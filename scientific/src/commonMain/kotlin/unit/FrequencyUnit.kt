@@ -39,7 +39,7 @@ val FrequencyUnits: Set<Frequency> get() = setOf(
     Kilohertz,
     Megahertz,
     Gigahertz,
-    BeatsPerMinute
+    BeatsPerMinute,
 )
 
 /**

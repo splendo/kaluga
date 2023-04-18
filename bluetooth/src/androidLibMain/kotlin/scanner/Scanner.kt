@@ -72,7 +72,7 @@ actual class DefaultScanner internal constructor(
     private val scanSettings: ScanSettings,
     settings: Settings,
     coroutineScope: CoroutineScope,
-    scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher
+    scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher,
 ) : BaseScanner(settings, coroutineScope, scanningDispatcher) {
 
     /**
@@ -86,13 +86,13 @@ actual class DefaultScanner internal constructor(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
         private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
         private val bluetoothAdapter: BluetoothAdapter? = (applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter,
-        private val scanSettings: ScanSettings = defaultScanSettings
+        private val scanSettings: ScanSettings = defaultScanSettings,
     ) : BaseScanner.Builder {
 
         override fun create(
             settings: Settings,
             coroutineScope: CoroutineScope,
-            scanningDispatcher: CoroutineDispatcher
+            scanningDispatcher: CoroutineDispatcher,
         ): BaseScanner {
             return DefaultScanner(applicationContext, bluetoothScanner, bluetoothAdapter, scanSettings, settings, coroutineScope, scanningDispatcher)
         }
@@ -157,10 +157,16 @@ actual class DefaultScanner internal constructor(
     override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create() }
     private val locationEnabledMonitor = LocationMonitor.Builder(applicationContext).create()
 
-    override val permissionsFlow: Flow<List<PermissionState<*>>> get() = combine(bluetoothPermissionRepo.filterOnlyImportant(), locationPermissionRepo.filterOnlyImportant()) { bluetoothPermission, locationPermission ->
+    override val permissionsFlow: Flow<List<PermissionState<*>>> get() = combine(
+        bluetoothPermissionRepo.filterOnlyImportant(),
+        locationPermissionRepo.filterOnlyImportant(),
+    ) { bluetoothPermission, locationPermission ->
         listOf(bluetoothPermission, locationPermission)
     }
-    override val enabledFlow: Flow<List<Boolean>> get() = combine(bluetoothEnabledMonitor?.isEnabled ?: flowOf(false), locationEnabledMonitor.isEnabled) { bluetoothEnabled, locationEnabled ->
+    override val enabledFlow: Flow<List<Boolean>> get() = combine(
+        bluetoothEnabledMonitor?.isEnabled ?: flowOf(false),
+        locationEnabledMonitor.isEnabled,
+    ) { bluetoothEnabled, locationEnabled ->
         listOf(bluetoothEnabled, locationEnabled)
     }
 
@@ -170,7 +176,7 @@ actual class DefaultScanner internal constructor(
                 ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build()
             },
             scanSettings,
-            callback
+            callback,
         )
     }
 
@@ -200,7 +206,7 @@ actual class DefaultScanner internal constructor(
                         EnableServiceActivity.showEnableServiceActivity(
                             applicationContext,
                             hashCode().toString(),
-                            Intent(ACTION_BLUETOOTH_SETTINGS)
+                            Intent(ACTION_BLUETOOTH_SETTINGS),
                         ).await()
                     } else {
                         @Suppress("DEPRECATION")
@@ -215,18 +221,18 @@ actual class DefaultScanner internal constructor(
                 EnableServiceActivity.showEnableServiceActivity(
                     applicationContext,
                     hashCode().toString(),
-                    Intent(ACTION_LOCATION_SOURCE_SETTINGS)
+                    Intent(ACTION_LOCATION_SOURCE_SETTINGS),
                 )::await
             } else {
                 null
-            }
+            },
         )
     }
 
     @SuppressLint("MissingPermission") // Lint complains even with permissions
     override suspend fun retrievePairedDeviceDiscoveredEvents(
         withServices: Filter,
-        connectionSettings: ConnectionSettings?
+        connectionSettings: ConnectionSettings?,
     ): List<Scanner.DeviceDiscovered> {
         if (!isSupported) {
             return emptyList()
@@ -238,7 +244,7 @@ actual class DefaultScanner internal constructor(
         }
         val result = ActivityCompat.checkSelfPermission(
             applicationContext,
-            permission
+            permission,
         )
         if (result != PackageManager.PERMISSION_GRANTED) {
             return emptyList()
@@ -260,7 +266,7 @@ actual class DefaultScanner internal constructor(
                     identifier = deviceWrapper.identifier,
                     rssi = Int.MIN_VALUE,
                     advertisementData = advertisementData,
-                    deviceCreator = getDeviceBuilder(deviceWrapper, Int.MIN_VALUE, advertisementData, deviceConnectionManagerBuilder, connectionSettings)
+                    deviceCreator = getDeviceBuilder(deviceWrapper, Int.MIN_VALUE, advertisementData, deviceConnectionManagerBuilder, connectionSettings),
                 )
             } ?: emptyList()
     }

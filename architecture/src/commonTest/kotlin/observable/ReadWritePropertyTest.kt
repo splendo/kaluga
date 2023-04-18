@@ -59,7 +59,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
 
         val subject = nullableReadWriteProperty.toDefaultSubject(
             defaultValue = "default",
-            context = Dispatchers.Unconfined
+            context = Dispatchers.Unconfined,
         )
 
         testStringDefaultSubject(
@@ -69,7 +69,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
             useSuspendableSetter = useSuspendableSetter,
             "new" to "new",
             null to "default",
-            "newer" to "newer"
+            "newer" to "newer",
         )
     }
 
@@ -83,7 +83,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
             shortDelayAfterUpdate = false,
             useSuspendableSetter = false,
             "new" to "new",
-            "other" to "other"
+            "other" to "other",
         )
     }
 
@@ -98,7 +98,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
             useSuspendableSetter = false,
             "new" to "new",
             null to null,
-            "other" to "other"
+            "other" to "other",
         )
     }
 
@@ -111,7 +111,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
             useSuspendableSetter = false,
             "new" to "new",
             null to null,
-            "other" to "other"
+            "other" to "other",
         )
     }
 }

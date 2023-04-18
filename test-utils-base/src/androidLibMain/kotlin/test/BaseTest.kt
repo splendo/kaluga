@@ -84,7 +84,7 @@ actual open class BaseTest {
                     level: LogLevel,
                     tag: String?,
                     throwable: Throwable?,
-                    message: (() -> String)?
+                    message: (() -> String)?,
                 ) {
                     println("$level: ${tag?.let { "[$it]" } ?: ""} ${message?.invoke() ?: ""} ${throwable?.message ?: ""}".trim())
                     throwable?.printStackTrace(System.out)

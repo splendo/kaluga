@@ -30,25 +30,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricVolumetricFlowTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.VolumetricFlow, MetricVolumetricFlow>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = unit.volume.volume(this, time)
 
 @JvmName("imperialVolumetricFlowTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.VolumetricFlow, ImperialVolumetricFlow>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = unit.volume.volume(this, time)
 
 @JvmName("ukImperialVolumetricFlowTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.VolumetricFlow, UKImperialVolumetricFlow>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = unit.volume.volume(this, time)
 
 @JvmName("usCustomaryVolumetricFlowTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.VolumetricFlow, USCustomaryVolumetricFlow>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = unit.volume.volume(this, time)
 
 @JvmName("volumetricFlowTimesTime")
 infix operator fun <VolumetricFlowUnit : VolumetricFlow, TimeUnit : Time> ScientificValue<PhysicalQuantity.VolumetricFlow, VolumetricFlowUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = unit.volume.volume(this, time)

@@ -51,9 +51,9 @@ fun UILabel.bindLabel(label: KalugaLabel) {
                         linkStyledAttributedString.addAttributes(
                             mapOf(
                                 "NSColor" to linkStyle.color.uiColor,
-                                "NSUnderline" to if (linkStyle.isUnderlined) NSUnderlineStyleSingle else NSUnderlineStyleNone
+                                "NSUnderline" to if (linkStyle.isUnderlined) NSUnderlineStyleSingle else NSUnderlineStyleNone,
                             ),
-                            range
+                            range,
                         )
                     }
                 }

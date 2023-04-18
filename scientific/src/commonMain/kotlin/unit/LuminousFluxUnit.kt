@@ -35,7 +35,7 @@ val LuminousFluxUnits: Set<LuminousFlux> get() = setOf(
     Hectolumen,
     Kilolumen,
     Megalumen,
-    Gigalumen
+    Gigalumen,
 )
 
 /**

@@ -30,19 +30,19 @@ import kotlin.jvm.JvmName
 @JvmName("timeFromLuminousEnergyAndFluxDefault")
 fun <
     TimeUnit : Time,
-    LuminousFluxUnit : LuminousFlux
+    LuminousFluxUnit : LuminousFlux,
     > TimeUnit.time(
     luminousEnergy: ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>,
-    luminousFlux: ScientificValue<PhysicalQuantity.LuminousFlux, LuminousFluxUnit>
+    luminousFlux: ScientificValue<PhysicalQuantity.LuminousFlux, LuminousFluxUnit>,
 ) = time(luminousEnergy, luminousFlux, ::DefaultScientificValue)
 
 @JvmName("timeFromLuminousEnergyAndFlux")
 fun <
     TimeUnit : Time,
     LuminousFluxUnit : LuminousFlux,
-    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     > TimeUnit.time(
     luminousEnergy: ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>,
     luminousFlux: ScientificValue<PhysicalQuantity.LuminousFlux, LuminousFluxUnit>,
-    factory: (Decimal, TimeUnit) -> Value
+    factory: (Decimal, TimeUnit) -> Value,
 ) = byDividing(luminousEnergy, luminousFlux, factory)

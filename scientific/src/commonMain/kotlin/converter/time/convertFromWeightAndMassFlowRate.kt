@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     WeightUnit : Weight,
     TimeUnit : Time,
-    MassFlowRateUnit : MassFlowRate
+    MassFlowRateUnit : MassFlowRate,
     > TimeUnit.time(
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MassFlowRateUnit>
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MassFlowRateUnit>,
 ) = time(weight, massFlowRate, ::DefaultScientificValue)
 
 @JvmName("timeFromWeightAndMassFlowRate")
@@ -42,9 +42,9 @@ fun <
     WeightUnit : Weight,
     TimeUnit : Time,
     MassFlowRateUnit : MassFlowRate,
-    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     > TimeUnit.time(
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
     massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MassFlowRateUnit>,
-    factory: (Decimal, TimeUnit) -> Value
+    factory: (Decimal, TimeUnit) -> Value,
 ) = byDividing(weight, massFlowRate, factory)

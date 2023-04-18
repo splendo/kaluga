@@ -41,7 +41,7 @@ class KalugaViewModelLifecycleObserver<ViewModel : BaseLifecycleViewModel> inter
     private val viewModel: ViewModel,
     private val activity: Activity?,
     private val fragmentManager: FragmentManager,
-    childFragmentManager: FragmentManager? = null
+    childFragmentManager: FragmentManager? = null,
 ) : DefaultLifecycleObserver {
 
     private val manager = LifecycleSubscribableManager(viewModel, activity, fragmentManager, childFragmentManager)
@@ -67,7 +67,7 @@ class LifecycleSubscribableManager<ViewModel : BaseLifecycleViewModel>(
     private val viewModel: ViewModel,
     private val activity: Activity?,
     private val fragmentManager: FragmentManager,
-    private val childFragmentManager: FragmentManager? = null
+    private val childFragmentManager: FragmentManager? = null,
 ) {
     fun onCreate(owner: LifecycleOwner) {
         owner.lifecycle.coroutineScope.launch {

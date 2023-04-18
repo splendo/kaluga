@@ -57,7 +57,7 @@ actual class DefaultScanner internal constructor(
     settings: Settings,
     private val scanSettings: ScanSettings,
     coroutineScope: CoroutineScope,
-    scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher
+    scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher,
 ) : BaseScanner(settings, coroutineScope, scanningDispatcher) {
 
     /**
@@ -69,7 +69,7 @@ actual class DefaultScanner internal constructor(
         override fun create(
             settings: Settings,
             coroutineScope: CoroutineScope,
-            scanningDispatcher: CoroutineDispatcher
+            scanningDispatcher: CoroutineDispatcher,
         ): BaseScanner {
             return DefaultScanner(settings, scanSettings, coroutineScope, scanningDispatcher)
         }
@@ -82,7 +82,7 @@ actual class DefaultScanner internal constructor(
      */
     class ScanSettings private constructor(
         private val allowDuplicateKeys: Boolean,
-        private val solicitedServiceUUIDsKey: List<UUID>?
+        private val solicitedServiceUUIDsKey: List<UUID>?,
     ) {
 
         companion object {
@@ -134,7 +134,7 @@ actual class DefaultScanner internal constructor(
     @Suppress("CONFLICTING_OVERLOADS")
     private class PoweredOnCBCentralManagerDelegate(
         private val scanner: DefaultScanner,
-        private val isEnabledCompleted: EmptyCompletableDeferred
+        private val isEnabledCompleted: EmptyCompletableDeferred,
     ) : NSObject(), CBCentralManagerDelegateProtocol {
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
@@ -147,13 +147,13 @@ actual class DefaultScanner internal constructor(
             central: CBCentralManager,
             didDiscoverPeripheral: CBPeripheral,
             advertisementData: Map<Any?, *>,
-            RSSI: NSNumber
+            RSSI: NSNumber,
         ) {
             scanner.discoverPeripheral(
                 central,
                 didDiscoverPeripheral,
                 advertisementData.typedMap(),
-                RSSI.intValue
+                RSSI.intValue,
             )
         }
 
@@ -164,7 +164,7 @@ actual class DefaultScanner internal constructor(
         override fun centralManager(
             central: CBCentralManager,
             didDisconnectPeripheral: CBPeripheral,
-            error: NSError?
+            error: NSError?,
         ) {
             scanner.handleDeviceDisconnected(didDisconnectPeripheral.identifier)
         }
@@ -172,7 +172,7 @@ actual class DefaultScanner internal constructor(
         override fun centralManager(
             central: CBCentralManager,
             didFailToConnectPeripheral: CBPeripheral,
-            error: NSError?
+            error: NSError?,
         ) {
             scanner.handleDeviceDisconnected(didFailToConnectPeripheral.identifier)
         }
@@ -210,7 +210,7 @@ actual class DefaultScanner internal constructor(
         val centralManager = getOrCreateCentralManager()
         centralManager.scanForPeripheralsWithServices(
             filter.takeIf { it.isNotEmpty() }?.toList(),
-            scanSettings.parse()
+            scanSettings.parse(),
         )
     }
 
@@ -234,13 +234,13 @@ actual class DefaultScanner internal constructor(
                 }
             } else {
                 null
-            }
+            },
         )
     }
 
     override suspend fun retrievePairedDeviceDiscoveredEvents(
         withServices: Filter,
-        connectionSettings: ConnectionSettings?
+        connectionSettings: ConnectionSettings?,
     ): List<Scanner.DeviceDiscovered> {
         val centralManager = getOrCreateCentralManager()
         return centralManager
@@ -264,10 +264,10 @@ actual class DefaultScanner internal constructor(
                         advertisementData,
                         DefaultDeviceConnectionManager.Builder(
                             centralManager,
-                            peripheral
+                            peripheral,
                         ),
-                        connectionSettings
-                    )
+                        connectionSettings,
+                    ),
                 )
             }
     }

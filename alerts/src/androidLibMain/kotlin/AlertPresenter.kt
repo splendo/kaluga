@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 actual class AlertPresenter(
     private val alert: Alert,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BaseAlertPresenter(alert), CoroutineScope by coroutineScope {
 
     /**
@@ -51,7 +51,7 @@ actual class AlertPresenter(
      * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes
      */
     actual class Builder(
-        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
+        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     ) : BaseAlertPresenter.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
 
         /**
@@ -77,7 +77,7 @@ actual class AlertPresenter(
         data class Showing(
             val animated: Boolean,
             val afterHandler: (Alert.Action?) -> Unit,
-            val completion: () -> Unit
+            val completion: () -> Unit,
         ) : DialogPresentation()
 
         object Hidden : DialogPresentation()
@@ -90,7 +90,7 @@ actual class AlertPresenter(
         launch {
             combine(
                 lifecycleManagerObserver.managerState,
-                presentation
+                presentation,
             ) { managerState, dialogPresentation ->
                 Pair(managerState, dialogPresentation)
             }.collect { contextPresentation ->
@@ -111,7 +111,7 @@ actual class AlertPresenter(
     override fun showAlert(
         animated: Boolean,
         afterHandler: (Alert.Action?) -> Unit,
-        completion: () -> Unit
+        completion: () -> Unit,
     ) {
         presentation.value = DialogPresentation.Showing(animated, afterHandler, completion)
     }
@@ -132,7 +132,7 @@ actual class AlertPresenter(
                 alert.textInputAction?.let { textInputAction ->
                     val editText = createEditTextView(
                         context,
-                        textInputAction
+                        textInputAction,
                     )
                     setView(editText)
                 }
@@ -170,12 +170,12 @@ actual class AlertPresenter(
      */
     private fun createEditTextView(
         context: Context,
-        textInputAction: Alert.TextInputAction
+        textInputAction: Alert.TextInputAction,
     ): LinearLayout {
         val linearLayout = LinearLayout(context)
         val layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.WRAP_CONTENT,
         )
         val editText = EditText(context)
         editText.layoutParams = layoutParams
@@ -189,7 +189,7 @@ actual class AlertPresenter(
                 s: CharSequence?,
                 start: Int,
                 count: Int,
-                after: Int
+                after: Int,
             ) {
                 // Do nothing
             }
@@ -198,7 +198,7 @@ actual class AlertPresenter(
                 s: CharSequence?,
                 start: Int,
                 before: Int,
-                count: Int
+                count: Int,
             ) {
                 // Do nothing
             }

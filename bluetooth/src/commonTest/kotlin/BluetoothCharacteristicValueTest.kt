@@ -30,14 +30,16 @@ import kotlin.test.assertTrue
 
 class BluetoothCharacteristicValueTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithCharacteristic, BluetoothFlowTest.CharacteristicContext, ByteArray?>() {
 
-    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithCharacteristic, scope: CoroutineScope) -> CharacteristicContext = { configuration, scope -> CharacteristicContext(configuration, scope) }
+    override val createTestContextWithConfiguration: suspend (Configuration.DeviceWithCharacteristic, CoroutineScope) -> CharacteristicContext = { configuration, scope ->
+        CharacteristicContext(configuration, scope)
+    }
     override val flowFromTestContext: suspend CharacteristicContext.() -> Flow<ByteArray?> = {
         bluetooth.scannedDevices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid].value()
     }
 
     @Test
     fun testGetCharacteristicValue() = testWithFlowAndTestContext(
-        Configuration.DeviceWithCharacteristic()
+        Configuration.DeviceWithCharacteristic(),
     ) {
         val newValue = "Test".encodeToByteArray()
 

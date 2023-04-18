@@ -59,7 +59,7 @@ interface DeviceConnectionManager {
         fun create(
             deviceWrapper: DeviceWrapper,
             settings: ConnectionSettings,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ): DeviceConnectionManager
     }
 
@@ -85,7 +85,7 @@ interface DeviceConnectionManager {
         /**
          * Device is connecting
          */
-        CONNECTING
+        CONNECTING,
     }
 
     /**
@@ -255,7 +255,7 @@ interface DeviceConnectionManager {
 abstract class BaseDeviceConnectionManager(
     protected val deviceWrapper: DeviceWrapper,
     settings: ConnectionSettings,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
 ) : DeviceConnectionManager, CoroutineScope by coroutineScope {
 
     private val logTag = "Bluetooth Device ${deviceWrapper.identifier.stringValue}"

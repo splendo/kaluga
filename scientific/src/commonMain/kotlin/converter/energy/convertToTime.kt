@@ -54,7 +54,7 @@ infix operator fun <WattUnit : WattMultiple> ScientificValue<PhysicalQuantity.En
 
 @JvmName("wattHourMultipleDivWattMultiple")
 infix operator fun <WattHourUnit : WattHourMultiple, WattUnit : WattMultiple> ScientificValue<PhysicalQuantity.Energy, WattHourUnit>.div(
-    power: ScientificValue<PhysicalQuantity.Power, WattUnit>
+    power: ScientificValue<PhysicalQuantity.Power, WattUnit>,
 ) =
     Hour.time(this, power)
 
@@ -80,5 +80,5 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, BritishThermalUnit>.
 
 @JvmName("energyDivPower")
 infix operator fun <EnergyUnit : Energy, PowerUnit : Power> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>,
 ) = Second.time(this, power)

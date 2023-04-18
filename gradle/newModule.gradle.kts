@@ -30,6 +30,7 @@ abstract class NewModule : DefaultTask() {
     sealed class Templates {
         abstract val subpath: String
         abstract val createDirs: Map<String, List<String>>
+        abstract val isAndroidModule: Boolean
 
         object Common : Templates() {
             override val subpath: String = "common"
@@ -44,6 +45,7 @@ abstract class NewModule : DefaultTask() {
                 "jsMain" to emptyList(),
                 "jvmMain" to emptyList()
             )
+            override val isAndroidModule: Boolean = false
         }
 
         object Test : Templates() {
@@ -55,6 +57,7 @@ abstract class NewModule : DefaultTask() {
                 "jsMain" to emptyList(),
                 "jvmMain" to emptyList()
             )
+            override val isAndroidModule: Boolean = false
         }
 
         object Compose : Templates() {
@@ -64,6 +67,7 @@ abstract class NewModule : DefaultTask() {
                 "main" to emptyList(),
                 "test" to emptyList()
             )
+            override val isAndroidModule: Boolean = true
         }
 
         object Databinding : Templates() {
@@ -73,6 +77,7 @@ abstract class NewModule : DefaultTask() {
                 "main" to emptyList(),
                 "test" to emptyList()
             )
+            override val isAndroidModule: Boolean = true
         }
     }
 
@@ -121,7 +126,7 @@ abstract class NewModule : DefaultTask() {
                 val basePath = "../$TEMPLATE_PATH/${template.subpath}"
                 template.createDirs.entries.forEach { (path, files) ->
                     val dir = outputDir.dir("src/${path}")
-                    val kotlinDir = dir.dir("kotlin")
+                    val kotlinDir = dir.dir(if (template.isAndroidModule) "java" else "kotlin") // ktlint does not work for src/*/kotlin/ when creating an android module
                     Files.createDirectories(kotlinDir.asFile.toPath())
                     files.forEach {
                         val from = outputDir.file("$basePath/src/${path}/$it").asFile

@@ -36,7 +36,7 @@ class BluetoothDeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.De
 
     @Test
     fun testGetDevice() = testWithFlowAndTestContext(
-        Configuration.DeviceWithoutService()
+        Configuration.DeviceWithoutService(),
     ) {
         test {
             assertNull(it)

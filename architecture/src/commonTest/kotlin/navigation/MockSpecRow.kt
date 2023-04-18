@@ -31,8 +31,8 @@ class MockSpec : NavigationBundleSpec<MockSpecRow<*>>(
         MockSpecRow.OptionalString,
         MockSpecRow.OptionalFloat,
         MockSpecRow.DateSpecRow,
-        MockSpecRow.DateArraySpecRow
-    )
+        MockSpecRow.DateArraySpecRow,
+    ),
 )
 
 sealed class MockSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {

@@ -86,90 +86,90 @@ class ForceUnitTest {
         assertEqualScientificValue(
             4(PoundForce),
             2(Pound) * (2 * ImperialStandardGravityAcceleration),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(PoundForce),
             (2 * ImperialStandardGravityAcceleration) * 2(Pound),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(OunceForce),
             2(Ounce) * (2 * ImperialStandardGravityAcceleration),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(OunceForce),
             (2 * ImperialStandardGravityAcceleration) * 2(Ounce),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(GrainForce),
             2(Grain) * (2 * ImperialStandardGravityAcceleration),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(GrainForce),
             (2 * ImperialStandardGravityAcceleration) * 2(Grain),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(UsTonForce),
             2(UsTon) * (2 * ImperialStandardGravityAcceleration),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(UsTonForce),
             (2 * ImperialStandardGravityAcceleration) * 2(UsTon),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(ImperialTonForce),
             2(ImperialTon) * (2 * ImperialStandardGravityAcceleration),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(ImperialTonForce),
             (2 * ImperialStandardGravityAcceleration) * 2(ImperialTon),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(PoundForce),
             2(Pound as ImperialWeight) * (2 * ImperialStandardGravityAcceleration),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(PoundForce),
             (2 * ImperialStandardGravityAcceleration) * 2(Pound as ImperialWeight),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(PoundForce.ukImperial),
             2(Pound.ukImperial) * (2 * ImperialStandardGravityAcceleration),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(PoundForce.ukImperial),
             (2 * ImperialStandardGravityAcceleration) * 2(Pound.ukImperial),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(PoundForce.usCustomary),
             2(Pound.usCustomary) * (2 * ImperialStandardGravityAcceleration),
-            9
+            9,
         )
         assertEqualScientificValue(
             4(PoundForce.usCustomary),
             (2 * ImperialStandardGravityAcceleration) * 2(Pound.usCustomary),
-            9
+            9,
         )
         assertEquals(
             4.0(Newton),
-            2(Kilogram) * 2(Meter per Second per Second).convert(Foot per Second per Second)
+            2(Kilogram) * 2(Meter per Second per Second).convert(Foot per Second per Second),
         )
         assertEquals(
             4.0(Newton),
-            2(Meter per Second per Second).convert(Foot per Second per Second) * 2(Kilogram)
+            2(Meter per Second per Second).convert(Foot per Second per Second) * 2(Kilogram),
         )
     }
 
@@ -186,7 +186,7 @@ class ForceUnitTest {
         assertEqualScientificValue(
             1.0(Newton).convert(PoundForce),
             2(Joule).convert(WattHour) / 2(Meter).convert(Foot),
-            8
+            8,
         )
         assertEqualScientificValue(1.0(Newton), 2(Joule) / 2(Meter).convert(Foot), 8)
     }
@@ -197,21 +197,21 @@ class ForceUnitTest {
         assertEqualScientificValue(
             1(PoundForce),
             (2 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)) / 2(Second),
-            10
+            10,
         )
         assertEqualScientificValue(
             1(PoundForce.ukImperial),
             (2 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial x (Foot per Second)) / 2(
-                Second
+                Second,
             ),
-            10
+            10,
         )
         assertEqualScientificValue(
             1(PoundForce.usCustomary),
             (2 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary x (Foot per Second)) / 2(
-                Second
+                Second,
             ),
-            10
+            10,
         )
         assertEquals(1.0(Newton), 2(Kilogram x (Meter per Second)).convert((Pound x (Foot per Second)) as Momentum) / 2(Second))
     }
@@ -281,11 +281,11 @@ class ForceUnitTest {
         assertEqualScientificValue(4.0(PoundForce), 2(Second) * 2(PoundForce per Second))
         assertEqualScientificValue(
             4.0(ImperialTonForce),
-            2(ImperialTonForce per Second) * 2(Second)
+            2(ImperialTonForce per Second) * 2(Second),
         )
         assertEqualScientificValue(
             4.0(ImperialTonForce),
-            2(Second) * 2(ImperialTonForce per Second)
+            2(Second) * 2(ImperialTonForce per Second),
         )
         assertEqualScientificValue(4.0(UsTonForce), 2(UsTonForce per Second) * 2(Second))
         assertEqualScientificValue(4.0(UsTonForce), 2(Second) * 2(UsTonForce per Second))

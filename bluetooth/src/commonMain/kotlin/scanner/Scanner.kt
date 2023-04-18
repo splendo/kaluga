@@ -87,7 +87,7 @@ interface Scanner {
         val identifier: Identifier,
         val rssi: Int,
         val advertisementData: BaseAdvertisementData,
-        val deviceCreator: (CoroutineContext) -> Device
+        val deviceCreator: (CoroutineContext) -> Device,
     )
 
     /**
@@ -124,7 +124,7 @@ interface Scanner {
         data class PairedDevicesRetrieved(
             val devices: List<DeviceDiscovered>,
             val filter: Filter,
-            val removeForAllPairedFilters: Boolean
+            val removeForAllPairedFilters: Boolean,
         ) : Event() {
 
             /**
@@ -240,7 +240,7 @@ interface Scanner {
 abstract class BaseScanner constructor(
     settings: Settings,
     private val coroutineScope: CoroutineScope,
-    private val scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher
+    private val scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher,
 ) : Scanner, CoroutineScope by coroutineScope {
 
     companion object {
@@ -262,7 +262,7 @@ abstract class BaseScanner constructor(
         val autoEnableSensors: Boolean = true,
         val discoverBondedDevices: Boolean = true,
         val defaultConnectionSettings: ConnectionSettings = ConnectionSettings(),
-        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
+        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     )
 
     /**
@@ -280,7 +280,7 @@ abstract class BaseScanner constructor(
         fun create(
             settings: Settings,
             coroutineScope: CoroutineScope,
-            scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher
+            scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher,
         ): BaseScanner
     }
 
@@ -419,7 +419,11 @@ abstract class BaseScanner constructor(
 
     protected abstract fun generateEnableSensorsActions(): List<EnableSensorAction>
 
-    override suspend fun retrievePairedDevices(withServices: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?) = isRetrievingPairedDevicesMutex.withLock {
+    override suspend fun retrievePairedDevices(
+        withServices: Filter,
+        removeForAllPairedFilters: Boolean,
+        connectionSettings: ConnectionSettings?,
+    ) = isRetrievingPairedDevicesMutex.withLock {
         if (!checkIfNewPairingDiscoveryShouldBeStarted(withServices)) return
 
         retrievingPairedDevicesJob = this@BaseScanner.launch {
@@ -447,14 +451,14 @@ abstract class BaseScanner constructor(
         deviceWrapper: DeviceWrapper,
         rssi: RSSI,
         advertisementData: BaseAdvertisementData,
-        connectionManagerBuilder: DeviceConnectionManager.Builder
+        connectionManagerBuilder: DeviceConnectionManager.Builder,
     ) = handleDeviceDiscovered(deviceWrapper, rssi, advertisementData) { coroutineContext ->
         getDeviceBuilder(
             deviceWrapper,
             rssi,
             advertisementData,
             connectionManagerBuilder,
-            defaultConnectionSettings
+            defaultConnectionSettings,
         )(coroutineContext)
     }
 
@@ -462,13 +466,13 @@ abstract class BaseScanner constructor(
         deviceWrapper: DeviceWrapper,
         rssi: RSSI,
         advertisementData: BaseAdvertisementData,
-        deviceCreator: (CoroutineContext) -> Device
+        deviceCreator: (CoroutineContext) -> Device,
     ) {
         logger.info(LOG_TAG) { "Device ${deviceWrapper.identifier.stringValue} discovered with rssi: $rssi" }
         logger.debug(LOG_TAG) { "Device ${deviceWrapper.identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
 
         isScanningDevicesDiscovered.value?.trySend(
-            Scanner.DeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData, deviceCreator)
+            Scanner.DeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData, deviceCreator),
         )
     }
 
@@ -492,19 +496,25 @@ abstract class BaseScanner constructor(
         rssi: RSSI,
         advertisementData: BaseAdvertisementData,
         connectionManagerBuilder: DeviceConnectionManager.Builder,
-        connectionSettings: ConnectionSettings?
+        connectionSettings: ConnectionSettings?,
     ): (CoroutineContext) -> Device = { coroutineContext ->
         DeviceImpl(
             deviceWrapper.identifier,
             DeviceInfoImpl(deviceWrapper, rssi, advertisementData),
             connectionSettings ?: defaultConnectionSettings,
-            { settings -> connectionManagerBuilder.create(deviceWrapper, settings, CoroutineScope(coroutineContext + CoroutineName("ConnectionManager ${deviceWrapper.identifier.stringValue}"))) },
-            CoroutineScope(coroutineContext + CoroutineName("Device ${deviceWrapper.identifier.stringValue}"))
+            { settings ->
+                connectionManagerBuilder.create(
+                    deviceWrapper,
+                    settings,
+                    CoroutineScope(coroutineContext + CoroutineName("ConnectionManager ${deviceWrapper.identifier.stringValue}")),
+                )
+            },
+            CoroutineScope(coroutineContext + CoroutineName("Device ${deviceWrapper.identifier.stringValue}")),
         ) { connectionManager, context ->
             ConnectableDeviceStateImplRepo(
                 (connectionSettings ?: defaultConnectionSettings).reconnectionSettings,
                 connectionManager,
-                context
+                context,
             )
         }
     }

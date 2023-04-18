@@ -174,5 +174,8 @@ val KalugaLocale.uses24HourClock: Boolean get() {
     return !formattedDate.contains(formatter.amString) && !formattedDate.contains(formatter.pmString)
 }
 
-@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaLocale"))
+@Deprecated(
+    "Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.",
+    ReplaceWith("KalugaLocale"),
+)
 typealias Locale = KalugaLocale

@@ -27,5 +27,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("amountOfSubstanceDivCatalysticActivity")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, CatalysisUnit : CatalysticActivity> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    catalysis: ScientificValue<PhysicalQuantity.CatalysticActivity, CatalysisUnit>
+    catalysis: ScientificValue<PhysicalQuantity.CatalysticActivity, CatalysisUnit>,
 ) = Second.time(this, catalysis)

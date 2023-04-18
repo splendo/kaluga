@@ -87,17 +87,23 @@ interface USCustomaryScientificUnit<Quantity : PhysicalQuantity> : SystemScienti
 /**
  * A [SystemScientificUnit] for [MeasurementSystem.UKImperial]
  */
-interface UKImperialScientificUnit<Quantity : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.UKImperial, Quantity>, MeasurementUsage.UsedInUKImperial
+interface UKImperialScientificUnit<Quantity : PhysicalQuantity> :
+    SystemScientificUnit<MeasurementSystem.UKImperial, Quantity>,
+    MeasurementUsage.UsedInUKImperial
 
 /**
  * A [SystemScientificUnit] for [MeasurementSystem.MetricAndUKImperial]
  */
-interface MetricAndUKImperialScientificUnit<Quantity : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.MetricAndUKImperial, Quantity>, MeasurementUsage.UsedInMetricAndUKImperial
+interface MetricAndUKImperialScientificUnit<Quantity : PhysicalQuantity> :
+    SystemScientificUnit<MeasurementSystem.MetricAndUKImperial, Quantity>,
+    MeasurementUsage.UsedInMetricAndUKImperial
 
 /**
  * A [SystemScientificUnit] for [MeasurementSystem.MetricAndImperial]
  */
-interface MetricAndImperialScientificUnit<Quantity : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.MetricAndImperial, Quantity>, MeasurementUsage.UsedInMetricAndImperial
+interface MetricAndImperialScientificUnit<Quantity : PhysicalQuantity> :
+    SystemScientificUnit<MeasurementSystem.MetricAndImperial, Quantity>,
+    MeasurementUsage.UsedInMetricAndImperial
 
 /**
  * A class implementation of [ScientificUnit]
@@ -115,7 +121,7 @@ sealed class AbstractScientificUnit<Quantity : PhysicalQuantity> : ScientificUni
  */
 fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
     value: Number,
-    to: ScientificUnit<Quantity>
+    to: ScientificUnit<Quantity>,
 ) = convert(value.toDecimal(), to).toDouble()
 
 /**
@@ -131,7 +137,7 @@ fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
     value: Number,
     to: ScientificUnit<Quantity>,
     round: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ) = convert(value.toDecimal(), to).round(round, roundingMode).toDouble()
 
 /**
@@ -147,7 +153,7 @@ fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
     value: Decimal,
     to: ScientificUnit<Quantity>,
     round: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ) = convert(value, to).round(round, roundingMode)
 
 /**
@@ -159,7 +165,7 @@ fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
  */
 fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
     value: Decimal,
-    to: ScientificUnit<Quantity>
+    to: ScientificUnit<Quantity>,
 ) = if (this == to) value else to.fromSIUnit(toSIUnit(value))
 
 /**

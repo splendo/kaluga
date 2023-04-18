@@ -45,7 +45,7 @@ enum class DateFormatStyle {
     /**
      * Full style pattern
      */
-    Full
+    Full,
 }
 
 /**
@@ -125,7 +125,7 @@ expect class KalugaDateFormatter : BaseDateFormatter {
         fun dateFormat(
             style: DateFormatStyle = DateFormatStyle.Medium,
             timeZone: KalugaTimeZone = KalugaTimeZone.current(),
-            locale: KalugaLocale = defaultLocale
+            locale: KalugaLocale = defaultLocale,
         ): KalugaDateFormatter
 
         /**
@@ -137,7 +137,7 @@ expect class KalugaDateFormatter : BaseDateFormatter {
         fun timeFormat(
             style: DateFormatStyle = DateFormatStyle.Medium,
             timeZone: KalugaTimeZone = KalugaTimeZone.current(),
-            locale: KalugaLocale = defaultLocale
+            locale: KalugaLocale = defaultLocale,
         ): KalugaDateFormatter
 
         /**
@@ -151,7 +151,7 @@ expect class KalugaDateFormatter : BaseDateFormatter {
             dateStyle: DateFormatStyle = DateFormatStyle.Medium,
             timeStyle: DateFormatStyle = DateFormatStyle.Medium,
             timeZone: KalugaTimeZone = KalugaTimeZone.current(),
-            locale: KalugaLocale = defaultLocale
+            locale: KalugaLocale = defaultLocale,
         ): KalugaDateFormatter
 
         /**
@@ -166,12 +166,15 @@ expect class KalugaDateFormatter : BaseDateFormatter {
         fun patternFormat(
             pattern: String,
             timeZone: KalugaTimeZone = KalugaTimeZone.current(),
-            locale: KalugaLocale = defaultLocale
+            locale: KalugaLocale = defaultLocale,
         ): KalugaDateFormatter
     }
 }
 
-@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaState"))
+@Deprecated(
+    "Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.",
+    ReplaceWith("KalugaState"),
+)
 typealias DateFormatter = KalugaDateFormatter
 
 /**
@@ -180,7 +183,10 @@ typealias DateFormatter = KalugaDateFormatter
  * @param pattern The pattern to apply.
  * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
  */
-fun KalugaDateFormatter.Companion.fixedPatternFormat(pattern: String, timeZone: KalugaTimeZone = KalugaTimeZone.current()) = patternFormat(pattern, timeZone, KalugaLocale.enUsPosix)
+fun KalugaDateFormatter.Companion.fixedPatternFormat(
+    pattern: String,
+    timeZone: KalugaTimeZone = KalugaTimeZone.current(),
+) = patternFormat(pattern, timeZone, KalugaLocale.enUsPosix)
 
 /**
  * Creates a [KalugaDateFormatter] that formats time according to the ISo 8601 format.
@@ -199,7 +205,7 @@ fun KalugaDateFormatter.Companion.dateFormat(
     style: DateFormatStyle = DateFormatStyle.Medium,
     excludeYear: Boolean,
     timeZone: KalugaTimeZone = KalugaTimeZone.current(),
-    locale: KalugaLocale = defaultLocale
+    locale: KalugaLocale = defaultLocale,
 ): KalugaDateFormatter {
     val formatWithYear = dateFormat(style, timeZone, locale)
     return if (excludeYear) {
@@ -222,7 +228,7 @@ fun KalugaDateFormatter.Companion.dateTimeFormat(
     excludeYear: Boolean,
     timeStyle: DateFormatStyle = DateFormatStyle.Medium,
     timeZone: KalugaTimeZone = KalugaTimeZone.current(),
-    locale: KalugaLocale = defaultLocale
+    locale: KalugaLocale = defaultLocale,
 ): KalugaDateFormatter {
     val formatWithYear = dateTimeFormat(dateStyle, timeStyle, timeZone, locale)
     return if (excludeYear) {

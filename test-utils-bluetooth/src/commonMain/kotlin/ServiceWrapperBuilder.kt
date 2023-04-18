@@ -29,29 +29,29 @@ annotation class MockBuilderDsl
 typealias CharacteristicList = ArrayList<ServiceWrapperBuilder.Characteristic>
 
 fun CharacteristicList.characteristic(
-    builder: ServiceWrapperBuilder.Characteristic.Builder.() -> Unit
+    builder: ServiceWrapperBuilder.Characteristic.Builder.() -> Unit,
 ) = add(
-    ServiceWrapperBuilder.Characteristic.Builder().apply(builder).build()
+    ServiceWrapperBuilder.Characteristic.Builder().apply(builder).build(),
 )
 
 @MockBuilderDsl
 typealias DescriptorList = ArrayList<ServiceWrapperBuilder.Descriptor>
 
 fun DescriptorList.descriptor(uuid: UUID) = add(
-    ServiceWrapperBuilder.Descriptor(uuid)
+    ServiceWrapperBuilder.Descriptor(uuid),
 )
 
 @MockBuilderDsl
 class ServiceWrapperBuilder {
 
     data class Descriptor(
-        val uuid: UUID = randomUUID()
+        val uuid: UUID = randomUUID(),
     )
 
     data class Characteristic(
         val uuid: UUID = randomUUID(),
         val descriptors: List<Descriptor> = listOf(Descriptor()),
-        val properties: Int = 0
+        val properties: Int = 0,
     ) {
 
         @MockBuilderDsl

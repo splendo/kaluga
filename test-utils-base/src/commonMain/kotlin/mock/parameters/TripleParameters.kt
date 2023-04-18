@@ -39,7 +39,7 @@ class TripleParameters<T0, T1, T2> : ParametersSpec<TripleParameters.Matchers<T0
     data class Matchers<T0, T1, T2>(
         val first: ParameterMatcher<T0>,
         val second: ParameterMatcher<T1>,
-        val third: ParameterMatcher<T2>
+        val third: ParameterMatcher<T2>,
     ) : ParametersSpec.Matchers {
         override fun asList() = listOf(first, second, third)
     }
@@ -53,7 +53,7 @@ class TripleParameters<T0, T1, T2> : ParametersSpec<TripleParameters.Matchers<T0
     data class MatchersOrCaptor<T0, T1, T2>(
         val first: ParameterMatcherOrCaptor<T0>,
         val second: ParameterMatcherOrCaptor<T1>,
-        val third: ParameterMatcherOrCaptor<T2>
+        val third: ParameterMatcherOrCaptor<T2>,
     ) : ParametersSpec.MatchersOrCaptor<Matchers<T0, T1, T2>> {
         override fun asMatchers(): Matchers<T0, T1, T2> = Matchers(first.asMatcher(), second.asMatcher(), third.asMatcher())
     }
@@ -76,10 +76,16 @@ class TripleParameters<T0, T1, T2> : ParametersSpec<TripleParameters.Matchers<T0
     }
 }
 
-internal fun <T0, T1, T2, R> ((T0, T1, T2) -> R).asMock() = MethodMock<TripleParameters.Matchers<T0, T1, T2>, TripleParameters.MatchersOrCaptor<T0, T1, T2>, TripleParameters.Values<T0, T1, T2>, TripleParameters<T0, T1, T2>, R>(TripleParameters())
+internal fun <T0, T1, T2, R> ((T0, T1, T2) -> R).asMock() = MethodMock<
+    TripleParameters.Matchers<T0, T1, T2>,
+    TripleParameters.MatchersOrCaptor<T0, T1, T2>,
+    TripleParameters.Values<T0, T1, T2>,
+    TripleParameters<T0, T1, T2>,
+    R,
+    >(TripleParameters())
 
 fun <T0, T1, T2, R> ((T0, T1, T2) -> R).mockWithDefaultAnswer(
-    defaultAnswer: Answer<TripleParameters.Values<T0, T1, T2>, R>
+    defaultAnswer: Answer<TripleParameters.Values<T0, T1, T2>, R>,
 ) = asMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>()).doAnswer(defaultAnswer)
 }
@@ -203,10 +209,16 @@ fun <T0, T1, T2, R : Any> ((T0, T1, T2) -> R?).mock() = mockWithDefaultValue(nul
 @JsName("mockTripleNonNullable")
 fun <T0, T1, T2, R : Any> ((T0, T1, T2) -> R).mock() = asMock()
 
-internal fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).asSuspendedMock() = SuspendMethodMock<TripleParameters.Matchers<T0, T1, T2>, TripleParameters.MatchersOrCaptor<T0, T1, T2>, TripleParameters.Values<T0, T1, T2>, TripleParameters<T0, T1, T2>, R>(TripleParameters())
+internal fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).asSuspendedMock() = SuspendMethodMock<
+    TripleParameters.Matchers<T0, T1, T2>,
+    TripleParameters.MatchersOrCaptor<T0, T1, T2>,
+    TripleParameters.Values<T0, T1, T2>,
+    TripleParameters<T0, T1, T2>,
+    R,
+    >(TripleParameters())
 
 fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).mockWithDefaultAnswer(
-    defaultAnswer: SuspendedAnswer<TripleParameters.Values<T0, T1, T2>, R>
+    defaultAnswer: SuspendedAnswer<TripleParameters.Values<T0, T1, T2>, R>,
 ) = asSuspendedMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>()).doAnswer(defaultAnswer)
 }

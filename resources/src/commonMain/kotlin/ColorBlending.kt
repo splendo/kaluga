@@ -42,7 +42,7 @@ sealed class BlendMode {
         override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = colorFrom(
             blendColorChannel(backdrop.red, source.red),
             blendColorChannel(backdrop.green, source.green),
-            blendColorChannel(backdrop.blue, source.blue)
+            blendColorChannel(backdrop.blue, source.blue),
         )
 
         /**
@@ -74,12 +74,12 @@ sealed class BlendMode {
                         min < 0.0 -> colorFrom(
                             lumination + (((red - lumination) * lumination) / (lumination - min)),
                             lumination + (((green - lumination) * lumination) / (lumination - min)),
-                            lumination + (((blue - lumination) * lumination) / (lumination - min))
+                            lumination + (((blue - lumination) * lumination) / (lumination - min)),
                         )
                         max > 1.0 -> colorFrom(
                             lumination + (((red - lumination) * (1.0 - lumination)) / (max - lumination)),
                             lumination + (((green - lumination) * (1.0 - lumination)) / (max - lumination)),
-                            lumination + (((blue - lumination) * (1.0 - lumination)) / (max - lumination))
+                            lumination + (((blue - lumination) * (1.0 - lumination)) / (max - lumination)),
                         )
                         else -> colorFrom(red, green, blue)
                     }
@@ -92,7 +92,7 @@ sealed class BlendMode {
             get() = maxOf(red, green, blue) - minOf(
                 red,
                 green,
-                blue
+                blue,
             )
 
         protected fun KalugaColor.setLumination(lumination: Double): KalugaColor =
@@ -280,7 +280,7 @@ private fun KalugaColor.blend(source: KalugaColor, mode: BlendMode): KalugaColor
             compositeAlpha: Double,
             backdropColor: Double,
             sourceColor: Double,
-            compositeColor: Double ->
+            compositeColor: Double, ->
         Double
         (1.0 - sourceAlpha / compositeAlpha) * backdropColor +
             (sourceAlpha / compositeAlpha) * ((1 - backdropAlpha) * sourceColor + backdropAlpha * compositeColor)
@@ -291,7 +291,7 @@ private fun KalugaColor.blend(source: KalugaColor, mode: BlendMode): KalugaColor
         alphaCompose(alpha, source.alpha, compositeAlpha, red, source.red, composite.red),
         alphaCompose(alpha, source.alpha, compositeAlpha, green, source.green, composite.green),
         alphaCompose(alpha, source.alpha, compositeAlpha, blue, source.blue, composite.blue),
-        compositeAlpha
+        compositeAlpha,
     )
 }
 

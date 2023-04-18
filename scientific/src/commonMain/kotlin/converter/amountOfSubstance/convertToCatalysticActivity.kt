@@ -27,5 +27,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("amountOfSubstanceDivTime")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, TimeUnit : Time> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = Katal.catalysticActivity(this, time)

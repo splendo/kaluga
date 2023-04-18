@@ -35,45 +35,45 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricDensityTimesMetricVolume")
 infix operator fun <VolumeUnit : MetricVolume> ScientificValue<PhysicalQuantity.Density, MetricDensity>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = unit.weight.mass(this, volume)
 
 @JvmName("imperialDensityTimesImperialVolume")
 infix operator fun <VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Density, ImperialDensity>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = unit.weight.mass(this, volume)
 
 @JvmName("imperialDensityTimesUKImperialVolume")
 infix operator fun <VolumeUnit : UKImperialVolume> ScientificValue<PhysicalQuantity.Density, ImperialDensity>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = unit.weight.mass(this, volume)
 
 @JvmName("imperialDensityTimesUSCustomaryVolume")
 infix operator fun <VolumeUnit : USCustomaryVolume> ScientificValue<PhysicalQuantity.Density, ImperialDensity>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = unit.weight.mass(this, volume)
 
 @JvmName("ukImperialDensityTimesImperialVolume")
 infix operator fun <VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Density, UKImperialDensity>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = unit.weight.mass(this, volume)
 
 @JvmName("ukImperialDensityTimesUKImperialVolume")
 infix operator fun <VolumeUnit : UKImperialVolume> ScientificValue<PhysicalQuantity.Density, UKImperialDensity>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = unit.weight.mass(this, volume)
 
 @JvmName("usCustomaryDensityTimesUKImperialVolume")
 infix operator fun <VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = unit.weight.mass(this, volume)
 
 @JvmName("usCustomaryDensityTimesUSCustomaryVolume")
 infix operator fun <VolumeUnit : USCustomaryVolume> ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = unit.weight.mass(this, volume)
 
 @JvmName("densityTimesVolume")
 infix operator fun <DensityUnit : Density, VolumeUnit : Volume> ScientificValue<PhysicalQuantity.Density, DensityUnit>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = Kilogram.mass(this, volume)

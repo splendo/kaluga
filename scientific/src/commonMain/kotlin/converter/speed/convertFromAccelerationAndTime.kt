@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     AccelerationUnit : Acceleration,
     TimeUnit : Time,
-    SpeedUnit : Speed
+    SpeedUnit : Speed,
     > SpeedUnit.speed(
     acceleration: ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>,
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = speed(acceleration, time, ::DefaultScientificValue)
 
 @JvmName("speedFromAccelerationAndTime")
@@ -42,9 +42,9 @@ fun <
     AccelerationUnit : Acceleration,
     TimeUnit : Time,
     SpeedUnit : Speed,
-    Value : ScientificValue<PhysicalQuantity.Speed, SpeedUnit>
+    Value : ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
     > SpeedUnit.speed(
     acceleration: ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, SpeedUnit) -> Value
+    factory: (Decimal, SpeedUnit) -> Value,
 ) = byMultiplying(acceleration, time, factory)

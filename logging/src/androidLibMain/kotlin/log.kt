@@ -39,7 +39,7 @@ actual val defaultLogger: Logger =
                         tag
                     }
                 }
-            }
+            },
         )
     } else {
         NapierLogger(DebugAntilog())

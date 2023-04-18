@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.Flow
 abstract class BaseNetworkStateTest<T, F : Flow<T>> : BaseFlowTest<BaseNetworkStateTest.Configuration, BaseNetworkStateTest.Context, T, F>() {
 
     data class Configuration(
-        val initialNetworkConnectionType: NetworkConnectionType
+        val initialNetworkConnectionType: NetworkConnectionType,
     )
 
     class Context(configuration: Configuration, coroutineScope: CoroutineScope) : TestContext {
@@ -41,11 +41,11 @@ abstract class BaseNetworkStateTest<T, F : Flow<T>> : BaseFlowTest<BaseNetworkSt
 
     protected fun testNetworkState(
         initialNetworkConnectionType: NetworkConnectionType,
-        test: suspend BaseFlowTest<Configuration, Context, T, F>.(F) -> Unit
+        test: suspend BaseFlowTest<Configuration, Context, T, F>.(F) -> Unit,
     ) {
         testWithFlowAndTestContext(
             Configuration(initialNetworkConnectionType),
-            blockWithContext = test
+            blockWithContext = test,
         )
     }
 }

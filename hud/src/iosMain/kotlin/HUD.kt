@@ -48,7 +48,12 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * Default [BaseHUD] implementation.
  */
-actual class HUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController, wrapper: (UIViewController) -> UIViewController, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
+actual class HUD private constructor(
+    private val containerView: ContainerView,
+    private val viewController: UIViewController,
+    wrapper: (UIViewController) -> UIViewController,
+    coroutineScope: CoroutineScope,
+) : BaseHUD(coroutineScope) {
 
     /**
      * Builder class for creating a [HUD]
@@ -73,13 +78,13 @@ actual class HUD private constructor(private val containerView: ContainerView, p
             ContainerView(hudConfig, viewController.view.window?.bounds ?: UIScreen.mainScreen.bounds),
             viewController,
             wrapper,
-            coroutineScope
+            coroutineScope,
         )
     }
 
     private class ContainerView(
-        internal val hudConfig: HudConfig,
-        frame: CValue<CGRect>
+        val hudConfig: HudConfig,
+        frame: CValue<CGRect>,
     ) : UIView(frame) {
 
         private val titleLabel: UILabel
@@ -132,8 +137,8 @@ actual class HUD private constructor(private val containerView: ContainerView, p
                     stackView.widthAnchor.constraintGreaterThanOrEqualToConstant(64.0 as CGFloat),
                     stackView.widthAnchor.constraintLessThanOrEqualToAnchor(widthAnchor, 0.5 as CGFloat),
                     stackView.heightAnchor.constraintGreaterThanOrEqualToConstant(64.0 as CGFloat),
-                    stackView.heightAnchor.constraintLessThanOrEqualToAnchor(heightAnchor, 0.5 as CGFloat)
-                )
+                    stackView.heightAnchor.constraintLessThanOrEqualToAnchor(heightAnchor, 0.5 as CGFloat),
+                ),
             )
             // Activity indicator
             UIActivityIndicatorView(UIActivityIndicatorViewStyleWhiteLarge).apply {
@@ -159,7 +164,7 @@ actual class HUD private constructor(private val containerView: ContainerView, p
             modalTransitionStyle = UIModalTransitionStyleCrossDissolve
             view.backgroundColor = UIColor.clearColor
             view.addSubview(containerView)
-        }
+        },
     )
 
     private val topViewController: UIViewController

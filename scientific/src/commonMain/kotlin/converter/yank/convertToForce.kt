@@ -38,15 +38,15 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Yank, Impe
 
 @JvmName("ukImperialYankTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Yank, UKImperialYank>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit.force).force(this, time)
 
 @JvmName("usCustomaryYankTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Yank, USCustomaryYank>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit.force).force(this, time)
 
 @JvmName("yankTimesTime")
 infix operator fun <YankUnit : Yank, TimeUnit : Time> ScientificValue<PhysicalQuantity.Yank, YankUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit.force).force(this, time)

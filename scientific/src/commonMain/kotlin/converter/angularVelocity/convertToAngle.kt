@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("angularVelocityTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = unit.angle.angle(this, time)

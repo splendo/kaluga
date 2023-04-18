@@ -38,7 +38,7 @@ val MetricAndImperialPowerUnits: Set<MetricAndImperialPower> get() = setOf(
     Hectowatt,
     Kilowatt,
     Megawatt,
-    Gigawatt
+    Gigawatt,
 )
 
 /**
@@ -47,7 +47,7 @@ val MetricAndImperialPowerUnits: Set<MetricAndImperialPower> get() = setOf(
 val MetricPowerUnits: Set<MetricPower> get() = MetricAndImperialPowerUnits.map { it.metric }.toSet() +
     setOf(
         ErgPerSecond,
-        MetricHorsepower
+        MetricHorsepower,
     )
 
 /**
@@ -62,7 +62,7 @@ val ImperialPowerUnits: Set<ImperialPower> get() = MetricAndImperialPowerUnits.m
         Horsepower,
         BritishThermalUnitPerSecond,
         BritishThermalUnitPerMinute,
-        BritishThermalUnitPerHour
+        BritishThermalUnitPerHour,
     )
 
 /**

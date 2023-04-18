@@ -79,27 +79,27 @@ fun android.widget.Button.applyButtonStyle(style: KalugaButtonStyle, rippleStyle
             arrayOf(
                 intArrayOf(android.R.attr.state_pressed),
                 intArrayOf(-android.R.attr.state_enabled),
-                intArrayOf()
+                intArrayOf(),
             ),
             intArrayOf(
                 style.pressedStyle.textColor,
                 style.disabledStyle.textColor,
-                style.defaultStyle.textColor
-            )
-        )
+                style.defaultStyle.textColor,
+            ),
+        ),
     )
     val stateListDrawable = StateListDrawable().apply {
         addState(
             intArrayOf(android.R.attr.state_pressed),
-            style.pressedStyle.backgroundStyle.createDrawable(context)
+            style.pressedStyle.backgroundStyle.createDrawable(context),
         )
         addState(
             intArrayOf(-android.R.attr.state_enabled),
-            style.disabledStyle.backgroundStyle.createDrawable(context)
+            style.disabledStyle.backgroundStyle.createDrawable(context),
         )
         addState(
             StateSet.WILD_CARD,
-            style.defaultStyle.backgroundStyle.createDrawable(context)
+            style.defaultStyle.backgroundStyle.createDrawable(context),
         )
     }
     background = when (rippleStyle) {
@@ -108,14 +108,14 @@ fun android.widget.Button.applyButtonStyle(style: KalugaButtonStyle, rippleStyle
             RippleDrawable(
                 ColorStateList(arrayOf(intArrayOf()), intArrayOf(style.pressedStyle.textColor)),
                 stateListDrawable,
-                null
+                null,
             )
         }
         is RippleStyle.CustomRipple -> {
             RippleDrawable(
                 ColorStateList(arrayOf(intArrayOf()), intArrayOf(rippleStyle.color)),
                 stateListDrawable,
-                null
+                null,
             )
         }
     }

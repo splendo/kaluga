@@ -37,5 +37,5 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.times
 
 @JvmName("currentTimesVoltage")
 infix operator fun <VoltageUnit : Voltage, ElectricCurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.ElectricCurrent, ElectricCurrentUnit>.times(
-    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
 ) = voltage * this

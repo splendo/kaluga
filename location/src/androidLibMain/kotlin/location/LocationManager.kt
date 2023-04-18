@@ -48,7 +48,7 @@ actual class DefaultLocationManager(
     locationManager: android.location.LocationManager?,
     private val locationProvider: LocationProvider,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BaseLocationManager(settings, coroutineScope) {
 
     /**
@@ -60,9 +60,9 @@ actual class DefaultLocationManager(
     class Builder(
         private val context: Context = ApplicationHolder.applicationContext,
         private val locationManager: android.location.LocationManager? = context.getSystemService(
-            Context.LOCATION_SERVICE
+            Context.LOCATION_SERVICE,
         ) as? android.location.LocationManager,
-        private val createLocationProvider: (Settings) -> LocationProvider
+        private val createLocationProvider: (Settings) -> LocationProvider,
     ) : BaseLocationManager.Builder {
 
         /**
@@ -74,27 +74,27 @@ actual class DefaultLocationManager(
         constructor(
             context: Context = ApplicationHolder.applicationContext,
             locationManager: android.location.LocationManager? = context.getSystemService(
-                Context.LOCATION_SERVICE
+                Context.LOCATION_SERVICE,
             ) as? android.location.LocationManager,
-            googleLocationProviderSettings: GoogleLocationProvider.Settings
+            googleLocationProviderSettings: GoogleLocationProvider.Settings,
         ) : this(
             context,
             locationManager,
             { settings ->
                 GoogleLocationProvider(context, googleLocationProviderSettings, settings.minUpdateDistanceMeters)
-            }
+            },
         )
 
         override fun create(
             settings: Settings,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ): BaseLocationManager {
             return DefaultLocationManager(
                 context,
                 locationManager,
                 createLocationProvider(settings),
                 settings,
-                coroutineScope
+                coroutineScope,
             )
         }
     }
@@ -141,7 +141,7 @@ actual class DefaultLocationManager(
  */
 actual class LocationStateRepoBuilder(
     private val locationManagerBuilder: BaseLocationManager.Builder,
-    private val permissionsBuilder: suspend (CoroutineContext) -> Permissions
+    private val permissionsBuilder: suspend (CoroutineContext) -> Permissions,
 ) : BaseLocationStateRepoBuilder {
 
     /**
@@ -153,17 +153,17 @@ actual class LocationStateRepoBuilder(
     constructor(
         context: Context = ApplicationHolder.applicationContext,
         locationManager: android.location.LocationManager? = context.getSystemService(
-            Context.LOCATION_SERVICE
+            Context.LOCATION_SERVICE,
         ) as? android.location.LocationManager,
-        createLocationProvider: (Settings) -> LocationProvider
+        createLocationProvider: (Settings) -> LocationProvider,
     ) : this(
         DefaultLocationManager.Builder(context, locationManager, createLocationProvider),
         { coroutineContext ->
             Permissions(
                 PermissionsBuilder(PermissionContext(context)).apply { registerLocationPermissionIfNotRegistered() },
-                coroutineContext
+                coroutineContext,
             )
-        }
+        },
     )
 
     /**
@@ -175,21 +175,21 @@ actual class LocationStateRepoBuilder(
     constructor(
         context: Context = ApplicationHolder.applicationContext,
         locationManager: android.location.LocationManager? = context.getSystemService(
-            Context.LOCATION_SERVICE
+            Context.LOCATION_SERVICE,
         ) as? android.location.LocationManager,
-        googleLocationProviderSettings: GoogleLocationProvider.Settings
+        googleLocationProviderSettings: GoogleLocationProvider.Settings,
     ) : this(
         context,
         locationManager,
         { settings ->
             GoogleLocationProvider(context, googleLocationProviderSettings, settings.minUpdateDistanceMeters)
-        }
+        },
     )
 
     override fun create(
         locationPermission: LocationPermission,
-        settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings,
-        coroutineContext: CoroutineContext
+        settingsBuilder: (LocationPermission, Permissions) -> Settings,
+        coroutineContext: CoroutineContext,
     ): LocationStateRepo {
         return LocationStateRepo({ settingsBuilder(locationPermission, permissionsBuilder(it)) }, locationManagerBuilder, coroutineContext)
     }

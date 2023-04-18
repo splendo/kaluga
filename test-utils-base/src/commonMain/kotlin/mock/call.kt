@@ -28,13 +28,13 @@ import com.splendo.kaluga.test.base.mock.parameters.VoidParameters
  * Calls a [MethodMock] without any parameters
  */
 fun <
-    Result
+    Result,
     > MethodMock<
     VoidParameters.Matchers,
     VoidParameters.MatchersOrCaptor,
     VoidParameters.Values,
     VoidParameters,
-    Result
+    Result,
     >.call(): Result {
     return callWithValues(VoidParameters.Values)
 }
@@ -43,13 +43,13 @@ fun <
  * Calls a [SuspendMethodMock] without any parameters
  */
 suspend fun <
-    Result
+    Result,
     > SuspendMethodMock<
     VoidParameters.Matchers,
     VoidParameters.MatchersOrCaptor,
     VoidParameters.Values,
     VoidParameters,
-    Result
+    Result,
     >.call(): Result {
     return callWithValues(VoidParameters.Values)
 }
@@ -60,13 +60,13 @@ suspend fun <
  */
 fun <
     Value,
-    Result
+    Result,
     > MethodMock<
     SingleParameters.Matchers<Value>,
     SingleParameters.MatchersOrCaptor<Value>,
     SingleParameters.Values<Value>,
     SingleParameters<Value>,
-    Result
+    Result,
     >.call(value: Value): Result {
     return callWithValues(SingleParameters.Values(value))
 }
@@ -77,13 +77,13 @@ fun <
  */
 suspend fun <
     Value,
-    Result
+    Result,
     > SuspendMethodMock<
     SingleParameters.Matchers<Value>,
     SingleParameters.MatchersOrCaptor<Value>,
     SingleParameters.Values<Value>,
     SingleParameters<Value>,
-    Result
+    Result,
     >.call(value: Value): Result {
     return callWithValues(SingleParameters.Values(value))
 }
@@ -96,13 +96,13 @@ suspend fun <
 fun <
     T0,
     T1,
-    Result
+    Result,
     > MethodMock<
     PairParameters.Matchers<T0, T1>,
     PairParameters.MatchersOrCaptor<T0, T1>,
     PairParameters.Values<T0, T1>,
     PairParameters<T0, T1>,
-    Result
+    Result,
     >.call(first: T0, second: T1): Result {
     return callWithValues(PairParameters.Values(first, second))
 }
@@ -115,13 +115,13 @@ fun <
 suspend fun <
     T0,
     T1,
-    Result
+    Result,
     > SuspendMethodMock<
     PairParameters.Matchers<T0, T1>,
     PairParameters.MatchersOrCaptor<T0, T1>,
     PairParameters.Values<T0, T1>,
     PairParameters<T0, T1>,
-    Result
+    Result,
     >.call(first: T0, second: T1): Result {
     return callWithValues(PairParameters.Values(first, second))
 }
@@ -136,13 +136,13 @@ fun <
     T0,
     T1,
     T2,
-    Result
+    Result,
     > MethodMock<
     TripleParameters.Matchers<T0, T1, T2>,
     TripleParameters.MatchersOrCaptor<T0, T1, T2>,
     TripleParameters.Values<T0, T1, T2>,
     TripleParameters<T0, T1, T2>,
-    Result
+    Result,
     >.call(first: T0, second: T1, third: T2): Result {
     return callWithValues(TripleParameters.Values(first, second, third))
 }
@@ -157,13 +157,13 @@ suspend fun <
     T0,
     T1,
     T2,
-    Result
+    Result,
     > SuspendMethodMock<
     TripleParameters.Matchers<T0, T1, T2>,
     TripleParameters.MatchersOrCaptor<T0, T1, T2>,
     TripleParameters.Values<T0, T1, T2>,
     TripleParameters<T0, T1, T2>,
-    Result
+    Result,
     >.call(first: T0, second: T1, third: T2): Result {
     return callWithValues(TripleParameters.Values(first, second, third))
 }
@@ -180,13 +180,13 @@ fun <
     T1,
     T2,
     T3,
-    Result
+    Result,
     > MethodMock<
     QuadrupleParameters.Matchers<T0, T1, T2, T3>,
     QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>,
     QuadrupleParameters.Values<T0, T1, T2, T3>,
     QuadrupleParameters<T0, T1, T2, T3>,
-    Result
+    Result,
     >.call(first: T0, second: T1, third: T2, fourth: T3): Result {
     return callWithValues(QuadrupleParameters.Values(first, second, third, fourth))
 }
@@ -203,13 +203,13 @@ suspend fun <
     T1,
     T2,
     T3,
-    Result
+    Result,
     > SuspendMethodMock<
     QuadrupleParameters.Matchers<T0, T1, T2, T3>,
     QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>,
     QuadrupleParameters.Values<T0, T1, T2, T3>,
     QuadrupleParameters<T0, T1, T2, T3>,
-    Result
+    Result,
     >.call(first: T0, second: T1, third: T2, fourth: T3): Result {
     return callWithValues(QuadrupleParameters.Values(first, second, third, fourth))
 }
@@ -228,13 +228,13 @@ fun <
     T2,
     T3,
     T4,
-    Result
+    Result,
     > MethodMock<
     QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
     QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>,
     QuintupleParameters.Values<T0, T1, T2, T3, T4>,
     QuintupleParameters<T0, T1, T2, T3, T4>,
-    Result
+    Result,
     >.call(first: T0, second: T1, third: T2, fourth: T3, fifth: T4): Result {
     return callWithValues(QuintupleParameters.Values(first, second, third, fourth, fifth))
 }
@@ -253,13 +253,13 @@ suspend fun <
     T2,
     T3,
     T4,
-    Result
+    Result,
     > SuspendMethodMock<
     QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
     QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>,
     QuintupleParameters.Values<T0, T1, T2, T3, T4>,
     QuintupleParameters<T0, T1, T2, T3, T4>,
-    Result
+    Result,
     >.call(first: T0, second: T1, third: T2, fourth: T3, fifth: T4): Result {
     return callWithValues(QuintupleParameters.Values(first, second, third, fourth, fifth))
 }

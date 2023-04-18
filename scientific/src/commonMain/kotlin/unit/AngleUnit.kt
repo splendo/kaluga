@@ -44,7 +44,7 @@ val AngleUnits: Set<Angle> get() = setOf(
     Degree,
     Gradian,
     ArcMinute,
-    ArcSecond
+    ArcSecond,
 )
 
 /**

@@ -17,6 +17,13 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.DocumentSelector.DocumentSelectorAppearance
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.DocumentSelector.DocumentSelectorSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Email.EmailSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.ImagePicker.MediaType
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Message.MessageSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Nested.Type
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.ThirdParty.OpenMode
 import platform.CoreFoundation.CFStringRef
 import platform.CoreServices.kUTTypeImage
 import platform.CoreServices.kUTTypeMovie
@@ -87,7 +94,7 @@ sealed class NavigationSpec {
         val presentationStyle: UIModalPresentationStyle = UIModalPresentationAutomatic,
         val transitionStyle: UIModalTransitionStyle = UIModalTransitionStyleCoverVertical,
         val present: () -> UIViewController,
-        val completion: (() -> Unit)? = null
+        val completion: (() -> Unit)? = null,
     ) : NavigationSpec()
 
     /**
@@ -122,7 +129,7 @@ sealed class NavigationSpec {
         val type: Type = Type.Add,
         val containerView: UIView,
         val nested: () -> UIViewController,
-        val constraints: ((UIView, UIView) -> List<NSLayoutConstraint>)? = null
+        val constraints: ((UIView, UIView) -> List<NSLayoutConstraint>)? = null,
     ) : NavigationSpec() {
 
         /**
@@ -156,7 +163,7 @@ sealed class NavigationSpec {
         val navigationDelegate: UINavigationControllerDelegateProtocol,
         val imagePickerDelegate: UIImagePickerControllerDelegateProtocol,
         val animated: Boolean = false,
-        val completion: (() -> Unit)? = null
+        val completion: (() -> Unit)? = null,
     ) : NavigationSpec() {
 
         @Suppress("CONFLICTING_OVERLOADS")
@@ -174,14 +181,14 @@ sealed class NavigationSpec {
                 navigationController: UINavigationController,
                 animationControllerForOperation: UINavigationControllerOperation,
                 fromViewController: UIViewController,
-                toViewController: UIViewController
+                toViewController: UIViewController,
             ): UIViewControllerAnimatedTransitioningProtocol? {
                 return navigationDelegate.navigationController(navigationController, animationControllerForOperation, fromViewController, toViewController)
             }
 
             override fun navigationController(
                 navigationController: UINavigationController,
-                interactionControllerForAnimationController: UIViewControllerAnimatedTransitioningProtocol
+                interactionControllerForAnimationController: UIViewControllerAnimatedTransitioningProtocol,
             ): UIViewControllerInteractiveTransitioningProtocol? {
                 return navigationDelegate.navigationController(navigationController, interactionControllerForAnimationController)
             }
@@ -230,7 +237,7 @@ sealed class NavigationSpec {
         val emailSettings: EmailSettings,
         val delegate: MFMailComposeViewControllerDelegateProtocol? = null,
         val animated: Boolean = false,
-        val completion: (() -> Unit)? = null
+        val completion: (() -> Unit)? = null,
     ) : NavigationSpec() {
 
         /**
@@ -266,7 +273,7 @@ sealed class NavigationSpec {
             val bcc: List<String> = emptyList(),
             val subject: String? = null,
             val body: String? = null,
-            val attachments: List<Attachment> = emptyList()
+            val attachments: List<Attachment> = emptyList(),
         )
     }
 
@@ -283,7 +290,7 @@ sealed class NavigationSpec {
         val documentSelectorAppearance: DocumentSelectorAppearance,
         val delegate: UIDocumentBrowserViewControllerDelegateProtocol,
         val animated: Boolean = false,
-        val completion: (() -> Unit)? = null
+        val completion: (() -> Unit)? = null,
     ) : NavigationSpec() {
 
         /**
@@ -300,7 +307,7 @@ sealed class NavigationSpec {
             val customActions: List<UIDocumentBrowserAction> = emptyList(),
             val createTitle: String,
             val documentAspectRatio: Double = 2.0 / 3.0,
-            val showFileExtensions: Boolean = false
+            val showFileExtensions: Boolean = false,
         )
     }
 
@@ -326,7 +333,7 @@ sealed class NavigationSpec {
         val messageSettings: MessageSettings,
         val delegate: MFMessageComposeViewControllerDelegateProtocol,
         val animated: Boolean = false,
-        val completion: (() -> Unit)? = null
+        val completion: (() -> Unit)? = null,
     ) : NavigationSpec() {
 
         /**
@@ -351,7 +358,7 @@ sealed class NavigationSpec {
             val body: String? = null,
             val message: MSMessage? = null,
             val disableAttachments: Boolean = false,
-            val attachments: List<Attachment> = emptyList()
+            val attachments: List<Attachment> = emptyList(),
         )
     }
 
@@ -419,7 +426,7 @@ sealed class NavigationSpec {
             /**
              * The provider token for the developer that created the app
              */
-            val providerToken: String? = null
+            val providerToken: String? = null,
         )
     }
 }

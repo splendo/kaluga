@@ -49,7 +49,7 @@ val IonizingRadiationAbsorbedDoseUnits: Set<IonizingRadiationAbsorbedDose> get()
     Hectorad,
     Kilorad,
     Megarad,
-    Gigarad
+    Gigarad,
 )
 
 /**
@@ -57,7 +57,8 @@ val IonizingRadiationAbsorbedDoseUnits: Set<IonizingRadiationAbsorbedDose> get()
  * SI unit is [Gray]
  */
 @Serializable
-sealed class IonizingRadiationAbsorbedDose : AbstractScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>(), MetricAndImperialScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>
+sealed class IonizingRadiationAbsorbedDose :
+    AbstractScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>(), MetricAndImperialScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>
 
 @Serializable
 object Gray : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose> {

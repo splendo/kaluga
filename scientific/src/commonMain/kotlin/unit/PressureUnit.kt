@@ -77,7 +77,7 @@ val MetricPressureUnits: Set<MetricPressure> get() = setOf(
     Gigatorr,
     MillimeterOfMercury,
     MillimeterOfWater,
-    CentimeterOfWater
+    CentimeterOfWater,
 )
 
 /**
@@ -90,7 +90,7 @@ val ImperialPressureUnits: Set<ImperialPressure> get() = setOf(
     KiloPoundSquareInch,
     InchOfMercury,
     InchOfWater,
-    FootOfWater
+    FootOfWater,
 )
 
 /**
@@ -100,7 +100,7 @@ val USCustomaryPressureUnits: Set<USCustomaryPressure> get() = setOf(
     KipSquareInch,
     KipSquareFoot,
     USTonSquareInch,
-    USTonSquareFoot
+    USTonSquareFoot,
 ) + ImperialPressureUnits.map { it.usCustomary }.toSet()
 
 /**
@@ -108,7 +108,7 @@ val USCustomaryPressureUnits: Set<USCustomaryPressure> get() = setOf(
  */
 val UKImperialPressureUnits: Set<UKImperialPressure> get() = setOf(
     ImperialTonSquareInch,
-    ImperialTonSquareFoot
+    ImperialTonSquareFoot,
 ) + ImperialPressureUnits.map { it.ukImperial }.toSet()
 
 /**

@@ -22,7 +22,10 @@ package com.splendo.kaluga.resources
  */
 expect class KalugaFont
 
-@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaColor"))
+@Deprecated(
+    "Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.",
+    ReplaceWith("KalugaColor"),
+)
 typealias Font = KalugaFont
 
 /**

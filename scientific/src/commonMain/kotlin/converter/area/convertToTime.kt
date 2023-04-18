@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("areaDivKinematicViscosity")
 infix operator fun <AreaUnit : Area, KinematicViscosityUnit : KinematicViscosity> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>,
 ) = (kinematicViscosity.unit.time).time(this, kinematicViscosity)

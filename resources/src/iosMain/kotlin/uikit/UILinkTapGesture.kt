@@ -70,9 +70,9 @@ internal class UILinkTapGesture(private val label: UILabel, private val urlRange
             addAttributes(
                 mapOf(
                     "NSFont" to label.font,
-                    "NSParagraphStyle" to paragraphStyle
+                    "NSParagraphStyle" to paragraphStyle,
                 ),
-                stringRange
+                stringRange,
             )
             attributedText.enumerateAttributesInRange(stringRange, 0) { attributes, range, _ ->
                 attributes?.let {
@@ -117,15 +117,19 @@ internal class UILinkTapGesture(private val label: UILabel, private val urlRange
         val textBoundingBox = layoutManager.usedRectForTextContainer(textContainer)
         val textContainerOffset = CGPointMake(
             (-textBoundingBox.useContents { origin.x }),
-            (-textBoundingBox.useContents { origin.y })
+            (-textBoundingBox.useContents { origin.y }),
         ).useContents { this }
         val locationOfTouchInTextContainer = CGPointMake(
             locationOfTouchInLabel.useContents { x } - textContainerOffset.x,
-            locationOfTouchInLabel.useContents { y } - textContainerOffset.y
+            locationOfTouchInLabel.useContents { y } - textContainerOffset.y,
         )
         val indexOfCharacter = layoutManager.characterIndexForPoint(locationOfTouchInTextContainer, textContainer, null)
 
-        return NSLocationInRange(indexOfCharacter, targetRange) && CGRectContainsPoint(layoutManager.boundingRectWithMarginsForCharacterAtIndex(indexOfCharacter, textContainer, attributedText.length), locationOfTouchInTextContainer)
+        return NSLocationInRange(indexOfCharacter, targetRange) &&
+            CGRectContainsPoint(
+                layoutManager.boundingRectWithMarginsForCharacterAtIndex(indexOfCharacter, textContainer, attributedText.length),
+                locationOfTouchInTextContainer,
+            )
     }
 
     private fun NSLayoutManager.boundingRectWithMarginsForCharacterAtIndex(index: NSUInteger, textContainer: NSTextContainer, stringLength: NSUInteger): CValue<CGRect> {

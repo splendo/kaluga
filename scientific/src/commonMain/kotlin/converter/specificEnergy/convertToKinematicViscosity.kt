@@ -25,25 +25,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificEnergyTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (SquareMeter per time.unit).kinematicViscosity(this, time)
 
 @JvmName("imperialSpecificEnergyTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (SquareFoot per time.unit).kinematicViscosity(this, time)
 
 @JvmName("ukImperialSpecificEnergyTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (SquareFoot per time.unit).kinematicViscosity(this, time)
 
 @JvmName("usCustomarySpecificEnergyTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (SquareFoot per time.unit).kinematicViscosity(this, time)
 
 @JvmName("specificEnergyTimesTime")
 infix operator fun <SpecificEnergyUnit : SpecificEnergy, TimeUnit : Time> ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (SquareMeter per time.unit).kinematicViscosity(this, time)

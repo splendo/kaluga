@@ -38,7 +38,7 @@ class RecurringTimerTest {
         val timer = RecurringTimer(
             duration = 100.milliseconds,
             interval = 10.milliseconds,
-            coroutineScope = this
+            coroutineScope = this,
         )
         assertIs<Timer.State.NotRunning.Paused>(timer.state.first(), "timer was not paused after creation")
         timer.start()
@@ -62,7 +62,7 @@ class RecurringTimerTest {
         val timer = RecurringTimer(
             duration = 100.milliseconds,
             interval = 10.milliseconds,
-            coroutineScope = this
+            coroutineScope = this,
         )
 
         withTimeout(500.milliseconds) {
@@ -80,7 +80,7 @@ class RecurringTimerTest {
         val timer = RecurringTimer(
             duration = duration,
             interval = 50.milliseconds,
-            coroutineScope = this
+            coroutineScope = this,
         )
 
         // capture and validate an initial state
@@ -168,12 +168,12 @@ class RecurringTimerTest {
             // -7ms delivery lag, -4ms af undershoot spot on, correction for 4ms
             Timings(393, 396, 104),
             // last interval: no delivery lag, 5 ms processing lag, no correction
-            Timings(500, 505, 0)
+            Timings(500, 505, 0),
         )
 
         val timeSource = PredefinedTimeSource(
             listOf(Duration.ZERO) + // a tick for the timer auto finish
-                timings.flatMap { listOf(it.emit, it.afterEmit) }
+                timings.flatMap { listOf(it.emit, it.afterEmit) },
         )
         val delayHandler = PredefinedDelayHandler(timings.map(Timings::correction))
 
@@ -182,7 +182,7 @@ class RecurringTimerTest {
             interval = 100.milliseconds,
             timeSource = timeSource,
             delayFunction = delayHandler::delay,
-            coroutineScope = this
+            coroutineScope = this,
         )
 
         // capture and validate an initial state

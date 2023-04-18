@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("timeTimesCatalysticActivity")
 infix operator fun <TimeUnit : Time, CatalysisUnit : CatalysticActivity> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    catalysis: ScientificValue<PhysicalQuantity.CatalysticActivity, CatalysisUnit>
+    catalysis: ScientificValue<PhysicalQuantity.CatalysticActivity, CatalysisUnit>,
 ) = catalysis * this

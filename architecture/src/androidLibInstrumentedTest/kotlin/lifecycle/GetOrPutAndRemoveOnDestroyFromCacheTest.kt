@@ -54,7 +54,7 @@ class GetOrPutAndRemoveOnDestroyFromCacheTest : BaseTest() {
         val returnedFirstTime = activity?.getOrPutAndRemoveOnDestroyFromCache(
             onCreate = { onCreated.complete() },
             onDestroy = { onDestroyed.complete() },
-            defaultValue = { mutableList }
+            defaultValue = { mutableList },
         )
 
         assertSame(returnedFirstTime, mutableList)

@@ -56,7 +56,7 @@ import kotlin.math.roundToInt
 actual class StyledString(
     val spannable: Spannable,
     actual val defaultTextStyle: KalugaTextStyle,
-    actual val linkStyle: LinkStyle?
+    actual val linkStyle: LinkStyle?,
 )
 
 /**
@@ -77,7 +77,7 @@ actual class StyledStringBuilder constructor(
     string: String,
     private val defaultTextStyle: KalugaTextStyle,
     private val linkStyle: LinkStyle?,
-    private val context: Context
+    private val context: Context,
 ) {
 
     /**
@@ -123,17 +123,17 @@ actual class StyledStringBuilder constructor(
             },
             range.first,
             range.last + 1,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
     }
 
     private fun StringStyleAttribute.CharacterStyleAttribute.characterStyle(range: IntRange): CharacterStyle =
         when (this) {
             is StringStyleAttribute.CharacterStyleAttribute.BackgroundColor -> BackgroundColorSpan(
-                color
+                color,
             )
             is StringStyleAttribute.CharacterStyleAttribute.ForegroundColor -> ForegroundColorSpan(
-                color
+                color,
             )
             is StringStyleAttribute.CharacterStyleAttribute.Font -> CustomCharacterStyle {
                 typeface = font
@@ -152,7 +152,7 @@ actual class StyledStringBuilder constructor(
                     blurRadius.spToPixel(context),
                     xOffset.spToPixel(context),
                     yOffset.spToPixel(context),
-                    color
+                    color,
                 )
             }
             is StringStyleAttribute.CharacterStyleAttribute.Strikethrough -> StrikethroughSpan()
@@ -183,7 +183,7 @@ actual class StyledStringBuilder constructor(
                         text: CharSequence,
                         start: Int,
                         end: Int,
-                        lineNumber: Int
+                        lineNumber: Int,
                     ) {
                         val strokePaint = TextPaint(paint).apply {
                             style = Paint.Style.STROKE
@@ -199,7 +199,7 @@ actual class StyledStringBuilder constructor(
                                 min(range.last + 1, end),
                                 left.toFloat() + offset,
                                 baseline.toFloat(),
-                                strokePaint
+                                strokePaint,
                             )
                         } else {
                             canvas.drawText(
@@ -208,7 +208,7 @@ actual class StyledStringBuilder constructor(
                                 min(range.last + 1, end),
                                 left.toFloat(),
                                 baseline.toFloat(),
-                                strokePaint
+                                strokePaint,
                             )
                         }
                     }
@@ -219,7 +219,7 @@ actual class StyledStringBuilder constructor(
         get() = when (this) {
             is StringStyleAttribute.ParagraphStyleAttribute.LeadingIndent -> LeadingMarginSpan.Standard(
                 firstLineIndent.spToPixel(context).toInt(),
-                indent.spToPixel(context).toInt()
+                indent.spToPixel(context).toInt(),
             )
             is StringStyleAttribute.ParagraphStyleAttribute.LineSpacing -> object : LineHeightSpan {
                 override fun chooseHeight(
@@ -228,7 +228,7 @@ actual class StyledStringBuilder constructor(
                     end: Int,
                     spanstartv: Int,
                     lineHeight: Int,
-                    fm: Paint.FontMetricsInt?
+                    fm: Paint.FontMetricsInt?,
                 ) {
                     val fontMetrics = fm ?: return
                     val halfLineSpacing = (spacing * 0.5f).spToPixel(context).roundToInt()
@@ -253,7 +253,7 @@ actual class StyledStringBuilder constructor(
                 }
             }
             is StringStyleAttribute.ParagraphStyleAttribute.Alignment -> AlignmentSpan.Standard(
-                alignment.alignment(context)
+                alignment.alignment(context),
             )
         }
 

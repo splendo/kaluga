@@ -29,7 +29,7 @@ import kotlinx.coroutines.CoroutineScope
  * @param dateTimePicker The [DateTimePicker] being presented.
  */
 actual class DateTimePickerPresenter(
-    dateTimePicker: DateTimePicker
+    dateTimePicker: DateTimePicker,
 ) : BaseDateTimePickerPresenter(dateTimePicker) {
 
     /**

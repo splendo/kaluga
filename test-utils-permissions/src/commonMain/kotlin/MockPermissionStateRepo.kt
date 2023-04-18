@@ -36,7 +36,7 @@ class MockBasePermissionStateRepo<P : Permission>(
     val permission: P,
     createInitializingState: () -> MockPermissionState.Uninitialized<P>,
     setupMocks: Boolean = true,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : BasePermissionStateRepo<P>(
     createUninitializedState = createInitializingState,
     createInitializingState = { state ->
@@ -49,7 +49,7 @@ class MockBasePermissionStateRepo<P : Permission>(
         (this as MockBasePermissionStateRepo<P>).didDeinitialize(mockState)
         mockState.deinitialize
     },
-    coroutineContext
+    coroutineContext,
 ) {
 
     val didInitializeMock = ::didInitialize.mock()
@@ -67,7 +67,7 @@ class MockBasePermissionStateRepo<P : Permission>(
                     if (state is PermissionState.Initializing) {
                         state.initialize(
                             mockState.activeState == MockPermissionState.ActiveState.ALLOWED,
-                            mockState.activeState == MockPermissionState.ActiveState.LOCKED
+                            mockState.activeState == MockPermissionState.ActiveState.LOCKED,
                         )
                     } else {
                         state.remain()
@@ -82,11 +82,11 @@ class MockPermissionStateRepo<P : Permission>(
     monitoringInterval: Duration = defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
     val builder: MockPermissionManager.Builder<P>,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : PermissionStateRepo<P>(
     monitoringInterval = monitoringInterval,
     createPermissionManager = { builder.create(settings, it) },
-    coroutineContext = coroutineContext
+    coroutineContext = coroutineContext,
 ) {
     /**
      * The [MockPermissionManager] of this repo

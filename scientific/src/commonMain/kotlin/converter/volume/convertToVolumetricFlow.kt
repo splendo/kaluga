@@ -33,25 +33,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricVolumeDivTime")
 infix operator fun <VolumeUnit : MetricVolume, TimeUnit : Time> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit per time.unit).volumetricFlow(this, time)
 
 @JvmName("imperialVolumeDivTime")
 infix operator fun <VolumeUnit : ImperialVolume, TimeUnit : Time> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit per time.unit).volumetricFlow(this, time)
 
 @JvmName("ukImperialVolumeDivTime")
 infix operator fun <VolumeUnit : UKImperialVolume, TimeUnit : Time> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit per time.unit).volumetricFlow(this, time)
 
 @JvmName("usCustomaryVolumeDivTime")
 infix operator fun <VolumeUnit : USCustomaryVolume, TimeUnit : Time> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit per time.unit).volumetricFlow(this, time)
 
 @JvmName("volumeDivTime")
 infix operator fun <VolumeUnit : Volume, TimeUnit : Time> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (CubicMeter per Second).volumetricFlow(this, time)

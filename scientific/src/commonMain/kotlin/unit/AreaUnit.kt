@@ -37,7 +37,7 @@ val MetricAreaUnits: Set<MetricArea> get() = setOf(
     SquareDecameter,
     SquareHectometer,
     SquareKilometer,
-    Hectare
+    Hectare,
 )
 
 /**
@@ -48,7 +48,7 @@ val ImperialAreaUnits: Set<ImperialArea> get() = setOf(
     SquareFoot,
     SquareYard,
     SquareMile,
-    Acre
+    Acre,
 )
 
 /**

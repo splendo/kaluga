@@ -104,7 +104,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Area, SquareGigameter>.div(l
 
 @JvmName("metricAreaDivMetricLength")
 infix operator fun <AreaUnit : MetricArea, LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = Meter.width(this, length)
 
 @JvmName("squareInchDivInch")
@@ -125,10 +125,10 @@ infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMile>.div(length
 
 @JvmName("imperialAreaDivImperialLength")
 infix operator fun <AreaUnit : ImperialArea, LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = Foot.width(this, length)
 
 @JvmName("areaDivLength")
 infix operator fun <AreaUnit : Area, LengthUnit : Length> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = Meter.width(this, length)

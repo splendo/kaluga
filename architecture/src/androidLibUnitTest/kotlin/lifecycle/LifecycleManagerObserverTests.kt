@@ -52,10 +52,10 @@ class LifecycleManagerObserverTests : BaseTest() {
     @Test
     fun testLifecycleManagerObserverHandlerCalled() = runBlocking {
         val observer = LifecycleManagerObserver()
-        val data: ActivityLifecycleSubscribable.LifecycleManager? = ActivityLifecycleSubscribable.LifecycleManager(
+        val data: ActivityLifecycleSubscribable.LifecycleManager = ActivityLifecycleSubscribable.LifecycleManager(
             activity,
             lifecycleOwner,
-            fragmentManager
+            fragmentManager,
         )
 
         val deferredLifecycleManager = MutableList(3) { CompletableDeferred<ActivityLifecycleSubscribable.LifecycleManager?>() }

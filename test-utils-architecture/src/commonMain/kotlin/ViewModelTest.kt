@@ -18,6 +18,8 @@
 package com.splendo.kaluga.test.architecture
 
 import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
+import com.splendo.kaluga.test.architecture.BaseUIThreadViewModelTest.ViewModelTestContext
+import com.splendo.kaluga.test.architecture.UIThreadViewModelTest.ViewModelTestContext
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.BaseUIThreadTest
 import com.splendo.kaluga.test.base.UIThreadTest
@@ -49,7 +51,7 @@ abstract class SimpleUIThreadViewModelTest<ViewModel : LifecycleViewModel> :
 /**
  * A [UIThreadTest] that takes a [ViewModelTestContext]
  */
-abstract class UIThreadViewModelTest<Context : UIThreadViewModelTest.ViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel>() :
+abstract class UIThreadViewModelTest<Context : UIThreadViewModelTest.ViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel> :
     UIThreadTest<Context>() {
 
     /**
@@ -57,7 +59,10 @@ abstract class UIThreadViewModelTest<Context : UIThreadViewModelTest.ViewModelTe
      * @param coroutineScope The [CoroutineScope] of the [LazyViewModelTestContext]
      * @param createViewModel Creator for the [LifecycleViewModel]
      */
-    open class LazyViewModelTestContext<ViewModel : LifecycleViewModel>(coroutineScope: CoroutineScope, private val createViewModel: () -> ViewModel) : BaseUIThreadViewModelTest.LazyViewModelTestContext<ViewModel>(coroutineScope, createViewModel), ViewModelTestContext<ViewModel>
+    open class LazyViewModelTestContext<ViewModel : LifecycleViewModel>(
+        coroutineScope: CoroutineScope,
+        private val createViewModel: () -> ViewModel,
+    ) : BaseUIThreadViewModelTest.LazyViewModelTestContext<ViewModel>(coroutineScope, createViewModel), ViewModelTestContext<ViewModel>
 
     /**
      * A [UIThreadTest.TestContext] that provides a [LifecycleViewModel]

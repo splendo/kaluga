@@ -27,9 +27,9 @@ import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.One
 
 infix operator fun Decimal.div(
-    modifier: ScientificValue<PhysicalQuantity.Dimensionless, *>
+    modifier: ScientificValue<PhysicalQuantity.Dimensionless, *>,
 ) = this.invoke(One).div(modifier).value.toDecimal()
 
 infix operator fun Decimal.times(
-    modifier: ScientificValue<PhysicalQuantity.Dimensionless, *>
+    modifier: ScientificValue<PhysicalQuantity.Dimensionless, *>,
 ) = this.invoke(One).times(modifier).value.toDecimal()

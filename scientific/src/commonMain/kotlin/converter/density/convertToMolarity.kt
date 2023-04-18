@@ -34,50 +34,50 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricDensityTimesMolality")
 infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Density, MetricDensity>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>
+    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
 ) = molality * this
 
 @JvmName("imperialDensityTimesMolality")
 infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Density, ImperialDensity>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>
+    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
 ) = molality * this
 
 @JvmName("ukImperialDensityTimesMolality")
 infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Density, UKImperialDensity>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>
+    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
 ) = molality * this
 
 @JvmName("usCustomaryDensityTimesMolality")
 infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>
+    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
 ) = molality * this
 
 @JvmName("densityTimesMolality")
 infix operator fun <MolalityUnit : Molality, DensityUnit : Density> ScientificValue<PhysicalQuantity.Density, DensityUnit>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>
+    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
 ) = molality * this
 
 @JvmName("metricDensityDivMolarMass")
 infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.Density, MetricDensity>.div(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
 ) = (molarMass.unit.per per unit.per).molarity(this, molarMass)
 
 @JvmName("imperialDensityDivMolarMass")
 infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.Density, ImperialDensity>.div(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
 ) = (molarMass.unit.per per unit.per).molarity(this, molarMass)
 
 @JvmName("ukImperialDensityDivMolarMass")
 infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.Density, UKImperialDensity>.div(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
 ) = (molarMass.unit.per per unit.per).molarity(this, molarMass)
 
 @JvmName("usCustomaryDensityDivMolarMass")
 infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>.div(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
 ) = (molarMass.unit.per per unit.per).molarity(this, molarMass)
 
 @JvmName("densityDivMolarMass")
 infix operator fun <DensityUnit : Density, MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.Density, DensityUnit>.div(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
 ) = (molarMass.unit.per per CubicMeter).molarity(this, molarMass)

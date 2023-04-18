@@ -36,7 +36,7 @@ val ElectricResistanceUnits: Set<ElectricResistance> get() = setOf(
     Kiloohm,
     Megaohm,
     Gigaohm,
-    Abohm
+    Abohm,
 )
 
 /**

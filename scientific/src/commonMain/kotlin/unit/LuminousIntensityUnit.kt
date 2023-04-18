@@ -35,7 +35,7 @@ val LuminousIntensityUnits: Set<LuminousIntensity> get() = setOf(
     Hectocandela,
     Kilocandela,
     Megacandela,
-    Gigacandela
+    Gigacandela,
 )
 
 /**

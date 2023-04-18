@@ -35,7 +35,7 @@ class BluetoothRequestMtuTest : BluetoothFlowTest<BluetoothFlowTest.Configuratio
 
     @Test
     fun testRequestMtu() = testWithFlowAndTestContext(
-        Configuration.DeviceWithoutService()
+        Configuration.DeviceWithoutService(),
     ) {
         val newMtu = 512
 

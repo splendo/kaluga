@@ -36,7 +36,7 @@ val ElectricInductanceUnits: Set<ElectricInductance> get() = setOf(
     Kilohenry,
     Megahenry,
     Gigahenry,
-    Abhenry
+    Abhenry,
 )
 
 /**

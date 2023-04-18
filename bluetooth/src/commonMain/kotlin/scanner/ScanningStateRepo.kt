@@ -47,7 +47,7 @@ abstract class BaseScanningStateRepo(
     createNotInitializedState: () -> ScanningState.NotInitialized,
     createInitializingState: suspend ColdStateFlowRepo<ScanningState>.(ScanningState.Inactive) -> suspend () -> ScanningState,
     createDeinitializingState: suspend ColdStateFlowRepo<ScanningState>.(ScanningState.Active) -> suspend () -> ScanningState.Deinitialized,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : ColdStateFlowRepo<ScanningState>(
     coroutineContext = coroutineContext,
     initChangeStateWithRepo = { state, repo ->
@@ -64,7 +64,7 @@ abstract class BaseScanningStateRepo(
             is ScanningState.Inactive, is ScanningState.NoHardware -> state.remain()
         }
     },
-    firstState = createNotInitializedState
+    firstState = createNotInitializedState,
 )
 
 /**
@@ -76,7 +76,7 @@ abstract class BaseScanningStateRepo(
 open class ScanningStateImplRepo(
     createScanner: suspend () -> Scanner,
     private val contextForIdentifier: (Identifier) -> CoroutineContext,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : BaseScanningStateRepo(
     createNotInitializedState = { ScanningStateImpl.NotInitialized },
     createInitializingState = { state ->
@@ -100,7 +100,7 @@ open class ScanningStateImplRepo(
         repo.dispatcher = null
         state.deinitialize
     },
-    coroutineContext = coroutineContext
+    coroutineContext = coroutineContext,
 ) {
 
     private val supervisorJob = SupervisorJob(coroutineContext[Job])
@@ -115,7 +115,9 @@ open class ScanningStateImplRepo(
                     is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
                     is Scanner.Event.BluetoothDisabled -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { it.disable }
                     is Scanner.Event.BluetoothEnabled -> takeAndChangeState(remainIfStateNot = ScanningState.NoBluetooth.Disabled::class) { it.enable }
-                    is Scanner.Event.FailedScanning -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) { it.stopScanning(BluetoothService.CleanMode.REMOVE_ALL) }
+                    is Scanner.Event.FailedScanning -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) {
+                        it.stopScanning(BluetoothService.CleanMode.REMOVE_ALL)
+                    }
                     is Scanner.Event.PairedDevicesRetrieved -> handlePairedDevice(event)
                 }
             }
@@ -196,14 +198,14 @@ class ScanningStateRepo(
     settingsBuilder: suspend (CoroutineContext) -> BaseScanner.Settings,
     builder: BaseScanner.Builder,
     contextForIdentifier: (Identifier) -> CoroutineContext,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : ScanningStateImplRepo(
     createScanner = {
         builder.create(
             settingsBuilder(coroutineContext + CoroutineName("BluetoothPermissions")),
-            CoroutineScope(coroutineContext + CoroutineName("BluetoothScanner"))
+            CoroutineScope(coroutineContext + CoroutineName("BluetoothScanner")),
         )
     },
     contextForIdentifier = contextForIdentifier,
-    coroutineContext = coroutineContext
+    coroutineContext = coroutineContext,
 )

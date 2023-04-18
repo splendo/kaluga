@@ -43,7 +43,9 @@ import kotlin.test.fail
 
 class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, ScanningState>() {
 
-    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithoutService, scope: CoroutineScope) -> DeviceContext = { configuration, coroutineScope -> DeviceContext(configuration, coroutineScope) }
+    override val createTestContextWithConfiguration: suspend (Configuration.DeviceWithoutService, CoroutineScope) -> DeviceContext = { configuration, coroutineScope ->
+        DeviceContext(configuration, coroutineScope)
+    }
     override val flowFromTestContext: suspend DeviceContext.() -> Flow<ScanningState> = { bluetooth.scanningStateRepo.filterOnlyImportant() }
 
     override val filter: (Flow<ScanningState>) -> Flow<ScanningState> = {
@@ -85,8 +87,8 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     fun testStartWithoutPermissionNoAutoRequest() = testWithFlowAndTestContext(
         Configuration.DeviceWithoutService(
             autoRequestPermission = false,
-            initialPermissionState = MockPermissionState.ActiveState.LOCKED
-        )
+            initialPermissionState = MockPermissionState.ActiveState.LOCKED,
+        ),
     ) {
         test {
             permissionStateRepo.currentMockState.requestMock.verify(rule = never())
@@ -248,13 +250,13 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
                         val newState = scanningState.discoverDevice(
                             deviceWrapper.identifier,
                             newRssi,
-                            newAdvertisementData
+                            newAdvertisementData,
                         ) { device }
                         assertEquals(scanningState.remain(), newState)
                         assertEquals(mapOf(device.identifier to device), scanningState.devices.allDevices)
                         assertEquals(
                             newAdvertisementData,
-                            scanningState.devices.allDevices[device.identifier]?.info?.first()?.advertisementData
+                            scanningState.devices.allDevices[device.identifier]?.info?.first()?.advertisementData,
                         )
                         assertEquals(newRssi, scanningState.devices.allDevices[device.identifier]?.info?.first()?.rssi)
                         newState

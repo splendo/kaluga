@@ -41,7 +41,7 @@ interface BufferedAsListChannel<T : Any> : SendChannel<T>, ReceiveChannel<List<T
  * @return the [BufferedAsListChannel] created
  */
 fun <T : Any> BufferedAsListChannel(
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ): BufferedAsListChannel<T> = BufferedAsListChannelInt(coroutineContext)
 
 /**
@@ -55,7 +55,7 @@ fun <T : Any> BufferedAsListChannel(
 fun <T : Any> BufferedAsListChannel(
     coroutineContext: CoroutineContext,
     dispatcher: CloseableCoroutineDispatcher,
-    closeDispatcherOnCompletion: Boolean
+    closeDispatcherOnCompletion: Boolean,
 ): BufferedAsListChannel<T> = BufferedAsListChannelInt(coroutineContext, dispatcher, closeDispatcherOnCompletion)
 
 internal class BufferedAsListChannelInt<T : Any> private constructor(
@@ -63,23 +63,23 @@ internal class BufferedAsListChannelInt<T : Any> private constructor(
     private val receiveChannel: Channel<List<T>>,
     coroutineContext: CoroutineContext,
     dispatcher: CloseableCoroutineDispatcher,
-    closeDispatcherOnCompletion: Boolean
+    closeDispatcherOnCompletion: Boolean,
 ) : BufferedAsListChannel<T>, SendChannel<T> by sendChannel, ReceiveChannel<List<T>> by receiveChannel {
 
     constructor(
-        coroutineContext: CoroutineContext
+        coroutineContext: CoroutineContext,
     ) : this(coroutineContext, singleThreadDispatcher("GroupingChannel"), true)
 
     constructor(
         coroutineContext: CoroutineContext,
         dispatcher: CloseableCoroutineDispatcher,
-        closeDispatcherOnCompletion: Boolean
+        closeDispatcherOnCompletion: Boolean,
     ) : this(
         Channel<T>(Channel.UNLIMITED),
         Channel<List<T>>(),
         coroutineContext,
         dispatcher,
-        closeDispatcherOnCompletion
+        closeDispatcherOnCompletion,
     )
 
     init {
@@ -129,7 +129,7 @@ internal class BufferedAsListChannelInt<T : Any> private constructor(
 
     @Deprecated(
         "Since 1.2.0, binary compatibility with versions <= 1.1.x",
-        level = DeprecationLevel.HIDDEN
+        level = DeprecationLevel.HIDDEN,
     )
     override fun cancel(cause: Throwable?): Boolean {
         sendChannel.cancel(cause as? CancellationException)

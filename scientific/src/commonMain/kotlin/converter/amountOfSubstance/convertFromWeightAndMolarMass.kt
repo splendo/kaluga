@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     WeightUnit : Weight,
-    MolarMassUnit : MolarMass
+    MolarMassUnit : MolarMass,
     > AmountOfSubstanceUnit.amountOfSubstance(
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
 ) = amountOfSubstance(weight, molarMass, ::DefaultScientificValue)
 
 @JvmName("amountOfSubstanceFromWeightAndMolarMass")
@@ -42,9 +42,9 @@ fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     WeightUnit : Weight,
     MolarMassUnit : MolarMass,
-    Value : ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    Value : ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
     > AmountOfSubstanceUnit.amountOfSubstance(
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
     molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
-    factory: (Decimal, AmountOfSubstanceUnit) -> Value
+    factory: (Decimal, AmountOfSubstanceUnit) -> Value,
 ) = byDividing(weight, molarMass, factory)

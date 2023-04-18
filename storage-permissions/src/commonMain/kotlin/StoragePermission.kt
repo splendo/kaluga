@@ -53,7 +53,11 @@ interface BaseStoragePermissionManagerBuilder : BasePermissionsBuilder<StoragePe
      * @param coroutineScope The [CoroutineScope] the manager runs on
      * @return a [StoragePermissionManager]
      */
-    fun create(storagePermission: StoragePermission, settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): StoragePermissionManager
+    fun create(
+        storagePermission: StoragePermission,
+        settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
+        coroutineScope: CoroutineScope,
+    ): StoragePermissionManager
 }
 
 /**
@@ -80,5 +84,5 @@ class StoragePermissionStateRepo(
     builder: BaseStoragePermissionManagerBuilder,
     monitoringInterval: Duration = defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : PermissionStateRepo<StoragePermission>(monitoringInterval, { builder.create(storagePermission, settings, it) }, coroutineContext)

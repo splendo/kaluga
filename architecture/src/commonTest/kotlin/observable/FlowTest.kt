@@ -34,33 +34,33 @@ class FlowTest : ObservableBaseTest() {
 
     private suspend fun <V : String?> testUninitializedFlow(
         observable: UninitializedObservable<V>,
-        vararg furtherUpdates: ObservableOptional<V>
+        vararg furtherUpdates: ObservableOptional<V>,
     ) = testUninitializedStringObservable(
         observable,
         true,
-        *furtherUpdates.map { { _: UninitializedObservable<V> -> it } }.toTypedArray()
+        *furtherUpdates.map { { _: UninitializedObservable<V> -> it } }.toTypedArray(),
     )
 
     private suspend fun testDefaultFlow(
         observable: DefaultObservable<String, String?>,
         initialExcepted: String,
-        vararg furtherUpdates: String
+        vararg furtherUpdates: String,
     ) = testDefaultStringObservable(
         observable,
         initialExcepted,
         true,
-        *furtherUpdates.map { { _: DefaultObservable<String, String?> -> it } }.toTypedArray()
+        *furtherUpdates.map { { _: DefaultObservable<String, String?> -> it } }.toTypedArray(),
     )
 
     private suspend fun <V : String?> testInitializedFlow(
         observable: InitializedObservable<V>,
         initialExcepted: V,
-        vararg furtherUpdates: V
+        vararg furtherUpdates: V,
     ) = testInitializedStringObservable(
         observable,
         initialExcepted,
         true,
-        *furtherUpdates.map { { _: InitializedObservable<V> -> it } }.toTypedArray()
+        *furtherUpdates.map { { _: InitializedObservable<V> -> it } }.toTypedArray(),
     )
 
     @Test
@@ -74,7 +74,7 @@ class FlowTest : ObservableBaseTest() {
                 Nothing(),
                 Value("1"),
                 Value("2"),
-                Value("3")
+                Value("3"),
             )
         }
     }
@@ -90,7 +90,7 @@ class FlowTest : ObservableBaseTest() {
             "initial",
             "1",
             "2",
-            "3"
+            "3",
         )
     }
 
@@ -104,7 +104,7 @@ class FlowTest : ObservableBaseTest() {
             Nothing(),
             Value("1"),
             Value(null),
-            Value("3")
+            Value("3"),
         )
     }
 
@@ -119,7 +119,7 @@ class FlowTest : ObservableBaseTest() {
             "initial",
             "1",
             "default",
-            "3"
+            "3",
         )
     }
 }

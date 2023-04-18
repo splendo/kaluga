@@ -37,5 +37,5 @@ fun Float.spToPixel(context: Context): Float = toPixel(TypedValue.COMPLEX_UNIT_S
 private fun Float.toPixel(unit: Int, context: Context): Float = TypedValue.applyDimension(
     unit,
     this,
-    context.resources.displayMetrics
+    context.resources.displayMetrics,
 )

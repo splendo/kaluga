@@ -40,27 +40,27 @@ object BeaconMock {
 
     fun mockGenericDevice(name: String, coroutineScope: CoroutineScope) = makeDevice(
         createDeviceWrapper(name),
-        coroutineScope = coroutineScope
+        coroutineScope = coroutineScope,
     )
 
     fun mockBeaconDevice(id: String, coroutineScope: CoroutineScope): Device {
         val beaconId = BeaconID(
             namespace = id.substring(0..19),
-            instance = id.substring(20)
+            instance = id.substring(20),
         )
         return makeDevice(
             deviceWrapper = createDeviceWrapper("Beacon:" + beaconId.namespace + beaconId.instance),
             serviceData = mapOf(
-                Eddystone.SERVICE_UUID to beaconId.asByteArray()
+                Eddystone.SERVICE_UUID to beaconId.asByteArray(),
             ),
-            coroutineScope
+            coroutineScope,
         )
     }
 
     private fun makeDevice(
         deviceWrapper: DeviceWrapper,
         serviceData: ServiceData = emptyMap(),
-        coroutineScope: CoroutineScope
+        coroutineScope: CoroutineScope,
     ) = DeviceImpl(
         deviceWrapper.identifier,
         makeDeviceInfo(deviceWrapper.name.orEmpty(), serviceData),
@@ -69,19 +69,19 @@ object BeaconMock {
             MockDeviceConnectionManager(
                 deviceWrapper = deviceWrapper,
                 connectionSettings = it,
-                coroutineScope = coroutineScope
+                coroutineScope = coroutineScope,
             )
         },
-        coroutineScope
+        coroutineScope,
     )
 
     private val settings = ConnectionSettings(
-        reconnectionSettings = ConnectionSettings.ReconnectionSettings.Always
+        reconnectionSettings = ConnectionSettings.ReconnectionSettings.Always,
     )
 
     private fun makeDeviceInfo(name: String, serviceData: ServiceData) = DeviceInfoImpl(
         createDeviceWrapper(name),
         rssi = -78,
-        MockAdvertisementData(name, serviceData = serviceData)
+        MockAdvertisementData(name, serviceData = serviceData),
     )
 }

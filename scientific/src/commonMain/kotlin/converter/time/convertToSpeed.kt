@@ -28,15 +28,15 @@ import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricAcceleration")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>,
 ) = acceleration * this
 
 @JvmName("timeTimesImperialAcceleration")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>,
 ) = acceleration * this
 
 @JvmName("timeTimesAcceleration")
 infix operator fun <AccelerationUnit : Acceleration, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>,
 ) = acceleration * this

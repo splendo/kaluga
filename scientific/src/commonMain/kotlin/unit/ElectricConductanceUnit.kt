@@ -36,7 +36,7 @@ val ElectricConductanceUnits: Set<ElectricConductance> get() = setOf(
     Kilosiemens,
     Megasiemens,
     Gigasiemens,
-    Absiemens
+    Absiemens,
 )
 
 /**

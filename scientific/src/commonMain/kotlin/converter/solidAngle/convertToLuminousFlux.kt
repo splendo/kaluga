@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("solidAngleTimesLuminousIntensity")
 infix operator fun <IntensityUnit : LuminousIntensity, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>.times(
-    intensity: ScientificValue<PhysicalQuantity.LuminousIntensity, IntensityUnit>
+    intensity: ScientificValue<PhysicalQuantity.LuminousIntensity, IntensityUnit>,
 ) = intensity * this

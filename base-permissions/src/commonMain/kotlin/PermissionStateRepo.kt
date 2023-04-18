@@ -48,7 +48,7 @@ abstract class BasePermissionStateRepo<P : Permission>(
     createUninitializedState: () -> PermissionState.Uninitialized<P>,
     createInitializingState: suspend ColdStateFlowRepo<PermissionState<P>>.(PermissionState.Inactive<P>) -> suspend () -> PermissionState.Initializing<P>,
     createDeinitializedState: suspend ColdStateFlowRepo<PermissionState<P>>.(PermissionState.Active<P>) -> suspend () -> PermissionState.Deinitialized<P> = { it.deinitialize },
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : ColdStateFlowRepo<PermissionState<P>>(
     coroutineContext = coroutineContext,
     initChangeStateWithRepo = { state, repo ->
@@ -63,7 +63,7 @@ abstract class BasePermissionStateRepo<P : Permission>(
             is PermissionState.Inactive -> state.remain()
         }
     },
-    firstState = createUninitializedState
+    firstState = createUninitializedState,
 )
 
 /**
@@ -76,7 +76,7 @@ abstract class BasePermissionStateRepo<P : Permission>(
 open class PermissionStateRepo<P : Permission>(
     protected val monitoringInterval: Duration = defaultMonitoringInterval,
     createPermissionManager: (CoroutineScope) -> PermissionManager<P>,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : BasePermissionStateRepo<P>(
     createUninitializedState = { PermissionStateImpl.Uninitialized() },
     createInitializingState = { state ->
@@ -97,7 +97,7 @@ open class PermissionStateRepo<P : Permission>(
         (this as PermissionStateRepo<P>).superVisorJob.cancelChildren()
         state.deinitialize
     },
-    coroutineContext = coroutineContext
+    coroutineContext = coroutineContext,
 ) {
 
     companion object {
@@ -120,7 +120,7 @@ open class PermissionStateRepo<P : Permission>(
         when (state) {
             is PermissionState.Initializing -> state.initialize(
                 allowed = true,
-                locked = false
+                locked = false,
             )
             is PermissionState.Denied -> state.allow
             is PermissionState.Allowed, is PermissionState.Inactive -> state.remain()

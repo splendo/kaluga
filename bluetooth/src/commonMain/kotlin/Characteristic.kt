@@ -37,12 +37,12 @@ open class Characteristic(
     initialValue: ByteArray? = null,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     parentLogTag: String,
-    logger: Logger
+    logger: Logger,
 ) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(
     initialValue,
     emitNewAction,
     "$parentLogTag Characteristic",
-    logger
+    logger,
 ) {
 
     private val isBusy = MutableStateFlow(false)

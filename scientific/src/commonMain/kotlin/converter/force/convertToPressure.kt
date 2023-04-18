@@ -58,7 +58,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.div(area: Scien
 
 @JvmName("dyneMultipleDivSquareCentimeter")
 infix operator fun <DyneUnit : DyneMultiple> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>
+    area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>,
 ) = Barye.pressure(this, area)
 
 @JvmName("poundalDivSquareFoot")
@@ -67,7 +67,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Force, Poundal>.div(area: Sc
 
 @JvmName("poundalDivImperialArea")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Force, Poundal>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = PoundSquareInch.pressure(this, area)
 
 @JvmName("poundForceDivSquareFoot")
@@ -76,17 +76,17 @@ infix operator fun ScientificValue<PhysicalQuantity.Force, PoundForce>.div(area:
 
 @JvmName("poundForceDivImperialArea")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Force, PoundForce>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = PoundSquareInch.pressure(this, area)
 
 @JvmName("ounceForceDivImperialArea")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Force, OunceForce>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = OunceSquareInch.pressure(this, area)
 
 @JvmName("grainForceDivImperialArea")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Force, GrainForce>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = OunceSquareInch.pressure(this, area)
 
 @JvmName("kipDivSquareFoot")
@@ -103,7 +103,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Force, UsTonForce>.div(area:
 
 @JvmName("usTonForceDivImperialArea")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Force, UsTonForce>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = USTonSquareInch.pressure(this, area)
 
 @JvmName("imperialTonForceDivSquareFoot")
@@ -112,25 +112,25 @@ infix operator fun ScientificValue<PhysicalQuantity.Force, ImperialTonForce>.div
 
 @JvmName("imperialTonForceDivImperialArea")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Force, ImperialTonForce>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = ImperialTonSquareInch.pressure(this, area)
 
 @JvmName("imperialForceDivImperialArea")
 infix operator fun <ForceUnit : ImperialForce, AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = PoundSquareInch.pressure(this, area)
 
 @JvmName("usCustomaryForceDivImperialArea")
 infix operator fun <ForceUnit : USCustomaryForce, AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = PoundSquareInch.usCustomary.pressure(this, area)
 
 @JvmName("ukImperialForceDivImperialArea")
 infix operator fun <ForceUnit : UKImperialForce, AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = PoundSquareInch.ukImperial.pressure(this, area)
 
 @JvmName("forceDivArea")
 infix operator fun <ForceUnit : Force, AreaUnit : Area> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = Pascal.pressure(this, area)

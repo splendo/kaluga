@@ -28,7 +28,7 @@ import com.splendo.kaluga.resources.KalugaColor
 data class KalugaBackgroundStyle(
     val fillStyle: FillStyle,
     val strokeStyle: StrokeStyle = StrokeStyle.None,
-    val shape: Shape = Shape.Rectangle()
+    val shape: Shape = Shape.Rectangle(),
 ) {
 
     /**
@@ -63,7 +63,7 @@ data class KalugaBackgroundStyle(
         data class Rectangle(
             val cornerRadiusX: Float,
             val cornerRadiusY: Float,
-            val roundedCorners: Set<Corner> = Corner.values().toSet()
+            val roundedCorners: Set<Corner> = Corner.values().toSet(),
         ) : Shape() {
 
             /**
@@ -89,7 +89,7 @@ data class KalugaBackgroundStyle(
                 /**
                  * The bottom-right corner
                  */
-                BOTTOM_RIGHT
+                BOTTOM_RIGHT,
             }
 
             /**

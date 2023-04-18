@@ -100,7 +100,7 @@ fun Decimal.plus(value: Decimal, scale: Int): Decimal = if (this is Decimal.Fini
 fun Decimal.plus(
     value: Decimal,
     scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal.plus(value.finiteDecimal, scale, roundingMode))
 } else {
@@ -112,7 +112,7 @@ internal expect fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int): Finite
 internal expect fun FiniteDecimal.plus(
     value: FiniteDecimal,
     scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ): FiniteDecimal
 
 /**
@@ -148,7 +148,7 @@ fun Decimal.minus(value: Decimal, scale: Int): Decimal = if (this is Decimal.Fin
 fun Decimal.minus(
     value: Decimal,
     scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal.minus(value.finiteDecimal, scale, roundingMode))
 } else {
@@ -160,7 +160,7 @@ internal expect fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int): Finit
 internal expect fun FiniteDecimal.minus(
     value: FiniteDecimal,
     scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ): FiniteDecimal
 
 /**
@@ -204,7 +204,7 @@ fun Decimal.div(value: Decimal, scale: Int): Decimal = if (this is Decimal.Finit
 fun Decimal.div(
     value: Decimal,
     scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     if (value.toDouble() == 0.0) {
         (toDouble() / value.toDouble()).toDecimal()
@@ -220,7 +220,7 @@ internal expect fun FiniteDecimal.div(value: FiniteDecimal, scale: Int): FiniteD
 internal expect fun FiniteDecimal.div(
     value: FiniteDecimal,
     scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ): FiniteDecimal
 
 /**
@@ -256,7 +256,7 @@ fun Decimal.times(value: Decimal, scale: Int): Decimal = if (this is Decimal.Fin
 fun Decimal.times(
     value: Decimal,
     scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal.times(value.finiteDecimal, scale, roundingMode))
 } else {
@@ -268,7 +268,7 @@ internal expect fun FiniteDecimal.times(value: FiniteDecimal, scale: Int): Finit
 internal expect fun FiniteDecimal.times(
     value: FiniteDecimal,
     scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ): FiniteDecimal
 
 /**
@@ -304,7 +304,7 @@ fun Decimal.pow(n: Int, scale: Int): Decimal = if (this is Decimal.Finite) {
 fun Decimal.pow(
     n: Int,
     scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ): Decimal = if (this is Decimal.Finite) {
     Decimal.Finite(finiteDecimal.pow(n, scale, roundingMode))
 } else {
@@ -316,7 +316,7 @@ internal expect fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal
 internal expect fun FiniteDecimal.pow(
     n: Int,
     scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ): FiniteDecimal
 
 /**
@@ -372,9 +372,11 @@ fun Number.toDecimal(): Decimal = when (this) {
 fun String.toDecimal(): Decimal = when (lowercase()) {
     Double.NaN.toString().lowercase() -> Decimal.NaN
     Double.POSITIVE_INFINITY.toString().lowercase(),
-    '\u221E'.toString() -> Decimal.PositiveInfinity
+    '\u221E'.toString(),
+    -> Decimal.PositiveInfinity
     Double.NEGATIVE_INFINITY.toString().lowercase(),
-    "-${'\u221E'}" -> Decimal.NegativeInfinity
+    "-${'\u221E'}",
+    -> Decimal.NegativeInfinity
     else -> toFiniteDecimal()?.let { Decimal.Finite(it) } ?: Decimal.NaN
 }
 

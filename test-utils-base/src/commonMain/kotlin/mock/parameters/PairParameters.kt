@@ -73,7 +73,13 @@ class PairParameters<T0, T1> : ParametersSpec<PairParameters.Matchers<T0, T1>, P
     }
 }
 
-internal fun <T0, T1, R> ((T0, T1) -> R).asMock() = MethodMock<PairParameters.Matchers<T0, T1>, PairParameters.MatchersOrCaptor<T0, T1>, PairParameters.Values<T0, T1>, PairParameters<T0, T1>, R>(PairParameters())
+internal fun <T0, T1, R> ((T0, T1) -> R).asMock() = MethodMock<
+    PairParameters.Matchers<T0, T1>,
+    PairParameters.MatchersOrCaptor<T0, T1>,
+    PairParameters.Values<T0, T1>,
+    PairParameters<T0, T1>,
+    R,
+    >(PairParameters())
 
 fun <T0, T1, R> ((T0, T1) -> R).mockWithDefaultAnswer(defaultAnswer: Answer<PairParameters.Values<T0, T1>, R>) = asMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>()).doAnswer(defaultAnswer)
@@ -198,7 +204,13 @@ fun <T0, T1, R : Any> ((T0, T1) -> R?).mock() = mockWithDefaultValue(null)
 @JsName("mockPairNonNullable")
 fun <T0, T1, R : Any> ((T0, T1) -> R).mock() = asMock()
 
-internal fun <T0, T1, R> (suspend (T0, T1) -> R).asSuspendedMock() = SuspendMethodMock<PairParameters.Matchers<T0, T1>, PairParameters.MatchersOrCaptor<T0, T1>, PairParameters.Values<T0, T1>, PairParameters<T0, T1>, R>(PairParameters())
+internal fun <T0, T1, R> (suspend (T0, T1) -> R).asSuspendedMock() = SuspendMethodMock<
+    PairParameters.Matchers<T0, T1>,
+    PairParameters.MatchersOrCaptor<T0, T1>,
+    PairParameters.Values<T0, T1>,
+    PairParameters<T0, T1>,
+    R,
+    >(PairParameters())
 
 fun <T0, T1, R> (suspend (T0, T1) -> R).mockWithDefaultAnswer(defaultAnswer: SuspendedAnswer<PairParameters.Values<T0, T1>, R>) = asSuspendedMock()
     .also {

@@ -39,5 +39,5 @@ infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.times(curre
 
 @JvmName("voltageTimesCurrent")
 infix operator fun <VoltageUnit : Voltage, ElectricCurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.times(
-    current: ScientificValue<PhysicalQuantity.ElectricCurrent, ElectricCurrentUnit>
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, ElectricCurrentUnit>,
 ) = Watt.power(this, current)

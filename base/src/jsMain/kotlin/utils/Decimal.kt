@@ -44,7 +44,7 @@ private const val FLOOR = "floor"
 data class Rounding(
     val maximumFractionDigits: Int? = null,
     val roundingMode: String = ROUNDING_MODE,
-    val maximumSignificantDigits: Int = DECIMAL_128_SIGNIFICANT_DIGITS
+    val maximumSignificantDigits: Int = DECIMAL_128_SIGNIFICANT_DIGITS,
 )
 
 /**
@@ -64,7 +64,7 @@ private val ZERO = BigDecimal.BigDecimal(0)
 private fun round(
     a: BigDecimal,
     roundingMode: RoundingMode,
-    maximumFractionDigits: Int? = null
+    maximumFractionDigits: Int? = null,
 ): FiniteDecimal {
     val mode = if (BigDecimal.lessThan(a, ZERO)) {
         when (roundingMode) {
@@ -86,56 +86,56 @@ actual operator fun FiniteDecimal.plus(value: FiniteDecimal): FiniteDecimal = Fi
 
 actual fun FiniteDecimal.plus(
     value: FiniteDecimal,
-    scale: Int
+    scale: Int,
 ): FiniteDecimal = FiniteDecimal(BigDecimal.add(bd, value.bd, Rounding(scale)))
 
 actual fun FiniteDecimal.plus(
     value: FiniteDecimal,
     scale: Int,
-    roundingMode: RoundingMode
+    roundingMode: RoundingMode,
 ): FiniteDecimal = round(BigDecimal.add(bd, value.bd), roundingMode, scale)
 
 actual operator fun FiniteDecimal.minus(value: FiniteDecimal): FiniteDecimal = FiniteDecimal(BigDecimal.subtract(bd, value.bd))
 
 actual fun FiniteDecimal.minus(
     value: FiniteDecimal,
-    scale: Int
+    scale: Int,
 ): FiniteDecimal = FiniteDecimal(BigDecimal.subtract(bd, value.bd, Rounding(scale)))
 
 actual fun FiniteDecimal.minus(
     value: FiniteDecimal,
     scale: Int,
-    roundingMode: RoundingMode
+    roundingMode: RoundingMode,
 ): FiniteDecimal = round(BigDecimal.subtract(bd, value.bd), roundingMode, scale)
 
 actual operator fun FiniteDecimal.div(
-    value: FiniteDecimal
+    value: FiniteDecimal,
 ): FiniteDecimal = FiniteDecimal(BigDecimal.divide(bd, value.bd, Rounding()))
 
 actual fun FiniteDecimal.div(
     value: FiniteDecimal,
-    scale: Int
+    scale: Int,
 ): FiniteDecimal = FiniteDecimal(BigDecimal.divide(bd, value.bd, Rounding(scale)))
 
 actual fun FiniteDecimal.div(
     value: FiniteDecimal,
     scale: Int,
-    roundingMode: RoundingMode
+    roundingMode: RoundingMode,
 ): FiniteDecimal = round(BigDecimal.divide(bd, value.bd, Rounding(scale + 1, ROUNDING_MODE, DIV_DECIMAL_128_SIGNIFICANT_DIGITS)), roundingMode, scale)
 
 actual operator fun FiniteDecimal.times(
-    value: FiniteDecimal
+    value: FiniteDecimal,
 ): FiniteDecimal = FiniteDecimal(BigDecimal.multiply(bd, value.bd, Rounding()))
 
 actual fun FiniteDecimal.times(
     value: FiniteDecimal,
-    scale: Int
+    scale: Int,
 ): FiniteDecimal = FiniteDecimal(BigDecimal.multiply(bd, value.bd, Rounding(scale)))
 
 actual fun FiniteDecimal.times(
     value: FiniteDecimal,
     scale: Int,
-    roundingMode: RoundingMode
+    roundingMode: RoundingMode,
 ): FiniteDecimal = round(BigDecimal.multiply(bd, value.bd), roundingMode, scale)
 
 actual infix fun FiniteDecimal.pow(n: Int): FiniteDecimal = FiniteDecimal(BigDecimal.BigDecimal(toDouble().pow(n)))
@@ -143,12 +143,12 @@ actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = FiniteDecimal(
 actual fun FiniteDecimal.pow(
     n: Int,
     scale: Int,
-    roundingMode: RoundingMode
+    roundingMode: RoundingMode,
 ): FiniteDecimal = this pow n
 
 actual fun FiniteDecimal.round(
     scale: Int,
-    roundingMode: RoundingMode
+    roundingMode: RoundingMode,
 ): FiniteDecimal = round(bd, roundingMode, scale)
 
 actual fun Number.toFiniteDecimal(): FiniteDecimal? = this.toString().toFiniteDecimal()

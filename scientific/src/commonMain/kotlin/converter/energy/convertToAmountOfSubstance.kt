@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("energyDivMolarEnergy")
 infix operator fun <EnergyUnit : Energy, MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>,
 ) = molarEnergy.unit.per.amountOfSubstance(this, molarEnergy)

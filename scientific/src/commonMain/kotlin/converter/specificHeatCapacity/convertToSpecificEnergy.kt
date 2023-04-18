@@ -34,20 +34,20 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificHeatCapacityTimesMetricAndUKImperialTemperature")
 infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<PhysicalQuantity.SpecificHeatCapacity, MetricSpecificHeatCapacity>.times(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
 ) = (unit.heatCapacity.energy per unit.perWeight).specificEnergy(this, temperature)
 
 @JvmName("ukImperialSpecificHeatCapacityTimesMetricAndUKImperialTemperature")
 infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<PhysicalQuantity.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>.times(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
 ) = (unit.heatCapacity.energy per unit.perWeight).specificEnergy(this, temperature)
 
 @JvmName("usCustomarySpecificHeatCapacityTimesUSCustomaryTemperature")
 infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<PhysicalQuantity.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>.times(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
 ) = (unit.heatCapacity.energy per unit.perWeight).specificEnergy(this, temperature)
 
 @JvmName("heatCapacityTimesTemperature")
-infix operator fun <SpecificHeatCapacityUnit : SpecificHeatCapacity, TemperatureUnit : Temperature> ScientificValue<PhysicalQuantity.SpecificHeatCapacity, SpecificHeatCapacityUnit>.times(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>
-) = (Joule per Kilogram).specificEnergy(this, temperature)
+infix operator fun <SpecificHeatCapacityUnit, TemperatureUnit> ScientificValue<PhysicalQuantity.SpecificHeatCapacity, SpecificHeatCapacityUnit>.times(
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
+) where SpecificHeatCapacityUnit : SpecificHeatCapacity, TemperatureUnit : Temperature = (Joule per Kilogram).specificEnergy(this, temperature)

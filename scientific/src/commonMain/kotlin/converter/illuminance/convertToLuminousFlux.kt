@@ -27,5 +27,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("illuminanceTimesArea")
 infix operator fun <IlluminanceUnit : Illuminance, AreaUnit : Area> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.times(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = Lumen.flux(this, area)

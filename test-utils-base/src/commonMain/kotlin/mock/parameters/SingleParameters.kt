@@ -63,10 +63,16 @@ class SingleParameters<T0> : ParametersSpec<SingleParameters.Matchers<T0>, Singl
     }
 }
 
-internal fun <T0, R> ((T0) -> R).asMock() = MethodMock<SingleParameters.Matchers<T0>, SingleParameters.MatchersOrCaptor<T0>, SingleParameters.Values<T0>, SingleParameters<T0>, R>(SingleParameters())
+internal fun <T0, R> ((T0) -> R).asMock() = MethodMock<
+    SingleParameters.Matchers<T0>,
+    SingleParameters.MatchersOrCaptor<T0>,
+    SingleParameters.Values<T0>,
+    SingleParameters<T0>,
+    R,
+    >(SingleParameters())
 
 fun <T0, R> ((T0) -> R).mockWithDefaultAnswer(
-    defaultAnswer: Answer<SingleParameters.Values<T0>, R>
+    defaultAnswer: Answer<SingleParameters.Values<T0>, R>,
 ) = asMock().also {
     it.on(ParameterMatcher.any<T0>()).doAnswer(defaultAnswer)
 }
@@ -190,10 +196,16 @@ fun <T0, R : Any> ((T0) -> R?).mock() = mockWithDefaultValue(null)
 @JsName("mockSingleNonNullable")
 fun <T0, R : Any> ((T0) -> R).mock() = asMock()
 
-internal fun <T0, R> (suspend (T0) -> R).asSuspendedMock() = SuspendMethodMock<SingleParameters.Matchers<T0>, SingleParameters.MatchersOrCaptor<T0>, SingleParameters.Values<T0>, SingleParameters<T0>, R>(SingleParameters())
+internal fun <T0, R> (suspend (T0) -> R).asSuspendedMock() = SuspendMethodMock<
+    SingleParameters.Matchers<T0>,
+    SingleParameters.MatchersOrCaptor<T0>,
+    SingleParameters.Values<T0>,
+    SingleParameters<T0>,
+    R,
+    >(SingleParameters())
 
 fun <T0, R> (suspend (T0) -> R).mockWithDefaultAnswer(
-    defaultAnswer: SuspendedAnswer<SingleParameters.Values<T0>, R>
+    defaultAnswer: SuspendedAnswer<SingleParameters.Values<T0>, R>,
 ) = asSuspendedMock().also {
     it.on(ParameterMatcher.any<T0>()).doAnswer(defaultAnswer)
 }

@@ -27,5 +27,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("chargeDivCurrent")
 infix operator fun <ChargeUnit : ElectricCharge, CurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.div(
-    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
 ) = Second.duration(this, current)

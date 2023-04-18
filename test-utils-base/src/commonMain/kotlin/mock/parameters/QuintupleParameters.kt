@@ -31,7 +31,11 @@ import kotlin.jvm.JvmName
 /**
  * The [ParametersSpec] for a five parameters
  */
-class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<QuintupleParameters.Matchers<T0, T1, T2, T3, T4>, QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>, QuintupleParameters.Values<T0, T1, T2, T3, T4>> {
+class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<
+    QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
+    QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>,
+    QuintupleParameters.Values<T0, T1, T2, T3, T4>,
+    > {
 
     /**
      * The [ParametersSpec.Matchers] for five parameters
@@ -46,7 +50,7 @@ class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<QuintupleParamete
         val second: ParameterMatcher<T1>,
         val third: ParameterMatcher<T2>,
         val fourth: ParameterMatcher<T3>,
-        val fifth: ParameterMatcher<T4>
+        val fifth: ParameterMatcher<T4>,
     ) : ParametersSpec.Matchers {
         override fun asList() = listOf(first, second, third, fourth, fifth)
     }
@@ -64,14 +68,14 @@ class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<QuintupleParamete
         val second: ParameterMatcherOrCaptor<T1>,
         val third: ParameterMatcherOrCaptor<T2>,
         val fourth: ParameterMatcherOrCaptor<T3>,
-        val fifth: ParameterMatcherOrCaptor<T4>
+        val fifth: ParameterMatcherOrCaptor<T4>,
     ) : ParametersSpec.MatchersOrCaptor<Matchers<T0, T1, T2, T3, T4>> {
         override fun asMatchers(): Matchers<T0, T1, T2, T3, T4> = Matchers(
             first.asMatcher(),
             second.asMatcher(),
             third.asMatcher(),
             fourth.asMatcher(),
-            fifth.asMatcher()
+            fifth.asMatcher(),
         )
     }
 
@@ -100,10 +104,16 @@ class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<QuintupleParamete
     }
 }
 
-internal fun <T0, T1, T2, T3, T4, R> ((T0, T1, T2, T3, T4) -> R).asMock() = MethodMock<QuintupleParameters.Matchers<T0, T1, T2, T3, T4>, QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>, QuintupleParameters.Values<T0, T1, T2, T3, T4>, QuintupleParameters<T0, T1, T2, T3, T4>, R>(QuintupleParameters())
+internal fun <T0, T1, T2, T3, T4, R> ((T0, T1, T2, T3, T4) -> R).asMock() = MethodMock<
+    QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
+    QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>,
+    QuintupleParameters.Values<T0, T1, T2, T3, T4>,
+    QuintupleParameters<T0, T1, T2, T3, T4>,
+    R,
+    >(QuintupleParameters())
 
 fun <T0, T1, T2, T3, T4, R> ((T0, T1, T2, T3, T4) -> R).mockWithDefaultAnswer(
-    defaultAnswer: Answer<QuintupleParameters.Values<T0, T1, T2, T3, T4>, R>
+    defaultAnswer: Answer<QuintupleParameters.Values<T0, T1, T2, T3, T4>, R>,
 ) = asMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>(), ParameterMatcher.any<T3>(), ParameterMatcher.any<T4>()).doAnswer(defaultAnswer)
 }
@@ -227,10 +237,16 @@ fun <T0, T1, T2, T3, T4, R : Any> ((T0, T1, T2, T3, T4) -> R?).mock() = mockWith
 @JsName("mockQuintupleNonNullable")
 fun <T0, T1, T2, T3, T4, R : Any> ((T0, T1, T2, T3, T4) -> R).mock() = asMock()
 
-internal fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).asSuspendedMock() = SuspendMethodMock<QuintupleParameters.Matchers<T0, T1, T2, T3, T4>, QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>, QuintupleParameters.Values<T0, T1, T2, T3, T4>, QuintupleParameters<T0, T1, T2, T3, T4>, R>(QuintupleParameters())
+internal fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).asSuspendedMock() = SuspendMethodMock<
+    QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
+    QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>,
+    QuintupleParameters.Values<T0, T1, T2, T3, T4>,
+    QuintupleParameters<T0, T1, T2, T3, T4>,
+    R,
+    >(QuintupleParameters())
 
 fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).mockWithDefaultAnswer(
-    defaultAnswer: SuspendedAnswer<QuintupleParameters.Values<T0, T1, T2, T3, T4>, R>
+    defaultAnswer: SuspendedAnswer<QuintupleParameters.Values<T0, T1, T2, T3, T4>, R>,
 ) = asSuspendedMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>(), ParameterMatcher.any<T3>(), ParameterMatcher.any<T4>()).doAnswer(defaultAnswer)
 }

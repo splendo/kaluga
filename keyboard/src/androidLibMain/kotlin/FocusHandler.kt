@@ -29,7 +29,7 @@ import androidx.annotation.IdRes
  * @param id the ID of the View to focus on
  */
 class ViewFocusHandler(
-    @IdRes private val id: Int
+    @IdRes private val id: Int,
 ) : FocusHandler {
     fun requestFocus(activity: Activity?) {
         if (activity == null) return

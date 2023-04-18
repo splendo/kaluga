@@ -48,9 +48,8 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
             {
                 nullableString.value = null
                 "default"
-            }
+            },
         )
-        Unit
     }
 
     @Test
@@ -63,7 +62,7 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
             initialExpected = "initial",
             shortDelayAfterUpdate = false,
             { s.value = "new"; "new" }, //
-            { s.value = "other"; "other" }
+            { s.value = "other"; "other" },
         )
     }
 
@@ -82,7 +81,7 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
             shortDelayAfterUpdate = false,
             { s.value = "new"; "new" },
             { s.value = null; null },
-            { s.value = "other"; "other" }
+            { s.value = "other"; "other" },
         )
     }
 }

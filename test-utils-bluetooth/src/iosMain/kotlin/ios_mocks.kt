@@ -26,7 +26,7 @@ actual fun randomIdentifier(): Identifier = NSUUID()
 
 actual fun createDeviceWrapper(
     deviceName: String?,
-    identifier: Identifier
+    identifier: Identifier,
 ): DeviceWrapper = MockCBPeripheralWrapper(name = deviceName, identifier = identifier)
 
 actual fun ServiceWrapperBuilder.build(): ServiceWrapper = MockServiceWrapper(builder = this)

@@ -36,7 +36,7 @@ val AmountOfSubstanceUnits: Set<AmountOfSubstance> get() = setOf(
     Hectomole,
     Kilomole,
     Megamole,
-    Gigamole
+    Gigamole,
 )
 
 /**

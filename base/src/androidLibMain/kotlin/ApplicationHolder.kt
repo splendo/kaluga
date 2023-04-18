@@ -20,6 +20,7 @@ package com.splendo.kaluga.base
 
 import android.app.Application
 import android.content.Context
+import com.splendo.kaluga.base.ApplicationHolder.Companion.application
 
 /**
  * Class holding reference to the [Application] running Kaluga
@@ -44,12 +45,14 @@ class ApplicationHolder {
             get() {
                 val application = this.application
                 checkNotNull(application) {
-                    "You've used ApplicationHolder.applicationContext without setting the Application on this holder (you should do this from Application.onCreate() or in your test)"
+                    "You've used ApplicationHolder.applicationContext without setting the Application on this holder " +
+                        "(you should do this from Application.onCreate() or in your test)"
                 }
 
                 val context = application.applicationContext
                 checkNotNull(context) {
-                    "ApplicationContext is null, this should not happen during runtime if you set a real Application instance on this holder. For testing make sure you set an Application with a real or mock ApplicationContext available."
+                    "ApplicationContext is null, this should not happen during runtime if you set a real Application instance on this holder." +
+                        "For testing make sure you set an Application with a real or mock ApplicationContext available."
                 }
 
                 return context

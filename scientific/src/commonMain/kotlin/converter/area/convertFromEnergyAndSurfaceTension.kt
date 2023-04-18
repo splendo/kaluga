@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     EnergyUnit : Energy,
     AreaUnit : Area,
-    SurfaceTensionUnit : SurfaceTension
+    SurfaceTensionUnit : SurfaceTension,
     > AreaUnit.area(
     energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
-    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>
+    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>,
 ) = area(energy, surfaceTension, ::DefaultScientificValue)
 
 @JvmName("areaFromEnergyAndSurfaceTension")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     AreaUnit : Area,
     SurfaceTensionUnit : SurfaceTension,
-    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     > AreaUnit.area(
     energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
     surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>,
-    factory: (Decimal, AreaUnit) -> Value
+    factory: (Decimal, AreaUnit) -> Value,
 ) = byDividing(energy, surfaceTension, factory)

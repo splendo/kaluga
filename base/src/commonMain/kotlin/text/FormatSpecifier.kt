@@ -81,16 +81,20 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 when (currentChar.regular) {
                     RegularFormatCharacter.DECIMAL_INTEGER,
                     RegularFormatCharacter.OCTAL_INTEGER,
-                    RegularFormatCharacter.HEXADECIMAL_INTEGER -> printInteger(arg, currentChar, locale)
+                    RegularFormatCharacter.HEXADECIMAL_INTEGER,
+                    -> printInteger(arg, currentChar, locale)
                     RegularFormatCharacter.SCIENTIFIC,
                     RegularFormatCharacter.GENERAL,
                     RegularFormatCharacter.DECIMAL_FLOAT,
-                    RegularFormatCharacter.HEXADECIMAL_FLOAT -> printFloat(arg, currentChar, locale)
+                    RegularFormatCharacter.HEXADECIMAL_FLOAT,
+                    -> printFloat(arg, currentChar, locale)
                     RegularFormatCharacter.CHARACTER,
-                    RegularFormatCharacter.CHARACTER_UPPER -> printCharacter(arg, currentChar, locale)
+                    RegularFormatCharacter.CHARACTER_UPPER,
+                    -> printCharacter(arg, currentChar, locale)
                     RegularFormatCharacter.BOOLEAN -> printBoolean(arg, locale)
                     RegularFormatCharacter.STRING,
-                    RegularFormatCharacter.STRING_IOS -> printString(arg, locale)
+                    RegularFormatCharacter.STRING_IOS,
+                    -> printString(arg, locale)
                     RegularFormatCharacter.HASHCODE -> printHashCode(arg, locale)
                     RegularFormatCharacter.LINE_SEPARATOR -> out.append(lineSeparator)
                     RegularFormatCharacter.PERCENT_SIGN -> print("%", locale)
@@ -109,7 +113,8 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             }
             is Long,
             is Int,
-            is Short -> {
+            is Short,
+            -> {
                 DefaultKalugaDate.epoch((arg as Number).toLong().milliseconds, KalugaTimeZone.current(), locale)
             }
             is KalugaDate -> {
@@ -159,7 +164,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             if (flags.contains(Flag.ALTERNATE)) {
                 throw StringFormatterException.FormatFlagsConversionMismatchException(
                     Flag.ALTERNATE.toString(),
-                    's'
+                    's',
                 )
             }
 
@@ -178,7 +183,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                     (arg as? Boolean) ?: true
                 } ?: false
                 ).toString(),
-            locale
+            locale,
         )
     }
 
@@ -290,7 +295,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         locale: KalugaLocale,
         c: ParsingCharacter.RegularCharacter,
         precision: Int,
-        neg: Boolean
+        neg: Boolean,
     ) {
         when (c.regular) {
             RegularFormatCharacter.SCIENTIFIC -> {
@@ -612,7 +617,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         value: Int,
         flags: Set<Flag>,
         width: Int,
-        locale: KalugaLocale
+        locale: KalugaLocale,
     ): StringBuilder {
         return localizedMagnitude(sb, value.toString(10), 0, flags, width, locale)
     }
@@ -623,7 +628,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         offset: Int,
         flags: Set<Flag>,
         width: Int,
-        locale: KalugaLocale
+        locale: KalugaLocale,
     ): StringBuilder {
         val begin: Int = sb.length
         val zero: Char = getZero(locale)
@@ -721,7 +726,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             if (flags.contains(badFlag)) {
                 throw StringFormatterException.FormatFlagsConversionMismatchException(
                     badFlag.toString(),
-                    currentChar.char
+                    currentChar.char,
                 )
             }
     }
@@ -771,7 +776,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         if ((currentChar.regular == RegularFormatCharacter.BOOLEAN || currentChar.regular == RegularFormatCharacter.HASHCODE) && flags.contains(Flag.ALTERNATE)) {
             throw StringFormatterException.FormatFlagsConversionMismatchException(
                 Flag.ALTERNATE.toString(),
-                currentChar.char
+                currentChar.char,
             )
         }
 
@@ -783,7 +788,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             Flag.LEADING_SPACE,
             Flag.ZERO_PAD,
             Flag.GROUP,
-            Flag.PARENTHESES
+            Flag.PARENTHESES,
         )
     }
 
@@ -796,7 +801,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             Flag.LEADING_SPACE,
             Flag.ZERO_PAD,
             Flag.GROUP,
-            Flag.PARENTHESES
+            Flag.PARENTHESES,
         )
 
         // '-' requires a width
@@ -812,7 +817,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             Flag.LEADING_SPACE,
             Flag.ZERO_PAD,
             Flag.GROUP,
-            Flag.PARENTHESES
+            Flag.PARENTHESES,
         )
 
         // '-' requires a width
@@ -822,7 +827,13 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
     private fun checkInteger(currentChar: ParsingCharacter.RegularCharacter) {
         checkNumeric()
         if (precision != -1) throw StringFormatterException.IllegalFormatPrecisionException(precision)
-        if (currentChar.regular == RegularFormatCharacter.DECIMAL_INTEGER) checkBadFlags(currentChar, Flag.ALTERNATE) else if (currentChar.regular == RegularFormatCharacter.OCTAL_INTEGER) checkBadFlags(currentChar, Flag.GROUP) else checkBadFlags(currentChar, Flag.GROUP)
+        when (currentChar.regular) {
+            RegularFormatCharacter.DECIMAL_INTEGER -> {
+                checkBadFlags(currentChar, Flag.ALTERNATE)
+            }
+            RegularFormatCharacter.OCTAL_INTEGER -> checkBadFlags(currentChar, Flag.GROUP)
+            else -> checkBadFlags(currentChar, Flag.GROUP)
+        }
     }
 
     private fun checkFloat(currentChar: ParsingCharacter.RegularCharacter) {

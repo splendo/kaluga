@@ -32,29 +32,29 @@ class ByOrdinalOrDefaultTest {
             Numbers.ONE,
             Enum.byOrdinalOrDefault(
                 0,
-                Numbers.TWO
-            )
+                Numbers.TWO,
+            ),
         )
         assertEquals(
             Numbers.TWO,
             Enum.byOrdinalOrDefault(
                 1,
-                Numbers.ONE
-            )
+                Numbers.ONE,
+            ),
         )
         assertEquals(
             Numbers.TWO,
             Enum.byOrdinalOrDefault(
                 -1,
-                Numbers.TWO
-            )
+                Numbers.TWO,
+            ),
         )
         assertEquals(
             Numbers.ONE,
             Enum.byOrdinalOrDefault(
                 2,
-                Numbers.ONE
-            )
+                Numbers.ONE,
+            ),
         )
     }
 }

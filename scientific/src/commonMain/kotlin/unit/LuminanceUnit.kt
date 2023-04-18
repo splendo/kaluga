@@ -44,14 +44,14 @@ val MetricLuminanceUnits: Set<MetricLuminance> get() = setOf(
     Apostilb,
     Lambert,
     Skot,
-    Bril
+    Bril,
 )
 
 /**
  * Set of all [ImperialLuminance]
  */
 val ImperialLuminanceUnits: Set<ImperialLuminance> get() = setOf(
-    FootLambert
+    FootLambert,
 )
 
 /**

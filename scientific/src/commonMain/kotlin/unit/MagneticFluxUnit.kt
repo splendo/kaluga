@@ -36,7 +36,7 @@ val MagneticFluxUnits: Set<MagneticFlux> get() = setOf(
     Kiloweber,
     Megaweber,
     Gigaweber,
-    Maxwell
+    Maxwell,
 )
 
 /**

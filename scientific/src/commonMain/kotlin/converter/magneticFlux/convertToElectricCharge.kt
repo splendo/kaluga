@@ -34,5 +34,5 @@ infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(r
 
 @JvmName("fluxDivResistance")
 infix operator fun <FluxUnit : MagneticFlux, ResistanceUnit : ElectricResistance> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.div(
-    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
 ) = Coulomb.charge(this, resistance)

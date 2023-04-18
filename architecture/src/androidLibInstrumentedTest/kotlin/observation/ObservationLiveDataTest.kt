@@ -137,8 +137,7 @@ class ObservationLiveDataTest : BaseTest() {
         val job = launch(Dispatchers.Main) {
             liveData.observeOnCoroutine(
                 this,
-                observer = {
-                }
+                observer = {},
             )
             assertTrue(liveData.hasObservers(), "LiveData has observers (inside launch)")
             completedObserving.complete()

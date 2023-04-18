@@ -30,10 +30,10 @@ import kotlin.jvm.JvmName
 fun <
     LengthUnit : Length,
     WidthUnit : Length,
-    AreaUnit : Area
+    AreaUnit : Area,
     > AreaUnit.area(
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-    width: ScientificValue<PhysicalQuantity.Length, WidthUnit>
+    width: ScientificValue<PhysicalQuantity.Length, WidthUnit>,
 ) = area(length, width, ::DefaultScientificValue)
 
 @JvmName("areaFromLengthAndWidth")
@@ -41,9 +41,9 @@ fun <
     LengthUnit : Length,
     WidthUnit : Length,
     AreaUnit : Area,
-    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     > AreaUnit.area(
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
     width: ScientificValue<PhysicalQuantity.Length, WidthUnit>,
-    factory: (Decimal, AreaUnit) -> Value
+    factory: (Decimal, AreaUnit) -> Value,
 ) = byMultiplying(length, width, factory)

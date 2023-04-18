@@ -50,7 +50,7 @@ val RadioactivityUnits: Set<Radioactivity> get() = setOf(
     Hectocurie,
     Kilocurie,
     Megacurie,
-    Gigacurie
+    Gigacurie,
 )
 
 /**

@@ -47,7 +47,7 @@ class SpecificVolumeUnitTest {
         assertEquals(1(CubicFoot per UsTon), 2(SquareFoot) / 2(UsTon per Foot))
         assertEquals(
             1(CubicMeter per Kilogram),
-            2(SquareMeter) / 2(Kilogram per Meter).convert(Pound per Foot)
+            2(SquareMeter) / 2(Kilogram per Meter).convert(Pound per Foot),
         )
     }
 
@@ -60,13 +60,13 @@ class SpecificVolumeUnitTest {
         assertEquals(0.5(ImperialGallon per Pound), 2(Pound per ImperialGallon).specificVolume())
         assertEquals(
             0.5(ImperialGallon per ImperialTon),
-            2(ImperialTon per ImperialGallon).specificVolume()
+            2(ImperialTon per ImperialGallon).specificVolume(),
         )
         assertEquals(0.5(UsLiquidGallon per Pound), 2(Pound per UsLiquidGallon).specificVolume())
         assertEquals(0.5(UsLiquidGallon per UsTon), 2(UsTon per UsLiquidGallon).specificVolume())
         assertEquals(
             0.5(CubicMeter per Kilogram),
-            2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density).specificVolume()
+            2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density).specificVolume(),
         )
     }
 
@@ -78,7 +78,7 @@ class SpecificVolumeUnitTest {
         assertEquals(1(CubicFoot per UsTon), 2(Foot) / 2(UsTon per SquareFoot))
         assertEquals(
             1(CubicMeter per Kilogram),
-            2(Meter).convert(Foot) / 2(Kilogram per SquareMeter)
+            2(Meter).convert(Foot) / 2(Kilogram per SquareMeter),
         )
     }
 
@@ -91,13 +91,13 @@ class SpecificVolumeUnitTest {
         assertEquals(1(ImperialGallon per Pound), 2(Decimole per Pound) / 2(Decimole per ImperialGallon))
         assertEquals(
             1(ImperialGallon per ImperialTon),
-            2(Decimole per ImperialTon) / 2(Decimole per ImperialGallon)
+            2(Decimole per ImperialTon) / 2(Decimole per ImperialGallon),
         )
         assertEquals(1(UsLiquidGallon per Pound), 2(Decimole per Pound) / 2(Decimole per UsLiquidGallon))
         assertEquals(1(UsLiquidGallon per UsTon), 2(Decimole per UsTon) / 2(Decimole per UsLiquidGallon))
         assertEquals(
             1(CubicMeter per Kilogram),
-            2(Decimole per Kilogram) / 2(Decimole per CubicMeter).convert(Decimole per CubicFoot)
+            2(Decimole per Kilogram) / 2(Decimole per CubicMeter).convert(Decimole per CubicFoot),
         )
     }
 
@@ -115,11 +115,11 @@ class SpecificVolumeUnitTest {
         assertEquals(4(ImperialGallon per Pound), 2(Decimole per Pound) * 2(ImperialGallon per Decimole))
         assertEquals(
             4(ImperialGallon per ImperialTon),
-            2(ImperialGallon per Decimole) * 2(Decimole per ImperialTon)
+            2(ImperialGallon per Decimole) * 2(Decimole per ImperialTon),
         )
         assertEquals(
             4(ImperialGallon per ImperialTon),
-            2(Decimole per ImperialTon) * 2(ImperialGallon per Decimole)
+            2(Decimole per ImperialTon) * 2(ImperialGallon per Decimole),
         )
         assertEquals(4(UsLiquidGallon per Pound), 2(UsLiquidGallon per Decimole) * 2(Decimole per Pound))
         assertEquals(4(UsLiquidGallon per Pound), 2(Decimole per Pound) * 2(UsLiquidGallon per Decimole))
@@ -127,11 +127,11 @@ class SpecificVolumeUnitTest {
         assertEquals(4(UsLiquidGallon per UsTon), 2(Decimole per UsTon) * 2(UsLiquidGallon per Decimole))
         assertEquals(
             4(CubicMeter per Kilogram),
-            2(CubicMeter per Decimole) * 2(Decimole per Kilogram).convert(Decimole per Pound)
+            2(CubicMeter per Decimole) * 2(Decimole per Kilogram).convert(Decimole per Pound),
         )
         assertEquals(
             4(CubicMeter per Kilogram),
-            2(Decimole per Kilogram).convert(Decimole per Pound) * 2(CubicMeter per Decimole)
+            2(Decimole per Kilogram).convert(Decimole per Pound) * 2(CubicMeter per Decimole),
         )
     }
 
@@ -144,14 +144,14 @@ class SpecificVolumeUnitTest {
         assertEquals(1(ImperialGallon per Pound), 2(ImperialGallon per Decimole) / 2(Pound per Decimole))
         assertEquals(
             1(ImperialGallon per ImperialTon),
-            2(ImperialGallon per Decimole) / 2(ImperialTon per Decimole)
+            2(ImperialGallon per Decimole) / 2(ImperialTon per Decimole),
         )
         assertEquals(1(UsLiquidGallon per Pound), 2(UsLiquidGallon per Decimole) / 2(Pound per Decimole))
         assertEquals(1(UsLiquidGallon per UsTon), 2(UsLiquidGallon per Decimole) / 2(UsTon per Decimole))
         assertEqualScientificValue(
             1(CubicMeter per Kilogram),
             2(CubicMeter per Decimole) / 2(Kilogram per Decimole).convert(Pound per Decimole),
-            8
+            8,
         )
     }
 

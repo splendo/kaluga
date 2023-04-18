@@ -41,7 +41,7 @@ actual interface CharacteristicWrapper {
         /**
          * Write characteristic including authentication signature
          */
-        SIGNED(BluetoothGattCharacteristic.WRITE_TYPE_SIGNED)
+        SIGNED(BluetoothGattCharacteristic.WRITE_TYPE_SIGNED),
     }
 
     /**

@@ -36,7 +36,7 @@ enum class UnitSystem {
     /**
      * Unit system used in the United States.
      */
-    IMPERIAL;
+    IMPERIAL, ;
 
     companion object {
 

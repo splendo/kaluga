@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     MomentumUnit : Momentum,
     AreaUnit : Area,
-    DynamicViscosityUnit : DynamicViscosity
+    DynamicViscosityUnit : DynamicViscosity,
     > MomentumUnit.momentum(
     dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, DynamicViscosityUnit>,
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = momentum(dynamicViscosity, area, ::DefaultScientificValue)
 
 @JvmName("momentumFromDynamicViscosityAndArea")
@@ -42,9 +42,9 @@ fun <
     MomentumUnit : Momentum,
     AreaUnit : Area,
     DynamicViscosityUnit : DynamicViscosity,
-    Value : ScientificValue<PhysicalQuantity.Momentum, MomentumUnit>
+    Value : ScientificValue<PhysicalQuantity.Momentum, MomentumUnit>,
     > MomentumUnit.momentum(
     dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, DynamicViscosityUnit>,
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-    factory: (Decimal, MomentumUnit) -> Value
+    factory: (Decimal, MomentumUnit) -> Value,
 ) = byMultiplying(dynamicViscosity, area, factory)

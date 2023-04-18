@@ -34,30 +34,30 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAndUKImperialHeatCapacityDivMetricSpecificHeatCapacity")
 infix operator fun ScientificValue<PhysicalQuantity.HeatCapacity, MetricAndUKImperialHeatCapacity>.div(
-    specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, MetricSpecificHeatCapacity>
+    specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, MetricSpecificHeatCapacity>,
 ) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
 
 @JvmName("metricAndUKImperialHeatCapacityDivUKImperialSpecificHeatCapacity")
 infix operator fun ScientificValue<PhysicalQuantity.HeatCapacity, MetricAndUKImperialHeatCapacity>.div(
-    specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>
+    specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>,
 ) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
 
 @JvmName("metricHeatCapacityDivMetricSpecificHeatCapacity")
 infix operator fun ScientificValue<PhysicalQuantity.HeatCapacity, MetricHeatCapacity>.div(
-    specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, MetricSpecificHeatCapacity>
+    specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, MetricSpecificHeatCapacity>,
 ) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
 
 @JvmName("ukImperialHeatCapacityDivUKImperialSpecificHeatCapacity")
 infix operator fun ScientificValue<PhysicalQuantity.HeatCapacity, UKImperialHeatCapacity>.div(
-    specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>
+    specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>,
 ) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
 
 @JvmName("usCustomaryHeatCapacityDivUSCustomarySpecificHeatCapacity")
 infix operator fun ScientificValue<PhysicalQuantity.HeatCapacity, USCustomaryHeatCapacity>.div(
-    specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>
+    specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>,
 ) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
 
 @JvmName("heatCapacityDivSpecificHeatCapacity")
 infix operator fun <HeatCapacityUnit : HeatCapacity, SpecificHeatCapacityUnit : SpecificHeatCapacity> ScientificValue<PhysicalQuantity.HeatCapacity, HeatCapacityUnit>.div(
-    specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, SpecificHeatCapacityUnit>
+    specificHeatCapacity: ScientificValue<PhysicalQuantity.SpecificHeatCapacity, SpecificHeatCapacityUnit>,
 ) = Kilogram.weight(this, specificHeatCapacity)

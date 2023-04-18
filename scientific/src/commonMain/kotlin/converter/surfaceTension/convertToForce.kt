@@ -33,25 +33,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricSurfaceTensionTimesMetricLength")
 infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfaceTension>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = unit.force.force(this, length)
 
 @JvmName("imperialSurfaceTensionTimesImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.SurfaceTension, ImperialSurfaceTension>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = unit.force.force(this, length)
 
 @JvmName("ukImperialSurfaceTensionTimesImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.SurfaceTension, UKImperialSurfaceTension>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = unit.force.force(this, length)
 
 @JvmName("usCustomarySurfaceTensionTimesImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.SurfaceTension, USCustomarySurfaceTension>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = unit.force.force(this, length)
 
 @JvmName("surfaceTensionTimesLength")
 infix operator fun <SurfaceTensionUnit : SurfaceTension, LengthUnit : Length> ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = Newton.force(this, length)

@@ -45,7 +45,7 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
         actual fun dateFormat(
             style: DateFormatStyle,
             timeZone: KalugaTimeZone,
-            locale: KalugaLocale
+            locale: KalugaLocale,
         ): KalugaDateFormatter = createDateFormatter(DateFormat.getDateInstance(style.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
         /**
@@ -57,7 +57,7 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
         actual fun timeFormat(
             style: DateFormatStyle,
             timeZone: KalugaTimeZone,
-            locale: KalugaLocale
+            locale: KalugaLocale,
         ): KalugaDateFormatter = createDateFormatter(DateFormat.getTimeInstance(style.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
         /**
@@ -71,7 +71,7 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
             dateStyle: DateFormatStyle,
             timeStyle: DateFormatStyle,
             timeZone: KalugaTimeZone,
-            locale: KalugaLocale
+            locale: KalugaLocale,
         ): KalugaDateFormatter = createDateFormatter(DateFormat.getDateTimeInstance(dateStyle.javaStyle(), timeStyle.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
         /**
@@ -86,7 +86,7 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
         actual fun patternFormat(
             pattern: String,
             timeZone: KalugaTimeZone,
-            locale: KalugaLocale
+            locale: KalugaLocale,
         ): KalugaDateFormatter = createDateFormatter(SimpleDateFormat(pattern, locale.locale), timeZone)
 
         private fun createDateFormatter(simpleDateFormat: SimpleDateFormat, timeZone: KalugaTimeZone): KalugaDateFormatter {
@@ -169,7 +169,7 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
                     calendar.apply {
                         time = date
                         timeZone = currentTimeZone.timeZone
-                    }
+                    },
                 )
             }
         } catch (e: ParseException) {

@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     AreaDensityUnit : AreaDensity,
     LengthUnit : Length,
-    LinearMassDensityUnit : LinearMassDensity
+    LinearMassDensityUnit : LinearMassDensity,
     > LinearMassDensityUnit.linearMassDensity(
     areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>,
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = linearMassDensity(areaDensity, length, ::DefaultScientificValue)
 
 @JvmName("linearMassDensityFromAreaDensityAndLength")
@@ -42,9 +42,9 @@ fun <
     AreaDensityUnit : AreaDensity,
     LengthUnit : Length,
     LinearMassDensityUnit : LinearMassDensity,
-    Value : ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>
+    Value : ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>,
     > LinearMassDensityUnit.linearMassDensity(
     areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>,
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-    factory: (Decimal, LinearMassDensityUnit) -> Value
+    factory: (Decimal, LinearMassDensityUnit) -> Value,
 ) = byMultiplying(areaDensity, length, factory)

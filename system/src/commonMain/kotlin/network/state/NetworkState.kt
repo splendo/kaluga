@@ -148,17 +148,20 @@ internal sealed class NetworkStateImpl {
 
     object NotInitialized : NetworkStateImpl(), NetworkState.NotInitialized {
         override val networkConnectionType: NetworkConnectionType = NetworkConnectionType.Unknown.WithoutLastNetwork(
-            NetworkConnectionType.Unknown.Reason.NOT_CLEAR
+            NetworkConnectionType.Unknown.Reason.NOT_CLEAR,
         )
         fun startInitializing(networkManager: NetworkManager): suspend () -> NetworkState.Initializing = {
             Initializing(networkConnectionType, networkManager)
         }
     }
 
-    data class Deinitialized(private val previousNetworkConnectionType: NetworkConnectionType, val networkManager: NetworkManager) : NetworkStateImpl(), NetworkState.Deinitialized {
+    data class Deinitialized(
+        private val previousNetworkConnectionType: NetworkConnectionType,
+        val networkManager: NetworkManager,
+    ) : NetworkStateImpl(), NetworkState.Deinitialized {
         override val reinitialize: suspend () -> NetworkState.Initializing = { Initializing(previousNetworkConnectionType, networkManager) }
         override val networkConnectionType: NetworkConnectionType = previousNetworkConnectionType.unknown(
-            NetworkConnectionType.Unknown.Reason.NOT_CLEAR
+            NetworkConnectionType.Unknown.Reason.NOT_CLEAR,
         )
     }
 
@@ -196,7 +199,7 @@ internal sealed class NetworkStateImpl {
         fun unknown(reason: NetworkConnectionType.Unknown.Reason): suspend () -> NetworkState.Unknown = {
             Unknown(
                 networkConnectionType.unknown(reason),
-                networkManager
+                networkManager,
             )
         }
     }
@@ -207,7 +210,7 @@ internal sealed class NetworkStateImpl {
 
     data class Available(
         override val networkConnectionType: NetworkConnectionType.Known.Available,
-        override val networkManager: NetworkManager
+        override val networkManager: NetworkManager,
     ) : Initialized(), NetworkState.Available {
         override val unavailable: suspend () -> NetworkState.Unavailable = { Unavailable(networkManager) }
     }

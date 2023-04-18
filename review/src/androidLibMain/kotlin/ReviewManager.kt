@@ -35,7 +35,7 @@ import com.splendo.kaluga.base.ApplicationHolder
  */
 actual class ReviewManager(
     private val reviewManager: com.google.android.play.core.review.ReviewManager,
-    private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
+    private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
 ) {
 
     /**
@@ -50,7 +50,7 @@ actual class ReviewManager(
         /**
          * Review Manager for testing purposes. This will not result in actual reviews being posted.
          */
-        Fake;
+        Fake, ;
 
         internal fun reviewManager(context: Context): com.google.android.play.core.review.ReviewManager = when (this) {
             Live -> ReviewManagerFactory.create(context)
@@ -67,7 +67,7 @@ actual class ReviewManager(
     actual class Builder(
         private val type: Type = Type.Live,
         private val context: Context = ApplicationHolder.applicationContext,
-        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
+        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     ) : LifecycleSubscribable, ActivityLifecycleSubscribable by lifecycleManagerObserver {
 
         /**

@@ -29,7 +29,7 @@ import com.splendo.kaluga.logging.RestrictedLogger
  */
 data class ConnectionSettings(
     val reconnectionSettings: ReconnectionSettings = ReconnectionSettings.Always,
-    val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
+    val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
 ) {
 
     /**

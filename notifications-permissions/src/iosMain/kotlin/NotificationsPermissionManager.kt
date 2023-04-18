@@ -55,7 +55,7 @@ actual data class NotificationOptions(val options: UNAuthorizationOptions)
 actual class DefaultNotificationsPermissionManager(
     notificationsPermission: NotificationsPermission,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
 
     class Provider(val notificationCenter: UNUserNotificationCenter, val coroutineScope: CoroutineScope) : CurrentAuthorizationStatusProvider {
@@ -82,7 +82,7 @@ actual class DefaultNotificationsPermissionManager(
         permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
             val deferred = CompletableDeferred<Boolean>()
             notificationCenter.requestAuthorizationWithOptions(
-                permission.options?.options ?: UNAuthorizationOptionNone
+                permission.options?.options ?: UNAuthorizationOptionNone,
             ) { authorization: Boolean, error: NSError? ->
                 error?.let { deferred.completeExceptionally(Throwable(error.localizedDescription)) } ?: run { deferred.complete(authorization) }
                 Unit
@@ -115,7 +115,7 @@ actual class DefaultNotificationsPermissionManager(
  */
 actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): NotificationsPermissionManager {
+    override fun create(notificationsPermission: NotificationsPermission, settings: Settings, coroutineScope: CoroutineScope): NotificationsPermissionManager {
         return DefaultNotificationsPermissionManager(notificationsPermission, settings, coroutineScope)
     }
 }
@@ -129,7 +129,7 @@ private fun UNAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.
         else -> {
             error(
                 "CalendarPermissionManager",
-                "Unknown CBManagerAuthorization status={$this}"
+                "Unknown CBManagerAuthorization status={$this}",
             )
             IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         }

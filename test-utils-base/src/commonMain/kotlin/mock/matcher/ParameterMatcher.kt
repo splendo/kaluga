@@ -79,7 +79,15 @@ sealed class ParameterMatcher<in T> : ParameterMatcherOrCaptor<T>, Comparable<Pa
          */
         fun <T> any(): ParameterMatcher<T> = AnyMatcher()
 
-        private val priorityOrder = setOf(EqualsMatcher::class, OneOfMatcher::class, ConditionMatcher::class, NotEqualsMatcher::class, SubClassMatcher::class, AnyNotNullMatcher::class, AnyMatcher::class)
+        private val priorityOrder = setOf(
+            EqualsMatcher::class,
+            OneOfMatcher::class,
+            ConditionMatcher::class,
+            NotEqualsMatcher::class,
+            SubClassMatcher::class,
+            AnyNotNullMatcher::class,
+            AnyMatcher::class,
+        )
     }
 
     override fun compareTo(other: ParameterMatcher<*>): Int = priorityOrder.indexOf(this::class).compareTo(priorityOrder.indexOf(other::class))

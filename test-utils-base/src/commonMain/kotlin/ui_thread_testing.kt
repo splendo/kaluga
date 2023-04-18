@@ -88,7 +88,7 @@ abstract class UIThreadTest<Context : UIThreadTest.TestContext> : BaseUIThreadTe
  * as it eases dealing with immutability and allows a shared context.
  *
  */
-abstract class BaseUIThreadTest<Configuration, Context : BaseUIThreadTest.TestContext>() : BaseTest() {
+abstract class BaseUIThreadTest<Configuration, Context : BaseUIThreadTest.TestContext> : BaseTest() {
 
     interface TestContext {
         fun dispose() {}

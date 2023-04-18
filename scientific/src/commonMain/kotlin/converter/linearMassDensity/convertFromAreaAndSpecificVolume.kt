@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     SpecificVolumeUnit : SpecificVolume,
     AreaUnit : Area,
-    LinearMassDensityUnit : LinearMassDensity
+    LinearMassDensityUnit : LinearMassDensity,
     > LinearMassDensityUnit.linearMassDensity(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
 ) = linearMassDensity(area, specificVolume, ::DefaultScientificValue)
 
 @JvmName("linearMassDensityFromAreaAndSpecificVolume")
@@ -42,9 +42,9 @@ fun <
     SpecificVolumeUnit : SpecificVolume,
     AreaUnit : Area,
     LinearMassDensityUnit : LinearMassDensity,
-    Value : ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>
+    Value : ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>,
     > LinearMassDensityUnit.linearMassDensity(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
-    factory: (Decimal, LinearMassDensityUnit) -> Value
+    factory: (Decimal, LinearMassDensityUnit) -> Value,
 ) = byDividing(area, specificVolume, factory)

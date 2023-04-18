@@ -40,7 +40,7 @@ import kotlin.reflect.KProperty
  * @param initialValue The initial value this observation should contain.
  */
 open class Observation<R : T, T, OO : ObservableOptional<R>>(
-    override val initialValue: ObservableOptional<T>
+    override val initialValue: ObservableOptional<T>,
 ) : Initial<R, T> {
 
     // this is not used by iOS
@@ -208,7 +208,7 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
  * @param initialValue The initial [ObservableOptional.Value] this observation should contain.
  */
 open class ObservationInitialized<T>(
-    override val initialValue: ObservableOptional.Value<T>
+    override val initialValue: ObservableOptional.Value<T>,
 ) : Observation<T, T, ObservableOptional.Value<T>>(initialValue),
     ReadWriteProperty<Any?, T>,
     MutableInitialized<T, T> {
@@ -278,7 +278,7 @@ class ObservationUninitialized<T> :
  */
 open class ObservationDefault<R : T?, T>(
     override val defaultValue: ObservableOptional.Value<R>,
-    override val initialValue: ObservableOptional.Value<T?>
+    override val initialValue: ObservableOptional.Value<T?>,
 ) : Observation<R, T?, ObservableOptional.Value<R>>(initialValue),
     ReadWriteProperty<Any?, R>,
     MutableDefaultInitialized<R, T?> {
@@ -290,7 +290,7 @@ open class ObservationDefault<R : T?, T>(
      */
     constructor(
         defaultValue: R,
-        initialValue: ObservableOptional.Value<T?>
+        initialValue: ObservableOptional.Value<T?>,
     ) : this(ObservableOptional.Value<R>(defaultValue), initialValue)
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): R = current
@@ -329,7 +329,7 @@ fun <R : T, T, OO : ObservableOptional<R>> observeFlow(
     observation: Observation<R, T, OO>,
     coroutineScope: CoroutineScope,
     context: CoroutineContext = coroutineScope.coroutineContext,
-    flow: Flow<T>
+    flow: Flow<T>,
 ) {
     observation.onFirstObservation = {
         coroutineScope.launch(context) {

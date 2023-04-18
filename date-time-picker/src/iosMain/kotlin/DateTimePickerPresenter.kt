@@ -49,7 +49,7 @@ import kotlin.time.DurationUnit
  */
 actual class DateTimePickerPresenter(
     dateTimePicker: DateTimePicker,
-    private val parent: UIViewController
+    private val parent: UIViewController,
 ) : BaseDateTimePickerPresenter(dateTimePicker) {
 
     /**
@@ -67,7 +67,7 @@ actual class DateTimePickerPresenter(
          */
         actual override fun create(
             dateTimePicker: DateTimePicker,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ) = DateTimePickerPresenter(dateTimePicker, viewController)
     }
 
@@ -135,15 +135,15 @@ actual class DateTimePickerPresenter(
                     translatesAutoresizingMaskIntoConstraints = false
                     bottomAnchor.constraintEqualToAnchor(
                         datePickerView.topAnchor,
-                        -15.0
+                        -15.0,
                     ).active = true
                     containerView.leadingAnchor.constraintEqualToAnchor(
                         leadingAnchor,
-                        -20.0
+                        -20.0,
                     ).active = true
                     containerView.trailingAnchor.constraintEqualToAnchor(
                         trailingAnchor,
-                        20.0
+                        20.0,
                     ).active = true
                     bottomAnchor
                 }.topAnchor
@@ -164,7 +164,13 @@ actual class DateTimePickerPresenter(
 
         @ObjCAction
         private fun onSelected() {
-            completion(DefaultKalugaDate.epoch(datePickerView.date.timeIntervalSince1970.seconds, this@DateTimePickerPresenter.dateTimePicker.selectedDate.timeZone, this@DateTimePickerPresenter.dateTimePicker.locale))
+            completion(
+                DefaultKalugaDate.epoch(
+                    datePickerView.date.timeIntervalSince1970.seconds,
+                    this@DateTimePickerPresenter.dateTimePicker.selectedDate.timeZone,
+                    this@DateTimePickerPresenter.dateTimePicker.locale,
+                ),
+            )
             dismissDateTimePicker(true)
         }
     }

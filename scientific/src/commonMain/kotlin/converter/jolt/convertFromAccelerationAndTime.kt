@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     AccelerationUnit : Acceleration,
     TimeUnit : Time,
-    JoltUnit : Jolt
+    JoltUnit : Jolt,
     > JoltUnit.jolt(
     acceleration: ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>,
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = jolt(acceleration, time, ::DefaultScientificValue)
 
 @JvmName("joltFromAccelerationAndTime")
@@ -42,9 +42,9 @@ fun <
     AccelerationUnit : Acceleration,
     TimeUnit : Time,
     JoltUnit : Jolt,
-    Value : ScientificValue<PhysicalQuantity.Jolt, JoltUnit>
+    Value : ScientificValue<PhysicalQuantity.Jolt, JoltUnit>,
     > JoltUnit.jolt(
     acceleration: ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, JoltUnit) -> Value
+    factory: (Decimal, JoltUnit) -> Value,
 ) = byDividing(acceleration, time, factory)

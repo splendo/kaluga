@@ -35,7 +35,7 @@ val CatalysticActivityUnits: Set<CatalysticActivity> get() = setOf(
     Hectokatal,
     Kilokatal,
     Megakatal,
-    Gigakatal
+    Gigakatal,
 )
 
 /**

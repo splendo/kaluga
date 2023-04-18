@@ -34,14 +34,14 @@ class KoinUIThreadViewModelTestTest :
     }
 
     class MyKoinViewModelTestContext :
-        KoinUIThreadViewModelTest.KoinViewModelTestContext<KoinViewModel>(
+        KoinViewModelTestContext<KoinViewModel>(
             {
                 printLogger(Level.DEBUG) // not the default
             },
             module {
                 single { "S" }
                 single { KoinViewModel() }
-            }
+            },
         ) {
 
         // if you're using this as example and don't want inject your viewmodel you can instead use `by lazy`
@@ -57,7 +57,7 @@ class KoinUIThreadViewModelTestTest :
         assertEquals(
             Level.DEBUG,
             viewModel.getKoin().logger.level,
-            "KoinApplicationDeclaration should have changed the Logger"
+            "KoinApplicationDeclaration should have changed the Logger",
         )
     }
 }

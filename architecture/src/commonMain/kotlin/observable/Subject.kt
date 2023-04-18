@@ -89,7 +89,7 @@ interface DefaultSubject<R : T?, T> :
  */
 abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(
     observation: Observation<R, T, OO>,
-    private val stateFlowToBind: suspend () -> StateFlow<R?>
+    private val stateFlowToBind: suspend () -> StateFlow<R?>,
 ) :
     BaseObservable<R, T, OO>(observation), BasicSubject<R, T, OO> {
 
@@ -111,7 +111,7 @@ abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(
  */
 expect abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>>(
     observation: Observation<R, T, OO>,
-    stateFlowToBind: suspend () -> StateFlow<R?>
+    stateFlowToBind: suspend () -> StateFlow<R?>,
 ) :
     AbstractBaseSubject<R, T, OO>
 
@@ -129,7 +129,7 @@ abstract class AbstractBaseInitializedSubject<T>(override val observation: Obser
             withContext(Dispatchers.Main.immediate) {
                 observation.stateFlow
             }
-        }
+        },
     ),
     InitializedSubject<T>,
     MutableInitialized<T, T> by observation {
@@ -139,7 +139,7 @@ abstract class AbstractBaseInitializedSubject<T>(override val observation: Obser
      * @param initialValue The [Value] to use as the initial value.
      */
     constructor(
-        initialValue: Value<T>
+        initialValue: Value<T>,
     ) : this(ObservationInitialized(initialValue))
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<T> =
@@ -159,7 +159,7 @@ expect abstract class BaseInitializedSubject<T>(observation: ObservationInitiali
      * @param initialValue The [Value] to use as the initial value.
      */
     constructor(
-        initialValue: Value<T>
+        initialValue: Value<T>,
     )
 }
 
@@ -170,10 +170,10 @@ expect abstract class BaseInitializedSubject<T>(observation: ObservationInitiali
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 abstract class AbstractBaseUninitializedSubject<T>(
-    override val observation: ObservationUninitialized<T>
+    override val observation: ObservationUninitialized<T>,
 ) : BaseSubject<T, T, ObservableOptional<T>>(
     observation,
-    { observation.stateFlow }
+    { observation.stateFlow },
 ),
     UninitializedSubject<T>,
     MutableUninitialized<T> by observation {
@@ -187,7 +187,7 @@ abstract class AbstractBaseUninitializedSubject<T>(
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
 expect abstract class BaseUninitializedSubject<T>(
-    observation: ObservationUninitialized<T>
+    observation: ObservationUninitialized<T>,
 ) : AbstractBaseUninitializedSubject<T>
 
 /**
@@ -198,16 +198,16 @@ expect abstract class BaseUninitializedSubject<T>(
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE") // deliberate
 abstract class AbstractBaseDefaultSubject<R : T?, T>(
-    override val observation: ObservationDefault<R, T?>
+    override val observation: ObservationDefault<R, T?>,
 ) : BaseSubject<R, T?, Value<R>>(
     observation,
-    { observation.stateFlow }
+    { observation.stateFlow },
 ),
     DefaultSubject<R, T>,
     MutableDefaultInitialized<R, T?> by observation {
     constructor(
         defaultValue: Value<R>,
-        initialValue: Value<T?>
+        initialValue: Value<T?>,
     ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue))
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
@@ -221,7 +221,7 @@ abstract class AbstractBaseDefaultSubject<R : T?, T>(
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
 expect abstract class BaseDefaultSubject<R : T?, T>(
-    observation: ObservationDefault<R, T?>
+    observation: ObservationDefault<R, T?>,
 ) : AbstractBaseDefaultSubject<R, T> {
 
     /**
@@ -231,7 +231,7 @@ expect abstract class BaseDefaultSubject<R : T?, T>(
      */
     constructor(
         defaultValue: Value<R>,
-        initialValue: Value<T?>
+        initialValue: Value<T?>,
     )
 }
 
@@ -242,9 +242,9 @@ expect abstract class BaseDefaultSubject<R : T?, T>(
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 class SimpleInitializedSubject<T>(
-    override val observation: ObservationInitialized<T>
+    override val observation: ObservationInitialized<T>,
 ) : BaseInitializedSubject<T>(
-    observation
+    observation,
 ) {
 
     /**
@@ -252,7 +252,7 @@ class SimpleInitializedSubject<T>(
      * @param initialValue The initial value of [T]
      */
     constructor(
-        initialValue: T
+        initialValue: T,
     ) : this(Value(initialValue))
 
     /**
@@ -260,7 +260,7 @@ class SimpleInitializedSubject<T>(
      * @param initialValue The initial [Value] of [T]
      */
     constructor(
-        initialValue: Value<T>
+        initialValue: Value<T>,
     ) : this(ObservationInitialized(initialValue))
 
     override suspend fun set(newValue: T) {
@@ -281,11 +281,11 @@ class SimpleInitializedSubject<T>(
  */
 class SimpleDefaultSubject<R : T?, T>(
     defaultValue: R,
-    initialValue: T? = defaultValue
+    initialValue: T? = defaultValue,
 ) :
     BaseDefaultSubject<R, T?>(
         Value(defaultValue),
-        Value(initialValue)
+        Value(initialValue),
     ) {
 
     override fun post(newValue: T?) {

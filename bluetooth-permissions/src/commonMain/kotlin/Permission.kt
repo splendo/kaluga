@@ -44,14 +44,14 @@ object BluetoothPermission : Permission() {
 fun PermissionsBuilder.registerBluetoothPermission(
     bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
-    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
 ) =
     registerBluetoothPermission(bluetoothPermissionManagerBuilderBuilder) { baseBluetoothPermissionManagerBuilder, coroutineContext ->
         BluetoothPermissionStateRepo(
             baseBluetoothPermissionManagerBuilder,
             monitoringInterval,
             settings,
-            coroutineContext
+            coroutineContext,
         )
     }
 
@@ -65,7 +65,7 @@ fun PermissionsBuilder.registerBluetoothPermission(
  */
 fun PermissionsBuilder.registerBluetoothPermission(
     bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
-    stateRepoBuilder: (BaseBluetoothPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<BluetoothPermission>
+    stateRepoBuilder: (BaseBluetoothPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<BluetoothPermission>,
 ) = bluetoothPermissionManagerBuilderBuilder(context).also {
     register(it)
     registerPermissionStateRepoBuilder<BluetoothPermission> { _, coroutineContext ->
@@ -84,14 +84,14 @@ fun PermissionsBuilder.registerBluetoothPermission(
 fun PermissionsBuilder.registerBluetoothPermissionIfNotRegistered(
     bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
-    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
 ) =
     registerBluetoothPermissionIfNotRegistered(bluetoothPermissionManagerBuilderBuilder) { baseBluetoothPermissionManagerBuilder, coroutineContext ->
         BluetoothPermissionStateRepo(
             baseBluetoothPermissionManagerBuilder,
             monitoringInterval,
             settings,
-            coroutineContext
+            coroutineContext,
         )
     }
 
@@ -104,7 +104,7 @@ fun PermissionsBuilder.registerBluetoothPermissionIfNotRegistered(
  */
 fun PermissionsBuilder.registerBluetoothPermissionIfNotRegistered(
     bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
-    stateRepoBuilder: (BaseBluetoothPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<BluetoothPermission>
+    stateRepoBuilder: (BaseBluetoothPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<BluetoothPermission>,
 ) = bluetoothPermissionManagerBuilderBuilder(context).also {
     registerOrGet(it)
     registerOrGetPermissionStateRepoBuilder<BluetoothPermission> { _, coroutineContext ->

@@ -35,7 +35,7 @@ val ElectricCapacitanceUnits: Set<ElectricCapacitance> get() = setOf(
     Hectofarad,
     Kilofarad,
     Megafarad,
-    Gigafarad
+    Gigafarad,
 )
 
 /**

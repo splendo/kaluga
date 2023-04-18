@@ -53,7 +53,7 @@ private fun GradientDrawable.applyShape(shape: KalugaBackgroundStyle.Shape, cont
                 if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT)) radiusX else 0.0f,
                 if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT)) radiusY else 0.0f,
                 if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT)) radiusX else 0.0f,
-                if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT)) radiusY else 0.0f
+                if (shape.roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT)) radiusY else 0.0f,
             )
             GradientDrawable.RECTANGLE
         }
@@ -72,7 +72,7 @@ private fun GradientDrawable.applyFillStyle(fillStyle: KalugaBackgroundStyle.Fil
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 setColors(
                     colors,
-                    offsets
+                    offsets,
                 )
             } else {
                 setColors(colors)

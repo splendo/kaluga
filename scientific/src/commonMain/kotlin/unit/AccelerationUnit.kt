@@ -79,7 +79,7 @@ sealed class Acceleration : AbstractScientificUnit<PhysicalQuantity.Acceleration
 @Serializable
 data class MetricAcceleration(
     override val speed: MetricSpeed,
-    override val per: Time
+    override val per: Time,
 ) : Acceleration(), MetricScientificUnit<PhysicalQuantity.Acceleration> {
     override val system = MeasurementSystem.Metric
 }
@@ -92,7 +92,7 @@ data class MetricAcceleration(
 @Serializable
 data class ImperialAcceleration(
     override val speed: ImperialSpeed,
-    override val per: Time
+    override val per: Time,
 ) : Acceleration(), ImperialScientificUnit<PhysicalQuantity.Acceleration> {
     override val system = MeasurementSystem.Imperial
 }

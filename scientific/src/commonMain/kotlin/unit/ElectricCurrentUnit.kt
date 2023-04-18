@@ -37,7 +37,7 @@ val ElectricCurrentUnits: Set<ElectricCurrent> get() = setOf(
     Megaampere,
     Gigaampere,
     Biot,
-    Abampere
+    Abampere,
 )
 
 /**

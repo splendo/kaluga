@@ -26,7 +26,7 @@ actual data class KalugaLocale internal constructor(
     override val countryCode: String = "",
     override val variantCode: String = "",
     override val scriptCode: String = "",
-    override val unitSystem: UnitSystem = UnitSystem.METRIC
+    override val unitSystem: UnitSystem = UnitSystem.METRIC,
 ) : BaseLocale() {
 
     actual companion object {

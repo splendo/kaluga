@@ -55,7 +55,7 @@ val MetricForceUnits: Set<MetricForce> get() = setOf(
     KilogramForce,
     TonneForce,
     GramForce,
-    MilligramForce
+    MilligramForce,
 )
 
 /**
@@ -65,7 +65,7 @@ val ImperialForceUnits: Set<ImperialForce> get() = setOf(
     Poundal,
     PoundForce,
     OunceForce,
-    GrainForce
+    GrainForce,
 )
 
 /**
@@ -73,20 +73,23 @@ val ImperialForceUnits: Set<ImperialForce> get() = setOf(
  */
 val USCustomaryForceUnits: Set<USCustomaryForce> get() = setOf(
     Kip,
-    UsTonForce
+    UsTonForce,
 ) + ImperialForceUnits.map { it.usCustomary }
 
 /**
  * Set of all [UKImperialForce]
  */
 val UKImperialForceUnits: Set<UKImperialForce> get() = setOf(
-    ImperialTonForce
+    ImperialTonForce,
 ) + ImperialForceUnits.map { it.ukImperial }
 
 /**
  * Set of all [Force]
  */
-val ForceUnits: Set<Force> get() = MetricForceUnits + ImperialForceUnits + UKImperialForceUnits.filter { it !is UKImperialImperialForceWrapper }.toSet() + USCustomaryForceUnits.filter { it !is USCustomaryImperialForceWrapper }
+val ForceUnits: Set<Force> get() = MetricForceUnits +
+    ImperialForceUnits +
+    UKImperialForceUnits.filter { it !is UKImperialImperialForceWrapper }.toSet() +
+    USCustomaryForceUnits.filter { it !is USCustomaryImperialForceWrapper }
 
 /**
  * An [AbstractScientificUnit] for [PhysicalQuantity.Force]

@@ -32,25 +32,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("amountOfSubstanceDivMetricWeight")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (unit per weight.unit).molality(this, weight)
 
 @JvmName("amountOfSubstanceDivImperialWeight")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (unit per weight.unit).molality(this, weight)
 
 @JvmName("amountOfSubstanceDivUKImperialWeight")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (unit per weight.unit).molality(this, weight)
 
 @JvmName("amountOfSubstanceDivUSCustomaryWeight")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (unit per weight.unit).molality(this, weight)
 
 @JvmName("amountOfSubstanceDivWeight")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : Weight> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (unit per Kilogram).molality(this, weight)

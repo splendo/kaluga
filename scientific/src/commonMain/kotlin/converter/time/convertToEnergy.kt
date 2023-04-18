@@ -95,17 +95,17 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, Time
 
 @JvmName("timeTimesMetricPower")
 infix operator fun <PowerUnit : MetricPower, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>,
 ) = power * this
 
 @JvmName("timeTimesInchPoundForcePerSecond")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    power: ScientificValue<PhysicalQuantity.Power, InchPoundForcePerSecond>
+    power: ScientificValue<PhysicalQuantity.Power, InchPoundForcePerSecond>,
 ) = power * this
 
 @JvmName("timeTimesInchPoundForcePerMinute")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    power: ScientificValue<PhysicalQuantity.Power, InchPoundForcePerMinute>
+    power: ScientificValue<PhysicalQuantity.Power, InchPoundForcePerMinute>,
 ) = power * this
 
 @JvmName("hourTimesHorsepower")
@@ -126,10 +126,10 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, Time
 
 @JvmName("timeTimesImperialPower")
 infix operator fun <PowerUnit : ImperialPower, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>,
 ) = power * this
 
 @JvmName("timeTimesPower")
 infix operator fun <PowerUnit : Power, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>
+    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>,
 ) = power * this

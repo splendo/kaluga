@@ -41,7 +41,7 @@ class MockPermissionManager<P : Permission>(
     private val initialState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.REQUESTABLE,
     settings: Settings,
     setupMocks: Boolean = true,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BasePermissionManager<P>(permission, settings, coroutineScope) {
 
     /**
@@ -53,7 +53,7 @@ class MockPermissionManager<P : Permission>(
         val permission: P,
         val monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
         val initialState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.REQUESTABLE,
-        setupMocks: Boolean = true
+        setupMocks: Boolean = true,
     ) {
         /**
          * List of built [MockPermissionManager]
@@ -74,7 +74,7 @@ class MockPermissionManager<P : Permission>(
                         initialState,
                         settings,
                         setupMocks,
-                        coroutineScope
+                        coroutineScope,
                     ).also { createdManagers.add(it) }
                 }
             }
@@ -107,7 +107,7 @@ class MockPermissionManager<P : Permission>(
                         MockPermissionState.ActiveState.ALLOWED -> PermissionManager.Event.PermissionGranted
                         MockPermissionState.ActiveState.REQUESTABLE -> PermissionManager.Event.PermissionDenied(false)
                         MockPermissionState.ActiveState.LOCKED -> PermissionManager.Event.PermissionDenied(true)
-                    }
+                    },
                 )
             }
         }

@@ -60,7 +60,7 @@ val MetricEnergyUnits: Set<MetricEnergy> get() = setOf(
     Hectoelectronvolt,
     Kiloelectronvolt,
     Megaelectronvolt,
-    Gigaelectronvolt
+    Gigaelectronvolt,
 ) + MetricAndImperialEnergyUnits.map { it.metric }.toSet()
 
 /**
@@ -85,7 +85,7 @@ val MetricAndImperialEnergyUnits: Set<MetricAndImperialEnergy> get() = setOf(
     Kilocalorie,
     Kilocalorie.IT,
     Megacalorie,
-    Megacalorie.IT
+    Megacalorie.IT,
 )
 
 /**
@@ -98,13 +98,15 @@ val ImperialEnergyUnits: Set<ImperialEnergy> get() = setOf(
     InchOunceForce,
     HorsepowerHour,
     BritishThermalUnit,
-    BritishThermalUnit.Thermal
+    BritishThermalUnit.Thermal,
 ) + MetricAndImperialEnergyUnits.map { it.imperial }.toSet()
 
 /**
  * Set of all [Energy]
  */
-val EnergyUnits: Set<Energy> get() = MetricAndImperialEnergyUnits + MetricEnergyUnits.filter { it !is MetricMetricAndImperialEnergyWrapper }.toSet() + ImperialEnergyUnits.filter { it !is ImperialMetricAndImperialEnergyWrapper }.toSet()
+val EnergyUnits: Set<Energy> get() = MetricAndImperialEnergyUnits +
+    MetricEnergyUnits.filter { it !is MetricMetricAndImperialEnergyWrapper }.toSet() +
+    ImperialEnergyUnits.filter { it !is ImperialMetricAndImperialEnergyWrapper }.toSet()
 
 /**
  * An [AbstractScientificUnit] for [PhysicalQuantity.Energy]
@@ -393,7 +395,10 @@ object HorsepowerHour : ImperialEnergy() {
 @Serializable
 object BritishThermalUnit : ImperialEnergy(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Energy> by BritishThermalUnitBase(Calorie.IT) {
 
-    internal class BritishThermalUnitBase(private val calorieUnit: CalorieUnit, symbolPostfix: String = "") : SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Energy> {
+    internal class BritishThermalUnitBase(
+        private val calorieUnit: CalorieUnit,
+        symbolPostfix: String = "",
+    ) : SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Energy> {
         override val symbol: String = "Btu$symbolPostfix"
         override val system = MeasurementSystem.Imperial
         override val quantity = PhysicalQuantity.Energy

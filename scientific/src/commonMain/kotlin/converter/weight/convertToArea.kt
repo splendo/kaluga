@@ -35,45 +35,45 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricWeightDivMetricAreaDensity")
 infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>,
 ) = areaDensity.unit.per.area(this, areaDensity)
 
 @JvmName("imperialWeightDivImperialAreaDensity")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>,
 ) = areaDensity.unit.per.area(this, areaDensity)
 
 @JvmName("imperialWeightDivUKImperialAreaDensity")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>,
 ) = areaDensity.unit.per.area(this, areaDensity)
 
 @JvmName("imperialWeightDivUSCustomaryAreaDensity")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>,
 ) = areaDensity.unit.per.area(this, areaDensity)
 
 @JvmName("ukImperialWeightDivImperialAreaDensity")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>,
 ) = areaDensity.unit.per.area(this, areaDensity)
 
 @JvmName("ukImperialWeightDivUKImperialAreaDensity")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>,
 ) = areaDensity.unit.per.area(this, areaDensity)
 
 @JvmName("usCustomaryWeightDivImperialAreaDensity")
 infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>,
 ) = areaDensity.unit.per.area(this, areaDensity)
 
 @JvmName("usCustomaryWeightDivUSCustomaryAreaDensity")
 infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>,
 ) = areaDensity.unit.per.area(this, areaDensity)
 
 @JvmName("weightDivAreaDensity")
 infix operator fun <WeightUnit : Weight, AreaDensityUnit : AreaDensity> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>,
 ) = SquareMeter.area(this, areaDensity)

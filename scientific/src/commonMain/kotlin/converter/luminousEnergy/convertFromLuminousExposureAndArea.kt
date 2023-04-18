@@ -30,19 +30,19 @@ import kotlin.jvm.JvmName
 @JvmName("luminousEnergyFromLuminousExposureAndAreaDefault")
 fun <
     LuminousExposureUnit : LuminousExposure,
-    AreaUnit : Area
+    AreaUnit : Area,
     > LuminousEnergy.luminousEnergy(
     luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, LuminousExposureUnit>,
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = luminousEnergy(luminousExposure, area, ::DefaultScientificValue)
 
 @JvmName("luminousEnergyFromLuminousExposureAndArea")
 fun <
     LuminousExposureUnit : LuminousExposure,
     AreaUnit : Area,
-    Value : ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>
+    Value : ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>,
     > LuminousEnergy.luminousEnergy(
     luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, LuminousExposureUnit>,
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-    factory: (Decimal, LuminousEnergy) -> Value
+    factory: (Decimal, LuminousEnergy) -> Value,
 ) = byMultiplying(luminousExposure, area, factory)

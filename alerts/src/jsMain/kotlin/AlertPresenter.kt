@@ -28,7 +28,7 @@ import kotlinx.coroutines.CoroutineScope
  * @param alert The [Alert] being presented.
  */
 actual class AlertPresenter(
-    alert: Alert
+    alert: Alert,
 ) : BaseAlertPresenter(alert) {
 
     /**
@@ -67,7 +67,7 @@ actual class AlertPresenter(
     override fun showAlert(
         animated: Boolean,
         afterHandler: (Alert.Action?) -> Unit,
-        completion: () -> Unit
+        completion: () -> Unit,
     ) {
         TODO("not implemented")
     }

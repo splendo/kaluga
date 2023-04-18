@@ -30,15 +30,15 @@ import kotlin.jvm.JvmName
 
 @JvmName("luminousEnergyDivMetricExposure")
 infix operator fun ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>.div(
-    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, MetricLuminousExposure>
+    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, MetricLuminousExposure>,
 ) = (1(unit.luminousFlux) / 1(luminousExposure.unit.illuminance)).unit.area(this, luminousExposure)
 
 @JvmName("luminousEnergyDivImperialExposure")
 infix operator fun ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>.div(
-    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, ImperialLuminousExposure>
+    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, ImperialLuminousExposure>,
 ) = (1(unit.luminousFlux) / 1(luminousExposure.unit.illuminance)).unit.area(this, luminousExposure)
 
 @JvmName("luminousEnergyDivExposure")
 infix operator fun <ExposureUnit : LuminousExposure> ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>.div(
-    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, ExposureUnit>
+    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, ExposureUnit>,
 ) = (1(unit.luminousFlux) / 1(luminousExposure.unit.illuminance)).unit.area(this, luminousExposure)

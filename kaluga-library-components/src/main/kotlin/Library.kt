@@ -117,5 +117,5 @@ class LibraryImpl(project: Project) {
 enum class IOSTarget {
     X64,
     Arm64,
-    SimulatorArm64
+    SimulatorArm64,
 }

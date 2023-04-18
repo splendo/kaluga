@@ -25,25 +25,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricDynamicViscosityDivMetricKinematicViscosity")
 infix operator fun ScientificValue<PhysicalQuantity.DynamicViscosity, MetricDynamicViscosity>.div(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>,
 ) = (Kilogram per CubicMeter).density(this, kinematicViscosity)
 
 @JvmName("imperialDynamicViscosityDivImperialKinematicViscosity")
 infix operator fun ScientificValue<PhysicalQuantity.DynamicViscosity, ImperialDynamicViscosity>.div(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>,
 ) = (Pound per CubicFoot).density(this, kinematicViscosity)
 
 @JvmName("ukImperialDynamicViscosityDivImperialKinematicViscosity")
 infix operator fun ScientificValue<PhysicalQuantity.DynamicViscosity, UKImperialDynamicViscosity>.div(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>,
 ) = (Pound.ukImperial per CubicFoot).density(this, kinematicViscosity)
 
 @JvmName("usCustomaryDynamicViscosityDivImperialKinematicViscosity")
 infix operator fun ScientificValue<PhysicalQuantity.DynamicViscosity, USCustomaryDynamicViscosity>.div(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>,
 ) = (Pound.usCustomary per CubicFoot).density(this, kinematicViscosity)
 
 @JvmName("dynamicViscosityDivKinematicViscosity")
 infix operator fun <DynamicViscosityUnit : DynamicViscosity, DensityUnit : KinematicViscosity> ScientificValue<PhysicalQuantity.DynamicViscosity, DynamicViscosityUnit>.div(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, DensityUnit>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, DensityUnit>,
 ) = (Kilogram per CubicMeter).density(this, kinematicViscosity)

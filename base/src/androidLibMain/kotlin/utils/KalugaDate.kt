@@ -43,7 +43,7 @@ actual class DefaultKalugaDate internal constructor(internal val calendar: Calen
         actual fun now(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate = DefaultKalugaDate(
             Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
                 add(Calendar.MILLISECOND, offset.inWholeMilliseconds.toInt())
-            }
+            },
         )
 
         /**
@@ -56,7 +56,7 @@ actual class DefaultKalugaDate internal constructor(internal val calendar: Calen
         actual fun epoch(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate = DefaultKalugaDate(
             Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
                 timeInMillis = offset.inWholeMilliseconds
-            }
+            },
         )
     }
 

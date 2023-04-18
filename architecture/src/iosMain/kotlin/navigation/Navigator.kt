@@ -80,7 +80,7 @@ object MissingViewControllerNavigationException : NavigationException("Missing P
  */
 class ViewControllerNavigator<Action : NavigationAction<*>>(
     parentVC: UIViewController,
-    private val navigationMapper: (Action) -> NavigationSpec
+    private val navigationMapper: (Action) -> NavigationSpec,
 ) : Navigator<Action> {
 
     private inner class StoreKitDelegate : NSObject(), SKStoreProductViewControllerDelegateProtocol {
@@ -193,7 +193,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(
             NSLayoutAttributeLeading,
             NSLayoutAttributeTrailing,
             NSLayoutAttributeTop,
-            NSLayoutAttributeBottom
+            NSLayoutAttributeBottom,
         ).map { attribute ->
             CGFloat
             NSLayoutConstraint.constraintWithItem(child.view, attribute, NSLayoutRelationEqual, nestedSpec.containerView, attribute, 1.0, 0.0)
@@ -359,7 +359,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(
             delegate = storeKitDelegate
         }
         productViewController.loadProductWithParameters(
-            parameters
+            parameters,
         ) { isLoaded, _ ->
             if (isLoaded) {
                 parent.presentViewController(productViewController, true, null)

@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     DensityUnit : Density,
     MolarMassUnit : MolarMass,
-    MolarityUnit : Molarity
+    MolarityUnit : Molarity,
     > MolarityUnit.molarity(
     density: ScientificValue<PhysicalQuantity.Density, DensityUnit>,
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
 ) = molarity(density, molarMass, ::DefaultScientificValue)
 
 @JvmName("molarityFromDensityAndMolarMass")
@@ -42,9 +42,9 @@ fun <
     DensityUnit : Density,
     MolarMassUnit : MolarMass,
     MolarityUnit : Molarity,
-    Value : ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>
+    Value : ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>,
     > MolarityUnit.molarity(
     density: ScientificValue<PhysicalQuantity.Density, DensityUnit>,
     molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
-    factory: (Decimal, MolarityUnit) -> Value
+    factory: (Decimal, MolarityUnit) -> Value,
 ) = byDividing(density, molarMass, factory)

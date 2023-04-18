@@ -37,7 +37,7 @@ val ElectricChargeUnits: Set<ElectricCharge> get() = setOf(
     Kilocoulomb,
     Megacoulomb,
     Gigacoulomb,
-    Abcoulomb
+    Abcoulomb,
 )
 
 /**

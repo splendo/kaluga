@@ -35,8 +35,8 @@ class BluetoothDistanceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
     fun testDistance() = testWithFlowAndTestContext(
         Configuration.DeviceWithoutService(
             rssi = -50,
-            advertisementData = MockAdvertisementData(txPowerLevel = -50)
-        )
+            advertisementData = MockAdvertisementData(txPowerLevel = -50),
+        ),
     ) {
         mainAction {
             bluetooth.startScanning()

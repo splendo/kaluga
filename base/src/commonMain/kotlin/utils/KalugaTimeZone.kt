@@ -19,6 +19,9 @@ package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate.Companion.now
 import com.splendo.kaluga.base.utils.KalugaLocale.Companion.defaultLocale
+import com.splendo.kaluga.base.utils.TimeZoneNameStyle.Long
+import com.splendo.kaluga.base.utils.TimeZoneNameStyle.Short
+import kotlin.Long
 import kotlin.time.Duration
 
 /**
@@ -35,7 +38,7 @@ enum class TimeZoneNameStyle {
     /**
      * A style specifier for [KalugaTimeZone.displayName] indicating a long name, such as "Central European Time"
      */
-    Long
+    Long,
 }
 
 /**
@@ -136,5 +139,8 @@ expect class KalugaTimeZone : BaseTimeZone {
     }
 }
 
-@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaTimeZone"))
+@Deprecated(
+    "Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.",
+    ReplaceWith("KalugaTimeZone"),
+)
 typealias TimeZone = KalugaTimeZone

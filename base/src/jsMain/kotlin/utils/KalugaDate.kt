@@ -37,7 +37,13 @@ actual class DefaultKalugaDate internal constructor(override val date: KalugaDat
          * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
          * @return A [KalugaDate] relative to the current time
          */
-        actual fun now(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(kotlin.js.Date.now() + offset.inWholeMilliseconds))
+        actual fun now(
+            offset: Duration,
+            timeZone: KalugaTimeZone,
+            locale: KalugaLocale,
+        ): KalugaDate = DefaultKalugaDate(
+            kotlin.js.Date(kotlin.js.Date.now() + offset.inWholeMilliseconds),
+        )
 
         /**
          * Creates a [KalugaDate] relative to January 1st 1970 00:00:00 GMT

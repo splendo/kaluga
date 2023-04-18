@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     MassUnit : Weight,
     AccelerationUnit : Acceleration,
-    ForceUnit : Force
+    ForceUnit : Force,
     > ForceUnit.force(
     mass: ScientificValue<PhysicalQuantity.Weight, MassUnit>,
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>,
 ) = force(mass, acceleration, ::DefaultScientificValue)
 
 @JvmName("forceFromMassAndAcceleration")
@@ -42,9 +42,9 @@ fun <
     MassUnit : Weight,
     AccelerationUnit : Acceleration,
     ForceUnit : Force,
-    Value : ScientificValue<PhysicalQuantity.Force, ForceUnit>
+    Value : ScientificValue<PhysicalQuantity.Force, ForceUnit>,
     > ForceUnit.force(
     mass: ScientificValue<PhysicalQuantity.Weight, MassUnit>,
     acceleration: ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>,
-    factory: (Decimal, ForceUnit) -> Value
+    factory: (Decimal, ForceUnit) -> Value,
 ) = byMultiplying(mass, acceleration, factory)

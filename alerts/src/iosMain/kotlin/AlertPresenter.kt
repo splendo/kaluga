@@ -43,7 +43,7 @@ import platform.objc.sel_registerName
  */
 actual class AlertPresenter(
     private val alert: Alert,
-    private val parent: UIViewController
+    private val parent: UIViewController,
 ) : BaseAlertPresenter(alert) {
 
     /** Ref to alert's [UITextField] of type [Alert.Style.TEXT_INPUT] */
@@ -66,10 +66,12 @@ actual class AlertPresenter(
         fun transform(style: Alert.Action.Style): UIAlertActionStyle = when (style) {
             Alert.Action.Style.DEFAULT,
             Alert.Action.Style.POSITIVE,
-            Alert.Action.Style.NEUTRAL -> UIAlertActionStyleDefault
+            Alert.Action.Style.NEUTRAL,
+            -> UIAlertActionStyleDefault
             Alert.Action.Style.DESTRUCTIVE -> UIAlertActionStyleDestructive
             Alert.Action.Style.CANCEL,
-            Alert.Action.Style.NEGATIVE -> UIAlertActionStyleCancel
+            Alert.Action.Style.NEGATIVE,
+            -> UIAlertActionStyleCancel
         }
 
         fun transform(style: Alert.Style): UIAlertControllerStyle = when (style) {
@@ -102,22 +104,22 @@ actual class AlertPresenter(
     override fun showAlert(
         animated: Boolean,
         afterHandler: (Alert.Action?) -> Unit,
-        completion: () -> Unit
+        completion: () -> Unit,
     ) {
         UIAlertController.alertControllerWithTitle(
             alert.title,
             alert.message,
-            transform(alert.style)
+            transform(alert.style),
         ).apply {
             alert.actions.forEach { action ->
                 addAction(
                     UIAlertAction.actionWithTitle(
                         action.title,
-                        transform(action.style)
+                        transform(action.style),
                     ) {
                         action.handler()
                         afterHandler(action)
-                    }
+                    },
                 )
             }
             val cancelButtonIndex = alert.actions.indexOfFirst {
@@ -128,10 +130,10 @@ actual class AlertPresenter(
                 addAction(
                     UIAlertAction.actionWithTitle(
                         NSString.localizedStringWithFormat("Cancel"),
-                        UIAlertActionStyleCancel
+                        UIAlertActionStyleCancel,
                     ) {
                         afterHandler(null)
-                    }
+                    },
                 )
             } else if (alert.style == Alert.Style.TEXT_INPUT) {
                 alert.textInputAction?.let { textInputAction ->
@@ -150,7 +152,7 @@ actual class AlertPresenter(
         textField?.addTarget(
             target = this,
             action = sel_registerName("textDidChange"),
-            forControlEvents = UIControlEventEditingChanged
+            forControlEvents = UIControlEventEditingChanged,
         )
         textInputAction.text?.let {
             textField?.text = it

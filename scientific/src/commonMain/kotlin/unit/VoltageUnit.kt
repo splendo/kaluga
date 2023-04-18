@@ -39,7 +39,7 @@ val VoltageUnits: Set<Voltage> get() = setOf(
     Kilovolt,
     Megavolt,
     Gigavolt,
-    Abvolt
+    Abvolt,
 )
 
 /**

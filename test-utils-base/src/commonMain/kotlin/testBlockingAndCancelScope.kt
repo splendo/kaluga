@@ -28,7 +28,7 @@ class DeliberateCancellationException(val result: Any?) :
 
 inline fun <reified T> testBlockingAndCancelScope(
     context: CoroutineContext = EmptyCoroutineContext,
-    crossinline block: suspend CoroutineScope.() -> T
+    crossinline block: suspend CoroutineScope.() -> T,
 ): T {
     try {
         return runBlocking(context) {

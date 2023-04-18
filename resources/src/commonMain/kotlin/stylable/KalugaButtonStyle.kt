@@ -36,7 +36,7 @@ data class KalugaButtonStyle(
     val textAlignment: KalugaTextAlignment = KalugaTextAlignment.CENTER,
     val defaultStyle: ButtonStateStyle,
     val pressedStyle: ButtonStateStyle = defaultStyle,
-    val disabledStyle: ButtonStateStyle = defaultStyle
+    val disabledStyle: ButtonStateStyle = defaultStyle,
 ) {
 
     /**
@@ -54,7 +54,7 @@ data class KalugaButtonStyle(
         backgroundColor: KalugaColor = DefaultColors.clear,
         pressedBackgroundColor: KalugaColor = backgroundColor,
         disabledBackgroundColor: KalugaColor = backgroundColor,
-        shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle()
+        shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle(),
     ) : this(
         textStyle.font,
         textStyle.size,
@@ -62,18 +62,18 @@ data class KalugaButtonStyle(
         ButtonStateStyle(
             textStyle.color,
             backgroundColor,
-            shape
+            shape,
         ),
         ButtonStateStyle(
             textStyle.color,
             pressedBackgroundColor,
-            shape
+            shape,
         ),
         ButtonStateStyle(
             textStyle.color,
             disabledBackgroundColor,
-            shape
-        )
+            shape,
+        ),
     )
 
     /**
@@ -109,7 +109,7 @@ data class KalugaButtonStyle(
  */
 data class ButtonStateStyle(
     val textColor: KalugaColor,
-    val backgroundStyle: KalugaBackgroundStyle
+    val backgroundStyle: KalugaBackgroundStyle,
 ) {
 
     /**
@@ -122,7 +122,7 @@ data class ButtonStateStyle(
         textColor,
         KalugaBackgroundStyle(
             KalugaBackgroundStyle.FillStyle.Solid(backgroundColor),
-            shape = shape
-        )
+            shape = shape,
+        ),
     )
 }

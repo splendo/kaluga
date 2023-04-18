@@ -40,26 +40,26 @@ abstract class ObservableBaseTest : BaseTest() {
         observable: O,
         initialExpected: String?,
         shortDelayAfterUpdate: Boolean = false,
-        vararg updates: (O) -> String?
+        vararg updates: (O) -> String?,
     ) = testObservable(
         observable,
         "unused",
         Value(initialExpected),
         shortDelayAfterUpdate,
-        *updates.map { it.asNullableUpdate() }.toTypedArray()
+        *updates.map { it.asNullableUpdate() }.toTypedArray(),
     )
 
     suspend fun <V : String?, O : InitializedObservable<V>> testInitializedStringObservable(
         observable: O,
         initialExpected: V,
         shortDelayAfterUpdate: Boolean = false,
-        vararg updates: (O) -> V
+        vararg updates: (O) -> V,
     ) = testObservable(
         observable,
         "unused" as V,
         Value(initialExpected),
         shortDelayAfterUpdate,
-        *updates.map { it.asUpdate() }.toTypedArray()
+        *updates.map { it.asUpdate() }.toTypedArray(),
     )
 
     suspend fun <V : String?, OO : ObservableOptional<V>, S : BasicSubject<V, V, OO>> testStringSubject(
@@ -67,51 +67,50 @@ abstract class ObservableBaseTest : BaseTest() {
         initialExpected: V,
         shortDelayAfterUpdate: Boolean = false,
         useSuspendableSetter: Boolean = false,
-        vararg updates: Pair<V, V>
-
+        vararg updates: Pair<V, V>,
     ) = testStringObservable(
         observable = subject,
         initialExpected,
         shortDelayAfterUpdate,
-        *updates.map { it.asUpdate<V, OO, S>(useSuspendableSetter) }.toTypedArray()
+        *updates.map { it.asUpdate<V, OO, S>(useSuspendableSetter) }.toTypedArray(),
     )
 
     suspend fun <V : String?, OO : ObservableOptional<V>, O : BasicObservable<V, V, OO>> testUninitializedStringObservable(
         observable: O,
         shortDelayAfterUpdate: Boolean = false,
-        vararg updates: (O) -> ObservableOptional<V>
+        vararg updates: (O) -> ObservableOptional<V>,
     ) = testObservable(
         observable,
         "unused" as V,
         Nothing<V>() as OO,
         shortDelayAfterUpdate,
-        *updates
+        *updates,
     )
 
     suspend fun <O : DefaultObservable<String, String?>> testDefaultStringObservable(
         observable: O,
         initialExpected: String,
         shortDelayAfterUpdate: Boolean = false,
-        vararg updates: (O) -> String
+        vararg updates: (O) -> String,
     ) = testObservable(
         observable,
         "unused",
         Value(initialExpected),
         shortDelayAfterUpdate,
-        *updates.map { it.asUpdate() }.toTypedArray()
+        *updates.map { it.asUpdate() }.toTypedArray(),
     )
 
     suspend fun <R : T, T : String?, OO : ObservableOptional<R>, O : BasicObservable<R, T, OO>> testStringObservable(
         observable: O,
         initialExpected: T,
         shortDelayAfterUpdate: Boolean = false,
-        vararg updates: (O) -> ObservableOptional<R>
+        vararg updates: (O) -> ObservableOptional<R>,
     ) = testObservable(
         observable,
         "unused" as R,
         Value(initialExpected) as OO,
         shortDelayAfterUpdate,
-        *updates
+        *updates,
     )
 
     fun <O : BasicObservable<String, String?, Value<String>>> Pair<String?, String>.asNullableUpdate(useSetter: Boolean): (O) -> Value<String> = {
@@ -141,26 +140,25 @@ abstract class ObservableBaseTest : BaseTest() {
         initialExpected: String,
         shortDelayAfterUpdate: Boolean = false,
         useSuspendableSetter: Boolean = false,
-        vararg updates: Pair<String?, String>
-
+        vararg updates: Pair<String?, String>,
     ) = testStringObservable(
         subject,
         initialExpected,
         shortDelayAfterUpdate,
-        *updates.map { it.asNullableUpdate<S>(useSuspendableSetter) }.toTypedArray()
+        *updates.map { it.asNullableUpdate<S>(useSuspendableSetter) }.toTypedArray(),
     )
 
     suspend fun <O : DefaultObservable<String, String?>> testStringDefaultObservable(
         observable: O,
         initialExpected: String,
         shortDelayAfterUpdate: Boolean = false,
-        vararg updates: (O) -> String
+        vararg updates: (O) -> String,
     ) = testObservable(
         observable,
         "unused",
         Value(initialExpected),
         shortDelayAfterUpdate,
-        *updates.map { it.asUpdate() }.toTypedArray()
+        *updates.map { it.asUpdate() }.toTypedArray(),
     )
 
     private var updateSemaphore: Semaphore? = null
@@ -173,7 +171,7 @@ abstract class ObservableBaseTest : BaseTest() {
         unusedValue: R,
         initialExpected: OO,
         shortDelayAfterUpdate: Boolean = false,
-        vararg updates: (O) -> ObservableOptional<R>
+        vararg updates: (O) -> ObservableOptional<R>,
     ) {
         val permits = updates.size + 1 // +1 for initial state
         val semaphore = Semaphore(permits)

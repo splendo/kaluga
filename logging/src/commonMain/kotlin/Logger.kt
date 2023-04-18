@@ -46,7 +46,7 @@ open class TransformLogger(
     private val transformLogLevel: ((LogLevel) -> LogLevel)? = null,
     private val transformTag: ((String?) -> String?)? = null,
     private val transformThrowable: ((Throwable?) -> Throwable?)? = null,
-    private val transformMessage: ((String?) -> String?)? = null
+    private val transformMessage: ((String?) -> String?)? = null,
 ) : Logger {
 
     override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
@@ -60,7 +60,7 @@ open class TransformLogger(
             logThrowable,
             // already resolve the lazy message if it needs transformation (else we cannot transform it)
             // after transform wrap it in a "lazy" closure again {{🤗}}
-            logMessage
+            logMessage,
         )
     }
 }

@@ -50,7 +50,7 @@ val MetricWeightUnits: Set<MetricWeight> get() = setOf(
     HectoDalton,
     Kilodalton,
     Megadalton,
-    Gigadalton
+    Gigadalton,
 )
 
 /**
@@ -61,7 +61,7 @@ val ImperialWeightUnits: Set<ImperialWeight> get() = setOf(
     Ounce,
     Pound,
     Stone,
-    Slug
+    Slug,
 )
 
 /**

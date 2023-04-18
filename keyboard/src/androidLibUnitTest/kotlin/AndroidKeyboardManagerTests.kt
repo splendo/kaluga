@@ -61,7 +61,7 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<ViewFocusHandler, Andro
             val mockFragmentManager = mock(FragmentManager::class.java)
 
             `when`(mockActivity.getSystemService(eq(Context.INPUT_METHOD_SERVICE))).thenReturn(
-                mockInputMethodManager
+                mockInputMethodManager,
             )
             `when`(mockActivity.currentFocus).thenReturn(mockView)
             `when`(mockActivity.findViewById<View>(ArgumentMatchers.eq(viewId))).thenReturn(mockView)
@@ -76,8 +76,8 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<ViewFocusHandler, Andro
                 ActivityLifecycleSubscribable.LifecycleManager(
                     mockActivity,
                     mockLifecycleOwner,
-                    mockFragmentManager
-                )
+                    mockFragmentManager,
+                ),
             )
         }
     }

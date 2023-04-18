@@ -47,7 +47,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
 
     @Test
     fun testScanDevice() = testWithFlowAndTestContext(
-        Configuration.Bluetooth()
+        Configuration.Bluetooth(),
     ) {
         test {
             assertEquals(emptyList(), it)
@@ -89,7 +89,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
 
     @Test
     fun testScanAndCleanDevice() = testWithFlowAndTestContext(
-        Configuration.Bluetooth()
+        Configuration.Bluetooth(),
     ) {
         test {
             assertEquals(emptyList(), it)
@@ -139,7 +139,7 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
 
     @Test
     fun testScanDeviceAndCleanProvidedFilter() = testWithFlowAndTestContext(
-        Configuration.Bluetooth()
+        Configuration.Bluetooth(),
     ) {
         test {
             assertEquals(emptyList(), it)

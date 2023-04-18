@@ -59,6 +59,6 @@ fun <ViewModel : BaseLifecycleViewModel> ViewModel.bind(fragment: Fragment) =
             viewModel = this,
             activity = fragment.activity,
             fragmentManager = fragment.parentFragmentManager,
-            childFragmentManager = fragment.childFragmentManager
-        )
+            childFragmentManager = fragment.childFragmentManager,
+        ),
     )

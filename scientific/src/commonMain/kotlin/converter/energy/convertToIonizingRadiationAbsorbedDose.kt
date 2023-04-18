@@ -39,5 +39,5 @@ infix fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUn
 
 @JvmName("energyAbsorbedByWeight")
 infix fun <EnergyUnit : Energy, WeightUnit : Weight> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.absorbedBy(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = Gray.absorbedDose(this, weight)

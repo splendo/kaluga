@@ -57,7 +57,7 @@ object VoidParameters : ParametersSpec<VoidParameters.Matchers, VoidParameters.M
 internal fun <R> (() -> R).asMock() = MethodMock<VoidParameters.Matchers, VoidParameters.MatchersOrCaptor, VoidParameters.Values, VoidParameters, R>(VoidParameters)
 
 fun <R> (() -> R).mockWithDefaultAnswer(
-    defaultAnswer: Answer<VoidParameters.Values, R>
+    defaultAnswer: Answer<VoidParameters.Values, R>,
 ) = asMock().also {
     it.on().doAnswer(defaultAnswer)
 }
@@ -181,10 +181,16 @@ fun <R : Any> (() -> R?).mock() = mockWithDefaultValue(null)
 @JsName("mockVoidNonNullable")
 fun <R : Any> (() -> R).mock() = asMock()
 
-internal fun <R> (suspend () -> R).asSuspendedMock() = SuspendMethodMock<VoidParameters.Matchers, VoidParameters.MatchersOrCaptor, VoidParameters.Values, VoidParameters, R>(VoidParameters)
+internal fun <R> (suspend () -> R).asSuspendedMock() = SuspendMethodMock<
+    VoidParameters.Matchers,
+    VoidParameters.MatchersOrCaptor,
+    VoidParameters.Values,
+    VoidParameters,
+    R,
+    >(VoidParameters)
 
 fun <R> (suspend () -> R).mockWithDefaultAnswer(
-    defaultAnswer: SuspendedAnswer<VoidParameters.Values, R>
+    defaultAnswer: SuspendedAnswer<VoidParameters.Values, R>,
 ) = asSuspendedMock().also {
     it.on().doAnswer(defaultAnswer)
 }

@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     VolumeUnit : Volume,
     TimeUnit : Time,
-    VolumetricFlowUnit : VolumetricFlow
+    VolumetricFlowUnit : VolumetricFlow,
     > VolumeUnit.volume(
     volumetricFlow: ScientificValue<PhysicalQuantity.VolumetricFlow, VolumetricFlowUnit>,
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = volume(volumetricFlow, time, ::DefaultScientificValue)
 
 @JvmName("volumeFromVolumetricFlowAndTime")
@@ -42,9 +42,9 @@ fun <
     VolumeUnit : Volume,
     TimeUnit : Time,
     VolumetricFlowUnit : VolumetricFlow,
-    Value : ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    Value : ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
     > VolumeUnit.volume(
     volumetricFlow: ScientificValue<PhysicalQuantity.VolumetricFlow, VolumetricFlowUnit>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, VolumeUnit) -> Value
+    factory: (Decimal, VolumeUnit) -> Value,
 ) = byMultiplying(volumetricFlow, time, factory)

@@ -39,7 +39,7 @@ val MagneticInductionUnits: Set<MagneticInduction> get() = setOf(
     Kilotesla,
     Megatesla,
     Gigatesla,
-    Gauss
+    Gauss,
 )
 
 /**

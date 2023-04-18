@@ -30,25 +30,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricPressure")
 infix operator fun <PressureUnit : MetricPressure, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
 ) = pressure * this
 
 @JvmName("timeTimesImperialPressure")
 infix operator fun <PressureUnit : ImperialPressure, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
 ) = pressure * this
 
 @JvmName("timeTimesUKImperialPressure")
 infix operator fun <PressureUnit : UKImperialPressure, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
 ) = pressure * this
 
 @JvmName("timeTimesUSCustomaryPressure")
 infix operator fun <PressureUnit : USCustomaryPressure, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
 ) = pressure * this
 
 @JvmName("timeTimesPressure")
 infix operator fun <PressureUnit : Pressure, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
 ) = pressure * this

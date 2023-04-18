@@ -43,62 +43,62 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricLengthTimesMetricDensity")
 infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>
+    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>,
 ) = density * this
 
 @JvmName("imperialLengthTimesImperialDensity")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>
+    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
 ) = density * this
 
 @JvmName("imperialLengthTimesUKImperialDensity")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>
+    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>,
 ) = density * this
 
 @JvmName("imperialLengthTimesUSCustomaryDensity")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>
+    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>,
 ) = density * this
 
 @JvmName("lengthTimesDensity")
 infix operator fun <DensityUnit : Density, LengthUnit : Length> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>
+    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>,
 ) = density * this
 
 @JvmName("metricLengthDivMetricSpecificVolume")
 infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>,
 ) = (specificVolume.unit.per per (1(specificVolume.unit.volume) / 1(unit)).unit).areaDensity(
     this,
-    specificVolume
+    specificVolume,
 )
 
 @JvmName("imperialLengthDivImperialSpecificVolume")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>,
 ) = (specificVolume.unit.per per (1(specificVolume.unit.volume) / 1(unit)).unit).areaDensity(
     this,
-    specificVolume
+    specificVolume,
 )
 
 @JvmName("imperialLengthDivUKImperialSpecificVolume")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>,
 ) = (specificVolume.unit.per per (1(specificVolume.unit.volume) / 1(unit)).unit).areaDensity(
     this,
-    specificVolume
+    specificVolume,
 )
 
 @JvmName("imperialLengthDivUSCustomarySpecificVolume")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>,
 ) = (specificVolume.unit.per per (1(specificVolume.unit.volume) / 1(unit)).unit).areaDensity(
     this,
-    specificVolume
+    specificVolume,
 )
 
 @JvmName("lengthDivSpecificVolume")
 infix operator fun <SpecificVolumeUnit : SpecificVolume, LengthUnit : Length> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
 ) = (Kilogram per SquareMeter).areaDensity(this, specificVolume)

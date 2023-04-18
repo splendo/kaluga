@@ -54,7 +54,7 @@ internal enum class RegularFormatCharacter(val char: Char) {
     HASHCODE('h'),
     HASHCODE_UPPER('H'),
     LINE_SEPARATOR('n'),
-    PERCENT_SIGN('%');
+    PERCENT_SIGN('%'), ;
 
     companion object {
         internal fun parse(c: Char): RegularFormatCharacter {

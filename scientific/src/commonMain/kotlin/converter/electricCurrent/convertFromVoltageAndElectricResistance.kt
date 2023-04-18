@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
-    ResistanceUnit : ElectricResistance
+    ResistanceUnit : ElectricResistance,
     > CurrentUnit.current(
     voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
-    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
 ) = current(voltage, resistance, ::DefaultScientificValue)
 
 @JvmName("currentFromVoltageAndResistance")
@@ -42,9 +42,9 @@ fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
     ResistanceUnit : ElectricResistance,
-    Value : ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
     > CurrentUnit.current(
     voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
     resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
-    factory: (Decimal, CurrentUnit) -> Value
+    factory: (Decimal, CurrentUnit) -> Value,
 ) = byDividing(voltage, resistance, factory)

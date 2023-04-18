@@ -41,7 +41,7 @@ class ColdStateFlowRepoTest : BaseTest() {
             active
         },
         deinit = { deinit },
-        firstState = { first }
+        firstState = { first },
     )
 
     @Test

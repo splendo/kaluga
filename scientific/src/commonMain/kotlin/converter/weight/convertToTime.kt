@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("weightDivMassFlowRate")
 infix operator fun <WeightUnit : Weight, MassFlowRateUnit : MassFlowRate> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MassFlowRateUnit>
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MassFlowRateUnit>,
 ) = massFlowRate.unit.per.time(this, massFlowRate)

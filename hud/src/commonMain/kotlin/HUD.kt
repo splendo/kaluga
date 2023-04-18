@@ -34,7 +34,7 @@ enum class HUDStyle {
     SYSTEM,
 
     /** Custom appearance */
-    CUSTOM
+    CUSTOM,
 }
 
 /**
@@ -155,5 +155,5 @@ fun BaseHUD.Builder.build(coroutineScope: CoroutineScope, initialize: HudConfig.
     HudConfig.Builder().apply {
         initialize()
     }.build(),
-    coroutineScope
+    coroutineScope,
 )

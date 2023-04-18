@@ -30,13 +30,13 @@ abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext> : BaseKoi
 
     open class KoinTestContext(
         appDeclaration: KoinAppDeclaration? = null,
-        koinModules: List<Module>
+        koinModules: List<Module>,
     ) : BaseKoinUIThreadTest.KoinTestContext(appDeclaration, koinModules) {
 
         constructor(vararg koinModules: Module) : this(null, koinModules.toList())
         constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
             appDeclaration,
-            koinModules.toList()
+            koinModules.toList(),
         )
     }
 
@@ -55,14 +55,14 @@ abstract class BaseKoinUIThreadTest<C, TC : BaseKoinUIThreadTest.KoinTestContext
 
     open class KoinTestContext(
         appDeclaration: KoinAppDeclaration? = null,
-        koinModules: List<Module>
+        koinModules: List<Module>,
     ) :
         TestContext, KoinComponent {
 
         constructor(vararg koinModules: Module) : this(null, koinModules.toList())
         constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
             appDeclaration,
-            koinModules.toList()
+            koinModules.toList(),
         )
 
         init {

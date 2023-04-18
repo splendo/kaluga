@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     LuminousExposureUnit : LuminousExposure,
     TimeUnit : Time,
-    IlluminanceUnit : Illuminance
+    IlluminanceUnit : Illuminance,
     > TimeUnit.time(
     luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, LuminousExposureUnit>,
-    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
 ) = time(luminousExposure, illuminance, ::DefaultScientificValue)
 
 @JvmName("timeFromLuminousExposureAndIlluminance")
@@ -42,9 +42,9 @@ fun <
     LuminousExposureUnit : LuminousExposure,
     TimeUnit : Time,
     IlluminanceUnit : Illuminance,
-    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     > TimeUnit.time(
     luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, LuminousExposureUnit>,
     illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
-    factory: (Decimal, TimeUnit) -> Value
+    factory: (Decimal, TimeUnit) -> Value,
 ) = byDividing(luminousExposure, illuminance, factory)

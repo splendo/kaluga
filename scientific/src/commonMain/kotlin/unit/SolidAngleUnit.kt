@@ -36,7 +36,7 @@ val SolidAngleUnits: Set<SolidAngle> get() = setOf(
     Centisteradian,
     Decisteradian,
     Spat,
-    SquareDegree
+    SquareDegree,
 )
 
 /**

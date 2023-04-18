@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     LuminousExposureUnit : LuminousExposure,
     TimeUnit : Time,
-    IlluminanceUnit : Illuminance
+    IlluminanceUnit : Illuminance,
     > LuminousExposureUnit.luminousExposure(
     illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = luminousExposure(illuminance, time, ::DefaultScientificValue)
 
 @JvmName("luminousExposureFromIlluminanceAndTime")
@@ -42,9 +42,9 @@ fun <
     LuminousExposureUnit : LuminousExposure,
     TimeUnit : Time,
     IlluminanceUnit : Illuminance,
-    Value : ScientificValue<PhysicalQuantity.LuminousExposure, LuminousExposureUnit>
+    Value : ScientificValue<PhysicalQuantity.LuminousExposure, LuminousExposureUnit>,
     > LuminousExposureUnit.luminousExposure(
     illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, LuminousExposureUnit) -> Value
+    factory: (Decimal, LuminousExposureUnit) -> Value,
 ) = byMultiplying(illuminance, time, factory)

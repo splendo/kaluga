@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     CapacitanceUnit : ElectricCapacitance,
     ConductanceUnit : ElectricConductance,
-    FrequencyUnit : Frequency
+    FrequencyUnit : Frequency,
     > CapacitanceUnit.capacitance(
     conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
-    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>,
 ) = capacitance(conductance, frequency, ::DefaultScientificValue)
 
 @JvmName("capacitanceFromConductanceAndFrequency")
@@ -42,9 +42,9 @@ fun <
     CapacitanceUnit : ElectricCapacitance,
     ConductanceUnit : ElectricConductance,
     FrequencyUnit : Frequency,
-    Value : ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>,
     > CapacitanceUnit.capacitance(
     conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
     frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>,
-    factory: (Decimal, CapacitanceUnit) -> Value
+    factory: (Decimal, CapacitanceUnit) -> Value,
 ) = byDividing(conductance, frequency, factory)

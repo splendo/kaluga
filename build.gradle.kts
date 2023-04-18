@@ -33,7 +33,7 @@ allprojects {
         /* mavenLocal() */
     }
 
-    tasks.withType<Test>() {
+    tasks.withType<Test> {
         testLogging {
             events = setOf(TestLogEvent.STANDARD_OUT, TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
         }

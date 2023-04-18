@@ -29,34 +29,34 @@ import kotlin.jvm.JvmName
 @JvmName("dimensionlessTimesDimensionlessDefault")
 infix operator fun <
     LeftUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
-    RightUnit : ScientificUnit<PhysicalQuantity.Dimensionless>
+    RightUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
     > ScientificValue<PhysicalQuantity.Dimensionless, LeftUnit>.times(
-    modifier: ScientificValue<PhysicalQuantity.Dimensionless, RightUnit>
+    modifier: ScientificValue<PhysicalQuantity.Dimensionless, RightUnit>,
 ) = modify(modifier, ::DefaultScientificValue)
 
 @JvmName("dimensionlessDivDimensionlessDefault")
 infix operator fun <
     LeftUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
-    RightUnit : ScientificUnit<PhysicalQuantity.Dimensionless>
+    RightUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
     > ScientificValue<PhysicalQuantity.Dimensionless, LeftUnit>.div(
-    modifier: ScientificValue<PhysicalQuantity.Dimensionless, RightUnit>
+    modifier: ScientificValue<PhysicalQuantity.Dimensionless, RightUnit>,
 ) = unit.byDividing(this, modifier, ::DefaultScientificValue)
 
 @JvmName("dimensionlessTimesValue")
 infix operator fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>
+    Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>,
     > ScientificValue<PhysicalQuantity.Dimensionless, Modifier>.times(
-    value: ScientificValue<Quantity, Unit>
+    value: ScientificValue<Quantity, Unit>,
 ) = value.modify(this, ::DefaultScientificValue)
 
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
     Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>,
-    Value : ScientificValue<Quantity, Unit>
+    Value : ScientificValue<Quantity, Unit>,
     > ScientificValue<Quantity, Unit>.modify(
     modifier: ScientificValue<PhysicalQuantity.Dimensionless, Modifier>,
-    factory: (Decimal, Unit) -> Value
+    factory: (Decimal, Unit) -> Value,
 ) = unit.byMultiplying(this, modifier, factory)

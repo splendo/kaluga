@@ -35,7 +35,7 @@ class KnownLocationTest {
         val locationFlow = flowOf(
             Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
             knownLocation,
-            Location.UnknownLocation.WithLastLocation(knownLocation, Location.UnknownLocation.Reason.NOT_CLEAR)
+            Location.UnknownLocation.WithLastLocation(knownLocation, Location.UnknownLocation.Reason.NOT_CLEAR),
         ).known()
         val collectedLocations = mutableListOf<Location.KnownLocation?>()
         locationFlow.toCollection(collectedLocations)
@@ -51,7 +51,7 @@ class KnownLocationTest {
         val knownLocation = Location.KnownLocation(1.0, 1.0, time = now)
         val locationFlow = flowOf(
             knownLocation.copy(time = DefaultKalugaDate.epoch()),
-            knownLocation
+            knownLocation,
         ).known(maxAge = 5.seconds) { now }
         val collectedLocations = mutableListOf<Location.KnownLocation?>()
         locationFlow.toCollection(collectedLocations)

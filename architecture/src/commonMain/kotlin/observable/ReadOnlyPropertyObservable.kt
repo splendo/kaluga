@@ -50,9 +50,9 @@ class ReadOnlyPropertyInitializedObservable<T>(
             run {
                 val v by readOnlyProperty
                 v
-            }
-        )
-    )
+            },
+        ),
+    ),
 ) :
     BaseInitializedObservable<T>(observation), InitializedObservable<T> {
 
@@ -80,9 +80,9 @@ class ReadOnlyPropertyDefaultObservable<R : T?, T>(
             run {
                 val v by readOnlyProperty
                 v
-            }
-        )
-    )
+            },
+        ),
+    ),
 ) :
     BaseDefaultObservable<R, T>(observation) { // no default is needed, since this is for use with non-optionals
 

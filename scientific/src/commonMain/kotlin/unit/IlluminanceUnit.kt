@@ -46,14 +46,14 @@ val MetricIlluminanceUnits: Set<MetricIlluminance> get() = setOf(
     Hectophot,
     Kilophot,
     Megaphot,
-    Gigaphot
+    Gigaphot,
 )
 
 /**
  * Set of all [ImperialIlluminance]
  */
 val ImperialIlluminanceUnits: Set<ImperialIlluminance> get() = setOf(
-    FootCandle
+    FootCandle,
 )
 
 /**

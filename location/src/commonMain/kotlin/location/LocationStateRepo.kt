@@ -51,7 +51,7 @@ abstract class BaseLocationStateRepo(
     createNotInitializedState: () -> LocationState.NotInitialized,
     createInitializingState: suspend ColdStateFlowRepo<LocationState>.(LocationState.Inactive) -> suspend () -> LocationState.Initializing,
     createDeinitializingState: suspend ColdStateFlowRepo<LocationState>.(LocationState.Active) -> suspend () -> LocationState.Deinitialized,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : ColdStateFlowRepo<LocationState>(
     coroutineContext = coroutineContext,
     initChangeStateWithRepo = { state, repo ->
@@ -68,7 +68,7 @@ abstract class BaseLocationStateRepo(
             is LocationState.Inactive -> state.remain()
         }
     },
-    firstState = createNotInitializedState
+    firstState = createNotInitializedState,
 )
 
 /**
@@ -78,7 +78,7 @@ abstract class BaseLocationStateRepo(
  */
 open class LocationStateImplRepo(
     createLocationManager: suspend () -> LocationManager,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : BaseLocationStateRepo(
     createNotInitializedState = { LocationStateImpl.NotInitialized },
     createInitializingState = { state ->
@@ -99,7 +99,7 @@ open class LocationStateImplRepo(
         (this as LocationStateImplRepo).superVisorJob.cancelChildren()
         state.deinitialized
     },
-    coroutineContext = coroutineContext
+    coroutineContext = coroutineContext,
 ) {
 
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
@@ -145,15 +145,15 @@ open class LocationStateImplRepo(
 class LocationStateRepo(
     settingsBuilder: suspend (CoroutineContext) -> BaseLocationManager.Settings,
     builder: BaseLocationManager.Builder,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : LocationStateImplRepo(
     createLocationManager = {
         builder.create(
             settingsBuilder(coroutineContext + CoroutineName("LocationPermissions")),
-            CoroutineScope(coroutineContext + CoroutineName("LocationManager"))
+            CoroutineScope(coroutineContext + CoroutineName("LocationManager")),
         )
     },
-    coroutineContext = coroutineContext
+    coroutineContext = coroutineContext,
 )
 
 /**
@@ -170,7 +170,7 @@ interface BaseLocationStateRepoBuilder {
     fun create(
         locationPermission: LocationPermission,
         settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings = { permission, permissions -> BaseLocationManager.Settings(permission, permissions) },
-        coroutineContext: CoroutineContext = defaultLocationDispatcher
+        coroutineContext: CoroutineContext = defaultLocationDispatcher,
     ): LocationStateRepo
 }
 

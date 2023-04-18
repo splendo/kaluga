@@ -32,7 +32,7 @@ import kotlinx.coroutines.CoroutineScope
 actual class DefaultScanner(
     settings: Settings,
     coroutineScope: CoroutineScope,
-    scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher
+    scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher,
 ) : BaseScanner(settings, coroutineScope, scanningDispatcher) {
 
     /**
@@ -43,7 +43,7 @@ actual class DefaultScanner(
         override fun create(
             settings: Settings,
             coroutineScope: CoroutineScope,
-            scanningDispatcher: CoroutineDispatcher
+            scanningDispatcher: CoroutineDispatcher,
         ): BaseScanner {
             return DefaultScanner(settings, coroutineScope, scanningDispatcher)
         }
@@ -64,7 +64,7 @@ actual class DefaultScanner(
 
     override suspend fun retrievePairedDeviceDiscoveredEvents(
         withServices: Filter,
-        connectionSettings: ConnectionSettings?
+        connectionSettings: ConnectionSettings?,
     ): List<Scanner.DeviceDiscovered> {
         TODO("Not yet implemented")
     }

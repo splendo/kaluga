@@ -230,8 +230,8 @@ fun LibraryExtension.commonMultiplatformComponentAndroid() {
                 // bytebuddy 🤡
                 "win32-x86-64/attach_hotspot_windows.dll",
                 "win32-x86/attach_hotspot_windows.dll",
-                "META-INF/licenses/ASM"
-            )
+                "META-INF/licenses/ASM",
+            ),
         )
     }
 }

@@ -101,7 +101,7 @@ class AndroidDateTimePickerPresenterTest : DateTimePickerPresenterTests() {
                         setMessage("DateTimePicker$i")
                         setConfirmButtonTitle("OK$i")
                         setCancelButtonTitle("CANCEL$i")
-                    }
+                    },
                 )
             }
         }

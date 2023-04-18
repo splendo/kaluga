@@ -25,6 +25,6 @@ import com.splendo.kaluga.scientific.unit.SpecificEnergy
 import kotlin.jvm.JvmName
 
 @JvmName("kinematicViscosityDivSpecificEnergy")
-infix operator fun <KinematicViscosityUnit : KinematicViscosity, SpecificEnergyUnit : SpecificEnergy> ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>
-) = unit.time.time(this, specificEnergy)
+infix operator fun <KinematicViscosityUnit, SpecificEnergyUnit> ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>.div(
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>,
+) where KinematicViscosityUnit : KinematicViscosity, SpecificEnergyUnit : SpecificEnergy = unit.time.time(this, specificEnergy)

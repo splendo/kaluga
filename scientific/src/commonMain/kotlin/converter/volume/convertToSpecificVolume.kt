@@ -37,45 +37,45 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricVolumeDivMetricWeight")
 infix operator fun <VolumeUnit : MetricVolume, WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (unit per weight.unit).specificVolume(this, weight)
 
 @JvmName("imperialVolumeDivImperialWeight")
 infix operator fun <VolumeUnit : ImperialVolume, WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (unit per weight.unit).specificVolume(this, weight)
 
 @JvmName("imperialVolumeDivUKImperialWeight")
 infix operator fun <VolumeUnit : ImperialVolume, WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (unit per weight.unit).specificVolume(this, weight)
 
 @JvmName("imperialVolumeDivUSCustomaryWeight")
 infix operator fun <VolumeUnit : ImperialVolume, WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (unit per weight.unit).specificVolume(this, weight)
 
 @JvmName("ukImperialVolumeDivImperialWeight")
 infix operator fun <VolumeUnit : UKImperialVolume, WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (unit per weight.unit).specificVolume(this, weight)
 
 @JvmName("ukImperialVolumeDivUKImperialWeight")
 infix operator fun <VolumeUnit : UKImperialVolume, WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (unit per weight.unit).specificVolume(this, weight)
 
 @JvmName("usCustomaryVolumeDivImperialWeight")
 infix operator fun <VolumeUnit : USCustomaryVolume, WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (unit per weight.unit).specificVolume(this, weight)
 
 @JvmName("usCustomaryVolumeDivUSCustomaryWeight")
 infix operator fun <VolumeUnit : USCustomaryVolume, WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (unit per weight.unit).specificVolume(this, weight)
 
 @JvmName("volumeDivWeight")
 infix operator fun <VolumeUnit : Volume, WeightUnit : Weight> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (CubicMeter per Kilogram).specificVolume(this, weight)

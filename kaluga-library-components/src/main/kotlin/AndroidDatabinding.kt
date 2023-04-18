@@ -20,5 +20,12 @@ fun org.gradle.api.Project.databindingAndroidComponent(packageName: String) {
     version = Library.version
     commonAndroidComponent(ComponentType.DataBinding, packageName)
 
+    ktlint {
+        // Should be replaced by using .editorconfig but this seems to be broken
+        // Therefore using older version of ktlint for now
+        version.set("0.48.2")
+        disabledRules.set(listOf("no-wildcard-imports", "filename", "import-ordering"))
+    }
+
     publish(ComponentType.DataBinding)
 }
