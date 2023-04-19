@@ -1,6 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jlleitschuh.gradle.ktlint.tasks.BaseKtLintCheckTask
 
 buildscript {
 
@@ -19,7 +18,7 @@ buildscript {
 plugins {
     id("kaluga-library-components")
     id("convention.publication")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("org.jmailen.kotlinter")
     id("org.jetbrains.dokka")
     id("org.jetbrains.kotlin.multiplatform") apply false
     id("org.jetbrains.kotlinx.binary-compatibility-validator")
@@ -38,10 +37,6 @@ allprojects {
             events = setOf(TestLogEvent.STANDARD_OUT, TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
         }
         testLogging.exceptionFormat = TestExceptionFormat.FULL
-    }
-
-    tasks.withType<BaseKtLintCheckTask>().configureEach {
-        workerMaxHeapSize.set("512m")
     }
 
     // Workaround for Kapt not setting the proper JVM target

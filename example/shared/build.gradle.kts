@@ -3,7 +3,7 @@ plugins {
     kotlin("plugin.serialization")
     id("com.android.library")
     id("jacoco")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("org.jmailen.kotlinter")
 }
 
 val libraryVersion = Library.version

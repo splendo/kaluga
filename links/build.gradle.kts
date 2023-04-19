@@ -22,7 +22,7 @@ plugins {
     id("convention.publication")
     id("com.android.library")
     id("org.jetbrains.dokka")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("org.jmailen.kotlinter")
 }
 
 publishableComponent("links")

@@ -39,10 +39,6 @@ fun Project.kotlinMultiplatform(action: KotlinMultiplatformExtension.() -> Unit)
     configureAction("kotlin", action)
 }
 
-fun Project.ktlint(action: org.jlleitschuh.gradle.ktlint.KtlintExtension.() -> Unit) {
-    configureAction("ktlint", action)
-}
-
 fun Project.publishing(action: org.gradle.api.publish.PublishingExtension.() -> Unit) {
     configureAction("publishing", action)
 }
