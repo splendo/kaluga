@@ -45,7 +45,7 @@ val LuminousExposureUnits: Set<LuminousExposure> get() = MetricLuminousExposureU
  * SI unit is `Lux x Second`
  */
 @Serializable
-abstract class LuminousExposure : ScientificUnit<PhysicalQuantity.LuminousExposure> {
+sealed class LuminousExposure : AbstractScientificUnit<PhysicalQuantity.LuminousExposure>() {
     /**
      * The [Illuminance] component
      */

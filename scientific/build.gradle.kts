@@ -21,6 +21,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(project(":test-utils-base"))
+                apiDependency(Dependencies.KotlinX.Serialization.Json)
             }
         }
     }

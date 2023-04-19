@@ -22,11 +22,12 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>,
+    Unit : AbstractScientificUnit<Quantity>,
     Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>,
     > ScientificValue<Quantity, Unit>.times(
     modifier: ScientificValue<PhysicalQuantity.Dimensionless, Modifier>,
@@ -34,7 +35,7 @@ infix operator fun <
 
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>,
+    Unit : AbstractScientificUnit<Quantity>,
     Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>,
     > ScientificValue<Quantity, Unit>.div(
     modifier: ScientificValue<PhysicalQuantity.Dimensionless, Modifier>,

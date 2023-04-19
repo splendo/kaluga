@@ -169,9 +169,9 @@ fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
 ) = if (this == to) value else to.fromSIUnit(toSIUnit(value))
 
 /**
- * The set of all [ScientificUnit] supported by this library
+ * The set of all [AbstractScientificUnit] supported by this library
  */
-val Units: Set<ScientificUnit<*>> get() = AccelerationUnits +
+val Units: Set<AbstractScientificUnit<*>> get() = AccelerationUnits +
     ActionUnits +
     AmountOfSubstanceUnits +
     AngleUnits +

@@ -47,8 +47,9 @@ val FrequencyUnits: Set<Frequency> get() = setOf(
  * SI unit is [Hertz]
  */
 @Serializable
-sealed class Frequency : ScientificUnit<PhysicalQuantity.Frequency>, MetricAndImperialScientificUnit<PhysicalQuantity.Frequency>
+sealed class Frequency : AbstractScientificUnit<PhysicalQuantity.Frequency>(), MetricAndImperialScientificUnit<PhysicalQuantity.Frequency>
 
+@Serializable
 object Hertz : Frequency(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency> {
     override val symbol: String = "Hz"
     override val system = MeasurementSystem.MetricAndImperial
