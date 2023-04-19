@@ -42,7 +42,7 @@ class LocationViewModel(permission: LocationPermission) : BaseLifecycleViewModel
     private val locationStateRepo = repoBuilder.create(
         permission,
         { permission, permissions -> BaseLocationManager.Settings(permission, permissions, logger = logger) },
-        coroutineScope.coroutineContext + locationDispatcher
+        coroutineScope.coroutineContext + locationDispatcher,
     )
 
     private val _location = MutableStateFlow("")

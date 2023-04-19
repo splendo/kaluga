@@ -50,7 +50,8 @@ class PermissionViewModel(private val permission: Permission) : BaseLifecycleVie
                 is PermissionState.Denied.Locked -> "permission_denied".localized()
                 is PermissionState.Initializing,
                 is PermissionState.Deinitialized,
-                is PermissionState.Uninitialized -> "permission_unknown".localized()
+                is PermissionState.Uninitialized,
+                -> "permission_unknown".localized()
             }
         }
         .toUninitializedObservable(coroutineScope)

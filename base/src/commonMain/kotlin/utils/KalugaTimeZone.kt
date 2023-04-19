@@ -19,14 +19,11 @@ package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate.Companion.now
 import com.splendo.kaluga.base.utils.KalugaLocale.Companion.defaultLocale
-import com.splendo.kaluga.base.utils.TimeZoneNameStyle.Long
-import com.splendo.kaluga.base.utils.TimeZoneNameStyle.Short
-import kotlin.Long
 import kotlin.time.Duration
 
 /**
  * Style for writing the name of a [KalugaTimeZone]
- * Can be either [Short] or [Long]
+ * Can be either [TimeZoneNameStyle.Short] or [TimeZoneNameStyle.Long]
  */
 enum class TimeZoneNameStyle {
 

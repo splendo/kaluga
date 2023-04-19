@@ -61,7 +61,7 @@ fun AlertsLayout() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Constants.Padding.default)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()),
             ) {
                 showAlertButton.Composable(modifier = Modifier.fillMaxWidth())
                 showAndDismissAfter3SecondsButton.Composable(modifier = Modifier.fillMaxWidth())

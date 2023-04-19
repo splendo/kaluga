@@ -41,8 +41,8 @@ fun BottomSheetLayout(bottomSheetNavigationState: StateFlow<BottomSheetNavigator
         parametersOf(
             ModalBottomSheetNavigator<BottomSheetNavigation>(
                 bottomSheetNavigationState,
-                navigationMapper = { bottomSheetNavigationRouteMapper(it) }
-            )
+                navigationMapper = { bottomSheetNavigationRouteMapper(it) },
+            ),
         )
     }
 
@@ -51,13 +51,13 @@ fun BottomSheetLayout(bottomSheetNavigationState: StateFlow<BottomSheetNavigator
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(Constants.Padding.default)
+                .padding(Constants.Padding.default),
         ) {
             Text(text)
             button.Composable(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(Constants.Padding.default)
+                    .padding(Constants.Padding.default),
             )
         }
     }

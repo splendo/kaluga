@@ -24,9 +24,15 @@ import com.splendo.kaluga.scientific.unit.CatalysticActivity
 import com.splendo.kaluga.scientific.unit.Time
 
 val PhysicalQuantity.CatalysticActivity.converters get() = listOf<QuantityConverter<PhysicalQuantity.CatalysticActivity, *>>(
-    QuantityConverterWithOperator("Amount of Substance from Time", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Amount of Substance from Time",
+        QuantityConverter.WithOperator.Type.Multiplication,
+        PhysicalQuantity.Time,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is CatalysticActivity && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is CatalysticActivity && rightUnit is Time -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

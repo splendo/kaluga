@@ -31,7 +31,6 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.NotificationPermissionViewModel
@@ -61,25 +60,25 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
         lifecycleScope.launch {
             combine(
                 viewModel.location.stateFlow,
-                notificationsViewModel.hasPermission.stateFlow
+                notificationsViewModel.hasPermission.stateFlow,
             ) { message, hasNotificationsPermission ->
                 if (hasNotificationsPermission) message else null
             }.flowWithLifecycle(lifecycle, Lifecycle.State.CREATED)
                 .collect { message ->
-                if (message != null && ActivityCompat.checkSelfPermission(
-                        this@LocationBackgroundService,
-                        Manifest.permission.POST_NOTIFICATIONS
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) {
-                    NotificationManagerCompat.from(applicationContext)
-                        .notify(notificationId, getNotification(message))
+                    if (message != null && ActivityCompat.checkSelfPermission(
+                            this@LocationBackgroundService,
+                            Manifest.permission.POST_NOTIFICATIONS,
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        NotificationManagerCompat.from(applicationContext)
+                            .notify(notificationId, getNotification(message))
+                    }
                 }
-            }
         }
 
         lifecycleScope.launch {
-            notificationsViewModel.hasPermission.stateFlow.
-            filterNot { it }
+            notificationsViewModel.hasPermission.stateFlow
+                .filterNot { it }
                 .flowWithLifecycle(lifecycle, Lifecycle.State.CREATED)
                 .collect {
                     notificationsViewModel.requestPermission()
@@ -113,7 +112,7 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
 
     private fun createChannelIfNeeded() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationService.getNotificationChannel(
-                channelId
+                channelId,
             ) == null
         ) {
             val importance = NotificationManager.IMPORTANCE_DEFAULT

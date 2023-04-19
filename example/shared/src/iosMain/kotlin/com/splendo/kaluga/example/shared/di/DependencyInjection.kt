@@ -29,7 +29,7 @@ fun initKoin(customModules: List<Module> = emptyList()) = initKoin(
     iosModule,
     { LocationStateRepoBuilder(permissionsBuilder = it) },
     { BluetoothBuilder(permissionsBuilder = it) },
-    customModules
+    customModules,
 )
 
 internal actual val appDeclaration: KoinAppDeclaration = {

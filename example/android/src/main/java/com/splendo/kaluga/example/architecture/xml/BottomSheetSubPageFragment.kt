@@ -39,7 +39,7 @@ class BottomSheetSubPageFragment(private val navigator: Navigator<BottomSheetSub
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 

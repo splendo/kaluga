@@ -57,7 +57,7 @@ class ScientificConverterActivity : KalugaViewModelActivity<ScientificConverterV
                         }
                     }
                 }
-            }
+            },
         )
     }
 

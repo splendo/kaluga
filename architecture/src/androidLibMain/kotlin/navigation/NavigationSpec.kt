@@ -28,13 +28,9 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.Activity.LaunchType
-import com.splendo.kaluga.architecture.navigation.NavigationSpec.Camera.Type
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.FileSelector.FileSelectorSettings
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.Fragment.AnimationSettings
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.Fragment.BackStackSettings
-import com.splendo.kaluga.architecture.navigation.NavigationSpec.Fragment.Type
-import com.splendo.kaluga.architecture.navigation.NavigationSpec.Phone.Type
-import com.splendo.kaluga.architecture.navigation.NavigationSpec.Settings.Type
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.TextMessenger.TextMessengerSettings
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.ThirdPartyApp.OpenMode
 import java.net.URL
@@ -117,7 +113,7 @@ sealed class NavigationSpec {
     /**
      * Shows a [androidx.fragment.app.Fragment]
      * @param containerId The identifier of the View containing the fragment
-     * @param type The [Type] of transaction. Defaults to [Type.Replace]
+     * @param type The [Fragment.Type] of transaction. Defaults to [Fragment.Type.Replace]
      * @param tag Optional tag of the fragment transaction
      * @param backStackSettings The [BackStackSettings] of the transaction. Defaults to [BackStackSettings.DontAdd]
      * @param animationSettings Optional [AnimationSettings] for the transaction
@@ -252,7 +248,7 @@ sealed class NavigationSpec {
 
     /**
      * Shows the Camera
-     * @param type The [Type] of media to capture
+     * @param type The [Camera.Type] of media to capture
      * @param requestCode The request code added to the intent
      * @param uri Optional [Uri] indicating where the result should be stored
      */
@@ -283,7 +279,7 @@ sealed class NavigationSpec {
 
         /**
          * Settings for the email
-         * @param type The [Type] of formatting to be used
+         * @param type The [Email.Type] of formatting to be used
          * @param to The list of recipent emails
          * @param cc The list of cc emails
          * @param bcc The list of bcc emails
@@ -357,7 +353,7 @@ sealed class NavigationSpec {
 
     /**
      * Opens up the Phone screen
-     * @param type The [Type] of phone screen to show
+     * @param type The [Phone.Type] of phone screen to show
      * @param phoneNumber The phone number to dial
      */
     data class Phone(val type: Type, val phoneNumber: String) : NavigationSpec() {
@@ -379,7 +375,7 @@ sealed class NavigationSpec {
 
     /**
      * Opens the Settings screen
-     * @param type [Type] of settings screen to open
+     * @param type [Settings.Type] of settings screen to open
      */
     data class Settings(val type: Type) : NavigationSpec() {
         sealed class Type {
@@ -464,7 +460,7 @@ sealed class NavigationSpec {
 
         /**
          * Settings for the text message
-         * @param type [Type] of text message to send
+         * @param type [TextMessenger.Type] of text message to send
          * @param recipients List of recipients
          * @param subject Optional subject of the message
          * @param body Optional body of the message

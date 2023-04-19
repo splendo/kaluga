@@ -18,7 +18,8 @@ enum class Resource(private val titleKey: String) {
     COLOR("feature_resources_color"),
     BUTTON("feature_resources_button"),
     IMAGE("feature_resources_image"),
-    LABEL("feature_resources_label");
+    LABEL("feature_resources_label"),
+    ;
 
     val title: String get() = titleKey.localized()
 }
@@ -34,7 +35,7 @@ class ResourcesListViewModel(navigator: Navigator<ResourcesListNavigationAction>
                 Resource.BUTTON -> ResourcesListNavigationAction.Button
                 Resource.IMAGE -> ResourcesListNavigationAction.Image
                 Resource.LABEL -> ResourcesListNavigationAction.Label
-            }
+            },
         )
     }
 }

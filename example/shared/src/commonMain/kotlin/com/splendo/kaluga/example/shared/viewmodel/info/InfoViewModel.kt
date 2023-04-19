@@ -28,6 +28,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DialogSpec(val title: String, val message: String)
+
 @Serializable
 data class MailSpec(val to: List<String>, val subject: String)
 
@@ -40,7 +41,7 @@ sealed class InfoNavigation<T>(value: T, type: NavigationBundleSpecType<T>) : Si
 
 class InfoViewModel(
     reviewManagerBuilder: ReviewManager.Builder,
-    navigator: Navigator<InfoNavigation<*>>
+    navigator: Navigator<InfoNavigation<*>>,
 ) : NavigatingViewModel<InfoNavigation<*>>(navigator, reviewManagerBuilder) {
 
     sealed class Button(val title: String) {

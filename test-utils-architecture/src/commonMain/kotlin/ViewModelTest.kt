@@ -18,7 +18,6 @@
 package com.splendo.kaluga.test.architecture
 
 import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
-import com.splendo.kaluga.test.architecture.BaseUIThreadViewModelTest.ViewModelTestContext
 import com.splendo.kaluga.test.architecture.UIThreadViewModelTest.ViewModelTestContext
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.BaseUIThreadTest
@@ -40,7 +39,7 @@ abstract class ViewModelTest<ViewModel : LifecycleViewModel> : BaseTest() {
 }
 
 abstract class SimpleUIThreadViewModelTest<ViewModel : LifecycleViewModel> :
-    UIThreadViewModelTest<UIThreadViewModelTest.ViewModelTestContext<ViewModel>, ViewModel>() {
+    UIThreadViewModelTest<ViewModelTestContext<ViewModel>, ViewModel>() {
 
     override val createTestContext: suspend (CoroutineScope) -> ViewModelTestContext<ViewModel> =
         { LazyViewModelTestContext(it, ::createViewModel) }
@@ -49,13 +48,13 @@ abstract class SimpleUIThreadViewModelTest<ViewModel : LifecycleViewModel> :
 }
 
 /**
- * A [UIThreadTest] that takes a [ViewModelTestContext]
+ * A [UIThreadTest] that takes a [UIThreadViewModelTest.ViewModelTestContext]
  */
-abstract class UIThreadViewModelTest<Context : UIThreadViewModelTest.ViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel> :
+abstract class UIThreadViewModelTest<Context : ViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel> :
     UIThreadTest<Context>() {
 
     /**
-     * [ViewModelTestContext] that lazily creates the view model
+     * [BaseUIThreadViewModelTest.LazyViewModelTestContext] that lazily creates the view model
      * @param coroutineScope The [CoroutineScope] of the [LazyViewModelTestContext]
      * @param createViewModel Creator for the [LifecycleViewModel]
      */
@@ -65,13 +64,13 @@ abstract class UIThreadViewModelTest<Context : UIThreadViewModelTest.ViewModelTe
     ) : BaseUIThreadViewModelTest.LazyViewModelTestContext<ViewModel>(coroutineScope, createViewModel), ViewModelTestContext<ViewModel>
 
     /**
-     * A [UIThreadTest.TestContext] that provides a [LifecycleViewModel]
+     * A [BaseUIThreadViewModelTest.ViewModelTestContext] that provides a [LifecycleViewModel]
      */
     interface ViewModelTestContext<ViewModel : LifecycleViewModel> : BaseUIThreadViewModelTest.ViewModelTestContext<ViewModel>, TestContext
 }
 
 /**
- * A [BaseUIThreadTest] that takes a [ViewModelTestContext]
+ * A [BaseUIThreadTest] that takes a [BaseUIThreadViewModelTest.ViewModelTestContext]
  */
 abstract class BaseUIThreadViewModelTest<Configuration, Context : BaseUIThreadViewModelTest.ViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel> :
     BaseUIThreadTest<Configuration, Context>() {

@@ -38,7 +38,7 @@ class XMLKeyboardActivity : KalugaViewModelActivity<KeyboardViewModel<ViewFocusH
     override val viewModel: KeyboardViewModel<ViewFocusHandler> by viewModel(named(viewModelName)) {
         parametersOf(
             ViewKeyboardManager.Builder(),
-            ViewFocusHandler(R.id.edit_field)
+            ViewFocusHandler(R.id.edit_field),
         )
     }
 

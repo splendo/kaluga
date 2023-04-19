@@ -40,7 +40,7 @@ class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
         parametersOf(
             ActivityNavigator<DeviceDetails> {
                 NavigationSpec.Activity<BluetoothMoreActivity>()
-            }
+            },
         )
     }
 
@@ -83,7 +83,8 @@ class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.start_scanning,
-            R.id.stop_scanning -> {
+            R.id.stop_scanning,
+            -> {
                 viewModel.onScanPressed()
                 true
             }

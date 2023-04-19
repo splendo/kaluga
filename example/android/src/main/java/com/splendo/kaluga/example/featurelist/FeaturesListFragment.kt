@@ -70,14 +70,14 @@ class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>() {
                     FeatureListNavigationAction.Scientific -> NavigationSpec.Activity<ScientificActivity>()
                     FeatureListNavigationAction.PlatformSpecific -> throw java.lang.RuntimeException("Not supported")
                 }
-            }
+            },
         )
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 

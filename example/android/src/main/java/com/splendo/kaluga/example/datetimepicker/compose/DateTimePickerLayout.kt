@@ -48,7 +48,7 @@ class ComposeDateTimePickerActivity : AppCompatActivity() {
 
         setContent {
             CompositionLocalProvider(
-                LocalAppCompatActivity provides this
+                LocalAppCompatActivity provides this,
             ) {
                 DateTimePickerLayout()
             }
@@ -62,7 +62,6 @@ fun DateTimePickerLayout() {
         val viewModel = koinViewModel<DateTimePickerViewModel>()
 
         ViewModelComposable(viewModel) {
-
             val dateLabel by dateLabel.state()
 
             Column(
@@ -70,7 +69,7 @@ fun DateTimePickerLayout() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Constants.Padding.default)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()),
             ) {
                 selectDateButton.Composable(modifier = Modifier.fillMaxWidth())
                 selectTimeButton.Composable(modifier = Modifier.fillMaxWidth())

@@ -47,7 +47,7 @@ class BluetoothServiceAdapter(private val lifecycleOwner: LifecycleOwner) : Recy
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): BluetoothServiceItemViewHolder {
         val binding = BluetoothServiceItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         binding.lifecycleOwner = lifecycleOwner

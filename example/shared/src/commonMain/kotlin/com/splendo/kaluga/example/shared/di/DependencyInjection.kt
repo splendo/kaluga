@@ -42,7 +42,7 @@ typealias BluetoothBuilderBuilder = (suspend (CoroutineContext) -> Permissions) 
 
 private fun sharedModule(
     locationStateRepoBuilderBuilder: LocationStateRepoBuilderBuilder,
-    bluetoothBuilderBuilder: BluetoothBuilderBuilder
+    bluetoothBuilderBuilder: BluetoothBuilderBuilder,
 ) = module {
     single<Logger> { RestrictedLogger(RestrictedLogLevel.None) }
     single { PermissionsBuilder() }
@@ -50,7 +50,7 @@ private fun sharedModule(
         locationStateRepoBuilderBuilder {
             val builder = get<PermissionsBuilder>()
             builder.registerLocationPermissionIfNotRegistered(
-                settings = BasePermissionManager.Settings(logger = get())
+                settings = BasePermissionManager.Settings(logger = get()),
             )
             Permissions(builder, it)
         }
@@ -63,7 +63,7 @@ private fun sharedModule(
             builder.registerLocationPermissionIfNotRegistered(settings = settings)
             Permissions(builder, it)
         }.create(
-            scannerSettingsBuilder = { BaseScanner.Settings(it, logger = get()) }
+            scannerSettingsBuilder = { BaseScanner.Settings(it, logger = get()) },
         )
     }
     single { DefaultBeacons(get<Bluetooth>(), beaconLifetime = 1.minutes, logger = get()) }
@@ -73,7 +73,7 @@ internal fun initKoin(
     platformModule: Module,
     locationStateRepoBuilderBuilder: LocationStateRepoBuilderBuilder,
     bluetoothBuilderBuilder: BluetoothBuilderBuilder,
-    customModules: List<Module> = emptyList()
+    customModules: List<Module> = emptyList(),
 ) = startKoin {
     appDeclaration()
     modules(platformModule, sharedModule(locationStateRepoBuilderBuilder, bluetoothBuilderBuilder), *customModules.toTypedArray())

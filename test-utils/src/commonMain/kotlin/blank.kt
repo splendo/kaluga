@@ -15,16 +15,5 @@
 
  */
 
-package com.splendo.kaluga.example.shared.viewmodel.scientific
-
-import com.splendo.kaluga.architecture.navigation.DefaultNavigator
-
-fun ScientificUnitSelectionNavigator(
-    onDidSelect: (Int) -> Unit,
-    onCancelled: () -> Unit,
-) = DefaultNavigator<ScientificUnitSelectionAction<*>> { action ->
-    when (action) {
-        is ScientificUnitSelectionAction.DidSelect -> onDidSelect(action.value)
-        is ScientificUnitSelectionAction.Cancelled -> onCancelled()
-    }
-}
+// iOS requires that the source folder is not empty
+// Since this module just offers a full feature set of all test utils modules, this file is required
