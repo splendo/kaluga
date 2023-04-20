@@ -14,19 +14,20 @@ public final class com/splendo/kaluga/scientific/ByteScientificArray$DefaultImpl
 
 public final class com/splendo/kaluga/scientific/DefaultScientificArray : com/splendo/kaluga/scientific/DoubleScientificArray {
 	public static final field Companion Lcom/splendo/kaluga/scientific/DefaultScientificArray$Companion;
-	public synthetic fun <init> (I[DLcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public fun <init> (Ljava/util/List;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)V
-	public fun <init> ([DLcom/splendo/kaluga/scientific/unit/ScientificUnit;)V
+	public synthetic fun <init> (I[DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Ljava/util/List;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)V
+	public fun <init> ([DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)V
 	public final fun component1 ()[D
-	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
-	public final fun copy ([DLcom/splendo/kaluga/scientific/unit/ScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/DefaultScientificArray;[DLcom/splendo/kaluga/scientific/unit/ScientificUnit;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;
+	public final fun copy ([DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/DefaultScientificArray;[DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun get (I)Ljava/lang/Double;
 	public synthetic fun get (I)Ljava/lang/Number;
 	public fun getDecimalValues ()Ljava/util/List;
 	public fun getSize ()I
-	public fun getUnit ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
+	public fun getUnit ()Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;
+	public synthetic fun getUnit ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
 	public fun getValues ()[D
 	public fun hashCode ()I
 	public fun iterator ()Ljava/util/Iterator;
@@ -51,18 +52,19 @@ public final class com/splendo/kaluga/scientific/DefaultScientificArray$Companio
 
 public final class com/splendo/kaluga/scientific/DefaultScientificValue : com/splendo/kaluga/scientific/ScientificValue {
 	public static final field Companion Lcom/splendo/kaluga/scientific/DefaultScientificValue$Companion;
-	public fun <init> (DLcom/splendo/kaluga/scientific/unit/ScientificUnit;)V
-	public synthetic fun <init> (IDLcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public fun <init> (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)V
+	public fun <init> (DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)V
+	public synthetic fun <init> (IDLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)V
 	public fun compareTo (Lcom/splendo/kaluga/scientific/ScientificValue;)I
 	public synthetic fun compareTo (Ljava/lang/Object;)I
 	public final fun component1 ()D
-	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
-	public final fun copy (DLcom/splendo/kaluga/scientific/unit/ScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/DefaultScientificValue;DLcom/splendo/kaluga/scientific/unit/ScientificUnit;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;
+	public final fun copy (DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/DefaultScientificValue;DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getDecimalValue ()Lcom/splendo/kaluga/base/utils/Decimal;
-	public fun getUnit ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
+	public fun getUnit ()Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;
+	public synthetic fun getUnit ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
 	public fun getValue ()Ljava/lang/Double;
 	public synthetic fun getValue ()Ljava/lang/Number;
 	public fun hashCode ()I
@@ -147,47 +149,47 @@ public abstract class com/splendo/kaluga/scientific/PhysicalQuantity : java/io/S
 	public static final fun write$Self (Lcom/splendo/kaluga/scientific/PhysicalQuantity;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Acceleration : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Acceleration : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Acceleration;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Action : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Action : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Action;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$AmountOfSubstance : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$AmountOfSubstance : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$AmountOfSubstance;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Angle : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Angle : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Angle;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$AngularAcceleration : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$AngularAcceleration : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$AngularAcceleration;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$AngularVelocity : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$AngularVelocity : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$AngularVelocity;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Area : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Area : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Area;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$AreaDensity : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$AreaDensity : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$AreaDensity;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$CatalysticActivity : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$CatalysticActivity : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$CatalysticActivity;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
@@ -196,7 +198,7 @@ public final class com/splendo/kaluga/scientific/PhysicalQuantity$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Density : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Density : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Density;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
@@ -206,252 +208,262 @@ public final class com/splendo/kaluga/scientific/PhysicalQuantity$Dimensionless 
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$DynamicViscosity : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$DynamicViscosity : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$DynamicViscosity;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$ElectricCapacitance : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$ElectricCapacitance : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$ElectricCapacitance;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$ElectricCharge : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$ElectricCharge : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$ElectricCharge;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$ElectricConductance : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$ElectricConductance : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$ElectricConductance;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$ElectricCurrent : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$ElectricCurrent : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$ElectricCurrent;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$ElectricInductance : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$ElectricInductance : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$ElectricInductance;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$ElectricResistance : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$ElectricResistance : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$ElectricResistance;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Energy : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Energy : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Energy;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Force : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Force : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Force;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Frequency : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Frequency : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Frequency;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$HeatCapacity : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$HeatCapacity : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$HeatCapacity;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Illuminance : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Illuminance : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Illuminance;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$IonizingRadiationAbsorbedDose : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$IonizingRadiationAbsorbedDose : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$IonizingRadiationAbsorbedDose;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$IonizingRadiationEquivalentDose : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$IonizingRadiationEquivalentDose : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$IonizingRadiationEquivalentDose;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Jolt : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Jolt : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Jolt;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$KinematicViscosity : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$KinematicViscosity : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$KinematicViscosity;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Length : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Length : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Length;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$LinearMassDensity : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$LinearMassDensity : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$LinearMassDensity;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Luminance : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Luminance : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Luminance;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$LuminousEnergy : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$LuminousEnergy : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$LuminousEnergy;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$LuminousExposure : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$LuminousExposure : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$LuminousExposure;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$LuminousFlux : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$LuminousFlux : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$LuminousFlux;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$LuminousIntensity : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$LuminousIntensity : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$LuminousIntensity;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$MagneticFlux : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$MagneticFlux : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$MagneticFlux;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$MagneticInduction : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$MagneticInduction : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$MagneticInduction;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$MassFlowRate : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$MassFlowRate : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$MassFlowRate;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Molality : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Molality : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Molality;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$MolarEnergy : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$MolarEnergy : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$MolarEnergy;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$MolarMass : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$MolarMass : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$MolarMass;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$MolarVolume : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$MolarVolume : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$MolarVolume;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Molarity : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Molarity : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Molarity;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Momentum : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Momentum : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Momentum;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Power : com/splendo/kaluga/scientific/PhysicalQuantity {
+public abstract class com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension : com/splendo/kaluga/scientific/PhysicalQuantity {
+	public static final field Companion Lcom/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension$Companion;
+	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public static final fun write$Self (Lcom/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Power : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Power;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Pressure : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Pressure : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Pressure;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Radioactivity : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Radioactivity : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Radioactivity;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$SolidAngle : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$SolidAngle : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$SolidAngle;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$SpecificEnergy : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$SpecificEnergy : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$SpecificEnergy;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$SpecificHeatCapacity : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$SpecificHeatCapacity : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$SpecificHeatCapacity;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$SpecificVolume : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$SpecificVolume : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$SpecificVolume;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Speed : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Speed : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Speed;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$SurfaceTension : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$SurfaceTension : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$SurfaceTension;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Temperature : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Temperature : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Temperature;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$ThermalResistance : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$ThermalResistance : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$ThermalResistance;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Time : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Time : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Time;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Voltage : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Voltage : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Voltage;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Volume : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Volume : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Volume;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$VolumetricFlow : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$VolumetricFlow : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$VolumetricFlow;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$VolumetricFlux : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$VolumetricFlux : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$VolumetricFlux;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Weight : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Weight : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Weight;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/splendo/kaluga/scientific/PhysicalQuantity$Yank : com/splendo/kaluga/scientific/PhysicalQuantity {
+public final class com/splendo/kaluga/scientific/PhysicalQuantity$Yank : com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/PhysicalQuantity$Yank;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
@@ -469,33 +481,32 @@ public final class com/splendo/kaluga/scientific/ScientificArray$DefaultImpls {
 }
 
 public final class com/splendo/kaluga/scientific/ScientificArrayKt {
-	public static final fun combine (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
-	public static final fun combine (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificArray;
 	public static final fun combine (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/ScientificArray;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
-	public static final fun combine (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/ScientificArray;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificArray;
+	public static final fun combine (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/ScientificArray;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificArray;
 	public static final fun concat (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/ScientificArray;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
-	public static final fun concat (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
+	public static final fun concat (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public static final fun concat (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificArray;
 	public static final fun concat (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/ScientificArray;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificArray;
-	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
-	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificArray;
+	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
+	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificArray;
+	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificArray;
+	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificArray;
 	public static final fun convertValues (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)Ljava/util/List;
-	public static final fun map (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
-	public static final fun map (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/scientific/ScientificArray;
 	public static final fun map (Lcom/splendo/kaluga/scientific/ScientificArray;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
-	public static final fun map (Lcom/splendo/kaluga/scientific/ScientificArray;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/scientific/ScientificArray;
+	public static final fun map (Lcom/splendo/kaluga/scientific/ScientificArray;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
+	public static final fun map (Lcom/splendo/kaluga/scientific/ScientificArray;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/scientific/ScientificArray;
 	public static final fun plus (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/ScientificArray;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public static final fun plus (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public static final fun plus (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificArray;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public static final fun scientificArrayFromListOfDecimal (Ljava/util/List;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificArray;
-	public static final fun scientificArrayFromListOfDecimalDefault (Ljava/util/List;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
+	public static final fun scientificArrayFromListOfDecimalDefault (Ljava/util/List;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public static final fun scientificArrayFromListOfNumber (Ljava/util/List;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificArray;
-	public static final fun scientificArrayFromListOfNumberDefault (Ljava/util/List;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
+	public static final fun scientificArrayFromListOfNumberDefault (Ljava/util/List;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public static final fun split (Lcom/splendo/kaluga/scientific/ScientificArray;)Ljava/util/List;
-	public static final fun split (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)Ljava/util/List;
+	public static final fun split (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Ljava/util/List;
 	public static final fun split (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
 	public static final fun split (Lcom/splendo/kaluga/scientific/ScientificArray;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
-	public static final fun toScientificArray (Ljava/util/List;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
+	public static final fun toScientificArray (Ljava/util/List;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public static final fun toScientificArray (Ljava/util/List;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificArray;
 }
 
@@ -512,11 +523,11 @@ public final class com/splendo/kaluga/scientific/ScientificValue$DefaultImpls {
 }
 
 public final class com/splendo/kaluga/scientific/ScientificValueKt {
-	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
-	public static synthetic fun convert$default (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static synthetic fun convert$default (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static synthetic fun convert$default (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun convertValue (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public static final fun convertValue (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;)Lcom/splendo/kaluga/base/utils/Decimal;
@@ -530,9 +541,9 @@ public final class com/splendo/kaluga/scientific/ScientificValueKt {
 	public static final fun div (Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun div (Ljava/lang/Number;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun getDecimalFraction (Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static final fun invoke (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun invoke (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun invoke (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
-	public static final fun invoke (Ljava/lang/Number;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun invoke (Ljava/lang/Number;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun invoke (Ljava/lang/Number;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun minus (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun minus (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
@@ -1196,16 +1207,13 @@ public final class com/splendo/kaluga/scientific/converter/density/ConvertToWeig
 	public static final fun usCustomaryDensityTimesUSCustomaryVolume (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
-public final class com/splendo/kaluga/scientific/converter/dimensionless/ConvertFromAnyUnitKt {
-	public static final fun dimensionlessDivDimensionlessDefault (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public static final fun dimensionlessTimesDimensionlessDefault (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public static final fun dimensionlessTimesValue (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public static final fun modify (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
-}
-
 public final class com/splendo/kaluga/scientific/converter/dimensionless/ConvertToAnyUnitKt {
-	public static final fun div (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public static final fun times (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun dimensionlessDivValue (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun dimensionlessTimesValue (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun divDimensionless (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun timesDimensionless (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun valueDivDimensionless (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static final fun valueTimesDimensionless (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 }
 
 public final class com/splendo/kaluga/scientific/converter/dimensionless/ConvertToDecimalKt {
@@ -7444,7 +7452,7 @@ public final class com/splendo/kaluga/scientific/unit/ForceUnitKt {
 	public static final fun getUsCustomary (Lcom/splendo/kaluga/scientific/unit/ImperialForce;)Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialForceWrapper;
 }
 
-public abstract class com/splendo/kaluga/scientific/unit/Frequency : com/splendo/kaluga/scientific/unit/MetricAndImperialScientificUnit, com/splendo/kaluga/scientific/unit/ScientificUnit {
+public abstract class com/splendo/kaluga/scientific/unit/Frequency : com/splendo/kaluga/scientific/unit/AbstractScientificUnit, com/splendo/kaluga/scientific/unit/MetricAndImperialScientificUnit {
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/Frequency$Companion;
 	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public static final fun write$Self (Lcom/splendo/kaluga/scientific/unit/Frequency;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
@@ -8556,6 +8564,7 @@ public final class com/splendo/kaluga/scientific/unit/Hertz : com/splendo/kaluga
 	public fun getSymbol ()Ljava/lang/String;
 	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$MetricAndImperial;
 	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 	public fun toSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
@@ -10559,7 +10568,7 @@ public final class com/splendo/kaluga/scientific/unit/LuminanceUnitKt {
 	public static final fun getMetricLuminanceUnits ()Ljava/util/Set;
 }
 
-public final class com/splendo/kaluga/scientific/unit/LuminousEnergy : com/splendo/kaluga/scientific/unit/MetricAndImperialScientificUnit {
+public final class com/splendo/kaluga/scientific/unit/LuminousEnergy : com/splendo/kaluga/scientific/unit/AbstractScientificUnit, com/splendo/kaluga/scientific/unit/MetricAndImperialScientificUnit {
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/LuminousEnergy$Companion;
 	public synthetic fun <init> (ILcom/splendo/kaluga/scientific/unit/LuminousFlux;Lcom/splendo/kaluga/scientific/unit/Time;Ljava/lang/String;Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$MetricAndImperial;Lcom/splendo/kaluga/scientific/PhysicalQuantity$LuminousEnergy;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/LuminousFlux;Lcom/splendo/kaluga/scientific/unit/Time;)V
@@ -10602,9 +10611,8 @@ public final class com/splendo/kaluga/scientific/unit/LuminousEnergyUnitKt {
 	public static final fun x (Lcom/splendo/kaluga/scientific/unit/LuminousFlux;Lcom/splendo/kaluga/scientific/unit/Time;)Lcom/splendo/kaluga/scientific/unit/LuminousEnergy;
 }
 
-public abstract class com/splendo/kaluga/scientific/unit/LuminousExposure : com/splendo/kaluga/scientific/unit/ScientificUnit {
+public abstract class com/splendo/kaluga/scientific/unit/LuminousExposure : com/splendo/kaluga/scientific/unit/AbstractScientificUnit {
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/LuminousExposure$Companion;
-	public fun <init> ()V
 	public synthetic fun <init> (ILcom/splendo/kaluga/scientific/PhysicalQuantity$LuminousExposure;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public abstract fun getIlluminance ()Lcom/splendo/kaluga/scientific/unit/Illuminance;
