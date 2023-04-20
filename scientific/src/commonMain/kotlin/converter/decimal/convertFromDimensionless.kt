@@ -24,12 +24,13 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.dimensionless.div
 import com.splendo.kaluga.scientific.converter.dimensionless.times
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.Dimensionless
 import com.splendo.kaluga.scientific.unit.One
 
-infix operator fun Decimal.div(
-    modifier: ScientificValue<PhysicalQuantity.Dimensionless, *>
+infix operator fun <DimensionlessUnit : Dimensionless> Decimal.div(
+    modifier: ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>
 ) = this.invoke(One).div(modifier).value.toDecimal()
 
-infix operator fun Decimal.times(
-    modifier: ScientificValue<PhysicalQuantity.Dimensionless, *>
+infix operator fun <DimensionlessUnit : Dimensionless>  Decimal.times(
+    modifier: ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>
 ) = this.invoke(One).times(modifier).value.toDecimal()

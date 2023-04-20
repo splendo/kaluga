@@ -24,21 +24,22 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
+import com.splendo.kaluga.scientific.unit.Dimensionless
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import kotlin.jvm.JvmName
 
 @JvmName("dimensionlessTimesDimensionlessDefault")
 infix operator fun <
-    LeftUnit : AbstractScientificUnit<PhysicalQuantity.Dimensionless>,
-    RightUnit : AbstractScientificUnit<PhysicalQuantity.Dimensionless>,
+    LeftUnit : Dimensionless,
+    RightUnit : Dimensionless,
     > ScientificValue<PhysicalQuantity.Dimensionless, LeftUnit>.times(
     modifier: ScientificValue<PhysicalQuantity.Dimensionless, RightUnit>
 ) = modify(modifier, ::DefaultScientificValue)
 
 @JvmName("dimensionlessDivDimensionlessDefault")
 infix operator fun <
-    LeftUnit : AbstractScientificUnit<PhysicalQuantity.Dimensionless>,
-    RightUnit : AbstractScientificUnit<PhysicalQuantity.Dimensionless>,
+    LeftUnit : Dimensionless,
+    RightUnit : Dimensionless,
     > ScientificValue<PhysicalQuantity.Dimensionless, LeftUnit>.div(
     modifier: ScientificValue<PhysicalQuantity.Dimensionless, RightUnit>
 ) = unit.byDividing(this, modifier, ::DefaultScientificValue)
@@ -47,7 +48,7 @@ infix operator fun <
 infix operator fun <
     Quantity : PhysicalQuantity,
     Unit : AbstractScientificUnit<Quantity>,
-    Modifier : AbstractScientificUnit<PhysicalQuantity.Dimensionless>,
+    Modifier : Dimensionless,
     > ScientificValue<PhysicalQuantity.Dimensionless, Modifier>.times(
     value: ScientificValue<Quantity, Unit>
 ) = value.modify(this, ::DefaultScientificValue)
@@ -55,7 +56,7 @@ infix operator fun <
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>,
+    Modifier : Dimensionless,
     Value : ScientificValue<Quantity, Unit>
     > ScientificValue<Quantity, Unit>.modify(
     modifier: ScientificValue<PhysicalQuantity.Dimensionless, Modifier>,
