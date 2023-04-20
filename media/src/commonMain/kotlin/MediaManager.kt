@@ -143,7 +143,7 @@ interface MediaManager : VolumeController, MediaSurfaceController {
      * This method should be called when done with the media manager.
      * After calling this playback is disabled. Any subsequent calls will result in a [PlaybackError.PlaybackHasEnded]
      */
-    fun end()
+    fun close()
 }
 
 /**
@@ -232,7 +232,7 @@ abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfacePr
 
     protected abstract fun handleReset()
 
-    override fun end() {
+    override fun close() {
         cleanUp()
         _events.trySend(MediaManager.Event.DidEnd)
     }

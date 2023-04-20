@@ -70,7 +70,7 @@ sealed class MockPlaybackState {
         val mediaSurfaceController: MediaSurfaceController by lazy { configuration.mediaSurfaceController }
 
         val reset: suspend () -> PlaybackState.Uninitialized = { Uninitialized(configuration) }
-        val end: suspend () -> PlaybackState.Ended = { Ended }
+        val end: suspend () -> PlaybackState.Closed = { Closed }
         fun failWithError(error: PlaybackError) = suspend {
             Error(error, configuration)
         }
@@ -239,9 +239,9 @@ sealed class MockPlaybackState {
     }
 
     /**
-     * Mock implementation of [PlaybackState.Ended]
+     * Mock implementation of [PlaybackState.Closed]
      */
-    object Ended : MockPlaybackState(), PlaybackState.Ended {
+    object Closed : MockPlaybackState(), PlaybackState.Closed {
         override val playbackState: PlaybackState = this
     }
 }

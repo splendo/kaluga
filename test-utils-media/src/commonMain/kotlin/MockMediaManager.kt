@@ -123,9 +123,9 @@ class MockMediaManager(
     val resetMock = this::reset.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [end]
+     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [close]
      */
-    val endMock = this::end.mock()
+    val endMock = this::close.mock()
 
     init {
         if (setupMocks) {
@@ -144,7 +144,7 @@ class MockMediaManager(
     override fun stop(): Unit = stopMock.call()
 
     override fun reset(): Unit = resetMock.call()
-    override fun end(): Unit = endMock.call()
+    override fun close(): Unit = endMock.call()
 }
 
 /**

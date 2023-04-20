@@ -10,8 +10,8 @@ public final class com/splendo/kaluga/media/ActivityMediaSurfaceProvider : com/s
 public abstract class com/splendo/kaluga/media/BaseMediaManager : com/splendo/kaluga/media/MediaManager, kotlinx/coroutines/CoroutineScope {
 	public fun <init> (Lcom/splendo/kaluga/media/MediaSurfaceProvider;Lkotlin/coroutines/CoroutineContext;)V
 	protected abstract fun cleanUp ()V
+	public fun close ()V
 	public final fun createPlayableMedia (Lcom/splendo/kaluga/media/MediaSource;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun end ()V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getEvents ()Lkotlinx/coroutines/flow/Flow;
 	protected fun handleCompleted ()V
@@ -54,7 +54,7 @@ public final class com/splendo/kaluga/media/DefaultMediaPlayer : com/splendo/kal
 	public fun <init> (Lcom/splendo/kaluga/media/MediaSurfaceProvider;Lcom/splendo/kaluga/media/BaseMediaManager$Builder;Lkotlin/coroutines/CoroutineContext;)V
 	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;)V
 	public fun awaitCompletion (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun end ()V
+	public fun close ()V
 	public fun forceStart (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getControls ()Lkotlinx/coroutines/flow/Flow;
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
@@ -76,8 +76,8 @@ public final class com/splendo/kaluga/media/DefaultPlayableMedia : com/splendo/k
 }
 
 public abstract interface class com/splendo/kaluga/media/MediaManager : com/splendo/kaluga/media/MediaSurfaceController, com/splendo/kaluga/media/VolumeController {
+	public abstract fun close ()V
 	public abstract fun createPlayableMedia (Lcom/splendo/kaluga/media/MediaSource;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun end ()V
 	public abstract fun getEvents ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun initialize (Lcom/splendo/kaluga/media/PlayableMedia;)V
 	public abstract fun pause ()V
@@ -122,7 +122,7 @@ public final class com/splendo/kaluga/media/MediaManager$Event$DidPrepare : com/
 
 public abstract interface class com/splendo/kaluga/media/MediaPlayer : com/splendo/kaluga/media/MediaSurfaceController, com/splendo/kaluga/media/VolumeController {
 	public abstract fun awaitCompletion (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun end ()V
+	public abstract fun close ()V
 	public abstract fun forceStart (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun forceStart$default (Lcom/splendo/kaluga/media/MediaPlayer;Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun getControls ()Lkotlinx/coroutines/flow/Flow;
@@ -345,12 +345,12 @@ public abstract interface class com/splendo/kaluga/media/PlaybackState$Active : 
 	public abstract fun getVolumeController ()Lcom/splendo/kaluga/media/VolumeController;
 }
 
+public abstract interface class com/splendo/kaluga/media/PlaybackState$Closed : com/splendo/kaluga/base/flow/SpecialFlowValue$Last, com/splendo/kaluga/media/PlaybackState {
+}
+
 public abstract interface class com/splendo/kaluga/media/PlaybackState$Completed : com/splendo/kaluga/media/PlaybackState$PlayingOrCompleted {
 	public abstract fun start (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
 	public static synthetic fun start$default (Lcom/splendo/kaluga/media/PlaybackState$Completed;Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;ILjava/lang/Object;)Lkotlin/jvm/functions/Function1;
-}
-
-public abstract interface class com/splendo/kaluga/media/PlaybackState$Ended : com/splendo/kaluga/base/flow/SpecialFlowValue$Last, com/splendo/kaluga/media/PlaybackState {
 }
 
 public abstract interface class com/splendo/kaluga/media/PlaybackState$Error : com/splendo/kaluga/media/PlaybackState$InitializedOrError {

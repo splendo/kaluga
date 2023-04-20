@@ -64,9 +64,9 @@ class MockMediaPlayer(
     val resetMock = this::reset.mock()
 
     /**
-     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [end]
+     * A [com.splendo.kaluga.test.base.mock.MethodMock] for [close]
      */
-    val endMock = this::end.mock()
+    val endMock = this::close.mock()
 
     override suspend fun initializeFor(source: MediaSource): Unit = initializeForMock.call(source)
 
@@ -77,5 +77,5 @@ class MockMediaPlayer(
 
     override suspend fun awaitCompletion(): Unit = awaitCompletionMock.call()
     override suspend fun reset(): Unit = resetMock.call()
-    override fun end(): Unit = endMock.call()
+    override fun close(): Unit = endMock.call()
 }

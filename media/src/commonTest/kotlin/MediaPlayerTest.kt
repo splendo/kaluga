@@ -69,7 +69,7 @@ class MediaPlayerTest {
 
         val didCleanUp = EmptyCompletableDeferred()
         mediaManager.cleanUpMock.on().doExecute { didCleanUp.complete() }
-        mediaPlayer.end()
+        mediaPlayer.close()
         didCleanUp.await()
         coroutineContext.cancelChildren()
     }
@@ -229,7 +229,7 @@ class MediaPlayerTest {
 
         val didCleanUp = EmptyCompletableDeferred()
         mediaManager.cleanUpMock.on().doExecute { didCleanUp.complete() }
-        mediaPlayer.end()
+        mediaPlayer.close()
         didCleanUp.await()
 
         val source = mediaSourceFromUrl("https://example.com")!!
@@ -276,7 +276,7 @@ class MediaPlayerTest {
 
         val didCleanUp = EmptyCompletableDeferred()
         mediaManager.cleanUpMock.on().doExecute { didCleanUp.complete() }
-        mediaPlayer.end()
+        mediaPlayer.close()
         didCleanUp.await()
 
         assertFailsWith<PlaybackError.PlaybackHasEnded> { mediaPlayer.updateVolume(1.0f) }
@@ -296,7 +296,7 @@ class MediaPlayerTest {
 
         val didCleanUp = EmptyCompletableDeferred()
         mediaManager.cleanUpMock.on().doExecute { didCleanUp.complete() }
-        mediaPlayer.end()
+        mediaPlayer.close()
         didCleanUp.await()
 
         mediaSurfaceController.renderVideoOnSurfaceMock.resetCalls()

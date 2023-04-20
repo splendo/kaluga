@@ -23,6 +23,7 @@ import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.NoMoreCollections
 import com.splendo.kaluga.base.flow.onCollectionEvent
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.atomicfu.atomic
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -220,6 +221,9 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(coro
                     val actionResult = action(state())
                     result.complete(actionResult)
                 } catch (e: Throwable) {
+                    if (e is CancellationException) {
+                        throw e
+                    }
                     result.completeExceptionally(e)
                 }
             }

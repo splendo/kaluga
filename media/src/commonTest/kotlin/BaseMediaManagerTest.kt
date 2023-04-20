@@ -53,7 +53,7 @@ class BaseMediaManagerTest {
         assertEquals(MediaManager.Event.DidComplete, mediaManager.events.first())
         mediaManager.handleError(PlaybackError.Unknown)
         assertEquals(MediaManager.Event.DidFailWithError(PlaybackError.Unknown), mediaManager.events.first())
-        mediaManager.end()
+        mediaManager.close()
         assertEquals(MediaManager.Event.DidEnd, mediaManager.events.first())
         coroutineContext.cancelChildren()
     }

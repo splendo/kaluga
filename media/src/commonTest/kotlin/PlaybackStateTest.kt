@@ -103,7 +103,7 @@ class PlaybackStateTest : BaseFlowTest<Unit, PlaybackStateTest.Context, Playback
             events.tryEmit(MediaManager.Event.DidEnd)
         }
         test {
-            assertIs<PlaybackState.Ended>(it)
+            assertIs<PlaybackState.Closed>(it)
         }
     }
 

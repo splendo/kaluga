@@ -117,9 +117,9 @@ sealed interface PlaybackState : KalugaState {
         val reset: suspend () -> Uninitialized
 
         /**
-         * Transitions into an [Ended] state
+         * Transitions into an [Closed] state
          */
-        val end: suspend () -> Ended
+        val end: suspend () -> Closed
 
         /**
          * Transitions into an [Error] state
@@ -285,7 +285,7 @@ sealed interface PlaybackState : KalugaState {
     /**
      * A [PlaybackState] indicating playback has ended and all resources have been released
      */
-    interface Ended : PlaybackState, SpecialFlowValue.Last
+    interface Closed : PlaybackState, SpecialFlowValue.Last
 }
 
 internal sealed class PlaybackStateImpl {
@@ -297,7 +297,7 @@ internal sealed class PlaybackStateImpl {
         val mediaSurfaceController: MediaSurfaceController by lazy { mediaManager }
 
         val reset: suspend () -> PlaybackState.Uninitialized = { Uninitialized(mediaManager) }
-        val end: suspend () -> PlaybackState.Ended = { Ended }
+        val end: suspend () -> PlaybackState.Closed = { Closed }
         fun failWithError(error: PlaybackError) = suspend { Error(error, mediaManager) }
     }
 
@@ -413,5 +413,5 @@ internal sealed class PlaybackStateImpl {
 
     data class Error(override val error: PlaybackError, override val mediaManager: MediaManager) : Active(), PlaybackState.Error
 
-    object Ended : PlaybackStateImpl(), PlaybackState.Ended
+    object Closed : PlaybackStateImpl(), PlaybackState.Closed
 }
