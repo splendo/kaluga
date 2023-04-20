@@ -23,21 +23,22 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import kotlin.jvm.JvmName
 
 @JvmName("dimensionlessTimesDimensionlessDefault")
 infix operator fun <
-    LeftUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
-    RightUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
+    LeftUnit : AbstractScientificUnit<PhysicalQuantity.Dimensionless>,
+    RightUnit : AbstractScientificUnit<PhysicalQuantity.Dimensionless>,
     > ScientificValue<PhysicalQuantity.Dimensionless, LeftUnit>.times(
     modifier: ScientificValue<PhysicalQuantity.Dimensionless, RightUnit>
 ) = modify(modifier, ::DefaultScientificValue)
 
 @JvmName("dimensionlessDivDimensionlessDefault")
 infix operator fun <
-    LeftUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
-    RightUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
+    LeftUnit : AbstractScientificUnit<PhysicalQuantity.Dimensionless>,
+    RightUnit : AbstractScientificUnit<PhysicalQuantity.Dimensionless>,
     > ScientificValue<PhysicalQuantity.Dimensionless, LeftUnit>.div(
     modifier: ScientificValue<PhysicalQuantity.Dimensionless, RightUnit>
 ) = unit.byDividing(this, modifier, ::DefaultScientificValue)
@@ -45,8 +46,8 @@ infix operator fun <
 @JvmName("dimensionlessTimesValue")
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>,
-    Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>
+    Unit : AbstractScientificUnit<Quantity>,
+    Modifier : AbstractScientificUnit<PhysicalQuantity.Dimensionless>,
     > ScientificValue<PhysicalQuantity.Dimensionless, Modifier>.times(
     value: ScientificValue<Quantity, Unit>
 ) = value.modify(this, ::DefaultScientificValue)
