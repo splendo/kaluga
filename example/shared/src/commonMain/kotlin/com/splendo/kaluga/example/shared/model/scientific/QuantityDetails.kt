@@ -28,12 +28,16 @@ import com.splendo.kaluga.scientific.unit.*
 
 data class QuantityDetails<Quantity : PhysicalQuantity>(
     val quantity: Quantity,
-    val units: Set<ScientificUnit<Quantity>>,
+    val units: Set<AbstractScientificUnit<Quantity>>,
     val converters: List<QuantityConverter<Quantity, *>>,
 ) {
     @Suppress("UNCHECKED_CAST")
-    fun convert(value: Decimal, unit: ScientificUnit<*>, to: ScientificUnit<*>): ScientificValue<Quantity, *>? = if (unit.quantity == quantity && to.quantity == quantity) {
-        DefaultScientificValue(value, unit as ScientificUnit<Quantity>).convert(to as ScientificUnit<Quantity>)
+    fun convert(
+        value: Decimal,
+        unit: AbstractScientificUnit<*>,
+        to: AbstractScientificUnit<*>,
+    ): ScientificValue<Quantity, *>? = if (unit.quantity == quantity && to.quantity == quantity) {
+        DefaultScientificValue(value, unit as AbstractScientificUnit<Quantity>).convert(to as AbstractScientificUnit<Quantity>)
     } else {
         null
     }

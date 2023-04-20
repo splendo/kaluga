@@ -37,6 +37,7 @@ import com.splendo.kaluga.example.shared.model.scientific.name
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -83,11 +84,11 @@ class ScientificViewModel(
         createQuantityButton(it)
     }.toInitializedObservable(createQuantityButton(null), coroutineScope)
     private val units = currentQuantityDetails.map { it?.units ?: emptySet() }.stateIn(coroutineScope, SharingStarted.Eagerly, emptySet())
-    private val currentLeftUnit = MutableStateFlow<ScientificUnit<*>?>(null)
+    private val currentLeftUnit = MutableStateFlow<AbstractScientificUnit<*>?>(null)
     val currentLeftUnitButton: BaseInitializedObservable<KalugaButton> = currentLeftUnit.map {
         createLeftUnitButton(it)
     }.toInitializedObservable(createLeftUnitButton(null), coroutineScope)
-    private val currentRightUnit = MutableStateFlow<ScientificUnit<*>?>(null)
+    private val currentRightUnit = MutableStateFlow<AbstractScientificUnit<*>?>(null)
     val currentRightUnitButton: BaseInitializedObservable<KalugaButton> = currentRightUnit.map {
         createRightUnitButton(it)
     }.toInitializedObservable(createRightUnitButton(null), coroutineScope)
