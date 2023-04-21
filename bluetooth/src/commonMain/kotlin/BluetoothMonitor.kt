@@ -17,12 +17,14 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.ServiceMonitor
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A [ServiceMonitor] that monitors whether Bluetooth is enabled
  */
-expect interface BluetoothMonitor : ServiceMonitor {
+expect interface BluetoothMonitor {
 
     /**
      * Builder for creating a [BluetoothMonitor]
@@ -33,6 +35,6 @@ expect interface BluetoothMonitor : ServiceMonitor {
          * Creates the [BluetoothMonitor]
          * @return the [BluetoothMonitor] created
          */
-        fun create(): BluetoothMonitor
+        fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor
     }
 }

@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.test.base.BaseFlowTest
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
@@ -186,7 +187,7 @@ class LocationStateTest :
             )
         }
         mainAction {
-            locationManager.locationEnabled.value = true
+            locationManager.locationMonitor.launchTakeAndChangeState { { DefaultServiceMonitor.ServiceMonitorStateImpl.Initialized.Enabled } }
             permissionStateRepo.takeAndChangeState { state ->
                 (state as MockPermissionState<LocationPermission>).allow
             }
@@ -301,7 +302,7 @@ class LocationStateTest :
             )
         }
         mainAction {
-            locationManager.locationEnabled.value = true
+            locationManager.locationMonitor.launchTakeAndChangeState { { DefaultServiceMonitor.ServiceMonitorStateImpl.Initialized.Enabled } }
         }
         test {
             locationManager.startMonitoringLocationMock.verify()
@@ -479,11 +480,11 @@ class LocationStateTest :
             assertEquals(location1, it.location)
         }
         mainAction {
-            locationManager.locationEnabled.value = false
+            locationManager.locationMonitor.launchTakeAndChangeState { { DefaultServiceMonitor.ServiceMonitorStateImpl.Initialized.Disabled } }
             yieldMultiple(3)
         }
         test {
-            locationManager.requestEnableLocationMock.verify()
+            locationManager.requestEnableLocationMock.verify(2)
             locationManager.stopMonitoringLocationMock.verify()
             assertIs<LocationState.Disabled.NoGPS>(it)
             assertEquals(
@@ -644,12 +645,18 @@ class LocationStateTest :
         }
 
         mainAction {
-            yieldMultiple(10)
+            yieldMultiple()
             locationManager.stopMonitoringPermissionsMock.verify()
             locationManager.stopMonitoringLocationMock.verify()
             locationManager.stopMonitoringLocationEnabledMock.verify()
+        }
+        // DOUBLE_CHECK
+        test {
+            assertIs<LocationState.Enabled>(it)
+        }
 
-            locationManager.locationEnabled.value = false
+        mainAction {
+            locationManager.locationMonitor.launchTakeAndChangeState { { DefaultServiceMonitor.ServiceMonitorStateImpl.Initialized.Disabled } }
         }
 
         test {

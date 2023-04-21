@@ -42,6 +42,7 @@ import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.EnableServiceActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -154,13 +155,13 @@ actual class DefaultScanner internal constructor(
 
     override val isSupported: Boolean = bluetoothAdapter != null
     private val deviceConnectionManagerBuilder = DefaultDeviceConnectionManager.Builder(applicationContext)
-    override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create() }
-    private val locationEnabledMonitor = LocationMonitor.Builder(applicationContext).create()
+    override val bluetoothEnabledMonitor: DefaultServiceMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create(coroutineContext) }
+    private val locationEnabledMonitor = LocationMonitor.Builder(applicationContext).create(coroutineContext)
 
     override val permissionsFlow: Flow<List<PermissionState<*>>> get() = combine(bluetoothPermissionRepo.filterOnlyImportant(), locationPermissionRepo.filterOnlyImportant()) { bluetoothPermission, locationPermission ->
         listOf(bluetoothPermission, locationPermission)
     }
-    override val enabledFlow: Flow<List<Boolean>> get() = combine(bluetoothEnabledMonitor?.isEnabled ?: flowOf(false), locationEnabledMonitor.isEnabled) { bluetoothEnabled, locationEnabled ->
+    override val enabledFlow: Flow<List<Boolean>> get() = combine(bluetoothEnabledMonitor?.isEnabledFlow ?: flowOf(false), locationEnabledMonitor.isEnabledFlow) { bluetoothEnabled, locationEnabled ->
         listOf(bluetoothEnabled, locationEnabled)
     }
 
@@ -179,16 +180,16 @@ actual class DefaultScanner internal constructor(
     }
 
     override suspend fun startMonitoringHardwareEnabled() {
-        locationEnabledMonitor.startMonitoring()
+        locationEnabledMonitor.monitoringDidStart()
         super.startMonitoringHardwareEnabled()
     }
 
     override suspend fun stopMonitoringHardwareEnabled() {
-        locationEnabledMonitor.stopMonitoring()
+        locationEnabledMonitor.monitoringDidStop()
         super.stopMonitoringHardwareEnabled()
     }
 
-    override suspend fun isHardwareEnabled(): Boolean = super.isHardwareEnabled() && locationEnabledMonitor.isServiceEnabled
+    override suspend fun isHardwareEnabled(): Boolean = super.isHardwareEnabled() && locationEnabledMonitor.isEnabled
 
     @SuppressLint("MissingPermission") // Lint complains even with permissions
     override fun generateEnableSensorsActions(): List<EnableSensorAction> {
@@ -205,9 +206,9 @@ actual class DefaultScanner internal constructor(
                     @Suppress("DEPRECATION")
                     bluetoothAdapter?.enable()
                 }
-                bluetoothEnabledMonitor!!.isEnabled.first { it }
+                bluetoothEnabledMonitor!!.isEnabledFlow.first { it }
             } else null,
-            if (!locationEnabledMonitor.isServiceEnabled) {
+            if (!locationEnabledMonitor.isEnabled) {
                 EnableServiceActivity.showEnableServiceActivity(
                     applicationContext,
                     hashCode().toString(),

@@ -27,8 +27,8 @@ import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
 import com.splendo.kaluga.bluetooth.scanner.DefaultScanner.ScanSettings
+import com.splendo.kaluga.service.DefaultServiceMonitor
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import platform.CoreBluetooth.CBCentralManager
@@ -177,9 +177,9 @@ actual class DefaultScanner internal constructor(
     private val enabledQueue = dispatch_queue_create("ScannerMonitorEnabled", null)
     private val scanQueue = dispatch_queue_create("ScannerScanning", null)
     override val isSupported: Boolean = true
-    override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor.Builder {
+    override val bluetoothEnabledMonitor: DefaultServiceMonitor = BluetoothMonitor.Builder {
         CBCentralManager(null, enabledQueue, emptyMap<Any?, Any>())
-    }.create()
+    }.create(coroutineContext)
 
     private var centralManager: CBCentralManager? = null
     private var centralManagerDelegate: CBCentralManagerDelegateProtocol? = null
@@ -224,12 +224,12 @@ actual class DefaultScanner internal constructor(
     override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         // Trigger Enable Bluetooth popup
         return listOfNotNull(
-            if (!bluetoothEnabledMonitor.isServiceEnabled) {
+            if (!bluetoothEnabledMonitor.isEnabled) {
                 suspend {
                     // We want it to ask for permissions when the state machine requests it but NOT if the scanning starts
                     val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to true)
                     CBCentralManager(null, scanQueue, options)
-                    bluetoothEnabledMonitor.isEnabled.first { it }
+                    bluetoothEnabledMonitor.isEnabled
                 }
             } else null
         )

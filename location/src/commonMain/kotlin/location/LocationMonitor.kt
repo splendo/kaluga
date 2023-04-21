@@ -17,12 +17,14 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.ServiceMonitor
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A [ServiceMonitor] that monitors whether the location service is enabled
  */
-expect interface LocationMonitor : ServiceMonitor {
+expect interface LocationMonitor {
 
     /**
      * Builder for creating a [LocationMonitor]
@@ -33,6 +35,6 @@ expect interface LocationMonitor : ServiceMonitor {
          * Creates the [LocationMonitor]
          * @return the created [LocationMonitor]
          */
-        fun create(): LocationMonitor
+        fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor
     }
 }

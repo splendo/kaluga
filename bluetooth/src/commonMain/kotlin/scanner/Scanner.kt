@@ -40,6 +40,7 @@ import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
+import com.splendo.kaluga.service.DefaultServiceMonitor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -258,10 +259,12 @@ abstract class BaseScanner constructor(
     override val events: Flow<Scanner.Event> = eventChannel.receiveAsFlow()
 
     protected val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
-    protected abstract val bluetoothEnabledMonitor: BluetoothMonitor?
+    protected abstract val bluetoothEnabledMonitor: DefaultServiceMonitor?
 
     protected open val permissionsFlow: Flow<List<PermissionState<*>>> get() = bluetoothPermissionRepo.filterOnlyImportant().map { listOf(it) }
-    protected open val enabledFlow: Flow<List<Boolean>> get() = (bluetoothEnabledMonitor?.isEnabled ?: flowOf(false)).map { listOf(it) }
+    protected open val enabledFlow: Flow<List<Boolean>> get() = (bluetoothEnabledMonitor?.isEnabledFlow ?: flowOf(false)).map {
+        listOf(it)
+    }
 
     private val permissionsLock = Mutex()
     private var monitoringPermissionsJob: Job? = null
@@ -305,6 +308,7 @@ abstract class BaseScanner constructor(
     }
 
     final override suspend fun scanForDevices(filter: Set<UUID>) {
+        logger.info(LOG_TAG) { "scanForDevices" }
         if (filter.isEmpty()) {
             logger.info(LOG_TAG) { "Start Scanning" }
         } else {
@@ -324,7 +328,7 @@ abstract class BaseScanner constructor(
 
     override suspend fun startMonitoringHardwareEnabled() = enabledJob.withLock {
         val bluetoothEnabledMonitor = bluetoothEnabledMonitor ?: return
-        bluetoothEnabledMonitor.startMonitoring()
+        bluetoothEnabledMonitor.monitoringDidStart()
         if (monitoringBluetoothEnabledJob != null) return
         monitoringBluetoothEnabledJob = coroutineScope.launch {
             enabledFlow.collect {
@@ -335,12 +339,12 @@ abstract class BaseScanner constructor(
 
     override suspend fun stopMonitoringHardwareEnabled() = enabledJob.withLock {
         val bluetoothEnabledMonitor = bluetoothEnabledMonitor ?: return
-        bluetoothEnabledMonitor.stopMonitoring()
+        bluetoothEnabledMonitor.monitoringDidStop()
         monitoringBluetoothEnabledJob?.cancel()
         monitoringBluetoothEnabledJob = null
     }
 
-    override suspend fun isHardwareEnabled(): Boolean = bluetoothEnabledMonitor?.isServiceEnabled ?: false
+    override suspend fun isHardwareEnabled(): Boolean = bluetoothEnabledMonitor?.isEnabled ?: false
     override suspend fun requestEnableHardware() {
         val actions = generateEnableSensorsActions()
         if (actions.isEmpty()) {

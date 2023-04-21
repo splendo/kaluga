@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.scanner
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner.Settings
+import com.splendo.kaluga.service.DefaultServiceMonitor
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -46,7 +47,7 @@ actual class DefaultScanner(
     }
 
     override val isSupported: Boolean = false
-    override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor.Builder().create()
+    override val bluetoothEnabledMonitor: DefaultServiceMonitor = BluetoothMonitor.Builder().create(coroutineContext)
 
     override suspend fun didStartScanning(filter: Set<UUID>) {
         TODO("Not yet implemented")

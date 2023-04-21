@@ -23,6 +23,7 @@ import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.location.MainCLLocationManagerAccessor
 import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
+import com.splendo.kaluga.service.DefaultServiceMonitor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -83,7 +84,7 @@ actual class DefaultLocationManager(
             }
     }
 
-    override val locationMonitor: LocationMonitor = LocationMonitor.Builder(CLLocationManager()).create()
+    override val locationMonitor: DefaultServiceMonitor = LocationMonitor.Builder(CLLocationManager()).create(coroutineContext)
     private val locationManager = MainCLLocationManagerAccessor {
         desiredAccuracy = if (locationPermission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
         distanceFilter = settings.minUpdateDistanceMeters.toDouble()

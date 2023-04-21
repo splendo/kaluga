@@ -27,6 +27,7 @@ import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
+import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.EnableServiceActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -99,7 +100,7 @@ actual class DefaultLocationManager(
         }
     }
 
-    override val locationMonitor: LocationMonitor = LocationMonitor.Builder(context, locationManager).create()
+    override val locationMonitor: DefaultServiceMonitor = LocationMonitor.Builder(context, locationManager!!).create(coroutineContext)
     private val monitoringMutex = Mutex()
     private var monitoringLocationJob: Job? = null
 

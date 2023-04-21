@@ -26,6 +26,7 @@ import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.service.DefaultServiceMonitor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
@@ -190,7 +191,7 @@ abstract class BaseLocationManager(
     protected val sharedLocations = MutableSharedFlow<Location.KnownLocation>(replay = 0, extraBufferCapacity = settings.locationBufferCapacity, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     override val locations: Flow<Location.KnownLocation> = sharedLocations.asSharedFlow()
 
-    protected abstract val locationMonitor: LocationMonitor
+    protected abstract val locationMonitor: DefaultServiceMonitor
 
     private val permissionsLock = Mutex()
     private var monitoringPermissionsJob: Job? = null
@@ -234,22 +235,22 @@ abstract class BaseLocationManager(
     }
 
     override suspend fun startMonitoringLocationEnabled() = enabledLock.withLock {
-        locationMonitor.startMonitoring()
+        locationMonitor.monitoringDidStart()
         if (monitoringLocationEnabledJob != null) return
         monitoringLocationEnabledJob = coroutineScope.launch {
-            locationMonitor.isEnabled.collect {
+            locationMonitor.collect {
                 handleLocationEnabledChanged()
             }
         }
     }
 
     override suspend fun stopMonitoringLocationEnabled() = enabledLock.withLock {
-        locationMonitor.stopMonitoring()
+        locationMonitor.monitoringDidStop()
         monitoringLocationEnabledJob?.cancel()
         monitoringLocationEnabledJob = null
     }
 
-    override fun isLocationEnabled(): Boolean = locationMonitor.isServiceEnabled
+    override fun isLocationEnabled(): Boolean = locationMonitor.isEnabled
 
     private fun handleLocationEnabledChanged() {
         val isEnabled = isLocationEnabled()

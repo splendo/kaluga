@@ -19,11 +19,12 @@ package com.splendo.kaluga.location
 
 import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.ServiceMonitor
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A [ServiceMonitor] that monitors whether the location service is enabled
  */
-actual interface LocationMonitor : ServiceMonitor {
+actual interface LocationMonitor {
 
     /**
      * Builder for creating a [LocationMonitor]
@@ -34,16 +35,18 @@ actual interface LocationMonitor : ServiceMonitor {
          * Creates the [LocationMonitor]
          * @return the created [LocationMonitor]
          */
-        actual fun create(): LocationMonitor = DefaultLocationMonitor()
+        actual fun create(
+            coroutineContext: CoroutineContext
+        ): DefaultServiceMonitor = DefaultLocationMonitor(coroutineContext)
     }
 }
 
 /**
  * Default implementation of [LocationMonitor]
  */
-class DefaultLocationMonitor : DefaultServiceMonitor(), LocationMonitor {
-    override val isServiceEnabled: Boolean
-        get() = TODO("Not yet implemented")
+class DefaultLocationMonitor(
+    coroutineContext: CoroutineContext
+) : DefaultServiceMonitor(coroutineContext = coroutineContext), LocationMonitor {
 
     override fun monitoringDidStart() {
         TODO("Not yet implemented")

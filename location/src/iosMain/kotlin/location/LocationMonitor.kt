@@ -19,14 +19,16 @@ package com.splendo.kaluga.location
 
 import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.ServiceMonitor
+import com.splendo.kaluga.service.ServiceMonitorState
 import platform.CoreLocation.CLLocationManager
-import platform.CoreLocation.CLLocationManagerDelegateProtocol
-import platform.darwin.NSObject
+import platform.CoreLocation.kCLAuthorizationStatusDenied
+import platform.CoreLocation.kCLAuthorizationStatusRestricted
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A [ServiceMonitor] that monitors whether the location service is enabled
  */
-actual interface LocationMonitor : ServiceMonitor {
+actual interface LocationMonitor {
 
     /**
      * Builder for creating a [LocationMonitor]
@@ -39,8 +41,10 @@ actual interface LocationMonitor : ServiceMonitor {
          * Creates the [LocationMonitor]
          * @return the created [LocationMonitor]
          */
-        actual fun create(): LocationMonitor = DefaultLocationMonitor(
-            locationManager = locationManager
+        actual fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor =
+            DefaultLocationMonitor(
+            locationManager = locationManager,
+            coroutineContext = coroutineContext
         )
     }
 }
@@ -49,24 +53,44 @@ actual interface LocationMonitor : ServiceMonitor {
  * Default implementation of [LocationMonitor]
  * @param locationManager the [CLLocationManager] to manage the location
  */
-class DefaultLocationMonitor(private val locationManager: CLLocationManager) : DefaultServiceMonitor(), LocationMonitor {
+class DefaultLocationMonitor(
+    private val locationManager: CLLocationManager,
+    coroutineContext: CoroutineContext
+) : DefaultServiceMonitor(coroutineContext = coroutineContext), LocationMonitor {
 
-    internal class LocationManagerDelegate(
-        private val updateState: () -> Unit
-    ) : NSObject(), CLLocationManagerDelegateProtocol {
-        override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
-            updateState()
-        }
-    }
-
-    override val isServiceEnabled: Boolean
-        get() = locationManager.locationServicesEnabled()
+    private val isUnauthorized: Boolean
+        get() = locationManager.authorizationStatus == kCLAuthorizationStatusRestricted ||
+            locationManager.authorizationStatus == kCLAuthorizationStatusDenied
 
     override fun monitoringDidStart() {
-        locationManager.delegate = LocationManagerDelegate(::updateState)
+        locationManager.delegate = if (IOSVersion.systemVersion >= IOSVersion(14)) {
+            LocationManagerDelegate.NewLocationManagerDelegate(::updateState).delegate
+        } else {
+            LocationManagerDelegate.OldLocationManagerDelegate(::updateState).delegate
+        }
+        updateState()
     }
 
     override fun monitoringDidStop() {
         locationManager.delegate = null
     }
+
+    private fun updateState() {
+        launchTakeAndChangeState {
+            {
+                if (locationManager.locationServicesEnabled) {
+                    isUnauthorizedOrDefault(ServiceMonitorStateImpl.Initialized.Enabled)
+                } else {
+                    isUnauthorizedOrDefault(ServiceMonitorStateImpl.Initialized.Disabled)
+                }
+            }
+        }
+    }
+
+    private fun isUnauthorizedOrDefault(default: ServiceMonitorState) =
+        if (isUnauthorized) {
+            ServiceMonitorStateImpl.Initialized.Unauthorized
+        } else {
+            default as ServiceMonitorStateImpl
+        }
 }

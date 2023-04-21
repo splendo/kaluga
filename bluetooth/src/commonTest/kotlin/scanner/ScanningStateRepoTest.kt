@@ -18,16 +18,17 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Idle
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Scanning
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.Disabled
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NoBluetooth.MissingPermissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
+import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.permissions.MockPermissionState
 import kotlinx.coroutines.CoroutineScope
@@ -73,6 +74,10 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
                 (state as MockPermissionState<BluetoothPermission>).allow
             }
         }
+        // DOUBLE_CHECK
+        test {
+            assertIs<ScanningState.NoBluetooth.Disabled>(it)
+        }
         test {
             assertIs<Idle>(it)
             assertEquals(emptySet(), it.discovered.filter)
@@ -102,7 +107,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         }
         mainAction {
             scanner.generateEnableSensorsActionsMock.verify()
-            scanner.isEnabled.value = true
+            scanner.bluetoothEnabledMonitor.launchTakeAndChangeState { { DefaultServiceMonitor.ServiceMonitorStateImpl.Initialized.Enabled } }
         }
         test {
             assertIs<Idle>(it)
@@ -183,7 +188,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             yieldMultiple()
             scanner.stopMonitoringPermissionsMock.verify()
             scanner.stopMonitoringHardwareEnabledMock.verify()
-
+            scanner.bluetoothEnabledMonitor.launchTakeAndChangeState { { DefaultServiceMonitor.ServiceMonitorStateImpl.Initialized.Enabled } }
             // here to debug this test potentially being unstable
             println("peek current state: ${bluetooth.scanningStateRepo.stateFlow.value}")
             delay(100)
@@ -286,7 +291,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             assertIs<Idle>(it)
         }
         mainAction {
-            scanner.isEnabled.value = false
+            scanner.bluetoothEnabledMonitor.launchTakeAndChangeState { { DefaultServiceMonitor.ServiceMonitorStateImpl.Initialized.Disabled } }
         }
 
         test {
@@ -338,7 +343,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
             assertIs<Scanning>(it)
         }
         mainAction {
-            scanner.isEnabled.value = false
+            scanner.bluetoothEnabledMonitor.launchTakeAndChangeState { { DefaultServiceMonitor.ServiceMonitorStateImpl.Initialized.Disabled } }
         }
         test {
             scanner.didStopScanningMock.verify()

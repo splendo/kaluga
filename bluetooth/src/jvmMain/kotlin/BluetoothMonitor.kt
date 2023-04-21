@@ -19,11 +19,12 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.ServiceMonitor
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A [ServiceMonitor] that monitors whether Bluetooth is enabled
  */
-actual interface BluetoothMonitor : ServiceMonitor {
+actual interface BluetoothMonitor {
 
     /**
      * Builder for creating a [BluetoothMonitor]
@@ -34,17 +35,17 @@ actual interface BluetoothMonitor : ServiceMonitor {
          * Creates the [BluetoothMonitor]
          * @return the [BluetoothMonitor] created
          */
-        actual fun create(): BluetoothMonitor = DefaultBluetoothMonitor()
+        actual fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor =
+            DefaultBluetoothMonitor(coroutineContext)
     }
 }
 
 /**
  * Default implementation of [BluetoothMonitor]
  */
-class DefaultBluetoothMonitor : DefaultServiceMonitor(), BluetoothMonitor {
-
-    override val isServiceEnabled: Boolean
-        get() = TODO("Not yet implemented")
+class DefaultBluetoothMonitor(
+    coroutineContext: CoroutineContext
+) : DefaultServiceMonitor(coroutineContext = coroutineContext), BluetoothMonitor {
 
     override fun monitoringDidStart() {
         TODO("Not yet implemented")
