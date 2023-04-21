@@ -154,6 +154,64 @@ interface MediaPlayer : VolumeController, MediaSurfaceController {
          * @return an instance of [Type] or `null` if it is not available
          */
         inline fun <reified Type : ControlType> getControlType(): Type? = controlTypes.filterIsInstance<Type>().firstOrNull()
+
+        /**
+         * Attempts to do [Play.perform] on [play] if it exists
+         * @param playbackParameters the [PlaybackState.PlaybackParameters] to play with
+         * @return `true` if play was successfully completed, `false` if [play] was empty
+         */
+        suspend fun tryPlay(playbackParameters: PlaybackState.PlaybackParameters = PlaybackState.PlaybackParameters()) = tryPerformControlType<Play> {
+            perform(playbackParameters)
+        }
+
+        /**
+         * Attempts to do [Pause.perform] on [pause] if it exists
+         * @return `true` if pause was successfully completed, `false` if [pause] was empty
+         */
+        suspend fun tryPause(): Boolean = tryPerformControlType<Pause> { perform() }
+
+        /**
+         * Attempts to do [Unpause.perform] on [unpause] if it exists
+         * @return `true` if unpause was successfully completed, `false` if [unpause] was empty
+         */
+        suspend fun tryUnpause(): Boolean = tryPerformControlType<Unpause> { perform() }
+
+        /**
+         * Attempts to do [Stop.perform] on [stop] if it exists
+         * @return `true` if stop was successfully completed, `false` if [stop] was empty
+         */
+        suspend fun tryStop(): Boolean = tryPerformControlType<Stop> { perform() }
+
+        /**
+         * Attempts to do [Seek.perform] on [seek] if it exists
+         * @return `true` if seek was successfully completed, `false` if [seek] was empty or failed to complete
+         */
+        suspend fun trySeek(duration: Duration): Boolean = tryPerformControlTypeWithResult<Seek> { perform(duration) }
+
+        /**
+         * Attempts to do [SetRate.perform] on [setRate] if it exists
+         * @return `true` if setRate was successfully completed, `false` if [setRate] was empty
+         */
+        suspend fun trySetRate(rate: Float): Boolean = tryPerformControlType<SetRate> { perform(rate) }
+
+        /**
+         * Attempts to do [SetLoopMode.perform] on [setLoopMode] if it exists
+         * @return `true` if setLoopMode was successfully completed, `false` if [setLoopMode] was empty
+         */
+        suspend fun trySetLoopMode(loopMode: PlaybackState.LoopMode): Boolean = tryPerformControlType<SetLoopMode> { perform(loopMode) }
+
+        private inline fun <reified Type : ControlType> tryPerformControlType(
+            block: Type.() -> Unit
+        ): Boolean = tryPerformControlTypeWithResult<Type> {
+            block()
+            true
+        }
+
+        private inline fun <reified Type : ControlType> tryPerformControlTypeWithResult(
+            block: Type.() -> Boolean
+        ): Boolean = getControlType<Type>()?.let {
+            block.invoke(it)
+        } ?: false
     }
 
     /**

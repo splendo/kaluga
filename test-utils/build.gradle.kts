@@ -21,6 +21,7 @@ kotlin {
                 api(project(":test-utils-keyboard"))
                 api(project(":test-utils-koin"))
                 api(project(":test-utils-location"))
+                api(project(":test-utils-media"))
                 api(project(":test-utils-permissions"))
                 api(project(":test-utils-resources"))
                 api(project(":test-utils-system"))

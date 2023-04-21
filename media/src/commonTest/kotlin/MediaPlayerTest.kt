@@ -44,6 +44,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.seconds
 
@@ -321,11 +322,11 @@ class MediaPlayerTest {
 
         val idleControls = mediaPlayer.controls.first()
         assertEquals(2, idleControls.controlTypes.size)
-        idleControls.getControlType<MediaPlayer.Controls.Seek>()!!.perform(10.seconds)
+        assertTrue(idleControls.trySeek(10.seconds))
         configuration.seekToMock.verify(eq(10.seconds))
 
         val parameters = PlaybackState.PlaybackParameters(2.0f, PlaybackState.LoopMode.LoopingForever)
-        idleControls.getControlType<MediaPlayer.Controls.Play>()!!.perform(parameters)
+        assertTrue(idleControls.tryPlay(parameters))
 
         val playControls = mediaPlayer.controls.first()
         assertEquals(5, playControls.controlTypes.size)
@@ -334,15 +335,15 @@ class MediaPlayerTest {
         assertEquals(parameters.rate, playControls.getControlType<MediaPlayer.Controls.SetRate>()!!.currentRate)
         assertEquals(parameters.loopMode, playControls.getControlType<MediaPlayer.Controls.SetLoopMode>()!!.currentLoopMode)
         configuration.seekToMock.resetCalls()
-        playControls.getControlType<MediaPlayer.Controls.Seek>()!!.perform(20.seconds)
+        assertTrue(playControls.trySeek(20.seconds))
         configuration.seekToMock.verify(eq(20.seconds))
 
-        playControls.getControlType<MediaPlayer.Controls.SetRate>()!!.perform(1.0f)
+        assertTrue(playControls.trySetRate(1.0f))
         val updatedPlayControls = mediaPlayer.controls.first()
         assertEquals(5, updatedPlayControls.controlTypes.size)
         assertEquals(1.0f, updatedPlayControls.getControlType<MediaPlayer.Controls.SetRate>()!!.currentRate)
 
-        updatedPlayControls.getControlType<MediaPlayer.Controls.SetLoopMode>()!!.perform(PlaybackState.LoopMode.NotLooping)
+        assertTrue(updatedPlayControls.trySetLoopMode(PlaybackState.LoopMode.NotLooping))
         val updatedPlayControls2 = mediaPlayer.controls.first()
         assertEquals(5, updatedPlayControls2.controlTypes.size)
         assertEquals(PlaybackState.LoopMode.NotLooping, updatedPlayControls2.getControlType<MediaPlayer.Controls.SetLoopMode>()!!.currentLoopMode)
@@ -353,13 +354,13 @@ class MediaPlayerTest {
         assertEquals(3, completedControls.controlTypes.size)
         assertNotNull(completedControls.getControlType<MediaPlayer.Controls.Play>())
         configuration.seekToMock.resetCalls()
-        completedControls.getControlType<MediaPlayer.Controls.Seek>()!!.perform(30.seconds)
+        assertTrue(completedControls.trySeek(30.seconds))
         configuration.seekToMock.verify(eq(30.seconds))
-        completedControls.getControlType<MediaPlayer.Controls.Stop>()!!.perform()
+        assertTrue(completedControls.tryStop())
 
         val stopControls = mediaPlayer.controls.first()
         assertEquals(1, stopControls.controlTypes.size)
-        val didPlay = async { stopControls.getControlType<MediaPlayer.Controls.Play>()!!.perform(parameters) }
+        val didPlay = async { assertTrue(stopControls.tryPlay(parameters)) }
 
         repo.first { it is PlaybackState.Initialized }
         repo.takeAndChangeState(PlaybackState.Initialized::class) { it.prepared(MockPlayableMedia(source)) }
@@ -391,39 +392,39 @@ class MediaPlayerTest {
         val mediaPlayer = DefaultMediaPlayer({ repo }, coroutineContext)
         val playControls = mediaPlayer.controls.first()
         assertEquals(5, playControls.controlTypes.size)
-        playControls.getControlType<MediaPlayer.Controls.Pause>()!!.perform()
+        assertTrue(playControls.tryPause())
 
         val pauseControls = mediaPlayer.controls.first()
         assertEquals(6, pauseControls.controlTypes.size)
         assertNotNull(pauseControls.getControlType<MediaPlayer.Controls.Stop>())
         assertEquals(parameters.rate, pauseControls.getControlType<MediaPlayer.Controls.SetRate>()!!.currentRate)
         assertEquals(parameters.loopMode, pauseControls.getControlType<MediaPlayer.Controls.SetLoopMode>()!!.currentLoopMode)
-        pauseControls.getControlType<MediaPlayer.Controls.Seek>()!!.perform(10.seconds)
+        assertTrue(pauseControls.trySeek(10.seconds))
         configuration.seekToMock.verify(eq(10.seconds))
-        pauseControls.getControlType<MediaPlayer.Controls.SetRate>()!!.perform(1.0f)
+        assertTrue(pauseControls.trySetRate(1.0f))
 
         val updatedPauseControls = mediaPlayer.controls.first()
         assertEquals(6, updatedPauseControls.controlTypes.size)
         assertEquals(1.0f, updatedPauseControls.getControlType<MediaPlayer.Controls.SetRate>()!!.currentRate)
 
-        updatedPauseControls.getControlType<MediaPlayer.Controls.SetLoopMode>()!!.perform(PlaybackState.LoopMode.NotLooping)
+        assertTrue(updatedPauseControls.trySetLoopMode(PlaybackState.LoopMode.NotLooping))
         val updatedPauseControls2 = mediaPlayer.controls.first()
         assertEquals(6, updatedPauseControls2.controlTypes.size)
         assertEquals(PlaybackState.LoopMode.NotLooping, updatedPauseControls2.getControlType<MediaPlayer.Controls.SetLoopMode>()!!.currentLoopMode)
 
         configuration.seekToMock.resetCalls()
-        updatedPauseControls2.getControlType<MediaPlayer.Controls.Unpause>()!!.perform()
+        assertTrue(updatedPauseControls2.tryUnpause())
 
         val unpausedPlayControls = mediaPlayer.controls.first()
         assertEquals(5, unpausedPlayControls.controlTypes.size)
         assertEquals(1.0f, unpausedPlayControls.getControlType<MediaPlayer.Controls.SetRate>()!!.currentRate)
         assertEquals(PlaybackState.LoopMode.NotLooping, unpausedPlayControls.getControlType<MediaPlayer.Controls.SetLoopMode>()!!.currentLoopMode)
         configuration.seekToMock.verify(rule = never())
-        unpausedPlayControls.getControlType<MediaPlayer.Controls.Pause>()!!.perform()
+        assertTrue(unpausedPlayControls.tryPause())
 
         val pausedAgainControls = mediaPlayer.controls.first()
         assertEquals(6, pausedAgainControls.controlTypes.size)
-        pausedAgainControls.getControlType<MediaPlayer.Controls.Play>()!!.perform(parameters)
+        assertTrue(pausedAgainControls.tryPlay(parameters))
         configuration.seekToMock.verify(eq(ZERO), times = 2)
 
         val resetPlayControls = mediaPlayer.controls.first()

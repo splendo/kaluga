@@ -106,8 +106,8 @@ class MediaViewModel(
         KalugaButton.Plain("\u23F5", ButtonStyles.mediaButton, controls.play != null || controls.unpause != null) {
             coroutineScope.launch {
                 when {
-                    controls.unpause != null -> controls.unpause?.perform?.invoke()
-                    controls.play != null -> controls.play?.perform()
+                    controls.unpause != null -> controls.tryUnpause()
+                    controls.play != null -> controls.tryPlay()
                     else -> {}
                 }
             }
@@ -116,13 +116,13 @@ class MediaViewModel(
 
     val pauseButton = _controls.map {
         KalugaButton.Plain("\u23F8", ButtonStyles.mediaButton, it.pause != null) {
-            coroutineScope.launch { it.pause?.perform?.invoke() }
+            coroutineScope.launch { it.tryPause() }
         }
     }.toUninitializedObservable(coroutineScope)
 
     val stopButton = _controls.map {
         KalugaButton.Plain("\u23F9", ButtonStyles.mediaButton, it.stop != null) {
-            coroutineScope.launch { it.stop?.perform?.invoke() }
+            coroutineScope.launch { it.tryStop() }
         }
     }.toUninitializedObservable(coroutineScope)
 
@@ -179,7 +179,7 @@ class MediaViewModel(
 
     fun seekTo(progress: Double) {
         coroutineScope.launch {
-            _controls.value.seek?.perform?.invoke(_totalDuration.value * progress)
+            _controls.value.trySeek(_totalDuration.value * progress)
         }
     }
 
@@ -257,7 +257,7 @@ class MediaViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        mediaPlayer.end()
+        mediaPlayer.close()
         mediaPlayerDispatcher.close()
     }
 

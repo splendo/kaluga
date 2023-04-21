@@ -22,9 +22,11 @@ import com.splendo.kaluga.media.MediaPlayer.Controls
 import com.splendo.kaluga.media.MediaSource
 import com.splendo.kaluga.media.MediaSurfaceController
 import com.splendo.kaluga.media.PlayableMedia
+import com.splendo.kaluga.media.PlaybackError
 import com.splendo.kaluga.media.PlaybackState
 import com.splendo.kaluga.media.VolumeController
 import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -67,6 +69,12 @@ class MockMediaPlayer(
      * A [com.splendo.kaluga.test.base.mock.MethodMock] for [close]
      */
     val endMock = this::close.mock()
+
+    init {
+        forceStartMock.on().doThrow(PlaybackError.Unknown)
+        awaitCompletionMock.on().doThrow(PlaybackError.Unknown)
+        resetMock.on().doThrow(PlaybackError.PlaybackHasEnded)
+    }
 
     override suspend fun initializeFor(source: MediaSource): Unit = initializeForMock.call(source)
 
