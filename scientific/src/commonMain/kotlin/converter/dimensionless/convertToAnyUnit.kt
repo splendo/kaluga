@@ -17,25 +17,69 @@
 
 package com.splendo.kaluga.scientific.converter.dimensionless
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
+import com.splendo.kaluga.scientific.unit.Dimensionless
 import com.splendo.kaluga.scientific.unit.ScientificUnit
+import kotlin.jvm.JvmName
 
+@JvmName("valueTimesDimensionless")
 infix operator fun <
-    Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>,
-    Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>
+    Quantity : PhysicalQuantity.PhysicalQuantityWithDimension,
+    Unit : AbstractScientificUnit<Quantity>,
+    DimensionlessUnit : Dimensionless,
     > ScientificValue<Quantity, Unit>.times(
-    modifier: ScientificValue<PhysicalQuantity.Dimensionless, Modifier>
-) = unit.byMultiplying(this, modifier, ::DefaultScientificValue)
+    value: ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>
+) = timesDimensionless(value, ::DefaultScientificValue)
 
+@JvmName("dimensionlessTimesValue")
 infix operator fun <
-    Quantity : PhysicalQuantity,
+    Quantity : PhysicalQuantity.PhysicalQuantityWithDimension,
+    Unit : AbstractScientificUnit<Quantity>,
+    DimensionlessUnit : Dimensionless,
+    > ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>.times(
+    value: ScientificValue<Quantity, Unit>
+) = value.timesDimensionless(this, ::DefaultScientificValue)
+
+fun <
+    Quantity : PhysicalQuantity.PhysicalQuantityWithDimension,
     Unit : ScientificUnit<Quantity>,
-    Modifier : ScientificUnit<PhysicalQuantity.Dimensionless>
+    DimensionlessUnit : Dimensionless,
+    Value : ScientificValue<Quantity, Unit>
+    > ScientificValue<Quantity, Unit>.timesDimensionless(
+    modifier: ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>,
+    factory: (Decimal, Unit) -> Value
+) = unit.byMultiplying(this, modifier, factory)
+
+@JvmName("valueDivDimensionless")
+infix operator fun <
+    Quantity : PhysicalQuantity.PhysicalQuantityWithDimension,
+    Unit : AbstractScientificUnit<Quantity>,
+    DimensionlessUnit : Dimensionless,
     > ScientificValue<Quantity, Unit>.div(
-    modifier: ScientificValue<PhysicalQuantity.Dimensionless, Modifier>
-) = unit.byDividing(this, modifier, ::DefaultScientificValue)
+    value: ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>
+) = divDimensionless(value, ::DefaultScientificValue)
+
+@JvmName("dimensionlessDivValue")
+infix operator fun <
+    Quantity : PhysicalQuantity.PhysicalQuantityWithDimension,
+    Unit : AbstractScientificUnit<Quantity>,
+    DimensionlessUnit : Dimensionless,
+    > ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>.div(
+    value: ScientificValue<Quantity, Unit>
+) = value.divDimensionless(this, ::DefaultScientificValue)
+
+fun <
+    Quantity : PhysicalQuantity.PhysicalQuantityWithDimension,
+    Unit : ScientificUnit<Quantity>,
+    DimensionlessUnit : Dimensionless,
+    Value : ScientificValue<Quantity, Unit>
+    > ScientificValue<Quantity, Unit>.divDimensionless(
+    modifier: ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>,
+    factory: (Decimal, Unit) -> Value
+) = unit.byDividing(this, modifier, factory)
