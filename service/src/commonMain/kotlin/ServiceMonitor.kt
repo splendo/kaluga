@@ -17,68 +17,119 @@
 
 package com.splendo.kaluga.service
 
+import com.splendo.kaluga.base.state.ColdStateFlowRepo
+import com.splendo.kaluga.base.state.KalugaState
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlin.coroutines.CoroutineContext
 
-/**
- * Interface to monitor whether a given service is enabled
- */
-interface ServiceMonitor {
-    /**
-     * If `true` the service is currently enabled.
-     */
-    val isServiceEnabled: Boolean
-
-    /**
-     * A [Flow] representing the enabled status of the service
-     */
-    val isEnabled: Flow<Boolean>
-
-    /**
-     * When called, the [ServiceMonitor] will start monitoring for changes to [isServiceEnabled]
-     */
-    fun startMonitoring()
-
-    /**
-     * When called, the [ServiceMonitor] will stop monitoring for changes to [isServiceEnabled]
-     */
-    fun stopMonitoring()
+interface ServiceMonitor<S: ServiceMonitorState> : StateFlow<S> {
+    val isEnabled: Boolean
+    val isEnabledFlow: Flow<Boolean>
 }
+
+// /**
+//  * Interface to monitor whether a given service is enabled
+//  */
+// interface ServiceMonitor {
+//     /**
+//      * If `true` the service is currently enabled.
+//      */
+//     val isServiceEnabled: Boolean
+//
+//     /**
+//      * A [Flow] representing the enabled status of the service
+//      */
+//     val isEnabled: Flow<Boolean>
+//
+//     /**
+//      * When called, the [ServiceMonitor] will start monitoring for changes to [isServiceEnabled]
+//      */
+//     fun startMonitoring()
+//
+//     /**
+//      * When called, the [ServiceMonitor] will stop monitoring for changes to [isServiceEnabled]
+//      */
+//     fun stopMonitoring()
+// }
 
 /**
  * Default implementation of [ServiceMonitor].
  * @param logger The [Logger] to log and changes to.
+ * @param coroutineContext CoroutineContext to flow on.
  */
-abstract class DefaultServiceMonitor(protected val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)) : ServiceMonitor {
+abstract class DefaultServiceMonitor(
+    protected val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
+    coroutineContext: CoroutineContext
+) : ColdStateFlowRepo<DefaultServiceMonitor.ServiceMonitorStateImpl>(
+    coroutineContext = coroutineContext,
+    initChangeStateWithRepo = { state, repo ->
+        debug("DefaultServiceMonitor") { "initChangeStateWithRepo with $state" }
+        (repo as DefaultServiceMonitor).run {
+            monitoringDidStart()
+        }
+        when (state) {
+            is ServiceMonitorState.Initialized,
+            is ServiceMonitorState.NotInitialized,
+            is ServiceMonitorState.NotSupported -> state.remain()
+            else -> throw IllegalStateException("ServiceMonitorStateRepo's state cannot be null or $state")
+        }
+    },
+    deinitChangeStateWithRepo = { state, repo ->
+        debug("DefaultServiceMonitor") { "deinitChangeStateWithRepo with $state" }
+        (repo as DefaultServiceMonitor).run {
+            monitoringDidStop()
+        }
+        when (state) {
+            is ServiceMonitorState.Initialized -> {
+                { ServiceMonitorStateImpl.NotInitialized }
+            }
+            is ServiceMonitorState.NotInitialized,
+            is ServiceMonitorState.NotSupported -> state.remain()
+            else -> throw IllegalStateException("ServiceMonitorStateRepo's state cannot be null or $state")
 
-    protected open val TAG: String = this::class.simpleName ?: "ServiceMonitor"
+        }
+    },
+    firstState = { ServiceMonitorStateImpl.NotInitialized }
+), ServiceMonitor<DefaultServiceMonitor.ServiceMonitorStateImpl> {
 
-    private val _isEnabled = MutableStateFlow<Boolean?>(null)
-    override val isEnabled get() = _isEnabled.filterNotNull()
+    sealed class ServiceMonitorStateImpl : KalugaState, ServiceMonitorState {
+        sealed class Initialized : ServiceMonitorStateImpl(), ServiceMonitorState.Initialized {
+            object Enabled : Initialized(), ServiceMonitorState.Initialized.Enabled
+            object Disabled : Initialized(), ServiceMonitorState.Initialized.Disabled
+            object Unauthorized : Initialized(), ServiceMonitorState.Initialized.Unauthorized
+        }
+            object NotInitialized : ServiceMonitorStateImpl(), ServiceMonitorState.NotInitialized
 
-    final override fun startMonitoring() {
-        logger.debug(TAG) { "Start monitoring service state ($isServiceEnabled)" }
-        updateState()
-        monitoringDidStart()
+            object NotSupported : ServiceMonitorStateImpl(), ServiceMonitorState.NotSupported
     }
 
-    protected abstract fun monitoringDidStart()
+    protected val TAG: String = this::class.simpleName ?: "ServiceMonitor"
 
-    final override fun stopMonitoring() {
-        logger.debug(TAG) { "Stop monitoring service state" }
-        _isEnabled.value = null
-        monitoringDidStop()
+    override val replayCache: List<ServiceMonitorStateImpl>
+        get() = stateFlow.replayCache
+
+    override val value: ServiceMonitorStateImpl
+        get() = stateFlow.value
+
+    override val isEnabled: Boolean
+        get() = value is ServiceMonitorStateImpl.Initialized.Enabled
+
+    override val isEnabledFlow: Flow<Boolean> = map {
+        it is ServiceMonitorStateImpl.Initialized.Enabled
+    }.distinctUntilChanged()
+
+    open fun monitoringDidStart() {
+        debug(TAG) { "Start monitoring service state (${stateFlow.value})" }
     }
 
-    protected abstract fun monitoringDidStop()
-
-    protected fun updateState() {
-        logger.debug(TAG) { "updateState isLocationEnabled = $isServiceEnabled" }
-        _isEnabled.value = isServiceEnabled
+    open fun monitoringDidStop() {
+        debug(TAG) { "Stop monitoring service state (${stateFlow.value})" }
     }
 }
