@@ -33,7 +33,7 @@ actual data class KalugaLocale internal constructor(internal val locale: java.ut
         actual fun createLocale(language: String): KalugaLocale = KalugaLocale(
             java.util.Locale.Builder()
                 .setLanguage(language)
-                .build()
+                .build(),
         )
 
         /**
@@ -46,7 +46,7 @@ actual data class KalugaLocale internal constructor(internal val locale: java.ut
             java.util.Locale.Builder()
                 .setLanguage(language)
                 .setRegion(country)
-                .build()
+                .build(),
         )
 
         /**
@@ -61,7 +61,7 @@ actual data class KalugaLocale internal constructor(internal val locale: java.ut
                 .setLanguage(language)
                 .setRegion(country)
                 .setVariant(variant)
-                .build()
+                .build(),
         )
 
         /**
