@@ -333,7 +333,7 @@ public final class com/splendo/kaluga/scientific/PhysicalQuantity$Momentum : com
 public abstract class com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension : com/splendo/kaluga/scientific/PhysicalQuantity {
 	public static final field Companion Lcom/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension$Companion;
 	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public static final fun write$Self (Lcom/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/splendo/kaluga/scientific/PhysicalQuantity$PhysicalQuantityWithDimension$Companion {
