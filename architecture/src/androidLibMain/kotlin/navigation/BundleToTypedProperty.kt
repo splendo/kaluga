@@ -380,3 +380,17 @@ fun <T : Any> Bundle.asTypeOfOrNull(serializer: KSerializer<T>): T? = toTypedPro
  */
 @JvmName("asNullableTypeOfOrNull")
 fun <T> Bundle.asTypeOfOrNull(serializer: KSerializer<T>): T? = toTypedPropertyOrNull(NavigationBundleSpecType.SerializedType(serializer))
+
+/**
+ * Converts a [Bundle] to a [Unit].
+ * Requires that the [Bundle] is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.UnitType]
+ * @return The [String] stored in the bundle.
+ * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.UnitType].
+ */
+fun Bundle.asUnit(): Unit = toTypedProperty(NavigationBundleSpecType.UnitType)
+
+/**
+ * Converts a [Bundle] to a [Unit] if it is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType.UnitType] either directly or wrapped by [NavigationBundleSpecType.OptionalType].
+ * @return The [Unit] stored in the bundle or null if no such value was found.
+ */
+fun Bundle.asUnitNull(): Unit? = toTypedPropertyOrNull(NavigationBundleSpecType.UnitType)

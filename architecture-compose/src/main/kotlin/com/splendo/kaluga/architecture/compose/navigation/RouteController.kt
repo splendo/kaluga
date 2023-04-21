@@ -191,10 +191,10 @@ class BottomSheetSheetContentRouteController(
 
     override fun back(result: Route.Result): Boolean {
         val navHostController = bottomSheetNavigatorState.value?.sheetContentNavHostController
-        val rootRoute = NavDestination.createRoute(ROOT_VIEW).hashCode()
-        // If navigating back to anything but the ROOT_VIEW, just go back
-        // Otherwise, close the BottomSheet
-        return if (navHostController != null && navHostController.backQueue.isNotEmpty() && navHostController.previousBackStackEntry?.destination?.id != rootRoute) {
+        val rootId = NavDestination("").apply {
+            route = ROOT_VIEW
+        }.id
+        return if (navHostController != null && navHostController.backQueue.isNotEmpty() && navHostController.previousBackStackEntry?.destination?.id != rootId) {
             navHostController.previousBackStackEntry?.setResult(result)
             navHostController.popBackStack()
         } else {

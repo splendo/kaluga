@@ -661,15 +661,48 @@ fun <T> NavHostController.HandleResultOfTypeOrNull(
     onResult: T?.() -> Unit,
 ) = HandleResult(retain) { asTypeOfOrNull(serializer).onResult() }
 
+/**
+ * Handles a [Route.Result.Data] matching a Unit
+ * Requires that the [Route.Result.Data.bundle] is described by a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.UnitType]
+ * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
+ * @param onResult Method for handling the result
+ * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.UnitType].
+ */
+@Composable
+fun NavHostController.HandleUnitResult(
+    retain: Boolean = false,
+    onResult: () -> Unit,
+) = HandleResult(retain) {
+    asUnit()
+    onResult()
+}
+
+/**
+ * Handles a [Route.Result.Data] matching a Unit or `null`
+ * Requires that the [Route.Result.Data.bundle] is described by a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.UnitType] either directly or wrapped by [NavigationBundleSpecType.OptionalType]
+ * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
+ * @param onResult Method for handling the result
+ */
+@Composable
+fun NavHostController.HandleUnitOrNullResult(
+    retain: Boolean = false,
+    onResult: () -> Unit,
+) = HandleResult(retain) {
+    asUnitNull()
+    onResult()
+}
+
 @Composable
 internal fun NavHostController.HandleResult(retain: Boolean = false, onResult: Bundle.() -> Unit) {
     // Check if we have a result in the current BackStack.
     val result = currentBackStackEntry?.savedStateHandle?.getStateFlow<Bundle?>(Route.Result.KEY, null)?.collectAsState()
     result?.value?.let {
-        onResult(it)
-        // If retain is set we keep the result, otherwise clean up.
-        if (!retain) {
-            currentBackStackEntry?.savedStateHandle?.remove<Bundle>(Route.Result.KEY)
-        }
+        try {
+            onResult(it)
+            // If retain is set we keep the result, otherwise clean up.
+            if (!retain) {
+                currentBackStackEntry?.savedStateHandle?.remove<Bundle>(Route.Result.KEY)
+            }
+        } catch (e: BundleConversionError) {}
     }
 }
