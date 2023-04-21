@@ -22,6 +22,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
 import com.splendo.kaluga.bluetooth.scanner.Scanner
+import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
@@ -115,12 +116,7 @@ class MockBaseScanner(
         ): BaseScanner = createMock.call(settings, coroutineScope)
     }
 
-    /**
-     * Manages bluetooth enabled state
-     */
-    val isEnabled = MutableStateFlow(initialBluetoothEnabled)
-
-    public override val bluetoothEnabledMonitor = MockBluetoothMonitor(isEnabled)
+    public override val bluetoothEnabledMonitor = MockBluetoothMonitor(initialBluetoothEnabled, coroutineContext)
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [startMonitoringPermissions]
@@ -194,7 +190,7 @@ class MockBaseScanner(
 
     override suspend fun didStartScanning(filter: Set<UUID>): Unit = didStartScanningMock.call(filter)
 
-    override suspend fun didStopScanning(): Unit = didStopScanningMock.call()
+    override suspend fun didStopScanning() = didStopScanningMock.call()
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
 

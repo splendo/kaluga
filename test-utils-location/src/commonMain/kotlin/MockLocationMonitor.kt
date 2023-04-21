@@ -19,9 +19,9 @@ package com.splendo.kaluga.test.location
 
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.test.service.MockServiceMonitor
-import kotlinx.coroutines.flow.StateFlow
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Mock implementation of [LocationMonitor]
  */
-class MockLocationMonitor(override val isEnabled: StateFlow<Boolean>) : MockServiceMonitor(), LocationMonitor
+class MockLocationMonitor(initialState: Boolean, coroutineContext: CoroutineContext) : MockServiceMonitor(initialState, coroutineContext), LocationMonitor

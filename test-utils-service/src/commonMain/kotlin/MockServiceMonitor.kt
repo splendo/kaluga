@@ -17,29 +17,44 @@
 
 package com.splendo.kaluga.test.service
 
+import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.ServiceMonitor
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
-import kotlinx.coroutines.flow.StateFlow
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Mock implementation of [ServiceMonitor]
  */
-abstract class MockServiceMonitor : ServiceMonitor {
-    abstract override val isEnabled: StateFlow<Boolean>
-    override val isServiceEnabled: Boolean
-        get() = isEnabled.value
+abstract class MockServiceMonitor(
+    private val initialState: Boolean,
+    coroutineContext: CoroutineContext
+) : DefaultServiceMonitor(coroutineContext = coroutineContext) {
 
     /**
      * [com.splendo.kaluga.test.base.mock.MethodMock] for [startMonitoring]
      */
-    val startMonitoringMock = ::startMonitoring.mock()
+    val startMonitoringMock = ::monitoringDidStart.mock()
 
     /**
      * [com.splendo.kaluga.test.base.mock.MethodMock] for [stopMonitoring]
      */
-    val stopMonitoringMock = ::stopMonitoring.mock()
+    val stopMonitoringMock = ::monitoringDidStop.mock()
 
-    override fun startMonitoring(): Unit = startMonitoringMock.call()
-    override fun stopMonitoring(): Unit = stopMonitoringMock.call()
+    override fun monitoringDidStart() {
+        super.monitoringDidStart()
+        launchTakeAndChangeState {
+            if (initialState) {
+                { ServiceMonitorStateImpl.Initialized.Enabled }
+            } else {
+                { ServiceMonitorStateImpl.Initialized.Disabled }
+            }
+        }
+        startMonitoringMock.call()
+    }
+    override fun monitoringDidStop() {
+        super.monitoringDidStop()
+        launchTakeAndChangeState { { ServiceMonitorStateImpl.Initialized.Disabled } }
+        stopMonitoringMock.call()
+    }
 }

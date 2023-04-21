@@ -27,7 +27,6 @@ import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 
 class MockLocationManager(
     override val locationPermission: LocationPermission,
@@ -73,7 +72,10 @@ class MockBaseLocationManager(
      * @param initialLocationEnabled Sets the initial state of location
      * @param setupMocks If `true` sets up [createMock] to build [MockBaseLocationManager]
      */
-    class Builder(val initialLocationEnabled: Boolean, setupMocks: Boolean = true) : BaseLocationManager.Builder {
+    class Builder(
+        private val initialLocationEnabled: Boolean,
+        setupMocks: Boolean = true
+    ) : BaseLocationManager.Builder {
 
         /**
          * Ths list of built [MockBaseLocationManager]
@@ -102,12 +104,7 @@ class MockBaseLocationManager(
         ): BaseLocationManager = createMock.call(settings, coroutineScope)
     }
 
-    /**
-     * Sets whether location is enabled
-     */
-    val locationEnabled = MutableStateFlow(initialLocationEnabled)
-
-    override val locationMonitor = MockLocationMonitor(locationEnabled)
+    public override val locationMonitor = MockLocationMonitor(initialLocationEnabled, coroutineContext)
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [startMonitoringPermissions]
