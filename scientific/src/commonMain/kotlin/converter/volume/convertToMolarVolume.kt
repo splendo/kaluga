@@ -32,25 +32,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricVolumeDivAmountOfSubstance")
 infix operator fun <VolumeUnit : MetricVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = (unit per amountOfSubstance.unit).molarVolume(this, amountOfSubstance)
 
 @JvmName("imperialVolumeDivAmountOfSubstance")
 infix operator fun <VolumeUnit : ImperialVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = (unit per amountOfSubstance.unit).molarVolume(this, amountOfSubstance)
 
 @JvmName("ukImperialVolumeDivAmountOfSubstance")
 infix operator fun <VolumeUnit : UKImperialVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = (unit per amountOfSubstance.unit).molarVolume(this, amountOfSubstance)
 
 @JvmName("usCustomaryVolumeDivAmountOfSubstance")
 infix operator fun <VolumeUnit : USCustomaryVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = (unit per amountOfSubstance.unit).molarVolume(this, amountOfSubstance)
 
 @JvmName("volumeDivAmountOfSubstance")
 infix operator fun <VolumeUnit : Volume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = (CubicMeter per amountOfSubstance.unit).molarVolume(this, amountOfSubstance)

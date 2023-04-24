@@ -78,7 +78,7 @@ fun <Row : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: Navigatio
             mapValue(row.key ?: row.javaClass.simpleName, row.associatedType)?.let {
                 Pair(row, it)
             } ?: throw BundleConversionError()
-        }
+        },
     )
 }
 

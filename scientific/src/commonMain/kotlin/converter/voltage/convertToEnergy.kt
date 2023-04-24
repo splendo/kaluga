@@ -32,5 +32,5 @@ infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.times(charg
 
 @JvmName("voltageTimesCharge")
 infix operator fun <ChargeUnit : ElectricCharge, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.times(
-    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
 ) = charge * this

@@ -35,10 +35,10 @@ import kotlin.math.ln
 fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     TimeUnit : Time,
-    RadioactivityUnit : Radioactivity
+    RadioactivityUnit : Radioactivity,
     > RadioactivityUnit.radioactivity(
     substance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
-    halfLife: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    halfLife: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = radioactivity(substance, halfLife, ::DefaultScientificValue)
 
 @JvmName("radioactivityFromSubstanceAndHalfLife")
@@ -46,16 +46,16 @@ fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     TimeUnit : Time,
     RadioactivityUnit : Radioactivity,
-    Value : ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>
+    Value : ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>,
     > RadioactivityUnit.radioactivity(
     substance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
     halfLife: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, RadioactivityUnit) -> Value
+    factory: (Decimal, RadioactivityUnit) -> Value,
 ) = byDividing(
     DefaultScientificValue(
         substance.decimalValue * AvogadroConstant * ln(2.0).toDecimal(),
-        substance.unit
+        substance.unit,
     ),
     halfLife,
-    factory
+    factory,
 )

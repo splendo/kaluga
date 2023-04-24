@@ -38,14 +38,14 @@ class ExampleActivity : KalugaViewModelActivity<ExampleViewModel>(R.layout.activ
                 when (action) {
                     ExampleTabNavigation.FeatureList -> NavigationSpec.Fragment(
                         R.id.example_fragment,
-                        createFragment = { FeaturesListFragment() }
+                        createFragment = { FeaturesListFragment() },
                     )
                     ExampleTabNavigation.Info -> NavigationSpec.Fragment(
                         R.id.example_fragment,
-                        createFragment = { InfoFragment() }
+                        createFragment = { InfoFragment() },
                     )
                 }
-            }
+            },
         )
     }
 

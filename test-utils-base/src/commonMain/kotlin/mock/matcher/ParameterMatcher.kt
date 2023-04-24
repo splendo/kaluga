@@ -72,13 +72,22 @@ sealed class ParameterMatcher<in T> : ParameterMatcherOrCaptor<T>, Comparable<Pa
          * This is stronger than [any] but weaker than [isInstance].
          */
         fun <T : Any> notNull(): ParameterMatcher<T?> = AnyNotNullMatcher()
+
         /**
          * Creates a [ParameterMatcher] that matches anything
          * This is the weakest [ParameterMatcher].
          */
         fun <T> any(): ParameterMatcher<T> = AnyMatcher()
 
-        private val priorityOrder = setOf(EqualsMatcher::class, OneOfMatcher::class, ConditionMatcher::class, NotEqualsMatcher::class, SubClassMatcher::class, AnyNotNullMatcher::class, AnyMatcher::class)
+        private val priorityOrder = setOf(
+            EqualsMatcher::class,
+            OneOfMatcher::class,
+            ConditionMatcher::class,
+            NotEqualsMatcher::class,
+            SubClassMatcher::class,
+            AnyNotNullMatcher::class,
+            AnyMatcher::class,
+        )
     }
 
     override fun compareTo(other: ParameterMatcher<*>): Int = priorityOrder.indexOf(this::class).compareTo(priorityOrder.indexOf(other::class))

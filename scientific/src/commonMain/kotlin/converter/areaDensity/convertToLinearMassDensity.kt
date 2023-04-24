@@ -37,25 +37,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAreaDensityTimesMetricLength")
 infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = (unit.weight per (1(unit.per) / length).unit).linearMassDensity(this, length)
 
 @JvmName("imperialAreaDensityTimesImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = (unit.weight per (1(unit.per) / length).unit).linearMassDensity(this, length)
 
 @JvmName("ukImperialAreaDensityTimesImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = (unit.weight per (1(unit.per) / length).unit).linearMassDensity(this, length)
 
 @JvmName("usCustomaryAreaDensityTimesImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = (unit.weight per (1(unit.per) / length).unit).linearMassDensity(this, length)
 
 @JvmName("areaDensityTimesLength")
 infix operator fun <AreaDensityUnit : AreaDensity, LengthUnit : Length> ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = (Kilogram per Meter).linearMassDensity(this, length)

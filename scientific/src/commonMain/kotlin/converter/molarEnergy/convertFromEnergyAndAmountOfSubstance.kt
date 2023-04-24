@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     EnergyUnit : Energy,
     AmountOfSubstanceUnit : AmountOfSubstance,
-    MolarEnergyUnit : MolarEnergy
+    MolarEnergyUnit : MolarEnergy,
     > MolarEnergyUnit.molarEnergy(
     energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = molarEnergy(energy, amountOfSubstance, ::DefaultScientificValue)
 
 @JvmName("molarEnergyFromEnergyAndAmountOfSubstance")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     AmountOfSubstanceUnit : AmountOfSubstance,
     MolarEnergyUnit : MolarEnergy,
-    Value : ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>,
     > MolarEnergyUnit.molarEnergy(
     energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
     amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
-    factory: (Decimal, MolarEnergyUnit) -> Value
+    factory: (Decimal, MolarEnergyUnit) -> Value,
 ) = byDividing(energy, amountOfSubstance, factory)

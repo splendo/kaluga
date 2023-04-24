@@ -126,11 +126,11 @@ class PressureUnitTest {
         assertEqualScientificValue(1(USTonSquareFoot), 2(USTonSquareFoot x Second) / 2(Second))
         assertEqualScientificValue(
             1(ImperialTonSquareFoot),
-            2(ImperialTonSquareFoot x Second) / 2(Second)
+            2(ImperialTonSquareFoot x Second) / 2(Second),
         )
         assertEqualScientificValue(
             1(Pascal),
-            2((Pascal x Second) as DynamicViscosity) / 2(Second)
+            2((Pascal x Second) as DynamicViscosity) / 2(Second),
         )
     }
 
@@ -142,33 +142,33 @@ class PressureUnitTest {
         assertEqualScientificValue(
             1(PoundSquareFoot),
             (2 * ImperialStandardGravityAcceleration.value)(FootPoundal) / 2(CubicFoot),
-            8
+            8,
         )
         assertEqualScientificValue(1(PoundSquareFoot), 2(FootPoundForce) / 2(CubicFoot))
         assertEqualScientificValue(1(PoundSquareInch), 2(InchPoundForce) / 2(CubicInch))
         assertEqualScientificValue(
             1(PoundSquareInch),
-            2(InchPoundForce).convert(WattHour) / 2(CubicInch)
+            2(InchPoundForce).convert(WattHour) / 2(CubicInch),
         )
         assertEqualScientificValue(
             1(PoundSquareInch.ukImperial),
             2(InchPoundForce) / 2(CubicInch.ukImperial),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(PoundSquareInch.usCustomary),
             2(InchPoundForce) / 2(CubicInch.usCustomary),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(PoundSquareInch.ukImperial),
             2(InchPoundForce).convert(WattHour) / 2(CubicInch.ukImperial),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(PoundSquareInch.usCustomary),
             2(InchPoundForce).convert(WattHour) / 2(CubicInch.usCustomary),
-            8
+            8,
         )
         assertEqualScientificValue(1(Pascal), 2(Joule) / 2(CubicMeter).convert(CubicFoot), 8)
     }
@@ -181,19 +181,19 @@ class PressureUnitTest {
         assertEqualScientificValue(
             1(PoundSquareFoot),
             (2 * ImperialStandardGravityAcceleration.value)(Poundal) / 2(SquareFoot),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(PoundSquareInch),
             (2 * ImperialStandardGravityAcceleration.value)(Poundal) / 2(SquareInch),
-            8
+            8,
         )
         assertEqualScientificValue(1(PoundSquareFoot), 2(PoundForce) / 2(SquareFoot))
         assertEqualScientificValue(1(PoundSquareInch), 2(PoundForce) / 2(SquareInch))
         assertEqualScientificValue(1(OunceSquareInch), 2(OunceForce) / 2(SquareInch))
         assertEqualScientificValue(
             1(OunceSquareInch),
-            2(OunceForce).convert(GrainForce) / 2(SquareInch)
+            2(OunceForce).convert(GrainForce) / 2(SquareInch),
         )
         assertEqualScientificValue(1(KipSquareFoot), 2(Kip) / 2(SquareFoot))
         assertEqualScientificValue(1(KipSquareInch), 2(Kip) / 2(SquareInch))
@@ -203,15 +203,15 @@ class PressureUnitTest {
         assertEqualScientificValue(1(ImperialTonSquareInch), 2(ImperialTonForce) / 2(SquareInch))
         assertEqualScientificValue(
             1(PoundSquareInch),
-            2(PoundForce) / 2(SquareInch).convert(SquareYard)
+            2(PoundForce) / 2(SquareInch).convert(SquareYard),
         )
         assertEqualScientificValue(
             1(PoundSquareInch.ukImperial),
-            2(PoundForce.ukImperial) / 2(SquareInch)
+            2(PoundForce.ukImperial) / 2(SquareInch),
         )
         assertEqualScientificValue(
             1(PoundSquareInch.usCustomary),
-            2(PoundForce.usCustomary) / 2(SquareInch)
+            2(PoundForce.usCustomary) / 2(SquareInch),
         )
         assertEqualScientificValue(1(Pascal), 2(Newton) / 2(SquareMeter).convert(SquareFoot))
     }

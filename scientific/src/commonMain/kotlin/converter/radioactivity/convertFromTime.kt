@@ -35,35 +35,35 @@ import kotlin.jvm.JvmName
 @JvmName("radioactivityFromInvertedTimeDefault")
 fun <
     TimeUnit : Time,
-    RadioactivityUnit : Radioactivity
+    RadioactivityUnit : Radioactivity,
     > RadioactivityUnit.radioactivity(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = radioactivity(time, ::DefaultScientificValue)
 
 @JvmName("radioactivityFromInvertedTime")
 fun <
     TimeUnit : Time,
     RadioactivityUnit : Radioactivity,
-    Value : ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>
+    Value : ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>,
     > RadioactivityUnit.radioactivity(
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, RadioactivityUnit) -> Value
+    factory: (Decimal, RadioactivityUnit) -> Value,
 ) = byInverting(time, factory)
 
 fun <
     RadioactivityUnit : Radioactivity,
-    TimeUnit : Time
+    TimeUnit : Time,
     > RadioactivityUnit.radioactivity(
     decays: Decimal,
-    per: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    per: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = radioactivity(decays, per, ::DefaultScientificValue)
 
 fun <
     RadioactivityUnit : Radioactivity,
     TimeUnit : Time,
-    Value : ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>
+    Value : ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>,
     > RadioactivityUnit.radioactivity(
     decays: Decimal,
     per: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, RadioactivityUnit) -> Value
+    factory: (Decimal, RadioactivityUnit) -> Value,
 ) = (decays / per.convertValue(Second))(Becquerel).convert(this, factory)

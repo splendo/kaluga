@@ -16,6 +16,7 @@
  */
 
 @file:JvmName("AndroidLogKT")
+
 package com.splendo.kaluga.logging
 
 import android.os.Build
@@ -38,7 +39,7 @@ actual val defaultLogger: Logger =
                         tag
                     }
                 }
-            }
+            },
         )
     } else {
         NapierLogger(DebugAntilog())

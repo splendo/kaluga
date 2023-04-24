@@ -65,7 +65,7 @@ class ArchitectureViewModel(navigator: Navigator<ArchitectureNavigationAction<*>
     val isNumberValid = _isNumberValid.toInitializedObservable(false, coroutineScope)
 
     private val isValid = combine(_isNameValid, _isNumberValid) {
-        validName, validNumber ->
+            validName, validNumber ->
         validName && validNumber
     }
 
@@ -81,8 +81,8 @@ class ArchitectureViewModel(navigator: Navigator<ArchitectureNavigationAction<*>
             if (isValid.first()) {
                 navigator.navigate(
                     ArchitectureNavigationAction.Details(
-                        InputDetails(name ?: "", number?.toIntOrNull() ?: 0)
-                    )
+                        InputDetails(name ?: "", number?.toIntOrNull() ?: 0),
+                    ),
                 )
             }
         }

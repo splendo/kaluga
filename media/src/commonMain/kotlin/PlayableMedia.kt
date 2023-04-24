@@ -55,7 +55,7 @@ val PlayableMedia.isVideo: Boolean get() = tracks.any { it.type == TrackInfo.Typ
 data class TrackInfo(
     val id: Int,
     val type: Type,
-    val language: String
+    val language: String,
 ) {
     /**
      * The type of the track
@@ -66,7 +66,7 @@ data class TrackInfo(
         SUBTITLE,
         TIMED_TEXT,
         VIDEO,
-        UNKNOWN
+        UNKNOWN,
     }
 }
 

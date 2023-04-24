@@ -169,7 +169,7 @@ internal sealed class LocationStateImpl {
 
     data class Deinitialized(
         override val location: Location,
-        internal val locationManager: LocationManager
+        internal val locationManager: LocationManager,
     ) : LocationStateImpl(), LocationState.Deinitialized {
         override val reinitialize: suspend () -> LocationState.Initializing = { Initializing(location, locationManager) }
     }
@@ -205,7 +205,8 @@ internal sealed class LocationStateImpl {
             when (newState) {
                 is LocationState.Inactive,
                 is LocationState.Initializing,
-                is LocationState.Disabled.NotPermitted -> locationManager.stopMonitoringLocationEnabled()
+                is LocationState.Disabled.NotPermitted,
+                -> locationManager.stopMonitoringLocationEnabled()
                 else -> {}
             }
         }
@@ -214,7 +215,8 @@ internal sealed class LocationStateImpl {
             when (oldState) {
                 is LocationState.Inactive,
                 is LocationState.Initializing,
-                is LocationState.Disabled.NotPermitted -> locationManager.startMonitoringLocationEnabled()
+                is LocationState.Disabled.NotPermitted,
+                -> locationManager.startMonitoringLocationEnabled()
                 else -> {}
             }
         }

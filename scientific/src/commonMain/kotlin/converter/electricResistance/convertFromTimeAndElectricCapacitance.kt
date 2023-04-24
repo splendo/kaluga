@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     CapacitanceUnit : ElectricCapacitance,
     TimeUnit : Time,
-    ResistanceUnit : ElectricResistance
+    ResistanceUnit : ElectricResistance,
     > ResistanceUnit.resistance(
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>
+    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>,
 ) = resistance(time, capacitance, ::DefaultScientificValue)
 
 @JvmName("resistanceFromTimeAndCapacitance")
@@ -42,9 +42,9 @@ fun <
     CapacitanceUnit : ElectricCapacitance,
     TimeUnit : Time,
     ResistanceUnit : ElectricResistance,
-    Value : ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
     > ResistanceUnit.resistance(
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>,
-    factory: (Decimal, ResistanceUnit) -> Value
+    factory: (Decimal, ResistanceUnit) -> Value,
 ) = byDividing(time, capacitance, factory)

@@ -35,7 +35,9 @@ interface ComposableLifecycleSubscribable : LifecycleSubscribable {
     /**
      * This [Composable] modifier method transforms the View Builder associated with a [BaseLifecycleViewModel] to wrap the functionality of the subscribable.
      */
-    val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit
+    val modifier: @Composable BaseLifecycleViewModel.(
+        @Composable BaseLifecycleViewModel.() -> Unit,
+    ) -> Unit
 }
 
 @Composable

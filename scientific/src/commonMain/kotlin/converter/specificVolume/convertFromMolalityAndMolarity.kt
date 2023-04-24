@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     MolarityUnit : Molarity,
     SpecificVolumeUnit : SpecificVolume,
-    MolalityUnit : Molality
+    MolalityUnit : Molality,
     > SpecificVolumeUnit.specificVolume(
     molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
-    molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>
+    molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>,
 ) = specificVolume(molality, molarity, ::DefaultScientificValue)
 
 @JvmName("specificVolumeFromMolalityAndMolarity")
@@ -42,9 +42,9 @@ fun <
     MolarityUnit : Molarity,
     SpecificVolumeUnit : SpecificVolume,
     MolalityUnit : Molality,
-    Value : ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>
+    Value : ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
     > SpecificVolumeUnit.specificVolume(
     molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
     molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>,
-    factory: (Decimal, SpecificVolumeUnit) -> Value
+    factory: (Decimal, SpecificVolumeUnit) -> Value,
 ) = byDividing(molality, molarity, factory)

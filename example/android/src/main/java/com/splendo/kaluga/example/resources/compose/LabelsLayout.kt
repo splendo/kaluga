@@ -44,7 +44,7 @@ fun LabelsLayout() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(Constants.Padding.default)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
         ) {
             labels.forEach {
                 it.Composable(modifier = Modifier.fillMaxWidth())

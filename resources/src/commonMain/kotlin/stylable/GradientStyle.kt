@@ -89,7 +89,7 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
             /**
              * Gradient starts in the bottom-right corner and ends in the top-left corner
              */
-            BOTTOM_RIGHT_TOP_LEFT
+            BOTTOM_RIGHT_TOP_LEFT,
         }
 
         companion object {
@@ -123,7 +123,7 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
     class Radial private constructor(
         colorPoints: List<ColorPoint>,
         val radius: Float,
-        val centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)
+        val centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f),
     ) : GradientStyle(colorPoints) {
         companion object {
 
@@ -156,7 +156,7 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
      */
     class Angular private constructor(
         colorPoints: List<ColorPoint>,
-        val centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)
+        val centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f),
     ) : GradientStyle(colorPoints) {
         companion object {
 

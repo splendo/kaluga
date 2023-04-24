@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     SpecificVolumeUnit : SpecificVolume,
     AreaUnit : Area,
-    LinearMassDensityUnit : LinearMassDensity
+    LinearMassDensityUnit : LinearMassDensity,
     > AreaUnit.area(
     specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>,
 ) = area(specificVolume, linearMassDensity, ::DefaultScientificValue)
 
 @JvmName("areaFromLinearMassDensityAndSpecificVolume")
@@ -42,9 +42,9 @@ fun <
     SpecificVolumeUnit : SpecificVolume,
     AreaUnit : Area,
     LinearMassDensityUnit : LinearMassDensity,
-    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     > AreaUnit.area(
     specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
     linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>,
-    factory: (Decimal, AreaUnit) -> Value
+    factory: (Decimal, AreaUnit) -> Value,
 ) = byMultiplying(specificVolume, linearMassDensity, factory)

@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class MockLocationManager(
     override val locationPermission: LocationPermission,
     override val events: MutableSharedFlow<LocationManager.Event>,
-    override val locations: MutableSharedFlow<Location.KnownLocation>
+    override val locations: MutableSharedFlow<Location.KnownLocation>,
 ) : LocationManager {
 
     val isLocationEnabledMock = ::isLocationEnabled.mock()
@@ -62,10 +62,10 @@ class MockLocationManager(
 class MockBaseLocationManager(
     initialLocationEnabled: Boolean,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BaseLocationManager(
     settings,
-    coroutineScope
+    coroutineScope,
 ) {
 
     /**
@@ -98,7 +98,7 @@ class MockBaseLocationManager(
 
         override fun create(
             settings: Settings,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ): BaseLocationManager = createMock.call(settings, coroutineScope)
     }
 

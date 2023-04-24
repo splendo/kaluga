@@ -50,7 +50,7 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
 
     enum class ConnectButtonState {
         Connect,
-        Disconnect
+        Disconnect,
     }
 
     private val device = bluetooth.scannedDevices()[identifier]
@@ -88,7 +88,9 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
     val isFoldedOut = _isFoldedOut.toInitializedObservable(coroutineScope)
 
     private fun <T> deviceStateObservable(mapper: (DeviceState) -> T): UninitializedObservable<T> = device.state().map { mapper(it) }.toUninitializedObservable(coroutineScope)
-    private fun <T> advertisementObservable(mapper: (BaseAdvertisementData) -> T): UninitializedObservable<T> = device.advertisement().map { mapper(it) }.toUninitializedObservable(coroutineScope)
+    private fun <T> advertisementObservable(mapper: (BaseAdvertisementData) -> T): UninitializedObservable<T> = device.advertisement().map {
+        mapper(it)
+    }.toUninitializedObservable(coroutineScope)
 
     fun toggleFoldOut() = coroutineScope.launch {
         _isFoldedOut.value = !_isFoldedOut.value

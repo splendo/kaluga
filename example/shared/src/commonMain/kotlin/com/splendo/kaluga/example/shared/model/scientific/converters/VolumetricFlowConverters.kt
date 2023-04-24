@@ -24,38 +24,88 @@ import com.splendo.kaluga.scientific.converter.volumetricFlow.times
 import com.splendo.kaluga.scientific.unit.*
 
 val PhysicalQuantity.VolumetricFlow.converters get() = listOf<QuantityConverter<PhysicalQuantity.VolumetricFlow, *>>(
-    QuantityConverterWithOperator("Area from Volumetric Flux", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.VolumetricFlux) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Area from Volumetric Flux",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.VolumetricFlux,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricVolumetricFlow && rightUnit is MetricVolumetricFlux -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialVolumetricFlow && rightUnit is ImperialVolumetricFlux -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialVolumetricFlow && rightUnit is UKImperialVolumetricFlux -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialVolumetricFlow && rightUnit is USCustomaryVolumetricFlux -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialVolumetricFlow && rightUnit is ImperialVolumetricFlux -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialVolumetricFlow && rightUnit is UKImperialVolumetricFlux -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryVolumetricFlow && rightUnit is ImperialVolumetricFlux -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryVolumetricFlow && rightUnit is USCustomaryVolumetricFlux -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is VolumetricFlow && rightUnit is VolumetricFlux -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricVolumetricFlow && rightUnit is MetricVolumetricFlux -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialVolumetricFlow && rightUnit is ImperialVolumetricFlux -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialVolumetricFlow && rightUnit is UKImperialVolumetricFlux -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialVolumetricFlow && rightUnit is USCustomaryVolumetricFlux -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialVolumetricFlow && rightUnit is ImperialVolumetricFlux -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialVolumetricFlow && rightUnit is UKImperialVolumetricFlux -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryVolumetricFlow && rightUnit is ImperialVolumetricFlux -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryVolumetricFlow && rightUnit is USCustomaryVolumetricFlux -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is VolumetricFlow && rightUnit is VolumetricFlux -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Volume from Time", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Volume from Time",
+        QuantityConverter.WithOperator.Type.Multiplication,
+        PhysicalQuantity.Time,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricVolumetricFlow && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialVolumetricFlow && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialVolumetricFlow && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryVolumetricFlow && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is VolumetricFlow && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricVolumetricFlow && rightUnit is Time -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialVolumetricFlow && rightUnit is Time -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialVolumetricFlow && rightUnit is Time -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryVolumetricFlow && rightUnit is Time -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is VolumetricFlow && rightUnit is Time -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Volumetric Flux from Area", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Volumetric Flux from Area",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.Area,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricVolumetricFlow && rightUnit is MetricArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialVolumetricFlow && rightUnit is ImperialArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialVolumetricFlow && rightUnit is ImperialArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryVolumetricFlow && rightUnit is ImperialArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is VolumetricFlow && rightUnit is Area -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricVolumetricFlow && rightUnit is MetricArea -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialVolumetricFlow && rightUnit is ImperialArea -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialVolumetricFlow && rightUnit is ImperialArea -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryVolumetricFlow && rightUnit is ImperialArea -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is VolumetricFlow && rightUnit is Area -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
-    }
+    },
 )

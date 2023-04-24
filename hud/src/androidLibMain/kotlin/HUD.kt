@@ -17,6 +17,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 */
 
 @file:JvmName("AndroidHUD")
+
 package com.splendo.kaluga.hud
 
 import android.content.Context
@@ -49,13 +50,20 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * Default [BaseHUD] implementation.
  */
-actual class HUD private constructor(@LayoutRes viewResId: Int, override val hudConfig: HudConfig, lifecycleManagerObserver: LifecycleManagerObserver, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
+actual class HUD private constructor(
+    @LayoutRes viewResId: Int,
+    override val hudConfig: HudConfig,
+    lifecycleManagerObserver: LifecycleManagerObserver,
+    coroutineScope: CoroutineScope,
+) : BaseHUD(coroutineScope) {
 
     /**
      * Builder class for creating a [HUD]
      * @param lifecycleManagerObserver the [LifecycleManagerObserver] to observe lifecycle changes.
      */
-    actual class Builder(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) : BaseHUD.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
+    actual class Builder(
+        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
+    ) : BaseHUD.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
 
         /**
          * Creates a [HUD] based on [hudConfig].
@@ -67,7 +75,7 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, override val hud
             R.layout.loading_indicator_view,
             hudConfig,
             lifecycleManagerObserver,
-            coroutineScope
+            coroutineScope,
         )
     }
 

@@ -36,7 +36,7 @@ class MockDeviceInfoBuilderTest : UIThreadTest<MockDeviceInfoBuilderTest.Context
             manufacturerData = byteArrayOf(1, 2, 3)
             txPowerLevel = 10
             serviceData = mapOf(
-                uuidFrom("180a") to byteArrayOf(4, 5, 6)
+                uuidFrom("180a") to byteArrayOf(4, 5, 6),
             )
             services {
                 uuid("180d")
@@ -55,17 +55,17 @@ class MockDeviceInfoBuilderTest : UIThreadTest<MockDeviceInfoBuilderTest.Context
         assertEquals(0x1234, deviceInfo.advertisementData.manufacturerId)
         assertContentEquals(
             byteArrayOf(1, 2, 3),
-            deviceInfo.advertisementData.manufacturerData
+            deviceInfo.advertisementData.manufacturerData,
         )
         assertEquals(10, deviceInfo.advertisementData.txPowerLevel)
         assertContentEquals(
             listOf(uuidFrom("180d")),
-            deviceInfo.advertisementData.serviceUUIDs
+            deviceInfo.advertisementData.serviceUUIDs,
         )
         assertEquals(1, deviceInfo.advertisementData.serviceData.size)
         assertContentEquals(
             byteArrayOf(4, 5, 6),
-            deviceInfo.advertisementData.serviceData[uuidFrom("180a")]
+            deviceInfo.advertisementData.serviceData[uuidFrom("180a")],
         )
     }
 }

@@ -41,20 +41,20 @@ infix operator fun <DyneUnit : DyneMultiple> ScientificValue<PhysicalQuantity.Sp
 
 @JvmName("imperialSpeedTimesImperialForce")
 infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
-    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
 ) = force * this
 
 @JvmName("imperialSpeedTimesUKImperialForce")
 infix operator fun <ForceUnit : UKImperialForce> ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
-    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
 ) = force * this
 
 @JvmName("imperialSpeedTimesUSCustomaryForce")
 infix operator fun <ForceUnit : USCustomaryForce> ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
-    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
 ) = force * this
 
 @JvmName("speedTimesMetricForce")
 infix operator fun <ForceUnit : Force, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
-    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
 ) = force * this

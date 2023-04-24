@@ -50,7 +50,7 @@ actual class DefaultStoragePermissionManager(
     private val bundle: NSBundle,
     storagePermission: StoragePermission,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
 
     private class Provider : CurrentAuthorizationStatusProvider {
@@ -93,7 +93,7 @@ actual class DefaultStoragePermissionManager(
  */
 actual class StoragePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storagePermission: StoragePermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): StoragePermissionManager {
+    override fun create(storagePermission: StoragePermission, settings: Settings, coroutineScope: CoroutineScope): StoragePermissionManager {
         return DefaultStoragePermissionManager(context, storagePermission, settings, coroutineScope)
     }
 }
@@ -107,7 +107,7 @@ private fun PHAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.
         else -> {
             error(
                 "StoragePermissionManager",
-                "Unknown StorageManagerAuthorization status={$this}"
+                "Unknown StorageManagerAuthorization status={$this}",
             )
             IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         }

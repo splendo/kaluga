@@ -36,5 +36,5 @@ fun AppCompatActivity.lifecycleManagerObserver(): LifecycleManagerObserver =
     getOrPutAndRemoveOnDestroyFromCache(
         onCreate = { it.subscribe(this@lifecycleManagerObserver) },
         onDestroy = { it.unsubscribe() },
-        defaultValue = { LifecycleManagerObserver() }
+        defaultValue = { LifecycleManagerObserver() },
     )

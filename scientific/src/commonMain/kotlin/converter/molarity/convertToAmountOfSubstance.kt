@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("molarityTimesVolume")
 infix operator fun <MolarityUnit : Molarity, VolumeUnit : Volume> ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = unit.amountOfSubstance.amountOfSubstance(this, volume)

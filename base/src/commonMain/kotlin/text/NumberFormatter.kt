@@ -58,7 +58,7 @@ enum class RoundingMode {
     /**
      * Round towards the nearest integer, or away from zero if equidistant.
      */
-    HalfUp
+    HalfUp,
 }
 
 @ExperimentalUnsignedTypes
@@ -76,7 +76,7 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
     data class Integer(
         val minDigits: UInt = 0U,
         val maxDigits: UInt = 309U,
-        override val roundingMode: RoundingMode = RoundingMode.HalfEven
+        override val roundingMode: RoundingMode = RoundingMode.HalfEven,
     ) : NumberFormatStyle(roundingMode)
 
     /**
@@ -92,7 +92,7 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
         val maxIntegerDigits: UInt = 309U,
         val minFractionDigits: UInt = 0U,
         val maxFractionDigits: UInt = 325U,
-        override val roundingMode: RoundingMode = RoundingMode.HalfEven
+        override val roundingMode: RoundingMode = RoundingMode.HalfEven,
     ) : NumberFormatStyle(roundingMode)
 
     /**
@@ -109,7 +109,7 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
         val maxIntegerDigits: UInt = 309U,
         val minFractionDigits: UInt = 0U,
         val maxFractionDigits: UInt = 325U,
-        override val roundingMode: RoundingMode = RoundingMode.HalfEven
+        override val roundingMode: RoundingMode = RoundingMode.HalfEven,
     ) : NumberFormatStyle(roundingMode)
 
     /**
@@ -126,7 +126,7 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
         val maxIntegerDigits: UInt = 309U,
         val minFractionDigits: UInt = 0U,
         val maxFractionDigits: UInt = 325U,
-        override val roundingMode: RoundingMode = RoundingMode.HalfEven
+        override val roundingMode: RoundingMode = RoundingMode.HalfEven,
     ) : NumberFormatStyle(roundingMode)
 
     /**
@@ -147,7 +147,7 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
         val minFractionDigits: UInt = 1U,
         val maxFractionDigits: UInt = 16U,
         val minExponent: UInt = 1U,
-        override val roundingMode: RoundingMode = RoundingMode.HalfEven
+        override val roundingMode: RoundingMode = RoundingMode.HalfEven,
     ) : NumberFormatStyle(roundingMode) {
         val pattern: String get() {
             val mantissaInteger = "${"#".repeat(max(maxIntegerDigits.toInt() - minIntegerDigits.toInt(), 0))}${"0".repeat(max(minIntegerDigits.toInt(), 1))}"
@@ -176,7 +176,7 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
         val maxIntegerDigits: UInt = 309U,
         val minFractionDigits: UInt? = null,
         val maxFractionDigits: UInt? = null,
-        override val roundingMode: RoundingMode = RoundingMode.HalfEven
+        override val roundingMode: RoundingMode = RoundingMode.HalfEven,
     ) : NumberFormatStyle(roundingMode)
 
     /**
@@ -185,7 +185,11 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
      * @param negativePattern The pattern to apply for negative numbers. Defaults to "-[positivePattern]".
      * @param roundingMode The [RoundingMode] to be applied. Defaults to [RoundingMode.HalfEven].
      */
-    data class Pattern(val positivePattern: String, val negativePattern: String = "-$positivePattern", override val roundingMode: RoundingMode = RoundingMode.HalfEven) : NumberFormatStyle(roundingMode)
+    data class Pattern(
+        val positivePattern: String,
+        val negativePattern: String = "-$positivePattern",
+        override val roundingMode: RoundingMode = RoundingMode.HalfEven,
+    ) : NumberFormatStyle(roundingMode)
 }
 
 /**
@@ -246,14 +250,17 @@ interface BaseNumberFormatter {
      * Text to be added in front of the number when positive
      */
     var positivePrefix: String
+
     /**
      * Text to be added behind the number when positive
      */
     var positiveSuffix: String
+
     /**
      * Text to be added in front of the number when negative
      */
     var negativePrefix: String
+
     /**
      * Text to be added behind the number when negative
      */

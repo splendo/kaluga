@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     ChargeUnit : ElectricCharge,
     VoltageUnit : Voltage,
-    CapacitanceUnit : ElectricCapacitance
+    CapacitanceUnit : ElectricCapacitance,
     > CapacitanceUnit.capacitance(
     charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
-    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
 ) = capacitance(charge, voltage, ::DefaultScientificValue)
 
 @JvmName("capacitanceFromChargeAndVoltage")
@@ -42,9 +42,9 @@ fun <
     ChargeUnit : ElectricCharge,
     VoltageUnit : Voltage,
     CapacitanceUnit : ElectricCapacitance,
-    Value : ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>,
     > CapacitanceUnit.capacitance(
     charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
     voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
-    factory: (Decimal, CapacitanceUnit) -> Value
+    factory: (Decimal, CapacitanceUnit) -> Value,
 ) = byDividing(charge, voltage, factory)

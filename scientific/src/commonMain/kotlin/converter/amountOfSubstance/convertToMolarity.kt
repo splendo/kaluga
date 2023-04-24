@@ -32,25 +32,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("amountOfSubstanceDivMetricVolume")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, VolumeUnit : MetricVolume> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = (unit per volume.unit).molarity(this, volume)
 
 @JvmName("amountOfSubstanceDivImperialVolume")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = (unit per volume.unit).molarity(this, volume)
 
 @JvmName("amountOfSubstanceDivUKImperialVolume")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, VolumeUnit : UKImperialVolume> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = (unit per volume.unit).molarity(this, volume)
 
 @JvmName("amountOfSubstanceDivUSCustomaryVolume")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, VolumeUnit : USCustomaryVolume> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = (unit per volume.unit).molarity(this, volume)
 
 @JvmName("amountOfSubstanceDivVolume")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, VolumeUnit : Volume> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = (unit per CubicMeter).molarity(this, volume)

@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
-    ConductanceUnit : ElectricConductance
+    ConductanceUnit : ElectricConductance,
     > CurrentUnit.current(
     conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
-    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
 ) = current(conductance, voltage, ::DefaultScientificValue)
 
 @JvmName("currentFromVoltageAndConductance")
@@ -42,9 +42,9 @@ fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
     ConductanceUnit : ElectricConductance,
-    Value : ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
     > CurrentUnit.current(
     conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
     voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
-    factory: (Decimal, CurrentUnit) -> Value
+    factory: (Decimal, CurrentUnit) -> Value,
 ) = byMultiplying(conductance, voltage, factory)

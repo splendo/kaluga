@@ -38,5 +38,5 @@ class MockPlayableMedia(
     override val duration: Duration = Duration.ZERO,
     override var currentPlayTime: Duration = Duration.ZERO,
     override val resolution: MutableStateFlow<Resolution> = MutableStateFlow(Resolution.ZERO),
-    override val tracks: List<TrackInfo> = emptyList()
+    override val tracks: List<TrackInfo> = emptyList(),
 ) : PlayableMedia

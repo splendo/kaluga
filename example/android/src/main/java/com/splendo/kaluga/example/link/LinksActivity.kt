@@ -37,10 +37,10 @@ class LinksActivity : KalugaViewModelActivity<LinksViewModel>() {
                 when (it) {
                     is BrowserNavigationActions.OpenWebView -> NavigationSpec.Browser(
                         URL(it.value),
-                        NavigationSpec.Browser.Type.Normal
+                        NavigationSpec.Browser.Type.Normal,
                     )
                 }
-            }
+            },
         )
     }
 

@@ -36,7 +36,7 @@ actual data class MediaSurface(val bind: MediaSurfaceBinding) {
     constructor(avPlayerLayer: AVPlayerLayer) : this(
         {
             avPlayerLayer.player = it
-        }
+        },
     )
 
     /**
@@ -46,6 +46,6 @@ actual data class MediaSurface(val bind: MediaSurfaceBinding) {
     constructor(viewController: AVPlayerViewController) : this(
         {
             viewController.player = it
-        }
+        },
     )
 }

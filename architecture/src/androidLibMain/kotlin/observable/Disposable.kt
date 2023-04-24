@@ -16,6 +16,7 @@
  */
 
 @file:JvmName("DisposableJVMKt")
+
 package com.splendo.kaluga.architecture.observable
 
 /**

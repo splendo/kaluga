@@ -19,7 +19,7 @@ pluginManagement {
             val kalugaAndroidGradlePluginVersion =
                 settings.extra["kaluga.androidGradlePluginVersion"]
             val kalugaKotlinVersion = settings.extra["kaluga.kotlinVersion"]
-            val kalugaKtLintGradlePluginVersion = settings.extra["kaluga.ktLintGradlePluginVersion"]
+            val kalugaKotlinterGradlePluginVersion = settings.extra["kaluga.kotlinterGradlePluginVersion"]
             val kalugaGoogleServicesGradlePluginVersion = settings.extra["kaluga.googleServicesGradlePluginVersion"]
             val kalugaAtomicFuGradlePluginVersion = settings.extra["kaluga.atomicFuGradlePluginVersion"]
             val kalugaBinaryCompatibilityValidatorVersion = settings.extra["kaluga.binaryCompatibilityValidatorVersion"]
@@ -29,16 +29,15 @@ pluginManagement {
                 "org.jetbrains.kotlin.multiplatform",
                 "org.jetbrains.kotlin.plugin.serialization",
                 "org.jetbrains.kotlin.android",
-                "org.jetbrains.kotlin.kapt",
+                "org.jetbrains.kotlin.kapt"
                 -> useVersion("$kalugaKotlinVersion")
                 "org.jetbrains.dokka"
                 -> useVersion("$kalugaDokkaVersion")
                 "com.android.library",
-                "com.android.application",
+                "com.android.application"
                 -> useVersion("$kalugaAndroidGradlePluginVersion")
-                "org.jlleitschuh.gradle.ktlint",
-                "org.jlleitschuh.gradle.ktlint-idea",
-                -> useVersion("$kalugaKtLintGradlePluginVersion")
+                "org.jmailen.kotlinter"
+                -> useVersion("$kalugaKotlinterGradlePluginVersion")
                 "com.google.gms:google-services"
                 -> useVersion("com.google.gms:google-services:$kalugaGoogleServicesGradlePluginVersion")
                 "org.jetbrains.kotlinx.binary-compatibility-validator"

@@ -29,10 +29,10 @@ import kotlin.jvm.JvmName
 
 @JvmName("abfaradTimesFrequency")
 infix operator fun <FrequencyUnit : Frequency> ScientificValue<PhysicalQuantity.ElectricCapacitance, Abfarad>.times(
-    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>,
 ) = Absiemens.conductance(this, frequency)
 
 @JvmName("capacitanceTimesFrequency")
 infix operator fun <CapacitanceUnit : ElectricCapacitance, FrequencyUnit : Frequency> ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>.times(
-    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>,
 ) = Siemens.conductance(this, frequency)

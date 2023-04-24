@@ -30,20 +30,27 @@ import java.util.WeakHashMap
  * A [BaseKeyboardManager] that takes a [ComposeFocusHandler]. Uses for managing the keyboard in Compose views.
  * @param currentFocusManager The initial [FocusManager] to manage the focus.
  */
-class ComposeKeyboardManager(internal var currentFocusManager: FocusManager? = null) : BaseKeyboardManager<ComposeFocusHandler> {
+class ComposeKeyboardManager(internal var currentFocusManager: FocusManager? = null) :
+    BaseKeyboardManager<ComposeFocusHandler> {
 
     /**
      * A [BaseKeyboardManager.Builder] for creating a [ComposeKeyboardManager]
      */
-    class Builder : BaseKeyboardManager.Builder<ComposeFocusHandler>, ComposableLifecycleSubscribable {
+    class Builder :
+        BaseKeyboardManager.Builder<ComposeFocusHandler>,
+        ComposableLifecycleSubscribable {
 
         private val builtManagers = WeakHashMap<Int, ComposeKeyboardManager>()
 
-        override fun create(coroutineScope: CoroutineScope): BaseKeyboardManager<ComposeFocusHandler> = ComposeKeyboardManager().also {
+        override fun create(
+            coroutineScope: CoroutineScope,
+        ): BaseKeyboardManager<ComposeFocusHandler> = ComposeKeyboardManager().also {
             builtManagers[it.hashCode()] = it
         }
 
-        override val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = { content ->
+        override val modifier: @Composable BaseLifecycleViewModel.(
+            @Composable BaseLifecycleViewModel.() -> Unit,
+        ) -> Unit = { content ->
             val focusManager = LocalFocusManager.current
             builtManagers.values.forEach {
                 it.currentFocusManager = focusManager

@@ -49,7 +49,11 @@ interface BaseContactsPermissionManagerBuilder : BasePermissionsBuilder<Contacts
      * @param coroutineScope The [CoroutineScope] the manager runs on
      * @return a [ContactsPermissionManager]
      */
-    fun create(contactsPermission: ContactsPermission, settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): ContactsPermissionManager
+    fun create(
+        contactsPermission: ContactsPermission,
+        settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
+        coroutineScope: CoroutineScope,
+    ): ContactsPermissionManager
 }
 
 /**
@@ -71,5 +75,5 @@ class ContactsPermissionStateRepo(
     builder: BaseContactsPermissionManagerBuilder,
     monitoringInterval: Duration = defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : PermissionStateRepo<ContactsPermission>(monitoringInterval, { builder.create(contactsPermission, settings, it) }, coroutineContext)

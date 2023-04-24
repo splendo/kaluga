@@ -26,7 +26,6 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
 
     @Test
     fun testOneDiscoveredBeacon() = testWithFlow {
-
         test {
             assertTrue(it.isEmpty())
         }
@@ -35,7 +34,7 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
             start()
             discoverDevices(
                 BeaconMock.mockGenericDevice("AXA", scope),
-                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope),
             )
         }
 
@@ -51,7 +50,6 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
 
     @Test
     fun testTwoDiscoveredBeacons() = testWithFlow {
-
         test {
             assertTrue(it.isEmpty())
         }
@@ -59,7 +57,7 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
         action {
             start()
             discoverDevices(
-                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope),
             )
         }
 
@@ -70,7 +68,7 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
 
         action {
             discoverDevices(
-                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460222", scope)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460222", scope),
             )
         }
 
@@ -79,7 +77,7 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
             assertEquals(2, it.size)
             assertContentEquals(
                 listOf("f7826da6bc5b71e0893e4e4161460111", "f7826da6bc5b71e0893e4e4161460222"),
-                it.map { beacon -> beacon.beaconID.asString() }
+                it.map { beacon -> beacon.beaconID.asString() },
             )
         }
 

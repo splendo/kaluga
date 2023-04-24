@@ -46,7 +46,7 @@ sealed class NetworkConnectionType {
             /**
              * There is no clear reason why the network state is unknown
              */
-            NOT_CLEAR
+            NOT_CLEAR,
         }
 
         /**
@@ -62,7 +62,7 @@ sealed class NetworkConnectionType {
          */
         data class WithLastNetwork(
             val lastKnown: Known,
-            override val reason: Reason
+            override val reason: Reason,
         ) : Unknown(reason)
     }
 
@@ -111,9 +111,9 @@ fun NetworkConnectionType.unknown(reason: NetworkConnectionType.Unknown.Reason) 
     is NetworkConnectionType.Known -> NetworkConnectionType.Unknown.WithLastNetwork(this, reason)
     is NetworkConnectionType.Unknown.WithLastNetwork -> NetworkConnectionType.Unknown.WithLastNetwork(
         this.lastKnown,
-        reason
+        reason,
     )
     is NetworkConnectionType.Unknown.WithoutLastNetwork -> NetworkConnectionType.Unknown.WithoutLastNetwork(
-        reason
+        reason,
     )
 }

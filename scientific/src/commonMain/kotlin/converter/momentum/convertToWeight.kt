@@ -48,5 +48,5 @@ infix operator fun ScientificValue<PhysicalQuantity.Momentum, USCustomaryMomentu
 
 @JvmName("momentumDivSpeed")
 infix operator fun <MomentumUnit : Momentum, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.Momentum, MomentumUnit>.div(
-    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>
+    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
 ) = unit.mass.mass(this, speed)

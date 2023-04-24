@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
  * Default implementation of [NetworkManager]
  */
 actual class DefaultNetworkManager internal constructor(
-    private val androidNetworkManager: AndroidNetworkManager
+    private val androidNetworkManager: AndroidNetworkManager,
 ) : NetworkManager {
 
     override val network: Flow<NetworkConnectionType> get() = androidNetworkManager.network
@@ -49,13 +49,13 @@ actual class DefaultNetworkManager internal constructor(
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val androidNetworkManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 AndroidConnectivityCallbackManager(
-                    connectivityManager
+                    connectivityManager,
                 )
             } else {
                 @Suppress("DEPRECATION")
                 AndroidConnectivityReceiverManager(
                     connectivityManager,
-                    context
+                    context,
                 )
             }
             return DefaultNetworkManager(androidNetworkManager)
@@ -66,7 +66,7 @@ actual class DefaultNetworkManager internal constructor(
 
     @RequiresApi(Build.VERSION_CODES.N)
     internal class AndroidConnectivityCallbackManager(
-        private val connectivityManager: ConnectivityManager
+        private val connectivityManager: ConnectivityManager,
     ) : AndroidNetworkManager {
 
         private val networkChannel = Channel<NetworkConnectionType>(Channel.UNLIMITED)
@@ -89,8 +89,8 @@ actual class DefaultNetworkManager internal constructor(
                 super.onLosing(network, maxMsToLive)
                 networkChannel.trySend(
                     NetworkConnectionType.Unknown.WithoutLastNetwork(
-                        NetworkConnectionType.Unknown.Reason.LOSING
-                    )
+                        NetworkConnectionType.Unknown.Reason.LOSING,
+                    ),
                 )
             }
 
@@ -112,7 +112,9 @@ actual class DefaultNetworkManager internal constructor(
             val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
             return when {
                 capabilities == null -> NetworkConnectionType.Known.Absent
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> NetworkConnectionType.Known.Wifi(!capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED))
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                    NetworkConnectionType.Known.Wifi(!capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED))
+                }
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> NetworkConnectionType.Known.Cellular
                 else -> NetworkConnectionType.Known.Absent
             }
@@ -123,7 +125,7 @@ actual class DefaultNetworkManager internal constructor(
     @Deprecated("Deprecated on Android")
     internal class AndroidConnectivityReceiverManager(
         private val connectivityManager: ConnectivityManager,
-        private val context: Context
+        private val context: Context,
     ) : AndroidNetworkManager {
 
         private val networkChannel = Channel<NetworkConnectionType>(Channel.UNLIMITED)

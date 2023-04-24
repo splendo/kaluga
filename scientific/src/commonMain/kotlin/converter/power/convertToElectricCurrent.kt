@@ -34,5 +34,5 @@ infix operator fun ScientificValue<PhysicalQuantity.Power, ErgPerSecond>.div(vol
 
 @JvmName("powerDivVoltage")
 infix operator fun <PowerUnit : Power, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
-    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
 ) = Ampere.current(this, voltage)

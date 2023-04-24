@@ -85,7 +85,10 @@ sealed class VolumetricFlux : AbstractScientificUnit<PhysicalQuantity.Volumetric
  * @param per the [MetricArea] component
  */
 @Serializable
-data class MetricVolumetricFlux(override val volumetricFlow: MetricVolumetricFlow, override val per: MetricArea) : VolumetricFlux(), MetricScientificUnit<PhysicalQuantity.VolumetricFlux> {
+data class MetricVolumetricFlux(
+    override val volumetricFlow: MetricVolumetricFlow,
+    override val per: MetricArea,
+) : VolumetricFlux(), MetricScientificUnit<PhysicalQuantity.VolumetricFlux> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -95,7 +98,10 @@ data class MetricVolumetricFlux(override val volumetricFlow: MetricVolumetricFlo
  * @param per the [ImperialArea] component
  */
 @Serializable
-data class ImperialVolumetricFlux(override val volumetricFlow: ImperialVolumetricFlow, override val per: ImperialArea) : VolumetricFlux(), ImperialScientificUnit<PhysicalQuantity.VolumetricFlux> {
+data class ImperialVolumetricFlux(
+    override val volumetricFlow: ImperialVolumetricFlow,
+    override val per: ImperialArea,
+) : VolumetricFlux(), ImperialScientificUnit<PhysicalQuantity.VolumetricFlux> {
     override val system = MeasurementSystem.Imperial
 
     /**
@@ -115,7 +121,10 @@ data class ImperialVolumetricFlux(override val volumetricFlow: ImperialVolumetri
  * @param per the [ImperialArea] component
  */
 @Serializable
-data class UKImperialVolumetricFlux(override val volumetricFlow: UKImperialVolumetricFlow, override val per: ImperialArea) : VolumetricFlux(), UKImperialScientificUnit<PhysicalQuantity.VolumetricFlux> {
+data class UKImperialVolumetricFlux(
+    override val volumetricFlow: UKImperialVolumetricFlow,
+    override val per: ImperialArea,
+) : VolumetricFlux(), UKImperialScientificUnit<PhysicalQuantity.VolumetricFlux> {
     override val system = MeasurementSystem.UKImperial
 }
 
@@ -125,7 +134,10 @@ data class UKImperialVolumetricFlux(override val volumetricFlow: UKImperialVolum
  * @param per the [ImperialArea] component
  */
 @Serializable
-data class USCustomaryVolumetricFlux(override val volumetricFlow: USCustomaryVolumetricFlow, override val per: ImperialArea) : VolumetricFlux(), USCustomaryScientificUnit<PhysicalQuantity.VolumetricFlux> {
+data class USCustomaryVolumetricFlux(
+    override val volumetricFlow: USCustomaryVolumetricFlow,
+    override val per: ImperialArea,
+) : VolumetricFlux(), USCustomaryScientificUnit<PhysicalQuantity.VolumetricFlux> {
     override val system = MeasurementSystem.USCustomary
 }
 

@@ -4,11 +4,12 @@ plugins {
     id("convention.publication")
     id("com.android.library")
     id("org.jetbrains.dokka")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("org.jmailen.kotlinter")
     id("kotlinx-atomicfu")
 }
 
 publishableComponent(
+    "base",
     iosMainInterop = {
         create("objectObserver").apply {
             defFile = project.file("src/nativeInterop/cinterop/objectObserver.def")

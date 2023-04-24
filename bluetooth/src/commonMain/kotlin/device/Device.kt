@@ -142,7 +142,7 @@ class DeviceImpl(
     private val coroutineScope: CoroutineScope,
     private val createDeviceStateFlow: (DeviceConnectionManager, CoroutineContext) -> ConnectableDeviceStateFlowRepo = { connectionManager, context ->
         ConnectableDeviceStateImplRepo(connectionSettings.reconnectionSettings, connectionManager, context)
-    }
+    },
 ) : Device, CoroutineScope by coroutineScope {
 
     companion object {
@@ -156,12 +156,12 @@ class DeviceImpl(
         .map { it.advertisementData.isConnectable }
         .runningFold(
             initial = initialDeviceInfo.advertisementData.isConnectable,
-            operation = Boolean::or // Once device is connectable we keep that state
+            operation = Boolean::or, // Once device is connectable we keep that state
         )
     override val info: Flow<DeviceInfo> = sharedInfo.asStateFlow()
     override val state: Flow<DeviceState> = combine(
         isConnectable,
-        deviceStateRepo
+        deviceStateRepo,
     ) { isConnectable, repo ->
         when {
             !isConnectable -> null
@@ -193,7 +193,8 @@ class DeviceImpl(
             connectionManager.await().events.collect { event ->
                 val repo = when (event) {
                     is DeviceConnectionManager.Event.Connecting,
-                    is DeviceConnectionManager.Event.Connected -> createDeviceStateRepoIfNotCreated()
+                    is DeviceConnectionManager.Event.Connected,
+                    -> createDeviceStateRepoIfNotCreated()
                     is DeviceConnectionManager.Event.CancelledConnecting,
                     is DeviceConnectionManager.Event.Discovering,
                     is DeviceConnectionManager.Event.DiscoveredServices,
@@ -201,7 +202,8 @@ class DeviceImpl(
                     is DeviceConnectionManager.Event.CompletedAction,
                     is DeviceConnectionManager.Event.Disconnecting,
                     is DeviceConnectionManager.Event.Disconnected,
-                    is DeviceConnectionManager.Event.MtuUpdated -> deviceStateRepo.value
+                    is DeviceConnectionManager.Event.MtuUpdated,
+                    -> deviceStateRepo.value
                 }
                 repo?.takeAndChangeState { state ->
                     event.stateTransition(state)
@@ -219,7 +221,7 @@ class DeviceImpl(
     }
 
     override fun advertisementDataDidUpdate(
-        advertisementData: BaseAdvertisementData
+        advertisementData: BaseAdvertisementData,
     ) {
         sharedInfo.value = sharedInfo.value.copy(advertisementData = advertisementData)
     }
@@ -234,10 +236,14 @@ class DeviceImpl(
 
     private fun createDeviceStateRepoIfNotCreated(): ConnectableDeviceStateFlowRepo? =
         deviceStateRepo.updateAndGet { repo ->
-            repo ?: if (sharedInfo.value.advertisementData.isConnectable) createDeviceStateFlow(
-                createConnectionManagerIfNotCreated(),
-                coroutineScope.coroutineContext
-            ) else null
+            repo ?: if (sharedInfo.value.advertisementData.isConnectable) {
+                createDeviceStateFlow(
+                    createConnectionManagerIfNotCreated(),
+                    coroutineScope.coroutineContext,
+                )
+            } else {
+                null
+            }
         }
 
     private suspend fun DeviceConnectionManager.Event.stateTransition(state: ConnectableDeviceState): suspend () -> ConnectableDeviceState =
@@ -287,7 +293,8 @@ class DeviceImpl(
             }
             is ConnectableDeviceState.Disconnected -> state.remain()
             is ConnectableDeviceState.Connecting,
-            is ConnectableDeviceState.Disconnecting -> {
+            is ConnectableDeviceState.Disconnecting,
+            -> {
                 onDisconnect()
                 state.didDisconnect
             }
@@ -341,10 +348,10 @@ class DeviceImpl(
  */
 abstract class BaseConnectableDeviceStateRepo(
     initialState: () -> ConnectableDeviceState,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : HotStateFlowRepo<ConnectableDeviceState>(
     coroutineContext = coroutineContext,
-    initialState = { initialState() }
+    initialState = { initialState() },
 )
 
 /**
@@ -356,26 +363,26 @@ abstract class BaseConnectableDeviceStateRepo(
 class ConnectableDeviceStateImplRepo(
     defaultReconnectionSettings: ConnectionSettings.ReconnectionSettings,
     connectionManager: DeviceConnectionManager,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : BaseConnectableDeviceStateRepo(
     initialState = {
         when (connectionManager.getCurrentState()) {
             DeviceConnectionManager.State.CONNECTED -> ConnectableDeviceStateImpl.Connected.NoServices(
                 defaultReconnectionSettings,
                 null,
-                connectionManager
+                connectionManager,
             )
             DeviceConnectionManager.State.CONNECTING -> ConnectableDeviceStateImpl.Connecting(
                 defaultReconnectionSettings,
-                connectionManager
+                connectionManager,
             )
             DeviceConnectionManager.State.DISCONNECTED -> ConnectableDeviceStateImpl.Disconnected(
-                connectionManager
+                connectionManager,
             )
             DeviceConnectionManager.State.DISCONNECTING -> ConnectableDeviceStateImpl.Disconnecting(
-                connectionManager
+                connectionManager,
             )
         }
     },
-    coroutineContext = coroutineContext
+    coroutineContext = coroutineContext,
 )

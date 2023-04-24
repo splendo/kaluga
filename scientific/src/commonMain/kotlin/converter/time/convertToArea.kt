@@ -20,11 +20,6 @@ package com.splendo.kaluga.scientific.converter.time
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.area.area
-import com.splendo.kaluga.scientific.converter.force.div
-import com.splendo.kaluga.scientific.converter.kinematicViscosity.kinematicViscosity
-import com.splendo.kaluga.scientific.converter.momentum.div
-import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.times
 import com.splendo.kaluga.scientific.unit.ImperialKinematicViscosity
 import com.splendo.kaluga.scientific.unit.KinematicViscosity
 import com.splendo.kaluga.scientific.unit.MetricKinematicViscosity
@@ -33,15 +28,15 @@ import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricKinematicViscosity")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>,
 ) = (kinematicViscosity.unit.area).area(kinematicViscosity, this)
 
 @JvmName("timeTimesImperialKinematicViscosity")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>,
 ) = (kinematicViscosity.unit.area).area(kinematicViscosity, this)
 
 @JvmName("timeTimesKinematicViscosity")
 infix operator fun <TimeUnit : Time, KinematicViscosityUnit : KinematicViscosity> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>,
 ) = (kinematicViscosity.unit.area).area(kinematicViscosity, this)

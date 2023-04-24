@@ -42,7 +42,7 @@ class MockMediaPlayer(
     override val playableMedia: MutableStateFlow<PlayableMedia?>,
     override val controls: MutableStateFlow<MediaPlayer.Controls>,
     val volumeController: MockVolumeController,
-    val mediaSurfaceController: MockMediaSurfaceController
+    val mediaSurfaceController: MockMediaSurfaceController,
 ) : MediaPlayer, VolumeController by volumeController, MediaSurfaceController by mediaSurfaceController {
 
     /**
@@ -80,7 +80,7 @@ class MockMediaPlayer(
 
     override suspend fun forceStart(
         playbackParameters: PlaybackState.PlaybackParameters,
-        restartIfStarted: Boolean
+        restartIfStarted: Boolean,
     ): Unit = forceStartMock.call(playbackParameters, restartIfStarted)
 
     override suspend fun awaitCompletion(): Unit = awaitCompletionMock.call()

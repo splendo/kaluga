@@ -40,7 +40,7 @@ abstract class Attribute<ReadAction : DeviceAction.Read, WriteAction : DeviceAct
     initialValue: ByteArray? = null,
     private val emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     private val parentLogTag: String,
-    private val logger: Logger
+    private val logger: Logger,
 ) : Flow<ByteArray?> {
 
     protected val logTag: String get() = "$parentLogTag-${uuid.uuidString}"

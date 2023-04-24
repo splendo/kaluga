@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     MolarVolumeUnit : MolarVolume,
     SpecificVolumeUnit : SpecificVolume,
-    MolarMassUnit : MolarMass
+    MolarMassUnit : MolarMass,
     > MolarVolumeUnit.molarVolume(
     molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
 ) = molarVolume(molarMass, specificVolume, ::DefaultScientificValue)
 
 @JvmName("molarVolumeFromSpecificVolumeAndMolarMass")
@@ -42,9 +42,9 @@ fun <
     MolarVolumeUnit : MolarVolume,
     SpecificVolumeUnit : SpecificVolume,
     MolarMassUnit : MolarMass,
-    Value : ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>
+    Value : ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>,
     > MolarVolumeUnit.molarVolume(
     molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
     specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
-    factory: (Decimal, MolarVolumeUnit) -> Value
+    factory: (Decimal, MolarVolumeUnit) -> Value,
 ) = byMultiplying(molarMass, specificVolume, factory)

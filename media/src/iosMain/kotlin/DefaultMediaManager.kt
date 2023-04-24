@@ -95,7 +95,10 @@ actual class DefaultPlayableMedia(override val source: MediaSource, internal val
     override val duration: Duration get() = CMTimeGetSeconds(avPlayerItem.duration).seconds
     override val currentPlayTime: Duration get() = CMTimeGetSeconds(avPlayerItem.currentTime()).seconds
     override val tracks: List<TrackInfo> get() = avPlayerItem.tracks.mapNotNull { (it as? AVPlayerItemTrack).asTrackInfo() }
-    override val resolution: Flow<Resolution> = avPlayerItem.observeKeyValueAsFlow<Any>("presentationSize", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew).map { _ ->
+    override val resolution: Flow<Resolution> = avPlayerItem.observeKeyValueAsFlow<Any>(
+        "presentationSize",
+        NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew,
+    ).map { _ ->
         // Mapping from typealias NSSize seems to fail so we'll just grab the value ourselves
         avPlayerItem.presentationSize.useContents { Resolution(width.toInt(), height.toInt()) }
     }
@@ -114,7 +117,7 @@ private fun AVPlayerItemTrack?.asTrackInfo(): TrackInfo? = this?.assetTrack?.let
             AVMediaTypeVideo -> TrackInfo.Type.VIDEO
             else -> TrackInfo.Type.UNKNOWN
         },
-        it.languageCode.orEmpty()
+        it.languageCode.orEmpty(),
     )
 }
 
@@ -129,7 +132,10 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
      * Builder for creating a [DefaultMediaManager]
      */
     class Builder : BaseMediaManager.Builder {
-        override fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): DefaultMediaManager = DefaultMediaManager(mediaSurfaceProvider, coroutineContext)
+        override fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): DefaultMediaManager = DefaultMediaManager(
+            mediaSurfaceProvider,
+            coroutineContext,
+        )
     }
 
     private val avPlayer = AVPlayer(null)
@@ -152,7 +158,8 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
             avPlayer.observeKeyValueAsFlow<AVPlayerStatus>("status", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew).collect { status ->
                 when (status) {
                     AVPlayerStatusUnknown,
-                    AVPlayerStatusReadyToPlay -> {}
+                    AVPlayerStatusReadyToPlay,
+                    -> {}
                     AVPlayerStatusFailed -> {
                         avPlayer.error?.handleError()
                     }
@@ -166,23 +173,23 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
             NSNotificationCenter.defaultCenter.addObserverForName(
                 AVPlayerItemDidPlayToEndTimeNotification,
                 null,
-                currentQueue ?: mainQueue
+                currentQueue ?: mainQueue,
             ) {
                 handleCompleted()
             },
             NSNotificationCenter.defaultCenter.addObserverForName(
                 AVPlayerItemFailedToPlayToEndTimeNotification,
                 null,
-                currentQueue ?: mainQueue
+                currentQueue ?: mainQueue,
             ) {
                 (it?.userInfo?.get(AVPlayerItemFailedToPlayToEndTimeErrorKey) as? NSError)?.handleError()
-            }
+            },
         )
     }
 
     override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia = DefaultPlayableMedia(
         source,
-        source.avPlayerItem
+        source.avPlayerItem,
     )
 
     override fun initialize(playableMedia: PlayableMedia) {
@@ -231,7 +238,11 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
         cancel()
     }
 
-    override fun startSeek(duration: Duration) = avPlayer.seekToTime(CMTimeMakeWithSeconds(duration.toDouble(DurationUnit.SECONDS), 1000), kCMTimeZero.readValue(), kCMTimeZero.readValue()) {
+    override fun startSeek(duration: Duration) = avPlayer.seekToTime(
+        CMTimeMakeWithSeconds(duration.toDouble(DurationUnit.SECONDS), 1000),
+        kCMTimeZero.readValue(),
+        kCMTimeZero.readValue(),
+    ) {
         handleSeekCompleted(it)
     }
 
@@ -245,9 +256,11 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
                 AVErrorFormatUnsupported,
                 AVErrorContentIsNotAuthorized,
                 AVErrorContentIsProtected,
-                AVErrorContentIsUnavailable -> PlaybackError.Unsupported
+                AVErrorContentIsUnavailable,
+                -> PlaybackError.Unsupported
                 AVErrorDecodeFailed,
-                AVErrorFailedToParse -> PlaybackError.MalformedMediaSource
+                AVErrorFailedToParse,
+                -> PlaybackError.MalformedMediaSource
                 AVErrorNoLongerPlayable -> PlaybackError.IO
                 AVErrorContentNotUpdated -> PlaybackError.TimedOut
                 else -> null

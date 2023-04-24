@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     WeightUnit : Weight,
     LengthUnit : Length,
-    LinearMassDensityUnit : LinearMassDensity
+    LinearMassDensityUnit : LinearMassDensity,
     > LinearMassDensityUnit.linearMassDensity(
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = linearMassDensity(weight, length, ::DefaultScientificValue)
 
 @JvmName("linearMassDensityFromWeightAndArea")
@@ -42,9 +42,9 @@ fun <
     WeightUnit : Weight,
     LengthUnit : Length,
     LinearMassDensityUnit : LinearMassDensity,
-    Value : ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>
+    Value : ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>,
     > LinearMassDensityUnit.linearMassDensity(
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-    factory: (Decimal, LinearMassDensityUnit) -> Value
+    factory: (Decimal, LinearMassDensityUnit) -> Value,
 ) = byDividing(weight, length, factory)

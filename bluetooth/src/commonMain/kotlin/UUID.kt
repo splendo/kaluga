@@ -26,7 +26,7 @@ import kotlin.jvm.JvmName
 private object Constants {
     val formatValidationRegex = Regex(
         "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9a-f]{4}",
-        RegexOption.IGNORE_CASE
+        RegexOption.IGNORE_CASE,
     )
     const val baseBluetoothUUID = "0000%s-0000-1000-8000-00805f9b34fb"
 }

@@ -29,7 +29,10 @@ import kotlin.time.Duration
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultMicrophonePermissionManager(settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope) {
+actual class DefaultMicrophonePermissionManager(
+    settings: Settings,
+    coroutineScope: CoroutineScope,
+) : BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope) {
 
     override fun requestPermissionDidStart() {
         TODO("Not yet implemented")
@@ -50,7 +53,7 @@ actual class DefaultMicrophonePermissionManager(settings: Settings, coroutineSco
  */
 actual class MicrophonePermissionManagerBuilder actual constructor(context: PermissionContext) : BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): PermissionManager<MicrophonePermission> {
+    override fun create(settings: Settings, coroutineScope: CoroutineScope): PermissionManager<MicrophonePermission> {
         return DefaultMicrophonePermissionManager(settings, coroutineScope)
     }
 }

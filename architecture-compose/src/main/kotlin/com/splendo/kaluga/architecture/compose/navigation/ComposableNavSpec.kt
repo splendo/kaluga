@@ -59,7 +59,7 @@ sealed class ComposableNavSpec {
             ViewModel::class,
             ActivityResultContracts.TakePicture(),
             { uri },
-            onResult
+            onResult,
         )
 
         /**
@@ -72,7 +72,7 @@ sealed class ComposableNavSpec {
             ViewModel::class,
             ActivityResultContracts.CaptureVideo(),
             { uri },
-            onResult
+            onResult,
         )
 
         /**
@@ -89,12 +89,12 @@ sealed class ComposableNavSpec {
          */
         inline fun <reified ViewModel : BaseLifecycleViewModel> PickVisualMedia(
             type: ActivityResultContracts.PickVisualMedia.VisualMediaType = ActivityResultContracts.PickVisualMedia.ImageAndVideo,
-            noinline onResult: ViewModel.(Uri?) -> Unit
+            noinline onResult: ViewModel.(Uri?) -> Unit,
         ) = Launcher(
             ViewModel::class,
             ActivityResultContracts.PickVisualMedia(),
             { PickVisualMediaRequest(mediaType = type) },
-            onResult
+            onResult,
         )
 
         /**
@@ -106,12 +106,12 @@ sealed class ComposableNavSpec {
         inline fun <reified ViewModel : BaseLifecycleViewModel> PickMultipleVisualMedia(
             maxItems: Int? = null,
             type: ActivityResultContracts.PickVisualMedia.VisualMediaType = ActivityResultContracts.PickVisualMedia.ImageAndVideo,
-            noinline onResult: ViewModel.(List<Uri>) -> Unit
+            noinline onResult: ViewModel.(List<Uri>) -> Unit,
         ) = Launcher(
             ViewModel::class,
             maxItems?.let { ActivityResultContracts.PickMultipleVisualMedia(it) } ?: ActivityResultContracts.PickMultipleVisualMedia(),
             { PickVisualMediaRequest(mediaType = type) },
-            onResult
+            onResult,
         )
 
         /**
@@ -124,7 +124,7 @@ sealed class ComposableNavSpec {
             ViewModel::class,
             ActivityResultContracts.OpenDocument(),
             { types.toTypedArray() },
-            onResult
+            onResult,
         )
 
         /**
@@ -137,7 +137,7 @@ sealed class ComposableNavSpec {
             ViewModel::class,
             ActivityResultContracts.OpenMultipleDocuments(),
             { types.toTypedArray() },
-            onResult
+            onResult,
         )
 
         /**
@@ -151,7 +151,7 @@ sealed class ComposableNavSpec {
             ViewModel::class,
             ActivityResultContracts.CreateDocument(mimeType),
             { fileName },
-            onResult
+            onResult,
         )
 
         /**
@@ -164,7 +164,7 @@ sealed class ComposableNavSpec {
             ViewModel::class,
             ActivityResultContracts.OpenDocumentTree(),
             { startingLocation },
-            onResult
+            onResult,
         )
 
         /**
@@ -176,7 +176,7 @@ sealed class ComposableNavSpec {
             ViewModel::class,
             ActivityResultContracts.PickContact(),
             { null },
-            onResult
+            onResult,
         )
 
         /**
@@ -189,7 +189,7 @@ sealed class ComposableNavSpec {
             ViewModel::class,
             ActivityResultContracts.RequestPermission(),
             { permission },
-            onResult
+            onResult,
         )
 
         /**
@@ -198,11 +198,14 @@ sealed class ComposableNavSpec {
          * @param permissions Keys of the permission to be requested. E.g. [android.Manifest.permission.ACCESS_COARSE_LOCATION].
          * @param onResult Callback method that returns a map containing whether the permission was granted for each permission in [permissions].
          */
-        inline fun <reified ViewModel : BaseLifecycleViewModel> RequestMultiplePermissions(permissions: List<String>, noinline onResult: ViewModel.(Map<String, Boolean>) -> Unit) = Launcher(
+        inline fun <reified ViewModel : BaseLifecycleViewModel> RequestMultiplePermissions(
+            permissions: List<String>,
+            noinline onResult: ViewModel.(Map<String, Boolean>) -> Unit,
+        ) = Launcher(
             ViewModel::class,
             ActivityResultContracts.RequestMultiplePermissions(),
             { permissions.toTypedArray() },
-            onResult
+            onResult,
         )
 
         /**
@@ -298,7 +301,7 @@ sealed class ComposableNavSpec {
         val viewModelClass: KClass<ViewModel>,
         val activityResultContract: ActivityResultContract<Input, Output>,
         val getInput: @Composable () -> Input?,
-        val onResult: ViewModel.(Output) -> Unit
+        val onResult: ViewModel.(Output) -> Unit,
     ) : LaunchedNavigation() {
 
         @Composable
@@ -353,7 +356,7 @@ sealed class ComposableNavSpec {
      */
     data class Dialog(
         val tag: String? = null,
-        val createDialog: () -> DialogFragment
+        val createDialog: () -> DialogFragment,
     ) : LaunchedNavigation() {
 
         @Composable
@@ -398,7 +401,7 @@ sealed class ComposableNavSpec {
  */
 inline fun <reified ViewModel : BaseLifecycleViewModel, Input, Output> SingleValueNavigationAction<Input>.Launcher(
     activityResultContract: ActivityResultContract<Input, Output>,
-    noinline onResult: ViewModel.(Output) -> Unit
+    noinline onResult: ViewModel.(Output) -> Unit,
 ) = ComposableNavSpec.Launcher(ViewModel::class, activityResultContract, { value }, onResult)
 
 /**
@@ -413,7 +416,7 @@ inline fun <reified ViewModel : BaseLifecycleViewModel, Input, Output> SingleVal
 inline fun <reified Activity : android.app.Activity, reified ViewModel : BaseLifecycleViewModel, Output> NavigationAction<*>.Launcher(
     activityResultContract: ActivityResultContract<Intent, Output>,
     flags: Set<IntentFlag> = emptySet(),
-    noinline onResult: ViewModel.(Output) -> Unit
+    noinline onResult: ViewModel.(Output) -> Unit,
 ): ComposableNavSpec.Launcher<ViewModel, Intent, Output> {
     val getInput = @Composable {
         LocalContext.current.activity?.let { activity ->
@@ -434,7 +437,7 @@ inline fun <reified Activity : android.app.Activity, reified ViewModel : BaseLif
  * @param flags A set of [IntentFlag] to be applied to the next screen.
  */
 inline fun <reified Activity : android.app.Activity> NavigationAction<*>.ShowActivity(
-    flags: Set<IntentFlag> = emptySet()
+    flags: Set<IntentFlag> = emptySet(),
 ) = ComposableNavSpec.IntentLauncher {
     Intent(this, Activity::class.java).apply {
         bundle?.let {
@@ -449,5 +452,5 @@ inline fun <reified Activity : android.app.Activity> NavigationAction<*>.ShowAct
  * @param resultCode If not `null`, this will set the [NavigationAction.bundle] as the result of the activity.
  */
 fun NavigationAction<*>.CloseActivity(resultCode: Int?) = ComposableNavSpec.CloseActivity(
-    resultCode?.let { it to bundle }
+    resultCode?.let { it to bundle },
 )

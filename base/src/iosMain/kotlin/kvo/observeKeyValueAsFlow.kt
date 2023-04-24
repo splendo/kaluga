@@ -59,7 +59,7 @@ private class KVOObserver<T>(nsObject: NSObject, keyPath: String, options: NSKey
         keyPath: String?,
         ofObject: Any?,
         change: Map<Any?, *>?,
-        context: COpaquePointer?
+        context: COpaquePointer?,
     ) {
         val value = (ofObject as NSObject).valueForKeyPath(keyPath!!)
         _observedValue.tryEmit(value as T)
@@ -75,7 +75,7 @@ private class KVOObserver<T>(nsObject: NSObject, keyPath: String, options: NSKey
  */
 fun <T> NSObject.observeKeyValueAsFlow(
     keyPath: String,
-    options: NSKeyValueObservingOptions = NSKeyValueObservingOptionNew
+    options: NSKeyValueObservingOptions = NSKeyValueObservingOptionNew,
 ): Flow<T> {
     val observer = KVOObserver<T>(this, keyPath, options)
     return observer.observedValue

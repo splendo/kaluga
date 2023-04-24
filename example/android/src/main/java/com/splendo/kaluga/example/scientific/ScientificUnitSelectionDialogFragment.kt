@@ -55,14 +55,14 @@ abstract class ScientificUnitSelectionDialogFragment : KalugaViewModelDialogFrag
                         NavigationSpec.DismissDialog(TAG, fragmentRequestKey = requestKey)
                     }
                 }
-            }
+            },
         )
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val binding = DialogScientificUnitSelectionBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel

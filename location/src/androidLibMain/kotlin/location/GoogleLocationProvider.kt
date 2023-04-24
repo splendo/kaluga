@@ -47,7 +47,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class GoogleLocationProvider(
     private val context: Context,
     private val settings: Settings,
-    private val minUpdateDistanceMeters: Float
+    private val minUpdateDistanceMeters: Float,
 ) : LocationProvider {
 
     /**
@@ -59,14 +59,14 @@ class GoogleLocationProvider(
     data class Settings(
         val interval: Duration = 100.milliseconds,
         val maxUpdateDelay: Duration = ZERO,
-        val minUpdateInterval: Duration = interval
+        val minUpdateInterval: Duration = interval,
     )
 
     internal sealed class FusedLocationProviderClientType(
         permission: LocationPermission,
         context: Context,
         settings: Settings,
-        minUpdateDistanceMeters: Float
+        minUpdateDistanceMeters: Float,
     ) {
         protected val fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(context)
@@ -76,8 +76,11 @@ class GoogleLocationProvider(
                 .setMinUpdateIntervalMillis(settings.minUpdateInterval.inWholeMilliseconds)
                 .setMinUpdateDistanceMeters(minUpdateDistanceMeters)
                 .setPriority(
-                    if (permission.precise) Priority.PRIORITY_HIGH_ACCURACY
-                    else Priority.PRIORITY_BALANCED_POWER_ACCURACY
+                    if (permission.precise) {
+                        Priority.PRIORITY_HIGH_ACCURACY
+                    } else {
+                        Priority.PRIORITY_BALANCED_POWER_ACCURACY
+                    },
                 )
                 .build()
         protected val locationsState: MutableStateFlow<List<Location.KnownLocation>> =
@@ -87,7 +90,12 @@ class GoogleLocationProvider(
         abstract fun startRequestingUpdates()
         abstract fun stopRequestingUpdates()
 
-        class Foreground(permission: LocationPermission, context: Context, settings: Settings, minUpdateDistanceMeters: Float) : FusedLocationProviderClientType(permission, context, settings, minUpdateDistanceMeters) {
+        class Foreground(
+            permission: LocationPermission,
+            context: Context,
+            settings: Settings,
+            minUpdateDistanceMeters: Float,
+        ) : FusedLocationProviderClientType(permission, context, settings, minUpdateDistanceMeters) {
 
             private val locationCallback = object : LocationCallback() {
 
@@ -108,7 +116,12 @@ class GoogleLocationProvider(
             }
         }
 
-        class Background(permission: LocationPermission, context: Context, settings: Settings, minUpdateDistanceMeters: Float) : FusedLocationProviderClientType(permission, context, settings, minUpdateDistanceMeters) {
+        class Background(
+            permission: LocationPermission,
+            context: Context,
+            settings: Settings,
+            minUpdateDistanceMeters: Float,
+        ) : FusedLocationProviderClientType(permission, context, settings, minUpdateDistanceMeters) {
 
             private val identifier = hashCode().toString()
 
@@ -132,7 +145,7 @@ class GoogleLocationProvider(
     }
 
     private val fusedLocationProviderClients: MutableStateFlow<Map<LocationPermission, FusedLocationProviderClientType>> = MutableStateFlow(
-        mapOf()
+        mapOf(),
     )
 
     override fun location(permission: LocationPermission): Flow<List<Location.KnownLocation>> = fusedLocationProviderClients.flatMapLatest {
@@ -178,7 +191,16 @@ class GoogleLocationUpdatesBroadcastReceiver : BroadcastReceiver() {
                 action = ACTION_NAME
                 addCategory(locationManagerId)
             }
-            return PendingIntent.getBroadcast(context, 0, intent, if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT else PendingIntent.FLAG_UPDATE_CURRENT)
+            return PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                } else {
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                },
+            )
         }
     }
 

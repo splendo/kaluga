@@ -121,8 +121,8 @@ class MediaPlayerTest {
                     mediaPlayer.play(
                         PlaybackState.PlaybackParameters(
                             1.0f,
-                            PlaybackState.LoopMode.NotLooping
-                        )
+                            PlaybackState.LoopMode.NotLooping,
+                        ),
                     )
                 }
                 mediaManager.playMock.verify(rule = never())

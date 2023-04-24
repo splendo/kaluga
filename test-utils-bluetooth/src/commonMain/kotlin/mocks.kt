@@ -25,11 +25,11 @@ expect fun randomIdentifier(): Identifier
 
 expect fun createDeviceWrapper(
     deviceName: String? = null,
-    identifier: Identifier = randomIdentifier()
+    identifier: Identifier = randomIdentifier(),
 ): DeviceWrapper
 
 fun createServiceWrapper(
-    builder: ServiceWrapperBuilder.() -> Unit
+    builder: ServiceWrapperBuilder.() -> Unit,
 ): ServiceWrapper = ServiceWrapperBuilder().apply(builder).build()
 
 interface CanUpdateMockValue {

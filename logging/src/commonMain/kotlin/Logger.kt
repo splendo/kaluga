@@ -60,7 +60,7 @@ open class TransformLogger(
             logThrowable,
             // already resolve the lazy message if it needs transformation (else we cannot transform it)
             // after transform wrap it in a "lazy" closure again {{🤗}}
-            logMessage
+            logMessage,
         )
     }
 }

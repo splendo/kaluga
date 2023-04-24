@@ -51,11 +51,13 @@ actual class DefaultCalendarPermissionManager(
     private val bundle: NSBundle,
     calendarPermission: CalendarPermission,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
 
     private class Provider : CurrentAuthorizationStatusProvider {
-        override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = EKEventStore.authorizationStatusForEntityType(EKEntityType.EKEntityTypeEvent).toAuthorizationStatus()
+        override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = EKEventStore
+            .authorizationStatusForEntityType(EKEntityType.EKEntityTypeEvent)
+            .toAuthorizationStatus()
     }
 
     private val eventStore = EKEventStore()
@@ -69,7 +71,7 @@ actual class DefaultCalendarPermissionManager(
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<Boolean>()
                 eventStore.requestAccessToEntityType(
-                    EKEntityType.EKEntityTypeEvent
+                    EKEntityType.EKEntityTypeEvent,
                 ) { success, error ->
                     error?.let { deferred.completeExceptionally(Throwable(it.localizedDescription)) } ?: deferred.complete(success)
                     Unit
@@ -102,7 +104,7 @@ actual class DefaultCalendarPermissionManager(
  */
 actual class CalendarPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCalendarPermissionManagerBuilder {
 
-    override fun create(calendarPermission: CalendarPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CalendarPermissionManager {
+    override fun create(calendarPermission: CalendarPermission, settings: Settings, coroutineScope: CoroutineScope): CalendarPermissionManager {
         return DefaultCalendarPermissionManager(context, calendarPermission, settings, coroutineScope)
     }
 }
@@ -116,7 +118,7 @@ private fun EKAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.
         else -> {
             error(
                 "CalendarPermissionManager",
-                "Unknown CBManagerAuthorization status={$this}"
+                "Unknown CBManagerAuthorization status={$this}",
             )
             IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         }

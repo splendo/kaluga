@@ -40,11 +40,11 @@ class AngularVelocityUnitTest {
     fun angularVelocityFromAngularAccelerationTimesTimeTest() {
         assertEquals(
             4(Centiradian per Millisecond),
-            2(Centiradian per Millisecond per Millisecond) * 2(Millisecond)
+            2(Centiradian per Millisecond per Millisecond) * 2(Millisecond),
         )
         assertEquals(
             4(Centiradian per Millisecond),
-            2(Millisecond) * 2(Centiradian per Millisecond per Millisecond)
+            2(Millisecond) * 2(Centiradian per Millisecond per Millisecond),
         )
     }
 }

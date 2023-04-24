@@ -44,7 +44,7 @@ fun ButtonsLayout() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(Constants.Padding.default)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
         ) {
             buttons.forEach {
                 it.Composable(modifier = Modifier.fillMaxWidth())

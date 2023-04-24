@@ -26,7 +26,6 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultCInteropSettings
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
-import java.util.Locale
 
 sealed class ComponentType {
     object Default : ComponentType()
@@ -35,6 +34,7 @@ sealed class ComponentType {
 }
 
 fun Project.commonComponent(
+    packageName: String,
     iosMainInterop: (NamedDomainObjectContainer<DefaultCInteropSettings>.() -> Unit)? = null,
     iosTestInterop: (NamedDomainObjectContainer<DefaultCInteropSettings>.() -> Unit)? = null,
     iosExport: (Framework.() -> Unit)? = null
@@ -45,7 +45,7 @@ fun Project.commonComponent(
         commonMultiplatformComponent(this@commonComponent, iosMainInterop, iosTestInterop, iosExport)
     }
 
-    commonAndroidComponent()
+    commonAndroidComponent(packageName = packageName)
     androidLibrary {
         commonMultiplatformComponentAndroid()
     }
@@ -57,24 +57,22 @@ fun Project.commonComponent(
     }
 
     afterEvaluate {
-        Library.IOS.targets.forEach {
-            val targetName = it.sourceSetName
-            if (tasks.names.contains("linkDebugTest${targetName.capitalize(Locale.ENGLISH) }")) {
+        Library.IOS.targets.forEach { target ->
+            val targetName = target.sourceSetName
+            if (tasks.names.contains("linkDebugTest${targetName.replaceFirstChar { it.titlecase() } }")) {
                 // creating copy task for the target
-                val copyTask = tasks.create("copy${targetName.capitalize(Locale.ENGLISH) }TestResources", Copy::class.java) {
+                val copyTask = tasks.create("copy${targetName.replaceFirstChar { it.titlecase() } }TestResources", Copy::class.java) {
                     from("src/iosTest/resources/.")
                     into("$buildDir/bin/$targetName/debugTest")
                 }
 
                 // apply copy task to the target
-                tasks.named("linkDebugTest${targetName.capitalize(Locale.ENGLISH)}") {
+                tasks.named("linkDebugTest${targetName.replaceFirstChar { it.titlecase() }}") {
                     dependsOn(copyTask)
                 }
             }
         }
     }
-
-    ktlint { disabledRules.set(listOf("no-wildcard-imports", "filename", "import-ordering")) }
 
     if (Library.connectCheckExpansion) {
         parent?.subprojects?.filter {
@@ -98,7 +96,7 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
     targets {
         configureEach {
             compilations.configureEach {
-                (kotlinOptions as? KotlinJvmOptions)?.jvmTarget = "1.8"
+                (kotlinOptions as? KotlinJvmOptions)?.jvmTarget = "11"
             }
         }
     }
@@ -232,7 +230,7 @@ fun LibraryExtension.commonMultiplatformComponentAndroid() {
         unitTests.isReturnDefaultValues = true
     }
 
-    packagingOptions {
+    packaging {
         resources.excludes.addAll(
             listOf(
                 "META-INF/kotlinx-coroutines-core.kotlin_module",
@@ -243,8 +241,8 @@ fun LibraryExtension.commonMultiplatformComponentAndroid() {
                 // bytebuddy 🤡
                 "win32-x86-64/attach_hotspot_windows.dll",
                 "win32-x86/attach_hotspot_windows.dll",
-                "META-INF/licenses/ASM"
-            )
+                "META-INF/licenses/ASM",
+            ),
         )
     }
 }

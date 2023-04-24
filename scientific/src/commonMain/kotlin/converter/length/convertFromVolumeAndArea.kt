@@ -33,10 +33,10 @@ import kotlin.jvm.JvmName
 fun <
     HeightUnit : Length,
     AreaUnit : Area,
-    VolumeUnit : Volume
+    VolumeUnit : Volume,
     > HeightUnit.height(
     volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = height(volume, area, ::DefaultScientificValue)
 
 @JvmName("heightFromVolumeAndArea")
@@ -44,11 +44,11 @@ fun <
     HeightUnit : Length,
     AreaUnit : Area,
     VolumeUnit : Volume,
-    Value : ScientificValue<PhysicalQuantity.Length, HeightUnit>
+    Value : ScientificValue<PhysicalQuantity.Length, HeightUnit>,
     > HeightUnit.height(
     volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-    factory: (Decimal, HeightUnit) -> Value
+    factory: (Decimal, HeightUnit) -> Value,
 ) = byDividing(volume, area, factory)
 
 @JvmName("heightFromVolumeLengthAndWidthDefault")
@@ -56,7 +56,7 @@ fun <
     HeightUnit : Length,
     LengthUnit : Length,
     WidthUnit : Length,
-    VolumeUnit : Volume
+    VolumeUnit : Volume,
     > HeightUnit.height(
     volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
@@ -69,10 +69,10 @@ fun <
     LengthUnit : Length,
     WidthUnit : Length,
     VolumeUnit : Volume,
-    Value : ScientificValue<PhysicalQuantity.Length, HeightUnit>
+    Value : ScientificValue<PhysicalQuantity.Length, HeightUnit>,
     > HeightUnit.height(
     volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
     width: ScientificValue<PhysicalQuantity.Length, WidthUnit>,
-    factory: (Decimal, HeightUnit) -> Value
+    factory: (Decimal, HeightUnit) -> Value,
 ) = height(volume, SquareMeter.area(length, width), factory)

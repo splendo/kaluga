@@ -353,7 +353,7 @@ fun Intent?.parseStringListOrNull(): List<String>? = parseExtra { asStringListOr
  */
 fun <T> Intent?.parseTypeOf(serializer: KSerializer<T>): T = parseExtra {
     toTypedProperty(
-        NavigationBundleSpecType.SerializedType(serializer)
+        NavigationBundleSpecType.SerializedType(serializer),
     )
 }
 
@@ -364,7 +364,7 @@ fun <T> Intent?.parseTypeOf(serializer: KSerializer<T>): T = parseExtra {
  */
 fun <T : Any> Intent?.parseTypeOfOrNull(serializer: KSerializer<T>): T? = parseExtraOrNull {
     toTypedPropertyOrNull(
-        NavigationBundleSpecType.SerializedType(serializer)
+        NavigationBundleSpecType.SerializedType(serializer),
     )
 }
 
@@ -376,6 +376,6 @@ fun <T : Any> Intent?.parseTypeOfOrNull(serializer: KSerializer<T>): T? = parseE
 @JvmName("parseNullableTypeOfOrNull")
 fun <T> Intent?.parseTypeOfOrNull(serializer: KSerializer<T>): T? = parseExtraOrNull {
     toTypedPropertyOrNull(
-        NavigationBundleSpecType.SerializedType(serializer)
+        NavigationBundleSpecType.SerializedType(serializer),
     )
 }

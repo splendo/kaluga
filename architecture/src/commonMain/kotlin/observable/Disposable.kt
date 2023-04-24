@@ -16,6 +16,7 @@
  */
 
 @file:JvmName("DisposableCommonKt")
+
 package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.base.collections.ConcurrentMutableList

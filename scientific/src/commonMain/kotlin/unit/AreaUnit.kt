@@ -37,7 +37,7 @@ val MetricAreaUnits: Set<MetricArea> get() = setOf(
     SquareDecameter,
     SquareHectometer,
     SquareKilometer,
-    Hectare
+    Hectare,
 )
 
 /**
@@ -48,7 +48,7 @@ val ImperialAreaUnits: Set<ImperialArea> get() = setOf(
     SquareFoot,
     SquareYard,
     SquareMile,
-    Acre
+    Acre,
 )
 
 /**
@@ -62,6 +62,7 @@ val AreaUnits: Set<Area> get() = MetricAreaUnits + ImperialAreaUnits
  */
 @Serializable
 sealed class Area : AbstractScientificUnit<PhysicalQuantity.Area>()
+
 /**
  * An [Area] for [MeasurementSystem.Metric]
  */

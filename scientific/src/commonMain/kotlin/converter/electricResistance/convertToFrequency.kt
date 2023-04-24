@@ -27,5 +27,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("resistanceDivInductance")
 infix operator fun <ResistanceUnit : ElectricResistance, InductanceUnit : ElectricInductance> ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>.div(
-    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>
+    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>,
 ) = Hertz.frequency(this, inductance)

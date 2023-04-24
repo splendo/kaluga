@@ -151,7 +151,9 @@ interface MediaManager : VolumeController, MediaSurfaceController {
  * @param mediaSurfaceProvider a [MediaSurfaceProvider] that will automatically call [renderVideoOnSurface] for the latest [MediaSurface]
  * @param coroutineContext the [CoroutineContext] on which the media will be managed
  */
-abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext) : MediaManager, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("MediaManager")) {
+abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext) :
+    MediaManager,
+    CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("MediaManager")) {
 
     /**
      * Builder for creating a [BaseMediaManager]

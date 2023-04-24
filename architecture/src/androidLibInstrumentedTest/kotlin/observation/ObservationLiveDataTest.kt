@@ -43,7 +43,6 @@ class ObservationLiveDataTest : BaseTest() {
 
     @Test
     fun testLiveData() = testBlockingAndCancelScope {
-
         val flow = MutableStateFlow("initial")
         val subject = flow.toInitializedSubject(this, Dispatchers.Main.immediate)
         val channel = Channel<String>(4)
@@ -63,7 +62,6 @@ class ObservationLiveDataTest : BaseTest() {
 
     @Test
     fun testLiveDataWithNull() = testBlockingAndCancelScope {
-
         val flow = MutableStateFlow<String?>(null)
         val observable = flow.toInitializedObservable(this)
         val channel = Channel<String?>(4)
@@ -85,7 +83,6 @@ class ObservationLiveDataTest : BaseTest() {
 
     @Test
     fun testLiveDataWithNullAndDefault() = testBlockingAndCancelScope {
-
         val flow = MutableStateFlow<String?>(null)
         val observable = flow.toDefaultObservable("default", coroutineScope = this)
         val channel = Channel<String?>(4)
@@ -140,8 +137,7 @@ class ObservationLiveDataTest : BaseTest() {
         val job = launch(Dispatchers.Main) {
             liveData.observeOnCoroutine(
                 this,
-                observer = {
-                }
+                observer = {},
             )
             assertTrue(liveData.hasObservers(), "LiveData has observers (inside launch)")
             completedObserving.complete()

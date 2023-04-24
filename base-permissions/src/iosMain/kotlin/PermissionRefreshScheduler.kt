@@ -41,7 +41,7 @@ interface CurrentAuthorizationStatusProvider {
 class PermissionRefreshScheduler(
     private val currentAuthorizationStatusProvider: CurrentAuthorizationStatusProvider,
     private val authorizationStatusHandler: AuthorizationStatusHandler,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : CoroutineScope by coroutineScope {
 
     private sealed class TimerJobState {

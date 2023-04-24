@@ -39,14 +39,14 @@ import org.koin.core.parameter.parametersOf
 
 @Composable
 fun BottomSheetSubPageLayout(
-    bottomSheetNavigationState: StateFlow<BottomSheetNavigatorState?>
+    bottomSheetNavigationState: StateFlow<BottomSheetNavigatorState?>,
 ) {
     val viewModel = koinViewModel<BottomSheetSubPageViewModel> {
         parametersOf(
             ModalBottomSheetNavigator<BottomSheetSubPageNavigation>(
                 bottomSheetNavigationState,
-                navigationMapper = { bottomSheetSubPageNavigationRouteMapper(it) }
-            )
+                navigationMapper = { bottomSheetSubPageNavigationRouteMapper(it) },
+            ),
         )
     }
 
@@ -55,12 +55,12 @@ fun BottomSheetSubPageLayout(
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(Constants.Padding.default)
+                .padding(Constants.Padding.default),
         ) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Button(
                     modifier = Modifier.padding(Constants.Padding.default),
-                    onClick = { onClosePressed() }
+                    onClick = { onClosePressed() },
                 ) {
                     Text("X")
                 }

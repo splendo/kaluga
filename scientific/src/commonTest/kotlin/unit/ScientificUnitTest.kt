@@ -18,11 +18,16 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.invoke
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
 class ScientificUnitTest {
+
+    @Serializable
+    data class UnitContainer(val unit: AbstractScientificUnit<*>)
 
     @Test
     fun testUnits() {
@@ -34,5 +39,15 @@ class ScientificUnitTest {
         assertEquals(Double.NaN(Inch), Double.NaN(Meter).convert(Inch))
         assertEquals(Double.POSITIVE_INFINITY(Inch), Double.POSITIVE_INFINITY(Meter).convert(Inch))
         assertEquals(Double.NEGATIVE_INFINITY(Inch), Double.NEGATIVE_INFINITY(Meter).convert(Inch))
+    }
+
+    @Test
+    fun testSerialization() {
+        Units.forEach { unit ->
+            val container = UnitContainer(unit)
+            val jsonString = Json.encodeToString(UnitContainer.serializer(), container)
+            val decoded = Json.decodeFromString(UnitContainer.serializer(), jsonString)
+            assertEquals(container, decoded)
+        }
     }
 }

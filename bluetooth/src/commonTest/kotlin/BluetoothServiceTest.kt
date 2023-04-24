@@ -33,7 +33,7 @@ class BluetoothServiceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.D
 
     @Test
     fun testGetService() = testWithFlowAndTestContext(
-        Configuration.DeviceWithService()
+        Configuration.DeviceWithService(),
     ) {
         mainAction {
             bluetooth.startScanning()

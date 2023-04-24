@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("luminousEnergyDivLuminousFlux")
 infix operator fun <LuminousFluxUnit : LuminousFlux> ScientificValue<PhysicalQuantity.LuminousEnergy, LuminousEnergy>.div(
-    luminousFlux: ScientificValue<PhysicalQuantity.LuminousFlux, LuminousFluxUnit>
+    luminousFlux: ScientificValue<PhysicalQuantity.LuminousFlux, LuminousFluxUnit>,
 ) = unit.time.time(this, luminousFlux)

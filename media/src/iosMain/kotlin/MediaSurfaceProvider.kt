@@ -65,6 +65,7 @@ class UIViewMediaSurfaceProvider(initialView: UIView?) : BaseMediaSurfaceProvide
         }
     }
 }
+
 /**
  * A [BaseMediaSurfaceProvider] that attempts to grab the [MediaSurface] from an [AVPlayerLayer]
  * @param initialLayer the initial [AVPlayerLayer] or 'null' to provide a [MediaSurface] for

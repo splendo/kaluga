@@ -26,7 +26,7 @@ import androidx.compose.material.ModalBottomSheetLayout
  */
 class BottomSheetRouteController(
     internal val contentRouteController: RouteController,
-    internal val sheetContentRouteController: BottomSheetSheetContentRouteController
+    internal val sheetContentRouteController: BottomSheetSheetContentRouteController,
 ) {
 
     /**

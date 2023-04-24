@@ -54,7 +54,7 @@ val NavigationBundleSpecRow<*>.argumentKey: String get() = key ?: javaClass.simp
  * @param spec The [NavigationBundleSpec] describing the [Action]
  */
 inline fun <SpecRow : NavigationBundleSpecRow<*>, reified Action : NavigationAction<SpecRow>> route(
-    spec: NavigationBundleSpec<SpecRow>
+    spec: NavigationBundleSpec<SpecRow>,
 ): String = route(Action::class, spec)
 
 /**
@@ -67,7 +67,7 @@ inline fun <SpecRow : NavigationBundleSpecRow<*>, reified Action : NavigationAct
  */
 fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> route(
     actionClass: KClass<Action>,
-    spec: NavigationBundleSpec<SpecRow>
+    spec: NavigationBundleSpec<SpecRow>,
 ): String {
     val arguments = spec.rows.mapNotNull { row ->
         val key = row.argumentKey
@@ -90,7 +90,7 @@ fun <SpecRow : NavigationBundleSpecRow<*>> NavigationAction<SpecRow>.route(): St
             RouteArgument(
                 row.argumentKey,
                 it,
-                row.associatedType.isRequired
+                row.associatedType.isRequired,
             )
         }
     } ?: emptyList()
@@ -101,7 +101,7 @@ private data class RouteArgument(val key: String, val value: String, val isRequi
 
 private fun route(
     navigationActionClass: KClass<out NavigationAction<*>>,
-    vararg arguments: RouteArgument
+    vararg arguments: RouteArgument,
 ): String {
     val allArguments = arguments.toList()
         .groupBy(keySelector = { it.isRequired }, valueTransform = { it.key to it.value })
@@ -113,7 +113,7 @@ private fun route(
     return optionalArguments.takeIf(List<*>::isNotEmpty)
         ?.joinToString(
             "&",
-            prefix = "$routeWithRequiredArguments?"
+            prefix = "$routeWithRequiredArguments?",
         ) { "${it.first}=${it.second}" }
         ?: routeWithRequiredArguments
 }
@@ -123,7 +123,7 @@ private val NavigationBundleValue<*>.routeArgument: String?
         is NavigationBundleValue.UnitValue -> null
         is NavigationBundleValue.BooleanArrayValue -> Json.encodeToString(
             BooleanArraySerializer(),
-            value
+            value,
         )
         is NavigationBundleValue.BooleanValue -> Json.encodeToString(Boolean.serializer(), value)
         is NavigationBundleValue.BundleValue<*> -> null // Unsupported for now
@@ -134,22 +134,22 @@ private val NavigationBundleValue<*>.routeArgument: String?
         is NavigationBundleValue.CharValue -> Json.encodeToString(Char.serializer(), value)
         is NavigationBundleValue.DateArrayValue -> Json.encodeToString(
             ListSerializer(String.serializer()),
-            value.map { KalugaDateFormatter.Companion.iso8601Pattern().format(it) }
+            value.map { KalugaDateFormatter.Companion.iso8601Pattern().format(it) },
         )
         is NavigationBundleValue.DateValue -> KalugaDateFormatter.Companion.iso8601Pattern().format(value)
         is NavigationBundleValue.DoubleArrayValue -> Json.encodeToString(
             DoubleArraySerializer(),
-            value
+            value,
         )
         is NavigationBundleValue.DoubleValue -> Json.encodeToString(Double.serializer(), value)
         is NavigationBundleValue.FloatArrayValue -> Json.encodeToString(
             FloatArraySerializer(),
-            value
+            value,
         )
         is NavigationBundleValue.FloatValue -> Json.encodeToString(Float.serializer(), value)
         is NavigationBundleValue.IntegerArrayValue -> Json.encodeToString(
             IntArraySerializer(),
-            value
+            value,
         )
         is NavigationBundleValue.IntegerValue -> Json.encodeToString(Int.serializer(), value)
         is NavigationBundleValue.LongArrayValue -> Json.encodeToString(LongArraySerializer(), value)
@@ -158,12 +158,12 @@ private val NavigationBundleValue<*>.routeArgument: String?
         is NavigationBundleValue.SerializedValue<*> -> valueString
         is NavigationBundleValue.ShortArrayValue -> Json.encodeToString(
             ShortArraySerializer(),
-            value
+            value,
         )
         is NavigationBundleValue.ShortValue -> Json.encodeToString(Short.serializer(), value)
         is NavigationBundleValue.StringArrayValue -> Json.encodeToString(
             ListSerializer(String.serializer()),
-            value
+            value,
         )
         is NavigationBundleValue.StringValue -> value
     }
@@ -229,7 +229,7 @@ sealed class Route : ComposableNavSpec() {
      * @property routeAction The [Action] associated with the screen to navigate to
      */
     data class NextRoute<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
-        override val routeAction: Action
+        override val routeAction: Action,
     ) : Navigate<SpecRow, Action>()
 
     /**
@@ -241,7 +241,7 @@ sealed class Route : ComposableNavSpec() {
      */
     data class FromRoute<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
         override val routeAction: Action,
-        val from: String
+        val from: String,
     ) : Navigate<SpecRow, Action>()
 
     /**
@@ -256,7 +256,7 @@ sealed class Route : ComposableNavSpec() {
         Action : NavigationAction<SpecRow>,
         >(
         override val routeAction: Action,
-        val result: Result = Result.Empty
+        val result: Result = Result.Empty,
     ) : Navigate<SpecRow, Action>()
 
     /**
@@ -266,7 +266,7 @@ sealed class Route : ComposableNavSpec() {
      * @property routeAction The [Action] associated with the screen to navigate back from
      */
     data class PopToIncluding<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
-        override val routeAction: Action
+        override val routeAction: Action,
     ) : Navigate<SpecRow, Action>()
 
     /**
@@ -276,7 +276,7 @@ sealed class Route : ComposableNavSpec() {
      * @property routeAction The [Action] associated with the screen to replace the current screen with
      */
     data class Replace<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
-        override val routeAction: Action
+        override val routeAction: Action,
     ) : Navigate<SpecRow, Action>()
 
     /**
@@ -304,7 +304,7 @@ sealed class Route : ComposableNavSpec() {
  */
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.next
     get() = Route.NextRoute(
-        this
+        this,
     )
 
 /**
@@ -324,7 +324,7 @@ fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.fromRoot
     get() = Route.FromRoute(
         this,
-        ROOT_VIEW
+        ROOT_VIEW,
     )
 
 /**
@@ -335,7 +335,7 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.popTo
     get() = Route.PopTo(
         this,
-        bundle?.let { Route.Result.Data(it) } ?: Route.Result.Empty
+        bundle?.let { Route.Result.Data(it) } ?: Route.Result.Empty,
     )
 
 /**
@@ -345,7 +345,7 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
  */
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.popToIncluding
     get() = Route.PopToIncluding(
-        this
+        this,
     )
 
 /**
@@ -355,7 +355,7 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
  */
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.replace
     get() = Route.Replace(
-        this
+        this,
     )
 
 /**
@@ -365,12 +365,13 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
  */
 val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.back
     get() = Route.Back(
-        bundle?.let { Route.Result.Data(it) } ?: Route.Result.Empty
+        bundle?.let { Route.Result.Data(it) } ?: Route.Result.Empty,
     )
 
 internal val <T> NavigationBundleSpecType<T>.isRequired: Boolean get() = when (this) {
     is NavigationBundleSpecType.CharSequenceType,
     is NavigationBundleSpecType.OptionalType<*>,
-    is NavigationBundleSpecType.StringType -> false
+    is NavigationBundleSpecType.StringType,
+    -> false
     else -> true
 }

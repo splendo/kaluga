@@ -80,8 +80,8 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             Feature.Beacons,
             Feature.Resource,
             Feature.Scientific,
-            Feature.PlatformSpecific.takeIf { showPlatformSpecificFeatures }
-        )
+            Feature.PlatformSpecific.takeIf { showPlatformSpecificFeatures },
+        ),
     )
 
     fun onFeaturePressed(feature: Feature) {
@@ -103,7 +103,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
                 is Feature.Resource -> FeatureListNavigationAction.Resources
                 is Feature.Scientific -> FeatureListNavigationAction.Scientific
                 is Feature.PlatformSpecific -> FeatureListNavigationAction.PlatformSpecific
-            }
+            },
         )
     }
 }

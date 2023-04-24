@@ -21,7 +21,7 @@ import com.splendo.kaluga.architecture.navigation.DefaultNavigator
 
 fun ScientificUnitSelectionNavigator(
     onDidSelect: (Int) -> Unit,
-    onCancelled: () -> Unit
+    onCancelled: () -> Unit,
 ) = DefaultNavigator<ScientificUnitSelectionAction<*>> { action ->
     when (action) {
         is ScientificUnitSelectionAction.DidSelect -> onDidSelect(action.value)

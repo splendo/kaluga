@@ -72,7 +72,7 @@ interface MediaPlayer : VolumeController, MediaSurfaceController {
         val setRate: SetRate? = null,
         val setLoopMode: SetLoopMode? = null,
         val awaitPreparation: AwaitPreparation? = null,
-        val displayError: DisplayError? = null
+        val displayError: DisplayError? = null,
     ) {
 
         /**
@@ -201,14 +201,14 @@ interface MediaPlayer : VolumeController, MediaSurfaceController {
         suspend fun trySetLoopMode(loopMode: PlaybackState.LoopMode): Boolean = tryPerformControlType<SetLoopMode> { perform(loopMode) }
 
         private inline fun <reified Type : ControlType> tryPerformControlType(
-            block: Type.() -> Unit
+            block: Type.() -> Unit,
         ): Boolean = tryPerformControlTypeWithResult<Type> {
             block()
             true
         }
 
         private inline fun <reified Type : ControlType> tryPerformControlTypeWithResult(
-            block: Type.() -> Boolean
+            block: Type.() -> Boolean,
         ): Boolean = getControlType<Type>()?.let {
             block.invoke(it)
         } ?: false
@@ -264,7 +264,7 @@ interface MediaPlayer : VolumeController, MediaSurfaceController {
  */
 class DefaultMediaPlayer(
     createPlaybackStateRepo: (CoroutineContext) -> BasePlaybackStateRepo,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : MediaPlayer, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("MediaPlayer")) {
 
     /**
@@ -276,13 +276,13 @@ class DefaultMediaPlayer(
     constructor(
         mediaSurfaceProvider: MediaSurfaceProvider?,
         mediaManagerBuilder: BaseMediaManager.Builder,
-        coroutineContext: CoroutineContext
+        coroutineContext: CoroutineContext,
     ) : this(
         { context ->
             val mediaManager = mediaManagerBuilder.create(mediaSurfaceProvider, context)
             PlaybackStateRepo(mediaManager, context)
         },
-        coroutineContext
+        coroutineContext,
     )
 
     private val playbackStateRepo = createPlaybackStateRepo(coroutineContext)
@@ -311,14 +311,14 @@ class DefaultMediaPlayer(
         when (state) {
             is PlaybackState.Idle -> MediaPlayer.Controls(
                 play = playControl,
-                seek = seekControl
+                seek = seekControl,
             )
             is PlaybackState.Playing -> MediaPlayer.Controls(
                 pause = pauseControl,
                 stop = stopControl,
                 seek = seekControl,
                 setRate = state.createSetRateControls(),
-                setLoopMode = state.createSetLoopModeControls()
+                setLoopMode = state.createSetLoopModeControls(),
             )
             is PlaybackState.Paused -> MediaPlayer.Controls(
                 play = Play { parameters -> forceStart(parameters, true) },
@@ -326,12 +326,12 @@ class DefaultMediaPlayer(
                 stop = stopControl,
                 seek = seekControl,
                 setRate = state.createSetRateControls(),
-                setLoopMode = state.createSetLoopModeControls()
+                setLoopMode = state.createSetLoopModeControls(),
             )
             is PlaybackState.Completed -> MediaPlayer.Controls(
                 play = playControl,
                 stop = stopControl,
-                seek = seekControl
+                seek = seekControl,
             )
             is PlaybackState.Stopped -> MediaPlayer.Controls(play = playControl)
             is PlaybackState.Error -> MediaPlayer.Controls(displayError = DisplayError(state.error))
@@ -355,7 +355,7 @@ class DefaultMediaPlayer(
                 is PlaybackState.Uninitialized -> changePlaybackState<PlaybackState.Uninitialized> {
                     resetOnError = false
                     it.initialize(
-                        source
+                        source,
                     )
                 }
                 is PlaybackState.Initialized -> {
@@ -446,7 +446,8 @@ class DefaultMediaPlayer(
         when (state) {
             is PlaybackState.Prepared -> state.seekTo(duration)
             is PlaybackState.Active,
-            is PlaybackState.Closed -> false
+            is PlaybackState.Closed,
+            -> false
         }
     }
 
@@ -481,7 +482,7 @@ class DefaultMediaPlayer(
     }
 
     private suspend inline fun <reified State : PlaybackState> changePlaybackState(
-        noinline action: suspend (State) -> suspend () -> PlaybackState
+        noinline action: suspend (State) -> suspend () -> PlaybackState,
     ) = playbackStateRepo.takeAndChangeState(remainIfStateNot = State::class, action)
 
     override fun close() {

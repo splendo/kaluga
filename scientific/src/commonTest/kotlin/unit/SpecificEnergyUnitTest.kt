@@ -44,13 +44,13 @@ class SpecificEnergyUnitTest {
             1.0,
             (BritishThermalUnit per Pound),
             2240,
-            BritishThermalUnit per ImperialTon
+            BritishThermalUnit per ImperialTon,
         )
         assertScientificConversion(
             1.0,
             (BritishThermalUnit per Pound),
             2000,
-            BritishThermalUnit per UsTon
+            BritishThermalUnit per UsTon,
         )
     }
 
@@ -103,21 +103,21 @@ class SpecificEnergyUnitTest {
         assertEquals(4(HorsepowerHour per Pound), 2(Decimole per Pound) * 2(HorsepowerHour per Decimole))
         assertEquals(
             4(HorsepowerHour per ImperialTon),
-            2(HorsepowerHour per Decimole) * 2(Decimole per ImperialTon)
+            2(HorsepowerHour per Decimole) * 2(Decimole per ImperialTon),
         )
         assertEquals(
             4(HorsepowerHour per ImperialTon),
-            2(Decimole per ImperialTon) * 2(HorsepowerHour per Decimole)
+            2(Decimole per ImperialTon) * 2(HorsepowerHour per Decimole),
         )
         assertEquals(4(HorsepowerHour per UsTon), 2(HorsepowerHour per Decimole) * 2(Decimole per UsTon))
         assertEquals(4(HorsepowerHour per UsTon), 2(Decimole per UsTon) * 2(HorsepowerHour per Decimole))
         assertEquals(
             4(Joule per Kilogram),
-            2(Joule per Decimole) * 2(Decimole per Kilogram).convert(Decimole per Pound)
+            2(Joule per Decimole) * 2(Decimole per Kilogram).convert(Decimole per Pound),
         )
         assertEquals(
             4(Joule per Kilogram),
-            2(Decimole per Kilogram).convert(Decimole per Pound) * 2(Joule per Decimole)
+            2(Decimole per Kilogram).convert(Decimole per Pound) * 2(Joule per Decimole),
         )
     }
 
@@ -131,13 +131,13 @@ class SpecificEnergyUnitTest {
         assertEquals(1(HorsepowerHour per Pound), 2(HorsepowerHour per Decimole) / 2(Pound per Decimole))
         assertEquals(
             1(HorsepowerHour per ImperialTon),
-            2(HorsepowerHour per Decimole) / 2(ImperialTon per Decimole)
+            2(HorsepowerHour per Decimole) / 2(ImperialTon per Decimole),
         )
         assertEquals(1(HorsepowerHour per UsTon), 2(HorsepowerHour per Decimole) / 2(UsTon per Decimole))
         assertEqualScientificValue(
             1(Joule per Kilogram),
             2(Joule per Decimole) / 2(Kilogram per Decimole).convert(Pound per Decimole),
-            8
+            8,
         )
     }
 
@@ -149,43 +149,43 @@ class SpecificEnergyUnitTest {
         assertEquals(4(WattHour per Kilogram), 2(Celsius) * 2((WattHour per Celsius) per Kilogram))
         assertEquals(
             4(WattHour per Pound.ukImperial),
-            2((WattHour per Celsius) per Pound) * 2(Celsius)
+            2((WattHour per Celsius) per Pound) * 2(Celsius),
         )
         assertEquals(
             4(WattHour per Pound.ukImperial),
-            2(Celsius) * 2((WattHour per Celsius) per Pound)
+            2(Celsius) * 2((WattHour per Celsius) per Pound),
         )
         assertEquals(
             4(WattHour per Pound.usCustomary),
-            2((WattHour per Fahrenheit) per Pound) * 2(Fahrenheit)
+            2((WattHour per Fahrenheit) per Pound) * 2(Fahrenheit),
         )
         assertEquals(
             4(WattHour per Pound.usCustomary),
-            2(Fahrenheit) * 2((WattHour per Fahrenheit) per Pound)
+            2(Fahrenheit) * 2((WattHour per Fahrenheit) per Pound),
         )
         assertEquals(
             4(HorsepowerHour per Pound.ukImperial),
-            2((HorsepowerHour per Celsius) per Pound) * 2(Celsius)
+            2((HorsepowerHour per Celsius) per Pound) * 2(Celsius),
         )
         assertEquals(
             4(HorsepowerHour per Pound.ukImperial),
-            2(Celsius) * 2((HorsepowerHour per Celsius) per Pound)
+            2(Celsius) * 2((HorsepowerHour per Celsius) per Pound),
         )
         assertEquals(
             4(HorsepowerHour per Pound.usCustomary),
-            2((HorsepowerHour per Fahrenheit) per Pound) * 2(Fahrenheit)
+            2((HorsepowerHour per Fahrenheit) per Pound) * 2(Fahrenheit),
         )
         assertEquals(
             4(HorsepowerHour per Pound.usCustomary),
-            2(Fahrenheit) * 2((HorsepowerHour per Fahrenheit) per Pound)
+            2(Fahrenheit) * 2((HorsepowerHour per Fahrenheit) per Pound),
         )
         assertEquals(
             4(Joule per Kilogram),
-            2((Joule per Celsius) per Kilogram) * Fahrenheit.deltaValue(2(Celsius))
+            2((Joule per Celsius) per Kilogram) * Fahrenheit.deltaValue(2(Celsius)),
         )
         assertEquals(
             4(Joule per Kilogram),
-            Fahrenheit.deltaValue(2(Celsius)) * 2((Joule per Celsius) per Kilogram)
+            Fahrenheit.deltaValue(2(Celsius)) * 2((Joule per Celsius) per Kilogram),
         )
     }
 }

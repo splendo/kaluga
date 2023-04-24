@@ -30,7 +30,6 @@ import platform.UIKit.UILabel
 import platform.UIKit.UITapGestureRecognizer
 import platform.UIKit.UITextField
 import platform.UIKit.UITextView
-import platform.UIKit.addGestureRecognizer
 import platform.darwin.sel_registerName
 
 /**
@@ -52,9 +51,9 @@ fun UILabel.bindLabel(label: KalugaLabel) {
                         linkStyledAttributedString.addAttributes(
                             mapOf(
                                 "NSColor" to linkStyle.color.uiColor,
-                                "NSUnderline" to if (linkStyle.isUnderlined) NSUnderlineStyleSingle else NSUnderlineStyleNone
+                                "NSUnderline" to if (linkStyle.isUnderlined) NSUnderlineStyleSingle else NSUnderlineStyleNone,
                             ),
-                            range
+                            range,
                         )
                     }
                 }

@@ -38,7 +38,7 @@ typealias PlaybackStateFlowRepo = StateRepo<PlaybackState, MutableStateFlow<Play
  */
 abstract class BasePlaybackStateRepo(
     createInitialState: HotStateFlowRepo<PlaybackState>.() -> PlaybackState,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : HotStateFlowRepo<PlaybackState>(
     coroutineContext = coroutineContext,
     initialState = createInitialState,
@@ -51,12 +51,12 @@ abstract class BasePlaybackStateRepo(
  */
 open class PlaybackStateRepo(
     mediaManager: MediaManager,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : BasePlaybackStateRepo(
     createInitialState = {
         PlaybackStateImpl.Uninitialized(mediaManager = mediaManager)
     },
-    coroutineContext = coroutineContext
+    coroutineContext = coroutineContext,
 ) {
     init {
         launch {

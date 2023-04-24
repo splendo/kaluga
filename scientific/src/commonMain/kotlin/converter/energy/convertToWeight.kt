@@ -46,85 +46,92 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(absorbedDos
     Gram.weight(this, absorbedDose)
 
 @JvmName("ergMultipleDivRad")
-infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad>) =
-    Gram.weight(this, absorbedDose)
+infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(
+    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad>,
+) = Gram.weight(this, absorbedDose)
 
 @JvmName("ergDivRadMultiple")
 infix operator fun <RadUnit : RadMultiple> ScientificValue<PhysicalQuantity.Energy, Erg>.div(
-    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, RadUnit>
+    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, RadUnit>,
 ) =
     Gram.weight(this, absorbedDose)
 
 @JvmName("ergMultipleDivRadMultiple")
 infix operator fun <ErgUnit : ErgMultiple, RadUnit : RadMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(
-    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, RadUnit>
+    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, RadUnit>,
 ) = Gram.weight(this, absorbedDose)
 
 @JvmName("energyDivAbsorbedDose")
 infix operator fun <EnergyUnit : Energy, AbsorbedDoseUnit : IonizingRadiationAbsorbedDose> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
+    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>,
 ) = Kilogram.weight(this, absorbedDose)
 
 @JvmName("ergDivRem")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>) =
-    Gram.weight(this, equivalentDose)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(
+    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>,
+) = Gram.weight(this, equivalentDose)
 
 @JvmName("ergMultipleDivRem")
-infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>) =
-    Gram.weight(this, equivalentDose)
+infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(
+    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>,
+) = Gram.weight(this, equivalentDose)
 
 @JvmName("ergDivRemMultiple")
 infix operator fun <RemUnit : RoentgenEquivalentManMultiple> ScientificValue<PhysicalQuantity.Energy, Erg>.div(
-    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RemUnit>
+    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RemUnit>,
 ) = Gram.weight(this, equivalentDose)
 
 @JvmName("ergMultipleDivRemMultiple")
 infix operator fun <ErgUnit : ErgMultiple, RemUnit : RoentgenEquivalentManMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(
-    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RemUnit>
+    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RemUnit>,
 ) = Gram.weight(this, equivalentDose)
 
 @JvmName("energyDivEquivalentDose")
 infix operator fun <EnergyUnit : Energy, EquivalentDoseUnit : IonizingRadiationEquivalentDose> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
+    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>,
 ) = Kilogram.weight(this, equivalentDose)
 
 @JvmName("metricAndImperialEnergyDivMetricSpecificEnergy")
 infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>,
 ) = specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("metricAndImperialEnergyDivImperialSpecificEnergy")
 infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>,
 ) = specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("metricAndImperialEnergyDivUKImperialSpecificEnergy")
 infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>,
 ) = specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("metricAndImperialEnergyDivUSCustomarySpecificEnergy")
 infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>,
 ) = specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("metricEnergyDivMetricSpecificEnergy")
-infix operator fun <EnergyUnit : MetricEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>) =
-    specificEnergy.unit.per.weight(this, specificEnergy)
+infix operator fun <EnergyUnit : MetricEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>,
+) = specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("imperialEnergyDivImperialSpecificEnergy")
-infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>) =
-    specificEnergy.unit.per.weight(this, specificEnergy)
+infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>,
+) = specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("imperialEnergyDivUKImperialSpecificEnergy")
-infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>) =
-    specificEnergy.unit.per.weight(this, specificEnergy)
+infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>,
+) = specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("imperialEnergyDivUSCustomarySpecificEnergy")
-infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>) =
-    specificEnergy.unit.per.weight(this, specificEnergy)
+infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>,
+) = specificEnergy.unit.per.weight(this, specificEnergy)
 
 @JvmName("energyDivSpecificEnergy")
 infix operator fun <EnergyUnit : Energy, SpecificEnergyUnit : SpecificEnergy> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>,
 ) = specificEnergy.unit.per.weight(this, specificEnergy)

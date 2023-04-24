@@ -39,7 +39,7 @@ class MockDevice(
     override val info: MutableStateFlow<MockDeviceInfo> = MutableStateFlow(MockDeviceInfo()),
     private val connectionSettings: ConnectionSettings = ConnectionSettings(),
     private val coroutineContext: CoroutineContext,
-    setupMocks: Boolean = true
+    setupMocks: Boolean = true,
 ) : Device {
 
     val mockConnectableDeviceManager = MockConnectableDeviceManager()
@@ -79,7 +79,7 @@ class MockDevice(
     fun handleConnecting() {
         connectableDeviceStateRepo.launchTakeAndChangeState(
             coroutineContext,
-            ConnectableDeviceState.Disconnected::class
+            ConnectableDeviceState.Disconnected::class,
         ) { it.connect(connectionSettings.reconnectionSettings) }
     }
 
@@ -114,7 +114,8 @@ class MockDevice(
                 }
                 is ConnectableDeviceState.Disconnected -> state.remain()
                 is ConnectableDeviceState.Connecting,
-                is ConnectableDeviceState.Disconnecting -> state.didDisconnect
+                is ConnectableDeviceState.Disconnecting,
+                -> state.didDisconnect
             }
         }
     }

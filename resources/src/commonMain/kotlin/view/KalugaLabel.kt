@@ -37,7 +37,7 @@ sealed class KalugaLabel {
      */
     data class Plain(
         val text: String,
-        override val style: KalugaTextStyle
+        override val style: KalugaTextStyle,
     ) : KalugaLabel()
 
     /**
@@ -47,6 +47,6 @@ sealed class KalugaLabel {
      */
     data class Styled(
         val text: StyledString,
-        override val style: KalugaTextStyle = text.defaultTextStyle
+        override val style: KalugaTextStyle = text.defaultTextStyle,
     ) : KalugaLabel()
 }

@@ -38,7 +38,7 @@ val MetricAndImperialPowerUnits: Set<MetricAndImperialPower> get() = setOf(
     Hectowatt,
     Kilowatt,
     Megawatt,
-    Gigawatt
+    Gigawatt,
 )
 
 /**
@@ -47,7 +47,7 @@ val MetricAndImperialPowerUnits: Set<MetricAndImperialPower> get() = setOf(
 val MetricPowerUnits: Set<MetricPower> get() = MetricAndImperialPowerUnits.map { it.metric }.toSet() +
     setOf(
         ErgPerSecond,
-        MetricHorsepower
+        MetricHorsepower,
     )
 
 /**
@@ -62,7 +62,7 @@ val ImperialPowerUnits: Set<ImperialPower> get() = MetricAndImperialPowerUnits.m
         Horsepower,
         BritishThermalUnitPerSecond,
         BritishThermalUnitPerMinute,
-        BritishThermalUnitPerHour
+        BritishThermalUnitPerHour,
     )
 
 /**
@@ -111,22 +111,31 @@ sealed class WattMultiple : MetricAndImperialPower(), MetricMultipleUnit<Measure
 
 @Serializable
 object Nanowatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Nano(Watt)
+
 @Serializable
 object Microwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Micro(Watt)
+
 @Serializable
 object Milliwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Milli(Watt)
+
 @Serializable
 object Centiwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Centi(Watt)
+
 @Serializable
 object Deciwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Deci(Watt)
+
 @Serializable
 object Decawatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Deca(Watt)
+
 @Serializable
 object Hectowatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Hecto(Watt)
+
 @Serializable
 object Kilowatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Kilo(Watt)
+
 @Serializable
 object Megawatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Mega(Watt)
+
 @Serializable
 object Gigawatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Giga(Watt)
 

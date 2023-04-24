@@ -42,7 +42,7 @@ actual class DefaultBluetoothPermissionManager(
     context: Context,
     bluetoothAdapter: BluetoothAdapter?,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
@@ -52,19 +52,19 @@ actual class DefaultBluetoothPermissionManager(
             arrayOf(
                 Manifest.permission.BLUETOOTH_SCAN,
                 Manifest.permission.BLUETOOTH_CONNECT,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,
             )
         } else {
             arrayOf(
                 Manifest.permission.BLUETOOTH,
                 Manifest.permission.BLUETOOTH_ADMIN,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,
             )
         },
         coroutineScope,
         logTag,
         logger,
-        permissionHandler
+        permissionHandler,
     )
 
     private val supported: Boolean = bluetoothAdapter != null
@@ -99,7 +99,7 @@ actual class DefaultBluetoothPermissionManager(
  */
 actual class BluetoothPermissionManagerBuilder(
     private val context: PermissionContext,
-    private val bluetoothAdapter: BluetoothAdapter?
+    private val bluetoothAdapter: BluetoothAdapter?,
 ) : BaseBluetoothPermissionManagerBuilder {
 
     /**
@@ -108,7 +108,7 @@ actual class BluetoothPermissionManagerBuilder(
      */
     actual constructor(context: PermissionContext) : this(context, (context.context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter)
 
-    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager {
+    override fun create(settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager {
         return DefaultBluetoothPermissionManager(context.context, bluetoothAdapter, settings, coroutineScope)
     }
 }

@@ -30,15 +30,15 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAreaDivTime")
 infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, Time>
+    time: ScientificValue<PhysicalQuantity.Time, Time>,
 ) = (unit per time.unit).kinematicViscosity(this, time)
 
 @JvmName("imperialAreaDivTime")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, Time>
+    time: ScientificValue<PhysicalQuantity.Time, Time>,
 ) = (unit per time.unit).kinematicViscosity(this, time)
 
 @JvmName("areaDivTime")
 infix operator fun <AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, Time>
+    time: ScientificValue<PhysicalQuantity.Time, Time>,
 ) = (SquareMeter per time.unit).kinematicViscosity(this, time)

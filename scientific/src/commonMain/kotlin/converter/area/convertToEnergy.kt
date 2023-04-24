@@ -38,7 +38,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Area, SquareCentimeter>.time
 
 @JvmName("metricAreaTimesMetricSurfaceTension")
 infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfaceTension>
+    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfaceTension>,
 ) = surfaceTension * this
 
 @JvmName("squareInchTimesImperialSurfaceTension")
@@ -55,20 +55,20 @@ infix operator fun ScientificValue<PhysicalQuantity.Area, SquareInch>.times(surf
 
 @JvmName("imperialAreaTimesImperialSurfaceTensionTimes")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, ImperialSurfaceTension>
+    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, ImperialSurfaceTension>,
 ) = surfaceTension * this
 
 @JvmName("imperialAreaTimesUKImperialSurfaceTension")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, UKImperialSurfaceTension>
+    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, UKImperialSurfaceTension>,
 ) = surfaceTension * this
 
 @JvmName("imperialAreaTimesUSCustomarySurfaceTension")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, USCustomarySurfaceTension>
+    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, USCustomarySurfaceTension>,
 ) = surfaceTension * this
 
 @JvmName("areaTimesSurfaceTension")
 infix operator fun <SurfaceTensionUnit : SurfaceTension, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>
+    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>,
 ) = surfaceTension * this

@@ -26,7 +26,7 @@ internal val logLevel = arrayOf(
     NapierLogLevel.INFO,
     NapierLogLevel.WARNING,
     NapierLogLevel.ERROR,
-    NapierLogLevel.ASSERT
+    NapierLogLevel.ASSERT,
 )
 
 internal fun KalugaLogLevel.logLevel(): NapierLogLevel {

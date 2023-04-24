@@ -28,10 +28,10 @@ import kotlin.coroutines.CoroutineContext
  */
 class MockPlaybackStateRepo(
     createInitialState: () -> MockPlaybackState,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : BasePlaybackStateRepo(
     { createInitialState().playbackState },
-    coroutineContext
+    coroutineContext,
 ) {
 
     /**
@@ -41,6 +41,6 @@ class MockPlaybackStateRepo(
      */
     constructor(configuration: MockPlaybackState.Configuration, coroutineContext: CoroutineContext) : this(
         { MockPlaybackState.Uninitialized(configuration) },
-        coroutineContext
+        coroutineContext,
     )
 }

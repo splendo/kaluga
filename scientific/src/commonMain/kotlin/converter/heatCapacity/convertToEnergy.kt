@@ -32,25 +32,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAndUKImperialHeatCapacityTimesMetricAndUKImperialTemperature")
 infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<PhysicalQuantity.HeatCapacity, MetricAndUKImperialHeatCapacity>.times(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
 ) = (unit.energy).energy(this, temperature)
 
 @JvmName("metricHeatCapacityTimesMetricAndUKImperialTemperature")
 infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<PhysicalQuantity.HeatCapacity, MetricHeatCapacity>.times(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
 ) = (unit.energy).energy(this, temperature)
 
 @JvmName("ukImperialHeatCapacityTimesMetricAndUKImperialTemperature")
 infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<PhysicalQuantity.HeatCapacity, UKImperialHeatCapacity>.times(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
 ) = (unit.energy).energy(this, temperature)
 
 @JvmName("usCustomaryHeatCapacityTimesUSCustomaryTemperature")
 infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<PhysicalQuantity.HeatCapacity, USCustomaryHeatCapacity>.times(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
 ) = (unit.energy).energy(this, temperature)
 
 @JvmName("heatCapacityTimesTemperature")
 infix operator fun <HeatCapacityUnit : HeatCapacity, TemperatureUnit : Temperature> ScientificValue<PhysicalQuantity.HeatCapacity, HeatCapacityUnit>.times(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
 ) = (unit.energy).energy(this, temperature)

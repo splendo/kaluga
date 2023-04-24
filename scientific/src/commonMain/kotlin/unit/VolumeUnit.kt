@@ -49,7 +49,7 @@ val MetricVolumeUnits: Set<MetricVolume> get() = setOf(
     Hectoliter,
     Kiloliter,
     Megaliter,
-    Gigaliter
+    Gigaliter,
 )
 
 /**
@@ -59,7 +59,7 @@ val ImperialVolumeUnits: Set<ImperialVolume> get() = setOf(
     CubicInch,
     CubicFoot,
     CubicYard,
-    CubicMile
+    CubicMile,
 )
 
 /**
@@ -75,7 +75,7 @@ val USCustomaryVolumeUnits: Set<USCustomaryVolume> get() = ImperialVolumeUnits.m
         UsLegalCup,
         UsLiquidPint,
         UsLiquidQuart,
-        UsLiquidGallon
+        UsLiquidGallon,
     )
 
 /**
@@ -88,7 +88,7 @@ val UKImperialVolumeUnits: Set<UKImperialVolume> get() = ImperialVolumeUnits.map
         MetricCup,
         ImperialPint,
         ImperialQuart,
-        ImperialGallon
+        ImperialGallon,
     )
 
 /**

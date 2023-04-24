@@ -39,13 +39,13 @@ import kotlinx.coroutines.flow.StateFlow
 fun SetupNavHost(
     navHostController: StateFlow<NavHostController?>,
     rootView: @Composable () -> Unit = { Spacer(modifier = Modifier.fillMaxWidth()) },
-    builder: RouteContentBuilder
+    builder: RouteContentBuilder,
 ) {
     val currentNavHostController by navHostController.collectAsState()
     currentNavHostController?.let {
         SetupNavHost(
             navHostController = it,
-            startDestination = ROOT_VIEW
+            startDestination = ROOT_VIEW,
         ) {
             composable(ROOT_VIEW, content = { rootView() })
             builder(navHostController)
@@ -65,13 +65,13 @@ fun SetupNavHost(
     bottomSheetNavigatorState: StateFlow<BottomSheetNavigatorState?>,
     navHostController: BottomSheetNavigatorState.() -> NavHostController,
     rootView: @Composable () -> Unit = { Spacer(modifier = Modifier.fillMaxWidth()) },
-    builder: BottomSheetContentBuilder
+    builder: BottomSheetContentBuilder,
 ) {
     val currentBottomSheetNavigatorState by bottomSheetNavigatorState.collectAsState()
     currentBottomSheetNavigatorState?.let {
         SetupNavHost(
             navHostController = it.navHostController(),
-            startDestination = ROOT_VIEW
+            startDestination = ROOT_VIEW,
         ) {
             composable(ROOT_VIEW, content = { rootView() })
             builder(bottomSheetNavigatorState)
@@ -89,11 +89,11 @@ fun SetupNavHost(
 fun SetupNavHost(
     navHostController: NavHostController,
     startDestination: String,
-    builder: NavGraphBuilder.() -> Unit
+    builder: NavGraphBuilder.() -> Unit,
 ) {
     NavHost(
         navController = navHostController,
         startDestination = startDestination,
-        builder = { builder() }
+        builder = { builder() },
     )
 }

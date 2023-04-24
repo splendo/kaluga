@@ -32,25 +32,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("molarEnergyDivMetricSpecificEnergy")
 infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>,
 ) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
 
 @JvmName("molarEnergyDivImperialSpecificEnergy")
 infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>,
 ) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
 
 @JvmName("molarEnergyDivUKImperialSpecificEnergy")
 infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>,
 ) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
 
 @JvmName("molarEnergyDivUSCustomarySpecificEnergy")
 infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>,
 ) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
 
 @JvmName("molarEnergyDivSpecificEnergy")
 infix operator fun <MolarEnergyUnit : MolarEnergy, SpecificEnergyUnit : SpecificEnergy> ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>.div(
-    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>
+    specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>,
 ) = (Kilogram per unit.per).molarMass(this, specificEnergy)

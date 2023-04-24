@@ -42,47 +42,47 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAreaDensityTimesMetricSpecificVolume")
 infix operator fun ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("imperialAreaDensityTimesImperialSpecificVolume")
 infix operator fun ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("imperialAreaDensityTimesUKImperialSpecificVolume")
 infix operator fun ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("imperialAreaDensityTimesUSCustomarySpecificVolume")
 infix operator fun ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("ukImperialAreaDensityTimesImperialSpecificVolume")
 infix operator fun ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("ukImperialAreaDensityTimesUKImperialSpecificVolume")
 infix operator fun ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("usCustomaryAreaDensityTimesImperialSpecificVolume")
 infix operator fun ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("usCustomaryAreaDensityTimesUSCustomarySpecificVolume")
 infix operator fun ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("areaDensityTimesSpecificVolume")
 infix operator fun <AreaDensityUnit : AreaDensity, SpecificVolumeUnit : SpecificVolume> ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
 ) = specificVolume * this
 
 @JvmName("metricAreaDensityDivMetricDensity")
@@ -119,5 +119,5 @@ infix operator fun ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryArea
 
 @JvmName("areaDensityDivDensity")
 infix operator fun <AreaDensityUnit : AreaDensity, DensityUnit : Density> ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>
+    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>,
 ) = (1(density.unit.per) / 1(unit.per)).unit.length(this, density)

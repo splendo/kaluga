@@ -32,7 +32,7 @@ abstract class HUDTests<HTC : HUDTestContext> : UIThreadTest<HTC>() {
     @Test
     fun builderInitializer() = testOnUIThread {
         assertNotNull(
-            builder.build(MainScope())
+            builder.build(MainScope()),
         )
     }
 
@@ -42,7 +42,7 @@ abstract class HUDTests<HTC : HUDTestContext> : UIThreadTest<HTC>() {
             builder.build(MainScope()) {
                 setStyle(HUDStyle.CUSTOM)
                 setTitle("Foo")
-            }
+            },
         )
     }
 

@@ -39,7 +39,7 @@ import kotlin.time.Duration
 
 fun PermissionsBuilder.registerAllPermissions(
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
-    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
 ) {
     registerBluetoothPermission(monitoringInterval = monitoringInterval, settings = settings)
     registerCalendarPermission(monitoringInterval = monitoringInterval, settings = settings)
@@ -54,7 +54,7 @@ fun PermissionsBuilder.registerAllPermissions(
 
 suspend fun PermissionsBuilder.registerAllPermissionsNotRegistered(
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
-    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
 ) {
     registerBluetoothPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
     registerCalendarPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)

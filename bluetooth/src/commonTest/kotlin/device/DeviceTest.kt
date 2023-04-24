@@ -62,7 +62,7 @@ class DeviceTest :
     fun testNotConnectableToDisconnectedStateTransition() {
         // Is not connectable initially
         val configuration = Configuration.DeviceWithDescriptor(
-            advertisementData = MockAdvertisementData(isConnectable = false)
+            advertisementData = MockAdvertisementData(isConnectable = false),
         )
         testWithFlowAndTestContext(configuration) {
             test {
@@ -73,7 +73,7 @@ class DeviceTest :
             // 'Advertise' as connectable
             mainAction {
                 device.advertisementDataDidUpdate(
-                    MockAdvertisementData(isConnectable = true)
+                    MockAdvertisementData(isConnectable = true),
                 )
                 yieldMultiple(2)
             }
@@ -116,9 +116,9 @@ class DeviceTest :
     fun testReconnect() = testWithFlowAndTestContext(
         Configuration.DeviceWithDescriptor(
             connectionSettings = ConnectionSettings(
-                reconnectionSettings = ConnectionSettings.ReconnectionSettings.Always
-            )
-        )
+                reconnectionSettings = ConnectionSettings.ReconnectionSettings.Always,
+            ),
+        ),
     ) {
         getDisconnectedState()
         connecting()

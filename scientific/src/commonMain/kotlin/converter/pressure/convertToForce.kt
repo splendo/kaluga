@@ -57,55 +57,55 @@ infix operator fun <BaryeUnit : BaryeMultiple> ScientificValue<PhysicalQuantity.
 
 @JvmName("ounceSquareInchTimesImperialArea")
 infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Pressure, OunceSquareInch>.times(
-    area: ScientificValue<PhysicalQuantity.Area, Area>
+    area: ScientificValue<PhysicalQuantity.Area, Area>,
 ) = OunceForce.force(this, area)
 
 @JvmName("kipSquareInchTimesImperialArea")
 infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Pressure, KipSquareInch>.times(
-    area: ScientificValue<PhysicalQuantity.Area, Area>
+    area: ScientificValue<PhysicalQuantity.Area, Area>,
 ) = Kip.force(this, area)
 
 @JvmName("kipSquareFeetTimesImperialArea")
 infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Pressure, KipSquareFoot>.times(
-    area: ScientificValue<PhysicalQuantity.Area, Area>
+    area: ScientificValue<PhysicalQuantity.Area, Area>,
 ) = Kip.force(this, area)
 
 @JvmName("usTonSquareInchTimesImperialArea")
 infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Pressure, USTonSquareInch>.times(
-    area: ScientificValue<PhysicalQuantity.Area, Area>
+    area: ScientificValue<PhysicalQuantity.Area, Area>,
 ) = UsTonForce.force(this, area)
 
 @JvmName("usTonSquareFeetTimesImperialArea")
 infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Pressure, USTonSquareFoot>.times(
-    area: ScientificValue<PhysicalQuantity.Area, Area>
+    area: ScientificValue<PhysicalQuantity.Area, Area>,
 ) = UsTonForce.force(this, area)
 
 @JvmName("imperialTonSquareInchTimesImperialArea")
 infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Pressure, ImperialTonSquareInch>.times(
-    area: ScientificValue<PhysicalQuantity.Area, Area>
+    area: ScientificValue<PhysicalQuantity.Area, Area>,
 ) = ImperialTonForce.force(this, area)
 
 @JvmName("imperialTonSquareFeetTimesImperialArea")
 infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Pressure, ImperialTonSquareFoot>.times(
-    area: ScientificValue<PhysicalQuantity.Area, Area>
+    area: ScientificValue<PhysicalQuantity.Area, Area>,
 ) = ImperialTonForce.force(this, area)
 
 @JvmName("imperialPressureTimesImperialArea")
 infix operator fun <Pressure : ImperialPressure, Area : ImperialArea> ScientificValue<PhysicalQuantity.Pressure, Pressure>.times(
-    area: ScientificValue<PhysicalQuantity.Area, Area>
+    area: ScientificValue<PhysicalQuantity.Area, Area>,
 ) = PoundForce.force(this, area)
 
 @JvmName("ukImperialPressureTimesImperialArea")
 infix operator fun <Pressure : UKImperialPressure, Area : ImperialArea> ScientificValue<PhysicalQuantity.Pressure, Pressure>.times(
-    area: ScientificValue<PhysicalQuantity.Area, Area>
+    area: ScientificValue<PhysicalQuantity.Area, Area>,
 ) = PoundForce.ukImperial.force(this, area)
 
 @JvmName("usCustomaryPressureTimesImperialArea")
 infix operator fun <Pressure : USCustomaryPressure, Area : ImperialArea> ScientificValue<PhysicalQuantity.Pressure, Pressure>.times(
-    area: ScientificValue<PhysicalQuantity.Area, Area>
+    area: ScientificValue<PhysicalQuantity.Area, Area>,
 ) = PoundForce.usCustomary.force(this, area)
 
 @JvmName("pressureTimesArea")
 infix operator fun <PressureUnit : Pressure, AreaUnit : Area> ScientificValue<PhysicalQuantity.Pressure, PressureUnit>.times(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = Newton.force(this, area)

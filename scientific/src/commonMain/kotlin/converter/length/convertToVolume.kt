@@ -105,7 +105,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Length, Gigameter>.times(are
 
 @JvmName("metricLengthTimesMetricArea")
 infix operator fun <AreaUnit : MetricArea, HeightUnit : MetricLength> ScientificValue<PhysicalQuantity.Length, HeightUnit>.times(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = area * this
 
 @JvmName("inchTimesSquareInch")
@@ -134,10 +134,10 @@ infix operator fun ScientificValue<PhysicalQuantity.Length, Foot>.times(area: Sc
 
 @JvmName("imperialLengthTimesImperialArea")
 infix operator fun <AreaUnit : ImperialArea, HeightUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, HeightUnit>.times(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = area * this
 
 @JvmName("lengthTimesArea")
 infix operator fun <AreaUnit : Area, HeightUnit : Length> ScientificValue<PhysicalQuantity.Length, HeightUnit>.times(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = area * this

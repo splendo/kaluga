@@ -40,7 +40,7 @@ class PermissionsListActivity : KalugaViewModelActivity<PermissionsListViewModel
         parametersOf(
             ActivityNavigator<PermissionsListNavigationAction> {
                 NavigationSpec.Activity<PermissionActivity>()
-            }
+            },
         )
     }
 

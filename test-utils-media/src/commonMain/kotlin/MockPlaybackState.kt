@@ -31,7 +31,13 @@ import com.splendo.kaluga.test.base.mock.parameters.SingleParameters
 import kotlin.time.Duration
 
 typealias PlayableMediaProvider = (MediaSource) -> PlayableMedia?
-typealias SeekToMock = SuspendMethodMock<SingleParameters.Matchers<Duration>, SingleParameters.MatchersOrCaptor<Duration>, SingleParameters.Values<Duration>, SingleParameters<Duration>, Boolean>
+typealias SeekToMock = SuspendMethodMock<
+    SingleParameters.Matchers<Duration>,
+    SingleParameters.MatchersOrCaptor<Duration>,
+    SingleParameters.Values<Duration>,
+    SingleParameters<Duration>,
+    Boolean,
+    >
 
 /**
  * Mock implementation of [PlaybackState]
@@ -39,7 +45,7 @@ typealias SeekToMock = SuspendMethodMock<SingleParameters.Matchers<Duration>, Si
 sealed class MockPlaybackState {
 
     companion object {
-        fun createSeekToMock(): SeekToMock = SuspendMethodMock<SingleParameters.Matchers<Duration>, SingleParameters.MatchersOrCaptor<Duration>, SingleParameters.Values<Duration>, SingleParameters<Duration>, Boolean>(SingleParameters()).also {
+        fun createSeekToMock(): SeekToMock = SeekToMock(SingleParameters()).also {
             it.on().doReturn(true)
         }
     }
@@ -55,7 +61,7 @@ sealed class MockPlaybackState {
         val mediaProvider: PlayableMediaProvider = { MockPlayableMedia(it) },
         val volumeController: VolumeController = MockVolumeController(),
         val mediaSurfaceController: MediaSurfaceController = MockMediaSurfaceController(),
-        val seekToMock: SeekToMock = createSeekToMock()
+        val seekToMock: SeekToMock = createSeekToMock(),
     )
 
     abstract val playbackState: PlaybackState
@@ -81,7 +87,7 @@ sealed class MockPlaybackState {
      * @param configuration the [Configuration] to persist across all [MockPlaybackState.Active] states
      */
     data class Uninitialized(
-        override val configuration: Configuration
+        override val configuration: Configuration,
     ) : Active(), PlaybackState.Uninitialized {
         override val playbackState: PlaybackState = this
         override fun initialize(source: MediaSource): suspend () -> PlaybackState.InitializedOrError =
@@ -97,7 +103,7 @@ sealed class MockPlaybackState {
      */
     data class Initialized(
         private val playableMedia: PlayableMedia,
-        override val configuration: Configuration
+        override val configuration: Configuration,
     ) : Active(), PlaybackState.Initialized {
         override val source: MediaSource get() = playableMedia.source
         override val playbackState: PlaybackState = this
@@ -124,7 +130,7 @@ sealed class MockPlaybackState {
      */
     data class Idle(
         override val playableMedia: PlayableMedia,
-        override val configuration: Configuration
+        override val configuration: Configuration,
     ) : Prepared(), PlaybackState.Idle {
         override val playbackState: PlaybackState = this
         override fun play(playbackParameters: PlaybackState.PlaybackParameters): suspend () -> PlaybackState.Playing =
@@ -142,7 +148,7 @@ sealed class MockPlaybackState {
     data class Playing(
         override val playbackParameters: PlaybackState.PlaybackParameters,
         override val playableMedia: PlayableMedia,
-        override val configuration: Configuration
+        override val configuration: Configuration,
     ) : Prepared(), PlaybackState.Playing {
 
         override val playbackState: PlaybackState = this
@@ -183,7 +189,7 @@ sealed class MockPlaybackState {
     data class Paused(
         override val playbackParameters: PlaybackState.PlaybackParameters,
         override val playableMedia: PlayableMedia,
-        override val configuration: Configuration
+        override val configuration: Configuration,
     ) : Prepared(), PlaybackState.Paused {
 
         override val playbackState: PlaybackState = this
@@ -201,7 +207,7 @@ sealed class MockPlaybackState {
      */
     data class Stopped(
         private val playableMedia: PlayableMedia,
-        override val configuration: Configuration
+        override val configuration: Configuration,
     ) : Active(), PlaybackState.Stopped {
 
         override val playbackState: PlaybackState = this
@@ -216,7 +222,7 @@ sealed class MockPlaybackState {
      */
     data class Completed(
         override val playableMedia: PlayableMedia,
-        override val configuration: Configuration
+        override val configuration: Configuration,
     ) : Prepared(), PlaybackState.Completed {
 
         override val playbackState: PlaybackState = this
@@ -233,7 +239,7 @@ sealed class MockPlaybackState {
      */
     data class Error(
         override val error: PlaybackError,
-        override val configuration: Configuration
+        override val configuration: Configuration,
     ) : Active(), PlaybackState.Error {
         override val playbackState: PlaybackState = this
     }

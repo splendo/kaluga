@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     EnergyUnit : Energy,
     ChargeUnit : ElectricCharge,
-    VoltageUnit : Voltage
+    VoltageUnit : Voltage,
     > EnergyUnit.energy(
     charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
-    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
 ) = energy(charge, voltage, ::DefaultScientificValue)
 
 @JvmName("energyFromChargeAndVoltage")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     ChargeUnit : ElectricCharge,
     VoltageUnit : Voltage,
-    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
     > EnergyUnit.energy(
     charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
     voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
-    factory: (Decimal, EnergyUnit) -> Value
+    factory: (Decimal, EnergyUnit) -> Value,
 ) = byMultiplying(charge, voltage, factory)

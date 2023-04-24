@@ -41,10 +41,11 @@ import kotlin.time.Duration
  * @param setupMocks If `true` this will automatically set up some mocking
  */
 class MockVolumeController(
-    setupMocks: Boolean = true
+    setupMocks: Boolean = true,
 ) : VolumeController {
 
     override val currentVolume = MutableStateFlow(1.0f)
+
     /**
      * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [updateVolumeMock]
      * If `setupMocks` was set to `true` on construction this will automatically update [currentVolume]
@@ -83,7 +84,7 @@ class MockMediaManager(
     override val events: MutableSharedFlow<MediaManager.Event>,
     val volumeController: MockVolumeController,
     val mediaSurfaceController: MockMediaSurfaceController,
-    setupMocks: Boolean = true
+    setupMocks: Boolean = true,
 ) : MediaManager, VolumeController by volumeController, MediaSurfaceController by mediaSurfaceController {
 
     /**
@@ -160,7 +161,7 @@ class MockBaseMediaManager(
     val volumeController: MockVolumeController = MockVolumeController(),
     val mediaSurfaceController: MockMediaSurfaceController = MockMediaSurfaceController(),
     coroutineContext: CoroutineContext,
-    setupMocks: Boolean = true
+    setupMocks: Boolean = true,
 ) : BaseMediaManager(mediaSurfaceProvider, coroutineContext), VolumeController by volumeController, MediaSurfaceController by mediaSurfaceController {
 
     /**
@@ -172,7 +173,7 @@ class MockBaseMediaManager(
     class Builder(
         val volumeController: MockVolumeController = MockVolumeController(),
         val mediaSurfaceController: MockMediaSurfaceController = MockMediaSurfaceController(),
-        setupMocks: Boolean = true
+        setupMocks: Boolean = true,
     ) : BaseMediaManager.Builder {
 
         /**
@@ -197,7 +198,7 @@ class MockBaseMediaManager(
 
         override fun create(
             mediaSurfaceProvider: MediaSurfaceProvider?,
-            coroutineContext: CoroutineContext
+            coroutineContext: CoroutineContext,
         ): BaseMediaManager = createMock.call(mediaSurfaceProvider, coroutineContext)
     }
 

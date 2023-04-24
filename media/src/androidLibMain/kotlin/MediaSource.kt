@@ -58,7 +58,12 @@ actual sealed class MediaSource {
      * @property headers the headers to be sent together with the request for the data. The headers must not include cookies
      * @property cookies the list of [HttpCookie] to be sent with the request
      */
-    data class Content(val context: Context = ApplicationHolder.applicationContext, val uri: Uri, val headers: Map<String, String>? = null, val cookies: List<HttpCookie>? = null) : MediaSource()
+    data class Content(
+        val context: Context = ApplicationHolder.applicationContext,
+        val uri: Uri,
+        val headers: Map<String, String>? = null,
+        val cookies: List<HttpCookie>? = null,
+    ) : MediaSource()
 }
 
 /**

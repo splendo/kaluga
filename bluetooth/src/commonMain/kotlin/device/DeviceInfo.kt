@@ -146,7 +146,7 @@ data class DeviceInfoImpl(
     override val name: String?,
     override val identifier: Identifier,
     override val rssi: RSSI,
-    override val advertisementData: BaseAdvertisementData
+    override val advertisementData: BaseAdvertisementData,
 ) : DeviceInfo {
 
     /**
@@ -158,7 +158,7 @@ data class DeviceInfoImpl(
     constructor(
         wrapper: DeviceWrapper,
         rssi: RSSI,
-        advertisementData: BaseAdvertisementData
+        advertisementData: BaseAdvertisementData,
     ) : this(
         name = wrapper.name,
         identifier = wrapper.identifier,

@@ -32,25 +32,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificEnergyDivMolarEnergy")
 infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>.div(
-    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>,
 ) = (molarEnergy.unit.per per unit.per).molality(this, molarEnergy)
 
 @JvmName("imperialSpecificEnergyDivMolarEnergy")
 infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>.div(
-    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>,
 ) = (molarEnergy.unit.per per unit.per).molality(this, molarEnergy)
 
 @JvmName("ukImperialSpecificEnergyDivMolarEnergy")
 infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>.div(
-    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>,
 ) = (molarEnergy.unit.per per unit.per).molality(this, molarEnergy)
 
 @JvmName("usCustomarySpecificEnergyDivMolarEnergy")
 infix operator fun <MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>.div(
-    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>,
 ) = (molarEnergy.unit.per per unit.per).molality(this, molarEnergy)
 
 @JvmName("specificEnergyDivMolarEnergy")
 infix operator fun <SpecificEnergyUnit : SpecificEnergy, MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>.div(
-    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>,
 ) = (molarEnergy.unit.per per Kilogram).molality(this, molarEnergy)

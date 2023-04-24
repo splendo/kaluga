@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     HeatCapacityUnit : HeatCapacity,
     WeightUnit : Weight,
-    SpecificHeatCapacityUnit : SpecificHeatCapacity
+    SpecificHeatCapacityUnit : SpecificHeatCapacity,
     > SpecificHeatCapacityUnit.specificHeatCapacity(
     heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, HeatCapacityUnit>,
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = specificHeatCapacity(heatCapacity, weight, ::DefaultScientificValue)
 
 @JvmName("specificHeatCapacityFromHeatCapacityAndWeight")
@@ -42,9 +42,9 @@ fun <
     HeatCapacityUnit : HeatCapacity,
     WeightUnit : Weight,
     SpecificHeatCapacityUnit : SpecificHeatCapacity,
-    Value : ScientificValue<PhysicalQuantity.SpecificHeatCapacity, SpecificHeatCapacityUnit>
+    Value : ScientificValue<PhysicalQuantity.SpecificHeatCapacity, SpecificHeatCapacityUnit>,
     > SpecificHeatCapacityUnit.specificHeatCapacity(
     heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, HeatCapacityUnit>,
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-    factory: (Decimal, SpecificHeatCapacityUnit) -> Value
+    factory: (Decimal, SpecificHeatCapacityUnit) -> Value,
 ) = byDividing(heatCapacity, weight, factory)

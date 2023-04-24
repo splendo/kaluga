@@ -61,7 +61,6 @@ class AndroidDateTimePickerPresenterTest : DateTimePickerPresenterTests() {
 
     @Test
     fun testBuilderReuse() = runBlocking {
-
         val deferredPickerPresenter = CompletableDeferred<BaseDateTimePickerPresenter>()
         val job1 = launch(Dispatchers.Main.immediate) {
             val pickerPresenter = builder.buildTimePicker(this) {
@@ -102,7 +101,7 @@ class AndroidDateTimePickerPresenterTest : DateTimePickerPresenterTests() {
                         setMessage("DateTimePicker$i")
                         setConfirmButtonTitle("OK$i")
                         setCancelButtonTitle("CANCEL$i")
-                    }
+                    },
                 )
             }
         }

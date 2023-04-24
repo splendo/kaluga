@@ -68,11 +68,11 @@ class AmountOfSubstanceUnitTest {
     fun amountOfSubstanceFromMolarityAndVolumeTest() {
         assertEqualScientificValue(
             4(Decimole),
-            2(Decimole per CubicCentimeter) * 2(CubicCentimeter)
+            2(Decimole per CubicCentimeter) * 2(CubicCentimeter),
         )
         assertEqualScientificValue(
             4(Decimole),
-            2(CubicCentimeter) * 2(Decimole per CubicCentimeter)
+            2(CubicCentimeter) * 2(Decimole per CubicCentimeter),
         )
     }
 
@@ -80,7 +80,7 @@ class AmountOfSubstanceUnitTest {
     fun amountOfSubstanceFromVolumeAndMolarVolumeTest() {
         assertEqualScientificValue(
             1(Decimole),
-            (2(CubicCentimeter) / 2(CubicCentimeter per Decimole))
+            (2(CubicCentimeter) / 2(CubicCentimeter per Decimole)),
         )
     }
 

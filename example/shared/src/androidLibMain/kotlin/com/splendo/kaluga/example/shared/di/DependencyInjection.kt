@@ -16,6 +16,7 @@
  */
 
 @file:JvmName("AndroidDependencyInjection")
+
 package com.splendo.kaluga.example.shared.di
 
 import com.splendo.kaluga.alerts.AlertPresenter
@@ -103,7 +104,7 @@ internal val androidModule = module {
     viewModel { (navigator: Navigator<InfoNavigation<*>>) ->
         InfoViewModel(
             ReviewManager.Builder(),
-            navigator
+            navigator,
         )
     }
 
@@ -128,7 +129,7 @@ internal val androidModule = module {
     viewModel { (initialDetail: InputDetails, navigator: Navigator<ArchitectureDetailsNavigationAction<*>>) ->
         ArchitectureDetailsViewModel(
             initialDetail,
-            navigator
+            navigator,
         )
     }
 
@@ -160,7 +161,7 @@ internal val androidModule = module {
         LinksViewModel(
             DefaultLinksManager.Builder(),
             AlertPresenter.Builder(),
-            navigator
+            navigator,
         )
     }
 
@@ -170,7 +171,7 @@ internal val androidModule = module {
 
     viewModel { (navigator: Navigator<SystemNavigationActions>) ->
         SystemViewModel(
-            navigator
+            navigator,
         )
     }
 
@@ -228,13 +229,13 @@ fun initKoin(customModules: List<Module> = emptyList()) = initKoin(
     {
         LocationStateRepoBuilder(
             locationManagerBuilder = DefaultLocationManager.Builder(
-                googleLocationProviderSettings = GoogleLocationProvider.Settings()
+                googleLocationProviderSettings = GoogleLocationProvider.Settings(),
             ),
             permissionsBuilder = it,
         )
     },
     { BluetoothBuilder(permissionsBuilder = it) },
-    customModules
+    customModules,
 )
 
 internal actual val appDeclaration: KoinAppDeclaration = {

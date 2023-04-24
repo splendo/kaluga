@@ -31,25 +31,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricMolarMassTimesAmountOfSubstance")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarMass, MetricMolarMass>.times(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = unit.weight.mass(this, amountOfSubstance)
 
 @JvmName("imperialMolarMassTimesAmountOfSubstance")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarMass, ImperialMolarMass>.times(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = unit.weight.mass(this, amountOfSubstance)
 
 @JvmName("ukImperialMolarMassTimesAmountOfSubstance")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarMass, UKImperialMolarMass>.times(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = unit.weight.mass(this, amountOfSubstance)
 
 @JvmName("usCustomaryMolarMassTimesAmountOfSubstance")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarMass, USCustomaryMolarMass>.times(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = unit.weight.mass(this, amountOfSubstance)
 
 @JvmName("molarMassTimesAmountOfSubstance")
 infix operator fun <MolarMassUnit : MolarMass, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>.times(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = Kilogram.mass(this, amountOfSubstance)

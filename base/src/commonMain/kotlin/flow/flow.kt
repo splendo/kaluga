@@ -23,7 +23,6 @@ import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.NoMoreCollections
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.filterNot
@@ -58,7 +57,7 @@ suspend fun <T> MutableSharedFlow<T>.onCollectionEvent(onEvent: suspend MutableS
                     subscriptionState.value && subscriptionState.index == 0 -> FirstCollection
                     subscriptionState.value && subscriptionState.index != 0 -> LaterCollections
                     else -> NoMoreCollections
-                }
+                },
             )
         }
 
@@ -109,7 +108,7 @@ inline fun <T> Flow<T>.filterOnlyImportant(): Flow<T> =
  */
 suspend inline fun <T> Flow<T>.collectUntilLast(
     includeLast: Boolean = true,
-    collector: FlowCollector<T>
+    collector: FlowCollector<T>,
 ) =
     takeUntilLast(includeLast).collect(collector)
 
@@ -127,6 +126,6 @@ suspend inline fun <T> Flow<T>.collectImportant(collector: FlowCollector<T>) =
  */
 suspend inline fun <T> Flow<T>.collectImportantUntilLast(
     includeLast: Boolean = true,
-    collector: FlowCollector<T>
+    collector: FlowCollector<T>,
 ) =
     takeUntilLast(includeLast).filterOnlyImportant().collect(collector)

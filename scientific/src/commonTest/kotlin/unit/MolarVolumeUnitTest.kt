@@ -44,7 +44,7 @@ class MolarVolumeUnitTest {
         assertEquals(0.5(AcreFoot per Decimole), 2(Decimole per AcreFoot).molarVolume())
         assertEquals(
             0.5(CubicMeter per Decimole),
-            2(Decimole per CubicMeter).convert((Decimole per CubicFoot) as Molarity).molarVolume()
+            2(Decimole per CubicMeter).convert((Decimole per CubicFoot) as Molarity).molarVolume(),
         )
     }
 
@@ -56,7 +56,7 @@ class MolarVolumeUnitTest {
         assertEquals(1(AcreFoot per Decimole), 2(Pound per Decimole) / 2(Pound per AcreFoot))
         assertEquals(
             1(CubicMeter per Decimole),
-            2(Kilogram per Decimole) / 2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density)
+            2(Kilogram per Decimole) / 2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density),
         )
     }
 
@@ -69,7 +69,7 @@ class MolarVolumeUnitTest {
         assertEqualScientificValue(
             1(CubicMeter per Decimole),
             2(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume) / 2(Decimole per Kilogram),
-            8
+            8,
         )
     }
 
@@ -86,12 +86,12 @@ class MolarVolumeUnitTest {
         assertEqualScientificValue(
             4(CubicMeter per Decimole),
             2(Kilogram per Decimole) * 2(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume),
-            8
+            8,
         )
         assertEqualScientificValue(
             4(CubicMeter per Decimole),
             2(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume) * 2(Kilogram per Decimole),
-            8
+            8,
         )
     }
 

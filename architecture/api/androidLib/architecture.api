@@ -152,6 +152,8 @@ public final class com/splendo/kaluga/architecture/navigation/BundleToTypedPrope
 	public static final fun asStringOrNull (Landroid/os/Bundle;)Ljava/lang/String;
 	public static final fun asTypeOf (Landroid/os/Bundle;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
 	public static final fun asTypeOfOrNull (Landroid/os/Bundle;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final fun asUnit (Landroid/os/Bundle;)V
+	public static final fun asUnitNull (Landroid/os/Bundle;)Lkotlin/Unit;
 	public static final fun toNullableTypedPropertyOrNull (Landroid/os/Bundle;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;)Ljava/lang/Object;
 	public static final fun toTypedProperty (Landroid/os/Bundle;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;)Ljava/lang/Object;
 	public static final fun toTypedPropertyOrNull (Landroid/os/Bundle;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleSpecType;)Ljava/lang/Object;

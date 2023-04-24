@@ -20,9 +20,6 @@ import android.widget.TextView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ButtonElevation
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -37,7 +34,6 @@ import com.splendo.kaluga.resources.StringStyleAttribute
 import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.resources.defaultBoldFont
 import com.splendo.kaluga.resources.styled
-import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.resources.view.KalugaLabel
 import com.splendo.kaluga.resources.view.bindLabel
 
@@ -55,7 +51,7 @@ fun KalugaLabel.Composable(modifier: Modifier) {
                 color = style.color.composable,
                 fontFamily = FontFamily(style.font),
                 fontSize = style.size.sp,
-                textAlign = style.alignment.composable
+                textAlign = style.alignment.composable,
             )
         }
         is KalugaLabel.Styled -> {
@@ -66,7 +62,7 @@ fun KalugaLabel.Composable(modifier: Modifier) {
                     TextView(context).apply {
                         this.bindLabel(this@Composable)
                     }
-                }
+                },
             )
         }
     }
@@ -78,25 +74,24 @@ fun PreviewKalugaLabel() {
     val textStyle = com.splendo.kaluga.resources.stylable.KalugaTextStyle(
         defaultBoldFont,
         DefaultColors.darkRed,
-        12.0f
+        12.0f,
     )
     Column(modifier = Modifier.size(100.dp)) {
         KalugaLabel.Plain("Plain Text", textStyle).Composable(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
         KalugaLabel.Styled(
             "Styled Text".styled(
                 StyledStringBuilder.Provider(LocalContext.current),
                 textStyle,
                 {
-                    Pair(
-                        StringStyleAttribute.CharacterStyleAttribute.ForegroundColor(DefaultColors.darkBlue),
-                        IntRange(0, 5)
-                    )
-                }
+                    StringStyleAttribute.CharacterStyleAttribute.ForegroundColor(
+                        DefaultColors.darkBlue,
+                    ) to IntRange(0, 5)
+                },
             ),
         ).Composable(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }

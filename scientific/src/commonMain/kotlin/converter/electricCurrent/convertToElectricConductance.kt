@@ -39,5 +39,5 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.div(v
 
 @JvmName("currentDivVoltage")
 infix operator fun <CurrentUnit : ElectricCurrent, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>.div(
-    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
 ) = Siemens.conductance(this, voltage)

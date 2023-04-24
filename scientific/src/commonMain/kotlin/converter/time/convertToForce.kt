@@ -46,5 +46,5 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, Time
 
 @JvmName("timeTimesYank")
 infix operator fun <YankUnit : Yank, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    yank: ScientificValue<PhysicalQuantity.Yank, YankUnit>
+    yank: ScientificValue<PhysicalQuantity.Yank, YankUnit>,
 ) = yank * this

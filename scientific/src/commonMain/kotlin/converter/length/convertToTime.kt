@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("lengthDivSpeed")
 infix operator fun <LengthUnit : Length, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
-    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>
+    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
 ) = speed.unit.per.time(this, speed)

@@ -95,7 +95,7 @@ expect val StyledString.rawString: String
 fun String.styled(
     provider: StyledStringBuilder.Provider,
     defaultTextStyle: KalugaTextStyle,
-    vararg attributes: StringStyleAttribute
+    vararg attributes: StringStyleAttribute,
 ) = styled(provider, defaultTextStyle, null, *attributes)
 
 /**
@@ -110,7 +110,7 @@ fun String.styled(
     provider: StyledStringBuilder.Provider,
     defaultTextStyle: KalugaTextStyle,
     linkColor: KalugaColor,
-    vararg attributes: StringStyleAttribute
+    vararg attributes: StringStyleAttribute,
 ) = styled(provider, defaultTextStyle, LinkStyle(linkColor, true), *attributes)
 
 /**
@@ -125,14 +125,14 @@ fun String.styled(
     provider: StyledStringBuilder.Provider,
     defaultTextStyle: KalugaTextStyle,
     linkStyle: LinkStyle?,
-    vararg attributes: StringStyleAttribute
+    vararg attributes: StringStyleAttribute,
 ) = styled(
     provider,
     defaultTextStyle,
     linkStyle,
     *attributes.map<StringStyleAttribute, String.() -> Pair<StringStyleAttribute, IntRange>?> { attribute ->
         { attributeSubstring(this, attribute) }
-    }.toTypedArray()
+    }.toTypedArray(),
 )
 
 /**
@@ -146,7 +146,7 @@ fun String.styled(
 fun String.styled(
     provider: StyledStringBuilder.Provider,
     defaultTextStyle: KalugaTextStyle,
-    vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?
+    vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?,
 ) = styled(provider, defaultTextStyle, null, *attributes)
 
 /**
@@ -162,7 +162,7 @@ fun String.styled(
     provider: StyledStringBuilder.Provider,
     defaultTextStyle: KalugaTextStyle,
     linkColor: KalugaColor,
-    vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?
+    vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?,
 ) = styled(provider, defaultTextStyle, LinkStyle(linkColor, true), *attributes)
 
 /**
@@ -178,7 +178,7 @@ fun String.styled(
     provider: StyledStringBuilder.Provider,
     defaultTextStyle: KalugaTextStyle,
     linkStyle: LinkStyle?,
-    vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?
+    vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?,
 ) = provider.provide(this, defaultTextStyle, linkStyle).apply {
     attributes.forEach { attribute ->
         attribute()?.let {

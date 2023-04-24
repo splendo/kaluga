@@ -5,10 +5,10 @@ plugins {
     id("convention.publication")
     id("com.android.library")
     id("org.jetbrains.dokka")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("org.jmailen.kotlinter")
 }
 
-publishableComponent()
+publishableComponent("scientific")
 
 kotlin {
     sourceSets {
@@ -21,6 +21,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(project(":test-utils-base"))
+                apiDependency(Dependencies.KotlinX.Serialization.Json)
             }
         }
     }

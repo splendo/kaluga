@@ -511,6 +511,8 @@ public final class com/splendo/kaluga/architecture/compose/navigation/result/Han
 	public static final fun HandleStringListResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
 	public static final fun HandleStringOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
 	public static final fun HandleStringResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleUnitOrNullResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;II)V
+	public static final fun HandleUnitResult (Landroidx/navigation/NavHostController;ZLkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/result/NavHostResultHandler {

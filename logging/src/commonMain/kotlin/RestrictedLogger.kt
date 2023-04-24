@@ -76,7 +76,7 @@ class RestrictedLogger(private val restrictedLogLevel: RestrictedLogLevel, priva
         level: LogLevel,
         tag: String?,
         throwable: Throwable?,
-        message: (() -> String)?
+        message: (() -> String)?,
     ) {
         if (restrictedLogLevel.levels.contains(level)) {
             logger.log(level = level, tag = tag, throwable = throwable, message = message)

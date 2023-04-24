@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     WeightUnit : Weight,
     VolumeUnit : Volume,
-    DensityUnit : Density
+    DensityUnit : Density,
     > VolumeUnit.volume(
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>
+    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>,
 ) = volume(weight, density, ::DefaultScientificValue)
 
 @JvmName("volumeFromWeightAndDensity")
@@ -42,9 +42,9 @@ fun <
     WeightUnit : Weight,
     VolumeUnit : Volume,
     DensityUnit : Density,
-    Value : ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    Value : ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
     > VolumeUnit.volume(
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
     density: ScientificValue<PhysicalQuantity.Density, DensityUnit>,
-    factory: (Decimal, VolumeUnit) -> Value
+    factory: (Decimal, VolumeUnit) -> Value,
 ) = byDividing(weight, density, factory)

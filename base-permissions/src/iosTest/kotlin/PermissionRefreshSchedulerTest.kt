@@ -45,7 +45,7 @@ class PermissionRefreshSchedulerTest : BaseTest() {
                     onPermissionChangedFlow.value = status
                 }
             },
-            coroutineScope = this
+            coroutineScope = this,
         )
 
         timerHelper.startMonitoring(50.milliseconds)
@@ -56,7 +56,7 @@ class PermissionRefreshSchedulerTest : BaseTest() {
         delay(60)
         assertEquals(
             IOSPermissionsHelper.AuthorizationStatus.Authorized,
-            onPermissionChangedFlow.value
+            onPermissionChangedFlow.value,
         )
 
         timerHelper.waitingLock.lock()

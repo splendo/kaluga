@@ -79,7 +79,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             override val autoEnableBluetooth: Boolean = true,
             override val isEnabled: Boolean = true,
             override val initialPermissionState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
-            override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
+            override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService(),
         ) : Configuration()
 
         sealed class Device : Configuration() {
@@ -101,7 +101,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             override val initialPermissionState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
             override val rssi: RSSI = -100,
             override val advertisementData: BaseAdvertisementData = MockAdvertisementData(name = "Name"),
-            override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
+            override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService(),
         ) : Device()
 
         data class DeviceWithService(
@@ -113,7 +113,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             override val initialPermissionState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
             override val rssi: RSSI = -100,
             override val advertisementData: BaseAdvertisementData = MockAdvertisementData(name = "Name"),
-            override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
+            override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService(),
         ) : Device(), Service
 
         data class DeviceWithCharacteristic(
@@ -125,7 +125,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             override val initialPermissionState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
             override val rssi: RSSI = -100,
             override val advertisementData: BaseAdvertisementData = MockAdvertisementData(name = "Name"),
-            override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
+            override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService(),
         ) : Device(), Characteristic
 
         data class DeviceWithDescriptor(
@@ -137,19 +137,19 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             override val initialPermissionState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
             override val rssi: RSSI = -100,
             override val advertisementData: BaseAdvertisementData = MockAdvertisementData(name = "Name"),
-            override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService()
+            override val serviceWrapperBuilder: ServiceWrapperBuilder.() -> Unit = defaultService(),
         ) : Device(), Descriptor
     }
 
     abstract class Context<C : Configuration>(
         val configuration: C,
-        val coroutineScope: CoroutineScope
+        val coroutineScope: CoroutineScope,
     ) : TestContext {
 
         val deviceFilter = setOf(randomUUID())
 
         val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder(
-            initialActiveState = configuration.initialPermissionState
+            initialActiveState = configuration.initialPermissionState,
         )
 
         val permissionStateRepo get() = permissionsBuilder.buildBluetoothStateRepos.first()
@@ -163,17 +163,17 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
                 BaseScanner.Settings(
                     Permissions(
                         permissionsBuilder,
-                        coroutineContext = scannerContext
+                        coroutineContext = scannerContext,
                     ).apply {
                         // Make sure permissionState has been created as it may break the tests otherwise
                         get(BluetoothPermission)
                     },
                     configuration.autoRequestPermission,
-                    configuration.autoEnableBluetooth
+                    configuration.autoEnableBluetooth,
                 )
             },
             scannerBuilder,
-            coroutineScope.coroutineContext
+            coroutineScope.coroutineContext,
         )
         val scanningStateRepo = bluetooth.scanningStateRepo
 
@@ -184,7 +184,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             deviceWrapper: DeviceWrapper,
             rssi: RSSI,
             advertisementData: BaseAdvertisementData,
-            deviceConnectionManagerBuilder: (ConnectionSettings) -> BaseDeviceConnectionManager
+            deviceConnectionManagerBuilder: (ConnectionSettings) -> BaseDeviceConnectionManager,
         ): Device {
             return DeviceImpl(
                 deviceWrapper.identifier,
@@ -201,7 +201,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             device: Device,
             deviceWrapper: DeviceWrapper,
             rssi: RSSI,
-            advertisementData: BaseAdvertisementData
+            advertisementData: BaseAdvertisementData,
         ) {
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
             scanner.handleDeviceDiscovered(deviceWrapper, rssi, advertisementData) { device }
@@ -211,7 +211,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             device: Device,
             deviceWrapper: DeviceWrapper,
             rssi: RSSI,
-            advertisementData: BaseAdvertisementData
+            advertisementData: BaseAdvertisementData,
         ) {
             coroutineScope.launch {
                 awaitScanDevice(device, deviceWrapper, rssi, advertisementData)
@@ -249,32 +249,55 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
 
         fun createDevice(
             deviceWrapper: DeviceWrapper = this.deviceWrapper,
-            deviceConnectionManagerBuilder: MockDeviceConnectionManager.Builder = this.deviceConnectionManagerBuilder
-        ) = createDevice(configuration.connectionSettings, deviceWrapper, configuration.rssi, configuration.advertisementData) { deviceConnectionManagerBuilder.create(deviceWrapper, configuration.connectionSettings, coroutineScope) }
+            deviceConnectionManagerBuilder: MockDeviceConnectionManager.Builder = this.deviceConnectionManagerBuilder,
+        ) = createDevice(configuration.connectionSettings, deviceWrapper, configuration.rssi, configuration.advertisementData) {
+            deviceConnectionManagerBuilder.create(deviceWrapper, configuration.connectionSettings, coroutineScope)
+        }
 
         fun scanDevice(
             rssi: RSSI = configuration.rssi,
-            advertisementData: BaseAdvertisementData = configuration.advertisementData
+            advertisementData: BaseAdvertisementData = configuration.advertisementData,
         ) = super.scanDevice(device, deviceWrapper, rssi, advertisementData)
         suspend fun connectDevice() = connectDevice(device, connectionManager)
         suspend fun disconnectDevice() = disconnectDevice(device, connectionManager)
     }
-    class DeviceContext(configuration: Configuration.DeviceWithoutService, coroutineScope: CoroutineScope) : BaseDeviceContext<Configuration.DeviceWithoutService>(configuration, coroutineScope)
-    sealed class BaseServiceContext<C>(configuration: C, coroutineScope: CoroutineScope) : BaseDeviceContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Service {
+    class DeviceContext(
+        configuration: Configuration.DeviceWithoutService,
+        coroutineScope: CoroutineScope,
+    ) : BaseDeviceContext<Configuration.DeviceWithoutService>(configuration, coroutineScope)
+    sealed class BaseServiceContext<C>(
+        configuration: C,
+        coroutineScope: CoroutineScope,
+    ) : BaseDeviceContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Service {
         val serviceUuid = serviceWrapper.uuid
         val service by lazy { connectionManager.createService(serviceWrapper) }
         suspend fun discoverService() =
             discoverService(service, device, connectionManager)
     }
-    class ServiceContext(configuration: Configuration.DeviceWithService, coroutineScope: CoroutineScope) : BaseServiceContext<Configuration.DeviceWithService>(configuration, coroutineScope)
-    sealed class BaseCharacteristicContext<C>(configuration: C, coroutineScope: CoroutineScope) : BaseServiceContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Characteristic {
+    class ServiceContext(
+        configuration: Configuration.DeviceWithService,
+        coroutineScope: CoroutineScope,
+    ) : BaseServiceContext<Configuration.DeviceWithService>(configuration, coroutineScope)
+    sealed class BaseCharacteristicContext<C>(
+        configuration: C,
+        coroutineScope: CoroutineScope,
+    ) : BaseServiceContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Characteristic {
         val characteristicUuid = serviceWrapper.characteristics.first().uuid
         val characteristic by lazy { service.characteristics.first() }
     }
-    class CharacteristicContext(configuration: Configuration.DeviceWithCharacteristic, coroutineScope: CoroutineScope) : BaseCharacteristicContext<Configuration.DeviceWithCharacteristic>(configuration, coroutineScope)
-    sealed class BaseDescriptorContext<C>(configuration: C, coroutineScope: CoroutineScope) : BaseCharacteristicContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Descriptor {
+    class CharacteristicContext(
+        configuration: Configuration.DeviceWithCharacteristic,
+        coroutineScope: CoroutineScope,
+    ) : BaseCharacteristicContext<Configuration.DeviceWithCharacteristic>(configuration, coroutineScope)
+    sealed class BaseDescriptorContext<C>(
+        configuration: C,
+        coroutineScope: CoroutineScope,
+    ) : BaseCharacteristicContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Descriptor {
         val descriptorUuid = serviceWrapper.characteristics.first().descriptors.first().uuid
         val descriptor by lazy { characteristic.descriptors.first() }
     }
-    class DescriptorContext(configuration: Configuration.DeviceWithDescriptor, coroutineScope: CoroutineScope) : BaseDescriptorContext<Configuration.DeviceWithDescriptor>(configuration, coroutineScope)
+    class DescriptorContext(
+        configuration: Configuration.DeviceWithDescriptor,
+        coroutineScope: CoroutineScope,
+    ) : BaseDescriptorContext<Configuration.DeviceWithDescriptor>(configuration, coroutineScope)
 }

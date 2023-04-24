@@ -94,7 +94,7 @@ class AndroidAlertPresenterTest : AlertPresenterTests() {
                     builder.buildAlert(CoroutineScope(coroutineContext + Dispatchers.Main.immediate)) {
                         setTitle("Alert$i")
                         setPositiveButton("OK$i")
-                    }
+                    },
                 )
             }
         }

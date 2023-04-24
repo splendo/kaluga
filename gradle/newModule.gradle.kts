@@ -25,54 +25,115 @@ abstract class NewModule : DefaultTask() {
         const val VALID_PACKAGE_NAME_REGEX = "^[a-z]+(\\.[a-z]+)*\\Z"
         const val TEMPLATE_PATH = "adding-a-new-module/template"
         const val BUILD_GRADLE_KTS = "build.gradle.kts"
-        val CREATE_DIRS = listOf(
-            "androidLibAndroidTest" to listOf("kotlin/TestActivity.kt", "AndroidManifest.xml"),
-            "androidLibMain" to listOf("AndroidManifest.xml"),
-            "androidLibTest" to emptyList(),
-            "commonMain" to emptyList(),
-            "commonTest" to emptyList(),
-            "iosMain" to emptyList(),
-            "iosTest" to emptyList(),
-            "jsMain" to emptyList(),
-            "jvmMain" to emptyList()
-        )
+    }
+
+    sealed class Templates {
+        abstract val subpath: String
+        abstract val createDirs: Map<String, List<String>>
+
+        object Common : Templates() {
+            override val subpath: String = "common"
+            override val createDirs = mapOf(
+                "androidLibInstrumentedTest" to listOf("kotlin/TestActivity.kt", "AndroidManifest.xml"),
+                "androidLibMain" to emptyList(),
+                "androidLibUnitTest" to emptyList(),
+                "commonMain" to emptyList(),
+                "commonTest" to emptyList(),
+                "iosMain" to emptyList(),
+                "iosTest" to emptyList(),
+                "jsMain" to emptyList(),
+                "jvmMain" to emptyList()
+            )
+        }
+
+        object Test : Templates() {
+            override val subpath: String = "test"
+            override val createDirs = mapOf<String, List<String>>(
+                "androidLibMain" to emptyList(),
+                "commonMain" to emptyList(),
+                "iosMain" to emptyList(),
+                "jsMain" to emptyList(),
+                "jvmMain" to emptyList()
+            )
+        }
+
+        object Compose : Templates() {
+            override val subpath: String = "compose"
+            override val createDirs = mapOf(
+                "androidTest" to listOf("kotlin/TestActivity.kt", "AndroidManifest.xml"),
+                "main" to emptyList(),
+                "test" to emptyList()
+            )
+        }
+
+        object Databinding : Templates() {
+            override val subpath: String = "databinding"
+            override val createDirs = mapOf(
+                "androidTest" to listOf("kotlin/TestActivity.kt", "AndroidManifest.xml"),
+                "main" to emptyList(),
+                "test" to emptyList()
+            )
+        }
+    }
+
+    data class Configuration(val baseModuleName: String, val basePackageName: String, val template: Templates) {
+        val moduleName: String get() = when (template) {
+            is Templates.Common -> baseModuleName
+            is Templates.Test -> "test-utils-$baseModuleName"
+            is Templates.Compose -> "$baseModuleName-compose"
+            is Templates.Databinding -> "$baseModuleName-databinding"
+        }
+
+        val packageName: String get() = when (template) {
+            is Templates.Common -> basePackageName
+            is Templates.Test -> "test.$basePackageName"
+            is Templates.Compose -> "$basePackageName.compose"
+            is Templates.Databinding -> "$basePackageName.databinding"
+        }
     }
 
     @get:Internal
-    abstract val outputDir: DirectoryProperty
-    @get:Input
-    abstract val packageName: Property<String>
+    abstract val rootDir: DirectoryProperty
+    @get:Internal
+    abstract val configurations: ListProperty<Configuration>
 
     @TaskAction
     fun create() {
-        if (!outputDir.isPresent) {
+        if (!configurations.isPresent || configurations.get().isEmpty()) {
             throw GradleException("No module name provided! Use -P module_name=my-awesome-module")
         }
-        val outputDir = outputDir.get()
+
+        configurations.get().forEach { it.createModule() }
+    }
+
+    private fun Configuration.createModule() {
+        val outputDir = rootDir.get().dir(moduleName)
         val file = outputDir.asFile
         val module = file.name
-        val packageName = this.packageName.get()
         if (file.exists()) {
             throw GradleException("Module `$module` already exists!")
         }
-        
+
         when {
             !module.matches(Regex(VALID_MODULE_NAME_REGEX)) -> throw GradleException("`$module` is not valid module name!")
             !packageName.matches(Regex(VALID_PACKAGE_NAME_REGEX)) -> throw GradleException("`$packageName` is not a valid package name!")
             else -> {
-                CREATE_DIRS.forEach { pair ->
-                    val dir = outputDir.dir("src/${pair.first}")
+                val basePath = "../$TEMPLATE_PATH/${template.subpath}"
+                template.createDirs.entries.forEach { (path, files) ->
+                    val dir = outputDir.dir("src/${path}")
                     val kotlinDir = dir.dir("kotlin")
                     Files.createDirectories(kotlinDir.asFile.toPath())
-                    pair.second.forEach {
-                        val from = outputDir.file("../$TEMPLATE_PATH/src/${pair.first}/$it").asFile
+                    files.forEach {
+                        val from = outputDir.file("$basePath/src/${path}/$it").asFile
                         val to = dir.file(it).asFile
                         from.copyRecursively(to)
-                        replaceVariable(to, packageName)
+                        replaceVariable(to, this)
                     }
                 }
-                val buildGradleFile = outputDir.file("../$TEMPLATE_PATH/$BUILD_GRADLE_KTS").asFile
-                buildGradleFile.copyTo(outputDir.file(BUILD_GRADLE_KTS).asFile)
+                val buildGradleFile = outputDir.file("$basePath/$BUILD_GRADLE_KTS").asFile
+                val to = outputDir.file(BUILD_GRADLE_KTS).asFile
+                buildGradleFile.copyTo(to)
+                replaceVariable(to, this)
             }
         }
         logger.lifecycle("New module `$module` has been created:")
@@ -81,10 +142,11 @@ abstract class NewModule : DefaultTask() {
         }
     }
 
-    private fun replaceVariable(template: File, value: String) {
+    private fun replaceVariable(template: File, configuration: Configuration) {
         val content = template
             .readText()
-            .replace("%PACKAGE%", value)
+            .replace("%PACKAGE%", configuration.packageName)
+            .replace("%BASEMODULE%", configuration.baseModuleName)
             .replace("%YEAR%", "${Calendar.getInstance().get(Calendar.YEAR)}")
         template.writeText(content)
     }
@@ -93,7 +155,58 @@ abstract class NewModule : DefaultTask() {
 tasks.register<NewModule>("createNewModule") {
     group = "utils"
     if (project.hasProperty("module_name")) {
-        outputDir.set(file(project.property("module_name").toString()))
-        packageName.set(project.property(if (project.hasProperty("package_name")) "package_name" else "module_name").toString())
+        rootDir.set(file("./"))
+        val moduleName = project.property("module_name").toString()
+        val packageName = project.property(if (project.hasProperty("package_name")) "package_name" else "module_name").toString()
+        configurations.set(
+            listOfNotNull(
+                NewModule.Configuration(moduleName, packageName, NewModule.Templates.Common),
+                if (project.hasProperty("create-test-utils")) {
+                    NewModule.Configuration(moduleName, packageName, NewModule.Templates.Test)
+                } else null,
+                if (project.hasProperty("create-compose")) {
+                    NewModule.Configuration(moduleName, packageName, NewModule.Templates.Compose)
+                } else null,
+                if (project.hasProperty("create-databinding")) {
+                    NewModule.Configuration(moduleName, packageName, NewModule.Templates.Databinding)
+                } else null
+            )
+        )
+    }
+}
+
+tasks.register<NewModule>("createNewTestModule") {
+    group = "utils"
+    if (project.hasProperty("module_name")) {
+        rootDir.set(file("./"))
+        val moduleName = project.property("module_name").toString()
+        val packageName = project.property(if (project.hasProperty("package_name")) "package_name" else "module_name").toString()
+        configurations.set(
+            listOf(NewModule.Configuration(moduleName, packageName, NewModule.Templates.Test))
+        )
+    }
+}
+
+tasks.register<NewModule>("createNewComposeModule") {
+    group = "utils"
+    if (project.hasProperty("module_name")) {
+        rootDir.set(file("./"))
+        val moduleName = project.property("module_name").toString()
+        val packageName = project.property(if (project.hasProperty("package_name")) "package_name" else "module_name").toString()
+        configurations.set(
+            listOf(NewModule.Configuration(moduleName, packageName, NewModule.Templates.Compose))
+        )
+    }
+}
+
+tasks.register<NewModule>("createNewDataBindingModule") {
+    group = "utils"
+    if (project.hasProperty("module_name")) {
+        rootDir.set(file("./"))
+        val moduleName = project.property("module_name").toString()
+        val packageName = project.property(if (project.hasProperty("package_name")) "package_name" else "module_name").toString()
+        configurations.set(
+            listOf(NewModule.Configuration(moduleName, packageName, NewModule.Templates.Databinding))
+        )
     }
 }

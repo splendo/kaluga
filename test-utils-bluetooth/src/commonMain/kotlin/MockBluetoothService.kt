@@ -35,7 +35,7 @@ class MockBluetoothService(
     val filteredDevicesFlow: MutableStateFlow<Map<Filter, List<Device>>> = MutableStateFlow(emptyMap()),
     val pairedDevicesFlow: MutableStateFlow<Map<Set<UUID>, List<Device>>> = MutableStateFlow(emptyMap()),
     override val isEnabled: MutableStateFlow<Boolean> = MutableStateFlow(true),
-    setupMocks: Boolean = true
+    setupMocks: Boolean = true,
 ) : BluetoothService {
 
     private val isScanningState = MutableStateFlow(false)
@@ -74,7 +74,7 @@ class MockBluetoothService(
     override fun startScanning(
         filter: Filter,
         cleanMode: BluetoothService.CleanMode,
-        connectionSettings: ConnectionSettings?
+        connectionSettings: ConnectionSettings?,
     ) {
         currentFilter.value = filter
         startScanningMock.call(filter, cleanMode, connectionSettings)
@@ -84,7 +84,7 @@ class MockBluetoothService(
     override fun pairedDevices(
         filter: Filter,
         removeForAllPairedFilters: Boolean,
-        connectionSettings: ConnectionSettings?
+        connectionSettings: ConnectionSettings?,
     ): Flow<List<Device>> = pairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
 
     override fun scannedDevices(filter: Filter): Flow<List<Device>> = scannedDevicesMock.call(filter)

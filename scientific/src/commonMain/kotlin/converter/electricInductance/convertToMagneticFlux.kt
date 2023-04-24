@@ -39,5 +39,5 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricInductance, Abhenry>
 
 @JvmName("inductanceTimesCurrent")
 infix operator fun <InductanceUnit : ElectricInductance, CurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>.times(
-    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
 ) = Weber.flux(this, current)

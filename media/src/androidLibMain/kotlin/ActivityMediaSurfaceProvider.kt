@@ -42,7 +42,7 @@ import kotlin.reflect.safeCast
 class ActivityMediaSurfaceProvider<Activity : android.app.Activity>(
     private val activityClass: KClass<Activity>,
     private val activitySurfaceHolder: Activity.() -> SurfaceHolder?,
-    private val observer: LifecycleManagerObserver = LifecycleManagerObserver()
+    private val observer: LifecycleManagerObserver = LifecycleManagerObserver(),
 ) : MediaSurfaceProvider, ActivityLifecycleSubscribable by observer {
 
     override val surface: Flow<MediaSurface?> = observer.managerState.flatMapLatest { manager ->
@@ -91,5 +91,5 @@ private fun SurfaceHolder.flowMediaSurface(): Flow<MediaSurface?> {
  * @param activitySurfaceHolder method for getting a [SurfaceHolder] from an instance of [Activity]
  */
 inline fun <reified Activity : android.app.Activity> ActivityMediaSurfaceProvider(
-    noinline activitySurfaceHolder: Activity.() -> SurfaceHolder?
+    noinline activitySurfaceHolder: Activity.() -> SurfaceHolder?,
 ) = ActivityMediaSurfaceProvider(Activity::class, activitySurfaceHolder)

@@ -38,7 +38,7 @@ actual class DefaultCalendarPermissionManager(
     context: Context,
     calendarPermission: CalendarPermission,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
@@ -48,7 +48,7 @@ actual class DefaultCalendarPermissionManager(
         coroutineScope,
         logTag,
         logger,
-        permissionHandler
+        permissionHandler,
     )
 
     override fun requestPermissionDidStart() {
@@ -70,7 +70,7 @@ actual class DefaultCalendarPermissionManager(
  */
 actual class CalendarPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCalendarPermissionManagerBuilder {
 
-    override fun create(calendarPermission: CalendarPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CalendarPermissionManager {
+    override fun create(calendarPermission: CalendarPermission, settings: Settings, coroutineScope: CoroutineScope): CalendarPermissionManager {
         return DefaultCalendarPermissionManager(context.context, calendarPermission, settings, coroutineScope)
     }
 }

@@ -53,8 +53,8 @@ class NotificationPermissionViewModel : BaseLifecycleViewModel(), KoinComponent 
     init {
         permissionsBuilder.registerNotificationsPermissionIfNotRegistered(
             settings = BasePermissionManager.Settings(
-                logger = RestrictedLogger(RestrictedLogLevel.None)
-            )
+                logger = RestrictedLogger(RestrictedLogLevel.None),
+            ),
         )
     }
 

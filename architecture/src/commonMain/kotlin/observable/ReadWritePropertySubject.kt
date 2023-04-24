@@ -69,14 +69,14 @@ class ReadWritePropertyInitializedSubject<T>(
         run {
             val v by readWriteProperty
             v
-        }
+        },
     ),
     coroutineScope: CoroutineScope?,
     context: CoroutineContext? = coroutineScope?.coroutineContext,
-    observation: ObservationInitialized<T> = ObservationInitialized(initialValue)
+    observation: ObservationInitialized<T> = ObservationInitialized(initialValue),
 ) :
     BaseInitializedSubject<T>(
-        observation
+        observation,
     ),
     SuspendableSetter<T> by ReadWritePropertyObservableHelper(readWriteProperty, observation) {
     init {
@@ -104,14 +104,14 @@ class ReadWritePropertyDefaultSubject<R : T?, T>(
         run {
             val v by readWriteProperty
             v
-        }
+        },
     ),
     coroutineScope: CoroutineScope?,
     context: CoroutineContext? = coroutineScope?.coroutineContext,
-    observation: ObservationDefault<R, T?> = ObservationDefault(defaultValue, initialValue)
+    observation: ObservationDefault<R, T?> = ObservationDefault(defaultValue, initialValue),
 ) :
     BaseDefaultSubject<R, T>(
-        observation
+        observation,
     ),
     SuspendableSetter<T?> by ReadWritePropertyObservableHelper(readWriteProperty, observation) {
     init {
@@ -128,7 +128,7 @@ class ReadWritePropertyDefaultSubject<R : T?, T>(
  */
 fun <T> ReadWriteProperty<Any?, T>.toInitializedSubject(
     coroutineScope: CoroutineScope? = null,
-    context: CoroutineContext? = coroutineScope?.coroutineContext
+    context: CoroutineContext? = coroutineScope?.coroutineContext,
 ) =
     ReadWritePropertyInitializedSubject(this, context = context, coroutineScope = coroutineScope)
 
@@ -141,7 +141,7 @@ fun <T> ReadWriteProperty<Any?, T>.toInitializedSubject(
 fun <R : T, T> ReadWriteProperty<Any?, T?>.toDefaultSubject(
     defaultValue: R,
     coroutineScope: CoroutineScope? = null,
-    context: CoroutineContext? = coroutineScope?.coroutineContext
+    context: CoroutineContext? = coroutineScope?.coroutineContext,
 ): ReadWritePropertyDefaultSubject<R, T?> =
     ReadWritePropertyDefaultSubject(
         defaultValue = defaultValue,

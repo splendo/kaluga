@@ -35,45 +35,45 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricWeightDivMetricLinearMassDensity")
 infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, MetricLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, MetricLinearMassDensity>,
 ) = linearMassDensity.unit.per.length(this, linearMassDensity)
 
 @JvmName("imperialWeightDivImperialLinearMassDensity")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>,
 ) = linearMassDensity.unit.per.length(this, linearMassDensity)
 
 @JvmName("imperialWeightDivUKImperialLinearMassDensity")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>,
 ) = linearMassDensity.unit.per.length(this, linearMassDensity)
 
 @JvmName("imperialWeightDivUSCustomaryLinearMassDensity")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>,
 ) = linearMassDensity.unit.per.length(this, linearMassDensity)
 
 @JvmName("ukImperialWeightDivImperialLinearMassDensity")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>,
 ) = linearMassDensity.unit.per.length(this, linearMassDensity)
 
 @JvmName("ukImperialWeightDivUKImperialLinearMassDensity")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>,
 ) = linearMassDensity.unit.per.length(this, linearMassDensity)
 
 @JvmName("usCustomaryWeightDivImperialLinearMassDensity")
 infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>,
 ) = linearMassDensity.unit.per.length(this, linearMassDensity)
 
 @JvmName("usCustomaryWeightDivUSCustomaryLinearMassDensity")
 infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>,
 ) = linearMassDensity.unit.per.length(this, linearMassDensity)
 
 @JvmName("weightDivLinearMassDensity")
 infix operator fun <WeightUnit : Weight, LinearMassDensityUnit : LinearMassDensity> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>,
 ) = Meter.length(this, linearMassDensity)

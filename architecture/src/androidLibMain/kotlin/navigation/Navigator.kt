@@ -53,7 +53,9 @@ object MissingActivityNavigationException : NavigationException("LifecycleManage
  * @param Action The type of [NavigationAction] handled by this navigator.
  * @param navigationMapper A function mapping the [Action] to [NavigationSpec]
  */
-class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapper: (Action) -> NavigationSpec) : Navigator<Action>, ActivityLifecycleSubscribable by DefaultActivityLifecycleSubscribable() {
+class ActivityNavigator<Action : NavigationAction<*>>(
+    private val navigationMapper: (Action) -> NavigationSpec,
+) : Navigator<Action>, ActivityLifecycleSubscribable by DefaultActivityLifecycleSubscribable() {
 
     override fun navigate(action: Action) {
         navigate(navigationMapper.invoke(action), action.bundle)
@@ -84,7 +86,7 @@ class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapp
 
     private fun navigateToActivity(
         activitySpec: NavigationSpec.Activity<*>,
-        bundle: NavigationBundle<*>?
+        bundle: NavigationBundle<*>?,
     ) {
         val activity = getActivity()
         val intent = Intent(activity, activitySpec.activityClass).apply {
@@ -103,7 +105,7 @@ class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapp
     }
 
     private fun navigateForContract(
-        contractSpec: NavigationSpec.Contract<*, *>
+        contractSpec: NavigationSpec.Contract<*, *>,
     ) {
         val activity = getActivity()
         contractSpec.tryAndLaunch(activity) ?: throw RuntimeException("Activity is not an instance of ${contractSpec.activityClass.simpleName}")
@@ -128,7 +130,7 @@ class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapp
         val transaction = fragmentManager.beginTransaction().let {
             when (val backtrackSettings = fragmentSpec.backStackSettings) {
                 is NavigationSpec.Fragment.BackStackSettings.Add -> it.addToBackStack(
-                    backtrackSettings.name
+                    backtrackSettings.name,
                 )
                 else -> it
             }
@@ -139,7 +141,7 @@ class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapp
                 animationSettings.enter,
                 animationSettings.exit,
                 animationSettings.popEnter,
-                animationSettings.popExit
+                animationSettings.popExit,
             )
         }
 
@@ -150,12 +152,12 @@ class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapp
             is NavigationSpec.Fragment.Type.Add -> transaction.add(
                 fragmentSpec.containerId,
                 fragment,
-                fragmentSpec.tag
+                fragmentSpec.tag,
             )
             is NavigationSpec.Fragment.Type.Replace -> transaction.replace(
                 fragmentSpec.containerId,
                 fragment,
-                fragmentSpec.tag
+                fragmentSpec.tag,
             )
         }
 
@@ -307,11 +309,10 @@ class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapp
                 customTabsIntent.intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 customTabsIntent.launchUrl(
                     activity,
-                    Uri.parse(browserSpec.url.toURI().toString())
+                    Uri.parse(browserSpec.url.toURI().toString()),
                 )
             }
             NavigationSpec.Browser.Type.Normal -> {
-
                 val uri = Uri.parse(browserSpec.url.toURI().toString())
                 val intent = Intent(Intent.ACTION_VIEW, uri)
 
@@ -325,10 +326,10 @@ class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapp
     private fun navigateToThirdPartyApp(thirdPartyAppSpec: NavigationSpec.ThirdPartyApp) {
         when (thirdPartyAppSpec.openMode) {
             NavigationSpec.ThirdPartyApp.OpenMode.ONLY_WHEN_INSTALLED -> navigateToThirdPartyApp(
-                thirdPartyAppSpec.packageName
+                thirdPartyAppSpec.packageName,
             )
             NavigationSpec.ThirdPartyApp.OpenMode.FORCE_STORE -> navigateToPlayStore(
-                thirdPartyAppSpec.packageName
+                thirdPartyAppSpec.packageName,
             )
             NavigationSpec.ThirdPartyApp.OpenMode.FALLBACK_TO_STORE -> {
                 if (!navigateToThirdPartyApp(thirdPartyAppSpec.packageName)) {
@@ -358,15 +359,15 @@ class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapp
             activity.startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("market://details?id=$packageName")
-                )
+                    Uri.parse("market://details?id=$packageName"),
+                ),
             )
         } catch (e: ActivityNotFoundException) {
             activity.startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
-                )
+                    Uri.parse("https://play.google.com/store/apps/details?id=$packageName"),
+                ),
             )
         }
     }

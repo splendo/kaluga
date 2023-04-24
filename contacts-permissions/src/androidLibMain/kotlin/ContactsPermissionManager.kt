@@ -38,7 +38,7 @@ actual class DefaultContactsPermissionManager(
     context: Context,
     contactsPermission: ContactsPermission,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BasePermissionManager<ContactsPermission>(contactsPermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
@@ -46,12 +46,12 @@ actual class DefaultContactsPermissionManager(
         context,
         listOfNotNull(
             Manifest.permission.READ_CONTACTS,
-            if (contactsPermission.allowWrite) Manifest.permission.WRITE_CONTACTS else null
+            if (contactsPermission.allowWrite) Manifest.permission.WRITE_CONTACTS else null,
         ).toTypedArray(),
         coroutineScope,
         logTag,
         logger,
-        permissionHandler
+        permissionHandler,
     )
 
     override fun requestPermissionDidStart() {
@@ -73,7 +73,7 @@ actual class DefaultContactsPermissionManager(
  */
 actual class ContactsPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseContactsPermissionManagerBuilder {
 
-    override fun create(contactsPermission: ContactsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): ContactsPermissionManager {
+    override fun create(contactsPermission: ContactsPermission, settings: Settings, coroutineScope: CoroutineScope): ContactsPermissionManager {
         return DefaultContactsPermissionManager(context.context, contactsPermission, settings, coroutineScope)
     }
 }

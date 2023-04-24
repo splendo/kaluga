@@ -55,14 +55,14 @@ internal actual class DefaultDeviceConnectionManager(
         override fun create(
             deviceWrapper: DeviceWrapper,
             settings: ConnectionSettings,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ): DefaultDeviceConnectionManager {
             return DefaultDeviceConnectionManager(
                 cbCentralManager,
                 peripheral,
                 deviceWrapper,
                 settings,
-                coroutineScope
+                coroutineScope,
             )
         }
     }
@@ -216,7 +216,7 @@ internal actual class DefaultDeviceConnectionManager(
                     peripheral.services?.typedList<CBService>()?.map {
                         peripheral.discoverCharacteristics(emptyList<CBUUID>(), it)
                         it.UUID
-                    } ?: emptyList()
+                    } ?: emptyList(),
                 )
             }
 
@@ -232,7 +232,7 @@ internal actual class DefaultDeviceConnectionManager(
                     forService.characteristics?.typedList<CBCharacteristic>()?.map {
                         peripheral.discoverDescriptorsForCharacteristic(it)
                         it.UUID
-                    } ?: emptyList()
+                    } ?: emptyList(),
                 )
             }
             checkScanComplete()

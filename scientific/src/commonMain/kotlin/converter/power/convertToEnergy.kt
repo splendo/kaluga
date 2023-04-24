@@ -112,17 +112,17 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Power, Erg
 
 @JvmName("metricPowerTimesTime")
 infix operator fun <PowerUnit : MetricPower, TimeUnit : Time> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = Joule.energy(this, time)
 
 @JvmName("inchPoundForcePerSecondTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Power, InchPoundForcePerSecond>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = InchPoundForce.energy(this, time)
 
 @JvmName("inchPoundForcePerMinuteTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Power, InchPoundForcePerMinute>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = InchPoundForce.energy(this, time)
 
 @JvmName("horsepowerTimesHour")
@@ -131,25 +131,25 @@ infix operator fun ScientificValue<PhysicalQuantity.Power, Horsepower>.times(tim
 
 @JvmName("britishThermalUnitPerSecondTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Power, BritishThermalUnitPerSecond>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = BritishThermalUnit.energy(this, time)
 
 @JvmName("britishThermalUnitPerMinuteTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Power, BritishThermalUnitPerMinute>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = BritishThermalUnit.energy(this, time)
 
 @JvmName("britishThermalUnitPerHourTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Power, BritishThermalUnitPerHour>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = BritishThermalUnit.energy(this, time)
 
 @JvmName("imperialPowerTimesTime")
 infix operator fun <PowerUnit : ImperialPower, TimeUnit : Time> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = FootPoundForce.energy(this, time)
 
 @JvmName("powerTimesTime")
 infix operator fun <PowerUnit : Power, TimeUnit : Time> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = Joule.energy(this, time)

@@ -75,7 +75,7 @@ private fun AndroidTrackInfo.asTrackInfo(identifier: Int): TrackInfo = TrackInfo
         AndroidTrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT -> TrackInfo.Type.TIMED_TEXT
         else -> TrackInfo.Type.UNKNOWN
     },
-    language
+    language,
 )
 
 /**
@@ -89,7 +89,10 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
      * Builder for creating a [DefaultMediaManager]
      */
     class Builder : BaseMediaManager.Builder {
-        override fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): DefaultMediaManager = DefaultMediaManager(mediaSurfaceProvider, coroutineContext)
+        override fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): DefaultMediaManager = DefaultMediaManager(
+            mediaSurfaceProvider,
+            coroutineContext,
+        )
     }
 
     private val mediaPlayer = AndroidMediaPlayer()

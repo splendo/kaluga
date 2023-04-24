@@ -45,7 +45,7 @@ abstract class BaseNetworkStateRepo(
     createNotInitializedState: () -> NetworkState.NotInitialized,
     createInitializingState: suspend ColdStateFlowRepo<NetworkState>.(NetworkState.Inactive) -> suspend () -> NetworkState,
     createDeinitializingState: suspend ColdStateFlowRepo<NetworkState>.(NetworkState.Active) -> suspend () -> NetworkState.Deinitialized,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : ColdStateFlowRepo<NetworkState>(
     coroutineContext = coroutineContext,
     initChangeStateWithRepo = { state, repo ->
@@ -62,7 +62,7 @@ abstract class BaseNetworkStateRepo(
             is NetworkState.Inactive -> state.remain()
         }
     },
-    firstState = createNotInitializedState
+    firstState = createNotInitializedState,
 )
 
 /**
@@ -72,7 +72,7 @@ abstract class BaseNetworkStateRepo(
  */
 open class NetworkStateImplRepo(
     createNetworkManager: suspend () -> NetworkManager,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : BaseNetworkStateRepo(
     createNotInitializedState = { NetworkStateImpl.NotInitialized },
     createInitializingState = { state ->
@@ -93,7 +93,7 @@ open class NetworkStateImplRepo(
         (this as NetworkStateImplRepo).superVisorJob.cancelChildren()
         state.deinitialize
     },
-    coroutineContext = coroutineContext
+    coroutineContext = coroutineContext,
 ) {
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
     private fun startMonitoringNetworkManager(manager: NetworkManager) {
@@ -137,5 +137,5 @@ class NetworkStateRepo(
     createNetworkManager = {
         networkManagerBuilder.create()
     },
-    coroutineContext
+    coroutineContext,
 )

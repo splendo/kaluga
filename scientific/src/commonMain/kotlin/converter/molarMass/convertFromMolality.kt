@@ -29,17 +29,17 @@ import kotlin.jvm.JvmName
 @JvmName("molarMassFromInvertedMolalityDefault")
 fun <
     MolalityUnit : Molality,
-    MolarMassUnit : MolarMass
+    MolarMassUnit : MolarMass,
     > MolarMassUnit.molarMass(
-    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>
+    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
 ) = molarMass(molality, ::DefaultScientificValue)
 
 @JvmName("molarMassFromInvertedMolality")
 fun <
     MolalityUnit : Molality,
     MolarMassUnit : MolarMass,
-    Value : ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
+    Value : ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
     > MolarMassUnit.molarMass(
     molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
-    factory: (Decimal, MolarMassUnit) -> Value
+    factory: (Decimal, MolarMassUnit) -> Value,
 ) = byInverting(molality, factory)

@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     TimeUnit : Time,
-    CatalysisUnit : CatalysticActivity
+    CatalysisUnit : CatalysticActivity,
     > AmountOfSubstanceUnit.amountOfSubstance(
     catalysis: ScientificValue<PhysicalQuantity.CatalysticActivity, CatalysisUnit>,
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = amountOfSubstance(catalysis, time, ::DefaultScientificValue)
 
 @JvmName("amountOfSubstanceFromCatalysisAndTime")
@@ -42,9 +42,9 @@ fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     TimeUnit : Time,
     CatalysisUnit : CatalysticActivity,
-    Value : ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    Value : ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
     > AmountOfSubstanceUnit.amountOfSubstance(
     catalysis: ScientificValue<PhysicalQuantity.CatalysticActivity, CatalysisUnit>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, AmountOfSubstanceUnit) -> Value
+    factory: (Decimal, AmountOfSubstanceUnit) -> Value,
 ) = byMultiplying(catalysis, time, factory)

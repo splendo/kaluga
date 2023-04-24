@@ -33,10 +33,10 @@ import kotlin.jvm.JvmName
 fun <
     EnergyUnit : Energy,
     TemperatureUnit : Temperature,
-    HeatCapacityUnit : HeatCapacity
+    HeatCapacityUnit : HeatCapacity,
     > EnergyUnit.energy(
     heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, HeatCapacityUnit>,
-    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
 ) = energy(heatCapacity, temperature, ::DefaultScientificValue)
 
 @JvmName("energyFromHeatCapacityAndTemperature")
@@ -44,9 +44,9 @@ fun <
     EnergyUnit : Energy,
     TemperatureUnit : Temperature,
     HeatCapacityUnit : HeatCapacity,
-    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
     > EnergyUnit.energy(
     heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, HeatCapacityUnit>,
     temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
-    factory: (Decimal, EnergyUnit) -> Value
+    factory: (Decimal, EnergyUnit) -> Value,
 ) = byMultiplying(heatCapacity, Kelvin.deltaValue(temperature), factory)

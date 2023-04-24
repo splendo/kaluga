@@ -58,7 +58,6 @@ class FlowTestTest : FlowTest<String, MutableStateFlow<String>>() {
 
     @Test
     fun testStopFlow() = testWithFlow {
-
         val scope = MainScope()
         val collectionJob = scope.async {
             it.collect { }

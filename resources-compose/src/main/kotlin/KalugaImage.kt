@@ -21,7 +21,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.layout.ContentScale
@@ -36,7 +35,7 @@ fun KalugaImage.Composable(
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
-    colorFilter: ColorFilter? = null
+    colorFilter: ColorFilter? = null,
 ) = Image(
     painter = rememberDrawablePainter(drawable = drawable),
     contentDescription = contentDescription,
@@ -44,7 +43,7 @@ fun KalugaImage.Composable(
     alignment = alignment,
     contentScale = contentScale,
     alpha = alpha,
-    colorFilter = colorFilter
+    colorFilter = colorFilter,
 )
 
 @Composable
@@ -60,5 +59,5 @@ fun TintedImage.Composable(
     alignment = alignment,
     contentScale = contentScale,
     alpha = alpha,
-    colorFilter = ColorFilter.tint(tint.composable)
+    colorFilter = ColorFilter.tint(tint.composable),
 )
