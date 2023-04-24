@@ -58,27 +58,27 @@ infix operator fun ScientificValue<PhysicalQuantity.MolarVolume, ImperialMolarVo
 
 @JvmName("ukImperialMolarVolumeTimesImperialMolality")
 infix operator fun ScientificValue<PhysicalQuantity.MolarVolume, UKImperialMolarVolume>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, ImperialMolality>
+    molality: ScientificValue<PhysicalQuantity.Molality, ImperialMolality>,
 ) = (unit.volume per molality.unit.per).specificVolume(this, molality)
 
 @JvmName("ukImperialMolarVolumeTimesUKImperialMolality")
 infix operator fun ScientificValue<PhysicalQuantity.MolarVolume, UKImperialMolarVolume>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, UKImperialMolality>
+    molality: ScientificValue<PhysicalQuantity.Molality, UKImperialMolality>,
 ) = (unit.volume per molality.unit.per).specificVolume(this, molality)
 
 @JvmName("usCustomaryMolarVolumeTimesImperialMolality")
 infix operator fun ScientificValue<PhysicalQuantity.MolarVolume, USCustomaryMolarVolume>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, ImperialMolality>
+    molality: ScientificValue<PhysicalQuantity.Molality, ImperialMolality>,
 ) = (unit.volume per molality.unit.per).specificVolume(this, molality)
 
 @JvmName("usCustomaryMolarVolumeTimesUSCustomaryMolality")
 infix operator fun ScientificValue<PhysicalQuantity.MolarVolume, USCustomaryMolarVolume>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, USCustomaryMolality>
+    molality: ScientificValue<PhysicalQuantity.Molality, USCustomaryMolality>,
 ) = (unit.volume per molality.unit.per).specificVolume(this, molality)
 
 @JvmName("molarVolumeTimesMolality")
 infix operator fun <MolarVolumeUnit : MolarVolume, MolalityUnit : Molality> ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>
+    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
 ) = (CubicMeter per Kilogram).specificVolume(this, molality)
 
 @JvmName("metricMolarVolumeDivMetricMolarMass")
@@ -107,15 +107,15 @@ infix operator fun ScientificValue<PhysicalQuantity.MolarVolume, UKImperialMolar
 
 @JvmName("usCustomaryMolarVolumeDivImperialMolarMass")
 infix operator fun ScientificValue<PhysicalQuantity.MolarVolume, USCustomaryMolarVolume>.div(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, ImperialMolarMass>
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, ImperialMolarMass>,
 ) = (unit.volume per molarMass.unit.weight).specificVolume(this, molarMass)
 
 @JvmName("usCustomaryMolarVolumeDivUSCustomaryMolarMass")
 infix operator fun ScientificValue<PhysicalQuantity.MolarVolume, USCustomaryMolarVolume>.div(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, USCustomaryMolarMass>
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, USCustomaryMolarMass>,
 ) = (unit.volume per molarMass.unit.weight).specificVolume(this, molarMass)
 
 @JvmName("molarVolumeDivMolarMass")
 infix operator fun <MolarVolumeUnit : MolarVolume, MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>.div(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
 ) = (CubicMeter per Kilogram).specificVolume(this, molarMass)

@@ -57,8 +57,8 @@ class LibraryImpl(project: Project) {
         const val minSdk = 23
         const val compileSdk = 33
         const val targetSdk = 33
-        const val buildTools = "33.0.1"
-        const val composeCompiler = "1.4.0"
+        const val buildTools = "33.0.2"
+        const val composeCompiler = "1.4.5"
     }
 
     class IOSLibrary(props: Properties, logger: Logger) {
@@ -117,5 +117,5 @@ class LibraryImpl(project: Project) {
 enum class IOSTarget {
     X64,
     Arm64,
-    SimulatorArm64
+    SimulatorArm64,
 }

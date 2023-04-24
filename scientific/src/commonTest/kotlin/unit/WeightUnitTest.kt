@@ -100,7 +100,7 @@ class WeightUnitTest {
         assertEqualScientificValue(
             1(Kilogram),
             2(Decimole) / 2(Decimole per Kilogram).convert((Decimole per Pound) as Molality),
-            8
+            8,
         )
     }
 
@@ -116,11 +116,11 @@ class WeightUnitTest {
         assertEqualScientificValue(4(UsTon), 2(SquareFoot) * 2(UsTon per SquareFoot))
         assertEqualScientificValue(
             4(Kilogram),
-            2(Kilogram per SquareMeter) * 2(SquareMeter).convert(SquareFoot)
+            2(Kilogram per SquareMeter) * 2(SquareMeter).convert(SquareFoot),
         )
         assertEqualScientificValue(
             4(Kilogram),
-            2(SquareMeter).convert(SquareFoot) * 2(Kilogram per SquareMeter)
+            2(SquareMeter).convert(SquareFoot) * 2(Kilogram per SquareMeter),
         )
     }
 
@@ -138,11 +138,11 @@ class WeightUnitTest {
         assertEqualScientificValue(4(ImperialTon), 2(CubicFoot) * 2(ImperialTon per CubicFoot))
         assertEqualScientificValue(
             4(ImperialTon),
-            2(ImperialTon per ImperialGallon) * 2(ImperialGallon)
+            2(ImperialTon per ImperialGallon) * 2(ImperialGallon),
         )
         assertEqualScientificValue(
             4(ImperialTon),
-            2(ImperialGallon) * 2(ImperialTon per ImperialGallon)
+            2(ImperialGallon) * 2(ImperialTon per ImperialGallon),
         )
         assertEqualScientificValue(4(UsTon), 2(UsTon per CubicFoot) * 2(CubicFoot))
         assertEqualScientificValue(4(UsTon), 2(CubicFoot) * 2(UsTon per CubicFoot))
@@ -150,11 +150,11 @@ class WeightUnitTest {
         assertEqualScientificValue(4(UsTon), 2(UsLiquidGallon) * 2(UsTon per UsLiquidGallon))
         assertEqualScientificValue(
             4(Kilogram),
-            2(Kilogram per CubicMeter) * 2(CubicMeter).convert(CubicFoot)
+            2(Kilogram per CubicMeter) * 2(CubicMeter).convert(CubicFoot),
         )
         assertEqualScientificValue(
             4(Kilogram),
-            2(CubicMeter).convert(CubicFoot) * 2(Kilogram per CubicMeter)
+            2(CubicMeter).convert(CubicFoot) * 2(Kilogram per CubicMeter),
         )
     }
 
@@ -185,20 +185,20 @@ class WeightUnitTest {
         assertEqualScientificValue(1(Kilogram), 2(Joule) / 2(Joule per Kilogram))
         assertEqualScientificValue(
             1(Pound),
-            2(BritishThermalUnit) / 2(BritishThermalUnit per Pound)
+            2(BritishThermalUnit) / 2(BritishThermalUnit per Pound),
         )
         assertEqualScientificValue(
             1(ImperialTon),
-            2(BritishThermalUnit) / 2(BritishThermalUnit per ImperialTon)
+            2(BritishThermalUnit) / 2(BritishThermalUnit per ImperialTon),
         )
         assertEqualScientificValue(
             1(UsTon),
-            2(BritishThermalUnit) / 2(BritishThermalUnit per UsTon)
+            2(BritishThermalUnit) / 2(BritishThermalUnit per UsTon),
         )
         assertEqualScientificValue(
             1(Kilogram),
             2(Joule).convert(BritishThermalUnit) / 2(Joule per Kilogram),
-            8
+            8,
         )
     }
 
@@ -209,60 +209,60 @@ class WeightUnitTest {
         assertEqualScientificValue(1(Kilogram), 2(Newton) / 2(Meter per Second per Second))
         assertEqualScientificValue(
             1(Kilogram),
-            2(KilogramForce) / (2 * MetricStandardGravityAcceleration)
+            2(KilogramForce) / (2 * MetricStandardGravityAcceleration),
         )
         assertEqualScientificValue(1(Gram), 2(GramForce) / (2 * MetricStandardGravityAcceleration))
         assertEqualScientificValue(
             1(Milligram),
-            2(MilligramForce) / (2 * MetricStandardGravityAcceleration)
+            2(MilligramForce) / (2 * MetricStandardGravityAcceleration),
         )
         assertEqualScientificValue(
             1(Tonne),
-            2(TonneForce) / (2 * MetricStandardGravityAcceleration)
+            2(TonneForce) / (2 * MetricStandardGravityAcceleration),
         )
 
         assertEqualScientificValue(1(Pound), 2(Poundal) / 2(Foot per Second per Second))
         assertEqualScientificValue(
             1(Pound),
             2(PoundForce) / (2 * ImperialStandardGravityAcceleration),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(Ounce),
             2(OunceForce) / (2 * ImperialStandardGravityAcceleration),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(Grain),
             2(GrainForce) / (2 * ImperialStandardGravityAcceleration),
-            8
+            8,
         )
 
         assertEqualScientificValue(
             1000(Pound.usCustomary),
             2(Kip) / (2 * ImperialStandardGravityAcceleration),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(UsTon),
             2(UsTonForce) / (2 * ImperialStandardGravityAcceleration),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(Pound.ukImperial),
             2(PoundForce.ukImperial) / (2 * ImperialStandardGravityAcceleration),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(ImperialTon),
             2(ImperialTonForce) / (2 * ImperialStandardGravityAcceleration),
-            8
+            8,
         )
 
         assertEqualScientificValue(
             1(Kilogram),
             2(Newton).convert(PoundForce) / 2(Meter per Second per Second),
-            8
+            8,
         )
     }
 
@@ -270,34 +270,34 @@ class WeightUnitTest {
     fun weightFromHeatCapacityAndSpecificHeatCapacityTest() {
         assertEqualScientificValue(
             1(Kilogram),
-            2(WattHour per Celsius) / 2(WattHour per Celsius per Kilogram)
+            2(WattHour per Celsius) / 2(WattHour per Celsius per Kilogram),
         )
         assertEqualScientificValue(
             1(Kilogram),
-            2(Joule per Celsius) / 2(Joule per Celsius per Kilogram)
+            2(Joule per Celsius) / 2(Joule per Celsius per Kilogram),
         )
         assertEqualScientificValue(
             1(Pound.ukImperial),
-            2(WattHour per Celsius) / 2(WattHour per Celsius per Pound)
+            2(WattHour per Celsius) / 2(WattHour per Celsius per Pound),
         )
         assertEqualScientificValue(
             1(Pound.ukImperial),
-            2(BritishThermalUnit per Celsius) / 2(BritishThermalUnit per Celsius per Pound)
+            2(BritishThermalUnit per Celsius) / 2(BritishThermalUnit per Celsius per Pound),
         )
         assertEqualScientificValue(
             1(Pound.usCustomary),
-            2(WattHour per Fahrenheit) / 2(WattHour per Fahrenheit per Pound)
+            2(WattHour per Fahrenheit) / 2(WattHour per Fahrenheit per Pound),
         )
         assertEqualScientificValue(
             1(Pound.usCustomary),
-            2(BritishThermalUnit per Fahrenheit) / 2(BritishThermalUnit per Fahrenheit per Pound)
+            2(BritishThermalUnit per Fahrenheit) / 2(BritishThermalUnit per Fahrenheit per Pound),
         )
         assertEqualScientificValue(
             1(Kilogram),
             2(WattHour per Celsius) / 2(WattHour per Celsius per Kilogram).convert(
-                BritishThermalUnit per Fahrenheit per Pound
+                BritishThermalUnit per Fahrenheit per Pound,
             ),
-            8
+            8,
         )
     }
 
@@ -328,12 +328,12 @@ class WeightUnitTest {
         assertEqualScientificValue(
             4(Kilogram),
             2(Kilogram per Hour).convert((Pound per Hour) as MassFlowRate) * 2(Hour),
-            8
+            8,
         )
         assertEqualScientificValue(
             4(Kilogram),
             2(Hour) * 2(Kilogram per Hour).convert((Pound per Hour) as MassFlowRate),
-            8
+            8,
         )
     }
 
@@ -350,12 +350,12 @@ class WeightUnitTest {
         assertEqualScientificValue(
             4(Kilogram),
             2(Kilogram per Decimole).convert((Pound per Mole) as MolarMass) * 2(Decimole),
-            8
+            8,
         )
         assertEqualScientificValue(
             4(Kilogram),
             2(Decimole) * 2(Kilogram per Decimole).convert((Pound per Mole) as MolarMass),
-            8
+            8,
         )
     }
 
@@ -363,17 +363,17 @@ class WeightUnitTest {
     fun weightFromMomentumAndSpeedTest() {
         assertEqualScientificValue(
             1(Kilogram),
-            2(Kilogram x (Meter per Second)) / 2(Meter per Second)
+            2(Kilogram x (Meter per Second)) / 2(Meter per Second),
         )
         assertEqualScientificValue(1(Pound), 2(Pound x (Foot per Second)) / 2(Foot per Second))
         assertEqualScientificValue(
             1(ImperialTon),
-            2(ImperialTon x (Foot per Second)) / 2(Foot per Second)
+            2(ImperialTon x (Foot per Second)) / 2(Foot per Second),
         )
         assertEqualScientificValue(1(UsTon), 2(UsTon x (Foot per Second)) / 2(Foot per Second))
         assertEqualScientificValue(
             1(Kilogram),
-            2(Kilogram x (Meter per Second)) / 2(Meter per Second).convert(Foot per Second)
+            2(Kilogram x (Meter per Second)) / 2(Meter per Second).convert(Foot per Second),
         )
     }
 
@@ -383,28 +383,28 @@ class WeightUnitTest {
         assertEqualScientificValue(1(Pound), 2(CubicFoot) / 2(CubicFoot per Pound))
         assertEqualScientificValue(
             1(Pound.ukImperial),
-            2(CubicFoot) / 2(CubicFoot per Pound.ukImperial)
+            2(CubicFoot) / 2(CubicFoot per Pound.ukImperial),
         )
         assertEqualScientificValue(
             1(Pound.usCustomary),
-            2(CubicFoot) / 2(CubicFoot per Pound.usCustomary)
+            2(CubicFoot) / 2(CubicFoot per Pound.usCustomary),
         )
         assertEqualScientificValue(
             1(Pound.ukImperial),
-            2(CubicFoot.ukImperial) / 2(CubicFoot per Pound)
+            2(CubicFoot.ukImperial) / 2(CubicFoot per Pound),
         )
         assertEqualScientificValue(
             1(ImperialTon),
-            2(ImperialGallon) / 2(ImperialGallon per ImperialTon)
+            2(ImperialGallon) / 2(ImperialGallon per ImperialTon),
         )
         assertEqualScientificValue(
             1(Pound.usCustomary),
-            2(CubicFoot.usCustomary) / 2(CubicFoot per Pound)
+            2(CubicFoot.usCustomary) / 2(CubicFoot per Pound),
         )
         assertEqualScientificValue(1(UsTon), 2(UsLiquidGallon) / 2(UsLiquidGallon per UsTon))
         assertEqualScientificValue(
             1(Kilogram),
-            2(CubicMeter).convert(CubicFoot) / 2(CubicMeter per Kilogram)
+            2(CubicMeter).convert(CubicFoot) / 2(CubicMeter per Kilogram),
         )
     }
 
@@ -412,27 +412,27 @@ class WeightUnitTest {
     fun weightFromYankAndJoltTest() {
         assertEqualScientificValue(
             1(Kilogram),
-            2(Newton per Hour) / 2(Meter per Second per Second per Hour)
+            2(Newton per Hour) / 2(Meter per Second per Second per Hour),
         )
         assertEqualScientificValue(
             1(Pound),
             2(PoundForce per Hour) / ((2 * ImperialStandardGravityAcceleration) / 1(Hour)),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(Pound.ukImperial),
             2(PoundForce.ukImperial per Hour) / ((2 * ImperialStandardGravityAcceleration) / 1(Hour)),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(Pound.usCustomary),
             2(PoundForce.usCustomary per Hour) / ((2 * ImperialStandardGravityAcceleration) / 1(Hour)),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(Kilogram),
             2(Newton per Hour).convert(PoundForce per Hour) / 2(Meter per Second per Second per Hour),
-            8
+            8,
         )
     }
 }

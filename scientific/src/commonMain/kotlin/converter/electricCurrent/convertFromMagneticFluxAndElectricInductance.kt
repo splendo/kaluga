@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     FluxUnit : MagneticFlux,
     CurrentUnit : ElectricCurrent,
-    InductanceUnit : ElectricInductance
+    InductanceUnit : ElectricInductance,
     > CurrentUnit.current(
     flux: ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>,
-    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>
+    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>,
 ) = current(flux, inductance, ::DefaultScientificValue)
 
 @JvmName("currentFromFluxAndInductance")
@@ -42,9 +42,9 @@ fun <
     FluxUnit : MagneticFlux,
     CurrentUnit : ElectricCurrent,
     InductanceUnit : ElectricInductance,
-    Value : ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
     > CurrentUnit.current(
     flux: ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>,
     inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>,
-    factory: (Decimal, CurrentUnit) -> Value
+    factory: (Decimal, CurrentUnit) -> Value,
 ) = byDividing(flux, inductance, factory)

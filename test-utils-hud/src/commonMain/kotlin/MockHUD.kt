@@ -34,7 +34,7 @@ import kotlinx.coroutines.CoroutineScope
 class MockHUD(
     override val hudConfig: HudConfig,
     setupMocks: Boolean = true,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BaseHUD(coroutineScope) {
 
     /**

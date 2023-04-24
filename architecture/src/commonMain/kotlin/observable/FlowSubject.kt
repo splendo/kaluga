@@ -30,7 +30,7 @@ private class MutableFlowSubjectHelper<R : T, T, OO : ObservableOptional<R>>(
     val flow: () -> Flow<T>,
     val setter: suspend (T) -> Unit,
     val poster: (T) -> Unit = { coroutineScope.launch(context) { setter(it) } },
-    observation: Observation<R, T, OO>
+    observation: Observation<R, T, OO>,
 ) : SuspendableSetter<T> {
 
     init {
@@ -57,8 +57,8 @@ open class StateFlowInitializedSubject<T>(
     autoBind: Boolean = true,
     observation: ObservationInitialized<T> = ObservationInitialized(
         ObservableOptional.Value(
-            observedStateFlow.value
-        )
+            observedStateFlow.value,
+        ),
     ),
 ) : BaseInitializedSubject<T>(observation),
     SuspendableSetter<T> by MutableFlowSubjectHelper(
@@ -67,7 +67,7 @@ open class StateFlowInitializedSubject<T>(
         { observedStateFlow },
         { observedStateFlow.value = it },
         { observedStateFlow.value = it },
-        observation
+        observation,
     ) {
     init {
         if (autoBind) {
@@ -95,7 +95,7 @@ open class StateFlowDefaultSubject<R : T?, T>(
     autoBind: Boolean = true,
     observation: ObservationDefault<R, T?> = ObservationDefault(
         defaultValue,
-        ObservableOptional.Value(observedStateFlow.value)
+        ObservableOptional.Value(observedStateFlow.value),
     ),
 ) : BaseDefaultSubject<R, T?>(observation),
     SuspendableSetter<T?> by MutableFlowSubjectHelper(
@@ -104,7 +104,7 @@ open class StateFlowDefaultSubject<R : T?, T>(
         { observedStateFlow },
         { observedStateFlow.value = it },
         { observedStateFlow.value = it },
-        observation
+        observation,
     ) {
     init {
         if (autoBind) {
@@ -127,16 +127,16 @@ open class SharedFlowSubject<T>(
     context: CoroutineContext = coroutineScope.coroutineContext,
     sharedFlow: MutableSharedFlow<T>,
     autoBind: Boolean = true,
-    observation: ObservationUninitialized<T> = ObservationUninitialized()
+    observation: ObservationUninitialized<T> = ObservationUninitialized(),
 ) : BaseUninitializedSubject<T>(
-    observation
+    observation,
 ),
     SuspendableSetter<T> by MutableFlowSubjectHelper(
         coroutineScope,
         context,
         { sharedFlow },
         { sharedFlow.emit(it) },
-        observation = observation
+        observation = observation,
     ) {
     init {
         if (autoBind) {
@@ -161,16 +161,16 @@ open class SharedFlowInitializedSubject<T>(
     context: CoroutineContext = coroutineScope.coroutineContext,
     sharedFlow: MutableSharedFlow<T>,
     autoBind: Boolean = true,
-    observation: ObservationInitialized<T> = ObservationInitialized(initialValue)
+    observation: ObservationInitialized<T> = ObservationInitialized(initialValue),
 ) : BaseInitializedSubject<T>(
-    observation
+    observation,
 ),
     SuspendableSetter<T> by MutableFlowSubjectHelper(
         coroutineScope,
         context,
         { sharedFlow },
         { sharedFlow.emit(it) },
-        observation = observation
+        observation = observation,
     ) {
     init {
         if (autoBind) {
@@ -199,17 +199,17 @@ open class SharedFlowDefaultSubject<R : T?, T>(
     autoBind: Boolean = true,
     observation: ObservationDefault<R, T?> = ObservationDefault(
         defaultValue,
-        ObservableOptional.Value(initialValue)
+        ObservableOptional.Value(initialValue),
     ),
 ) : BaseDefaultSubject<R, T?>(
-    observation
+    observation,
 ),
     SuspendableSetter<T?> by MutableFlowSubjectHelper(
         coroutineScope,
         context,
         { sharedFlow },
         { sharedFlow.emit(it) },
-        observation = observation
+        observation = observation,
     ) {
     init {
         if (autoBind) {
@@ -225,11 +225,11 @@ open class SharedFlowDefaultSubject<R : T?, T>(
  */
 fun <T> MutableSharedFlow<T>.toUninitializedSubject(
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext
+    context: CoroutineContext = coroutineScope.coroutineContext,
 ) = SharedFlowSubject(
     coroutineScope,
     context,
-    this
+    this,
 )
 
 /**
@@ -239,7 +239,7 @@ fun <T> MutableSharedFlow<T>.toUninitializedSubject(
  */
 fun <T> MutableStateFlow<T>.toInitializedSubject(
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext
+    context: CoroutineContext = coroutineScope.coroutineContext,
 ) = StateFlowInitializedSubject(coroutineScope, context, this)
 
 /**
@@ -251,12 +251,12 @@ fun <T> MutableStateFlow<T>.toInitializedSubject(
 fun <T> MutableSharedFlow<T>.toInitializedSubject(
     initialValue: T,
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext
+    context: CoroutineContext = coroutineScope.coroutineContext,
 ) = SharedFlowInitializedSubject(
     initialValue,
     coroutineScope,
     context,
-    this
+    this,
 )
 
 /**
@@ -268,7 +268,7 @@ fun <T> MutableSharedFlow<T>.toInitializedSubject(
 fun <R : T, T> MutableStateFlow<T?>.toDefaultSubject(
     defaultValue: R,
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext
+    context: CoroutineContext = coroutineScope.coroutineContext,
 ) = StateFlowDefaultSubject(defaultValue, coroutineScope, context, this)
 
 /**
@@ -282,11 +282,11 @@ fun <R : T?, T> MutableSharedFlow<T?>.toDefaultSubject(
     defaultValue: R,
     initialValue: T? = defaultValue,
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext
+    context: CoroutineContext = coroutineScope.coroutineContext,
 ) = SharedFlowDefaultSubject(
     defaultValue,
     initialValue,
     coroutineScope,
     context,
-    this
+    this,
 )

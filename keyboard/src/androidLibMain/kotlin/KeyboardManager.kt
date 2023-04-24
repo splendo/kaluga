@@ -30,7 +30,7 @@ import kotlinx.coroutines.CoroutineScope
  */
 class ViewKeyboardManager(
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BaseKeyboardManager<ViewFocusHandler>, CoroutineScope by coroutineScope {
 
     /**
@@ -38,7 +38,7 @@ class ViewKeyboardManager(
      * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes.
      */
     class Builder(
-        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
+        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     ) : BaseKeyboardManager.Builder<ViewFocusHandler>, ActivityLifecycleSubscribable by lifecycleManagerObserver {
         override fun create(coroutineScope: CoroutineScope) = ViewKeyboardManager(lifecycleManagerObserver, coroutineScope)
     }

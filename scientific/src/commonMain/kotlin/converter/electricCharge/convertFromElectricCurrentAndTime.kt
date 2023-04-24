@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     CurrentUnit : ElectricCurrent,
     TimeUnit : Time,
-    ChargeUnit : ElectricCharge
+    ChargeUnit : ElectricCharge,
     > ChargeUnit.charge(
     current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = charge(current, time, ::DefaultScientificValue)
 
 @JvmName("chargeFromCurrentAndTime")
@@ -42,9 +42,9 @@ fun <
     CurrentUnit : ElectricCurrent,
     TimeUnit : Time,
     ChargeUnit : ElectricCharge,
-    Value : ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
     > ChargeUnit.charge(
     current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, ChargeUnit) -> Value
+    factory: (Decimal, ChargeUnit) -> Value,
 ) = byMultiplying(current, time, factory)

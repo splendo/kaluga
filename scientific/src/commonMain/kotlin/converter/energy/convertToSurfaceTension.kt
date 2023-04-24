@@ -56,7 +56,7 @@ infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Ener
 
 @JvmName("metricAndImperialEnergyDivMetricArea")
 infix operator fun <EnergyUnit : MetricAndImperialEnergy, AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = (Newton per Meter).surfaceTension(this, area)
 
 @JvmName("footPoundalDivSquareFoot")
@@ -73,15 +73,15 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, InchOunceForce>.div(
 
 @JvmName("metricAndImperialEnergyDivImperialArea")
 infix operator fun <EnergyUnit : MetricAndImperialEnergy, AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = (PoundForce per Foot).surfaceTension(this, area)
 
 @JvmName("imperialEnergyDivImperialArea")
 infix operator fun <EnergyUnit : ImperialEnergy, AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = (PoundForce per Foot).surfaceTension(this, area)
 
 @JvmName("energyDivArea")
 infix operator fun <EnergyUnit : Energy, AreaUnit : Area> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = (Newton per Meter).surfaceTension(this, area)

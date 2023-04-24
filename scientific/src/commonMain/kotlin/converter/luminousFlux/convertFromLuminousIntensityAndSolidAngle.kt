@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     IntensityUnit : LuminousIntensity,
     SolidAngleUnit : SolidAngle,
-    FluxUnit : LuminousFlux
+    FluxUnit : LuminousFlux,
     > FluxUnit.flux(
     intensity: ScientificValue<PhysicalQuantity.LuminousIntensity, IntensityUnit>,
-    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>,
 ) = flux(intensity, solidAngle, ::DefaultScientificValue)
 
 @JvmName("luminousFluxFromIntensityAndSolidAngle")
@@ -42,9 +42,9 @@ fun <
     IntensityUnit : LuminousIntensity,
     SolidAngleUnit : SolidAngle,
     FluxUnit : LuminousFlux,
-    Value : ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>
+    Value : ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>,
     > FluxUnit.flux(
     intensity: ScientificValue<PhysicalQuantity.LuminousIntensity, IntensityUnit>,
     solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>,
-    factory: (Decimal, FluxUnit) -> Value
+    factory: (Decimal, FluxUnit) -> Value,
 ) = byMultiplying(intensity, solidAngle, factory)

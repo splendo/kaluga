@@ -34,8 +34,9 @@ import kotlinx.coroutines.CompletableDeferred
 actual class DefaultStringLoader(private val context: Context?) : StringLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
     override fun loadString(identifier: String, defaultValue: String): String {
-        if (context == null)
+        if (context == null) {
             return defaultValue
+        }
         val id = context.resources.getIdentifier(identifier, "string", context.packageName)
         return try {
             context.getString(id)

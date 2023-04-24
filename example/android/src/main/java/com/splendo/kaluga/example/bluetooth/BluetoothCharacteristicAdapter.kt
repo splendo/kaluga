@@ -47,7 +47,7 @@ class BluetoothCharacteristicAdapter(private val lifecycleOwner: LifecycleOwner)
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): BluetoothCharacteristicItemViewHolder {
         val binding = BluetoothCharacteristicItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         binding.lifecycleOwner = lifecycleOwner

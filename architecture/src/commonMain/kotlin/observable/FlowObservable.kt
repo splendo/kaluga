@@ -34,7 +34,7 @@ class FlowObservable<T>(
     val coroutineScope: CoroutineScope,
     context: CoroutineContext = coroutineScope.coroutineContext,
     val flow: Flow<T>,
-    observation: ObservationUninitialized<T> = ObservationUninitialized()
+    observation: ObservationUninitialized<T> = ObservationUninitialized(),
 ) : BaseUninitializedObservable<T>(observation) {
     init {
         observeFlow(observation, coroutineScope, context, flow)
@@ -55,7 +55,7 @@ class FlowInitializedObservable<T>(
     val coroutineScope: CoroutineScope,
     context: CoroutineContext = coroutineScope.coroutineContext,
     val flow: Flow<T>,
-    observation: ObservationInitialized<T> = ObservationInitialized(initialValue)
+    observation: ObservationInitialized<T> = ObservationInitialized(initialValue),
 ) : BaseInitializedObservable<T>(observation) {
     init {
         observeFlow(observation, coroutineScope, context, flow)
@@ -81,7 +81,7 @@ class DefaultFlowObservable<R : T?, T>(
     flow: Flow<T?>,
     observation: ObservationDefault<R, T?> = ObservationDefault(
         defaultValue,
-        ObservableOptional.Value(initialValue)
+        ObservableOptional.Value(initialValue),
     ),
 ) : BaseDefaultObservable<R, T?>(observation) {
     init {
@@ -96,7 +96,7 @@ class DefaultFlowObservable<R : T?, T>(
  */
 fun <T> Flow<T>.toUninitializedObservable(
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext
+    context: CoroutineContext = coroutineScope.coroutineContext,
 ) = FlowObservable(coroutineScope, context, this)
 
 /**
@@ -106,7 +106,7 @@ fun <T> Flow<T>.toUninitializedObservable(
  */
 fun <T> MutableStateFlow<T>.toInitializedObservable(
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext
+    context: CoroutineContext = coroutineScope.coroutineContext,
 ) = FlowInitializedObservable(this.value, coroutineScope, context, this)
 
 /**
@@ -118,7 +118,7 @@ fun <T> MutableStateFlow<T>.toInitializedObservable(
 fun <T> Flow<T>.toInitializedObservable(
     initialValue: T,
     coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext
+    context: CoroutineContext = coroutineScope.coroutineContext,
 ) = FlowInitializedObservable(initialValue, coroutineScope, context, this)
 
 /**

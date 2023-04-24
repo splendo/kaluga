@@ -30,15 +30,15 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricIlluminanceTimesTime")
 infix operator fun <IlluminanceUnit : MetricIlluminance, TimeUnit : Time> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit x time.unit).luminousExposure(this, time)
 
 @JvmName("imperialIlluminanceTimesTime")
 infix operator fun <IlluminanceUnit : ImperialIlluminance, TimeUnit : Time> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit x time.unit).luminousExposure(this, time)
 
 @JvmName("illuminanceTimesTime")
 infix operator fun <IlluminanceUnit : Illuminance, TimeUnit : Time> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (Lux x time.unit).luminousExposure(this, time)

@@ -41,7 +41,7 @@ sealed class MockScanningState {
     }
 
     data class Deinitialized(
-        override val previousDevices: ScanningState.Devices
+        override val previousDevices: ScanningState.Devices,
     ) :
         Inactive(), ScanningState.Deinitialized {
         override val reinitialize = suspend { Initializing(previousDevices) }
@@ -57,7 +57,7 @@ sealed class MockScanningState {
     }
 
     data class Initializing(
-        override val devices: ScanningState.Devices
+        override val devices: ScanningState.Devices,
     ) : Active(), ScanningState.Initializing {
 
         override fun initialized(hasPermission: Boolean, enabled: Boolean): suspend () -> ScanningState.Initialized =
@@ -89,7 +89,7 @@ sealed class MockScanningState {
         ) = this.devices.copyAndSetPaired(devices, filter, removeForAllPairedFilters)
 
         class Idle(
-            override val devices: ScanningState.Devices
+            override val devices: ScanningState.Devices,
         ) : Enabled(), ScanningState.Enabled.Idle {
 
             override val permittedHandler: PermittedHandler = PermittedHandler(devices)
@@ -99,41 +99,41 @@ sealed class MockScanningState {
             override suspend fun retrievePairedDevices(
                 filter: Filter,
                 removeForAllPairedFilters: Boolean,
-                connectionSettings: ConnectionSettings?
+                connectionSettings: ConnectionSettings?,
             ): Unit = retrievePairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
 
             override fun pairedDevices(
                 devices: Map<Identifier, () -> Device>,
                 filter: Filter,
-                removeForAllPairedFilters: Boolean
+                removeForAllPairedFilters: Boolean,
             ): suspend () -> ScanningState.Enabled = {
                 Idle(
-                    devicesForPairedDevices(devices, filter, removeForAllPairedFilters)
+                    devicesForPairedDevices(devices, filter, removeForAllPairedFilters),
                 )
             }
 
             override fun startScanning(
                 filter: Filter,
                 cleanMode: BluetoothService.CleanMode,
-                connectionSettings: ConnectionSettings?
+                connectionSettings: ConnectionSettings?,
             ): suspend () -> ScanningState.Enabled.Scanning = {
                 Scanning(
-                    devices.updateScanFilter(filter, cleanMode)
+                    devices.updateScanFilter(filter, cleanMode),
                 )
             }
 
             override fun refresh(
                 filter: Filter,
-                cleanMode: BluetoothService.CleanMode
+                cleanMode: BluetoothService.CleanMode,
             ): suspend () -> ScanningState.Enabled.Idle = {
                 Idle(
-                    devices.updateScanFilter(filter, cleanMode)
+                    devices.updateScanFilter(filter, cleanMode),
                 )
             }
         }
 
         class Scanning(
-            override val devices: ScanningState.Devices
+            override val devices: ScanningState.Devices,
         ) : Enabled(),
             ScanningState.Enabled.Scanning {
 
@@ -144,7 +144,7 @@ sealed class MockScanningState {
             override suspend fun retrievePairedDevices(
                 filter: Filter,
                 removeForAllPairedFilters: Boolean,
-                connectionSettings: ConnectionSettings?
+                connectionSettings: ConnectionSettings?,
             ): Unit = retrievePairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
 
             override fun pairedDevices(
@@ -153,12 +153,12 @@ sealed class MockScanningState {
                 removeForAllPairedFilters: Boolean,
             ): suspend () -> ScanningState.Enabled = {
                 Scanning(
-                    devicesForPairedDevices(devices, filter, removeForAllPairedFilters)
+                    devicesForPairedDevices(devices, filter, removeForAllPairedFilters),
                 )
             }
 
             override suspend fun discoverDevices(
-                devices: List<ScanningState.Enabled.Scanning.DiscoveredDevice>
+                devices: List<ScanningState.Enabled.Scanning.DiscoveredDevice>,
             ): suspend () -> ScanningState.Enabled.Scanning {
                 devices.mapNotNull { device ->
                     this.devices.allDevices[device.identifier]?.let { knownDevice ->
@@ -177,7 +177,7 @@ sealed class MockScanningState {
                             acc.copyAndAddScanned(discoveredDevice.identifier, discoveredDevice.deviceCreator)
                         }
                         Scanning(
-                            newDiscovered
+                            newDiscovered,
                         )
                     }
                 }

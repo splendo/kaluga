@@ -50,16 +50,16 @@ class ReadWritePropertyTest : ObservableBaseTest() {
 
     @Test
     fun testReadWritePropertyDefaultObservable() = testReadWritePropertyDefaultObservableWithInitialValue("something", true)
+
     @Test
     fun testReadWritePropertyDefaultObservableWithInitialNull() = testReadWritePropertyDefaultObservableWithInitialValue(null, false)
 
     private fun testReadWritePropertyDefaultObservableWithInitialValue(initialValue: String?, useSuspendableSetter: Boolean) = runBlocking {
-
         nullableReadWritePropertyValue.value = initialValue
 
         val subject = nullableReadWriteProperty.toDefaultSubject(
             defaultValue = "default",
-            context = Dispatchers.Unconfined
+            context = Dispatchers.Unconfined,
         )
 
         testStringDefaultSubject(
@@ -69,13 +69,12 @@ class ReadWritePropertyTest : ObservableBaseTest() {
             useSuspendableSetter = useSuspendableSetter,
             "new" to "new",
             null to "default",
-            "newer" to "newer"
+            "newer" to "newer",
         )
     }
 
     @Test
     fun testReadWritePropertyObservable() = runBlocking {
-
         val subject = readWriteProperty.toInitializedSubject(context = Dispatchers.Unconfined)
 
         testStringSubject(
@@ -84,13 +83,12 @@ class ReadWritePropertyTest : ObservableBaseTest() {
             shortDelayAfterUpdate = false,
             useSuspendableSetter = false,
             "new" to "new",
-            "other" to "other"
+            "other" to "other",
         )
     }
 
     @Test
     fun testReadWriteNullablePropertyObservableWithInitialValue() = runBlocking {
-
         nullableReadWritePropertyValue.value = "initial"
 
         testStringSubject(
@@ -100,7 +98,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
             useSuspendableSetter = false,
             "new" to "new",
             null to null,
-            "other" to "other"
+            "other" to "other",
         )
     }
 
@@ -113,7 +111,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
             useSuspendableSetter = false,
             "new" to "new",
             null to null,
-            "other" to "other"
+            "other" to "other",
         )
     }
 }

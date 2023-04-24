@@ -36,25 +36,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricVolumetricFlowDivMetricArea")
 infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.VolumetricFlow, MetricVolumetricFlow>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = (unit per area.unit).volumetricFlux(this, area)
 
 @JvmName("imperialVolumetricFlowDivImperialArea")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.VolumetricFlow, ImperialVolumetricFlow>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = (unit per area.unit).volumetricFlux(this, area)
 
 @JvmName("ukImperialVolumetricFlowDivImperialArea")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.VolumetricFlow, UKImperialVolumetricFlow>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = (unit per area.unit).volumetricFlux(this, area)
 
 @JvmName("usCustomaryVolumetricFlowDivImperialArea")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.VolumetricFlow, USCustomaryVolumetricFlow>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = (unit per area.unit).volumetricFlux(this, area)
 
 @JvmName("volumetricFlowDivArea")
 infix operator fun <VolumetricFlowUnit : VolumetricFlow, AreaUnit : Area> ScientificValue<PhysicalQuantity.VolumetricFlow, VolumetricFlowUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = (CubicMeter per Second per SquareMeter).volumetricFlux(this, area)

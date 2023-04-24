@@ -22,8 +22,8 @@ fun <
         VoidParameters.Matchers,
         VoidParameters.Values,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     VoidParameters.Matchers,
     VoidParameters.MatchersOrCaptor,
@@ -31,7 +31,7 @@ fun <
     VoidParameters,
     Result,
     Answer,
-    Stub
+    Stub,
     >.verify(times: Int = 1) {
     verifyWithParameters(VoidParameters.MatchersOrCaptor, times)
 }
@@ -47,8 +47,8 @@ fun <
         VoidParameters.Matchers,
         VoidParameters.Values,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     VoidParameters.Matchers,
     VoidParameters.MatchersOrCaptor,
@@ -56,7 +56,7 @@ fun <
     VoidParameters,
     Result,
     Answer,
-    Stub
+    Stub,
     >.verify(rule: VerificationRule) {
     verifyWithParameters(VoidParameters.MatchersOrCaptor, rule)
 }
@@ -74,8 +74,8 @@ fun <
         SingleParameters.Matchers<Value>,
         SingleParameters.Values<Value>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     SingleParameters.Matchers<Value>,
     SingleParameters.MatchersOrCaptor<Value>,
@@ -83,7 +83,7 @@ fun <
     SingleParameters<Value>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.verify(value: ParameterMatcherOrCaptor<Value> = ParameterMatcher.any(), times: Int = 1) {
     verifyWithParameters(SingleParameters.MatchersOrCaptor(value), times)
 }
@@ -101,8 +101,8 @@ fun <
         SingleParameters.Matchers<Value>,
         SingleParameters.Values<Value>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     SingleParameters.Matchers<Value>,
     SingleParameters.MatchersOrCaptor<Value>,
@@ -110,10 +110,10 @@ fun <
     SingleParameters<Value>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.verify(
     value: ParameterMatcherOrCaptor<Value> = ParameterMatcher.any(),
-    rule: VerificationRule
+    rule: VerificationRule,
 ) {
     verifyWithParameters(SingleParameters.MatchersOrCaptor(value), rule)
 }
@@ -133,8 +133,8 @@ fun <
         PairParameters.Matchers<T0, T1>,
         PairParameters.Values<T0, T1>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     PairParameters.Matchers<T0, T1>,
     PairParameters.MatchersOrCaptor<T0, T1>,
@@ -142,11 +142,11 @@ fun <
     PairParameters<T0, T1>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.verify(
     first: ParameterMatcherOrCaptor<T0> = ParameterMatcher.any(),
     second: ParameterMatcherOrCaptor<T1> = ParameterMatcher.any(),
-    times: Int = 1
+    times: Int = 1,
 ) {
     verifyWithParameters(PairParameters.MatchersOrCaptor(first, second), times)
 }
@@ -166,8 +166,8 @@ fun <
         PairParameters.Matchers<T0, T1>,
         PairParameters.Values<T0, T1>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     PairParameters.Matchers<T0, T1>,
     PairParameters.MatchersOrCaptor<T0, T1>,
@@ -175,11 +175,11 @@ fun <
     PairParameters<T0, T1>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.verify(
     first: ParameterMatcherOrCaptor<T0> = ParameterMatcher.any(),
     second: ParameterMatcherOrCaptor<T1> = ParameterMatcher.any(),
-    rule: VerificationRule
+    rule: VerificationRule,
 ) {
     verifyWithParameters(PairParameters.MatchersOrCaptor(first, second), rule)
 }
@@ -201,8 +201,8 @@ fun <
         TripleParameters.Matchers<T0, T1, T2>,
         TripleParameters.Values<T0, T1, T2>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     TripleParameters.Matchers<T0, T1, T2>,
     TripleParameters.MatchersOrCaptor<T0, T1, T2>,
@@ -210,12 +210,12 @@ fun <
     TripleParameters<T0, T1, T2>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.verify(
     first: ParameterMatcherOrCaptor<T0> = ParameterMatcher.any(),
     second: ParameterMatcherOrCaptor<T1> = ParameterMatcher.any(),
     third: ParameterMatcherOrCaptor<T2> = ParameterMatcher.any(),
-    times: Int = 1
+    times: Int = 1,
 ) {
     verifyWithParameters(TripleParameters.MatchersOrCaptor(first, second, third), times)
 }
@@ -237,8 +237,8 @@ fun <
         TripleParameters.Matchers<T0, T1, T2>,
         TripleParameters.Values<T0, T1, T2>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     TripleParameters.Matchers<T0, T1, T2>,
     TripleParameters.MatchersOrCaptor<T0, T1, T2>,
@@ -246,12 +246,12 @@ fun <
     TripleParameters<T0, T1, T2>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.verify(
     first: ParameterMatcherOrCaptor<T0> = ParameterMatcher.any(),
     second: ParameterMatcherOrCaptor<T1> = ParameterMatcher.any(),
     third: ParameterMatcherOrCaptor<T2> = ParameterMatcher.any(),
-    rule: VerificationRule
+    rule: VerificationRule,
 ) {
     verifyWithParameters(TripleParameters.MatchersOrCaptor(first, second, third), rule)
 }
@@ -275,8 +275,8 @@ fun <
         QuadrupleParameters.Matchers<T0, T1, T2, T3>,
         QuadrupleParameters.Values<T0, T1, T2, T3>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     QuadrupleParameters.Matchers<T0, T1, T2, T3>,
     QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>,
@@ -284,13 +284,13 @@ fun <
     QuadrupleParameters<T0, T1, T2, T3>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.verify(
     first: ParameterMatcherOrCaptor<T0> = ParameterMatcher.any(),
     second: ParameterMatcherOrCaptor<T1> = ParameterMatcher.any(),
     third: ParameterMatcherOrCaptor<T2> = ParameterMatcher.any(),
     fourth: ParameterMatcherOrCaptor<T3> = ParameterMatcher.any(),
-    times: Int = 1
+    times: Int = 1,
 ) {
     verifyWithParameters(QuadrupleParameters.MatchersOrCaptor(first, second, third, fourth), times)
 }
@@ -314,8 +314,8 @@ fun <
         QuadrupleParameters.Matchers<T0, T1, T2, T3>,
         QuadrupleParameters.Values<T0, T1, T2, T3>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     QuadrupleParameters.Matchers<T0, T1, T2, T3>,
     QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>,
@@ -323,13 +323,13 @@ fun <
     QuadrupleParameters<T0, T1, T2, T3>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.verify(
     first: ParameterMatcherOrCaptor<T0> = ParameterMatcher.any(),
     second: ParameterMatcherOrCaptor<T1> = ParameterMatcher.any(),
     third: ParameterMatcherOrCaptor<T2> = ParameterMatcher.any(),
     fourth: ParameterMatcherOrCaptor<T3> = ParameterMatcher.any(),
-    rule: VerificationRule
+    rule: VerificationRule,
 ) {
     verifyWithParameters(QuadrupleParameters.MatchersOrCaptor(first, second, third, fourth), rule)
 }
@@ -355,8 +355,8 @@ fun <
         QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
         QuintupleParameters.Values<T0, T1, T2, T3, T4>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
     QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>,
@@ -364,14 +364,14 @@ fun <
     QuintupleParameters<T0, T1, T2, T3, T4>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.verify(
     first: ParameterMatcherOrCaptor<T0> = ParameterMatcher.any(),
     second: ParameterMatcherOrCaptor<T1> = ParameterMatcher.any(),
     third: ParameterMatcherOrCaptor<T2> = ParameterMatcher.any(),
     fourth: ParameterMatcherOrCaptor<T3> = ParameterMatcher.any(),
     fifth: ParameterMatcherOrCaptor<T4> = ParameterMatcher.any(),
-    times: Int = 1
+    times: Int = 1,
 ) {
     verifyWithParameters(QuintupleParameters.MatchersOrCaptor(first, second, third, fourth, fifth), times)
 }
@@ -397,8 +397,8 @@ fun <
         QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
         QuintupleParameters.Values<T0, T1, T2, T3, T4>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
     QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>,
@@ -406,14 +406,14 @@ fun <
     QuintupleParameters<T0, T1, T2, T3, T4>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.verify(
     first: ParameterMatcherOrCaptor<T0> = ParameterMatcher.any(),
     second: ParameterMatcherOrCaptor<T1> = ParameterMatcher.any(),
     third: ParameterMatcherOrCaptor<T2> = ParameterMatcher.any(),
     fourth: ParameterMatcherOrCaptor<T3> = ParameterMatcher.any(),
     fifth: ParameterMatcherOrCaptor<T4> = ParameterMatcher.any(),
-    rule: VerificationRule
+    rule: VerificationRule,
 ) {
     verifyWithParameters(QuintupleParameters.MatchersOrCaptor(first, second, third, fourth, fifth), rule)
 }

@@ -48,7 +48,11 @@ sealed class MockDeviceState {
 
         suspend fun pair() = mockConnectableDeviceManager.pair()
 
-        data class NoServices(override val reconnectionSettings: ConnectionSettings.ReconnectionSettings, override val mtu: MTU?, override val mockConnectableDeviceManager: MockConnectableDeviceManager) : Connected(), ConnectableDeviceState.Connected.NoServices {
+        data class NoServices(
+            override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
+            override val mtu: MTU?,
+            override val mockConnectableDeviceManager: MockConnectableDeviceManager,
+        ) : Connected(), ConnectableDeviceState.Connected.NoServices {
 
             override fun startDiscovering() = mockConnectableDeviceManager.startDiscovering()
 
@@ -65,7 +69,11 @@ sealed class MockDeviceState {
             override val asDeviceState: ConnectableDeviceState = this
         }
 
-        data class Discovering(override val reconnectionSettings: ConnectionSettings.ReconnectionSettings, override val mtu: MTU?, override val mockConnectableDeviceManager: MockConnectableDeviceManager) : Connected(), ConnectableDeviceState.Connected.Discovering {
+        data class Discovering(
+            override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
+            override val mtu: MTU?,
+            override val mockConnectableDeviceManager: MockConnectableDeviceManager,
+        ) : Connected(), ConnectableDeviceState.Connected.Discovering {
             override fun didDiscoverServices(services: List<Service>): suspend () -> ConnectableDeviceState.Connected.Idle = {
                 Idle(reconnectionSettings, mtu, services, mockConnectableDeviceManager)
             }
@@ -81,7 +89,12 @@ sealed class MockDeviceState {
         }
 
         sealed class DiscoveredServices : Connected()
-        data class Idle(override val reconnectionSettings: ConnectionSettings.ReconnectionSettings, override val mtu: MTU?, override val services: List<Service>, override val mockConnectableDeviceManager: MockConnectableDeviceManager) : DiscoveredServices(), ConnectableDeviceState.Connected.Idle {
+        data class Idle(
+            override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
+            override val mtu: MTU?,
+            override val services: List<Service>,
+            override val mockConnectableDeviceManager: MockConnectableDeviceManager,
+        ) : DiscoveredServices(), ConnectableDeviceState.Connected.Idle {
             override fun handleAction(action: DeviceAction): suspend () -> ConnectableDeviceState.Connected.HandlingAction = {
                 HandlingAction(reconnectionSettings, mtu, services, action, emptyList(), mockConnectableDeviceManager)
             }
@@ -102,7 +115,7 @@ sealed class MockDeviceState {
             override val services: List<Service>,
             override val action: DeviceAction,
             override val nextActions: List<DeviceAction>,
-            override val mockConnectableDeviceManager: MockConnectableDeviceManager
+            override val mockConnectableDeviceManager: MockConnectableDeviceManager,
         ) : DiscoveredServices(), ConnectableDeviceState.Connected.HandlingAction {
 
             override fun addAction(newAction: DeviceAction): suspend () -> ConnectableDeviceState.Connected.HandlingAction = {
@@ -128,7 +141,10 @@ sealed class MockDeviceState {
         }
     }
 
-    data class Connecting(private val reconnectionSettings: ConnectionSettings.ReconnectionSettings, override val mockConnectableDeviceManager: MockConnectableDeviceManager) : Connectable(), ConnectableDeviceState.Connecting {
+    data class Connecting(
+        private val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
+        override val mockConnectableDeviceManager: MockConnectableDeviceManager,
+    ) : Connectable(), ConnectableDeviceState.Connecting {
 
         override val cancelConnection: suspend () -> Disconnecting = { Disconnecting(mockConnectableDeviceManager) }
 

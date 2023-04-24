@@ -31,8 +31,8 @@ import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -55,8 +55,10 @@ class AndroidPermissionsManagerTest : BaseTest() {
 
     @Mock
     lateinit var context: Context
+
     @Mock
     lateinit var packageManager: PackageManager
+
     @Mock
     lateinit var packageInfo: PackageInfo
 
@@ -73,16 +75,16 @@ class AndroidPermissionsManagerTest : BaseTest() {
             `when`(
                 packageManager.getPackageInfo(
                     Mockito.eq(packageName),
-                    Mockito.eq(PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong()))
-                )
+                    Mockito.eq(PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong())),
+                ),
             )
         } else {
             @Suppress("DEPRECATION")
             `when`(
                 packageManager.getPackageInfo(
                     Mockito.eq(packageName),
-                    Mockito.eq(PackageManager.GET_PERMISSIONS)
-                )
+                    Mockito.eq(PackageManager.GET_PERMISSIONS),
+                ),
             )
         }.thenReturn(packageInfo)
         AndroidPermissionsManager.permissionsStates.clear()

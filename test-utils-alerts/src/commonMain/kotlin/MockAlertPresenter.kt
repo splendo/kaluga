@@ -118,7 +118,7 @@ class MockAlertPresenter(val alert: Alert, setupMocks: Boolean = true) : BaseAle
     override fun showAlert(
         animated: Boolean,
         afterHandler: (Alert.Action?) -> Unit,
-        completion: () -> Unit
+        completion: () -> Unit,
     ) {
         isPresented = true
         this.afterHandler = afterHandler

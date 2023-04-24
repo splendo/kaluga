@@ -30,7 +30,7 @@ class KoinFlowTestTest :
     class TestContext : KoinUIThreadTest.KoinTestContext(
         module {
             single { 1 }
-        }
+        },
     ) {
         val i: Int by inject()
     }

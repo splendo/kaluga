@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     FluxUnit : MagneticFlux,
     AreaUnit : Area,
-    InductionUnit : MagneticInduction
+    InductionUnit : MagneticInduction,
     > AreaUnit.area(
     flux: ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>,
-    induction: ScientificValue<PhysicalQuantity.MagneticInduction, InductionUnit>
+    induction: ScientificValue<PhysicalQuantity.MagneticInduction, InductionUnit>,
 ) = area(flux, induction, ::DefaultScientificValue)
 
 @JvmName("areaFromFluxAndInduction")
@@ -42,9 +42,9 @@ fun <
     FluxUnit : MagneticFlux,
     AreaUnit : Area,
     InductionUnit : MagneticInduction,
-    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     > AreaUnit.area(
     flux: ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>,
     induction: ScientificValue<PhysicalQuantity.MagneticInduction, InductionUnit>,
-    factory: (Decimal, AreaUnit) -> Value
+    factory: (Decimal, AreaUnit) -> Value,
 ) = byDividing(flux, induction, factory)

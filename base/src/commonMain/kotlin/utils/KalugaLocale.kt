@@ -97,14 +97,17 @@ abstract class BaseLocale {
      * The Character(s) used for indicating the start of a quote
      */
     abstract val quotationStart: String
+
     /**
      * The Character(s) used for indicating the end of a quote
      */
     abstract val quotationEnd: String
+
     /**
      * The alternative Character(s) used for indicating the start of a quote
      */
     abstract val alternateQuotationStart: String
+
     /**
      * The alternative Character(s) used for indicating the end of a quote
      */
@@ -171,5 +174,8 @@ val KalugaLocale.uses24HourClock: Boolean get() {
     return !formattedDate.contains(formatter.amString) && !formattedDate.contains(formatter.pmString)
 }
 
-@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaLocale"))
+@Deprecated(
+    "Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.",
+    ReplaceWith("KalugaLocale"),
+)
 typealias Locale = KalugaLocale

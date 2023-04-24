@@ -92,17 +92,17 @@ object Dependencies {
         }
 
         object Serialization {
-            private const val version =  "1.4.1"
+            private const val version =  "1.5.0"
             val Core = Dependency(group, "kotlinx-serialization-core", version)
             val Json = Dependency(group, "kotlinx-serialization-json", version)
         }
 
-        val AtomicFu = Dependency(group, "atomicfu", "0.19.0")
+        val AtomicFu = Dependency(group, "atomicfu", "0.20.2")
     }
 
     object Accompanist {
         private const val groupBase = "com.google.accompanist"
-        private const val version = "0.28.0"
+        private const val version = "0.30.1"
 
         val DrawablePainter = Dependency(groupBase, "accompanist-drawablepainter", version)
         val MaterialThemeAdapter = Dependency(groupBase, "accompanist-themeadapter-material", version)
@@ -112,7 +112,7 @@ object Dependencies {
         internal const val groupBase = "com.google.android"
         private const val materialBase = "$groupBase.material"
 
-        val Material = Dependency(materialBase, "material", "1.7.0")
+        val Material = Dependency(materialBase, "material", "1.8.0")
 
         object Play {
             private const val group = "$groupBase.play"
@@ -130,21 +130,21 @@ object Dependencies {
 
         private const val groupBase = "androidx"
         private const val fragmentGroup = "$groupBase.fragment"
-        private const val fragmentVersion = "1.5.5"
+        private const val fragmentVersion = "1.5.6"
 
         object Activity {
             private const val group = "$groupBase.activity"
-            private const val version = "1.6.1"
+            private const val version = "1.7.0"
             val Activity = Dependency(group, "activity", version)
             val Ktx = Dependency(group, "activity-ktx", version)
             val Compose = Dependency(group, "activity-compose", version)
         }
-        val AppCompat = Dependency("$groupBase.appcompat", "appcompat", "1.6.0")
-        val ArchCore = Dependency("$groupBase.arch.core", "core-testing", "2.1.0")
-        val Browser = Dependency("$groupBase.browser", "browser", "1.4.0")
+        val AppCompat = Dependency("$groupBase.appcompat", "appcompat", "1.6.1")
+        val ArchCore = Dependency("$groupBase.arch.core", "core-testing", "2.2.0")
+        val Browser = Dependency("$groupBase.browser", "browser", "1.5.0")
         object Compose {
-            private const val version = "1.3.1"
-            private const val uiVersion = "1.3.3"
+            private const val version = "1.4.1"
+            private const val uiVersion = "1.4.1"
             private const val composeGroupBase = "$groupBase.compose"
 
             val Foundation = Dependency("$composeGroupBase.foundation", "foundation", version)
@@ -159,7 +159,7 @@ object Dependencies {
         val FragmentKtx = Dependency(fragmentGroup, "fragment-ktx", fragmentVersion)
         object Lifecycle {
             private const val group = "$groupBase.lifecycle"
-            private const val version = "2.5.1"
+            private const val version = "2.6.1"
 
             val LiveData = Dependency(group, "lifecycle-livedata-ktx", version)
             val Runtime = Dependency(group, "lifecycle-runtime-ktx", version)
@@ -195,9 +195,9 @@ object Dependencies {
 
     object Koin {
         private const val group = "io.insert-koin"
-        private const val version = "3.3.2"
-        private const val androidVersion = "3.3.2"
-        private const val composeVersion = "3.4.1"
+        private const val version = "3.4.0"
+        private const val androidVersion = "3.4.0"
+        private const val composeVersion = "3.4.3"
         val Android = Dependency(group, "koin-android", androidVersion)
         val AndroidXCompose = Dependency(group, "koin-androidx-compose", composeVersion)
         val Core = Dependency(group, "koin-core", version)
@@ -209,7 +209,7 @@ object Dependencies {
 
     object Mockito {
         private const val group = "org.mockito"
-        private const val version = "5.0.0"
+        private const val version = "5.3.0"
 
         val Android = Dependency(group, "mockito-android", version)
         val Core = Dependency(group, "mockito-core", version)
@@ -217,7 +217,7 @@ object Dependencies {
 
     object ByteBuddy {
         private const val group = "net.bytebuddy"
-        private const val version = "1.12.22"
+        private const val version = "1.14.4"
 
         val Android = Dependency(group, "byte-buddy-android", version)
         val Agent = Dependency(group, "byte-buddy-agent", version)

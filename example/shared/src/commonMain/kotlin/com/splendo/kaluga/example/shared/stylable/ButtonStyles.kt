@@ -32,7 +32,7 @@ object ButtonStyles {
             backgroundColor = DefaultColors.lightGray,
             pressedBackgroundColor = DefaultColors.gray,
             disabledBackgroundColor = DefaultColors.dimGray,
-            shape = KalugaBackgroundStyle.Shape.Rectangle(4.0f)
+            shape = KalugaBackgroundStyle.Shape.Rectangle(4.0f),
         )
     }
 
@@ -44,16 +44,30 @@ object ButtonStyles {
             TextStyles.whiteText,
             backgroundColor = DefaultColors.red,
             pressedBackgroundColor = DefaultColors.maroon,
-            disabledBackgroundColor = DefaultColors.lightGray
+            disabledBackgroundColor = DefaultColors.lightGray,
         )
     }
     val roundedButton by lazy {
         KalugaButtonStyle(
             defaultFont,
             12.0f,
-            defaultStyle = ButtonStateStyle(DefaultColors.white, DefaultColors.deepSkyBlue, KalugaBackgroundStyle.Shape.Rectangle(10.0f, setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT))),
-            pressedStyle = ButtonStateStyle(DefaultColors.azure, DefaultColors.lightSkyBlue, KalugaBackgroundStyle.Shape.Rectangle(5.0f, setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT))),
-            disabledStyle = ButtonStateStyle(DefaultColors.black, DefaultColors.lightGray, KalugaBackgroundStyle.Shape.Rectangle(10.0f))
+            defaultStyle = ButtonStateStyle(
+                DefaultColors.white,
+                DefaultColors.deepSkyBlue,
+                KalugaBackgroundStyle.Shape.Rectangle(
+                    10.0f,
+                    setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT),
+                ),
+            ),
+            pressedStyle = ButtonStateStyle(
+                DefaultColors.azure,
+                DefaultColors.lightSkyBlue,
+                KalugaBackgroundStyle.Shape.Rectangle(
+                    5.0f,
+                    setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT),
+                ),
+            ),
+            disabledStyle = ButtonStateStyle(DefaultColors.black, DefaultColors.lightGray, KalugaBackgroundStyle.Shape.Rectangle(10.0f)),
         )
     }
     val ovalButton by lazy {
@@ -62,7 +76,7 @@ object ButtonStyles {
             12.0f,
             defaultStyle = ButtonStateStyle(DefaultColors.white, DefaultColors.deepSkyBlue, KalugaBackgroundStyle.Shape.Oval),
             pressedStyle = ButtonStateStyle(DefaultColors.azure, DefaultColors.lightSkyBlue, KalugaBackgroundStyle.Shape.Oval),
-            disabledStyle = ButtonStateStyle(DefaultColors.black, DefaultColors.lightGray, KalugaBackgroundStyle.Shape.Oval)
+            disabledStyle = ButtonStateStyle(DefaultColors.black, DefaultColors.lightGray, KalugaBackgroundStyle.Shape.Oval),
         )
     }
     val redButtonWithStroke by lazy {
@@ -74,25 +88,25 @@ object ButtonStyles {
                 KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.red),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.white),
-                    KalugaBackgroundStyle.Shape.Rectangle()
-                )
+                    KalugaBackgroundStyle.Shape.Rectangle(),
+                ),
             ),
             pressedStyle = ButtonStateStyle(
                 DefaultColors.white,
                 KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.maroon),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.mistyRose),
-                    KalugaBackgroundStyle.Shape.Rectangle()
-                )
+                    KalugaBackgroundStyle.Shape.Rectangle(),
+                ),
             ),
             disabledStyle = ButtonStateStyle(
                 DefaultColors.black,
                 KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.lightGray),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.black),
-                    KalugaBackgroundStyle.Shape.Rectangle()
-                )
-            )
+                    KalugaBackgroundStyle.Shape.Rectangle(),
+                ),
+            ),
         )
     }
     val roundedButtonWithStroke by lazy {
@@ -104,25 +118,31 @@ object ButtonStyles {
                 KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.deepSkyBlue),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.white),
-                    KalugaBackgroundStyle.Shape.Rectangle(10.0f, setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT))
-                )
+                    KalugaBackgroundStyle.Shape.Rectangle(
+                        10.0f,
+                        setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT),
+                    ),
+                ),
             ),
             pressedStyle = ButtonStateStyle(
                 DefaultColors.azure,
                 KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.lightSkyBlue),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.azure),
-                    KalugaBackgroundStyle.Shape.Rectangle(5.0f, setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT))
-                )
+                    KalugaBackgroundStyle.Shape.Rectangle(
+                        5.0f,
+                        setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT),
+                    ),
+                ),
             ),
             disabledStyle = ButtonStateStyle(
                 DefaultColors.black,
                 KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.lightGray),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.black),
-                    KalugaBackgroundStyle.Shape.Rectangle(10.0f)
-                )
-            )
+                    KalugaBackgroundStyle.Shape.Rectangle(10.0f),
+                ),
+            ),
         )
     }
     val ovalButtonWithStroke by lazy {
@@ -134,25 +154,25 @@ object ButtonStyles {
                 KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.deepSkyBlue),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.white),
-                    KalugaBackgroundStyle.Shape.Oval
-                )
+                    KalugaBackgroundStyle.Shape.Oval,
+                ),
             ),
             pressedStyle = ButtonStateStyle(
                 DefaultColors.azure,
                 KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.lightSkyBlue),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.azure),
-                    KalugaBackgroundStyle.Shape.Oval
-                )
+                    KalugaBackgroundStyle.Shape.Oval,
+                ),
             ),
             disabledStyle = ButtonStateStyle(
                 DefaultColors.black,
                 KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.lightGray),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.black),
-                    KalugaBackgroundStyle.Shape.Oval
-                )
-            )
+                    KalugaBackgroundStyle.Shape.Oval,
+                ),
+            ),
         )
     }
 
@@ -163,27 +183,33 @@ object ButtonStyles {
             defaultStyle = ButtonStateStyle(
                 DefaultColors.white,
                 KalugaBackgroundStyle(
-                    KalugaBackgroundStyle.FillStyle.Gradient(GradientStyle.Linear(listOf(DefaultColors.deepSkyBlue, DefaultColors.lightSkyBlue), GradientStyle.Linear.Orientation.LEFT_RIGHT)),
+                    KalugaBackgroundStyle.FillStyle.Gradient(
+                        GradientStyle.Linear(listOf(DefaultColors.deepSkyBlue, DefaultColors.lightSkyBlue), GradientStyle.Linear.Orientation.LEFT_RIGHT),
+                    ),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.white),
-                    KalugaBackgroundStyle.Shape.Rectangle()
-                )
+                    KalugaBackgroundStyle.Shape.Rectangle(),
+                ),
             ),
             pressedStyle = ButtonStateStyle(
                 DefaultColors.azure,
                 KalugaBackgroundStyle(
-                    KalugaBackgroundStyle.FillStyle.Gradient(GradientStyle.Linear(listOf(DefaultColors.midnightBlue, DefaultColors.deepSkyBlue), GradientStyle.Linear.Orientation.LEFT_RIGHT)),
+                    KalugaBackgroundStyle.FillStyle.Gradient(
+                        GradientStyle.Linear(listOf(DefaultColors.midnightBlue, DefaultColors.deepSkyBlue), GradientStyle.Linear.Orientation.LEFT_RIGHT),
+                    ),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.mistyRose),
-                    KalugaBackgroundStyle.Shape.Rectangle()
-                )
+                    KalugaBackgroundStyle.Shape.Rectangle(),
+                ),
             ),
             disabledStyle = ButtonStateStyle(
                 DefaultColors.black,
                 KalugaBackgroundStyle(
-                    KalugaBackgroundStyle.FillStyle.Gradient(GradientStyle.Linear(listOf(DefaultColors.lightGray, DefaultColors.gray), GradientStyle.Linear.Orientation.LEFT_RIGHT)),
+                    KalugaBackgroundStyle.FillStyle.Gradient(
+                        GradientStyle.Linear(listOf(DefaultColors.lightGray, DefaultColors.gray), GradientStyle.Linear.Orientation.LEFT_RIGHT),
+                    ),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.black),
-                    KalugaBackgroundStyle.Shape.Rectangle()
-                )
-            )
+                    KalugaBackgroundStyle.Shape.Rectangle(),
+                ),
+            ),
         )
     }
 
@@ -194,27 +220,31 @@ object ButtonStyles {
             defaultStyle = ButtonStateStyle(
                 DefaultColors.white,
                 KalugaBackgroundStyle(
-                    KalugaBackgroundStyle.FillStyle.Gradient(GradientStyle.Radial(listOf(DefaultColors.deepSkyBlue, DefaultColors.lightSkyBlue), 50.0f, GradientStyle.CenterPoint(0.3f, 0.3f))),
+                    KalugaBackgroundStyle.FillStyle.Gradient(
+                        GradientStyle.Radial(listOf(DefaultColors.deepSkyBlue, DefaultColors.lightSkyBlue), 50.0f, GradientStyle.CenterPoint(0.3f, 0.3f)),
+                    ),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.white),
-                    KalugaBackgroundStyle.Shape.Rectangle()
-                )
+                    KalugaBackgroundStyle.Shape.Rectangle(),
+                ),
             ),
             pressedStyle = ButtonStateStyle(
                 DefaultColors.azure,
                 KalugaBackgroundStyle(
-                    KalugaBackgroundStyle.FillStyle.Gradient(GradientStyle.Radial(listOf(DefaultColors.midnightBlue, DefaultColors.deepSkyBlue), 25.0f, GradientStyle.CenterPoint(0.6f, 0.6f))),
+                    KalugaBackgroundStyle.FillStyle.Gradient(
+                        GradientStyle.Radial(listOf(DefaultColors.midnightBlue, DefaultColors.deepSkyBlue), 25.0f, GradientStyle.CenterPoint(0.6f, 0.6f)),
+                    ),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.mistyRose),
-                    KalugaBackgroundStyle.Shape.Rectangle()
-                )
+                    KalugaBackgroundStyle.Shape.Rectangle(),
+                ),
             ),
             disabledStyle = ButtonStateStyle(
                 DefaultColors.black,
                 KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Gradient(GradientStyle.Radial(listOf(DefaultColors.lightGray, DefaultColors.gray), 50.0f)),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.black),
-                    KalugaBackgroundStyle.Shape.Rectangle()
-                )
-            )
+                    KalugaBackgroundStyle.Shape.Rectangle(),
+                ),
+            ),
         )
     }
 
@@ -225,27 +255,31 @@ object ButtonStyles {
             defaultStyle = ButtonStateStyle(
                 DefaultColors.white,
                 KalugaBackgroundStyle(
-                    KalugaBackgroundStyle.FillStyle.Gradient(GradientStyle.Angular(listOf(DefaultColors.deepSkyBlue, DefaultColors.lightSkyBlue), GradientStyle.CenterPoint(0.3f, 0.3f))),
+                    KalugaBackgroundStyle.FillStyle.Gradient(
+                        GradientStyle.Angular(listOf(DefaultColors.deepSkyBlue, DefaultColors.lightSkyBlue), GradientStyle.CenterPoint(0.3f, 0.3f)),
+                    ),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.white),
-                    KalugaBackgroundStyle.Shape.Rectangle()
-                )
+                    KalugaBackgroundStyle.Shape.Rectangle(),
+                ),
             ),
             pressedStyle = ButtonStateStyle(
                 DefaultColors.azure,
                 KalugaBackgroundStyle(
-                    KalugaBackgroundStyle.FillStyle.Gradient(GradientStyle.Angular(listOf(DefaultColors.midnightBlue, DefaultColors.deepSkyBlue), GradientStyle.CenterPoint(0.6f, 0.6f))),
+                    KalugaBackgroundStyle.FillStyle.Gradient(
+                        GradientStyle.Angular(listOf(DefaultColors.midnightBlue, DefaultColors.deepSkyBlue), GradientStyle.CenterPoint(0.6f, 0.6f)),
+                    ),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.mistyRose),
-                    KalugaBackgroundStyle.Shape.Rectangle()
-                )
+                    KalugaBackgroundStyle.Shape.Rectangle(),
+                ),
             ),
             disabledStyle = ButtonStateStyle(
                 DefaultColors.black,
                 KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Gradient(GradientStyle.Angular(listOf(DefaultColors.lightGray, DefaultColors.gray))),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.black),
-                    KalugaBackgroundStyle.Shape.Rectangle()
-                )
-            )
+                    KalugaBackgroundStyle.Shape.Rectangle(),
+                ),
+            ),
         )
     }
 }

@@ -39,5 +39,5 @@ infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.times
 
 @JvmName("fluxTimesCurrent")
 infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.times(
-    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
 ) = Joule.energy(this, current)

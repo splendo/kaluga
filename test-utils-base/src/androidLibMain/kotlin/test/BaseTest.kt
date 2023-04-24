@@ -73,7 +73,6 @@ actual open class BaseTest {
 
     @BeforeTest
     actual open fun beforeTest() {
-
         if (isUnitTest) {
             // Disabled as it gives issues as of Kotlin 1.8
             // DebugProbes.install() // coroutine debugging
@@ -85,7 +84,7 @@ actual open class BaseTest {
                     level: LogLevel,
                     tag: String?,
                     throwable: Throwable?,
-                    message: (() -> String)?
+                    message: (() -> String)?,
                 ) {
                     println("$level: ${tag?.let { "[$it]" } ?: ""} ${message?.invoke() ?: ""} ${throwable?.message ?: ""}".trim())
                     throwable?.printStackTrace(System.out)

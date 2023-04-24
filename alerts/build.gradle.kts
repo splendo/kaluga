@@ -4,7 +4,7 @@ plugins {
     id("convention.publication")
     id("com.android.library")
     id("org.jetbrains.dokka")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("org.jmailen.kotlinter")
 }
 
 dependencies {
@@ -13,7 +13,7 @@ dependencies {
     androidTestImplementationDependency(Dependencies.AndroidX.Activity.Ktx)
 }
 
-publishableComponent()
+publishableComponent("alerts")
 
 kotlin {
     sourceSets {

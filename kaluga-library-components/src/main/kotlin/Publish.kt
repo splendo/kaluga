@@ -17,6 +17,8 @@
 
 import org.gradle.api.Project
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
+import org.gradle.plugins.signing.Sign
 
 fun Project.publish(componentType: ComponentType = ComponentType.Default) {
     afterEvaluate {
@@ -53,5 +55,9 @@ fun Project.publish(componentType: ComponentType = ComponentType.Default) {
                 }
             }
         }
+    }
+
+    tasks.withType(AbstractPublishToMaven::class.java).configureEach {
+        dependsOn(tasks.withType(Sign::class.java))
     }
 }

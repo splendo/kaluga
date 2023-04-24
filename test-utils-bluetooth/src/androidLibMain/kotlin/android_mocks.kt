@@ -29,7 +29,7 @@ actual fun randomIdentifier(): Identifier = randomUUID().uuidString
 
 actual fun createDeviceWrapper(
     deviceName: String?,
-    identifier: Identifier
+    identifier: Identifier,
 ): DeviceWrapper = MockDeviceWrapper(deviceName, identifier, bondState)
 
 actual fun ServiceWrapperBuilder.build(): ServiceWrapper = MockServiceWrapper(builder = this)

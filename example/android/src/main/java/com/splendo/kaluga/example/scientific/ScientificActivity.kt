@@ -72,7 +72,7 @@ class ScientificActivity : KalugaViewModelActivity<ScientificViewModel>() {
                     }
                     is ScientificNavigationAction.Converter -> NavigationSpec.Activity<ScientificConverterActivity>()
                 }
-            }
+            },
         )
     }
 

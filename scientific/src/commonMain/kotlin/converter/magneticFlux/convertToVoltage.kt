@@ -33,5 +33,5 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.MagneticFl
 
 @JvmName("fluxDivTime")
 infix operator fun <FluxUnit : MagneticFlux, TimeUnit : Time> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = Volt.voltage(this, time)

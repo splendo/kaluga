@@ -32,20 +32,20 @@ import kotlin.jvm.JvmName
 
 @JvmName("luminousIntensityDivSquareCentimeter")
 infix operator fun <LuminousIntensityUnit : LuminousIntensity> ScientificValue<PhysicalQuantity.LuminousIntensity, LuminousIntensityUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>
+    area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>,
 ) = Stilb.luminance(this, area)
 
 @JvmName("luminousIntensityDivMetricArea")
 infix operator fun <LuminousIntensityUnit : LuminousIntensity, AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.LuminousIntensity, LuminousIntensityUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = Nit.luminance(this, area)
 
 @JvmName("luminousIntensityDivImperialArea")
 infix operator fun <LuminousIntensityUnit : LuminousIntensity, AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.LuminousIntensity, LuminousIntensityUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = FootLambert.luminance(this, area)
 
 @JvmName("luminousIntensityDivArea")
 infix operator fun <LuminousIntensityUnit : LuminousIntensity, AreaUnit : Area> ScientificValue<PhysicalQuantity.LuminousIntensity, LuminousIntensityUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = Nit.luminance(this, area)

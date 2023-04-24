@@ -32,25 +32,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricLengthTimesMetricSurfaceTension")
 infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
-    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfaceTension>
+    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfaceTension>,
 ) = surfaceTension * this
 
 @JvmName("imperialLengthTimesImperialSurfaceTension")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
-    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, ImperialSurfaceTension>
+    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, ImperialSurfaceTension>,
 ) = surfaceTension * this
 
 @JvmName("imperialLengthTimesUKImperialSurfaceTension")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
-    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, UKImperialSurfaceTension>
+    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, UKImperialSurfaceTension>,
 ) = surfaceTension * this
 
 @JvmName("imperialLengthTimesUSCustomarySurfaceTension")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
-    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, USCustomarySurfaceTension>
+    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, USCustomarySurfaceTension>,
 ) = surfaceTension * this
 
 @JvmName("lengthTimesSurfaceTension")
 infix operator fun <SurfaceTensionUnit : SurfaceTension, LengthUnit : Length> ScientificValue<PhysicalQuantity.Length, LengthUnit>.times(
-    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>
+    surfaceTension: ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>,
 ) = surfaceTension * this

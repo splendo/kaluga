@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     CurrentUnit : ElectricCurrent,
     TimeUnit : Time,
-    ChargeUnit : ElectricCharge
+    ChargeUnit : ElectricCharge,
     > TimeUnit.duration(
     charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
-    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
 ) = duration(charge, current, ::DefaultScientificValue)
 
 @JvmName("timeFromChargeAndCurrent")
@@ -42,9 +42,9 @@ fun <
     CurrentUnit : ElectricCurrent,
     TimeUnit : Time,
     ChargeUnit : ElectricCharge,
-    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     > TimeUnit.duration(
     charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
     current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
-    factory: (Decimal, TimeUnit) -> Value
+    factory: (Decimal, TimeUnit) -> Value,
 ) = byDividing(charge, current, factory)

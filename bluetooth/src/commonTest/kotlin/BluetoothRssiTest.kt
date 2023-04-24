@@ -35,7 +35,7 @@ class BluetoothRssiTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Devi
 
     @Test
     fun testRssi() = testWithFlowAndTestContext(
-        Configuration.DeviceWithoutService()
+        Configuration.DeviceWithoutService(),
     ) {
         val newRssi = -42
         mainAction {

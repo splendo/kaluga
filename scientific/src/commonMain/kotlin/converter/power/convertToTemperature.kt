@@ -33,37 +33,40 @@ import kotlin.jvm.JvmName
 
 @JvmName("powerTimesMetricAndUKImperialThermalResistance")
 infix operator fun <PowerUnit : Power> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(
-    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, MetricAndUKImperialThermalResistance>
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, MetricAndUKImperialThermalResistance>,
 ) = thermalResistance * this
 
 @JvmName("metricAndImperialPowerTimesMetricThermalResistance")
 infix operator fun <PowerUnit : MetricAndImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(
-    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, MetricThermalResistance>
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, MetricThermalResistance>,
 ) = thermalResistance * this
 
 @JvmName("metricPowerTimesMetricThermalResistance")
-infix operator fun <PowerUnit : MetricPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, MetricThermalResistance>) =
-    thermalResistance * this
+infix operator fun <PowerUnit : MetricPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, MetricThermalResistance>,
+) = thermalResistance * this
 
 @JvmName("metricAndImperialPowerTimesUKImperialThermalResistance")
 infix operator fun <PowerUnit : MetricAndImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(
-    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, UKImperialThermalResistance>
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, UKImperialThermalResistance>,
 ) = thermalResistance * this
 
 @JvmName("imperialPowerTimesUKImperialThermalResistance")
-infix operator fun <PowerUnit : ImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, UKImperialThermalResistance>) =
-    thermalResistance * this
+infix operator fun <PowerUnit : ImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, UKImperialThermalResistance>,
+) = thermalResistance * this
 
 @JvmName("metricAndImperialPowerTimesUSCustomaryThermalResistance")
 infix operator fun <PowerUnit : MetricAndImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(
-    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, USCustomaryThermalResistance>
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, USCustomaryThermalResistance>,
 ) = thermalResistance * this
 
 @JvmName("imperialPowerTimesUSCustomaryThermalResistance")
-infix operator fun <PowerUnit : ImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, USCustomaryThermalResistance>) =
-    thermalResistance * this
+infix operator fun <PowerUnit : ImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, USCustomaryThermalResistance>,
+) = thermalResistance * this
 
 @JvmName("powerTimesThermalResistance")
 infix operator fun <ThermalResistanceUnit : ThermalResistance, PowerUnit : Power> ScientificValue<PhysicalQuantity.Power, PowerUnit>.times(
-    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, ThermalResistanceUnit>
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, ThermalResistanceUnit>,
 ) = thermalResistance * this

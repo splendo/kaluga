@@ -107,7 +107,7 @@ expect class DefaultFontLoader() : FontLoader
  */
 fun String.localized(
     stringLoader: StringLoader = DefaultStringLoader(),
-    defaultValue: String = this
+    defaultValue: String = this,
 ) = stringLoader.loadString(this, defaultValue)
 
 /**
@@ -121,7 +121,7 @@ fun String.localized(
 fun String.quantity(
     quantity: Int,
     stringLoader: StringLoader = DefaultStringLoader(),
-    defaultValue: String = this
+    defaultValue: String = this,
 ): String = stringLoader.loadQuantityString(this, quantity, defaultValue)
 
 /**
@@ -132,7 +132,7 @@ fun String.quantity(
  */
 fun String.asColor(
     colorLoader: KalugaColorLoader = DefaultColorLoader(),
-    defaultValue: KalugaColor? = null
+    defaultValue: KalugaColor? = null,
 ): KalugaColor? = colorLoader.loadColor(this, defaultValue)
 
 /**
@@ -143,7 +143,7 @@ fun String.asColor(
  */
 fun String.asImage(
     imageLoader: ImageLoader = DefaultImageLoader(),
-    defaultValue: KalugaImage? = null
+    defaultValue: KalugaImage? = null,
 ): KalugaImage? = imageLoader.loadImage(this, defaultValue)
 
 /**
@@ -154,5 +154,5 @@ fun String.asImage(
  */
 suspend fun String.asFont(
     fontLoader: FontLoader = DefaultFontLoader(),
-    defaultValue: KalugaFont? = null
+    defaultValue: KalugaFont? = null,
 ): KalugaFont? = fontLoader.loadFont(this, defaultValue)

@@ -45,5 +45,5 @@ enum class KalugaTextAlignment {
     /**
      * Alignment at the center of the view
      */
-    CENTER
+    CENTER,
 }

@@ -49,12 +49,12 @@ infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Ener
 
 @JvmName("metricAndImperialEnergyDivMetricLength")
 infix operator fun <EnergyUnit : MetricAndImperialEnergy, LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = Newton.force(this, distance)
 
 @JvmName("footPoundalDivImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Energy, FootPoundal>.div(
-    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = Poundal.force(this, distance)
 
 @JvmName("inchOunceForceDivInch")
@@ -63,15 +63,15 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, InchOunceForce>.div(
 
 @JvmName("metricAndImperialEnergyDivImperialLength")
 infix operator fun <EnergyUnit : MetricAndImperialEnergy, LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = PoundForce.force(this, distance)
 
 @JvmName("imperialEnergyDivImperialLength")
 infix operator fun <EnergyUnit : ImperialEnergy, LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = PoundForce.force(this, distance)
 
 @JvmName("energyDivLength")
 infix operator fun <EnergyUnit : Energy, LengthUnit : Length> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = Newton.force(this, distance)

@@ -29,10 +29,10 @@ import kotlin.jvm.JvmName
 
 @JvmName("timeTimesFrequency")
 infix operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>,
 ): Decimal = frequency * this
 
 @JvmName("timeTimesRadioactivity")
 infix operator fun <RadioactivityUnit : Radioactivity, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    radioactivity: ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>
+    radioactivity: ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>,
 ): Decimal = radioactivity * this

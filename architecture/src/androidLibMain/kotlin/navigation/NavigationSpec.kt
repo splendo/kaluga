@@ -27,6 +27,12 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Activity.LaunchType
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.FileSelector.FileSelectorSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Fragment.AnimationSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Fragment.BackStackSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.TextMessenger.TextMessengerSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.ThirdPartyApp.OpenMode
 import java.net.URL
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
@@ -39,7 +45,7 @@ sealed class NavigationSpec {
     companion object {
         inline fun <reified A : android.app.Activity> Activity(
             flags: Set<IntentFlag> = emptySet(),
-            launchType: Activity.LaunchType = Activity.LaunchType.NoResult
+            launchType: LaunchType = LaunchType.NoResult,
         ) = Activity(A::class.java, flags, launchType)
     }
 
@@ -53,7 +59,7 @@ sealed class NavigationSpec {
     data class Activity<A : android.app.Activity>(
         val activityClass: Class<A>,
         val flags: Set<IntentFlag> = emptySet(),
-        val launchType: LaunchType = LaunchType.NoResult
+        val launchType: LaunchType = LaunchType.NoResult,
     ) : NavigationSpec() {
 
         /**
@@ -84,7 +90,7 @@ sealed class NavigationSpec {
              */
             class ActivityContract<A : android.app.Activity>(
                 val activityClass: KClass<A>,
-                val provideResultLauncher: A.() -> ActivityResultLauncher<Intent>
+                val provideResultLauncher: A.() -> ActivityResultLauncher<Intent>,
             ) : LaunchType() {
                 fun tryAndGetContract(activity: android.app.Activity): ActivityResultLauncher<Intent>? = activityClass.safeCast(activity)?.provideResultLauncher()
             }
@@ -94,7 +100,7 @@ sealed class NavigationSpec {
         constructor(
             activityClass: Class<A>,
             flags: Set<IntentFlag> = emptySet(),
-            requestCode: Int?
+            requestCode: Int?,
         ) : this(activityClass, flags, requestCode?.let { LaunchType.ActivityResult(it) } ?: LaunchType.NoResult)
     }
 
@@ -107,7 +113,7 @@ sealed class NavigationSpec {
     /**
      * Shows a [androidx.fragment.app.Fragment]
      * @param containerId The identifier of the View containing the fragment
-     * @param type The [Type] of transaction. Defaults to [Type.Replace]
+     * @param type The [Fragment.Type] of transaction. Defaults to [Fragment.Type.Replace]
      * @param tag Optional tag of the fragment transaction
      * @param backStackSettings The [BackStackSettings] of the transaction. Defaults to [BackStackSettings.DontAdd]
      * @param animationSettings Optional [AnimationSettings] for the transaction
@@ -121,7 +127,7 @@ sealed class NavigationSpec {
         val backStackSettings: BackStackSettings = BackStackSettings.DontAdd,
         val animationSettings: AnimationSettings? = null,
         val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
-        val createFragment: () -> androidx.fragment.app.Fragment
+        val createFragment: () -> androidx.fragment.app.Fragment,
     ) : NavigationSpec() {
 
         /**
@@ -163,10 +169,18 @@ sealed class NavigationSpec {
          * @param popExit Pop Exit Animation
          */
         data class AnimationSettings(
-            @AnimatorRes @AnimRes val enter: Int = 0,
-            @AnimatorRes @AnimRes val exit: Int = 0,
-            @AnimatorRes @AnimRes val popEnter: Int = 0,
-            @AnimatorRes @AnimRes val popExit: Int = 0
+            @AnimatorRes
+            @AnimRes
+            val enter: Int = 0,
+            @AnimatorRes
+            @AnimRes
+            val exit: Int = 0,
+            @AnimatorRes
+            @AnimRes
+            val popEnter: Int = 0,
+            @AnimatorRes
+            @AnimRes
+            val popExit: Int = 0,
         )
     }
 
@@ -179,7 +193,7 @@ sealed class NavigationSpec {
     data class RemoveFragment(
         val tag: String,
         val fragmentRequestKey: String? = null,
-        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
     ) : NavigationSpec()
 
     /**
@@ -191,7 +205,7 @@ sealed class NavigationSpec {
     data class PopFragment(
         val immediate: Boolean = false,
         val fragmentRequestKey: String? = null,
-        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
     ) : NavigationSpec()
 
     /**
@@ -205,7 +219,7 @@ sealed class NavigationSpec {
         val inclusive: Boolean,
         val immediate: Boolean = false,
         val fragmentRequestKey: String? = null,
-        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
     ) : NavigationSpec()
 
     /**
@@ -217,7 +231,7 @@ sealed class NavigationSpec {
     data class Dialog(
         val tag: String? = null,
         val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
-        val createDialog: () -> DialogFragment
+        val createDialog: () -> DialogFragment,
     ) : NavigationSpec()
 
     /**
@@ -229,12 +243,12 @@ sealed class NavigationSpec {
     data class DismissDialog(
         val tag: String,
         val fragmentRequestKey: String? = null,
-        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager }
+        val getFragmentManager: ActivityLifecycleSubscribable.LifecycleManager.() -> FragmentManager = { fragmentManager },
     ) : NavigationSpec()
 
     /**
      * Shows the Camera
-     * @param type The [Type] of media to capture
+     * @param type The [Camera.Type] of media to capture
      * @param requestCode The request code added to the intent
      * @param uri Optional [Uri] indicating where the result should be stored
      */
@@ -265,7 +279,7 @@ sealed class NavigationSpec {
 
         /**
          * Settings for the email
-         * @param type The [Type] of formatting to be used
+         * @param type The [Email.Type] of formatting to be used
          * @param to The list of recipent emails
          * @param cc The list of cc emails
          * @param bcc The list of bcc emails
@@ -280,22 +294,22 @@ sealed class NavigationSpec {
             val bcc: List<String> = emptyList(),
             val subject: String? = null,
             val body: String? = null,
-            val attachments: List<Uri> = emptyList()
+            val attachments: List<Uri> = emptyList(),
         ) {
             val intent get() = when (attachments.size) {
                 0 -> Intent(Intent.ACTION_SEND)
                 1 -> Intent(Intent.ACTION_SEND).apply {
                     putExtra(
                         Intent.EXTRA_STREAM,
-                        attachments[0]
+                        attachments[0],
                     )
                 }
                 else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
                     putExtra(
                         Intent.EXTRA_STREAM,
                         ArrayList(
-                            attachments
-                        )
+                            attachments,
+                        ),
                     )
                 }
             }.apply {
@@ -304,7 +318,7 @@ sealed class NavigationSpec {
                     when (this@EmailSettings.type) {
                         is Type.Plain -> "text/plain"
                         is Type.Stylized -> "*/*"
-                    }
+                    },
                 )
                 if (to.isNotEmpty()) {
                     putExtra(Intent.EXTRA_EMAIL, to.toTypedArray())
@@ -339,7 +353,7 @@ sealed class NavigationSpec {
 
     /**
      * Opens up the Phone screen
-     * @param type The [Type] of phone screen to show
+     * @param type The [Phone.Type] of phone screen to show
      * @param phoneNumber The phone number to dial
      */
     data class Phone(val type: Type, val phoneNumber: String) : NavigationSpec() {
@@ -361,7 +375,7 @@ sealed class NavigationSpec {
 
     /**
      * Opens the Settings screen
-     * @param type [Type] of settings screen to open
+     * @param type [Settings.Type] of settings screen to open
      */
     data class Settings(val type: Type) : NavigationSpec() {
         sealed class Type {
@@ -446,27 +460,33 @@ sealed class NavigationSpec {
 
         /**
          * Settings for the text message
-         * @param type [Type] of text message to send
+         * @param type [TextMessenger.Type] of text message to send
          * @param recipients List of recipients
          * @param subject Optional subject of the message
          * @param body Optional body of the message
          * @param attachments List of [Uri] pointing to attachments to add
          */
-        data class TextMessengerSettings(val type: Type = Type.Plain, val recipients: List<String>, val subject: String? = null, val body: String? = null, val attachments: List<Uri> = emptyList()) {
+        data class TextMessengerSettings(
+            val type: Type = Type.Plain,
+            val recipients: List<String>,
+            val subject: String? = null,
+            val body: String? = null,
+            val attachments: List<Uri> = emptyList(),
+        ) {
             val intent: Intent = when (attachments.size) {
                 0 -> Intent(Intent.ACTION_SEND)
                 1 -> Intent(Intent.ACTION_SEND).apply {
                     putExtra(
                         Intent.EXTRA_STREAM,
-                        attachments[0]
+                        attachments[0],
                     )
                 }
                 else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
                     putExtra(
                         Intent.EXTRA_STREAM,
                         ArrayList(
-                            attachments
-                        )
+                            attachments,
+                        ),
                     )
                 }
             }.apply {
@@ -477,7 +497,7 @@ sealed class NavigationSpec {
                         is Type.Plain -> "text/plain"
                         is Type.Image -> "image/*"
                         is Type.Video -> "video/*"
-                    }
+                    },
                 )
                 subject?.let { putExtra("subject", it) }
                 body?.let { putExtra("sms_body", it) }
@@ -516,7 +536,7 @@ sealed class NavigationSpec {
             /**
              * Opens the PlayStore if the app is not installed
              */
-            FALLBACK_TO_STORE
+            FALLBACK_TO_STORE,
         }
     }
 

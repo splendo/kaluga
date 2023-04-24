@@ -29,10 +29,10 @@ import kotlin.jvm.JvmName
 
 @JvmName("absiemensDivFrequency")
 infix operator fun <FrequencyUnit : Frequency> ScientificValue<PhysicalQuantity.ElectricConductance, Absiemens>.div(
-    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>,
 ) = Abfarad.capacitance(this, frequency)
 
 @JvmName("conductanceDivFrequency")
 infix operator fun <ConductanceUnit : ElectricConductance, FrequencyUnit : Frequency> ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>.div(
-    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>,
 ) = Farad.capacitance(this, frequency)

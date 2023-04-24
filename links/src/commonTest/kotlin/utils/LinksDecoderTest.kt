@@ -40,7 +40,7 @@ data class DataTypesValues(
     val byteValue: Byte,
     val enumValue: MyEnum,
     val listValue: List<String>,
-    val nullableValue: String?
+    val nullableValue: String?,
 )
 
 class LinksDecoderTest {
@@ -61,7 +61,7 @@ class LinksDecoderTest {
             "zero", // listValue[0]
             "one", // listValue[1]
             "two", // listValue[2]
-            "NULL" // nullableValue
+            "NULL", // nullableValue
         )
         private val expextedValue = DataTypesValues(
             "Test",
@@ -74,7 +74,7 @@ class LinksDecoderTest {
             byteValue,
             MyEnum.A,
             listOf("zero", "one", "two"),
-            null
+            null,
         )
     }
 

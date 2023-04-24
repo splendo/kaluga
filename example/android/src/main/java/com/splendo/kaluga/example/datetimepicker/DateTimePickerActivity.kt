@@ -21,4 +21,7 @@ import com.splendo.kaluga.example.compose.ComposeOrXMLActivity
 import com.splendo.kaluga.example.datetimepicker.compose.ComposeDateTimePickerActivity
 import com.splendo.kaluga.example.datetimepicker.xml.XMLDateTimePickerActivity
 
-class DateTimePickerActivity : ComposeOrXMLActivity<ComposeDateTimePickerActivity, XMLDateTimePickerActivity>(ComposeDateTimePickerActivity::class.java, XMLDateTimePickerActivity::class.java)
+class DateTimePickerActivity : ComposeOrXMLActivity<ComposeDateTimePickerActivity, XMLDateTimePickerActivity>(
+    ComposeDateTimePickerActivity::class.java,
+    XMLDateTimePickerActivity::class.java,
+)

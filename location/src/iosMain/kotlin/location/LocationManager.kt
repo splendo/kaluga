@@ -43,7 +43,7 @@ import kotlin.coroutines.CoroutineContext
  */
 actual class DefaultLocationManager(
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BaseLocationManager(settings, coroutineScope) {
 
     /**
@@ -53,10 +53,10 @@ actual class DefaultLocationManager(
 
         override fun create(
             settings: Settings,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ): BaseLocationManager = DefaultLocationManager(
             settings,
-            coroutineScope
+            coroutineScope,
         )
     }
 
@@ -124,7 +124,7 @@ actual class DefaultLocationManager(
  * Needs to have [com.splendo.kaluga.permissions.location.LocationPermission] registered.
  */
 actual class LocationStateRepoBuilder(
-    private val permissionsBuilder: suspend (CoroutineContext) -> Permissions
+    private val permissionsBuilder: suspend (CoroutineContext) -> Permissions,
 ) : BaseLocationStateRepoBuilder {
 
     /**
@@ -132,22 +132,22 @@ actual class LocationStateRepoBuilder(
      * @param bundle the [NSBundle]
      */
     constructor(
-        bundle: NSBundle = NSBundle.mainBundle
+        bundle: NSBundle = NSBundle.mainBundle,
     ) : this(
         { context ->
             Permissions(
                 PermissionsBuilder(bundle).apply {
                     registerLocationPermissionIfNotRegistered()
                 },
-                context
+                context,
             )
-        }
+        },
     )
 
     override fun create(
         locationPermission: LocationPermission,
-        settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings,
-        coroutineContext: CoroutineContext
+        settingsBuilder: (LocationPermission, Permissions) -> Settings,
+        coroutineContext: CoroutineContext,
     ): LocationStateRepo {
         return LocationStateRepo({ settingsBuilder(locationPermission, permissionsBuilder(it)) }, DefaultLocationManager.Builder(), coroutineContext)
     }

@@ -26,7 +26,6 @@ class BeaconUpdateTest : BeaconFlowTest() {
 
     @Test
     fun testBeaconUpdatedTimestamp() = testWithFlow {
-
         test {
             assertTrue(it.isEmpty())
         }
@@ -34,7 +33,7 @@ class BeaconUpdateTest : BeaconFlowTest() {
         action {
             start()
             discoverDevices(
-                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope),
             )
         }
 
@@ -43,7 +42,7 @@ class BeaconUpdateTest : BeaconFlowTest() {
         action {
             delay(1_000)
             discoverDevices(
-                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope),
             )
         }
 

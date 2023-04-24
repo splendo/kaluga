@@ -40,7 +40,7 @@ actual fun threadPoolDispatcher(numberOfThreads: UInt, name: String): CloseableC
     CoroutineDispatcherWrapper(Dispatchers.Default)
 
 private class CoroutineDispatcherWrapper(
-    private val base: CoroutineDispatcher
+    private val base: CoroutineDispatcher,
 ) : CloseableCoroutineDispatcher() {
     override fun dispatch(context: CoroutineContext, block: Runnable) {
         base.dispatch(context, block)

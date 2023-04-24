@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     SpecificEnergyUnit : SpecificEnergy,
     TimeUnit : Time,
-    KinematicViscosityUnit : KinematicViscosity
+    KinematicViscosityUnit : KinematicViscosity,
     > SpecificEnergyUnit.specificEnergy(
     kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>,
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = specificEnergy(kinematicViscosity, time, ::DefaultScientificValue)
 
 @JvmName("specificEnergyFromKinematicViscosityAndTime")
@@ -42,9 +42,9 @@ fun <
     SpecificEnergyUnit : SpecificEnergy,
     TimeUnit : Time,
     KinematicViscosityUnit : KinematicViscosity,
-    Value : ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>,
     > SpecificEnergyUnit.specificEnergy(
     kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, SpecificEnergyUnit) -> Value
+    factory: (Decimal, SpecificEnergyUnit) -> Value,
 ) = byDividing(kinematicViscosity, time, factory)

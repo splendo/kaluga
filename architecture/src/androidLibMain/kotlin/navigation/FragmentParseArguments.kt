@@ -353,7 +353,7 @@ fun Fragment.parseStringListOrNull(): List<String>? = parseExtra { asStringListO
  */
 fun <T> Fragment.parseTypeOf(serializer: KSerializer<T>): T = parseExtra {
     toTypedProperty(
-        NavigationBundleSpecType.SerializedType(serializer)
+        NavigationBundleSpecType.SerializedType(serializer),
     )
 }
 
@@ -364,7 +364,7 @@ fun <T> Fragment.parseTypeOf(serializer: KSerializer<T>): T = parseExtra {
  */
 fun <T : Any> Fragment.parseTypeOfOrNull(serializer: KSerializer<T>): T? = parseExtraOrNull {
     toTypedPropertyOrNull(
-        NavigationBundleSpecType.SerializedType(serializer)
+        NavigationBundleSpecType.SerializedType(serializer),
     )
 }
 
@@ -376,6 +376,6 @@ fun <T : Any> Fragment.parseTypeOfOrNull(serializer: KSerializer<T>): T? = parse
 @JvmName("parseNullableTypeOfOrNull")
 fun <T> Fragment.parseTypeOfOrNull(serializer: KSerializer<T>): T? = parseExtraOrNull {
     toTypedPropertyOrNull(
-        NavigationBundleSpecType.SerializedType(serializer)
+        NavigationBundleSpecType.SerializedType(serializer),
     )
 }

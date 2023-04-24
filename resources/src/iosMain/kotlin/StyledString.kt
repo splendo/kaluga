@@ -52,7 +52,7 @@ import platform.UIKit.size
 actual data class StyledString(
     val attributeString: NSAttributedString,
     actual val defaultTextStyle: KalugaTextStyle,
-    actual val linkStyle: LinkStyle?
+    actual val linkStyle: LinkStyle?,
 )
 
 /**
@@ -71,7 +71,7 @@ actual val StyledString.rawString: String get() = attributeString.string
 actual class StyledStringBuilder constructor(
     string: String,
     private val defaultTextStyle: KalugaTextStyle,
-    private val linkStyle: LinkStyle?
+    private val linkStyle: LinkStyle?,
 ) {
 
     /**
@@ -108,7 +108,7 @@ actual class StyledStringBuilder constructor(
                     attributedString.addAttribute(
                         it.key,
                         it.value,
-                        nsRange
+                        nsRange,
                     )
                 }
             }
@@ -128,7 +128,7 @@ actual class StyledStringBuilder constructor(
         is StringStyleAttribute.CharacterStyleAttribute.BackgroundColor -> mapOf("NSBackgroundColor" to color.uiColor)
         is StringStyleAttribute.CharacterStyleAttribute.Stroke -> mapOf(
             "NSStrokeColor" to color.uiColor,
-            "NSStrokeWidth" to -1.0 * width
+            "NSStrokeWidth" to -1.0 * width,
         )
         is StringStyleAttribute.CharacterStyleAttribute.SuperScript -> {
             val offset = defaultTextStyle.font.fontWithSize(defaultTextStyle.size.toDouble()).ascender / 2.0
@@ -143,7 +143,7 @@ actual class StyledStringBuilder constructor(
         is StringStyleAttribute.CharacterStyleAttribute.Font -> mapOf("NSFont" to font.fontWithSize(size.toDouble()))
         is StringStyleAttribute.CharacterStyleAttribute.TextStyle -> mapOf(
             "NSFont" to textStyle.font.fontWithSize(textStyle.size.toDouble()),
-            "NSColor" to textStyle.color.uiColor
+            "NSColor" to textStyle.color.uiColor,
         )
         is StringStyleAttribute.CharacterStyleAttribute.Kerning -> mapOf("NSKern" to kern * defaultTextStyle.size)
         is StringStyleAttribute.CharacterStyleAttribute.Shadow -> mapOf(
@@ -151,7 +151,7 @@ actual class StyledStringBuilder constructor(
                 shadowColor = color.uiColor
                 shadowBlurRadius = blurRadius.toDouble()
                 shadowOffset = CGSizeMake(xOffset.toDouble(), yOffset.toDouble())
-            }
+            },
         )
     }
 

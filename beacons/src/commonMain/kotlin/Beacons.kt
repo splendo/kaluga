@@ -105,7 +105,7 @@ class DefaultBeacons(
     private val bluetooth: BluetoothService,
     private val beaconLifetime: Duration = 10.seconds,
     private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
-    coroutineContext: CoroutineContext = defaultBeaconsDispatcher
+    coroutineContext: CoroutineContext = defaultBeaconsDispatcher,
 ) : Beacons, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("Beacons")) {
 
     private companion object { const val TAG = "Beacons" }

@@ -22,10 +22,10 @@ plugins {
     id("jacoco")
     id("convention.publication")
     id("org.jetbrains.dokka")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("org.jmailen.kotlinter")
 }
 
-databindingAndroidComponent()
+databindingAndroidComponent("resources.databinding")
 
 dependencies {
     implementation(project(":base"))

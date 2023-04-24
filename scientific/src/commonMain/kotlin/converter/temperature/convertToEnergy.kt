@@ -32,25 +32,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAndUKImperialTemperatureTimesMetricAndUKImperialHeatCapacity")
 infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>.times(
-    heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, MetricAndUKImperialHeatCapacity>
+    heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, MetricAndUKImperialHeatCapacity>,
 ) = heatCapacity * this
 
 @JvmName("metricAndUKImperialTemperatureTimesMetricHeatCapacity")
 infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>.times(
-    heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, MetricHeatCapacity>
+    heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, MetricHeatCapacity>,
 ) = heatCapacity * this
 
 @JvmName("metricAndUKImperialTemperatureTimesUKImperialHeatCapacity")
 infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>.times(
-    heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, UKImperialHeatCapacity>
+    heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, UKImperialHeatCapacity>,
 ) = heatCapacity * this
 
 @JvmName("usCustomaryTemperatureTimesUSCustomaryHeatCapacity")
 infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>.times(
-    heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, USCustomaryHeatCapacity>
+    heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, USCustomaryHeatCapacity>,
 ) = heatCapacity * this
 
 @JvmName("temperatureTimesHeatCapacity")
 infix operator fun <HeatCapacityUnit : HeatCapacity, TemperatureUnit : Temperature> ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>.times(
-    heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, HeatCapacityUnit>
+    heatCapacity: ScientificValue<PhysicalQuantity.HeatCapacity, HeatCapacityUnit>,
 ) = heatCapacity * this

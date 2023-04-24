@@ -61,7 +61,7 @@ fun LoadingLayout() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Constants.Padding.default)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()),
             ) {
                 showSystemButton.Composable(modifier = Modifier.fillMaxWidth())
                 showCustomButton.Composable(modifier = Modifier.fillMaxWidth())

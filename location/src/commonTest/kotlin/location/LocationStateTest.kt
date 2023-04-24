@@ -47,7 +47,7 @@ class LocationStateTest :
             verticalAccuracy = 1.0,
             altitude = 1.0,
             speed = 1.0,
-            course = 1.0
+            course = 1.0,
         )
         private val location2 = Location.KnownLocation(
             latitude = 52.079,
@@ -57,7 +57,7 @@ class LocationStateTest :
             verticalAccuracy = 2.0,
             altitude = 2.0,
             speed = 2.0,
-            course = 2.0
+            course = 2.0,
         )
     }
 
@@ -66,13 +66,13 @@ class LocationStateTest :
         val autoRequestPermission: Boolean,
         val autoEnableLocations: Boolean,
         val initialPermissionState: MockPermissionState.ActiveState,
-        val locationEnabled: Boolean
+        val locationEnabled: Boolean,
     )
 
     class Context(private val configuration: Configuration, coroutineScope: CoroutineScope) :
         TestContext {
         val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder(
-            initialActiveState = configuration.initialPermissionState
+            initialActiveState = configuration.initialPermissionState,
         )
 
         val locationStateRepoBuilder = MockLocationStateRepoBuilder(
@@ -80,23 +80,26 @@ class LocationStateTest :
                 permissionsBuilder.registerAllPermissionsBuilders()
                 Permissions(
                     permissionsBuilder,
-                    coroutineContext = coroutineScope.coroutineContext
+                    coroutineContext = coroutineScope.coroutineContext,
                 ).apply {
                     // Make sure permissionState has been created as it may break the tests otherwise
                     get(configuration.locationPermission)
                 }
             },
-            MockBaseLocationManager.Builder(configuration.locationEnabled)
+            MockBaseLocationManager.Builder(configuration.locationEnabled),
         )
 
-        private fun settingsBuilder(autoRequestPermission: Boolean, autoEnableLocations: Boolean): (LocationPermission, Permissions) -> BaseLocationManager.Settings = { locationPermission, permissions ->
+        private fun settingsBuilder(
+            autoRequestPermission: Boolean,
+            autoEnableLocations: Boolean,
+        ): (LocationPermission, Permissions) -> BaseLocationManager.Settings = { locationPermission, permissions ->
             BaseLocationManager.Settings(locationPermission, permissions, autoRequestPermission = autoRequestPermission, autoEnableLocations = autoEnableLocations)
         }
 
         val locationStateRepo = locationStateRepoBuilder.create(
             configuration.locationPermission,
             settingsBuilder(configuration.autoRequestPermission, configuration.autoEnableLocations),
-            coroutineContext = coroutineScope.coroutineContext
+            coroutineContext = coroutineScope.coroutineContext,
         )
         val locationManager get() = locationStateRepoBuilder.locationManagerBuilder.builtLocationManagers.first()
         val permissionStateRepo get() = permissionsBuilder.buildLocationStateRepos.first()
@@ -115,7 +118,7 @@ class LocationStateTest :
         autoRequestPermission = false,
         autoEnableLocations = false,
         MockPermissionState.ActiveState.ALLOWED,
-        true
+        true,
     ) {
         test {
             locationManager.startMonitoringPermissionsMock.verify()
@@ -124,7 +127,7 @@ class LocationStateTest :
             assertIs<LocationState.Enabled>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
-                it.location
+                it.location,
             )
         }
 
@@ -146,7 +149,7 @@ class LocationStateTest :
         autoRequestPermission = false,
         autoEnableLocations = false,
         MockPermissionState.ActiveState.REQUESTABLE,
-        false
+        false,
     ) {
         test {
             locationManager.startMonitoringPermissionsMock.verify()
@@ -154,7 +157,7 @@ class LocationStateTest :
             assertIs<LocationState.Disabled.NotPermitted>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED),
-                it.location
+                it.location,
             )
         }
 
@@ -174,7 +177,7 @@ class LocationStateTest :
         autoRequestPermission = true,
         autoEnableLocations = false,
         MockPermissionState.ActiveState.REQUESTABLE,
-        false
+        false,
     ) {
         test {
             locationManager.startMonitoringPermissionsMock.verify()
@@ -182,7 +185,7 @@ class LocationStateTest :
             assertIs<LocationState.Disabled.NotPermitted>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED),
-                it.location
+                it.location,
             )
         }
         mainAction {
@@ -197,7 +200,7 @@ class LocationStateTest :
             assertIs<LocationState.Enabled>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
-                it.location
+                it.location,
             )
         }
 
@@ -219,14 +222,14 @@ class LocationStateTest :
         autoRequestPermission = true,
         autoEnableLocations = false,
         MockPermissionState.ActiveState.REQUESTABLE,
-        false
+        false,
     ) {
         test {
             locationManager.startMonitoringPermissionsMock.verify()
             assertIs<LocationState.Disabled.NotPermitted>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED),
-                it.location
+                it.location,
             )
         }
         mainAction {
@@ -239,7 +242,7 @@ class LocationStateTest :
             assertIs<LocationState.Disabled.NoGPS>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NO_GPS),
-                it.location
+                it.location,
             )
         }
 
@@ -260,7 +263,7 @@ class LocationStateTest :
         autoRequestPermission = false,
         autoEnableLocations = false,
         MockPermissionState.ActiveState.ALLOWED,
-        false
+        false,
     ) {
         test {
             locationManager.startMonitoringPermissionsMock.verify()
@@ -268,7 +271,7 @@ class LocationStateTest :
             assertIs<LocationState.Disabled.NoGPS>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NO_GPS),
-                it.location
+                it.location,
             )
         }
 
@@ -289,7 +292,7 @@ class LocationStateTest :
         autoRequestPermission = false,
         autoEnableLocations = true,
         MockPermissionState.ActiveState.ALLOWED,
-        false
+        false,
     ) {
         test {
             locationManager.startMonitoringPermissionsMock.verify()
@@ -297,7 +300,7 @@ class LocationStateTest :
             assertIs<LocationState.Disabled.NoGPS>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NO_GPS),
-                it.location
+                it.location,
             )
         }
         mainAction {
@@ -308,7 +311,7 @@ class LocationStateTest :
             assertIs<LocationState.Enabled>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
-                it.location
+                it.location,
             )
         }
 
@@ -330,13 +333,13 @@ class LocationStateTest :
         autoRequestPermission = true,
         autoEnableLocations = false,
         MockPermissionState.ActiveState.ALLOWED,
-        true
+        true,
     ) {
         test {
             assertIs<LocationState.Enabled>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
-                it.location
+                it.location,
             )
         }
         mainAction {
@@ -372,13 +375,13 @@ class LocationStateTest :
         autoRequestPermission = true,
         autoEnableLocations = false,
         MockPermissionState.ActiveState.ALLOWED,
-        true
+        true,
     ) {
         test {
             assertIs<LocationState.Enabled>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
-                it.location
+                it.location,
             )
         }
         mainAction {
@@ -411,13 +414,13 @@ class LocationStateTest :
         autoRequestPermission = true,
         autoEnableLocations = false,
         MockPermissionState.ActiveState.ALLOWED,
-        true
+        true,
     ) {
         test {
             assertIs<LocationState.Enabled>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
-                it.location
+                it.location,
             )
         }
         mainAction {
@@ -440,9 +443,9 @@ class LocationStateTest :
             assertEquals(
                 Location.UnknownLocation.WithLastLocation(
                     location1,
-                    Location.UnknownLocation.Reason.PERMISSION_DENIED
+                    Location.UnknownLocation.Reason.PERMISSION_DENIED,
                 ),
-                it.location
+                it.location,
             )
         }
 
@@ -462,13 +465,13 @@ class LocationStateTest :
         autoRequestPermission = false,
         autoEnableLocations = true,
         MockPermissionState.ActiveState.ALLOWED,
-        true
+        true,
     ) {
         test {
             assertIs<LocationState.Enabled>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
-                it.location
+                it.location,
             )
         }
         mainAction {
@@ -489,9 +492,9 @@ class LocationStateTest :
             assertEquals(
                 Location.UnknownLocation.WithLastLocation(
                     location1,
-                    Location.UnknownLocation.Reason.NO_GPS
+                    Location.UnknownLocation.Reason.NO_GPS,
                 ),
-                it.location
+                it.location,
             )
         }
 
@@ -512,13 +515,13 @@ class LocationStateTest :
         autoRequestPermission = false,
         autoEnableLocations = false,
         MockPermissionState.ActiveState.ALLOWED,
-        true
+        true,
     ) {
         test {
             assertIs<LocationState.Enabled>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
-                it.location
+                it.location,
             )
         }
         mainAction {
@@ -563,13 +566,13 @@ class LocationStateTest :
         autoRequestPermission = false,
         autoEnableLocations = false,
         MockPermissionState.ActiveState.ALLOWED,
-        true
+        true,
     ) {
         test {
             assertIs<LocationState.Enabled>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
-                it.location
+                it.location,
             )
         }
         mainAction {
@@ -600,9 +603,9 @@ class LocationStateTest :
             assertEquals(
                 Location.UnknownLocation.WithLastLocation(
                     location1,
-                    Location.UnknownLocation.Reason.PERMISSION_DENIED
+                    Location.UnknownLocation.Reason.PERMISSION_DENIED,
                 ),
-                it.location
+                it.location,
             )
         }
 
@@ -622,13 +625,13 @@ class LocationStateTest :
         autoRequestPermission = false,
         autoEnableLocations = false,
         MockPermissionState.ActiveState.ALLOWED,
-        true
+        true,
     ) {
         test {
             assertIs<LocationState.Enabled>(it)
             assertEquals(
                 Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR),
-                it.location
+                it.location,
             )
         }
         mainAction {
@@ -657,9 +660,9 @@ class LocationStateTest :
             assertEquals(
                 Location.UnknownLocation.WithLastLocation(
                     location1,
-                    Location.UnknownLocation.Reason.NO_GPS
+                    Location.UnknownLocation.Reason.NO_GPS,
                 ),
-                it.location
+                it.location,
             )
         }
         mainAction {
@@ -674,18 +677,17 @@ class LocationStateTest :
         autoEnableLocations: Boolean,
         initialPermissionState: MockPermissionState.ActiveState,
         locationEnabled: Boolean,
-        test: suspend BaseFlowTest<Configuration, Context, LocationState, LocationStateRepo>.(LocationStateRepo) -> Unit
+        test: suspend BaseFlowTest<Configuration, Context, LocationState, LocationStateRepo>.(LocationStateRepo) -> Unit,
     ) {
-
         testWithFlowAndTestContext(
             Configuration(
                 locationPermission,
                 autoRequestPermission,
                 autoEnableLocations,
                 initialPermissionState,
-                locationEnabled
+                locationEnabled,
             ),
-            blockWithContext = test
+            blockWithContext = test,
         )
     }
 }

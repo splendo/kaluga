@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     ResistanceUnit : ElectricResistance,
     FrequencyUnit : Frequency,
-    InductanceUnit : ElectricInductance
+    InductanceUnit : ElectricInductance,
     > FrequencyUnit.frequency(
     resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
-    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>
+    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>,
 ) = frequency(resistance, inductance, ::DefaultScientificValue)
 
 @JvmName("frequencyFromResistanceAndInductance")
@@ -42,9 +42,9 @@ fun <
     ResistanceUnit : ElectricResistance,
     FrequencyUnit : Frequency,
     InductanceUnit : ElectricInductance,
-    Value : ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
+    Value : ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>,
     > FrequencyUnit.frequency(
     resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
     inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>,
-    factory: (Decimal, FrequencyUnit) -> Value
+    factory: (Decimal, FrequencyUnit) -> Value,
 ) = byDividing(resistance, inductance, factory)

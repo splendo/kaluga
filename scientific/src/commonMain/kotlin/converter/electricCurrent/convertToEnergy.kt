@@ -37,5 +37,5 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.times
 
 @JvmName("currentTimesFlux")
 infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>.times(
-    flux: ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>
+    flux: ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>,
 ) = flux * this

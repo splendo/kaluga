@@ -18,6 +18,7 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.location.BaseLocationManager.Settings
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
@@ -133,7 +134,7 @@ interface LocationManager {
  */
 abstract class BaseLocationManager(
     private val settings: Settings,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
 ) : LocationManager, CoroutineScope by coroutineScope {
 
     companion object {
@@ -159,7 +160,7 @@ abstract class BaseLocationManager(
         val autoEnableLocations: Boolean = true,
         val locationBufferCapacity: Int = 16,
         val minUpdateDistanceMeters: Float = 0f,
-        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
+        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     )
 
     /**
@@ -174,7 +175,7 @@ abstract class BaseLocationManager(
          */
         fun create(
             settings: Settings,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ): BaseLocationManager
     }
 
@@ -187,7 +188,11 @@ abstract class BaseLocationManager(
 
     private val eventChannel = Channel<LocationManager.Event>(UNLIMITED)
     override val events: Flow<LocationManager.Event> = eventChannel.receiveAsFlow()
-    protected val sharedLocations = MutableSharedFlow<Location.KnownLocation>(replay = 0, extraBufferCapacity = settings.locationBufferCapacity, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    protected val sharedLocations = MutableSharedFlow<Location.KnownLocation>(
+        replay = 0,
+        extraBufferCapacity = settings.locationBufferCapacity,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
     override val locations: Flow<Location.KnownLocation> = sharedLocations.asSharedFlow()
 
     protected abstract val locationMonitor: LocationMonitor

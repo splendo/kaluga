@@ -46,7 +46,10 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class DeviceDetails(value: Identifier) : SingleValueNavigationAction<SerializableIdentifier>(value.serializable, NavigationBundleSpecType.SerializedType(SerializableIdentifier.serializer()))
+class DeviceDetails(value: Identifier) : SingleValueNavigationAction<SerializableIdentifier>(
+    value.serializable,
+    NavigationBundleSpecType.SerializedType(SerializableIdentifier.serializer()),
+)
 
 class BluetoothDeviceDetailViewModel(private val identifier: Identifier) : BaseLifecycleViewModel(), KoinComponent {
 
@@ -72,7 +75,7 @@ class BluetoothDeviceDetailViewModel(private val identifier: Identifier) : BaseL
         }.localized()
     }.toUninitializedObservable(coroutineScope)
     private val _services = MutableStateFlow(
-        emptyList<BluetoothServiceViewModel>()
+        emptyList<BluetoothServiceViewModel>(),
     )
     val services = _services.toInitializedObservable(coroutineScope)
 

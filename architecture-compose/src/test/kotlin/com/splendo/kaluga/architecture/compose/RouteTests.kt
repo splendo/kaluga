@@ -47,29 +47,40 @@ object MockSpec : NavigationBundleSpec<MockSpecRow<*>>(
         MockSpecRow.OptionalString,
         MockSpecRow.OptionalFloat,
         MockSpecRow.OptionalMockSerializable,
-        MockSpecRow.DateSpecRow
-    )
+        MockSpecRow.DateSpecRow,
+    ),
 )
 
-sealed class MockSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
+sealed class MockSpecRow<V>(associatedType: NavigationBundleSpecType<V>) :
+    NavigationBundleSpecRow<V>(associatedType) {
     object StringSpecRow : MockSpecRow<String>(NavigationBundleSpecType.StringType)
     object BooleanSpecRow : MockSpecRow<Boolean>(NavigationBundleSpecType.BooleanType)
     object FloatSpecRow : MockSpecRow<Float>(NavigationBundleSpecType.FloatType)
-    object SerializableSpecRow : MockSpecRow<MockSerializable>(NavigationBundleSpecType.SerializedType(MockSerializable.serializer()))
-    object OptionalString : MockSpecRow<String?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType))
-    object OptionalFloat : MockSpecRow<Float?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType))
-    object OptionalMockSerializable : MockSpecRow<MockSerializable?>(NavigationBundleSpecType.SerializedType(MockSerializable.serializer().nullable))
+    object SerializableSpecRow : MockSpecRow<MockSerializable>(
+        NavigationBundleSpecType.SerializedType(MockSerializable.serializer()),
+    )
+    object OptionalString : MockSpecRow<String?>(
+        NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType),
+    )
+    object OptionalFloat : MockSpecRow<Float?>(
+        NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType),
+    )
+    object OptionalMockSerializable : MockSpecRow<MockSerializable?>(
+        NavigationBundleSpecType.SerializedType(MockSerializable.serializer().nullable),
+    )
     object DateSpecRow : MockSpecRow<KalugaDate>(NavigationBundleSpecType.DateType)
 }
 
 class NestedSpec : NavigationBundleSpec<NestedSpecRow<*>>(setOf(NestedSpecRow.StringSpecRow))
 
-sealed class NestedSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
+sealed class NestedSpecRow<V>(associatedType: NavigationBundleSpecType<V>) :
+    NavigationBundleSpecRow<V>(associatedType) {
 
     object StringSpecRow : NestedSpecRow<String>(NavigationBundleSpecType.StringType)
 }
 
-class TestNavigationAction(bundle: NavigationBundle<MockSpecRow<*>>) : NavigationAction<MockSpecRow<*>>(bundle)
+class TestNavigationAction(bundle: NavigationBundle<MockSpecRow<*>>) :
+    NavigationAction<MockSpecRow<*>>(bundle)
 
 class RouteTests {
 
@@ -81,14 +92,24 @@ class RouteTests {
                 is MockSpecRow.StringSpecRow -> row.convertValue("string")
                 is MockSpecRow.BooleanSpecRow -> row.convertValue(true)
                 is MockSpecRow.FloatSpecRow -> row.convertValue(0.5f)
-                is MockSpecRow.SerializableSpecRow -> row.convertValue(MockSerializable("Mock"))
+                is MockSpecRow.SerializableSpecRow -> row.convertValue(
+                    MockSerializable("Mock"),
+                )
                 is MockSpecRow.OptionalString -> row.convertValue("optional")
                 is MockSpecRow.OptionalFloat -> row.convertValue(null)
-                is MockSpecRow.OptionalMockSerializable -> row.convertValue(MockSerializable("OptionalMock"))
+                is MockSpecRow.OptionalMockSerializable -> row.convertValue(
+                    MockSerializable("OptionalMock"),
+                )
                 is MockSpecRow.DateSpecRow -> row.convertValue(time)
             }
         }
         val action = TestNavigationAction(bundle)
-        assertEquals("TestNavigationAction/true/0.5/{\"value\":\"Mock\"}/{\"value\":\"OptionalMock\"}/${KalugaDateFormatter.iso8601Pattern().format(time)}?StringSpecRow=string&OptionalString=optional", action.route())
+        assertEquals(
+            "TestNavigationAction/true/0.5/{" +
+                "\"value\":\"Mock\"}/{\"value\":\"OptionalMock\"" +
+                "}/${KalugaDateFormatter.iso8601Pattern().format(time)}?" +
+                "StringSpecRow=string&OptionalString=optional",
+            action.route(),
+        )
     }
 }

@@ -38,7 +38,7 @@ actual class DefaultStoragePermissionManager(
     context: Context,
     storagePermission: StoragePermission,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
@@ -46,12 +46,12 @@ actual class DefaultStoragePermissionManager(
         context,
         listOfNotNull(
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            if (storagePermission.allowWrite) Manifest.permission.WRITE_EXTERNAL_STORAGE else null
+            if (storagePermission.allowWrite) Manifest.permission.WRITE_EXTERNAL_STORAGE else null,
         ).toTypedArray(),
         coroutineScope,
         logTag,
         logger,
-        permissionHandler
+        permissionHandler,
     )
 
     override fun requestPermissionDidStart() {
@@ -73,7 +73,7 @@ actual class DefaultStoragePermissionManager(
  */
 actual class StoragePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storagePermission: StoragePermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): StoragePermissionManager {
+    override fun create(storagePermission: StoragePermission, settings: Settings, coroutineScope: CoroutineScope): StoragePermissionManager {
         return DefaultStoragePermissionManager(context.context, storagePermission, settings, coroutineScope)
     }
 }

@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     DynamicViscosityUnit : DynamicViscosity,
     TimeUnit : Time,
-    PressureUnit : Pressure
+    PressureUnit : Pressure,
     > PressureUnit.pressure(
     dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, DynamicViscosityUnit>,
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = pressure(dynamicViscosity, time, ::DefaultScientificValue)
 
 @JvmName("pressureFromDynamicViscosityAndTime")
@@ -42,9 +42,9 @@ fun <
     DynamicViscosityUnit : DynamicViscosity,
     TimeUnit : Time,
     PressureUnit : Pressure,
-    Value : ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
+    Value : ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
     > PressureUnit.pressure(
     dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, DynamicViscosityUnit>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, PressureUnit) -> Value
+    factory: (Decimal, PressureUnit) -> Value,
 ) = byDividing(dynamicViscosity, time, factory)

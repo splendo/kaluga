@@ -30,5 +30,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("frequencyTimesTime")
 infix operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ): Decimal = convertValue(Hertz) * time.convertValue(Second)

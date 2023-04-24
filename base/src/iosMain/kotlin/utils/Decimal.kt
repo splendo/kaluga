@@ -45,9 +45,9 @@ actual fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int) = copy(
             raiseOnExactness = false,
             raiseOnOverflow = false,
             raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
-        )
-    )
+            raiseOnDivideByZero = true,
+        ),
+    ),
 )
 
 actual fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode) = copy(
@@ -59,9 +59,9 @@ actual fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int, roundingMode: Ro
             raiseOnExactness = false,
             raiseOnOverflow = false,
             raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
-        )
-    )
+            raiseOnDivideByZero = true,
+        ),
+    ),
 )
 
 actual operator fun FiniteDecimal.minus(value: FiniteDecimal) = copy(nsDecimal = nsDecimal.decimalNumberBySubtracting(value.nsDecimal))
@@ -75,9 +75,9 @@ actual fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int) = copy(
             raiseOnExactness = false,
             raiseOnOverflow = false,
             raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
-        )
-    )
+            raiseOnDivideByZero = true,
+        ),
+    ),
 )
 
 actual fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode) = copy(
@@ -89,9 +89,9 @@ actual fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int, roundingMode: R
             raiseOnExactness = false,
             raiseOnOverflow = false,
             raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
-        )
-    )
+            raiseOnDivideByZero = true,
+        ),
+    ),
 )
 
 actual operator fun FiniteDecimal.div(value: FiniteDecimal) = copy(nsDecimal = nsDecimal.decimalNumberByDividingBy(value.nsDecimal))
@@ -105,9 +105,9 @@ actual fun FiniteDecimal.div(value: FiniteDecimal, scale: Int) = copy(
             raiseOnExactness = true,
             raiseOnOverflow = true,
             raiseOnUnderflow = true,
-            raiseOnDivideByZero = true
-        )
-    )
+            raiseOnDivideByZero = true,
+        ),
+    ),
 )
 
 actual fun FiniteDecimal.div(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode) = copy(
@@ -119,9 +119,9 @@ actual fun FiniteDecimal.div(value: FiniteDecimal, scale: Int, roundingMode: Rou
             raiseOnExactness = false,
             raiseOnOverflow = false,
             raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
-        )
-    )
+            raiseOnDivideByZero = true,
+        ),
+    ),
 )
 
 actual operator fun FiniteDecimal.times(value: FiniteDecimal) = copy(nsDecimal = nsDecimal.decimalNumberByMultiplyingBy(value.nsDecimal))
@@ -135,9 +135,9 @@ actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int) = copy(
             raiseOnExactness = false,
             raiseOnOverflow = false,
             raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
-        )
-    )
+            raiseOnDivideByZero = true,
+        ),
+    ),
 )
 
 actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode) = copy(
@@ -149,9 +149,9 @@ actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int, roundingMode: R
             raiseOnExactness = false,
             raiseOnOverflow = false,
             raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
-        )
-    )
+            raiseOnDivideByZero = true,
+        ),
+    ),
 )
 
 actual infix fun FiniteDecimal.pow(n: Int): FiniteDecimal = if (n < 0) {
@@ -172,16 +172,16 @@ actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = if (n < 0) {
                 raiseOnExactness = false,
                 raiseOnOverflow = false,
                 raiseOnUnderflow = false,
-                raiseOnDivideByZero = true
-            )
-        )
+                raiseOnDivideByZero = true,
+            ),
+        ),
     )
 }
 
 actual fun FiniteDecimal.pow(
     n: Int,
     scale: Int,
-    roundingMode: RoundingMode
+    roundingMode: RoundingMode,
 ): FiniteDecimal = if (n < 0) {
     1.toFiniteDecimal()!! / pow(n.absoluteValue, scale, roundingMode)
 } else {
@@ -194,9 +194,9 @@ actual fun FiniteDecimal.pow(
                 raiseOnExactness = false,
                 raiseOnOverflow = false,
                 raiseOnUnderflow = false,
-                raiseOnDivideByZero = true
-            )
-        )
+                raiseOnDivideByZero = true,
+            ),
+        ),
     )
 }
 
@@ -209,6 +209,7 @@ actual fun String.toFiniteDecimal(): FiniteDecimal? = when (val decimal = NSDeci
 actual fun FiniteDecimal.toDouble() = nsDecimal.toString().toDouble()
 actual fun FiniteDecimal.toInt() = nsDecimal.intValue
 actual fun FiniteDecimal.toLong() = nsDecimal.longValue
+
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 actual fun FiniteDecimal.toString() = nsDecimal.stringValue
 
@@ -220,9 +221,9 @@ actual fun FiniteDecimal.round(scale: Int, roundingMode: RoundingMode) = copy(
             raiseOnExactness = false,
             raiseOnOverflow = false,
             raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
-        )
-    )
+            raiseOnDivideByZero = true,
+        ),
+    ),
 )
 
 private val RoundingMode.nsRoundingMode

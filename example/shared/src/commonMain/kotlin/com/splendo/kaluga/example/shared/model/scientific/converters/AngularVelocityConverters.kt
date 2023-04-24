@@ -26,22 +26,40 @@ import com.splendo.kaluga.scientific.unit.AngularVelocity
 import com.splendo.kaluga.scientific.unit.Time
 
 val PhysicalQuantity.AngularVelocity.converters get() = listOf<QuantityConverter<PhysicalQuantity.AngularVelocity, *>>(
-    QuantityConverterWithOperator("Angle from Time", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Time) { (angularVelocityValue, angularVelocityUnit), (timeValue, timeUnit) ->
+    QuantityConverterWithOperator(
+        "Angle from Time",
+        QuantityConverter.WithOperator.Type.Multiplication,
+        PhysicalQuantity.Time,
+    ) { (angularVelocityValue, angularVelocityUnit), (timeValue, timeUnit) ->
         when {
-            angularVelocityUnit is AngularVelocity && timeUnit is Time -> DefaultScientificValue(angularVelocityValue, angularVelocityUnit) * DefaultScientificValue(timeValue, timeUnit)
+            angularVelocityUnit is AngularVelocity && timeUnit is Time -> {
+                DefaultScientificValue(angularVelocityValue, angularVelocityUnit) * DefaultScientificValue(timeValue, timeUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $angularVelocityUnit $timeUnit")
         }
     },
-    QuantityConverterWithOperator("Angular Acceleration from Time", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Time) { (angularVelocityValue, angularVelocityUnit), (timeValue, timeUnit) ->
+    QuantityConverterWithOperator(
+        "Angular Acceleration from Time",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.Time,
+    ) { (angularVelocityValue, angularVelocityUnit), (timeValue, timeUnit) ->
         when {
-            angularVelocityUnit is AngularVelocity && timeUnit is Time -> DefaultScientificValue(angularVelocityValue, angularVelocityUnit) / DefaultScientificValue(timeValue, timeUnit)
+            angularVelocityUnit is AngularVelocity && timeUnit is Time -> {
+                DefaultScientificValue(angularVelocityValue, angularVelocityUnit) / DefaultScientificValue(timeValue, timeUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $angularVelocityUnit $timeUnit")
         }
     },
-    QuantityConverterWithOperator("Time from Angular Acceleration", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.AngularAcceleration) { (angularVelocityValue, angularVelocityUnit), (angularAccelerationValue, angularAccelerationUnit) ->
+    QuantityConverterWithOperator(
+        "Time from Angular Acceleration",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.AngularAcceleration,
+    ) { (angularVelocityValue, angularVelocityUnit), (angularAccelerationValue, angularAccelerationUnit) ->
         when {
-            angularVelocityUnit is AngularVelocity && angularAccelerationUnit is AngularAcceleration -> DefaultScientificValue(angularVelocityValue, angularVelocityUnit) / DefaultScientificValue(angularAccelerationValue, angularAccelerationUnit)
+            angularVelocityUnit is AngularVelocity && angularAccelerationUnit is AngularAcceleration -> {
+                DefaultScientificValue(angularVelocityValue, angularVelocityUnit) / DefaultScientificValue(angularAccelerationValue, angularAccelerationUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $angularVelocityUnit $angularAccelerationUnit")
         }
-    }
+    },
 )

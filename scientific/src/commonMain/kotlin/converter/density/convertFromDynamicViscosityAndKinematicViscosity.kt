@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     DensityUnit : Density,
     DynamicViscosityUnit : DynamicViscosity,
-    KinematicViscosityUnit : KinematicViscosity
+    KinematicViscosityUnit : KinematicViscosity,
     > DensityUnit.density(
     dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, DynamicViscosityUnit>,
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>,
 ) = density(dynamicViscosity, kinematicViscosity, ::DefaultScientificValue)
 
 @JvmName("densityFromDynamicViscosityAndKinematicViscosity")
@@ -42,9 +42,9 @@ fun <
     DensityUnit : Density,
     DynamicViscosityUnit : DynamicViscosity,
     KinematicViscosityUnit : KinematicViscosity,
-    Value : ScientificValue<PhysicalQuantity.Density, DensityUnit>
+    Value : ScientificValue<PhysicalQuantity.Density, DensityUnit>,
     > DensityUnit.density(
     dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, DynamicViscosityUnit>,
     kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>,
-    factory: (Decimal, DensityUnit) -> Value
+    factory: (Decimal, DensityUnit) -> Value,
 ) = byDividing(dynamicViscosity, kinematicViscosity, factory)

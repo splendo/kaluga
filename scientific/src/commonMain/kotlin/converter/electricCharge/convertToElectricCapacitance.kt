@@ -34,5 +34,5 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>.d
 
 @JvmName("chargeDivVoltage")
 infix operator fun <ChargeUnit : ElectricCharge, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.div(
-    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
 ) = Farad.capacitance(this, voltage)

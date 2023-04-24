@@ -26,20 +26,20 @@ actual class BluetoothBuilder(
                 registerBluetoothPermissionIfNotRegistered()
                 registerLocationPermissionIfNotRegistered()
             },
-            coroutineContext = context
+            coroutineContext = context,
         )
     },
-    private val scannerBuilder: BaseScanner.Builder = DefaultScanner.Builder(applicationContext = applicationContext)
+    private val scannerBuilder: BaseScanner.Builder = DefaultScanner.Builder(applicationContext = applicationContext),
 ) : BaseBluetoothBuilder {
 
     override fun create(
         scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings,
-        coroutineContext: CoroutineContext
+        coroutineContext: CoroutineContext,
     ): Bluetooth = Bluetooth(
         { scannerContext ->
             scannerSettingsBuilder(permissionsBuilder(scannerContext))
         },
         scannerBuilder,
-        coroutineContext
+        coroutineContext,
     )
 }

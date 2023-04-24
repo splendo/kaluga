@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.test.resources
 
-import com.splendo.kaluga.resources.KalugaFont
 import com.splendo.kaluga.resources.FontLoader
-import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.ImageLoader
 import com.splendo.kaluga.resources.KalugaColor
 import com.splendo.kaluga.resources.KalugaColorLoader
+import com.splendo.kaluga.resources.KalugaFont
+import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.StringLoader
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
@@ -58,7 +58,7 @@ class MockStringLoader(private val returnMock: Boolean = false) : StringLoader {
     override fun loadQuantityString(
         identifier: String,
         quantity: Int,
-        defaultValue: String
+        defaultValue: String,
     ): String = loadQuantityStringMock.call(identifier, quantity, defaultValue)
 }
 

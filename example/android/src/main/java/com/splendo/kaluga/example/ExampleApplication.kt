@@ -47,8 +47,8 @@ class ExampleApplication : Application() {
                     viewModel(named(XMLKeyboardActivity.viewModelName)) { (keyboardBuilder: ViewKeyboardManager.Builder, focusHandler: ViewFocusHandler) ->
                         KeyboardViewModel(keyboardBuilder, focusHandler)
                     }
-                }
-            )
+                },
+            ),
         )
     }
 }

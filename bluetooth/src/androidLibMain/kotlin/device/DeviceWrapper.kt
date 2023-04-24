@@ -46,7 +46,7 @@ actual interface DeviceWrapper {
         /**
          * Indicates the device s bonded
          */
-        BONDED
+        BONDED,
     }
 
     /**

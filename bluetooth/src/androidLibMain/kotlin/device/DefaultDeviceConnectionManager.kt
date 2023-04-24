@@ -46,7 +46,7 @@ internal actual class DefaultDeviceConnectionManager(
     private val context: Context,
     deviceWrapper: DeviceWrapper,
     connectionSettings: ConnectionSettings = ConnectionSettings(),
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BaseDeviceConnectionManager(deviceWrapper, connectionSettings, coroutineScope) {
 
     private companion object {
@@ -57,7 +57,7 @@ internal actual class DefaultDeviceConnectionManager(
         override fun create(
             deviceWrapper: DeviceWrapper,
             settings: ConnectionSettings,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ): BaseDeviceConnectionManager {
             return DefaultDeviceConnectionManager(context, deviceWrapper, settings, coroutineScope = coroutineScope)
         }
@@ -89,7 +89,7 @@ internal actual class DefaultDeviceConnectionManager(
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic,
             value: ByteArray,
-            status: Int
+            status: Int,
         ) = updateCharacteristic(characteristic, value, status)
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
@@ -114,7 +114,7 @@ internal actual class DefaultDeviceConnectionManager(
         override fun onCharacteristicChanged(
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic,
-            value: ByteArray
+            value: ByteArray,
         ) = updateCharacteristic(characteristic, value, status = GATT_SUCCESS)
 
         @Deprecated("Deprecated in Java")
@@ -128,7 +128,7 @@ internal actual class DefaultDeviceConnectionManager(
             gatt: BluetoothGatt,
             descriptor: BluetoothGattDescriptor,
             status: Int,
-            value: ByteArray
+            value: ByteArray,
         ) = updateDescriptor(descriptor, value, status)
 
         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {

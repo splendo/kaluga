@@ -21,10 +21,8 @@ import com.splendo.kaluga.architecture.observable.Disposable
 import com.splendo.kaluga.architecture.observable.DisposeBag
 import platform.UIKit.UIViewController
 import platform.UIKit.addChildViewController
-import platform.UIKit.addSubview
 import platform.UIKit.didMoveToParentViewController
 import platform.UIKit.removeFromParentViewController
-import platform.UIKit.removeFromSuperview
 import platform.UIKit.willMoveToParentViewController
 
 /**
@@ -53,7 +51,10 @@ class LifecycleManager internal constructor(clearViewModel: () -> Unit) {
  */
 typealias onLifeCycleChanged = () -> List<Disposable>
 
-internal class ViewModelLifecycleManager<ViewModel : BaseLifecycleViewModel>(private val viewModel: ViewModel, private val onLifecycle: onLifeCycleChanged) : UIViewController(null, null) {
+internal class ViewModelLifecycleManager<ViewModel : BaseLifecycleViewModel>(
+    private val viewModel: ViewModel,
+    private val onLifecycle: onLifeCycleChanged,
+) : UIViewController(null, null) {
 
     internal val lifecycleManager = LifecycleManager {
         viewModel.clear()

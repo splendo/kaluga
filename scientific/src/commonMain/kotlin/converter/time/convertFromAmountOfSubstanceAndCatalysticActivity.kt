@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     TimeUnit : Time,
-    CatalysisUnit : CatalysticActivity
+    CatalysisUnit : CatalysticActivity,
     > TimeUnit.time(
     amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
-    catalysis: ScientificValue<PhysicalQuantity.CatalysticActivity, CatalysisUnit>
+    catalysis: ScientificValue<PhysicalQuantity.CatalysticActivity, CatalysisUnit>,
 ) = time(amountOfSubstance, catalysis, ::DefaultScientificValue)
 
 @JvmName("timeFromAmountOfSubstanceAndCatalysticActivity")
@@ -42,9 +42,9 @@ fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     TimeUnit : Time,
     CatalysisUnit : CatalysticActivity,
-    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     > TimeUnit.time(
     amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
     catalysis: ScientificValue<PhysicalQuantity.CatalysticActivity, CatalysisUnit>,
-    factory: (Decimal, TimeUnit) -> Value
+    factory: (Decimal, TimeUnit) -> Value,
 ) = byDividing(amountOfSubstance, catalysis, factory)

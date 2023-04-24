@@ -35,14 +35,14 @@ sealed class UIType(val title: String) {
 }
 
 class SwiftUIOrUIKitSelectionViewModel(
-    navigator: Navigator<SwiftUIOrUIKitNavigationAction>
+    navigator: Navigator<SwiftUIOrUIKitNavigationAction>,
 ) : NavigatingViewModel<SwiftUIOrUIKitNavigationAction>(navigator) {
 
     val uiTypes = observableOf(
         listOf(
             UIType.SwiftUI,
-            UIType.UIKit
-        )
+            UIType.UIKit,
+        ),
     )
 
     fun onUITypePressed(uiType: UIType) {
@@ -50,7 +50,7 @@ class SwiftUIOrUIKitSelectionViewModel(
             when (uiType) {
                 is UIType.SwiftUI -> SwiftUIOrUIKitNavigationAction.SwiftUI
                 is UIType.UIKit -> SwiftUIOrUIKitNavigationAction.UIKit
-            }
+            },
         )
     }
 }

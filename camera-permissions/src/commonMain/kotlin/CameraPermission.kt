@@ -68,5 +68,5 @@ class CameraPermissionStateRepo(
     builder: BaseCameraPermissionManagerBuilder,
     monitoringInterval: Duration = defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : PermissionStateRepo<CameraPermission>(monitoringInterval, { builder.create(settings, it) }, coroutineContext)

@@ -64,7 +64,7 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
     lateinit var activity: TestActivity
 
     inner class AndroidHUDTestContext(coroutineScope: CoroutineScope) : HUDTestContext(
-        coroutineScope
+        coroutineScope,
     ) {
         override val builder get() = activity.viewModel.builder
 
@@ -103,7 +103,6 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
 
     @Test
     fun indicatorDismiss() = testOnUIThread(cancelScopeAfterTest = true) {
-
         val indicator = builder.build(this) {
             setTitle(LOADING)
         }

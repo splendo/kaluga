@@ -45,7 +45,7 @@ actual class DefaultNotificationsPermissionManager(
     context: Context,
     notificationsPermission: NotificationsPermission,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
@@ -60,7 +60,7 @@ actual class DefaultNotificationsPermissionManager(
             coroutineScope,
             logTag,
             logger,
-            permissionHandler
+            permissionHandler,
         )
 
     override fun requestPermissionDidStart() {
@@ -92,7 +92,7 @@ actual class DefaultNotificationsPermissionManager(
  */
 actual class NotificationsPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): NotificationsPermissionManager {
+    override fun create(notificationsPermission: NotificationsPermission, settings: Settings, coroutineScope: CoroutineScope): NotificationsPermissionManager {
         return DefaultNotificationsPermissionManager(context.context, notificationsPermission, settings, coroutineScope)
     }
 }

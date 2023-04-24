@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("dynamicViscosityDivPressure")
 infix operator fun <DynamicViscosityUnit : DynamicViscosity, PressureUnit : Pressure> ScientificValue<PhysicalQuantity.DynamicViscosity, DynamicViscosityUnit>.div(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
 ) = unit.time.time(this, pressure)

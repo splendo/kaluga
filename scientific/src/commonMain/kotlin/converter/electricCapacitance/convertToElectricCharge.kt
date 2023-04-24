@@ -34,5 +34,5 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricCapacitance, Abfarad
 
 @JvmName("capacitanceTimesVoltage")
 infix operator fun <CapacitanceUnit : ElectricCapacitance, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>.times(
-    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
 ) = Coulomb.charge(this, voltage)

@@ -24,7 +24,7 @@ fun InfoNavigator(
     parent: UIViewController,
     onDialogSpec: (DialogSpec) -> NavigationSpec,
     onLink: (String) -> NavigationSpec,
-    onMailSpec: (MailSpec) -> NavigationSpec
+    onMailSpec: (MailSpec) -> NavigationSpec,
 
 ) = ViewControllerNavigator<InfoNavigation<*>>(parent) { action ->
     when (action) {

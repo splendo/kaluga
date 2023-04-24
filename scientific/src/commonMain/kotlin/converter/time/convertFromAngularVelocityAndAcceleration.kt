@@ -29,18 +29,18 @@ import kotlin.jvm.JvmName
 
 @JvmName("timeFromAngularAccelerationAndVelocityDefault")
 fun <
-    TimeUnit : Time
+    TimeUnit : Time,
     > TimeUnit.time(
     velocity: ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>,
-    acceleration: ScientificValue<PhysicalQuantity.AngularAcceleration, AngularAcceleration>
+    acceleration: ScientificValue<PhysicalQuantity.AngularAcceleration, AngularAcceleration>,
 ) = time(velocity, acceleration, ::DefaultScientificValue)
 
 @JvmName("timeFromAngularAccelerationAndVelocity")
 fun <
     TimeUnit : Time,
-    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     > TimeUnit.time(
     velocity: ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>,
     acceleration: ScientificValue<PhysicalQuantity.AngularAcceleration, AngularAcceleration>,
-    factory: (Decimal, TimeUnit) -> Value
+    factory: (Decimal, TimeUnit) -> Value,
 ) = byDividing(velocity, acceleration, factory)

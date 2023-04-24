@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     EnergyUnit : Energy,
     PressureUnit : Pressure,
-    VolumeUnit : Volume
+    VolumeUnit : Volume,
     > EnergyUnit.energy(
     pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = energy(pressure, volume, ::DefaultScientificValue)
 
 @JvmName("energyFromPressureAndVolume")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     PressureUnit : Pressure,
     VolumeUnit : Volume,
-    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
     > EnergyUnit.energy(
     pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
     volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
-    factory: (Decimal, EnergyUnit) -> Value
+    factory: (Decimal, EnergyUnit) -> Value,
 ) = byMultiplying(pressure, volume, factory)

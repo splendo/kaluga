@@ -27,7 +27,6 @@ class BeaconLostTest : BeaconFlowTest(timeout = 2.seconds) {
 
     @Test
     fun testLostOnTimeout() = testWithFlow {
-
         test {
             assertTrue(it.isEmpty())
         }
@@ -35,7 +34,7 @@ class BeaconLostTest : BeaconFlowTest(timeout = 2.seconds) {
         action {
             start()
             discoverDevices(
-                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope),
             )
         }
 
@@ -56,7 +55,6 @@ class BeaconLostTest : BeaconFlowTest(timeout = 2.seconds) {
 
     @Test
     fun testLostOneByOneTimeout() = testWithFlow {
-
         test {
             assertTrue(it.isEmpty())
         }
@@ -64,7 +62,7 @@ class BeaconLostTest : BeaconFlowTest(timeout = 2.seconds) {
         action {
             start()
             discoverDevices(
-                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope),
             )
         }
 
@@ -76,7 +74,7 @@ class BeaconLostTest : BeaconFlowTest(timeout = 2.seconds) {
         action {
             delay(1_000)
             discoverDevices(
-                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460222", scope)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460222", scope),
             )
         }
 

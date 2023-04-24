@@ -24,7 +24,7 @@ import platform.UIKit.UIViewController
 
 fun ArchitectureNavigator(
     onDetails: (InputDetails) -> Unit,
-    onBottomSheet: () -> Unit
+    onBottomSheet: () -> Unit,
 ) = DefaultNavigator<ArchitectureNavigationAction<*>> { action ->
     when (action) {
         is ArchitectureNavigationAction.Details -> onDetails(action.value)
@@ -35,7 +35,7 @@ fun ArchitectureNavigator(
 fun ArchitectureViewControllerNavigator(
     parent: UIViewController,
     onDetails: (InputDetails) -> NavigationSpec,
-    onBottomSheet: () -> NavigationSpec
+    onBottomSheet: () -> NavigationSpec,
 ) = ViewControllerNavigator<ArchitectureNavigationAction<*>>(parent) { action ->
     when (action) {
         is ArchitectureNavigationAction.Details -> onDetails(action.value)

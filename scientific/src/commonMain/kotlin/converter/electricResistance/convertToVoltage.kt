@@ -37,5 +37,5 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricResistance, Abohm>.t
 
 @JvmName("resistanceTimesCurrent")
 infix operator fun <CurrentUnit : ElectricCurrent, ResistanceUnit : ElectricResistance> ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>.times(
-    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
 ) = current * this

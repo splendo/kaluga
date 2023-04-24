@@ -45,11 +45,11 @@ inline fun mainContinuation(singleShot: Boolean = true, noinline block: () -> Un
                 invokerArg,
                 staticCFunction { args ->
                     args!!.callContinuation0()
-                }
+                },
             )
         }
     },
-    singleShot
+    singleShot,
 )
 
 inline fun <T1> mainContinuation(singleShot: Boolean = true, noinline block: (T1) -> Unit) = Continuation1(
@@ -63,11 +63,11 @@ inline fun <T1> mainContinuation(singleShot: Boolean = true, noinline block: (T1
                 invokerArg,
                 staticCFunction { args ->
                     args!!.callContinuation1<T1>()
-                }
+                },
             )
         }
     },
-    singleShot
+    singleShot,
 )
 
 inline fun <T1, T2> mainContinuation(singleShot: Boolean = true, noinline block: (T1, T2) -> Unit) = Continuation2(
@@ -81,9 +81,9 @@ inline fun <T1, T2> mainContinuation(singleShot: Boolean = true, noinline block:
                 invokerArg,
                 staticCFunction { args ->
                     args!!.callContinuation2<T1, T2>()
-                }
+                },
             )
         }
     },
-    singleShot
+    singleShot,
 )

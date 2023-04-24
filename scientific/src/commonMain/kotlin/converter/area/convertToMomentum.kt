@@ -32,25 +32,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAreaTimesMetricDynamicViscosity")
 infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, MetricDynamicViscosity>
+    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, MetricDynamicViscosity>,
 ) = dynamicViscosity * this
 
 @JvmName("imperialAreaTimesImperialDynamicViscosity")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, ImperialDynamicViscosity>
+    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, ImperialDynamicViscosity>,
 ) = dynamicViscosity * this
 
 @JvmName("imperialAreaTimesUKImperialDynamicViscosity")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, UKImperialDynamicViscosity>
+    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, UKImperialDynamicViscosity>,
 ) = dynamicViscosity * this
 
 @JvmName("imperialAreaTimesUSCustomaryDynamicViscosity")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, USCustomaryDynamicViscosity>
+    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, USCustomaryDynamicViscosity>,
 ) = dynamicViscosity * this
 
 @JvmName("areaTimesDynamicViscosity")
 infix operator fun <DynamicViscosityUnit : DynamicViscosity, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, DynamicViscosityUnit>
+    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, DynamicViscosityUnit>,
 ) = dynamicViscosity * this

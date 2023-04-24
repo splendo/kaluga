@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.StateFlow
  * @param navigationMapper A mapper that converts an [Action] handled by this navigator into a [BottomSheetComposableNavSpec]
  */
 sealed class BottomSheetNavigator<Action : NavigationAction<*>>(
-    private val navigationMapper: @Composable (Action) -> BottomSheetComposableNavSpec
+    private val navigationMapper: @Composable (Action) -> BottomSheetComposableNavSpec,
 ) : Navigator<Action>, ComposableLifecycleSubscribable {
 
     protected abstract val routeController: BottomSheetRouteController
@@ -39,14 +39,18 @@ sealed class BottomSheetNavigator<Action : NavigationAction<*>>(
         actionState.value = action
     }
 
-    final override val modifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
+    final override val modifier: @Composable BaseLifecycleViewModel.(
+        @Composable BaseLifecycleViewModel.() -> Unit,
+    ) -> Unit = @Composable { content ->
         // Make sure Navigation actions are launched
         SetupNavigationAction()
         // Actually modify the content
         contentModifier(content)
     }
 
-    protected abstract val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit
+    protected abstract val contentModifier: @Composable BaseLifecycleViewModel.(
+        @Composable BaseLifecycleViewModel.() -> Unit,
+    ) -> Unit
 
     @Composable
     protected fun BaseLifecycleViewModel.SetupNavigationAction() {
@@ -64,7 +68,9 @@ sealed class BottomSheetNavigator<Action : NavigationAction<*>>(
                         onDispose()
                     }
                 }
-                is BottomSheetLaunchedNavigation -> spec.launchedNavigation.Launch(this, onDispose)
+                is BottomSheetLaunchedNavigation -> {
+                    spec.launchedNavigation.Launch(this, onDispose)
+                }
             }
         }
     }
@@ -86,7 +92,7 @@ class RootModalBottomSheetNavigator<Action : NavigationAction<*>>(
     parentRouteController: RouteController? = null,
     contentRootResultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
     contentBuilder: BottomSheetContentBuilder,
-    sheetContentBuilder: BottomSheetContentBuilder
+    sheetContentBuilder: BottomSheetContentBuilder,
 ) : BottomSheetNavigator<Action>(navigationMapper) {
 
     private val bottomSheetNavigationState = MutableStateFlow<BottomSheetNavigatorState?>(null)
@@ -95,19 +101,21 @@ class RootModalBottomSheetNavigator<Action : NavigationAction<*>>(
         BottomSheetContentRouteController(bottomSheetNavigationState, parentRouteController),
         BottomSheetSheetContentRouteController(
             bottomSheetNavigationState,
-            sheetStateCoroutineScope
-        )
+            sheetStateCoroutineScope,
+        ),
     )
 
-    override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
+    override val contentModifier: @Composable BaseLifecycleViewModel.(
+        @Composable BaseLifecycleViewModel.() -> Unit,
+    ) -> Unit = @Composable { content ->
         val contentNavController = rememberNavController()
         // Update the bottomSheetNavigationState to the current state.
         bottomSheetNavigationState.tryEmit(
             BottomSheetNavigatorState(
                 contentNavController,
                 rememberNavController(),
-                rememberModalBottomSheetState(initialValue = initialSheetValue)
-            )
+                rememberModalBottomSheetState(initialValue = initialSheetValue),
+            ),
         )
         sheetStateCoroutineScope.tryEmit(rememberCoroutineScope())
 
@@ -123,7 +131,7 @@ class RootModalBottomSheetNavigator<Action : NavigationAction<*>>(
                 }
                 content()
             },
-            contentBuilder
+            contentBuilder,
         )
     }
 }
@@ -141,7 +149,7 @@ class ModalBottomSheetNavigator<Action : NavigationAction<*>>(
     bottomSheetNavigatorState: StateFlow<BottomSheetNavigatorState?>,
     contentResultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
     sheetContentResultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
-    navigationMapper: @Composable (Action) -> BottomSheetComposableNavSpec
+    navigationMapper: @Composable (Action) -> BottomSheetComposableNavSpec,
 ) : BottomSheetNavigator<Action>(navigationMapper) {
 
     private val sheetStateCoroutineScope = MutableStateFlow<CoroutineScope?>(null)
@@ -150,8 +158,8 @@ class ModalBottomSheetNavigator<Action : NavigationAction<*>>(
         BottomSheetContentRouteController(bottomSheetNavigatorState),
         BottomSheetSheetContentRouteController(
             bottomSheetNavigatorState,
-            sheetStateCoroutineScope
-        )
+            sheetStateCoroutineScope,
+        ),
     )
 
     override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
@@ -171,7 +179,7 @@ private fun SetupNavigatingModalBottomSheetLayout(
     sheetContentRouteController: RouteController,
     sheetContent: BottomSheetContentBuilder,
     contentRoot: @Composable () -> Unit,
-    content: BottomSheetContentBuilder
+    content: BottomSheetContentBuilder,
 ) {
     val currentBottomSheetNavigationState by bottomSheetNavigationState.collectAsState()
     currentBottomSheetNavigationState?.let { navigationState ->
@@ -190,7 +198,7 @@ private fun SetupNavigatingModalBottomSheetLayout(
                         navHostController = { sheetContentNavHostController },
                     ) { state ->
                         sheetContent(
-                            state
+                            state,
                         )
                     }
                 }
@@ -201,10 +209,10 @@ private fun SetupNavigatingModalBottomSheetLayout(
             SetupNavHost(
                 bottomSheetNavigatorState = bottomSheetNavigationState,
                 navHostController = { contentNavHostController },
-                rootView = contentRoot
+                rootView = contentRoot,
             ) { state ->
                 content(
-                    state
+                    state,
                 )
             }
         }

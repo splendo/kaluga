@@ -32,7 +32,7 @@ actual interface LocationMonitor : ServiceMonitor {
      * Builder for creating a [LocationMonitor]
      */
     actual class Builder(
-        val locationManager: CLLocationManager = CLLocationManager()
+        val locationManager: CLLocationManager = CLLocationManager(),
     ) {
 
         /**
@@ -40,7 +40,7 @@ actual interface LocationMonitor : ServiceMonitor {
          * @return the created [LocationMonitor]
          */
         actual fun create(): LocationMonitor = DefaultLocationMonitor(
-            locationManager = locationManager
+            locationManager = locationManager,
         )
     }
 }
@@ -52,7 +52,7 @@ actual interface LocationMonitor : ServiceMonitor {
 class DefaultLocationMonitor(private val locationManager: CLLocationManager) : DefaultServiceMonitor(), LocationMonitor {
 
     internal class LocationManagerDelegate(
-        private val updateState: () -> Unit
+        private val updateState: () -> Unit,
     ) : NSObject(), CLLocationManagerDelegateProtocol {
         override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
             updateState()

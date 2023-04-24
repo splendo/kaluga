@@ -67,7 +67,7 @@ import platform.posix.QOS_CLASS_UTILITY
  * Default implementation of [NetworkManager]
  */
 actual class DefaultNetworkManager internal constructor(
-    private val appleNetworkManager: AppleNetworkManager
+    private val appleNetworkManager: AppleNetworkManager,
 ) : NetworkManager {
 
     /**
@@ -105,12 +105,12 @@ actual class DefaultNetworkManager internal constructor(
                 dispatch_queue_attr_make_with_qos_class(
                     null,
                     QOS_CLASS_UTILITY,
-                    DISPATCH_QUEUE_PRIORITY_DEFAULT
-                )
+                    DISPATCH_QUEUE_PRIORITY_DEFAULT,
+                ),
             )
             nw_path_monitor_set_queue(
                 this,
-                queue
+                queue,
             )
             nw_path_monitor_set_update_handler(this, networkMonitor)
         }
@@ -151,7 +151,10 @@ actual class DefaultNetworkManager internal constructor(
         private val lock = Mutex()
         private var reachability: SCNetworkReachabilityRef? = null
 
-        private val onNetworkStateChanged: SCNetworkReachabilityCallBack = staticCFunction { _: SCNetworkReachabilityRef?, flags: SCNetworkReachabilityFlags, info: COpaquePointer? ->
+        private val onNetworkStateChanged: SCNetworkReachabilityCallBack = staticCFunction {
+                _: SCNetworkReachabilityRef?,
+                flags: SCNetworkReachabilityFlags,
+                info: COpaquePointer?, ->
             if (info == null) {
                 return@staticCFunction
             }

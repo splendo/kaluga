@@ -66,7 +66,7 @@ enum class Flag(val char: Char) {
     /**
      * Causes the arguments of the previous [Formattable] to be used.
      */
-    PREVIOUS('<');
+    PREVIOUS('<'), ;
 
     companion object {
         fun parse(stringToMatch: String): Set<Flag> {

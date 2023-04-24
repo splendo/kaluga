@@ -46,7 +46,11 @@ class BluetoothServiceViewModel(private val bluetooth: Bluetooth, private val de
         super.onResume(scope)
 
         scope.launch {
-            service.characteristics().map { characteristics -> characteristics.map { BluetoothCharacteristicViewModel(bluetooth, deviceIdentifier, serviceUUID, it.uuid) } }.collect {
+            service.characteristics().map { characteristics ->
+                characteristics.map {
+                    BluetoothCharacteristicViewModel(bluetooth, deviceIdentifier, serviceUUID, it.uuid)
+                }
+            }.collect {
                 cleanCharacteristics()
                 _characteristics.value = it
             }

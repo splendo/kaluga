@@ -32,20 +32,20 @@ import kotlin.jvm.JvmName
 
 @JvmName("photDivSolidAngle")
 infix operator fun <SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, Phot>.div(
-    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>,
 ) = Stilb.luminance(this, solidAngle)
 
 @JvmName("photMultipleDivSolidAngle")
 infix operator fun <PhotUnit : PhotMultiple, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, PhotUnit>.div(
-    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>,
 ) = Stilb.luminance(this, solidAngle)
 
 @JvmName("imperialIlluminanceDivSolidAngle")
 infix operator fun <IlluminanceUnit : ImperialIlluminance, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.div(
-    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>,
 ) = FootLambert.luminance(this, solidAngle)
 
 @JvmName("illuminanceDivSolidAngle")
 infix operator fun <IlluminanceUnit : Illuminance, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.div(
-    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>,
 ) = Nit.luminance(this, solidAngle)

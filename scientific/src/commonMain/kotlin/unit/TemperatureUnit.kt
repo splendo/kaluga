@@ -59,7 +59,10 @@ sealed class Temperature : AbstractScientificUnit<PhysicalQuantity.Temperature>(
  * A [Temperature] for [MeasurementSystem.MetricAndUKImperial]
  */
 @Serializable
-sealed class MetricAndUKImperialTemperature(override val symbol: String) : Temperature(), MetricAndUKImperialScientificUnit<PhysicalQuantity.Temperature>, MeasurementUsage.UsedInUKImperial {
+sealed class MetricAndUKImperialTemperature(override val symbol: String) :
+    Temperature(),
+    MetricAndUKImperialScientificUnit<PhysicalQuantity.Temperature>,
+    MeasurementUsage.UsedInUKImperial {
     override val system = MeasurementSystem.MetricAndUKImperial
 }
 
@@ -108,17 +111,17 @@ object Rankine : USCustomaryTemperature("°R") {
 
 fun Temperature.convertDelta(
     value: Number,
-    to: Temperature
+    to: Temperature,
 ) = convertDelta(value.toDecimal(), to).toDouble()
 
 fun Temperature.convertDelta(
     value: Number,
     to: Temperature,
     round: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ) = convertDelta(value.toDecimal(), to).round(round, roundingMode).toDouble()
 
 fun Temperature.convertDelta(
     value: Decimal,
-    to: Temperature
+    to: Temperature,
 ) = if (this == to) value else to.deltaFromSIUnitDelta(deltaToSIUnitDelta(value))

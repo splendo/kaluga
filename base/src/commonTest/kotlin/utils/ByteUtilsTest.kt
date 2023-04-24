@@ -31,11 +31,11 @@ class ByteUtilsTest {
     fun testBytesOf() {
         assertContentEquals(
             ByteArray(0),
-            bytesOf()
+            bytesOf(),
         )
         assertContentEquals(
             listOf(0x0, 0x1, 0xfe.toByte(), 0xff.toByte()).toByteArray(),
-            bytesOf(0x0, 0x1, 0xfe, 0xff)
+            bytesOf(0x0, 0x1, 0xfe, 0xff),
         )
     }
 
@@ -43,34 +43,34 @@ class ByteUtilsTest {
     fun testToHexString() {
         assertEquals(
             "",
-            bytesOf().toHexString()
+            bytesOf().toHexString(),
         )
         assertEquals(
             "00",
-            bytesOf(0x0).toHexString()
+            bytesOf(0x0).toHexString(),
         )
         assertEquals(
             "00,01,02,fe,ff",
-            bytesOf(0x0, 0x1, 0x2, 0xfe, 0xff).toHexString(separator = ",")
+            bytesOf(0x0, 0x1, 0x2, 0xfe, 0xff).toHexString(separator = ","),
         )
     }
 
     @Test
     fun testDecode() {
         assertNull(
-            "010".decodeHex()
+            "010".decodeHex(),
         )
         assertContentEquals(
             bytesOf(),
-            "".decodeHex()
+            "".decodeHex(),
         )
         assertContentEquals(
             bytesOf(0x0),
-            "00".decodeHex()
+            "00".decodeHex(),
         )
         assertContentEquals(
             bytesOf(0x0, 0x1, 0x2, 0x3, 0xfe, 0xff),
-            "00010203feFF".decodeHex()
+            "00010203feFF".decodeHex(),
         )
     }
 }

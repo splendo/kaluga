@@ -52,27 +52,27 @@ class MolarityUnitTest {
         assertEquals(4(Decimole per CubicFoot), 2(Pound per CubicFoot) * 2(Decimole per Pound))
         assertEquals(
             4(Decimole per CubicFoot.ukImperial),
-            2(Decimole per Pound) * 2(Pound.ukImperial per CubicFoot)
+            2(Decimole per Pound) * 2(Pound.ukImperial per CubicFoot),
         )
         assertEquals(
             4(Decimole per CubicFoot.ukImperial),
-            2(Pound.ukImperial per CubicFoot) * 2(Decimole per Pound)
+            2(Pound.ukImperial per CubicFoot) * 2(Decimole per Pound),
         )
         assertEquals(
             4(Decimole per CubicFoot.usCustomary),
-            2(Decimole per Pound) * 2(Pound.usCustomary per CubicFoot)
+            2(Decimole per Pound) * 2(Pound.usCustomary per CubicFoot),
         )
         assertEquals(
             4(Decimole per CubicFoot.usCustomary),
-            2(Pound.usCustomary per CubicFoot) * 2(Decimole per Pound)
+            2(Pound.usCustomary per CubicFoot) * 2(Decimole per Pound),
         )
         assertEquals(
             4(Decimole per CubicMeter),
-            2(Decimole per Kilogram) * 2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density)
+            2(Decimole per Kilogram) * 2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density),
         )
         assertEquals(
             4(Decimole per CubicMeter),
-            2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density) * 2(Decimole per Kilogram)
+            2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density) * 2(Decimole per Kilogram),
         )
     }
 
@@ -82,15 +82,15 @@ class MolarityUnitTest {
         assertEquals(1(Decimole per CubicFoot), 2(Pound per CubicFoot) / 2(Pound per Decimole))
         assertEquals(
             1(Decimole per CubicFoot.ukImperial),
-            2(Pound.ukImperial per CubicFoot) / 2(Pound per Decimole)
+            2(Pound.ukImperial per CubicFoot) / 2(Pound per Decimole),
         )
         assertEquals(
             1(Decimole per CubicFoot.usCustomary),
-            2(Pound.usCustomary per CubicFoot) / 2(Pound per Decimole)
+            2(Pound.usCustomary per CubicFoot) / 2(Pound per Decimole),
         )
         assertEquals(
             1(Decimole per CubicMeter),
-            2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density) / 2(Kilogram per Decimole)
+            2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density) / 2(Kilogram per Decimole),
         )
     }
 
@@ -100,15 +100,15 @@ class MolarityUnitTest {
         assertEquals(1(Decimole per CubicFoot), 2(Decimole per Pound) / 2(CubicFoot per Pound))
         assertEquals(
             1(Decimole per CubicFoot.ukImperial),
-            2(Decimole per Pound) / 2(CubicFoot per Pound.ukImperial)
+            2(Decimole per Pound) / 2(CubicFoot per Pound.ukImperial),
         )
         assertEquals(
             1(Decimole per CubicFoot.usCustomary),
-            2(Decimole per Pound) / 2(CubicFoot per Pound.usCustomary)
+            2(Decimole per Pound) / 2(CubicFoot per Pound.usCustomary),
         )
         assertEquals(
             1(Decimole per CubicMeter),
-            2(Decimole per Kilogram) / 2(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume)
+            2(Decimole per Kilogram) / 2(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume),
         )
     }
 
@@ -118,15 +118,15 @@ class MolarityUnitTest {
         assertEquals(0.5(Decimole per CubicFoot), 2(CubicFoot per Decimole).molarity())
         assertEquals(
             0.5(Decimole per CubicFoot.ukImperial),
-            2(CubicFoot.ukImperial per Decimole).molarity()
+            2(CubicFoot.ukImperial per Decimole).molarity(),
         )
         assertEquals(
             0.5(Decimole per CubicFoot.usCustomary),
-            2(CubicFoot.usCustomary per Decimole).molarity()
+            2(CubicFoot.usCustomary per Decimole).molarity(),
         )
         assertEquals(
             0.5(Decimole per CubicMeter),
-            2(CubicMeter per Decimole).convert((CubicFoot per Decimole) as MolarVolume).molarity()
+            2(CubicMeter per Decimole).convert((CubicFoot per Decimole) as MolarVolume).molarity(),
         )
     }
 }

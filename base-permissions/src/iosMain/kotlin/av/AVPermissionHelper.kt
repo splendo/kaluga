@@ -63,7 +63,7 @@ class AVPermissionHelper(
     private val bundle: NSBundle,
     private val type: AVType,
     private val authorizationStatusHandler: AuthorizationStatusHandler,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
 ) : CoroutineScope by coroutineScope {
 
     private class Provider(private val type: AVMediaType) : CurrentAuthorizationStatusProvider {
@@ -83,7 +83,7 @@ class AVPermissionHelper(
             authorizationStatusHandler.requestAuthorizationStatus(timerHelper, coroutineScope) {
                 val deferred = CompletableDeferred<Boolean>()
                 AVCaptureDevice.requestAccessForMediaType(
-                    mediaType
+                    mediaType,
                 ) { allowed ->
                     deferred.complete(allowed)
                     Unit
@@ -125,7 +125,7 @@ private fun AVAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.
         else -> {
             error(
                 "AVPermissionManager",
-                "Unknown AVManagerAuthorization status={$this}"
+                "Unknown AVManagerAuthorization status={$this}",
             )
             IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         }

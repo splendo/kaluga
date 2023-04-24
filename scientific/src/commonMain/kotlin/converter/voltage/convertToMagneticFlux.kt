@@ -33,5 +33,5 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Voltage, A
 
 @JvmName("voltageTimesTime")
 infix operator fun <VoltageUnit : Voltage, TimeUnit : Time> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = Weber.flux(this, time)

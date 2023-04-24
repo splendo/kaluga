@@ -35,30 +35,30 @@ import kotlin.jvm.JvmName
 
 @JvmName("radTimesGram")
 infix operator fun ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad>.times(
-    weight: ScientificValue<PhysicalQuantity.Weight, Gram>
+    weight: ScientificValue<PhysicalQuantity.Weight, Gram>,
 ) = Erg.energy(this, weight)
 
 @JvmName("radMultipleTimesGram")
 infix operator fun <RadUnit : RadMultiple> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, RadUnit>.times(
-    weight: ScientificValue<PhysicalQuantity.Weight, Gram>
+    weight: ScientificValue<PhysicalQuantity.Weight, Gram>,
 ) = Erg.energy(this, weight)
 
 @JvmName("absorbedDoseTimesImperialWeight")
-infix operator fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.times(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
-) = FootPoundForce.energy(this, weight)
+infix operator fun <AbsorbedDoseUnit, WeightUnit> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
+) where AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : ImperialWeight = FootPoundForce.energy(this, weight)
 
 @JvmName("absorbedDoseTimesUKImperialWeight")
-infix operator fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.times(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
-) = FootPoundForce.energy(this, weight)
+infix operator fun <AbsorbedDoseUnit, WeightUnit> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
+) where AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : UKImperialWeight = FootPoundForce.energy(this, weight)
 
 @JvmName("absorbedDoseTimesUSCustomaryWeight")
-infix operator fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.times(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
-) = FootPoundForce.energy(this, weight)
+infix operator fun <AbsorbedDoseUnit, WeightUnit> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
+) where AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : USCustomaryWeight = FootPoundForce.energy(this, weight)
 
 @JvmName("absorbedDoseTimesWeight")
-infix operator fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : Weight> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.times(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
-) = Joule.energy(this, weight)
+infix operator fun <AbsorbedDoseUnit, WeightUnit> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.times(
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
+) where AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : Weight = Joule.energy(this, weight)

@@ -68,5 +68,5 @@ class MicrophonePermissionStateRepo(
     builder: BaseMicrophonePermissionManagerBuilder,
     monitoringInterval: Duration = defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : PermissionStateRepo<MicrophonePermission>(monitoringInterval, { builder.create(settings, it) }, coroutineContext)

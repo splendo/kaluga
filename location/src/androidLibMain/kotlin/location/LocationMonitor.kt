@@ -39,7 +39,7 @@ actual interface LocationMonitor : ServiceMonitor {
      */
     actual class Builder(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
-        private val locationManager: LocationManager? = applicationContext.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+        private val locationManager: LocationManager? = applicationContext.getSystemService(Context.LOCATION_SERVICE) as? LocationManager,
     ) {
 
         /**
@@ -48,7 +48,7 @@ actual interface LocationMonitor : ServiceMonitor {
          */
         actual fun create(): LocationMonitor = DefaultLocationMonitor(
             applicationContext = applicationContext,
-            locationManager = locationManager
+            locationManager = locationManager,
         )
     }
 }
@@ -60,7 +60,7 @@ actual interface LocationMonitor : ServiceMonitor {
  */
 class DefaultLocationMonitor(
     private val applicationContext: Context,
-    private val locationManager: LocationManager?
+    private val locationManager: LocationManager?,
 ) : DefaultServiceMonitor(), LocationMonitor {
 
     private val locationAvailabilityBroadcastReceiver = object : BroadcastReceiver() {
@@ -81,7 +81,7 @@ class DefaultLocationMonitor(
     override fun monitoringDidStart() {
         applicationContext.registerReceiver(
             locationAvailabilityBroadcastReceiver,
-            IntentFilter(LocationManager.MODE_CHANGED_ACTION)
+            IntentFilter(LocationManager.MODE_CHANGED_ACTION),
         )
     }
 

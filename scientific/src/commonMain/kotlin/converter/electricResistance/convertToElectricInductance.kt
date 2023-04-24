@@ -30,20 +30,20 @@ import kotlin.jvm.JvmName
 
 @JvmName("abohmDivFrequency")
 infix operator fun <FrequencyUnit : Frequency> ScientificValue<PhysicalQuantity.ElectricResistance, Abohm>.div(
-    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>,
 ) = Abhenry.inductance(this, frequency)
 
 @JvmName("resistanceDivFrequency")
 infix operator fun <ResistanceUnit : ElectricResistance, FrequencyUnit : Frequency> ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>.div(
-    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
+    frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>,
 ) = Henry.inductance(this, frequency)
 
 @JvmName("abohmTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricResistance, Abohm>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = Abhenry.inductance(this, time)
 
 @JvmName("resistanceTimesTime")
 infix operator fun <ResistanceUnit : ElectricResistance, TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = Henry.inductance(this, time)

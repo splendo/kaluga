@@ -31,14 +31,30 @@ import com.splendo.kaluga.scientific.unit.USCustomaryWeight
 import com.splendo.kaluga.scientific.unit.Weight
 
 val PhysicalQuantity.IonizingRadiationEquivalentDose.converters get() = listOf<QuantityConverter<PhysicalQuantity.IonizingRadiationEquivalentDose, *>>(
-    QuantityConverterWithOperator("Energy from Weight", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Energy from Weight",
+        QuantityConverter.WithOperator.Type.Multiplication,
+        PhysicalQuantity.Weight,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is RoentgenEquivalentMan && rightUnit is Gram -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is RoentgenEquivalentManMultiple && rightUnit is Gram -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is IonizingRadiationEquivalentDose && rightUnit is ImperialWeight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is IonizingRadiationEquivalentDose && rightUnit is UKImperialWeight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is IonizingRadiationEquivalentDose && rightUnit is USCustomaryWeight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is IonizingRadiationEquivalentDose && rightUnit is Weight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is RoentgenEquivalentMan && rightUnit is Gram -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is RoentgenEquivalentManMultiple && rightUnit is Gram -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is IonizingRadiationEquivalentDose && rightUnit is ImperialWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is IonizingRadiationEquivalentDose && rightUnit is UKImperialWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is IonizingRadiationEquivalentDose && rightUnit is USCustomaryWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is IonizingRadiationEquivalentDose && rightUnit is Weight -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -49,5 +65,5 @@ val PhysicalQuantity.IonizingRadiationEquivalentDose.converters get() = listOf<Q
             is IonizingRadiationEquivalentDose -> DefaultScientificValue(value, unit).asSpecificEnergy()
             else -> throw RuntimeException("Unexpected unit: $unit")
         }
-    }
+    },
 )

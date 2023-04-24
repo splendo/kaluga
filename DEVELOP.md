@@ -150,21 +150,21 @@ The project uses regular Kotlin code conventions. This includes not creating `co
 ### Code style verification
 
 This project uses [ktlint](https://github.com/pinterest/ktlint) Kotlin linter with standard rules.
-Each component should setup ktlint gradle [plugin](https://github.com/jlleitschuh/ktlint-gradle) in `build.gradle.kts` file:
+Each component should setup kotlinter gradle [plugin](https://github.com/jeremymailen/kotlinter-gradle) in `build.gradle.kts` file:
 
 ```kotlin
 plugins {
-    id("org.jlleitschuh.gradle.ktlint")
+    id("org.jmailen.kotlinter")
 }
 ```
 
-You can run `Ktlint Check` configuration from IDE before commit changes to git.
+You can run `Lint Kotlin` configuration from IDE before commit changes to git.
 
 #### Formatting
 
-You can run `Ktlint Format` configuration to reformat source code if needed.
+You can run `Format Kotlin` configuration to reformat source code if needed.
 
-See ktlint and gradle plugin documentation for more details.
+See kotlinter and gradle plugin documentation for more details.
 
 ## Frequent issues
 

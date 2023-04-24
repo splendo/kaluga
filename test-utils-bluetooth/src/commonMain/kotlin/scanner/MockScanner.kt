@@ -43,7 +43,7 @@ class MockScanner(
     override val isSupported: Boolean,
     override val events: MutableSharedFlow<Scanner.Event>,
     override val connectionEvents: MutableSharedFlow<Scanner.ConnectionEvent>,
-    override val discoveryEvents: MutableSharedFlow<List<Scanner.DeviceDiscovered>>
+    override val discoveryEvents: MutableSharedFlow<List<Scanner.DeviceDiscovered>>,
 ) : Scanner {
 
     val startMonitoringPermissionsMock = ::startMonitoringPermissions.mock()
@@ -74,7 +74,7 @@ class MockScanner(
     override suspend fun retrievePairedDevices(
         withServices: Filter,
         removeForAllPairedFilters: Boolean,
-        connectionSettings: ConnectionSettings?
+        connectionSettings: ConnectionSettings?,
     ): Unit = retrievePairedDevicesMock.call(withServices, removeForAllPairedFilters, connectionSettings)
 }
 
@@ -93,11 +93,11 @@ class MockBaseScanner(
     coroutineScope: CoroutineScope,
     scanningDispatcher: CoroutineDispatcher,
     override val isSupported: Boolean = true,
-    setupMocks: Boolean = true
+    setupMocks: Boolean = true,
 ) : BaseScanner(
     settings,
     coroutineScope,
-    scanningDispatcher
+    scanningDispatcher,
 ) {
 
     /**
@@ -130,7 +130,7 @@ class MockBaseScanner(
         override fun create(
             settings: Settings,
             coroutineScope: CoroutineScope,
-            scanningDispatcher: CoroutineDispatcher
+            scanningDispatcher: CoroutineDispatcher,
         ): BaseScanner = createMock.call(settings, coroutineScope, scanningDispatcher)
     }
 
@@ -221,13 +221,13 @@ class MockBaseScanner(
         deviceWrapper: DeviceWrapper,
         rssi: RSSI,
         advertisementData: BaseAdvertisementData,
-        deviceCreator: (CoroutineContext) -> Device
+        deviceCreator: (CoroutineContext) -> Device,
     ) {
         super.handleDeviceDiscovered(deviceWrapper, rssi, advertisementData, deviceCreator)
     }
 
     override suspend fun retrievePairedDeviceDiscoveredEvents(
         withServices: Filter,
-        connectionSettings: ConnectionSettings?
+        connectionSettings: ConnectionSettings?,
     ): List<Scanner.DeviceDiscovered> = retrievePairedDeviceDiscoveredEventsMock.call(withServices, connectionSettings)
 }

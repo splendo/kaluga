@@ -36,30 +36,30 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificEnergyDivMetricAndUKImperialTemperature")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificEnergy, MetricSpecificEnergy>.div(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, MetricAndUKImperialTemperature>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, MetricAndUKImperialTemperature>,
 ) = (unit per temperature.unit).specificHeatCapacity(this, temperature)
 
 @JvmName("imperialSpecificEnergyDivMetricAndUKImperialTemperature")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>.div(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, MetricAndUKImperialTemperature>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, MetricAndUKImperialTemperature>,
 ) = (unit per temperature.unit).specificHeatCapacity(this, temperature)
 
 @JvmName("imperialSpecificEnergyDivUSCustomaryTemperature")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificEnergy, ImperialSpecificEnergy>.div(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, USCustomaryTemperature>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, USCustomaryTemperature>,
 ) = (unit per temperature.unit).specificHeatCapacity(this, temperature)
 
 @JvmName("ukImperialSpecificEnergyDivMetricAndUKImperialTemperature")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificEnergy, UKImperialSpecificEnergy>.div(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, MetricAndUKImperialTemperature>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, MetricAndUKImperialTemperature>,
 ) = (unit per temperature.unit).specificHeatCapacity(this, temperature)
 
 @JvmName("usCustomarySpecificEnergyDivUSCustomaryTemperature")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificEnergy, USCustomarySpecificEnergy>.div(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, USCustomaryTemperature>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, USCustomaryTemperature>,
 ) = (unit per temperature.unit).specificHeatCapacity(this, temperature)
 
 @JvmName("specificEnergyDivTemperature")
 infix operator fun <SpecificEnergyUnit : SpecificEnergy, TemperatureUnit : Temperature> ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>.div(
-    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>
+    temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
 ) = (Joule per Kelvin per Kilogram).specificHeatCapacity(this, temperature)

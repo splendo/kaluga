@@ -30,5 +30,5 @@ data class MockDeviceInfo(
     override val advertisementData: BaseAdvertisementData = MockAdvertisementData(),
     override val name: String? = null,
     override val rssi: RSSI = Int.MIN_VALUE,
-    override val updatedAt: KalugaDate = DefaultKalugaDate.epoch()
+    override val updatedAt: KalugaDate = DefaultKalugaDate.epoch(),
 ) : DeviceInfo

@@ -26,7 +26,7 @@ import com.splendo.kaluga.base.text.format
  */
 actual class DefaultStringLoader(
     private val transformer: (String) -> String?,
-    private val formatter: (String, Int) -> String?
+    private val formatter: (String, Int) -> String?,
 ) : StringLoader {
     actual constructor() : this({ it }, { format, value -> format.format(value) })
 
@@ -36,7 +36,7 @@ actual class DefaultStringLoader(
     override fun loadQuantityString(
         identifier: String,
         quantity: Int,
-        defaultValue: String
+        defaultValue: String,
     ): String = formatter(identifier, quantity) ?: defaultValue
 }
 

@@ -34,13 +34,6 @@ public final class com/splendo/kaluga/test/bluetooth/Android_mocksKt {
 	public static final fun randomIdentifier ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/test/bluetooth/BuildConfig {
-	public static final field BUILD_TYPE Ljava/lang/String;
-	public static final field DEBUG Z
-	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
-	public fun <init> ()V
-}
-
 public abstract interface class com/splendo/kaluga/test/bluetooth/CanUpdateMockValue {
 	public abstract fun updateMockValue ([B)V
 }

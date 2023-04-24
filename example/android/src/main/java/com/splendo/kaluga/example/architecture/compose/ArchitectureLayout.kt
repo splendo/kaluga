@@ -70,7 +70,7 @@ class ComposeArchitectureActivity : AppCompatActivity() {
 
         setContent {
             CompositionLocalProvider(
-                LocalAppCompatActivity provides this
+                LocalAppCompatActivity provides this,
             ) {
                 ArchitectureLayout()
             }
@@ -89,11 +89,11 @@ fun ArchitectureLayout() {
                         InputDetails.serializer().NavHostResultHandler<ArchitectureViewModel, InputDetails> {
                             nameInput.post(it.name)
                             numberInput.post(it.number.toString())
-                        }
+                        },
                     ),
                     contentBuilder = { bottomSheetNavigationState ->
                         composable<InputDetails, ArchitectureNavigationAction.Details>(
-                            InputDetails.serializer()
+                            InputDetails.serializer(),
                         ) { inputDetails ->
                             ArchitectureDetailsLayout(inputDetails, bottomSheetNavigationState)
                         }
@@ -101,16 +101,16 @@ fun ArchitectureLayout() {
                     sheetContentBuilder = { bottomSheetNavigationState ->
                         composable(ArchitectureNavigationAction.BottomSheet.route()) {
                             BottomSheetLayout(
-                                bottomSheetNavigationState
+                                bottomSheetNavigationState,
                             )
                         }
                         composable(BottomSheetNavigation.SubPage.route()) {
                             BottomSheetSubPageLayout(
-                                bottomSheetNavigationState
+                                bottomSheetNavigationState,
                             )
                         }
-                    }
-                )
+                    },
+                ),
             )
         }
 
@@ -126,7 +126,7 @@ fun ArchitectureLayout() {
                 verticalArrangement = Arrangement.spacedBy(Constants.Padding.default),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()),
             ) {
                 OutlinedTextField(
                     value = nameInput.value,
@@ -145,8 +145,8 @@ fun ArchitectureLayout() {
                     placeholder = { Text(namePlaceholder) },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                    )
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                    ),
                 )
                 OutlinedTextField(
                     value = numberInput.value,
@@ -156,9 +156,9 @@ fun ArchitectureLayout() {
                     placeholder = { Text(numberPlaceholder) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Done,
                     ),
-                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
+                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                 )
                 showDetailsButton.Composable(modifier = Modifier.fillMaxWidth())
                 showBottomSheetButton.Composable(modifier = Modifier.fillMaxWidth())

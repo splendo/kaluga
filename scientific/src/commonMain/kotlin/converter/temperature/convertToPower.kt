@@ -33,25 +33,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAndUKImperialTemperatureDivMetricAndUKImperialThermalResistance")
 infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>.div(
-    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, MetricAndUKImperialThermalResistance>
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, MetricAndUKImperialThermalResistance>,
 ) = thermalResistance.unit.per.power(this, thermalResistance)
 
 @JvmName("metricAndUKImperialTemperatureDivMetricThermalResistance")
 infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>.div(
-    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, MetricThermalResistance>
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, MetricThermalResistance>,
 ) = thermalResistance.unit.per.power(this, thermalResistance)
 
 @JvmName("metricAndUKImperialTemperatureDivUKImperialThermalResistance")
 infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>.div(
-    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, UKImperialThermalResistance>
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, UKImperialThermalResistance>,
 ) = thermalResistance.unit.per.power(this, thermalResistance)
 
 @JvmName("usCustomaryTemperatureDivUSCustomaryThermalResistance")
 infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>.div(
-    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, USCustomaryThermalResistance>
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, USCustomaryThermalResistance>,
 ) = thermalResistance.unit.per.power(this, thermalResistance)
 
 @JvmName("temperatureDivThermalResistance")
 infix operator fun <TemperatureUnit : Temperature, ThermalResistanceUnit : ThermalResistance> ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>.div(
-    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, ThermalResistanceUnit>
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, ThermalResistanceUnit>,
 ) = Watt.power(this, thermalResistance)

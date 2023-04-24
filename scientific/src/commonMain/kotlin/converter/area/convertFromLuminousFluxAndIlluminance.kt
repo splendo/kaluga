@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     FluxUnit : LuminousFlux,
     AreaUnit : Area,
-    IlluminanceUnit : Illuminance
+    IlluminanceUnit : Illuminance,
     > AreaUnit.area(
     flux: ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>,
-    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
 ) = area(flux, illuminance, ::DefaultScientificValue)
 
 @JvmName("areaFromFluxAndIlluminance")
@@ -42,9 +42,9 @@ fun <
     FluxUnit : LuminousFlux,
     AreaUnit : Area,
     IlluminanceUnit : Illuminance,
-    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     > AreaUnit.area(
     flux: ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>,
     illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
-    factory: (Decimal, AreaUnit) -> Value
+    factory: (Decimal, AreaUnit) -> Value,
 ) = byDividing(flux, illuminance, factory)

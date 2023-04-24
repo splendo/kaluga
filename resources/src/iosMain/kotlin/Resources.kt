@@ -38,7 +38,7 @@ actual class DefaultStringLoader(private val bundle: NSBundle, private val table
     override fun loadQuantityString(
         identifier: String,
         quantity: Int,
-        defaultValue: String
+        defaultValue: String,
     ): String {
         val format = bundle.localizedStringForKey(identifier, defaultValue, table)
         return NSString.localizedStringWithFormat(format, quantity)
@@ -52,7 +52,9 @@ actual class DefaultStringLoader(private val bundle: NSBundle, private val table
  */
 actual class DefaultColorLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) : KalugaColorLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
-    override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? = UIColor.colorNamed(identifier, bundle, traitCollection)?.let { KalugaColor(it) } ?: defaultValue
+    override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? = UIColor
+        .colorNamed(identifier, bundle, traitCollection)
+        ?.let { KalugaColor(it) } ?: defaultValue
 }
 
 /**

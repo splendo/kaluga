@@ -17,6 +17,7 @@
 
 @file:JsModule("@splendo/bigdecimal")
 @file:JsNonModule
+
 package com.splendo.kaluga.base.utils
 
 external class BigDecimal(a: Any, b: Any) {

@@ -18,7 +18,6 @@
 package com.splendo.kaluga.architecture.compose.navigation
 
 import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -67,7 +66,7 @@ sealed interface RouteController {
  */
 sealed class ProvidingNavHostRouteController<Provider>(
     private val provider: StateFlow<Provider?>,
-    private val parentRouteController: RouteController? = null
+    private val parentRouteController: RouteController? = null,
 ) : RouteController {
 
     /**
@@ -139,7 +138,7 @@ sealed class ProvidingNavHostRouteController<Provider>(
  */
 class NavHostRouteController(
     provider: StateFlow<NavHostController?>,
-    parentRouteController: RouteController? = null
+    parentRouteController: RouteController? = null,
 ) : ProvidingNavHostRouteController<NavHostController>(provider, parentRouteController) {
     override fun NavHostController.provide(): NavHostController = this
 }
@@ -163,7 +162,7 @@ class BottomSheetContentRouteController(
  */
 class BottomSheetSheetContentRouteController(
     private val bottomSheetNavigatorState: StateFlow<BottomSheetNavigatorState?>,
-    private val coroutineScope: StateFlow<CoroutineScope?>
+    private val coroutineScope: StateFlow<CoroutineScope?>,
 ) : RouteController {
 
     inner class NavHostRouteController : ProvidingNavHostRouteController<BottomSheetNavigatorState>(bottomSheetNavigatorState) {
@@ -176,7 +175,7 @@ class BottomSheetSheetContentRouteController(
         bottomSheetNavigatorState.value?.let { (_, _, sheetState) ->
             if (!sheetState.isVisible) {
                 coroutineScope.value?.launch {
-                    sheetState.animateTo(ModalBottomSheetValue.Expanded)
+                    sheetState.show()
                 }
             }
         }
@@ -192,10 +191,10 @@ class BottomSheetSheetContentRouteController(
 
     override fun back(result: Route.Result): Boolean {
         val navHostController = bottomSheetNavigatorState.value?.sheetContentNavHostController
-        val rootRoute = NavDestination.createRoute(ROOT_VIEW).hashCode()
-        // If navigating back to anything but the ROOT_VIEW, just go back
-        // Otherwise, close the BottomSheet
-        return if (navHostController != null && navHostController.backQueue.isNotEmpty() && navHostController.previousBackStackEntry?.destination?.id != rootRoute) {
+        val rootId = NavDestination("").apply {
+            route = ROOT_VIEW
+        }.id
+        return if (navHostController != null && navHostController.backQueue.isNotEmpty() && navHostController.previousBackStackEntry?.destination?.id != rootId) {
             navHostController.previousBackStackEntry?.setResult(result)
             navHostController.popBackStack()
         } else {

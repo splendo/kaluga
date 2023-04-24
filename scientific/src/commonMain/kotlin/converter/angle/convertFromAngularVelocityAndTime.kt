@@ -33,16 +33,16 @@ fun <
     TimeUnit : Time,
     > AngleUnit.angle(
     velocity: ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>,
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = angle(velocity, time, ::DefaultScientificValue)
 
 @JvmName("angleFromAngularVelocityAndTime")
 fun <
     AngleUnit : Angle,
     TimeUnit : Time,
-    Value : ScientificValue<PhysicalQuantity.Angle, AngleUnit>
+    Value : ScientificValue<PhysicalQuantity.Angle, AngleUnit>,
     > AngleUnit.angle(
     velocity: ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, AngleUnit) -> Value
+    factory: (Decimal, AngleUnit) -> Value,
 ) = byMultiplying(velocity, time, factory)

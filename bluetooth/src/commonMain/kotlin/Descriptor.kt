@@ -34,12 +34,12 @@ open class Descriptor(
     initialValue: ByteArray? = null,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     parentLogTag: String,
-    logger: Logger
+    logger: Logger,
 ) : Attribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(
     initialValue,
     emitNewAction,
     "$parentLogTag Descriptor",
-    logger
+    logger,
 ) {
 
     override val uuid = wrapper.uuid

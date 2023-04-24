@@ -125,7 +125,10 @@ data class UKImperialVolumetricFlow(override val volume: UKImperialVolume, overr
  * @param per the [Time] component
  */
 @Serializable
-data class USCustomaryVolumetricFlow(override val volume: USCustomaryVolume, override val per: Time) : VolumetricFlow(), USCustomaryScientificUnit<PhysicalQuantity.VolumetricFlow> {
+data class USCustomaryVolumetricFlow(
+    override val volume: USCustomaryVolume,
+    override val per: Time,
+) : VolumetricFlow(), USCustomaryScientificUnit<PhysicalQuantity.VolumetricFlow> {
     override val system = MeasurementSystem.USCustomary
 }
 

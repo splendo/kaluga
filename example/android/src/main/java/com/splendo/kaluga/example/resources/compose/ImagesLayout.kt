@@ -42,13 +42,13 @@ fun ImagesLayout() {
                 .fillMaxWidth()
                 .padding(Constants.Padding.default)
                 .verticalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(Constants.Padding.default)
+            horizontalArrangement = Arrangement.spacedBy(Constants.Padding.default),
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(Constants.Padding.default),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(1f),
             ) {
                 viewModel.images.forEach {
                     it.Composable(contentDescription = null)
@@ -58,7 +58,7 @@ fun ImagesLayout() {
                 verticalArrangement = Arrangement.spacedBy(Constants.Padding.default),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(1f),
             ) {
                 viewModel.tintedImages.forEach {
                     it.Composable(contentDescription = null)

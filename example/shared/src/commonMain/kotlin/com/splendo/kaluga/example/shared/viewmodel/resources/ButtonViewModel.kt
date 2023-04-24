@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 class ButtonViewModel(
     styledStringBuilderProvider: StyledStringBuilder.Provider,
-    private val alertPresenterBuilder: BaseAlertPresenter.Builder
+    private val alertPresenterBuilder: BaseAlertPresenter.Builder,
 ) : BaseLifecycleViewModel(alertPresenterBuilder) {
 
     val buttons = observableOf(
@@ -53,16 +53,16 @@ class ButtonViewModel(
                         styledStringBuilderProvider,
                         ButtonStyles.textButton.getStateTextStyle(
                             isEnabled = true,
-                            isPressed = false
+                            isPressed = false,
                         ),
-                        StringStyleAttribute.CharacterStyleAttribute.Strikethrough
+                        StringStyleAttribute.CharacterStyleAttribute.Strikethrough,
                     ),
-                    ButtonStyles.textButton
+                    ButtonStyles.textButton,
                 ) {
                     showAlert("Styled Button")
-                }
-            )
-        ).flatten()
+                },
+            ),
+        ).flatten(),
     )
 
     private fun showAlert(message: String) {
@@ -77,10 +77,10 @@ class ButtonViewModel(
 
     private fun String.toButton(
         style: KalugaButtonStyle,
-        isEnabled: Boolean = true
+        isEnabled: Boolean = true,
     ): List<KalugaButton.Plain> = listOf(
         KalugaButton.Plain(this, style, isEnabled) {
             showAlert(this)
-        }
+        },
     )
 }

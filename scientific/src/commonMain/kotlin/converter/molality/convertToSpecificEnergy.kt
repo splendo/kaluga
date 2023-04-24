@@ -65,5 +65,5 @@ infix operator fun ScientificValue<PhysicalQuantity.Molality, USCustomaryMolalit
 
 @JvmName("molalityTimesMolarEnergy")
 infix operator fun <MolalityUnit : Molality, MolarEnergyUnit : MolarEnergy> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.times(
-    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>,
 ) = molarEnergy * this

@@ -42,7 +42,7 @@ abstract class KalugaViewModelComposeActivity<ViewModel : BaseLifecycleViewModel
 
         setContent {
             CompositionLocalProvider(
-                LocalAppCompatActivity provides this
+                LocalAppCompatActivity provides this,
             ) {
                 RootView {
                     ViewModelComposable(viewModel = createViewModel()) {

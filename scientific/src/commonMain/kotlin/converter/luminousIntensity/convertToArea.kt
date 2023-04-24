@@ -33,25 +33,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("luminousIntensityDivStilb")
 infix operator fun <LuminousIntensityUnit : LuminousIntensity> ScientificValue<PhysicalQuantity.LuminousIntensity, LuminousIntensityUnit>.div(
-    luminance: ScientificValue<PhysicalQuantity.Luminance, Stilb>
+    luminance: ScientificValue<PhysicalQuantity.Luminance, Stilb>,
 ) = SquareCentimeter.area(this, luminance)
 
 @JvmName("luminousIntensityDivLambert")
 infix operator fun <LuminousIntensityUnit : LuminousIntensity> ScientificValue<PhysicalQuantity.LuminousIntensity, LuminousIntensityUnit>.div(
-    luminance: ScientificValue<PhysicalQuantity.Luminance, Lambert>
+    luminance: ScientificValue<PhysicalQuantity.Luminance, Lambert>,
 ) = SquareCentimeter.area(this, luminance)
 
 @JvmName("luminousIntensityDivMetricLuminance")
 infix operator fun <LuminousIntensityUnit : LuminousIntensity, LuminanceUnit : MetricLuminance> ScientificValue<PhysicalQuantity.LuminousIntensity, LuminousIntensityUnit>.div(
-    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>
+    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>,
 ) = SquareMeter.area(this, luminance)
 
 @JvmName("luminousIntensityDivImperialLuminance")
 infix operator fun <LuminousIntensityUnit : LuminousIntensity, LuminanceUnit : ImperialLuminance> ScientificValue<PhysicalQuantity.LuminousIntensity, LuminousIntensityUnit>.div(
-    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>
+    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>,
 ) = SquareFoot.area(this, luminance)
 
 @JvmName("luminousIntensityDivLuminance")
 infix operator fun <LuminousIntensityUnit : LuminousIntensity, LuminanceUnit : Luminance> ScientificValue<PhysicalQuantity.LuminousIntensity, LuminousIntensityUnit>.div(
-    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>
+    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>,
 ) = SquareMeter.area(this, luminance)

@@ -32,8 +32,9 @@ import kotlin.time.Duration.Companion.milliseconds
 enum class HUDStyle {
     /** System appearance */
     SYSTEM,
+
     /** Custom appearance */
-    CUSTOM
+    CUSTOM,
 }
 
 /**
@@ -125,6 +126,7 @@ fun BaseHUD.dismissAfter(duration: Duration, animated: Boolean = true): BaseHUD 
         dismiss(animated)
     }
 }
+
 /**
  * Dismisses the indicator after [timeMillis] milliseconds
  * @param timeMillis The number of milliseconds to wait
@@ -153,5 +155,5 @@ fun BaseHUD.Builder.build(coroutineScope: CoroutineScope, initialize: HudConfig.
     HudConfig.Builder().apply {
         initialize()
     }.build(),
-    coroutineScope
+    coroutineScope,
 )

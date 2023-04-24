@@ -26,7 +26,7 @@ typealias RouteContentBuilder = NavGraphBuilder.(StateFlow<NavHostController?>) 
  * @param navigationMapper A mapper that converts an [Action] handled by this navigator into a [ComposableNavSpec]
  */
 sealed class ComposableNavigator<Action : NavigationAction<*>>(
-    private val navigationMapper: @Composable (Action) -> ComposableNavSpec
+    private val navigationMapper: @Composable (Action) -> ComposableNavSpec,
 ) : Navigator<Action>, ComposableLifecycleSubscribable {
 
     protected abstract val routeController: RouteController?
@@ -80,7 +80,7 @@ class RootNavHostComposableNavigator<Action : NavigationAction<*>>(
     navigationMapper: @Composable (Action) -> ComposableNavSpec,
     parentRouteController: RouteController? = null,
     rootResultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
-    contentBuilder: RouteContentBuilder
+    contentBuilder: RouteContentBuilder,
 ) : ComposableNavigator<Action>(navigationMapper) {
 
     private val navHostController = MutableStateFlow<NavHostController?>(null)
@@ -103,7 +103,7 @@ class RootNavHostComposableNavigator<Action : NavigationAction<*>>(
                 // Render original content
                 content()
             },
-            builder = contentBuilder
+            builder = contentBuilder,
         )
     }
 }
@@ -120,7 +120,7 @@ class RootNavHostComposableNavigator<Action : NavigationAction<*>>(
 sealed class ProvidingNavHostComposableNavigator<Action : NavigationAction<*>, Provider>(
     override val routeController: ProvidingNavHostRouteController<Provider>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
-    navigationMapper: @Composable (Action) -> ComposableNavSpec
+    navigationMapper: @Composable (Action) -> ComposableNavSpec,
 ) : ComposableNavigator<Action>(navigationMapper) {
 
     override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content ->
@@ -142,11 +142,11 @@ class NavHostComposableNavigator<Action : NavigationAction<*>>(
     navHostController: StateFlow<NavHostController?>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
     parentRouteController: RouteController? = null,
-    navigationMapper: @Composable (Action) -> ComposableNavSpec
+    navigationMapper: @Composable (Action) -> ComposableNavSpec,
 ) : ProvidingNavHostComposableNavigator<Action, NavHostController>(
     NavHostRouteController(navHostController, parentRouteController),
     resultHandlers,
-    navigationMapper
+    navigationMapper,
 )
 
 /**
@@ -161,11 +161,11 @@ class BottomSheetContentNavHostComposableNavigator<Action : NavigationAction<*>>
     bottomSheetNavigator: StateFlow<BottomSheetNavigatorState?>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
     parentRouteController: RouteController? = null,
-    navigationMapper: @Composable (Action) -> ComposableNavSpec
+    navigationMapper: @Composable (Action) -> ComposableNavSpec,
 ) : ProvidingNavHostComposableNavigator<Action, BottomSheetNavigatorState>(
     BottomSheetContentRouteController(bottomSheetNavigator, parentRouteController),
     resultHandlers,
-    navigationMapper
+    navigationMapper,
 )
 
 /**
@@ -178,7 +178,7 @@ class BottomSheetContentNavHostComposableNavigator<Action : NavigationAction<*>>
 class BottomSheetSheetContentNavHostComposableNavigator<Action : NavigationAction<*>>(
     bottomSheetNavigator: StateFlow<BottomSheetNavigatorState?>,
     resultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
-    navigationMapper: @Composable (Action) -> ComposableNavSpec
+    navigationMapper: @Composable (Action) -> ComposableNavSpec,
 ) : ComposableNavigator<Action>(navigationMapper) {
 
     private val coroutineScopeState = MutableStateFlow<CoroutineScope?>(null)
@@ -198,7 +198,7 @@ class BottomSheetSheetContentNavHostComposableNavigator<Action : NavigationActio
  * @param navigationMapper Maps [Action] to a [ComposableNavSpec.LaunchedNavigation] to be navigated to.
  */
 class LaunchedComposableNavigator<Action : NavigationAction<*>>(
-    navigationMapper: @Composable (Action) -> ComposableNavSpec.LaunchedNavigation
+    navigationMapper: @Composable (Action) -> ComposableNavSpec.LaunchedNavigation,
 ) : ComposableNavigator<Action>(navigationMapper) {
     override val routeController: RouteController? = null
     override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content -> content() }

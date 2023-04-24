@@ -34,7 +34,7 @@ infix operator fun <
     Unit : AbstractScientificUnit<Quantity>,
     DimensionlessUnit : Dimensionless,
     > ScientificValue<Quantity, Unit>.times(
-    value: ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>
+    value: ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>,
 ) = timesDimensionless(value, ::DefaultScientificValue)
 
 @JvmName("dimensionlessTimesValue")
@@ -43,17 +43,17 @@ infix operator fun <
     Unit : AbstractScientificUnit<Quantity>,
     DimensionlessUnit : Dimensionless,
     > ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>.times(
-    value: ScientificValue<Quantity, Unit>
+    value: ScientificValue<Quantity, Unit>,
 ) = value.timesDimensionless(this, ::DefaultScientificValue)
 
 fun <
     Quantity : PhysicalQuantity.PhysicalQuantityWithDimension,
     Unit : ScientificUnit<Quantity>,
     DimensionlessUnit : Dimensionless,
-    Value : ScientificValue<Quantity, Unit>
+    Value : ScientificValue<Quantity, Unit>,
     > ScientificValue<Quantity, Unit>.timesDimensionless(
     modifier: ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>,
-    factory: (Decimal, Unit) -> Value
+    factory: (Decimal, Unit) -> Value,
 ) = unit.byMultiplying(this, modifier, factory)
 
 @JvmName("valueDivDimensionless")
@@ -62,7 +62,7 @@ infix operator fun <
     Unit : AbstractScientificUnit<Quantity>,
     DimensionlessUnit : Dimensionless,
     > ScientificValue<Quantity, Unit>.div(
-    value: ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>
+    value: ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>,
 ) = divDimensionless(value, ::DefaultScientificValue)
 
 @JvmName("dimensionlessDivValue")
@@ -71,15 +71,15 @@ infix operator fun <
     Unit : AbstractScientificUnit<Quantity>,
     DimensionlessUnit : Dimensionless,
     > ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>.div(
-    value: ScientificValue<Quantity, Unit>
+    value: ScientificValue<Quantity, Unit>,
 ) = value.divDimensionless(this, ::DefaultScientificValue)
 
 fun <
     Quantity : PhysicalQuantity.PhysicalQuantityWithDimension,
     Unit : ScientificUnit<Quantity>,
     DimensionlessUnit : Dimensionless,
-    Value : ScientificValue<Quantity, Unit>
+    Value : ScientificValue<Quantity, Unit>,
     > ScientificValue<Quantity, Unit>.divDimensionless(
     modifier: ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>,
-    factory: (Decimal, Unit) -> Value
+    factory: (Decimal, Unit) -> Value,
 ) = unit.byDividing(this, modifier, factory)

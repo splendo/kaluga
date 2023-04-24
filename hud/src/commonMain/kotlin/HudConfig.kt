@@ -22,7 +22,7 @@ data class HudConfig(
     /** Style of the HUD */
     val style: HUDStyle = HUDStyle.SYSTEM,
     /** Optional title of the HUD */
-    val title: String? = null
+    val title: String? = null,
 ) {
 
     class Builder {

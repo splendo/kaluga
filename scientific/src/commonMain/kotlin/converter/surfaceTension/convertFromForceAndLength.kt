@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     ForceUnit : Force,
     LengthUnit : Length,
-    SurfaceTensionUnit : SurfaceTension
+    SurfaceTensionUnit : SurfaceTension,
     > SurfaceTensionUnit.surfaceTension(
     force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = surfaceTension(force, length, ::DefaultScientificValue)
 
 @JvmName("surfaceTensionFromForceAndLength")
@@ -42,9 +42,9 @@ fun <
     ForceUnit : Force,
     LengthUnit : Length,
     SurfaceTensionUnit : SurfaceTension,
-    Value : ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>
+    Value : ScientificValue<PhysicalQuantity.SurfaceTension, SurfaceTensionUnit>,
     > SurfaceTensionUnit.surfaceTension(
     force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-    factory: (Decimal, SurfaceTensionUnit) -> Value
+    factory: (Decimal, SurfaceTensionUnit) -> Value,
 ) = byDividing(force, length, factory)

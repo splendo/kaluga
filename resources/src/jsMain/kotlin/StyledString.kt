@@ -32,7 +32,7 @@ actual data class StyledString(
     val string: String,
     actual val defaultTextStyle: KalugaTextStyle,
     actual val linkStyle: LinkStyle?,
-    val attributed: List<Pair<StringStyleAttribute, IntRange>>
+    val attributed: List<Pair<StringStyleAttribute, IntRange>>,
 )
 
 /**
@@ -46,7 +46,7 @@ actual data class StyledString(
 actual class StyledStringBuilder constructor(
     string: String,
     defaultTextStyle: KalugaTextStyle,
-    linkStyle: LinkStyle?
+    linkStyle: LinkStyle?,
 ) {
 
     /**
@@ -79,7 +79,7 @@ actual class StyledStringBuilder constructor(
         styledString = styledString.copy(
             attributed = styledString.attributed.toMutableList().apply {
                 add(Pair(attribute, range))
-            }
+            },
         )
     }
 

@@ -37,7 +37,7 @@ class DynamicViscosityTest {
             (Pascal x Second),
             0.1450377,
             PoundSquareInch x Millisecond,
-            7
+            7,
         )
     }
 
@@ -49,11 +49,27 @@ class DynamicViscosityTest {
         assertEqualScientificValue(4(PoundSquareInch x Second), 2(SquareInch per Second) * (24 * ImperialStandardGravityAcceleration.value)(Pound per CubicInch), 5)
         assertEqualScientificValue(4(PoundSquareInch x Second), (24 * ImperialStandardGravityAcceleration.value)(Pound per CubicInch) * 2(SquareInch per Second), 5)
 
-        assertEqualScientificValue(4(PoundSquareInch.ukImperial x Second), 2(SquareInch per Second) * (24 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial per CubicInch), 5)
-        assertEqualScientificValue(4(PoundSquareInch.ukImperial x Second), (24 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial per CubicInch) * 2(SquareInch per Second), 5)
+        assertEqualScientificValue(
+            4(PoundSquareInch.ukImperial x Second),
+            2(SquareInch per Second) * (24 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial per CubicInch),
+            5,
+        )
+        assertEqualScientificValue(
+            4(PoundSquareInch.ukImperial x Second),
+            (24 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial per CubicInch) * 2(SquareInch per Second),
+            5,
+        )
 
-        assertEqualScientificValue(4(PoundSquareInch.usCustomary x Second), 2(SquareInch per Second) * (24 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary per CubicInch), 5)
-        assertEqualScientificValue(4(PoundSquareInch.usCustomary x Second), (24 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary per CubicInch) * 2(SquareInch per Second), 5)
+        assertEqualScientificValue(
+            4(PoundSquareInch.usCustomary x Second),
+            2(SquareInch per Second) * (24 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary per CubicInch),
+            5,
+        )
+        assertEqualScientificValue(
+            4(PoundSquareInch.usCustomary x Second),
+            (24 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary per CubicInch) * 2(SquareInch per Second),
+            5,
+        )
 
         assertEquals(4(Pascal x Second), 2(SquareMeter per Second) * 2(Kilogram per CubicMeter).convert(Pound per CubicFoot))
         assertEquals(4(Pascal x Second), 2(Kilogram per CubicMeter).convert(Pound per CubicFoot) * 2(SquareMeter per Second))
@@ -65,27 +81,27 @@ class DynamicViscosityTest {
         assertEqualScientificValue(
             1(PoundSquareInch x Second),
             (2 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)) / 2(
-                SquareInch
+                SquareInch,
             ),
-            5
+            5,
         )
         assertEqualScientificValue(
             1(PoundSquareInch.ukImperial x Second),
             (2 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial x (Foot per Second)) / 2(
-                SquareInch
+                SquareInch,
             ),
-            5
+            5,
         )
         assertEqualScientificValue(
             1(PoundSquareInch.usCustomary x Second),
             (2 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary x (Foot per Second)) / 2(
-                SquareInch
+                SquareInch,
             ),
-            5
+            5,
         )
         assertEquals(
             1(Pascal x Second),
-            2(Kilogram x (Meter per Second)) / 2(SquareMeter).convert(SquareFoot)
+            2(Kilogram x (Meter per Second)) / 2(SquareMeter).convert(SquareFoot),
         )
     }
 

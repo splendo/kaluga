@@ -29,20 +29,20 @@ import kotlin.jvm.JvmName
 
 @JvmName("amountOfSubstanceTimesMetricAndImperialMolarEnergy")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.times(
-    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>,
 ) = molarEnergy * this
 
 @JvmName("amountOfSubstanceTimesMetricMolarEnergy")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.times(
-    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MetricMolarEnergy>
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MetricMolarEnergy>,
 ) = molarEnergy * this
 
 @JvmName("amountOfSubstanceTimesImperialMolarEnergy")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.times(
-    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, ImperialMolarEnergy>
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, ImperialMolarEnergy>,
 ) = molarEnergy * this
 
 @JvmName("amountOfSubstanceTimesMolarEnergy")
 infix operator fun <MolarEnergyUnit : MolarEnergy, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.times(
-    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>
+    molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>,
 ) = molarEnergy * this

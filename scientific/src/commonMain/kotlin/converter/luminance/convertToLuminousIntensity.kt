@@ -27,5 +27,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("luminanceTimesArea")
 infix operator fun <LuminanceUnit : Luminance, AreaUnit : Area> ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>.times(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = Candela.luminousIntensity(this, area)

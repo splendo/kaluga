@@ -37,37 +37,37 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricLengthDivMetricAreaDensity")
 infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>,
 ) = ((1(areaDensity.unit.per) * 1(unit)).unit per areaDensity.unit.weight).specificVolume(
     this,
-    areaDensity
+    areaDensity,
 )
 
 @JvmName("imperialLengthDivImperialAreaDensity")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>,
 ) = ((1(areaDensity.unit.per) * 1(unit)).unit per areaDensity.unit.weight).specificVolume(
     this,
-    areaDensity
+    areaDensity,
 )
 
 @JvmName("imperialLengthDivUKImperialAreaDensity")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>,
 ) = ((1(areaDensity.unit.per) * 1(unit)).unit per areaDensity.unit.weight).specificVolume(
     this,
-    areaDensity
+    areaDensity,
 )
 
 @JvmName("imperialLengthDivUSCustomaryAreaDensity")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>,
 ) = ((1(areaDensity.unit.per) * 1(unit)).unit per areaDensity.unit.weight).specificVolume(
     this,
-    areaDensity
+    areaDensity,
 )
 
 @JvmName("lengthDivAreaDensity")
 infix operator fun <AreaDensityUnit : AreaDensity, LengthUnit : Length> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>,
 ) = (CubicMeter per Kilogram).specificVolume(this, areaDensity)

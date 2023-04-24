@@ -39,7 +39,7 @@ import kotlin.time.Duration
 actual class DefaultCameraPermissionManager(
     context: Context,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BasePermissionManager<CameraPermission>(CameraPermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
@@ -49,7 +49,7 @@ actual class DefaultCameraPermissionManager(
         coroutineScope,
         logTag,
         logger,
-        permissionHandler
+        permissionHandler,
     )
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
 
@@ -82,7 +82,7 @@ actual class DefaultCameraPermissionManager(
  */
 actual class CameraPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CameraPermissionManager {
+    override fun create(settings: Settings, coroutineScope: CoroutineScope): CameraPermissionManager {
         return DefaultCameraPermissionManager(context.context, settings, coroutineScope)
     }
 }

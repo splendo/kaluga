@@ -4,10 +4,10 @@ plugins {
     id("convention.publication")
     id("com.android.library")
     id("org.jetbrains.dokka")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("org.jmailen.kotlinter")
 }
 
-publishableComponent()
+publishableComponent("test")
 
 kotlin {
     sourceSets {
@@ -17,12 +17,14 @@ kotlin {
                 api(project(":test-utils-architecture"))
                 api(project(":test-utils-base"))
                 api(project(":test-utils-bluetooth"))
+                api(project(":test-utils-date-time-picker"))
                 api(project(":test-utils-hud"))
                 api(project(":test-utils-keyboard"))
                 api(project(":test-utils-koin"))
                 api(project(":test-utils-location"))
                 api(project(":test-utils-permissions"))
                 api(project(":test-utils-resources"))
+                api(project(":test-utils-service"))
                 api(project(":test-utils-system"))
             }
         }

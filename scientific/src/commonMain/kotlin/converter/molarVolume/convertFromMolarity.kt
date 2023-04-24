@@ -31,15 +31,15 @@ fun <
     MolarityUnit : Molarity,
     MolarVolumeUnit : MolarVolume,
     > MolarVolumeUnit.molarVolume(
-    molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>
+    molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>,
 ) = molarVolume(molarity, ::DefaultScientificValue)
 
 @JvmName("molarVolumeFromInvertedMolarity")
 fun <
     MolarityUnit : Molarity,
     MolarVolumeUnit : MolarVolume,
-    Value : ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>
+    Value : ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>,
     > MolarVolumeUnit.molarVolume(
     molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>,
-    factory: (Decimal, MolarVolumeUnit) -> Value
+    factory: (Decimal, MolarVolumeUnit) -> Value,
 ) = byInverting(molarity, factory)

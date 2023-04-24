@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     VolumetricFlowUnit : VolumetricFlow,
     AreaUnit : Area,
-    VolumetricFluxUnit : VolumetricFlux
+    VolumetricFluxUnit : VolumetricFlux,
     > VolumetricFlowUnit.volumetricFlow(
     volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, VolumetricFluxUnit>,
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = volumetricFlow(volumetricFlux, area, ::DefaultScientificValue)
 
 @JvmName("volumetricFlowFromVolumetricFluxAndArea")
@@ -42,9 +42,9 @@ fun <
     VolumetricFlowUnit : VolumetricFlow,
     AreaUnit : Area,
     VolumetricFluxUnit : VolumetricFlux,
-    Value : ScientificValue<PhysicalQuantity.VolumetricFlow, VolumetricFlowUnit>
+    Value : ScientificValue<PhysicalQuantity.VolumetricFlow, VolumetricFlowUnit>,
     > VolumetricFlowUnit.volumetricFlow(
     volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, VolumetricFluxUnit>,
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-    factory: (Decimal, VolumetricFlowUnit) -> Value
+    factory: (Decimal, VolumetricFlowUnit) -> Value,
 ) = byMultiplying(volumetricFlux, area, factory)

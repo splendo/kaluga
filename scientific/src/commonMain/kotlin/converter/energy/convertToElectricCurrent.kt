@@ -39,5 +39,5 @@ infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Ener
 
 @JvmName("energyDivFlux")
 infix operator fun <EnergyUnit : Energy, FluxUnit : MagneticFlux> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    flux: ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>
+    flux: ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>,
 ) = Ampere.current(this, flux)

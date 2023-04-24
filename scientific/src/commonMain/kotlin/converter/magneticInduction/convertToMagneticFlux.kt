@@ -34,5 +34,5 @@ infix operator fun ScientificValue<PhysicalQuantity.MagneticInduction, Gauss>.ti
 
 @JvmName("inductionTimesArea")
 infix operator fun <InductionUnit : MagneticInduction, AreaUnit : Area> ScientificValue<PhysicalQuantity.MagneticInduction, InductionUnit>.times(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = Weber.flux(this, area)

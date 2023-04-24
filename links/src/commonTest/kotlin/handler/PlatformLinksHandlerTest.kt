@@ -30,13 +30,13 @@ abstract class PlatformLinksHandlerTest(private val linksValidator: PlatformLink
             "https://test.io",
             "http://test.io",
             "https://test.io?isValid=true",
-            "https://test.io?list_1=first&list_2=second&list_3=third"
+            "https://test.io?list_1=first&list_2=second&list_3=third",
         )
 
         val INVALID_URLS = listOf(
             "notvalid.com",
             "not valid",
-            "httpss://notvalid.com?/?isValid=false"
+            "httpss://notvalid.com?/?isValid=false",
         )
     }
 
