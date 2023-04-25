@@ -64,6 +64,7 @@ class ActivityNavigator<Action : NavigationAction<*>>(
     private fun navigate(spec: NavigationSpec, bundle: NavigationBundle<*>?) {
         when (spec) {
             is NavigationSpec.Activity<*> -> navigateToActivity(spec, bundle)
+            is NavigationSpec.Contract<*, *> -> navigateForContract(spec)
             is NavigationSpec.Close -> closeActivity(spec, bundle)
             is NavigationSpec.Fragment -> navigateToFragment(spec, bundle)
             is NavigationSpec.RemoveFragment -> removeFragment(spec, bundle)
@@ -101,6 +102,13 @@ class ActivityNavigator<Action : NavigationAction<*>>(
             is NavigationSpec.Activity.LaunchType.ActivityContract<*> -> requestType.tryAndGetContract(activity)
                 ?.launch(intent) ?: throw RuntimeException("Activity is not an instance of ${requestType.activityClass.simpleName}")
         }
+    }
+
+    private fun navigateForContract(
+        contractSpec: NavigationSpec.Contract<*, *>,
+    ) {
+        val activity = getActivity()
+        contractSpec.tryAndLaunch(activity) ?: throw RuntimeException("Activity is not an instance of ${contractSpec.activityClass.simpleName}")
     }
 
     private fun closeActivity(closeSpec: NavigationSpec.Close, bundle: NavigationBundle<*>?) {

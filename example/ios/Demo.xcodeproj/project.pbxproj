@@ -20,6 +20,7 @@
 		201EA22529390A7F00C562EC /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA22429390A7F00C562EC /* ButtonView.swift */; };
 		201EA22729390CFE00C562EC /* LabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA22629390CFE00C562EC /* LabelView.swift */; };
 		201EA229293B8C6600C562EC /* ColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA228293B8C6600C562EC /* ColorView.swift */; };
+		2025CA2B29C9FC480037DF68 /* MediaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2025CA2A29C9FC480037DF68 /* MediaViewController.swift */; };
 		2034C13A2937B494003A6D19 /* PartialSheet in Frameworks */ = {isa = PBXBuildFile; productRef = 2034C1392937B494003A6D19 /* PartialSheet */; };
 		20524A24257BEA1E0054B57E /* DateTimePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */; };
 		205747572397C9C400CDE25E /* KeyboardManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */; };
@@ -141,6 +142,7 @@
 		201EA22429390A7F00C562EC /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
 		201EA22629390CFE00C562EC /* LabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelView.swift; sourceTree = "<group>"; };
 		201EA228293B8C6600C562EC /* ColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorView.swift; sourceTree = "<group>"; };
+		2025CA2A29C9FC480037DF68 /* MediaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaViewController.swift; sourceTree = "<group>"; };
 		20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimePickerViewController.swift; sourceTree = "<group>"; };
 		205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManagerViewController.swift; sourceTree = "<group>"; };
 		205AF6552488F017001BD99E /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Demo/Base.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -214,7 +216,7 @@
 		896B16F89BA730B7FBF42625 /* RoutingState.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = RoutingState.generated.swift; sourceTree = "<group>"; };
 		89DAFF461D97215C4B63A0A1 /* PlatformMappers.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = PlatformMappers.generated.swift; sourceTree = "<group>"; };
 		93070CB7E1723F904DBEDD26 /* DefaultValues.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = DefaultValues.generated.swift; sourceTree = "<group>"; };
-		944D74BABB71F3B76E746EC8 /* TintedImage+Image.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; lastKnownFileType = sourcecode.swift; name = "TintedImage+Image.generated.swift"; path = "TintedImage+Image.generated.swift"; sourceTree = "<group>"; };
+		944D74BABB71F3B76E746EC8 /* TintedImage+Image.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "TintedImage+Image.generated.swift"; sourceTree = "<group>"; };
 		978348A6235DF586005B140B /* PermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionViewController.swift; sourceTree = "<group>"; };
 		A1AD210B87A46DBD057A7D28 /* Navigation.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Navigation.generated.swift; sourceTree = "<group>"; };
 		A8678F48E60D40E6AB06177C /* LifecycleViewModel.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = LifecycleViewModel.generated.swift; sourceTree = "<group>"; };
@@ -255,6 +257,14 @@
 				201EA2182937C32000C562EC /* SwiftUIOrUIKitSelectionViewController.swift */,
 			);
 			path = UITypeSelection;
+			sourceTree = "<group>";
+		};
+		2025CA2929C9FC310037DF68 /* Media */ = {
+			isa = PBXGroup;
+			children = (
+				2025CA2A29C9FC480037DF68 /* MediaViewController.swift */,
+			);
+			path = Media;
 			sourceTree = "<group>";
 		};
 		20524A22257BEA020054B57E /* DateTimePicker */ = {
@@ -450,6 +460,7 @@
 		746CAD9D15ECB24F4ED84E11 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				2025CA2929C9FC310037DF68 /* Media */,
 				20D4E17A296D561500A046D6 /* Scientific */,
 				20BB9E7829645A8E0096E836 /* DateTime */,
 				201EA2172937C2CC00C562EC /* UITypeSelection */,
@@ -785,6 +796,7 @@
 				207537AB29A64D3000D273F2 /* ImagesViewController.swift in Sources */,
 				42B12B5CFE87189A5F539B92 /* HasDefaultValue.generated.swift in Sources */,
 				D174F54A364898AC7E0962FC /* KalugaBackgroundStyle+SwiftUI.generated.swift in Sources */,
+				2025CA2B29C9FC480037DF68 /* MediaViewController.swift in Sources */,
 				20FFB48C293EC3CB005CF1C8 /* ArchitectureDetailsView.swift in Sources */,
 				D976FB8DC34A35578A995B2E /* KalugaButton+SwiftUI.generated.swift in Sources */,
 				7C49888336FE57AAA89E7958 /* KalugaDate+Extensions.generated.swift in Sources */,

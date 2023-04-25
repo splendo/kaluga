@@ -38,6 +38,7 @@ import com.splendo.kaluga.example.keyboard.KeyboardActivity
 import com.splendo.kaluga.example.link.LinksActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
+import com.splendo.kaluga.example.media.MediaActivity
 import com.splendo.kaluga.example.permissions.PermissionsListActivity
 import com.splendo.kaluga.example.resources.ResourcesActivity
 import com.splendo.kaluga.example.scientific.ScientificActivity
@@ -63,6 +64,7 @@ class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>() {
                     FeatureListNavigationAction.Architecture -> NavigationSpec.Activity<ArchitectureActivity>()
                     FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity<KeyboardActivity>()
                     FeatureListNavigationAction.Links -> NavigationSpec.Activity<LinksActivity>()
+                    FeatureListNavigationAction.Media -> NavigationSpec.Activity<MediaActivity>()
                     FeatureListNavigationAction.System -> NavigationSpec.Activity<SystemActivity>()
                     FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity<BluetoothActivity>()
                     FeatureListNavigationAction.Beacons -> NavigationSpec.Activity<BeaconsActivity>()

@@ -1078,6 +1078,22 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Clo
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Companion {
 }
 
+public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Contract : com/splendo/kaluga/architecture/navigation/NavigationSpec {
+	public fun <init> (Lkotlin/reflect/KClass;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
+	public final fun component1 ()Lkotlin/reflect/KClass;
+	public final fun component2 ()Ljava/lang/Object;
+	public final fun component3 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy (Lkotlin/reflect/KClass;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Contract;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Contract;Lkotlin/reflect/KClass;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Contract;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActivityClass ()Lkotlin/reflect/KClass;
+	public final fun getInput ()Ljava/lang/Object;
+	public final fun getProvideResultLauncher ()Lkotlin/jvm/functions/Function1;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun tryAndLaunch (Landroid/app/Activity;)Lkotlin/Unit;
+}
+
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$CustomIntent : com/splendo/kaluga/architecture/navigation/NavigationSpec {
 	public fun <init> (Landroid/content/Intent;)V
 	public final fun component1 ()Landroid/content/Intent;

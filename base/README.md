@@ -22,6 +22,7 @@ You can run code on the OS Main Thread by using `runOnMain`. Use the `MainQueueD
 ## Data Accessors
 - Use `byOrdinalOrDefault` to get an Enum value by ordinal or the default value if no such value exists.
 - (Android Only) Use the `ApplicationHolder` class to get and set the current `Application`. This is useful for default access to the ApplicationContext
+- (iOS Only) you can flow on Key-Value Observed values by using the `NSObject.observeKeyValueAsFlow(keyPath:options:)` method
 
 ## Data Converters
 - Convert a `ByteArray` to a hexadecimal String using `toHexString()`

@@ -22,13 +22,28 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec.DocumentSelecto
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.Email.EmailSettings
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.ImagePicker.MediaType
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.Message.MessageSettings
-import com.splendo.kaluga.architecture.navigation.NavigationSpec.Nested.Type
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.ThirdParty.OpenMode
 import platform.CoreFoundation.CFStringRef
 import platform.CoreServices.kUTTypeImage
 import platform.CoreServices.kUTTypeMovie
 import platform.Foundation.NSData
 import platform.Foundation.NSURL
+import platform.MediaPlayer.MPMediaPickerController
+import platform.MediaPlayer.MPMediaPickerControllerDelegateProtocol
+import platform.MediaPlayer.MPMediaType
+import platform.MediaPlayer.MPMediaTypeAny
+import platform.MediaPlayer.MPMediaTypeAnyAudio
+import platform.MediaPlayer.MPMediaTypeAnyVideo
+import platform.MediaPlayer.MPMediaTypeAudioBook
+import platform.MediaPlayer.MPMediaTypeAudioITunesU
+import platform.MediaPlayer.MPMediaTypeHomeVideo
+import platform.MediaPlayer.MPMediaTypeMovie
+import platform.MediaPlayer.MPMediaTypeMusic
+import platform.MediaPlayer.MPMediaTypeMusicVideo
+import platform.MediaPlayer.MPMediaTypePodcast
+import platform.MediaPlayer.MPMediaTypeTVShow
+import platform.MediaPlayer.MPMediaTypeVideoITunesU
+import platform.MediaPlayer.MPMediaTypeVideoPodcast
 import platform.MessageUI.MFMailComposeViewController
 import platform.MessageUI.MFMailComposeViewControllerDelegateProtocol
 import platform.MessageUI.MFMessageComposeViewController
@@ -120,7 +135,7 @@ sealed class NavigationSpec {
 
     /**
      * Adds a nested [UIViewController] to a container [UIView].
-     * @param type The [Type] of presentation
+     * @param type The [Nested.Type] of presentation
      * @param containerView The [UIView] to which the [UIViewController] should be added. Must be a child of the parent
      * @param nested Function to create the [UIViewController] to add to the container view
      * @param constraints Optional function that takes the child and container view and returns the constraints to set. If left empty, the child will default to match the container view size
@@ -151,6 +166,7 @@ sealed class NavigationSpec {
 
     /**
      * Presents a [UIImagePickerController] to the parent
+     * @param sourceType the [UIImagePickerControllerSourceType] to pick
      * @param mediaType Set of allowed [MediaType]s to pick
      * @param navigationDelegate The [UINavigationControllerDelegateProtocol] added to the [UIImagePickerController]
      * @param imagePickerDelegate The [UIImagePickerControllerDelegateProtocol] added to the [UIImagePickerController]
@@ -159,7 +175,7 @@ sealed class NavigationSpec {
      */
     data class ImagePicker(
         val sourceType: UIImagePickerControllerSourceType = UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypePhotoLibrary,
-        val mediaType: Set<MediaType> = setOf(MediaType.Image),
+        val mediaType: Set<MediaType> = setOf(MediaType.IMAGE),
         val navigationDelegate: UINavigationControllerDelegateProtocol,
         val imagePickerDelegate: UIImagePickerControllerDelegateProtocol,
         val animated: Boolean = false,
@@ -217,13 +233,61 @@ sealed class NavigationSpec {
         /**
          * The type of media that can be picked
          */
-        sealed class MediaType {
-
-            abstract val typeString: CFStringRef?
-
-            object Image : MediaType() { override val typeString = kUTTypeImage }
-            object Movie : MediaType() { override val typeString = kUTTypeMovie }
+        enum class MediaType(val typeString: CFStringRef?) {
+            IMAGE(kUTTypeImage),
+            MOVIE(kUTTypeMovie),
         }
+    }
+
+    /**
+     * Presents a [MPMediaPickerController] to the parent
+     * @param types the set of [MediaPicker.Type]
+     * @param delegate the [MPMediaPickerControllerDelegateProtocol] added to the [MPMediaPickerController]
+     * @param settings the [MediaPicker.Settings] to configure the [MPMediaPickerController]
+     * @param animated Specifies whether transition should be animated
+     * @param completion Optional function called when presentation is completed
+     */
+    data class MediaPicker(
+        val types: Set<Type>,
+        val delegate: MPMediaPickerControllerDelegateProtocol? = null,
+        val settings: Settings = Settings(),
+        val animated: Boolean = false,
+        val completion: (() -> Unit)? = null,
+    ) : NavigationSpec() {
+
+        /**
+         * A Media Type
+         * @property mediaType the associated [MPMediaType]
+         */
+        enum class Type(val mediaType: MPMediaType) {
+            MUSIC(MPMediaTypeMusic),
+            PODCAST(MPMediaTypePodcast),
+            AUDIOBOOK(MPMediaTypeAudioBook),
+            AUDIO_ITUNES_U(MPMediaTypeAudioITunesU),
+            ANY_AUDIO(MPMediaTypeAnyAudio),
+            MOVIE(MPMediaTypeMovie),
+            TV_SHOW(MPMediaTypeTVShow),
+            VIDEO_PODCAST(MPMediaTypeVideoPodcast),
+            MUSIC_VIDEO(MPMediaTypeMusicVideo),
+            VIDEO_ITUNES_U(MPMediaTypeVideoITunesU),
+            HOME_VIDEO(MPMediaTypeHomeVideo),
+            ANY_VIDEO(MPMediaTypeAnyVideo),
+            ANY(MPMediaTypeAny),
+        }
+
+        /**
+         * Settings to configure a [MPMediaPickerController]
+         * @property allowsPickingMultipleItems A Boolean value specifying the default selection behavior for a media item picker.
+         * @property showsCloudItems A Boolean value specifying whether to display iCloud Media Library items for a media picker.
+         * @property prompt A prompt, for the user, that appears above the navigation bar buttons.
+         * @property showsItemsWithProtectedAssets A Boolean value specifying if protect assets are displayed.
+         */
+        data class Settings(
+            val allowsPickingMultipleItems: Boolean = false,
+            val showsCloudItems: Boolean = true,
+            val prompt: String? = null,
+            val showsItemsWithProtectedAssets: Boolean = true,
+        )
     }
 
     /**
@@ -249,7 +313,7 @@ sealed class NavigationSpec {
         }
 
         /**
-         * An attachement added to the email
+         * An attachment added to the email
          * @param data [NSData] to add to the email
          * @param mimeType Mime type of the file
          * @param fileName File name of the file
@@ -349,7 +413,7 @@ sealed class NavigationSpec {
          * @param recipients list of phone numbers to send the message to
          * @param subject Optional subject of the message
          * @param body Optional body of the message
-         * @param disableAttachments Disables the user from adding attachements
+         * @param disableAttachments Disables the user from adding attachments
          * @param attachments The list of [Attachment] added to the message
          */
         data class MessageSettings(
@@ -388,7 +452,7 @@ sealed class NavigationSpec {
 
             /**
              * Only navigates whn the app is installed
-             * @param urlScheme The [NSURL] scheme for opening the app
+             * @param url The [NSURL] scheme for opening the app
              */
             data class OnlyWhenInstalled(val url: NSURL) : OpenMode()
 

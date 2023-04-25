@@ -69,6 +69,7 @@ jobs:
           "permissions",
           "location",
           "keyboard",
+          "media",
           "links",
           "resources",
           "review",

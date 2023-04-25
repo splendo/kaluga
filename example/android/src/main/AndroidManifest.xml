@@ -142,6 +142,9 @@
         <activity android:name=".beacons.BeaconsActivity"
             android:label="@string/feature_beacons"
             android:screenOrientation="fullSensor"/>
+        <activity android:name=".media.MediaActivity"
+            android:label="@string/feature_media"
+            android:screenOrientation="fullSensor"/>
         <activity android:name=".resources.ResourcesActivity"
             android:label="@string/feature_resources"
             android:screenOrientation="fullSensor"/>

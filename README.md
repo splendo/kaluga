@@ -111,6 +111,7 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 | [links](links/)                                             | Used for decoding url into an object                                               | com.splendo.kaluga:links                       |
 | [location](location/)                                       | Provides the User' geolocation                                                     | com.splendo.kaluga:location                    |
 | [logging](logging/)                                         | Shared console logging                                                             | com.splendo.kaluga:logging                     |
+| [media](media/)                                             | Playing audio/video                                                                | com.splendo.kaluga:media                       |
 | [base-permissions](base-permissions/)                       | Managing permissions, used in conjunction with modules below                       | com.splendo.kaluga:base-permissions            |
 | [bluetooth-permissions](bluetooth-permissions/)             | Managing bluetooth permissions                                                     | com.splendo.kaluga:bluetooth-permissions       |
 | [calendar-permissions](calendar-permissions/)               | Managing calendar permissions                                                      | com.splendo.kaluga:calendar-permissions        |

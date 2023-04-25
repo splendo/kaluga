@@ -16,11 +16,13 @@
  */
 
 import com.android.build.gradle.LibraryExtension
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
+import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultCInteropSettings
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
@@ -31,11 +33,16 @@ sealed class ComponentType {
     object DataBinding : ComponentType()
 }
 
-fun Project.commonComponent(packageName: String, iosExport: (Framework.() -> Unit)? = null) {
+fun Project.commonComponent(
+    packageName: String,
+    iosMainInterop: (NamedDomainObjectContainer<DefaultCInteropSettings>.() -> Unit)? = null,
+    iosTestInterop: (NamedDomainObjectContainer<DefaultCInteropSettings>.() -> Unit)? = null,
+    iosExport: (Framework.() -> Unit)? = null
+) {
     group = Library.group
     version = Library.version
     kotlinMultiplatform {
-        commonMultiplatformComponent(this@commonComponent, iosExport)
+        commonMultiplatformComponent(this@commonComponent, iosMainInterop, iosTestInterop, iosExport)
     }
 
     commonAndroidComponent(packageName = packageName)
@@ -80,7 +87,12 @@ fun Project.commonComponent(packageName: String, iosExport: (Framework.() -> Uni
     }
 }
 
-fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Project, iosExport: (Framework.() -> Unit)? = null) {
+fun KotlinMultiplatformExtension.commonMultiplatformComponent(
+    currentProject: Project,
+    iosMainInterop: (NamedDomainObjectContainer<DefaultCInteropSettings>.() -> Unit)? = null,
+    iosTestInterop: (NamedDomainObjectContainer<DefaultCInteropSettings>.() -> Unit)? = null,
+    iosExport: (Framework.() -> Unit)? = null
+) {
     targets {
         configureEach {
             compilations.configureEach {
@@ -92,6 +104,12 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(currentProject: Pr
     android("androidLib").publishAllLibraryVariants()
     val target: KotlinNativeTarget.() -> Unit =
         {
+            iosMainInterop?.let { mainInterop ->
+                compilations.getByName("main").cinterops.mainInterop()
+            }
+            iosTestInterop?.let { testInterop ->
+                compilations.getByName("test").cinterops.testInterop()
+            }
             binaries {
                 iosExport?.let { iosExport ->
                     framework {

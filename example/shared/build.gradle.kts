@@ -20,6 +20,7 @@ val modules = listOf(
     "links" to true,
     "location" to false,
     "logging" to false,
+    "media" to true,
     "resources" to true,
     "review" to true,
     "scientific" to false,

@@ -15,9 +15,15 @@
 
  */
 
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
+import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultCInteropSettings
 
-fun Project.publishableComponent(packageName: String) {
-    commonComponent(packageName)
+fun Project.publishableComponent(
+    packageName: String,
+    iosMainInterop: (NamedDomainObjectContainer<DefaultCInteropSettings>.() -> Unit)? = null,
+    iosTestInterop: (NamedDomainObjectContainer<DefaultCInteropSettings>.() -> Unit)? = null,
+) {
+    commonComponent(packageName, iosMainInterop, iosTestInterop)
     publish()
 }

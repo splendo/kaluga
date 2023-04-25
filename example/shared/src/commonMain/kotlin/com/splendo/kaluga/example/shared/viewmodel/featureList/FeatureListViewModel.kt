@@ -34,6 +34,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object Bluetooth : FeatureListNavigationAction()
     object Keyboard : FeatureListNavigationAction()
     object Links : FeatureListNavigationAction()
+    object Media : FeatureListNavigationAction()
     object System : FeatureListNavigationAction()
     object Beacons : FeatureListNavigationAction()
     object Resources : FeatureListNavigationAction()
@@ -50,6 +51,7 @@ sealed class Feature(val title: String) {
     object Keyboard : Feature("feature_keyboard".localized())
     object LoadingIndicator : Feature("feature_hud".localized())
     object Location : Feature("feature_location".localized())
+    object Media : Feature("feature_media".localized())
     object Permissions : Feature("feature_permissions".localized())
     object Links : Feature("feature_links".localized())
     object System : Feature("feature_system".localized())
@@ -72,6 +74,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             Feature.Links,
             Feature.LoadingIndicator,
             Feature.Location,
+            Feature.Media,
             Feature.Permissions,
             Feature.System,
             Feature.Beacons,
@@ -93,6 +96,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
                 is Feature.Links -> FeatureListNavigationAction.Links
                 is Feature.LoadingIndicator -> FeatureListNavigationAction.LoadingIndicator
                 is Feature.Location -> FeatureListNavigationAction.Location
+                is Feature.Media -> FeatureListNavigationAction.Media
                 is Feature.Permissions -> FeatureListNavigationAction.Permissions
                 is Feature.System -> FeatureListNavigationAction.System
                 is Feature.Beacons -> FeatureListNavigationAction.Beacons
