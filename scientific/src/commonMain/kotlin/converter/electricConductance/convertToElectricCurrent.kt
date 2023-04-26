@@ -34,5 +34,5 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricConductance, Absieme
 
 @JvmName("conductanceTimesVoltage")
 infix operator fun <ConductanceUnit : ElectricConductance, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>.times(
-    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
 ) = Ampere.current(this, voltage)

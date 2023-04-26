@@ -27,7 +27,7 @@ sealed class MockPermissionState<P : Permission> {
     enum class ActiveState {
         ALLOWED,
         REQUESTABLE,
-        LOCKED
+        LOCKED,
     }
 
     val requestMock = ::request.mock()

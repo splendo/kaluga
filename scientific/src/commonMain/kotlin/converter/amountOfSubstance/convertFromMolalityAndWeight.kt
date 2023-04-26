@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     WeightUnit : Weight,
-    MolalityUnit : Molality
+    MolalityUnit : Molality,
     > AmountOfSubstanceUnit.amountOfSubstance(
     molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = amountOfSubstance(molality, weight, ::DefaultScientificValue)
 
 @JvmName("amountOfSubstanceFromMolalityAndWeight")
@@ -42,9 +42,9 @@ fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     WeightUnit : Weight,
     MolalityUnit : Molality,
-    Value : ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    Value : ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
     > AmountOfSubstanceUnit.amountOfSubstance(
     molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-    factory: (Decimal, AmountOfSubstanceUnit) -> Value
+    factory: (Decimal, AmountOfSubstanceUnit) -> Value,
 ) = byMultiplying(molality, weight, factory)

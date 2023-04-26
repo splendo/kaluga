@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.device
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.yieldMultiple
@@ -61,7 +62,7 @@ class DeviceTest :
     fun testNotConnectableToDisconnectedStateTransition() {
         // Is not connectable initially
         val configuration = Configuration.DeviceWithDescriptor(
-            advertisementData = MockAdvertisementData(isConnectable = false)
+            advertisementData = MockAdvertisementData(isConnectable = false),
         )
         testWithFlowAndTestContext(configuration) {
             test {
@@ -72,7 +73,7 @@ class DeviceTest :
             // 'Advertise' as connectable
             mainAction {
                 device.advertisementDataDidUpdate(
-                    MockAdvertisementData(isConnectable = true)
+                    MockAdvertisementData(isConnectable = true),
                 )
                 yieldMultiple(2)
             }
@@ -94,11 +95,12 @@ class DeviceTest :
         getDisconnectedState()
         connecting()
         mainAction {
+            connectionManager.disconnectMock.on().doExecute { connectionManager.handleDisconnect() }
             connectionManager.cancelConnecting()
             yieldMultiple(2)
         }
-        disconnecting()
-        disconnect()
+        getDisconnectingState()
+        getDisconnectedState()
     }
 
     @Test
@@ -114,11 +116,9 @@ class DeviceTest :
     fun testReconnect() = testWithFlowAndTestContext(
         Configuration.DeviceWithDescriptor(
             connectionSettings = ConnectionSettings(
-                reconnectionSettings = ConnectionSettings.ReconnectionSettings.Limited(
-                    attempts = 2
-                )
-            )
-        )
+                reconnectionSettings = ConnectionSettings.ReconnectionSettings.Always,
+            ),
+        ),
     ) {
         getDisconnectedState()
         connecting()
@@ -130,8 +130,7 @@ class DeviceTest :
         }
         test {
             connectionManager.connectMock.verify(times = 2)
-            assertIs<ConnectableDeviceState.Reconnecting>(it)
-            assertEquals(0, it.attempt)
+            assertIs<ConnectableDeviceState.Connecting>(it)
         }
         mainAction {
             connectionManager.handleConnect()
@@ -139,49 +138,6 @@ class DeviceTest :
         }
         test {
             assertIs<ConnectableDeviceState.Connected>(it)
-        }
-    }
-
-    @Test
-    fun testReconnectFailed() = testWithFlowAndTestContext(
-        Configuration.DeviceWithDescriptor(
-            connectionSettings = ConnectionSettings(
-                reconnectionSettings = ConnectionSettings.ReconnectionSettings.Limited(
-                    attempts = 2
-                )
-            )
-        )
-    ) {
-        getDisconnectedState()
-        connecting()
-        connect()
-
-        mainAction {
-            connectionManager.handleDisconnect()
-            yieldMultiple(2)
-        }
-
-        test {
-            connectionManager.connectMock.verify(times = 2)
-            assertIs<ConnectableDeviceState.Reconnecting>(it)
-            assertEquals(0, it.attempt)
-        }
-        mainAction {
-            connectionManager.handleDisconnect()
-            yieldMultiple(2)
-        }
-        test {
-            connectionManager.connectMock.verify(times = 3)
-            assertIs<ConnectableDeviceState.Reconnecting>(it)
-            assertEquals(1, it.attempt)
-        }
-        mainAction {
-            connectionManager.handleDisconnect()
-            yieldMultiple(2)
-        }
-        test {
-            connectionManager.connectMock.verify(times = 3)
-            assertIs<ConnectableDeviceState.Disconnected>(it)
         }
     }
 

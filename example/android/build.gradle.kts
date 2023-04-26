@@ -3,7 +3,7 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     kotlin("plugin.serialization")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("org.jmailen.kotlinter")
 }
 
 group = Library.group
@@ -22,6 +22,11 @@ androidApp {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
     signingConfigs {
         get("debug").apply {
             keyAlias = "key0"
@@ -31,9 +36,13 @@ androidApp {
         }
     }
 
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+
     buildTypes {
         debug {
-            signingConfig = signingConfigs.get("debug")
+            signingConfig = signingConfigs["debug"]
         }
         release {
             isMinifyEnabled = false
@@ -41,7 +50,7 @@ androidApp {
         }
     }
 
-    packagingOptions {
+    packaging {
         resources.excludes.addAll(
             listOf(
                 "META-INF/kotlinx-coroutines-core.kotlin_module",
@@ -101,4 +110,10 @@ dependencies {
     implementationDependency(Dependencies.KotlinX.Serialization.Json)
 
     implementationDependency(Dependencies.Koin.AndroidXCompose)
+}
+
+// Workaround for Kapt not setting the proper JVM target
+// See https://youtrack.jetbrains.com/issue/KT-55947/Unable-to-set-kapt-jvm-target-version
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions.jvmTarget = "11"
 }

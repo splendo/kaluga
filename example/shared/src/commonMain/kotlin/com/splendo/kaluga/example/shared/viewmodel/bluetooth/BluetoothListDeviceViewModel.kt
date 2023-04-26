@@ -39,18 +39,21 @@ import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.rssi
 import com.splendo.kaluga.bluetooth.state
 import com.splendo.kaluga.resources.localized
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration.Companion.minutes
 
 class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth: Bluetooth, navigator: Navigator<DeviceDetails>) : NavigatingViewModel<DeviceDetails>(navigator) {
 
     enum class ConnectButtonState {
         Connect,
-        Disconnect
+        Disconnect,
     }
 
-    private val device = bluetooth.devices()[identifier]
+    private val device = bluetooth.scannedDevices()[identifier]
 
     val name = advertisementObservable { it.name ?: "bluetooth_no_name".localized() }
     val identifierString = identifier.stringValue
@@ -74,7 +77,6 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
             is ConnectableDeviceState.Disconnected -> "bluetooth_disconnected"
             is ConnectableDeviceState.Connected -> "bluetooth_connected"
             is ConnectableDeviceState.Connecting -> "bluetooth_connecting"
-            is ConnectableDeviceState.Reconnecting -> "bluetooth_reconnecting"
         }.localized()
     }
     val serviceUUIDs = advertisementObservable { parseServiceUUIDs(it.serviceUUIDs) }
@@ -86,14 +88,20 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
     val isFoldedOut = _isFoldedOut.toInitializedObservable(coroutineScope)
 
     private fun <T> deviceStateObservable(mapper: (DeviceState) -> T): UninitializedObservable<T> = device.state().map { mapper(it) }.toUninitializedObservable(coroutineScope)
-    private fun <T> advertisementObservable(mapper: (BaseAdvertisementData) -> T): UninitializedObservable<T> = device.advertisement().map { mapper(it) }.toUninitializedObservable(coroutineScope)
+    private fun <T> advertisementObservable(mapper: (BaseAdvertisementData) -> T): UninitializedObservable<T> = device.advertisement().map {
+        mapper(it)
+    }.toUninitializedObservable(coroutineScope)
 
     fun toggleFoldOut() = coroutineScope.launch {
         _isFoldedOut.value = !_isFoldedOut.value
     }
 
     fun onConnectPressed() = coroutineScope.launch {
-        device.connect()
+        try {
+            withTimeout(5.minutes) {
+                device.connect()
+            }
+        } catch (_: TimeoutCancellationException) {}
     }
 
     fun onDisconnectPressed() = coroutineScope.launch {

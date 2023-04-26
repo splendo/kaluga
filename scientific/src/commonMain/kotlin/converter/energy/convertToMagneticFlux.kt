@@ -48,5 +48,5 @@ infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Ener
 
 @JvmName("energyDivCurrent")
 infix operator fun <EnergyUnit : Energy, CurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
 ) = Weber.flux(this, current)

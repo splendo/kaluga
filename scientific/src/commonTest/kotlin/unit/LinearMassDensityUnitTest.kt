@@ -38,14 +38,14 @@ class LinearMassDensityUnitTest {
             (Kilogram per Meter),
             0.671969,
             (Pound.ukImperial per Foot),
-            6
+            6,
         )
         assertScientificConversion(
             1,
             (Kilogram per Meter),
             0.671969,
             (Pound.usCustomary per Foot),
-            6
+            6,
         )
     }
 
@@ -55,15 +55,15 @@ class LinearMassDensityUnitTest {
         assertEquals(1(Pound per Foot), 2(SquareFoot) / 2(CubicFoot per Pound))
         assertEquals(
             1(Pound.ukImperial per Foot),
-            2(SquareFoot) / 2(CubicFoot.ukImperial per Pound.ukImperial)
+            2(SquareFoot) / 2(CubicFoot.ukImperial per Pound.ukImperial),
         )
         assertEquals(
             1(Pound.usCustomary per Foot),
-            2(SquareFoot) / 2(CubicFoot.usCustomary per Pound.usCustomary)
+            2(SquareFoot) / 2(CubicFoot.usCustomary per Pound.usCustomary),
         )
         assertEquals(
             1(Kilogram per Meter),
-            2(SquareMeter).convert(SquareFoot) / 2(CubicMeter per Kilogram)
+            2(SquareMeter).convert(SquareFoot) / 2(CubicMeter per Kilogram),
         )
     }
 
@@ -89,27 +89,27 @@ class LinearMassDensityUnitTest {
         assertEquals(4(Pound per Foot), 2(SquareFoot) * 2(Pound per CubicFoot))
         assertEquals(
             4(Pound.ukImperial per Foot),
-            2(Pound.ukImperial per CubicFoot) * 2(SquareFoot)
+            2(Pound.ukImperial per CubicFoot) * 2(SquareFoot),
         )
         assertEquals(
             4(Pound.ukImperial per Foot),
-            2(SquareFoot) * 2(Pound.ukImperial per CubicFoot)
+            2(SquareFoot) * 2(Pound.ukImperial per CubicFoot),
         )
         assertEquals(
             4(Pound.usCustomary per Foot),
-            2(Pound.usCustomary per CubicFoot) * 2(SquareFoot)
+            2(Pound.usCustomary per CubicFoot) * 2(SquareFoot),
         )
         assertEquals(
             4(Pound.usCustomary per Foot),
-            2(SquareFoot) * 2(Pound.usCustomary per CubicFoot)
+            2(SquareFoot) * 2(Pound.usCustomary per CubicFoot),
         )
         assertEquals(
             4(Kilogram per Meter),
-            2(Kilogram per CubicMeter) * 2(SquareMeter).convert(SquareFoot)
+            2(Kilogram per CubicMeter) * 2(SquareMeter).convert(SquareFoot),
         )
         assertEquals(
             4(Kilogram per Meter),
-            2(SquareMeter).convert(SquareFoot) * 2(Kilogram per CubicMeter)
+            2(SquareMeter).convert(SquareFoot) * 2(Kilogram per CubicMeter),
         )
     }
 

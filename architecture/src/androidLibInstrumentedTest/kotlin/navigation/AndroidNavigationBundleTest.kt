@@ -37,12 +37,12 @@ class AndroidNavigationBundleTest {
                 is NestedSpecRow.StringSpecRow -> entry.associatedType.convertValue(nestedString)
             }
         }
-        val optionalString: String? = "Some String"
+        val optionalString: String = "Some String"
         val optionalFloat: Float? = null
         val dateValue = DefaultKalugaDate.epoch(offset = 1606204800000.milliseconds)
         val dateArray = listOf(
             DefaultKalugaDate.epoch(offset = 1606204800001.milliseconds),
-            DefaultKalugaDate.epoch(offset = 1606204800002.milliseconds)
+            DefaultKalugaDate.epoch(offset = 1606204800002.milliseconds),
         )
 
         val mockSpec = MockSpec()

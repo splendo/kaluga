@@ -73,11 +73,11 @@ enum class SelectableBlendMode {
     HUE,
     SATURATION,
     LUMINATE,
-    COLOR_BLEND;
+    COLOR_BLEND,
 }
 
 class ColorViewModel(
-    private val alertPresenterBuilder: BaseAlertPresenter.Builder
+    private val alertPresenterBuilder: BaseAlertPresenter.Builder,
 ) : BaseLifecycleViewModel(alertPresenterBuilder) {
 
     private val backdropColor = MutableStateFlow(DefaultColors.mediumPurple)
@@ -122,14 +122,14 @@ class ColorViewModel(
     private fun Flow<KalugaColor>.lightenList() = map { color ->
         steps.map {
             KalugaBackgroundStyle(
-                KalugaBackgroundStyle.FillStyle.Solid(color.lightenBy(it))
+                KalugaBackgroundStyle.FillStyle.Solid(color.lightenBy(it)),
             )
         }
     }.toInitializedObservable(emptyList(), coroutineScope)
     private fun Flow<KalugaColor>.darkenList() = map { color ->
         steps.map {
             KalugaBackgroundStyle(
-                KalugaBackgroundStyle.FillStyle.Solid(color.darkenBy(it))
+                KalugaBackgroundStyle.FillStyle.Solid(color.darkenBy(it)),
             )
         }
     }.toInitializedObservable(emptyList(), coroutineScope)
@@ -149,7 +149,7 @@ class ColorViewModel(
     val blendModeButton = blendMode.map { currentlySelectedBlendMode ->
         KalugaButton.Plain(
             currentlySelectedBlendMode.name,
-            ButtonStyles.redButton
+            ButtonStyles.redButton,
         ) {
             alertPresenterBuilder.buildActionSheet(coroutineScope) {
                 addActions(
@@ -157,7 +157,7 @@ class ColorViewModel(
                         Alert.Action(selectableBlendMode.name) {
                             blendMode.value = selectableBlendMode
                         }
-                    }
+                    },
                 )
             }.showAsync()
         }
@@ -165,7 +165,7 @@ class ColorViewModel(
 
     val flipButton: KalugaButton = KalugaButton.Plain(
         "Flip",
-        ButtonStyles.textButton
+        ButtonStyles.textButton,
     ) {
         val sourceColor = sourceColor.value
         this.sourceColor.value = backdropColor.value
@@ -186,7 +186,7 @@ class ColorViewModel(
 
     private val Flow<KalugaColor>.backgroundStyleObservable: BaseInitializedObservable<KalugaBackgroundStyle> get() = map {
         KalugaBackgroundStyle(
-            KalugaBackgroundStyle.FillStyle.Solid(it)
+            KalugaBackgroundStyle.FillStyle.Solid(it),
         )
     }.toInitializedObservable(KalugaBackgroundStyle(KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.clear)), coroutineScope)
 }

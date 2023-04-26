@@ -55,7 +55,7 @@ val MetricForceUnits: Set<MetricForce> get() = setOf(
     KilogramForce,
     TonneForce,
     GramForce,
-    MilligramForce
+    MilligramForce,
 )
 
 /**
@@ -73,20 +73,23 @@ val ImperialForceUnits: Set<ImperialForce> get() = setOf(
  */
 val USCustomaryForceUnits: Set<USCustomaryForce> get() = setOf(
     Kip,
-    UsTonForce
+    UsTonForce,
 ) + ImperialForceUnits.map { it.usCustomary }
 
 /**
  * Set of all [UKImperialForce]
  */
 val UKImperialForceUnits: Set<UKImperialForce> get() = setOf(
-    ImperialTonForce
+    ImperialTonForce,
 ) + ImperialForceUnits.map { it.ukImperial }
 
 /**
  * Set of all [Force]
  */
-val ForceUnits: Set<Force> get() = MetricForceUnits + ImperialForceUnits + UKImperialForceUnits.filter { it !is UKImperialImperialForceWrapper }.toSet() + USCustomaryForceUnits.filter { it !is USCustomaryImperialForceWrapper }
+val ForceUnits: Set<Force> get() = MetricForceUnits +
+    ImperialForceUnits +
+    UKImperialForceUnits.filter { it !is UKImperialImperialForceWrapper }.toSet() +
+    USCustomaryForceUnits.filter { it !is USCustomaryImperialForceWrapper }
 
 /**
  * An [AbstractScientificUnit] for [PhysicalQuantity.Force]
@@ -142,22 +145,31 @@ sealed class NewtonMultiple : MetricForce(), MetricMultipleUnit<MeasurementSyste
 
 @Serializable
 object Nanonewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Nano(Newton)
+
 @Serializable
 object Micronewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Micro(Newton)
+
 @Serializable
 object Millinewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Milli(Newton)
+
 @Serializable
 object Centinewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Centi(Newton)
+
 @Serializable
 object Decinewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Deci(Newton)
+
 @Serializable
 object Decanewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Deca(Newton)
+
 @Serializable
 object Hectonewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Hecto(Newton)
+
 @Serializable
 object Kilonewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Kilo(Newton)
+
 @Serializable
 object Meganewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Mega(Newton)
+
 @Serializable
 object Giganewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Giga(Newton)
 
@@ -175,22 +187,31 @@ sealed class DyneMultiple : MetricForce(), MetricMultipleUnit<MeasurementSystem.
 
 @Serializable
 object Nanodyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Nano(Dyne)
+
 @Serializable
 object Microdyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Micro(Dyne)
+
 @Serializable
 object Millidyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Milli(Dyne)
+
 @Serializable
 object Centidyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Centi(Dyne)
+
 @Serializable
 object Decidyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Deci(Dyne)
+
 @Serializable
 object Decadyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Deca(Dyne)
+
 @Serializable
 object Hectodyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Hecto(Dyne)
+
 @Serializable
 object Kilodyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Kilo(Dyne)
+
 @Serializable
 object Megadyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Mega(Dyne)
+
 @Serializable
 object Gigadyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Giga(Dyne)
 
@@ -202,6 +223,7 @@ object KilogramForce : MetricForce() {
     override fun fromSIUnit(value: Decimal): Decimal = value / MetricStandardGravityAcceleration.decimalValue
     override fun toSIUnit(value: Decimal): Decimal = value * MetricStandardGravityAcceleration.decimalValue
 }
+
 @Serializable
 object TonneForce : MetricForce() {
     override val symbol: String = "tf"
@@ -210,6 +232,7 @@ object TonneForce : MetricForce() {
     override fun fromSIUnit(value: Decimal): Decimal = Tonne.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
     override fun toSIUnit(value: Decimal): Decimal = Tonne.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
+
 @Serializable
 object GramForce : MetricForce() {
     override val symbol: String = "gf"
@@ -218,6 +241,7 @@ object GramForce : MetricForce() {
     override fun fromSIUnit(value: Decimal): Decimal = Gram.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
     override fun toSIUnit(value: Decimal): Decimal = Gram.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
+
 @Serializable
 object MilligramForce : MetricForce() {
     override val symbol: String = "gf"

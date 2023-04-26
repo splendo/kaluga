@@ -39,5 +39,5 @@ infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.div(current
 
 @JvmName("voltageDivCurrent")
 infix operator fun <CurrentUnit : ElectricCurrent, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.div(
-    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
 ) = Ohm.resistance(this, current)

@@ -40,7 +40,7 @@ class SystemActivity : KalugaViewModelActivity<SystemViewModel>() {
                 when (action) {
                     SystemNavigationActions.Network -> NavigationSpec.Activity<NetworkActivity>()
                 }
-            }
+            },
         )
     }
 
@@ -65,7 +65,7 @@ object SystemFeaturesBinding {
 }
 
 class SystemFeatureAdapter(
-    private val viewModel: SystemViewModel
+    private val viewModel: SystemViewModel,
 ) : RecyclerView.Adapter<SystemFeatureAdapter.SystemFeatureViewHolder>() {
 
     inner class SystemFeatureViewHolder(val binding: ViewListButtonBinding) : RecyclerView.ViewHolder(binding.root) {

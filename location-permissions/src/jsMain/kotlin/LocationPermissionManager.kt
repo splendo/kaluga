@@ -30,7 +30,11 @@ import kotlin.time.Duration
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultLocationPermissionManager(locationPermission: LocationPermission, settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<LocationPermission>(locationPermission, settings, coroutineScope) {
+actual class DefaultLocationPermissionManager(
+    locationPermission: LocationPermission,
+    settings: Settings,
+    coroutineScope: CoroutineScope,
+) : BasePermissionManager<LocationPermission>(locationPermission, settings, coroutineScope) {
 
     override fun requestPermissionDidStart() {
         TODO("Not yet implemented")
@@ -51,7 +55,7 @@ actual class DefaultLocationPermissionManager(locationPermission: LocationPermis
  */
 actual class LocationPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseLocationPermissionManagerBuilder {
 
-    override fun create(locationPermission: LocationPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): PermissionManager<LocationPermission> {
+    override fun create(locationPermission: LocationPermission, settings: Settings, coroutineScope: CoroutineScope): PermissionManager<LocationPermission> {
         return DefaultLocationPermissionManager(locationPermission, settings, coroutineScope)
     }
 }

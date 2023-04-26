@@ -24,51 +24,121 @@ import com.splendo.kaluga.scientific.converter.molarEnergy.times
 import com.splendo.kaluga.scientific.unit.*
 
 val PhysicalQuantity.MolarEnergy.converters get() = listOf<QuantityConverter<PhysicalQuantity.MolarEnergy, *>>(
-    QuantityConverterWithOperator("Energy from Amount of Substance", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.AmountOfSubstance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Energy from Amount of Substance",
+        QuantityConverter.WithOperator.Type.Multiplication,
+        PhysicalQuantity.AmountOfSubstance,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricAndImperialMolarEnergy && rightUnit is AmountOfSubstance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricMolarEnergy && rightUnit is AmountOfSubstance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialMolarEnergy && rightUnit is AmountOfSubstance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MolarEnergy && rightUnit is AmountOfSubstance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricAndImperialMolarEnergy && rightUnit is AmountOfSubstance -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricMolarEnergy && rightUnit is AmountOfSubstance -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialMolarEnergy && rightUnit is AmountOfSubstance -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MolarEnergy && rightUnit is AmountOfSubstance -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Molar Mass from Specific Energy", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.SpecificEnergy) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Molar Mass from Specific Energy",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.SpecificEnergy,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MolarEnergy && rightUnit is MetricSpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MolarEnergy && rightUnit is ImperialSpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MolarEnergy && rightUnit is UKImperialSpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MolarEnergy && rightUnit is USCustomarySpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MolarEnergy && rightUnit is SpecificEnergy -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MolarEnergy && rightUnit is MetricSpecificEnergy -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MolarEnergy && rightUnit is ImperialSpecificEnergy -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MolarEnergy && rightUnit is UKImperialSpecificEnergy -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MolarEnergy && rightUnit is USCustomarySpecificEnergy -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MolarEnergy && rightUnit is SpecificEnergy -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Specific Energy from Molar Mass", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.MolarMass) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Specific Energy from Molar Mass",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.MolarMass,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricAndImperialMolarEnergy && rightUnit is MetricMolarMass -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricAndImperialMolarEnergy && rightUnit is ImperialMolarMass -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricAndImperialMolarEnergy && rightUnit is UKImperialMolarMass -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricAndImperialMolarEnergy && rightUnit is USCustomaryMolarMass -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricMolarEnergy && rightUnit is MetricMolarMass -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialMolarEnergy && rightUnit is ImperialMolarMass -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialMolarEnergy && rightUnit is UKImperialMolarMass -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialMolarEnergy && rightUnit is USCustomaryMolarMass -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MolarEnergy && rightUnit is MolarMass -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricAndImperialMolarEnergy && rightUnit is MetricMolarMass -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricAndImperialMolarEnergy && rightUnit is ImperialMolarMass -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricAndImperialMolarEnergy && rightUnit is UKImperialMolarMass -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricAndImperialMolarEnergy && rightUnit is USCustomaryMolarMass -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricMolarEnergy && rightUnit is MetricMolarMass -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialMolarEnergy && rightUnit is ImperialMolarMass -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialMolarEnergy && rightUnit is UKImperialMolarMass -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialMolarEnergy && rightUnit is USCustomaryMolarMass -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MolarEnergy && rightUnit is MolarMass -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Specific Energy from Molality", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Molality) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Specific Energy from Molality",
+        QuantityConverter.WithOperator.Type.Multiplication,
+        PhysicalQuantity.Molality,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricAndImperialMolarEnergy && rightUnit is MetricMolality -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricAndImperialMolarEnergy && rightUnit is ImperialMolality -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricAndImperialMolarEnergy && rightUnit is UKImperialMolality -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricAndImperialMolarEnergy && rightUnit is USCustomaryMolality -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricMolarEnergy && rightUnit is MetricMolality -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialMolarEnergy && rightUnit is ImperialMolality -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialMolarEnergy && rightUnit is UKImperialMolality -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialMolarEnergy && rightUnit is USCustomaryMolality -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MolarEnergy && rightUnit is Molality -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricAndImperialMolarEnergy && rightUnit is MetricMolality -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricAndImperialMolarEnergy && rightUnit is ImperialMolality -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricAndImperialMolarEnergy && rightUnit is UKImperialMolality -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricAndImperialMolarEnergy && rightUnit is USCustomaryMolality -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricMolarEnergy && rightUnit is MetricMolality -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialMolarEnergy && rightUnit is ImperialMolality -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialMolarEnergy && rightUnit is UKImperialMolality -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialMolarEnergy && rightUnit is USCustomaryMolality -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MolarEnergy && rightUnit is Molality -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
-    }
+    },
 )

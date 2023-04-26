@@ -61,7 +61,7 @@ fun ColorsLayout() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(Constants.Padding.default)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
         ) {
             val mainColorSize = 80.dp
             val backdropText by backdropText.state()
@@ -85,7 +85,7 @@ fun ColorsLayout() {
                     Box(
                         modifier = Modifier
                             .size(mainColorSize)
-                            .backgroundStyle(backdropColorBackground)
+                            .backgroundStyle(backdropColorBackground),
                     )
                     OutlinedTextField(
                         value = backdropTempText,
@@ -95,15 +95,15 @@ fun ColorsLayout() {
                             .onFocusChanged { if (!it.hasFocus) submitBackdropText(backdropTempText) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(
-                            onDone = { focusManager.clearFocus() }
-                        )
+                            onDone = { focusManager.clearFocus() },
+                        ),
                     )
                 }
                 Spacer(modifier = Modifier.weight(1.0f))
                 Box(
                     modifier = Modifier
                         .size(mainColorSize)
-                        .backgroundStyle(blendedColorBackground)
+                        .backgroundStyle(blendedColorBackground),
                 )
                 Spacer(modifier = Modifier.weight(1.0f))
                 Column(Modifier.width(mainColorSize)) {
@@ -111,7 +111,7 @@ fun ColorsLayout() {
                     Box(
                         modifier = Modifier
                             .size(mainColorSize)
-                            .backgroundStyle(sourceColorBackground)
+                            .backgroundStyle(sourceColorBackground),
                     )
                     OutlinedTextField(
                         value = sourceTempText,
@@ -121,8 +121,8 @@ fun ColorsLayout() {
                             .onFocusChanged { if (!it.hasFocus) submitSourceText(sourceTempText) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(
-                            onDone = { focusManager.clearFocus() }
-                        )
+                            onDone = { focusManager.clearFocus() },
+                        ),
                     )
                 }
             }
@@ -145,13 +145,13 @@ fun ListOfColors(list: List<KalugaBackgroundStyle>) {
     Row(
         Modifier
             .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())
+            .horizontalScroll(rememberScrollState()),
     ) {
         list.forEach {
             Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .backgroundStyle(it)
+                    .backgroundStyle(it),
             )
         }
     }

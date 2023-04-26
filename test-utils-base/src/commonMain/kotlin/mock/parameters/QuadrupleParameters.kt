@@ -45,7 +45,7 @@ class QuadrupleParameters<T0, T1, T2, T3> :
         val first: ParameterMatcher<T0>,
         val second: ParameterMatcher<T1>,
         val third: ParameterMatcher<T2>,
-        val fourth: ParameterMatcher<T3>
+        val fourth: ParameterMatcher<T3>,
     ) :
         ParametersSpec.Matchers {
         override fun asList() = listOf(first, second, third, fourth)
@@ -62,14 +62,14 @@ class QuadrupleParameters<T0, T1, T2, T3> :
         val first: ParameterMatcherOrCaptor<T0>,
         val second: ParameterMatcherOrCaptor<T1>,
         val third: ParameterMatcherOrCaptor<T2>,
-        val fourth: ParameterMatcherOrCaptor<T3>
+        val fourth: ParameterMatcherOrCaptor<T3>,
     ) :
         ParametersSpec.MatchersOrCaptor<Matchers<T0, T1, T2, T3>> {
         override fun asMatchers(): Matchers<T0, T1, T2, T3> = Matchers(
             first.asMatcher(),
             second.asMatcher(),
             third.asMatcher(),
-            fourth.asMatcher()
+            fourth.asMatcher(),
         )
     }
 
@@ -84,7 +84,7 @@ class QuadrupleParameters<T0, T1, T2, T3> :
         val first: T0,
         val second: T1,
         val third: T2,
-        val fourth: T3
+        val fourth: T3,
     ) : ParametersSpec.Values
 
     override fun Matchers<T0, T1, T2, T3>.matches(values: Values<T0, T1, T2, T3>): Boolean =
@@ -101,19 +101,22 @@ class QuadrupleParameters<T0, T1, T2, T3> :
     }
 }
 
-internal fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).asMock() =
-    MethodMock<QuadrupleParameters.Matchers<T0, T1, T2, T3>, QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>, QuadrupleParameters.Values<T0, T1, T2, T3>, QuadrupleParameters<T0, T1, T2, T3>, R>(
-        QuadrupleParameters()
-    )
+internal fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).asMock() = MethodMock<
+    QuadrupleParameters.Matchers<T0, T1, T2, T3>,
+    QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>,
+    QuadrupleParameters.Values<T0, T1, T2, T3>,
+    QuadrupleParameters<T0, T1, T2, T3>,
+    R,
+    >(QuadrupleParameters())
 
 fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).mockWithDefaultAnswer(
-    defaultAnswer: Answer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>
+    defaultAnswer: Answer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>,
 ) = asMock().also {
     it.on(
         ParameterMatcher.any<T0>(),
         ParameterMatcher.any<T1>(),
         ParameterMatcher.any<T2>(),
-        ParameterMatcher.any<T3>()
+        ParameterMatcher.any<T3>(),
     ).doAnswer(defaultAnswer)
 }
 
@@ -122,7 +125,7 @@ fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).mockWithDefaultValue(defaultValu
         ParameterMatcher.any<T0>(),
         ParameterMatcher.any<T1>(),
         ParameterMatcher.any<T2>(),
-        ParameterMatcher.any<T3>()
+        ParameterMatcher.any<T3>(),
     ).doReturn(defaultValue)
 }
 
@@ -242,19 +245,22 @@ fun <T0, T1, T2, T3, R : Any> ((T0, T1, T2, T3) -> R?).mock() = mockWithDefaultV
 @JsName("mockQuadrupleNonNullable")
 fun <T0, T1, T2, T3, R : Any> ((T0, T1, T2, T3) -> R).mock() = asMock()
 
-internal fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).asSuspendedMock() =
-    SuspendMethodMock<QuadrupleParameters.Matchers<T0, T1, T2, T3>, QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>, QuadrupleParameters.Values<T0, T1, T2, T3>, QuadrupleParameters<T0, T1, T2, T3>, R>(
-        QuadrupleParameters()
-    )
+internal fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).asSuspendedMock() = SuspendMethodMock<
+    QuadrupleParameters.Matchers<T0, T1, T2, T3>,
+    QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>,
+    QuadrupleParameters.Values<T0, T1, T2, T3>,
+    QuadrupleParameters<T0, T1, T2, T3>,
+    R,
+    >(QuadrupleParameters())
 
 fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).mockWithDefaultAnswer(
-    defaultAnswer: SuspendedAnswer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>
+    defaultAnswer: SuspendedAnswer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>,
 ) = asSuspendedMock().also {
     it.on(
         ParameterMatcher.any<T0>(),
         ParameterMatcher.any<T1>(),
         ParameterMatcher.any<T2>(),
-        ParameterMatcher.any<T3>()
+        ParameterMatcher.any<T3>(),
     ).doAnswer(defaultAnswer)
 }
 
@@ -263,7 +269,7 @@ fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).mockWithDefaultValue(def
         ParameterMatcher.any<T0>(),
         ParameterMatcher.any<T1>(),
         ParameterMatcher.any<T2>(),
-        ParameterMatcher.any<T3>()
+        ParameterMatcher.any<T3>(),
     ).doReturn(defaultValue)
 }
 

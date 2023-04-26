@@ -28,16 +28,16 @@ class DeliberateCancellationException(val result: Any?) :
 
 inline fun <reified T> testBlockingAndCancelScope(
     context: CoroutineContext = EmptyCoroutineContext,
-    crossinline block: suspend CoroutineScope.() -> T
+    crossinline block: suspend CoroutineScope.() -> T,
 ): T {
-
     try {
         return runBlocking(context) {
             block().also { cancel(DeliberateCancellationException(it)) }
         }
     } catch (e: Throwable) {
-        if (e is DeliberateCancellationException && e.result is T)
+        if (e is DeliberateCancellationException && e.result is T) {
             return e.result
+        }
         throw e // not our expected exception
     }
 }

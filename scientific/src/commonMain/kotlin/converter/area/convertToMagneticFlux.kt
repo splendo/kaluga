@@ -32,5 +32,5 @@ infix operator fun ScientificValue<PhysicalQuantity.Area, SquareCentimeter>.time
 
 @JvmName("areaTimesInduction")
 infix operator fun <InductionUnit : MagneticInduction, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    induction: ScientificValue<PhysicalQuantity.MagneticInduction, InductionUnit>
+    induction: ScientificValue<PhysicalQuantity.MagneticInduction, InductionUnit>,
 ) = induction * this

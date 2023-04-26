@@ -159,12 +159,14 @@ internal sealed class PermissionStateImpl<P : Permission> {
 
     class Uninitialized<P : Permission> : Inactive<P>(), PermissionState.Uninitialized<P> {
 
-        fun initialize(monitoringInterval: Duration, permissionManager: PermissionManager<P>): suspend () -> Initializing<P> = { Initializing(monitoringInterval, permissionManager) }
+        fun initialize(monitoringInterval: Duration, permissionManager: PermissionManager<P>): suspend () -> Initializing<P> = {
+            Initializing(monitoringInterval, permissionManager)
+        }
     }
 
     data class Deinitialized<P : Permission>(
         val monitoringInterval: Duration,
-        val permissionManager: PermissionManager<P>
+        val permissionManager: PermissionManager<P>,
     ) : Inactive<P>(), PermissionState.Deinitialized<P> {
         override val reinitialize: suspend () -> Initializing<P> = { Initializing(monitoringInterval, permissionManager) }
     }
@@ -193,9 +195,9 @@ internal sealed class PermissionStateImpl<P : Permission> {
 
     data class Initializing<P : Permission>(
         override val monitoringInterval: Duration,
-        override val permissionManager: PermissionManager<P>
+        override val permissionManager: PermissionManager<P>,
     ) : Active<P>(), PermissionState.Initializing<P> {
-        override fun initialize(allowed: Boolean, locked: Boolean): suspend() -> PermissionState.Initialized<P> = {
+        override fun initialize(allowed: Boolean, locked: Boolean): suspend() -> Initialized<P> = {
             when {
                 !allowed && locked -> Denied.Locked(monitoringInterval, permissionManager)
                 !allowed -> Denied.Requestable(monitoringInterval, permissionManager)
@@ -206,7 +208,7 @@ internal sealed class PermissionStateImpl<P : Permission> {
 
     data class Allowed<P : Permission>(
         override val monitoringInterval: Duration,
-        override val permissionManager: PermissionManager<P>
+        override val permissionManager: PermissionManager<P>,
     ) : Active<P>(), PermissionState.Allowed<P> {
 
         override fun deny(locked: Boolean): suspend () -> PermissionState.Denied<P> = {
@@ -222,7 +224,7 @@ internal sealed class PermissionStateImpl<P : Permission> {
 
         data class Locked<P : Permission>(
             override val monitoringInterval: Duration,
-            override val permissionManager: PermissionManager<P>
+            override val permissionManager: PermissionManager<P>,
         ) : Denied<P>(), PermissionState.Denied.Locked<P> {
 
             override val unlock: suspend () -> Requestable<P> = {
@@ -232,7 +234,7 @@ internal sealed class PermissionStateImpl<P : Permission> {
 
         data class Requestable<P : Permission>(
             override val monitoringInterval: Duration,
-            override val permissionManager: PermissionManager<P>
+            override val permissionManager: PermissionManager<P>,
         ) : Denied<P>(), PermissionState.Denied.Requestable<P> {
 
             override fun request() {
@@ -254,10 +256,10 @@ internal sealed class PermissionStateImpl<P : Permission> {
 suspend fun <P : Permission> Flow<PermissionState<out P>>.request(): Boolean {
     return this.transformLatest { state ->
         when (state) {
-            is PermissionState.Allowed -> emit(true)
-            is PermissionState.Denied.Requestable -> state.request()
-            is PermissionState.Denied.Locked -> emit(false)
-            is PermissionState.Inactive, is PermissionState.Active -> {}
+            is Allowed -> emit(true)
+            is Denied.Requestable -> state.request()
+            is Denied.Locked -> emit(false)
+            is Inactive, is Active -> {}
         }
     }.first()
 }

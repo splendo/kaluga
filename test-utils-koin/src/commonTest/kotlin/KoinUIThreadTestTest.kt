@@ -25,10 +25,10 @@ import kotlin.test.assertEquals
 
 class KoinUIThreadTestTest : KoinUIThreadTest<KoinUIThreadTestTest.MyKoinTestContext>() {
 
-    class MyKoinTestContext : KoinUIThreadTest.KoinTestContext(
+    class MyKoinTestContext : KoinTestContext(
         module {
             single { "K" }
-        }
+        },
     ) {
         // test injection into context
         val k: String by inject()

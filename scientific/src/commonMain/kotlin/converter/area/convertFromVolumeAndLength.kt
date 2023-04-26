@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     HeightUnit : Length,
     AreaUnit : Area,
-    VolumeUnit : Volume
+    VolumeUnit : Volume,
     > AreaUnit.area(
     volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
-    height: ScientificValue<PhysicalQuantity.Length, HeightUnit>
+    height: ScientificValue<PhysicalQuantity.Length, HeightUnit>,
 ) = area(volume, height, ::DefaultScientificValue)
 
 @JvmName("areaFromVolumeAndHeight")
@@ -42,9 +42,9 @@ fun <
     HeightUnit : Length,
     AreaUnit : Area,
     VolumeUnit : Volume,
-    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     > AreaUnit.area(
     volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
     height: ScientificValue<PhysicalQuantity.Length, HeightUnit>,
-    factory: (Decimal, AreaUnit) -> Value
+    factory: (Decimal, AreaUnit) -> Value,
 ) = byDividing(volume, height, factory)

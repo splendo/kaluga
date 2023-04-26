@@ -24,7 +24,7 @@ import platform.UIKit.UIViewController
 fun BottomSheetSubPageViewControllerNavigator(
     parent: UIViewController,
     onClose: () -> NavigationSpec,
-    onBack: () -> NavigationSpec
+    onBack: () -> NavigationSpec,
 ) = ViewControllerNavigator<BottomSheetSubPageNavigation>(parent) { action ->
     when (action) {
         is BottomSheetSubPageNavigation.Close -> onClose()

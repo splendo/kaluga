@@ -27,5 +27,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("luminousFluxDivSolidAngle")
 infix operator fun <FluxUnit : LuminousFlux, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
-    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>,
 ) = Candela.luminousIntensity(this, solidAngle)

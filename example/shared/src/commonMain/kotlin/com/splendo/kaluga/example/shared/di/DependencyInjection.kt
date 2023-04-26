@@ -20,7 +20,6 @@ package com.splendo.kaluga.example.shared.di
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.beacons.DefaultBeacons
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.logging.Logger
@@ -43,7 +42,7 @@ typealias BluetoothBuilderBuilder = (suspend (CoroutineContext) -> Permissions) 
 
 private fun sharedModule(
     locationStateRepoBuilderBuilder: LocationStateRepoBuilderBuilder,
-    bluetoothBuilderBuilder: BluetoothBuilderBuilder
+    bluetoothBuilderBuilder: BluetoothBuilderBuilder,
 ) = module {
     single<Logger> { RestrictedLogger(RestrictedLogLevel.None) }
     single { PermissionsBuilder() }
@@ -51,7 +50,7 @@ private fun sharedModule(
         locationStateRepoBuilderBuilder {
             val builder = get<PermissionsBuilder>()
             builder.registerLocationPermissionIfNotRegistered(
-                settings = BasePermissionManager.Settings(logger = get())
+                settings = BasePermissionManager.Settings(logger = get()),
             )
             Permissions(builder, it)
         }
@@ -65,7 +64,6 @@ private fun sharedModule(
             Permissions(builder, it)
         }.create(
             scannerSettingsBuilder = { BaseScanner.Settings(it, logger = get()) },
-            connectionSettings = ConnectionSettings(logger = get())
         )
     }
     single { DefaultBeacons(get<Bluetooth>(), beaconLifetime = 1.minutes, logger = get()) }
@@ -75,7 +73,7 @@ internal fun initKoin(
     platformModule: Module,
     locationStateRepoBuilderBuilder: LocationStateRepoBuilderBuilder,
     bluetoothBuilderBuilder: BluetoothBuilderBuilder,
-    customModules: List<Module> = emptyList()
+    customModules: List<Module> = emptyList(),
 ) = startKoin {
     appDeclaration()
     modules(platformModule, sharedModule(locationStateRepoBuilderBuilder, bluetoothBuilderBuilder), *customModules.toTypedArray())

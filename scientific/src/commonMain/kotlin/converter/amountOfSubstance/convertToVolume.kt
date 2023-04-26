@@ -37,50 +37,50 @@ import kotlin.jvm.JvmName
 
 @JvmName("amountOfSubstanceDivMetricMolarity")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    molarity: ScientificValue<PhysicalQuantity.Molarity, MetricMolarity>
+    molarity: ScientificValue<PhysicalQuantity.Molarity, MetricMolarity>,
 ) = molarity.unit.per.volume(this, molarity)
 
 @JvmName("amountOfSubstanceDivImperialMolarity")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    molarity: ScientificValue<PhysicalQuantity.Molarity, ImperialMolarity>
+    molarity: ScientificValue<PhysicalQuantity.Molarity, ImperialMolarity>,
 ) = molarity.unit.per.volume(this, molarity)
 
 @JvmName("amountOfSubstanceDivUKImperialMolarity")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    molarity: ScientificValue<PhysicalQuantity.Molarity, UKImperialMolarity>
+    molarity: ScientificValue<PhysicalQuantity.Molarity, UKImperialMolarity>,
 ) = molarity.unit.per.volume(this, molarity)
 
 @JvmName("amountOfSubstanceDivUSCustomaryMolarity")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    molarity: ScientificValue<PhysicalQuantity.Molarity, USCustomaryMolarity>
+    molarity: ScientificValue<PhysicalQuantity.Molarity, USCustomaryMolarity>,
 ) = molarity.unit.per.volume(this, molarity)
 
 @JvmName("amountOfSubstanceDivMolarity")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, MolarityUnit : Molarity> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.div(
-    molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>
+    molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>,
 ) = CubicMeter.volume(this, molarity)
 
 @JvmName("amountOfSubstanceTimesMetricMolarVolume")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.times(
-    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, MetricMolarVolume>
+    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, MetricMolarVolume>,
 ) = molarVolume * this
 
 @JvmName("amountOfSubstanceTimesImperialMolarVolume")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.times(
-    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, ImperialMolarVolume>
+    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, ImperialMolarVolume>,
 ) = molarVolume * this
 
 @JvmName("amountOfSubstanceTimesUKImperialMolarVolume")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.times(
-    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, UKImperialMolarVolume>
+    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, UKImperialMolarVolume>,
 ) = molarVolume * this
 
 @JvmName("amountOfSubstanceTimesUSCustomaryMolarVolume")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.times(
-    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, USCustomaryMolarVolume>
+    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, USCustomaryMolarVolume>,
 ) = molarVolume * this
 
 @JvmName("amountOfSubstanceTimesMolarVolume")
 infix operator fun <MolarVolumeUnit : MolarVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.times(
-    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>
+    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>,
 ) = molarVolume * this

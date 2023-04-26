@@ -41,90 +41,90 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricWeightDivMetricDensity")
 infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>
+    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>,
 ) = density.unit.per.volume(this, density)
 
 @JvmName("imperialWeightDivImperialDensity")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>
+    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
 ) = density.unit.per.volume(this, density)
 
 @JvmName("imperialWeightDivUKImperialDensity")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>
+    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>,
 ) = density.unit.per.volume(this, density)
 
 @JvmName("imperialWeightDivUSCustomaryDensity")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>
+    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>,
 ) = density.unit.per.volume(this, density)
 
 @JvmName("ukImperialWeightDivImperialDensity")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>
+    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
 ) = density.unit.per.volume(this, density)
 
 @JvmName("ukImperialWeightDivUKImperialDensity")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>
+    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>,
 ) = density.unit.per.volume(this, density)
 
 @JvmName("usCustomaryWeightDivImperialDensity")
 infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>
+    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
 ) = density.unit.per.volume(this, density)
 
 @JvmName("usCustomaryWeightDivUSCustomaryDensity")
 infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>
+    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>,
 ) = density.unit.per.volume(this, density)
 
 @JvmName("weightDivDensity")
 infix operator fun <WeightUnit : Weight, DensityUnit : Density> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>
+    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>,
 ) = CubicMeter.volume(this, density)
 
 @JvmName("metricWeightTimesMetricSpecificVolume")
 infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("imperialWeightTimesImperialSpecificVolume")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("imperialWeightTimesUKImperialSpecificVolume")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("imperialWeightTimesUSCustomarySpecificVolume")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("ukImperialWeightTimesImperialSpecificVolume")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("ukImperialWeightTimesUKImperialSpecificVolume")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("usCustomaryWeightTimesImperialSpecificVolume")
 infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("usCustomaryWeightTimesUSCustomarySpecificVolume")
 infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>,
 ) = specificVolume * this
 
 @JvmName("weightTimesSpecificVolume")
 infix operator fun <SpecificVolumeUnit : SpecificVolume, WeightUnit : Weight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
 ) = specificVolume * this

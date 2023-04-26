@@ -30,15 +30,15 @@ import kotlin.jvm.JvmName
 
 @JvmName("abampereTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = Abcoulomb.charge(this, time)
 
 @JvmName("biotTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = Abcoulomb.charge(this, time)
 
 @JvmName("currentTimesTime")
 infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = Coulomb.charge(this, time)

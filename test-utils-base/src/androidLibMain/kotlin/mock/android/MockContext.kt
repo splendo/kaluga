@@ -121,14 +121,14 @@ class MockContext : Context() {
     override fun openOrCreateDatabase(
         name: String?,
         mode: Int,
-        factory: SQLiteDatabase.CursorFactory?
+        factory: SQLiteDatabase.CursorFactory?,
     ): SQLiteDatabase = error("not implemented")
 
     override fun openOrCreateDatabase(
         name: String?,
         mode: Int,
         factory: SQLiteDatabase.CursorFactory?,
-        errorHandler: DatabaseErrorHandler?
+        errorHandler: DatabaseErrorHandler?,
     ): SQLiteDatabase = error("not implemented")
 
     override fun moveDatabaseFrom(sourceContext: Context?, name: String?): Boolean = error("not implemented")
@@ -166,7 +166,7 @@ class MockContext : Context() {
         fillInIntent: Intent?,
         flagsMask: Int,
         flagsValues: Int,
-        extraFlags: Int
+        extraFlags: Int,
     ) = error("not implemented")
 
     override fun startIntentSender(
@@ -175,7 +175,7 @@ class MockContext : Context() {
         flagsMask: Int,
         flagsValues: Int,
         extraFlags: Int,
-        options: Bundle?
+        options: Bundle?,
     ) = error("not implemented")
 
     override fun sendBroadcast(intent: Intent?) = error("not implemented")
@@ -191,7 +191,7 @@ class MockContext : Context() {
         scheduler: Handler?,
         initialCode: Int,
         initialData: String?,
-        initialExtras: Bundle?
+        initialExtras: Bundle?,
     ) = error("not implemented")
 
     override fun sendBroadcastAsUser(intent: Intent?, user: UserHandle?) = error("not implemented")
@@ -199,7 +199,7 @@ class MockContext : Context() {
     override fun sendBroadcastAsUser(
         intent: Intent?,
         user: UserHandle?,
-        receiverPermission: String?
+        receiverPermission: String?,
     ) = error("not implemented")
 
     override fun sendOrderedBroadcastAsUser(
@@ -210,7 +210,7 @@ class MockContext : Context() {
         scheduler: Handler?,
         initialCode: Int,
         initialData: String?,
-        initialExtras: Bundle?
+        initialExtras: Bundle?,
     ) = error("not implemented")
 
     override fun sendStickyBroadcast(intent: Intent?) = error("not implemented")
@@ -221,7 +221,7 @@ class MockContext : Context() {
         scheduler: Handler?,
         initialCode: Int,
         initialData: String?,
-        initialExtras: Bundle?
+        initialExtras: Bundle?,
     ) = error("not implemented")
 
     override fun removeStickyBroadcast(intent: Intent?) = error("not implemented")
@@ -235,7 +235,7 @@ class MockContext : Context() {
         scheduler: Handler?,
         initialCode: Int,
         initialData: String?,
-        initialExtras: Bundle?
+        initialExtras: Bundle?,
     ) = error("not implemented")
 
     override fun removeStickyBroadcastAsUser(intent: Intent?, user: UserHandle?) = error("not implemented")
@@ -245,14 +245,7 @@ class MockContext : Context() {
     override fun registerReceiver(
         receiver: BroadcastReceiver?,
         filter: IntentFilter?,
-        flags: Int
-    ): Intent? = error("not implemented")
-
-    override fun registerReceiver(
-        receiver: BroadcastReceiver?,
-        filter: IntentFilter?,
-        broadcastPermission: String?,
-        scheduler: Handler?
+        flags: Int,
     ): Intent? = error("not implemented")
 
     override fun registerReceiver(
@@ -260,7 +253,14 @@ class MockContext : Context() {
         filter: IntentFilter?,
         broadcastPermission: String?,
         scheduler: Handler?,
-        flags: Int
+    ): Intent? = error("not implemented")
+
+    override fun registerReceiver(
+        receiver: BroadcastReceiver?,
+        filter: IntentFilter?,
+        broadcastPermission: String?,
+        scheduler: Handler?,
+        flags: Int,
     ): Intent? = error("not implemented")
 
     override fun unregisterReceiver(receiver: BroadcastReceiver?) = error("not implemented")
@@ -278,7 +278,7 @@ class MockContext : Context() {
     override fun startInstrumentation(
         className: ComponentName,
         profileFile: String?,
-        arguments: Bundle?
+        arguments: Bundle?,
     ): Boolean = error("not implemented")
 
     override fun getSystemService(name: String): Any = error("not implemented")
@@ -313,7 +313,7 @@ class MockContext : Context() {
         writePermission: String?,
         pid: Int,
         uid: Int,
-        modeFlags: Int
+        modeFlags: Int,
     ): Int = error("not implemented")
 
     override fun checkCallingUriPermission(uri: Uri?, modeFlags: Int): Int = error("not implemented")
@@ -325,7 +325,7 @@ class MockContext : Context() {
         pid: Int,
         uid: Int,
         modeFlags: Int,
-        message: String?
+        message: String?,
     ) = error("not implemented")
 
     override fun enforceUriPermission(
@@ -335,7 +335,7 @@ class MockContext : Context() {
         pid: Int,
         uid: Int,
         modeFlags: Int,
-        message: String?
+        message: String?,
     ) = error("not implemented")
 
     override fun enforceCallingUriPermission(uri: Uri?, modeFlags: Int, message: String?) = error("not implemented")

@@ -22,9 +22,8 @@ import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.LaterCollections
 import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.NoMoreCollections
 import com.splendo.kaluga.base.flow.onCollectionEvent
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import kotlinx.atomicfu.atomic
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -131,7 +130,9 @@ interface HandleAfterOldStateIsRemoved<OldState : KalugaState> {
  * @param F the type of [MutableSharedFlow] the state will be collected in.
  * @param coroutineContext the [CoroutineContext] used to create a coroutine scope for this state machine. Make sure that if you pass a coroutine context that has sequential execution if you do not want simultaneous state changes. The default Main dispatcher meets these criteria.
  */
-abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(coroutineContext: CoroutineContext = Dispatchers.Main.immediate) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")), Flow<State> {
+abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")), Flow<State> {
 
     override suspend fun collect(collector: FlowCollector<State>) = mutableFlow.collect(collector)
 
@@ -209,17 +210,22 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(coro
      *
      * This method uses a separate coroutineScope, meaning it will suspend until all child Jobs are completed, including those that asynchronously call this method itself (however a different state might be current at that point).
      *
+     * @param Result the type of the result to be returned
      * @param action the function for which will [State] receive the state, guaranteed to be unchanged for the duration of the function.
+     * @return the [Result] returned by [action] for the [State]
      */
-    suspend fun useState(action: suspend (State) -> Unit) = coroutineScope {
+    suspend fun <Result> useState(action: suspend (State) -> Result) = coroutineScope {
         initialize()
         stateMutex.withPermit {
-            val result = EmptyCompletableDeferred()
+            val result = CompletableDeferred<Result>()
             launch {
                 try {
-                    action(state())
-                    result.complete()
+                    val actionResult = action(state())
+                    result.complete(actionResult)
                 } catch (e: Throwable) {
+                    if (e is CancellationException) {
+                        throw e
+                    }
                     result.completeExceptionally(e)
                 }
             }
@@ -231,13 +237,14 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(coro
      * Launches in a given [CoroutineContext] and calls [action] on the current [State]. The state is guaranteed not to change during the execution of [action].
      * This operation ensures atomic state observations, so the state will not change while the [action] is being executed.
      *
+     * @param Result the type of the result to be returned
      * @param context The [CoroutineContext] in which to use the state.
      * @param action The action to execute on the current [State]
      * @see [useState]
      */
-    fun launchUseState(
+    fun <Result> launchUseState(
         context: CoroutineContext = coroutineContext,
-        action: suspend(State) -> Unit
+        action: suspend (State) -> Result,
     ) = launch(context) {
         useState(action)
     }
@@ -282,7 +289,7 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(coro
      */
     fun launchTakeAndChangeState(
         context: CoroutineContext = coroutineContext,
-        action: suspend(State) -> suspend () -> State
+        action: suspend(State) -> suspend () -> State,
     ) = launch(context) {
         takeAndChangeState(action)
     }
@@ -298,7 +305,7 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(coro
     fun <K : State> launchTakeAndChangeState(
         context: CoroutineContext = coroutineContext,
         remainIfStateNot: KClass<K>,
-        action: suspend(K) -> suspend () -> State
+        action: suspend(K) -> suspend () -> State,
     ) = launch(context) {
         takeAndChangeState(remainIfStateNot) {
             action(it)
@@ -367,7 +374,7 @@ interface StateFlowRepo<State : KalugaState> {
  * @param coroutineContext the [CoroutineContext] used to create a coroutine scope for this state machine. Make sure that if you pass a coroutine context that has sequential execution if you do not want simultaneous state changes. The default Main dispatcher meets these criteria.
  */
 abstract class BaseHotStateRepo<State : KalugaState, F : MutableSharedFlow<State>>(
-    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
 ) : StateRepo<State, F>(coroutineContext) {
 
     abstract val lazyMutableSharedFlow: Lazy<F>
@@ -407,7 +414,7 @@ abstract class HotStateRepo<State : KalugaState>(coroutineContext: CoroutineCont
  */
 abstract class HotStateFlowRepo<State : KalugaState>(
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
-    val initialState: (HotStateFlowRepo<State>) -> State
+    val initialState: (HotStateFlowRepo<State>) -> State,
 ) : StateFlowRepo<State>,
     BaseHotStateRepo<State, MutableStateFlow<State>>(coroutineContext) {
 
@@ -434,7 +441,7 @@ abstract class HotStateFlowRepo<State : KalugaState>(
  * @param context the [CoroutineContext] used to create a coroutine scope for this state machine. Make sure that if you pass a coroutine context that has sequential execution if you do not want simultaneous state changes. The default Main dispatcher meets these criteria.
  */
 abstract class BaseColdStateRepo<State : KalugaState, F : MutableSharedFlow<State>>(
-    context: CoroutineContext = Dispatchers.Main.immediate
+    context: CoroutineContext = Dispatchers.Main.immediate,
 ) : StateRepo<State, F>(context) {
 
     private val initialized = atomic(false)
@@ -485,7 +492,7 @@ open class ColdStateFlowRepo<State : KalugaState>(
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
     val initChangeStateWithRepo: suspend (State, ColdStateFlowRepo<State>) -> (suspend () -> State),
     val deinitChangeStateWithRepo: suspend (State, ColdStateFlowRepo<State>) -> (suspend () -> State)?,
-    val firstState: () -> State
+    val firstState: () -> State,
 ) : StateFlowRepo<State>,
     BaseColdStateRepo<State, MutableStateFlow<State>>(
         context = coroutineContext,
@@ -503,12 +510,12 @@ open class ColdStateFlowRepo<State : KalugaState>(
         // order is different than below because here firstState is mandatory, and to avoid JVM signature clashes
         firstState: () -> State,
         initChangeState: suspend (State) -> (suspend () -> State),
-        deinitChangeState: suspend (State) -> (suspend () -> State)
+        deinitChangeState: suspend (State) -> (suspend () -> State),
     ) : this(
         coroutineContext,
         initChangeStateWithRepo = { state, _ -> initChangeState(state) },
         deinitChangeStateWithRepo = { state, _ -> deinitChangeState(state) },
-        firstState = firstState
+        firstState = firstState,
     )
 
     /**
@@ -522,12 +529,12 @@ open class ColdStateFlowRepo<State : KalugaState>(
         coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
         init: suspend (ColdStateFlowRepo<State>) -> State,
         deinit: suspend (ColdStateFlowRepo<State>) -> State?,
-        firstState: () -> State
+        firstState: () -> State,
     ) : this(
         coroutineContext,
         initChangeStateWithRepo = { _, repo -> { init(repo) } },
         deinitChangeStateWithRepo = { state, repo -> { deinit(repo) ?: state } },
-        firstState = firstState
+        firstState = firstState,
     )
 
     override val stateFlow: StateFlow<State>
@@ -543,7 +550,7 @@ open class ColdStateFlowRepo<State : KalugaState>(
     override val lazyMutableFlow: Lazy<MutableStateFlow<State>> =
         lazy {
             MutableStateFlow(
-                firstState()
+                firstState(),
             )
         }
 
@@ -570,7 +577,7 @@ open class ColdStateFlowRepo<State : KalugaState>(
  */
 abstract class ColdStateRepo<State : KalugaState>(
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
-    override val lazyMutableFlow: Lazy<MutableSharedFlow<State>> = defaultLazySharedFlow()
+    override val lazyMutableFlow: Lazy<MutableSharedFlow<State>> = defaultLazySharedFlow(),
 ) : BaseColdStateRepo<State, MutableSharedFlow<State>>(coroutineContext) {
 
     final override suspend fun firstCollection() {

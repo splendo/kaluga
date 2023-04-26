@@ -62,8 +62,10 @@ class Eddystone {
             val instance = data.slice(12..17)
             Frame(
                 txPower.toInt(),
-                UID(namespace.toHexString(), instance.toHexString())
+                UID(namespace.toHexString(), instance.toHexString()),
             )
-        } else null
+        } else {
+            null
+        }
     }
 }

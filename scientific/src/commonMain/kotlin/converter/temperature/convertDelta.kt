@@ -26,15 +26,15 @@ import com.splendo.kaluga.scientific.unit.convertDelta
 
 fun <
     TemperatureUnit : Temperature,
-    TargetTemperatureUnit : Temperature
+    TargetTemperatureUnit : Temperature,
     > TargetTemperatureUnit.deltaValue(value: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>) =
     deltaValue(value, ::DefaultScientificValue)
 
 fun <
     TemperatureUnit : Temperature,
     TargetTemperatureUnit : Temperature,
-    Value : ScientificValue<PhysicalQuantity.Temperature, TargetTemperatureUnit>
+    Value : ScientificValue<PhysicalQuantity.Temperature, TargetTemperatureUnit>,
     > TargetTemperatureUnit.deltaValue(
     value: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
-    factory: (Decimal, TargetTemperatureUnit) -> Value
+    factory: (Decimal, TargetTemperatureUnit) -> Value,
 ) = factory(value.unit.convertDelta(value.decimalValue, this), this)

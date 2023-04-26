@@ -46,27 +46,27 @@ class YankUnitTest {
     fun yankFromMassAndJoltTest() {
         assertEquals(
             4(Newton per Second),
-            2(Kilogram) * 2((Meter per Second per Second) per Second)
+            2(Kilogram) * 2((Meter per Second per Second) per Second),
         )
         assertEqualScientificValue(
             4(PoundForce per Second),
             2(Pound) * (ImperialStandardGravityAcceleration / 0.5(Second)),
-            8
+            8,
         )
         assertEqualScientificValue(
             4(PoundForce.ukImperial per Second),
             2(Pound.ukImperial) * (ImperialStandardGravityAcceleration / 0.5(Second)),
-            8
+            8,
         )
         assertEqualScientificValue(
             4(PoundForce.usCustomary per Second),
             2(Pound.usCustomary) * (ImperialStandardGravityAcceleration / 0.5(Second)),
-            8
+            8,
         )
         assertEqualScientificValue(
             4(Newton per Second),
             2(Kilogram).convert(Pound) * 2((Meter per Second per Second) per Second),
-            8
+            8,
         )
     }
 }

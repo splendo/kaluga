@@ -32,7 +32,7 @@ import kotlin.coroutines.CoroutineContext
  */
 class MockNetworkStateRepoBuilder<NMB : NetworkManager.Builder>(
     val networkManagerBuilder: NMB,
-    setupMocks: Boolean = true
+    setupMocks: Boolean = true,
 ) : BaseNetworkStateRepoBuilder {
 
     /**

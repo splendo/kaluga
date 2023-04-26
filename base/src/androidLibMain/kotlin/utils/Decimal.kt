@@ -17,6 +17,7 @@
 
 @file:JvmName("DecimalAndroid")
 @file:Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+
 package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.utils.RoundingMode.RoundDown
@@ -39,7 +40,7 @@ actual fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int) =
 actual fun FiniteDecimal.plus(
     value: FiniteDecimal,
     scale: Int,
-    roundingMode: RoundingMode
+    roundingMode: RoundingMode,
 ) = this.add(value).setScale(scale, roundingMode.android)
 
 actual operator fun FiniteDecimal.minus(value: FiniteDecimal) = this.subtract(value)
@@ -50,7 +51,7 @@ actual fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int) =
 actual fun FiniteDecimal.minus(
     value: FiniteDecimal,
     scale: Int,
-    roundingMode: RoundingMode
+    roundingMode: RoundingMode,
 ) = this.subtract(value).setScale(scale, roundingMode.android)
 
 actual operator fun FiniteDecimal.div(value: FiniteDecimal) = this.divide(value, MathContext.DECIMAL128)
@@ -60,13 +61,13 @@ actual fun FiniteDecimal.div(value: FiniteDecimal, scale: Int) = this.divide(val
 actual fun FiniteDecimal.div(
     value: FiniteDecimal,
     scale: Int,
-    roundingMode: RoundingMode
+    roundingMode: RoundingMode,
 ) = this.divide(
     value,
     MathContext(
         MathContext.DECIMAL128.precision,
-        roundingMode.android
-    )
+        roundingMode.android,
+    ),
 ).setScale(scale, roundingMode.android)
 
 actual operator fun FiniteDecimal.times(value: FiniteDecimal) =
@@ -78,19 +79,19 @@ actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int) =
 actual fun FiniteDecimal.times(
     value: FiniteDecimal,
     scale: Int,
-    roundingMode: RoundingMode
+    roundingMode: RoundingMode,
 ) = this.multiply(
     value,
     MathContext(
         MathContext.DECIMAL128.precision,
-        roundingMode.android
-    )
+        roundingMode.android,
+    ),
 ).setScale(scale, roundingMode.android)
 
 actual fun FiniteDecimal.round(scale: Int, roundingMode: RoundingMode) =
     this.setScale(
         scale,
-        roundingMode.android
+        roundingMode.android,
     )
 
 actual infix fun FiniteDecimal.pow(n: Int): FiniteDecimal = this.pow(n, MathContext.DECIMAL128)
@@ -98,13 +99,13 @@ actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = this.pow(n, Ma
 actual fun FiniteDecimal.pow(
     n: Int,
     scale: Int,
-    roundingMode: RoundingMode
+    roundingMode: RoundingMode,
 ): FiniteDecimal = this.pow(
     n,
     MathContext(
         MathContext.DECIMAL128.precision,
-        roundingMode.android
-    )
+        roundingMode.android,
+    ),
 ).setScale(scale, roundingMode.android)
 
 actual fun Number.toFiniteDecimal() = toString().toFiniteDecimal()

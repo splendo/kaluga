@@ -41,7 +41,7 @@ import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
  */
 fun Modifier.backgroundStyle(backgroundStyle: KalugaBackgroundStyle) = background(
     backgroundStyle.fillStyle.brush,
-    backgroundStyle.shape.shape
+    backgroundStyle.shape.shape,
 ).border(backgroundStyle.strokeStyle.borderStroke, backgroundStyle.shape.shape)
 
 /**
@@ -56,12 +56,36 @@ val KalugaBackgroundStyle.FillStyle.brush: Brush get() = when (this) {
  * Gets the [Shape] of a [KalugaBackgroundStyle.Shape]
  */
 val KalugaBackgroundStyle.Shape.shape: Shape get() = when (this) {
-    is KalugaBackgroundStyle.Shape.Rectangle -> RoundedCornerRadiusShape(
-        if (roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT)) CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp) else CornerRadiusSize(0.dp, 0.dp),
-        if (roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT)) CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp) else CornerRadiusSize(0.dp, 0.dp),
-        if (roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT)) CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp) else CornerRadiusSize(0.dp, 0.dp),
-        if (roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT)) CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp) else CornerRadiusSize(0.dp, 0.dp)
-    )
+    is KalugaBackgroundStyle.Shape.Rectangle -> {
+        val cornerRadiusSize = CornerRadiusSize(cornerRadiusX.dp, cornerRadiusY.dp)
+        val cornerRadiusZero = CornerRadiusSize(0.dp, 0.dp)
+        RoundedCornerRadiusShape(
+            if (roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT)) {
+                cornerRadiusSize
+            } else {
+                cornerRadiusZero
+            },
+            if (roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT)) {
+                cornerRadiusSize
+            } else {
+                cornerRadiusZero
+            },
+            if (
+                roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT)
+            ) {
+                cornerRadiusSize
+            } else {
+                cornerRadiusZero
+            },
+            if (
+                roundedCorners.contains(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT)
+            ) {
+                cornerRadiusSize
+            } else {
+                cornerRadiusZero
+            },
+        )
+    }
     is KalugaBackgroundStyle.Shape.Oval -> androidx.compose.foundation.shape.CircleShape
 }
 
@@ -81,16 +105,23 @@ fun PreviewBackgroundStyle() {
                         listOf(
                             GradientStyle.ColorPoint(DefaultColors.darkBlue, 0.2f),
                             GradientStyle.ColorPoint(DefaultColors.blue, 0.4f),
-                            GradientStyle.ColorPoint(DefaultColors.aliceBlue, 0.6f)
+                            GradientStyle.ColorPoint(DefaultColors.aliceBlue, 0.6f),
                         ),
                         50.0f,
-                        GradientStyle.CenterPoint(0.2f, 0.3f)
-                    )
+                        GradientStyle.CenterPoint(0.2f, 0.3f),
+                    ),
                 ),
                 KalugaBackgroundStyle.StrokeStyle.Stroke(1.0f, DefaultColors.black),
-                KalugaBackgroundStyle.Shape.Rectangle(4.0f, 2.0f, setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT))
-            )
-        )
+                KalugaBackgroundStyle.Shape.Rectangle(
+                    4.0f,
+                    2.0f,
+                    setOf(
+                        KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT,
+                        KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT,
+                    ),
+                ),
+            ),
+        ),
     ) {
         Text("Test")
     }

@@ -30,10 +30,15 @@ import com.splendo.kaluga.scientific.unit.Kilogram
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Second
 import com.splendo.kaluga.scientific.unit.SquareMeter
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ScientificValueTest {
+
+    @Serializable
+    data class ValueContainer(val value: DefaultScientificValue<*, *>)
 
     @Test
     fun testCalculations() {
@@ -58,5 +63,14 @@ class ScientificValueTest {
         assertEquals(Decimal.PositiveInfinity(Kilogram), 1(Kilogram) / 0(Kilogram))
         assertEquals(Decimal.PositiveInfinity(Kilogram), 1(Kilogram) / 0)
         assertEquals(Decimal.PositiveInfinity(Hertz), 0(Second).frequency())
+    }
+
+    @Test
+    fun testSerialization() {
+        val value = 10(Meter)
+        val container = ValueContainer(value)
+        val json = Json.encodeToString(ValueContainer.serializer(), container)
+        val decoded = Json.decodeFromString(ValueContainer.serializer(), json)
+        assertEquals(container, decoded)
     }
 }

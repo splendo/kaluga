@@ -73,12 +73,12 @@ val BaseAdvertisementData.description: String get() = listOfNotNull(
     if (serviceUUIDs.isEmpty()) null else { "ServiceUUIDS: ${serviceUUIDs.joinToString(", ") { it.uuidString }}" },
     if (serviceData.isEmpty()) null else { "ServiceData: ${serviceData.entries.joinToString(",") { (uuid, data) -> "[${uuid.uuidString} : $data]" } }" },
     "TxPowerLevel: $txPowerLevel",
-    "IsConnectable: $isConnectable"
+    "IsConnectable: $isConnectable",
 ).joinToString("\n")
 
 internal data class PairedAdvertisementData(
     override val name: String? = null,
-    override val serviceUUIDs: List<UUID> = emptyList()
+    override val serviceUUIDs: List<UUID> = emptyList(),
 ) : BaseAdvertisementData {
     override val manufacturerId: Int? = null
     override val manufacturerData: ByteArray? = null

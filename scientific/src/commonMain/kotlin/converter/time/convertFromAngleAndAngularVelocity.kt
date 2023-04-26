@@ -30,19 +30,19 @@ import kotlin.jvm.JvmName
 @JvmName("timeFromAngleAndAngularVelocityDefault")
 fun <
     AngleUnit : Angle,
-    TimeUnit : Time
+    TimeUnit : Time,
     > TimeUnit.time(
     angle: ScientificValue<PhysicalQuantity.Angle, AngleUnit>,
-    velocity: ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>
+    velocity: ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>,
 ) = time(angle, velocity, ::DefaultScientificValue)
 
 @JvmName("timeFromAngleAndAngularVelocity")
 fun <
     AngleUnit : Angle,
     TimeUnit : Time,
-    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    Value : ScientificValue<PhysicalQuantity.Time, TimeUnit>,
     > TimeUnit.time(
     angle: ScientificValue<PhysicalQuantity.Angle, AngleUnit>,
     velocity: ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>,
-    factory: (Decimal, TimeUnit) -> Value
+    factory: (Decimal, TimeUnit) -> Value,
 ) = byDividing(angle, velocity, factory)

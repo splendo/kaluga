@@ -30,14 +30,16 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricSpeed")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>): ScientificValue<PhysicalQuantity.Length, MetricLength> =
-    speed * this
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>,
+): ScientificValue<PhysicalQuantity.Length, MetricLength> = speed * this
 
 @JvmName("timeTimesImperialSpeed")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>): ScientificValue<PhysicalQuantity.Length, ImperialLength> =
-    speed * this
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
+    speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>,
+): ScientificValue<PhysicalQuantity.Length, ImperialLength> = speed * this
 
 @JvmName("timeTimesSpeed")
 infix operator fun <SpeedUnit : Speed, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>
+    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
 ): ScientificValue<PhysicalQuantity.Length, Length> = speed * this

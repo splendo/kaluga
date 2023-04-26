@@ -51,18 +51,18 @@ internal actual class DefaultDeviceConnectionManager(
     coroutineScope: CoroutineScope,
 ) : BaseDeviceConnectionManager(deviceWrapper, settings, coroutineScope) {
 
-    class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : BaseDeviceConnectionManager.Builder {
+    class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : DeviceConnectionManager.Builder {
         override fun create(
             deviceWrapper: DeviceWrapper,
             settings: ConnectionSettings,
-            coroutineScope: CoroutineScope
-        ): BaseDeviceConnectionManager {
+            coroutineScope: CoroutineScope,
+        ): DefaultDeviceConnectionManager {
             return DefaultDeviceConnectionManager(
                 cbCentralManager,
                 peripheral,
                 deviceWrapper,
                 settings,
-                coroutineScope
+                coroutineScope,
             )
         }
     }
@@ -134,7 +134,7 @@ internal actual class DefaultDeviceConnectionManager(
         else -> DeviceConnectionManager.State.DISCONNECTED
     }
 
-    override suspend fun connect() {
+    override fun connect() {
         cbCentralManager.connectPeripheral(peripheral, null)
     }
 
@@ -146,8 +146,12 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override suspend fun disconnect() {
+    override fun disconnect() {
+        val state = getCurrentState()
         cbCentralManager.cancelPeripheralConnection(peripheral)
+        if (state != DeviceConnectionManager.State.CONNECTED) {
+            handleDisconnect()
+        }
     }
 
     override suspend fun readRssi() {
@@ -212,7 +216,7 @@ internal actual class DefaultDeviceConnectionManager(
                     peripheral.services?.typedList<CBService>()?.map {
                         peripheral.discoverCharacteristics(emptyList<CBUUID>(), it)
                         it.UUID
-                    } ?: emptyList()
+                    } ?: emptyList(),
                 )
             }
 
@@ -228,7 +232,7 @@ internal actual class DefaultDeviceConnectionManager(
                     forService.characteristics?.typedList<CBCharacteristic>()?.map {
                         peripheral.discoverDescriptorsForCharacteristic(it)
                         it.UUID
-                    } ?: emptyList()
+                    } ?: emptyList(),
                 )
             }
             checkScanComplete()

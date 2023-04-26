@@ -14,7 +14,7 @@ pluginManagement {
 
             val kalugaAndroidGradlePluginVersion = settings.extra["kaluga.androidGradlePluginVersion"]
             val kalugaKotlinVersion = settings.extra["kaluga.kotlinVersion"]
-            val kalugaKtLintGradlePluginVersion = settings.extra["kaluga.ktLintGradlePluginVersion"]
+            val kalugaKotlinterGradlePluginVersion = settings.extra["kaluga.kotlinterGradlePluginVersion"]
             val kalugaGoogleServicesGradlePluginVersion = settings.extra["kaluga.googleServicesGradlePluginVersion"]
 
             when (requested.id.id) {
@@ -26,9 +26,8 @@ pluginManagement {
                 "com.android.library",
                 "com.android.application",
                 -> useVersion("$kalugaAndroidGradlePluginVersion")
-                "org.jlleitschuh.gradle.ktlint",
-                "org.jlleitschuh.gradle.ktlint-idea",
-                -> useVersion("$kalugaKtLintGradlePluginVersion")
+                "org.jmailen.kotlinter",
+                -> useVersion("$kalugaKotlinterGradlePluginVersion")
                 "com.google.gms:google-services"
                 -> useVersion("com.google.gms:google-services:$kalugaGoogleServicesGradlePluginVersion")
             }

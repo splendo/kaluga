@@ -39,5 +39,5 @@ infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(c
 
 @JvmName("fluxDivCurrent")
 infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.div(
-    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>
+    current: ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>,
 ) = Henry.inductance(this, current)

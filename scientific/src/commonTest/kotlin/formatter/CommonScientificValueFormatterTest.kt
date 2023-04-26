@@ -107,5 +107,5 @@ private fun randomScientificValue(): ScientificValue<*, *> = listOf(
     (0..10000).random()(Meter),
     Random.nextDouble(0.0, 10000.0)(Liter),
     (0..10000).random()(Newton),
-    Random.nextDouble(0.0, 1000.0)(Mile per Hour)
+    Random.nextDouble(0.0, 1000.0)(Mile per Hour),
 ).random()

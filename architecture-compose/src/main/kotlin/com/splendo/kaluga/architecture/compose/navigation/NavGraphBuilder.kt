@@ -59,7 +59,7 @@ import kotlin.reflect.KClass
  */
 inline fun <SpecType : NavigationBundleSpecRow<*>, reified Action : NavigationAction<SpecType>> NavGraphBuilder.composable(
     spec: NavigationBundleSpec<SpecType>,
-    noinline content: @Composable (NavigationBundle<SpecType>) -> Unit
+    noinline content: @Composable (NavigationBundle<SpecType>) -> Unit,
 ) = composable(Action::class, spec, content)
 
 /**
@@ -71,7 +71,7 @@ inline fun <SpecType : NavigationBundleSpecRow<*>, reified Action : NavigationAc
 fun <SpecType : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecType>> NavGraphBuilder.composable(
     actionClass: KClass<Action>,
     spec: NavigationBundleSpec<SpecType>,
-    content: @Composable (NavigationBundle<SpecType>) -> Unit
+    content: @Composable (NavigationBundle<SpecType>) -> Unit,
 ) {
     composable(
         route(actionClass, spec),
@@ -81,7 +81,7 @@ fun <SpecType : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecType>>
             } else {
                 null
             }
-        }
+        },
     ) { backStackEntry ->
         backStackEntry.arguments?.composable(spec)?.let { content(it) }
             ?: Spacer(modifier = Modifier.fillMaxSize())
@@ -95,122 +95,122 @@ fun <SpecType : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecType>>
  */
 inline fun <Value, reified Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composable(
     type: NavigationBundleSpecType<Value>,
-    noinline content: @Composable (Value) -> Unit
+    noinline content: @Composable (Value) -> Unit,
 ) = composable(Action::class, type, content)
 
 @JvmName("singleValueUnitComposable")
 inline fun <reified Action : SingleValueNavigationAction<Unit>> NavGraphBuilder.composable(
-    noinline content: @Composable () -> Unit
+    noinline content: @Composable () -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.UnitType) { content() }
 
 @JvmName("singleValueBooleanComposable")
 inline fun <reified Action : SingleValueNavigationAction<Boolean>> NavGraphBuilder.composable(
-    noinline content: @Composable (Boolean) -> Unit
+    noinline content: @Composable (Boolean) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.BooleanType, content)
 
 @JvmName("singleValueBooleanArrayComposable")
 inline fun <reified Action : SingleValueNavigationAction<BooleanArray>> NavGraphBuilder.composable(
-    noinline content: @Composable (BooleanArray) -> Unit
+    noinline content: @Composable (BooleanArray) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.BooleanArrayType, content)
 
 @JvmName("singleValueByteComposable")
 inline fun <reified Action : SingleValueNavigationAction<Byte>> NavGraphBuilder.composable(
-    noinline content: @Composable (Byte) -> Unit
+    noinline content: @Composable (Byte) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.ByteType, content)
 
 @JvmName("singleValueByteArrayComposable")
 inline fun <reified Action : SingleValueNavigationAction<ByteArray>> NavGraphBuilder.composable(
-    noinline content: @Composable (ByteArray) -> Unit
+    noinline content: @Composable (ByteArray) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.ByteArrayType, content)
 
 @JvmName("singleValueCharComposable")
 inline fun <reified Action : SingleValueNavigationAction<Char>> NavGraphBuilder.composable(
-    noinline content: @Composable (Char) -> Unit
+    noinline content: @Composable (Char) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.CharType, content)
 
 @JvmName("singleValueCharArrayComposable")
 inline fun <reified Action : SingleValueNavigationAction<CharArray>> NavGraphBuilder.composable(
-    noinline content: @Composable (CharArray) -> Unit
+    noinline content: @Composable (CharArray) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.CharArrayType, content)
 
 @JvmName("singleValueCharSequenceComposable")
 inline fun <reified Action : SingleValueNavigationAction<CharSequence>> NavGraphBuilder.composable(
-    noinline content: @Composable (CharSequence) -> Unit
+    noinline content: @Composable (CharSequence) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.CharSequenceType, content)
 
 @JvmName("singleValueDoubleComposable")
 inline fun <reified Action : SingleValueNavigationAction<Double>> NavGraphBuilder.composable(
-    noinline content: @Composable (Double) -> Unit
+    noinline content: @Composable (Double) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.DoubleType, content)
 
 @JvmName("singleValueDoubleArrayComposable")
 inline fun <reified Action : SingleValueNavigationAction<DoubleArray>> NavGraphBuilder.composable(
-    noinline content: @Composable (DoubleArray) -> Unit
+    noinline content: @Composable (DoubleArray) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.DoubleArrayType, content)
 
 @JvmName("singleValueFloatComposable")
 inline fun <reified Action : SingleValueNavigationAction<Float>> NavGraphBuilder.composable(
-    noinline content: @Composable (Float) -> Unit
+    noinline content: @Composable (Float) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.FloatType, content)
 
 @JvmName("singleValueFloatArrayComposable")
 inline fun <reified Action : SingleValueNavigationAction<FloatArray>> NavGraphBuilder.composable(
-    noinline content: @Composable (FloatArray) -> Unit
+    noinline content: @Composable (FloatArray) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.FloatArrayType, content)
 
 @JvmName("singleValueIntComposable")
 inline fun <reified Action : SingleValueNavigationAction<Int>> NavGraphBuilder.composable(
-    noinline content: @Composable (Int) -> Unit
+    noinline content: @Composable (Int) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.IntegerType, content)
 
 @JvmName("singleValueIntArrayComposable")
 inline fun <reified Action : SingleValueNavigationAction<IntArray>> NavGraphBuilder.composable(
-    noinline content: @Composable (IntArray) -> Unit
+    noinline content: @Composable (IntArray) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.IntegerArrayType, content)
 
 @JvmName("singleValueLongComposable")
 inline fun <reified Action : SingleValueNavigationAction<Long>> NavGraphBuilder.composable(
-    noinline content: @Composable (Long) -> Unit
+    noinline content: @Composable (Long) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.LongType, content)
 
 @JvmName("singleValueLongArrayComposable")
 inline fun <reified Action : SingleValueNavigationAction<LongArray>> NavGraphBuilder.composable(
-    noinline content: @Composable (LongArray) -> Unit
+    noinline content: @Composable (LongArray) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.LongArrayType, content)
 
 @JvmName("singleValueShortComposable")
 inline fun <reified Action : SingleValueNavigationAction<Short>> NavGraphBuilder.composable(
-    noinline content: @Composable (Short) -> Unit
+    noinline content: @Composable (Short) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.ShortType, content)
 
 @JvmName("singleValueShortArrayComposable")
 inline fun <reified Action : SingleValueNavigationAction<ShortArray>> NavGraphBuilder.composable(
-    noinline content: @Composable (ShortArray) -> Unit
+    noinline content: @Composable (ShortArray) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.ShortArrayType, content)
 
 @JvmName("singleValueStringComposable")
 inline fun <reified Action : SingleValueNavigationAction<String>> NavGraphBuilder.composable(
-    noinline content: @Composable (String) -> Unit
+    noinline content: @Composable (String) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.StringType, content)
 
 @JvmName("singleValueStringArrayComposable")
 inline fun <reified Action : SingleValueNavigationAction<List<String>>> NavGraphBuilder.composable(
-    noinline content: @Composable (List<String>) -> Unit
+    noinline content: @Composable (List<String>) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.StringArrayType, content)
 
 @JvmName("singleValueDateComposable")
 inline fun <reified Action : SingleValueNavigationAction<KalugaDate>> NavGraphBuilder.composable(
-    noinline content: @Composable (KalugaDate) -> Unit
+    noinline content: @Composable (KalugaDate) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.DateType, content)
 
 @JvmName("singleValueDateArrayComposable")
 inline fun <reified Action : SingleValueNavigationAction<List<KalugaDate>>> NavGraphBuilder.composable(
-    noinline content: @Composable (List<KalugaDate>) -> Unit
+    noinline content: @Composable (List<KalugaDate>) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.DateArrayType, content)
 
 inline fun <Value, reified Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composable(
     serializer: KSerializer<Value>,
-    noinline content: @Composable (Value) -> Unit
+    noinline content: @Composable (Value) -> Unit,
 ) = composable(Action::class, NavigationBundleSpecType.SerializedType(serializer), content)
 
 /**
@@ -222,12 +222,12 @@ inline fun <Value, reified Action : SingleValueNavigationAction<Value>> NavGraph
 fun <Value, Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composable(
     actionClass: KClass<Action>,
     type: NavigationBundleSpecType<Value>,
-    content: @Composable (Value) -> Unit
+    content: @Composable (Value) -> Unit,
 ) = composable(
     actionClass,
     SingleValueNavigationSpec(
-        type
-    )
+        type,
+    ),
 ) { bundle ->
     content(bundle.get(type))
 }
@@ -244,7 +244,7 @@ private fun <SpecType : NavigationBundleSpecRow<*>> Bundle.composable(spec: Navi
 
 private fun Bundle.composableValue(
     value: String?,
-    specType: NavigationBundleSpecType<*>
+    specType: NavigationBundleSpecType<*>,
 ): NavigationBundleValue<*> {
     val nonNullableValue = value ?: ""
     return when (specType) {
@@ -252,105 +252,105 @@ private fun Bundle.composableValue(
         is NavigationBundleSpecType.BooleanArrayType -> specType.convertValue(
             Json.decodeFromString(
                 BooleanArraySerializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.BooleanType -> specType.convertValue(
             Json.decodeFromString(
                 Boolean.serializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.BundleType<*> -> throw BundleConversionError() // Unsupported for now
         is NavigationBundleSpecType.ByteArrayType -> specType.convertValue(
             Json.decodeFromString(
                 ByteArraySerializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.ByteType -> specType.convertValue(
             Json.decodeFromString(
                 Byte.serializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.CharArrayType -> specType.convertValue(
             Json.decodeFromString(
                 CharArraySerializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.CharSequenceType -> specType.convertValue(nonNullableValue)
         is NavigationBundleSpecType.CharType -> specType.convertValue(
             Json.decodeFromString(
                 Char.serializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.DateArrayType -> specType.convertValue(
             Json.decodeFromString(
                 ListSerializer(String.serializer()),
-                nonNullableValue
+                nonNullableValue,
             ).map {
                 KalugaDateFormatter.Companion.iso8601Pattern().parse(it) ?: throw BundleConversionError()
-            }
+            },
         )
         is NavigationBundleSpecType.DateType -> specType.convertValue(
             KalugaDateFormatter.Companion.iso8601Pattern().parse(nonNullableValue)
-                ?: throw BundleConversionError()
+                ?: throw BundleConversionError(),
         )
         is NavigationBundleSpecType.DoubleArrayType -> specType.convertValue(
             Json.decodeFromString(
                 DoubleArraySerializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.DoubleType -> specType.convertValue(
             Json.decodeFromString(
                 Double.serializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.FloatArrayType -> specType.convertValue(
             Json.decodeFromString(
                 FloatArraySerializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.FloatType -> specType.convertValue(
             Json.decodeFromString(
                 Float.serializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.IntegerArrayType -> specType.convertValue(
             Json.decodeFromString(
                 IntArraySerializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.IntegerType -> specType.convertValue(
             Json.decodeFromString(
                 Int.serializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.LongArrayType -> specType.convertValue(
             Json.decodeFromString(
                 LongArraySerializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.LongType -> specType.convertValue(
             Json.decodeFromString(
                 Long.serializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.OptionalType<*> -> value?.let {
             composableValue(
                 it,
-                specType.type
+                specType.type,
             )
         } ?: specType.convertValue(null)
         is NavigationBundleSpecType.SerializedType<*> -> specType.generateValue(nonNullableValue)
@@ -358,20 +358,20 @@ private fun Bundle.composableValue(
         is NavigationBundleSpecType.ShortArrayType -> specType.convertValue(
             Json.decodeFromString(
                 ShortArraySerializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.ShortType -> specType.convertValue(
             Json.decodeFromString(
                 Short.serializer(),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.StringArrayType -> specType.convertValue(
             Json.decodeFromString(
                 ListSerializer(String.serializer()),
-                nonNullableValue
-            )
+                nonNullableValue,
+            ),
         )
         is NavigationBundleSpecType.StringType -> specType.convertValue(nonNullableValue)
     }

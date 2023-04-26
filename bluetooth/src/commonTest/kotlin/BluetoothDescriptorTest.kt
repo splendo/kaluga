@@ -25,19 +25,18 @@ import kotlin.test.assertNull
 
 class BluetoothDescriptorTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, Descriptor?>() {
 
-    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithDescriptor, scope: CoroutineScope) -> DescriptorContext = { configuration, scope ->
+    override val createTestContextWithConfiguration: suspend (Configuration.DeviceWithDescriptor, CoroutineScope) -> DescriptorContext = { configuration, scope ->
         DescriptorContext(configuration, scope)
     }
 
     override val flowFromTestContext: suspend DescriptorContext.() -> Flow<Descriptor?> = {
-        bluetooth.devices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid].descriptors()[descriptorUuid]
+        bluetooth.scannedDevices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid].descriptors()[descriptorUuid]
     }
 
     @Test
     fun testGetDescriptor() = testWithFlowAndTestContext(
-        Configuration.DeviceWithDescriptor()
+        Configuration.DeviceWithDescriptor(),
     ) {
-
         mainAction {
             bluetooth.startScanning()
             scanDevice()

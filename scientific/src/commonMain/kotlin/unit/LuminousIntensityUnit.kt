@@ -35,7 +35,7 @@ val LuminousIntensityUnits: Set<LuminousIntensity> get() = setOf(
     Hectocandela,
     Kilocandela,
     Megacandela,
-    Gigacandela
+    Gigacandela,
 )
 
 /**
@@ -59,21 +59,30 @@ sealed class CandelaMultiple : LuminousIntensity(), MetricMultipleUnit<Measureme
 
 @Serializable
 object Nanocandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Nano(Candela)
+
 @Serializable
 object Microcandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Micro(Candela)
+
 @Serializable
 object Millicandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Milli(Candela)
+
 @Serializable
 object Centicandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Centi(Candela)
+
 @Serializable
 object Decicandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Deci(Candela)
+
 @Serializable
 object Decacandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Deca(Candela)
+
 @Serializable
 object Hectocandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Hecto(Candela)
+
 @Serializable
 object Kilocandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Kilo(Candela)
+
 @Serializable
 object Megacandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Mega(Candela)
+
 @Serializable
 object Gigacandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Giga(Candela)

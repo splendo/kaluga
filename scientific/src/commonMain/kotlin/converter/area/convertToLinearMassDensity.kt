@@ -43,62 +43,62 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAreaTimesMetricDensity")
 infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>
+    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>,
 ) = density * this
 
 @JvmName("imperialAreaTimesImperialDensity")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>
+    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
 ) = density * this
 
 @JvmName("imperialAreaTimesUKImperialDensity")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>
+    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>,
 ) = density * this
 
 @JvmName("imperialAreaTimesUSCustomaryDensity")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>
+    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>,
 ) = density * this
 
 @JvmName("areaTimesDensity")
 infix operator fun <DensityUnit : Density, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>
+    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>,
 ) = density * this
 
 @JvmName("metricAreaDivMetricSpecificVolume")
 infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>,
 ) = (specificVolume.unit.per per (1(specificVolume.unit.volume) / 1(unit)).unit).linearMassDensity(
     this,
-    specificVolume
+    specificVolume,
 )
 
 @JvmName("imperialAreaDivImperialSpecificVolume")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>,
 ) = (specificVolume.unit.per per (1(specificVolume.unit.volume) / 1(unit)).unit).linearMassDensity(
     this,
-    specificVolume
+    specificVolume,
 )
 
 @JvmName("imperialAreaDivUKImperialSpecificVolume")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>,
 ) = (specificVolume.unit.per per (1(specificVolume.unit.volume) / 1(unit)).unit).linearMassDensity(
     this,
-    specificVolume
+    specificVolume,
 )
 
 @JvmName("imperialAreaDivUSCustomarySpecificVolume")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>,
 ) = (specificVolume.unit.per per (1(specificVolume.unit.volume) / 1(unit)).unit).linearMassDensity(
     this,
-    specificVolume
+    specificVolume,
 )
 
 @JvmName("areaDivSpecificVolume")
 infix operator fun <SpecificVolumeUnit : SpecificVolume, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
 ) = (Kilogram per Meter).linearMassDensity(this, specificVolume)

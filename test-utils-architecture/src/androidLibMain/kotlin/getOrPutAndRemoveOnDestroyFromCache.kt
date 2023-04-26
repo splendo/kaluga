@@ -37,7 +37,7 @@ val lifecycleAwareActivityCache = concurrentMutableMapOf<Pair<AppCompatActivity,
 inline fun <reified T : Any> AppCompatActivity.getOrPutAndRemoveOnDestroyFromCache(
     crossinline onCreate: (T) -> Unit = {},
     crossinline onDestroy: (T) -> Unit = {},
-    defaultValue: () -> T
+    defaultValue: () -> T,
 ): T {
     val key = Pair(this, T::class)
     return lifecycleAwareActivityCache.getOrPut(key) {
@@ -52,7 +52,7 @@ inline fun <reified T : Any> AppCompatActivity.getOrPutAndRemoveOnDestroyFromCac
                         lifecycleAwareActivityCache.remove(key)
                         onDestroy(it)
                     }
-                }
+                },
             )
         }
     } as T

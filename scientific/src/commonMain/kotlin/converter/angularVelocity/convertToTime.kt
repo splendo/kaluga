@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("angularVelocityDivAngularAcceleration")
 infix operator fun ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>.div(
-    angularAcceleration: ScientificValue<PhysicalQuantity.AngularAcceleration, AngularAcceleration>
+    angularAcceleration: ScientificValue<PhysicalQuantity.AngularAcceleration, AngularAcceleration>,
 ) = angularAcceleration.unit.per.time(this, angularAcceleration)

@@ -70,7 +70,7 @@ interface DefaultObservable<R : T?, T> :
  * @param observation The [Observation] to handle observing the value.
  */
 abstract class BaseObservable<R : T, T, OO : ObservableOptional<R>>(
-    protected open val observation: Observation<R, T, OO>
+    protected open val observation: Observation<R, T, OO>,
 ) : BasicObservable<R, T, OO>,
     Initial<R, T> by observation {
     constructor(
@@ -85,7 +85,7 @@ abstract class BaseObservable<R : T, T, OO : ObservableOptional<R>>(
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 abstract class BaseInitializedObservable<T>(
-    observation: ObservationInitialized<T>
+    observation: ObservationInitialized<T>,
 ) : BaseObservable<T, T, Value<T>>(observation),
     InitializedObservable<T>,
     Initialized<T, T> by observation {
@@ -94,7 +94,7 @@ abstract class BaseInitializedObservable<T>(
         observation.currentObserved
 
     constructor(
-        initialValue: Value<T>
+        initialValue: Value<T>,
     ) : this(ObservationInitialized(initialValue))
 }
 
@@ -105,9 +105,9 @@ abstract class BaseInitializedObservable<T>(
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 abstract class BaseUninitializedObservable<T>(
-    override val observation: ObservationUninitialized<T>
+    override val observation: ObservationUninitialized<T>,
 ) : BaseObservable<T, T, ObservableOptional<T>>(
-    observation
+    observation,
 ),
     UninitializedObservable<T>,
     Uninitialized<T> by observation {
@@ -124,7 +124,7 @@ abstract class BaseUninitializedObservable<T>(
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE") // we want our delegate to override
 abstract class BaseDefaultObservable<R : T?, T>(
-    override val observation: ObservationDefault<R, T?>
+    override val observation: ObservationDefault<R, T?>,
 ) :
     BaseObservable<R, T?, Value<R>>(observation),
     DefaultObservable<R, T?>,
@@ -137,7 +137,7 @@ abstract class BaseDefaultObservable<R : T?, T>(
      */
     constructor(
         defaultValue: R,
-        initialValue: Value<T?>
+        initialValue: Value<T?>,
     ) : this(ObservationDefault<R, T?>(Value(defaultValue), initialValue))
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
@@ -150,7 +150,7 @@ abstract class BaseDefaultObservable<R : T?, T>(
  * @param value The fixed value of the observable
  */
 class SimpleInitializedObservable<T>(
-    value: T
+    value: T,
 ) : BaseInitializedObservable<T>(Value(value))
 
 /**

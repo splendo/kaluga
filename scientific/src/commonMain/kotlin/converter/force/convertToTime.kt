@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("forceDivYank")
 infix operator fun <ForceUnit : Force, YankUnit : Yank> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    yank: ScientificValue<PhysicalQuantity.Yank, YankUnit>
+    yank: ScientificValue<PhysicalQuantity.Yank, YankUnit>,
 ) = yank.unit.per.time(this, yank)

@@ -33,14 +33,14 @@ sealed class SystemNavigationActions : SingleValueNavigationAction<Unit>(Unit, N
 }
 
 class SystemViewModel(
-    navigator: Navigator<SystemNavigationActions>
+    navigator: Navigator<SystemNavigationActions>,
 ) : NavigatingViewModel<SystemNavigationActions>(navigator) {
 
     val systemFeatures =
         observableOf(
             listOf(
-                SystemFeatures.Network
-            )
+                SystemFeatures.Network,
+            ),
         )
 
     fun onButtonTapped(systemFeatures: SystemFeatures) {

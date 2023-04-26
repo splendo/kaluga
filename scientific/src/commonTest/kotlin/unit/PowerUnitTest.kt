@@ -91,12 +91,12 @@ class PowerUnitTest {
         assertEqualScientificValue(
             1(FootPoundForcePerSecond),
             (2 * ImperialStandardGravityAcceleration.value)(FootPoundal) / 2(Second),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(FootPoundForcePerMinute),
             (2 * ImperialStandardGravityAcceleration.value)(FootPoundal) / 2(Minute),
-            8
+            8,
         )
         assertEqualScientificValue(1(FootPoundForcePerSecond), 2(FootPoundForce) / 2(Second), 8)
         assertEqualScientificValue(1(FootPoundForcePerMinute), 2(FootPoundForce) / 2(Minute), 8)
@@ -105,12 +105,12 @@ class PowerUnitTest {
         assertEqualScientificValue(
             1(BritishThermalUnitPerSecond),
             2(BritishThermalUnit) / 2(Second),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(BritishThermalUnitPerMinute),
             2(BritishThermalUnit) / 2(Minute),
-            8
+            8,
         )
         assertEqualScientificValue(1(BritishThermalUnitPerHour), 2(BritishThermalUnit) / 2(Hour), 8)
         assertEquals(1(Horsepower), 2(HorsepowerHour) / 2(Hour))

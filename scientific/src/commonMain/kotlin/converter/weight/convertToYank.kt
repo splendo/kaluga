@@ -34,25 +34,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricWeightTimesMetricJolt")
 infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    jolt: ScientificValue<PhysicalQuantity.Jolt, MetricJolt>
+    jolt: ScientificValue<PhysicalQuantity.Jolt, MetricJolt>,
 ) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)
 
 @JvmName("imperialWeightTimesImperialJolt")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    jolt: ScientificValue<PhysicalQuantity.Jolt, ImperialJolt>
+    jolt: ScientificValue<PhysicalQuantity.Jolt, ImperialJolt>,
 ) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)
 
 @JvmName("ukImperialWeightTimesImperialJolt")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    jolt: ScientificValue<PhysicalQuantity.Jolt, ImperialJolt>
+    jolt: ScientificValue<PhysicalQuantity.Jolt, ImperialJolt>,
 ) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)
 
 @JvmName("usCustomaryWeightTimesImperialJolt")
 infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    jolt: ScientificValue<PhysicalQuantity.Jolt, ImperialJolt>
+    jolt: ScientificValue<PhysicalQuantity.Jolt, ImperialJolt>,
 ) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)
 
 @JvmName("weightTimesJolt")
 infix operator fun <WeightUnit : Weight, JoltUnit : Jolt> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    jolt: ScientificValue<PhysicalQuantity.Jolt, JoltUnit>
+    jolt: ScientificValue<PhysicalQuantity.Jolt, JoltUnit>,
 ) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)

@@ -48,28 +48,28 @@ class InfoFragment : KalugaViewModelFragment<InfoViewModel>(R.layout.fragment_in
                         NavigationSpec.Dialog(
                             createDialog = {
                                 InfoDialog(action.value)
-                            }
+                            },
                         )
                     }
                     is InfoNavigation.Link -> NavigationSpec.Browser(
                         URL(action.value),
-                        NavigationSpec.Browser.Type.Normal
+                        NavigationSpec.Browser.Type.Normal,
                     )
                     is InfoNavigation.Mail -> NavigationSpec.Email(
                         NavigationSpec.Email.EmailSettings(
                             to = action.value.to,
-                            subject = action.value.subject
-                        )
+                            subject = action.value.subject,
+                        ),
                     )
                 }
-            }
+            },
         )
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
@@ -123,7 +123,7 @@ class InfoDialog(private val dialogSpec: DialogSpec) : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val v = inflater.inflate(R.layout.dialog_info, container, false)
 

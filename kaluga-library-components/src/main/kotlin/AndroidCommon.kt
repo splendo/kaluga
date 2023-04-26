@@ -18,11 +18,10 @@
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.api.file.*
 
-fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = ComponentType.Default) {
+fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = ComponentType.Default, packageName: String) {
     androidLibrary {
-        androidCommon(this@commonAndroidComponent, type)
+        androidCommon(this@commonAndroidComponent, type, packageName)
     }
 
     dependencies {
@@ -52,9 +51,10 @@ fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = Componen
     }
 }
 
-fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentType: ComponentType = ComponentType.Default) {
+fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentType: ComponentType = ComponentType.Default, packageName: String) {
     compileSdk = LibraryImpl.Android.compileSdk
     buildToolsVersion = LibraryImpl.Android.buildTools
+    namespace = "${project.Library.group}.$packageName"
 
     defaultConfig {
         minSdk = LibraryImpl.Android.minSdk
@@ -81,13 +81,13 @@ fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentTyp
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
+        jvmTarget = "11"
+        freeCompilerArgs = freeCompilerArgs + listOf("-XXLanguage:+InlineClasses", "-Xjvm-default=all")
     }
 
     when (componentType) {

@@ -36,8 +36,10 @@ class LifecycleManagerObserverTests : BaseTest() {
 
     @Mock
     private lateinit var activity: Activity
+
     @Mock
     private lateinit var lifecycleOwner: LifecycleOwner
+
     @Mock
     private lateinit var fragmentManager: FragmentManager
 
@@ -50,10 +52,10 @@ class LifecycleManagerObserverTests : BaseTest() {
     @Test
     fun testLifecycleManagerObserverHandlerCalled() = runBlocking {
         val observer = LifecycleManagerObserver()
-        val data: ActivityLifecycleSubscribable.LifecycleManager? = ActivityLifecycleSubscribable.LifecycleManager(
+        val data: ActivityLifecycleSubscribable.LifecycleManager = ActivityLifecycleSubscribable.LifecycleManager(
             activity,
             lifecycleOwner,
-            fragmentManager
+            fragmentManager,
         )
 
         val deferredLifecycleManager = MutableList(3) { CompletableDeferred<ActivityLifecycleSubscribable.LifecycleManager?>() }

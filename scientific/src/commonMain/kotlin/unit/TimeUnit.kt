@@ -35,7 +35,7 @@ val TimeUnits: Set<Time> get() = setOf(
     Centisecond,
     Decisecond,
     Minute,
-    Hour
+    Hour,
 )
 
 /**

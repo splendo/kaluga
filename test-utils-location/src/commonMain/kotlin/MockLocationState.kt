@@ -47,7 +47,7 @@ sealed class MockLocationState {
     }
 
     data class Initializing(
-        override val location: Location
+        override val location: Location,
     ) : Active(), LocationState.Initializing {
 
         override fun initialize(hasPermission: Boolean, enabled: Boolean): suspend () -> LocationState.Initialized =

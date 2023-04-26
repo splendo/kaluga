@@ -32,20 +32,20 @@ import kotlin.jvm.JvmName
 
 @JvmName("fluxDivPhot")
 infix operator fun <FluxUnit : LuminousFlux> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
-    phot: ScientificValue<PhysicalQuantity.Illuminance, Phot>
+    phot: ScientificValue<PhysicalQuantity.Illuminance, Phot>,
 ) = SquareCentimeter.area(this, phot)
 
 @JvmName("fluxDivPhotMultiple")
 infix operator fun <FluxUnit : LuminousFlux, PhotUnit : PhotMultiple> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
-    phot: ScientificValue<PhysicalQuantity.Illuminance, PhotUnit>
+    phot: ScientificValue<PhysicalQuantity.Illuminance, PhotUnit>,
 ) = SquareCentimeter.area(this, phot)
 
 @JvmName("fluxDivImperialIlluminance")
 infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : ImperialIlluminance> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
-    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
 ) = SquareFoot.area(this, illuminance)
 
 @JvmName("fluxDivIlluminance")
 infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : Illuminance> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
-    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
 ) = SquareMeter.area(this, illuminance)

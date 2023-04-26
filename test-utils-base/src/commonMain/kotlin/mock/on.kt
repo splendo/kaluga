@@ -20,8 +20,8 @@ fun <
         VoidParameters.Matchers,
         VoidParameters.Values,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     VoidParameters.Matchers,
     VoidParameters.MatchersOrCaptor,
@@ -29,7 +29,7 @@ fun <
     VoidParameters,
     Result,
     Answer,
-    Stub
+    Stub,
     >.on(): Stub {
     return onMatcher(VoidParameters.Matchers)
 }
@@ -47,8 +47,8 @@ fun <
         SingleParameters.Matchers<Value>,
         SingleParameters.Values<Value>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     SingleParameters.Matchers<Value>,
     SingleParameters.MatchersOrCaptor<Value>,
@@ -56,7 +56,7 @@ fun <
     SingleParameters<Value>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.on(value: ParameterMatcher<Value> = ParameterMatcher.any()): Stub {
     return onMatcher(SingleParameters.Matchers(value))
 }
@@ -76,8 +76,8 @@ fun <
         PairParameters.Matchers<T0, T1>,
         PairParameters.Values<T0, T1>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     PairParameters.Matchers<T0, T1>,
     PairParameters.MatchersOrCaptor<T0, T1>,
@@ -85,10 +85,10 @@ fun <
     PairParameters<T0, T1>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.on(
     first: ParameterMatcher<T0> = ParameterMatcher.any(),
-    second: ParameterMatcher<T1> = ParameterMatcher.any()
+    second: ParameterMatcher<T1> = ParameterMatcher.any(),
 ): Stub {
     return onMatcher(PairParameters.Matchers(first, second))
 }
@@ -110,8 +110,8 @@ fun <
         TripleParameters.Matchers<T0, T1, T2>,
         TripleParameters.Values<T0, T1, T2>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     TripleParameters.Matchers<T0, T1, T2>,
     TripleParameters.MatchersOrCaptor<T0, T1, T2>,
@@ -119,11 +119,11 @@ fun <
     TripleParameters<T0, T1, T2>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.on(
     first: ParameterMatcher<T0> = ParameterMatcher.any(),
     second: ParameterMatcher<T1> = ParameterMatcher.any(),
-    third: ParameterMatcher<T2> = ParameterMatcher.any()
+    third: ParameterMatcher<T2> = ParameterMatcher.any(),
 ): Stub {
     return onMatcher(TripleParameters.Matchers(first, second, third))
 }
@@ -147,8 +147,8 @@ fun <
         QuadrupleParameters.Matchers<T0, T1, T2, T3>,
         QuadrupleParameters.Values<T0, T1, T2, T3>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     QuadrupleParameters.Matchers<T0, T1, T2, T3>,
     QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>,
@@ -156,12 +156,12 @@ fun <
     QuadrupleParameters<T0, T1, T2, T3>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.on(
     first: ParameterMatcher<T0> = ParameterMatcher.any(),
     second: ParameterMatcher<T1> = ParameterMatcher.any(),
     third: ParameterMatcher<T2> = ParameterMatcher.any(),
-    fourth: ParameterMatcher<T3> = ParameterMatcher.any()
+    fourth: ParameterMatcher<T3> = ParameterMatcher.any(),
 ): Stub {
     return onMatcher(QuadrupleParameters.Matchers(first, second, third, fourth))
 }
@@ -187,8 +187,8 @@ fun <
         QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
         QuintupleParameters.Values<T0, T1, T2, T3, T4>,
         Result,
-        Answer
-        >
+        Answer,
+        >,
     > BaseMethodMock<
     QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
     QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>,
@@ -196,13 +196,13 @@ fun <
     QuintupleParameters<T0, T1, T2, T3, T4>,
     Result,
     Answer,
-    Stub
+    Stub,
     >.on(
     first: ParameterMatcher<T0> = ParameterMatcher.any(),
     second: ParameterMatcher<T1> = ParameterMatcher.any(),
     third: ParameterMatcher<T2> = ParameterMatcher.any(),
     fourth: ParameterMatcher<T3> = ParameterMatcher.any(),
-    fifth: ParameterMatcher<T4> = ParameterMatcher.any()
+    fifth: ParameterMatcher<T4> = ParameterMatcher.any(),
 ): Stub {
     return onMatcher(QuintupleParameters.Matchers(first, second, third, fourth, fifth))
 }

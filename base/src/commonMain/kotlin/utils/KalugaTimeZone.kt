@@ -23,7 +23,7 @@ import kotlin.time.Duration
 
 /**
  * Style for writing the name of a [KalugaTimeZone]
- * Can be either [Short] or [Long]
+ * Can be either [TimeZoneNameStyle.Short] or [TimeZoneNameStyle.Long]
  */
 enum class TimeZoneNameStyle {
 
@@ -35,7 +35,7 @@ enum class TimeZoneNameStyle {
     /**
      * A style specifier for [KalugaTimeZone.displayName] indicating a long name, such as "Central European Time"
      */
-    Long
+    Long,
 }
 
 /**
@@ -136,5 +136,8 @@ expect class KalugaTimeZone : BaseTimeZone {
     }
 }
 
-@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaTimeZone"))
+@Deprecated(
+    "Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.",
+    ReplaceWith("KalugaTimeZone"),
+)
 typealias TimeZone = KalugaTimeZone

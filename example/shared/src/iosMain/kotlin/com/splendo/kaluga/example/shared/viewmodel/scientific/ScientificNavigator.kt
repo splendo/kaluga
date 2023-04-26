@@ -23,7 +23,7 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 fun ScientificNavigator(
     onSelectLeftUnit: (PhysicalQuantity) -> Unit,
     onSelectRightUnit: (PhysicalQuantity) -> Unit,
-    onConverter: (ScientificConverterViewModel.Arguments) -> Unit
+    onConverter: (ScientificConverterViewModel.Arguments) -> Unit,
 ) = DefaultNavigator<ScientificNavigationAction<*>> { action ->
     when (action) {
         is ScientificNavigationAction.SelectUnit.Left -> onSelectLeftUnit(action.value)

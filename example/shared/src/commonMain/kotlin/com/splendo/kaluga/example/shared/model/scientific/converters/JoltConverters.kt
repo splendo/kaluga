@@ -31,22 +31,46 @@ import com.splendo.kaluga.scientific.unit.USCustomaryWeight
 import com.splendo.kaluga.scientific.unit.Weight
 
 val PhysicalQuantity.Jolt.converters get() = listOf<QuantityConverter<PhysicalQuantity.Jolt, *>>(
-    QuantityConverterWithOperator("Acceleration from Time", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Time) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Acceleration from Time",
+        QuantityConverter.WithOperator.Type.Multiplication,
+        PhysicalQuantity.Time,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricJolt && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialJolt && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is Jolt && rightUnit is Time -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricJolt && rightUnit is Time -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialJolt && rightUnit is Time -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is Jolt && rightUnit is Time -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Yank from Weight", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Yank from Weight",
+        QuantityConverter.WithOperator.Type.Multiplication,
+        PhysicalQuantity.Weight,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricJolt && rightUnit is MetricWeight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialJolt && rightUnit is ImperialWeight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialJolt && rightUnit is UKImperialWeight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialJolt && rightUnit is USCustomaryWeight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is Jolt && rightUnit is Weight -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricJolt && rightUnit is MetricWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialJolt && rightUnit is ImperialWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialJolt && rightUnit is UKImperialWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialJolt && rightUnit is USCustomaryWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is Jolt && rightUnit is Weight -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
-    }
+    },
 )

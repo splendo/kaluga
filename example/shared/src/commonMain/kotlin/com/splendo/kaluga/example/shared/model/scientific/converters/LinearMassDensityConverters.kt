@@ -24,76 +24,184 @@ import com.splendo.kaluga.scientific.converter.linearMassDensity.times
 import com.splendo.kaluga.scientific.unit.*
 
 val PhysicalQuantity.LinearMassDensity.converters get() = listOf<QuantityConverter<PhysicalQuantity.LinearMassDensity, *>>(
-    QuantityConverterWithOperator("Area from Density", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Density) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Area from Density",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.Density,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricLinearMassDensity && rightUnit is MetricDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialLinearMassDensity && rightUnit is ImperialDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialLinearMassDensity && rightUnit is UKImperialDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialLinearMassDensity && rightUnit is USCustomaryDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialLinearMassDensity && rightUnit is ImperialDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialLinearMassDensity && rightUnit is UKImperialDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryLinearMassDensity && rightUnit is ImperialDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryLinearMassDensity && rightUnit is USCustomaryDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is LinearMassDensity && rightUnit is Density -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricLinearMassDensity && rightUnit is MetricDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialLinearMassDensity && rightUnit is ImperialDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialLinearMassDensity && rightUnit is UKImperialDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialLinearMassDensity && rightUnit is USCustomaryDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialLinearMassDensity && rightUnit is ImperialDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialLinearMassDensity && rightUnit is UKImperialDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryLinearMassDensity && rightUnit is ImperialDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryLinearMassDensity && rightUnit is USCustomaryDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is LinearMassDensity && rightUnit is Density -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Area from Specific Volume", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.SpecificVolume) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Area from Specific Volume",
+        QuantityConverter.WithOperator.Type.Multiplication,
+        PhysicalQuantity.SpecificVolume,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricLinearMassDensity && rightUnit is MetricSpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialLinearMassDensity && rightUnit is ImperialSpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialLinearMassDensity && rightUnit is UKImperialSpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialLinearMassDensity && rightUnit is USCustomarySpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialLinearMassDensity && rightUnit is ImperialSpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialLinearMassDensity && rightUnit is UKImperialSpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryLinearMassDensity && rightUnit is ImperialSpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryLinearMassDensity && rightUnit is USCustomarySpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is LinearMassDensity && rightUnit is SpecificVolume -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricLinearMassDensity && rightUnit is MetricSpecificVolume -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialLinearMassDensity && rightUnit is ImperialSpecificVolume -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialLinearMassDensity && rightUnit is UKImperialSpecificVolume -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialLinearMassDensity && rightUnit is USCustomarySpecificVolume -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialLinearMassDensity && rightUnit is ImperialSpecificVolume -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialLinearMassDensity && rightUnit is UKImperialSpecificVolume -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryLinearMassDensity && rightUnit is ImperialSpecificVolume -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryLinearMassDensity && rightUnit is USCustomarySpecificVolume -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is LinearMassDensity && rightUnit is SpecificVolume -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Area Density from Length", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Area Density from Length",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.Length,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricLinearMassDensity && rightUnit is MetricLength -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialLinearMassDensity && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialLinearMassDensity && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryLinearMassDensity && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is LinearMassDensity && rightUnit is Length -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricLinearMassDensity && rightUnit is MetricLength -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialLinearMassDensity && rightUnit is ImperialLength -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialLinearMassDensity && rightUnit is ImperialLength -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryLinearMassDensity && rightUnit is ImperialLength -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is LinearMassDensity && rightUnit is Length -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Density from Area", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Density from Area",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.Area,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricLinearMassDensity && rightUnit is MetricArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialLinearMassDensity && rightUnit is ImperialArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialLinearMassDensity && rightUnit is ImperialArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryLinearMassDensity && rightUnit is ImperialArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is LinearMassDensity && rightUnit is Area -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricLinearMassDensity && rightUnit is MetricArea -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialLinearMassDensity && rightUnit is ImperialArea -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialLinearMassDensity && rightUnit is ImperialArea -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryLinearMassDensity && rightUnit is ImperialArea -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is LinearMassDensity && rightUnit is Area -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Length from Area Density", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.AreaDensity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Length from Area Density",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.AreaDensity,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricLinearMassDensity && rightUnit is MetricAreaDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialLinearMassDensity && rightUnit is ImperialAreaDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialLinearMassDensity && rightUnit is UKImperialAreaDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialLinearMassDensity && rightUnit is USCustomaryAreaDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialLinearMassDensity && rightUnit is ImperialAreaDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialLinearMassDensity && rightUnit is UKImperialAreaDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryLinearMassDensity && rightUnit is ImperialAreaDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryLinearMassDensity && rightUnit is USCustomaryAreaDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is LinearMassDensity && rightUnit is AreaDensity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricLinearMassDensity && rightUnit is MetricAreaDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialLinearMassDensity && rightUnit is ImperialAreaDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialLinearMassDensity && rightUnit is UKImperialAreaDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialLinearMassDensity && rightUnit is USCustomaryAreaDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialLinearMassDensity && rightUnit is ImperialAreaDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialLinearMassDensity && rightUnit is UKImperialAreaDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryLinearMassDensity && rightUnit is ImperialAreaDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryLinearMassDensity && rightUnit is USCustomaryAreaDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is LinearMassDensity && rightUnit is AreaDensity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Weight from Length", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Length) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Weight from Length",
+        QuantityConverter.WithOperator.Type.Multiplication,
+        PhysicalQuantity.Length,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricLinearMassDensity && rightUnit is MetricLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is ImperialLinearMassDensity && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialLinearMassDensity && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryLinearMassDensity && rightUnit is ImperialLength -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is LinearMassDensity && rightUnit is Length -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricLinearMassDensity && rightUnit is MetricLength -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is ImperialLinearMassDensity && rightUnit is ImperialLength -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialLinearMassDensity && rightUnit is ImperialLength -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryLinearMassDensity && rightUnit is ImperialLength -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is LinearMassDensity && rightUnit is Length -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
-    }
+    },
 )

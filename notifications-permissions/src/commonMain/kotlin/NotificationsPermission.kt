@@ -54,7 +54,11 @@ interface BaseNotificationsPermissionManagerBuilder : BasePermissionsBuilder<Not
      * @param coroutineScope The [CoroutineScope] the manager runs on
      * @return a [NotificationsPermissionManager]
      */
-    fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): NotificationsPermissionManager
+    fun create(
+        notificationsPermission: NotificationsPermission,
+        settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
+        coroutineScope: CoroutineScope,
+    ): NotificationsPermissionManager
 }
 
 /**
@@ -76,5 +80,5 @@ class NotificationsPermissionStateRepo(
     builder: BaseNotificationsPermissionManagerBuilder,
     monitoringInterval: Duration = defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : PermissionStateRepo<NotificationsPermission>(monitoringInterval, { builder.create(notificationsPermission, settings, it) }, coroutineContext)

@@ -59,7 +59,7 @@ import com.splendo.kaluga.resources.view.KalugaLabel
 fun KalugaButton.Composable(
     modifier: Modifier,
     elevation: ButtonElevation = ButtonDefaults.elevation(),
-    contentPadding: PaddingValues = ButtonDefaults.ContentPadding
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
 ) {
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
@@ -79,7 +79,7 @@ fun KalugaButton.Composable(
             modifier = Modifier
                 .backgroundStyle(stateStyle.backgroundStyle)
                 .padding(contentPadding)
-                .then(modifier)
+                .then(modifier),
         ) {
             when (this@Composable) {
                 is KalugaButton.Plain -> KalugaLabel.Plain(text, textStyle)
@@ -99,35 +99,37 @@ fun PreviewKalugaButton() {
         defaultStyle = ButtonStateStyle(
             DefaultColors.white,
             DefaultColors.red,
-            shape = KalugaBackgroundStyle.Shape.Rectangle(5.0f)
+            shape = KalugaBackgroundStyle.Shape.Rectangle(5.0f),
         ),
         pressedStyle = ButtonStateStyle(
             DefaultColors.red,
             DefaultColors.white,
-            shape = KalugaBackgroundStyle.Shape.Rectangle(5.0f)
+            shape = KalugaBackgroundStyle.Shape.Rectangle(5.0f),
         ),
         disabledStyle = ButtonStateStyle(
             DefaultColors.black,
             DefaultColors.white,
-            shape = KalugaBackgroundStyle.Shape.Rectangle(5.0f)
-        )
+            shape = KalugaBackgroundStyle.Shape.Rectangle(5.0f),
+        ),
     )
     Column(modifier = Modifier.size(100.dp)) {
         KalugaButton.Plain("Plain Text", buttonStyle, true) {}.Composable(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
         KalugaButton.Styled(
             "Styled Text".styled(
                 StyledStringBuilder.Provider(LocalContext.current),
                 buttonStyle.getStateTextStyle(isEnabled = true, isPressed = false),
                 {
-                    Pair(StringStyleAttribute.CharacterStyleAttribute.ForegroundColor(DefaultColors.darkBlue), IntRange(0, 5))
-                }
+                    StringStyleAttribute.CharacterStyleAttribute.ForegroundColor(
+                        DefaultColors.darkBlue,
+                    ) to IntRange(0, 5)
+                },
             ),
             buttonStyle,
-            true
+            true,
         ) {}.Composable(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }

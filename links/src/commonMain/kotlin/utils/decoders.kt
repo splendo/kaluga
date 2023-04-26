@@ -32,7 +32,7 @@ internal fun <T> decodeFromList(list: List<Any>, deserializer: DeserializationSt
 
 internal class LinksDecoder(
     private val list: ArrayDeque<Any>,
-    var elementsCount: Int = 0
+    var elementsCount: Int = 0,
 ) : AbstractDecoder() {
     private var elementIndex = 0
 

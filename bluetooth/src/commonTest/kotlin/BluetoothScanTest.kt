@@ -36,14 +36,14 @@ class BluetoothScanTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.Blue
 
     @Test
     fun testIsScanning() = testWithFlowAndTestContext(
-        Configuration.Bluetooth()
+        Configuration.Bluetooth(),
     ) {
         val devicesJob = CompletableDeferred<Job>()
         mainAction {
             devicesJob.complete(
                 coroutineScope.launch {
-                    bluetooth.devices().collect {}
-                }
+                    bluetooth.scannedDevices().collect {}
+                },
             )
         }
         test {

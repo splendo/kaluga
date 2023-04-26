@@ -44,7 +44,7 @@ data class DateTimePicker(
     val confirmButtonTitle: String,
     val type: Type,
     val locale: KalugaLocale,
-    val selectedDate: KalugaDate
+    val selectedDate: KalugaDate,
 ) {
 
     /**
@@ -60,7 +60,7 @@ data class DateTimePicker(
          */
         data class DateType(
             val earliestDate: KalugaDate? = null,
-            val latestDate: KalugaDate? = null
+            val latestDate: KalugaDate? = null,
         ) : Type() {
 
             internal fun adjustDate(date: KalugaDate) = when {
@@ -92,7 +92,7 @@ data class DateTimePicker(
                     minute = 0
                     second = 0
                     millisecond = 0
-                }
+                },
             )
             is Type.TimeType -> DefaultKalugaDate.epoch().apply {
                 val now = DefaultKalugaDate.now()
@@ -239,7 +239,7 @@ abstract class BaseDateTimePickerPresenter(protected open val dateTimePicker: Da
 
     protected abstract fun showDateTimePicker(
         animated: Boolean = true,
-        completion: (KalugaDate?) -> Unit = {}
+        completion: (KalugaDate?) -> Unit = {},
     )
 }
 
@@ -276,12 +276,12 @@ fun BaseDateTimePickerPresenter.Builder.buildDatePicker(
     coroutineScope: CoroutineScope,
     earliestDate: KalugaDate? = null,
     latestDate: KalugaDate? = null,
-    initialize: DateTimePicker.Builder.() -> Unit
+    initialize: DateTimePicker.Builder.() -> Unit,
 ): BaseDateTimePickerPresenter = create(
     DateTimePicker.Builder(DateTimePicker.Type.DateType(earliestDate, latestDate)).apply {
         initialize()
     }.build(),
-    coroutineScope
+    coroutineScope,
 )
 
 /**
@@ -293,10 +293,10 @@ fun BaseDateTimePickerPresenter.Builder.buildDatePicker(
  */
 fun BaseDateTimePickerPresenter.Builder.buildTimePicker(
     coroutineScope: CoroutineScope,
-    initialize: DateTimePicker.Builder.() -> Unit
+    initialize: DateTimePicker.Builder.() -> Unit,
 ): BaseDateTimePickerPresenter = create(
     DateTimePicker.Builder(DateTimePicker.Type.TimeType).apply {
         initialize()
     }.build(),
-    coroutineScope
+    coroutineScope,
 )

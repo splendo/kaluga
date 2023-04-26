@@ -2,8 +2,14 @@
 This **project** includes all common dependencies and settings for kaluga module.
 
 # Steps for adding a new module
-1. Run gradle task: `./gradlew createNewModule -P module_name=<your-module> -P package_name=<your-package>` from the root directory.
-   * `package_name` can be omitted if the module and package names are the same.
+1. Run gradle task: `./gradlew createNewModule -P module_name=<your-module> -P package_name=<your-package> -P create-test-utils -P create-compose -P create-databinding` from the root directory.
+   * `package_name` can be omitted if the module and package names are the same. Package name will be prefixed with `com.splendo.kaluga`.
+   * Only pass `create-test-utils` if you want to also create a `test-utils-<your-module>` with package `com.splendo.kaluga.test.<your-package>`.
+      * Use `./gradlew createNewTestModule -P module_name=<your-module> -P package_name=<your-package>` to create a `test-utils-<your-module>` for an existing module.
+   * Only pass `create-compose` if you want to also create a `<your-module>-compose` with package `com.splendo.kaluga.<your-package>.compose`.
+      * Use `./gradlew createNewComposeModule -P module_name=<your-module> -P package_name=<your-package>` to create a `<your-module>-compose` for an existing module.
+   * Only pass `create-databinding` if you want to also create a `<your-module>-databinding` with package `com.splendo.kaluga.<your-package>.databinding`.
+      * Use `./gradlew createNewDataBindingModule -P module_name=<your-module> -P package_name=<your-package>` to create a `<your-module>-databinding` for an existing module.
 1. Include your module to kaluga project edit `kaluga/settings.gradle.kts` by adding: `include(":<your-module>")`.
 1. Add Unit tests
     * [Common Unit Tests](#commonTests)

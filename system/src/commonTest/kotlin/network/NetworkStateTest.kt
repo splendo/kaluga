@@ -38,8 +38,8 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
     @Test
     fun testInitialValueUnknown() = testNetworkState(
         NetworkConnectionType.Unknown.WithoutLastNetwork(
-            NetworkConnectionType.Unknown.Reason.NOT_CLEAR
-        )
+            NetworkConnectionType.Unknown.Reason.NOT_CLEAR,
+        ),
     ) {
         assertInitialValue()
 
@@ -90,7 +90,7 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
         mainAction {
             networkManager.network.value = NetworkConnectionType.Unknown.WithLastNetwork(
                 NetworkConnectionType.Known.Wifi(),
-                NetworkConnectionType.Unknown.Reason.LOSING
+                NetworkConnectionType.Unknown.Reason.LOSING,
             )
         }
 
@@ -98,9 +98,9 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
             assertEquals(
                 NetworkConnectionType.Unknown.WithLastNetwork(
                     NetworkConnectionType.Known.Wifi(),
-                    NetworkConnectionType.Unknown.Reason.LOSING
+                    NetworkConnectionType.Unknown.Reason.LOSING,
                 ),
-                it.networkConnectionType
+                it.networkConnectionType,
             )
         }
 
@@ -153,8 +153,8 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
     @Test
     fun testUnknownTransition() = testNetworkState(
         NetworkConnectionType.Unknown.WithoutLastNetwork(
-            NetworkConnectionType.Unknown.Reason.NOT_CLEAR
-        )
+            NetworkConnectionType.Unknown.Reason.NOT_CLEAR,
+        ),
     ) {
         test {
             assertIs<NetworkState.Unknown>(it)
@@ -208,7 +208,7 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
             assertIs<NetworkState.Unknown>(it)
             assertEquals(
                 NetworkConnectionType.Unknown.WithoutLastNetwork(NetworkConnectionType.Unknown.Reason.NOT_CLEAR),
-                it.networkConnectionType
+                it.networkConnectionType,
             )
             networkManager.startMonitoringMock.verify()
         }

@@ -28,10 +28,10 @@ import kotlin.jvm.JvmName
 
 @JvmName("volumeTimesMolarity")
 infix operator fun <MolarityUnit : Molarity, VolumeUnit : Volume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(
-    molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>
+    molarity: ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>,
 ) = molarity * this
 
 @JvmName("volumeDivMolarVolume")
 infix operator fun <VolumeUnit : Volume, MolarVolumeUnit : MolarVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>
+    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>,
 ) = molarVolume.unit.per.amountOfSubstance(this, molarVolume)

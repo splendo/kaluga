@@ -23,15 +23,15 @@ import kotlinx.coroutines.CoroutineScope
 internal actual class DefaultDeviceConnectionManager(
     deviceWrapper: DeviceWrapper,
     settings: ConnectionSettings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BaseDeviceConnectionManager(deviceWrapper, settings, coroutineScope) {
 
-    class Builder() : BaseDeviceConnectionManager.Builder {
+    class Builder : DeviceConnectionManager.Builder {
 
         override fun create(
             deviceWrapper: DeviceWrapper,
             settings: ConnectionSettings,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ): DefaultDeviceConnectionManager {
             return DefaultDeviceConnectionManager(deviceWrapper, settings, coroutineScope)
         }
@@ -39,11 +39,11 @@ internal actual class DefaultDeviceConnectionManager(
 
     override fun getCurrentState(): DeviceConnectionManager.State = DeviceConnectionManager.State.DISCONNECTED
 
-    override suspend fun connect() {}
+    override fun connect() {}
 
     override suspend fun discoverServices() {}
 
-    override suspend fun disconnect() {}
+    override fun disconnect() {}
 
     override suspend fun readRssi() {}
 

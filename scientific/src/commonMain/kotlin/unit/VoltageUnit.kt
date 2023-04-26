@@ -39,7 +39,7 @@ val VoltageUnits: Set<Voltage> get() = setOf(
     Kilovolt,
     Megavolt,
     Gigavolt,
-    Abvolt
+    Abvolt,
 )
 
 /**
@@ -60,6 +60,7 @@ object Volt : Voltage(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, Phy
 
 @Serializable
 object Nanovolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Nano(Volt)
+
 @Serializable
 object Abvolt : Voltage() {
     private const val ABVOLT_IN_VOLT = 100000000.0
@@ -75,19 +76,27 @@ sealed class VoltMultiple : Voltage(), MetricMultipleUnit<MeasurementSystem.Metr
 
 @Serializable
 object Microvolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Micro(Volt)
+
 @Serializable
 object Millivolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Milli(Volt)
+
 @Serializable
 object Centivolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Centi(Volt)
+
 @Serializable
 object Decivolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Deci(Volt)
+
 @Serializable
 object Decavolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Deca(Volt)
+
 @Serializable
 object Hectovolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Hecto(Volt)
+
 @Serializable
 object Kilovolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Kilo(Volt)
+
 @Serializable
 object Megavolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Mega(Volt)
+
 @Serializable
 object Gigavolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Giga(Volt)

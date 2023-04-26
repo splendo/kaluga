@@ -34,5 +34,5 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>.d
 
 @JvmName("chargeDivCapacitance")
 infix operator fun <ChargeUnit : ElectricCharge, CapacitanceUnit : ElectricCapacitance> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.div(
-    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>
+    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>,
 ) = Volt.voltage(this, capacitance)

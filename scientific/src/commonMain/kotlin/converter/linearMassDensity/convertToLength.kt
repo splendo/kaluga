@@ -36,45 +36,45 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricLinearMassDensityDivMetricAreaDensity")
 infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, MetricLinearMassDensity>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>,
 ) = (1(areaDensity.unit.per) / 1(unit.per)).unit.length(this, areaDensity)
 
 @JvmName("imperialLinearMassDensityDivImperialAreaDensity")
 infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>,
 ) = (1(areaDensity.unit.per) / 1(unit.per)).unit.length(this, areaDensity)
 
 @JvmName("imperialLinearMassDensityDivUKImperialAreaDensity")
 infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>,
 ) = (1(areaDensity.unit.per) / 1(unit.per)).unit.length(this, areaDensity)
 
 @JvmName("imperialLinearMassDensityDivUSCustomaryAreaDensity")
 infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>,
 ) = (1(areaDensity.unit.per) / 1(unit.per)).unit.length(this, areaDensity)
 
 @JvmName("ukImperialLinearMassDensityDivImperialAreaDensity")
 infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>,
 ) = (1(areaDensity.unit.per) / 1(unit.per)).unit.length(this, areaDensity)
 
 @JvmName("ukImperialLinearMassDensityDivUKImperialAreaDensity")
 infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>,
 ) = (1(areaDensity.unit.per) / 1(unit.per)).unit.length(this, areaDensity)
 
 @JvmName("usCustomaryLinearMassDensityDivImperialAreaDensity")
 infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>,
 ) = (1(areaDensity.unit.per) / 1(unit.per)).unit.length(this, areaDensity)
 
 @JvmName("usCustomaryLinearMassDensityDivUSCustomaryAreaDensity")
 infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>,
 ) = (1(areaDensity.unit.per) / 1(unit.per)).unit.length(this, areaDensity)
 
 @JvmName("linearMassDensityDivAreaDensity")
 infix operator fun <LinearMassDensityUnit : LinearMassDensity, AreaDensityUnit : AreaDensity> ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>.div(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>,
 ) = (1(areaDensity.unit.per) / 1(unit.per)).unit.length(this, areaDensity)

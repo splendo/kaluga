@@ -75,7 +75,7 @@ fun KeyboardLayout() {
             koinViewModel<KeyboardViewModel<ComposeFocusHandler>>(named(composeKeyboardViewModel)) {
                 parametersOf(
                     ComposeKeyboardManager.Builder(),
-                    ComposeFocusHandler(FocusRequester.Default)
+                    ComposeFocusHandler(FocusRequester.Default),
                 )
             }
 
@@ -85,7 +85,7 @@ fun KeyboardLayout() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Constants.Padding.default)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()),
             ) {
                 var text by remember {
                     mutableStateOf("")
@@ -98,8 +98,8 @@ fun KeyboardLayout() {
                         .focusRequester(FocusRequester.Default),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
-                        onDone = { focusHandler.clearFocus() }
-                    )
+                        onDone = { focusHandler.clearFocus() },
+                    ),
                 )
                 showButton.Composable(modifier = Modifier.fillMaxWidth())
                 hideButton.Composable(modifier = Modifier.fillMaxWidth())

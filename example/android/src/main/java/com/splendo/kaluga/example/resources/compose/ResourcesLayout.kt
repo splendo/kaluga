@@ -54,7 +54,7 @@ class ComposeResourcesActivity : AppCompatActivity() {
 
         setContent {
             CompositionLocalProvider(
-                LocalAppCompatActivity provides this
+                LocalAppCompatActivity provides this,
             ) {
                 ResourcesLayout()
             }
@@ -75,13 +75,13 @@ fun ResourcesLayout() {
                             is ResourcesListNavigationAction.Image -> action.next
                             is ResourcesListNavigationAction.Label -> action.next
                         }
-                    }
+                    },
                 ) {
                     composable(ResourcesListNavigationAction.Button.route()) { ButtonsLayout() }
                     composable(ResourcesListNavigationAction.Color.route()) { ColorsLayout() }
                     composable(ResourcesListNavigationAction.Image.route()) { ImagesLayout() }
                     composable(ResourcesListNavigationAction.Label.route()) { LabelsLayout() }
-                }
+                },
             )
         }
         ViewModelComposable(viewModel) {
@@ -90,13 +90,13 @@ fun ResourcesLayout() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Constants.Padding.default)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()),
             ) {
                 val resources by resources.state()
                 resources.forEach {
                     Button(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { onResourceSelected(it) }
+                        onClick = { onResourceSelected(it) },
                     ) {
                         Text(it.title)
                     }

@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
@@ -47,17 +47,17 @@ class PairingUtilsTests : BaseTest() {
 
         val mockConnectionManager = CompletableDeferred<MockDeviceConnectionManager>()
 
-        private val manager = object : BaseDeviceConnectionManager.Builder {
+        private val manager = object : DeviceConnectionManager.Builder {
             override fun create(
                 deviceWrapper: DeviceWrapper,
                 settings: ConnectionSettings,
-                coroutineScope: CoroutineScope
-            ): BaseDeviceConnectionManager {
+                coroutineScope: CoroutineScope,
+            ): MockDeviceConnectionManager {
                 val connectionManager = MockDeviceConnectionManager(
                     true,
                     deviceWrapper,
                     settings,
-                    coroutineScope
+                    coroutineScope,
                 )
                 mockConnectionManager.complete(connectionManager)
                 return connectionManager
@@ -69,11 +69,11 @@ class PairingUtilsTests : BaseTest() {
             DeviceInfoImpl(
                 createDeviceWrapper(NAME),
                 rssi = -78,
-                MockAdvertisementData(NAME)
+                MockAdvertisementData(NAME),
             ),
             ConnectionSettings(),
             { manager.create(MockDeviceWrapper(NAME, NAME, DeviceWrapper.BondState.NONE, true), ConnectionSettings(), coroutineScope) },
-            coroutineScope
+            coroutineScope,
         )
     }
 
@@ -81,7 +81,6 @@ class PairingUtilsTests : BaseTest() {
 
     @Test
     fun unpairTest(): Unit = testBlockingAndCancelScope {
-
         val device = mocks.device(this)
         val flow = flowOf(device)
         flow.unpair()

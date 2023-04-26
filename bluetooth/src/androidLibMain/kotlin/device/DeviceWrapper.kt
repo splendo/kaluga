@@ -46,7 +46,7 @@ actual interface DeviceWrapper {
         /**
          * Indicates the device s bonded
          */
-        BONDED
+        BONDED,
     }
 
     /**
@@ -71,11 +71,6 @@ actual interface DeviceWrapper {
      * Creates a bond with the device (pair)
      */
     fun createBond()
-
-    /**
-     * The [BluetoothDevice] being wrapped
-     */
-    val device: BluetoothDevice
 }
 
 /**
@@ -83,7 +78,7 @@ actual interface DeviceWrapper {
  * @param device the [BluetoothDevice] being wrapped
  */
 @SuppressLint("MissingPermission")
-class DefaultDeviceWrapper(override val device: BluetoothDevice) : DeviceWrapper {
+class DefaultDeviceWrapper(private val device: BluetoothDevice) : DeviceWrapper {
 
     override val name: String?
         get() = device.name

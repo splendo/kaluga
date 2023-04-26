@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     EnergyUnit : Energy,
     TimeUnit : Time,
-    PowerUnit : Power
+    PowerUnit : Power,
     > EnergyUnit.energy(
     power: ScientificValue<PhysicalQuantity.Power, PowerUnit>,
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = energy(power, time, ::DefaultScientificValue)
 
 @JvmName("energyFromPowerAndTime")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     TimeUnit : Time,
     PowerUnit : Power,
-    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
     > EnergyUnit.energy(
     power: ScientificValue<PhysicalQuantity.Power, PowerUnit>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, EnergyUnit) -> Value
+    factory: (Decimal, EnergyUnit) -> Value,
 ) = byMultiplying(power, time, factory)

@@ -105,7 +105,7 @@ class DefaultBeacons(
     private val bluetooth: BluetoothService,
     private val beaconLifetime: Duration = 10.seconds,
     private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
-    coroutineContext: CoroutineContext = defaultBeaconsDispatcher
+    coroutineContext: CoroutineContext = defaultBeaconsDispatcher,
 ) : Beacons, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("Beacons")) {
 
     private companion object { const val TAG = "Beacons" }
@@ -125,7 +125,7 @@ class DefaultBeacons(
         _beacons.value = emptySet()
         bluetooth.startScanning()
         monitoringJob.value = this@DefaultBeacons.launch {
-            bluetooth.devices().collect { list ->
+            bluetooth.scannedDevices().collect { list ->
                 logger.debug(TAG, "Total Bluetooth devices discovered: ${list.size}")
                 updateBeacons(list.mapNotNull { createBeaconWith(it) })
             }

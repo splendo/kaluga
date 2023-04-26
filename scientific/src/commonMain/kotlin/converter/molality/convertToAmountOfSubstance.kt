@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("molalityTimesWeight")
 infix operator fun <MolalityUnit : Molality, WeightUnit : Weight> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.times(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = unit.amountOfSubstance.amountOfSubstance(this, weight)

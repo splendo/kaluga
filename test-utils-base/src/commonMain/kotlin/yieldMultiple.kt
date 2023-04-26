@@ -44,7 +44,7 @@ suspend fun yieldUntil(
     timeout: Duration = Duration.INFINITE,
     timesPerTurn: Int = DEFAULT_MULTIPLE_TIMES_YIELDS,
     delayPerTurn: Duration = 10.milliseconds,
-    constraint: () -> Boolean
+    constraint: () -> Boolean,
 ) = withTimeout(timeout) {
     while (!constraint()) {
         yieldMultiple(times = timesPerTurn)

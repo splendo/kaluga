@@ -24,6 +24,8 @@ import com.splendo.kaluga.scientific.converter.dimensionless.div
 import com.splendo.kaluga.scientific.converter.dimensionless.times
 import com.splendo.kaluga.scientific.decimalFraction
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.div
+import com.splendo.kaluga.scientific.times
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails

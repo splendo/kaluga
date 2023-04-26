@@ -52,7 +52,7 @@ interface BaseLocationPermissionManagerBuilder : BasePermissionsBuilder<Location
     fun create(
         locationPermission: LocationPermission,
         settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-        coroutineScope: CoroutineScope
+        coroutineScope: CoroutineScope,
     ): LocationPermissionManager
 }
 
@@ -75,5 +75,5 @@ class LocationPermissionStateRepo(
     builder: BaseLocationPermissionManagerBuilder,
     monitoringInterval: Duration = defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : PermissionStateRepo<LocationPermission>(monitoringInterval, { builder.create(locationPermission, settings, it) }, coroutineContext)

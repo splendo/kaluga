@@ -25,5 +25,5 @@ import com.splendo.kaluga.scientific.unit.Becquerel
 import com.splendo.kaluga.scientific.unit.Time
 
 infix fun <AmountOfSubstanceUnit : AmountOfSubstance, TimeUnit : Time> ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>.decaysWithHalfLife(
-    halfLife: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    halfLife: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = Becquerel.radioactivity(this, halfLife)

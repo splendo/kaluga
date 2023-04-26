@@ -28,12 +28,12 @@ import java.util.UUID
 
 class MockServiceWrapper(
     override val uuid: UUID = UUID.randomUUID(),
-    initialCharacteristics: List<ServiceWrapperBuilder.Characteristic> = emptyList()
+    initialCharacteristics: List<ServiceWrapperBuilder.Characteristic> = emptyList(),
 ) : ServiceWrapper {
 
     constructor(builder: ServiceWrapperBuilder) : this(
         builder.uuid,
-        builder.characteristics
+        builder.characteristics,
     )
 
     override val type: ServiceWrapper.Type = ServiceWrapper.Type.PRIMARY
@@ -44,9 +44,9 @@ class MockServiceWrapper(
                 uuid = it.uuid,
                 descriptorUUIDs = it.descriptorUUIDs,
                 properties = it.properties,
-                service = this
+                service = this,
             )
-        }.toTypedArray()
+        }.toTypedArray(),
     )
     override val characteristics: List<CharacteristicWrapper>
         get() = mutableCharacteristics

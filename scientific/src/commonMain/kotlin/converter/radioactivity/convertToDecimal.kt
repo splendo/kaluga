@@ -30,7 +30,7 @@ import kotlin.jvm.JvmName
 
 @JvmName("radioactivityTimesTime")
 infix operator fun <RadioactivityUnit : Radioactivity, TimeUnit : Time> ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ): Decimal = convertValue(
-    Becquerel
+    Becquerel,
 ) * time.convertValue(Second)

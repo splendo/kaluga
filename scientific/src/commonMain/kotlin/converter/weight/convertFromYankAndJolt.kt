@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     WeightUnit : Weight,
     JoltUnit : Jolt,
-    YankUnit : Yank
+    YankUnit : Yank,
     > WeightUnit.mass(
     yank: ScientificValue<PhysicalQuantity.Yank, YankUnit>,
-    jolt: ScientificValue<PhysicalQuantity.Jolt, JoltUnit>
+    jolt: ScientificValue<PhysicalQuantity.Jolt, JoltUnit>,
 ) = mass(yank, jolt, ::DefaultScientificValue)
 
 @JvmName("massFromYankAndJolt")
@@ -42,9 +42,9 @@ fun <
     WeightUnit : Weight,
     JoltUnit : Jolt,
     YankUnit : Yank,
-    Value : ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    Value : ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
     > WeightUnit.mass(
     yank: ScientificValue<PhysicalQuantity.Yank, YankUnit>,
     jolt: ScientificValue<PhysicalQuantity.Jolt, JoltUnit>,
-    factory: (Decimal, WeightUnit) -> Value
+    factory: (Decimal, WeightUnit) -> Value,
 ) = byDividing(yank, jolt, factory)

@@ -29,7 +29,7 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAndImperialActionDivTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Action, MetricAndImperialAction>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit.energy).energy(this, time)
 
 @JvmName("metricActionDivTime")
@@ -38,10 +38,10 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Action, Me
 
 @JvmName("imperialActionDivTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Action, ImperialAction>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit.energy).energy(this, time)
 
 @JvmName("actionDivTime")
 infix operator fun <ActionUnit : Action, TimeUnit : Time> ScientificValue<PhysicalQuantity.Action, ActionUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit.energy).energy(this, time)

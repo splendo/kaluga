@@ -45,7 +45,7 @@ sealed class Location {
         val verticalAccuracy: Double? = null,
         val speed: Double? = null,
         val course: Double? = null,
-        val time: KalugaDate
+        val time: KalugaDate,
     ) : Location() {
 
         /**
@@ -79,7 +79,7 @@ sealed class Location {
             /**
              * Location is unknown for an unknown reason
              */
-            NOT_CLEAR
+            NOT_CLEAR,
         }
 
         /**
@@ -110,7 +110,7 @@ data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double
         North,
         West,
         South,
-        East
+        East,
     }
 
     companion object {

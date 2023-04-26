@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     ResistanceUnit : ElectricResistance,
     ChargeUnit : ElectricCharge,
-    FluxUnit : MagneticFlux
+    FluxUnit : MagneticFlux,
     > FluxUnit.flux(
     resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
-    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
 ) = flux(resistance, charge, ::DefaultScientificValue)
 
 @JvmName("fluxFromResistanceAndCharge")
@@ -42,9 +42,9 @@ fun <
     ResistanceUnit : ElectricResistance,
     ChargeUnit : ElectricCharge,
     FluxUnit : MagneticFlux,
-    Value : ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>
+    Value : ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>,
     > FluxUnit.flux(
     resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
     charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
-    factory: (Decimal, FluxUnit) -> Value
+    factory: (Decimal, FluxUnit) -> Value,
 ) = byMultiplying(resistance, charge, factory)

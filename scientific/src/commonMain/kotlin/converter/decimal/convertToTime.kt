@@ -46,9 +46,11 @@ infix operator fun <FrequencyUnit : Frequency> Decimal.div(frequency: Scientific
     Second.time(this, frequency)
 
 @JvmName("numberDivRadioactivity")
-infix operator fun <RadioactivityUnit : Radioactivity> Number.div(radioactivity: ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>): ScientificValue<PhysicalQuantity.Time, Second> =
-    toDecimal() / radioactivity
+infix operator fun <RadioactivityUnit : Radioactivity> Number.div(
+    radioactivity: ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>,
+): ScientificValue<PhysicalQuantity.Time, Second> = toDecimal() / radioactivity
 
 @JvmName("decimalDivRadioactivity")
-infix operator fun <RadioactivityUnit : Radioactivity> Decimal.div(radioactivity: ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>): ScientificValue<PhysicalQuantity.Time, Second> =
-    Second.time(this, radioactivity)
+infix operator fun <RadioactivityUnit : Radioactivity> Decimal.div(
+    radioactivity: ScientificValue<PhysicalQuantity.Radioactivity, RadioactivityUnit>,
+): ScientificValue<PhysicalQuantity.Time, Second> = Second.time(this, radioactivity)

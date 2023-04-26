@@ -30,17 +30,17 @@ import kotlin.test.assertTrue
 
 class BluetoothDescriptorValueTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, ByteArray?>() {
 
-    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithDescriptor, scope: CoroutineScope) -> DescriptorContext = { configuration, scope ->
+    override val createTestContextWithConfiguration: suspend (Configuration.DeviceWithDescriptor, CoroutineScope) -> DescriptorContext = { configuration, scope ->
         DescriptorContext(configuration, scope)
     }
 
     override val flowFromTestContext: suspend DescriptorContext.() -> Flow<ByteArray?> = {
-        bluetooth.devices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid].descriptors()[descriptorUuid].value()
+        bluetooth.scannedDevices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid].descriptors()[descriptorUuid].value()
     }
 
     @Test
     fun testGetDescriptorValue() = testWithFlowAndTestContext(
-        Configuration.DeviceWithDescriptor()
+        Configuration.DeviceWithDescriptor(),
     ) {
         val newValue = "Test".encodeToByteArray()
         mainAction {

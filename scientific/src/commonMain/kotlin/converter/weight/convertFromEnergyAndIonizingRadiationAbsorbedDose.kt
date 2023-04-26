@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     EnergyUnit : Energy,
     WeightUnit : Weight,
-    AbsorbedDoseUnit : IonizingRadiationAbsorbedDose
+    AbsorbedDoseUnit : IonizingRadiationAbsorbedDose,
     > WeightUnit.weight(
     energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
-    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
+    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>,
 ) = weight(energy, absorbedDose, ::DefaultScientificValue)
 
 @JvmName("weightFromEnergyAndAbsorbedDose")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     WeightUnit : Weight,
     AbsorbedDoseUnit : IonizingRadiationAbsorbedDose,
-    Value : ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    Value : ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
     > WeightUnit.weight(
     energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
     absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>,
-    factory: (Decimal, WeightUnit) -> Value
+    factory: (Decimal, WeightUnit) -> Value,
 ) = byDividing(energy, absorbedDose, factory)

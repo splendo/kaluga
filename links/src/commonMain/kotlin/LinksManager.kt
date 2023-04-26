@@ -62,7 +62,7 @@ interface LinksManager {
  * @param linksHandler the [LinksHandler] to handle processing the link
  */
 class DefaultLinksManager(
-    private val linksHandler: LinksHandler
+    private val linksHandler: LinksHandler,
 ) : LinksManager {
 
     /**
@@ -70,7 +70,7 @@ class DefaultLinksManager(
      * @param handler the [LinksHandler] to handle processing the link
      */
     class Builder(
-        private val handler: LinksHandler
+        private val handler: LinksHandler,
     ) : LinksManager.Builder {
 
         constructor() : this(PlatformLinksHandler())

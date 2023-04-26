@@ -50,6 +50,7 @@ sealed class NavigationBundleValue<T> {
     object UnitValue : NonNullableNavigationBundleValue<Unit>() {
         override val value: Unit = Unit
     }
+
     /**
      * A [NonNullableNavigationBundleValue] containing a [Boolean]
      * @property value The [Boolean] value of this [NavigationBundleValue]

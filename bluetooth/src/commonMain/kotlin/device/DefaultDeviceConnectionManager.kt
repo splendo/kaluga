@@ -31,9 +31,9 @@ import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -45,6 +45,25 @@ import kotlin.jvm.JvmName
 interface DeviceConnectionManager {
 
     /**
+     * Builder for creating a [BaseDeviceConnectionManager]
+     */
+    interface Builder {
+
+        /**
+         * Creates a [DeviceConnectionManager]
+         * @param deviceWrapper the [DeviceWrapper] wrapping the [Device]
+         * @param settings the [ConnectionSettings] to apply for connecting
+         * @param coroutineScope the [CoroutineScope] on which the device should be managed
+         * @return the created [DeviceConnectionManager]
+         */
+        fun create(
+            deviceWrapper: DeviceWrapper,
+            settings: ConnectionSettings,
+            coroutineScope: CoroutineScope,
+        ): DeviceConnectionManager
+    }
+
+    /**
      * The state of a [DeviceConnectionManager]
      */
     enum class State {
@@ -52,18 +71,21 @@ interface DeviceConnectionManager {
          * Device is disconnected
          */
         DISCONNECTED,
+
         /**
          * Device is disconnecting
          */
         DISCONNECTING,
+
         /**
          * Device is connected
          */
         CONNECTED,
+
         /**
          * Device is connecting
          */
-        CONNECTING
+        CONNECTING,
     }
 
     /**
@@ -73,8 +95,9 @@ interface DeviceConnectionManager {
 
         /**
          * [Event] indicating the device started connecting
+         * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use when reconnecting if the device disconnects unexpectedly
          */
-        object Connecting : Event()
+        data class Connecting(val reconnectionSettings: ConnectionSettings.ReconnectionSettings) : Event()
 
         /**
          * [Event] indicating the device cancelled connecting
@@ -146,7 +169,7 @@ interface DeviceConnectionManager {
     /**
      * Starts connecting to the device
      */
-    suspend fun connect()
+    fun connect()
 
     /**
      * Starts discovering [Service] for the device
@@ -156,7 +179,7 @@ interface DeviceConnectionManager {
     /**
      * Starts disconnecting from the device
      */
-    suspend fun disconnect()
+    fun disconnect()
 
     /**
      * Starts reading the latest RSSI value of the device
@@ -178,8 +201,9 @@ interface DeviceConnectionManager {
 
     /**
      * Fires an [Event.Connecting]
+     * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use when reconnecting if the device disconnects unexpectedly. If `null` the default will be used.
      */
-    fun startConnecting()
+    fun startConnecting(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null)
 
     /**
      * Fires an [Event.CancelledConnecting]
@@ -231,29 +255,13 @@ interface DeviceConnectionManager {
 abstract class BaseDeviceConnectionManager(
     protected val deviceWrapper: DeviceWrapper,
     settings: ConnectionSettings,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
 ) : DeviceConnectionManager, CoroutineScope by coroutineScope {
-
-    /**
-     * Builder for creating a [BaseDeviceConnectionManager]
-     */
-    interface Builder {
-
-        /**
-         * Creates a [BaseDeviceConnectionManager]
-         * @param deviceWrapper the [DeviceWrapper] wrapping the [Device]
-         * @param settings the [ConnectionSettings] to apply for connecting
-         * @param coroutineScope the [CoroutineScope] on which the device should be managed
-         */
-        fun create(
-            deviceWrapper: DeviceWrapper,
-            settings: ConnectionSettings,
-            coroutineScope: CoroutineScope
-        ): BaseDeviceConnectionManager
-    }
 
     private val logTag = "Bluetooth Device ${deviceWrapper.identifier.stringValue}"
     private val logger = settings.logger
+
+    private val defaultReconnectionSettings = settings.reconnectionSettings
 
     protected var currentAction: DeviceAction? = null
     protected val notifyingCharacteristics = concurrentMutableMapOf<String, Characteristic>()
@@ -279,9 +287,9 @@ abstract class BaseDeviceConnectionManager(
         emitEvent(DeviceConnectionManager.Event.MtuUpdated(mtu))
     }
 
-    final override fun startConnecting() {
+    final override fun startConnecting(reconnectionSettings: ConnectionSettings.ReconnectionSettings?) {
         logger.info(logTag) { "Start Connecting" }
-        emitEvent(DeviceConnectionManager.Event.Connecting)
+        emitEvent(DeviceConnectionManager.Event.Connecting(reconnectionSettings ?: defaultReconnectionSettings))
     }
 
     final override fun cancelConnecting() {
@@ -371,12 +379,16 @@ abstract class BaseDeviceConnectionManager(
             is DeviceAction.Read.Characteristic -> {
                 if (action.characteristic.uuid.uuidString == uuid.uuidString) {
                     action.characteristic
-                } else null
+                } else {
+                    null
+                }
             }
             is DeviceAction.Write.Characteristic -> {
                 if (action.characteristic.uuid.uuidString == uuid.uuidString) {
                     action.characteristic
-                } else null
+                } else {
+                    null
+                }
             }
             else -> null
         }
@@ -393,14 +405,20 @@ abstract class BaseDeviceConnectionManager(
             is DeviceAction.Read.Descriptor -> {
                 if (action.descriptor.uuid.uuidString == uuid.uuidString) {
                     action.descriptor
-                } else null
+                } else {
+                    null
+                }
             }
             is DeviceAction.Write.Descriptor -> {
                 if (action.descriptor.uuid.uuidString == uuid.uuidString) {
                     action.descriptor
-                } else null
+                } else {
+                    null
+                }
             }
-            else -> null
+            else -> {
+                null
+            }
         }
 
         descriptorToUpdate?.let {

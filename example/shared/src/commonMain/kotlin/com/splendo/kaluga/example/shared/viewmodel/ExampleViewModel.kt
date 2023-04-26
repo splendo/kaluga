@@ -54,7 +54,7 @@ class ExampleViewModel(navigator: Navigator<ExampleTabNavigation>) : NavigatingV
                     when (currentTab) {
                         is Tab.FeatureList -> ExampleTabNavigation.FeatureList
                         is Tab.Info -> ExampleTabNavigation.Info
-                    }
+                    },
                 )
             }
         }

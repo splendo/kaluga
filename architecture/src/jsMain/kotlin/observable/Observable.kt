@@ -55,7 +55,7 @@ actual interface WithState<T> {
  */
 actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual constructor(
     observation: Observation<R, T, OO>,
-    stateFlowToBind: suspend () -> StateFlow<R?>
+    stateFlowToBind: suspend () -> StateFlow<R?>,
 ) : AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
 
     final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
@@ -69,7 +69,7 @@ actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual c
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
 actual abstract class BaseUninitializedSubject<T> actual constructor(
-    observation: ObservationUninitialized<T>
+    observation: ObservationUninitialized<T>,
 ) : AbstractBaseUninitializedSubject<T>(observation)
 
 /**
@@ -84,7 +84,7 @@ actual abstract class BaseInitializedSubject<T> actual constructor(observation: 
      * @param initialValue The [Value] to use as the initial value.
      */
     actual constructor(
-        initialValue: ObservableOptional.Value<T>
+        initialValue: Value<T>,
     ) : this (ObservationInitialized(initialValue))
 }
 
@@ -95,7 +95,7 @@ actual abstract class BaseInitializedSubject<T> actual constructor(observation: 
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
 actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
-    observation: ObservationDefault<R, T?>
+    observation: ObservationDefault<R, T?>,
 ) : AbstractBaseDefaultSubject<R, T>(observation) {
 
     /**
@@ -104,7 +104,7 @@ actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
      * @param initialValue The initial [Value] of [T].
      */
     actual constructor(
-        defaultValue: ObservableOptional.Value<R>,
-        initialValue: ObservableOptional.Value<T?>
+        defaultValue: Value<R>,
+        initialValue: Value<T?>,
     ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue))
 }

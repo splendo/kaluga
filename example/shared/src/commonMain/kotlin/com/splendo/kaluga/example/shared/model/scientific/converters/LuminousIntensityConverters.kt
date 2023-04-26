@@ -34,29 +34,61 @@ import com.splendo.kaluga.scientific.unit.SquareCentimeter
 import com.splendo.kaluga.scientific.unit.Stilb
 
 val PhysicalQuantity.LuminousIntensity.converters get() = listOf<QuantityConverter<PhysicalQuantity.LuminousIntensity, *>>(
-    QuantityConverterWithOperator("Area from Luminance", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Luminance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Area from Luminance",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.Luminance,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is LuminousIntensity && rightUnit is Stilb -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is LuminousIntensity && rightUnit is Lambert -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is LuminousIntensity && rightUnit is MetricLuminance -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is LuminousIntensity && rightUnit is ImperialLuminance -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is LuminousIntensity && rightUnit is Luminance -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is LuminousIntensity && rightUnit is Stilb -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is LuminousIntensity && rightUnit is Lambert -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is LuminousIntensity && rightUnit is MetricLuminance -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is LuminousIntensity && rightUnit is ImperialLuminance -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is LuminousIntensity && rightUnit is Luminance -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Luminance from Area", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Area) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Luminance from Area",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.Area,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is LuminousIntensity && rightUnit is SquareCentimeter -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is LuminousIntensity && rightUnit is MetricArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is LuminousIntensity && rightUnit is ImperialArea -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is LuminousIntensity && rightUnit is Area -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is LuminousIntensity && rightUnit is SquareCentimeter -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is LuminousIntensity && rightUnit is MetricArea -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is LuminousIntensity && rightUnit is ImperialArea -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is LuminousIntensity && rightUnit is Area -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Luminous Flux from Solid Angle", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.SolidAngle) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Luminous Flux from Solid Angle",
+        QuantityConverter.WithOperator.Type.Multiplication,
+        PhysicalQuantity.SolidAngle,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is LuminousIntensity && rightUnit is SolidAngle -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is LuminousIntensity && rightUnit is SolidAngle -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
-    }
+    },
 )

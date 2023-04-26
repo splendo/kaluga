@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     LengthUnit : Length,
     TimeUnit : Time,
-    SpeedUnit : Speed
+    SpeedUnit : Speed,
     > LengthUnit.distance(
     speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = distance(speed, time, ::DefaultScientificValue)
 
 @JvmName("distanceFromSpeedAndTime")
@@ -42,9 +42,9 @@ fun <
     LengthUnit : Length,
     TimeUnit : Time,
     SpeedUnit : Speed,
-    Value : ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    Value : ScientificValue<PhysicalQuantity.Length, LengthUnit>,
     > LengthUnit.distance(
     speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, LengthUnit) -> Value
+    factory: (Decimal, LengthUnit) -> Value,
 ) = byMultiplying(speed, time, factory)

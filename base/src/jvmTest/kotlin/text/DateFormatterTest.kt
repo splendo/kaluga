@@ -17,6 +17,6 @@
 
 package com.splendo.kaluga.base.text
 
-actual val usdForNL: String = "USD"
-actual val jpyForUS: String = "JPY"
-actual val jpyForNL: String = "JPY"
+actual val USDForNL: String = "USD"
+actual val JPYForUS: String = "JPY"
+actual val JPYForNL: String = "JPY"

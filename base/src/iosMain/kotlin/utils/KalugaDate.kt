@@ -142,7 +142,9 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
     override fun equals(other: Any?): Boolean {
         return if (other is DefaultKalugaDate) {
             calendar.calendarIdentifier == other.calendar.calendarIdentifier && durationSinceEpoch == other.durationSinceEpoch && this.calendar.timeZone == other.calendar.timeZone
-        } else false
+        } else {
+            false
+        }
     }
 
     override fun hashCode(): Int {
@@ -188,7 +190,7 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
                 component,
                 (value - previousValue),
                 date,
-                0UL
+                0UL,
             )
         }?.let {
             date = it

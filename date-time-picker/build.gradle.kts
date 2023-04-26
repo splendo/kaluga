@@ -4,21 +4,13 @@ plugins {
     id("convention.publication")
     id("com.android.library")
     id("org.jetbrains.dokka")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("com.github.psxpaul.execfork") version "0.2.2"
+    id("org.jmailen.kotlinter")
 }
 
-publishableComponent()
+publishableComponent("datetimepicker")
 
 dependencies {
     androidTestImplementationDependency(Dependencies.AndroidX.Activity.Ktx)
-}
-
-task<com.github.psxpaul.task.ExecFork>("recordVideo") {
-    executable = "./record_emulator.sh"
-    args.add("video.mp4")
-    workingDir = project.rootProject.rootDir
-    waitForOutput = "FFmpeg developers"
 }
 
 kotlin {

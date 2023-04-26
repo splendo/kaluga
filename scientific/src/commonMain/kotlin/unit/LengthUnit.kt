@@ -39,7 +39,7 @@ val MetricLengthUnits: Set<MetricLength> get() = setOf(
     Kilometer,
     Megameter,
     Gigameter,
-    NauticalMile
+    NauticalMile,
 )
 
 /**
@@ -49,7 +49,7 @@ val ImperialLengthUnits: Set<ImperialLength> get() = setOf(
     Inch,
     Foot,
     Yard,
-    Mile
+    Mile,
 )
 
 /**

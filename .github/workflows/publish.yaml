@@ -40,10 +40,10 @@ jobs:
 
       - name: "Publish SNAPSHOT"
         if: ${{ github.ref_name != 'master' }}
-        run: ./gradlew publishAllPublicationsToSnapshotsRepository --stacktrace --no-configuration-cache
+        run: ./gradlew publishAllPublicationsToSnapshotsRepository --stacktrace
 
       - name: "Publish Maven Central"
         if: ${{ github.ref_name == 'master' }}
         env:
           MAVEN_CENTRAL_RELEASE: "true"
-        run: ./gradlew publishAllPublicationsToSonatypeRepository --stacktrace --no-configuration-cache
+        run: ./gradlew publishAllPublicationsToSonatypeRepository --stacktrace

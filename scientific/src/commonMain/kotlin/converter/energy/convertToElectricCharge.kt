@@ -39,5 +39,5 @@ infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Ener
 
 @JvmName("energyDivVoltage")
 infix operator fun <EnergyUnit : Energy, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
 ) = Coulomb.charge(this, voltage)

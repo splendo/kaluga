@@ -58,7 +58,7 @@ enum class AndroidPermissionState {
     /**
      * Permission is denied and the user has selected `Do not ask again`
      */
-    DENIED_DO_NOT_ASK;
+    DENIED_DO_NOT_ASK, ;
 
     companion object {
 
@@ -110,7 +110,7 @@ class AndroidPermissionsManager constructor(
     coroutineScope: CoroutineScope,
     private val logTag: String = "AndroidPermissionManager",
     private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
-    private val onPermissionChanged: AndroidPermissionStateHandler /* what */
+    private val onPermissionChanged: AndroidPermissionStateHandler, // what
 ) : CoroutineScope by coroutineScope {
 
     internal companion object {
@@ -237,7 +237,7 @@ interface AndroidPermissionStateHandler {
 class DefaultAndroidPermissionStateHandler(
     private val eventChannel: SendChannel<PermissionManager.Event>,
     private val logTag: String,
-    private val logger: Logger
+    private val logger: Logger,
 ) : AndroidPermissionStateHandler {
 
     override fun status(state: AndroidPermissionState) {

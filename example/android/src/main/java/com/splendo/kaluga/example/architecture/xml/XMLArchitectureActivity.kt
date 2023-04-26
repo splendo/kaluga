@@ -41,7 +41,7 @@ class XMLArchitectureActivity : KalugaViewModelActivity<ArchitectureViewModel>()
 
         override fun parseResult(
             resultCode: Int,
-            intent: Intent?
+            intent: Intent?,
         ): InputDetails? {
             return intent.parseTypeOfOrNull(InputDetails.serializer())
         }
@@ -52,11 +52,11 @@ class XMLArchitectureActivity : KalugaViewModelActivity<ArchitectureViewModel>()
             ActivityNavigator<ArchitectureNavigationAction<*>> { action ->
                 when (action) {
                     is ArchitectureNavigationAction.Details -> NavigationSpec.Activity<ArchitectureDetailsActivity>(
-                        launchType = NavigationSpec.Activity.LaunchType.ActivityContract<XMLArchitectureActivity> { contract }
+                        launchType = NavigationSpec.Activity.LaunchType.ActivityContract<XMLArchitectureActivity> { contract },
                     )
                     is ArchitectureNavigationAction.BottomSheet -> NavigationSpec.Dialog(BottomSheetRootDialogFragment.TAG) { BottomSheetRootDialogFragment() }
                 }
-            }
+            },
         )
     }
 

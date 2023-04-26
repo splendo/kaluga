@@ -44,7 +44,7 @@ val AngleUnits: Set<Angle> get() = setOf(
     Degree,
     Gradian,
     ArcMinute,
-    ArcSecond
+    ArcSecond,
 )
 
 /**
@@ -68,12 +68,16 @@ sealed class RadianMultiple : Angle(), MetricMultipleUnit<MeasurementSystem.Metr
 
 @Serializable
 object Nanoradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Nano(Radian)
+
 @Serializable
 object Microradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Micro(Radian)
+
 @Serializable
 object Milliradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Milli(Radian)
+
 @Serializable
 object Centiradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Centi(Radian)
+
 @Serializable
 object Deciradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Deci(Radian)
 
@@ -92,12 +96,16 @@ sealed class TurnMultiple : Angle(), MetricMultipleUnit<MeasurementSystem.Metric
 
 @Serializable
 object Nanoturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Nano(Turn)
+
 @Serializable
 object Microturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Micro(Turn)
+
 @Serializable
 object Milliturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Milli(Turn)
+
 @Serializable
 object Centiturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Centi(Turn)
+
 @Serializable
 object Deciturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Deci(Turn)
 

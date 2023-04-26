@@ -40,38 +40,90 @@ import com.splendo.kaluga.scientific.unit.USCustomaryWeight
 import com.splendo.kaluga.scientific.unit.Weight
 
 val PhysicalQuantity.HeatCapacity.converters get() = listOf<QuantityConverter<PhysicalQuantity.HeatCapacity, *>>(
-    QuantityConverterWithOperator("Energy from Temperature", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.Temperature) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Energy from Temperature",
+        QuantityConverter.WithOperator.Type.Multiplication,
+        PhysicalQuantity.Temperature,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is MetricAndUKImperialTemperature -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricHeatCapacity && rightUnit is MetricAndUKImperialTemperature -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialHeatCapacity && rightUnit is MetricAndUKImperialTemperature -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryHeatCapacity && rightUnit is USCustomaryTemperature -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is HeatCapacity && rightUnit is Temperature -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is MetricAndUKImperialTemperature -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricHeatCapacity && rightUnit is MetricAndUKImperialTemperature -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialHeatCapacity && rightUnit is MetricAndUKImperialTemperature -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryHeatCapacity && rightUnit is USCustomaryTemperature -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is HeatCapacity && rightUnit is Temperature -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Specific Heat Capacity from Weight", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Weight) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Specific Heat Capacity from Weight",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.Weight,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is MetricWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is ImperialWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is UKImperialWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricHeatCapacity && rightUnit is MetricWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialHeatCapacity && rightUnit is ImperialWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialHeatCapacity && rightUnit is UKImperialWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryHeatCapacity && rightUnit is ImperialWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryHeatCapacity && rightUnit is USCustomaryWeight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is HeatCapacity && rightUnit is Weight -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is MetricWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is ImperialWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is UKImperialWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricHeatCapacity && rightUnit is MetricWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialHeatCapacity && rightUnit is ImperialWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialHeatCapacity && rightUnit is UKImperialWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryHeatCapacity && rightUnit is ImperialWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryHeatCapacity && rightUnit is USCustomaryWeight -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is HeatCapacity && rightUnit is Weight -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Weight from Specific Heat Capacity", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.SpecificHeatCapacity) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Weight from Specific Heat Capacity",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.SpecificHeatCapacity,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is MetricSpecificHeatCapacity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is UKImperialSpecificHeatCapacity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is MetricHeatCapacity && rightUnit is MetricSpecificHeatCapacity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is UKImperialHeatCapacity && rightUnit is UKImperialSpecificHeatCapacity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is USCustomaryHeatCapacity && rightUnit is USCustomarySpecificHeatCapacity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is HeatCapacity && rightUnit is SpecificHeatCapacity -> DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is MetricSpecificHeatCapacity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is UKImperialSpecificHeatCapacity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is MetricHeatCapacity && rightUnit is MetricSpecificHeatCapacity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is UKImperialHeatCapacity && rightUnit is UKImperialSpecificHeatCapacity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is USCustomaryHeatCapacity && rightUnit is USCustomarySpecificHeatCapacity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is HeatCapacity && rightUnit is SpecificHeatCapacity -> {
+                DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

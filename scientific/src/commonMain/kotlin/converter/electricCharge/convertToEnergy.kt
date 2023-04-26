@@ -34,5 +34,5 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>.t
 
 @JvmName("chargeTimesVoltage")
 infix operator fun <ChargeUnit : ElectricCharge, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.times(
-    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
 ) = Joule.energy(this, voltage)

@@ -85,40 +85,40 @@ infix operator fun ScientificValue<PhysicalQuantity.Pressure, ImperialTonSquareI
 
 @JvmName("imperialPressureTimesImperialVolume")
 infix operator fun <PressureUnit : ImperialPressure, VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Pressure, PressureUnit>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = FootPoundForce.energy(this, volume)
 
 @JvmName("imperialPressureTimesUKImperialVolume")
 infix operator fun <PressureUnit : ImperialPressure, VolumeUnit : UKImperialVolume> ScientificValue<PhysicalQuantity.Pressure, PressureUnit>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = FootPoundForce.energy(this, volume)
 
 @JvmName("imperialPressureTimesUSCustomaryVolume")
 infix operator fun <PressureUnit : ImperialPressure, VolumeUnit : USCustomaryVolume> ScientificValue<PhysicalQuantity.Pressure, PressureUnit>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = FootPoundForce.energy(this, volume)
 
 @JvmName("ukImperialPressureTimesImperialVolume")
 infix operator fun <PressureUnit : UKImperialPressure, VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Pressure, PressureUnit>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = FootPoundForce.energy(this, volume)
 
 @JvmName("ukImperialPressureTimesUKImperialVolume")
 infix operator fun <PressureUnit : UKImperialPressure, VolumeUnit : UKImperialVolume> ScientificValue<PhysicalQuantity.Pressure, PressureUnit>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = FootPoundForce.energy(this, volume)
 
 @JvmName("usCustomaryPressureTimesImperialVolume")
 infix operator fun <PressureUnit : USCustomaryPressure, VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Pressure, PressureUnit>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = FootPoundForce.energy(this, volume)
 
 @JvmName("usCustomaryPressureTimesUSCustomaryVolume")
 infix operator fun <PressureUnit : USCustomaryPressure, VolumeUnit : USCustomaryVolume> ScientificValue<PhysicalQuantity.Pressure, PressureUnit>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = FootPoundForce.energy(this, volume)
 
 @JvmName("pressureTimesVolume")
 infix operator fun <PressureUnit : Pressure, VolumeUnit : Volume> ScientificValue<PhysicalQuantity.Pressure, PressureUnit>.times(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = Joule.energy(this, volume)

@@ -29,17 +29,17 @@ import kotlin.jvm.JvmName
 @JvmName("specificVolumeFromInvertedDensityDefault")
 fun <
     SpecificVolumeUnit : SpecificVolume,
-    DensityUnit : Density
+    DensityUnit : Density,
     > SpecificVolumeUnit.specificVolume(
-    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>
+    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>,
 ) = specificVolume(density, ::DefaultScientificValue)
 
 @JvmName("specificVolumeFromInvertedDensity")
 fun <
     SpecificVolumeUnit : SpecificVolume,
     DensityUnit : Density,
-    Value : ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>
+    Value : ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
     > SpecificVolumeUnit.specificVolume(
     density: ScientificValue<PhysicalQuantity.Density, DensityUnit>,
-    factory: (Decimal, SpecificVolumeUnit) -> Value
+    factory: (Decimal, SpecificVolumeUnit) -> Value,
 ) = byInverting(density, factory)

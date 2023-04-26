@@ -33,20 +33,20 @@ import kotlin.jvm.JvmName
 @JvmName("specificEnergyFromEquivalentDoseDefault")
 fun <
     EquivalentDoseUnit : IonizingRadiationEquivalentDose,
-    SpecificEnergyUnit : SpecificEnergy
+    SpecificEnergyUnit : SpecificEnergy,
     > SpecificEnergyUnit.specificEnergy(
-    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
+    equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>,
 ) = specificEnergy(equivalentDose, ::DefaultScientificValue)
 
 @JvmName("specificEnergyFromEquivalentDose")
 fun <
     EquivalentDoseUnit : IonizingRadiationEquivalentDose,
     SpecificEnergyUnit : SpecificEnergy,
-    Value : ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>,
     > SpecificEnergyUnit.specificEnergy(
     equivalentDose: ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, EquivalentDoseUnit>,
-    factory: (Decimal, SpecificEnergyUnit) -> Value
+    factory: (Decimal, SpecificEnergyUnit) -> Value,
 ) = DefaultScientificValue(equivalentDose.convert(Sievert).value, Joule per Kilogram).convert(
     this,
-    factory
+    factory,
 )

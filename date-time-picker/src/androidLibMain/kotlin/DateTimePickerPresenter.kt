@@ -42,7 +42,7 @@ actual class DateTimePickerPresenter(
     dateTimePicker: DateTimePicker,
     private val themeResourceId: Int,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BaseDateTimePickerPresenter(dateTimePicker), CoroutineScope by coroutineScope {
 
     /**
@@ -52,7 +52,7 @@ actual class DateTimePickerPresenter(
      */
     actual class Builder(
         private val themeResourceId: Int = 0,
-        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
+        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     ) : BaseDateTimePickerPresenter.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
 
         /**
@@ -64,7 +64,7 @@ actual class DateTimePickerPresenter(
          */
         actual override fun create(
             dateTimePicker: DateTimePicker,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ) = DateTimePickerPresenter(dateTimePicker, themeResourceId, lifecycleManagerObserver, coroutineScope)
     }
 
@@ -107,12 +107,12 @@ actual class DateTimePickerPresenter(
                         dateTimePicker.selectedDate.copy().apply {
                             this.hour = hour
                             this.minute = minute
-                        }
+                        },
                     )
                 },
                 dateTimePicker.selectedDate.hour,
                 dateTimePicker.selectedDate.minute,
-                dateTimePicker.locale.uses24HourClock
+                dateTimePicker.locale.uses24HourClock,
             )
             is DateTimePicker.Type.DateType -> {
                 DatePickerDialog(
@@ -124,12 +124,12 @@ actual class DateTimePickerPresenter(
                                 this.year = year
                                 this.month = month + 1
                                 this.day = dayOfMonth
-                            }
+                            },
                         )
                     },
                     dateTimePicker.selectedDate.year,
                     dateTimePicker.selectedDate.month - 1,
-                    dateTimePicker.selectedDate.day
+                    dateTimePicker.selectedDate.day,
                 ).apply {
                     type.earliestDate?.let {
                         datePicker.minDate = it.durationSinceEpoch.inWholeMilliseconds
@@ -147,12 +147,12 @@ actual class DateTimePickerPresenter(
             setButton(
                 DialogInterface.BUTTON_POSITIVE,
                 dateTimePicker.confirmButtonTitle,
-                this as DialogInterface.OnClickListener
+                this as DialogInterface.OnClickListener,
             )
             setButton(
                 DialogInterface.BUTTON_NEGATIVE,
                 dateTimePicker.cancelButtonTitle,
-                this as DialogInterface.OnClickListener
+                this as DialogInterface.OnClickListener,
             )
             setOnCancelListener { presentation.completion(null) }
             setOnDismissListener {

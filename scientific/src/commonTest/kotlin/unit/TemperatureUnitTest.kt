@@ -63,15 +63,15 @@ class TemperatureUnitTest {
         assertEqualScientificValue(1(Celsius), 2(WattHour.imperial) / 2(WattHour per Celsius))
         assertEqualScientificValue(
             1(Celsius),
-            2(BritishThermalUnit) / 2(BritishThermalUnit per Celsius)
+            2(BritishThermalUnit) / 2(BritishThermalUnit per Celsius),
         )
         assertEqualScientificValue(
             1(Fahrenheit),
-            2(BritishThermalUnit) / 2(BritishThermalUnit per Fahrenheit)
+            2(BritishThermalUnit) / 2(BritishThermalUnit per Fahrenheit),
         )
         assertEqualScientificValue(
             1(Kelvin),
-            2(Joule).convert(BritishThermalUnit) / 2(Joule per Kelvin)
+            2(Joule).convert(BritishThermalUnit) / 2(Joule per Kelvin),
         )
     }
 
@@ -79,27 +79,27 @@ class TemperatureUnitTest {
     fun temperatureFromSpecificEnergyAndSpecificHeatCapacityTest() {
         assertEqualScientificValue(
             1(Celsius),
-            2(Joule per Kilogram) / 2(Joule per Celsius per Kilogram)
+            2(Joule per Kilogram) / 2(Joule per Celsius per Kilogram),
         )
         assertEqualScientificValue(
             1(Celsius),
-            2(WattHour per Pound) / 2(WattHour per Celsius per Pound)
+            2(WattHour per Pound) / 2(WattHour per Celsius per Pound),
         )
         assertEqualScientificValue(
             1(Fahrenheit),
-            2(WattHour per Pound) / 2(WattHour per Fahrenheit per Pound)
+            2(WattHour per Pound) / 2(WattHour per Fahrenheit per Pound),
         )
         assertEqualScientificValue(
             1(Celsius),
-            2(WattHour per ImperialTon) / 2(WattHour per Celsius per ImperialTon)
+            2(WattHour per ImperialTon) / 2(WattHour per Celsius per ImperialTon),
         )
         assertEqualScientificValue(
             1(Fahrenheit),
-            2(WattHour per UsTon) / 2(WattHour per Fahrenheit per UsTon)
+            2(WattHour per UsTon) / 2(WattHour per Fahrenheit per UsTon),
         )
         assertEqualScientificValue(
             1(Kelvin),
-            2(Joule per Kilogram).convert(WattHour per Pound) / 2(Joule per Celsius per Kilogram)
+            2(Joule per Kilogram).convert(WattHour per Pound) / 2(Joule per Celsius per Kilogram),
         )
     }
 
@@ -115,29 +115,29 @@ class TemperatureUnitTest {
         assertEqualScientificValue(4(Celsius), 2(Watt) * 2(Celsius per Watt.imperial))
         assertEqualScientificValue(
             4(Celsius),
-            2(Celsius per BritishThermalUnitPerSecond) * 2(BritishThermalUnitPerSecond)
+            2(Celsius per BritishThermalUnitPerSecond) * 2(BritishThermalUnitPerSecond),
         )
         assertEqualScientificValue(
             4(Celsius),
-            2(BritishThermalUnitPerSecond) * 2(Celsius per BritishThermalUnitPerSecond)
+            2(BritishThermalUnitPerSecond) * 2(Celsius per BritishThermalUnitPerSecond),
         )
         assertEqualScientificValue(4(Fahrenheit), 2(Fahrenheit per Watt) * 2(Watt))
         assertEqualScientificValue(4(Fahrenheit), 2(Watt) * 2(Fahrenheit per Watt))
         assertEqualScientificValue(
             4(Fahrenheit),
-            2(Fahrenheit per BritishThermalUnitPerSecond) * 2(BritishThermalUnitPerSecond)
+            2(Fahrenheit per BritishThermalUnitPerSecond) * 2(BritishThermalUnitPerSecond),
         )
         assertEqualScientificValue(
             4(Fahrenheit),
-            2(BritishThermalUnitPerSecond) * 2(Fahrenheit per BritishThermalUnitPerSecond)
+            2(BritishThermalUnitPerSecond) * 2(Fahrenheit per BritishThermalUnitPerSecond),
         )
         assertEqualScientificValue(
             4(Kelvin),
-            2(Celsius per Watt).convert(Fahrenheit per Watt) * 2(Watt.metric)
+            2(Celsius per Watt).convert(Fahrenheit per Watt) * 2(Watt.metric),
         )
         assertEqualScientificValue(
             4(Kelvin),
-            2(Watt.metric) * 2(Celsius per Watt).convert(Fahrenheit per Watt)
+            2(Watt.metric) * 2(Celsius per Watt).convert(Fahrenheit per Watt),
         )
     }
 }

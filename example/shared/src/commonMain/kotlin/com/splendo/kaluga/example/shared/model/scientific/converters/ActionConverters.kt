@@ -28,19 +28,37 @@ import com.splendo.kaluga.scientific.unit.MetricAndImperialAction
 import com.splendo.kaluga.scientific.unit.Time
 
 val PhysicalQuantity.Action.converters get() = listOf<QuantityConverter<PhysicalQuantity.Action, *>>(
-    QuantityConverterWithOperator("Energy from Time", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Time) { (actionValue, actionUnit), (timeValue, timeUnit) ->
+    QuantityConverterWithOperator(
+        "Energy from Time",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.Time,
+    ) { (actionValue, actionUnit), (timeValue, timeUnit) ->
         when {
-            actionUnit is MetricAndImperialAction && timeUnit is Time -> DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(timeValue, timeUnit)
-            actionUnit is MetricAction && timeUnit is Time -> DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(timeValue, timeUnit)
-            actionUnit is ImperialAction && timeUnit is Time -> DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(timeValue, timeUnit)
-            actionUnit is Action && timeUnit is Time -> DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(timeValue, timeUnit)
+            actionUnit is MetricAndImperialAction && timeUnit is Time -> {
+                DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(timeValue, timeUnit)
+            }
+            actionUnit is MetricAction && timeUnit is Time -> {
+                DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(timeValue, timeUnit)
+            }
+            actionUnit is ImperialAction && timeUnit is Time -> {
+                DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(timeValue, timeUnit)
+            }
+            actionUnit is Action && timeUnit is Time -> {
+                DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(timeValue, timeUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $actionUnit, $timeUnit")
         }
     },
-    QuantityConverterWithOperator("Time from Energy", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Energy) { (actionValue, actionUnit), (energyValue, energyUnit) ->
+    QuantityConverterWithOperator(
+        "Time from Energy",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.Energy,
+    ) { (actionValue, actionUnit), (energyValue, energyUnit) ->
         when {
-            actionUnit is Action && energyUnit is Energy -> DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(energyValue, energyUnit)
+            actionUnit is Action && energyUnit is Energy -> {
+                DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(energyValue, energyUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $actionUnit, $energyUnit")
         }
-    }
+    },
 )

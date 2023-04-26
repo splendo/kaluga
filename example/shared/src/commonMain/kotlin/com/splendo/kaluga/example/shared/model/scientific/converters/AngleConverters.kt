@@ -25,16 +25,28 @@ import com.splendo.kaluga.scientific.unit.AngularVelocity
 import com.splendo.kaluga.scientific.unit.Time
 
 val PhysicalQuantity.Angle.converters get() = listOf<QuantityConverter<PhysicalQuantity.Angle, *>>(
-    QuantityConverterWithOperator("Angular Velocity from Time", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.Time) { (angleValue, angleUnit), (timeValue, timeUnit) ->
+    QuantityConverterWithOperator(
+        "Angular Velocity from Time",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.Time,
+    ) { (angleValue, angleUnit), (timeValue, timeUnit) ->
         when {
-            angleUnit is Angle && timeUnit is Time -> DefaultScientificValue(angleValue, angleUnit) / DefaultScientificValue(timeValue, timeUnit)
+            angleUnit is Angle && timeUnit is Time -> {
+                DefaultScientificValue(angleValue, angleUnit) / DefaultScientificValue(timeValue, timeUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $angleUnit $timeUnit")
         }
     },
-    QuantityConverterWithOperator("Time from Angular Velocity", QuantityConverter.WithOperator.Type.Division, PhysicalQuantity.AngularVelocity) { (angleValue, angleUnit), (angularVelocityValue, angularVelocityUnit) ->
+    QuantityConverterWithOperator(
+        "Time from Angular Velocity",
+        QuantityConverter.WithOperator.Type.Division,
+        PhysicalQuantity.AngularVelocity,
+    ) { (angleValue, angleUnit), (angularVelocityValue, angularVelocityUnit) ->
         when {
-            angleUnit is Angle && angularVelocityUnit is AngularVelocity -> DefaultScientificValue(angleValue, angleUnit) / DefaultScientificValue(angularVelocityValue, angularVelocityUnit)
+            angleUnit is Angle && angularVelocityUnit is AngularVelocity -> {
+                DefaultScientificValue(angleValue, angleUnit) / DefaultScientificValue(angularVelocityValue, angularVelocityUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $angleUnit $angularVelocityUnit")
         }
-    }
+    },
 )

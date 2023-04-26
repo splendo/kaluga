@@ -27,10 +27,10 @@ import kotlin.jvm.JvmName
 
 @JvmName("frequencyTimesAbhenry")
 infix operator fun <FrequencyUnit : Frequency> ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>.times(
-    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, Abhenry>
+    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, Abhenry>,
 ) = inductance * this
 
 @JvmName("frequencyTimesInductance")
 infix operator fun <InductanceUnit : ElectricInductance, FrequencyUnit : Frequency> ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>.times(
-    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>
+    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>,
 ) = inductance * this

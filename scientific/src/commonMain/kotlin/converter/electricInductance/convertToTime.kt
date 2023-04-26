@@ -27,5 +27,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("inductanceDivResistance")
 infix operator fun <InductanceUnit : ElectricInductance, ResistanceUnit : ElectricResistance> ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>.div(
-    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
 ) = Second.time(this, resistance)

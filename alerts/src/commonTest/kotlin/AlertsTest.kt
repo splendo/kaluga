@@ -28,7 +28,6 @@ class AlertsTest {
 
     @Test
     fun testAlertBaseInitialization() {
-
         var handlerWasCalled = false
         val handler = { handlerWasCalled = true }
         val action = Alert.Action("action", Alert.Action.Style.DEFAULT, handler)

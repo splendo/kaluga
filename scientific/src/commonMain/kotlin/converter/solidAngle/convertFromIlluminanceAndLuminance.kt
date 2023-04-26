@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     LuminanceUnit : Luminance,
     SolidAngleUnit : SolidAngle,
-    IlluminanceUnit : Illuminance
+    IlluminanceUnit : Illuminance,
     > SolidAngleUnit.solidAngle(
     illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
-    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>
+    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>,
 ) = solidAngle(illuminance, luminance, ::DefaultScientificValue)
 
 @JvmName("solidAngleFromIlluminanceAndLuminance")
@@ -42,9 +42,9 @@ fun <
     LuminanceUnit : Luminance,
     SolidAngleUnit : SolidAngle,
     IlluminanceUnit : Illuminance,
-    Value : ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
+    Value : ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>,
     > SolidAngleUnit.solidAngle(
     illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
     luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>,
-    factory: (Decimal, SolidAngleUnit) -> Value
+    factory: (Decimal, SolidAngleUnit) -> Value,
 ) = byDividing(illuminance, luminance, factory)

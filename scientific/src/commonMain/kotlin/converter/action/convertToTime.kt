@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("actionDivEnergy")
 infix operator fun <ActionUnit : Action, EnergyUnit : Energy> ScientificValue<PhysicalQuantity.Action, ActionUnit>.div(
-    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
 ) = unit.time.time(this, energy)

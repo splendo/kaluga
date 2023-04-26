@@ -33,7 +33,11 @@ actual data class KalugaLocale internal constructor(internal val locale: java.ut
          * @param language a `language` ISO 639 alpha-2 or alpha-3 code.
          * @return The [KalugaLocale] for the given [language]
          */
-        actual fun createLocale(language: String): KalugaLocale = KalugaLocale(java.util.Locale(language))
+        actual fun createLocale(language: String): KalugaLocale = KalugaLocale(
+            java.util.Locale.Builder()
+                .setLanguage(language)
+                .build(),
+        )
 
         /**
          * Creates a [KalugaLocale] based on a ISO 639 alpha-2 or alpha-3 `language` code and ISO 3166 alpha-2 `country` code.
@@ -41,7 +45,12 @@ actual data class KalugaLocale internal constructor(internal val locale: java.ut
          * @param country a ISO 3166 alpha-2 `country` code.
          * @return The [KalugaLocale] for the given [language] and [country]
          */
-        actual fun createLocale(language: String, country: String): KalugaLocale = KalugaLocale(java.util.Locale(language, country))
+        actual fun createLocale(language: String, country: String): KalugaLocale = KalugaLocale(
+            java.util.Locale.Builder()
+                .setLanguage(language)
+                .setRegion(country)
+                .build(),
+        )
 
         /**
          * Creates a [KalugaLocale] based on a ISO 639 alpha-2 or alpha-3 `language` code, ISO 3166 alpha-2 `country` code, and variant code.
@@ -50,7 +59,13 @@ actual data class KalugaLocale internal constructor(internal val locale: java.ut
          * @param variant Arbitrary value used to indicate a variation of a [KalugaLocale]
          * @return The [KalugaLocale] for the given [language], [country], and [variant]
          */
-        actual fun createLocale(language: String, country: String, variant: String): KalugaLocale = KalugaLocale(java.util.Locale(language, country, variant))
+        actual fun createLocale(language: String, country: String, variant: String): KalugaLocale = KalugaLocale(
+            java.util.Locale.Builder()
+                .setLanguage(language)
+                .setRegion(country)
+                .setVariant(variant)
+                .build(),
+        )
 
         /**
          * The default [KalugaLocale] of the user

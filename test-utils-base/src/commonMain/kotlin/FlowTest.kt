@@ -78,7 +78,11 @@ abstract class FlowTest<T, F : Flow<T>>(scope: CoroutineScope = MainScope()) : B
         }
 }
 
-abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>(val scope: CoroutineScope = MainScope()) : BaseUIThreadTest<Configration, Context>(), CoroutineScope by scope {
+abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>(
+    val scope: CoroutineScope = MainScope(),
+) :
+    BaseUIThreadTest<Configration, Context>(),
+    CoroutineScope by scope {
 
     abstract val flowFromTestContext: suspend Context.() -> F
 
@@ -117,7 +121,6 @@ abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>
     protected val waitForTestToSucceed = 60.seconds
 
     private suspend fun awaitTestBlocks() {
-
         val tests = this.tests
 
         if (tests.size == 0) {
@@ -142,9 +145,8 @@ abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>
         configuration: Configration,
         createFlowInMainScope: Boolean = true,
         retainContextAfterTest: Boolean = false,
-        blockWithContext: FlowTestBlockWithContext<Configration, Context, T, F>
+        blockWithContext: FlowTestBlockWithContext<Configration, Context, T, F>,
     ) {
-
         runBlocking {
             try {
                 testChannel = Channel(Channel.UNLIMITED)
@@ -165,7 +167,7 @@ abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>
                         flow(
                             withContext(Dispatchers.Main.immediate) {
                                 (getOrCreateContext { createTestContextWithConfiguration(configuration, scope) })
-                            }
+                            },
                         )
                     }
 

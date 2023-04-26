@@ -33,10 +33,10 @@ import kotlin.jvm.JvmName
 fun <
     HeightUnit : Length,
     AreaUnit : Area,
-    VolumeUnit : Volume
+    VolumeUnit : Volume,
     > VolumeUnit.volume(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-    height: ScientificValue<PhysicalQuantity.Length, HeightUnit>
+    height: ScientificValue<PhysicalQuantity.Length, HeightUnit>,
 ) = volume(area, height, ::DefaultScientificValue)
 
 @JvmName("volumeFromAreaAndHeight")
@@ -44,11 +44,11 @@ fun <
     HeightUnit : Length,
     AreaUnit : Area,
     VolumeUnit : Volume,
-    Value : ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    Value : ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
     > VolumeUnit.volume(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     height: ScientificValue<PhysicalQuantity.Length, HeightUnit>,
-    factory: (Decimal, VolumeUnit) -> Value
+    factory: (Decimal, VolumeUnit) -> Value,
 ) = byMultiplying(area, height, factory)
 
 @JvmName("volumeFromLengthWidthAndHeightDefault")
@@ -56,11 +56,11 @@ fun <
     LengthUnit : Length,
     WidthUnit : Length,
     HeightUnit : Length,
-    VolumeUnit : Volume
+    VolumeUnit : Volume,
     > VolumeUnit.volume(
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
     width: ScientificValue<PhysicalQuantity.Length, WidthUnit>,
-    height: ScientificValue<PhysicalQuantity.Length, HeightUnit>
+    height: ScientificValue<PhysicalQuantity.Length, HeightUnit>,
 ) = volume(length, width, height, ::DefaultScientificValue)
 
 @JvmName("volumeFromLengthWidthAndHeight")
@@ -69,10 +69,10 @@ fun <
     WidthUnit : Length,
     HeightUnit : Length,
     VolumeUnit : Volume,
-    Value : ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    Value : ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
     > VolumeUnit.volume(
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
     width: ScientificValue<PhysicalQuantity.Length, WidthUnit>,
     height: ScientificValue<PhysicalQuantity.Length, HeightUnit>,
-    factory: (Decimal, VolumeUnit) -> Value
+    factory: (Decimal, VolumeUnit) -> Value,
 ) = volume(SquareMeter.area(length, width), height, factory)

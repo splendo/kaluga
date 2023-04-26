@@ -34,5 +34,5 @@ infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(c
 
 @JvmName("fluxDivCharge")
 infix operator fun <FluxUnit : MagneticFlux, ChargeUnit : ElectricCharge> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.div(
-    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
 ) = Ohm.resistance(this, charge)

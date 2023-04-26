@@ -17,10 +17,10 @@
 
 import org.gradle.kotlin.dsl.dependencies
 
-fun org.gradle.api.Project.composeAndroidComponent() {
+fun org.gradle.api.Project.composeAndroidComponent(packageName: String) {
     group = Library.group
     version = Library.version
-    commonAndroidComponent(ComponentType.Compose)
+    commonAndroidComponent(ComponentType.Compose, packageName)
     dependencies {
         implementationDependency(Dependencies.AndroidX.Compose.Foundation)
         implementationDependency(Dependencies.AndroidX.Compose.UI)
@@ -36,8 +36,6 @@ fun org.gradle.api.Project.composeAndroidComponent() {
             }
         }
     }
-
-    ktlint { disabledRules.set(listOf("no-wildcard-imports", "filename", "import-ordering")) }
 
     publish(ComponentType.Compose)
 }

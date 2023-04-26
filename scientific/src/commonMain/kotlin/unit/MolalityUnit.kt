@@ -115,7 +115,10 @@ data class ImperialMolality(override val amountOfSubstance: AmountOfSubstance, o
  * @param per the [USCustomaryWeight] component
  */
 @Serializable
-data class USCustomaryMolality(override val amountOfSubstance: AmountOfSubstance, override val per: USCustomaryWeight) : Molality(), USCustomaryScientificUnit<PhysicalQuantity.Molality> {
+data class USCustomaryMolality(
+    override val amountOfSubstance: AmountOfSubstance,
+    override val per: USCustomaryWeight,
+) : Molality(), USCustomaryScientificUnit<PhysicalQuantity.Molality> {
     override val system = MeasurementSystem.USCustomary
 }
 
@@ -125,7 +128,10 @@ data class USCustomaryMolality(override val amountOfSubstance: AmountOfSubstance
  * @param per the [UKImperialWeight] component
  */
 @Serializable
-data class UKImperialMolality(override val amountOfSubstance: AmountOfSubstance, override val per: UKImperialWeight) : Molality(), UKImperialScientificUnit<PhysicalQuantity.Molality> {
+data class UKImperialMolality(
+    override val amountOfSubstance: AmountOfSubstance,
+    override val per: UKImperialWeight,
+) : Molality(), UKImperialScientificUnit<PhysicalQuantity.Molality> {
     override val system = MeasurementSystem.UKImperial
 }
 

@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     EnergyUnit : Energy,
     ForceUnit : Force,
-    LengthUnit : Length
+    LengthUnit : Length,
     > LengthUnit.distance(
     energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
-    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>
+    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
 ) = distance(energy, force, ::DefaultScientificValue)
 
 @JvmName("lengthFromEnergyAndForce")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     ForceUnit : Force,
     LengthUnit : Length,
-    Value : ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    Value : ScientificValue<PhysicalQuantity.Length, LengthUnit>,
     > LengthUnit.distance(
     energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
     force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
-    factory: (Decimal, LengthUnit) -> Value
+    factory: (Decimal, LengthUnit) -> Value,
 ) = byDividing(energy, force, factory)

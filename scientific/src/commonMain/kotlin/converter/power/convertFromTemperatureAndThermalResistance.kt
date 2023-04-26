@@ -33,10 +33,10 @@ import kotlin.jvm.JvmName
 fun <
     TemperatureUnit : Temperature,
     PowerUnit : Power,
-    ThermalResistanceUnit : ThermalResistance
+    ThermalResistanceUnit : ThermalResistance,
     > PowerUnit.power(
     temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
-    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, ThermalResistanceUnit>
+    thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, ThermalResistanceUnit>,
 ) = power(temperature, thermalResistance, ::DefaultScientificValue)
 
 @JvmName("powerFromTemperatureAndThermalResistance")
@@ -44,9 +44,9 @@ fun <
     TemperatureUnit : Temperature,
     PowerUnit : Power,
     ThermalResistanceUnit : ThermalResistance,
-    Value : ScientificValue<PhysicalQuantity.Power, PowerUnit>
+    Value : ScientificValue<PhysicalQuantity.Power, PowerUnit>,
     > PowerUnit.power(
     temperature: ScientificValue<PhysicalQuantity.Temperature, TemperatureUnit>,
     thermalResistance: ScientificValue<PhysicalQuantity.ThermalResistance, ThermalResistanceUnit>,
-    factory: (Decimal, PowerUnit) -> Value
+    factory: (Decimal, PowerUnit) -> Value,
 ) = byDividing(Kelvin.deltaValue(temperature), thermalResistance, factory)

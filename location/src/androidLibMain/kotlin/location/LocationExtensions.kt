@@ -36,7 +36,7 @@ fun android.location.Location.toKnownLocation(): Location.KnownLocation {
         verticalAccuracy = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) verticalAccuracyMeters.toDouble() else 0.0,
         speed = speed.toDouble(),
         course = bearing.toDouble(),
-        time = DefaultKalugaDate.epoch(time.milliseconds)
+        time = DefaultKalugaDate.epoch(time.milliseconds),
     )
 }
 

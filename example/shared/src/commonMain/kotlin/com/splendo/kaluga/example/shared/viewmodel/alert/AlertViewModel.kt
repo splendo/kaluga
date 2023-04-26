@@ -97,7 +97,7 @@ class AlertViewModel(private val builder: BaseAlertPresenter.Builder) : BaseLife
                     Alert.Action("Option 1") { debug("Option 1") },
                     Alert.Action("Option 2") { debug("Option 2") },
                     Alert.Action("Option 3") { debug("Option 3") },
-                    Alert.Action("Option 4") { debug("Option 4") }
+                    Alert.Action("Option 4") { debug("Option 4") },
                 )
             }.show()
         }

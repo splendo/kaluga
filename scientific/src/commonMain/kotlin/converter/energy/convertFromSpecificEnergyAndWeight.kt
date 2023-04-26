@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     EnergyUnit : Energy,
     WeightUnit : Weight,
-    SpecificEnergyUnit : SpecificEnergy
+    SpecificEnergyUnit : SpecificEnergy,
     > EnergyUnit.energy(
     specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>,
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = energy(specificEnergy, weight, ::DefaultScientificValue)
 
 @JvmName("energyFromSpecificEnergyAndWeight")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     WeightUnit : Weight,
     SpecificEnergyUnit : SpecificEnergy,
-    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
     > EnergyUnit.energy(
     specificEnergy: ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>,
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-    factory: (Decimal, EnergyUnit) -> Value
+    factory: (Decimal, EnergyUnit) -> Value,
 ) = byMultiplying(specificEnergy, weight, factory)

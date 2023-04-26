@@ -39,20 +39,20 @@ infix operator fun ScientificValue<PhysicalQuantity.Power, ErgPerSecond>.div(spe
 
 @JvmName("metricPowerDivMetricSpeed")
 infix operator fun <PowerUnit : MetricPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
-    speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>
+    speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>,
 ) = Newton.force(this, speed)
 
 @JvmName("imperialPowerDivImperialSpeed")
 infix operator fun <PowerUnit : ImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
-    speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>
+    speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>,
 ) = PoundForce.force(this, speed)
 
 @JvmName("metricAndImperialPowerDivImperialSpeed")
 infix operator fun <PowerUnit : MetricAndImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
-    speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>
+    speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>,
 ) = PoundForce.force(this, speed)
 
 @JvmName("powerDivSpeed")
 infix operator fun <PowerUnit : Power, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
-    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>
+    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
 ) = Newton.force(this, speed)

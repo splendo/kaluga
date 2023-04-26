@@ -59,35 +59,35 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundForce>.div(
 
 @JvmName("imperialEnergyDivImperialVolume")
 infix operator fun <EnergyUnit : ImperialEnergy, VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = PoundSquareInch.pressure(this, volume)
 
 @JvmName("metricAndImperialEnergyDivImperialVolume")
 infix operator fun <EnergyUnit : MetricAndImperialEnergy, VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = PoundSquareInch.pressure(this, volume)
 
 @JvmName("imperialEnergyDivUKImperialVolume")
 infix operator fun <EnergyUnit : ImperialEnergy, VolumeUnit : UKImperialVolume> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = PoundSquareInch.ukImperial.pressure(this, volume)
 
 @JvmName("imperialEnergyDivUSCustomaryVolume")
 infix operator fun <EnergyUnit : ImperialEnergy, VolumeUnit : USCustomaryVolume> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = PoundSquareInch.usCustomary.pressure(this, volume)
 
 @JvmName("metricAndImperialEnergyDivUKImperialVolume")
 infix operator fun <EnergyUnit : MetricAndImperialEnergy, VolumeUnit : UKImperialVolume> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = PoundSquareInch.ukImperial.pressure(this, volume)
 
 @JvmName("metricAndImperialEnergyDivUSCustomaryVolume")
 infix operator fun <EnergyUnit : MetricAndImperialEnergy, VolumeUnit : USCustomaryVolume> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = PoundSquareInch.usCustomary.pressure(this, volume)
 
 @JvmName("energyDivVolume")
 infix operator fun <EnergyUnit : Energy, VolumeUnit : Volume> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    volume: ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
 ) = Pascal.pressure(this, volume)

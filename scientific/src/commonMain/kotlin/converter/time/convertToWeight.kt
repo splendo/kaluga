@@ -30,25 +30,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricMassFlowRate")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MetricMassFlowRate>
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MetricMassFlowRate>,
 ) = massFlowRate * this
 
 @JvmName("timeTimesImperialMassFlowRate")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, ImperialMassFlowRate>
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, ImperialMassFlowRate>,
 ) = massFlowRate * this
 
 @JvmName("timeUKImperialMassFlowRate")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, UKImperialMassFlowRate>
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, UKImperialMassFlowRate>,
 ) = massFlowRate * this
 
 @JvmName("timeTimesUSCustomaryMassFlowRate")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, USCustomaryMassFlowRate>
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, USCustomaryMassFlowRate>,
 ) = massFlowRate * this
 
 @JvmName("timeTimesMassFlowRate")
 infix operator fun <MassFlowRateUnit : MassFlowRate, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MassFlowRateUnit>
+    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MassFlowRateUnit>,
 ) = massFlowRate * this

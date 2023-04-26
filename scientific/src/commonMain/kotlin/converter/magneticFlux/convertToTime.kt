@@ -27,5 +27,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("fluxDivVoltage")
 infix operator fun <FluxUnit : MagneticFlux, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.div(
-    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>
+    voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
 ) = Second.time(this, voltage)

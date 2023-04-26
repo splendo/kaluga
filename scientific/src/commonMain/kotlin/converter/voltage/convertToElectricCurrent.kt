@@ -37,7 +37,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.times(condu
 
 @JvmName("voltageTimesConductance")
 infix operator fun <ConductanceUnit : ElectricConductance, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.times(
-    conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>
+    conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
 ) = conductance * this
 
 @JvmName("abvoltDivAbohm")
@@ -46,5 +46,5 @@ infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.div(resista
 
 @JvmName("voltageDivResistance")
 infix operator fun <VoltageUnit : Voltage, ResistanceUnit : ElectricResistance> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.div(
-    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
 ) = Ampere.current(this, resistance)

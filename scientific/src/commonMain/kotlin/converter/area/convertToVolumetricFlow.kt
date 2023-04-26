@@ -32,25 +32,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAreaTimesMetricVolumetricFlux")
 infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, MetricVolumetricFlux>
+    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, MetricVolumetricFlux>,
 ) = volumetricFlux * this
 
 @JvmName("imperialAreaTimesImperialVolumetricFlux")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, ImperialVolumetricFlux>
+    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, ImperialVolumetricFlux>,
 ) = volumetricFlux * this
 
 @JvmName("imperialAreaTimesUKImperialVolumetricFlux")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, UKImperialVolumetricFlux>
+    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, UKImperialVolumetricFlux>,
 ) = volumetricFlux * this
 
 @JvmName("imperialAreaTimesUSCustomaryVolumetricFlux")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, USCustomaryVolumetricFlux>
+    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, USCustomaryVolumetricFlux>,
 ) = volumetricFlux * this
 
 @JvmName("areaTimesVolumetricFlux")
 infix operator fun <VolumetricFluxUnit : VolumetricFlux, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, VolumetricFluxUnit>
+    volumetricFlux: ScientificValue<PhysicalQuantity.VolumetricFlux, VolumetricFluxUnit>,
 ) = volumetricFlux * this

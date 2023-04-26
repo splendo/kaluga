@@ -131,7 +131,12 @@ interface DeviceInfo {
      * @param environmentalFactor the constant to account for environmental interference. Should usually range between 2.0 and 4.0
      * @return the distance to the device in meters
      */
-    fun distance(environmentalFactor: Double = 2.0): Double
+    fun distance(environmentalFactor: Double = 2.0): Double {
+        if (advertisementData.txPowerLevel == Int.MIN_VALUE || environmentalFactor.isNaN()) return Double.NaN
+        val difference = advertisementData.txPowerLevel.toDouble() - rssi.toDouble()
+        val factor = 10.0 * environmentalFactor
+        return 10.0.pow(difference / factor)
+    }
 }
 
 /**
@@ -141,7 +146,7 @@ data class DeviceInfoImpl(
     override val name: String?,
     override val identifier: Identifier,
     override val rssi: RSSI,
-    override val advertisementData: BaseAdvertisementData
+    override val advertisementData: BaseAdvertisementData,
 ) : DeviceInfo {
 
     /**
@@ -153,7 +158,7 @@ data class DeviceInfoImpl(
     constructor(
         wrapper: DeviceWrapper,
         rssi: RSSI,
-        advertisementData: BaseAdvertisementData
+        advertisementData: BaseAdvertisementData,
     ) : this(
         name = wrapper.name,
         identifier = wrapper.identifier,
@@ -161,11 +166,4 @@ data class DeviceInfoImpl(
         advertisementData = advertisementData,
     )
     override val updatedAt = DefaultKalugaDate.now()
-
-    override fun distance(environmentalFactor: Double): Double {
-        if (advertisementData.txPowerLevel == Int.MIN_VALUE || environmentalFactor.isNaN()) return Double.NaN
-        val difference = advertisementData.txPowerLevel.toDouble() - rssi.toDouble()
-        val factor = 10.0 * environmentalFactor
-        return 10.0.pow(difference / factor)
-    }
 }

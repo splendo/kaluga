@@ -38,6 +38,7 @@ import com.splendo.kaluga.example.keyboard.KeyboardActivity
 import com.splendo.kaluga.example.link.LinksActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
+import com.splendo.kaluga.example.media.MediaActivity
 import com.splendo.kaluga.example.permissions.PermissionsListActivity
 import com.splendo.kaluga.example.resources.ResourcesActivity
 import com.splendo.kaluga.example.scientific.ScientificActivity
@@ -63,6 +64,7 @@ class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>() {
                     FeatureListNavigationAction.Architecture -> NavigationSpec.Activity<ArchitectureActivity>()
                     FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity<KeyboardActivity>()
                     FeatureListNavigationAction.Links -> NavigationSpec.Activity<LinksActivity>()
+                    FeatureListNavigationAction.Media -> NavigationSpec.Activity<MediaActivity>()
                     FeatureListNavigationAction.System -> NavigationSpec.Activity<SystemActivity>()
                     FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity<BluetoothActivity>()
                     FeatureListNavigationAction.Beacons -> NavigationSpec.Activity<BeaconsActivity>()
@@ -70,14 +72,14 @@ class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>() {
                     FeatureListNavigationAction.Scientific -> NavigationSpec.Activity<ScientificActivity>()
                     FeatureListNavigationAction.PlatformSpecific -> throw java.lang.RuntimeException("Not supported")
                 }
-            }
+            },
         )
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 

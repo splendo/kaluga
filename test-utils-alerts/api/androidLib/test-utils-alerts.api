@@ -2,13 +2,6 @@ public final class com/splendo/kaluga/test/alerts/AlertPresenterBuilderKt {
 	public static final fun alertPresenterBuilder (Landroidx/appcompat/app/AppCompatActivity;)Lcom/splendo/kaluga/alerts/AlertPresenter$Builder;
 }
 
-public final class com/splendo/kaluga/test/alerts/BuildConfig {
-	public static final field BUILD_TYPE Ljava/lang/String;
-	public static final field DEBUG Z
-	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
-	public fun <init> ()V
-}
-
 public final class com/splendo/kaluga/test/alerts/MockAlertPresenter : com/splendo/kaluga/alerts/BaseAlertPresenter {
 	public fun <init> (Lcom/splendo/kaluga/alerts/Alert;Z)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/alerts/Alert;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V

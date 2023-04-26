@@ -25,6 +25,7 @@ import com.splendo.kaluga.base.utils.plus
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
+import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.convert
 import kotlinx.serialization.Serializable
@@ -57,14 +58,14 @@ interface ScientificValue<Quantity : PhysicalQuantity, Unit : ScientificUnit<Qua
 /**
  * A class implementation of [ScientificValue]
  * @param Quantity the type of [PhysicalQuantity] of the unit
- * @param Unit the type of [ScientificUnit] this value represents
+ * @param Unit the type of [AbstractScientificUnit] this value represents
  * @param value the value component
  * @param unit the [Unit] component
  */
 @Serializable
-data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : ScientificUnit<Quantity>>(
+data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(
     override val value: Double,
-    override val unit: Unit
+    override val unit: Unit,
 ) : ScientificValue<Quantity, Unit> {
     constructor(value: Decimal, unit: Unit) : this(value.toDouble(), unit)
 }
@@ -72,15 +73,15 @@ data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : Scientific
 // Creation
 
 /**
- * Creates a [DefaultScientificValue] of this number using a given [unit]
+ * Creates a [DefaultScientificValue] of this number using a given [AbstractScientificUnit]
  * @param Quantity the type of [PhysicalQuantity] of the unit
- * @param Unit the type of [ScientificUnit] the value should represents
+ * @param Unit the type of [AbstractScientificUnit] the value should represents
  * @param unit the [Unit] of the [DefaultScientificValue] to be created
  * @return the created [DefaultScientificValue]
  */
 operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > Number.invoke(unit: Unit) = this.toDecimal()(unit)
 
 /**
@@ -95,19 +96,19 @@ operator fun <
 operator fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, Unit>
+    Value : ScientificValue<Quantity, Unit>,
     > Number.invoke(unit: Unit, factory: (Decimal, Unit) -> Value) = this.toDecimal()(unit, factory)
 
 /**
- * Creates a [DefaultScientificValue] of this [Decimal] using a given [unit]
+ * Creates a [DefaultScientificValue] of this [Decimal] using a given [AbstractScientificUnit]
  * @param Quantity the type of [PhysicalQuantity] of the unit
- * @param Unit the type of [ScientificUnit] the value should represents
+ * @param Unit the type of [AbstractScientificUnit] the value should represents
  * @param unit the [Unit] of the [DefaultScientificValue] to be created
  * @return the created [DefaultScientificValue]
  */
 operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > Decimal.invoke(unit: Unit) = this(unit, ::DefaultScientificValue)
 
 /**
@@ -122,7 +123,7 @@ operator fun <
 operator fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, Unit>
+    Value : ScientificValue<Quantity, Unit>,
     > Decimal.invoke(unit: Unit, factory: (Decimal, Unit) -> Value) = factory(this, unit)
 
 // Conversion
@@ -141,16 +142,16 @@ fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
     TargetUnit : ScientificUnit<Quantity>,
-    TargetValue : ScientificValue<Quantity, TargetUnit>
+    TargetValue : ScientificValue<Quantity, TargetUnit>,
     > ScientificValue<Quantity, Unit>.convert(
     target: TargetUnit,
-    factory: (Decimal, TargetUnit) -> TargetValue
+    factory: (Decimal, TargetUnit) -> TargetValue,
 ): TargetValue = factory(convertValue(target), target)
 
 /**
- * Converts a [ScientificValue] into a [DefaultScientificValue] with a [ScientificUnit] of the same [PhysicalQuantity]
+ * Converts a [ScientificValue] into a [DefaultScientificValue] with an [AbstractScientificUnit] of the same [PhysicalQuantity]
  * @param Quantity the type of [PhysicalQuantity] of the current [ScientificValue] as well as the [DefaultScientificValue] to be created
- * @param Unit the type of [ScientificUnit] of the current [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the current [ScientificValue]
  * @param TargetUnit the type of [ScientificUnit] of the [DefaultScientificValue]
  * @param target the [TargetUnit] to convert to
  * @return an instance of [DefaultScientificValue] with its value equal to the value of this [ScientificUnit] in [TargetUnit]
@@ -158,7 +159,7 @@ fun <
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    TargetUnit : ScientificUnit<Quantity>
+    TargetUnit : AbstractScientificUnit<Quantity>,
     > ScientificValue<Quantity, Unit>.convert(target: TargetUnit) = convert(target, ::DefaultScientificValue)
 
 /**
@@ -172,7 +173,7 @@ fun <
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    TargetUnit : ScientificUnit<Quantity>
+    TargetUnit : ScientificUnit<Quantity>,
     > ScientificValue<Quantity, Unit>.convertValue(target: TargetUnit): Decimal {
     return unit.convert(decimalValue, target)
 }
@@ -193,16 +194,16 @@ fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
     TargetUnit : ScientificUnit<Quantity>,
-    TargetValue : ScientificValue<Quantity, TargetUnit>
+    TargetValue : ScientificValue<Quantity, TargetUnit>,
     > ScientificValue<Quantity, Unit>.convert(
     target: TargetUnit,
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-    factory: (Decimal, TargetUnit) -> TargetValue
+    factory: (Decimal, TargetUnit) -> TargetValue,
 ): TargetValue = factory(convertValue(target, round, roundingMode), target)
 
 /**
- * Converts a [ScientificValue] into a [DefaultScientificValue] with a [ScientificUnit] of the same [PhysicalQuantity]
+ * Converts a [ScientificValue] into a [DefaultScientificValue] with an [AbstractScientificUnit] of the same [PhysicalQuantity]
  * @param Quantity the type of [PhysicalQuantity] of the current [ScientificValue] as well as the [DefaultScientificValue] to be created
  * @param Unit the type of [ScientificUnit] of the current [ScientificValue]
  * @param TargetUnit the type of [ScientificUnit] of the [DefaultScientificValue]
@@ -214,11 +215,11 @@ fun <
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    TargetUnit : ScientificUnit<Quantity>
+    TargetUnit : AbstractScientificUnit<Quantity>,
     > ScientificValue<Quantity, Unit>.convert(
     target: TargetUnit,
     round: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ) = convert(target, round, roundingMode, ::DefaultScientificValue)
 
 /**
@@ -234,11 +235,11 @@ fun <
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    TargetUnit : ScientificUnit<Quantity>
+    TargetUnit : ScientificUnit<Quantity>,
     > ScientificValue<Quantity, Unit>.convertValue(
     target: TargetUnit,
     round: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ): Decimal {
     return unit.convert(decimalValue, target, round, roundingMode)
 }
@@ -248,49 +249,49 @@ fun <
 /**
  * Creates a [DefaultScientificValue] equal to the [ScientificValue.value] increased by [value]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the amount to add to the value
  * @return the [DefaultScientificValue] where the [ScientificValue.value] is increased by [value]
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > ScientificValue<Quantity, Unit>.plus(value: Number) = this + value.toDecimal()
 
 /**
  * Creates a [DefaultScientificValue] equal to a [ScientificValue.value] increased by this [Number]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the [ScientificValue] to add the value to
  * @return a [DefaultScientificValue] where the [ScientificValue.value] of [value] is increased by this number
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > Number.plus(value: ScientificValue<Quantity, Unit>) = toDecimal() + value
 
 /**
  * Creates a [DefaultScientificValue] equal to the [ScientificValue.value] increased by [value]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the [Decimal] amount to add to the value
  * @return a [DefaultScientificValue] where the [ScientificValue.value] is increased by [value]
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > ScientificValue<Quantity, Unit>.plus(value: Decimal) = plus(value, ::DefaultScientificValue)
 
 /**
  * Creates a [DefaultScientificValue] equal to a [ScientificValue.value] increased by this [Decimal]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the [ScientificValue] to add the value to
  * @return a [DefaultScientificValue] where the [ScientificValue.value] of [value] is increased by this [Decimal]
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > Decimal.plus(value: ScientificValue<Quantity, Unit>) = plus(value, ::DefaultScientificValue)
 
 /**
@@ -305,10 +306,10 @@ infix operator fun <
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, Unit>
+    Value : ScientificValue<Quantity, Unit>,
     > ScientificValue<Quantity, Unit>.plus(
     value: Decimal,
-    factory: (Decimal, Unit) -> Value
+    factory: (Decimal, Unit) -> Value,
 ) = factory(decimalValue + value, unit)
 
 /**
@@ -323,24 +324,24 @@ fun <
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, Unit>
+    Value : ScientificValue<Quantity, Unit>,
     > Decimal.plus(
     value: ScientificValue<Quantity, Unit>,
-    factory: (Decimal, Unit) -> Value
+    factory: (Decimal, Unit) -> Value,
 ) = factory(this + value.decimalValue, value.unit)
 
 /**
  * Adds the [ScientificValue.value] of two [ScientificValue] into a [DefaultScientificValue] with [LeftUnit] as its unit
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param LeftUnit the type of [ScientificUnit] of the [ScientificValue] being added to
+ * @param LeftUnit the type of [AbstractScientificUnit] of the [ScientificValue] being added to
  * @param RightUnit the type of [ScientificUnit] of the [ScientificValue] being added
  * @param right the [ScientificValue] of [RightUnit] to add
  * @return a [DefaultScientificValue] in [LeftUnit] where [right] is added to this value
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    LeftUnit : ScientificUnit<Quantity>,
-    RightUnit : ScientificUnit<Quantity>
+    LeftUnit : AbstractScientificUnit<Quantity>,
+    RightUnit : ScientificUnit<Quantity>,
     > ScientificValue<Quantity, LeftUnit>.plus(right: ScientificValue<Quantity, RightUnit>) = unit.plus(this, right, ::DefaultScientificValue)
 
 /**
@@ -360,59 +361,59 @@ fun <
     LeftUnit : ScientificUnit<Quantity>,
     RightUnit : ScientificUnit<Quantity>,
     TargetUnit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, TargetUnit>
+    Value : ScientificValue<Quantity, TargetUnit>,
     > TargetUnit.plus(
     left: ScientificValue<Quantity, LeftUnit>,
     right: ScientificValue<Quantity, RightUnit>,
-    factory: (Decimal, TargetUnit) -> Value
+    factory: (Decimal, TargetUnit) -> Value,
 ) = byAdding(left, right, factory)
 
 /**
  * Creates a [DefaultScientificValue] equal to the [ScientificValue.value] decreased by [value]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the amount to subtract from the value
  * @return a [DefaultScientificValue] where the [ScientificValue.value] is decreased by [value]
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > ScientificValue<Quantity, Unit>.minus(value: Number) = this - value.toDecimal()
 
 /**
  * Creates a [DefaultScientificValue] equal to a [ScientificValue.value] decreased from this [Number]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the [ScientificValue] whose value should be subtracted from this [Number]
  * @return a [DefaultScientificValue] where the [ScientificValue.value] of [value] is subtracted from this number
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > Number.minus(value: ScientificValue<Quantity, Unit>) = toDecimal() - value
 
 /**
  * Creates a [DefaultScientificValue] equal to the [ScientificValue.value] decreased by [value]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the [Decimal] to subtract from the value
  * @return a [DefaultScientificValue] where the [ScientificValue.value] is decreased by [value]
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > ScientificValue<Quantity, Unit>.minus(value: Decimal) = minus(value, ::DefaultScientificValue)
 
 /**
  * Creates a [DefaultScientificValue] equal to a [ScientificValue.value] decreased from this [Decimal]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the [ScientificValue] whose value should be subtracted from this [Decimal]
  * @return a [DefaultScientificValue] where the [ScientificValue.value] of [value] is subtracted from this number
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > Decimal.minus(value: ScientificValue<Quantity, Unit>) = minus(value, ::DefaultScientificValue)
 
 /**
@@ -427,10 +428,10 @@ infix operator fun <
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, Unit>
+    Value : ScientificValue<Quantity, Unit>,
     > ScientificValue<Quantity, Unit>.minus(
     value: Decimal,
-    factory: (Decimal, Unit) -> Value
+    factory: (Decimal, Unit) -> Value,
 ) = factory(decimalValue - value, unit)
 
 /**
@@ -445,24 +446,24 @@ fun <
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, Unit>
+    Value : ScientificValue<Quantity, Unit>,
     > Decimal.minus(
     value: ScientificValue<Quantity, Unit>,
-    factory: (Decimal, Unit) -> Value
+    factory: (Decimal, Unit) -> Value,
 ) = factory(this - value.decimalValue, value.unit)
 
 /**
  * Subtracts the [ScientificValue.value] of two [ScientificValue] into a [DefaultScientificValue] with [LeftUnit] as its unit
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param LeftUnit the type of [ScientificUnit] of the [ScientificValue] being subtracted from
+ * @param LeftUnit the type of [AbstractScientificUnit] of the [ScientificValue] being subtracted from
  * @param RightUnit the type of [ScientificUnit] of the [ScientificValue] being subtracted
  * @param right the [ScientificValue] of [RightUnit] to subtract
  * @return a [DefaultScientificValue] in [LeftUnit] where [right] is subtracted from this value
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    LeftUnit : ScientificUnit<Quantity>,
-    RightUnit : ScientificUnit<Quantity>
+    LeftUnit : AbstractScientificUnit<Quantity>,
+    RightUnit : ScientificUnit<Quantity>,
     > ScientificValue<Quantity, LeftUnit>.minus(right: ScientificValue<Quantity, RightUnit>) = unit.minus(this, right, ::DefaultScientificValue)
 
 /**
@@ -482,59 +483,59 @@ fun <
     LeftUnit : ScientificUnit<Quantity>,
     RightUnit : ScientificUnit<Quantity>,
     TargetUnit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, TargetUnit>
+    Value : ScientificValue<Quantity, TargetUnit>,
     > TargetUnit.minus(
     left: ScientificValue<Quantity, LeftUnit>,
     right: ScientificValue<Quantity, RightUnit>,
-    factory: (Decimal, TargetUnit) -> Value
+    factory: (Decimal, TargetUnit) -> Value,
 ) = bySubtracting(left, right, factory)
 
 /**
  * Creates a [DefaultScientificValue] equal to the [ScientificValue.value] multiplied by [value]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the amount to multiply the value with
  * @return the [DefaultScientificValue] where the [ScientificValue.value] is multiplied by [value]
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > ScientificValue<Quantity, Unit>.times(value: Number) = this * value.toDecimal()
 
 /**
  * Creates a [DefaultScientificValue] equal to a [ScientificValue.value] multiplied by this [Number]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the [ScientificValue] to multiply the value with
  * @return a [DefaultScientificValue] where the [ScientificValue.value] of [value] is multiplied by this number
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > Number.times(value: ScientificValue<Quantity, Unit>) = toDecimal() * value
 
 /**
  * Creates a [DefaultScientificValue] equal to the [ScientificValue.value] multiplied by [value]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the [Decimal] to multiply the value with
  * @return the [DefaultScientificValue] where the [ScientificValue.value] is multiplied by [value]
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > ScientificValue<Quantity, Unit>.times(value: Decimal) = times(value, ::DefaultScientificValue)
 
 /**
  * Creates a [DefaultScientificValue] equal to a [ScientificValue.value] multiplied by this [Decimal]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the [ScientificValue] to multiply the value with
  * @return a [DefaultScientificValue] where the [ScientificValue.value] of [value] is multiplied by this number
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > Decimal.times(value: ScientificValue<Quantity, Unit>) = times(value, ::DefaultScientificValue)
 
 /**
@@ -549,10 +550,10 @@ infix operator fun <
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, Unit>
+    Value : ScientificValue<Quantity, Unit>,
     > ScientificValue<Quantity, Unit>.times(
     value: Decimal,
-    factory: (Decimal, Unit) -> Value
+    factory: (Decimal, Unit) -> Value,
 ) = factory(decimalValue * value, unit)
 
 /**
@@ -567,24 +568,24 @@ fun <
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, Unit>
+    Value : ScientificValue<Quantity, Unit>,
     > Decimal.times(
     value: ScientificValue<Quantity, Unit>,
-    factory: (Decimal, Unit) -> Value
+    factory: (Decimal, Unit) -> Value,
 ) = factory(this * value.decimalValue, value.unit)
 
 /**
  * Multiplies the [ScientificValue.value] of two [ScientificValue] into a [DefaultScientificValue] with [LeftUnit] as its unit
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param LeftUnit the type of [ScientificUnit] of the [ScientificValue] being multiplied
+ * @param LeftUnit the type of [AbstractScientificUnit] of the [ScientificValue] being multiplied
  * @param RightUnit the type of [ScientificUnit] of the [ScientificValue] multiplying
  * @param right the [ScientificValue] of [RightUnit] to multiply
  * @return a [DefaultScientificValue] in [LeftUnit] where [right] is multiplied by this value
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    LeftUnit : ScientificUnit<Quantity>,
-    RightUnit : ScientificUnit<Quantity>
+    LeftUnit : AbstractScientificUnit<Quantity>,
+    RightUnit : ScientificUnit<Quantity>,
     > ScientificValue<Quantity, LeftUnit>.times(right: ScientificValue<Quantity, RightUnit>) = unit.times(this, right, ::DefaultScientificValue)
 
 /**
@@ -604,59 +605,59 @@ fun <
     LeftUnit : ScientificUnit<Quantity>,
     RightUnit : ScientificUnit<Quantity>,
     TargetUnit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, TargetUnit>
+    Value : ScientificValue<Quantity, TargetUnit>,
     > TargetUnit.times(
     left: ScientificValue<Quantity, LeftUnit>,
     right: ScientificValue<Quantity, RightUnit>,
-    factory: (Decimal, TargetUnit) -> Value
+    factory: (Decimal, TargetUnit) -> Value,
 ) = byMultiplying(left, right, factory)
 
 /**
  * Creates a [DefaultScientificValue] equal to the [ScientificValue.value] divided by [value]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the amount to divide from the value
  * @return a [DefaultScientificValue] where the [ScientificValue.value] is divided by [value]
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > ScientificValue<Quantity, Unit>.div(value: Number) = this / value.toDecimal()
 
 /**
  * Creates a [DefaultScientificValue] equal to a [ScientificValue.value] divided from this [Number]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the [ScientificValue] whose value should be divided from this [Number]
  * @return a [DefaultScientificValue] where the [ScientificValue.value] of [unit] is divided from this number
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > Number.div(value: ScientificValue<Quantity, Unit>) = toDecimal() / value
 
 /**
  * Creates a [DefaultScientificValue] equal to the [ScientificValue.value] divided by [value]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the [Decimal] to divided from the value
  * @return a [DefaultScientificValue] where the [ScientificValue.value] is divided by [value]
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > ScientificValue<Quantity, Unit>.div(value: Decimal) = div(value, ::DefaultScientificValue)
 
 /**
  * Creates a [DefaultScientificValue] equal to a [ScientificValue.value] divided from this [Decimal]
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
+ * @param Unit the type of [AbstractScientificUnit] of the [ScientificValue]
  * @param value the [ScientificValue] whose value should be divided from this [Decimal]
  * @return a [DefaultScientificValue] where the [ScientificValue.value] of [value] is divided from this number
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>
+    Unit : AbstractScientificUnit<Quantity>,
     > Decimal.div(value: ScientificValue<Quantity, Unit>) = div(value, ::DefaultScientificValue)
 
 /**
@@ -671,10 +672,10 @@ infix operator fun <
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, Unit>
+    Value : ScientificValue<Quantity, Unit>,
     > ScientificValue<Quantity, Unit>.div(
     value: Decimal,
-    factory: (Decimal, Unit) -> Value
+    factory: (Decimal, Unit) -> Value,
 ) = factory(decimalValue / value, unit)
 
 /**
@@ -689,24 +690,24 @@ fun <
 fun <
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, Unit>
+    Value : ScientificValue<Quantity, Unit>,
     > Decimal.div(
     value: ScientificValue<Quantity, Unit>,
-    factory: (Decimal, Unit) -> Value
+    factory: (Decimal, Unit) -> Value,
 ) = factory(this / value.decimalValue, value.unit)
 
 /**
  * Divides the [ScientificValue.value] of two [ScientificValue] into a [DefaultScientificValue] with [LeftUnit] as its unit
  * @param Quantity the type of [PhysicalQuantity] of the [ScientificValue]
- * @param LeftUnit the type of [ScientificUnit] of the [ScientificValue] being divided from
+ * @param LeftUnit the type of [AbstractScientificUnit] of the [ScientificValue] being divided from
  * @param RightUnit the type of [ScientificUnit] of the [ScientificValue] being divided
  * @param right the [ScientificValue] of [RightUnit] to divide with
  * @return a [DefaultScientificValue] in [LeftUnit] where [right] is divided from this value
  */
 infix operator fun <
     Quantity : PhysicalQuantity,
-    LeftUnit : ScientificUnit<Quantity>,
-    RightUnit : ScientificUnit<Quantity>
+    LeftUnit : AbstractScientificUnit<Quantity>,
+    RightUnit : ScientificUnit<Quantity>,
     > ScientificValue<Quantity, LeftUnit>.div(right: ScientificValue<Quantity, RightUnit>) = unit.div(this, right, ::DefaultScientificValue)
 
 /**
@@ -726,11 +727,11 @@ fun <
     LeftUnit : ScientificUnit<Quantity>,
     RightUnit : ScientificUnit<Quantity>,
     TargetUnit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, TargetUnit>
+    Value : ScientificValue<Quantity, TargetUnit>,
     > TargetUnit.div(
     left: ScientificValue<Quantity, LeftUnit>,
     right: ScientificValue<Quantity, RightUnit>,
-    factory: (Decimal, TargetUnit) -> Value
+    factory: (Decimal, TargetUnit) -> Value,
 ) = byDividing(left, right, factory)
 
 internal fun <
@@ -740,11 +741,11 @@ internal fun <
     LeftQuantity : PhysicalQuantity,
     LeftUnit : ScientificUnit<LeftQuantity>,
     RightQuantity : PhysicalQuantity,
-    RightUnit : ScientificUnit<RightQuantity>
+    RightUnit : ScientificUnit<RightQuantity>,
     > TargetUnit.byAdding(
     left: ScientificValue<LeftQuantity, LeftUnit>,
     right: ScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, TargetUnit) -> Value
+    factory: (Decimal, TargetUnit) -> Value,
 ) = fromSIUnit(left.unit.toSIUnit(left.decimalValue) + right.unit.toSIUnit(right.decimalValue))(this, factory)
 
 internal fun <
@@ -754,11 +755,11 @@ internal fun <
     LeftQuantity : PhysicalQuantity,
     LeftUnit : ScientificUnit<LeftQuantity>,
     RightQuantity : PhysicalQuantity,
-    RightUnit : ScientificUnit<RightQuantity>
+    RightUnit : ScientificUnit<RightQuantity>,
     > TargetUnit.bySubtracting(
     left: ScientificValue<LeftQuantity, LeftUnit>,
     right: ScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, TargetUnit) -> Value
+    factory: (Decimal, TargetUnit) -> Value,
 ) = fromSIUnit(left.unit.toSIUnit(left.decimalValue) - right.unit.toSIUnit(right.decimalValue))(this, factory)
 
 internal fun <
@@ -768,11 +769,11 @@ internal fun <
     NominatorQuantity : PhysicalQuantity,
     NominatorUnit : ScientificUnit<NominatorQuantity>,
     DividerQuantity : PhysicalQuantity,
-    DividerUnit : ScientificUnit<DividerQuantity>
+    DividerUnit : ScientificUnit<DividerQuantity>,
     > Unit.byDividing(
     nominator: ScientificValue<NominatorQuantity, NominatorUnit>,
     divider: ScientificValue<DividerQuantity, DividerUnit>,
-    factory: (Decimal, Unit) -> Value
+    factory: (Decimal, Unit) -> Value,
 ) = fromSIUnit(nominator.unit.toSIUnit(nominator.decimalValue) / divider.unit.toSIUnit(divider.decimalValue))(this, factory)
 
 internal fun <
@@ -782,11 +783,11 @@ internal fun <
     LeftQuantity : PhysicalQuantity,
     LeftUnit : ScientificUnit<LeftQuantity>,
     RightQuantity : PhysicalQuantity,
-    RightUnit : ScientificUnit<RightQuantity>
+    RightUnit : ScientificUnit<RightQuantity>,
     > TargetUnit.byMultiplying(
     left: ScientificValue<LeftQuantity, LeftUnit>,
     right: ScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, TargetUnit) -> Value
+    factory: (Decimal, TargetUnit) -> Value,
 ) = fromSIUnit(left.unit.toSIUnit(left.decimalValue) * right.unit.toSIUnit(right.decimalValue))(this, factory)
 
 internal fun <
@@ -794,10 +795,10 @@ internal fun <
     InverseUnit : ScientificUnit<InverseQuantity>,
     Quantity : PhysicalQuantity,
     Unit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, Unit>
+    Value : ScientificValue<Quantity, Unit>,
     > Unit.byInverting(
     inverse: ScientificValue<InverseQuantity, InverseUnit>,
-    factory: (Decimal, Unit) -> Value
+    factory: (Decimal, Unit) -> Value,
 ) = fromSIUnit(1.0.toDecimal() / inverse.unit.toSIUnit(inverse.decimalValue))(this, factory)
 
 /**

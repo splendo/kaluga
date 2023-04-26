@@ -39,7 +39,10 @@ import kotlinx.coroutines.flow.map
 
 sealed class ScientificConverterNavigationAction<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
     object Close : ScientificConverterNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
-    sealed class SelectUnit(quantity: PhysicalQuantity) : ScientificConverterNavigationAction<PhysicalQuantity>(quantity, NavigationBundleSpecType.SerializedType(PhysicalQuantity.serializer())) {
+    sealed class SelectUnit(quantity: PhysicalQuantity) : ScientificConverterNavigationAction<PhysicalQuantity>(
+        quantity,
+        NavigationBundleSpecType.SerializedType(PhysicalQuantity.serializer()),
+    ) {
         data class Left(val quantity: PhysicalQuantity) : SelectUnit(quantity)
         data class Right(val quantity: PhysicalQuantity) : SelectUnit(quantity)
     }
@@ -48,11 +51,13 @@ sealed class ScientificConverterNavigationAction<T>(value: T, type: NavigationBu
 class ScientificConverterViewModel internal constructor(
     private val leftUnits: Set<ScientificUnit<*>>,
     private val converter: QuantityConverter<*, *>?,
-    navigator: Navigator<ScientificConverterNavigationAction<*>>
+    navigator: Navigator<ScientificConverterNavigationAction<*>>,
 ) : NavigatingViewModel<ScientificConverterNavigationAction<*>>(navigator) {
 
     companion object {
-        val numberFormatterDecimal = NumberFormatter(style = NumberFormatStyle.Decimal(maxIntegerDigits = 10U, minIntegerDigits = 1U, minFractionDigits = 0U, maxFractionDigits = 10U))
+        val numberFormatterDecimal = NumberFormatter(
+            style = NumberFormatStyle.Decimal(maxIntegerDigits = 10U, minIntegerDigits = 1U, minFractionDigits = 0U, maxFractionDigits = 10U),
+        )
         val numberFormatterScientific = NumberFormatter(style = NumberFormatStyle.Scientific())
     }
 
@@ -62,10 +67,14 @@ class ScientificConverterViewModel internal constructor(
     }
 
     private val currentLeftUnit = MutableStateFlow(leftUnits.firstOrNull())
-    val currentLeftUnitButton: BaseInitializedObservable<KalugaButton> = currentLeftUnit.map { createLeftUnitButton(it) }.toInitializedObservable(createLeftUnitButton(null), coroutineScope)
+    val currentLeftUnitButton: BaseInitializedObservable<KalugaButton> = currentLeftUnit.map {
+        createLeftUnitButton(it)
+    }.toInitializedObservable(createLeftUnitButton(null), coroutineScope)
     val isRightUnitSelectable = converter is QuantityConverter.WithOperator<*, *, *>
     private val currentRightUnit = MutableStateFlow((converter as? QuantityConverter.WithOperator<*, *, *>)?.rightQuantity?.quantityDetails?.units?.firstOrNull())
-    val currentRightUnitButton: BaseInitializedObservable<KalugaButton> = currentRightUnit.map { createRightUnitButton(it) }.toInitializedObservable(createRightUnitButton(null), coroutineScope)
+    val currentRightUnitButton: BaseInitializedObservable<KalugaButton> = currentRightUnit.map {
+        createRightUnitButton(it)
+    }.toInitializedObservable(createRightUnitButton(null), coroutineScope)
     private val _leftValue = MutableStateFlow(numberFormatterDecimal.format(0.0))
     val leftValue = _leftValue.toInitializedSubject(coroutineScope)
     private val _rightValue = MutableStateFlow(numberFormatterDecimal.format(0.0))
@@ -134,7 +143,10 @@ class ScientificConverterViewModel internal constructor(
     }
 }
 
-fun ScientificConverterViewModel(arguments: ScientificConverterViewModel.Arguments, navigator: Navigator<ScientificConverterNavigationAction<*>>) = arguments.physicalQuantity.quantityDetails?.let { details ->
+fun ScientificConverterViewModel(
+    arguments: ScientificConverterViewModel.Arguments,
+    navigator: Navigator<ScientificConverterNavigationAction<*>>,
+) = arguments.physicalQuantity.quantityDetails?.let { details ->
     details.converters.getOrNull(arguments.converterIndex)?.let { converter ->
         ScientificConverterViewModel(details.units, converter, navigator)
     }

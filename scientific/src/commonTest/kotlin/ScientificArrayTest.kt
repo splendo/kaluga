@@ -28,11 +28,16 @@ import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Millimeter
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.SquareMeter
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class ScientificArrayTest {
+
+    @Serializable
+    data class ArrayContainer(val value: DefaultScientificArray<*, *>)
 
     @Test
     fun testCreateScientificArray() {
@@ -98,6 +103,15 @@ class ScientificArrayTest {
         val listOfLength = listOf(1, 2, 3)(Meter) + listOf(40, 50)(Decimeter) + (0.1)(Kilometer)
         assertEquals(Meter, listOfLength.unit)
         assertEquals(listOf(1.0, 2.0, 3.0, 4.0, 5.0, 100.0), listOfLength.values.asList())
+    }
+
+    @Test
+    fun testSerialization() {
+        val value = listOf(1, 2, 3)(Meter)
+        val container = ArrayContainer(value)
+        val json = Json.encodeToString(ArrayContainer.serializer(), container)
+        val decoded = Json.decodeFromString(ArrayContainer.serializer(), json)
+        assertEquals(container, decoded)
     }
 }
 

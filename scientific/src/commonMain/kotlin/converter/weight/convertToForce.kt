@@ -51,7 +51,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Weight, Gram>.times(accelera
 
 @JvmName("metricWeightTimesMetricAcceleration")
 infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>,
 ) = Newton.force(this, acceleration)
 
 @JvmName("poundTimesImperialAcceleration")
@@ -76,20 +76,20 @@ infix operator fun ScientificValue<PhysicalQuantity.Weight, ImperialTon>.times(a
 
 @JvmName("imperialWeightTimesImperialAcceleration")
 infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>,
 ) = PoundForce.force(this, acceleration)
 
 @JvmName("ukImperialWeightTimesImperialAcceleration")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>,
 ) = PoundForce.ukImperial.force(this, acceleration)
 
 @JvmName("usCustomaryWeightTimesImperialAcceleration")
 infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>,
 ) = PoundForce.usCustomary.force(this, acceleration)
 
 @JvmName("weightTimesAcceleration")
 infix operator fun <WeightUnit : Weight, AccelerationUnit : Acceleration> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>,
 ) = Newton.force(this, acceleration)

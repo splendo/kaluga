@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     WeightUnit : Weight,
     AreaUnit : Area,
-    AreaDensityUnit : AreaDensity
+    AreaDensityUnit : AreaDensity,
     > WeightUnit.mass(
     areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>,
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = mass(areaDensity, area, ::DefaultScientificValue)
 
 @JvmName("weightFromAreaDensityAndArea")
@@ -42,9 +42,9 @@ fun <
     WeightUnit : Weight,
     AreaUnit : Area,
     AreaDensityUnit : AreaDensity,
-    Value : ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    Value : ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
     > WeightUnit.mass(
     areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>,
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-    factory: (Decimal, WeightUnit) -> Value
+    factory: (Decimal, WeightUnit) -> Value,
 ) = byMultiplying(areaDensity, area, factory)

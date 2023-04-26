@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     VolumeUnit : Volume,
     SpecificVolumeUnit : SpecificVolume,
-    WeightUnit : Weight
+    WeightUnit : Weight,
     > VolumeUnit.volume(
     specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = volume(specificVolume, weight, ::DefaultScientificValue)
 
 @JvmName("volumeFromSpecificVolumeAndWeight")
@@ -42,9 +42,9 @@ fun <
     VolumeUnit : Volume,
     SpecificVolumeUnit : SpecificVolume,
     WeightUnit : Weight,
-    Value : ScientificValue<PhysicalQuantity.Volume, VolumeUnit>
+    Value : ScientificValue<PhysicalQuantity.Volume, VolumeUnit>,
     > VolumeUnit.volume(
     specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
     weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-    factory: (Decimal, VolumeUnit) -> Value
+    factory: (Decimal, VolumeUnit) -> Value,
 ) = byMultiplying(specificVolume, weight, factory)

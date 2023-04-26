@@ -29,10 +29,10 @@ import kotlin.jvm.JvmName
 
 @JvmName("abcoulombDivTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = Abampere.current(this, time)
 
 @JvmName("chargeDivTime")
 infix operator fun <ChargeUnit : ElectricCharge, TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = Ampere.current(this, time)

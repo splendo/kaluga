@@ -38,7 +38,7 @@ import kotlin.time.Duration
 actual class DefaultMicrophonePermissionManager(
     context: Context,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
@@ -62,8 +62,9 @@ actual class DefaultMicrophonePermissionManager(
     }
 
     override fun monitoringDidStop() {
-        if (supported)
+        if (supported) {
             permissionsManager.stopMonitoring()
+        }
     }
 }
 
@@ -73,7 +74,7 @@ actual class DefaultMicrophonePermissionManager(
  */
 actual class MicrophonePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): MicrophonePermissionManager {
+    override fun create(settings: Settings, coroutineScope: CoroutineScope): MicrophonePermissionManager {
         return DefaultMicrophonePermissionManager(context.context, settings, coroutineScope)
     }
 }

@@ -29,7 +29,10 @@ import kotlin.time.Duration
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultBluetoothPermissionManager(settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
+actual class DefaultBluetoothPermissionManager(
+    settings: Settings,
+    coroutineScope: CoroutineScope,
+) : BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
 
     override fun requestPermissionDidStart() {
         TODO("Not yet implemented")
@@ -50,7 +53,7 @@ actual class DefaultBluetoothPermissionManager(settings: Settings, coroutineScop
  */
 actual class BluetoothPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseBluetoothPermissionManagerBuilder {
 
-    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): PermissionManager<BluetoothPermission> {
+    override fun create(settings: Settings, coroutineScope: CoroutineScope): PermissionManager<BluetoothPermission> {
         return DefaultBluetoothPermissionManager(settings, coroutineScope)
     }
 }

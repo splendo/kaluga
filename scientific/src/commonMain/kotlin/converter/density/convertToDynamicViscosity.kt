@@ -32,25 +32,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricDensityTimesMetricKinematicViscosity")
 infix operator fun ScientificValue<PhysicalQuantity.Density, MetricDensity>.times(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>,
 ) = kinematicViscosity * this
 
 @JvmName("imperialDensityTimesImperialKinematicViscosity")
 infix operator fun ScientificValue<PhysicalQuantity.Density, ImperialDensity>.times(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>,
 ) = kinematicViscosity * this
 
 @JvmName("ukImperialDensityTimesImperialKinematicViscosity")
 infix operator fun ScientificValue<PhysicalQuantity.Density, UKImperialDensity>.times(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>,
 ) = kinematicViscosity * this
 
 @JvmName("usCustomaryDensityTimesImperialKinematicViscosity")
 infix operator fun ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>.times(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>,
 ) = kinematicViscosity * this
 
 @JvmName("densityTimesKinematicViscosity")
 infix operator fun <DensityUnit : Density, KinematicViscosityUnit : KinematicViscosity> ScientificValue<PhysicalQuantity.Density, DensityUnit>.times(
-    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>
+    kinematicViscosity: ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>,
 ) = kinematicViscosity * this

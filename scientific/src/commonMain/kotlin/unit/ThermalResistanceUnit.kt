@@ -85,7 +85,10 @@ sealed class ThermalResistance : AbstractScientificUnit<PhysicalQuantity.Thermal
  * @param per the [MetricAndImperialPower] component
  */
 @Serializable
-data class MetricAndUKImperialThermalResistance(override val temperature: MetricAndUKImperialTemperature, override val per: MetricAndImperialPower) : ThermalResistance(), MetricAndUKImperialScientificUnit<PhysicalQuantity.ThermalResistance> {
+data class MetricAndUKImperialThermalResistance(
+    override val temperature: MetricAndUKImperialTemperature,
+    override val per: MetricAndImperialPower,
+) : ThermalResistance(), MetricAndUKImperialScientificUnit<PhysicalQuantity.ThermalResistance> {
     override val system = MeasurementSystem.MetricAndUKImperial
 
     /**
@@ -105,7 +108,10 @@ data class MetricAndUKImperialThermalResistance(override val temperature: Metric
  * @param per the [MetricPower] component
  */
 @Serializable
-data class MetricThermalResistance(override val temperature: MetricAndUKImperialTemperature, override val per: MetricPower) : ThermalResistance(), MetricScientificUnit<PhysicalQuantity.ThermalResistance> {
+data class MetricThermalResistance(
+    override val temperature: MetricAndUKImperialTemperature,
+    override val per: MetricPower,
+) : ThermalResistance(), MetricScientificUnit<PhysicalQuantity.ThermalResistance> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -115,7 +121,10 @@ data class MetricThermalResistance(override val temperature: MetricAndUKImperial
  * @param per the [ImperialPower] component
  */
 @Serializable
-data class UKImperialThermalResistance(override val temperature: MetricAndUKImperialTemperature, override val per: ImperialPower) : ThermalResistance(), UKImperialScientificUnit<PhysicalQuantity.ThermalResistance> {
+data class UKImperialThermalResistance(
+    override val temperature: MetricAndUKImperialTemperature,
+    override val per: ImperialPower,
+) : ThermalResistance(), UKImperialScientificUnit<PhysicalQuantity.ThermalResistance> {
     override val system = MeasurementSystem.UKImperial
 }
 
@@ -125,7 +134,10 @@ data class UKImperialThermalResistance(override val temperature: MetricAndUKImpe
  * @param per the [ImperialPower] component
  */
 @Serializable
-data class USCustomaryThermalResistance(override val temperature: USCustomaryTemperature, override val per: ImperialPower) : ThermalResistance(), USCustomaryScientificUnit<PhysicalQuantity.ThermalResistance> {
+data class USCustomaryThermalResistance(
+    override val temperature: USCustomaryTemperature,
+    override val per: ImperialPower,
+) : ThermalResistance(), USCustomaryScientificUnit<PhysicalQuantity.ThermalResistance> {
     override val system = MeasurementSystem.USCustomary
 }
 

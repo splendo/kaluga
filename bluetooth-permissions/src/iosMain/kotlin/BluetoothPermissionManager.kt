@@ -58,7 +58,7 @@ const val NSBluetoothPeripheralUsageDescription = "NSBluetoothPeripheralUsageDes
 actual class DefaultBluetoothPermissionManager(
     private val bundle: NSBundle,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
 
     companion object {
@@ -95,7 +95,7 @@ actual class DefaultBluetoothPermissionManager(
         if (IOSPermissionsHelper.missingDeclarationsInPList(
                 bundle,
                 NSBluetoothAlwaysUsageDescription,
-                NSBluetoothPeripheralUsageDescription
+                NSBluetoothPeripheralUsageDescription,
             ).isEmpty()
         ) {
             centralManager.value
@@ -121,12 +121,12 @@ actual class DefaultBluetoothPermissionManager(
  * @param context the [PermissionContext] this permissions manager builder runs on
  */
 actual class BluetoothPermissionManagerBuilder actual constructor(
-    private val context: PermissionContext
+    private val context: PermissionContext,
 ) : BaseBluetoothPermissionManagerBuilder {
 
     override fun create(
-        settings: BasePermissionManager.Settings,
-        coroutineScope: CoroutineScope
+        settings: Settings,
+        coroutineScope: CoroutineScope,
     ): BluetoothPermissionManager {
         return DefaultBluetoothPermissionManager(context, settings, coroutineScope)
     }
@@ -141,7 +141,7 @@ private fun CBPeripheralManagerAuthorizationStatus.toPeripheralAuthorizationStat
         else -> {
             error(
                 "BluetoothPermissionManager",
-                "Unknown CBPeripheralManagerAuthorizationStatus status={$this}"
+                "Unknown CBPeripheralManagerAuthorizationStatus status={$this}",
             )
             IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         }
@@ -157,7 +157,7 @@ private fun CBManagerAuthorization.toAuthorizationStatus(): IOSPermissionsHelper
         else -> {
             error(
                 "BluetoothPermissionManager",
-                "Unknown CBManagerAuthorization status={$this}"
+                "Unknown CBManagerAuthorization status={$this}",
             )
             IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         }

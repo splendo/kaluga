@@ -77,7 +77,10 @@ sealed class MolarEnergy : AbstractScientificUnit<PhysicalQuantity.MolarEnergy>(
  * @param per the [AmountOfSubstance] component
  */
 @Serializable
-data class MetricAndImperialMolarEnergy(override val energy: MetricAndImperialEnergy, override val per: AmountOfSubstance) : MolarEnergy(), MetricAndImperialScientificUnit<PhysicalQuantity.MolarEnergy> {
+data class MetricAndImperialMolarEnergy(
+    override val energy: MetricAndImperialEnergy,
+    override val per: AmountOfSubstance,
+) : MolarEnergy(), MetricAndImperialScientificUnit<PhysicalQuantity.MolarEnergy> {
     override val system = MeasurementSystem.MetricAndImperial
 
     /**
