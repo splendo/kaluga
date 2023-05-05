@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.ServiceMonitor
 import com.splendo.kaluga.service.ServiceMonitorState

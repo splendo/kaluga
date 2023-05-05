@@ -21,6 +21,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":service"))
+                api(project(":base", ""))
                 api(project(":location-permissions", ""))
             }
         }
