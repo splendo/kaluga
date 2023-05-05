@@ -120,6 +120,9 @@ class DefaultBluetoothMonitor internal constructor(
                     is PermissionState.Inactive -> {
                         updateAndTearDownCentralManager(CBCentralManagerStateUnknown)
                     }
+                    else -> {
+                        // DOUBLE_CHECK
+                    }
                 }
             }
         }
