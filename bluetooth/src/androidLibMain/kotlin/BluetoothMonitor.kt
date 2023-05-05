@@ -25,7 +25,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Build.VERSION_CODES
 import androidx.core.content.ContextCompat
+import androidx.core.os.BuildCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.service.DefaultServiceMonitor
@@ -88,13 +91,24 @@ class DefaultBluetoothMonitor internal constructor(
      * Also [Manifest.permission.BLUETOOTH] is a normal protection level permission, that means that [ContextCompat.checkSelfPermission]` method will always return granted.
      */
     private val isUnauthorized: Boolean
-        get() = ContextCompat.checkSelfPermission(
-            applicationContext,
-            Manifest.permission.BLUETOOTH
-        ) == PackageManager.PERMISSION_DENIED || ContextCompat.checkSelfPermission(
-            applicationContext,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_DENIED
+        get() {
+            val locationIsDenied = ContextCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_DENIED
+            // Android 12 requires no more to check the BLUETOOTH permissions since COARSE_LOCATION is enough
+            return if (Build.VERSION.SDK_INT >= VERSION_CODES.S) {
+                locationIsDenied
+            } else {
+                val bluetoothIsDenied = ContextCompat.checkSelfPermission(
+                    applicationContext,
+                    Manifest.permission.BLUETOOTH
+                ) == PackageManager.PERMISSION_DENIED
+                locationIsDenied || bluetoothIsDenied
+            }
+        }
+
+    private val registeredReceivers = ArrayList<BroadcastReceiver>()
 
     private val availabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -118,6 +132,8 @@ class DefaultBluetoothMonitor internal constructor(
             IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         )
 
+        registeredReceivers.add(availabilityBroadcastReceiver)
+
         launchTakeAndChangeState { // Force first emission
             {
                 if (bluetoothAdapter.isEnabled) {
@@ -131,7 +147,8 @@ class DefaultBluetoothMonitor internal constructor(
 
     override fun monitoringDidStop() {
         debug(TAG) { "Unregister broadcast receiver with applicationContext = $applicationContext and bluetoothAdapter = $bluetoothAdapter" }
-        if (bluetoothAdapter != null) {
+        if (bluetoothAdapter != null && registeredReceivers.contains(availabilityBroadcastReceiver)) {
+            registeredReceivers.clear()
             applicationContext.unregisterReceiver(availabilityBroadcastReceiver)
         }
     }
