@@ -74,7 +74,7 @@ fun Project.commonComponent(
         }
     }
 
-    if (Library.connectCheckExpansion) {
+    if (Library.enableDependentProjects) {
         parent?.subprojects?.filter {
             it.name.startsWith("${project.name}-") || it.name.endsWith("-${project.name}")
         }?.forEach { module ->
