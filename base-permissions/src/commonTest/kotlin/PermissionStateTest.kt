@@ -34,11 +34,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertIs
 
-class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPermission>, PermissionStateTest.Context, PermissionState<DummyPermission>, PermissionStateRepo<DummyPermission>>() {
+class PermissionStateTest : BaseFlowTest<
+    MockPermissionManager.Builder<DummyPermission>,
+    PermissionStateTest.Context,
+    PermissionState<DummyPermission>,
+    PermissionStateRepo<DummyPermission>,
+    >() {
 
     class Context(
         val builder: MockPermissionManager.Builder<DummyPermission>,
-        coroutineScope: CoroutineScope
+        coroutineScope: CoroutineScope,
     ) : TestContext {
         val permissionStateRepo = MockPermissionStateRepo(builder = builder, coroutineContext = coroutineScope.coroutineContext)
         val permissionManager get() = builder.createdManagers.first()
@@ -48,12 +53,15 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
         it.filterOnlyImportant()
     }
 
-    override val createTestContextWithConfiguration: suspend (configuration: MockPermissionManager.Builder<DummyPermission>, scope: CoroutineScope) -> Context = { configuration, scope -> Context(configuration, scope) }
+    override val createTestContextWithConfiguration: suspend (
+        configuration: MockPermissionManager.Builder<DummyPermission>,
+        scope: CoroutineScope,
+    ) -> Context = { configuration, scope -> Context(configuration, scope) }
     override val flowFromTestContext: suspend Context.() -> MockPermissionStateRepo<DummyPermission> = { permissionStateRepo }
 
     @Test
     fun testInitialState() = testWithFlowAndTestContext(
-        MockPermissionManager.Builder(DummyPermission)
+        MockPermissionManager.Builder(DummyPermission),
     ) {
         test {
             permissionManager.monitoringDidStartMock.verify(eq(permissionManager.monitoringInterval))
@@ -70,7 +78,7 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
 
     @Test
     fun testRequestPermission() = testWithFlowAndTestContext(
-        MockPermissionManager.Builder(DummyPermission)
+        MockPermissionManager.Builder(DummyPermission),
     ) {
         test {
             permissionManager.monitoringDidStartMock.verify(eq(permissionManager.monitoringInterval))
@@ -94,7 +102,7 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
 
     @Test
     fun testRequestPermissionDenied() = testWithFlowAndTestContext(
-        MockPermissionManager.Builder(DummyPermission)
+        MockPermissionManager.Builder(DummyPermission),
     ) {
         test {
             assertIs<Requestable<DummyPermission>>(it)
@@ -117,7 +125,7 @@ class PermissionStateTest : BaseFlowTest<MockPermissionManager.Builder<DummyPerm
 
     @Test
     fun testRevokePermission() = testWithFlowAndTestContext(
-        MockPermissionManager.Builder(DummyPermission)
+        MockPermissionManager.Builder(DummyPermission),
     ) {
         test {
             permissionManager.monitoringDidStartMock.verify(eq(permissionManager.monitoringInterval))

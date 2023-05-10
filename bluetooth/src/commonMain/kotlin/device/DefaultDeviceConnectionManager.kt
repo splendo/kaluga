@@ -59,7 +59,7 @@ interface DeviceConnectionManager {
         fun create(
             deviceWrapper: DeviceWrapper,
             settings: ConnectionSettings,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ): DeviceConnectionManager
     }
 
@@ -71,18 +71,21 @@ interface DeviceConnectionManager {
          * Device is disconnected
          */
         DISCONNECTED,
+
         /**
          * Device is disconnecting
          */
         DISCONNECTING,
+
         /**
          * Device is connected
          */
         CONNECTED,
+
         /**
          * Device is connecting
          */
-        CONNECTING
+        CONNECTING,
     }
 
     /**
@@ -252,7 +255,7 @@ interface DeviceConnectionManager {
 abstract class BaseDeviceConnectionManager(
     protected val deviceWrapper: DeviceWrapper,
     settings: ConnectionSettings,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
 ) : DeviceConnectionManager, CoroutineScope by coroutineScope {
 
     private val logTag = "Bluetooth Device ${deviceWrapper.identifier.stringValue}"
@@ -376,12 +379,16 @@ abstract class BaseDeviceConnectionManager(
             is DeviceAction.Read.Characteristic -> {
                 if (action.characteristic.uuid.uuidString == uuid.uuidString) {
                     action.characteristic
-                } else null
+                } else {
+                    null
+                }
             }
             is DeviceAction.Write.Characteristic -> {
                 if (action.characteristic.uuid.uuidString == uuid.uuidString) {
                     action.characteristic
-                } else null
+                } else {
+                    null
+                }
             }
             else -> null
         }
@@ -398,14 +405,20 @@ abstract class BaseDeviceConnectionManager(
             is DeviceAction.Read.Descriptor -> {
                 if (action.descriptor.uuid.uuidString == uuid.uuidString) {
                     action.descriptor
-                } else null
+                } else {
+                    null
+                }
             }
             is DeviceAction.Write.Descriptor -> {
                 if (action.descriptor.uuid.uuidString == uuid.uuidString) {
                     action.descriptor
-                } else null
+                } else {
+                    null
+                }
             }
-            else -> null
+            else -> {
+                null
+            }
         }
 
         descriptorToUpdate?.let {

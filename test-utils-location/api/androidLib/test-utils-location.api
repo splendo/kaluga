@@ -1,10 +1,3 @@
-public final class com/splendo/kaluga/test/location/BuildConfig {
-	public static final field BUILD_TYPE Ljava/lang/String;
-	public static final field DEBUG Z
-	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
-	public fun <init> ()V
-}
-
 public final class com/splendo/kaluga/test/location/MockBaseLocationManager : com/splendo/kaluga/location/BaseLocationManager {
 	public fun <init> (ZLcom/splendo/kaluga/location/BaseLocationManager$Settings;Lkotlinx/coroutines/CoroutineScope;)V
 	public final fun getLocationEnabled ()Lkotlinx/coroutines/flow/MutableStateFlow;

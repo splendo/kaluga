@@ -23,11 +23,11 @@ jobs:
       # remove VM settings as defined for using the IDE
       - run: sed -i '' -e '/org.gradle.jvmargs/d' gradle.properties; cat gradle.properties
 
-      - name : set up JDK 11
+      - name : set up JDK 17
         uses : actions/setup-java@v3
         with :
           distribution : 'temurin'
-          java-version : 11
+          java-version : 17
 
       - name: Konan cache
         uses: actions/cache@v3

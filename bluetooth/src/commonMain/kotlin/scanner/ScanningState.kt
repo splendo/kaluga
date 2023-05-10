@@ -121,7 +121,9 @@ sealed interface ScanningState : KalugaState {
          * @param filter the [DeviceDiscoveryMode] to get devices for
          * @return the list of [Device] found for the [filter]
          */
-        fun devicesForDiscoveryMode(filter: DeviceDiscoveryMode) = identifiersFoundForDeviceDiscoveryMode[filter]?.let { identifiers -> allDevices.entries.mapNotNull { if (identifiers.contains(it.key)) it.value else null } } ?: emptyList()
+        fun devicesForDiscoveryMode(filter: DeviceDiscoveryMode) = identifiersFoundForDeviceDiscoveryMode[filter]?.let { identifiers ->
+            allDevices.entries.mapNotNull { if (identifiers.contains(it.key)) it.value else null }
+        } ?: emptyList()
 
         /**
          * The list of [Device] found for the [currentScanFilter]
@@ -223,7 +225,7 @@ sealed interface ScanningState : KalugaState {
         fun pairedDevices(
             devices: Map<Identifier, () -> Device>,
             filter: Filter,
-            removeForAllPairedFilters: Boolean
+            removeForAllPairedFilters: Boolean,
         ): suspend () -> Enabled
 
         /**
@@ -246,7 +248,7 @@ sealed interface ScanningState : KalugaState {
             fun startScanning(
                 filter: Filter = devices.currentScanFilter.filter,
                 cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.REMOVE_ALL,
-                connectionSettings: ConnectionSettings? = null
+                connectionSettings: ConnectionSettings? = null,
             ): suspend () -> Scanning
 
             /**
@@ -274,7 +276,7 @@ sealed interface ScanningState : KalugaState {
                 val identifier: Identifier,
                 val rssi: RSSI,
                 val advertisementData: BaseAdvertisementData,
-                val deviceCreator: () -> Device
+                val deviceCreator: () -> Device,
             )
 
             /**
@@ -283,7 +285,7 @@ sealed interface ScanningState : KalugaState {
              * @return method for transitioning into a [Scanning] state where the list of [Device] is discovered
              */
             suspend fun discoverDevices(
-                devices: List<DiscoveredDevice>
+                devices: List<DiscoveredDevice>,
             ): suspend () -> Scanning
 
             /**
@@ -344,7 +346,7 @@ suspend fun Scanning.discoverDevice(
     identifier: Identifier,
     rssi: RSSI,
     advertisementData: BaseAdvertisementData,
-    deviceCreator: () -> Device
+    deviceCreator: () -> Device,
 ) = discoverDevices(listOf(Scanning.DiscoveredDevice(identifier, rssi, advertisementData, deviceCreator)))
 
 /**
@@ -353,7 +355,7 @@ suspend fun Scanning.discoverDevice(
 data class DefaultDevices(
     override val allDevices: Map<Identifier, Device>,
     override val identifiersFoundForDeviceDiscoveryMode: Map<ScanningState.DeviceDiscoveryMode, Set<Identifier>>,
-    override val currentScanFilter: ScanningState.DeviceDiscoveryMode.Scanning
+    override val currentScanFilter: ScanningState.DeviceDiscoveryMode.Scanning,
 ) : ScanningState.Devices {
 
     /**
@@ -364,13 +366,13 @@ data class DefaultDevices(
 
     override fun copyAndAddScanned(
         identifier: Identifier,
-        createDevice: () -> Device
+        createDevice: () -> Device,
     ): ScanningState.Devices = copyAndAdd(identifier, currentScanFilter, createDevice)
 
     override fun copyAndSetPaired(
         devices: Map<Identifier, () -> Device>,
         filter: Filter,
-        removeForAllPairedFilters: Boolean
+        removeForAllPairedFilters: Boolean,
     ): ScanningState.Devices {
         val filtersToRemove = if (removeForAllPairedFilters) {
             identifiersFoundForDeviceDiscoveryMode.keys.filterIsInstance<ScanningState.DeviceDiscoveryMode.Paired>()
@@ -382,7 +384,8 @@ data class DefaultDevices(
         val deviceWithFiltersRemoved = filtersToRemove.fold(this) { acc, paired ->
             acc.cleanFilter(paired)
         }
-        val newIdentifiersForDiscoveryMode = deviceWithFiltersRemoved.identifiersFoundForDeviceDiscoveryMode + listOf(ScanningState.DeviceDiscoveryMode.Paired(filter) to devices.keys)
+        val newIdentifiersForDiscoveryMode = deviceWithFiltersRemoved.identifiersFoundForDeviceDiscoveryMode +
+            listOf(ScanningState.DeviceDiscoveryMode.Paired(filter) to devices.keys)
 
         val newDevices = deviceWithFiltersRemoved.allDevices + newPairedDevices
 
@@ -392,7 +395,7 @@ data class DefaultDevices(
     private fun copyAndAdd(
         identifier: Identifier,
         filter: ScanningState.DeviceDiscoveryMode,
-        createDevice: () -> Device
+        createDevice: () -> Device,
     ): DefaultDevices {
         val device = allDevices.getOrElse(identifier, createDevice)
         val newDevices = allDevices + listOf(identifier to device)
@@ -403,7 +406,7 @@ data class DefaultDevices(
 
     override fun updateScanFilter(
         filter: Filter,
-        cleanMode: BluetoothService.CleanMode
+        cleanMode: BluetoothService.CleanMode,
     ): ScanningState.Devices = when (cleanMode) {
         BluetoothService.CleanMode.RETAIN_ALL -> DefaultDevices(allDevices, identifiersFoundForDeviceDiscoveryMode, ScanningState.DeviceDiscoveryMode.Scanning(filter))
         BluetoothService.CleanMode.ONLY_PROVIDED_FILTER -> cleanFilter(ScanningState.DeviceDiscoveryMode.Scanning(filter))
@@ -429,7 +432,7 @@ internal sealed class ScanningStateImpl {
     object NotInitialized : ScanningStateImpl(), ScanningState.NotInitialized {
 
         fun startInitializing(
-            scanner: Scanner
+            scanner: Scanner,
         ): suspend () -> ScanningState {
             return if (!scanner.isSupported) {
                 { NoHardware }
@@ -441,7 +444,7 @@ internal sealed class ScanningStateImpl {
 
     data class Deinitialized(
         override val previousDevices: ScanningState.Devices,
-        val scanner: Scanner
+        val scanner: Scanner,
     ) :
         ScanningStateImpl(), ScanningState.Deinitialized {
         override val reinitialize = suspend { Initializing(previousDevices, scanner) }
@@ -485,7 +488,8 @@ internal sealed class ScanningStateImpl {
                 is ScanningState.Inactive,
                 is ScanningState.Initializing,
                 is ScanningState.NoHardware,
-                is ScanningState.NoBluetooth.MissingPermissions -> scanner.stopMonitoringHardwareEnabled()
+                is ScanningState.NoBluetooth.MissingPermissions,
+                -> scanner.stopMonitoringHardwareEnabled()
                 is ScanningState.Active -> {}
             }
         }
@@ -495,7 +499,8 @@ internal sealed class ScanningStateImpl {
                 is ScanningState.Inactive,
                 is ScanningState.Initializing,
                 is ScanningState.NoHardware,
-                is ScanningState.NoBluetooth.MissingPermissions -> scanner.startMonitoringHardwareEnabled()
+                is ScanningState.NoBluetooth.MissingPermissions,
+                -> scanner.startMonitoringHardwareEnabled()
                 is ScanningState.Active -> {}
             }
         }
@@ -503,7 +508,7 @@ internal sealed class ScanningStateImpl {
 
     data class Initializing(
         override val devices: ScanningState.Devices,
-        override val scanner: Scanner
+        override val scanner: Scanner,
     ) : Active(), ScanningState.Initializing {
 
         override fun initialized(hasPermission: Boolean, enabled: Boolean): suspend () -> ScanningState.Initialized =
@@ -539,20 +544,22 @@ internal sealed class ScanningStateImpl {
         protected fun devicesForPairedDevices(
             devices: Map<Identifier, () -> Device>,
             filter: Filter,
-            removeForAllPairedFilters: Boolean
+            removeForAllPairedFilters: Boolean,
         ) = this.devices.copyAndSetPaired(
-            devices, filter, removeForAllPairedFilters
+            devices,
+            filter,
+            removeForAllPairedFilters,
         )
 
         suspend fun retrievePairedDevices(
             filter: Filter,
             removeForAllPairedFilters: Boolean,
-            connectionSettings: ConnectionSettings?
+            connectionSettings: ConnectionSettings?,
         ) = scanner.retrievePairedDevices(filter, removeForAllPairedFilters, connectionSettings)
 
         class Idle internal constructor(
             override val devices: ScanningState.Devices,
-            override val scanner: Scanner
+            override val scanner: Scanner,
         ) : Enabled(), ScanningState.Enabled.Idle {
 
             override val permittedHandler: PermittedHandler = PermittedHandler(devices, scanner)
@@ -560,33 +567,33 @@ internal sealed class ScanningStateImpl {
             override fun pairedDevices(
                 devices: Map<Identifier, () -> Device>,
                 filter: Filter,
-                removeForAllPairedFilters: Boolean
+                removeForAllPairedFilters: Boolean,
             ): suspend () -> ScanningState.Enabled = suspend {
                 Idle(
                     devicesForPairedDevices(devices, filter, removeForAllPairedFilters),
-                    scanner
+                    scanner,
                 )
             }
 
             override fun startScanning(
                 filter: Filter,
                 cleanMode: BluetoothService.CleanMode,
-                connectionSettings: ConnectionSettings?
+                connectionSettings: ConnectionSettings?,
             ): suspend () -> ScanningState.Enabled.Scanning = {
                 Scanning(
                     devices.updateScanFilter(filter, cleanMode),
                     scanner,
-                    connectionSettings
+                    connectionSettings,
                 )
             }
 
             override fun refresh(
                 filter: Filter,
-                cleanMode: BluetoothService.CleanMode
+                cleanMode: BluetoothService.CleanMode,
             ): suspend () -> ScanningState.Enabled.Idle = {
                 Idle(
                     devices.updateScanFilter(filter, cleanMode),
-                    scanner
+                    scanner,
                 )
             }
         }
@@ -594,7 +601,7 @@ internal sealed class ScanningStateImpl {
         class Scanning internal constructor(
             override val devices: ScanningState.Devices,
             override val scanner: Scanner,
-            private val connectionSettings: ConnectionSettings?
+            private val connectionSettings: ConnectionSettings?,
         ) : Enabled(),
             HandleAfterOldStateIsRemoved<ScanningState>,
             HandleAfterCreating<ScanningState>,
@@ -605,17 +612,17 @@ internal sealed class ScanningStateImpl {
             override fun pairedDevices(
                 devices: Map<Identifier, () -> Device>,
                 filter: Filter,
-                removeForAllPairedFilters: Boolean
+                removeForAllPairedFilters: Boolean,
             ): suspend () -> ScanningState.Enabled = suspend {
                 Scanning(
                     devicesForPairedDevices(devices, filter, removeForAllPairedFilters),
                     scanner,
-                    connectionSettings
+                    connectionSettings,
                 )
             }
 
             override suspend fun discoverDevices(
-                devices: List<ScanningState.Enabled.Scanning.DiscoveredDevice>
+                devices: List<ScanningState.Enabled.Scanning.DiscoveredDevice>,
             ): suspend () -> ScanningState.Enabled.Scanning {
                 devices.mapNotNull { device ->
                     this.devices.allDevices[device.identifier]?.let { knownDevice ->
@@ -664,7 +671,7 @@ internal sealed class ScanningStateImpl {
 
         class Disabled internal constructor(
             override val lastDevices: ScanningState.Devices,
-            override val scanner: Scanner
+            override val scanner: Scanner,
         ) : NoBluetooth(), ScanningState.NoBluetooth.Disabled {
 
             private val permittedHandler = PermittedHandler(lastDevices, scanner)
@@ -688,12 +695,15 @@ internal sealed class ScanningStateImpl {
 
         class MissingPermissions internal constructor(
             override val lastDevices: ScanningState.Devices,
-            override val scanner: Scanner
+            override val scanner: Scanner,
         ) : NoBluetooth(), ScanningState.NoBluetooth.MissingPermissions {
 
             override fun permit(enabled: Boolean): suspend () -> ScanningState = {
-                if (enabled) Enabled.Idle(lastDevices, scanner)
-                else Disabled(lastDevices, scanner)
+                if (enabled) {
+                    Enabled.Idle(lastDevices, scanner)
+                } else {
+                    Disabled(lastDevices, scanner)
+                }
             }
         }
     }

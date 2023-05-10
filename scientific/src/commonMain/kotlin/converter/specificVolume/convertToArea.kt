@@ -37,45 +37,45 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificVolumeTimesMetricLinearMassDensity")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>.times(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, MetricLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, MetricLinearMassDensity>,
 ) = (1(unit.volume) / 1(linearMassDensity.unit.per)).unit.area(this, linearMassDensity)
 
 @JvmName("imperialSpecificVolumeTimesImperialLinearMassDensity")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>.times(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>,
 ) = (1(unit.volume) / 1(linearMassDensity.unit.per)).unit.area(this, linearMassDensity)
 
 @JvmName("imperialSpecificVolumeTimesUKImperialLinearMassDensity")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>.times(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>,
 ) = (1(unit.volume) / 1(linearMassDensity.unit.per)).unit.area(this, linearMassDensity)
 
 @JvmName("imperialSpecificVolumeTimesUSCustomaryLinearMassDensity")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>.times(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>,
 ) = (1(unit.volume) / 1(linearMassDensity.unit.per)).unit.area(this, linearMassDensity)
 
 @JvmName("ukImperialSpecificVolumeTimesImperialLinearMassDensity")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>.times(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>,
 ) = (1(unit.volume) / 1(linearMassDensity.unit.per)).unit.area(this, linearMassDensity)
 
 @JvmName("ukImperialSpecificVolumeTimesUKImperialLinearMassDensity")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>.times(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>,
 ) = (1(unit.volume) / 1(linearMassDensity.unit.per)).unit.area(this, linearMassDensity)
 
 @JvmName("usCustomarySpecificVolumeTimesImperialLinearMassDensity")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>.times(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>,
 ) = (1(unit.volume) / 1(linearMassDensity.unit.per)).unit.area(this, linearMassDensity)
 
 @JvmName("usCustomarySpecificVolumeTimesUSCustomaryLinearMassDensity")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>.times(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>,
 ) = (1(unit.volume) / 1(linearMassDensity.unit.per)).unit.area(this, linearMassDensity)
 
 @JvmName("specificVolumeTimesLinearMassDensity")
 infix operator fun <SpecificVolumeUnit : SpecificVolume, LinearMassDensityUnit : LinearMassDensity> ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>.times(
-    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>
+    linearMassDensity: ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>,
 ) = SquareMeter.area(this, linearMassDensity)

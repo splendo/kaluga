@@ -34,5 +34,5 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricResistance, Abohm>.t
 
 @JvmName("resistanceTimesCharge")
 infix operator fun <ResistanceUnit : ElectricResistance, ChargeUnit : ElectricCharge> ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>.times(
-    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
 ) = Weber.flux(this, charge)

@@ -33,5 +33,5 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, Time
 
 @JvmName("timeDivResistance")
 infix operator fun <TimeUnit : Time, ResistanceUnit : ElectricResistance> ScientificValue<PhysicalQuantity.Time, TimeUnit>.div(
-    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
 ) = Farad.capacitance(this, resistance)

@@ -16,6 +16,7 @@
  */
 
 @file:JvmName("AndroidDateFormatter")
+
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
@@ -44,7 +45,7 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
         actual fun dateFormat(
             style: DateFormatStyle,
             timeZone: KalugaTimeZone,
-            locale: KalugaLocale
+            locale: KalugaLocale,
         ): KalugaDateFormatter = createDateFormatter(DateFormat.getDateInstance(style.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
         /**
@@ -56,7 +57,7 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
         actual fun timeFormat(
             style: DateFormatStyle,
             timeZone: KalugaTimeZone,
-            locale: KalugaLocale
+            locale: KalugaLocale,
         ): KalugaDateFormatter = createDateFormatter(DateFormat.getTimeInstance(style.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
         /**
@@ -70,7 +71,7 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
             dateStyle: DateFormatStyle,
             timeStyle: DateFormatStyle,
             timeZone: KalugaTimeZone,
-            locale: KalugaLocale
+            locale: KalugaLocale,
         ): KalugaDateFormatter = createDateFormatter(DateFormat.getDateTimeInstance(dateStyle.javaStyle(), timeStyle.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
         /**
@@ -82,7 +83,11 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun patternFormat(pattern: String, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter = createDateFormatter(SimpleDateFormat(pattern, locale.locale), timeZone)
+        actual fun patternFormat(
+            pattern: String,
+            timeZone: KalugaTimeZone,
+            locale: KalugaLocale,
+        ): KalugaDateFormatter = createDateFormatter(SimpleDateFormat(pattern, locale.locale), timeZone)
 
         private fun createDateFormatter(simpleDateFormat: SimpleDateFormat, timeZone: KalugaTimeZone): KalugaDateFormatter {
             return KalugaDateFormatter(simpleDateFormat).apply {
@@ -164,7 +169,7 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
                     calendar.apply {
                         time = date
                         timeZone = currentTimeZone.timeZone
-                    }
+                    },
                 )
             }
         } catch (e: ParseException) {

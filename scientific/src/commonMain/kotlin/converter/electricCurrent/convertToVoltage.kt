@@ -41,7 +41,7 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.times
 
 @JvmName("currentTimesResistance")
 infix operator fun <CurrentUnit : ElectricCurrent, ResistanceUnit : ElectricResistance> ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>.times(
-    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
 ) = Volt.voltage(this, resistance)
 
 @JvmName("abampereDivAbsiemens")
@@ -54,5 +54,5 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.div(c
 
 @JvmName("currentDivConductance")
 infix operator fun <CurrentUnit : ElectricCurrent, ConductanceUnit : ElectricConductance> ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>.div(
-    conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>
+    conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
 ) = Volt.voltage(this, conductance)

@@ -43,7 +43,7 @@ class XMLResourcesActivity : KalugaViewModelActivity<ResourcesListViewModel>() {
                     is ResourcesListNavigationAction.Image -> NavigationSpec.Activity<ImagesActivity>()
                     is ResourcesListNavigationAction.Button -> NavigationSpec.Activity<ButtonActivity>()
                 }
-            }
+            },
         )
     }
 

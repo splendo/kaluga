@@ -25,7 +25,7 @@ class DateTimePickerViewModel(private val dateTimePickerPresenterBuilder: DateTi
         DefaultKalugaDate.now().apply {
             second = 0
             millisecond = 0
-        }
+        },
     )
     val currentTimeTitle = "current_time".localized()
     val dateLabel = selectedDate.map { formatter.format(it) }.toInitializedObservable("", coroutineScope)
@@ -35,7 +35,7 @@ class DateTimePickerViewModel(private val dateTimePickerPresenterBuilder: DateTi
             dateTimePickerPresenterBuilder.buildDatePicker(
                 this,
                 DefaultKalugaDate.epoch(),
-                DefaultKalugaDate.now()
+                DefaultKalugaDate.now(),
             ) {
                 setSelectedDate(this@DateTimePickerViewModel.selectedDate.value)
                 setCancelButtonTitle("cancel_selection".localized())

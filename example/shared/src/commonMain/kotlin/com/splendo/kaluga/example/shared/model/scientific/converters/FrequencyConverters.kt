@@ -29,17 +29,33 @@ import com.splendo.kaluga.scientific.unit.ElectricInductance
 import com.splendo.kaluga.scientific.unit.Frequency
 
 val PhysicalQuantity.Frequency.converters get() = listOf<QuantityConverter<PhysicalQuantity.Frequency, *>>(
-    QuantityConverterWithOperator("Electric Conductance from Electric Capacitance", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.ElectricCapacitance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Electric Conductance from Electric Capacitance",
+        QuantityConverter.WithOperator.Type.Multiplication,
+        PhysicalQuantity.ElectricCapacitance,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is Frequency && rightUnit is Abfarad -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is Frequency && rightUnit is ElectricCapacitance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Frequency && rightUnit is Abfarad -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is Frequency && rightUnit is ElectricCapacitance -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
-    QuantityConverterWithOperator("Electric Resistance from Electric Inductance", QuantityConverter.WithOperator.Type.Multiplication, PhysicalQuantity.ElectricInductance) { (leftValue, leftUnit), (rightValue, rightUnit) ->
+    QuantityConverterWithOperator(
+        "Electric Resistance from Electric Inductance",
+        QuantityConverter.WithOperator.Type.Multiplication,
+        PhysicalQuantity.ElectricInductance,
+    ) { (leftValue, leftUnit), (rightValue, rightUnit) ->
         when {
-            leftUnit is Frequency && rightUnit is Abhenry -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
-            leftUnit is Frequency && rightUnit is ElectricInductance -> DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            leftUnit is Frequency && rightUnit is Abhenry -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
+            leftUnit is Frequency && rightUnit is ElectricInductance -> {
+                DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
+            }
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -49,5 +65,5 @@ val PhysicalQuantity.Frequency.converters get() = listOf<QuantityConverter<Physi
             is Frequency -> DefaultScientificValue(value, unit).time()
             else -> throw RuntimeException("Unexpected unit: $unit")
         }
-    }
+    },
 )

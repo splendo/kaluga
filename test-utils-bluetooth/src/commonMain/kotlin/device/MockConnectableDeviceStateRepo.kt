@@ -26,10 +26,10 @@ import kotlin.coroutines.CoroutineContext
 
 class MockConnectableDeviceStateRepo(
     mockConnectableDeviceManager: MockConnectableDeviceManager,
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : BaseConnectableDeviceStateRepo(
     coroutineContext = coroutineContext,
-    initialState = { MockDeviceState.Disconnected(mockConnectableDeviceManager) }
+    initialState = { MockDeviceState.Disconnected(mockConnectableDeviceManager) },
 )
 
 class MockConnectableDeviceManager {

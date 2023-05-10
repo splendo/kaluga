@@ -16,6 +16,7 @@
  */
 
 @file:JvmName("ColorCommonKt")
+
 package com.splendo.kaluga.resources
 
 import kotlinx.serialization.KSerializer
@@ -32,7 +33,10 @@ import kotlin.jvm.JvmName
  */
 expect class KalugaColor
 
-@Deprecated("Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.", ReplaceWith("KalugaColor"))
+@Deprecated(
+    "Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.",
+    ReplaceWith("KalugaColor"),
+)
 typealias Color = KalugaColor
 
 /**

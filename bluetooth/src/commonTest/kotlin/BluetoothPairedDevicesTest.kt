@@ -82,8 +82,8 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
                 listOf(
                     Scanner.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) {
                         device
-                    }
-                )
+                    },
+                ),
             )
             pairedDevicesTimer.tryEmit(Unit)
             yieldUntil(60.seconds) {
@@ -141,8 +141,8 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter))
             scanner.pairedDeviceDiscoveredEvents.emit(
                 listOf(
-                    Scanner.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) { device }
-                )
+                    Scanner.DeviceDiscovered(deviceWrapper.identifier, 0, MockAdvertisementData(name = name)) { device },
+                ),
             )
             completablePairedDevice.complete(device)
         }
@@ -174,7 +174,7 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             scanner.pairedDeviceDiscoveredEvents.emit(
                 listOf(completablePairedDevice.await(), device).map { deviceToAdd ->
                     Scanner.DeviceDiscovered(deviceToAdd.identifier, 0, MockAdvertisementData()) { deviceToAdd }
-                }
+                },
             )
             completableSecondPairedDevice.complete(device)
         }

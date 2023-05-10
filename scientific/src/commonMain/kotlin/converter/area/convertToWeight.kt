@@ -32,25 +32,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAreaTimesMetricAreaDensity")
 infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>,
 ) = areaDensity * this
 
 @JvmName("imperialAreaTimesImperialAreaDensity")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>,
 ) = areaDensity * this
 
 @JvmName("imperialAreaDensityTimesUKImperialAreaDensity")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>,
 ) = areaDensity * this
 
 @JvmName("imperialAreaTimesImperialUSCustomaryAreaDensity")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>,
 ) = areaDensity * this
 
 @JvmName("areaTimesAreaDensity")
 infix operator fun <AreaDensityUnit : AreaDensity, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>
+    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>,
 ) = areaDensity * this

@@ -28,13 +28,13 @@ abstract class KoinUIThreadViewModelTest<Context : KoinUIThreadViewModelTest.Koi
 
     abstract class KoinViewModelTestContext<ViewModel : LifecycleViewModel>(
         appDeclaration: KoinAppDeclaration? = null,
-        koinModules: List<Module>
-    ) : KoinUIThreadTest.KoinTestContext(appDeclaration, koinModules),
+        koinModules: List<Module>,
+    ) : KoinTestContext(appDeclaration, koinModules),
         UIThreadViewModelTest.ViewModelTestContext<ViewModel> {
         constructor(vararg koinModules: Module) : this(null, koinModules.toList())
         constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
             appDeclaration,
-            koinModules.toList()
+            koinModules.toList(),
         )
     }
 }
@@ -44,13 +44,13 @@ abstract class BaseKoinUIThreadViewModelTest<Configuration, Context : BaseKoinUI
 
     abstract class KoinViewModelTestContext<ViewModel : LifecycleViewModel>(
         appDeclaration: KoinAppDeclaration? = null,
-        koinModules: List<Module>
-    ) : BaseKoinUIThreadTest.KoinTestContext(appDeclaration, koinModules),
+        koinModules: List<Module>,
+    ) : KoinTestContext(appDeclaration, koinModules),
         BaseUIThreadViewModelTest.ViewModelTestContext<ViewModel> {
         constructor(vararg koinModules: Module) : this(null, koinModules.toList())
         constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
             appDeclaration,
-            koinModules.toList()
+            koinModules.toList(),
         )
     }
 }

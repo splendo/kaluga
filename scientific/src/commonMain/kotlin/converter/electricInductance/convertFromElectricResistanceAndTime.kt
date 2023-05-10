@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     ResistanceUnit : ElectricResistance,
     TimeUnit : Time,
-    InductanceUnit : ElectricInductance
+    InductanceUnit : ElectricInductance,
     > InductanceUnit.inductance(
     resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = inductance(resistance, time, ::DefaultScientificValue)
 
 @JvmName("inductanceFromResistanceAndTime")
@@ -42,9 +42,9 @@ fun <
     ResistanceUnit : ElectricResistance,
     TimeUnit : Time,
     InductanceUnit : ElectricInductance,
-    Value : ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>,
     > InductanceUnit.inductance(
     resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, InductanceUnit) -> Value
+    factory: (Decimal, InductanceUnit) -> Value,
 ) = byMultiplying(resistance, time, factory)

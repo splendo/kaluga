@@ -24,8 +24,8 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.view.View
 import com.splendo.kaluga.resources.dpToPixel
-import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.GradientStyle
+import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 
 /**
  * Creates a [Drawable] for a [KalugaBackgroundStyle]
@@ -72,7 +72,7 @@ private fun GradientDrawable.applyFillStyle(fillStyle: KalugaBackgroundStyle.Fil
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 setColors(
                     colors,
-                    offsets
+                    offsets,
                 )
             } else {
                 setColors(colors)

@@ -29,7 +29,7 @@ import kotlin.jvm.JvmName
 @JvmName("electricResistanceFromInvertedConductanceDefault")
 fun <
     ResistanceUnit : ElectricResistance,
-    ConductanceUnit : ElectricConductance
+    ConductanceUnit : ElectricConductance,
     > ResistanceUnit.resistance(
     conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
 ) = resistance(conductance, ::DefaultScientificValue)
@@ -38,8 +38,8 @@ fun <
 fun <
     ResistanceUnit : ElectricResistance,
     ConductanceUnit : ElectricConductance,
-    Value : ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
+    Value : ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
     > ResistanceUnit.resistance(
     conductance: ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>,
-    factory: (Decimal, ResistanceUnit) -> Value
+    factory: (Decimal, ResistanceUnit) -> Value,
 ) = byInverting(conductance, factory)

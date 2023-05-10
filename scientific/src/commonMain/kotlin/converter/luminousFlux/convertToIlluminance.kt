@@ -32,20 +32,20 @@ import kotlin.jvm.JvmName
 
 @JvmName("lumenDivSquareCentimeter")
 infix operator fun <FluxUnit : LuminousFlux> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
-    squareCentimeter: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>
+    squareCentimeter: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>,
 ) = Phot.illuminance(this, squareCentimeter)
 
 @JvmName("lumenDivMetricArea")
 infix operator fun <FluxUnit : LuminousFlux, AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = Lux.illuminance(this, area)
 
 @JvmName("lumenDivImperialArea")
 infix operator fun <FluxUnit : LuminousFlux, AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = FootCandle.illuminance(this, area)
 
 @JvmName("lumenDivArea")
 infix operator fun <FluxUnit : LuminousFlux, AreaUnit : Area> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = Lux.illuminance(this, area)

@@ -26,13 +26,6 @@ public abstract class com/splendo/kaluga/test/koin/BaseKoinUIThreadViewModelTest
 	public fun <init> ([Lorg/koin/core/module/Module;)V
 }
 
-public final class com/splendo/kaluga/test/koin/BuildConfig {
-	public static final field BUILD_TYPE Ljava/lang/String;
-	public static final field DEBUG Z
-	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
-	public fun <init> ()V
-}
-
 public abstract class com/splendo/kaluga/test/koin/KoinFlowTest : com/splendo/kaluga/test/koin/BaseKoinFlowTest {
 	public fun <init> ()V
 	public abstract fun getCreateTestContext ()Lkotlin/jvm/functions/Function2;

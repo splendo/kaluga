@@ -32,25 +32,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricWeightDivAmountOfSubstance")
 infix operator fun <WeightUnit : MetricWeight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = (unit per amountOfSubstance.unit).molarMass(this, amountOfSubstance)
 
 @JvmName("imperialWeightDivAmountOfSubstance")
 infix operator fun <WeightUnit : ImperialWeight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = (unit per amountOfSubstance.unit).molarMass(this, amountOfSubstance)
 
 @JvmName("ukImperialWeightDivAmountOfSubstance")
 infix operator fun <WeightUnit : UKImperialWeight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = (unit per amountOfSubstance.unit).molarMass(this, amountOfSubstance)
 
 @JvmName("usCustomaryWeightDivAmountOfSubstance")
 infix operator fun <WeightUnit : USCustomaryWeight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = (unit per amountOfSubstance.unit).molarMass(this, amountOfSubstance)
 
 @JvmName("weightDivAmountOfSubstance")
 infix operator fun <WeightUnit : Weight, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = (Kilogram per amountOfSubstance.unit).molarMass(this, amountOfSubstance)

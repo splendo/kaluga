@@ -38,7 +38,7 @@ actual interface ServiceWrapper {
         /**
          * Secondary service (included by primary services)
          */
-        SECONDARY
+        SECONDARY,
     }
 
     /**

@@ -48,7 +48,7 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
         actual fun dateFormat(
             style: DateFormatStyle,
             timeZone: KalugaTimeZone,
-            locale: KalugaLocale
+            locale: KalugaLocale,
         ): KalugaDateFormatter = createDateFormatter(style, null, timeZone, locale)
 
         /**
@@ -60,7 +60,7 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
         actual fun timeFormat(
             style: DateFormatStyle,
             timeZone: KalugaTimeZone,
-            locale: KalugaLocale
+            locale: KalugaLocale,
         ): KalugaDateFormatter = createDateFormatter(null, style, timeZone, locale)
 
         /**
@@ -74,7 +74,7 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
             dateStyle: DateFormatStyle,
             timeStyle: DateFormatStyle,
             timeZone: KalugaTimeZone,
-            locale: KalugaLocale
+            locale: KalugaLocale,
         ): KalugaDateFormatter = createDateFormatter(dateStyle, timeStyle, timeZone, locale)
 
         /**
@@ -92,14 +92,14 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
                 this.timeZone = timeZone.timeZone
                 this.defaultDate = defaultDate(timeZone)
                 dateFormat = pattern
-            }
+            },
         )
 
         fun createDateFormatter(
             dateStyle: DateFormatStyle?,
             timeStyle: DateFormatStyle?,
             timeZone: KalugaTimeZone,
-            locale: KalugaLocale
+            locale: KalugaLocale,
         ): KalugaDateFormatter = KalugaDateFormatter(
             NSDateFormatter().apply {
                 this.locale = locale.nsLocale
@@ -107,7 +107,7 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
                 this.defaultDate = defaultDate(timeZone)
                 this.dateStyle = dateStyle.nsDateFormatterStyle()
                 this.timeStyle = timeStyle.nsDateFormatterStyle()
-            }
+            },
         )
 
         // Due to a problem related to the commonizer we need to supply all the
@@ -116,7 +116,7 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
             DefaultKalugaDate.now(
                 offset = Duration.ZERO,
                 timeZone = timeZone,
-                locale = KalugaLocale.defaultLocale
+                locale = KalugaLocale.defaultLocale,
             ).apply {
                 // Cannot use .utc since it may not be available when this method is called
                 // This is likely caused by https://youtrack.jetbrains.com/issue/KT-38181
@@ -124,7 +124,7 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
                 val epoch = DefaultKalugaDate.epoch(
                     offset = Duration.ZERO,
                     timeZone = KalugaTimeZone.get("UTC")!!,
-                    locale = KalugaLocale.defaultLocale
+                    locale = KalugaLocale.defaultLocale,
                 )
                 this.era = epoch.era
                 this.year = epoch.year

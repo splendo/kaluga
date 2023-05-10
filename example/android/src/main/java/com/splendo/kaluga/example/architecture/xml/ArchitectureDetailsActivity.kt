@@ -44,10 +44,10 @@ class ArchitectureDetailsActivity : KalugaViewModelActivity<ArchitectureDetailsV
                     when (action) {
                         is ArchitectureDetailsNavigationAction.Close -> NavigationSpec.Close()
                         is ArchitectureDetailsNavigationAction.FinishWithDetails -> NavigationSpec.Close(
-                            resultCode
+                            resultCode,
                         )
                     }
-                }
+                },
             )
         } ?: parametersOf("", 0)
     }

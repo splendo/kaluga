@@ -58,7 +58,7 @@ class MockableTestMethodsImpl : MockableTestMethods {
         first: Int,
         second: String,
         third: String?,
-        fourth: Int?
+        fourth: Int?,
     ): String {
         throw NotImplementedError()
     }

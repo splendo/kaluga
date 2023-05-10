@@ -33,20 +33,20 @@ import kotlin.jvm.JvmName
 @JvmName("specificEnergyFromAbsorbedDoseDefault")
 fun <
     AbsorbedDoseUnit : IonizingRadiationAbsorbedDose,
-    SpecificEnergyUnit : SpecificEnergy
+    SpecificEnergyUnit : SpecificEnergy,
     > SpecificEnergyUnit.specificEnergy(
-    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
+    absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>,
 ) = specificEnergy(absorbedDose, ::DefaultScientificValue)
 
 @JvmName("specificEnergyFromAbsorbedDose")
 fun <
     AbsorbedDoseUnit : IonizingRadiationAbsorbedDose,
     SpecificEnergyUnit : SpecificEnergy,
-    Value : ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>,
     > SpecificEnergyUnit.specificEnergy(
     absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>,
-    factory: (Decimal, SpecificEnergyUnit) -> Value
+    factory: (Decimal, SpecificEnergyUnit) -> Value,
 ) = DefaultScientificValue(absorbedDose.convert(Gray).value, Joule per Kilogram).convert(
     this,
-    factory
+    factory,
 )

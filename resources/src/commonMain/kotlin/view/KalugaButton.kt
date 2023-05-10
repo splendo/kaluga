@@ -51,7 +51,7 @@ sealed class KalugaButton {
         val text: String,
         override val style: KalugaButtonStyle,
         override val isEnabled: Boolean = true,
-        override val action: () -> Unit
+        override val action: () -> Unit,
     ) : KalugaButton()
 
     /**
@@ -65,6 +65,6 @@ sealed class KalugaButton {
         val text: StyledString,
         override val style: KalugaButtonStyle,
         override val isEnabled: Boolean = true,
-        override val action: () -> Unit
+        override val action: () -> Unit,
     ) : KalugaButton()
 }

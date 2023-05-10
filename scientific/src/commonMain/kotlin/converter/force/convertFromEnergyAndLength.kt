@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     EnergyUnit : Energy,
     LengthUnit : Length,
-    ForceUnit : Force
+    ForceUnit : Force,
     > ForceUnit.force(
     energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = force(energy, length, ::DefaultScientificValue)
 
 @JvmName("forceFromEnergyAndLength")
@@ -42,9 +42,9 @@ fun <
     EnergyUnit : Energy,
     LengthUnit : Length,
     ForceUnit : Force,
-    Value : ScientificValue<PhysicalQuantity.Force, ForceUnit>
+    Value : ScientificValue<PhysicalQuantity.Force, ForceUnit>,
     > ForceUnit.force(
     energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-    factory: (Decimal, ForceUnit) -> Value
+    factory: (Decimal, ForceUnit) -> Value,
 ) = byDividing(energy, length, factory)

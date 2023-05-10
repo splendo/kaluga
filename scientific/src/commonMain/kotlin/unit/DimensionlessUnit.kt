@@ -79,7 +79,7 @@ sealed class Dimensionless : AbstractScientificUnit<PhysicalQuantity.Dimensionle
 val DimensionlessUnits: Set<Dimensionless> get() = setOf(
     One,
     Percent,
-    Permill
+    Permill,
 )
 
 @Serializable
@@ -92,7 +92,7 @@ object One : Dimensionless() {
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
-val One.constant get() = One.UNIT_VALUE.invoke(One)
+val One.constant get() = UNIT_VALUE.invoke(One)
 
 @Serializable
 object Percent : Dimensionless() {

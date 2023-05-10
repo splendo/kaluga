@@ -24,33 +24,33 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.Dimensionless
 import com.splendo.kaluga.scientific.unit.One
-import com.splendo.kaluga.scientific.unit.ScientificUnit
 
 infix operator fun <
-    Unit : ScientificUnit<PhysicalQuantity.Dimensionless>
+    Unit : Dimensionless,
     > ScientificValue<PhysicalQuantity.Dimensionless, Unit>.times(
-    decimal: Decimal
+    decimal: Decimal,
 ) = convertToOneByMultiplying(decimal, ::DefaultScientificValue)
 
 fun <
-    Unit : ScientificUnit<PhysicalQuantity.Dimensionless>,
-    Value : ScientificValue<PhysicalQuantity.Dimensionless, One>
+    Unit : Dimensionless,
+    Value : ScientificValue<PhysicalQuantity.Dimensionless, One>,
     > ScientificValue<PhysicalQuantity.Dimensionless, Unit>.convertToOneByMultiplying(
     decimal: Decimal,
-    factory: (Decimal, One) -> Value
+    factory: (Decimal, One) -> Value,
 ) = decimal.invoke(One).let { it.unit.byMultiplying(this, it, factory) }
 
 infix operator fun <
-    Unit : ScientificUnit<PhysicalQuantity.Dimensionless>
+    Unit : Dimensionless,
     > ScientificValue<PhysicalQuantity.Dimensionless, Unit>.div(
-    decimal: Decimal
+    decimal: Decimal,
 ) = convertToOneByDividing(decimal, ::DefaultScientificValue)
 
 fun <
-    Unit : ScientificUnit<PhysicalQuantity.Dimensionless>,
-    Value : ScientificValue<PhysicalQuantity.Dimensionless, One>
+    Unit : Dimensionless,
+    Value : ScientificValue<PhysicalQuantity.Dimensionless, One>,
     > ScientificValue<PhysicalQuantity.Dimensionless, Unit>.convertToOneByDividing(
     decimal: Decimal,
-    factory: (Decimal, One) -> Value
+    factory: (Decimal, One) -> Value,
 ) = decimal.invoke(One).let { it.unit.byDividing(this, it, factory) }

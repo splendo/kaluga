@@ -42,12 +42,12 @@ data class BeaconInfo(
     val beaconID: BeaconID,
     val txPower: TxPower,
     val rssi: RSSI,
-    val lastSeen: KalugaDate
+    val lastSeen: KalugaDate,
 )
 
 @Deprecated(
     message = "Replaced with beaconId.asString()",
-    replaceWith = ReplaceWith(expression = "beaconID.asString()")
+    replaceWith = ReplaceWith(expression = "beaconID.asString()"),
 )
 fun BeaconInfo.fullID() = this.beaconID.asString()
 

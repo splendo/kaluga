@@ -37,17 +37,7 @@ import platform.UIKit.UILabel
 import platform.UIKit.UIModalPresentationBlurOverFullScreen
 import platform.UIKit.UIView
 import platform.UIKit.UIViewController
-import platform.UIKit.addSubview
-import platform.UIKit.backgroundColor
-import platform.UIKit.bottomAnchor
-import platform.UIKit.centerXAnchor
-import platform.UIKit.centerYAnchor
-import platform.UIKit.insertSubview
-import platform.UIKit.leadingAnchor
 import platform.UIKit.systemBackgroundColor
-import platform.UIKit.topAnchor
-import platform.UIKit.trailingAnchor
-import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.objc.sel_registerName
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
@@ -59,7 +49,7 @@ import kotlin.time.DurationUnit
  */
 actual class DateTimePickerPresenter(
     dateTimePicker: DateTimePicker,
-    private val parent: UIViewController
+    private val parent: UIViewController,
 ) : BaseDateTimePickerPresenter(dateTimePicker) {
 
     /**
@@ -77,7 +67,7 @@ actual class DateTimePickerPresenter(
          */
         actual override fun create(
             dateTimePicker: DateTimePicker,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ) = DateTimePickerPresenter(dateTimePicker, viewController)
     }
 
@@ -145,15 +135,15 @@ actual class DateTimePickerPresenter(
                     translatesAutoresizingMaskIntoConstraints = false
                     bottomAnchor.constraintEqualToAnchor(
                         datePickerView.topAnchor,
-                        -15.0
+                        -15.0,
                     ).active = true
                     containerView.leadingAnchor.constraintEqualToAnchor(
                         leadingAnchor,
-                        -20.0
+                        -20.0,
                     ).active = true
                     containerView.trailingAnchor.constraintEqualToAnchor(
                         trailingAnchor,
-                        20.0
+                        20.0,
                     ).active = true
                     bottomAnchor
                 }.topAnchor
@@ -174,7 +164,13 @@ actual class DateTimePickerPresenter(
 
         @ObjCAction
         private fun onSelected() {
-            completion(DefaultKalugaDate.epoch(datePickerView.date.timeIntervalSince1970.seconds, this@DateTimePickerPresenter.dateTimePicker.selectedDate.timeZone, this@DateTimePickerPresenter.dateTimePicker.locale))
+            completion(
+                DefaultKalugaDate.epoch(
+                    datePickerView.date.timeIntervalSince1970.seconds,
+                    this@DateTimePickerPresenter.dateTimePicker.selectedDate.timeZone,
+                    this@DateTimePickerPresenter.dateTimePicker.locale,
+                ),
+            )
             dismissDateTimePicker(true)
         }
     }

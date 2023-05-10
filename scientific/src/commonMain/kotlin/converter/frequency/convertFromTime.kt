@@ -37,33 +37,33 @@ fun <
     TimeUnit : Time,
     FrequencyUnit : Frequency,
     > FrequencyUnit.frequency(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = frequency(time, ::DefaultScientificValue)
 
 @JvmName("frequencyFromInvertedTime")
 fun <
     TimeUnit : Time,
     FrequencyUnit : Frequency,
-    Value : ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
+    Value : ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>,
     > FrequencyUnit.frequency(
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, FrequencyUnit) -> Value
+    factory: (Decimal, FrequencyUnit) -> Value,
 ) = byInverting(time, factory)
 
 fun <
     FrequencyUnit : Frequency,
-    TimeUnit : Time
+    TimeUnit : Time,
     > FrequencyUnit.frequency(
     cycle: Decimal,
-    per: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    per: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = frequency(cycle, per, ::DefaultScientificValue)
 
 fun <
     FrequencyUnit : Frequency,
     TimeUnit : Time,
-    Value : ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>
+    Value : ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>,
     > FrequencyUnit.frequency(
     cycle: Decimal,
     per: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, FrequencyUnit) -> Value
+    factory: (Decimal, FrequencyUnit) -> Value,
 ) = (cycle / per.convertValue(Second))(Hertz).convert(this, factory)

@@ -52,7 +52,7 @@ interface BaseCalendarPermissionManagerBuilder : BasePermissionsBuilder<Calendar
     fun create(
         calendarPermission: CalendarPermission,
         settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-        coroutineScope: CoroutineScope
+        coroutineScope: CoroutineScope,
     ): CalendarPermissionManager
 }
 
@@ -75,5 +75,5 @@ class CalendarPermissionStateRepo(
     builder: BaseCalendarPermissionManagerBuilder,
     monitoringInterval: Duration = defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-    coroutineContext: CoroutineContext
+    coroutineContext: CoroutineContext,
 ) : PermissionStateRepo<CalendarPermission>(monitoringInterval, { builder.create(calendarPermission, settings, it) }, coroutineContext)

@@ -89,7 +89,7 @@ interface PermissionManager<P : Permission> {
 abstract class BasePermissionManager<P : Permission>(
     final override val permission: P,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : PermissionManager<P>, CoroutineScope by coroutineScope {
 
     /**
@@ -97,7 +97,7 @@ abstract class BasePermissionManager<P : Permission>(
      * @property logger the [Logger] the [BasePermissionManager] should use for logging
      */
     data class Settings(
-        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
+        val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     )
 
     protected val logTag = "PermissionManager $permission"

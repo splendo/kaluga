@@ -30,7 +30,7 @@ import kotlin.test.assertTrue
 
 class BluetoothDescriptorValueTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, ByteArray?>() {
 
-    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithDescriptor, scope: CoroutineScope) -> DescriptorContext = { configuration, scope ->
+    override val createTestContextWithConfiguration: suspend (Configuration.DeviceWithDescriptor, CoroutineScope) -> DescriptorContext = { configuration, scope ->
         DescriptorContext(configuration, scope)
     }
 
@@ -40,7 +40,7 @@ class BluetoothDescriptorValueTest : BluetoothFlowTest<BluetoothFlowTest.Configu
 
     @Test
     fun testGetDescriptorValue() = testWithFlowAndTestContext(
-        Configuration.DeviceWithDescriptor()
+        Configuration.DeviceWithDescriptor(),
     ) {
         val newValue = "Test".encodeToByteArray()
         mainAction {

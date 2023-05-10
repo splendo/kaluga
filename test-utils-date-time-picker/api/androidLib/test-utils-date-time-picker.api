@@ -1,10 +1,3 @@
-public final class com/splendo/kaluga/test/datetimepicker/BuildConfig {
-	public static final field BUILD_TYPE Ljava/lang/String;
-	public static final field DEBUG Z
-	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
-	public fun <init> ()V
-}
-
 public final class com/splendo/kaluga/test/datetimepicker/DatePickerPresenterBuilderKt {
 	public static final fun datePickerPresenterBuilder (Landroidx/appcompat/app/AppCompatActivity;I)Lcom/splendo/kaluga/datetimepicker/DateTimePickerPresenter$Builder;
 	public static synthetic fun datePickerPresenterBuilder$default (Landroidx/appcompat/app/AppCompatActivity;IILjava/lang/Object;)Lcom/splendo/kaluga/datetimepicker/DateTimePickerPresenter$Builder;

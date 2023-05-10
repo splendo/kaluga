@@ -35,14 +35,14 @@ sealed class UIType(val title: String) {
 }
 
 class ComposeOrXMLSelectionViewModel(
-    navigator: Navigator<ComposeOrXMLNavigationAction>
+    navigator: Navigator<ComposeOrXMLNavigationAction>,
 ) : NavigatingViewModel<ComposeOrXMLNavigationAction>(navigator) {
 
     val uiTypes = observableOf(
         listOf(
             UIType.Compose,
-            UIType.XML
-        )
+            UIType.XML,
+        ),
     )
 
     fun onUITypePressed(feature: UIType) {
@@ -50,7 +50,7 @@ class ComposeOrXMLSelectionViewModel(
             when (feature) {
                 is UIType.Compose -> ComposeOrXMLNavigationAction.Compose
                 is UIType.XML -> ComposeOrXMLNavigationAction.XML
-            }
+            },
         )
     }
 }

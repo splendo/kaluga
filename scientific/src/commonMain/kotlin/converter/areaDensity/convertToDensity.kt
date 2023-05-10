@@ -37,25 +37,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAreaDensityDivMetricLength")
 infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>.div(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = (unit.weight per (1(unit.per) * 1(length.unit)).unit).density(this, length)
 
 @JvmName("imperialAreaDensityDivImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>.div(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = (unit.weight per (1(unit.per) * 1(length.unit)).unit).density(this, length)
 
 @JvmName("ukImperialAreaDensityDivImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>.div(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = (unit.weight per (1(unit.per) * 1(length.unit)).unit).density(this, length)
 
 @JvmName("usCustomaryAreaDensityDivImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>.div(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = (unit.weight per (1(unit.per) * 1(length.unit)).unit).density(this, length)
 
 @JvmName("areaDensityDivLength")
 infix operator fun <AreaDensityUnit : AreaDensity, LengthUnit : Length> ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>.div(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = (Kilogram per CubicMeter).density(this, length)

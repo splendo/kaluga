@@ -56,18 +56,24 @@ class BottomSheetRootDialogFragment : KalugaViewModelBottomSheetDialogFragment<B
             ActivityNavigator<BottomSheetNavigation> { action ->
                 when (action) {
                     is BottomSheetNavigation.Close -> NavigationSpec.DismissDialog(TAG)
-                    is BottomSheetNavigation.SubPage -> NavigationSpec.Fragment(R.id.fragment_container_view, backStackSettings = NavigationSpec.Fragment.BackStackSettings.Add(), getFragmentManager = { childFragmentManager!! }) {
+                    is BottomSheetNavigation.SubPage -> NavigationSpec.Fragment(
+                        R.id.fragment_container_view,
+                        backStackSettings = NavigationSpec.Fragment.BackStackSettings.Add(),
+                        getFragmentManager = {
+                            childFragmentManager!!
+                        },
+                    ) {
                         BottomSheetSubPageFragment(subPageNavigator)
                     }
                 }
-            }
+            },
         )
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
@@ -102,7 +108,7 @@ class BottomSheetFragment(val viewModel: BottomSheetViewModel) : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 

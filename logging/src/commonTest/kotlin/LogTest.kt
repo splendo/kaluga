@@ -26,6 +26,7 @@ import kotlin.test.assertEquals
 class LogTest {
 
     private val mockLogger = LoggerMock()
+
     @BeforeTest
     fun setMockLogger() {
         logger = mockLogger
@@ -53,7 +54,7 @@ class LogTest {
                         ?.lowercase()
                         ?.replaceFirstChar { firstChar -> if (firstChar.isLowerCase()) firstChar.titlecase() else firstChar.toString() }
                         ?: "Null"
-                }
+                },
             )
         }
 
@@ -81,7 +82,7 @@ class LogTest {
             method4 = ::debug,
             method5 = ::debug,
             method6 = ::debug,
-            method7 = ::debug
+            method7 = ::debug,
         )
     }
 
@@ -95,7 +96,7 @@ class LogTest {
             method4 = ::d,
             method5 = ::d,
             method6 = ::d,
-            method7 = ::d
+            method7 = ::d,
         )
     }
 
@@ -109,7 +110,7 @@ class LogTest {
             method4 = ::info,
             method5 = ::info,
             method6 = ::info,
-            method7 = ::info
+            method7 = ::info,
         )
     }
 
@@ -123,7 +124,7 @@ class LogTest {
             method4 = ::i,
             method5 = ::i,
             method6 = ::i,
-            method7 = ::i
+            method7 = ::i,
         )
     }
 
@@ -137,7 +138,7 @@ class LogTest {
             method4 = ::warn,
             method5 = ::warn,
             method6 = ::warn,
-            method7 = ::warn
+            method7 = ::warn,
         )
     }
 
@@ -151,7 +152,7 @@ class LogTest {
             method4 = ::w,
             method5 = ::w,
             method6 = ::w,
-            method7 = ::w
+            method7 = ::w,
         )
     }
 
@@ -165,7 +166,7 @@ class LogTest {
             method4 = ::error,
             method5 = ::error,
             method6 = ::error,
-            method7 = ::error
+            method7 = ::error,
         )
     }
 
@@ -179,7 +180,7 @@ class LogTest {
             method4 = ::e,
             method5 = ::e,
             method6 = ::e,
-            method7 = ::e
+            method7 = ::e,
         )
     }
 
@@ -187,14 +188,14 @@ class LogTest {
         logLevel: LogLevel,
         tag: String? = null,
         throwable: Exception? = null,
-        message: String? = null
+        message: String? = null,
     ) {
         listOf(
             mockLogger.tagList.size,
             mockLogger.levelList.size,
             mockLogger.throwableList.size,
             mockLogger.messageList.size,
-            mockLogger.levelList.size
+            mockLogger.levelList.size,
         ).forEach {
             assertEquals(1, it)
         }

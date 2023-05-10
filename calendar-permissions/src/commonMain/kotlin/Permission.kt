@@ -45,7 +45,7 @@ data class CalendarPermission(val allowWrite: Boolean = false) : Permission() {
 fun PermissionsBuilder.registerCalendarPermission(
     calendarPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCalendarPermissionManagerBuilder = ::CalendarPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
-    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
 ) =
     registerCalendarPermission(calendarPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
         CalendarPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
@@ -61,7 +61,7 @@ fun PermissionsBuilder.registerCalendarPermission(
  */
 fun PermissionsBuilder.registerCalendarPermission(
     calendarPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCalendarPermissionManagerBuilder = ::CalendarPermissionManagerBuilder,
-    calendarPermissionStateRepoBuilder: (CalendarPermission, BaseCalendarPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<CalendarPermission>
+    calendarPermissionStateRepoBuilder: (CalendarPermission, BaseCalendarPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<CalendarPermission>,
 ) = calendarPermissionManagerBuilderBuilder(context).also {
     register(it)
     registerPermissionStateRepoBuilder<CalendarPermission> { permission, coroutineContext ->
@@ -80,7 +80,7 @@ fun PermissionsBuilder.registerCalendarPermission(
 fun PermissionsBuilder.registerCalendarPermissionIfNotRegistered(
     calendarPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCalendarPermissionManagerBuilder = ::CalendarPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
-    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
 ) =
     registerCalendarPermissionIfNotRegistered(calendarPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
         CalendarPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
@@ -95,7 +95,7 @@ fun PermissionsBuilder.registerCalendarPermissionIfNotRegistered(
  */
 fun PermissionsBuilder.registerCalendarPermissionIfNotRegistered(
     calendarPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCalendarPermissionManagerBuilder = ::CalendarPermissionManagerBuilder,
-    calendarPermissionStateRepoBuilder: (CalendarPermission, BaseCalendarPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<CalendarPermission>
+    calendarPermissionStateRepoBuilder: (CalendarPermission, BaseCalendarPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<CalendarPermission>,
 ) = calendarPermissionManagerBuilderBuilder(context).also {
     registerOrGet(it)
     registerOrGetPermissionStateRepoBuilder<CalendarPermission> { permission, coroutineContext ->

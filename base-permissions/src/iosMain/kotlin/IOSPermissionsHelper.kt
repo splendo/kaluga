@@ -56,7 +56,7 @@ class IOSPermissionsHelper {
         /**
          * The Authorization status has been granted
          */
-        Authorized
+        Authorized,
     }
 
     companion object {
@@ -71,7 +71,7 @@ class IOSPermissionsHelper {
          */
         fun missingDeclarationsInPList(
             bundle: NSBundle,
-            vararg requiredDeclarationName: String
+            vararg requiredDeclarationName: String,
         ) = requiredDeclarationName.mapNotNull { declaration ->
             try {
                 if (bundle.objectForInfoDictionaryKey(declaration) == null) {
@@ -106,7 +106,7 @@ interface AuthorizationStatusHandler {
 class DefaultAuthorizationStatusHandler(
     private val eventChannel: SendChannel<PermissionManager.Event>,
     private val logTag: String,
-    private val logger: Logger
+    private val logger: Logger,
 ) : AuthorizationStatusHandler {
 
     override fun status(status: AuthorizationStatus) {
@@ -140,7 +140,7 @@ class DefaultAuthorizationStatusHandler(
 fun AuthorizationStatusHandler.requestAuthorizationStatus(
     timerHelper: PermissionRefreshScheduler? = null,
     coroutineScope: CoroutineScope,
-    request: suspend () -> AuthorizationStatus
+    request: suspend () -> AuthorizationStatus,
 ) {
     coroutineScope.launch {
         timerHelper?.waitingLock?.withLock {

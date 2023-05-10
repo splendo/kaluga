@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     WeightUnit : Weight,
     SpeedUnit : Speed,
-    MomentumUnit : Momentum
+    MomentumUnit : Momentum,
     > SpeedUnit.speed(
     momentum: ScientificValue<PhysicalQuantity.Momentum, MomentumUnit>,
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = speed(momentum, mass, ::DefaultScientificValue)
 
 @JvmName("speedFromMomentumAndMass")
@@ -42,9 +42,9 @@ fun <
     WeightUnit : Weight,
     SpeedUnit : Speed,
     MomentumUnit : Momentum,
-    Value : ScientificValue<PhysicalQuantity.Speed, SpeedUnit>
+    Value : ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
     > SpeedUnit.speed(
     momentum: ScientificValue<PhysicalQuantity.Momentum, MomentumUnit>,
     mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-    factory: (Decimal, SpeedUnit) -> Value
+    factory: (Decimal, SpeedUnit) -> Value,
 ) = byDividing(momentum, mass, factory)

@@ -34,5 +34,5 @@ infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(i
 
 @JvmName("fluxDivInduction")
 infix operator fun <FluxUnit : MagneticFlux, InductionUnit : MagneticInduction> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.div(
-    induction: ScientificValue<PhysicalQuantity.MagneticInduction, InductionUnit>
+    induction: ScientificValue<PhysicalQuantity.MagneticInduction, InductionUnit>,
 ) = SquareMeter.area(this, induction)

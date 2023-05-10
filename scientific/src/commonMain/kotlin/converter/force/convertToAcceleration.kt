@@ -48,40 +48,40 @@ infix operator fun <DyneUnit : DyneMultiple> ScientificValue<PhysicalQuantity.Fo
 
 @JvmName("imperialForceDivImperialWeight")
 infix operator fun <ForceUnit : ImperialForce, WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (Foot per Second per Second).acceleration(this, mass)
 
 @JvmName("imperialForceDivUKImperialWeight")
 infix operator fun <ForceUnit : ImperialForce, WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (Foot per Second per Second).acceleration(this, mass)
 
 @JvmName("imperialForceDivUSCustomaryWeight")
 infix operator fun <ForceUnit : ImperialForce, WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (Foot per Second per Second).acceleration(this, mass)
 
 @JvmName("ukImperialForceDivImperialWeight")
 infix operator fun <ForceUnit : UKImperialForce, WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (Foot per Second per Second).acceleration(this, mass)
 
 @JvmName("ukImperialForceDivUKImperialWeight")
 infix operator fun <ForceUnit : UKImperialForce, WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (Foot per Second per Second).acceleration(this, mass)
 
 @JvmName("usCustomaryForceDivImperialWeight")
 infix operator fun <ForceUnit : USCustomaryForce, WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (Foot per Second per Second).acceleration(this, mass)
 
 @JvmName("usCustomaryForceDivUSCustomaryWeight")
 infix operator fun <ForceUnit : USCustomaryForce, WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (Foot per Second per Second).acceleration(this, mass)
 
 @JvmName("forceDivWeight")
 infix operator fun <ForceUnit : Force, WeightUnit : Weight> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>
+    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
 ) = (Meter per Second per Second).acceleration(this, mass)

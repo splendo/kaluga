@@ -5,11 +5,11 @@ plugins {
     id("com.android.library")
     id("convention.publication")
     id("org.jetbrains.dokka")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("org.jmailen.kotlinter")
     id("kotlinx-atomicfu")
 }
 
-publishableComponent()
+publishableComponent("architecture")
 
 dependencies {
     apiDependency(Dependencies.AndroidX.Lifecycle.Runtime)

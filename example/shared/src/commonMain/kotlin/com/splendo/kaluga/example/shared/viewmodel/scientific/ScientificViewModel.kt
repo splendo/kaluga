@@ -37,6 +37,7 @@ import com.splendo.kaluga.example.shared.model.scientific.name
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -45,19 +46,22 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 sealed class ScientificNavigationAction<T>(value: T, spec: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, spec) {
-    sealed class SelectUnit(quantity: PhysicalQuantity) : ScientificNavigationAction<PhysicalQuantity>(quantity, NavigationBundleSpecType.SerializedType(PhysicalQuantity.serializer())) {
+    sealed class SelectUnit(quantity: PhysicalQuantity) : ScientificNavigationAction<PhysicalQuantity>(
+        quantity,
+        NavigationBundleSpecType.SerializedType(PhysicalQuantity.serializer()),
+    ) {
         data class Left(val quantity: PhysicalQuantity) : SelectUnit(quantity)
         data class Right(val quantity: PhysicalQuantity) : SelectUnit(quantity)
     }
     data class Converter(val quantity: PhysicalQuantity, val index: Int) : ScientificNavigationAction<ScientificConverterViewModel.Arguments>(
         ScientificConverterViewModel.Arguments(quantity, index),
-        NavigationBundleSpecType.SerializedType(ScientificConverterViewModel.Arguments.serializer())
+        NavigationBundleSpecType.SerializedType(ScientificConverterViewModel.Arguments.serializer()),
     )
 }
 
 class ScientificViewModel(
     private val alertPresenterBuilder: BaseAlertPresenter.Builder,
-    navigator: Navigator<ScientificNavigationAction<*>>
+    navigator: Navigator<ScientificNavigationAction<*>>,
 ) : NavigatingViewModel<ScientificNavigationAction<*>>(navigator, alertPresenterBuilder) {
 
     data class Button(val name: String, val quantity: PhysicalQuantity, val index: Int, val navigator: Navigator<in ScientificNavigationAction.Converter>) {
@@ -68,18 +72,26 @@ class ScientificViewModel(
     }
 
     companion object {
-        val numberFormatterDecimal = NumberFormatter(style = NumberFormatStyle.Decimal(maxIntegerDigits = 10U, minIntegerDigits = 1U, minFractionDigits = 0U, maxFractionDigits = 10U))
+        val numberFormatterDecimal = NumberFormatter(
+            style = NumberFormatStyle.Decimal(maxIntegerDigits = 10U, minIntegerDigits = 1U, minFractionDigits = 0U, maxFractionDigits = 10U),
+        )
         val numberFormatterScientific = NumberFormatter(style = NumberFormatStyle.Scientific())
     }
 
     private val quantityDetails = allPhysicalQuantities.mapNotNull { it.quantityDetails }
     private val currentQuantityDetails = MutableStateFlow(quantityDetails.firstOrNull())
-    val quantityDetailsButton: BaseInitializedObservable<KalugaButton> = currentQuantityDetails.map { createQuantityButton(it) }.toInitializedObservable(createQuantityButton(null), coroutineScope)
+    val quantityDetailsButton: BaseInitializedObservable<KalugaButton> = currentQuantityDetails.map {
+        createQuantityButton(it)
+    }.toInitializedObservable(createQuantityButton(null), coroutineScope)
     private val units = currentQuantityDetails.map { it?.units ?: emptySet() }.stateIn(coroutineScope, SharingStarted.Eagerly, emptySet())
-    private val currentLeftUnit = MutableStateFlow<ScientificUnit<*>?>(null)
-    val currentLeftUnitButton: BaseInitializedObservable<KalugaButton> = currentLeftUnit.map { createLeftUnitButton(it) }.toInitializedObservable(createLeftUnitButton(null), coroutineScope)
-    private val currentRightUnit = MutableStateFlow<ScientificUnit<*>?>(null)
-    val currentRightUnitButton: BaseInitializedObservable<KalugaButton> = currentRightUnit.map { createRightUnitButton(it) }.toInitializedObservable(createRightUnitButton(null), coroutineScope)
+    private val currentLeftUnit = MutableStateFlow<AbstractScientificUnit<*>?>(null)
+    val currentLeftUnitButton: BaseInitializedObservable<KalugaButton> = currentLeftUnit.map {
+        createLeftUnitButton(it)
+    }.toInitializedObservable(createLeftUnitButton(null), coroutineScope)
+    private val currentRightUnit = MutableStateFlow<AbstractScientificUnit<*>?>(null)
+    val currentRightUnitButton: BaseInitializedObservable<KalugaButton> = currentRightUnit.map {
+        createRightUnitButton(it)
+    }.toInitializedObservable(createRightUnitButton(null), coroutineScope)
     private val _leftValue = MutableStateFlow(numberFormatterDecimal.format(0.0))
     val leftValue = _leftValue.toInitializedSubject(coroutineScope)
     private val _rightValue = MutableStateFlow(numberFormatterDecimal.format(0.0))
@@ -123,7 +135,12 @@ class ScientificViewModel(
         } ?: "Invalid Result"
     }
 
-    private fun createQuantityButton(currentQuantityDetails: QuantityDetails<*>?) = KalugaButton.Plain(currentQuantityDetails?.let { it.quantity::class.simpleName }.orEmpty(), ButtonStyles.default) { selectQuantity() }
+    private fun createQuantityButton(currentQuantityDetails: QuantityDetails<*>?) = KalugaButton.Plain(
+        currentQuantityDetails?.let {
+            it.quantity::class.simpleName
+        }.orEmpty(),
+        ButtonStyles.default,
+    ) { selectQuantity() }
 
     private fun selectQuantity() {
         coroutineScope.launch {

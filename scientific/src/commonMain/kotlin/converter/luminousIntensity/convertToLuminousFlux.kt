@@ -27,5 +27,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("luminousIntensityTimesSolidAngle")
 infix operator fun <IntensityUnit : LuminousIntensity, SolidAngleUnit : SolidAngle> ScientificValue<PhysicalQuantity.LuminousIntensity, IntensityUnit>.times(
-    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>
+    solidAngle: ScientificValue<PhysicalQuantity.SolidAngle, SolidAngleUnit>,
 ) = Lumen.flux(this, solidAngle)

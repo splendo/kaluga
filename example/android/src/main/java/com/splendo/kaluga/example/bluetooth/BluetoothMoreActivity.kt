@@ -30,7 +30,7 @@ class BluetoothMoreActivity : KalugaViewModelActivity<BluetoothDeviceDetailViewM
 
     override val viewModel: BluetoothDeviceDetailViewModel by viewModel {
         parametersOf(
-            parseTypeOf(SerializableIdentifier.serializer()).identifier
+            parseTypeOf(SerializableIdentifier.serializer()).identifier,
         )
     }
 

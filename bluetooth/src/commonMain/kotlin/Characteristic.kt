@@ -37,12 +37,12 @@ open class Characteristic(
     initialValue: ByteArray? = null,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     parentLogTag: String,
-    logger: Logger
+    logger: Logger,
 ) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(
     initialValue,
     emitNewAction,
     "$parentLogTag Characteristic",
-    logger
+    logger,
 ) {
 
     private val isBusy = MutableStateFlow(false)
@@ -67,7 +67,6 @@ open class Characteristic(
      * @see [isNotifying]
      */
     suspend fun enableNotification(): DeviceAction? {
-
         do {
             isBusy.first { !it }
             if (isNotifying) return null
@@ -96,7 +95,6 @@ open class Characteristic(
      * @see [isNotifying]
      */
     suspend fun disableNotification(): DeviceAction? {
-
         do {
             isBusy.first { !it }
             if (!isNotifying) return null

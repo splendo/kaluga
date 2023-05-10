@@ -31,15 +31,15 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAccelerationDivTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit per time.unit).jolt(this, time)
 
 @JvmName("imperialAccelerationDivTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit per time.unit).jolt(this, time)
 
 @JvmName("speedDivTime")
 infix operator fun <AccelerationUnit : Acceleration, TimeUnit : Time> ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (Meter per Second per Second per time.unit).jolt(this, time)

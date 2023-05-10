@@ -33,5 +33,5 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, Time
 
 @JvmName("timeDivCapacitance")
 infix operator fun <TimeUnit : Time, CapacitanceUnit : ElectricCapacitance> ScientificValue<PhysicalQuantity.Time, TimeUnit>.div(
-    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>
+    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>,
 ) = Ohm.resistance(this, capacitance)

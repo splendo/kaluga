@@ -28,7 +28,6 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
 
     @Test
     fun testReadOnlyPropertyDefaultObservable() = runBlocking {
-
         val nullableString = MutableStateFlow<String?>(null)
         val ro = ReadOnlyProperty<Any?, String?> { _, _ -> nullableString.value }
 
@@ -49,9 +48,8 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
             {
                 nullableString.value = null
                 "default"
-            }
+            },
         )
-        Unit
     }
 
     @Test
@@ -64,12 +62,13 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
             initialExpected = "initial",
             shortDelayAfterUpdate = false,
             { s.value = "new"; "new" }, //
-            { s.value = "other"; "other" }
+            { s.value = "other"; "other" },
         )
     }
 
     @Test
     fun testReadOnlyNullablePropertyObservableWithInitialValue() = testReadOnlyNullablePropertyObservable("initial")
+
     @Test
     fun testReadOnlyNullablePropertyObservableWithInitialNull() = testReadOnlyNullablePropertyObservable(null)
     private fun testReadOnlyNullablePropertyObservable(initial: String?) = runBlocking {
@@ -82,7 +81,7 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
             shortDelayAfterUpdate = false,
             { s.value = "new"; "new" },
             { s.value = null; null },
-            { s.value = "other"; "other" }
+            { s.value = "other"; "other" },
         )
     }
 }

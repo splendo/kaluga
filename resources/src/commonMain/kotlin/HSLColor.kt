@@ -33,7 +33,7 @@ data class HSLColor(
     val hue: Double,
     val saturation: Double,
     val lightness: Double,
-    val alpha: Double = 1.0
+    val alpha: Double = 1.0,
 )
 
 /**
@@ -48,7 +48,7 @@ val KalugaColor.hsl: HSLColor get() {
         HSLColor(
             0.0,
             0.0,
-            lightness
+            lightness,
         )
     } else {
         val saturation = if (lightness > 0.5) delta / (2.0 - max - min) else delta / (max + min)
@@ -61,7 +61,7 @@ val KalugaColor.hsl: HSLColor get() {
             hue / 6.0,
             saturation,
             lightness,
-            alpha
+            alpha,
         )
     }
 }
@@ -93,7 +93,7 @@ val HSLColor.color: KalugaColor get() {
             hue2Rgb(p, q, hue + (1.0 / 3.0)),
             hue2Rgb(p, q, hue),
             hue2Rgb(p, q, hue - (1.0 / 3.0)),
-            alpha
+            alpha,
         )
     }
 }

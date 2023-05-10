@@ -8,6 +8,7 @@
 "feature_hud" = "Loading Indicator";
 "feature_keyboard" = "Keyboard";
 "feature_location" = "Location";
+"feature_media" = "Media";
 "feature_permissions" = "Permissions";
 "feature_links" = "Links";
 "feature_beacons" = "Beacons";
@@ -112,6 +113,19 @@ That query will be deserialized into a object and shown in an alert.";
 
 "feature_system" = "System";
 "network_feature" = "Network";
+
+"media_select_media_button" = "Select Media";
+"media_select_title" = "Select Media Provider";
+"media_select_default_audio" = "Play Default Audio";
+"media_select_default_video" = "Play Default Video";
+"media_select_file_on_device" = "Media File on Device";
+"media_select_file_from_web" = "Media File from Web";
+"media_select_from_web_title" = "Provide Media URL";
+"media_select_from_web_hint" = "Url to remote media file";
+"media_playback_volume" = "Volume: %s";
+"media_playback_update_volume" = "Update Volume";
+"media_playback_rate" = "Set playback rate";
+"media_error_title" = "An error occurred playing this media";
 
 "ios_ui_type_selector" = "Select UI Type";
 "ios_swift_ui" = "SwiftUI";

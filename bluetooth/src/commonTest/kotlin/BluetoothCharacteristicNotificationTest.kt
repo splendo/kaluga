@@ -33,9 +33,12 @@ import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithCharacteristic, BluetoothFlowTest.CharacteristicContext, DeviceState>() {
+class BluetoothCharacteristicNotificationTest :
+    BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithCharacteristic, BluetoothFlowTest.CharacteristicContext, DeviceState>() {
 
-    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithCharacteristic, scope: CoroutineScope) -> CharacteristicContext = { configuration, scope -> CharacteristicContext(configuration, scope) }
+    override val createTestContextWithConfiguration: suspend (Configuration.DeviceWithCharacteristic, CoroutineScope) -> CharacteristicContext = { configuration, scope ->
+        CharacteristicContext(configuration, scope)
+    }
     override val flowFromTestContext: suspend CharacteristicContext.() -> Flow<DeviceState> = { device.state }
 
     @Test
@@ -90,8 +93,8 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<BluetoothFlowT
     @Test
     fun testFailedToEnableNotification() = testWithFlowAndTestContext(
         Configuration.DeviceWithCharacteristic(
-            willActionsSucceed = false
-        )
+            willActionsSucceed = false,
+        ),
     ) {
         connect()
         discover()

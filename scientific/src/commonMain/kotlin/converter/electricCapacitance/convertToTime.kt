@@ -27,5 +27,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("capacitanceTimesResistance")
 infix operator fun <CapacitanceUnit : ElectricCapacitance, ResistanceUnit : ElectricResistance> ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>.times(
-    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>
+    resistance: ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>,
 ) = Second.duration(this, resistance)

@@ -45,7 +45,7 @@ class MolarMassUnitTest {
         assertEquals(1(UsTon per Decimole), 2(UsTon per CubicFoot) / 2(Decimole per CubicFoot))
         assertEquals(
             1(Kilogram per Decimole),
-            2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density) / 2(Decimole per CubicMeter)
+            2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density) / 2(Decimole per CubicMeter),
         )
     }
 
@@ -61,11 +61,11 @@ class MolarMassUnitTest {
         assertEquals(4(UsTon per Decimole), 2(UsTon per CubicFoot) * 2(CubicFoot per Decimole))
         assertEquals(
             4(Kilogram per Decimole),
-            2(CubicMeter per Decimole) * 2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density)
+            2(CubicMeter per Decimole) * 2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density),
         )
         assertEquals(
             4(Kilogram per Decimole),
-            2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density) * 2(CubicMeter per Decimole)
+            2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density) * 2(CubicMeter per Decimole),
         )
     }
 
@@ -77,7 +77,7 @@ class MolarMassUnitTest {
         assertEquals(0.5(UsTon per Decimole), 2(Decimole per UsTon).molarMass())
         assertEquals(
             0.5(Kilogram per Decimole),
-            2(Decimole per Kilogram).convert((Decimole per Pound) as Molality).molarMass()
+            2(Decimole per Kilogram).convert((Decimole per Pound) as Molality).molarMass(),
         )
     }
 
@@ -87,15 +87,15 @@ class MolarMassUnitTest {
         assertEquals(1(Pound per Decimole), 2(WattHour per Decimole) / 2(WattHour per Pound))
         assertEquals(
             1(Pound.ukImperial per Decimole),
-            2(WattHour per Decimole) / 2(WattHour per Pound.ukImperial)
+            2(WattHour per Decimole) / 2(WattHour per Pound.ukImperial),
         )
         assertEquals(
             1(Pound.usCustomary per Decimole),
-            2(WattHour per Decimole) / 2(WattHour per Pound.usCustomary)
+            2(WattHour per Decimole) / 2(WattHour per Pound.usCustomary),
         )
         assertEquals(
             1(Kilogram per Decimole),
-            2(Joule per Decimole) / 2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy)
+            2(Joule per Decimole) / 2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy),
         )
     }
 
@@ -107,7 +107,7 @@ class MolarMassUnitTest {
         assertEquals(1(UsTon per Decimole), 2(CubicFoot per Decimole) / 2(CubicFoot per UsTon))
         assertEquals(
             1(Kilogram per Decimole),
-            2(CubicMeter per Decimole) / 2(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume)
+            2(CubicMeter per Decimole) / 2(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume),
         )
     }
 

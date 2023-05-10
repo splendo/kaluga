@@ -19,6 +19,7 @@ package com.splendo.kaluga.datetime.timer
 import com.splendo.kaluga.base.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.base.state.HotStateFlowRepo
+import com.splendo.kaluga.base.state.KalugaState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
@@ -34,10 +35,10 @@ import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
-import com.splendo.kaluga.base.state.KalugaState as KalugaState
 
 /** A coroutine delay function. */
 typealias DelayFunction = suspend (Duration) -> Unit
+
 /**
  * [Timer] based on the system clock.
  * @property duration timer duration
@@ -51,7 +52,7 @@ class RecurringTimer(
     interval: Duration = 100.milliseconds,
     timeSource: TimeSource = TimeSource.Monotonic,
     delayFunction: DelayFunction = { delayDuration -> delay(delayDuration) },
-    coroutineScope: CoroutineScope = MainScope()
+    coroutineScope: CoroutineScope = MainScope(),
 ) : ControllableTimer {
     private val stateRepo = TimerStateRepo(duration, interval, timeSource, delayFunction, coroutineScope)
     override val state: Flow<Timer.State> = stateRepo.stateFlow.map { it.timerState }
@@ -68,12 +69,12 @@ private class TimerStateRepo(
     private val interval: Duration,
     private val timeSource: TimeSource,
     private val delayFunction: DelayFunction,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
 ) : HotStateFlowRepo<TimerStateRepo.State>(
     coroutineScope.coroutineContext,
     {
         State.NotRunning.Paused(elapsedSoFar = Duration.ZERO, totalDuration = totalDuration)
-    }
+    },
 ) {
     suspend fun start() {
         withContext(coroutineScope.coroutineContext) {
@@ -118,10 +119,11 @@ private class TimerStateRepo(
         /** Timer is not running. */
         sealed class NotRunning(protected val elapsedSoFar: Duration) : State() {
             val elapsed = flowOf(elapsedSoFar)
+
             /** Timer is paused. */
             class Paused(
                 elapsedSoFar: Duration,
-                override val totalDuration: Duration
+                override val totalDuration: Duration,
             ) : NotRunning(elapsedSoFar), Timer.State.NotRunning.Paused {
 
                 override val timerState: Timer.State get() = this
@@ -131,7 +133,7 @@ private class TimerStateRepo(
                     timeSource: TimeSource,
                     delayFunction: DelayFunction,
                     coroutineScope: CoroutineScope,
-                    finishCallback: suspend () -> Unit
+                    finishCallback: suspend () -> Unit,
                 ): Running = Running(
                     elapsedSoFar = elapsedSoFar,
                     totalDuration = totalDuration,
@@ -139,13 +141,13 @@ private class TimerStateRepo(
                     timeSource = timeSource,
                     delayFunction = delayFunction,
                     coroutineScope = coroutineScope,
-                    finishCallback = finishCallback
+                    finishCallback = finishCallback,
                 )
             }
 
             /** Timer is finished. */
             class Finished(
-                override val totalDuration: Duration
+                override val totalDuration: Duration,
             ) : NotRunning(totalDuration), Timer.State.NotRunning.Finished {
                 override val timerState: Timer.State get() = this
             }
@@ -159,14 +161,14 @@ private class TimerStateRepo(
             timeSource: TimeSource,
             private val delayFunction: DelayFunction,
             private val coroutineScope: CoroutineScope,
-            private val finishCallback: suspend () -> Unit
+            private val finishCallback: suspend () -> Unit,
         ) : State(), Timer.State.Running, HandleAfterNewStateIsSet<State>, HandleBeforeOldStateIsRemoved<State> {
             override val elapsed: Flow<Duration> = tickProvider(
                 offset = elapsedSoFar,
                 max = totalDuration,
                 interval = interval,
                 timeSource = timeSource,
-                delayFunction = delayFunction
+                delayFunction = delayFunction,
             )
 
             override val timerState: Timer.State get() = this

@@ -30,15 +30,15 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricLuminousExposureDivMetricIlluminance")
 infix operator fun <IlluminanceUnit : MetricIlluminance> ScientificValue<PhysicalQuantity.LuminousExposure, MetricLuminousExposure>.div(
-    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
 ) = unit.time.time(this, illuminance)
 
 @JvmName("imperialLuminousExposureDivImperialIlluminance")
 infix operator fun <IlluminanceUnit : ImperialIlluminance> ScientificValue<PhysicalQuantity.LuminousExposure, ImperialLuminousExposure>.div(
-    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
 ) = unit.time.time(this, illuminance)
 
 @JvmName("luminousExposureDivIlluminance")
 infix operator fun <IlluminanceUnit : Illuminance> ScientificValue<PhysicalQuantity.LuminousExposure, LuminousExposure>.div(
-    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>
+    illuminance: ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>,
 ) = unit.time.time(this, illuminance)

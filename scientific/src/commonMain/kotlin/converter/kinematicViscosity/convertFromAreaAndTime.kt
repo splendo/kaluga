@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     KinematicViscosityUnit : KinematicViscosity,
     TimeUnit : Time,
-    AreaUnit : Area
+    AreaUnit : Area,
     > KinematicViscosityUnit.kinematicViscosity(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = kinematicViscosity(area, time, ::DefaultScientificValue)
 
 @JvmName("kinematicViscosityFromAreaAndTime")
@@ -42,9 +42,9 @@ fun <
     KinematicViscosityUnit : KinematicViscosity,
     TimeUnit : Time,
     AreaUnit : Area,
-    Value : ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>
+    Value : ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>,
     > KinematicViscosityUnit.kinematicViscosity(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, KinematicViscosityUnit) -> Value
+    factory: (Decimal, KinematicViscosityUnit) -> Value,
 ) = byDividing(area, time, factory)

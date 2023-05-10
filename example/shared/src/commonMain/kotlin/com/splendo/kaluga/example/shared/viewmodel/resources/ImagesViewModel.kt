@@ -27,12 +27,12 @@ class ImagesViewModel : BaseLifecycleViewModel() {
     val images = listOfNotNull(
         "check".asImage(),
         "star".asImage(),
-        "cancel".asImage()
+        "cancel".asImage(),
     )
 
     val tintedImages = listOfNotNull(
         "check".asImage()?.tinted(DefaultColors.green),
         "star".asImage()?.tinted(DefaultColors.gold),
-        "cancel".asImage()?.tinted(DefaultColors.red)
+        "cancel".asImage()?.tinted(DefaultColors.red),
     )
 }

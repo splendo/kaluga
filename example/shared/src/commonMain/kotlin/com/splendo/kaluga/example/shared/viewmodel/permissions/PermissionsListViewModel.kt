@@ -52,7 +52,8 @@ enum class PermissionView(val title: String) {
     Location("permissions_location".localized()),
     Microphone("permissions_microphone".localized()),
     Notifications("permissions_notifications".localized()),
-    Storage("permissions_storage".localized());
+    Storage("permissions_storage".localized()),
+    ;
 
     val permission: Permission get() = when (this) {
         Bluetooth -> BluetoothPermission
@@ -68,7 +69,10 @@ enum class PermissionView(val title: String) {
 
 expect val notificationOptions: NotificationOptions
 
-class PermissionsListNavigationAction(permissionView: PermissionView) : SingleValueNavigationAction<PermissionView>(permissionView, NavigationBundleSpecType.SerializedType(PermissionView.serializer()))
+class PermissionsListNavigationAction(permissionView: PermissionView) : SingleValueNavigationAction<PermissionView>(
+    permissionView,
+    NavigationBundleSpecType.SerializedType(PermissionView.serializer()),
+)
 
 class PermissionsListViewModel(navigator: Navigator<PermissionsListNavigationAction>) : NavigatingViewModel<PermissionsListNavigationAction>(navigator), KoinComponent {
 
@@ -81,8 +85,8 @@ class PermissionsListViewModel(navigator: Navigator<PermissionsListNavigationAct
             PermissionView.Location,
             PermissionView.Microphone,
             PermissionView.Notifications,
-            PermissionView.Storage
-        )
+            PermissionView.Storage,
+        ),
     )
     private val permissionsBuilder: PermissionsBuilder by inject()
 
@@ -90,8 +94,8 @@ class PermissionsListViewModel(navigator: Navigator<PermissionsListNavigationAct
         coroutineScope.launch {
             permissionsBuilder.registerAllPermissionsNotRegistered(
                 settings = BasePermissionManager.Settings(
-                    logger = RestrictedLogger(RestrictedLogLevel.None)
-                )
+                    logger = RestrictedLogger(RestrictedLogLevel.None),
+                ),
             )
             navigator.navigate(PermissionsListNavigationAction(permissionView))
         }

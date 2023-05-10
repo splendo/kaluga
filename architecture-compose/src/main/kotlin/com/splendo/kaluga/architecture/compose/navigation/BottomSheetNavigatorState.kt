@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
 data class BottomSheetNavigatorState(
     val contentNavHostController: NavHostController,
     val sheetContentNavHostController: NavHostController,
-    val sheetState: ModalBottomSheetState
+    val sheetState: ModalBottomSheetState,
 )
 
 typealias BottomSheetContentBuilder = NavGraphBuilder.(bottomSheetNavigationState: StateFlow<BottomSheetNavigatorState?>) -> Unit

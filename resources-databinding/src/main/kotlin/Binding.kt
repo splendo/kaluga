@@ -113,7 +113,13 @@ object Binding {
     fun bindAutoTextStyle(textView: TextView, autoTextStyle: KalugaTextStyle?, autoTextMinScalingFactor: Float) {
         autoTextStyle?.let {
             textView.applyTextStyle(it)
-            TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(textView, max(1, (it.size * autoTextMinScalingFactor).toInt()), it.size.toInt(), 1, TypedValue.COMPLEX_UNIT_SP)
+            TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                textView,
+                max(1, (it.size * autoTextMinScalingFactor).toInt()),
+                it.size.toInt(),
+                1,
+                TypedValue.COMPLEX_UNIT_SP,
+            )
             textView.gravity = Gravity.CENTER_VERTICAL or it.alignment.alignment(textView.context).gravity
         }
     }

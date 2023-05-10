@@ -18,8 +18,8 @@
 package com.splendo.kaluga.resources.stylable
 
 import com.splendo.kaluga.resources.DefaultColors
-import com.splendo.kaluga.resources.KalugaFont
 import com.splendo.kaluga.resources.KalugaColor
+import com.splendo.kaluga.resources.KalugaFont
 
 /**
  * The style to apply to a button
@@ -36,7 +36,7 @@ data class KalugaButtonStyle(
     val textAlignment: KalugaTextAlignment = KalugaTextAlignment.CENTER,
     val defaultStyle: ButtonStateStyle,
     val pressedStyle: ButtonStateStyle = defaultStyle,
-    val disabledStyle: ButtonStateStyle = defaultStyle
+    val disabledStyle: ButtonStateStyle = defaultStyle,
 ) {
 
     /**
@@ -54,7 +54,7 @@ data class KalugaButtonStyle(
         backgroundColor: KalugaColor = DefaultColors.clear,
         pressedBackgroundColor: KalugaColor = backgroundColor,
         disabledBackgroundColor: KalugaColor = backgroundColor,
-        shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle()
+        shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle(),
     ) : this(
         textStyle.font,
         textStyle.size,
@@ -62,18 +62,18 @@ data class KalugaButtonStyle(
         ButtonStateStyle(
             textStyle.color,
             backgroundColor,
-            shape
+            shape,
         ),
         ButtonStateStyle(
             textStyle.color,
             pressedBackgroundColor,
-            shape
+            shape,
         ),
         ButtonStateStyle(
             textStyle.color,
             disabledBackgroundColor,
-            shape
-        )
+            shape,
+        ),
     )
 
     /**
@@ -122,7 +122,7 @@ data class ButtonStateStyle(
         textColor,
         KalugaBackgroundStyle(
             KalugaBackgroundStyle.FillStyle.Solid(backgroundColor),
-            shape = shape
-        )
+            shape = shape,
+        ),
     )
 }

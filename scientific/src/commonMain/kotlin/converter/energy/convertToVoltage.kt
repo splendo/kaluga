@@ -39,5 +39,5 @@ infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Ener
 
 @JvmName("energyDivCharge")
 infix operator fun <EnergyUnit : Energy, ChargeUnit : ElectricCharge> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>
+    charge: ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>,
 ) = Volt.voltage(this, charge)

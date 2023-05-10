@@ -39,6 +39,6 @@ val CLLocation.knownLocation
             verticalAccuracy = verticalAccuracy,
             course = course,
             speed = speed,
-            time = DefaultKalugaDate.epoch(timestamp.timeIntervalSince1970.seconds, KalugaTimeZone.current(), defaultLocale)
+            time = DefaultKalugaDate.epoch(timestamp.timeIntervalSince1970.seconds, KalugaTimeZone.current(), defaultLocale),
         )
     }

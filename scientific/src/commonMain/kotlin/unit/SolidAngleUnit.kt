@@ -36,7 +36,7 @@ val SolidAngleUnits: Set<SolidAngle> get() = setOf(
     Centisteradian,
     Decisteradian,
     Spat,
-    SquareDegree
+    SquareDegree,
 )
 
 /**
@@ -60,12 +60,16 @@ sealed class SteradianMultiple : SolidAngle(), MetricMultipleUnit<MeasurementSys
 
 @Serializable
 object Nanosteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Nano(Steradian)
+
 @Serializable
 object Microsteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Micro(Steradian)
+
 @Serializable
 object Millisteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Milli(Steradian)
+
 @Serializable
 object Centisteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Centi(Steradian)
+
 @Serializable
 object Decisteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Deci(Steradian)
 

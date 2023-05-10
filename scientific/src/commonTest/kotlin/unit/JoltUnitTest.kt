@@ -34,7 +34,7 @@ class JoltUnitTest {
             (Meter per Second per Second per Second),
             11.8110236,
             Foot per Minute per Millisecond per Minute,
-            7
+            7,
         )
     }
 
@@ -42,15 +42,15 @@ class JoltUnitTest {
     fun joltFromAccelerationDivTimeTest() {
         assertEquals(
             1.0(Meter per Second per Second per Second),
-            (2(Meter per Second per Second) / 2(Second))
+            (2(Meter per Second per Second) / 2(Second)),
         )
         assertEquals(
             1.0(Foot per Second per Second per Second),
-            (2(Foot per Second per Second) / 2(Second))
+            (2(Foot per Second per Second) / 2(Second)),
         )
         assertEquals(
             1.0(Meter per Second per Second per Second),
-            (2((Meter per Second per Second) as Acceleration) / 2(Second))
+            (2((Meter per Second per Second) as Acceleration) / 2(Second)),
         )
     }
 
@@ -58,40 +58,40 @@ class JoltUnitTest {
     fun joltFromYankAndMassTest() {
         assertEquals(
             1.0(Meter per Second per Second per Second),
-            2(Newton per Second) / 2(Kilogram)
+            2(Newton per Second) / 2(Kilogram),
         )
         assertEquals(
             ImperialStandardGravityAcceleration / 1(Second),
-            2(PoundForce per Second) / 2(Pound)
+            2(PoundForce per Second) / 2(Pound),
         )
         assertEquals(
             ImperialStandardGravityAcceleration / 1(Second),
-            2(PoundForce per Second) / 2(Pound.ukImperial)
+            2(PoundForce per Second) / 2(Pound.ukImperial),
         )
         assertEquals(
             ImperialStandardGravityAcceleration / 1(Second),
-            2(PoundForce per Second) / 2(Pound.usCustomary)
+            2(PoundForce per Second) / 2(Pound.usCustomary),
         )
         assertEquals(
             ImperialStandardGravityAcceleration / 1(Second),
-            2(PoundForce.ukImperial per Second) / 2(Pound)
+            2(PoundForce.ukImperial per Second) / 2(Pound),
         )
         assertEquals(
             ImperialStandardGravityAcceleration / 1(Second),
-            2(PoundForce.ukImperial per Second) / 2(Pound.ukImperial)
+            2(PoundForce.ukImperial per Second) / 2(Pound.ukImperial),
         )
         assertEquals(
             ImperialStandardGravityAcceleration / 1(Second),
-            2(PoundForce.usCustomary per Second) / 2(Pound)
+            2(PoundForce.usCustomary per Second) / 2(Pound),
         )
         assertEquals(
             ImperialStandardGravityAcceleration / 1(Second),
-            2(PoundForce.usCustomary per Second) / 2(Pound.usCustomary)
+            2(PoundForce.usCustomary per Second) / 2(Pound.usCustomary),
         )
         assertEqualScientificValue(
             1.0(Meter per Second per Second per Second),
             2(Newton per Second) / 2(Kilogram).convert(Pound),
-            9
+            9,
         )
     }
 }

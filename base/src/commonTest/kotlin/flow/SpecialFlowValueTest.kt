@@ -45,12 +45,12 @@ class SpecialFlowValueTest : BaseTest() {
     fun testSpecialValues() = runBlocking {
         assertEquals(
             expected = listOf(Normal, NotImportant, Last, More),
-            actual = flow().toList()
+            actual = flow().toList(),
         )
 
         assertEquals(
             expected = listOf(Normal, Last, More),
-            actual = flow().filterOnlyImportant().toList()
+            actual = flow().filterOnlyImportant().toList(),
         )
 
         val list = mutableListOf<Special>()
@@ -59,7 +59,7 @@ class SpecialFlowValueTest : BaseTest() {
         }
         assertEquals(
             expected = listOf(Normal, Last),
-            actual = list
+            actual = list,
         )
 
         list.clear()
@@ -68,7 +68,7 @@ class SpecialFlowValueTest : BaseTest() {
         }
         assertEquals(
             expected = listOf(Normal, NotImportant, Last),
-            actual = list
+            actual = list,
         )
 
         list.clear()
@@ -79,7 +79,7 @@ class SpecialFlowValueTest : BaseTest() {
                 if (it is More) {
                     assertEquals(
                         expected = listOf(Normal, Last, More),
-                        actual = list
+                        actual = list,
                     )
                 }
                 cancel()

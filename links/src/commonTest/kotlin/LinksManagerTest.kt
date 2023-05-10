@@ -33,14 +33,14 @@ class LinksManagerTest {
     data class Person(
         val name: String,
         val surname: String,
-        val spokenLanguages: List<Languages> = emptyList()
+        val spokenLanguages: List<Languages> = emptyList(),
     ) {
         companion object {
             val dummyUrl = "http://url.com?name=Corrado&surname=Quattrocchi&spokenLanguageSize=3&spokenLanguages=ITALIAN&spokenLanguages=ENGLISH&spokenLanguages=DUTCH"
             val dummyPerson = Person(
                 "Corrado",
                 "Quattrocchi",
-                listOf(Languages.ITALIAN, Languages.ENGLISH, Languages.DUTCH)
+                listOf(Languages.ITALIAN, Languages.ENGLISH, Languages.DUTCH),
             )
         }
     }
@@ -56,7 +56,15 @@ class LinksManagerTest {
 
     @Test
     fun testHandleIncomingLinkSucceed() {
-        handler.extractQueryAsListMock.on(eq(Person.dummyUrl)).doReturn(listOf(Person.dummyPerson.name, Person.dummyPerson.surname, Person.dummyPerson.spokenLanguages.size) + Person.dummyPerson.spokenLanguages.map { it.name })
+        handler.extractQueryAsListMock
+            .on(eq(Person.dummyUrl))
+            .doReturn(
+                listOf(
+                    Person.dummyPerson.name,
+                    Person.dummyPerson.surname,
+                    Person.dummyPerson.spokenLanguages.size,
+                ) + Person.dummyPerson.spokenLanguages.map { it.name },
+            )
         val result = linksManager.handleIncomingLink(Person.dummyUrl, Person.serializer())
 
         assertEquals(Person.dummyPerson, result)

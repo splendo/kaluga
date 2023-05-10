@@ -43,8 +43,8 @@ fun ArchitectureDetailsLayout(inputDetails: InputDetails, bottomSheetNavigatorSt
             inputDetails,
             BottomSheetContentNavHostComposableNavigator<ArchitectureDetailsNavigationAction<*>>(
                 bottomSheetNavigatorState,
-                navigationMapper = { architectureDetailsNavigationRouteMapper(it) }
-            )
+                navigationMapper = { architectureDetailsNavigationRouteMapper(it) },
+            ),
         )
     }
 

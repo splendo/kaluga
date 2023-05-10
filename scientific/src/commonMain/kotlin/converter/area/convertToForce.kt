@@ -44,7 +44,7 @@ infix operator fun ScientificValue<PhysicalQuantity.Area, SquareCentimeter>.time
 
 @JvmName("squareCentimeterTimesBaryeMultiple")
 infix operator fun <BaryeUnit : BaryeMultiple> ScientificValue<PhysicalQuantity.Area, SquareCentimeter>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>
+    pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>,
 ) =
     pressure * this
 
@@ -78,20 +78,20 @@ infix operator fun <Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, 
 
 @JvmName("imperialAreaTimesImperialPressure")
 infix operator fun <Pressure : ImperialPressure, Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, Area>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>,
 ) = pressure * this
 
 @JvmName("imperialAreaTimesUKImperialPressure")
 infix operator fun <Pressure : UKImperialPressure, Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, Area>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>,
 ) = pressure * this
 
 @JvmName("imperialAreaTimesUSCustomaryPressure")
 infix operator fun <Pressure : USCustomaryPressure, Area : ImperialArea> ScientificValue<PhysicalQuantity.Area, Area>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>
+    pressure: ScientificValue<PhysicalQuantity.Pressure, Pressure>,
 ) = pressure * this
 
 @JvmName("areaTimesPressure")
 infix operator fun <PressureUnit : Pressure, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
 ) = pressure * this

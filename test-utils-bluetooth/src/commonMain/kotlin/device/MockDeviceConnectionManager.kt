@@ -53,7 +53,7 @@ class MockDeviceConnectionManager(
     deviceWrapper: DeviceWrapper,
     connectionSettings: ConnectionSettings,
     coroutineScope: CoroutineScope,
-    setupMocks: Boolean = true
+    setupMocks: Boolean = true,
 ) : BaseDeviceConnectionManager(deviceWrapper, connectionSettings, coroutineScope) {
 
     /**
@@ -86,7 +86,7 @@ class MockDeviceConnectionManager(
         override fun create(
             deviceWrapper: DeviceWrapper,
             settings: ConnectionSettings,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ): BaseDeviceConnectionManager {
             return createMock.call(deviceWrapper, settings, coroutineScope)
         }
@@ -188,17 +188,17 @@ class MockDeviceConnectionManager(
             when (action) {
                 is DeviceAction.Read.Characteristic -> handleUpdatedCharacteristic(
                     action.characteristic.uuid,
-                    willActionSucceed
+                    willActionSucceed,
                 ) {
                     debug("Mock Read: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
                 }
                 is DeviceAction.Read.Descriptor -> handleUpdatedDescriptor(
                     action.descriptor.uuid,
-                    willActionSucceed
+                    willActionSucceed,
                 )
                 is DeviceAction.Write.Characteristic -> {
                     (action.characteristic.wrapper as MockCharacteristicWrapper).updateMockValue(
-                        action.newValue
+                        action.newValue,
                     )
                     handleUpdatedCharacteristic(action.characteristic.uuid, willActionSucceed) {
                         debug("Mock Write: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
@@ -229,7 +229,7 @@ class MockDeviceConnectionManager(
     public override fun handleUpdatedCharacteristic(
         uuid: UUID,
         succeeded: Boolean,
-        onUpdate: ((Characteristic) -> Unit)?
+        onUpdate: ((Characteristic) -> Unit)?,
     ) {
         super.handleUpdatedCharacteristic(uuid, succeeded, onUpdate)
     }
@@ -237,7 +237,7 @@ class MockDeviceConnectionManager(
     public override fun handleUpdatedDescriptor(
         uuid: UUID,
         succeeded: Boolean,
-        onUpdate: ((Descriptor) -> Unit)?
+        onUpdate: ((Descriptor) -> Unit)?,
     ) {
         super.handleUpdatedDescriptor(uuid, succeeded, onUpdate)
     }

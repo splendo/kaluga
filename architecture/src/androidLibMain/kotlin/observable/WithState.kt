@@ -65,7 +65,7 @@ actual interface WithState<T> {
 fun <T> WithState<T>.observeOnLifecycle(
     lifecycleOwner: LifecycleOwner,
     filter: suspend (T) -> Boolean = { true },
-    onNext: (T) -> Unit
+    onNext: (T) -> Unit,
 ) =
     observeOnLifecycle(lifecycleOwner, filter = filter, transform = { it }, onNext = onNext)
 
@@ -78,13 +78,13 @@ fun <T> WithState<T>.observeOnLifecycle(
 fun <T> WithState<T?>.observeNotNullOnLifecycle(
     lifecycleOwner: LifecycleOwner,
     filter: suspend (T) -> Boolean = { true },
-    onNext: (T) -> Unit
+    onNext: (T) -> Unit,
 ) =
     observeOnLifecycle(
         lifecycleOwner,
         filter = { value -> value?.let { filter(it) } ?: false },
         transform = { it!! },
-        onNext = onNext
+        onNext = onNext,
     )
 
 /**
@@ -98,7 +98,7 @@ fun <T, R> WithState<T>.observeOnLifecycle(
     lifecycleOwner: LifecycleOwner,
     filter: suspend (T) -> Boolean = { true },
     transform: suspend (T) -> R,
-    onNext: (R) -> Unit
+    onNext: (R) -> Unit,
 ) = lifecycleOwner.lifecycleScope.launch {
     stateFlow.filter { filter(it) }.map { transform(it) }.collect {
         onNext(it)

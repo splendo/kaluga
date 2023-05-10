@@ -53,11 +53,12 @@ private fun <B, R : T, T, OO : ObservableOptional<R>> B.mutableLiveData(): Mutab
  */
 fun <T> LiveData<T>.observeOnCoroutine(
     coroutineScope: CoroutineScope,
-    observer: Observer<T>
+    observer: Observer<T>,
 ) {
     // Live Data mutations should only ever be done from the main thread, so we don't (any longer) allow passing a context
     coroutineScope.launch(Dispatchers.Main.immediate) {
-        if (value != null) observer.onChanged(value) // due to slight delay in launch we could miss value changes
+        val currentValue = value
+        if (currentValue != null) observer.onChanged(currentValue) // due to slight delay in launch we could miss value changes
         observeForever(observer)
         awaitCancellation()
     }.invokeOnCompletion {
@@ -75,7 +76,7 @@ fun <T> LiveData<T>.observeOnCoroutine(
  */
 actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual constructor(
     observation: Observation<R, T, OO>,
-    stateFlowToBind: suspend () -> StateFlow<R?>
+    stateFlowToBind: suspend () -> StateFlow<R?>,
 ) : AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
 
     private var coroutineScope: CoroutineScope? = null
@@ -113,7 +114,7 @@ actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual c
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
 actual abstract class BaseUninitializedSubject<T> actual constructor(
-    observation: ObservationUninitialized<T>
+    observation: ObservationUninitialized<T>,
 ) : AbstractBaseUninitializedSubject<T>(observation) {
 
     override fun createLiveData(): MutableLiveData<T> {
@@ -143,7 +144,7 @@ actual abstract class BaseInitializedSubject<T> actual constructor(observation: 
      * @param initialValue The [Value] to use as the initial value.
      */
     actual constructor(
-        initialValue: ObservableOptional.Value<T>
+        initialValue: Value<T>,
     ) : this (ObservationInitialized(initialValue))
 }
 
@@ -154,7 +155,7 @@ actual abstract class BaseInitializedSubject<T> actual constructor(observation: 
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
 actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
-    observation: ObservationDefault<R, T?>
+    observation: ObservationDefault<R, T?>,
 ) : AbstractBaseDefaultSubject<R, T>(observation) {
 
     override fun createLiveData(): MutableLiveData<R> = this.mutableLiveData()
@@ -167,6 +168,6 @@ actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
      */
     actual constructor(
         defaultValue: Value<R>,
-        initialValue: Value<T?>
+        initialValue: Value<T?>,
     ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue))
 }

@@ -34,11 +34,11 @@ open class NavigationAction<B : NavigationBundleSpecRow<*>>(val bundle: Navigati
  */
 open class SingleValueNavigationAction<T>(
     val value: T,
-    val type: NavigationBundleSpecType<T>
+    val type: NavigationBundleSpecType<T>,
 ) : NavigationAction<SingleValueNavigationSpec.Row<T>>(
     SingleValueNavigationSpec(type).toBundle {
         it.convertValue(value)
-    }
+    },
 )
 
 /**

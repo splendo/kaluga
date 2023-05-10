@@ -28,10 +28,10 @@ import kotlin.jvm.JvmName
 
 @JvmName("weightTimesMolality")
 infix operator fun <MolalityUnit : Molality, WeightUnit : Weight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>
+    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
 ) = molality * this
 
 @JvmName("weightDivMolarMass")
 infix operator fun <WeightUnit : Weight, MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>
+    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>,
 ) = molarMass.unit.per.amountOfSubstance(this, molarMass)

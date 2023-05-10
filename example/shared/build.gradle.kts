@@ -3,7 +3,7 @@ plugins {
     kotlin("plugin.serialization")
     id("com.android.library")
     id("jacoco")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("org.jmailen.kotlinter")
 }
 
 val libraryVersion = Library.version
@@ -20,6 +20,7 @@ val modules = listOf(
     "links" to true,
     "location" to false,
     "logging" to false,
+    "media" to true,
     "resources" to true,
     "review" to true,
     "scientific" to false,
@@ -27,7 +28,7 @@ val modules = listOf(
     "permissions" to true
 )
 
-commonComponent {
+commonComponent("example.shared") {
     logger.lifecycle("Configure framework")
     baseName = "KalugaExampleShared"
     isStatic = false

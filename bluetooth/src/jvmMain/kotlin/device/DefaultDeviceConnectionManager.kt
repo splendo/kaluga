@@ -23,15 +23,15 @@ import kotlinx.coroutines.CoroutineScope
 internal actual class DefaultDeviceConnectionManager(
     deviceWrapper: DeviceWrapper,
     settings: ConnectionSettings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BaseDeviceConnectionManager(deviceWrapper, settings, coroutineScope) {
 
-    class Builder() : DeviceConnectionManager.Builder {
+    class Builder : DeviceConnectionManager.Builder {
 
         override fun create(
             deviceWrapper: DeviceWrapper,
             settings: ConnectionSettings,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ): DefaultDeviceConnectionManager {
             return DefaultDeviceConnectionManager(deviceWrapper, settings, coroutineScope)
         }

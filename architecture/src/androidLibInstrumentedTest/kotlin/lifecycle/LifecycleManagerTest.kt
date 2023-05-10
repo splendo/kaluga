@@ -50,9 +50,9 @@ class LifecycleManagerTest {
             ActivityLifecycleSubscribable.LifecycleManager(
                 activity,
                 activity,
-                activity.supportFragmentManager
+                activity.supportFragmentManager,
             ),
-            observer.managerState.value
+            observer.managerState.value,
         )
 
         withContext(Dispatchers.Default) {

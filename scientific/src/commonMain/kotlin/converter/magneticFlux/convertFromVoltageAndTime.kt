@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     VoltageUnit : Voltage,
     TimeUnit : Time,
-    FluxUnit : MagneticFlux
+    FluxUnit : MagneticFlux,
     > FluxUnit.flux(
     voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = flux(voltage, time, ::DefaultScientificValue)
 
 @JvmName("fluxFromVoltageAndTime")
@@ -42,9 +42,9 @@ fun <
     VoltageUnit : Voltage,
     TimeUnit : Time,
     FluxUnit : MagneticFlux,
-    Value : ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>
+    Value : ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>,
     > FluxUnit.flux(
     voltage: ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>,
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-    factory: (Decimal, FluxUnit) -> Value
+    factory: (Decimal, FluxUnit) -> Value,
 ) = byMultiplying(voltage, time, factory)

@@ -29,20 +29,20 @@ import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricAndImperialEnergy")
 infix operator fun <EnergyUnit : MetricAndImperialEnergy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
 ) = energy * this
 
 @JvmName("timeTimesMetricEnergy")
 infix operator fun <EnergyUnit : MetricEnergy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
 ) = energy * this
 
 @JvmName("timeTimesImperialEnergy")
 infix operator fun <EnergyUnit : ImperialEnergy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
 ) = energy * this
 
 @JvmName("timeTimesEnergy")
 infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>
+    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
 ) = energy * this

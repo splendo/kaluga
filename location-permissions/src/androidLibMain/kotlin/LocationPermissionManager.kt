@@ -38,13 +38,13 @@ actual class DefaultLocationPermissionManager(
     context: Context,
     locationPermission: LocationPermission,
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BasePermissionManager<LocationPermission>(locationPermission, settings, coroutineScope) {
 
     private val permissions: Array<String> get() = listOfNotNull(
         Manifest.permission.ACCESS_COARSE_LOCATION,
         if (permission.precise) Manifest.permission.ACCESS_FINE_LOCATION else null,
-        if (permission.background && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) Manifest.permission.ACCESS_BACKGROUND_LOCATION else null
+        if (permission.background && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) Manifest.permission.ACCESS_BACKGROUND_LOCATION else null,
     ).toTypedArray()
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
@@ -71,8 +71,8 @@ actual class LocationPermissionManagerBuilder actual constructor(private val con
 
     override fun create(
         locationPermission: LocationPermission,
-        settings: BasePermissionManager.Settings,
-        coroutineScope: CoroutineScope
+        settings: Settings,
+        coroutineScope: CoroutineScope,
     ): LocationPermissionManager {
         return DefaultLocationPermissionManager(context.context, locationPermission, settings, coroutineScope)
     }

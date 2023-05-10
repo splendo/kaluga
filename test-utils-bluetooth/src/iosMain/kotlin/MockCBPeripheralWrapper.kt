@@ -22,5 +22,5 @@ import platform.Foundation.NSUUID
 
 data class MockCBPeripheralWrapper(
     override val name: String? = null,
-    override val identifier: NSUUID = NSUUID()
+    override val identifier: NSUUID = NSUUID(),
 ) : DeviceWrapper

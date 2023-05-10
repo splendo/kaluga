@@ -44,8 +44,8 @@ class BluetoothCharacteristicTest :
                         properties = 0
                     }
                 }
-            }
-        )
+            },
+        ),
     ) {
         mainAction {
             bluetooth.startScanning()
@@ -82,8 +82,8 @@ class BluetoothCharacteristicTest :
                         properties = CharacteristicProperties.Read or CharacteristicProperties.WriteWithoutResponse
                     }
                 }
-            }
-        )
+            },
+        ),
     ) {
         mainAction {
             bluetooth.startScanning()

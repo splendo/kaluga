@@ -40,7 +40,7 @@ sealed class ScientificUnitSelectionAction<T>(value: T, type: NavigationBundleSp
 
 class ScientificUnitSelectionViewModel(
     private val quantity: PhysicalQuantity,
-    navigator: Navigator<ScientificUnitSelectionAction<*>>
+    navigator: Navigator<ScientificUnitSelectionAction<*>>,
 ) : NavigatingViewModel<ScientificUnitSelectionAction<*>>(navigator) {
 
     private val allUnits = MutableStateFlow<List<String>>(emptyList())

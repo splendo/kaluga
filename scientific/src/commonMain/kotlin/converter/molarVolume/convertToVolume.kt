@@ -31,25 +31,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricMolarVolumeTimesAmountOfSubstance")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarVolume, MetricMolarVolume>.times(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = unit.volume.volume(this, amountOfSubstance)
 
 @JvmName("imperialMolarVolumeTimesAmountOfSubstance")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarVolume, ImperialMolarVolume>.times(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = unit.volume.volume(this, amountOfSubstance)
 
 @JvmName("ukImperialMolarVolumeTimesAmountOfSubstance")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarVolume, UKImperialMolarVolume>.times(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = unit.volume.volume(this, amountOfSubstance)
 
 @JvmName("usCustomaryMolarVolumeTimesAmountOfSubstance")
 infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarVolume, USCustomaryMolarVolume>.times(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = unit.volume.volume(this, amountOfSubstance)
 
 @JvmName("molarVolumeTimesAmountOfSubstance")
 infix operator fun <MolarVolumeUnit : MolarVolume, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>.times(
-    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>
+    amountOfSubstance: ScientificValue<PhysicalQuantity.AmountOfSubstance, AmountOfSubstanceUnit>,
 ) = CubicMeter.volume(this, amountOfSubstance)

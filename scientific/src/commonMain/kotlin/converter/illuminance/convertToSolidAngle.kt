@@ -27,5 +27,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("illuminanceDivLuminance")
 infix operator fun <IlluminanceUnit : Illuminance, LuminanceUnit : Luminance> ScientificValue<PhysicalQuantity.Illuminance, IlluminanceUnit>.div(
-    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>
+    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>,
 ) = Steradian.solidAngle(this, luminance)

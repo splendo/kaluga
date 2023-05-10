@@ -25,7 +25,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 abstract class BeaconFlowTest(
-    timeout: Duration = 3.seconds
+    timeout: Duration = 3.seconds,
 ) : SimpleFlowTest<Set<BeaconInfo>>() {
 
     private val bluetooth = MockBluetoothService()

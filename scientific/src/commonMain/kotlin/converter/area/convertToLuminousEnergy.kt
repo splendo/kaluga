@@ -30,15 +30,15 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricAreaTimesMetricExposure")
 infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, MetricLuminousExposure>
+    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, MetricLuminousExposure>,
 ) = luminousExposure * this
 
 @JvmName("imperialAreaTimesImperialExposure")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, ImperialLuminousExposure>
+    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, ImperialLuminousExposure>,
 ) = luminousExposure * this
 
 @JvmName("areaTimesExposure")
 infix operator fun <ExposureUnit : LuminousExposure, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, ExposureUnit>
+    luminousExposure: ScientificValue<PhysicalQuantity.LuminousExposure, ExposureUnit>,
 ) = luminousExposure * this

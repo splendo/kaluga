@@ -24,6 +24,7 @@ import platform.CoreGraphics.CGFloat
 import platform.Foundation.NSNumber
 import platform.Foundation.NSURL
 import platform.Foundation.numberWithInt
+import platform.MediaPlayer.MPMediaPickerController
 import platform.MessageUI.MFMailComposeViewController
 import platform.MessageUI.MFMessageComposeViewController
 import platform.QuartzCore.CATransaction
@@ -46,16 +47,13 @@ import platform.UIKit.UIApplication
 import platform.UIKit.UIApplicationOpenSettingsURLString
 import platform.UIKit.UIDocumentBrowserViewController
 import platform.UIKit.UIImagePickerController
+import platform.UIKit.UIImagePickerControllerSourceType
 import platform.UIKit.UIViewController
 import platform.UIKit.addChildViewController
-import platform.UIKit.addConstraint
-import platform.UIKit.addSubview
 import platform.UIKit.childViewControllers
 import platform.UIKit.didMoveToParentViewController
 import platform.UIKit.navigationController
 import platform.UIKit.removeFromParentViewController
-import platform.UIKit.removeFromSuperview
-import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.willMoveToParentViewController
 import platform.darwin.NSObject
 import kotlin.native.ref.WeakReference
@@ -75,6 +73,15 @@ class DefaultNavigator<Action : NavigationAction<*>>(val onAction: (Action) -> U
 }
 
 object MissingViewControllerNavigationException : NavigationException("Missing Parent ViewController")
+object MissingNavigationControllerNavigationException : NavigationException("Missing Navigation ViewController")
+object MailNotSupportedNavigationException : NavigationException("Cannot send Mail")
+object TextNotSupportedNavigationException : NavigationException("Cannot send Text")
+data class ImagePickerSourceNotAvailableNavigationException(val source: UIImagePickerControllerSourceType) : NavigationException(
+    "Source Type $source not available for ImagePicker",
+)
+data class ImagePickerMediaNotAvailableNavigationException(val types: Set<NavigationSpec.ImagePicker.MediaType>) : NavigationException(
+    "Media Types ${types.joinToString(", ")} not available for ImagePicker",
+)
 
 /**
  * Implementation of [Navigator] used for navigating to and from [UIViewController]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
@@ -84,7 +91,7 @@ object MissingViewControllerNavigationException : NavigationException("Missing P
  */
 class ViewControllerNavigator<Action : NavigationAction<*>>(
     parentVC: UIViewController,
-    private val navigationMapper: (Action) -> NavigationSpec
+    private val navigationMapper: (Action) -> NavigationSpec,
 ) : Navigator<Action> {
 
     private inner class StoreKitDelegate : NSObject(), SKStoreProductViewControllerDelegateProtocol {
@@ -111,6 +118,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(
             is NavigationSpec.Segue -> segueToViewController(spec, bundle)
             is NavigationSpec.Nested -> embedNestedViewController(spec)
             is NavigationSpec.ImagePicker -> presentImagePicker(spec)
+            is NavigationSpec.MediaPicker -> presentMediaPicker(spec)
             is NavigationSpec.Email -> presentMailComposer(spec)
             is NavigationSpec.DocumentSelector -> presentDocumentBrowser(spec)
             is NavigationSpec.Message -> presentMessageComposer(spec)
@@ -125,25 +133,25 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(
 
     private fun pushViewController(pushSpec: NavigationSpec.Push) {
         val parent = assertParent()
-        assert(parent.navigationController != null)
+        val navigationController = parent.navigationController ?: throw MissingNavigationControllerNavigationException
         CATransaction.begin()
         CATransaction.setCompletionBlock {
             pushSpec.completion?.invoke()
         }
-        parent.navigationController?.pushViewController(pushSpec.push(), pushSpec.animated)
+        navigationController.pushViewController(pushSpec.push(), pushSpec.animated)
         CATransaction.commit()
     }
 
     private fun popViewController(popSpec: NavigationSpec.Pop) {
         val parent = assertParent()
-        assert(parent.navigationController != null)
+        val navigationController = parent.navigationController ?: throw MissingNavigationControllerNavigationException
         CATransaction.begin()
         CATransaction.setCompletionBlock {
             popSpec.completion?.invoke()
         }
         popSpec.to?.let {
-            parent.navigationController?.popToViewController(it, popSpec.animated)
-        } ?: parent.navigationController?.popViewControllerAnimated(popSpec.animated)
+            navigationController.popToViewController(it, popSpec.animated)
+        } ?: navigationController.popViewControllerAnimated(popSpec.animated)
         CATransaction.commit()
     }
 
@@ -197,7 +205,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(
             NSLayoutAttributeLeading,
             NSLayoutAttributeTrailing,
             NSLayoutAttributeTop,
-            NSLayoutAttributeBottom
+            NSLayoutAttributeBottom,
         ).map { attribute ->
             CGFloat
             NSLayoutConstraint.constraintWithItem(child.view, attribute, NSLayoutRelationEqual, nestedSpec.containerView, attribute, 1.0, 0.0)
@@ -207,13 +215,10 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(
     }
 
     private fun presentImagePicker(imagePickerSpec: NavigationSpec.ImagePicker) {
-        val isSourceTypeAvailable = UIImagePickerController.isSourceTypeAvailable(imagePickerSpec.sourceType)
-        assert(isSourceTypeAvailable)
-        if (!isSourceTypeAvailable) return
+        if (!UIImagePickerController.isSourceTypeAvailable(imagePickerSpec.sourceType)) throw ImagePickerSourceNotAvailableNavigationException(imagePickerSpec.sourceType)
         val mediaTypes = imagePickerSpec.mediaType.map { it.typeString?.pointed.toString() }
         val isMediaTypesAvailable = UIImagePickerController.availableMediaTypesForSourceType(imagePickerSpec.sourceType)?.containsAll(mediaTypes) == true
-        assert(isMediaTypesAvailable)
-        if (!isMediaTypesAvailable) return
+        if (!isMediaTypesAvailable) throw ImagePickerMediaNotAvailableNavigationException(imagePickerSpec.mediaType)
         val pickerVC = UIImagePickerController()
         pickerVC.sourceType = imagePickerSpec.sourceType
         pickerVC.mediaTypes = mediaTypes
@@ -221,10 +226,20 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(
         assertParent().presentViewController(pickerVC, imagePickerSpec.animated) { imagePickerSpec.completion?.invoke() }
     }
 
+    private fun presentMediaPicker(mediaPickerSpec: NavigationSpec.MediaPicker) {
+        val mediaPickerController = MPMediaPickerController(mediaPickerSpec.types.fold(0UL) { acc, type -> acc or type.mediaType })
+
+        mediaPickerController.delegate = mediaPickerSpec.delegate
+        mediaPickerController.allowsPickingMultipleItems = mediaPickerSpec.settings.allowsPickingMultipleItems
+        mediaPickerController.showsCloudItems = mediaPickerSpec.settings.showsCloudItems
+        mediaPickerController.prompt = mediaPickerSpec.settings.prompt
+        mediaPickerController.showsItemsWithProtectedAssets = mediaPickerSpec.settings.showsItemsWithProtectedAssets
+
+        assertParent().presentViewController(mediaPickerController, mediaPickerSpec.animated) { mediaPickerSpec.completion?.invoke() }
+    }
+
     private fun presentMailComposer(mailSpec: NavigationSpec.Email) {
-        val canSendMail = MFMailComposeViewController.canSendMail()
-        assert(canSendMail)
-        if (!canSendMail) return
+        if (!MFMailComposeViewController.canSendMail()) throw MailNotSupportedNavigationException
         val composeVC = MFMailComposeViewController()
         composeVC.mailComposeDelegate = mailSpec.delegate
 
@@ -267,9 +282,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(
     }
 
     private fun presentMessageComposer(messageSpec: NavigationSpec.Message) {
-        val canSendText = MFMessageComposeViewController.canSendText()
-        assert(canSendText)
-        if (!canSendText) return
+        if (!MFMessageComposeViewController.canSendText()) throw TextNotSupportedNavigationException
         val composeVC = MFMessageComposeViewController()
         composeVC.messageComposeDelegate = messageSpec.delegate
 
@@ -363,7 +376,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(
             delegate = storeKitDelegate
         }
         productViewController.loadProductWithParameters(
-            parameters
+            parameters,
         ) { isLoaded, _ ->
             if (isLoaded) {
                 parent.presentViewController(productViewController, true, null)

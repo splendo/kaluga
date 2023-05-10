@@ -14,7 +14,9 @@
    limitations under the License.
 
 */
+
 @file:JvmName("JvmLogKt")
+
 package com.splendo.kaluga.logging
 
 import io.github.aakira.napier.DebugAntilog

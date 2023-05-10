@@ -24,7 +24,7 @@ import kotlin.test.assertEquals
 
 class BluetoothDescriptorsTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, List<Descriptor>>() {
 
-    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithDescriptor, scope: CoroutineScope) -> DescriptorContext = { configuration, scope ->
+    override val createTestContextWithConfiguration: suspend (Configuration.DeviceWithDescriptor, CoroutineScope) -> DescriptorContext = { configuration, scope ->
         DescriptorContext(configuration, scope)
     }
 
@@ -34,9 +34,8 @@ class BluetoothDescriptorsTest : BluetoothFlowTest<BluetoothFlowTest.Configurati
 
     @Test
     fun testGetDescriptors() = testWithFlowAndTestContext(
-        Configuration.DeviceWithDescriptor()
+        Configuration.DeviceWithDescriptor(),
     ) {
-
         mainAction {
             bluetooth.startScanning()
             scanDevice()

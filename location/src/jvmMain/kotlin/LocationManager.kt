@@ -32,7 +32,7 @@ import kotlin.coroutines.CoroutineContext
  */
 actual class DefaultLocationManager(
     settings: Settings,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) : BaseLocationManager(settings, coroutineScope) {
 
     /**
@@ -41,7 +41,7 @@ actual class DefaultLocationManager(
     class Builder : BaseLocationManager.Builder {
         override fun create(
             settings: Settings,
-            coroutineScope: CoroutineScope
+            coroutineScope: CoroutineScope,
         ): BaseLocationManager {
             return DefaultLocationManager(settings, coroutineScope)
         }
@@ -71,15 +71,15 @@ actual class LocationStateRepoBuilder(
     private val permissionsBuilder: suspend (CoroutineContext) -> Permissions = { context ->
         Permissions(
             PermissionsBuilder().apply { registerLocationPermissionIfNotRegistered() },
-            context
+            context,
         )
-    }
+    },
 ) : BaseLocationStateRepoBuilder {
 
     override fun create(
         locationPermission: LocationPermission,
-        settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings,
-        coroutineContext: CoroutineContext
+        settingsBuilder: (LocationPermission, Permissions) -> Settings,
+        coroutineContext: CoroutineContext,
     ): LocationStateRepo {
         return LocationStateRepo({ settingsBuilder(locationPermission, permissionsBuilder(it)) }, DefaultLocationManager.Builder(), coroutineContext)
     }

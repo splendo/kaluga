@@ -30,10 +30,10 @@ import kotlin.jvm.JvmName
 fun <
     LengthUnit : Length,
     WidthUnit : Length,
-    AreaUnit : Area
+    AreaUnit : Area,
     > WidthUnit.width(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = width(area, length, ::DefaultScientificValue)
 
 @JvmName("widthFromAreaAndLength")
@@ -41,9 +41,9 @@ fun <
     LengthUnit : Length,
     WidthUnit : Length,
     AreaUnit : Area,
-    Value : ScientificValue<PhysicalQuantity.Length, WidthUnit>
+    Value : ScientificValue<PhysicalQuantity.Length, WidthUnit>,
     > WidthUnit.width(
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-    factory: (Decimal, WidthUnit) -> Value
+    factory: (Decimal, WidthUnit) -> Value,
 ) = byDividing(area, length, factory)

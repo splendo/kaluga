@@ -39,7 +39,7 @@ import kotlinx.serialization.KSerializer
 fun <Row : NavigationBundleSpecRow<*>> NavHostController.HandleResult(
     spec: NavigationBundleSpec<Row>,
     retain: Boolean = false,
-    onResult: NavigationBundle<Row>.() -> Unit
+    onResult: NavigationBundle<Row>.() -> Unit,
 ) = HandleResult(retain) { toNavigationBundle(spec).onResult() }
 
 /**
@@ -55,7 +55,7 @@ fun <Row : NavigationBundleSpecRow<*>> NavHostController.HandleResult(
 fun <T> NavHostController.HandleResult(
     type: NavigationBundleSpecType<T>,
     retain: Boolean = false,
-    onResult: T.() -> Unit
+    onResult: T.() -> Unit,
 ) = HandleResult(retain) { toTypedProperty(type).onResult() }
 
 /**
@@ -70,7 +70,7 @@ fun <T> NavHostController.HandleResult(
 fun <T : Any> NavHostController.HandleResultOrNull(
     type: NavigationBundleSpecType<T>,
     retain: Boolean = false,
-    onResult: T?.() -> Unit
+    onResult: T?.() -> Unit,
 ) = HandleResult(retain) { toTypedPropertyOrNull(type).onResult() }
 
 /**
@@ -86,7 +86,7 @@ fun <T : Any> NavHostController.HandleResultOrNull(
 fun <T> NavHostController.HandleResultOrNull(
     type: NavigationBundleSpecType<T>,
     retain: Boolean = false,
-    onResult: T?.() -> Unit
+    onResult: T?.() -> Unit,
 ) = HandleResult(retain) { toTypedPropertyOrNull(type).onResult() }
 
 /**
@@ -99,7 +99,7 @@ fun <T> NavHostController.HandleResultOrNull(
 @Composable
 fun NavHostController.HandleBooleanResult(
     retain: Boolean = false,
-    onResult: Boolean.() -> Unit
+    onResult: Boolean.() -> Unit,
 ) = HandleResult(retain) { asBoolean().onResult() }
 
 /**
@@ -111,7 +111,7 @@ fun NavHostController.HandleBooleanResult(
 @Composable
 fun NavHostController.HandleBooleanOrNullResult(
     retain: Boolean = false,
-    onResult: Boolean?.() -> Unit
+    onResult: Boolean?.() -> Unit,
 ) = HandleResult(retain) { asBooleanOrNull().onResult() }
 
 /**
@@ -124,7 +124,7 @@ fun NavHostController.HandleBooleanOrNullResult(
 @Composable
 fun NavHostController.HandleBooleanArrayResult(
     retain: Boolean = false,
-    onResult: BooleanArray.() -> Unit
+    onResult: BooleanArray.() -> Unit,
 ) = HandleResult(retain) { asBooleanArray().onResult() }
 
 /**
@@ -136,7 +136,7 @@ fun NavHostController.HandleBooleanArrayResult(
 @Composable
 fun NavHostController.HandleBooleanArrayOrNullResult(
     retain: Boolean = false,
-    onResult: BooleanArray?.() -> Unit
+    onResult: BooleanArray?.() -> Unit,
 ) = HandleResult(retain) { asBooleanArrayOrNull().onResult() }
 
 /**
@@ -149,7 +149,7 @@ fun NavHostController.HandleBooleanArrayOrNullResult(
 @Composable
 fun NavHostController.HandleByteResult(
     retain: Boolean = false,
-    onResult: Byte.() -> Unit
+    onResult: Byte.() -> Unit,
 ) = HandleResult(retain) { asByte().onResult() }
 
 /**
@@ -161,7 +161,7 @@ fun NavHostController.HandleByteResult(
 @Composable
 fun NavHostController.HandleByteOrNullResult(
     retain: Boolean = false,
-    onResult: Byte?.() -> Unit
+    onResult: Byte?.() -> Unit,
 ) = HandleResult(retain) { asByteOrNull().onResult() }
 
 /**
@@ -174,7 +174,7 @@ fun NavHostController.HandleByteOrNullResult(
 @Composable
 fun NavHostController.HandleByteArrayResult(
     retain: Boolean = false,
-    onResult: ByteArray.() -> Unit
+    onResult: ByteArray.() -> Unit,
 ) = HandleResult(retain) { asByteArray().onResult() }
 
 /**
@@ -186,7 +186,7 @@ fun NavHostController.HandleByteArrayResult(
 @Composable
 fun NavHostController.HandleByteArrayOrNullResult(
     retain: Boolean = false,
-    onResult: ByteArray?.() -> Unit
+    onResult: ByteArray?.() -> Unit,
 ) = HandleResult(retain) { asByteArrayOrNull().onResult() }
 
 /**
@@ -199,7 +199,7 @@ fun NavHostController.HandleByteArrayOrNullResult(
 @Composable
 fun NavHostController.HandleCharResult(
     retain: Boolean = false,
-    onResult: Char.() -> Unit
+    onResult: Char.() -> Unit,
 ) = HandleResult(retain) { asChar().onResult() }
 
 /**
@@ -211,7 +211,7 @@ fun NavHostController.HandleCharResult(
 @Composable
 fun NavHostController.HandleCharOrNullResult(
     retain: Boolean = false,
-    onResult: Char?.() -> Unit
+    onResult: Char?.() -> Unit,
 ) = HandleResult(retain) { asCharOrNull().onResult() }
 
 /**
@@ -224,7 +224,7 @@ fun NavHostController.HandleCharOrNullResult(
 @Composable
 fun NavHostController.HandleCharArrayResult(
     retain: Boolean = false,
-    onResult: CharArray.() -> Unit
+    onResult: CharArray.() -> Unit,
 ) = HandleResult(retain) { asCharArray().onResult() }
 
 /**
@@ -236,7 +236,7 @@ fun NavHostController.HandleCharArrayResult(
 @Composable
 fun NavHostController.HandleCharArrayOrNullResult(
     retain: Boolean = false,
-    onResult: CharArray?.() -> Unit
+    onResult: CharArray?.() -> Unit,
 ) = HandleResult(retain) { asCharArrayOrNull().onResult() }
 
 /**
@@ -249,7 +249,7 @@ fun NavHostController.HandleCharArrayOrNullResult(
 @Composable
 fun NavHostController.HandleCharSequenceResult(
     retain: Boolean = false,
-    onResult: CharSequence.() -> Unit
+    onResult: CharSequence.() -> Unit,
 ) = HandleResult(retain) { asCharSequence().onResult() }
 
 /**
@@ -261,7 +261,7 @@ fun NavHostController.HandleCharSequenceResult(
 @Composable
 fun NavHostController.HandleCharSequenceOrNullResult(
     retain: Boolean = false,
-    onResult: CharSequence?.() -> Unit
+    onResult: CharSequence?.() -> Unit,
 ) = HandleResult(retain) { asCharSequenceOrNull().onResult() }
 
 /**
@@ -274,7 +274,7 @@ fun NavHostController.HandleCharSequenceOrNullResult(
 @Composable
 fun NavHostController.HandleDateResult(
     retain: Boolean = false,
-    onResult: KalugaDate.() -> Unit
+    onResult: KalugaDate.() -> Unit,
 ) = HandleResult(retain) { asDate().onResult() }
 
 /**
@@ -286,7 +286,7 @@ fun NavHostController.HandleDateResult(
 @Composable
 fun NavHostController.HandleDateOrNullResult(
     retain: Boolean = false,
-    onResult: KalugaDate?.() -> Unit
+    onResult: KalugaDate?.() -> Unit,
 ) = HandleResult(retain) { asDateOrNull().onResult() }
 
 /**
@@ -299,7 +299,7 @@ fun NavHostController.HandleDateOrNullResult(
 @Composable
 fun NavHostController.HandleDateArrayResult(
     retain: Boolean = false,
-    onResult: List<KalugaDate>.() -> Unit
+    onResult: List<KalugaDate>.() -> Unit,
 ) = HandleResult(retain) { asDateArray().onResult() }
 
 /**
@@ -311,7 +311,7 @@ fun NavHostController.HandleDateArrayResult(
 @Composable
 fun NavHostController.HandleDateArrayOrNullResult(
     retain: Boolean = false,
-    onResult: List<KalugaDate>?.() -> Unit
+    onResult: List<KalugaDate>?.() -> Unit,
 ) = HandleResult(retain) { asDateArrayOrNull().onResult() }
 
 /**
@@ -324,7 +324,7 @@ fun NavHostController.HandleDateArrayOrNullResult(
 @Composable
 fun NavHostController.HandleDoubleResult(
     retain: Boolean = false,
-    onResult: Double.() -> Unit
+    onResult: Double.() -> Unit,
 ) = HandleResult(retain) { asDouble().onResult() }
 
 /**
@@ -336,7 +336,7 @@ fun NavHostController.HandleDoubleResult(
 @Composable
 fun NavHostController.HandleDoubleOrNullResult(
     retain: Boolean = false,
-    onResult: Double?.() -> Unit
+    onResult: Double?.() -> Unit,
 ) = HandleResult(retain) { asDoubleOrNull().onResult() }
 
 /**
@@ -349,7 +349,7 @@ fun NavHostController.HandleDoubleOrNullResult(
 @Composable
 fun NavHostController.HandleDoubleArrayResult(
     retain: Boolean = false,
-    onResult: DoubleArray.() -> Unit
+    onResult: DoubleArray.() -> Unit,
 ) = HandleResult(retain) { asDoubleArray().onResult() }
 
 /**
@@ -361,7 +361,7 @@ fun NavHostController.HandleDoubleArrayResult(
 @Composable
 fun NavHostController.HandleDoubleArrayOrNullResult(
     retain: Boolean = false,
-    onResult: DoubleArray?.() -> Unit
+    onResult: DoubleArray?.() -> Unit,
 ) = HandleResult(retain) { asDoubleArrayOrNull().onResult() }
 
 /**
@@ -374,7 +374,7 @@ fun NavHostController.HandleDoubleArrayOrNullResult(
 @Composable
 fun NavHostController.HandleFloatResult(
     retain: Boolean = false,
-    onResult: Float.() -> Unit
+    onResult: Float.() -> Unit,
 ) = HandleResult(retain) { asFloat().onResult() }
 
 /**
@@ -386,7 +386,7 @@ fun NavHostController.HandleFloatResult(
 @Composable
 fun NavHostController.HandleFloatOrNullResult(
     retain: Boolean = false,
-    onResult: Float?.() -> Unit
+    onResult: Float?.() -> Unit,
 ) = HandleResult(retain) { asFloatOrNull().onResult() }
 
 /**
@@ -399,7 +399,7 @@ fun NavHostController.HandleFloatOrNullResult(
 @Composable
 fun NavHostController.HandleFloatArrayResult(
     retain: Boolean = false,
-    onResult: FloatArray.() -> Unit
+    onResult: FloatArray.() -> Unit,
 ) = HandleResult(retain) { asFloatArray().onResult() }
 
 /**
@@ -411,7 +411,7 @@ fun NavHostController.HandleFloatArrayResult(
 @Composable
 fun NavHostController.HandleFloatArrayOrNullResult(
     retain: Boolean = false,
-    onResult: FloatArray?.() -> Unit
+    onResult: FloatArray?.() -> Unit,
 ) = HandleResult(retain) { asFloatArrayOrNull().onResult() }
 
 /**
@@ -424,7 +424,7 @@ fun NavHostController.HandleFloatArrayOrNullResult(
 @Composable
 fun NavHostController.HandleIntResult(
     retain: Boolean = false,
-    onResult: Int.() -> Unit
+    onResult: Int.() -> Unit,
 ) = HandleResult(retain) { asInt().onResult() }
 
 /**
@@ -436,7 +436,7 @@ fun NavHostController.HandleIntResult(
 @Composable
 fun NavHostController.HandleIntOrNullResult(
     retain: Boolean = false,
-    onResult: Int?.() -> Unit
+    onResult: Int?.() -> Unit,
 ) = HandleResult(retain) { asIntOrNull().onResult() }
 
 /**
@@ -449,7 +449,7 @@ fun NavHostController.HandleIntOrNullResult(
 @Composable
 fun NavHostController.HandleIntArrayResult(
     retain: Boolean = false,
-    onResult: IntArray.() -> Unit
+    onResult: IntArray.() -> Unit,
 ) = HandleResult(retain) { asIntArray().onResult() }
 
 /**
@@ -461,7 +461,7 @@ fun NavHostController.HandleIntArrayResult(
 @Composable
 fun NavHostController.HandleIntArrayOrNullResult(
     retain: Boolean = false,
-    onResult: IntArray?.() -> Unit
+    onResult: IntArray?.() -> Unit,
 ) = HandleResult(retain) { asIntArrayOrNull().onResult() }
 
 /**
@@ -474,7 +474,7 @@ fun NavHostController.HandleIntArrayOrNullResult(
 @Composable
 fun NavHostController.HandleLongResult(
     retain: Boolean = false,
-    onResult: Long.() -> Unit
+    onResult: Long.() -> Unit,
 ) = HandleResult(retain) { asLong().onResult() }
 
 /**
@@ -486,7 +486,7 @@ fun NavHostController.HandleLongResult(
 @Composable
 fun NavHostController.HandleLongOrNullResult(
     retain: Boolean = false,
-    onResult: Long?.() -> Unit
+    onResult: Long?.() -> Unit,
 ) = HandleResult(retain) { asLongOrNull().onResult() }
 
 /**
@@ -499,7 +499,7 @@ fun NavHostController.HandleLongOrNullResult(
 @Composable
 fun NavHostController.HandleLongArrayResult(
     retain: Boolean = false,
-    onResult: LongArray.() -> Unit
+    onResult: LongArray.() -> Unit,
 ) = HandleResult(retain) { asLongArray().onResult() }
 
 /**
@@ -511,7 +511,7 @@ fun NavHostController.HandleLongArrayResult(
 @Composable
 fun NavHostController.HandleLongArrayOrNullResult(
     retain: Boolean = false,
-    onResult: LongArray?.() -> Unit
+    onResult: LongArray?.() -> Unit,
 ) = HandleResult(retain) { asLongArrayOrNull().onResult() }
 
 /**
@@ -524,7 +524,7 @@ fun NavHostController.HandleLongArrayOrNullResult(
 @Composable
 fun NavHostController.HandleShortResult(
     retain: Boolean = false,
-    onResult: Short.() -> Unit
+    onResult: Short.() -> Unit,
 ) = HandleResult(retain) { asShort().onResult() }
 
 /**
@@ -536,7 +536,7 @@ fun NavHostController.HandleShortResult(
 @Composable
 fun NavHostController.HandleShortOrNullResult(
     retain: Boolean = false,
-    onResult: Short?.() -> Unit
+    onResult: Short?.() -> Unit,
 ) = HandleResult(retain) { asShortOrNull().onResult() }
 
 /**
@@ -549,7 +549,7 @@ fun NavHostController.HandleShortOrNullResult(
 @Composable
 fun NavHostController.HandleShortArrayResult(
     retain: Boolean = false,
-    onResult: ShortArray.() -> Unit
+    onResult: ShortArray.() -> Unit,
 ) = HandleResult(retain) { asShortArray().onResult() }
 
 /**
@@ -561,7 +561,7 @@ fun NavHostController.HandleShortArrayResult(
 @Composable
 fun NavHostController.HandleShortArrayOrNullResult(
     retain: Boolean = false,
-    onResult: ShortArray?.() -> Unit
+    onResult: ShortArray?.() -> Unit,
 ) = HandleResult(retain) { asShortArrayOrNull().onResult() }
 
 /**
@@ -574,7 +574,7 @@ fun NavHostController.HandleShortArrayOrNullResult(
 @Composable
 fun NavHostController.HandleStringResult(
     retain: Boolean = false,
-    onResult: String.() -> Unit
+    onResult: String.() -> Unit,
 ) = HandleResult(retain) { asString().onResult() }
 
 /**
@@ -586,7 +586,7 @@ fun NavHostController.HandleStringResult(
 @Composable
 fun NavHostController.HandleStringOrNullResult(
     retain: Boolean = false,
-    onResult: String?.() -> Unit
+    onResult: String?.() -> Unit,
 ) = HandleResult(retain) { asStringOrNull().onResult() }
 
 /**
@@ -599,7 +599,7 @@ fun NavHostController.HandleStringOrNullResult(
 @Composable
 fun NavHostController.HandleStringListResult(
     retain: Boolean = false,
-    onResult: List<String>.() -> Unit
+    onResult: List<String>.() -> Unit,
 ) = HandleResult(retain) { asStringList().onResult() }
 
 /**
@@ -611,7 +611,7 @@ fun NavHostController.HandleStringListResult(
 @Composable
 fun NavHostController.HandleStringListOrNullResult(
     retain: Boolean = false,
-    onResult: List<String>?.() -> Unit
+    onResult: List<String>?.() -> Unit,
 ) = HandleResult(retain) { asStringListOrNull().onResult() }
 
 /**
@@ -627,7 +627,7 @@ fun NavHostController.HandleStringListOrNullResult(
 fun <T> NavHostController.HandleResultOfType(
     serializer: KSerializer<T>,
     retain: Boolean = false,
-    onResult: T.() -> Unit
+    onResult: T.() -> Unit,
 ) = HandleResult(retain) { asTypeOf(serializer).onResult() }
 
 /**
@@ -642,7 +642,7 @@ fun <T> NavHostController.HandleResultOfType(
 fun <T : Any> NavHostController.HandleResultOfTypeOrNull(
     serializer: KSerializer<T>,
     retain: Boolean = false,
-    onResult: T?.() -> Unit
+    onResult: T?.() -> Unit,
 ) = HandleResult(retain) { asTypeOfOrNull(serializer).onResult() }
 
 /**
@@ -658,18 +658,51 @@ fun <T : Any> NavHostController.HandleResultOfTypeOrNull(
 fun <T> NavHostController.HandleResultOfTypeOrNull(
     serializer: KSerializer<T>,
     retain: Boolean = false,
-    onResult: T?.() -> Unit
+    onResult: T?.() -> Unit,
 ) = HandleResult(retain) { asTypeOfOrNull(serializer).onResult() }
+
+/**
+ * Handles a [Route.Result.Data] matching a Unit
+ * Requires that the [Route.Result.Data.bundle] is described by a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.UnitType]
+ * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
+ * @param onResult Method for handling the result
+ * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.UnitType].
+ */
+@Composable
+fun NavHostController.HandleUnitResult(
+    retain: Boolean = false,
+    onResult: () -> Unit,
+) = HandleResult(retain) {
+    asUnit()
+    onResult()
+}
+
+/**
+ * Handles a [Route.Result.Data] matching a Unit or `null`
+ * Requires that the [Route.Result.Data.bundle] is described by a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.UnitType] either directly or wrapped by [NavigationBundleSpecType.OptionalType]
+ * @param retain If `true` the result will be retained in the [NavBackStackEntry]. It will be deleted otherwise.
+ * @param onResult Method for handling the result
+ */
+@Composable
+fun NavHostController.HandleUnitOrNullResult(
+    retain: Boolean = false,
+    onResult: () -> Unit,
+) = HandleResult(retain) {
+    asUnitNull()
+    onResult()
+}
 
 @Composable
 internal fun NavHostController.HandleResult(retain: Boolean = false, onResult: Bundle.() -> Unit) {
     // Check if we have a result in the current BackStack.
     val result = currentBackStackEntry?.savedStateHandle?.getStateFlow<Bundle?>(Route.Result.KEY, null)?.collectAsState()
     result?.value?.let {
-        onResult(it)
-        // If retain is set we keep the result, otherwise clean up.
-        if (!retain) {
-            currentBackStackEntry?.savedStateHandle?.remove<Bundle>(Route.Result.KEY)
-        }
+        try {
+            onResult(it)
+            // If retain is set we keep the result, otherwise clean up.
+            if (!retain) {
+                currentBackStackEntry?.savedStateHandle?.remove<Bundle>(Route.Result.KEY)
+            }
+        } catch (e: BundleConversionError) {}
     }
 }

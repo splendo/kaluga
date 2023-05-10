@@ -33,25 +33,25 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricLinearMassDensityTimesMetricLength")
 infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.LinearMassDensity, MetricLinearMassDensity>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = unit.weight.mass(this, length)
 
 @JvmName("imperialLinearMassDensityTimesImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = unit.weight.mass(this, length)
 
 @JvmName("ukImperialLinearMassDensityTimesImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = unit.weight.mass(this, length)
 
 @JvmName("usCustomaryLinearMassDensityTimesImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = unit.weight.mass(this, length)
 
 @JvmName("linearMassDensityTimesLength")
 infix operator fun <LinearMassDensityUnit : LinearMassDensity, LengthUnit : Length> ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>
+    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
 ) = Kilogram.mass(this, length)

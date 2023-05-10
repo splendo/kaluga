@@ -57,7 +57,7 @@ internal enum class DateTime(val char: Char) {
 
     // (Sat Nov 04 12:02:33 EST 1999)
     DATE('D'), // (mm/dd/yy)
-    ISO_STANDARD_DATE('F'); // (%Y-%m-%d)
+    ISO_STANDARD_DATE('F'), ; // (%Y-%m-%d)
 
     companion object {
         internal fun parse(c: Char): DateTime {

@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     LuminousIntensityUnit : LuminousIntensity,
     AreaUnit : Area,
-    LuminanceUnit : Luminance
+    LuminanceUnit : Luminance,
     > LuminanceUnit.luminance(
     luminousIntensity: ScientificValue<PhysicalQuantity.LuminousIntensity, LuminousIntensityUnit>,
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
 ) = luminance(luminousIntensity, area, ::DefaultScientificValue)
 
 @JvmName("luminanceFromLuminousIntensityAndArea")
@@ -42,9 +42,9 @@ fun <
     LuminousIntensityUnit : LuminousIntensity,
     AreaUnit : Area,
     LuminanceUnit : Luminance,
-    Value : ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>
+    Value : ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>,
     > LuminanceUnit.luminance(
     luminousIntensity: ScientificValue<PhysicalQuantity.LuminousIntensity, LuminousIntensityUnit>,
     area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-    factory: (Decimal, LuminanceUnit) -> Value
+    factory: (Decimal, LuminanceUnit) -> Value,
 ) = byDividing(luminousIntensity, area, factory)

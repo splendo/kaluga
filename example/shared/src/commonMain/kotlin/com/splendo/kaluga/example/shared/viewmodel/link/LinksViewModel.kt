@@ -33,7 +33,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Repository(
     val name: String,
-    val type: String
+    val type: String,
 )
 
 sealed class BrowserNavigationActions<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
@@ -43,7 +43,7 @@ sealed class BrowserNavigationActions<T>(value: T, type: NavigationBundleSpecTyp
 class LinksViewModel(
     linkManagerBuilder: LinksManager.Builder,
     private val alertPresenterBuilder: BaseAlertPresenter.Builder,
-    navigator: Navigator<BrowserNavigationActions<*>>
+    navigator: Navigator<BrowserNavigationActions<*>>,
 ) : NavigatingViewModel<BrowserNavigationActions<*>>(navigator, alertPresenterBuilder) {
 
     val browserButtonText = observableOf("browser_button_text".localized())
@@ -67,13 +67,13 @@ class LinksViewModel(
         val result = linksRepo.validateLink("https://kaluga-links.web.app")
         if (result != null) {
             navigator.navigate(
-                BrowserNavigationActions.OpenWebView(result)
+                BrowserNavigationActions.OpenWebView(result),
             )
         } else {
             showAlert(
                 "Error Alert",
                 "URL is invalid.",
-                Alert.Action.Style.NEGATIVE
+                Alert.Action.Style.NEGATIVE,
             )
         }
     }
@@ -84,13 +84,13 @@ class LinksViewModel(
             showAlert(
                 "Alert",
                 result.toString(),
-                Alert.Action.Style.POSITIVE
+                Alert.Action.Style.POSITIVE,
             )
         } else {
             showAlert(
                 "Error Alert",
                 "Query is invalid or empty.",
-                Alert.Action.Style.NEGATIVE
+                Alert.Action.Style.NEGATIVE,
             )
         }
     }

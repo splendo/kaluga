@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     SpecificEnergyUnit : SpecificEnergy,
     MolarEnergyUnit : MolarEnergy,
-    MolalityUnit : Molality
+    MolalityUnit : Molality,
     > SpecificEnergyUnit.specificEnergy(
     molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>,
-    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>
+    molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
 ) = specificEnergy(molarEnergy, molality, ::DefaultScientificValue)
 
 @JvmName("specificEnergyFromMolarEnergyAndMolality")
@@ -42,9 +42,9 @@ fun <
     SpecificEnergyUnit : SpecificEnergy,
     MolarEnergyUnit : MolarEnergy,
     MolalityUnit : Molality,
-    Value : ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>
+    Value : ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>,
     > SpecificEnergyUnit.specificEnergy(
     molarEnergy: ScientificValue<PhysicalQuantity.MolarEnergy, MolarEnergyUnit>,
     molality: ScientificValue<PhysicalQuantity.Molality, MolalityUnit>,
-    factory: (Decimal, SpecificEnergyUnit) -> Value
+    factory: (Decimal, SpecificEnergyUnit) -> Value,
 ) = byMultiplying(molarEnergy, molality, factory)

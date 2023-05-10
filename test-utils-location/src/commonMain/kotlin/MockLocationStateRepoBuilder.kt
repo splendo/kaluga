@@ -37,7 +37,7 @@ import kotlin.coroutines.CoroutineContext
 class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(
     private val permissionsBuilder: suspend () -> Permissions,
     val locationManagerBuilder: LMB,
-    setupMocks: Boolean = true
+    setupMocks: Boolean = true,
 ) : BaseLocationStateRepoBuilder {
 
     /**
@@ -57,7 +57,7 @@ class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(
                     LocationStateRepo(
                         { settingsBuilder(locationPermission, permissionsBuilder()) },
                         locationManagerBuilder,
-                        coroutineContext
+                        coroutineContext,
                     ).also {
                         builtLocationStateRepo.add(it)
                     }
@@ -68,6 +68,6 @@ class MockLocationStateRepoBuilder<LMB : BaseLocationManager.Builder>(
     override fun create(
         locationPermission: LocationPermission,
         settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings,
-        coroutineContext: CoroutineContext
+        coroutineContext: CoroutineContext,
     ): LocationStateRepo = createMock.call(locationPermission, settingsBuilder, coroutineContext)
 }

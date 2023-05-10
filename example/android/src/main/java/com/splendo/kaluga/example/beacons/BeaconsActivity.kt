@@ -71,7 +71,8 @@ class BeaconsActivity : KalugaViewModelActivity<BeaconsListViewModel>() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.start_scanning,
-            R.id.stop_scanning -> {
+            R.id.stop_scanning,
+            -> {
                 viewModel.onScanPressed()
                 true
             }

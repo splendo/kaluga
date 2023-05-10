@@ -44,12 +44,12 @@ class SpeedUnitTest {
         assertEquals(
             4(Meter per Second),
             2(Meter per Second per Second).convert((Foot per Second per Second) as Acceleration) * 2(
-                Second
-            )
+                Second,
+            ),
         )
         assertEquals(
             4(Meter per Second),
-            2(Second) * 2(Meter per Second per Second).convert((Foot per Second per Second) as Acceleration)
+            2(Second) * 2(Meter per Second per Second).convert((Foot per Second per Second) as Acceleration),
         )
     }
 
@@ -69,17 +69,17 @@ class SpeedUnitTest {
         assertEquals(1(Foot per Second), 2(Pound.ukImperial x (Foot per Second)) / 2(Pound))
         assertEquals(
             1(Foot per Second),
-            2(Pound.ukImperial x (Foot per Second)) / 2(Pound.ukImperial)
+            2(Pound.ukImperial x (Foot per Second)) / 2(Pound.ukImperial),
         )
         assertEquals(1(Foot per Second), 2(Pound.usCustomary x (Foot per Second)) / 2(Pound))
         assertEquals(
             1(Foot per Second),
-            2(Pound.usCustomary x (Foot per Second)) / 2(Pound.usCustomary)
+            2(Pound.usCustomary x (Foot per Second)) / 2(Pound.usCustomary),
         )
         assertEqualScientificValue(
             1(Meter per Second),
             2(Kilogram x (Meter per Second)) / 2(Kilogram).convert(Pound),
-            8
+            8,
         )
     }
 
@@ -95,40 +95,40 @@ class SpeedUnitTest {
         assertEquals(1(Inch per Minute), 2(InchPoundForcePerMinute) / 2(PoundForce))
         assertEquals(
             1(Foot per Second),
-            2(FootPoundForcePerSecond).convert(BritishThermalUnitPerSecond) / 2(PoundForce)
+            2(FootPoundForcePerSecond).convert(BritishThermalUnitPerSecond) / 2(PoundForce),
         )
         assertEquals(
             1(Foot per Minute),
-            2(FootPoundForcePerMinute).convert(BritishThermalUnitPerMinute) / 2(PoundForce)
+            2(FootPoundForcePerMinute).convert(BritishThermalUnitPerMinute) / 2(PoundForce),
         )
         assertEqualScientificValue(
             1(Foot per Hour),
             (1.0 / 30.0)(FootPoundForcePerMinute).convert(BritishThermalUnitPerHour) / 2(PoundForce),
-            8
+            8,
         )
         assertEqualScientificValue(
             1(Foot per Second),
-            2(FootPoundForcePerSecond).convert(Watt) / 2(PoundForce)
+            2(FootPoundForcePerSecond).convert(Watt) / 2(PoundForce),
         )
         assertEqualScientificValue(
             1(Foot per Second),
-            2(FootPoundForcePerSecond).convert(Watt.imperial) / 2(PoundForce)
+            2(FootPoundForcePerSecond).convert(Watt.imperial) / 2(PoundForce),
         )
         assertEqualScientificValue(
             1(Foot per Second),
-            2(FootPoundForcePerSecond).convert(Watt) / 2(PoundForce.ukImperial)
+            2(FootPoundForcePerSecond).convert(Watt) / 2(PoundForce.ukImperial),
         )
         assertEqualScientificValue(
             1(Foot per Second),
-            2(FootPoundForcePerSecond).convert(Watt.imperial) / 2(PoundForce.ukImperial)
+            2(FootPoundForcePerSecond).convert(Watt.imperial) / 2(PoundForce.ukImperial),
         )
         assertEqualScientificValue(
             1(Foot per Second),
-            2(FootPoundForcePerSecond).convert(Watt) / 2(PoundForce.usCustomary)
+            2(FootPoundForcePerSecond).convert(Watt) / 2(PoundForce.usCustomary),
         )
         assertEqualScientificValue(
             1(Foot per Second),
-            2(FootPoundForcePerSecond).convert(Watt.imperial) / 2(PoundForce.usCustomary)
+            2(FootPoundForcePerSecond).convert(Watt.imperial) / 2(PoundForce.usCustomary),
         )
         assertEquals(1(Meter per Second), 2(Watt.metric) / 2(Newton).convert(PoundForce))
     }

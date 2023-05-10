@@ -31,7 +31,7 @@ class Service(
     service: ServiceWrapper,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     parentLogTag: String,
-    logger: Logger
+    logger: Logger,
 ) {
 
     /**
@@ -47,7 +47,7 @@ class Service(
             it,
             emitNewAction = emitNewAction,
             parentLogTag = "$parentLogTag Service ${uuid.uuidString}",
-            logger = logger
+            logger = logger,
         )
     }
 }

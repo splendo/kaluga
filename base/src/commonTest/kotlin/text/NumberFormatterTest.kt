@@ -144,8 +144,8 @@ class NumberFormatterTest : BaseTest() {
         val formatters = createFormatters(
             NumberFormatStyle.Currency(
                 minFractionDigits = 2U,
-                maxFractionDigits = 2U
-            )
+                maxFractionDigits = 2U,
+            ),
         ) { it.usesGroupingSeparator = true }
         assertEquals("$1.00", formatters.usFormatter.format(1).replace("\u00A0", " "))
         assertEquals("€ 1,00", formatters.nlFormatter.format(1).replace("\u00A0", " "))
@@ -163,12 +163,12 @@ class NumberFormatterTest : BaseTest() {
         val usdFormatters = createFormatters(NumberFormatStyle.Currency(currencyCode = "USD")) { it.usesGroupingSeparator = true }
         assertEquals("$12,345.68", usdFormatters.usFormatter.format(12345.6789).replace("\u00A0", " "))
         // TODO: on Java 11 this becomes US$ instead of USD https://github.com/splendo/kaluga/issues/230
-        assertEquals("$usdForNL 12.345,68", usdFormatters.nlFormatter.format(12345.6789).replace("\u00A0", " "))
+        assertEquals("$USDForNL 12.345,68", usdFormatters.nlFormatter.format(12345.6789).replace("\u00A0", " "))
 
         // TODO on Java 11 this becomes ¥ instead of JPY https://github.com/splendo/kaluga/issues/230
         val yenFormatters = createFormatters(NumberFormatStyle.Currency(currencyCode = "JPY")) { it.usesGroupingSeparator = true }
-        assertEquals("${jpyForUS}12,346", yenFormatters.usFormatter.format(12345.6789).replace("\u00A0", " "))
-        assertEquals("$jpyForNL 12.346", yenFormatters.nlFormatter.format(12345.6789).replace("\u00A0", " "))
+        assertEquals("${JPYForUS}12,346", yenFormatters.usFormatter.format(12345.6789).replace("\u00A0", " "))
+        assertEquals("$JPYForNL 12.346", yenFormatters.nlFormatter.format(12345.6789).replace("\u00A0", " "))
     }
 
     @Test
@@ -196,6 +196,6 @@ class NumberFormatterTest : BaseTest() {
     private data class Formatters(val usFormatter: NumberFormatter, val nlFormatter: NumberFormatter)
 }
 
-expect val usdForNL: String
-expect val jpyForUS: String
-expect val jpyForNL: String
+expect val USDForNL: String
+expect val JPYForUS: String
+expect val JPYForNL: String

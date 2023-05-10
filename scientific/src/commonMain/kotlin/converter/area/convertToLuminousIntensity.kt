@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("areaTimesLuminance")
 infix operator fun <LuminanceUnit : Luminance, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>
+    luminance: ScientificValue<PhysicalQuantity.Luminance, LuminanceUnit>,
 ) = luminance * this

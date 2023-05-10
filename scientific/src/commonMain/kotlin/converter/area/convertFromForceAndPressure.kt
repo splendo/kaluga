@@ -31,10 +31,10 @@ import kotlin.jvm.JvmName
 fun <
     ForceUnit : Force,
     AreaUnit : Area,
-    PressureUnit : Pressure
+    PressureUnit : Pressure,
     > AreaUnit.area(
     force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
-    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>
+    pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
 ) = area(force, pressure, ::DefaultScientificValue)
 
 @JvmName("areaFromForceAndPressure")
@@ -42,9 +42,9 @@ fun <
     ForceUnit : Force,
     AreaUnit : Area,
     PressureUnit : Pressure,
-    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>
+    Value : ScientificValue<PhysicalQuantity.Area, AreaUnit>,
     > AreaUnit.area(
     force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
     pressure: ScientificValue<PhysicalQuantity.Pressure, PressureUnit>,
-    factory: (Decimal, AreaUnit) -> Value
+    factory: (Decimal, AreaUnit) -> Value,
 ) = byDividing(force, pressure, factory)

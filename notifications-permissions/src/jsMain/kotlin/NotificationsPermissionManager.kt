@@ -35,7 +35,11 @@ actual class NotificationOptions
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultNotificationsPermissionManager(notificationsPermission: NotificationsPermission, settings: Settings, coroutineScope: CoroutineScope) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
+actual class DefaultNotificationsPermissionManager(
+    notificationsPermission: NotificationsPermission,
+    settings: Settings,
+    coroutineScope: CoroutineScope,
+) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
 
     override fun requestPermissionDidStart() {
         TODO("Not yet implemented")
@@ -56,7 +60,7 @@ actual class DefaultNotificationsPermissionManager(notificationsPermission: Noti
  */
 actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): PermissionManager<NotificationsPermission> {
+    override fun create(notificationsPermission: NotificationsPermission, settings: Settings, coroutineScope: CoroutineScope): PermissionManager<NotificationsPermission> {
         return DefaultNotificationsPermissionManager(notificationsPermission, settings, coroutineScope)
     }
 }

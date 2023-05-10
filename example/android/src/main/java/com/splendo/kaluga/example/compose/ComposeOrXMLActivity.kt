@@ -36,7 +36,7 @@ import org.koin.core.parameter.parametersOf
 
 abstract class ComposeOrXMLActivity<ComposeActivity : AppCompatActivity, XMLActivity : AppCompatActivity>(
     composeActivityClass: Class<ComposeActivity>,
-    XMLActivityClass: Class<XMLActivity>
+    XMLActivityClass: Class<XMLActivity>,
 ) : KalugaViewModelActivity<ComposeOrXMLSelectionViewModel>() {
 
     override val viewModel: ComposeOrXMLSelectionViewModel by viewModel {
@@ -46,7 +46,7 @@ abstract class ComposeOrXMLActivity<ComposeActivity : AppCompatActivity, XMLActi
                     is ComposeOrXMLNavigationAction.Compose -> NavigationSpec.Activity(composeActivityClass)
                     is ComposeOrXMLNavigationAction.XML -> NavigationSpec.Activity(XMLActivityClass)
                 }
-            }
+            },
         )
     }
 

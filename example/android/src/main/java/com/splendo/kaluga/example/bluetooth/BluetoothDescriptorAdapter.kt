@@ -47,7 +47,7 @@ class BluetoothDescriptorAdapter(private val lifecycleOwner: LifecycleOwner) : R
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): BluetoothDescriptorItemViewHolder {
         val binding = BluetoothDescriptorItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         binding.lifecycleOwner = lifecycleOwner

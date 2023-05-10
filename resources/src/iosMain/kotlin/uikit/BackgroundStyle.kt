@@ -76,8 +76,8 @@ private fun pathForShape(shape: KalugaBackgroundStyle.Shape, bounds: CValue<CGRe
             },
             CGSizeMake(
                 shape.cornerRadiusX.toDouble(),
-                shape.cornerRadiusY.toDouble()
-            )
+                shape.cornerRadiusY.toDouble(),
+            ),
         )
         is KalugaBackgroundStyle.Shape.Oval -> UIBezierPath.bezierPathWithOvalInRect(bounds)
     }.CGPath
@@ -91,7 +91,7 @@ private fun CALayer.applyFillStyle(fillStyle: KalugaBackgroundStyle.FillStyle, b
                     type = kCAGradientLayerAxial
                     colors = listOfNotNull(
                         fillStyle.color.uiColor.CGColor,
-                        fillStyle.color.uiColor.CGColor
+                        fillStyle.color.uiColor.CGColor,
                     ).mapToCGColor()
                 }
                 is KalugaBackgroundStyle.FillStyle.Gradient -> {
@@ -103,7 +103,7 @@ private fun CALayer.applyFillStyle(fillStyle: KalugaBackgroundStyle.FillStyle, b
                     applyGradientStyle(fillStyle.gradientStyle, bounds)
                 }
             }
-        }
+        },
     )
 }
 
@@ -113,42 +113,42 @@ private fun List<CGColorRef>.mapToCGColor() = map {
 
 private fun CAGradientLayer.applyGradientStyle(
     gradientStyle: GradientStyle,
-    bounds: CValue<CGRect>
+    bounds: CValue<CGRect>,
 ) = when (gradientStyle) {
     is GradientStyle.Linear -> {
         type = kCAGradientLayerAxial
         val startAndEndPoint = when (gradientStyle.orientation) {
             GradientStyle.Linear.Orientation.TOP_LEFT_BOTTOM_RIGHT -> Pair(
                 CGPointMake(0.0, 0.0),
-                CGPointMake(1.0, 1.0)
+                CGPointMake(1.0, 1.0),
             )
             GradientStyle.Linear.Orientation.TOP_RIGHT_BOTTOM_LEFT -> Pair(
                 CGPointMake(1.0, 0.0),
-                CGPointMake(0.0, 0.0)
+                CGPointMake(0.0, 0.0),
             )
             GradientStyle.Linear.Orientation.TOP_BOTTOM -> Pair(
                 CGPointMake(0.5, 0.0),
-                CGPointMake(0.5, 1.0)
+                CGPointMake(0.5, 1.0),
             )
             GradientStyle.Linear.Orientation.LEFT_RIGHT -> Pair(
                 CGPointMake(0.0, 0.5),
-                CGPointMake(1.0, 0.5)
+                CGPointMake(1.0, 0.5),
             )
             GradientStyle.Linear.Orientation.BOTTOM_LEFT_TOP_RIGHT -> Pair(
                 CGPointMake(0.0, 1.0),
-                CGPointMake(1.0, 0.0)
+                CGPointMake(1.0, 0.0),
             )
             GradientStyle.Linear.Orientation.BOTTOM_RIGHT_TOP_LEFT -> Pair(
                 CGPointMake(1.0, 1.0),
-                CGPointMake(0.0, 0.0)
+                CGPointMake(0.0, 0.0),
             )
             GradientStyle.Linear.Orientation.BOTTOM_TOP -> Pair(
                 CGPointMake(0.5, 1.0),
-                CGPointMake(0.5, 0.0)
+                CGPointMake(0.5, 0.0),
             )
             GradientStyle.Linear.Orientation.RIGHT_LEFT -> Pair(
                 CGPointMake(1.0, 0.5),
-                CGPointMake(0.0, 0.5)
+                CGPointMake(0.0, 0.5),
             )
         }
         startPoint = startAndEndPoint.first
@@ -158,11 +158,11 @@ private fun CAGradientLayer.applyGradientStyle(
         type = kCAGradientLayerRadial
         startPoint = CGPointMake(
             gradientStyle.centerPoint.x.toDouble(),
-            gradientStyle.centerPoint.y.toDouble()
+            gradientStyle.centerPoint.y.toDouble(),
         )
         endPoint = CGPointMake(
             gradientStyle.centerPoint.x.toDouble() + (gradientStyle.radius / bounds.useContents { size.width }),
-            gradientStyle.centerPoint.y.toDouble() + (gradientStyle.radius / bounds.useContents { size.height })
+            gradientStyle.centerPoint.y.toDouble() + (gradientStyle.radius / bounds.useContents { size.height }),
         )
     }
     is GradientStyle.Angular -> {
@@ -175,7 +175,7 @@ private fun CAGradientLayer.applyGradientStyle(
 private fun CALayer.applyStroke(
     strokeStyle: KalugaBackgroundStyle.StrokeStyle,
     path: CGPathRef?,
-    bounds: CValue<CGRect>
+    bounds: CValue<CGRect>,
 ) {
     addSublayer(
         CAShapeLayer(this).apply {
@@ -192,6 +192,6 @@ private fun CALayer.applyStroke(
                 }
             }
             fillColor = null
-        }
+        },
     )
 }

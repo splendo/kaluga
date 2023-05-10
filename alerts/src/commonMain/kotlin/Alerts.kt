@@ -18,6 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.alerts
 
+import com.splendo.kaluga.alerts.Alert.Action.Style
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -38,7 +39,7 @@ data class Alert(
     val message: String?,
     val actions: List<Action>,
     val textInputAction: TextInputAction? = null,
-    val style: Style = Style.ALERT
+    val style: Style = Style.ALERT,
 ) {
 
     /**
@@ -58,7 +59,7 @@ data class Alert(
         /**
          * Alert that shows some Text Inout
          */
-        TEXT_INPUT
+        TEXT_INPUT,
     }
 
     /**
@@ -133,7 +134,7 @@ data class Alert(
         fun setTextInput(
             text: String? = null,
             placeholder: String?,
-            textObserver: AlertTextObserver
+            textObserver: AlertTextObserver,
         ) = apply {
             setTextInputAction(TextInputAction(text, placeholder, textObserver))
         }
@@ -206,7 +207,7 @@ data class Alert(
     data class Action(
         val title: String,
         val style: Style = Style.DEFAULT,
-        val handler: AlertActionHandler = {}
+        val handler: AlertActionHandler = {},
     ) {
         /**
          * The style of an action. This determines the look of the button when displayed in the alert.
@@ -240,7 +241,7 @@ data class Alert(
             /**
              * Negative button. Synonymous with [CANCEL]
              */
-            NEGATIVE(CANCEL.value)
+            NEGATIVE(CANCEL.value),
         }
     }
 
@@ -254,7 +255,7 @@ data class Alert(
     data class TextInputAction(
         val text: String?,
         val placeholder: String?,
-        val textObserver: AlertTextObserver
+        val textObserver: AlertTextObserver,
     )
 }
 
@@ -330,7 +331,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
                     continuation.tryResume(action)?.let {
                         continuation.completeResume(it)
                     }
-                }
+                },
             )
         }
 
@@ -343,7 +344,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
     protected abstract fun showAlert(
         animated: Boolean = true,
         afterHandler: (Alert.Action?) -> Unit = {},
-        completion: () -> Unit = {}
+        completion: () -> Unit = {},
     )
 }
 
@@ -376,12 +377,12 @@ expect class AlertPresenter : BaseAlertPresenter {
  */
 fun BaseAlertPresenter.Builder.buildAlert(
     coroutineScope: CoroutineScope,
-    initialize: Alert.Builder.() -> Unit
+    initialize: Alert.Builder.() -> Unit,
 ): BaseAlertPresenter = create(
     Alert.Builder(Alert.Style.ALERT).apply {
         initialize()
     }.build(),
-    coroutineScope
+    coroutineScope,
 )
 
 /**
@@ -393,12 +394,12 @@ fun BaseAlertPresenter.Builder.buildAlert(
  */
 fun BaseAlertPresenter.Builder.buildActionSheet(
     coroutineScope: CoroutineScope,
-    initialize: Alert.Builder.() -> Unit
+    initialize: Alert.Builder.() -> Unit,
 ): BaseAlertPresenter = create(
     Alert.Builder(Alert.Style.ACTION_LIST).apply {
         initialize()
     }.build(),
-    coroutineScope
+    coroutineScope,
 )
 
 /**
@@ -410,10 +411,10 @@ fun BaseAlertPresenter.Builder.buildActionSheet(
  */
 fun BaseAlertPresenter.Builder.buildAlertWithInput(
     coroutineScope: CoroutineScope,
-    initialize: Alert.Builder.() -> Unit
+    initialize: Alert.Builder.() -> Unit,
 ): BaseAlertPresenter = create(
     Alert.Builder(Alert.Style.TEXT_INPUT).apply {
         initialize()
     }.build(),
-    coroutineScope
+    coroutineScope,
 )

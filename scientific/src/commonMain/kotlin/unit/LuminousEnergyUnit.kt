@@ -35,7 +35,9 @@ val LuminousEnergyUnits: Set<LuminousEnergy> get() = LuminousFluxUnits.flatMap {
  * @property time the [Time] component
  */
 @Serializable
-data class LuminousEnergy(val luminousFlux: LuminousFlux, val time: Time) : MetricAndImperialScientificUnit<PhysicalQuantity.LuminousEnergy> {
+data class LuminousEnergy(val luminousFlux: LuminousFlux, val time: Time) :
+    AbstractScientificUnit<PhysicalQuantity.LuminousEnergy>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.LuminousEnergy> {
     override val symbol: String = "${luminousFlux.symbol}⋅${time.symbol}"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.LuminousEnergy

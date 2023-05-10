@@ -29,8 +29,8 @@ import kotlin.test.assertTrue
 class SuperSimpleFlowTestTest : SimpleFlowTest<Int>() {
     override val flow = suspend { flowOf(1, 2, 3) }
 
-    @Test
     // use testWithFlow to run the test
+    @Test
     fun test() = testWithFlow {
         val complete = EmptyCompletableDeferred()
 

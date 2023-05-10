@@ -37,50 +37,50 @@ import kotlin.jvm.JvmName
 
 @JvmName("molalityTimesMetricDensity")
 infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>
+    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>,
 ) = (unit.amountOfSubstance per density.unit.per).molarity(this, density)
 
 @JvmName("molalityTimesImperialDensity")
 infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>
+    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
 ) = (unit.amountOfSubstance per density.unit.per).molarity(this, density)
 
 @JvmName("molalityTimesUKImperialDensity")
 infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>
+    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>,
 ) = (unit.amountOfSubstance per density.unit.per).molarity(this, density)
 
 @JvmName("molalityTimesUSCustomaryDensity")
 infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>
+    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>,
 ) = (unit.amountOfSubstance per density.unit.per).molarity(this, density)
 
 @JvmName("molalityTimesDensity")
 infix operator fun <MolalityUnit : Molality, DensityUnit : Density> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>
+    density: ScientificValue<PhysicalQuantity.Density, DensityUnit>,
 ) = (unit.amountOfSubstance per CubicMeter).molarity(this, density)
 
 @JvmName("molalityDivMetricSpecificVolume")
 infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>,
 ) = (unit.amountOfSubstance per specificVolume.unit.volume).molarity(this, specificVolume)
 
 @JvmName("molalityDivImperialSpecificVolume")
 infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>,
 ) = (unit.amountOfSubstance per specificVolume.unit.volume).molarity(this, specificVolume)
 
 @JvmName("molalityDivUKImperialSpecificVolume")
 infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, UKImperialSpecificVolume>,
 ) = (unit.amountOfSubstance per specificVolume.unit.volume).molarity(this, specificVolume)
 
 @JvmName("molarityDivUSCustomarySpecificVolume")
 infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, USCustomarySpecificVolume>,
 ) = (unit.amountOfSubstance per specificVolume.unit.volume).molarity(this, specificVolume)
 
 @JvmName("molalityDivSpecificVolume")
 infix operator fun <MolalityUnit : Molality, SpecificVolumeUnit : SpecificVolume> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.div(
-    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>
+    specificVolume: ScientificValue<PhysicalQuantity.SpecificVolume, SpecificVolumeUnit>,
 ) = (unit.amountOfSubstance per CubicMeter).molarity(this, specificVolume)

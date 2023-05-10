@@ -37,5 +37,5 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.times
 
 @JvmName("currentTimesInductance")
 infix operator fun <InductanceUnit : ElectricInductance, CurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>.times(
-    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>
+    inductance: ScientificValue<PhysicalQuantity.ElectricInductance, InductanceUnit>,
 ) = inductance * this

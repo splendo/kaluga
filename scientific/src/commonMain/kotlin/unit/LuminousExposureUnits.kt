@@ -45,7 +45,7 @@ val LuminousExposureUnits: Set<LuminousExposure> get() = MetricLuminousExposureU
  * SI unit is `Lux x Second`
  */
 @Serializable
-abstract class LuminousExposure : ScientificUnit<PhysicalQuantity.LuminousExposure> {
+sealed class LuminousExposure : AbstractScientificUnit<PhysicalQuantity.LuminousExposure>() {
     /**
      * The [Illuminance] component
      */
@@ -67,7 +67,10 @@ abstract class LuminousExposure : ScientificUnit<PhysicalQuantity.LuminousExposu
  * @param time the [Time] component
  */
 @Serializable
-data class MetricLuminousExposure(override val illuminance: MetricIlluminance, override val time: Time) : LuminousExposure(), MetricScientificUnit<PhysicalQuantity.LuminousExposure> {
+data class MetricLuminousExposure(
+    override val illuminance: MetricIlluminance,
+    override val time: Time,
+) : LuminousExposure(), MetricScientificUnit<PhysicalQuantity.LuminousExposure> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -77,7 +80,10 @@ data class MetricLuminousExposure(override val illuminance: MetricIlluminance, o
  * @param time the [Time] component
  */
 @Serializable
-data class ImperialLuminousExposure(override val illuminance: ImperialIlluminance, override val time: Time) : LuminousExposure(), ImperialScientificUnit<PhysicalQuantity.LuminousExposure> {
+data class ImperialLuminousExposure(
+    override val illuminance: ImperialIlluminance,
+    override val time: Time,
+) : LuminousExposure(), ImperialScientificUnit<PhysicalQuantity.LuminousExposure> {
     override val system = MeasurementSystem.Imperial
 }
 

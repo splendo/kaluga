@@ -45,7 +45,7 @@ fun HardwareBackButtonNavigation(onBackButtonClickHandler: suspend () -> Unit) {
         DisposableEffect(Unit) {
             val onBackPressedCallback = ComposeOnBackPressedCallback(
                 coroutineScope,
-                onBackButtonClickHandler
+                onBackButtonClickHandler,
             )
 
             val lifecycleObserver = object : DefaultLifecycleObserver {
@@ -67,7 +67,7 @@ fun HardwareBackButtonNavigation(onBackButtonClickHandler: suspend () -> Unit) {
 
 private class ComposeOnBackPressedCallback(
     private val coroutineScope: CoroutineScope,
-    private val onBackButtonClickHandler: suspend () -> Unit
+    private val onBackButtonClickHandler: suspend () -> Unit,
 ) : OnBackPressedCallback(true) {
 
     override fun handleOnBackPressed() {

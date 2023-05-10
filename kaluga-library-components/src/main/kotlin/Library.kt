@@ -16,11 +16,11 @@
  */
 
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.extra
 import org.gradle.api.logging.Logger
+import org.gradle.kotlin.dsl.extra
 import org.jetbrains.kotlin.konan.file.File
-import org.jetbrains.kotlin.konan.properties.loadProperties
 import org.jetbrains.kotlin.konan.properties.Properties
+import org.jetbrains.kotlin.konan.properties.loadProperties
 import java.io.IOException
 
 private val libraries: MutableMap<Project, LibraryImpl> = mutableMapOf()
@@ -40,7 +40,7 @@ class LibraryImpl(project: Project) {
         }
     }
     private val logger = project.logger
-    private val baseVersion = "1.1.0"
+    private val baseVersion = "1.2.0"
     val group = "com.splendo.kaluga"
     val version: String by lazy {
         val libraryVersionLocalProperties: String? = props["kaluga.libraryVersion"] as? String
@@ -57,8 +57,8 @@ class LibraryImpl(project: Project) {
         const val minSdk = 23
         const val compileSdk = 33
         const val targetSdk = 33
-        const val buildTools = "33.0.1"
-        const val composeCompiler = "1.4.0"
+        const val buildTools = "33.0.2"
+        const val composeCompiler = "1.4.7"
     }
 
     class IOSLibrary(props: Properties, logger: Logger) {
@@ -117,5 +117,5 @@ class LibraryImpl(project: Project) {
 enum class IOSTarget {
     X64,
     Arm64,
-    SimulatorArm64
+    SimulatorArm64,
 }

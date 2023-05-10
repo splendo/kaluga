@@ -28,15 +28,15 @@ import kotlin.jvm.JvmName
 
 @JvmName("metricKinematicViscosityTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit.area).area(this, time)
 
 @JvmName("imperialKinematicViscosityTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit.area).area(this, time)
 
 @JvmName("kinematicViscosityTimesTime")
 infix operator fun <KinematicViscosityUnit : KinematicViscosity, TimeUnit : Time> ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit.area).area(this, time)

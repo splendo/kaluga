@@ -26,5 +26,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("timeTimesAngularVelocity")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    angularVelocity: ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>
+    angularVelocity: ScientificValue<PhysicalQuantity.AngularVelocity, AngularVelocity>,
 ) = angularVelocity * this

@@ -27,5 +27,5 @@ import kotlin.jvm.JvmName
 
 @JvmName("catalysticActivityTimesTime")
 infix operator fun <TimeUnit : Time, CatalysisUnit : CatalysticActivity> ScientificValue<PhysicalQuantity.CatalysticActivity, CatalysisUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = Mole.amountOfSubstance(this, time)

@@ -45,7 +45,7 @@ data class NotificationsPermission(val options: NotificationOptions? = null) : P
 fun PermissionsBuilder.registerNotificationsPermission(
     notificationsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseNotificationsPermissionManagerBuilder = ::NotificationsPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
-    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
 ) =
     registerNotificationsPermission(notificationsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
         NotificationsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
@@ -61,7 +61,7 @@ fun PermissionsBuilder.registerNotificationsPermission(
  */
 fun PermissionsBuilder.registerNotificationsPermission(
     notificationsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseNotificationsPermissionManagerBuilder = ::NotificationsPermissionManagerBuilder,
-    notificationsPermissionStateRepoBuilder: (NotificationsPermission, BaseNotificationsPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<NotificationsPermission>
+    notificationsPermissionStateRepoBuilder: (NotificationsPermission, BaseNotificationsPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<NotificationsPermission>,
 ) = notificationsPermissionManagerBuilderBuilder(context).also {
     register(it)
     registerPermissionStateRepoBuilder<NotificationsPermission> { permission, coroutineContext ->
@@ -80,7 +80,7 @@ fun PermissionsBuilder.registerNotificationsPermission(
 fun PermissionsBuilder.registerNotificationsPermissionIfNotRegistered(
     notificationsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseNotificationsPermissionManagerBuilder = ::NotificationsPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
-    settings: BasePermissionManager.Settings = BasePermissionManager.Settings()
+    settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
 ) =
     registerNotificationsPermissionIfNotRegistered(notificationsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
         NotificationsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
@@ -95,7 +95,7 @@ fun PermissionsBuilder.registerNotificationsPermissionIfNotRegistered(
  */
 fun PermissionsBuilder.registerNotificationsPermissionIfNotRegistered(
     notificationsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseNotificationsPermissionManagerBuilder = ::NotificationsPermissionManagerBuilder,
-    notificationsPermissionStateRepoBuilder: (NotificationsPermission, BaseNotificationsPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<NotificationsPermission>
+    notificationsPermissionStateRepoBuilder: (NotificationsPermission, BaseNotificationsPermissionManagerBuilder, CoroutineContext) -> PermissionStateRepo<NotificationsPermission>,
 ) = notificationsPermissionManagerBuilderBuilder(context).also {
     registerOrGet(it)
     registerOrGetPermissionStateRepoBuilder<NotificationsPermission> { permission, coroutineContext ->

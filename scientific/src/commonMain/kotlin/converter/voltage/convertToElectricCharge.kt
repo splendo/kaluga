@@ -32,5 +32,5 @@ infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.times(capac
 
 @JvmName("voltageTimesCapacitance")
 infix operator fun <CapacitanceUnit : ElectricCapacitance, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.times(
-    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>
+    capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, CapacitanceUnit>,
 ) = capacitance * this
