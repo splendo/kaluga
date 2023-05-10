@@ -45,11 +45,9 @@ class MediaActivity : KalugaViewModelActivity<MediaViewModel>() {
             },
             ActivityNavigator<MediaNavigationAction> { action ->
                 when (action) {
-                    is MediaNavigationAction.SelectLocal -> NavigationSpec.Contract<MediaActivity, Array<String>>(
-                        arrayOf("audio/*", "video/*")
-                    ) { contract }
+                    is MediaNavigationAction.SelectLocal -> NavigationSpec.Contract<MediaActivity, Array<String>>(arrayOf("audio/*", "video/*")) { contract }
                 }
-            }
+            },
         )
     }
 

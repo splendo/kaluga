@@ -68,7 +68,7 @@ class MediaViewModel(
     mediaSurfaceProvider: MediaSurfaceProvider,
     builder: BaseMediaManager.Builder,
     private val alertPresenterBuilder: BaseAlertPresenter.Builder,
-    navigator: Navigator<MediaNavigationAction>
+    navigator: Navigator<MediaNavigationAction>,
 ) : NavigatingViewModel<MediaNavigationAction>(navigator, mediaSurfaceProvider, alertPresenterBuilder) {
 
     private companion object {
@@ -80,7 +80,9 @@ class MediaViewModel(
     private val mediaPlayer = DefaultMediaPlayer(mediaSurfaceProvider, builder, coroutineScope.coroutineContext + mediaPlayerDispatcher)
 
     val isPreparing = mediaPlayer.controls.map { it.getControlType<MediaPlayer.Controls.AwaitPreparation>() != null }.toInitializedObservable(false, coroutineScope)
-    val hasControls = mediaPlayer.controls.map { it.controlTypes.isNotEmpty() && it.getControlType<MediaPlayer.Controls.AwaitPreparation>() == null }.toInitializedObservable(false, coroutineScope)
+    val hasControls = mediaPlayer.controls.map {
+        it.controlTypes.isNotEmpty() && it.getControlType<MediaPlayer.Controls.AwaitPreparation>() == null
+    }.toInitializedObservable(false, coroutineScope)
     private val _totalDuration = mediaPlayer.duration.stateIn(coroutineScope, SharingStarted.Eagerly, ZERO)
     private val _controls = mediaPlayer.controls.stateIn(coroutineScope, SharingStarted.Eagerly, MediaPlayer.Controls())
 
@@ -171,7 +173,7 @@ class MediaViewModel(
     val volumeButton = mediaPlayer.currentVolume.map {
         KalugaButton.Plain(
             "media_playback_volume".localized().format(volumeFormatter.format(it)),
-            ButtonStyles.default
+            ButtonStyles.default,
         ) {
             updateVolume()
         }
@@ -194,7 +196,7 @@ class MediaViewModel(
                         Alert.Action(volumeFormatter.format(asPercentage)) {
                             selectedVolume.complete(asPercentage)
                         }
-                    }
+                    },
                 )
             }.show()
 
@@ -217,7 +219,9 @@ class MediaViewModel(
 
             when (actionSelected) {
                 defaultAudio -> didSelectFileAt(mediaSourceFromUrl("https://cdn.freesound.org/previews/459/459992_6253486-lq.mp3"))
-                defaultVideo -> didSelectFileAt(mediaSourceFromUrl("https://joy1.videvo.net/videvo_files/video/free/2019-04/large_watermarked/190408_07_GulfSturgeon_03_preview.mp4"))
+                defaultVideo -> didSelectFileAt(
+                    mediaSourceFromUrl("https://joy1.videvo.net/videvo_files/video/free/2019-04/large_watermarked/190408_07_GulfSturgeon_03_preview.mp4"),
+                )
                 selectLocalFile -> navigator.navigate(MediaNavigationAction.SelectLocal)
                 selectRemoteFile -> {
                     var input = ""
