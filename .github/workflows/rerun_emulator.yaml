@@ -1,3 +1,4 @@
+name: Rerun failed emulator tests
 on:
   workflow_run:
     workflows: ["Android Emulator tests"]
