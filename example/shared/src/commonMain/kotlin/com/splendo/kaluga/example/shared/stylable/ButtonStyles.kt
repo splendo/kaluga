@@ -291,18 +291,18 @@ object ButtonStyles {
             defaultStyle = ButtonStateStyle(
                 DefaultColors.black,
                 DefaultColors.lightGray,
-                KalugaBackgroundStyle.Shape.Oval
+                KalugaBackgroundStyle.Shape.Oval,
             ),
             pressedStyle = ButtonStateStyle(
                 DefaultColors.black,
                 DefaultColors.dimGray,
-                KalugaBackgroundStyle.Shape.Oval
+                KalugaBackgroundStyle.Shape.Oval,
             ),
             disabledStyle = ButtonStateStyle(
                 DefaultColors.dimGray,
                 DefaultColors.gray,
-                KalugaBackgroundStyle.Shape.Oval
-            )
+                KalugaBackgroundStyle.Shape.Oval,
+            ),
         )
     }
 
@@ -313,18 +313,18 @@ object ButtonStyles {
             defaultStyle = ButtonStateStyle(
                 DefaultColors.azure,
                 DefaultColors.lightGray,
-                KalugaBackgroundStyle.Shape.Oval
+                KalugaBackgroundStyle.Shape.Oval,
             ),
             pressedStyle = ButtonStateStyle(
                 DefaultColors.azure,
                 DefaultColors.dimGray,
-                KalugaBackgroundStyle.Shape.Oval
+                KalugaBackgroundStyle.Shape.Oval,
             ),
             disabledStyle = ButtonStateStyle(
                 DefaultColors.dimGray,
                 DefaultColors.gray,
-                KalugaBackgroundStyle.Shape.Oval
-            )
+                KalugaBackgroundStyle.Shape.Oval,
+            ),
         )
     }
 }
