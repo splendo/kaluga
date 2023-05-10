@@ -2,7 +2,6 @@
 EMU_BOOTED=0
 n=0
 first_launcher=1
-echo 1 > /tmp/failed
 while [[ $EMU_BOOTED = 0 ]];do
 echo "Test for current focus"
 #        $ANDROID_HOME/platform-tools/adb shell dumpsys window
@@ -11,13 +10,12 @@ echo "Current focus: ${CURRENT_FOCUS}"
 case $CURRENT_FOCUS in
 *"auncher"*)
 if [[ $first_launcher == 1 ]]; then
-echo "Launcher seems to be ready, wait 10 sec for another popup..."
-sleep 10
+echo "Launcher seems to be ready, wait 5 sec for another popup..."
+sleep 5
 first_launcher=0
 else
 echo "Launcher is ready, Android boot completed"
 EMU_BOOTED=1
-rm /tmp/failed
 fi
 ;;
 *"Not Responding: com.android.systemui"*)
@@ -44,9 +42,9 @@ first_launcher=1
 ;;
 *)
 n=$((n + 1))
-echo "Waiting Android to boot 10 sec ($n)..."
-sleep 10
-if [ $n -gt 60 ]; then
+echo "Waiting Android to boot 5 sec ($n)..."
+sleep 5
+if [ $n -gt 120 ]; then
 echo "Android Emulator does not start in 10 minutes"
 exit 2
 fi

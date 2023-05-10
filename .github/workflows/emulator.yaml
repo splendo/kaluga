@@ -66,7 +66,7 @@ jobs:
           heap-size: 1500M
           profile: 3.4in WQVGA
           channel: canary
-          script: ./check_emulator.sh
+          script: ./script/check_emulator.sh
 
       - name: install ffmpeg
         if: inputs.video
@@ -97,24 +97,9 @@ jobs:
           profile: 3.4in WQVGA
           channel: canary
           script: |
-            ./check_emulator.sh
-            ./gradlew --no-configuration-cache :${{ matrix.project }}:recordVideo :${{ matrix.project }}:connectedDebugAndroidTest
+            ./script/check_emulator.sh
+            ./gradlew --no-configuration-cache recordVideo :${{ matrix.project }}:connectedDebugAndroidTest
 
-      - name: stop screen capture
-        if: always() && inputs.video
-        continue-on-error: true
-        shell: bash
-        run: |
-          ps aux | grep -m 1 ffmpeg
-          ps aux | grep -m 1 screenrecord
-
-          PID=$(ps aux | grep -m 1 ffmpeg | awk '{print $2}')
-          python -c "import os, signal; os.kill($PID, signal.SIGINT)"
-          sleep 2
-          
-          PID=$(ps aux | grep -m 1 screenrecord | awk '{print $2}')
-          python -c "import os, signal; os.kill($PID, signal.SIGINT)"
-          sleep 5
       - name: rename video
         if: always() && inputs.video    
         run: mv video.mp4 recording-${{ matrix.project }}-${{ matrix.api-level }}.mp4
