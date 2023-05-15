@@ -1,4 +1,4 @@
-# Review
+# Media
 This Library for Kaluga contains methods for playing audio and video files from local and remote sources.
 
 ## Installing
@@ -43,3 +43,6 @@ The `BaseMediaManager` class offers a way to inject a `MediaSurfaceProvider` tha
 
 On **Android** create an `ActivityMediaSurfaceProvider` that provides a `MediaSurface` for a given `Activity`.
 On **iOS** multiple `BaseMediaSurfaceProvider` are available: `UIViewMediaSurfaceProvider`, `AVPlayerLayerMediaSurfaceProvider`, `AVPlayerViewControllerMediaSurfaceProvider`, and `BindingMediaSurfaceProvider`
+
+## Testing
+Use the [`test-utils-media` module](../test-utils-media) to get a mockable `MediaPlayer`, `MediaManager`,`BaseMediaManager`, `VolumeController`, `MediaSurfaceController`, `PlayableMedia`, `MediaSurfaceProvider`, `PlaybackState`, and `BasePlaybackStateRepo`.
