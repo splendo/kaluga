@@ -35,6 +35,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -71,15 +72,16 @@ class ComposeKeyboardActivity : AppCompatActivity() {
 fun KeyboardLayout() {
     MdcTheme {
         val focusHandler = LocalFocusManager.current
+        val focusRequester = remember { FocusRequester() }
         val viewModel =
             koinViewModel<KeyboardViewModel<ComposeFocusHandler>>(named(composeKeyboardViewModel)) {
                 parametersOf(
-                    ComposeKeyboardManager.Builder(),
-                    ComposeFocusHandler(FocusRequester.Default),
+                    ComposeKeyboardManager.Builder()
                 )
             }
 
         ViewModelComposable(viewModel) {
+            editFieldFocusHandler.post(ComposeFocusHandler(focusRequester))
             Column(
                 verticalArrangement = Arrangement.spacedBy(Constants.Padding.default),
                 modifier = Modifier
@@ -95,7 +97,7 @@ fun KeyboardLayout() {
                     onValueChange = { text = it },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .focusRequester(FocusRequester.Default),
+                        .focusRequester(focusRequester),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
                         onDone = { focusHandler.clearFocus() },

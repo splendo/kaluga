@@ -24,12 +24,8 @@ class KeyboardManagerViewController: UIViewController {
     @IBOutlet private var showButton: UIButton!
     @IBOutlet private var hideButton: UIButton!
     
-    private lazy var editFieldFocusHandler = {
-        UIKitFocusHandler(view: self.editField)
-    }()
-    lazy var viewModel = KeyboardViewModel(
-        keyboardManagerBuilder: UIKitKeyboardManager.Builder(application: UIApplication.shared),
-        editFieldFocusHandler: editFieldFocusHandler
+    lazy var viewModel = KeyboardViewModel<UIKitFocusHandler>(
+        keyboardManagerBuilder: UIKitKeyboardManager.Builder(application: UIApplication.shared)
     )
     private var lifecycleManager: LifecycleManager!
 
@@ -41,6 +37,9 @@ class KeyboardManagerViewController: UIViewController {
         super.viewDidLoad()
 
         title = "feature_keyboard".localized()
+        
+        let editFieldFocusHandler = UIKitFocusHandler(view: self.editField)
+        viewModel.editFieldFocusHandler.post(newValue: editFieldFocusHandler)
 
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [] }
         ButtonStyleKt.bindButton(showButton, button: viewModel.showButton)

@@ -41,11 +41,11 @@ class ExampleApplication : Application() {
         initKoin(
             listOf(
                 module {
-                    viewModel(named(composeKeyboardViewModel)) { (keyboardBuilder: ComposeKeyboardManager.Builder, focusHandler: ComposeFocusHandler) ->
-                        KeyboardViewModel(keyboardBuilder, focusHandler)
+                    viewModel(named(composeKeyboardViewModel)) { (keyboardBuilder: ComposeKeyboardManager.Builder) ->
+                        KeyboardViewModel(keyboardBuilder)
                     }
-                    viewModel(named(XMLKeyboardActivity.viewModelName)) { (keyboardBuilder: ViewKeyboardManager.Builder, focusHandler: ViewFocusHandler) ->
-                        KeyboardViewModel(keyboardBuilder, focusHandler)
+                    viewModel(named(XMLKeyboardActivity.viewModelName)) { (keyboardBuilder: ViewKeyboardManager.Builder) ->
+                        KeyboardViewModel(keyboardBuilder)
                     }
                 },
             ),
