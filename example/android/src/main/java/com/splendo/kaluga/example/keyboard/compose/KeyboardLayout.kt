@@ -80,8 +80,9 @@ fun KeyboardLayout() {
                 )
             }
 
+        viewModel.editFieldFocusHandler.post(ComposeFocusHandler(focusRequester))
+
         ViewModelComposable(viewModel) {
-            editFieldFocusHandler.post(ComposeFocusHandler(focusRequester))
             Column(
                 verticalArrangement = Arrangement.spacedBy(Constants.Padding.default),
                 modifier = Modifier

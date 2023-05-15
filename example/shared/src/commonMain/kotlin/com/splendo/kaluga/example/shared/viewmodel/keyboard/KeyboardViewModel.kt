@@ -25,6 +25,9 @@ import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 
 class KeyboardViewModel<FH : FocusHandler>(keyboardManagerBuilder: BaseKeyboardManager.Builder<FH>) : BaseLifecycleViewModel(
     keyboardManagerBuilder,
@@ -34,6 +37,14 @@ class KeyboardViewModel<FH : FocusHandler>(keyboardManagerBuilder: BaseKeyboardM
     val editFieldFocusHandler = _editFieldFocusHandler.toUninitializedSubject(coroutineScope)
 
     private val keyboardManager: BaseKeyboardManager<FH> = keyboardManagerBuilder.create(coroutineScope)
+
+    init {
+        coroutineScope.launch {
+            _editFieldFocusHandler.filterNotNull().collect {
+                keyboardManager.show(it)
+            }
+        }
+    }
 
     val showButton = KalugaButton.Plain("show_keyboard".localized(), ButtonStyles.default) {
         _editFieldFocusHandler.value?.let { keyboardManager.show(it) }

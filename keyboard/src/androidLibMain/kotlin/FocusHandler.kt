@@ -19,6 +19,9 @@ package com.splendo.kaluga.keyboard
 
 import android.app.Activity
 import android.content.Context.INPUT_METHOD_SERVICE
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethod.SHOW_EXPLICIT
 import android.view.inputmethod.InputMethodManager
@@ -31,12 +34,25 @@ import androidx.annotation.IdRes
 class ViewFocusHandler(
     @IdRes private val id: Int,
 ) : FocusHandler {
+
+    private val handler = Handler(Looper.getMainLooper())
+
     fun requestFocus(activity: Activity?) {
         if (activity == null) return
         val view = activity.findViewById<View>(id) ?: return
         view.requestFocus()
-        val inputManager = activity.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
-        inputManager?.showSoftInput(view, SHOW_EXPLICIT)
+        activity.awaitWindowFocus {
+            val inputManager = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputManager?.showSoftInput(view, SHOW_EXPLICIT)
+        }
+    }
+
+    private fun Activity.awaitWindowFocus(block: Activity.() -> Unit): Boolean = handler.post {
+        when {
+            isDestroyed || isFinishing -> {}
+            hasWindowFocus() -> block()
+            else -> awaitWindowFocus(block)
+        }
     }
 }
 
