@@ -21,7 +21,6 @@ import android.app.Activity
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethod.SHOW_EXPLICIT
 import android.view.inputmethod.InputMethodManager

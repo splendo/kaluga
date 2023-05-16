@@ -24,9 +24,7 @@ import com.splendo.kaluga.example.keyboard.compose.composeKeyboardViewModel
 import com.splendo.kaluga.example.keyboard.xml.XMLKeyboardActivity
 import com.splendo.kaluga.example.shared.di.initKoin
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
-import com.splendo.kaluga.keyboard.ViewFocusHandler
 import com.splendo.kaluga.keyboard.ViewKeyboardManager
-import com.splendo.kaluga.keyboard.compose.ComposeFocusHandler
 import com.splendo.kaluga.keyboard.compose.ComposeKeyboardManager
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named

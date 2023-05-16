@@ -19,7 +19,6 @@ package com.splendo.kaluga.example.keyboard.xml
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.lifecycle.lifecycleScope
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.ActivityKeyboardManagerBinding
@@ -38,7 +37,7 @@ class XMLKeyboardActivity : KalugaViewModelActivity<KeyboardViewModel<ViewFocusH
 
     override val viewModel: KeyboardViewModel<ViewFocusHandler> by viewModel(named(viewModelName)) {
         parametersOf(
-            ViewKeyboardManager.Builder()
+            ViewKeyboardManager.Builder(),
         )
     }
 
