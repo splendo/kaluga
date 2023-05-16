@@ -6,9 +6,8 @@ public final class com/splendo/kaluga/keyboard/compose/ComposeFocusHandler : com
 
 public final class com/splendo/kaluga/keyboard/compose/ComposeKeyboardManager : com/splendo/kaluga/keyboard/BaseKeyboardManager {
 	public static final field $stable I
-	public fun <init> ()V
-	public fun <init> (Landroidx/compose/ui/focus/FocusManager;)V
-	public synthetic fun <init> (Landroidx/compose/ui/focus/FocusManager;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroidx/compose/ui/focus/FocusManager;Lkotlinx/coroutines/flow/MutableSharedFlow;)V
+	public synthetic fun <init> (Landroidx/compose/ui/focus/FocusManager;Lkotlinx/coroutines/flow/MutableSharedFlow;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun hide ()V
 	public synthetic fun show (Lcom/splendo/kaluga/keyboard/FocusHandler;)V
 	public fun show (Lcom/splendo/kaluga/keyboard/compose/ComposeFocusHandler;)V
