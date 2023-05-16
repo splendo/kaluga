@@ -12,8 +12,9 @@ public abstract interface class com/splendo/kaluga/keyboard/FocusHandler {
 
 public final class com/splendo/kaluga/keyboard/ViewFocusHandler : com/splendo/kaluga/keyboard/FocusHandler {
 	public fun <init> (I)V
-	public final fun copy (I)Lcom/splendo/kaluga/keyboard/ViewFocusHandler;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/keyboard/ViewFocusHandler;IILjava/lang/Object;)Lcom/splendo/kaluga/keyboard/ViewFocusHandler;
+	public fun <init> (ILandroid/os/Handler;)V
+	public final fun copy (ILandroid/os/Handler;)Lcom/splendo/kaluga/keyboard/ViewFocusHandler;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/keyboard/ViewFocusHandler;ILandroid/os/Handler;ILjava/lang/Object;)Lcom/splendo/kaluga/keyboard/ViewFocusHandler;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
 	public final fun requestFocus (Landroid/app/Activity;)V

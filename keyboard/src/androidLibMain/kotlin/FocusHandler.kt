@@ -29,12 +29,18 @@ import androidx.annotation.IdRes
 /**
  * A [FocusHandler] that focuses on a view with a given ID.
  * @param id the ID of the View to focus on
+ * @param handler the [Handler] on which to wait for a Window focus
  */
 data class ViewFocusHandler(
     @IdRes private val id: Int,
+    private val handler: Handler,
 ) : FocusHandler {
 
-    private val handler = Handler(Looper.getMainLooper())
+    /**
+     * Constructor
+     * @param id the ID of the View to focus on
+     */
+    constructor(@IdRes id: Int) : this(id, Handler(Looper.getMainLooper()))
 
     fun requestFocus(activity: Activity?) {
         if (activity == null) return
