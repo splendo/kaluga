@@ -24,9 +24,7 @@ import com.splendo.kaluga.example.keyboard.compose.composeKeyboardViewModel
 import com.splendo.kaluga.example.keyboard.xml.XMLKeyboardActivity
 import com.splendo.kaluga.example.shared.di.initKoin
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
-import com.splendo.kaluga.keyboard.ViewFocusHandler
 import com.splendo.kaluga.keyboard.ViewKeyboardManager
-import com.splendo.kaluga.keyboard.compose.ComposeFocusHandler
 import com.splendo.kaluga.keyboard.compose.ComposeKeyboardManager
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -41,11 +39,11 @@ class ExampleApplication : Application() {
         initKoin(
             listOf(
                 module {
-                    viewModel(named(composeKeyboardViewModel)) { (keyboardBuilder: ComposeKeyboardManager.Builder, focusHandler: ComposeFocusHandler) ->
-                        KeyboardViewModel(keyboardBuilder, focusHandler)
+                    viewModel(named(composeKeyboardViewModel)) { (keyboardBuilder: ComposeKeyboardManager.Builder) ->
+                        KeyboardViewModel(keyboardBuilder)
                     }
-                    viewModel(named(XMLKeyboardActivity.viewModelName)) { (keyboardBuilder: ViewKeyboardManager.Builder, focusHandler: ViewFocusHandler) ->
-                        KeyboardViewModel(keyboardBuilder, focusHandler)
+                    viewModel(named(XMLKeyboardActivity.viewModelName)) { (keyboardBuilder: ViewKeyboardManager.Builder) ->
+                        KeyboardViewModel(keyboardBuilder)
                     }
                 },
             ),
