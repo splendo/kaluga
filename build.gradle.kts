@@ -22,6 +22,7 @@ plugins {
     id("org.jetbrains.dokka")
     id("org.jetbrains.kotlin.multiplatform") apply false
     id("org.jetbrains.kotlinx.binary-compatibility-validator")
+    id("rs.houtbecke.gradle.recorder.plugin")
 }
 
 allprojects {

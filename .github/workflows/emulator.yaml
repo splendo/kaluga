@@ -74,13 +74,7 @@ jobs:
 
       - name: pregenerate test package
         if: inputs.video
-        run: ./gradlew --no-configuration-cache :${{ matrix.project }}:packageDebugAndroidTest
-
-#      - name: run ffmpeg screen capture
-#        if: inputs.video
-#        run: |
-#          ./record_emulator.sh recording-${{ matrix.project }}-${{ matrix.api-level }}.mp4 &
-#          sleep 5
+        run: ./gradlew :${{ matrix.project }}:packageDebugAndroidTest
 
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -98,11 +92,11 @@ jobs:
           channel: canary
           script: |
             ./script/check_emulator.sh
-            ./gradlew --no-configuration-cache recordVideo :${{ matrix.project }}:connectedDebugAndroidTest
+            ./gradlew :${{ inputs.video && 'recordAndroid' }} :${{ matrix.project }}:connectedDebugAndroidTest
 
       - name: rename video
         if: always() && inputs.video    
-        run: mv video.mp4 recording-${{ matrix.project }}-${{ matrix.api-level }}.mp4
+        run: mv build/video.mp4 recording-${{ matrix.project }}-${{ matrix.api-level }}.mp4
 
       - name: upload video
         if: always() && inputs.video
