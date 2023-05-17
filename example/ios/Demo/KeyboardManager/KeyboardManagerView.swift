@@ -31,7 +31,8 @@ struct KeyboardManagerView: View {
     init() {
         let keyboardManagerBuilder = SwiftUIKeyboardManagerBuilder<Field>()
         self.keyboardManagerBuilder = keyboardManagerBuilder
-        let viewModel = KeyboardViewModel(keyboardManagerBuilder: keyboardManagerBuilder, editFieldFocusHandler: swiftUIFocusHandler(value: Field.textField))
+        let viewModel = KeyboardViewModel<ValueFocusHandler<HashableClass<Field>>>(keyboardManagerBuilder: keyboardManagerBuilder)
+        viewModel.editFieldFocusHandler.post(newValue: swiftUIFocusHandler(value: Field.textField))
         lifecycleViewModel = LifecycleViewModel(viewModel)
     }
 

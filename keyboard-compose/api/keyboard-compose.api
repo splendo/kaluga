@@ -1,14 +1,19 @@
 public final class com/splendo/kaluga/keyboard/compose/ComposeFocusHandler : com/splendo/kaluga/keyboard/FocusHandler {
 	public static final field $stable I
 	public fun <init> (Landroidx/compose/ui/focus/FocusRequester;)V
+	public final fun component1 ()Landroidx/compose/ui/focus/FocusRequester;
+	public final fun copy (Landroidx/compose/ui/focus/FocusRequester;)Lcom/splendo/kaluga/keyboard/compose/ComposeFocusHandler;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/keyboard/compose/ComposeFocusHandler;Landroidx/compose/ui/focus/FocusRequester;ILjava/lang/Object;)Lcom/splendo/kaluga/keyboard/compose/ComposeFocusHandler;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFocusRequester ()Landroidx/compose/ui/focus/FocusRequester;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/keyboard/compose/ComposeKeyboardManager : com/splendo/kaluga/keyboard/BaseKeyboardManager {
 	public static final field $stable I
-	public fun <init> ()V
-	public fun <init> (Landroidx/compose/ui/focus/FocusManager;)V
-	public synthetic fun <init> (Landroidx/compose/ui/focus/FocusManager;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroidx/compose/ui/focus/FocusManager;Lkotlinx/coroutines/flow/MutableSharedFlow;)V
+	public synthetic fun <init> (Landroidx/compose/ui/focus/FocusManager;Lkotlinx/coroutines/flow/MutableSharedFlow;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun hide ()V
 	public synthetic fun show (Lcom/splendo/kaluga/keyboard/FocusHandler;)V
 	public fun show (Lcom/splendo/kaluga/keyboard/compose/ComposeFocusHandler;)V

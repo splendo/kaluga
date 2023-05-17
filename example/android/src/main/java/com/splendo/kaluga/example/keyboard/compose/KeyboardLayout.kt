@@ -32,6 +32,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,15 +72,18 @@ class ComposeKeyboardActivity : AppCompatActivity() {
 fun KeyboardLayout() {
     MdcTheme {
         val focusHandler = LocalFocusManager.current
+        val focusRequester = remember { FocusRequester() }
         val viewModel =
             koinViewModel<KeyboardViewModel<ComposeFocusHandler>>(named(composeKeyboardViewModel)) {
                 parametersOf(
                     ComposeKeyboardManager.Builder(),
-                    ComposeFocusHandler(FocusRequester.Default),
                 )
             }
 
         ViewModelComposable(viewModel) {
+            LaunchedEffect(focusRequester) {
+                viewModel.editFieldFocusHandler.post(ComposeFocusHandler(focusRequester))
+            }
             Column(
                 verticalArrangement = Arrangement.spacedBy(Constants.Padding.default),
                 modifier = Modifier
@@ -95,7 +99,7 @@ fun KeyboardLayout() {
                     onValueChange = { text = it },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .focusRequester(FocusRequester.Default),
+                        .focusRequester(focusRequester),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
                         onDone = { focusHandler.clearFocus() },

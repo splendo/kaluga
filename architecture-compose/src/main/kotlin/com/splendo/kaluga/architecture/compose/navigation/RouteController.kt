@@ -105,7 +105,7 @@ sealed class ProvidingNavHostRouteController<Provider>(
 
     override fun back(result: Route.Result): Boolean {
         val navHostController = provider.value?.provide()
-        return if (navHostController != null && navHostController.backQueue.isNotEmpty()) {
+        return if (navHostController?.currentBackStackEntry != null) {
             navHostController.previousBackStackEntry?.setResult(result)
             navHostController.popBackStack()
         } else {
@@ -194,7 +194,7 @@ class BottomSheetSheetContentRouteController(
         val rootId = NavDestination("").apply {
             route = ROOT_VIEW
         }.id
-        return if (navHostController != null && navHostController.backQueue.isNotEmpty() && navHostController.previousBackStackEntry?.destination?.id != rootId) {
+        return if (navHostController?.currentBackStackEntry != null && navHostController.previousBackStackEntry?.destination?.id != rootId) {
             navHostController.previousBackStackEntry?.setResult(result)
             navHostController.popBackStack()
         } else {

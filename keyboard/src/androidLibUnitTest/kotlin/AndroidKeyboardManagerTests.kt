@@ -14,6 +14,7 @@ package com.splendo.kaluga.keyboard
 
 import android.app.Activity
 import android.content.Context
+import android.os.Handler
 import android.os.IBinder
 import android.view.View
 import android.view.Window
@@ -25,6 +26,7 @@ import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.keyboard.AndroidKeyboardManagerTests.AndroidKeyboardTestContext
 import kotlinx.coroutines.CoroutineScope
 import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.any
 import org.mockito.Mockito.eq
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -37,7 +39,10 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<ViewFocusHandler, Andro
     }
 
     inner class AndroidKeyboardTestContext(coroutineScope: CoroutineScope) : KeyboardTestContext<ViewFocusHandler>(), CoroutineScope by coroutineScope {
-        override val focusHandler get() = ViewFocusHandler(viewId)
+
+        val handler = mock(Handler::class.java)
+
+        override val focusHandler get() = ViewFocusHandler(viewId, handler)
         override lateinit var builder: ViewKeyboardManager.Builder
 
         val mockActivity: Activity = mock(Activity::class.java)
@@ -47,9 +52,20 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<ViewFocusHandler, Andro
         var mockWindowToken: IBinder = mock(IBinder::class.java)
         var mockInputMethodManager: InputMethodManager = mock(InputMethodManager::class.java)
 
+        init {
+            `when`(handler.post(any())).thenAnswer { invocation ->
+                invocation.getArgument(0, Runnable::class.java).run()
+                true
+            }
+            `when`(mockActivity.isDestroyed).thenReturn(false)
+            `when`(mockActivity.isFinishing).thenReturn(false)
+            `when`(mockActivity.hasWindowFocus()).thenReturn(true)
+        }
+
         override fun verifyShow() {
             verify(mockView).requestFocus()
             verify(mockInputMethodManager).showSoftInput(eq(mockView), eq(SHOW_EXPLICIT))
+            Unit
         }
 
         override fun verifyDismiss() {

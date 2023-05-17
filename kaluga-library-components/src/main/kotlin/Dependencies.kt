@@ -81,7 +81,7 @@ object Dependencies {
         private const val group = "org.jetbrains.kotlinx"
 
         object Coroutines {
-            private const val version = "1.7.0"
+            private const val version = "1.7.1"
             val Android = Dependency(group, "kotlinx-coroutines-android", version)
             val Core = Dependency(group, "kotlinx-coroutines-core", version)
             val Swing = Dependency(group, "kotlinx-coroutines-swing", version)
@@ -92,7 +92,7 @@ object Dependencies {
         }
 
         object Serialization {
-            private const val version =  "1.5.0"
+            private const val version =  "1.5.1"
             val Core = Dependency(group, "kotlinx-serialization-core", version)
             val Json = Dependency(group, "kotlinx-serialization-json", version)
         }
