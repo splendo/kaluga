@@ -23,7 +23,7 @@ import platform.UIKit.UIView
  * A [FocusHandler] that focuses on a given [UIView]
  * @param view the [UIView] to focus on
  */
-class UIKitFocusHandler(val view: UIView) : FocusHandler {
+data class UIKitFocusHandler(val view: UIView) : FocusHandler {
     fun requestFocus() {
         if (view.canBecomeFirstResponder) {
             view.becomeFirstResponder()
@@ -36,4 +36,4 @@ class UIKitFocusHandler(val view: UIView) : FocusHandler {
  * This generic implementation allows for usage from SwiftUI.
  * @param Value the type of Value to focus on.
  */
-class ValueFocusHandler<Value>(val value: Value) : FocusHandler
+data class ValueFocusHandler<Value>(val value: Value) : FocusHandler

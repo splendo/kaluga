@@ -38,7 +38,6 @@ class XMLKeyboardActivity : KalugaViewModelActivity<KeyboardViewModel<ViewFocusH
     override val viewModel: KeyboardViewModel<ViewFocusHandler> by viewModel(named(viewModelName)) {
         parametersOf(
             ViewKeyboardManager.Builder(),
-            ViewFocusHandler(R.id.edit_field),
         )
     }
 
@@ -49,5 +48,11 @@ class XMLKeyboardActivity : KalugaViewModelActivity<KeyboardViewModel<ViewFocusH
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         setContentView(binding.root)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.editFieldFocusHandler.post(ViewFocusHandler(R.id.edit_field))
     }
 }
