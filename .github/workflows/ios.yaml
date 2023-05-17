@@ -25,7 +25,7 @@ jobs:
         kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
 
     - name: ktLint
-      run: ./gradlew ktlintCheck
+      run: ./gradlew lintKotlin
 
     - name: ktLint report
       uses: actions/upload-artifact@v3
