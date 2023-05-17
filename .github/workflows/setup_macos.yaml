@@ -36,6 +36,8 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
       - name: remove VM settings as defined in gradle.properties (for using in the IDE)
         run: sed -i '' -e '/org.gradle.jvmargs/d' gradle.properties; cat gradle.properties

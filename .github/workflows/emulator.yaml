@@ -36,6 +36,8 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
       - name: Setup tools and cache for workspace
         uses: ./.github/workflows/setup_tools_macos/
