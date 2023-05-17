@@ -12,7 +12,7 @@ jobs:
 
   lint:
     needs: build
-    runs-on: macos-12
+    runs-on: macos-13-xl
     steps:
     - name: checkout
       uses: actions/checkout@v3
@@ -36,7 +36,7 @@ jobs:
 
   test:
     needs: build
-    runs-on: macos-12
+    runs-on: macos-13-xl
     strategy:
       fail-fast: false
       matrix:

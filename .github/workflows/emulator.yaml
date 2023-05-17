@@ -27,7 +27,7 @@ jobs:
 
   test:
     needs: build
-    runs-on: macos-12
+    runs-on: macos-13-xl
     strategy:
       fail-fast: false
       matrix:
