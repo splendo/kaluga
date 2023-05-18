@@ -72,6 +72,7 @@ jobs:
           heap-size: 1500M
           profile: 3.4in WQVGA
           channel: canary
+          cores: 10
           script: ./script/check_emulator.sh
 
       - name: install ffmpeg
@@ -96,6 +97,7 @@ jobs:
           heap-size: 1500M
           profile: 3.4in WQVGA
           channel: canary
+          cores: 10
           script: |
             ./script/check_emulator.sh
             ./gradlew ${{ inputs.video && 'recordAndroid' }} :${{ matrix.project }}:connectedDebugAndroidTest
