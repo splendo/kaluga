@@ -55,7 +55,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd.v10-${{ matrix.api-level }}
+          key: avd.v11-${{ matrix.api-level }}
 
       - name: create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
@@ -72,7 +72,7 @@ jobs:
           heap-size: 1500M
           profile: 3.4in WQVGA
           channel: canary
-          cores: 10
+          cores: 6
           script: ./script/check_emulator.sh
 
       - name: install ffmpeg
@@ -97,7 +97,7 @@ jobs:
           heap-size: 1500M
           profile: 3.4in WQVGA
           channel: canary
-          cores: 10
+          cores: 6
           script: |
             ./script/check_emulator.sh
             ./gradlew ${{ inputs.video && 'recordAndroid' }} :${{ matrix.project }}:connectedDebugAndroidTest
