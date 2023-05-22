@@ -105,18 +105,16 @@ Don't forget to remove these when you are done.
 
 #### Publishing locally
 
-⚠️ Publishing is currently not compatible with the configuration cache. It can be disabled by passing `--no-configuration-cache` to Gradle. 
-
 1. Publish to local maven:
 
 ```sh
-./gradlew publishToMavenLocal --no-configuration-cache
+./gradlew publishToMavenLocal
 ```
 
 2. Upload and publish on Maven Central:
 
 ```sh
-./gradlew publishAllPublicationsToSonatypeRepository -PsigningKeyId=SIGNING_KEY_ID -PsigningPassword=SIGNING_KEY_PASSWORD -PsigningSecretKeyRingFile=SIGNING_KEY_FILE -PossrhUsername=OSSRH_USERNAME -PossrhPassword=OSSRH_PASSWORD --no-configuration-cache
+./gradlew publishAllPublicationsToSonatypeRepository -PsigningKeyId=SIGNING_KEY_ID -PsigningPassword=SIGNING_KEY_PASSWORD -PsigningSecretKeyRingFile=SIGNING_KEY_FILE -PossrhUsername=OSSRH_USERNAME -PossrhPassword=OSSRH_PASSWORD
 ```
 
 Where `SIGNING_KEY_ID` is the key id associated with the signing key,
@@ -177,3 +175,4 @@ e: org.jetbrains.kotlin.konan.KonanExternalToolFailure: The /usr/bin/xcrun comma
 Go to `XCode` -> `Preferences` -> `Locations tab` -> `Command Line Tools` dropdown.
 
 It should show none selected, so select any item.
+
