@@ -19,6 +19,7 @@ import com.android.build.gradle.LibraryExtension
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
+import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
@@ -26,6 +27,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultCInteropSettings
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
+import org.jmailen.gradle.kotlinter.tasks.LintTask
 
 sealed class ComponentType {
     object Default : ComponentType()
@@ -56,6 +58,11 @@ fun Project.commonComponent(
         }
     }
 
+    // output all reports to a single location
+    tasks.withType<LintTask>().configureEach {
+        reports.set(mapOf("plain" to rootProject.buildDir.resolve("reports/ktlint/${project.path}-${this.name}.txt")))
+    }
+
     afterEvaluate {
         Library.IOS.targets.forEach { target ->
             val targetName = target.sourceSetName
@@ -74,7 +81,7 @@ fun Project.commonComponent(
         }
     }
 
-    if (Library.connectCheckExpansion) {
+    if (Library.enableDependentProjects) {
         parent?.subprojects?.filter {
             it.name.startsWith("${project.name}-") || it.name.endsWith("-${project.name}")
         }?.forEach { module ->

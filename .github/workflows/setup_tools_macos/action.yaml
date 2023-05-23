@@ -1,0 +1,52 @@
+name: "setup tools and caching for macOS workspace"
+description: "setup tools and caching for macOS workspace"
+inputs:
+  kotlinVersion:
+    required: true
+    description: Kotlin version
+  gradle-cache-read-only:
+    default: 'true'
+    description: Updates gradle cache after actions if not read-only
+  restore-workspace-cache:
+    default: 'true'
+    description: Whether to restore the workspace cache
+  project:
+    required: false
+    description: single project to run
+
+runs:
+  using: "composite"
+  steps:
+    - name: set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: 17
+
+    - name: Gradle cache
+      uses: gradle/gradle-build-action@v2
+      with:
+        cache-read-only: ${{ inputs.gradle-cache-read-only }}
+        gradle-home-cache-includes: |
+          caches
+          notifications
+
+    - name: Konan cache
+      uses: actions/cache@v3
+      id: konan-cache
+      with:
+        path: |
+          ~/.konan/cache/*
+          ~/.konan/kotlin-native-prebuilt-macos-x86_64-${{ inputs.kotlinVersion }}/*
+          ~/.konan/dependencies/*
+        key: konan-${{ inputs.kotlinVersion }}
+
+    - name: Make cache of workspace
+      uses: actions/cache/restore@v3
+      if: ${{ inputs.restore-workspace-cache != 'false' }}
+      id: restore-build
+      with:
+        path: |
+          ./*
+          !/.gradle
+        key: build-iOS-${{ github.sha }}-${{ inputs.project }}

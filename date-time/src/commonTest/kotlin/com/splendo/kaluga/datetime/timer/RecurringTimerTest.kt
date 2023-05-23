@@ -186,7 +186,7 @@ class RecurringTimerTest {
         )
 
         // capture and validate an initial state
-        val initial = timer.elapsed().captureFor(100.milliseconds)
+        val initial = timer.elapsed().captureFor(200.milliseconds)
         assertEquals(listOf(Duration.ZERO), initial, "timer was not started in paused state")
         // capture and validate a first chunk of data
         timer.start()

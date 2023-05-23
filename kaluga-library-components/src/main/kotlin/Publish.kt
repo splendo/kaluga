@@ -24,7 +24,7 @@ fun Project.publish(componentType: ComponentType = ComponentType.Default) {
     afterEvaluate {
         publishing {
             publications {
-                logger.lifecycle("This project module will be published as: $componentType")
+                logger.info("This project module will be published as: $componentType")
                 when (componentType) {
                     is ComponentType.Compose,
                     is ComponentType.DataBinding -> {

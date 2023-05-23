@@ -42,6 +42,8 @@ xcuserdata/
 *.ipa
 *.dSYM.zip
 *.dSYM
+example/ios/Generated/
+*.framework
 
 ## Playgrounds
 timeline.xctimeline
@@ -72,6 +74,5 @@ projectFilesBackup*/
 # for now supply your own
 google-services.json
 
-*.framework
-
-example/ios/Generated/
+# generated for CI
+/non_dependent_projects.properties

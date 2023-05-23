@@ -62,9 +62,21 @@ fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentTyp
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("stableDebug") {
+            storeFile = project.rootProject.file("keystore/stableDebug.keystore")
+            storePassword = "stableDebug"
+            keyAlias = "stableDebug"
+            keyPassword = "stableDebug"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+        }
+        debug {
+            signingConfig = signingConfigs.getByName("stableDebug")
         }
     }
 

@@ -50,6 +50,7 @@ pluginManagement {
 
 includeBuild("kaluga-library-components")
 includeBuild("convention-plugins")
+includeBuild("gradle-test-recorder/plugin-build/")
 
 rootProject.name = "Kaluga"
 

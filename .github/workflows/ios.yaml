@@ -1,0 +1,54 @@
+name: iOS tests
+on: pull_request
+env:
+  GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false -Dkotlin.daemon.jvm.options=-Xmx8G,-XX:MaxMetaspaceSize=512m,-Dorg.gradle.daemon=false,-Dkotlin.incremental=false"
+  JAVA_OPTS: "-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+
+jobs:
+  build:
+    uses: ./.github/workflows/setup_macos.yaml
+    with:
+      gradleTask: compileKotlinIosX64
+
+  lint:
+    needs: build
+    runs-on: macos-13
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Setup tools and cache for workspace
+      uses: ./.github/workflows/setup_tools_macos/
+      with:
+        kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
+
+    - name: ktLint
+      run: ./gradlew lintKotlin
+
+    - name: ktLint report
+      uses: actions/upload-artifact@v3
+      with:
+        name: ktLint report
+        path: build/reports/ktlint
+      if: ${{ failure() }}
+
+  test:
+    needs: build
+    runs-on: macos-13
+    strategy:
+      fail-fast: false
+      matrix:
+        module: ${{ fromJSON(needs.build.outputs.projects) }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: Setup tools and cache for workspace
+        uses: ./.github/workflows/setup_tools_macos/
+        with:
+          kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
+
+      - name: run iOS tests
+        run: ./gradlew :${{ matrix.module }}:iosX64Test
