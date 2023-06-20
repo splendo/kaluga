@@ -27,7 +27,7 @@ on:
 jobs:
   setup:
 
-    runs-on: macos-13-xl
+    runs-on: macos-13
 
     outputs:
       projects: ${{ steps.envFile.outputs.projects }}
