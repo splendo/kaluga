@@ -25,17 +25,25 @@ import com.splendo.kaluga.scientific.unit.Dyne
 import com.splendo.kaluga.scientific.unit.Grain
 import com.splendo.kaluga.scientific.unit.GrainForce
 import com.splendo.kaluga.scientific.unit.Gram
+import com.splendo.kaluga.scientific.unit.GramForce
 import com.splendo.kaluga.scientific.unit.ImperialAcceleration
 import com.splendo.kaluga.scientific.unit.ImperialTon
 import com.splendo.kaluga.scientific.unit.ImperialTonForce
 import com.splendo.kaluga.scientific.unit.ImperialWeight
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.KilogramForce
 import com.splendo.kaluga.scientific.unit.MetricAcceleration
+import com.splendo.kaluga.scientific.unit.MetricAndImperialAcceleration
 import com.splendo.kaluga.scientific.unit.MetricWeight
+import com.splendo.kaluga.scientific.unit.Milligram
+import com.splendo.kaluga.scientific.unit.MilligramForce
 import com.splendo.kaluga.scientific.unit.Newton
 import com.splendo.kaluga.scientific.unit.Ounce
 import com.splendo.kaluga.scientific.unit.OunceForce
 import com.splendo.kaluga.scientific.unit.Pound
 import com.splendo.kaluga.scientific.unit.PoundForce
+import com.splendo.kaluga.scientific.unit.Tonne
+import com.splendo.kaluga.scientific.unit.TonneForce
 import com.splendo.kaluga.scientific.unit.UKImperialWeight
 import com.splendo.kaluga.scientific.unit.USCustomaryWeight
 import com.splendo.kaluga.scientific.unit.UsTon
@@ -45,48 +53,114 @@ import com.splendo.kaluga.scientific.unit.ukImperial
 import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.jvm.JvmName
 
+@JvmName("kilogramTimesMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, Kilogram>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = KilogramForce.force(this, acceleration)
+
+@JvmName("tonneTimesMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, Tonne>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = TonneForce.force(this, acceleration)
+
+@JvmName("gramTimesMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, Gram>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = GramForce.force(this, acceleration)
+
+@JvmName("milligramTimesMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, Milligram>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = MilligramForce.force(this, acceleration)
+
 @JvmName("gramTimesMetricAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Weight, Gram>.times(acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>) =
-    Dyne.force(this, acceleration)
+infix operator fun <MetricAccelerationUnit : MetricAcceleration> ScientificValue<PhysicalQuantity.Weight, Gram>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAccelerationUnit>,
+) = Dyne.force(this, acceleration)
 
 @JvmName("metricWeightTimesMetricAcceleration")
-infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>,
+infix operator fun <WeightUnit : MetricWeight, MetricAccelerationUnit : MetricAcceleration> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAccelerationUnit>,
 ) = Newton.force(this, acceleration)
 
-@JvmName("poundTimesImperialAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Weight, Pound>.times(acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>) =
-    PoundForce.force(this, acceleration)
-
-@JvmName("ounceTimesImperialAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Weight, Ounce>.times(acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>) =
-    OunceForce.force(this, acceleration)
-
-@JvmName("grainTimesImperialAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Weight, Grain>.times(acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>) =
-    GrainForce.force(this, acceleration)
-
-@JvmName("usTonTimesImperialAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Weight, UsTon>.times(acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>) =
-    UsTonForce.force(this, acceleration)
-
-@JvmName("imperialTonTimesImperialAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Weight, ImperialTon>.times(acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>) =
-    ImperialTonForce.force(this, acceleration)
-
-@JvmName("imperialWeightTimesImperialAcceleration")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>,
+@JvmName("poundTimesMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, Pound>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
 ) = PoundForce.force(this, acceleration)
 
-@JvmName("ukImperialWeightTimesImperialAcceleration")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>,
+@JvmName("poundTimesImperialAcceleration")
+infix operator fun <ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, Pound>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
+) = PoundForce.force(this, acceleration)
+
+@JvmName("ounceTimesMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, Ounce>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = OunceForce.force(this, acceleration)
+
+@JvmName("ounceTimesImperialAcceleration")
+infix operator fun <ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, Ounce>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
+) = OunceForce.force(this, acceleration)
+
+@JvmName("grainTimesMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, Grain>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = GrainForce.force(this, acceleration)
+
+@JvmName("grainTimesImperialAcceleration")
+infix operator fun <ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, Grain>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
+) = GrainForce.force(this, acceleration)
+
+@JvmName("usTonTimesMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, UsTon>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = UsTonForce.force(this, acceleration)
+
+@JvmName("usTonTimesImperialAcceleration")
+infix operator fun <ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, UsTon>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
+) = UsTonForce.force(this, acceleration)
+
+@JvmName("imperialTonTimesMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, ImperialTon>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = ImperialTonForce.force(this, acceleration)
+
+@JvmName("imperialTonTimesImperialAcceleration")
+infix operator fun <ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, ImperialTon>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
+) = ImperialTonForce.force(this, acceleration)
+
+@JvmName("imperialWeightTimesMetricAndImperialAcceleration")
+infix operator fun <WeightUnit : ImperialWeight, MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = PoundForce.force(this, acceleration)
+
+@JvmName("imperialWeightTimesImperialAcceleration")
+infix operator fun <WeightUnit : ImperialWeight, ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
+) = PoundForce.force(this, acceleration)
+
+@JvmName("ukImperialWeightTimesMetricAndImperialAcceleration")
+infix operator fun <WeightUnit : UKImperialWeight, MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
 ) = PoundForce.ukImperial.force(this, acceleration)
 
+@JvmName("ukImperialWeightTimesImperialAcceleration")
+infix operator fun <WeightUnit : UKImperialWeight, ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
+) = PoundForce.ukImperial.force(this, acceleration)
+
+@JvmName("usCustomaryWeightTimesMetricAndImperialAcceleration")
+infix operator fun <WeightUnit : USCustomaryWeight, MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = PoundForce.usCustomary.force(this, acceleration)
+
 @JvmName("usCustomaryWeightTimesImperialAcceleration")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>,
+infix operator fun <WeightUnit : USCustomaryWeight, ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.times(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
 ) = PoundForce.usCustomary.force(this, acceleration)
 
 @JvmName("weightTimesAcceleration")

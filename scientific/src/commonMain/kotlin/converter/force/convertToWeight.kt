@@ -35,6 +35,7 @@ import com.splendo.kaluga.scientific.unit.ImperialTonForce
 import com.splendo.kaluga.scientific.unit.Kilogram
 import com.splendo.kaluga.scientific.unit.KilogramForce
 import com.splendo.kaluga.scientific.unit.MetricAcceleration
+import com.splendo.kaluga.scientific.unit.MetricAndImperialAcceleration
 import com.splendo.kaluga.scientific.unit.MetricForce
 import com.splendo.kaluga.scientific.unit.Milligram
 import com.splendo.kaluga.scientific.unit.MilligramForce
@@ -51,65 +52,144 @@ import com.splendo.kaluga.scientific.unit.ukImperial
 import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.jvm.JvmName
 
-@JvmName("dyneDivAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.div(acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>) =
-    Gram.mass(this, acceleration)
-
-@JvmName("dyneMultipleDivAcceleration")
-infix operator fun <DyneUnit : DyneMultiple> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>,
+@JvmName("dyneDivMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Force, Dyne>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
 ) = Gram.mass(this, acceleration)
 
-@JvmName("kilogramForceDivAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Force, KilogramForce>.div(acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>) =
-    Kilogram.mass(this, acceleration)
+@JvmName("dyneDivMetricAcceleration")
+infix operator fun <MetricAccelerationUnit : MetricAcceleration> ScientificValue<PhysicalQuantity.Force, Dyne>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAccelerationUnit>,
+) = Gram.mass(this, acceleration)
 
-@JvmName("gramForceDivAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Force, GramForce>.div(acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>) =
-    Gram.mass(this, acceleration)
+@JvmName("dyneMultipleDivMetricAndImperialAcceleration")
+infix operator fun <DyneUnit : DyneMultiple, MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = Gram.mass(this, acceleration)
 
-@JvmName("milligramForceDivAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Force, MilligramForce>.div(acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>) =
-    Milligram.mass(this, acceleration)
+@JvmName("dyneMultipleDivMetricAcceleration")
+infix operator fun <DyneUnit : DyneMultiple, MetricAccelerationUnit : MetricAcceleration> ScientificValue<PhysicalQuantity.Force, DyneUnit>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAccelerationUnit>,
+) = Gram.mass(this, acceleration)
 
-@JvmName("tonneForceDivAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Force, TonneForce>.div(acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>) =
-    Tonne.mass(this, acceleration)
-
-@JvmName("metricForceDivMetricAcceleration")
-infix operator fun <ForceUnit : MetricForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>,
+@JvmName("kilogramForceDivMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Force, KilogramForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
 ) = Kilogram.mass(this, acceleration)
 
-@JvmName("ounceForceDivAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Force, OunceForce>.div(acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>) =
-    Ounce.mass(this, acceleration)
+@JvmName("kilogramForceDivMetricAcceleration")
+infix operator fun <MetricAccelerationUnit : MetricAcceleration> ScientificValue<PhysicalQuantity.Force, KilogramForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAccelerationUnit>,
+) = Kilogram.mass(this, acceleration)
 
-@JvmName("grainForceDivAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Force, GrainForce>.div(acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>) =
-    Grain.mass(this, acceleration)
+@JvmName("gramForceDivMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Force, GramForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = Gram.mass(this, acceleration)
 
-@JvmName("usTonForceDivAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Force, UsTonForce>.div(acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>) =
-    UsTon.mass(this, acceleration)
+@JvmName("gramForceDivMetricAcceleration")
+infix operator fun <MetricAccelerationUnit : MetricAcceleration> ScientificValue<PhysicalQuantity.Force, GramForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAccelerationUnit>,
+) = Gram.mass(this, acceleration)
 
-@JvmName("imperialTonForceDivAcceleration")
-infix operator fun ScientificValue<PhysicalQuantity.Force, ImperialTonForce>.div(acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>) =
-    ImperialTon.mass(this, acceleration)
+@JvmName("milligramForceDivMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Force, MilligramForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = Milligram.mass(this, acceleration)
 
-@JvmName("imperialForceDivImperialAcceleration")
-infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>,
+@JvmName("milligramForceDivMetricAcceleration")
+infix operator fun <MetricAccelerationUnit : MetricAcceleration> ScientificValue<PhysicalQuantity.Force, MilligramForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAccelerationUnit>,
+) = Milligram.mass(this, acceleration)
+
+@JvmName("tonneForceDivMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Force, TonneForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = Tonne.mass(this, acceleration)
+
+@JvmName("tonneForceDivMetricAcceleration")
+infix operator fun <MetricAccelerationUnit : MetricAcceleration> ScientificValue<PhysicalQuantity.Force, TonneForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAccelerationUnit>,
+) = Tonne.mass(this, acceleration)
+
+@JvmName("metricForceDivMetricAndImperialAcceleration")
+infix operator fun <ForceUnit : MetricForce, MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = Kilogram.mass(this, acceleration)
+
+@JvmName("metricForceDivMetricAcceleration")
+infix operator fun <ForceUnit : MetricForce, MetricAccelerationUnit : MetricAcceleration> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAccelerationUnit>,
+) = Kilogram.mass(this, acceleration)
+
+@JvmName("ounceForceDivMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Force, OunceForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = Ounce.mass(this, acceleration)
+
+@JvmName("ounceForceDivImperialAcceleration")
+infix operator fun <ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Force, OunceForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
+) = Ounce.mass(this, acceleration)
+
+@JvmName("grainForceDivMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Force, GrainForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = Grain.mass(this, acceleration)
+
+@JvmName("grainForceDivImperialAcceleration")
+infix operator fun <ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Force, GrainForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
+) = Grain.mass(this, acceleration)
+
+@JvmName("usTonForceDivMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Force, UsTonForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = UsTon.mass(this, acceleration)
+
+@JvmName("usTonForceDivImperialAcceleration")
+infix operator fun <ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Force, UsTonForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
+) = UsTon.mass(this, acceleration)
+
+@JvmName("imperialTonForceDivMetricAndImperialAcceleration")
+infix operator fun <MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Force, ImperialTonForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = ImperialTon.mass(this, acceleration)
+
+@JvmName("imperialTonForceDivImperialAcceleration")
+infix operator fun <ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Force, ImperialTonForce>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
+) = ImperialTon.mass(this, acceleration)
+
+@JvmName("imperialForceDivMetricAndImperialAcceleration")
+infix operator fun <ForceUnit : ImperialForce, MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
 ) = Pound.mass(this, acceleration)
 
-@JvmName("ukImperialForceDivImperialAcceleration")
-infix operator fun <ForceUnit : UKImperialForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>,
+@JvmName("imperialForceDivImperialAcceleration")
+infix operator fun <ForceUnit : ImperialForce, ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
+) = Pound.mass(this, acceleration)
+
+@JvmName("ukImperialForceDivMetricAndImperialAcceleration")
+infix operator fun <ForceUnit : UKImperialForce, MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
 ) = Pound.ukImperial.mass(this, acceleration)
 
+@JvmName("ukImperialForceDivImperialAcceleration")
+infix operator fun <ForceUnit : UKImperialForce, ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
+) = Pound.ukImperial.mass(this, acceleration)
+
+@JvmName("usCustomaryForceDivMetricAndImperialAcceleration")
+infix operator fun <ForceUnit : USCustomaryForce, MetricAndImperialAccelerationUnit : MetricAndImperialAcceleration> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, MetricAndImperialAccelerationUnit>,
+) = Pound.usCustomary.mass(this, acceleration)
+
 @JvmName("usCustomaryForceDivImperialAcceleration")
-infix operator fun <ForceUnit : USCustomaryForce> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>,
+infix operator fun <ForceUnit : USCustomaryForce, ImperialAccelerationUnit : ImperialAcceleration> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
+    acceleration: ScientificValue<PhysicalQuantity.Acceleration, ImperialAccelerationUnit>,
 ) = Pound.usCustomary.mass(this, acceleration)
 
 @JvmName("forceDivAcceleration")
