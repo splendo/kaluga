@@ -99,6 +99,13 @@ interface MetricAndUKImperialScientificUnit<Quantity : PhysicalQuantity> :
     MeasurementUsage.UsedInMetricAndUKImperial
 
 /**
+ * A [SystemScientificUnit] for [MeasurementSystem.MetricAndUSCustomary]
+ */
+interface MetricAndUSCustomaryScientificUnit<Quantity : PhysicalQuantity> :
+    SystemScientificUnit<MeasurementSystem.MetricAndUSCustomary, Quantity>,
+    MeasurementUsage.UsedInMetricAndUSCustomary
+
+/**
  * A [SystemScientificUnit] for [MeasurementSystem.MetricAndImperial]
  */
 interface MetricAndImperialScientificUnit<Quantity : PhysicalQuantity> :
