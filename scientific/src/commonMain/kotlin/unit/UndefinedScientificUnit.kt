@@ -17,12 +17,13 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import UndefinedQuantityType
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 
-sealed class UndefinedScientificUnit<QuantityType : PhysicalQuantity.Undefined.QuantityType> : ScientificUnit<PhysicalQuantity.Undefined<QuantityType>> {
+sealed class UndefinedScientificUnit<QuantityType : UndefinedQuantityType> : ScientificUnit<PhysicalQuantity.Undefined<QuantityType>> {
     abstract val quantityType: QuantityType
     override val quantity by lazy { PhysicalQuantity.Undefined(quantityType) }
     internal abstract val numeratorUnits: List<ScientificUnit<*>>
@@ -65,132 +66,210 @@ sealed class UndefinedScientificUnit<QuantityType : PhysicalQuantity.Undefined.Q
     }
 }
 
+sealed class ExtendedUndefinedScientificUnit<
+    ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension
+    > : UndefinedScientificUnit<UndefinedQuantityType.Extended<ExtendedQuantity>>() {
+        abstract val extendedQuantity: ExtendedQuantity
+    override val quantityType by lazy { UndefinedQuantityType.Extended(extendedQuantity) }
+
+    override val numeratorUnits: List<ScientificUnit<*>> by lazy { listOf(this) }
+    override val denominatorUnits: List<ScientificUnit<*>> = emptyList()
+
+    abstract class MetricAndImperial<ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension> :
+        ExtendedUndefinedScientificUnit<ExtendedQuantity>(),
+        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<ExtendedQuantity>>> {
+        override val system = MeasurementSystem.MetricAndImperial
+    }
+
+    abstract class Metric<ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension> :
+        ExtendedUndefinedScientificUnit<ExtendedQuantity>(),
+        MetricScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<ExtendedQuantity>>> {
+        override val system = MeasurementSystem.Metric
+    }
+
+    abstract class Imperial<ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension> :
+        ExtendedUndefinedScientificUnit<ExtendedQuantity>(),
+        ImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<ExtendedQuantity>>> {
+        override val system = MeasurementSystem.Imperial
+    }
+
+    abstract class UKImperial<ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension> :
+        ExtendedUndefinedScientificUnit<ExtendedQuantity>(),
+        UKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<ExtendedQuantity>>> {
+        override val system = MeasurementSystem.UKImperial
+    }
+
+    abstract class USCustomary<ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension> :
+        ExtendedUndefinedScientificUnit<ExtendedQuantity>(),
+        USCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<ExtendedQuantity>>> {
+        override val system = MeasurementSystem.USCustomary
+    }
+
+    abstract class MetricAndUKImperial<ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension> :
+        ExtendedUndefinedScientificUnit<ExtendedQuantity>(),
+        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<ExtendedQuantity>>> {
+        override val system = MeasurementSystem.MetricAndUKImperial
+    }
+
+    abstract class MetricAndUSCustomary<ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension> :
+        ExtendedUndefinedScientificUnit<ExtendedQuantity>(),
+        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<ExtendedQuantity>>> {
+        override val system = MeasurementSystem.MetricAndUSCustomary
+    }
+}
+
 sealed class WrappedUndefinedScientificUnit<
     WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    WrappedUnit : ScientificUnit<WrappedQuantity>
-    > : UndefinedScientificUnit<PhysicalQuantity.Undefined.QuantityType.Wrapped<WrappedQuantity>>() {
+    WrappedUnit : ScientificUnit<WrappedQuantity>,
+    > : ExtendedUndefinedScientificUnit<WrappedQuantity>() {
     abstract val wrapped: WrappedUnit
-    override val quantityType by lazy { PhysicalQuantity.Undefined.QuantityType.Wrapped(wrapped.quantity) }
+    override val extendedQuantity: WrappedQuantity by lazy { wrapped.quantity }
 
     override val numeratorUnits: List<ScientificUnit<*>> by lazy { listOf(wrapped) }
-    override val denominatorUnits: List<ScientificUnit<*>> = emptyList()
 
     override fun fromSIUnit(value: Decimal): Decimal = wrapped.toSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = wrapped.fromSIUnit(value)
+    override fun deltaFromSIUnitDelta(delta: Decimal): Decimal = wrapped.deltaFromSIUnitDelta(delta)
+    override fun deltaToSIUnitDelta(delta: Decimal): Decimal = wrapped.deltaToSIUnitDelta(delta)
 
     class MetricAndImperial<
         WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-        WrappedUnit
-        > internal constructor(override val wrapped: WrappedUnit) : WrappedUndefinedScientificUnit<WrappedQuantity, WrappedUnit>(), MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Wrapped<WrappedQuantity>>> where
-    WrappedUnit : ScientificUnit<WrappedQuantity>,
-    WrappedUnit : MeasurementUsage.UsedInMetricAndImperial {
+        WrappedUnit,
+        > internal constructor(override val wrapped: WrappedUnit) :
+        WrappedUndefinedScientificUnit<WrappedQuantity, WrappedUnit>(),
+        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<WrappedQuantity>>> where
+          WrappedUnit : ScientificUnit<WrappedQuantity>,
+          WrappedUnit : MeasurementUsage.UsedInMetricAndImperial {
         override val system = MeasurementSystem.MetricAndImperial
     }
 
     class Metric<
         WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-        WrappedUnit
-        > internal constructor(override val wrapped: WrappedUnit) : WrappedUndefinedScientificUnit<WrappedQuantity, WrappedUnit>(), MetricScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Wrapped<WrappedQuantity>>> where
-    WrappedUnit : ScientificUnit<WrappedQuantity>,
-    WrappedUnit : MeasurementUsage.UsedInMetric {
+        WrappedUnit,
+        > internal constructor(override val wrapped: WrappedUnit) :
+        WrappedUndefinedScientificUnit<WrappedQuantity, WrappedUnit>(),
+        MetricScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<WrappedQuantity>>> where
+          WrappedUnit : ScientificUnit<WrappedQuantity>,
+          WrappedUnit : MeasurementUsage.UsedInMetric {
         override val system = MeasurementSystem.Metric
     }
 
     class Imperial<
         WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-        WrappedUnit
-        > internal constructor(override val wrapped: WrappedUnit) : WrappedUndefinedScientificUnit<WrappedQuantity, WrappedUnit>(), ImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Wrapped<WrappedQuantity>>> where
-    WrappedUnit : ScientificUnit<WrappedQuantity>,
-    WrappedUnit : MeasurementUsage.UsedInImperial {
+        WrappedUnit,
+        > internal constructor(override val wrapped: WrappedUnit) :
+        WrappedUndefinedScientificUnit<WrappedQuantity, WrappedUnit>(),
+        ImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<WrappedQuantity>>> where
+          WrappedUnit : ScientificUnit<WrappedQuantity>,
+          WrappedUnit : MeasurementUsage.UsedInImperial {
         override val system = MeasurementSystem.Imperial
     }
 
     class UKImperial<
         WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-        WrappedUnit
-        > internal constructor(override val wrapped: WrappedUnit) : WrappedUndefinedScientificUnit<WrappedQuantity, WrappedUnit>(), UKImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Wrapped<WrappedQuantity>>> where
-    WrappedUnit : ScientificUnit<WrappedQuantity>,
-    WrappedUnit : MeasurementUsage.UsedInUKImperial {
+        WrappedUnit,
+        > internal constructor(override val wrapped: WrappedUnit) :
+        WrappedUndefinedScientificUnit<WrappedQuantity, WrappedUnit>(),
+        UKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<WrappedQuantity>>> where
+          WrappedUnit : ScientificUnit<WrappedQuantity>,
+          WrappedUnit : MeasurementUsage.UsedInUKImperial {
         override val system = MeasurementSystem.UKImperial
     }
 
     class USCustomary<
         WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-        WrappedUnit
-        > internal constructor(override val wrapped: WrappedUnit) : WrappedUndefinedScientificUnit<WrappedQuantity, WrappedUnit>(), USCustomaryScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Wrapped<WrappedQuantity>>> where
-    WrappedUnit : ScientificUnit<WrappedQuantity>,
-    WrappedUnit : MeasurementUsage.UsedInUSCustomary {
+        WrappedUnit,
+        > internal constructor(override val wrapped: WrappedUnit) :
+        WrappedUndefinedScientificUnit<WrappedQuantity, WrappedUnit>(),
+        USCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<WrappedQuantity>>> where
+          WrappedUnit : ScientificUnit<WrappedQuantity>,
+          WrappedUnit : MeasurementUsage.UsedInUSCustomary {
         override val system = MeasurementSystem.USCustomary
     }
 
     class MetricAndUKImperial<
         WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-        WrappedUnit
-        > internal constructor(override val wrapped: WrappedUnit) : WrappedUndefinedScientificUnit<WrappedQuantity, WrappedUnit>(), MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Wrapped<WrappedQuantity>>> where
-    WrappedUnit : ScientificUnit<WrappedQuantity>,
-    WrappedUnit : MeasurementUsage.UsedInMetricAndUKImperial {
+        WrappedUnit,
+        > internal constructor(override val wrapped: WrappedUnit) :
+        WrappedUndefinedScientificUnit<WrappedQuantity, WrappedUnit>(),
+        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<WrappedQuantity>>> where
+          WrappedUnit : ScientificUnit<WrappedQuantity>,
+          WrappedUnit : MeasurementUsage.UsedInMetricAndUKImperial {
         override val system = MeasurementSystem.MetricAndUKImperial
     }
 
     class MetricAndUSCustomary<
         WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-        WrappedUnit
-        > internal constructor(override val wrapped: WrappedUnit) : WrappedUndefinedScientificUnit<WrappedQuantity, WrappedUnit>(), MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Wrapped<WrappedQuantity>>> where
-    WrappedUnit : ScientificUnit<WrappedQuantity>,
-    WrappedUnit : MeasurementUsage.UsedInMetricAndUSCustomary {
+        WrappedUnit,
+        > internal constructor(override val wrapped: WrappedUnit) :
+        WrappedUndefinedScientificUnit<WrappedQuantity, WrappedUnit>(),
+        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<WrappedQuantity>>> where
+          WrappedUnit : ScientificUnit<WrappedQuantity>,
+          WrappedUnit : MeasurementUsage.UsedInMetricAndUSCustomary {
         override val system = MeasurementSystem.MetricAndUSCustomary
     }
 }
 
-sealed class CustomUndefinedScientificUnit<CustomQuantity> : UndefinedScientificUnit<PhysicalQuantity.Undefined.QuantityType.Custom<CustomQuantity>>() {
+sealed class CustomUndefinedScientificUnit<CustomQuantity> : UndefinedScientificUnit<UndefinedQuantityType.Custom<CustomQuantity>>() {
     abstract val customQuantity: CustomQuantity
-    override val quantityType by lazy { PhysicalQuantity.Undefined.QuantityType.Custom(customQuantity) }
+    override val quantityType by lazy { UndefinedQuantityType.Custom(customQuantity) }
 
     override val numeratorUnits: List<ScientificUnit<*>> by lazy { listOf(this) }
     override val denominatorUnits: List<ScientificUnit<*>> = emptyList()
 
-    override fun fromSIUnit(value: Decimal): Decimal = value
-    override fun toSIUnit(value: Decimal): Decimal = value
-
-    abstract class MetricAndImperial<CustomQuantity> : CustomUndefinedScientificUnit<CustomQuantity>(), MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Custom<CustomQuantity>>> {
+    abstract class MetricAndImperial<CustomQuantity> :
+        CustomUndefinedScientificUnit<CustomQuantity>(),
+        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Custom<CustomQuantity>>> {
         override val system = MeasurementSystem.MetricAndImperial
     }
 
-    abstract class Metric<CustomQuantity> : CustomUndefinedScientificUnit<CustomQuantity>(), MetricScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Custom<CustomQuantity>>> {
+    abstract class Metric<CustomQuantity> :
+        CustomUndefinedScientificUnit<CustomQuantity>(),
+        MetricScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Custom<CustomQuantity>>> {
         override val system = MeasurementSystem.Metric
     }
 
-    abstract class Imperial<CustomQuantity> : CustomUndefinedScientificUnit<CustomQuantity>(), ImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Custom<CustomQuantity>>> {
+    abstract class Imperial<CustomQuantity> :
+        CustomUndefinedScientificUnit<CustomQuantity>(),
+        ImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Custom<CustomQuantity>>> {
         override val system = MeasurementSystem.Imperial
     }
 
-    abstract class UKImperial<CustomQuantity> : CustomUndefinedScientificUnit<CustomQuantity>(), UKImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Custom<CustomQuantity>>> {
+    abstract class UKImperial<CustomQuantity> :
+        CustomUndefinedScientificUnit<CustomQuantity>(),
+        UKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Custom<CustomQuantity>>> {
         override val system = MeasurementSystem.UKImperial
     }
 
-    abstract class USCustomary<CustomQuantity> : CustomUndefinedScientificUnit<CustomQuantity>(), USCustomaryScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Custom<CustomQuantity>>> {
+    abstract class USCustomary<CustomQuantity> :
+        CustomUndefinedScientificUnit<CustomQuantity>(),
+        USCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Custom<CustomQuantity>>> {
         override val system = MeasurementSystem.USCustomary
     }
 
-    abstract class MetricAndUKImperial<CustomQuantity> : CustomUndefinedScientificUnit<CustomQuantity>(), MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Custom<CustomQuantity>>> {
+    abstract class MetricAndUKImperial<CustomQuantity> :
+        CustomUndefinedScientificUnit<CustomQuantity>(),
+        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Custom<CustomQuantity>>> {
         override val system = MeasurementSystem.MetricAndUKImperial
     }
 
-    abstract class MetricAndUSCustomary<CustomQuantity> : CustomUndefinedScientificUnit<CustomQuantity>(), MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Custom<CustomQuantity>>> {
+    abstract class MetricAndUSCustomary<CustomQuantity> :
+        CustomUndefinedScientificUnit<CustomQuantity>(),
+        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Custom<CustomQuantity>>> {
         override val system = MeasurementSystem.MetricAndUSCustomary
     }
 }
 
 sealed class DividedUndefinedScientificUnit<
-    NumeratorQuantity : PhysicalQuantity.Undefined.QuantityType,
+    NumeratorQuantity : UndefinedQuantityType,
     NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    DenominatorQuantity : PhysicalQuantity.Undefined.QuantityType,
-    DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>
-    > : UndefinedScientificUnit<PhysicalQuantity.Undefined.QuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>() {
+    DenominatorQuantity : UndefinedQuantityType,
+    DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
+    > : UndefinedScientificUnit<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>() {
     abstract val numerator: NumeratorUnit
     abstract val denominator: DenominatorUnit
     override val quantityType by lazy {
-        PhysicalQuantity.Undefined.QuantityType.Dividing(numerator.quantityType, denominator.quantityType)
+        UndefinedQuantityType.Dividing(numerator.quantityType, denominator.quantityType)
     }
 
     override val numeratorUnits: List<ScientificUnit<*>> by lazy {
@@ -201,132 +280,139 @@ sealed class DividedUndefinedScientificUnit<
         denominator.numeratorUnits + numerator.denominatorUnits
     }
 
-    override fun fromSIUnit(value: Decimal): Decimal = denominator.toSIUnit(numerator.fromSIUnit(value))
-    override fun toSIUnit(value: Decimal): Decimal = denominator.fromSIUnit(numerator.toSIUnit(value))
+    override fun fromSIUnit(value: Decimal): Decimal = denominator.deltaToSIUnitDelta(numerator.deltaFromSIUnitDelta(value))
+    override fun toSIUnit(value: Decimal): Decimal = numerator.deltaToSIUnitDelta(denominator.deltaFromSIUnitDelta(value))
 
     data class MetricAndImperial<
-        NumeratorQuantity : PhysicalQuantity.Undefined.QuantityType,
+        NumeratorQuantity : UndefinedQuantityType,
         NumeratorUnit,
-        DenominatorQuantity : PhysicalQuantity.Undefined.QuantityType,
-        DenominatorUnit
+        DenominatorQuantity : UndefinedQuantityType,
+        DenominatorUnit,
         > internal constructor(
         override val numerator: NumeratorUnit,
-        override val denominator: DenominatorUnit
-    ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(), MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
-    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    NumeratorUnit : MeasurementUsage.UsedInMetricAndImperial,
-    DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-    DenominatorUnit : MeasurementUsage.UsedInMetricAndImperial {
+        override val denominator: DenominatorUnit,
+    ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
+        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
+          NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
+          NumeratorUnit : MeasurementUsage.UsedInMetricAndImperial,
+          DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
+          DenominatorUnit : MeasurementUsage.UsedInMetricAndImperial {
         override val system = MeasurementSystem.MetricAndImperial
     }
 
     data class Metric<
-        NumeratorQuantity : PhysicalQuantity.Undefined.QuantityType,
+        NumeratorQuantity : UndefinedQuantityType,
         NumeratorUnit,
-        DenominatorQuantity : PhysicalQuantity.Undefined.QuantityType,
-        DenominatorUnit
+        DenominatorQuantity : UndefinedQuantityType,
+        DenominatorUnit,
         > internal constructor(
         override val numerator: NumeratorUnit,
-        override val denominator: DenominatorUnit
-    ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(), MetricScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
-    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    NumeratorUnit : MeasurementUsage.UsedInMetric,
-    DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-    DenominatorUnit : MeasurementUsage.UsedInMetric {
+        override val denominator: DenominatorUnit,
+    ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
+        MetricScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
+          NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
+          NumeratorUnit : MeasurementUsage.UsedInMetric,
+          DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
+          DenominatorUnit : MeasurementUsage.UsedInMetric {
         override val system = MeasurementSystem.Metric
     }
 
     data class Imperial<
-        NumeratorQuantity : PhysicalQuantity.Undefined.QuantityType,
+        NumeratorQuantity : UndefinedQuantityType,
         NumeratorUnit,
-        DenominatorQuantity : PhysicalQuantity.Undefined.QuantityType,
-        DenominatorUnit
+        DenominatorQuantity : UndefinedQuantityType,
+        DenominatorUnit,
         > internal constructor(
         override val numerator: NumeratorUnit,
-        override val denominator: DenominatorUnit
-    ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(), ImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
-    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    NumeratorUnit : MeasurementUsage.UsedInImperial,
-    DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-    DenominatorUnit : MeasurementUsage.UsedInImperial {
+        override val denominator: DenominatorUnit,
+    ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
+        ImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
+          NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
+          NumeratorUnit : MeasurementUsage.UsedInImperial,
+          DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
+          DenominatorUnit : MeasurementUsage.UsedInImperial {
         override val system = MeasurementSystem.Imperial
     }
 
     data class UKImperial<
-        NumeratorQuantity : PhysicalQuantity.Undefined.QuantityType,
+        NumeratorQuantity : UndefinedQuantityType,
         NumeratorUnit,
-        DenominatorQuantity : PhysicalQuantity.Undefined.QuantityType,
-        DenominatorUnit
+        DenominatorQuantity : UndefinedQuantityType,
+        DenominatorUnit,
         > internal constructor(
         override val numerator: NumeratorUnit,
-        override val denominator: DenominatorUnit
-    ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(), UKImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
-    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-    DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-    DenominatorUnit : MeasurementUsage.UsedInUKImperial {
+        override val denominator: DenominatorUnit,
+    ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
+        UKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
+          NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
+          NumeratorUnit : MeasurementUsage.UsedInUKImperial,
+          DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
+          DenominatorUnit : MeasurementUsage.UsedInUKImperial {
         override val system = MeasurementSystem.UKImperial
     }
 
     data class USCustomary<
-        NumeratorQuantity : PhysicalQuantity.Undefined.QuantityType,
+        NumeratorQuantity : UndefinedQuantityType,
         NumeratorUnit,
-        DenominatorQuantity : PhysicalQuantity.Undefined.QuantityType,
-        DenominatorUnit
+        DenominatorQuantity : UndefinedQuantityType,
+        DenominatorUnit,
         > internal constructor(
         override val numerator: NumeratorUnit,
-        override val denominator: DenominatorUnit
-    ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(), USCustomaryScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
-    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-    DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-    DenominatorUnit : MeasurementUsage.UsedInUSCustomary {
+        override val denominator: DenominatorUnit,
+    ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
+        USCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
+          NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
+          NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
+          DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
+          DenominatorUnit : MeasurementUsage.UsedInUSCustomary {
         override val system = MeasurementSystem.USCustomary
     }
 
     data class MetricAndUKImperial<
-        NumeratorQuantity : PhysicalQuantity.Undefined.QuantityType,
+        NumeratorQuantity : UndefinedQuantityType,
         NumeratorUnit,
-        DenominatorQuantity : PhysicalQuantity.Undefined.QuantityType,
-        DenominatorUnit
+        DenominatorQuantity : UndefinedQuantityType,
+        DenominatorUnit,
         > internal constructor(
         override val numerator: NumeratorUnit,
-        override val denominator: DenominatorUnit
-    ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(), MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
-    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    NumeratorUnit : MeasurementUsage.UsedInMetricAndUKImperial,
-    DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-    DenominatorUnit : MeasurementUsage.UsedInMetricAndUKImperial {
+        override val denominator: DenominatorUnit,
+    ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
+        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
+          NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
+          NumeratorUnit : MeasurementUsage.UsedInMetricAndUKImperial,
+          DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
+          DenominatorUnit : MeasurementUsage.UsedInMetricAndUKImperial {
         override val system = MeasurementSystem.MetricAndUKImperial
     }
 
     data class MetricAndUSCustomary<
-        NumeratorQuantity : PhysicalQuantity.Undefined.QuantityType,
+        NumeratorQuantity : UndefinedQuantityType,
         NumeratorUnit,
-        DenominatorQuantity : PhysicalQuantity.Undefined.QuantityType,
-        DenominatorUnit
+        DenominatorQuantity : UndefinedQuantityType,
+        DenominatorUnit,
         > internal constructor(
         override val numerator: NumeratorUnit,
-        override val denominator: DenominatorUnit
-    ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(), MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
-    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    NumeratorUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
-    DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-    DenominatorUnit : MeasurementUsage.UsedInMetricAndUSCustomary {
+        override val denominator: DenominatorUnit,
+    ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
+        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
+          NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
+          NumeratorUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
+          DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
+          DenominatorUnit : MeasurementUsage.UsedInMetricAndUSCustomary {
         override val system = MeasurementSystem.MetricAndUSCustomary
     }
 }
 
 sealed class MultipliedUndefinedScientificUnit<
-    LeftQuantity : PhysicalQuantity.Undefined.QuantityType,
+    LeftQuantity : UndefinedQuantityType,
     LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    RightQuantity : PhysicalQuantity.Undefined.QuantityType,
-    RightUnit : UndefinedScientificUnit<RightQuantity>
-    > : UndefinedScientificUnit<PhysicalQuantity.Undefined.QuantityType.Multiplying<LeftQuantity, RightQuantity>>() {
+    RightQuantity : UndefinedQuantityType,
+    RightUnit : UndefinedScientificUnit<RightQuantity>,
+    > : UndefinedScientificUnit<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>() {
     abstract val left: LeftUnit
     abstract val right: RightUnit
 
-    override val quantityType by lazy { PhysicalQuantity.Undefined.QuantityType.Multiplying(left.quantityType, right.quantityType) }
+    override val quantityType by lazy { UndefinedQuantityType.Multiplying(left.quantityType, right.quantityType) }
     override val numeratorUnits: List<ScientificUnit<*>> by lazy {
         left.numeratorUnits + right.numeratorUnits
     }
@@ -335,140 +421,133 @@ sealed class MultipliedUndefinedScientificUnit<
         left.denominatorUnits + right.denominatorUnits
     }
 
-    override fun fromSIUnit(value: Decimal): Decimal = left.fromSIUnit(right.fromSIUnit(value))
-    override fun toSIUnit(value: Decimal): Decimal = left.toSIUnit(right.toSIUnit(value))
+    override fun fromSIUnit(value: Decimal): Decimal = left.deltaFromSIUnitDelta(right.deltaFromSIUnitDelta(value))
+    override fun toSIUnit(value: Decimal): Decimal = left.deltaToSIUnitDelta(right.deltaToSIUnitDelta(value))
 
     data class MetricAndImperial<
-        LeftQuantity : PhysicalQuantity.Undefined.QuantityType,
+        LeftQuantity : UndefinedQuantityType,
         LeftUnit,
-        RightQuantity : PhysicalQuantity.Undefined.QuantityType,
-        RightUnit
+        RightQuantity : UndefinedQuantityType,
+        RightUnit,
         > internal constructor(
         override val left: LeftUnit,
-        override val right: RightUnit
+        override val right: RightUnit,
     ) : MultipliedUndefinedScientificUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
-        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
-    LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetricAndImperial,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetricAndImperial
-    {
+        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
+          LeftUnit : UndefinedScientificUnit<LeftQuantity>,
+          LeftUnit : MeasurementUsage.UsedInMetricAndImperial,
+          RightUnit : UndefinedScientificUnit<RightQuantity>,
+          RightUnit : MeasurementUsage.UsedInMetricAndImperial {
         override val system = MeasurementSystem.MetricAndImperial
     }
 
     data class Metric<
-        LeftQuantity : PhysicalQuantity.Undefined.QuantityType,
+        LeftQuantity : UndefinedQuantityType,
         LeftUnit,
-        RightQuantity : PhysicalQuantity.Undefined.QuantityType,
-        RightUnit
+        RightQuantity : UndefinedQuantityType,
+        RightUnit,
         > internal constructor(
         override val left: LeftUnit,
-        override val right: RightUnit
+        override val right: RightUnit,
     ) : MultipliedUndefinedScientificUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
-        MetricScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
-    LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetric
-    {
+        MetricScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
+          LeftUnit : UndefinedScientificUnit<LeftQuantity>,
+          LeftUnit : MeasurementUsage.UsedInMetric,
+          RightUnit : UndefinedScientificUnit<RightQuantity>,
+          RightUnit : MeasurementUsage.UsedInMetric {
         override val system = MeasurementSystem.Metric
     }
 
     data class Imperial<
-        LeftQuantity : PhysicalQuantity.Undefined.QuantityType,
+        LeftQuantity : UndefinedQuantityType,
         LeftUnit,
-        RightQuantity : PhysicalQuantity.Undefined.QuantityType,
-        RightUnit
+        RightQuantity : UndefinedQuantityType,
+        RightUnit,
         > internal constructor(
         override val left: LeftUnit,
-        override val right: RightUnit
+        override val right: RightUnit,
     ) : MultipliedUndefinedScientificUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
-        ImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
-    LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInImperial,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInImperial
-    {
+        ImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
+          LeftUnit : UndefinedScientificUnit<LeftQuantity>,
+          LeftUnit : MeasurementUsage.UsedInImperial,
+          RightUnit : UndefinedScientificUnit<RightQuantity>,
+          RightUnit : MeasurementUsage.UsedInImperial {
         override val system = MeasurementSystem.Imperial
     }
 
     data class UKImperial<
-        LeftQuantity : PhysicalQuantity.Undefined.QuantityType,
+        LeftQuantity : UndefinedQuantityType,
         LeftUnit,
-        RightQuantity : PhysicalQuantity.Undefined.QuantityType,
-        RightUnit
+        RightQuantity : UndefinedQuantityType,
+        RightUnit,
         > internal constructor(
         override val left: LeftUnit,
-        override val right: RightUnit
+        override val right: RightUnit,
     ) : MultipliedUndefinedScientificUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
-        UKImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
-    LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInUKImperial
-    {
+        UKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
+          LeftUnit : UndefinedScientificUnit<LeftQuantity>,
+          LeftUnit : MeasurementUsage.UsedInUKImperial,
+          RightUnit : UndefinedScientificUnit<RightQuantity>,
+          RightUnit : MeasurementUsage.UsedInUKImperial {
         override val system = MeasurementSystem.UKImperial
     }
 
     data class USCustomary<
-        LeftQuantity : PhysicalQuantity.Undefined.QuantityType,
+        LeftQuantity : UndefinedQuantityType,
         LeftUnit,
-        RightQuantity : PhysicalQuantity.Undefined.QuantityType,
-        RightUnit
+        RightQuantity : UndefinedQuantityType,
+        RightUnit,
         > internal constructor(
         override val left: LeftUnit,
-        override val right: RightUnit
+        override val right: RightUnit,
     ) : MultipliedUndefinedScientificUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
-        USCustomaryScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
-    LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInUSCustomary
-    {
+        USCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
+          LeftUnit : UndefinedScientificUnit<LeftQuantity>,
+          LeftUnit : MeasurementUsage.UsedInUSCustomary,
+          RightUnit : UndefinedScientificUnit<RightQuantity>,
+          RightUnit : MeasurementUsage.UsedInUSCustomary {
         override val system = MeasurementSystem.USCustomary
     }
 
     data class MetricAndUKImperial<
-        LeftQuantity : PhysicalQuantity.Undefined.QuantityType,
+        LeftQuantity : UndefinedQuantityType,
         LeftUnit,
-        RightQuantity : PhysicalQuantity.Undefined.QuantityType,
-        RightUnit
+        RightQuantity : UndefinedQuantityType,
+        RightUnit,
         > internal constructor(
         override val left: LeftUnit,
-        override val right: RightUnit
+        override val right: RightUnit,
     ) : MultipliedUndefinedScientificUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
-        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
-    LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetricAndUKImperial,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetricAndUKImperial
-    {
+        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
+          LeftUnit : UndefinedScientificUnit<LeftQuantity>,
+          LeftUnit : MeasurementUsage.UsedInMetricAndUKImperial,
+          RightUnit : UndefinedScientificUnit<RightQuantity>,
+          RightUnit : MeasurementUsage.UsedInMetricAndUKImperial {
         override val system = MeasurementSystem.MetricAndUKImperial
     }
 
     data class MetricAndUSCustomary<
-        LeftQuantity : PhysicalQuantity.Undefined.QuantityType,
+        LeftQuantity : UndefinedQuantityType,
         LeftUnit,
-        RightQuantity : PhysicalQuantity.Undefined.QuantityType,
-        RightUnit
+        RightQuantity : UndefinedQuantityType,
+        RightUnit,
         > internal constructor(
         override val left: LeftUnit,
-        override val right: RightUnit
+        override val right: RightUnit,
     ) : MultipliedUndefinedScientificUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
-        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
-    LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetricAndUSCustomary
-    {
+        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
+          LeftUnit : UndefinedScientificUnit<LeftQuantity>,
+          LeftUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
+          RightUnit : UndefinedScientificUnit<RightQuantity>,
+          RightUnit : MeasurementUsage.UsedInMetricAndUSCustomary {
         override val system = MeasurementSystem.MetricAndUSCustomary
     }
 }
 
 sealed class InvertedUndefinedScientificUnit<
-    InverseQuantity : PhysicalQuantity.Undefined.QuantityType,
-    InverseUnit : UndefinedScientificUnit<InverseQuantity>
-    > : UndefinedScientificUnit<PhysicalQuantity.Undefined.QuantityType.Inverse<InverseQuantity>>() {
+    InverseQuantity : UndefinedQuantityType,
+    InverseUnit : UndefinedScientificUnit<InverseQuantity>,
+    > : UndefinedScientificUnit<UndefinedQuantityType.Inverse<InverseQuantity>>() {
     abstract val inverse: InverseUnit
 
     override val numeratorUnits: List<ScientificUnit<*>> by lazy {
@@ -479,80 +558,87 @@ sealed class InvertedUndefinedScientificUnit<
         inverse.numeratorUnits
     }
 
-    override val quantityType: PhysicalQuantity.Undefined.QuantityType.Inverse<InverseQuantity> by lazy {
-        PhysicalQuantity.Undefined.QuantityType.Inverse(inverse.quantityType)
+    override val quantityType: UndefinedQuantityType.Inverse<InverseQuantity> by lazy {
+        UndefinedQuantityType.Inverse(inverse.quantityType)
     }
 
-    override fun fromSIUnit(value: Decimal): Decimal = inverse.fromSIUnit(1.0.toDecimal() / value)
-    override fun toSIUnit(value: Decimal): Decimal = inverse.toSIUnit(1.0.toDecimal() / value)
+    override fun fromSIUnit(value: Decimal): Decimal = inverse.deltaFromSIUnitDelta(1.0.toDecimal() / value)
+    override fun toSIUnit(value: Decimal): Decimal = inverse.deltaToSIUnitDelta(1.0.toDecimal() / value)
 
     data class MetricAndImperial<
-        InverseQuantity : PhysicalQuantity.Undefined.QuantityType,
-        InverseUnit
-        > internal constructor(override val inverse: InverseUnit) : InvertedUndefinedScientificUnit<InverseQuantity, InverseUnit>(),
-        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Inverse<InverseQuantity>>> where
-    InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-    InverseUnit : MeasurementUsage.UsedInMetricAndImperial {
+        InverseQuantity : UndefinedQuantityType,
+        InverseUnit,
+        > internal constructor(override val inverse: InverseUnit) :
+        InvertedUndefinedScientificUnit<InverseQuantity, InverseUnit>(),
+        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Inverse<InverseQuantity>>> where
+          InverseUnit : UndefinedScientificUnit<InverseQuantity>,
+          InverseUnit : MeasurementUsage.UsedInMetricAndImperial {
         override val system = MeasurementSystem.MetricAndImperial
     }
 
     data class Metric<
-        InverseQuantity : PhysicalQuantity.Undefined.QuantityType,
-        InverseUnit
-        > internal constructor(override val inverse: InverseUnit) : InvertedUndefinedScientificUnit<InverseQuantity, InverseUnit>(),
-        MetricScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Inverse<InverseQuantity>>> where
-    InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-    InverseUnit : MeasurementUsage.UsedInMetric {
+        InverseQuantity : UndefinedQuantityType,
+        InverseUnit,
+        > internal constructor(override val inverse: InverseUnit) :
+        InvertedUndefinedScientificUnit<InverseQuantity, InverseUnit>(),
+        MetricScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Inverse<InverseQuantity>>> where
+          InverseUnit : UndefinedScientificUnit<InverseQuantity>,
+          InverseUnit : MeasurementUsage.UsedInMetric {
         override val system = MeasurementSystem.Metric
     }
 
     data class Imperial<
-        InverseQuantity : PhysicalQuantity.Undefined.QuantityType,
-        InverseUnit
-        > internal constructor(override val inverse: InverseUnit) : InvertedUndefinedScientificUnit<InverseQuantity, InverseUnit>(),
-        ImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Inverse<InverseQuantity>>> where
-    InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-    InverseUnit : MeasurementUsage.UsedInImperial {
+        InverseQuantity : UndefinedQuantityType,
+        InverseUnit,
+        > internal constructor(override val inverse: InverseUnit) :
+        InvertedUndefinedScientificUnit<InverseQuantity, InverseUnit>(),
+        ImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Inverse<InverseQuantity>>> where
+          InverseUnit : UndefinedScientificUnit<InverseQuantity>,
+          InverseUnit : MeasurementUsage.UsedInImperial {
         override val system = MeasurementSystem.Imperial
     }
 
     data class UKImperial<
-        InverseQuantity : PhysicalQuantity.Undefined.QuantityType,
-        InverseUnit
-        > internal constructor(override val inverse: InverseUnit) : InvertedUndefinedScientificUnit<InverseQuantity, InverseUnit>(),
-        UKImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Inverse<InverseQuantity>>> where
-    InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-    InverseUnit : MeasurementUsage.UsedInUKImperial {
+        InverseQuantity : UndefinedQuantityType,
+        InverseUnit,
+        > internal constructor(override val inverse: InverseUnit) :
+        InvertedUndefinedScientificUnit<InverseQuantity, InverseUnit>(),
+        UKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Inverse<InverseQuantity>>> where
+          InverseUnit : UndefinedScientificUnit<InverseQuantity>,
+          InverseUnit : MeasurementUsage.UsedInUKImperial {
         override val system = MeasurementSystem.UKImperial
     }
 
     data class USCustomary<
-        InverseQuantity : PhysicalQuantity.Undefined.QuantityType,
-        InverseUnit
-        > internal constructor(override val inverse: InverseUnit) : InvertedUndefinedScientificUnit<InverseQuantity, InverseUnit>(),
-        USCustomaryScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Inverse<InverseQuantity>>> where
-    InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-    InverseUnit : MeasurementUsage.UsedInUSCustomary {
+        InverseQuantity : UndefinedQuantityType,
+        InverseUnit,
+        > internal constructor(override val inverse: InverseUnit) :
+        InvertedUndefinedScientificUnit<InverseQuantity, InverseUnit>(),
+        USCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Inverse<InverseQuantity>>> where
+          InverseUnit : UndefinedScientificUnit<InverseQuantity>,
+          InverseUnit : MeasurementUsage.UsedInUSCustomary {
         override val system = MeasurementSystem.USCustomary
     }
 
     data class MetricAndUKImperial<
-        InverseQuantity : PhysicalQuantity.Undefined.QuantityType,
-        InverseUnit
-        > internal constructor(override val inverse: InverseUnit) : InvertedUndefinedScientificUnit<InverseQuantity, InverseUnit>(),
-        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Inverse<InverseQuantity>>> where
-    InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-    InverseUnit : MeasurementUsage.UsedInMetricAndUKImperial {
+        InverseQuantity : UndefinedQuantityType,
+        InverseUnit,
+        > internal constructor(override val inverse: InverseUnit) :
+        InvertedUndefinedScientificUnit<InverseQuantity, InverseUnit>(),
+        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Inverse<InverseQuantity>>> where
+          InverseUnit : UndefinedScientificUnit<InverseQuantity>,
+          InverseUnit : MeasurementUsage.UsedInMetricAndUKImperial {
         override val system = MeasurementSystem.MetricAndUKImperial
     }
 
     data class MetricAndUSCustomary<
-        InverseQuantity : PhysicalQuantity.Undefined.QuantityType,
-        InverseUnit
-        > internal constructor(override val inverse: InverseUnit) : InvertedUndefinedScientificUnit<InverseQuantity, InverseUnit>(),
-        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<PhysicalQuantity.Undefined.QuantityType.Inverse<InverseQuantity>>> where
-    InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-    InverseUnit : MeasurementUsage.UsedInMetricAndUSCustomary {
+        InverseQuantity : UndefinedQuantityType,
+        InverseUnit,
+        > internal constructor(override val inverse: InverseUnit) :
+        InvertedUndefinedScientificUnit<InverseQuantity, InverseUnit>(),
+        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Inverse<InverseQuantity>>> where
+          InverseUnit : UndefinedScientificUnit<InverseQuantity>,
+          InverseUnit : MeasurementUsage.UsedInMetricAndUSCustomary {
         override val system = MeasurementSystem.MetricAndUSCustomary
     }
 }

@@ -51,8 +51,6 @@ val TemperatureUnits: Set<Temperature> get() = MetricAndUkImperialTemperatureUni
 @Serializable
 sealed class Temperature : AbstractScientificUnit<PhysicalQuantity.Temperature>() {
     override val quantity = PhysicalQuantity.Temperature
-    abstract fun deltaToSIUnitDelta(delta: Decimal): Decimal
-    abstract fun deltaFromSIUnitDelta(delta: Decimal): Decimal
 }
 
 /**

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific
 
+import UndefinedQuantityType
 import kotlinx.serialization.Serializable
 
 /**
@@ -41,7 +42,7 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
      */
     @Serializable
     sealed class DefinedPhysicalQuantityWithDimension : PhysicalQuantityWithDimension() {
-        val undefined get() = Undefined(Undefined.QuantityType.Wrapped(this))
+        val undefined get() = Undefined(UndefinedQuantityType.Extended(this))
     }
 
     /**
@@ -408,19 +409,5 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
      * A [PhysicalQuantityWithDimension] that can be used to create custom scientific units
      */
     @Serializable
-    data class Undefined<CustomQuantity : Undefined.QuantityType>(val customQuantity: CustomQuantity) : PhysicalQuantityWithDimension() {
-        @Serializable
-        sealed class QuantityType {
-            @Serializable
-            data class Wrapped<WrappedPhysicalQuantity : PhysicalQuantityWithDimension>(val wrapped: WrappedPhysicalQuantity) : QuantityType()
-            @Serializable
-            data class Custom<CustomQuantity>(val customQuantity: CustomQuantity) : QuantityType()
-            @Serializable
-            data class Dividing<NumeratorQuantity : QuantityType, DenominatorQuantity : QuantityType>(val numerator: NumeratorQuantity, val denominator : DenominatorQuantity) : QuantityType()
-            @Serializable
-            data class Multiplying<Left : QuantityType, Right : QuantityType>(val left: Left, val right: Right) : QuantityType()
-            @Serializable
-            data class Inverse<Quantity : QuantityType>(val inverted: Quantity) : QuantityType()
-        }
-    }
+    data class Undefined<CustomQuantity : UndefinedQuantityType>(val customQuantity: CustomQuantity) : PhysicalQuantityWithDimension()
 }

@@ -58,6 +58,9 @@ sealed interface ScientificUnit<Quantity : PhysicalQuantity> : MeasurementUsage,
      * @return the [Decimal] value in this unit
      */
     fun fromSIUnit(value: Decimal): Decimal
+
+    fun deltaToSIUnitDelta(delta: Decimal): Decimal = toSIUnit(delta)
+    fun deltaFromSIUnitDelta(delta: Decimal): Decimal = fromSIUnit(delta)
 }
 
 /**

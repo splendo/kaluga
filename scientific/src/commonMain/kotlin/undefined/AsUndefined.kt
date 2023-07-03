@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.scientific.unit.undefined
+package com.splendo.kaluga.scientific.undefined
 
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.unit.MeasurementUsage
@@ -24,29 +24,29 @@ import com.splendo.kaluga.scientific.unit.WrappedUndefinedScientificUnit
 
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    Unit
+    Unit,
     > Unit.asUndefined() where Unit : ScientificUnit<Quantity>, Unit : MeasurementUsage.UsedInMetricAndImperial = WrappedUndefinedScientificUnit.MetricAndImperial(this)
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    Unit
+    Unit,
     > Unit.asUndefined() where Unit : ScientificUnit<Quantity>, Unit : MeasurementUsage.UsedInMetric = WrappedUndefinedScientificUnit.Metric(this)
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    Unit
+    Unit,
     > Unit.asUndefined() where Unit : ScientificUnit<Quantity>, Unit : MeasurementUsage.UsedInImperial = WrappedUndefinedScientificUnit.Imperial(this)
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    Unit
+    Unit,
     > Unit.asUndefined() where Unit : ScientificUnit<Quantity>, Unit : MeasurementUsage.UsedInUKImperial = WrappedUndefinedScientificUnit.UKImperial(this)
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    Unit
+    Unit,
     > Unit.asUndefined() where Unit : ScientificUnit<Quantity>, Unit : MeasurementUsage.UsedInUSCustomary = WrappedUndefinedScientificUnit.USCustomary(this)
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    Unit
+    Unit,
     > Unit.asUndefined() where Unit : ScientificUnit<Quantity>, Unit : MeasurementUsage.UsedInMetricAndUKImperial = WrappedUndefinedScientificUnit.MetricAndUKImperial(this)
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    Unit
+    Unit,
     > Unit.asUndefined() where Unit : ScientificUnit<Quantity>, Unit : MeasurementUsage.UsedInMetricAndUSCustomary = WrappedUndefinedScientificUnit.MetricAndUSCustomary(this)
