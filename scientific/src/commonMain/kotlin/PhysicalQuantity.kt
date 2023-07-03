@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.scientific
 
-import UndefinedQuantityType
 import kotlinx.serialization.Serializable
 
 /**

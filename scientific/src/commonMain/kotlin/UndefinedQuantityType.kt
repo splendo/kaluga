@@ -15,7 +15,8 @@
 
  */
 
-import com.splendo.kaluga.scientific.PhysicalQuantity
+package com.splendo.kaluga.scientific
+
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -36,5 +37,5 @@ sealed class UndefinedQuantityType {
     data class Multiplying<Left : UndefinedQuantityType, Right : UndefinedQuantityType>(val left: Left, val right: Right) : UndefinedQuantityType()
 
     @Serializable
-    data class Inverse<Quantity : UndefinedQuantityType>(val inverted: Quantity) : UndefinedQuantityType()
+    data class Reciprocal<Quantity : UndefinedQuantityType>(val reciprocal: Quantity) : UndefinedQuantityType()
 }

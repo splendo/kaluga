@@ -18,7 +18,6 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.RoundingMode
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.minus
 import com.splendo.kaluga.base.utils.plus
@@ -27,7 +26,6 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
 import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.ScientificUnit
-import com.splendo.kaluga.scientific.unit.convert
 import kotlinx.serialization.Serializable
 
 /**
@@ -70,179 +68,7 @@ data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractSc
     constructor(value: Decimal, unit: Unit) : this(value.toDouble(), unit)
 }
 
-// Creation
-
-/**
- * Creates a [DefaultScientificValue] of this number using a given [AbstractScientificUnit]
- * @param Quantity the type of [PhysicalQuantity] of the unit
- * @param Unit the type of [AbstractScientificUnit] the value should represents
- * @param unit the [Unit] of the [DefaultScientificValue] to be created
- * @return the created [DefaultScientificValue]
- */
-operator fun <
-    Quantity : PhysicalQuantity,
-    Unit : AbstractScientificUnit<Quantity>,
-    > Number.invoke(unit: Unit) = this.toDecimal()(unit)
-
-/**
- * Creates a [Value] of this number using a given [unit]
- * @param Quantity the type of [PhysicalQuantity] of the unit
- * @param Unit the type of [ScientificUnit] the value should represents
- * @param Value the type of [ScientificValue] to return
- * @param unit the [Unit] of the [DefaultScientificValue] to be created
- * @param factory a method for creating a [Value] using a Decimal value and a [Unit]
- * @return the created [Value]
- */
-operator fun <
-    Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, Unit>,
-    > Number.invoke(unit: Unit, factory: (Decimal, Unit) -> Value) = this.toDecimal()(unit, factory)
-
-/**
- * Creates a [DefaultScientificValue] of this [Decimal] using a given [AbstractScientificUnit]
- * @param Quantity the type of [PhysicalQuantity] of the unit
- * @param Unit the type of [AbstractScientificUnit] the value should represents
- * @param unit the [Unit] of the [DefaultScientificValue] to be created
- * @return the created [DefaultScientificValue]
- */
-operator fun <
-    Quantity : PhysicalQuantity,
-    Unit : AbstractScientificUnit<Quantity>,
-    > Decimal.invoke(unit: Unit) = this(unit, ::DefaultScientificValue)
-
-/**
- * Creates a [Value] of this [Decimal] using a given [unit]
- * @param Quantity the type of [PhysicalQuantity] of the unit
- * @param Unit the type of [ScientificUnit] the value should represents
- * @param Value the type of [ScientificValue] to return
- * @param unit the [Unit] of the [DefaultScientificValue] to be created
- * @param factory a method for creating a [Value] using a Decimal value and a [Unit]
- * @return the created [Value]
- */
-operator fun <
-    Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>,
-    Value : ScientificValue<Quantity, Unit>,
-    > Decimal.invoke(unit: Unit, factory: (Decimal, Unit) -> Value) = factory(this, unit)
-
 // Conversion
-
-/**
- * Converts a [ScientificValue] into another [ScientificValue] with a [ScientificUnit] of the same [PhysicalQuantity]
- * @param Quantity the type of [PhysicalQuantity] of the current [ScientificValue] as well as the [TargetValue]
- * @param Unit the type of [ScientificUnit] of the current [ScientificValue]
- * @param TargetUnit the type of [ScientificUnit] of the [TargetValue]
- * @param TargetValue the type of [ScientificValue] to convert to
- * @param target the [TargetUnit] to convert to
- * @param factory method for creating the [TargetValue] given the [Decimal] value in [TargetUnit]
- * @return an instance of [TargetValue] with its value equal to the value of this [ScientificUnit] in [TargetUnit]
- */
-fun <
-    Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>,
-    TargetUnit : ScientificUnit<Quantity>,
-    TargetValue : ScientificValue<Quantity, TargetUnit>,
-    > ScientificValue<Quantity, Unit>.convert(
-    target: TargetUnit,
-    factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue = factory(convertValue(target), target)
-
-/**
- * Converts a [ScientificValue] into a [DefaultScientificValue] with an [AbstractScientificUnit] of the same [PhysicalQuantity]
- * @param Quantity the type of [PhysicalQuantity] of the current [ScientificValue] as well as the [DefaultScientificValue] to be created
- * @param Unit the type of [AbstractScientificUnit] of the current [ScientificValue]
- * @param TargetUnit the type of [ScientificUnit] of the [DefaultScientificValue]
- * @param target the [TargetUnit] to convert to
- * @return an instance of [DefaultScientificValue] with its value equal to the value of this [ScientificUnit] in [TargetUnit]
- */
-fun <
-    Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>,
-    TargetUnit : AbstractScientificUnit<Quantity>,
-    > ScientificValue<Quantity, Unit>.convert(target: TargetUnit) = convert(target, ::DefaultScientificValue)
-
-/**
- * Converts [ScientificValue.value] into the equivalent [Decimal] in [TargetUnit]
- * @param Quantity the type of [PhysicalQuantity] of the [Unit] and [TargetUnit]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
- * @param TargetUnit the type of [ScientificUnit] to convert to
- * @param target the [TargetUnit] to convert to
- * @return the [Decimal] value in [TargetUnit] equivalent to [ScientificValue.value]
- */
-fun <
-    Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>,
-    TargetUnit : ScientificUnit<Quantity>,
-    > ScientificValue<Quantity, Unit>.convertValue(target: TargetUnit): Decimal {
-    return unit.convert(decimalValue, target)
-}
-
-/**
- * Converts a [ScientificValue] into another [ScientificValue] with a [ScientificUnit] of the same [PhysicalQuantity]
- * @param Quantity the type of [PhysicalQuantity] of the current [ScientificValue] as well as the [TargetValue]
- * @param Unit the type of [ScientificUnit] of the current [ScientificValue]
- * @param TargetUnit the type of [ScientificUnit] of the [TargetValue]
- * @param TargetValue the type of [ScientificValue] to convert to
- * @param target the [TargetUnit] to convert to
- * @param round The number of digits a rounded value should have after its decimal point
- * @param roundingMode The [RoundingMode] to apply when scaling
- * @param factory method for creating the [TargetValue] given the [Decimal] value in [TargetUnit]
- * @return an instance of [TargetValue] with its value equal to the value of this [ScientificUnit] in [TargetUnit]
- */
-fun <
-    Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>,
-    TargetUnit : ScientificUnit<Quantity>,
-    TargetValue : ScientificValue<Quantity, TargetUnit>,
-    > ScientificValue<Quantity, Unit>.convert(
-    target: TargetUnit,
-    round: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-    factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue = factory(convertValue(target, round, roundingMode), target)
-
-/**
- * Converts a [ScientificValue] into a [DefaultScientificValue] with an [AbstractScientificUnit] of the same [PhysicalQuantity]
- * @param Quantity the type of [PhysicalQuantity] of the current [ScientificValue] as well as the [DefaultScientificValue] to be created
- * @param Unit the type of [ScientificUnit] of the current [ScientificValue]
- * @param TargetUnit the type of [ScientificUnit] of the [DefaultScientificValue]
- * @param target the [TargetUnit] to convert to
- * @param round The number of digits a rounded value should have after its decimal point
- * @param roundingMode The [RoundingMode] to apply when scaling
- * @return an instance of [DefaultScientificValue] with its value equal to the value of this [ScientificUnit] in [TargetUnit]
- */
-fun <
-    Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>,
-    TargetUnit : AbstractScientificUnit<Quantity>,
-    > ScientificValue<Quantity, Unit>.convert(
-    target: TargetUnit,
-    round: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-) = convert(target, round, roundingMode, ::DefaultScientificValue)
-
-/**
- * Converts [ScientificValue.value] into the equivalent [Decimal] in [TargetUnit]
- * @param Quantity the type of [PhysicalQuantity] of the [Unit] and [TargetUnit]
- * @param Unit the type of [ScientificUnit] of the [ScientificValue]
- * @param TargetUnit the type of [ScientificUnit] to convert to
- * @param target the [TargetUnit] to convert to
- * @param round The number of digits a rounded value should have after its decimal point
- * @param roundingMode The [RoundingMode] to apply when scaling
- * @return the [Decimal] value in [TargetUnit] equivalent to [ScientificValue.value]
- */
-fun <
-    Quantity : PhysicalQuantity,
-    Unit : ScientificUnit<Quantity>,
-    TargetUnit : ScientificUnit<Quantity>,
-    > ScientificValue<Quantity, Unit>.convertValue(
-    target: TargetUnit,
-    round: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-): Decimal {
-    return unit.convert(decimalValue, target, round, roundingMode)
-}
 
 // Calculation
 
