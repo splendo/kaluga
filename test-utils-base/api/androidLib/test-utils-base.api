@@ -57,6 +57,12 @@ public final class com/splendo/kaluga/test/base/DeliberateCancellationException 
 }
 
 public final class com/splendo/kaluga/test/base/FlowExtensionsKt {
+	public static final fun assertEmits-1Y68eR8 (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;JLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun assertEmits-1Y68eR8$default (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;JLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun assertEmits-zkXUZaI (Lkotlinx/coroutines/flow/Flow;Ljava/lang/Object;Ljava/lang/String;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun assertEmits-zkXUZaI$default (Lkotlinx/coroutines/flow/Flow;Ljava/lang/Object;Ljava/lang/String;JLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun awaitFirst-1Y68eR8 (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;JLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun awaitFirst-1Y68eR8$default (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;JLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun captureFor-8Mi8wO0 (Lkotlinx/coroutines/flow/Flow;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
