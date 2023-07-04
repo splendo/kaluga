@@ -26,7 +26,7 @@ sealed class UndefinedMultipliedUnit<
     LeftUnit : UndefinedScientificUnit<LeftQuantity>,
     RightQuantity : UndefinedQuantityType,
     RightUnit : UndefinedScientificUnit<RightQuantity>,
-    > : UndefinedScientificUnit<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>() {
+    > : AbstractUndefinedScientificUnit<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>() {
     abstract val left: LeftUnit
     abstract val right: RightUnit
 
@@ -51,7 +51,7 @@ sealed class UndefinedMultipliedUnit<
         override val left: LeftUnit,
         override val right: RightUnit,
     ) : UndefinedMultipliedUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
-        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
+        UndefinedScientificUnit.MetricAndImperial<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>> where
           LeftUnit : UndefinedScientificUnit<LeftQuantity>,
           LeftUnit : MeasurementUsage.UsedInMetricAndImperial,
           RightUnit : UndefinedScientificUnit<RightQuantity>,
@@ -68,7 +68,7 @@ sealed class UndefinedMultipliedUnit<
         override val left: LeftUnit,
         override val right: RightUnit,
     ) : UndefinedMultipliedUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
-        MetricScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
+        UndefinedScientificUnit.Metric<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>> where
           LeftUnit : UndefinedScientificUnit<LeftQuantity>,
           LeftUnit : MeasurementUsage.UsedInMetric,
           RightUnit : UndefinedScientificUnit<RightQuantity>,
@@ -85,7 +85,7 @@ sealed class UndefinedMultipliedUnit<
         override val left: LeftUnit,
         override val right: RightUnit,
     ) : UndefinedMultipliedUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
-        ImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
+        UndefinedScientificUnit.Imperial<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>> where
           LeftUnit : UndefinedScientificUnit<LeftQuantity>,
           LeftUnit : MeasurementUsage.UsedInImperial,
           RightUnit : UndefinedScientificUnit<RightQuantity>,
@@ -102,7 +102,7 @@ sealed class UndefinedMultipliedUnit<
         override val left: LeftUnit,
         override val right: RightUnit,
     ) : UndefinedMultipliedUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
-        UKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
+        UndefinedScientificUnit.UKImperial<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>> where
           LeftUnit : UndefinedScientificUnit<LeftQuantity>,
           LeftUnit : MeasurementUsage.UsedInUKImperial,
           RightUnit : UndefinedScientificUnit<RightQuantity>,
@@ -119,7 +119,7 @@ sealed class UndefinedMultipliedUnit<
         override val left: LeftUnit,
         override val right: RightUnit,
     ) : UndefinedMultipliedUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
-        USCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
+        UndefinedScientificUnit.USCustomary<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>> where
           LeftUnit : UndefinedScientificUnit<LeftQuantity>,
           LeftUnit : MeasurementUsage.UsedInUSCustomary,
           RightUnit : UndefinedScientificUnit<RightQuantity>,
@@ -136,7 +136,7 @@ sealed class UndefinedMultipliedUnit<
         override val left: LeftUnit,
         override val right: RightUnit,
     ) : UndefinedMultipliedUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
-        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
+        UndefinedScientificUnit.MetricAndUKImperial<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>> where
           LeftUnit : UndefinedScientificUnit<LeftQuantity>,
           LeftUnit : MeasurementUsage.UsedInMetricAndUKImperial,
           RightUnit : UndefinedScientificUnit<RightQuantity>,
@@ -153,7 +153,7 @@ sealed class UndefinedMultipliedUnit<
         override val left: LeftUnit,
         override val right: RightUnit,
     ) : UndefinedMultipliedUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
-        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>>> where
+        UndefinedScientificUnit.MetricAndUSCustomary<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>> where
           LeftUnit : UndefinedScientificUnit<LeftQuantity>,
           LeftUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
           RightUnit : UndefinedScientificUnit<RightQuantity>,

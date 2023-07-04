@@ -23,7 +23,7 @@ import com.splendo.kaluga.scientific.UndefinedQuantityType
 
 sealed class UndefinedExtendedUnit<
     ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    > : UndefinedScientificUnit<UndefinedQuantityType.Extended<ExtendedQuantity>>() {
+    > : AbstractUndefinedScientificUnit<UndefinedQuantityType.Extended<ExtendedQuantity>>() {
     abstract val extendedQuantity: ExtendedQuantity
     override val quantityType by lazy { UndefinedQuantityType.Extended(extendedQuantity) }
 
@@ -32,43 +32,43 @@ sealed class UndefinedExtendedUnit<
 
     abstract class MetricAndImperial<ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension> :
         UndefinedExtendedUnit<ExtendedQuantity>(),
-        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<ExtendedQuantity>>> {
+        UndefinedScientificUnit.MetricAndImperial<UndefinedQuantityType.Extended<ExtendedQuantity>> {
         override val system = MeasurementSystem.MetricAndImperial
     }
 
     abstract class Metric<ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension> :
         UndefinedExtendedUnit<ExtendedQuantity>(),
-        MetricScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<ExtendedQuantity>>> {
+        UndefinedScientificUnit.Metric<UndefinedQuantityType.Extended<ExtendedQuantity>> {
         override val system = MeasurementSystem.Metric
     }
 
     abstract class Imperial<ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension> :
         UndefinedExtendedUnit<ExtendedQuantity>(),
-        ImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<ExtendedQuantity>>> {
+        UndefinedScientificUnit.Imperial<UndefinedQuantityType.Extended<ExtendedQuantity>> {
         override val system = MeasurementSystem.Imperial
     }
 
     abstract class UKImperial<ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension> :
         UndefinedExtendedUnit<ExtendedQuantity>(),
-        UKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<ExtendedQuantity>>> {
+        UndefinedScientificUnit.UKImperial<UndefinedQuantityType.Extended<ExtendedQuantity>> {
         override val system = MeasurementSystem.UKImperial
     }
 
     abstract class USCustomary<ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension> :
         UndefinedExtendedUnit<ExtendedQuantity>(),
-        USCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<ExtendedQuantity>>> {
+        UndefinedScientificUnit.USCustomary<UndefinedQuantityType.Extended<ExtendedQuantity>> {
         override val system = MeasurementSystem.USCustomary
     }
 
     abstract class MetricAndUKImperial<ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension> :
         UndefinedExtendedUnit<ExtendedQuantity>(),
-        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<ExtendedQuantity>>> {
+        UndefinedScientificUnit.MetricAndUKImperial<UndefinedQuantityType.Extended<ExtendedQuantity>> {
         override val system = MeasurementSystem.MetricAndUKImperial
     }
 
     abstract class MetricAndUSCustomary<ExtendedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension> :
         UndefinedExtendedUnit<ExtendedQuantity>(),
-        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<ExtendedQuantity>>> {
+        UndefinedScientificUnit.MetricAndUSCustomary<UndefinedQuantityType.Extended<ExtendedQuantity>> {
         override val system = MeasurementSystem.MetricAndUSCustomary
     }
 }
@@ -92,7 +92,7 @@ sealed class WrappedUndefinedExtendedUnit<
         WrappedUnit,
         > internal constructor(override val wrapped: WrappedUnit) :
         WrappedUndefinedExtendedUnit<WrappedQuantity, WrappedUnit>(),
-        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<WrappedQuantity>>> where
+        UndefinedScientificUnit.MetricAndImperial<UndefinedQuantityType.Extended<WrappedQuantity>> where
           WrappedUnit : ScientificUnit<WrappedQuantity>,
           WrappedUnit : MeasurementUsage.UsedInMetricAndImperial {
         override val system = MeasurementSystem.MetricAndImperial
@@ -103,7 +103,7 @@ sealed class WrappedUndefinedExtendedUnit<
         WrappedUnit,
         > internal constructor(override val wrapped: WrappedUnit) :
         WrappedUndefinedExtendedUnit<WrappedQuantity, WrappedUnit>(),
-        MetricScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<WrappedQuantity>>> where
+        UndefinedScientificUnit.Metric<UndefinedQuantityType.Extended<WrappedQuantity>> where
           WrappedUnit : ScientificUnit<WrappedQuantity>,
           WrappedUnit : MeasurementUsage.UsedInMetric {
         override val system = MeasurementSystem.Metric
@@ -114,7 +114,7 @@ sealed class WrappedUndefinedExtendedUnit<
         WrappedUnit,
         > internal constructor(override val wrapped: WrappedUnit) :
         WrappedUndefinedExtendedUnit<WrappedQuantity, WrappedUnit>(),
-        ImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<WrappedQuantity>>> where
+        UndefinedScientificUnit.Imperial<UndefinedQuantityType.Extended<WrappedQuantity>> where
           WrappedUnit : ScientificUnit<WrappedQuantity>,
           WrappedUnit : MeasurementUsage.UsedInImperial {
         override val system = MeasurementSystem.Imperial
@@ -125,7 +125,7 @@ sealed class WrappedUndefinedExtendedUnit<
         WrappedUnit,
         > internal constructor(override val wrapped: WrappedUnit) :
         WrappedUndefinedExtendedUnit<WrappedQuantity, WrappedUnit>(),
-        UKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<WrappedQuantity>>> where
+        UndefinedScientificUnit.UKImperial<UndefinedQuantityType.Extended<WrappedQuantity>> where
           WrappedUnit : ScientificUnit<WrappedQuantity>,
           WrappedUnit : MeasurementUsage.UsedInUKImperial {
         override val system = MeasurementSystem.UKImperial
@@ -136,7 +136,7 @@ sealed class WrappedUndefinedExtendedUnit<
         WrappedUnit,
         > internal constructor(override val wrapped: WrappedUnit) :
         WrappedUndefinedExtendedUnit<WrappedQuantity, WrappedUnit>(),
-        USCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<WrappedQuantity>>> where
+        UndefinedScientificUnit.USCustomary<UndefinedQuantityType.Extended<WrappedQuantity>> where
           WrappedUnit : ScientificUnit<WrappedQuantity>,
           WrappedUnit : MeasurementUsage.UsedInUSCustomary {
         override val system = MeasurementSystem.USCustomary
@@ -147,7 +147,7 @@ sealed class WrappedUndefinedExtendedUnit<
         WrappedUnit,
         > internal constructor(override val wrapped: WrappedUnit) :
         WrappedUndefinedExtendedUnit<WrappedQuantity, WrappedUnit>(),
-        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<WrappedQuantity>>> where
+        UndefinedScientificUnit.MetricAndUKImperial<UndefinedQuantityType.Extended<WrappedQuantity>> where
           WrappedUnit : ScientificUnit<WrappedQuantity>,
           WrappedUnit : MeasurementUsage.UsedInMetricAndUKImperial {
         override val system = MeasurementSystem.MetricAndUKImperial
@@ -158,7 +158,7 @@ sealed class WrappedUndefinedExtendedUnit<
         WrappedUnit,
         > internal constructor(override val wrapped: WrappedUnit) :
         WrappedUndefinedExtendedUnit<WrappedQuantity, WrappedUnit>(),
-        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<WrappedQuantity>>> where
+        UndefinedScientificUnit.MetricAndUSCustomary<UndefinedQuantityType.Extended<WrappedQuantity>> where
           WrappedUnit : ScientificUnit<WrappedQuantity>,
           WrappedUnit : MeasurementUsage.UsedInMetricAndUSCustomary {
         override val system = MeasurementSystem.MetricAndUSCustomary

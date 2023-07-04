@@ -17,16 +17,16 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.UndefinedQuantityType
 
 sealed class UndefinedReciprocalUnit<
     InverseQuantity : UndefinedQuantityType,
     InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-    > : UndefinedScientificUnit<UndefinedQuantityType.Reciprocal<InverseQuantity>>() {
+    > : AbstractUndefinedScientificUnit<UndefinedQuantityType.Reciprocal<InverseQuantity>>() {
     abstract val inverse: InverseUnit
 
     override val numeratorUnits: List<ScientificUnit<*>> by lazy {
@@ -49,7 +49,7 @@ sealed class UndefinedReciprocalUnit<
         InverseUnit,
         > internal constructor(override val inverse: InverseUnit) :
         UndefinedReciprocalUnit<InverseQuantity, InverseUnit>(),
-        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Reciprocal<InverseQuantity>>> where
+        UndefinedScientificUnit.MetricAndImperial<UndefinedQuantityType.Reciprocal<InverseQuantity>> where
           InverseUnit : UndefinedScientificUnit<InverseQuantity>,
           InverseUnit : MeasurementUsage.UsedInMetricAndImperial {
         override val system = MeasurementSystem.MetricAndImperial
@@ -60,7 +60,7 @@ sealed class UndefinedReciprocalUnit<
         InverseUnit,
         > internal constructor(override val inverse: InverseUnit) :
         UndefinedReciprocalUnit<InverseQuantity, InverseUnit>(),
-        MetricScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Reciprocal<InverseQuantity>>> where
+        UndefinedScientificUnit.Metric<UndefinedQuantityType.Reciprocal<InverseQuantity>> where
           InverseUnit : UndefinedScientificUnit<InverseQuantity>,
           InverseUnit : MeasurementUsage.UsedInMetric {
         override val system = MeasurementSystem.Metric
@@ -71,7 +71,7 @@ sealed class UndefinedReciprocalUnit<
         InverseUnit,
         > internal constructor(override val inverse: InverseUnit) :
         UndefinedReciprocalUnit<InverseQuantity, InverseUnit>(),
-        ImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Reciprocal<InverseQuantity>>> where
+        UndefinedScientificUnit.Imperial<UndefinedQuantityType.Reciprocal<InverseQuantity>> where
           InverseUnit : UndefinedScientificUnit<InverseQuantity>,
           InverseUnit : MeasurementUsage.UsedInImperial {
         override val system = MeasurementSystem.Imperial
@@ -82,7 +82,7 @@ sealed class UndefinedReciprocalUnit<
         InverseUnit,
         > internal constructor(override val inverse: InverseUnit) :
         UndefinedReciprocalUnit<InverseQuantity, InverseUnit>(),
-        UKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Reciprocal<InverseQuantity>>> where
+        UndefinedScientificUnit.UKImperial<UndefinedQuantityType.Reciprocal<InverseQuantity>> where
           InverseUnit : UndefinedScientificUnit<InverseQuantity>,
           InverseUnit : MeasurementUsage.UsedInUKImperial {
         override val system = MeasurementSystem.UKImperial
@@ -93,7 +93,7 @@ sealed class UndefinedReciprocalUnit<
         InverseUnit,
         > internal constructor(override val inverse: InverseUnit) :
         UndefinedReciprocalUnit<InverseQuantity, InverseUnit>(),
-        USCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Reciprocal<InverseQuantity>>> where
+        UndefinedScientificUnit.USCustomary<UndefinedQuantityType.Reciprocal<InverseQuantity>> where
           InverseUnit : UndefinedScientificUnit<InverseQuantity>,
           InverseUnit : MeasurementUsage.UsedInUSCustomary {
         override val system = MeasurementSystem.USCustomary
@@ -104,7 +104,7 @@ sealed class UndefinedReciprocalUnit<
         InverseUnit,
         > internal constructor(override val inverse: InverseUnit) :
         UndefinedReciprocalUnit<InverseQuantity, InverseUnit>(),
-        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Reciprocal<InverseQuantity>>> where
+        UndefinedScientificUnit.MetricAndUKImperial<UndefinedQuantityType.Reciprocal<InverseQuantity>> where
           InverseUnit : UndefinedScientificUnit<InverseQuantity>,
           InverseUnit : MeasurementUsage.UsedInMetricAndUKImperial {
         override val system = MeasurementSystem.MetricAndUKImperial
@@ -115,7 +115,7 @@ sealed class UndefinedReciprocalUnit<
         InverseUnit,
         > internal constructor(override val inverse: InverseUnit) :
         UndefinedReciprocalUnit<InverseQuantity, InverseUnit>(),
-        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Reciprocal<InverseQuantity>>> where
+        UndefinedScientificUnit.MetricAndUSCustomary<UndefinedQuantityType.Reciprocal<InverseQuantity>> where
           InverseUnit : UndefinedScientificUnit<InverseQuantity>,
           InverseUnit : MeasurementUsage.UsedInMetricAndUSCustomary {
         override val system = MeasurementSystem.MetricAndUSCustomary

@@ -20,11 +20,23 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 
-sealed class UndefinedScientificUnit<QuantityType : UndefinedQuantityType> : ScientificUnit<PhysicalQuantity.Undefined<QuantityType>> {
-    abstract val quantityType: QuantityType
+sealed interface UndefinedScientificUnit<QuantityType : UndefinedQuantityType> : ScientificUnit<PhysicalQuantity.Undefined<QuantityType>> {
+    val quantityType: QuantityType
+    val numeratorUnits: List<ScientificUnit<*>>
+    val denominatorUnits: List<ScientificUnit<*>>
+
+    sealed interface MetricAndImperial<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType>, MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<QuantityType>>
+    sealed interface Metric<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType>, MetricScientificUnit<PhysicalQuantity.Undefined<QuantityType>>
+    sealed interface Imperial<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType>, ImperialScientificUnit<PhysicalQuantity.Undefined<QuantityType>>
+    sealed interface UKImperial<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType>, UKImperialScientificUnit<PhysicalQuantity.Undefined<QuantityType>>
+    sealed interface USCustomary<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType>, USCustomaryScientificUnit<PhysicalQuantity.Undefined<QuantityType>>
+    sealed interface MetricAndUKImperial<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType>, MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<QuantityType>>
+    sealed interface MetricAndUSCustomary<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType>, MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<QuantityType>>
+}
+
+sealed class AbstractUndefinedScientificUnit<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType> {
     override val quantity by lazy { PhysicalQuantity.Undefined(quantityType) }
-    internal abstract val numeratorUnits: List<ScientificUnit<*>>
-    internal abstract val denominatorUnits: List<ScientificUnit<*>>
+
     override val symbol: String by lazy {
         val groupedNumerators = numeratorUnits.groupingBy { it }.eachCount()
         val groupedDenominators = denominatorUnits.groupingBy { it }.eachCount()
@@ -63,7 +75,7 @@ sealed class UndefinedScientificUnit<QuantityType : UndefinedQuantityType> : Sci
     }
 }
 
-sealed class CustomUndefinedScientificUnit<CustomQuantity> : UndefinedScientificUnit<UndefinedQuantityType.Custom<CustomQuantity>>() {
+sealed class CustomUndefinedScientificUnit<CustomQuantity> : AbstractUndefinedScientificUnit<UndefinedQuantityType.Custom<CustomQuantity>>() {
     abstract val customQuantity: CustomQuantity
     override val quantityType by lazy { UndefinedQuantityType.Custom(customQuantity) }
 
@@ -72,43 +84,43 @@ sealed class CustomUndefinedScientificUnit<CustomQuantity> : UndefinedScientific
 
     abstract class MetricAndImperial<CustomQuantity> :
         CustomUndefinedScientificUnit<CustomQuantity>(),
-        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Custom<CustomQuantity>>> {
+        UndefinedScientificUnit.MetricAndImperial<UndefinedQuantityType.Custom<CustomQuantity>> {
         override val system = MeasurementSystem.MetricAndImperial
     }
 
     abstract class Metric<CustomQuantity> :
         CustomUndefinedScientificUnit<CustomQuantity>(),
-        MetricScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Custom<CustomQuantity>>> {
+        UndefinedScientificUnit.Metric<UndefinedQuantityType.Custom<CustomQuantity>> {
         override val system = MeasurementSystem.Metric
     }
 
     abstract class Imperial<CustomQuantity> :
         CustomUndefinedScientificUnit<CustomQuantity>(),
-        ImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Custom<CustomQuantity>>> {
+        UndefinedScientificUnit.Imperial<UndefinedQuantityType.Custom<CustomQuantity>> {
         override val system = MeasurementSystem.Imperial
     }
 
     abstract class UKImperial<CustomQuantity> :
         CustomUndefinedScientificUnit<CustomQuantity>(),
-        UKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Custom<CustomQuantity>>> {
+        UndefinedScientificUnit.UKImperial<UndefinedQuantityType.Custom<CustomQuantity>> {
         override val system = MeasurementSystem.UKImperial
     }
 
     abstract class USCustomary<CustomQuantity> :
         CustomUndefinedScientificUnit<CustomQuantity>(),
-        USCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Custom<CustomQuantity>>> {
+        UndefinedScientificUnit.USCustomary<UndefinedQuantityType.Custom<CustomQuantity>> {
         override val system = MeasurementSystem.USCustomary
     }
 
     abstract class MetricAndUKImperial<CustomQuantity> :
         CustomUndefinedScientificUnit<CustomQuantity>(),
-        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Custom<CustomQuantity>>> {
+        UndefinedScientificUnit.MetricAndUKImperial<UndefinedQuantityType.Custom<CustomQuantity>> {
         override val system = MeasurementSystem.MetricAndUKImperial
     }
 
     abstract class MetricAndUSCustomary<CustomQuantity> :
         CustomUndefinedScientificUnit<CustomQuantity>(),
-        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Custom<CustomQuantity>>> {
+        UndefinedScientificUnit.MetricAndUSCustomary<UndefinedQuantityType.Custom<CustomQuantity>> {
         override val system = MeasurementSystem.MetricAndUSCustomary
     }
 }

@@ -17,16 +17,16 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.UndefinedQuantityType
 
 sealed class DividedUndefinedScientificUnit<
     NumeratorQuantity : UndefinedQuantityType,
     NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
     DenominatorQuantity : UndefinedQuantityType,
     DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-    > : UndefinedScientificUnit<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>() {
+    > : AbstractUndefinedScientificUnit<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>() {
     abstract val numerator: NumeratorUnit
     abstract val denominator: DenominatorUnit
     override val quantityType by lazy {
@@ -53,7 +53,7 @@ sealed class DividedUndefinedScientificUnit<
         override val numerator: NumeratorUnit,
         override val denominator: DenominatorUnit,
     ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
-        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
+        UndefinedScientificUnit.MetricAndImperial<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> where
           NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
           NumeratorUnit : MeasurementUsage.UsedInMetricAndImperial,
           DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
@@ -70,7 +70,7 @@ sealed class DividedUndefinedScientificUnit<
         override val numerator: NumeratorUnit,
         override val denominator: DenominatorUnit,
     ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
-        MetricScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
+        UndefinedScientificUnit.Metric<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> where
           NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
           NumeratorUnit : MeasurementUsage.UsedInMetric,
           DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
@@ -87,7 +87,7 @@ sealed class DividedUndefinedScientificUnit<
         override val numerator: NumeratorUnit,
         override val denominator: DenominatorUnit,
     ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
-        ImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
+        UndefinedScientificUnit.Imperial<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> where
           NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
           NumeratorUnit : MeasurementUsage.UsedInImperial,
           DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
@@ -104,7 +104,7 @@ sealed class DividedUndefinedScientificUnit<
         override val numerator: NumeratorUnit,
         override val denominator: DenominatorUnit,
     ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
-        UKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
+        UndefinedScientificUnit.UKImperial<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> where
           NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
           NumeratorUnit : MeasurementUsage.UsedInUKImperial,
           DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
@@ -121,7 +121,7 @@ sealed class DividedUndefinedScientificUnit<
         override val numerator: NumeratorUnit,
         override val denominator: DenominatorUnit,
     ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
-        USCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
+        UndefinedScientificUnit.USCustomary<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> where
           NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
           NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
           DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
@@ -138,7 +138,7 @@ sealed class DividedUndefinedScientificUnit<
         override val numerator: NumeratorUnit,
         override val denominator: DenominatorUnit,
     ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
-        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
+        UndefinedScientificUnit.MetricAndUKImperial<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> where
           NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
           NumeratorUnit : MeasurementUsage.UsedInMetricAndUKImperial,
           DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
@@ -155,7 +155,7 @@ sealed class DividedUndefinedScientificUnit<
         override val numerator: NumeratorUnit,
         override val denominator: DenominatorUnit,
     ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
-        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>>> where
+        UndefinedScientificUnit.MetricAndUSCustomary<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> where
           NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
           NumeratorUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
           DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
