@@ -21,8 +21,13 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
+import com.splendo.kaluga.scientific.unit.DividedUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.Second
 import com.splendo.kaluga.scientific.unit.UndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.asUndefined
+import com.splendo.kaluga.scientific.unit.per
 
 internal fun <
     TargetQuantity : PhysicalQuantity,
@@ -183,3 +188,25 @@ fun <
     right: ScientificValue<Quantity, RightUnit>,
     factory: (Decimal, TargetUnit) -> Value,
 ) = byMultiplying(left, right, factory)
+
+infix operator fun <
+    LeftQuantity : UndefinedQuantityType,
+    LeftUnit : UndefinedScientificUnit.Metric<LeftQuantity>,
+    RightQuantity : UndefinedQuantityType,
+    RightUnit : UndefinedScientificUnit.MetricAndImperial<RightQuantity>
+    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(right : UndefinedScientificValue<RightQuantity, RightUnit>)
+    = ""
+
+infix operator fun <
+    LeftAndDenominatorQuantity : UndefinedQuantityType,
+    LeftUnit : UndefinedScientificUnit.Metric<LeftAndDenominatorQuantity>,
+    NumeratorQuantity : UndefinedQuantityType,
+    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
+    DenominatorUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
+    DividerUnit : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, LeftAndDenominatorQuantity, DenominatorUnit>
+    > UndefinedScientificValue<LeftAndDenominatorQuantity, LeftUnit>.times(right: UndefinedScientificValue<UndefinedQuantityType.Dividing<NumeratorQuantity, LeftAndDenominatorQuantity>, DividerUnit>) = ""
+
+private fun test() {
+    val meterSecond = 2(Meter.asUndefined()) * 4(Second.asUndefined())
+    val second = 2(Meter.asUndefined()) * 4(Second per Meter)
+}
