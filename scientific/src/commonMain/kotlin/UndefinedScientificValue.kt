@@ -42,7 +42,9 @@ fun <
     Value : UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, WrappedUndefinedExtendedUnit.MetricAndImperial<Quantity, Unit>>,
     > ScientificValue<Quantity, Unit>.asUndefined(factory: (Decimal, WrappedUndefinedExtendedUnit.MetricAndImperial<Quantity, Unit>) -> Value) where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndImperial = factory(decimalValue, unit.asUndefined())
+      Unit : MeasurementUsage.UsedInMetric,
+      Unit : MeasurementUsage.UsedInUKImperial,
+      Unit : MeasurementUsage.UsedInUSCustomary = factory(decimalValue, unit.asUndefined())
 
 @JvmName("metricAndImperialValueAsDefaultUndefined")
 fun <
@@ -50,7 +52,9 @@ fun <
     Unit,
     > ScientificValue<Quantity, Unit>.asUndefined() where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndImperial = asUndefined { value: Decimal, unit: WrappedUndefinedExtendedUnit.MetricAndImperial<Quantity, Unit> ->
+      Unit : MeasurementUsage.UsedInMetric,
+      Unit : MeasurementUsage.UsedInUKImperial,
+      Unit : MeasurementUsage.UsedInUSCustomary = asUndefined { value: Decimal, unit: WrappedUndefinedExtendedUnit.MetricAndImperial<Quantity, Unit> ->
     DefaultUndefinedScientificValue(value, unit)
 }
 
@@ -80,7 +84,8 @@ fun <
     Value : UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, WrappedUndefinedExtendedUnit.Imperial<Quantity, Unit>>,
     > ScientificValue<Quantity, Unit>.asUndefined(factory: (Decimal, WrappedUndefinedExtendedUnit.Imperial<Quantity, Unit>) -> Value) where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInImperial = factory(decimalValue, unit.asUndefined())
+      Unit : MeasurementUsage.UsedInUKImperial,
+      Unit : MeasurementUsage.UsedInUSCustomary = factory(decimalValue, unit.asUndefined())
 
 @JvmName("imperialValueAsDefaultUndefined")
 fun <
@@ -88,7 +93,8 @@ fun <
     Unit,
     > ScientificValue<Quantity, Unit>.asUndefined() where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInImperial = asUndefined { value: Decimal, unit: WrappedUndefinedExtendedUnit.Imperial<Quantity, Unit> ->
+      Unit : MeasurementUsage.UsedInUKImperial,
+      Unit : MeasurementUsage.UsedInUSCustomary = asUndefined { value: Decimal, unit: WrappedUndefinedExtendedUnit.Imperial<Quantity, Unit> ->
     DefaultUndefinedScientificValue(value, unit)
 }
 
@@ -137,7 +143,8 @@ fun <
     Value : UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, WrappedUndefinedExtendedUnit.MetricAndUKImperial<Quantity, Unit>>,
     > ScientificValue<Quantity, Unit>.asUndefined(factory: (Decimal, WrappedUndefinedExtendedUnit.MetricAndUKImperial<Quantity, Unit>) -> Value) where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndUKImperial = factory(decimalValue, unit.asUndefined())
+      Unit : MeasurementUsage.UsedInMetric,
+      Unit : MeasurementUsage.UsedInUKImperial = factory(decimalValue, unit.asUndefined())
 
 @JvmName("metricAndUKImperialValueAsDefaultUndefined")
 fun <
@@ -145,7 +152,8 @@ fun <
     Unit,
     > ScientificValue<Quantity, Unit>.asUndefined() where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndUKImperial = asUndefined { value: Decimal, unit: WrappedUndefinedExtendedUnit.MetricAndUKImperial<Quantity, Unit> ->
+      Unit : MeasurementUsage.UsedInMetric,
+      Unit : MeasurementUsage.UsedInUKImperial = asUndefined { value: Decimal, unit: WrappedUndefinedExtendedUnit.MetricAndUKImperial<Quantity, Unit> ->
     DefaultUndefinedScientificValue(value, unit)
 }
 
@@ -156,7 +164,8 @@ fun <
     Value : UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, WrappedUndefinedExtendedUnit.MetricAndUSCustomary<Quantity, Unit>>,
     > ScientificValue<Quantity, Unit>.asUndefined(factory: (Decimal, WrappedUndefinedExtendedUnit.MetricAndUSCustomary<Quantity, Unit>) -> Value) where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndUSCustomary = factory(decimalValue, unit.asUndefined())
+      Unit : MeasurementUsage.UsedInMetric,
+      Unit : MeasurementUsage.UsedInUSCustomary = factory(decimalValue, unit.asUndefined())
 
 @JvmName("metricAndUSCustomaryValueAsDefaultUndefined")
 fun <
@@ -164,6 +173,7 @@ fun <
     Unit,
     > ScientificValue<Quantity, Unit>.asUndefined() where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndUSCustomary = asUndefined { value: Decimal, unit: WrappedUndefinedExtendedUnit.MetricAndUSCustomary<Quantity, Unit> ->
+      Unit : MeasurementUsage.UsedInMetric,
+      Unit : MeasurementUsage.UsedInUSCustomary = asUndefined { value: Decimal, unit: WrappedUndefinedExtendedUnit.MetricAndUSCustomary<Quantity, Unit> ->
     DefaultUndefinedScientificValue(value, unit)
 }

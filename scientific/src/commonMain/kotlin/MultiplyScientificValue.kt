@@ -20,21 +20,18 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.scientific.converter.undefined.times
 import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.Celsius
-import com.splendo.kaluga.scientific.unit.DividedUndefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.Fahrenheit
-import com.splendo.kaluga.scientific.unit.MeasurementUsage
-import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Mile
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.Second
-import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.Watt
 import com.splendo.kaluga.scientific.unit.Yard
 import com.splendo.kaluga.scientific.unit.asUndefined
 import com.splendo.kaluga.scientific.unit.per
-import com.splendo.kaluga.scientific.unit.x
 
 internal fun <
     TargetQuantity : PhysicalQuantity,
@@ -196,220 +193,8 @@ fun <
     factory: (Decimal, TargetUnit) -> Value,
 ) = byMultiplying(left, right, factory)
 
-fun <
-    LeftQuantity : UndefinedQuantityType,
-    LeftUnit,
-    RightQuantity : UndefinedQuantityType,
-    RightUnit,
-    TargetValue : UndefinedScientificValue<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>, UndefinedMultipliedUnit.MetricAndImperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit>>
-    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, UndefinedMultipliedUnit.MetricAndImperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit>) -> TargetValue
-)  where LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-         LeftUnit : MeasurementUsage.UsedInMetric,
-         LeftUnit : MeasurementUsage.UsedInUKImperial,
-         LeftUnit : MeasurementUsage.UsedInUSCustomary,
-         RightUnit : UndefinedScientificUnit<RightQuantity>,
-         RightUnit : MeasurementUsage.UsedInMetric,
-         RightUnit : MeasurementUsage.UsedInUKImperial,
-         RightUnit : MeasurementUsage.UsedInUSCustomary = (unit x right.unit).byMultiplying(this, right, factory)
-
-fun <
-    LeftQuantity : UndefinedQuantityType,
-    LeftUnit,
-    RightQuantity : UndefinedQuantityType,
-    RightUnit,
-    TargetValue : UndefinedScientificValue<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>, UndefinedMultipliedUnit.Metric<LeftQuantity, LeftUnit, RightQuantity, RightUnit>>
-    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, UndefinedMultipliedUnit.Metric<LeftQuantity, LeftUnit, RightQuantity, RightUnit>) -> TargetValue
-)  where LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-         LeftUnit : MeasurementUsage.UsedInMetric,
-         RightUnit : UndefinedScientificUnit<RightQuantity>,
-         RightUnit : MeasurementUsage.UsedInMetric = (unit x right.unit).byMultiplying(this, right, factory)
-
-fun <
-    LeftQuantity : UndefinedQuantityType,
-    LeftUnit,
-    RightQuantity : UndefinedQuantityType,
-    RightUnit,
-    TargetValue : UndefinedScientificValue<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>, UndefinedMultipliedUnit.Imperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit>>
-    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, UndefinedMultipliedUnit.Imperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit>) -> TargetValue
-)  where LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-         LeftUnit : MeasurementUsage.UsedInUKImperial,
-         LeftUnit : MeasurementUsage.UsedInUSCustomary,
-         RightUnit : UndefinedScientificUnit<RightQuantity>,
-         RightUnit : MeasurementUsage.UsedInUKImperial,
-         RightUnit : MeasurementUsage.UsedInUSCustomary = (unit x right.unit).byMultiplying(this, right, factory)
-
-fun <
-    LeftQuantity : UndefinedQuantityType,
-    LeftUnit,
-    RightQuantity : UndefinedQuantityType,
-    RightUnit,
-    TargetValue : UndefinedScientificValue<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>, UndefinedMultipliedUnit.UKImperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit>>
-    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, UndefinedMultipliedUnit.UKImperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit>) -> TargetValue
-)  where LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-         LeftUnit : MeasurementUsage.UsedInUKImperial,
-         RightUnit : UndefinedScientificUnit<RightQuantity>,
-         RightUnit : MeasurementUsage.UsedInUKImperial = (unit x right.unit).byMultiplying(this, right, factory)
-
-fun <
-    LeftQuantity : UndefinedQuantityType,
-    LeftUnit,
-    RightQuantity : UndefinedQuantityType,
-    RightUnit,
-    TargetValue : UndefinedScientificValue<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>, UndefinedMultipliedUnit.USCustomary<LeftQuantity, LeftUnit, RightQuantity, RightUnit>>
-    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, UndefinedMultipliedUnit.USCustomary<LeftQuantity, LeftUnit, RightQuantity, RightUnit>) -> TargetValue
-)  where LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-         LeftUnit : MeasurementUsage.UsedInUSCustomary,
-         RightUnit : UndefinedScientificUnit<RightQuantity>,
-         RightUnit : MeasurementUsage.UsedInUSCustomary = (unit x right.unit).byMultiplying(this, right, factory)
-
-fun <
-    LeftQuantity : UndefinedQuantityType,
-    LeftUnit,
-    RightQuantity : UndefinedQuantityType,
-    RightUnit,
-    TargetValue : UndefinedScientificValue<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>, UndefinedMultipliedUnit.MetricAndUKImperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit>>
-    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, UndefinedMultipliedUnit.MetricAndUKImperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit>) -> TargetValue
-)  where LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-         LeftUnit : MeasurementUsage.UsedInMetric,
-         LeftUnit : MeasurementUsage.UsedInUKImperial,
-         RightUnit : UndefinedScientificUnit<RightQuantity>,
-         RightUnit : MeasurementUsage.UsedInMetric,
-         RightUnit : MeasurementUsage.UsedInUKImperial = (unit x right.unit).byMultiplying(this, right, factory)
-
-fun <
-    LeftQuantity : UndefinedQuantityType,
-    LeftUnit,
-    RightQuantity : UndefinedQuantityType,
-    RightUnit,
-    TargetValue : UndefinedScientificValue<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>, UndefinedMultipliedUnit.MetricAndUSCustomary<LeftQuantity, LeftUnit, RightQuantity, RightUnit>>
-    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, UndefinedMultipliedUnit.MetricAndUSCustomary<LeftQuantity, LeftUnit, RightQuantity, RightUnit>) -> TargetValue
-)  where LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-         LeftUnit : MeasurementUsage.UsedInMetric,
-         LeftUnit : MeasurementUsage.UsedInUSCustomary,
-         RightUnit : UndefinedScientificUnit<RightQuantity>,
-         RightUnit : MeasurementUsage.UsedInMetric,
-         RightUnit : MeasurementUsage.UsedInUSCustomary = (unit x right.unit).byMultiplying(this, right, factory)
-
-infix operator fun <
-    LeftQuantity : UndefinedQuantityType,
-    LeftUnit,
-    RightQuantity : UndefinedQuantityType,
-    RightUnit
-    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(right : UndefinedScientificValue<RightQuantity, RightUnit>) where
-    LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetric,
-    RightUnit : MeasurementUsage.UsedInUKImperial,
-    RightUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right) { value: Decimal, unit: UndefinedMultipliedUnit.MetricAndImperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit> -> DefaultUndefinedScientificValue(value, unit) }
-
-infix operator fun <
-    LeftQuantity : UndefinedQuantityType,
-    LeftUnit,
-    RightQuantity : UndefinedQuantityType,
-    RightUnit
-    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(right : UndefinedScientificValue<RightQuantity, RightUnit>) where
-    LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetric
-    = times(right) { value: Decimal, unit: UndefinedMultipliedUnit.Metric<LeftQuantity, LeftUnit, RightQuantity, RightUnit> -> DefaultUndefinedScientificValue(value, unit) }
-
-infix operator fun <
-    LeftQuantity : UndefinedQuantityType,
-    LeftUnit,
-    RightQuantity : UndefinedQuantityType,
-    RightUnit
-    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(right : UndefinedScientificValue<RightQuantity, RightUnit>) where
-    LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInUKImperial,
-    RightUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right) { value: Decimal, unit: UndefinedMultipliedUnit.Imperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit> -> DefaultUndefinedScientificValue(value, unit) }
-
-infix operator fun <
-    LeftQuantity : UndefinedQuantityType,
-    LeftUnit,
-    RightQuantity : UndefinedQuantityType,
-    RightUnit
-    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(right : UndefinedScientificValue<RightQuantity, RightUnit>) where
-    LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInUKImperial
-    = times(right) { value: Decimal, unit: UndefinedMultipliedUnit.UKImperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit> -> DefaultUndefinedScientificValue(value, unit) }
-
-infix operator fun <
-    LeftQuantity : UndefinedQuantityType,
-    LeftUnit,
-    RightQuantity : UndefinedQuantityType,
-    RightUnit
-    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(right : UndefinedScientificValue<RightQuantity, RightUnit>) where
-    LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right) { value: Decimal, unit: UndefinedMultipliedUnit.USCustomary<LeftQuantity, LeftUnit, RightQuantity, RightUnit> -> DefaultUndefinedScientificValue(value, unit) }
-
-infix operator fun <
-    LeftQuantity : UndefinedQuantityType,
-    LeftUnit,
-    RightQuantity : UndefinedQuantityType,
-    RightUnit
-    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(right : UndefinedScientificValue<RightQuantity, RightUnit>) where
-    LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetric,
-    RightUnit : MeasurementUsage.UsedInUKImperial
-    = times(right) { value: Decimal, unit: UndefinedMultipliedUnit.MetricAndUKImperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit> -> DefaultUndefinedScientificValue(value, unit) }
-
-infix operator fun <
-    LeftQuantity : UndefinedQuantityType,
-    LeftUnit,
-    RightQuantity : UndefinedQuantityType,
-    RightUnit
-    > UndefinedScientificValue<LeftQuantity, LeftUnit>.times(right : UndefinedScientificValue<RightQuantity, RightUnit>) where
-    LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetric,
-    RightUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right) { value: Decimal, unit: UndefinedMultipliedUnit.MetricAndUSCustomary<LeftQuantity, LeftUnit, RightQuantity, RightUnit> -> DefaultUndefinedScientificValue(value, unit) }
-
-infix operator fun <
-    LeftAndDenominatorQuantity : UndefinedQuantityType,
-    LeftUnit : UndefinedScientificUnit.Metric<LeftAndDenominatorQuantity>,
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    DenominatorUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    DividerUnit : DividedUndefinedScientificUnit.Metric<NumeratorQuantity, NumeratorUnit, LeftAndDenominatorQuantity, DenominatorUnit>
-    > UndefinedScientificValue<LeftAndDenominatorQuantity, LeftUnit>.times(right: UndefinedScientificValue<UndefinedQuantityType.Dividing<NumeratorQuantity, LeftAndDenominatorQuantity>, DividerUnit>) = 1
-
 private fun test() {
-    val meterSecond = 2(Meter.asUndefined()) * 4(Second.asUndefined())
+    val meterSecond = 2(Watt.asUndefined()) * 4(Second)
     val unit = 4(Celsius per Yard).convert(Fahrenheit per Mile)
-    val test = 2(Meter).asUndefined() * 4(Second per Meter)
-
+    val test = 2(Watt) * 4(Second per Watt)
 }

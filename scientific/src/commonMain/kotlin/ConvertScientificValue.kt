@@ -24,6 +24,7 @@ import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.asUndefined
 import com.splendo.kaluga.scientific.unit.convert
 import kotlin.jvm.JvmName
@@ -182,6 +183,19 @@ fun <
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ) = convert(target, round, roundingMode, ::DefaultUndefinedScientificValue)
 
+fun <
+    Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
+    Unit : ScientificUnit<Quantity>,
+    UndefinedUnit : WrappedUndefinedExtendedUnit<Quantity, Unit>,
+    TargetUnit : UndefinedExtendedUnit<Quantity>,
+    TargetValue : UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, TargetUnit>,
+    > ScientificValue<Quantity, Unit>.convert(
+    target: TargetUnit,
+    asUndefined: ScientificValue<Quantity, Unit>.() -> UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, UndefinedUnit>,
+    factory: (Decimal, TargetUnit) -> TargetValue,
+): TargetValue =
+    factory(asUndefined().convertValue(target), target)
+
 @JvmName("convertDefinedMetricAndImperialValueToExtended")
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -192,9 +206,11 @@ fun <
     target: TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
 ): TargetValue where
-      Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndImperial =
-    factory(asUndefined().convertValue(target), target)
+    Unit : ScientificUnit<Quantity>,
+    Unit : MeasurementUsage.UsedInMetric,
+    Unit : MeasurementUsage.UsedInUKImperial,
+    Unit : MeasurementUsage.UsedInUSCustomary
+    = convert(target, { asUndefined() }, factory)
 
 @JvmName("convertDefinedMetricValueToExtended")
 fun <
@@ -207,8 +223,7 @@ fun <
     factory: (Decimal, TargetUnit) -> TargetValue,
 ): TargetValue where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetric =
-    factory(asUndefined().convertValue(target), target)
+      Unit : MeasurementUsage.UsedInMetric = convert(target, { asUndefined() }, factory)
 
 @JvmName("convertDefinedImperialValueToExtended")
 fun <
@@ -220,9 +235,10 @@ fun <
     target: TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
 ): TargetValue where
-      Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInImperial =
-    factory(asUndefined().convertValue(target), target)
+    Unit : ScientificUnit<Quantity>,
+    Unit : MeasurementUsage.UsedInUKImperial,
+    Unit : MeasurementUsage.UsedInUSCustomary
+    = convert(target, { asUndefined() }, factory)
 
 @JvmName("convertDefinedUKImperialValueToExtended")
 fun <
@@ -234,9 +250,9 @@ fun <
     target: TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
 ): TargetValue where
-      Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInUKImperial =
-    factory(asUndefined().convertValue(target), target)
+    Unit : ScientificUnit<Quantity>,
+    Unit : MeasurementUsage.UsedInUKImperial
+    = convert(target, { asUndefined() }, factory)
 
 @JvmName("convertDefinedUSCustomaryValueToExtended")
 fun <
@@ -248,9 +264,9 @@ fun <
     target: TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
 ): TargetValue where
-      Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInUSCustomary =
-    factory(asUndefined().convertValue(target), target)
+    Unit : ScientificUnit<Quantity>,
+    Unit : MeasurementUsage.UsedInUSCustomary
+    = convert(target, { asUndefined() }, factory)
 
 @JvmName("convertDefinedMetricAndUKImperialValueToExtended")
 fun <
@@ -262,9 +278,10 @@ fun <
     target: TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
 ): TargetValue where
-      Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndUKImperial =
-    factory(asUndefined().convertValue(target), target)
+    Unit : ScientificUnit<Quantity>,
+    Unit : MeasurementUsage.UsedInMetric,
+    Unit : MeasurementUsage.UsedInUKImperial
+    = convert(target, { asUndefined() }, factory)
 
 @JvmName("convertDefinedMetricAndUSCustomaryValueToExtended")
 fun <
@@ -276,9 +293,10 @@ fun <
     target: TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
 ): TargetValue where
-      Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndUSCustomary =
-    factory(asUndefined().convertValue(target), target)
+    Unit : ScientificUnit<Quantity>,
+    Unit : MeasurementUsage.UsedInMetric,
+    Unit : MeasurementUsage.UsedInUSCustomary
+    = convert(target, { asUndefined() }, factory)
 
 @JvmName("convertDefinedMetricAndImperialValueToDefaultUndefinedValue")
 fun <
@@ -289,7 +307,9 @@ fun <
     target: TargetUnit,
 ) where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndImperial =
+      Unit : MeasurementUsage.UsedInMetric,
+      Unit : MeasurementUsage.UsedInUKImperial,
+      Unit : MeasurementUsage.UsedInUSCustomary =
     convert(target, ::DefaultUndefinedScientificValue)
 
 @JvmName("convertDefinedMetricValueToDefaultUndefinedValue")
@@ -313,7 +333,8 @@ fun <
     target: TargetUnit,
 ) where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInImperial =
+      Unit : MeasurementUsage.UsedInUKImperial,
+      Unit : MeasurementUsage.UsedInUSCustomary =
     convert(target, ::DefaultUndefinedScientificValue)
 
 @JvmName("convertDefinedUKImperialValueToDefaultUndefinedValue")
@@ -349,7 +370,8 @@ fun <
     target: TargetUnit,
 ) where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndUKImperial =
+      Unit : MeasurementUsage.UsedInMetric,
+      Unit : MeasurementUsage.UsedInUKImperial =
     convert(target, ::DefaultUndefinedScientificValue)
 
 @JvmName("convertDefinedMetricAndUSCustomaryValueToDefaultUndefinedValue")
@@ -361,7 +383,8 @@ fun <
     target: TargetUnit,
 ) where
       Unit : AbstractScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndUSCustomary =
+      Unit : MeasurementUsage.UsedInMetric,
+      Unit : MeasurementUsage.UsedInUSCustomary =
     convert(target, ::DefaultUndefinedScientificValue)
 
 @JvmName("convertDefinedMetricAndImperialValueToExtended")
@@ -377,7 +400,9 @@ fun <
     factory: (Decimal, TargetUnit) -> TargetValue,
 ): TargetValue where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndImperial =
+      Unit : MeasurementUsage.UsedInMetric,
+Unit : MeasurementUsage.UsedInUKImperial,
+Unit : MeasurementUsage.UsedInUSCustomary =
     convert(target, round, roundingMode, factory)
 
 @JvmName("convertDefinedMetricValueToExtended")
@@ -409,7 +434,8 @@ fun <
     factory: (Decimal, TargetUnit) -> TargetValue,
 ): TargetValue where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInImperial =
+      Unit : MeasurementUsage.UsedInUKImperial,
+Unit : MeasurementUsage.UsedInUSCustomary =
     convert(target, round, roundingMode, factory)
 
 @JvmName("convertDefinedUKImperialValueToExtended")
@@ -457,7 +483,8 @@ fun <
     factory: (Decimal, TargetUnit) -> TargetValue,
 ): TargetValue where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndUKImperial =
+      Unit : MeasurementUsage.UsedInMetric,
+Unit : MeasurementUsage.UsedInUKImperial =
     convert(target, round, roundingMode, factory)
 
 @JvmName("convertDefinedMetricAndUSCustomaryValueToExtended")
@@ -473,7 +500,8 @@ fun <
     factory: (Decimal, TargetUnit) -> TargetValue,
 ): TargetValue where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndUSCustomary =
+      Unit : MeasurementUsage.UsedInMetric,
+Unit : MeasurementUsage.UsedInUSCustomary =
     convert(target, round, roundingMode, factory)
 
 @JvmName("convertDefinedMetricAndImperialValueToDefaultUndefined")
@@ -487,7 +515,9 @@ fun <
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ) where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndImperial =
+      Unit : MeasurementUsage.UsedInMetric,
+Unit : MeasurementUsage.UsedInUKImperial,
+Unit : MeasurementUsage.UsedInUSCustomary =
     convert(target, round, roundingMode, ::DefaultUndefinedScientificValue)
 
 @JvmName("convertDefinedMetricValueToDefaultUndefined")
@@ -515,7 +545,8 @@ fun <
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ) where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInImperial =
+      Unit : MeasurementUsage.UsedInUKImperial,
+Unit : MeasurementUsage.UsedInUSCustomary =
     convert(target, round, roundingMode, ::DefaultUndefinedScientificValue)
 
 @JvmName("convertDefinedUKImperialValueToDefaultUndefined")
@@ -557,7 +588,8 @@ fun <
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ) where
       Unit : ScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndUKImperial =
+      Unit : MeasurementUsage.UsedInMetric,
+      Unit : MeasurementUsage.UsedInUKImperial =
     convert(target, round, roundingMode, ::DefaultUndefinedScientificValue)
 
 @JvmName("convertDefinedMetricAndUSCustomaryValueToDefaultUndefined")
@@ -571,9 +603,23 @@ fun <
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
 ) where
       Unit : AbstractScientificUnit<Quantity>,
-      Unit : MeasurementUsage.UsedInMetricAndUSCustomary =
-    convert(target, round, roundingMode, ::DefaultUndefinedScientificValue)
+      Unit : MeasurementUsage.UsedInMetric,
+      Unit : MeasurementUsage.UsedInUSCustomary = convert(target, round, roundingMode, ::DefaultUndefinedScientificValue)
 
+fun <
+    Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
+    Unit : UndefinedExtendedUnit<Quantity>,
+    UndefinedUnit : WrappedUndefinedExtendedUnit<Quantity, TargetUnit>,
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetValue : ScientificValue<Quantity, TargetUnit>,
+    > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
+    target: TargetUnit,
+    asUndefined: TargetUnit.() -> UndefinedUnit,
+    factory: (Decimal, TargetUnit) -> TargetValue,
+): TargetValue = factory(
+    convertValue(target.asUndefined()),
+    target,
+)
 @JvmName("convertMetricAndImperialExtendedValueToScientificValue")
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -583,7 +629,11 @@ fun <
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue where TargetUnit : ScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric, TargetUnit : MeasurementUsage.UsedInUKImperial, TargetUnit : MeasurementUsage.UsedInUSCustomary = factory(convertValue(target.asUndefined()), target)
+): TargetValue where
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric,
+    TargetUnit : MeasurementUsage.UsedInUKImperial,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, { asUndefined() }, factory)
 
 @JvmName("convertMetricExtendedValueToScientificValue")
 fun <
@@ -594,7 +644,9 @@ fun <
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue where TargetUnit : ScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric = factory(convertValue(target.asUndefined()), target)
+): TargetValue where
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric = convert(target, { asUndefined() }, factory)
 
 @JvmName("convertImperialExtendedValueToScientificValue")
 fun <
@@ -605,7 +657,10 @@ fun <
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue where TargetUnit : ScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInUKImperial, TargetUnit : MeasurementUsage.UsedInUSCustomary = factory(convertValue(target.asUndefined()), target)
+): TargetValue where
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInUKImperial,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, { asUndefined() }, factory)
 
 @JvmName("convertUKImperialExtendedValueToScientificValue")
 fun <
@@ -616,7 +671,9 @@ fun <
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue where TargetUnit : ScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInUKImperial = factory(convertValue(target.asUndefined()), target)
+): TargetValue where
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInUKImperial = convert(target, { asUndefined() }, factory)
 
 @JvmName("convertUSCustomaryExtendedValueToScientificValue")
 fun <
@@ -627,7 +684,9 @@ fun <
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue where TargetUnit : ScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInUSCustomary = factory(convertValue(target.asUndefined()), target)
+): TargetValue where
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, { asUndefined() }, factory)
 
 @JvmName("convertMetricAndUKImperialExtendedValueToScientificValue")
 fun <
@@ -638,7 +697,10 @@ fun <
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue where TargetUnit : ScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric, TargetUnit : MeasurementUsage.UsedInUKImperial = factory(convertValue(target.asUndefined()), target)
+): TargetValue where
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric,
+    TargetUnit : MeasurementUsage.UsedInUKImperial = convert(target, { asUndefined() }, factory)
 
 @JvmName("convertMetricAndUSCustomaryExtendedValueToScientificValue")
 fun <
@@ -649,7 +711,10 @@ fun <
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue where TargetUnit : ScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric, TargetUnit : MeasurementUsage.UsedInUSCustomary = factory(convertValue(target.asUndefined()), target)
+): TargetValue where
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, { asUndefined() }, factory)
 
 @JvmName("convertMetricAndImperialExtendedValueToDefaultScientificValue")
 fun <
@@ -658,10 +723,11 @@ fun <
     TargetUnit,
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
-) where TargetUnit : AbstractScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric, TargetUnit : MeasurementUsage.UsedInUKImperial, TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(
-    target,
-    ::DefaultScientificValue,
-)
+) where
+    TargetUnit : AbstractScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric,
+    TargetUnit : MeasurementUsage.UsedInUKImperial,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, ::DefaultScientificValue)
 
 @JvmName("convertMetricExtendedValueToDefaultScientificValue")
 fun <
@@ -670,7 +736,9 @@ fun <
     TargetUnit,
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
-) where TargetUnit : AbstractScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric = convert(target, ::DefaultScientificValue)
+) where
+    TargetUnit : AbstractScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric = convert(target, ::DefaultScientificValue)
 
 @JvmName("convertImperialExtendedValueToDefaultScientificValue")
 fun <
@@ -679,7 +747,10 @@ fun <
     TargetUnit,
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
-) where TargetUnit : AbstractScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInUKImperial, TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, ::DefaultScientificValue)
+) where
+    TargetUnit : AbstractScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInUKImperial,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, ::DefaultScientificValue)
 
 @JvmName("convertUKImperialExtendedValueToDefaultScientificValue")
 fun <
@@ -688,7 +759,9 @@ fun <
     TargetUnit,
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
-) where TargetUnit : AbstractScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInUKImperial = convert(target, ::DefaultScientificValue)
+) where
+    TargetUnit : AbstractScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInUKImperial = convert(target, ::DefaultScientificValue)
 
 @JvmName("convertUSCustomaryExtendedValueToDefaultScientificValue")
 fun <
@@ -697,7 +770,9 @@ fun <
     TargetUnit,
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
-) where TargetUnit : AbstractScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, ::DefaultScientificValue)
+) where
+    TargetUnit : AbstractScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, ::DefaultScientificValue)
 
 @JvmName("convertMetricAndUKImperialExtendedValueToDefaultScientificValue")
 fun <
@@ -706,10 +781,10 @@ fun <
     TargetUnit,
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
-) where TargetUnit : AbstractScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric, TargetUnit : MeasurementUsage.UsedInUKImperial = convert(
-    target,
-    ::DefaultScientificValue,
-)
+) where
+    TargetUnit : AbstractScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric,
+    TargetUnit : MeasurementUsage.UsedInUKImperial = convert(target, ::DefaultScientificValue)
 
 @JvmName("convertMetricAndUSCustomaryExtendedValueToDefaultScientificValue")
 fun <
@@ -718,9 +793,26 @@ fun <
     TargetUnit,
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
-) where TargetUnit : AbstractScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric, TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(
+) where
+    TargetUnit : AbstractScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, ::DefaultScientificValue)
+
+fun <
+    Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
+    Unit : UndefinedExtendedUnit<Quantity>,
+    UndefinedUnit : WrappedUndefinedExtendedUnit<Quantity, TargetUnit>,
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetValue : ScientificValue<Quantity, TargetUnit>,
+    > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
+    target: TargetUnit,
+    round: Int,
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
+    asUndefined: TargetUnit.() -> UndefinedUnit,
+    factory: (Decimal, TargetUnit) -> TargetValue,
+): TargetValue = factory(
+    convertValue(target.asUndefined(), round, roundingMode),
     target,
-    ::DefaultScientificValue,
 )
 
 @JvmName("convertMetricAndImperialExtendedValueToScientificValue")
@@ -734,10 +826,11 @@ fun <
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
     factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue where TargetUnit : ScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric, TargetUnit : MeasurementUsage.UsedInUKImperial, TargetUnit : MeasurementUsage.UsedInUSCustomary = factory(
-    convertValue(target.asUndefined(), round, roundingMode),
-    target,
-)
+): TargetValue where
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric,
+    TargetUnit : MeasurementUsage.UsedInUKImperial,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, round, roundingMode, { asUndefined() }, factory)
 
 @JvmName("convertMetricExtendedValueToScientificValue")
 fun <
@@ -750,7 +843,9 @@ fun <
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
     factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue where TargetUnit : ScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric = factory(convertValue(target.asUndefined(), round, roundingMode), target)
+): TargetValue where
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric = convert(target, round, roundingMode, { asUndefined() }, factory)
 
 @JvmName("convertImperialExtendedValueToScientificValue")
 fun <
@@ -763,7 +858,10 @@ fun <
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
     factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue where TargetUnit : ScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInUKImperial, TargetUnit : MeasurementUsage.UsedInUSCustomary = factory(convertValue(target.asUndefined(), round, roundingMode), target)
+): TargetValue where
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInUKImperial,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, round, roundingMode, { asUndefined() }, factory)
 
 @JvmName("convertUKImperialExtendedValueToScientificValue")
 fun <
@@ -776,10 +874,9 @@ fun <
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
     factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue where TargetUnit : ScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInUKImperial = factory(
-    convertValue(target.asUndefined(), round, roundingMode),
-    target,
-)
+): TargetValue where
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInUKImperial = convert(target, round, roundingMode, { asUndefined() }, factory)
 
 @JvmName("convertUSCustomaryExtendedValueToScientificValue")
 fun <
@@ -792,10 +889,9 @@ fun <
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
     factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue where TargetUnit : ScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInUSCustomary = factory(
-    convertValue(target.asUndefined(), round, roundingMode),
-    target,
-)
+): TargetValue where
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, round, roundingMode, { asUndefined() }, factory)
 
 @JvmName("convertMetricAndUKImperialExtendedValueToScientificValue")
 fun <
@@ -808,10 +904,10 @@ fun <
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
     factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue where TargetUnit : ScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric, TargetUnit : MeasurementUsage.UsedInUKImperial = factory(
-    convertValue(target.asUndefined(), round, roundingMode),
-    target,
-)
+): TargetValue where
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric,
+    TargetUnit : MeasurementUsage.UsedInUKImperial = convert(target, round, roundingMode, { asUndefined() }, factory)
 
 @JvmName("convertMetricAndUSCustomaryExtendedValueToScientificValue")
 fun <
@@ -824,10 +920,10 @@ fun <
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
     factory: (Decimal, TargetUnit) -> TargetValue,
-): TargetValue where TargetUnit : ScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric, TargetUnit : MeasurementUsage.UsedInUSCustomary = factory(
-    convertValue(target.asUndefined(), round, roundingMode),
-    target,
-)
+): TargetValue where
+    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, round, roundingMode, { asUndefined() }, factory)
 
 @JvmName("convertMetricAndImperialExtendedValueToDefaultScientificValue")
 fun <
@@ -838,12 +934,11 @@ fun <
     target: TargetUnit,
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-) where TargetUnit : AbstractScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric, TargetUnit : MeasurementUsage.UsedInUKImperial, TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(
-    target,
-    round,
-    roundingMode,
-    ::DefaultScientificValue,
-)
+) where
+    TargetUnit : AbstractScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric,
+    TargetUnit : MeasurementUsage.UsedInUKImperial,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, round, roundingMode, ::DefaultScientificValue)
 
 @JvmName("convertMetricExtendedValueToDefaultScientificValue")
 fun <
@@ -854,12 +949,9 @@ fun <
     target: TargetUnit,
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-) where TargetUnit : AbstractScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric = convert(
-    target,
-    round,
-    roundingMode,
-    ::DefaultScientificValue,
-)
+) where
+    TargetUnit : AbstractScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric = convert(target, round, roundingMode, ::DefaultScientificValue)
 
 @JvmName("convertImperialExtendedValueToDefaultScientificValue")
 fun <
@@ -870,12 +962,10 @@ fun <
     target: TargetUnit,
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-) where TargetUnit : AbstractScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInUKImperial, TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(
-    target,
-    round,
-    roundingMode,
-    ::DefaultScientificValue,
-)
+) where
+    TargetUnit : AbstractScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInUKImperial,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, round, roundingMode, ::DefaultScientificValue)
 
 @JvmName("convertUKImperialExtendedValueToDefaultScientificValue")
 fun <
@@ -886,12 +976,9 @@ fun <
     target: TargetUnit,
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-) where TargetUnit : AbstractScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInUKImperial = convert(
-    target,
-    round,
-    roundingMode,
-    ::DefaultScientificValue,
-)
+) where
+    TargetUnit : AbstractScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInUKImperial = convert(target, round, roundingMode, ::DefaultScientificValue)
 
 @JvmName("convertUSCustomaryExtendedValueToDefaultScientificValue")
 fun <
@@ -902,12 +989,9 @@ fun <
     target: TargetUnit,
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-) where TargetUnit : AbstractScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(
-    target,
-    round,
-    roundingMode,
-    ::DefaultScientificValue,
-)
+) where
+    TargetUnit : AbstractScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, round, roundingMode, ::DefaultScientificValue)
 
 @JvmName("convertMetricAndUKImperialExtendedValueToDefaultScientificValue")
 fun <
@@ -918,12 +1002,10 @@ fun <
     target: TargetUnit,
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-) where TargetUnit : AbstractScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric, TargetUnit : MeasurementUsage.UsedInUKImperial = convert(
-    target,
-    round,
-    roundingMode,
-    ::DefaultScientificValue,
-)
+) where
+    TargetUnit : AbstractScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric,
+    TargetUnit : MeasurementUsage.UsedInUKImperial = convert(target, round, roundingMode, ::DefaultScientificValue)
 
 @JvmName("convertMetricAndUSCustomaryExtendedValueToDefaultScientificValue")
 fun <
@@ -934,9 +1016,7 @@ fun <
     target: TargetUnit,
     round: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-) where TargetUnit : AbstractScientificUnit<Quantity>, TargetUnit : MeasurementUsage.UsedInMetric, TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(
-    target,
-    round,
-    roundingMode,
-    ::DefaultScientificValue,
-)
+) where
+    TargetUnit : AbstractScientificUnit<Quantity>,
+    TargetUnit : MeasurementUsage.UsedInMetric,
+    TargetUnit : MeasurementUsage.UsedInUSCustomary = convert(target, round, roundingMode, ::DefaultScientificValue)
