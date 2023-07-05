@@ -55,10 +55,22 @@ sealed class DividedUndefinedScientificUnit<
     ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
         UndefinedScientificUnit.MetricAndImperial<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> where
           NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-          NumeratorUnit : MeasurementUsage.UsedInMetricAndImperial,
+          NumeratorUnit : MeasurementUsage.UsedInMetric,
+          NumeratorUnit : MeasurementUsage.UsedInUKImperial,
+          NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
           DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-          DenominatorUnit : MeasurementUsage.UsedInMetricAndImperial {
+          DenominatorUnit : MeasurementUsage.UsedInMetric,
+          DenominatorUnit : MeasurementUsage.UsedInUKImperial,
+          DenominatorUnit : MeasurementUsage.UsedInUSCustomary
+    {
         override val system = MeasurementSystem.MetricAndImperial
+
+        override val metric: UndefinedScientificUnit.Metric<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> by lazy { Metric(numerator, denominator) }
+        override val imperial: Imperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { Imperial(numerator, denominator) }
+        override val ukImperial: UKImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { UKImperial(numerator, denominator) }
+        override val usCustomary: USCustomary<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { USCustomary(numerator, denominator) }
+        override val metricAndUKImperial: MetricAndUKImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { MetricAndUKImperial(numerator, denominator) }
+        override val metricAndUSCustomary: MetricAndUSCustomary<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { MetricAndUSCustomary(numerator, denominator) }
     }
 
     data class Metric<
@@ -89,10 +101,15 @@ sealed class DividedUndefinedScientificUnit<
     ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
         UndefinedScientificUnit.Imperial<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> where
           NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-          NumeratorUnit : MeasurementUsage.UsedInImperial,
+          NumeratorUnit : MeasurementUsage.UsedInUKImperial,
+          NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
           DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-          DenominatorUnit : MeasurementUsage.UsedInImperial {
+          DenominatorUnit : MeasurementUsage.UsedInUKImperial,
+          DenominatorUnit : MeasurementUsage.UsedInUSCustomary
+    {
         override val system = MeasurementSystem.Imperial
+        override val ukImperial: UKImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { UKImperial(numerator, denominator) }
+        override val usCustomary: USCustomary<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { USCustomary(numerator, denominator) }
     }
 
     data class UKImperial<
@@ -140,10 +157,15 @@ sealed class DividedUndefinedScientificUnit<
     ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
         UndefinedScientificUnit.MetricAndUKImperial<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> where
           NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-          NumeratorUnit : MeasurementUsage.UsedInMetricAndUKImperial,
+          NumeratorUnit : MeasurementUsage.UsedInMetric,
+          NumeratorUnit : MeasurementUsage.UsedInUKImperial,
           DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-          DenominatorUnit : MeasurementUsage.UsedInMetricAndUKImperial {
+          DenominatorUnit : MeasurementUsage.UsedInMetric,
+          DenominatorUnit : MeasurementUsage.UsedInUKImperial
+    {
         override val system = MeasurementSystem.MetricAndUKImperial
+        override val metric: UndefinedScientificUnit.Metric<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> by lazy { Metric(numerator, denominator) }
+        override val ukImperial: UKImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { UKImperial(numerator, denominator) }
     }
 
     data class MetricAndUSCustomary<
@@ -157,10 +179,14 @@ sealed class DividedUndefinedScientificUnit<
     ) : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>(),
         UndefinedScientificUnit.MetricAndUSCustomary<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> where
           NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-          NumeratorUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
+          NumeratorUnit : MeasurementUsage.UsedInMetric,
+          NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
           DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-          DenominatorUnit : MeasurementUsage.UsedInMetricAndUSCustomary {
+          DenominatorUnit : MeasurementUsage.UsedInMetric,
+          DenominatorUnit : MeasurementUsage.UsedInUSCustomary {
         override val system = MeasurementSystem.MetricAndUSCustomary
+        override val metric: UndefinedScientificUnit.Metric<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> by lazy { Metric(numerator, denominator) }
+        override val usCustomary: USCustomary<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { USCustomary(numerator, denominator) }
     }
 }
 
@@ -171,9 +197,13 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndImperial,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+NumeratorUnit : MeasurementUsage.UsedInUKImperial,
+NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndImperial = DividedUndefinedScientificUnit.MetricAndImperial(this, denominator)
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUKImperial,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary = DividedUndefinedScientificUnit.MetricAndImperial(this, denominator)
 
 infix fun <
     NumeratorQuantity : UndefinedQuantityType,
@@ -182,9 +212,13 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndImperial,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+NumeratorUnit : MeasurementUsage.UsedInUKImperial,
+NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndImperial = DividedUndefinedScientificUnit.MetricAndImperial(this, denominator.asUndefined())
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUKImperial,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary = DividedUndefinedScientificUnit.MetricAndImperial(this, denominator.asUndefined())
 
 infix fun <
     NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -193,9 +227,13 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndImperial,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+NumeratorUnit : MeasurementUsage.UsedInUKImperial,
+NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndImperial = DividedUndefinedScientificUnit.MetricAndImperial(asUndefined(), denominator)
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUKImperial,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary = DividedUndefinedScientificUnit.MetricAndImperial(asUndefined(), denominator)
 
 infix fun <
     NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -204,9 +242,13 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndImperial,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+NumeratorUnit : MeasurementUsage.UsedInUKImperial,
+NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndImperial = DividedUndefinedScientificUnit.MetricAndImperial(asUndefined(), denominator.asUndefined())
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUKImperial,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary = DividedUndefinedScientificUnit.MetricAndImperial(asUndefined(), denominator.asUndefined())
 
 infix fun <
     NumeratorQuantity : UndefinedQuantityType,
@@ -259,9 +301,11 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInImperial,
+      NumeratorUnit : MeasurementUsage.UsedInUKImperial,
+NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInImperial = DividedUndefinedScientificUnit.Imperial(this, denominator)
+      DenominatorUnit : MeasurementUsage.UsedInUKImperial,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary = DividedUndefinedScientificUnit.Imperial(this, denominator)
 
 infix fun <
     NumeratorQuantity : UndefinedQuantityType,
@@ -270,9 +314,11 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInImperial,
+      NumeratorUnit : MeasurementUsage.UsedInUKImperial,
+NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInImperial = DividedUndefinedScientificUnit.Imperial(this, denominator.asUndefined())
+      DenominatorUnit : MeasurementUsage.UsedInUKImperial,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary = DividedUndefinedScientificUnit.Imperial(this, denominator.asUndefined())
 
 infix fun <
     NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -281,9 +327,11 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInImperial,
+      NumeratorUnit : MeasurementUsage.UsedInUKImperial,
+NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInImperial = DividedUndefinedScientificUnit.Imperial(asUndefined(), denominator)
+      DenominatorUnit : MeasurementUsage.UsedInUKImperial,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary = DividedUndefinedScientificUnit.Imperial(asUndefined(), denominator)
 
 infix fun <
     NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -292,9 +340,11 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInImperial,
+      NumeratorUnit : MeasurementUsage.UsedInUKImperial,
+NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInImperial = DividedUndefinedScientificUnit.Imperial(asUndefined(), denominator.asUndefined())
+      DenominatorUnit : MeasurementUsage.UsedInUKImperial,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary = DividedUndefinedScientificUnit.Imperial(asUndefined(), denominator.asUndefined())
 
 infix fun <
     NumeratorQuantity : UndefinedQuantityType,
@@ -391,9 +441,11 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndUKImperial,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+NumeratorUnit : MeasurementUsage.UsedInUKImperial,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndUKImperial = DividedUndefinedScientificUnit.MetricAndUKImperial(this, denominator)
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUKImperial = DividedUndefinedScientificUnit.MetricAndUKImperial(this, denominator)
 
 infix fun <
     NumeratorQuantity : UndefinedQuantityType,
@@ -402,9 +454,11 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndUKImperial,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+NumeratorUnit : MeasurementUsage.UsedInUKImperial,
       DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndUKImperial = DividedUndefinedScientificUnit.MetricAndUKImperial(this, denominator.asUndefined())
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUKImperial = DividedUndefinedScientificUnit.MetricAndUKImperial(this, denominator.asUndefined())
 
 infix fun <
     NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -413,9 +467,11 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndUKImperial,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+NumeratorUnit : MeasurementUsage.UsedInUKImperial,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndUKImperial = DividedUndefinedScientificUnit.MetricAndUKImperial(asUndefined(), denominator)
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUKImperial = DividedUndefinedScientificUnit.MetricAndUKImperial(asUndefined(), denominator)
 
 infix fun <
     NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -424,9 +480,11 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndUKImperial,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+NumeratorUnit : MeasurementUsage.UsedInUKImperial,
       DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndUKImperial = DividedUndefinedScientificUnit.MetricAndUKImperial(asUndefined(), denominator.asUndefined())
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUKImperial = DividedUndefinedScientificUnit.MetricAndUKImperial(asUndefined(), denominator.asUndefined())
 
 infix fun <
     NumeratorQuantity : UndefinedQuantityType,
@@ -435,9 +493,11 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndUSCustomary = DividedUndefinedScientificUnit.MetricAndUSCustomary(this, denominator)
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary = DividedUndefinedScientificUnit.MetricAndUSCustomary(this, denominator)
 
 infix fun <
     NumeratorQuantity : UndefinedQuantityType,
@@ -446,9 +506,11 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndUSCustomary = DividedUndefinedScientificUnit.MetricAndUSCustomary(this, denominator.asUndefined())
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary = DividedUndefinedScientificUnit.MetricAndUSCustomary(this, denominator.asUndefined())
 
 infix fun <
     NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -457,9 +519,11 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndUSCustomary = DividedUndefinedScientificUnit.MetricAndUSCustomary(asUndefined(), denominator)
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary = DividedUndefinedScientificUnit.MetricAndUSCustomary(asUndefined(), denominator)
 
 infix fun <
     NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -468,6 +532,8 @@ infix fun <
     DenominatorUnit,
     > NumeratorUnit.per(denominator: DenominatorUnit) where
       NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+      NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndUSCustomary = DividedUndefinedScientificUnit.MetricAndUSCustomary(asUndefined(), denominator.asUndefined())
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary = DividedUndefinedScientificUnit.MetricAndUSCustomary(asUndefined(), denominator.asUndefined())

@@ -51,8 +51,17 @@ sealed class UndefinedReciprocalUnit<
         UndefinedReciprocalUnit<InverseQuantity, InverseUnit>(),
         UndefinedScientificUnit.MetricAndImperial<UndefinedQuantityType.Reciprocal<InverseQuantity>> where
           InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-          InverseUnit : MeasurementUsage.UsedInMetricAndImperial {
+          InverseUnit : MeasurementUsage.UsedInMetric,
+          InverseUnit : MeasurementUsage.UsedInUKImperial,
+          InverseUnit : MeasurementUsage.UsedInUSCustomary   {
         override val system = MeasurementSystem.MetricAndImperial
+
+        override val metric: Metric<InverseQuantity, InverseUnit> by lazy { Metric(inverse) }
+        override val imperial: Imperial<InverseQuantity, InverseUnit> by lazy { Imperial(inverse) }
+        override val ukImperial: UKImperial<InverseQuantity, InverseUnit> by lazy { UKImperial(inverse) }
+        override val usCustomary: USCustomary<InverseQuantity, InverseUnit> by lazy { USCustomary(inverse) }
+        override val metricAndUKImperial: MetricAndUKImperial<InverseQuantity, InverseUnit> by lazy { MetricAndUKImperial(inverse) }
+        override val metricAndUSCustomary: MetricAndUSCustomary<InverseQuantity, InverseUnit> by lazy { MetricAndUSCustomary(inverse) }
     }
 
     data class Metric<
@@ -73,8 +82,12 @@ sealed class UndefinedReciprocalUnit<
         UndefinedReciprocalUnit<InverseQuantity, InverseUnit>(),
         UndefinedScientificUnit.Imperial<UndefinedQuantityType.Reciprocal<InverseQuantity>> where
           InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-          InverseUnit : MeasurementUsage.UsedInImperial {
+          InverseUnit : MeasurementUsage.UsedInUKImperial,
+          InverseUnit : MeasurementUsage.UsedInUSCustomary {
         override val system = MeasurementSystem.Imperial
+        
+        override val ukImperial: UKImperial<InverseQuantity, InverseUnit> by lazy { UKImperial(inverse) }
+        override val usCustomary: USCustomary<InverseQuantity, InverseUnit> by lazy { USCustomary(inverse) }
     }
 
     data class UKImperial<
@@ -106,8 +119,12 @@ sealed class UndefinedReciprocalUnit<
         UndefinedReciprocalUnit<InverseQuantity, InverseUnit>(),
         UndefinedScientificUnit.MetricAndUKImperial<UndefinedQuantityType.Reciprocal<InverseQuantity>> where
           InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-          InverseUnit : MeasurementUsage.UsedInMetricAndUKImperial {
+          InverseUnit : MeasurementUsage.UsedInMetric,
+          InverseUnit : MeasurementUsage.UsedInUKImperial {
         override val system = MeasurementSystem.MetricAndUKImperial
+        
+        override val metric: Metric<InverseQuantity, InverseUnit> by lazy { Metric(inverse) }
+        override val ukImperial: UKImperial<InverseQuantity, InverseUnit> by lazy { UKImperial(inverse) }
     }
 
     data class MetricAndUSCustomary<
@@ -117,8 +134,12 @@ sealed class UndefinedReciprocalUnit<
         UndefinedReciprocalUnit<InverseQuantity, InverseUnit>(),
         UndefinedScientificUnit.MetricAndUSCustomary<UndefinedQuantityType.Reciprocal<InverseQuantity>> where
           InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-          InverseUnit : MeasurementUsage.UsedInMetricAndUSCustomary {
+          InverseUnit : MeasurementUsage.UsedInMetric,
+          InverseUnit : MeasurementUsage.UsedInUSCustomary {
         override val system = MeasurementSystem.MetricAndUSCustomary
+        
+        override val metric: Metric<InverseQuantity, InverseUnit> by lazy { Metric(inverse) }
+        override val usCustomary: USCustomary<InverseQuantity, InverseUnit> by lazy { USCustomary(inverse) }
     }
 }
 
@@ -127,14 +148,18 @@ fun <
     InverseUnit,
     > InverseUnit.reciprocal() where
       InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-      InverseUnit : MeasurementUsage.UsedInMetricAndImperial = UndefinedReciprocalUnit.MetricAndImperial(this)
+      InverseUnit : MeasurementUsage.UsedInMetric,
+InverseUnit : MeasurementUsage.UsedInUKImperial,
+InverseUnit : MeasurementUsage.UsedInUSCustomary = UndefinedReciprocalUnit.MetricAndImperial(this)
 
 fun <
     InverseQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     InverseUnit,
     > InverseUnit.reciprocal() where
       InverseUnit : ScientificUnit<InverseQuantity>,
-      InverseUnit : MeasurementUsage.UsedInMetricAndImperial = UndefinedReciprocalUnit.MetricAndImperial(asUndefined())
+      InverseUnit : MeasurementUsage.UsedInMetric,
+InverseUnit : MeasurementUsage.UsedInUKImperial,
+InverseUnit : MeasurementUsage.UsedInUSCustomary = UndefinedReciprocalUnit.MetricAndImperial(asUndefined())
 
 fun <
     InverseQuantity : UndefinedQuantityType,
@@ -155,14 +180,16 @@ fun <
     InverseUnit,
     > InverseUnit.reciprocal() where
       InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-      InverseUnit : MeasurementUsage.UsedInImperial = UndefinedReciprocalUnit.Imperial(this)
+      InverseUnit : MeasurementUsage.UsedInUKImperial,
+InverseUnit : MeasurementUsage.UsedInUSCustomary = UndefinedReciprocalUnit.Imperial(this)
 
 fun <
     InverseQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     InverseUnit,
     > InverseUnit.reciprocal() where
       InverseUnit : ScientificUnit<InverseQuantity>,
-      InverseUnit : MeasurementUsage.UsedInImperial = UndefinedReciprocalUnit.Imperial(asUndefined())
+      InverseUnit : MeasurementUsage.UsedInUKImperial,
+InverseUnit : MeasurementUsage.UsedInUSCustomary = UndefinedReciprocalUnit.Imperial(asUndefined())
 
 fun <
     InverseQuantity : UndefinedQuantityType,
@@ -197,35 +224,41 @@ fun <
     InverseUnit,
     > InverseUnit.reciprocal() where
       InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-      InverseUnit : MeasurementUsage.UsedInMetricAndUKImperial = UndefinedReciprocalUnit.MetricAndUKImperial(this)
+      InverseUnit : MeasurementUsage.UsedInMetric,
+InverseUnit : MeasurementUsage.UsedInUKImperial = UndefinedReciprocalUnit.MetricAndUKImperial(this)
 
 fun <
     InverseQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     InverseUnit,
     > InverseUnit.reciprocal() where
       InverseUnit : ScientificUnit<InverseQuantity>,
-      InverseUnit : MeasurementUsage.UsedInMetricAndUKImperial = UndefinedReciprocalUnit.MetricAndUKImperial(asUndefined())
+      InverseUnit : MeasurementUsage.UsedInMetric,
+InverseUnit : MeasurementUsage.UsedInUKImperial = UndefinedReciprocalUnit.MetricAndUKImperial(asUndefined())
 
 fun <
     InverseQuantity : UndefinedQuantityType,
     InverseUnit,
     > InverseUnit.reciprocal() where
       InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-      InverseUnit : MeasurementUsage.UsedInMetricAndUSCustomary = UndefinedReciprocalUnit.MetricAndUSCustomary(this)
+      InverseUnit : MeasurementUsage.UsedInMetric,
+InverseUnit : MeasurementUsage.UsedInUSCustomary = UndefinedReciprocalUnit.MetricAndUSCustomary(this)
 
 fun <
     InverseQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     InverseUnit,
     > InverseUnit.reciprocal() where
       InverseUnit : ScientificUnit<InverseQuantity>,
-      InverseUnit : MeasurementUsage.UsedInMetricAndUSCustomary = UndefinedReciprocalUnit.MetricAndUSCustomary(asUndefined())
+      InverseUnit : MeasurementUsage.UsedInMetric,
+InverseUnit : MeasurementUsage.UsedInUSCustomary = UndefinedReciprocalUnit.MetricAndUSCustomary(asUndefined())
 
 fun <
     InverseQuantity : UndefinedQuantityType,
     InverseUnit,
     > UndefinedReciprocalUnit.MetricAndImperial<InverseQuantity, InverseUnit>.reciprocal() where
       InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-      InverseUnit : MeasurementUsage.UsedInMetricAndImperial =
+      InverseUnit : MeasurementUsage.UsedInMetric,
+InverseUnit : MeasurementUsage.UsedInUKImperial,
+InverseUnit : MeasurementUsage.UsedInUSCustomary =
     inverse
 
 fun <
@@ -234,7 +267,9 @@ fun <
     InverseUnit,
     > UndefinedReciprocalUnit.MetricAndImperial<UndefinedQuantityType.Extended<WrappedQuantity>, InverseUnit>.reciprocal() where
       InverseUnit : WrappedUndefinedExtendedUnit<WrappedQuantity, WrappedUnit>,
-      InverseUnit : MeasurementUsage.UsedInMetricAndImperial =
+      InverseUnit : MeasurementUsage.UsedInMetric,
+InverseUnit : MeasurementUsage.UsedInUKImperial,
+InverseUnit : MeasurementUsage.UsedInUSCustomary =
     inverse.wrapped
 
 fun <
@@ -259,7 +294,8 @@ fun <
     InverseUnit,
     > UndefinedReciprocalUnit.Imperial<InverseQuantity, InverseUnit>.reciprocal() where
       InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-      InverseUnit : MeasurementUsage.UsedInImperial =
+      InverseUnit : MeasurementUsage.UsedInUKImperial,
+InverseUnit : MeasurementUsage.UsedInUSCustomary =
     inverse
 
 fun <
@@ -268,7 +304,8 @@ fun <
     InverseUnit,
     > UndefinedReciprocalUnit.Imperial<UndefinedQuantityType.Extended<WrappedQuantity>, InverseUnit>.reciprocal() where
       InverseUnit : WrappedUndefinedExtendedUnit<WrappedQuantity, WrappedUnit>,
-      InverseUnit : MeasurementUsage.UsedInImperial =
+      InverseUnit : MeasurementUsage.UsedInUKImperial,
+InverseUnit : MeasurementUsage.UsedInUSCustomary =
     inverse.wrapped
 
 fun <
@@ -310,7 +347,8 @@ fun <
     InverseUnit,
     > UndefinedReciprocalUnit.MetricAndUKImperial<InverseQuantity, InverseUnit>.reciprocal() where
       InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-      InverseUnit : MeasurementUsage.UsedInMetricAndUKImperial =
+      InverseUnit : MeasurementUsage.UsedInMetric,
+InverseUnit : MeasurementUsage.UsedInUKImperial =
     inverse
 
 fun <
@@ -319,7 +357,8 @@ fun <
     InverseUnit,
     > UndefinedReciprocalUnit.MetricAndUKImperial<UndefinedQuantityType.Extended<WrappedQuantity>, InverseUnit>.reciprocal() where
       InverseUnit : WrappedUndefinedExtendedUnit<WrappedQuantity, WrappedUnit>,
-      InverseUnit : MeasurementUsage.UsedInMetricAndUKImperial =
+      InverseUnit : MeasurementUsage.UsedInMetric,
+InverseUnit : MeasurementUsage.UsedInUKImperial =
     inverse.wrapped
 
 fun <
@@ -327,7 +366,8 @@ fun <
     InverseUnit,
     > UndefinedReciprocalUnit.MetricAndUSCustomary<InverseQuantity, InverseUnit>.reciprocal() where
       InverseUnit : UndefinedScientificUnit<InverseQuantity>,
-      InverseUnit : MeasurementUsage.UsedInMetricAndUSCustomary =
+      InverseUnit : MeasurementUsage.UsedInMetric,
+InverseUnit : MeasurementUsage.UsedInUSCustomary =
     inverse
 
 fun <
@@ -336,7 +376,8 @@ fun <
     InverseUnit,
     > UndefinedReciprocalUnit.MetricAndUSCustomary<UndefinedQuantityType.Extended<WrappedQuantity>, InverseUnit>.reciprocal() where
       InverseUnit : WrappedUndefinedExtendedUnit<WrappedQuantity, WrappedUnit>,
-      InverseUnit : MeasurementUsage.UsedInMetricAndUSCustomary =
+      InverseUnit : MeasurementUsage.UsedInMetric,
+InverseUnit : MeasurementUsage.UsedInUSCustomary =
     inverse.wrapped
 
 fun <
@@ -346,9 +387,13 @@ fun <
     DenominatorUnit,
     > DividedUndefinedScientificUnit.MetricAndImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndImperial,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+NumeratorUnit : MeasurementUsage.UsedInUKImperial,
+NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndImperial =
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUKImperial,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary =
     denominator x numerator.reciprocal()
 
 fun <
@@ -370,9 +415,11 @@ fun <
     DenominatorUnit,
     > DividedUndefinedScientificUnit.Imperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInImperial,
+      NumeratorUnit : MeasurementUsage.UsedInUKImperial,
+NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInImperial =
+      DenominatorUnit : MeasurementUsage.UsedInUKImperial,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary =
     denominator x numerator.reciprocal()
 
 fun <
@@ -406,9 +453,11 @@ fun <
     DenominatorUnit,
     > DividedUndefinedScientificUnit.MetricAndUKImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndUKImperial,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+NumeratorUnit : MeasurementUsage.UsedInUKImperial,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndUKImperial =
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUKImperial =
     denominator x numerator.reciprocal()
 
 fun <
@@ -418,7 +467,9 @@ fun <
     DenominatorUnit,
     > DividedUndefinedScientificUnit.MetricAndUSCustomary<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetricAndUSCustomary =
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+DenominatorUnit : MeasurementUsage.UsedInUSCustomary =
     denominator x numerator.reciprocal()

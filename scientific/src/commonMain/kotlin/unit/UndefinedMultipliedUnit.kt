@@ -53,10 +53,21 @@ sealed class UndefinedMultipliedUnit<
     ) : UndefinedMultipliedUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
         UndefinedScientificUnit.MetricAndImperial<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>> where
           LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-          LeftUnit : MeasurementUsage.UsedInMetricAndImperial,
+          LeftUnit : MeasurementUsage.UsedInMetric,
+          LeftUnit : MeasurementUsage.UsedInUKImperial,
+          LeftUnit : MeasurementUsage.UsedInUSCustomary,
           RightUnit : UndefinedScientificUnit<RightQuantity>,
-          RightUnit : MeasurementUsage.UsedInMetricAndImperial {
+          RightUnit : MeasurementUsage.UsedInMetric,
+          RightUnit : MeasurementUsage.UsedInUKImperial,
+          RightUnit : MeasurementUsage.UsedInUSCustomary   {
         override val system = MeasurementSystem.MetricAndImperial
+
+        override val metric: Metric<LeftQuantity, LeftUnit, RightQuantity, RightUnit> by lazy { Metric(left, right) }
+        override val imperial: Imperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit> by lazy { Imperial(left, right) }
+        override val ukImperial: UKImperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit> by lazy { UKImperial(left, right) }
+        override val usCustomary: USCustomary<LeftQuantity, LeftUnit, RightQuantity, RightUnit> by lazy { USCustomary(left, right) }
+        override val metricAndUKImperial: MetricAndUKImperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit> by lazy { MetricAndUKImperial(left, right) }
+        override val metricAndUSCustomary: MetricAndUSCustomary<LeftQuantity, LeftUnit, RightQuantity, RightUnit> by lazy { MetricAndUSCustomary(left, right) }
     }
 
     data class Metric<
@@ -87,10 +98,15 @@ sealed class UndefinedMultipliedUnit<
     ) : UndefinedMultipliedUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
         UndefinedScientificUnit.Imperial<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>> where
           LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-          LeftUnit : MeasurementUsage.UsedInImperial,
+          LeftUnit : MeasurementUsage.UsedInUKImperial,
+          LeftUnit : MeasurementUsage.UsedInUSCustomary,
           RightUnit : UndefinedScientificUnit<RightQuantity>,
-          RightUnit : MeasurementUsage.UsedInImperial {
+          RightUnit : MeasurementUsage.UsedInUKImperial,
+          RightUnit : MeasurementUsage.UsedInUSCustomary {
         override val system = MeasurementSystem.Imperial
+
+        override val ukImperial: UKImperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit> by lazy { UKImperial(left, right) }
+        override val usCustomary: USCustomary<LeftQuantity, LeftUnit, RightQuantity, RightUnit> by lazy { USCustomary(left, right) }
     }
 
     data class UKImperial<
@@ -138,10 +154,14 @@ sealed class UndefinedMultipliedUnit<
     ) : UndefinedMultipliedUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
         UndefinedScientificUnit.MetricAndUKImperial<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>> where
           LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-          LeftUnit : MeasurementUsage.UsedInMetricAndUKImperial,
+          LeftUnit : MeasurementUsage.UsedInMetric,
+          LeftUnit : MeasurementUsage.UsedInUKImperial,
           RightUnit : UndefinedScientificUnit<RightQuantity>,
-          RightUnit : MeasurementUsage.UsedInMetricAndUKImperial {
+          RightUnit : MeasurementUsage.UsedInMetric,
+          RightUnit : MeasurementUsage.UsedInUKImperial {
         override val system = MeasurementSystem.MetricAndUKImperial
+        override val metric: Metric<LeftQuantity, LeftUnit, RightQuantity, RightUnit> by lazy { Metric(left, right) }
+        override val ukImperial: UKImperial<LeftQuantity, LeftUnit, RightQuantity, RightUnit> by lazy { UKImperial(left, right) }
     }
 
     data class MetricAndUSCustomary<
@@ -155,10 +175,14 @@ sealed class UndefinedMultipliedUnit<
     ) : UndefinedMultipliedUnit<LeftQuantity, LeftUnit, RightQuantity, RightUnit>(),
         UndefinedScientificUnit.MetricAndUSCustomary<UndefinedQuantityType.Multiplying<LeftQuantity, RightQuantity>> where
           LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-          LeftUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
+          LeftUnit : MeasurementUsage.UsedInMetric,
+          LeftUnit : MeasurementUsage.UsedInUSCustomary,
           RightUnit : UndefinedScientificUnit<RightQuantity>,
-          RightUnit : MeasurementUsage.UsedInMetricAndUSCustomary {
+          RightUnit : MeasurementUsage.UsedInMetric,
+          RightUnit : MeasurementUsage.UsedInUSCustomary {
         override val system = MeasurementSystem.MetricAndUSCustomary
+        override val metric: Metric<LeftQuantity, LeftUnit, RightQuantity, RightUnit> by lazy { Metric(left, right) }
+        override val usCustomary: USCustomary<LeftQuantity, LeftUnit, RightQuantity, RightUnit> by lazy { USCustomary(left, right) }
     }
 }
 
@@ -169,9 +193,13 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInMetricAndImperial,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+LeftUnit : MeasurementUsage.UsedInUKImperial,
+LeftUnit : MeasurementUsage.UsedInUSCustomary,
       RightUnit : UndefinedScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInMetricAndImperial = UndefinedMultipliedUnit.MetricAndImperial(this, right)
+      RightUnit : MeasurementUsage.UsedInMetric,
+RightUnit : MeasurementUsage.UsedInUKImperial,
+RightUnit : MeasurementUsage.UsedInUSCustomary = UndefinedMultipliedUnit.MetricAndImperial(this, right)
 
 infix fun <
     LeftQuantity : UndefinedQuantityType,
@@ -180,9 +208,13 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInMetricAndImperial,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+LeftUnit : MeasurementUsage.UsedInUKImperial,
+LeftUnit : MeasurementUsage.UsedInUSCustomary,
       RightUnit : ScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInMetricAndImperial = UndefinedMultipliedUnit.MetricAndImperial(this, right.asUndefined())
+      RightUnit : MeasurementUsage.UsedInMetric,
+RightUnit : MeasurementUsage.UsedInUKImperial,
+RightUnit : MeasurementUsage.UsedInUSCustomary = UndefinedMultipliedUnit.MetricAndImperial(this, right.asUndefined())
 
 infix fun <
     LeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -191,9 +223,13 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : ScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInMetricAndImperial,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+LeftUnit : MeasurementUsage.UsedInUKImperial,
+LeftUnit : MeasurementUsage.UsedInUSCustomary,
       RightUnit : UndefinedScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInMetricAndImperial = UndefinedMultipliedUnit.MetricAndImperial(asUndefined(), right)
+      RightUnit : MeasurementUsage.UsedInMetric,
+RightUnit : MeasurementUsage.UsedInUKImperial,
+RightUnit : MeasurementUsage.UsedInUSCustomary = UndefinedMultipliedUnit.MetricAndImperial(asUndefined(), right)
 
 infix fun <
     LeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -202,9 +238,13 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : ScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInMetricAndImperial,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+LeftUnit : MeasurementUsage.UsedInUKImperial,
+LeftUnit : MeasurementUsage.UsedInUSCustomary,
       RightUnit : ScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInMetricAndImperial = UndefinedMultipliedUnit.MetricAndImperial(asUndefined(), right.asUndefined())
+      RightUnit : MeasurementUsage.UsedInMetric,
+RightUnit : MeasurementUsage.UsedInUKImperial,
+RightUnit : MeasurementUsage.UsedInUSCustomary = UndefinedMultipliedUnit.MetricAndImperial(asUndefined(), right.asUndefined())
 
 infix fun <
     LeftQuantity : UndefinedQuantityType,
@@ -257,9 +297,11 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInImperial,
+      LeftUnit : MeasurementUsage.UsedInUKImperial,
+LeftUnit : MeasurementUsage.UsedInUSCustomary,
       RightUnit : UndefinedScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInImperial = UndefinedMultipliedUnit.Imperial(this, right)
+      RightUnit : MeasurementUsage.UsedInUKImperial,
+RightUnit : MeasurementUsage.UsedInUSCustomary = UndefinedMultipliedUnit.Imperial(this, right)
 
 infix fun <
     LeftQuantity : UndefinedQuantityType,
@@ -268,9 +310,11 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInImperial,
+      LeftUnit : MeasurementUsage.UsedInUKImperial,
+LeftUnit : MeasurementUsage.UsedInUSCustomary,
       RightUnit : ScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInImperial = UndefinedMultipliedUnit.Imperial(this, right.asUndefined())
+      RightUnit : MeasurementUsage.UsedInUKImperial,
+RightUnit : MeasurementUsage.UsedInUSCustomary = UndefinedMultipliedUnit.Imperial(this, right.asUndefined())
 
 infix fun <
     LeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -279,9 +323,11 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : ScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInImperial,
+      LeftUnit : MeasurementUsage.UsedInUKImperial,
+LeftUnit : MeasurementUsage.UsedInUSCustomary,
       RightUnit : UndefinedScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInImperial = UndefinedMultipliedUnit.Imperial(asUndefined(), right)
+      RightUnit : MeasurementUsage.UsedInUKImperial,
+RightUnit : MeasurementUsage.UsedInUSCustomary = UndefinedMultipliedUnit.Imperial(asUndefined(), right)
 
 infix fun <
     LeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -290,9 +336,11 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : ScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInImperial,
+      LeftUnit : MeasurementUsage.UsedInUKImperial,
+LeftUnit : MeasurementUsage.UsedInUSCustomary,
       RightUnit : ScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInImperial = UndefinedMultipliedUnit.Imperial(asUndefined(), right.asUndefined())
+      RightUnit : MeasurementUsage.UsedInUKImperial,
+RightUnit : MeasurementUsage.UsedInUSCustomary = UndefinedMultipliedUnit.Imperial(asUndefined(), right.asUndefined())
 
 infix fun <
     LeftQuantity : UndefinedQuantityType,
@@ -389,9 +437,11 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInMetricAndUKImperial,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+LeftUnit : MeasurementUsage.UsedInUKImperial,
       RightUnit : UndefinedScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInMetricAndUKImperial = UndefinedMultipliedUnit.MetricAndUKImperial(this, right)
+      RightUnit : MeasurementUsage.UsedInMetric,
+RightUnit : MeasurementUsage.UsedInUKImperial = UndefinedMultipliedUnit.MetricAndUKImperial(this, right)
 
 infix fun <
     LeftQuantity : UndefinedQuantityType,
@@ -400,9 +450,11 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInMetricAndUKImperial,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+LeftUnit : MeasurementUsage.UsedInUKImperial,
       RightUnit : ScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInMetricAndUKImperial = UndefinedMultipliedUnit.MetricAndUKImperial(this, right.asUndefined())
+      RightUnit : MeasurementUsage.UsedInMetric,
+RightUnit : MeasurementUsage.UsedInUKImperial = UndefinedMultipliedUnit.MetricAndUKImperial(this, right.asUndefined())
 
 infix fun <
     LeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -411,9 +463,11 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : ScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInMetricAndUKImperial,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+LeftUnit : MeasurementUsage.UsedInUKImperial,
       RightUnit : UndefinedScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInMetricAndUKImperial = UndefinedMultipliedUnit.MetricAndUKImperial(asUndefined(), right)
+      RightUnit : MeasurementUsage.UsedInMetric,
+RightUnit : MeasurementUsage.UsedInUKImperial = UndefinedMultipliedUnit.MetricAndUKImperial(asUndefined(), right)
 
 infix fun <
     LeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -422,9 +476,11 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : ScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInMetricAndUKImperial,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+LeftUnit : MeasurementUsage.UsedInUKImperial,
       RightUnit : ScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInMetricAndUKImperial = UndefinedMultipliedUnit.MetricAndUKImperial(asUndefined(), right.asUndefined())
+      RightUnit : MeasurementUsage.UsedInMetric,
+RightUnit : MeasurementUsage.UsedInUKImperial = UndefinedMultipliedUnit.MetricAndUKImperial(asUndefined(), right.asUndefined())
 
 infix fun <
     LeftQuantity : UndefinedQuantityType,
@@ -433,9 +489,11 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+LeftUnit : MeasurementUsage.UsedInUSCustomary,
       RightUnit : UndefinedScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInMetricAndUSCustomary = UndefinedMultipliedUnit.MetricAndUSCustomary(this, right)
+      RightUnit : MeasurementUsage.UsedInMetric,
+RightUnit : MeasurementUsage.UsedInUSCustomary = UndefinedMultipliedUnit.MetricAndUSCustomary(this, right)
 
 infix fun <
     LeftQuantity : UndefinedQuantityType,
@@ -444,9 +502,11 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : UndefinedScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+LeftUnit : MeasurementUsage.UsedInUSCustomary,
       RightUnit : ScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInMetricAndUSCustomary = UndefinedMultipliedUnit.MetricAndUSCustomary(this, right.asUndefined())
+      RightUnit : MeasurementUsage.UsedInMetric,
+RightUnit : MeasurementUsage.UsedInUSCustomary = UndefinedMultipliedUnit.MetricAndUSCustomary(this, right.asUndefined())
 
 infix fun <
     LeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -455,9 +515,11 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : ScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+LeftUnit : MeasurementUsage.UsedInUSCustomary,
       RightUnit : UndefinedScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInMetricAndUSCustomary = UndefinedMultipliedUnit.MetricAndUSCustomary(asUndefined(), right)
+      RightUnit : MeasurementUsage.UsedInMetric,
+RightUnit : MeasurementUsage.UsedInUSCustomary = UndefinedMultipliedUnit.MetricAndUSCustomary(asUndefined(), right)
 
 infix fun <
     LeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
@@ -466,6 +528,8 @@ infix fun <
     RightUnit,
     > LeftUnit.x(right: RightUnit) where
       LeftUnit : ScientificUnit<LeftQuantity>,
-      LeftUnit : MeasurementUsage.UsedInMetricAndUSCustomary,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+LeftUnit : MeasurementUsage.UsedInUSCustomary,
       RightUnit : ScientificUnit<RightQuantity>,
-      RightUnit : MeasurementUsage.UsedInMetricAndUSCustomary = UndefinedMultipliedUnit.MetricAndUSCustomary(asUndefined(), right.asUndefined())
+      RightUnit : MeasurementUsage.UsedInMetric,
+RightUnit : MeasurementUsage.UsedInUSCustomary = UndefinedMultipliedUnit.MetricAndUSCustomary(asUndefined(), right.asUndefined())
