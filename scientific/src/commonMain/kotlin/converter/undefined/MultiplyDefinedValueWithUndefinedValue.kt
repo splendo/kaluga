@@ -41,12 +41,12 @@ fun <
     RightQuantity : UndefinedQuantityType,
     RightUnit : UndefinedScientificUnit<RightQuantity>,
     MultipliedUnit : UndefinedMultipliedUnit<UndefinedQuantityType.Extended<LeftQuantity>, ExtendedLeftUnit, RightQuantity, RightUnit>,
-    TargetValue : UndefinedScientificValue<UndefinedQuantityType.Multiplying<UndefinedQuantityType.Extended<LeftQuantity>, RightQuantity>, MultipliedUnit>
+    TargetValue : UndefinedScientificValue<UndefinedQuantityType.Multiplying<UndefinedQuantityType.Extended<LeftQuantity>, RightQuantity>, MultipliedUnit>,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
     leftAsUndefined: ScientificValue<LeftQuantity, LeftUnit>.() -> ExtendedLeftValue,
     multiply: ExtendedLeftUnit.(RightUnit) -> MultipliedUnit,
-    factory: (Decimal, MultipliedUnit) -> TargetValue
+    factory: (Decimal, MultipliedUnit) -> TargetValue,
 ) = leftAsUndefined().times(right, multiply, factory)
 
 @JvmName("metricAndImperialValueTimesUndefinedMetricAndImperialValue")
@@ -57,20 +57,34 @@ fun <
     RightUnit,
     TargetValue : UndefinedScientificValue<
         UndefinedQuantityType.Multiplying<UndefinedQuantityType.Extended<LeftQuantity>, RightQuantity>,
-        UndefinedMultipliedUnit.MetricAndImperial<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.MetricAndImperial<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>>
+        UndefinedMultipliedUnit.MetricAndImperial<
+            UndefinedQuantityType.Extended<LeftQuantity>,
+            WrappedUndefinedExtendedUnit.MetricAndImperial<LeftQuantity, LeftUnit>,
+            RightQuantity,
+            RightUnit,
+            >,
+        >,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, UndefinedMultipliedUnit.MetricAndImperial<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.MetricAndImperial<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>) -> TargetValue
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
+    factory: (
+        Decimal,
+        UndefinedMultipliedUnit.MetricAndImperial<
+            UndefinedQuantityType.Extended<LeftQuantity>,
+            WrappedUndefinedExtendedUnit.MetricAndImperial<LeftQuantity, LeftUnit>,
+            RightQuantity,
+            RightUnit,
+            >,
+    ) -> TargetValue,
 ) where
-    LeftUnit : ScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetric,
-    RightUnit : MeasurementUsage.UsedInUKImperial,
-    RightUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right, { asUndefined() }, { x(it) }, factory)
+      LeftUnit : ScientificUnit<LeftQuantity>,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+      LeftUnit : MeasurementUsage.UsedInUKImperial,
+      LeftUnit : MeasurementUsage.UsedInUSCustomary,
+      RightUnit : UndefinedScientificUnit<RightQuantity>,
+      RightUnit : MeasurementUsage.UsedInMetric,
+      RightUnit : MeasurementUsage.UsedInUKImperial,
+      RightUnit : MeasurementUsage.UsedInUSCustomary =
+    times(right, { asUndefined() }, { x(it) }, factory)
 
 @JvmName("metricValueTimesUndefinedMetricValue")
 fun <
@@ -80,16 +94,19 @@ fun <
     RightUnit,
     TargetValue : UndefinedScientificValue<
         UndefinedQuantityType.Multiplying<UndefinedQuantityType.Extended<LeftQuantity>, RightQuantity>,
-        UndefinedMultipliedUnit.Metric<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.Metric<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>>
+        UndefinedMultipliedUnit.Metric<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.Metric<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>,>,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, UndefinedMultipliedUnit.Metric<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.Metric<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>) -> TargetValue
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
+    factory: (
+        Decimal,
+        UndefinedMultipliedUnit.Metric<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.Metric<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>,
+    ) -> TargetValue,
 ) where
-    LeftUnit : ScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetric
-    = times(right, { asUndefined() }, { x(it) }, factory)
+      LeftUnit : ScientificUnit<LeftQuantity>,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+      RightUnit : UndefinedScientificUnit<RightQuantity>,
+      RightUnit : MeasurementUsage.UsedInMetric =
+    times(right, { asUndefined() }, { x(it) }, factory)
 
 @JvmName("imperialValueTimesUndefinedImperialValue")
 fun <
@@ -99,20 +116,23 @@ fun <
     RightUnit,
     TargetValue : UndefinedScientificValue<
         UndefinedQuantityType.Multiplying<UndefinedQuantityType.Extended<LeftQuantity>, RightQuantity>,
-        UndefinedMultipliedUnit.Imperial<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.Imperial<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>>
+        UndefinedMultipliedUnit.Imperial<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.Imperial<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>,>,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, UndefinedMultipliedUnit.Imperial<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.Imperial<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>) -> TargetValue
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
+    factory: (
+        Decimal,
+        UndefinedMultipliedUnit.Imperial<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.Imperial<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>,
+    ) -> TargetValue,
 ) where
-    LeftUnit : ScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInUKImperial,
-    RightUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right, { asUndefined() }, { x(it) }, factory)
+      LeftUnit : ScientificUnit<LeftQuantity>,
+      LeftUnit : MeasurementUsage.UsedInUKImperial,
+      LeftUnit : MeasurementUsage.UsedInUSCustomary,
+      RightUnit : UndefinedScientificUnit<RightQuantity>,
+      RightUnit : MeasurementUsage.UsedInUKImperial,
+      RightUnit : MeasurementUsage.UsedInUSCustomary =
+    times(right, { asUndefined() }, { x(it) }, factory)
 
-@JvmName("uKImperialValueTimesUndefinedUKImperialValue")
+@JvmName("ukImperialValueTimesUndefinedUKImperialValue")
 fun <
     LeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     LeftUnit,
@@ -120,18 +140,32 @@ fun <
     RightUnit,
     TargetValue : UndefinedScientificValue<
         UndefinedQuantityType.Multiplying<UndefinedQuantityType.Extended<LeftQuantity>, RightQuantity>,
-        UndefinedMultipliedUnit.UKImperial<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.UKImperial<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>>
+        UndefinedMultipliedUnit.UKImperial<
+            UndefinedQuantityType.Extended<LeftQuantity>,
+            WrappedUndefinedExtendedUnit.UKImperial<LeftQuantity, LeftUnit>,
+            RightQuantity,
+            RightUnit,
+            >,
+        >,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, UndefinedMultipliedUnit.UKImperial<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.UKImperial<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>) -> TargetValue
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
+    factory: (
+        Decimal,
+        UndefinedMultipliedUnit.UKImperial<
+            UndefinedQuantityType.Extended<LeftQuantity>,
+            WrappedUndefinedExtendedUnit.UKImperial<LeftQuantity, LeftUnit>,
+            RightQuantity,
+            RightUnit,
+            >,
+    ) -> TargetValue,
 ) where
-    LeftUnit : ScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInUKImperial
-    = times(right, { asUndefined() }, { x(it) }, factory)
+      LeftUnit : ScientificUnit<LeftQuantity>,
+      LeftUnit : MeasurementUsage.UsedInUKImperial,
+      RightUnit : UndefinedScientificUnit<RightQuantity>,
+      RightUnit : MeasurementUsage.UsedInUKImperial =
+    times(right, { asUndefined() }, { x(it) }, factory)
 
-@JvmName("uSCustomaryValueTimesUndefinedUSCustomaryValue")
+@JvmName("usCustomaryValueTimesUndefinedUSCustomaryValue")
 fun <
     LeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     LeftUnit,
@@ -139,16 +173,30 @@ fun <
     RightUnit,
     TargetValue : UndefinedScientificValue<
         UndefinedQuantityType.Multiplying<UndefinedQuantityType.Extended<LeftQuantity>, RightQuantity>,
-        UndefinedMultipliedUnit.USCustomary<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.USCustomary<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>>
+        UndefinedMultipliedUnit.USCustomary<
+            UndefinedQuantityType.Extended<LeftQuantity>,
+            WrappedUndefinedExtendedUnit.USCustomary<LeftQuantity, LeftUnit>,
+            RightQuantity,
+            RightUnit,
+            >,
+        >,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, UndefinedMultipliedUnit.USCustomary<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.USCustomary<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>) -> TargetValue
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
+    factory: (
+        Decimal,
+        UndefinedMultipliedUnit.USCustomary<
+            UndefinedQuantityType.Extended<LeftQuantity>,
+            WrappedUndefinedExtendedUnit.USCustomary<LeftQuantity, LeftUnit>,
+            RightQuantity,
+            RightUnit,
+            >,
+    ) -> TargetValue,
 ) where
-    LeftUnit : ScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right, { asUndefined() }, { x(it) }, factory)
+      LeftUnit : ScientificUnit<LeftQuantity>,
+      LeftUnit : MeasurementUsage.UsedInUSCustomary,
+      RightUnit : UndefinedScientificUnit<RightQuantity>,
+      RightUnit : MeasurementUsage.UsedInUSCustomary =
+    times(right, { asUndefined() }, { x(it) }, factory)
 
 @JvmName("metricAndUKImperialValueTimesUndefinedMetricAndUKImperialValue")
 fun <
@@ -158,18 +206,32 @@ fun <
     RightUnit,
     TargetValue : UndefinedScientificValue<
         UndefinedQuantityType.Multiplying<UndefinedQuantityType.Extended<LeftQuantity>, RightQuantity>,
-        UndefinedMultipliedUnit.MetricAndUKImperial<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.MetricAndUKImperial<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>>
+        UndefinedMultipliedUnit.MetricAndUKImperial<
+            UndefinedQuantityType.Extended<LeftQuantity>,
+            WrappedUndefinedExtendedUnit.MetricAndUKImperial<LeftQuantity, LeftUnit>,
+            RightQuantity,
+            RightUnit,
+            >,
+        >,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, UndefinedMultipliedUnit.MetricAndUKImperial<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.MetricAndUKImperial<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>) -> TargetValue
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
+    factory: (
+        Decimal,
+        UndefinedMultipliedUnit.MetricAndUKImperial<
+            UndefinedQuantityType.Extended<LeftQuantity>,
+            WrappedUndefinedExtendedUnit.MetricAndUKImperial<LeftQuantity, LeftUnit>,
+            RightQuantity,
+            RightUnit,
+            >,
+    ) -> TargetValue,
 ) where
-    LeftUnit : ScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetric,
-    RightUnit : MeasurementUsage.UsedInUKImperial
-    = times(right, { asUndefined() }, { x(it) }, factory)
+      LeftUnit : ScientificUnit<LeftQuantity>,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+      LeftUnit : MeasurementUsage.UsedInUKImperial,
+      RightUnit : UndefinedScientificUnit<RightQuantity>,
+      RightUnit : MeasurementUsage.UsedInMetric,
+      RightUnit : MeasurementUsage.UsedInUKImperial =
+    times(right, { asUndefined() }, { x(it) }, factory)
 
 @JvmName("metricAndUSCustomaryValueTimesUndefinedMetricAndUSCustomaryValue")
 fun <
@@ -179,18 +241,32 @@ fun <
     RightUnit,
     TargetValue : UndefinedScientificValue<
         UndefinedQuantityType.Multiplying<UndefinedQuantityType.Extended<LeftQuantity>, RightQuantity>,
-        UndefinedMultipliedUnit.MetricAndUSCustomary<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.MetricAndUSCustomary<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>>
+        UndefinedMultipliedUnit.MetricAndUSCustomary<
+            UndefinedQuantityType.Extended<LeftQuantity>,
+            WrappedUndefinedExtendedUnit.MetricAndUSCustomary<LeftQuantity, LeftUnit>,
+            RightQuantity,
+            RightUnit,
+            >,
+        >,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
-    factory: (Decimal, UndefinedMultipliedUnit.MetricAndUSCustomary<UndefinedQuantityType.Extended<LeftQuantity>, WrappedUndefinedExtendedUnit.MetricAndUSCustomary<LeftQuantity, LeftUnit>, RightQuantity, RightUnit>) -> TargetValue
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
+    factory: (
+        Decimal,
+        UndefinedMultipliedUnit.MetricAndUSCustomary<
+            UndefinedQuantityType.Extended<LeftQuantity>,
+            WrappedUndefinedExtendedUnit.MetricAndUSCustomary<LeftQuantity, LeftUnit>,
+            RightQuantity,
+            RightUnit,
+            >,
+    ) -> TargetValue,
 ) where
-    LeftUnit : ScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetric,
-    RightUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right, { asUndefined() }, { x(it) }, factory)
+      LeftUnit : ScientificUnit<LeftQuantity>,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+      LeftUnit : MeasurementUsage.UsedInUSCustomary,
+      RightUnit : UndefinedScientificUnit<RightQuantity>,
+      RightUnit : MeasurementUsage.UsedInMetric,
+      RightUnit : MeasurementUsage.UsedInUSCustomary =
+    times(right, { asUndefined() }, { x(it) }, factory)
 
 @JvmName("metricAndImperialValueTimesUndefinedMetricAndImperialValueDefault")
 infix operator fun <
@@ -199,26 +275,27 @@ infix operator fun <
     RightQuantity : UndefinedQuantityType,
     RightUnit,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
 ) where
-    LeftUnit : ScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetric,
-    RightUnit : MeasurementUsage.UsedInUKImperial,
-    RightUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right) {
-        value: Decimal,
-        unit: UndefinedMultipliedUnit.MetricAndImperial<
-            UndefinedQuantityType.Extended<LeftQuantity>,
-            WrappedUndefinedExtendedUnit.MetricAndImperial<LeftQuantity, LeftUnit>,
-            RightQuantity,
-            RightUnit
-            > ->
-    DefaultUndefinedScientificValue(value, unit)
-}
+      LeftUnit : ScientificUnit<LeftQuantity>,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+      LeftUnit : MeasurementUsage.UsedInUKImperial,
+      LeftUnit : MeasurementUsage.UsedInUSCustomary,
+      RightUnit : UndefinedScientificUnit<RightQuantity>,
+      RightUnit : MeasurementUsage.UsedInMetric,
+      RightUnit : MeasurementUsage.UsedInUKImperial,
+      RightUnit : MeasurementUsage.UsedInUSCustomary =
+    times(right) {
+            value: Decimal,
+            unit: UndefinedMultipliedUnit.MetricAndImperial<
+                UndefinedQuantityType.Extended<LeftQuantity>,
+                WrappedUndefinedExtendedUnit.MetricAndImperial<LeftQuantity, LeftUnit>,
+                RightQuantity,
+                RightUnit,
+                >,
+        ->
+        DefaultUndefinedScientificValue(value, unit)
+    }
 
 @JvmName("metricValueTimesUndefinedMetricValueDefault")
 infix operator fun <
@@ -227,22 +304,23 @@ infix operator fun <
     RightQuantity : UndefinedQuantityType,
     RightUnit,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
 ) where
-    LeftUnit : ScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetric
-    = times(right) {
-        value: Decimal,
-        unit: UndefinedMultipliedUnit.Metric<
-            UndefinedQuantityType.Extended<LeftQuantity>,
-            WrappedUndefinedExtendedUnit.Metric<LeftQuantity, LeftUnit>,
-            RightQuantity,
-            RightUnit
-            > ->
-    DefaultUndefinedScientificValue(value, unit)
-}
+      LeftUnit : ScientificUnit<LeftQuantity>,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+      RightUnit : UndefinedScientificUnit<RightQuantity>,
+      RightUnit : MeasurementUsage.UsedInMetric =
+    times(right) {
+            value: Decimal,
+            unit: UndefinedMultipliedUnit.Metric<
+                UndefinedQuantityType.Extended<LeftQuantity>,
+                WrappedUndefinedExtendedUnit.Metric<LeftQuantity, LeftUnit>,
+                RightQuantity,
+                RightUnit,
+                >,
+        ->
+        DefaultUndefinedScientificValue(value, unit)
+    }
 
 @JvmName("imperialValueTimesUndefinedImperialValueDefault")
 infix operator fun <
@@ -251,72 +329,75 @@ infix operator fun <
     RightQuantity : UndefinedQuantityType,
     RightUnit,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
 ) where
-    LeftUnit : ScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInUKImperial,
-    RightUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right) {
-        value: Decimal,
-        unit: UndefinedMultipliedUnit.Imperial<
-            UndefinedQuantityType.Extended<LeftQuantity>,
-            WrappedUndefinedExtendedUnit.Imperial<LeftQuantity, LeftUnit>,
-            RightQuantity,
-            RightUnit
-            > ->
-    DefaultUndefinedScientificValue(value, unit)
-}
+      LeftUnit : ScientificUnit<LeftQuantity>,
+      LeftUnit : MeasurementUsage.UsedInUKImperial,
+      LeftUnit : MeasurementUsage.UsedInUSCustomary,
+      RightUnit : UndefinedScientificUnit<RightQuantity>,
+      RightUnit : MeasurementUsage.UsedInUKImperial,
+      RightUnit : MeasurementUsage.UsedInUSCustomary =
+    times(right) {
+            value: Decimal,
+            unit: UndefinedMultipliedUnit.Imperial<
+                UndefinedQuantityType.Extended<LeftQuantity>,
+                WrappedUndefinedExtendedUnit.Imperial<LeftQuantity, LeftUnit>,
+                RightQuantity,
+                RightUnit,
+                >,
+        ->
+        DefaultUndefinedScientificValue(value, unit)
+    }
 
-@JvmName("uKImperialValueTimesUndefinedUKImperialValueDefault")
+@JvmName("ukImperialValueTimesUndefinedUKImperialValueDefault")
 infix operator fun <
     LeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     LeftUnit,
     RightQuantity : UndefinedQuantityType,
     RightUnit,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
 ) where
-    LeftUnit : ScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInUKImperial
-    = times(right) {
-        value: Decimal,
-        unit: UndefinedMultipliedUnit.UKImperial<
-            UndefinedQuantityType.Extended<LeftQuantity>,
-            WrappedUndefinedExtendedUnit.UKImperial<LeftQuantity, LeftUnit>,
-            RightQuantity,
-            RightUnit
-            > ->
-    DefaultUndefinedScientificValue(value, unit)
-}
+      LeftUnit : ScientificUnit<LeftQuantity>,
+      LeftUnit : MeasurementUsage.UsedInUKImperial,
+      RightUnit : UndefinedScientificUnit<RightQuantity>,
+      RightUnit : MeasurementUsage.UsedInUKImperial =
+    times(right) {
+            value: Decimal,
+            unit: UndefinedMultipliedUnit.UKImperial<
+                UndefinedQuantityType.Extended<LeftQuantity>,
+                WrappedUndefinedExtendedUnit.UKImperial<LeftQuantity, LeftUnit>,
+                RightQuantity,
+                RightUnit,
+                >,
+        ->
+        DefaultUndefinedScientificValue(value, unit)
+    }
 
-@JvmName("uSCustomaryValueTimesUndefinedUSCustomaryValueDefault")
+@JvmName("usCustomaryValueTimesUndefinedUSCustomaryValueDefault")
 infix operator fun <
     LeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     LeftUnit,
     RightQuantity : UndefinedQuantityType,
     RightUnit,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
 ) where
-    LeftUnit : ScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right) {
-        value: Decimal,
-        unit: UndefinedMultipliedUnit.USCustomary<
-            UndefinedQuantityType.Extended<LeftQuantity>,
-            WrappedUndefinedExtendedUnit.USCustomary<LeftQuantity, LeftUnit>,
-            RightQuantity,
-            RightUnit
-            > ->
-    DefaultUndefinedScientificValue(value, unit)
-}
+      LeftUnit : ScientificUnit<LeftQuantity>,
+      LeftUnit : MeasurementUsage.UsedInUSCustomary,
+      RightUnit : UndefinedScientificUnit<RightQuantity>,
+      RightUnit : MeasurementUsage.UsedInUSCustomary =
+    times(right) {
+            value: Decimal,
+            unit: UndefinedMultipliedUnit.USCustomary<
+                UndefinedQuantityType.Extended<LeftQuantity>,
+                WrappedUndefinedExtendedUnit.USCustomary<LeftQuantity, LeftUnit>,
+                RightQuantity,
+                RightUnit,
+                >,
+        ->
+        DefaultUndefinedScientificValue(value, unit)
+    }
 
 @JvmName("metricAndUKImperialValueTimesUndefinedMetricAndUKImperialValueDefault")
 infix operator fun <
@@ -325,24 +406,25 @@ infix operator fun <
     RightQuantity : UndefinedQuantityType,
     RightUnit,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
 ) where
-    LeftUnit : ScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetric,
-    RightUnit : MeasurementUsage.UsedInUKImperial
-    = times(right) {
-        value: Decimal,
-        unit: UndefinedMultipliedUnit.MetricAndUKImperial<
-            UndefinedQuantityType.Extended<LeftQuantity>,
-            WrappedUndefinedExtendedUnit.MetricAndUKImperial<LeftQuantity, LeftUnit>,
-            RightQuantity,
-            RightUnit
-            > ->
-    DefaultUndefinedScientificValue(value, unit)
-}
+      LeftUnit : ScientificUnit<LeftQuantity>,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+      LeftUnit : MeasurementUsage.UsedInUKImperial,
+      RightUnit : UndefinedScientificUnit<RightQuantity>,
+      RightUnit : MeasurementUsage.UsedInMetric,
+      RightUnit : MeasurementUsage.UsedInUKImperial =
+    times(right) {
+            value: Decimal,
+            unit: UndefinedMultipliedUnit.MetricAndUKImperial<
+                UndefinedQuantityType.Extended<LeftQuantity>,
+                WrappedUndefinedExtendedUnit.MetricAndUKImperial<LeftQuantity, LeftUnit>,
+                RightQuantity,
+                RightUnit,
+                >,
+        ->
+        DefaultUndefinedScientificValue(value, unit)
+    }
 
 @JvmName("metricAndUSCustomaryValueTimesUndefinedMetricAndUSCustomaryValueDefault")
 infix operator fun <
@@ -351,21 +433,22 @@ infix operator fun <
     RightQuantity : UndefinedQuantityType,
     RightUnit,
     > ScientificValue<LeftQuantity, LeftUnit>.times(
-    right : UndefinedScientificValue<RightQuantity, RightUnit>,
+    right: UndefinedScientificValue<RightQuantity, RightUnit>,
 ) where
-    LeftUnit : ScientificUnit<LeftQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    RightUnit : UndefinedScientificUnit<RightQuantity>,
-    RightUnit : MeasurementUsage.UsedInMetric,
-    RightUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right) {
-        value: Decimal,
-        unit: UndefinedMultipliedUnit.MetricAndUSCustomary<
-            UndefinedQuantityType.Extended<LeftQuantity>,
-            WrappedUndefinedExtendedUnit.MetricAndUSCustomary<LeftQuantity, LeftUnit>,
-            RightQuantity,
-            RightUnit
-            > ->
-    DefaultUndefinedScientificValue(value, unit)
-}
+      LeftUnit : ScientificUnit<LeftQuantity>,
+      LeftUnit : MeasurementUsage.UsedInMetric,
+      LeftUnit : MeasurementUsage.UsedInUSCustomary,
+      RightUnit : UndefinedScientificUnit<RightQuantity>,
+      RightUnit : MeasurementUsage.UsedInMetric,
+      RightUnit : MeasurementUsage.UsedInUSCustomary =
+    times(right) {
+            value: Decimal,
+            unit: UndefinedMultipliedUnit.MetricAndUSCustomary<
+                UndefinedQuantityType.Extended<LeftQuantity>,
+                WrappedUndefinedExtendedUnit.MetricAndUSCustomary<LeftQuantity, LeftUnit>,
+                RightQuantity,
+                RightUnit,
+                >,
+        ->
+        DefaultUndefinedScientificValue(value, unit)
+    }

@@ -18,7 +18,6 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 
 sealed class UndefinedDividedUnit<
@@ -61,16 +60,19 @@ sealed class UndefinedDividedUnit<
           DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
           DenominatorUnit : MeasurementUsage.UsedInMetric,
           DenominatorUnit : MeasurementUsage.UsedInUKImperial,
-          DenominatorUnit : MeasurementUsage.UsedInUSCustomary
-    {
+          DenominatorUnit : MeasurementUsage.UsedInUSCustomary {
         override val system = MeasurementSystem.MetricAndImperial
 
         override val metric: UndefinedScientificUnit.Metric<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> by lazy { Metric(numerator, denominator) }
         override val imperial: Imperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { Imperial(numerator, denominator) }
         override val ukImperial: UKImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { UKImperial(numerator, denominator) }
         override val usCustomary: USCustomary<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { USCustomary(numerator, denominator) }
-        override val metricAndUKImperial: MetricAndUKImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { MetricAndUKImperial(numerator, denominator) }
-        override val metricAndUSCustomary: MetricAndUSCustomary<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { MetricAndUSCustomary(numerator, denominator) }
+        override val metricAndUKImperial: MetricAndUKImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy {
+            MetricAndUKImperial(numerator, denominator)
+        }
+        override val metricAndUSCustomary: MetricAndUSCustomary<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy {
+            MetricAndUSCustomary(numerator, denominator)
+        }
     }
 
     data class Metric<
@@ -105,8 +107,7 @@ sealed class UndefinedDividedUnit<
           NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
           DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
           DenominatorUnit : MeasurementUsage.UsedInUKImperial,
-          DenominatorUnit : MeasurementUsage.UsedInUSCustomary
-    {
+          DenominatorUnit : MeasurementUsage.UsedInUSCustomary {
         override val system = MeasurementSystem.Imperial
         override val ukImperial: UKImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { UKImperial(numerator, denominator) }
         override val usCustomary: USCustomary<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { USCustomary(numerator, denominator) }
@@ -161,8 +162,7 @@ sealed class UndefinedDividedUnit<
           NumeratorUnit : MeasurementUsage.UsedInUKImperial,
           DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
           DenominatorUnit : MeasurementUsage.UsedInMetric,
-          DenominatorUnit : MeasurementUsage.UsedInUKImperial
-    {
+          DenominatorUnit : MeasurementUsage.UsedInUKImperial {
         override val system = MeasurementSystem.MetricAndUKImperial
         override val metric: UndefinedScientificUnit.Metric<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>> by lazy { Metric(numerator, denominator) }
         override val ukImperial: UKImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { UKImperial(numerator, denominator) }
@@ -189,351 +189,3 @@ sealed class UndefinedDividedUnit<
         override val usCustomary: USCustomary<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit> by lazy { USCustomary(numerator, denominator) }
     }
 }
-
-infix fun <
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit,
-    DenominatorQuantity : UndefinedQuantityType,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric,
-DenominatorUnit : MeasurementUsage.UsedInUKImperial,
-DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.MetricAndImperial(this, denominator)
-
-infix fun <
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit,
-    DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric,
-DenominatorUnit : MeasurementUsage.UsedInUKImperial,
-DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.MetricAndImperial(this, denominator.asUndefined())
-
-infix fun <
-    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit,
-    DenominatorQuantity : UndefinedQuantityType,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric,
-DenominatorUnit : MeasurementUsage.UsedInUKImperial,
-DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.MetricAndImperial(asUndefined(), denominator)
-
-infix fun <
-    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit,
-    DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric,
-DenominatorUnit : MeasurementUsage.UsedInUKImperial,
-DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.MetricAndImperial(asUndefined(), denominator.asUndefined())
-
-infix fun <
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit,
-    DenominatorQuantity : UndefinedQuantityType,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric = UndefinedDividedUnit.Metric(this, denominator)
-
-infix fun <
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit,
-    DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-      DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric = UndefinedDividedUnit.Metric(this, denominator.asUndefined())
-
-infix fun <
-    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit,
-    DenominatorQuantity : UndefinedQuantityType,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric = UndefinedDividedUnit.Metric(asUndefined(), denominator)
-
-infix fun <
-    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit,
-    DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-      DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric = UndefinedDividedUnit.Metric(asUndefined(), denominator.asUndefined())
-
-infix fun <
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit,
-    DenominatorQuantity : UndefinedQuantityType,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInUKImperial,
-DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.Imperial(this, denominator)
-
-infix fun <
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit,
-    DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInUKImperial,
-DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.Imperial(this, denominator.asUndefined())
-
-infix fun <
-    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit,
-    DenominatorQuantity : UndefinedQuantityType,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInUKImperial,
-DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.Imperial(asUndefined(), denominator)
-
-infix fun <
-    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit,
-    DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInUKImperial,
-DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.Imperial(asUndefined(), denominator.asUndefined())
-
-infix fun <
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit,
-    DenominatorQuantity : UndefinedQuantityType,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInUKImperial = UndefinedDividedUnit.UKImperial(this, denominator)
-
-infix fun <
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit,
-    DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-      DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInUKImperial = UndefinedDividedUnit.UKImperial(this, denominator.asUndefined())
-
-infix fun <
-    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit,
-    DenominatorQuantity : UndefinedQuantityType,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInUKImperial = UndefinedDividedUnit.UKImperial(asUndefined(), denominator)
-
-infix fun <
-    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit,
-    DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-      DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInUKImperial = UndefinedDividedUnit.UKImperial(asUndefined(), denominator.asUndefined())
-
-infix fun <
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit,
-    DenominatorQuantity : UndefinedQuantityType,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.USCustomary(this, denominator)
-
-infix fun <
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit,
-    DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.USCustomary(this, denominator.asUndefined())
-
-infix fun <
-    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit,
-    DenominatorQuantity : UndefinedQuantityType,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.USCustomary(asUndefined(), denominator)
-
-infix fun <
-    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit,
-    DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.USCustomary(asUndefined(), denominator.asUndefined())
-
-infix fun <
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit,
-    DenominatorQuantity : UndefinedQuantityType,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric,
-DenominatorUnit : MeasurementUsage.UsedInUKImperial = UndefinedDividedUnit.MetricAndUKImperial(this, denominator)
-
-infix fun <
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit,
-    DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-      DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric,
-DenominatorUnit : MeasurementUsage.UsedInUKImperial = UndefinedDividedUnit.MetricAndUKImperial(this, denominator.asUndefined())
-
-infix fun <
-    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit,
-    DenominatorQuantity : UndefinedQuantityType,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric,
-DenominatorUnit : MeasurementUsage.UsedInUKImperial = UndefinedDividedUnit.MetricAndUKImperial(asUndefined(), denominator)
-
-infix fun <
-    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit,
-    DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-NumeratorUnit : MeasurementUsage.UsedInUKImperial,
-      DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric,
-DenominatorUnit : MeasurementUsage.UsedInUKImperial = UndefinedDividedUnit.MetricAndUKImperial(asUndefined(), denominator.asUndefined())
-
-infix fun <
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit,
-    DenominatorQuantity : UndefinedQuantityType,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric,
-DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.MetricAndUSCustomary(this, denominator)
-
-infix fun <
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit,
-    DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric,
-DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.MetricAndUSCustomary(this, denominator.asUndefined())
-
-infix fun <
-    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit,
-    DenominatorQuantity : UndefinedQuantityType,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric,
-DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.MetricAndUSCustomary(asUndefined(), denominator)
-
-infix fun <
-    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit,
-    DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit,
-    > NumeratorUnit.per(denominator: DenominatorUnit) where
-      NumeratorUnit : ScientificUnit<NumeratorQuantity>,
-      NumeratorUnit : MeasurementUsage.UsedInMetric,
-      NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
-      DenominatorUnit : ScientificUnit<DenominatorQuantity>,
-      DenominatorUnit : MeasurementUsage.UsedInMetric,
-DenominatorUnit : MeasurementUsage.UsedInUSCustomary = UndefinedDividedUnit.MetricAndUSCustomary(asUndefined(), denominator.asUndefined())

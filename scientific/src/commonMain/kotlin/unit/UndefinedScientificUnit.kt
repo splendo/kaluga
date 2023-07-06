@@ -25,7 +25,9 @@ sealed interface UndefinedScientificUnit<QuantityType : UndefinedQuantityType> :
     val numeratorUnits: List<ScientificUnit<*>>
     val denominatorUnits: List<ScientificUnit<*>>
 
-    sealed interface MetricAndImperial<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType>, MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<QuantityType>> {
+    sealed interface MetricAndImperial<QuantityType : UndefinedQuantityType> :
+        UndefinedScientificUnit<QuantityType>,
+        MetricAndImperialScientificUnit<PhysicalQuantity.Undefined<QuantityType>> {
         val metric: Metric<QuantityType>
         val imperial: Imperial<QuantityType>
         val ukImperial: UKImperial<QuantityType>
@@ -33,18 +35,30 @@ sealed interface UndefinedScientificUnit<QuantityType : UndefinedQuantityType> :
         val metricAndUKImperial: MetricAndUKImperial<QuantityType>
         val metricAndUSCustomary: MetricAndUSCustomary<QuantityType>
     }
-    sealed interface Metric<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType>, MetricScientificUnit<PhysicalQuantity.Undefined<QuantityType>>
-    sealed interface Imperial<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType>, ImperialScientificUnit<PhysicalQuantity.Undefined<QuantityType>>  {
+    sealed interface Metric<QuantityType : UndefinedQuantityType> :
+        UndefinedScientificUnit<QuantityType>,
+        MetricScientificUnit<PhysicalQuantity.Undefined<QuantityType>>
+    sealed interface Imperial<QuantityType : UndefinedQuantityType> :
+        UndefinedScientificUnit<QuantityType>,
+        ImperialScientificUnit<PhysicalQuantity.Undefined<QuantityType>> {
         val ukImperial: UKImperial<QuantityType>
         val usCustomary: USCustomary<QuantityType>
     }
-    sealed interface UKImperial<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType>, UKImperialScientificUnit<PhysicalQuantity.Undefined<QuantityType>>
-    sealed interface USCustomary<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType>, USCustomaryScientificUnit<PhysicalQuantity.Undefined<QuantityType>>
-    sealed interface MetricAndUKImperial<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType>, MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<QuantityType>> {
+    sealed interface UKImperial<QuantityType : UndefinedQuantityType> :
+        UndefinedScientificUnit<QuantityType>,
+        UKImperialScientificUnit<PhysicalQuantity.Undefined<QuantityType>>
+    sealed interface USCustomary<QuantityType : UndefinedQuantityType> :
+        UndefinedScientificUnit<QuantityType>,
+        USCustomaryScientificUnit<PhysicalQuantity.Undefined<QuantityType>>
+    sealed interface MetricAndUKImperial<QuantityType : UndefinedQuantityType> :
+        UndefinedScientificUnit<QuantityType>,
+        MetricAndUKImperialScientificUnit<PhysicalQuantity.Undefined<QuantityType>> {
         val metric: Metric<QuantityType>
         val ukImperial: UKImperial<QuantityType>
     }
-    sealed interface MetricAndUSCustomary<QuantityType : UndefinedQuantityType> : UndefinedScientificUnit<QuantityType>, MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<QuantityType>> {
+    sealed interface MetricAndUSCustomary<QuantityType : UndefinedQuantityType> :
+        UndefinedScientificUnit<QuantityType>,
+        MetricAndUSCustomaryScientificUnit<PhysicalQuantity.Undefined<QuantityType>> {
         val metric: Metric<QuantityType>
         val usCustomary: USCustomary<QuantityType>
     }

@@ -183,9 +183,8 @@ sealed class WrappedUndefinedExtendedUnit<
         UndefinedScientificUnit.MetricAndImperial<UndefinedQuantityType.Extended<WrappedQuantity>> where
           WrappedUnit : ScientificUnit<WrappedQuantity>,
           WrappedUnit : MeasurementUsage.UsedInMetric,
-            WrappedUnit : MeasurementUsage.UsedInUKImperial,
-        WrappedUnit : MeasurementUsage.UsedInUSCustomary
-    {
+          WrappedUnit : MeasurementUsage.UsedInUKImperial,
+          WrappedUnit : MeasurementUsage.UsedInUSCustomary {
         override val system = MeasurementSystem.MetricAndImperial
         override val metric: Metric<WrappedQuantity, WrappedUnit> by lazy { Metric(wrapped) }
         override val imperial: Imperial<WrappedQuantity, WrappedUnit> by lazy { Imperial(wrapped) }
@@ -274,28 +273,55 @@ sealed class WrappedUndefinedExtendedUnit<
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     Unit,
-    > Unit.asUndefined() where Unit : ScientificUnit<Quantity>, Unit : MeasurementUsage.UsedInMetric, Unit : MeasurementUsage.UsedInUKImperial, Unit : MeasurementUsage.UsedInUSCustomary = WrappedUndefinedExtendedUnit.MetricAndImperial(this)
+    > Unit.asUndefined() where
+      Unit : ScientificUnit<Quantity>,
+      Unit : MeasurementUsage.UsedInMetric,
+      Unit : MeasurementUsage.UsedInUKImperial,
+      Unit : MeasurementUsage.UsedInUSCustomary = WrappedUndefinedExtendedUnit.MetricAndImperial(
+    this,
+)
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     Unit,
-    > Unit.asUndefined() where Unit : ScientificUnit<Quantity>, Unit : MeasurementUsage.UsedInMetric = WrappedUndefinedExtendedUnit.Metric(this)
+    > Unit.asUndefined() where
+      Unit : ScientificUnit<Quantity>,
+      Unit : MeasurementUsage.UsedInMetric = WrappedUndefinedExtendedUnit.Metric(this)
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     Unit,
-    > Unit.asUndefined() where Unit : ScientificUnit<Quantity>, Unit : MeasurementUsage.UsedInUKImperial, Unit : MeasurementUsage.UsedInUSCustomary = WrappedUndefinedExtendedUnit.Imperial(this)
+    > Unit.asUndefined() where
+      Unit : ScientificUnit<Quantity>,
+      Unit : MeasurementUsage.UsedInUKImperial,
+      Unit : MeasurementUsage.UsedInUSCustomary = WrappedUndefinedExtendedUnit.Imperial(
+    this,
+)
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     Unit,
-    > Unit.asUndefined() where Unit : ScientificUnit<Quantity>, Unit : MeasurementUsage.UsedInUKImperial = WrappedUndefinedExtendedUnit.UKImperial(this)
+    > Unit.asUndefined() where
+      Unit : ScientificUnit<Quantity>,
+      Unit : MeasurementUsage.UsedInUKImperial = WrappedUndefinedExtendedUnit.UKImperial(this)
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     Unit,
-    > Unit.asUndefined() where Unit : ScientificUnit<Quantity>, Unit : MeasurementUsage.UsedInUSCustomary = WrappedUndefinedExtendedUnit.USCustomary(this)
+    > Unit.asUndefined() where
+      Unit : ScientificUnit<Quantity>,
+      Unit : MeasurementUsage.UsedInUSCustomary = WrappedUndefinedExtendedUnit.USCustomary(this)
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     Unit,
-    > Unit.asUndefined() where Unit : ScientificUnit<Quantity>, Unit : MeasurementUsage.UsedInMetric, Unit : MeasurementUsage.UsedInUKImperial = WrappedUndefinedExtendedUnit.MetricAndUKImperial(this)
+    > Unit.asUndefined() where
+      Unit : ScientificUnit<Quantity>,
+      Unit : MeasurementUsage.UsedInMetric,
+      Unit : MeasurementUsage.UsedInUKImperial = WrappedUndefinedExtendedUnit.MetricAndUKImperial(
+    this,
+)
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     Unit,
-    > Unit.asUndefined() where Unit : ScientificUnit<Quantity>, Unit : MeasurementUsage.UsedInMetric, Unit : MeasurementUsage.UsedInUSCustomary = WrappedUndefinedExtendedUnit.MetricAndUSCustomary(this)
+    > Unit.asUndefined() where
+      Unit : ScientificUnit<Quantity>,
+      Unit : MeasurementUsage.UsedInMetric,
+      Unit : MeasurementUsage.UsedInUSCustomary = WrappedUndefinedExtendedUnit.MetricAndUSCustomary(
+    this,
+)
