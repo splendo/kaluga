@@ -385,7 +385,7 @@ fun <
     NumeratorUnit,
     DenominatorQuantity : UndefinedQuantityType,
     DenominatorUnit,
-    > DividedUndefinedScientificUnit.MetricAndImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
+    > UndefinedDividedUnit.MetricAndImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
       NumeratorUnit : MeasurementUsage.UsedInMetric,
 NumeratorUnit : MeasurementUsage.UsedInUKImperial,
@@ -401,7 +401,7 @@ fun <
     NumeratorUnit,
     DenominatorQuantity : UndefinedQuantityType,
     DenominatorUnit,
-    > DividedUndefinedScientificUnit.Metric<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
+    > UndefinedDividedUnit.Metric<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
       NumeratorUnit : MeasurementUsage.UsedInMetric,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
@@ -413,7 +413,7 @@ fun <
     NumeratorUnit,
     DenominatorQuantity : UndefinedQuantityType,
     DenominatorUnit,
-    > DividedUndefinedScientificUnit.Imperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
+    > UndefinedDividedUnit.Imperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
       NumeratorUnit : MeasurementUsage.UsedInUKImperial,
 NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
@@ -427,7 +427,7 @@ fun <
     NumeratorUnit,
     DenominatorQuantity : UndefinedQuantityType,
     DenominatorUnit,
-    > DividedUndefinedScientificUnit.UKImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
+    > UndefinedDividedUnit.UKImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
       NumeratorUnit : MeasurementUsage.UsedInUKImperial,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
@@ -439,7 +439,7 @@ fun <
     NumeratorUnit,
     DenominatorQuantity : UndefinedQuantityType,
     DenominatorUnit,
-    > DividedUndefinedScientificUnit.USCustomary<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
+    > UndefinedDividedUnit.USCustomary<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
       NumeratorUnit : MeasurementUsage.UsedInUSCustomary,
       DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
@@ -451,7 +451,7 @@ fun <
     NumeratorUnit,
     DenominatorQuantity : UndefinedQuantityType,
     DenominatorUnit,
-    > DividedUndefinedScientificUnit.MetricAndUKImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
+    > UndefinedDividedUnit.MetricAndUKImperial<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
       NumeratorUnit : MeasurementUsage.UsedInMetric,
 NumeratorUnit : MeasurementUsage.UsedInUKImperial,
@@ -465,7 +465,7 @@ fun <
     NumeratorUnit,
     DenominatorQuantity : UndefinedQuantityType,
     DenominatorUnit,
-    > DividedUndefinedScientificUnit.MetricAndUSCustomary<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
+    > UndefinedDividedUnit.MetricAndUSCustomary<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>.reciprocal() where
       NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
       NumeratorUnit : MeasurementUsage.UsedInMetric,
 NumeratorUnit : MeasurementUsage.UsedInUSCustomary,

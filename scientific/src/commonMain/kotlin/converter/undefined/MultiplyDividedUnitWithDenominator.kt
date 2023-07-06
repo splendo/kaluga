@@ -18,14 +18,17 @@
 package com.splendo.kaluga.scientific.converter.undefined
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.DefaultUndefinedScientificValue
+import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
-import com.splendo.kaluga.scientific.unit.DividedUndefinedScientificUnit
-import com.splendo.kaluga.scientific.unit.MeasurementUsage
+import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
+import com.splendo.kaluga.scientific.unit.One
+import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
 import com.splendo.kaluga.scientific.unit.UndefinedScientificUnit
-import kotlin.jvm.JvmName
+import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
 
 fun <
     LeftAndDenominatorQuantity : UndefinedQuantityType,
@@ -33,138 +36,163 @@ fun <
     NumeratorQuantity : UndefinedQuantityType,
     NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
     DenominatorUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    DividerUnit : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, LeftAndDenominatorQuantity, DenominatorUnit>,
+    DividerUnit : UndefinedDividedUnit<NumeratorQuantity, NumeratorUnit, LeftAndDenominatorQuantity, DenominatorUnit>,
     TargetValue : UndefinedScientificValue<NumeratorQuantity, NumeratorUnit>,
     > UndefinedScientificValue<LeftAndDenominatorQuantity, LeftUnit>.times(
     right: UndefinedScientificValue<UndefinedQuantityType.Dividing<NumeratorQuantity, LeftAndDenominatorQuantity>, DividerUnit>,
     factory: (Decimal, NumeratorUnit) -> TargetValue
 ) = right.unit.numerator.byMultiplying(this, right, factory)
 
-@JvmName("metricAndImperialDenominatorTimesMetricAndImperialUndefinedDividingUnit")
-infix operator fun <
-    LeftAndDenominatorQuantity : UndefinedQuantityType,
-    LeftUnit,
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    DenominatorUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    DividerUnit
-    > UndefinedScientificValue<LeftAndDenominatorQuantity, LeftUnit>.times(
-    right: UndefinedScientificValue<UndefinedQuantityType.Dividing<NumeratorQuantity, LeftAndDenominatorQuantity>, DividerUnit>
-) where
-    LeftUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    DividerUnit : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, LeftAndDenominatorQuantity, DenominatorUnit>,
-    DividerUnit : MeasurementUsage.UsedInMetric,
-    DividerUnit : MeasurementUsage.UsedInUKImperial,
-    DividerUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right) { value: Decimal, unit : NumeratorUnit -> DefaultUndefinedScientificValue(value, unit) }
+// To add cases for
 
-@JvmName("metricDenominatorTimesMetricUndefinedDividingUnit")
-infix operator fun <
-    LeftAndDenominatorQuantity : UndefinedQuantityType,
-    LeftUnit,
+fun <
+    LeftAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
+    LeftUnit : ScientificUnit<LeftAndDenominatorQuantity>,
+    WrappedLeftUnit : UndefinedScientificUnit<UndefinedQuantityType.Extended<LeftAndDenominatorQuantity>>,
+    WrappedLeftValue : UndefinedScientificValue<UndefinedQuantityType.Extended<LeftAndDenominatorQuantity>, WrappedLeftUnit>,
     NumeratorQuantity : UndefinedQuantityType,
     NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    DenominatorUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    DividerUnit
-    > UndefinedScientificValue<LeftAndDenominatorQuantity, LeftUnit>.times(
-    right: UndefinedScientificValue<UndefinedQuantityType.Dividing<NumeratorQuantity, LeftAndDenominatorQuantity>, DividerUnit>
-) where
-    LeftUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    DividerUnit : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, LeftAndDenominatorQuantity, DenominatorUnit>,
-    DividerUnit : MeasurementUsage.UsedInMetric
-    = times(right) { value: Decimal, unit : NumeratorUnit -> DefaultUndefinedScientificValue(value, unit) }
+    DenominatorUnit : UndefinedScientificUnit<UndefinedQuantityType.Extended<LeftAndDenominatorQuantity>>,
+    DividerUnit : UndefinedDividedUnit<NumeratorQuantity, NumeratorUnit, UndefinedQuantityType.Extended<LeftAndDenominatorQuantity>, DenominatorUnit>,
+    TargetValue : UndefinedScientificValue<NumeratorQuantity, NumeratorUnit>,
+    > ScientificValue<LeftAndDenominatorQuantity, LeftUnit>.times(
+    right: UndefinedScientificValue<UndefinedQuantityType.Dividing<NumeratorQuantity, UndefinedQuantityType.Extended<LeftAndDenominatorQuantity>>, DividerUnit>,
+    leftAsUndefined: ScientificValue<LeftAndDenominatorQuantity, LeftUnit>.() -> WrappedLeftValue,
+    factory: (Decimal, NumeratorUnit) -> TargetValue
+) = leftAsUndefined().times(right, factory)
 
-@JvmName("imperialDenominatorTimesImperialUndefinedDividingUnit")
-infix operator fun <
+fun <
     LeftAndDenominatorQuantity : UndefinedQuantityType,
-    LeftUnit,
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    DenominatorUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    DividerUnit
-    > UndefinedScientificValue<LeftAndDenominatorQuantity, LeftUnit>.times(
-    right: UndefinedScientificValue<UndefinedQuantityType.Dividing<NumeratorQuantity, LeftAndDenominatorQuantity>, DividerUnit>
-) where
     LeftUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    DividerUnit : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, LeftAndDenominatorQuantity, DenominatorUnit>,
-    DividerUnit : MeasurementUsage.UsedInUKImperial,
-    DividerUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right) { value: Decimal, unit : NumeratorUnit -> DefaultUndefinedScientificValue(value, unit) }
+    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
+    WrappedNumeratorUnit : ScientificUnit<NumeratorQuantity>,
+    NumeratorUnit : WrappedUndefinedExtendedUnit<NumeratorQuantity, WrappedNumeratorUnit>,
+    DenominatorUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
+    DividerUnit : UndefinedDividedUnit<UndefinedQuantityType.Extended<NumeratorQuantity>, NumeratorUnit, LeftAndDenominatorQuantity, DenominatorUnit>,
+    WrappedTargetValue : UndefinedScientificValue<UndefinedQuantityType.Extended<NumeratorQuantity>, NumeratorUnit>,
+    TargetValue : ScientificValue<NumeratorQuantity, WrappedNumeratorUnit>,
+    > UndefinedScientificValue<LeftAndDenominatorQuantity, LeftUnit>.times(
+    right: UndefinedScientificValue<UndefinedQuantityType.Dividing<UndefinedQuantityType.Extended<NumeratorQuantity>, LeftAndDenominatorQuantity>, DividerUnit>,
+    wrappedFactory: (Decimal, NumeratorUnit) -> WrappedTargetValue,
+    factory: (Decimal, WrappedNumeratorUnit) -> TargetValue
+) = times(right, wrappedFactory).let { wrapped -> factory(wrapped.decimalValue, wrapped.unit.wrapped) }
 
-@JvmName("ukImperialDenominatorTimesUKImperialUndefinedDividingUnit")
-infix operator fun <
-    LeftAndDenominatorQuantity : UndefinedQuantityType,
-    LeftUnit,
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    DenominatorUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    DividerUnit
-    > UndefinedScientificValue<LeftAndDenominatorQuantity, LeftUnit>.times(
-    right: UndefinedScientificValue<UndefinedQuantityType.Dividing<NumeratorQuantity, LeftAndDenominatorQuantity>, DividerUnit>
-) where
-    LeftUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    DividerUnit : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, LeftAndDenominatorQuantity, DenominatorUnit>,
-    DividerUnit : MeasurementUsage.UsedInUKImperial
-    = times(right) { value: Decimal, unit : NumeratorUnit -> DefaultUndefinedScientificValue(value, unit) }
+fun <
+    LeftAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
+    LeftUnit : ScientificUnit<LeftAndDenominatorQuantity>,
+    WrappedLeftUnit : UndefinedScientificUnit<UndefinedQuantityType.Extended<LeftAndDenominatorQuantity>>,
+    WrappedLeftValue : UndefinedScientificValue<UndefinedQuantityType.Extended<LeftAndDenominatorQuantity>, WrappedLeftUnit>,
+    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
+    WrappedNumeratorUnit : ScientificUnit<NumeratorQuantity>,
+    NumeratorUnit : WrappedUndefinedExtendedUnit<NumeratorQuantity, WrappedNumeratorUnit>,
+    DenominatorUnit : UndefinedScientificUnit<UndefinedQuantityType.Extended<LeftAndDenominatorQuantity>>,
+    DividerUnit : UndefinedDividedUnit<UndefinedQuantityType.Extended<NumeratorQuantity>, NumeratorUnit, UndefinedQuantityType.Extended<LeftAndDenominatorQuantity>, DenominatorUnit>,
+    WrappedTargetValue : UndefinedScientificValue<UndefinedQuantityType.Extended<NumeratorQuantity>, NumeratorUnit>,
+    TargetValue : ScientificValue<NumeratorQuantity, WrappedNumeratorUnit>,
+    > ScientificValue<LeftAndDenominatorQuantity, LeftUnit>.times(
+    right: UndefinedScientificValue<UndefinedQuantityType.Dividing<UndefinedQuantityType.Extended<NumeratorQuantity>, UndefinedQuantityType.Extended<LeftAndDenominatorQuantity>>, DividerUnit>,
+    leftAsUndefined: ScientificValue<LeftAndDenominatorQuantity, LeftUnit>.() -> WrappedLeftValue,
+    wrappedFactory: (Decimal, NumeratorUnit) -> WrappedTargetValue,
+    factory: (Decimal, WrappedNumeratorUnit) -> TargetValue
+) = leftAsUndefined().times(right, wrappedFactory, factory)
 
-@JvmName("usCustomaryDenominatorTimesUSCustomaryUndefinedDividingUnit")
-infix operator fun <
-    LeftAndDenominatorQuantity : UndefinedQuantityType,
-    LeftUnit,
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    DenominatorUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    DividerUnit
-    > UndefinedScientificValue<LeftAndDenominatorQuantity, LeftUnit>.times(
-    right: UndefinedScientificValue<UndefinedQuantityType.Dividing<NumeratorQuantity, LeftAndDenominatorQuantity>, DividerUnit>
-) where
-    LeftUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    DividerUnit : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, LeftAndDenominatorQuantity, DenominatorUnit>,
-    DividerUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right) { value: Decimal, unit : NumeratorUnit -> DefaultUndefinedScientificValue(value, unit) }
+fun <
+    LeftNumeratorRightDenominatorQuantity : UndefinedQuantityType,
+    LeftDenominatorRightNumeratorQuantity : UndefinedQuantityType,
+    LeftNumeratorUnit : UndefinedScientificUnit<LeftNumeratorRightDenominatorQuantity>,
+    LeftDenominatorUnit : UndefinedScientificUnit<LeftDenominatorRightNumeratorQuantity>,
+    LeftDividerUnit : UndefinedDividedUnit<LeftNumeratorRightDenominatorQuantity, LeftNumeratorUnit, LeftDenominatorRightNumeratorQuantity, LeftDenominatorUnit>,
+    RightNumeratorUnit : UndefinedScientificUnit<LeftDenominatorRightNumeratorQuantity>,
+    RightDenominatorUnit : UndefinedScientificUnit<LeftNumeratorRightDenominatorQuantity>,
+    RightDividerUnit :UndefinedDividedUnit<LeftDenominatorRightNumeratorQuantity, RightNumeratorUnit, LeftNumeratorRightDenominatorQuantity, RightDenominatorUnit>,
+    TargetValue : ScientificValue<PhysicalQuantity.Dimensionless, One>
+    > UndefinedScientificValue<UndefinedQuantityType.Dividing<LeftNumeratorRightDenominatorQuantity, LeftDenominatorRightNumeratorQuantity>, LeftDividerUnit>.times(
+    right: UndefinedScientificValue<UndefinedQuantityType.Dividing<LeftDenominatorRightNumeratorQuantity, LeftNumeratorRightDenominatorQuantity>, RightDividerUnit>,
+    factory: (Decimal, One) -> TargetValue
+) = One.byMultiplying(this, right, factory)
 
-@JvmName("metricAndUKImperialDenominatorTimesMetricAndUKImperialUndefinedDividingUnit")
-infix operator fun <
-    LeftAndDenominatorQuantity : UndefinedQuantityType,
-    LeftUnit,
-    NumeratorQuantity : UndefinedQuantityType,
-    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    DenominatorUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    DividerUnit
-    > UndefinedScientificValue<LeftAndDenominatorQuantity, LeftUnit>.times(
-    right: UndefinedScientificValue<UndefinedQuantityType.Dividing<NumeratorQuantity, LeftAndDenominatorQuantity>, DividerUnit>
-) where
-    LeftUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    LeftUnit : MeasurementUsage.UsedInUKImperial,
-    DividerUnit : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, LeftAndDenominatorQuantity, DenominatorUnit>,
-    DividerUnit : MeasurementUsage.UsedInMetric,
-    DividerUnit : MeasurementUsage.UsedInUKImperial
-    = times(right) { value: Decimal, unit : NumeratorUnit -> DefaultUndefinedScientificValue(value, unit) }
+fun <
+    ReciprocalQuantity : UndefinedQuantityType,
+    Unit : UndefinedScientificUnit<ReciprocalQuantity>,
+    ReciprocalUnit : UndefinedScientificUnit<UndefinedQuantityType.Reciprocal<ReciprocalQuantity>>,
+    TargetValue : ScientificValue<PhysicalQuantity.Dimensionless, One>
+    > UndefinedScientificValue<ReciprocalQuantity, Unit>.times(
+    reciprocal: UndefinedScientificValue<UndefinedQuantityType.Reciprocal<ReciprocalQuantity>, ReciprocalUnit>,
+    factory: (Decimal, One) -> TargetValue
+) = One.byMultiplying(this, reciprocal, factory)
 
-@JvmName("metricAndUSCustomaryDenominatorTimesMetricAndUSCustomaryUndefinedDividingUnit")
-infix operator fun <
-    LeftAndDenominatorQuantity : UndefinedQuantityType,
-    LeftUnit,
+fun <
+    ReciprocalQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
+    Unit : ScientificUnit<ReciprocalQuantity>,
+    WrappedUnit : WrappedUndefinedExtendedUnit<ReciprocalQuantity, Unit>,
+    WrappedValue : UndefinedScientificValue<UndefinedQuantityType.Extended<ReciprocalQuantity>, WrappedUnit>,
+    ReciprocalUnit : UndefinedScientificUnit<UndefinedQuantityType.Reciprocal<UndefinedQuantityType.Extended<ReciprocalQuantity>>>,
+    TargetValue : ScientificValue<PhysicalQuantity.Dimensionless, One>
+    > ScientificValue<ReciprocalQuantity, Unit>.times(
+    reciprocal: UndefinedScientificValue<UndefinedQuantityType.Reciprocal<UndefinedQuantityType.Extended<ReciprocalQuantity>>, ReciprocalUnit>,
+    asUndefined: ScientificValue<ReciprocalQuantity, Unit>.() -> WrappedValue,
+    factory: (Decimal, One) -> TargetValue
+) = asUndefined().times(reciprocal, factory)
+
+fun <
     NumeratorQuantity : UndefinedQuantityType,
     NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
-    DenominatorUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    DividerUnit
-    > UndefinedScientificValue<LeftAndDenominatorQuantity, LeftUnit>.times(
-    right: UndefinedScientificValue<UndefinedQuantityType.Dividing<NumeratorQuantity, LeftAndDenominatorQuantity>, DividerUnit>
-) where
-    LeftUnit : UndefinedScientificUnit<LeftAndDenominatorQuantity>,
-    LeftUnit : MeasurementUsage.UsedInMetric,
-    LeftUnit : MeasurementUsage.UsedInUSCustomary,
-    DividerUnit : DividedUndefinedScientificUnit<NumeratorQuantity, NumeratorUnit, LeftAndDenominatorQuantity, DenominatorUnit>,
-    DividerUnit : MeasurementUsage.UsedInMetric,
-    DividerUnit : MeasurementUsage.UsedInUSCustomary
-    = times(right) { value: Decimal, unit : NumeratorUnit -> DefaultUndefinedScientificValue(value, unit) }
+    DenominatorQuantity : UndefinedQuantityType,
+    DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
+    ReciprocalUnit : UndefinedReciprocalUnit<DenominatorQuantity, DenominatorUnit>,
+    DividingUnit : UndefinedDividedUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>,
+    TargetValue : UndefinedScientificValue<UndefinedQuantityType.Dividing<NumeratorQuantity, DenominatorQuantity>, DividingUnit>
+    > UndefinedScientificValue<NumeratorQuantity, NumeratorUnit>.times(
+        reciprocal: UndefinedScientificValue<UndefinedQuantityType.Reciprocal<DenominatorQuantity>, ReciprocalUnit>,
+        per: NumeratorUnit.(DenominatorUnit) -> DividingUnit,
+        factory: (Decimal, DividingUnit) -> TargetValue
+    ) = unit.per(reciprocal.unit.inverse).byMultiplying(this, reciprocal, factory)
+
+fun <
+    NumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
+    NumeratorUnit : ScientificUnit<NumeratorQuantity>,
+    WrappedNumeratorUnit : WrappedUndefinedExtendedUnit<NumeratorQuantity, NumeratorUnit>,
+    WrappedValue : UndefinedScientificValue<UndefinedQuantityType.Extended<NumeratorQuantity>, WrappedNumeratorUnit>,
+    DenominatorQuantity : UndefinedQuantityType,
+    DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
+    ReciprocalUnit : UndefinedReciprocalUnit<DenominatorQuantity, DenominatorUnit>,
+    DividingUnit : UndefinedDividedUnit<UndefinedQuantityType.Extended<NumeratorQuantity>, WrappedNumeratorUnit, DenominatorQuantity, DenominatorUnit>,
+    TargetValue : UndefinedScientificValue<UndefinedQuantityType.Dividing<UndefinedQuantityType.Extended<NumeratorQuantity>, DenominatorQuantity>, DividingUnit>
+    > ScientificValue<NumeratorQuantity, NumeratorUnit>.times(
+    reciprocal: UndefinedScientificValue<UndefinedQuantityType.Reciprocal<DenominatorQuantity>, ReciprocalUnit>,
+    asUndefined: ScientificValue<NumeratorQuantity, NumeratorUnit>.() -> WrappedValue,
+    per: WrappedNumeratorUnit.(DenominatorUnit) -> DividingUnit,
+    factory: (Decimal, DividingUnit) -> TargetValue
+) = asUndefined().times(reciprocal, per, factory)
+
+fun <
+    NumeratorQuantity : UndefinedQuantityType,
+    ReciprocalAndDenominatorQuantity : UndefinedQuantityType,
+    NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
+    DenominatorUnit : UndefinedScientificUnit<ReciprocalAndDenominatorQuantity>,
+    DividerUnit : UndefinedDividedUnit<NumeratorQuantity, NumeratorUnit, ReciprocalAndDenominatorQuantity, DenominatorUnit>,
+    ReciprocalInverseUnit : UndefinedScientificUnit<ReciprocalAndDenominatorQuantity>,
+    ReciprocalUnit : UndefinedReciprocalUnit<ReciprocalAndDenominatorQuantity, ReciprocalInverseUnit>,
+    TargetUnit : UndefinedReciprocalUnit<NumeratorQuantity, NumeratorUnit>,
+    TargetValue : UndefinedScientificValue<UndefinedQuantityType.Reciprocal<NumeratorQuantity>, TargetUnit>
+    > UndefinedScientificValue<UndefinedQuantityType.Dividing<NumeratorQuantity, ReciprocalAndDenominatorQuantity>, DividerUnit>.times(
+    reciprocal: UndefinedScientificValue<UndefinedQuantityType.Reciprocal<ReciprocalAndDenominatorQuantity>, ReciprocalUnit>,
+    inverse: NumeratorUnit.() -> TargetUnit,
+    factory: (Decimal, TargetUnit) -> TargetValue
+) = unit.numerator.inverse().byMultiplying(this, reciprocal, factory)
+
+// Mul<A, B> * Inv<B> -> A
+// Inv<B> * Mul<A, B> -> A
+
+// Mul<Wr<A>, B> * Inv<B> -> A
+// Inv<B> * Mul<Wr<A>, B> -> A
+
+// Mul<A, B> * Inv<A> -> B
+// Inv<A> * Mul<A, B> -> B
+
+// Mul<A, Wr<B>> * Inv<A> -> B
+// Inv<A> * Mul<A, Wr<B>> -> B
+
+
+
+
