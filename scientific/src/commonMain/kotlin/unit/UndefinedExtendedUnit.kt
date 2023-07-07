@@ -175,7 +175,7 @@ sealed class WrappedUndefinedExtendedUnit<
     override fun deltaFromSIUnitDelta(delta: Decimal): Decimal = wrapped.deltaFromSIUnitDelta(delta)
     override fun deltaToSIUnitDelta(delta: Decimal): Decimal = wrapped.deltaToSIUnitDelta(delta)
 
-    class MetricAndImperial<
+    data class MetricAndImperial<
         WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
         WrappedUnit,
         > internal constructor(override val wrapped: WrappedUnit) :
@@ -194,7 +194,7 @@ sealed class WrappedUndefinedExtendedUnit<
         override val metricAndUSCustomary: MetricAndUSCustomary<WrappedQuantity, WrappedUnit> by lazy { MetricAndUSCustomary(wrapped) }
     }
 
-    class Metric<
+    data class Metric<
         WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
         WrappedUnit,
         > internal constructor(override val wrapped: WrappedUnit) :
@@ -205,7 +205,7 @@ sealed class WrappedUndefinedExtendedUnit<
         override val system = MeasurementSystem.Metric
     }
 
-    class Imperial<
+    data class Imperial<
         WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
         WrappedUnit,
         > internal constructor(override val wrapped: WrappedUnit) :
@@ -219,7 +219,7 @@ sealed class WrappedUndefinedExtendedUnit<
         override val usCustomary: USCustomary<WrappedQuantity, WrappedUnit> by lazy { USCustomary(wrapped) }
     }
 
-    class UKImperial<
+    data class UKImperial<
         WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
         WrappedUnit,
         > internal constructor(override val wrapped: WrappedUnit) :
@@ -230,7 +230,7 @@ sealed class WrappedUndefinedExtendedUnit<
         override val system = MeasurementSystem.UKImperial
     }
 
-    class USCustomary<
+    data class USCustomary<
         WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
         WrappedUnit,
         > internal constructor(override val wrapped: WrappedUnit) :
@@ -241,7 +241,7 @@ sealed class WrappedUndefinedExtendedUnit<
         override val system = MeasurementSystem.USCustomary
     }
 
-    class MetricAndUKImperial<
+    data class MetricAndUKImperial<
         WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
         WrappedUnit,
         > internal constructor(override val wrapped: WrappedUnit) :
@@ -255,7 +255,7 @@ sealed class WrappedUndefinedExtendedUnit<
         override val ukImperial: UKImperial<WrappedQuantity, WrappedUnit> by lazy { UKImperial(wrapped) }
     }
 
-    class MetricAndUSCustomary<
+    data class MetricAndUSCustomary<
         WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
         WrappedUnit,
         > internal constructor(override val wrapped: WrappedUnit) :

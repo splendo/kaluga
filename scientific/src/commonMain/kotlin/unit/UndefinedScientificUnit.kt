@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 
@@ -96,12 +97,10 @@ sealed class AbstractUndefinedScientificUnit<QuantityType : UndefinedQuantityTyp
         listOf(numeratorSymbols, denominatorSymbols).filter { it.isNotEmpty() }.joinToString(" / ").ifEmpty { One.symbol }
     }
 
-    private fun ScientificUnit<*>.formatSymbol() {
-        if (quantity is PhysicalQuantity.Undefined<*>) {
-            symbol
-        } else {
-            "($symbol)"
-        }
+    private fun ScientificUnit<*>.formatSymbol(): String = when {
+        quantity is PhysicalQuantity.Undefined<*> -> symbol
+        symbol.matches(".*[\\d/*].*".toRegex()) -> "($symbol)"
+        else -> symbol
     }
 }
 
@@ -112,10 +111,61 @@ sealed class CustomUndefinedScientificUnit<CustomQuantity> : AbstractUndefinedSc
     override val numeratorUnits: List<ScientificUnit<*>> by lazy { listOf(this) }
     override val denominatorUnits: List<ScientificUnit<*>> = emptyList()
 
+    abstract override val symbol: String
+
     abstract class MetricAndImperial<CustomQuantity> :
         CustomUndefinedScientificUnit<CustomQuantity>(),
         UndefinedScientificUnit.MetricAndImperial<UndefinedQuantityType.Custom<CustomQuantity>> {
         override val system = MeasurementSystem.MetricAndImperial
+
+        override val metric: UndefinedScientificUnit.Metric<UndefinedQuantityType.Custom<CustomQuantity>> by lazy {
+            object : Metric<CustomQuantity>() {
+                override val customQuantity: CustomQuantity = this@MetricAndImperial.customQuantity
+                override val symbol: String = this@MetricAndImperial.symbol
+                override fun toSIUnit(value: Decimal): Decimal = this@MetricAndImperial.toSIUnit(value)
+                override fun fromSIUnit(value: Decimal): Decimal = this@MetricAndImperial.fromSIUnit(value)
+            }
+        }
+        override val imperial: UndefinedScientificUnit.Imperial<UndefinedQuantityType.Custom<CustomQuantity>> by lazy {
+            object : Imperial<CustomQuantity>() {
+                override val customQuantity: CustomQuantity = this@MetricAndImperial.customQuantity
+                override val symbol: String = this@MetricAndImperial.symbol
+                override fun toSIUnit(value: Decimal): Decimal = this@MetricAndImperial.toSIUnit(value)
+                override fun fromSIUnit(value: Decimal): Decimal = this@MetricAndImperial.fromSIUnit(value)
+            }
+        }
+        override val ukImperial: UndefinedScientificUnit.UKImperial<UndefinedQuantityType.Custom<CustomQuantity>> by lazy {
+            object : UKImperial<CustomQuantity>() {
+                override val customQuantity: CustomQuantity = this@MetricAndImperial.customQuantity
+                override val symbol: String = this@MetricAndImperial.symbol
+                override fun toSIUnit(value: Decimal): Decimal = this@MetricAndImperial.toSIUnit(value)
+                override fun fromSIUnit(value: Decimal): Decimal = this@MetricAndImperial.fromSIUnit(value)
+            }
+        }
+        override val usCustomary: UndefinedScientificUnit.USCustomary<UndefinedQuantityType.Custom<CustomQuantity>> by lazy {
+            object : USCustomary<CustomQuantity>() {
+                override val customQuantity: CustomQuantity = this@MetricAndImperial.customQuantity
+                override val symbol: String = this@MetricAndImperial.symbol
+                override fun toSIUnit(value: Decimal): Decimal = this@MetricAndImperial.toSIUnit(value)
+                override fun fromSIUnit(value: Decimal): Decimal = this@MetricAndImperial.fromSIUnit(value)
+            }
+        }
+        override val metricAndUKImperial: UndefinedScientificUnit.MetricAndUKImperial<UndefinedQuantityType.Custom<CustomQuantity>> by lazy {
+            object : MetricAndUKImperial<CustomQuantity>() {
+                override val customQuantity: CustomQuantity = this@MetricAndImperial.customQuantity
+                override val symbol: String = this@MetricAndImperial.symbol
+                override fun toSIUnit(value: Decimal): Decimal = this@MetricAndImperial.toSIUnit(value)
+                override fun fromSIUnit(value: Decimal): Decimal = this@MetricAndImperial.fromSIUnit(value)
+            }
+        }
+        override val metricAndUSCustomary: UndefinedScientificUnit.MetricAndUSCustomary<UndefinedQuantityType.Custom<CustomQuantity>> by lazy {
+            object : MetricAndUSCustomary<CustomQuantity>() {
+                override val customQuantity: CustomQuantity = this@MetricAndImperial.customQuantity
+                override val symbol: String = this@MetricAndImperial.symbol
+                override fun toSIUnit(value: Decimal): Decimal = this@MetricAndImperial.toSIUnit(value)
+                override fun fromSIUnit(value: Decimal): Decimal = this@MetricAndImperial.fromSIUnit(value)
+            }
+        }
     }
 
     abstract class Metric<CustomQuantity> :
@@ -128,6 +178,24 @@ sealed class CustomUndefinedScientificUnit<CustomQuantity> : AbstractUndefinedSc
         CustomUndefinedScientificUnit<CustomQuantity>(),
         UndefinedScientificUnit.Imperial<UndefinedQuantityType.Custom<CustomQuantity>> {
         override val system = MeasurementSystem.Imperial
+
+
+        override val ukImperial: UndefinedScientificUnit.UKImperial<UndefinedQuantityType.Custom<CustomQuantity>> by lazy {
+            object : UKImperial<CustomQuantity>() {
+                override val customQuantity: CustomQuantity = this@Imperial.customQuantity
+                override val symbol: String = this@Imperial.symbol
+                override fun toSIUnit(value: Decimal): Decimal = this@Imperial.toSIUnit(value)
+                override fun fromSIUnit(value: Decimal): Decimal = this@Imperial.fromSIUnit(value)
+            }
+        }
+        override val usCustomary: UndefinedScientificUnit.USCustomary<UndefinedQuantityType.Custom<CustomQuantity>> by lazy {
+            object : USCustomary<CustomQuantity>() {
+                override val customQuantity: CustomQuantity = this@Imperial.customQuantity
+                override val symbol: String = this@Imperial.symbol
+                override fun toSIUnit(value: Decimal): Decimal = this@Imperial.toSIUnit(value)
+                override fun fromSIUnit(value: Decimal): Decimal = this@Imperial.fromSIUnit(value)
+            }
+        }
     }
 
     abstract class UKImperial<CustomQuantity> :
@@ -146,11 +214,43 @@ sealed class CustomUndefinedScientificUnit<CustomQuantity> : AbstractUndefinedSc
         CustomUndefinedScientificUnit<CustomQuantity>(),
         UndefinedScientificUnit.MetricAndUKImperial<UndefinedQuantityType.Custom<CustomQuantity>> {
         override val system = MeasurementSystem.MetricAndUKImperial
+        override val metric: UndefinedScientificUnit.Metric<UndefinedQuantityType.Custom<CustomQuantity>> by lazy {
+            object : Metric<CustomQuantity>() {
+                override val customQuantity: CustomQuantity = this@MetricAndUKImperial.customQuantity
+                override val symbol: String = this@MetricAndUKImperial.symbol
+                override fun toSIUnit(value: Decimal): Decimal = this@MetricAndUKImperial.toSIUnit(value)
+                override fun fromSIUnit(value: Decimal): Decimal = this@MetricAndUKImperial.fromSIUnit(value)
+            }
+        }
+        override val ukImperial: UndefinedScientificUnit.UKImperial<UndefinedQuantityType.Custom<CustomQuantity>> by lazy {
+            object : UKImperial<CustomQuantity>() {
+                override val customQuantity: CustomQuantity = this@MetricAndUKImperial.customQuantity
+                override val symbol: String = this@MetricAndUKImperial.symbol
+                override fun toSIUnit(value: Decimal): Decimal = this@MetricAndUKImperial.toSIUnit(value)
+                override fun fromSIUnit(value: Decimal): Decimal = this@MetricAndUKImperial.fromSIUnit(value)
+            }
+        }
     }
 
     abstract class MetricAndUSCustomary<CustomQuantity> :
         CustomUndefinedScientificUnit<CustomQuantity>(),
         UndefinedScientificUnit.MetricAndUSCustomary<UndefinedQuantityType.Custom<CustomQuantity>> {
         override val system = MeasurementSystem.MetricAndUSCustomary
+        override val metric: UndefinedScientificUnit.Metric<UndefinedQuantityType.Custom<CustomQuantity>> by lazy {
+            object : Metric<CustomQuantity>() {
+                override val customQuantity: CustomQuantity = this@MetricAndUSCustomary.customQuantity
+                override val symbol: String = this@MetricAndUSCustomary.symbol
+                override fun toSIUnit(value: Decimal): Decimal = this@MetricAndUSCustomary.toSIUnit(value)
+                override fun fromSIUnit(value: Decimal): Decimal = this@MetricAndUSCustomary.fromSIUnit(value)
+            }
+        }
+        override val usCustomary: UndefinedScientificUnit.USCustomary<UndefinedQuantityType.Custom<CustomQuantity>> by lazy {
+            object : USCustomary<CustomQuantity>() {
+                override val customQuantity: CustomQuantity = this@MetricAndUSCustomary.customQuantity
+                override val symbol: String = this@MetricAndUSCustomary.symbol
+                override fun toSIUnit(value: Decimal): Decimal = this@MetricAndUSCustomary.toSIUnit(value)
+                override fun fromSIUnit(value: Decimal): Decimal = this@MetricAndUSCustomary.fromSIUnit(value)
+            }
+        }
     }
 }
