@@ -20,18 +20,9 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.converter.undefined.times
 import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
-import com.splendo.kaluga.scientific.unit.Celsius
-import com.splendo.kaluga.scientific.unit.Fahrenheit
-import com.splendo.kaluga.scientific.unit.Mile
 import com.splendo.kaluga.scientific.unit.ScientificUnit
-import com.splendo.kaluga.scientific.unit.Second
 import com.splendo.kaluga.scientific.unit.UndefinedScientificUnit
-import com.splendo.kaluga.scientific.unit.Watt
-import com.splendo.kaluga.scientific.unit.Yard
-import com.splendo.kaluga.scientific.unit.asUndefined
-import com.splendo.kaluga.scientific.unit.per
 
 internal fun <
     TargetQuantity : PhysicalQuantity,
@@ -192,9 +183,3 @@ fun <
     right: ScientificValue<Quantity, RightUnit>,
     factory: (Decimal, TargetUnit) -> Value,
 ) = byMultiplying(left, right, factory)
-
-private fun test() {
-    val meterSecond = 2(Watt.asUndefined()) * 4(Second)
-    val unit = 4(Celsius per Yard).convert(Fahrenheit per Mile)
-    val test = 2(Watt) * 4(Second per Watt)
-}
