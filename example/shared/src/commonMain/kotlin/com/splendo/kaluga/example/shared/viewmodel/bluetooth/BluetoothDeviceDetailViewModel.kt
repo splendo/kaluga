@@ -39,12 +39,15 @@ import com.splendo.kaluga.bluetooth.state
 import com.splendo.kaluga.bluetooth.updateRssi
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.coroutines.coroutineContext
 
 class DeviceDetails(value: Identifier) : SingleValueNavigationAction<SerializableIdentifier>(
     value.serializable,
@@ -60,10 +63,10 @@ class BluetoothDeviceDetailViewModel(private val identifier: Identifier) : BaseL
     private val bluetooth: Bluetooth by inject()
     private val device = bluetooth.scannedDevices()[identifier]
 
-    val name = device.info().map { it.name ?: "bluetooth_no_name".localized() }.toUninitializedObservable(coroutineScope)
+    val name = device.info().map { it.name ?: "bluetooth_no_name".localized() }.toInitializedObservable("", coroutineScope)
     val identifierString = identifier.stringValue
-    val rssi = device.rssi().map { "rssi".localized().format(it) }.toUninitializedObservable(coroutineScope)
-    val distance = device.distance().map { "distance".localized().format(it) }.toUninitializedObservable(coroutineScope)
+    val rssi = device.rssi().map { "rssi".localized().format(it) }.toInitializedObservable("", coroutineScope)
+    val distance = device.distance().map { "distance".localized().format(it) }.toInitializedObservable("", coroutineScope)
     val state = device.state().map { deviceState ->
         when (deviceState) {
             is NotConnectableDeviceState -> ""
@@ -73,21 +76,15 @@ class BluetoothDeviceDetailViewModel(private val identifier: Identifier) : BaseL
             is ConnectableDeviceState.Connected -> "bluetooth_connected"
             is ConnectableDeviceState.Connecting -> "bluetooth_connecting"
         }.localized()
-    }.toUninitializedObservable(coroutineScope)
-    private val _services = MutableStateFlow(
-        emptyList<BluetoothServiceViewModel>(),
-    )
-    val services = _services.toInitializedObservable(coroutineScope)
+    }.toInitializedObservable("", coroutineScope)
+    private val servicesJob = Job(coroutineScope.coroutineContext[Job])
+    val services = device.services().map { services ->
+        servicesJob.cancelChildren()
+        services.map { BluetoothServiceViewModel(bluetooth, identifier, it.uuid, CoroutineScope(coroutineScope.coroutineContext + servicesJob)) }
+    }.toInitializedObservable(emptyList(), coroutineScope)
 
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)
-
-        scope.launch {
-            device.services().map { services -> services.map { BluetoothServiceViewModel(bluetooth, identifier, it.uuid) } }.collect {
-                cleanServices()
-                _services.value = it
-            }
-        }
 
         scope.launch {
             while (true) {
@@ -95,14 +92,5 @@ class BluetoothDeviceDetailViewModel(private val identifier: Identifier) : BaseL
                 delay(rssi_frequency)
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        cleanServices()
-    }
-
-    private fun cleanServices() {
-        _services.value.forEach { it.onCleared() }
     }
 }

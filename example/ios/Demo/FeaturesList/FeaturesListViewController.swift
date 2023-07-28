@@ -98,7 +98,9 @@ private extension FeatureListNavigationAction {
             )
         }
         case is FeatureListNavigationAction.Beacons: return NavigationSpec.Segue(identifier: "showBeacons")
-        case is FeatureListNavigationAction.Bluetooth: return NavigationSpec.Segue(identifier: "showBluetooth")
+        case is FeatureListNavigationAction.Bluetooth: return NavigationSpec.Push(animated: true) {
+            UIHostingController(rootView: BluetoothListView())
+        }
         case is FeatureListNavigationAction.DateTime: return NavigationSpec.Push(animated: true) {
             UIHostingController(rootView: TimerView())
         }

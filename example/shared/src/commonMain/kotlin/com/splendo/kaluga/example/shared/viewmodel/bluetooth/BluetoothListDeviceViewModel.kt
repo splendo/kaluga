@@ -18,6 +18,8 @@
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
 import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.architecture.observable.BaseInitializedObservable
+import com.splendo.kaluga.architecture.observable.InitializedObservable
 import com.splendo.kaluga.architecture.observable.UninitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toUninitializedObservable
@@ -38,7 +40,10 @@ import com.splendo.kaluga.bluetooth.disconnect
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.rssi
 import com.splendo.kaluga.bluetooth.state
+import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.resources.localized
+import com.splendo.kaluga.resources.view.KalugaButton
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -46,31 +51,31 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration.Companion.minutes
 
-class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth: Bluetooth, navigator: Navigator<DeviceDetails>) : NavigatingViewModel<DeviceDetails>(navigator) {
-
-    enum class ConnectButtonState {
-        Connect,
-        Disconnect,
-    }
+class BluetoothListDeviceViewModel(
+    private val identifier: Identifier,
+    bluetooth: Bluetooth,
+    private val coroutineScope: CoroutineScope,
+    private val navigator: Navigator<DeviceDetails>
+) {
 
     private val device = bluetooth.scannedDevices()[identifier]
 
-    val name = advertisementObservable { it.name ?: "bluetooth_no_name".localized() }
+    val name = advertisementObservable("bluetooth_no_name".localized()) { it.name ?: "bluetooth_no_name".localized() }
     val identifierString = identifier.stringValue
-    val rssi = device.rssi().map { "rssi".localized().format(it) }.toUninitializedObservable(coroutineScope)
-    val isTxPowerVisible = advertisementObservable { it.txPowerLevel != Int.MIN_VALUE }
-    val txPower = advertisementObservable { if (it.txPowerLevel != Int.MIN_VALUE) "txPower".localized().format(it.txPowerLevel) else "" }
+    val rssi = device.rssi().map { "rssi".localized().format(it) }.toInitializedObservable("", coroutineScope)
+    val isTxPowerVisible = advertisementObservable(false) { it.txPowerLevel != Int.MIN_VALUE }
+    val txPower = advertisementObservable("") { if (it.txPowerLevel != Int.MIN_VALUE) "txPower".localized().format(it.txPowerLevel) else "" }
 
-    val isConnectButtonVisible = deviceStateObservable { it !is NotConnectableDeviceState }
-    val connectButtonState = deviceStateObservable {
+    val isConnectButtonVisible = deviceStateObservable(false) { it !is NotConnectableDeviceState }
+    val connectButton: BaseInitializedObservable<KalugaButton> = deviceStateObservable(KalugaButton.Plain("", ButtonStyles.default) {}) {
         when (it) {
-            is ConnectableDeviceState.Disconnected, is ConnectableDeviceState.Disconnecting -> ConnectButtonState.Connect
-            else -> ConnectButtonState.Disconnect
+            is ConnectableDeviceState.Disconnected, is ConnectableDeviceState.Disconnecting -> KalugaButton.Plain("Connect", ButtonStyles.default) { onConnectPressed() }
+            else -> KalugaButton.Plain("Disconnect", ButtonStyles.default) { onDisconnectPressed() }
         }
     }
-    val isMoreButtonVisible = deviceStateObservable { it is ConnectableDeviceState.Connected }
+    val isMoreButtonVisible = deviceStateObservable(false) { it is ConnectableDeviceState.Connected }
 
-    val status = deviceStateObservable {
+    val status = deviceStateObservable("") {
         when (it) {
             is NotConnectableDeviceState -> ""
             is ConnectableDeviceState.Disconnecting -> "bluetooth_disconneting"
@@ -79,24 +84,26 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
             is ConnectableDeviceState.Connecting -> "bluetooth_connecting"
         }.localized()
     }
-    val serviceUUIDs = advertisementObservable { parseServiceUUIDs(it.serviceUUIDs) }
-    val serviceData = advertisementObservable { parseServiceData(it.serviceData) }
-    val manufacturerId = advertisementObservable { "bluetooth_manufacturer_id".localized().format(it.manufacturerId ?: -1) }
-    val manufacturerData = advertisementObservable { "bluetooth_manufacturer_data".localized().format(it.manufacturerData?.toHexString() ?: "") }
+    val serviceUUIDs = advertisementObservable("") { parseServiceUUIDs(it.serviceUUIDs) }
+    val serviceData = advertisementObservable("") { parseServiceData(it.serviceData) }
+    val manufacturerId = advertisementObservable("") { "bluetooth_manufacturer_id".localized().format(it.manufacturerId ?: -1) }
+    val manufacturerData = advertisementObservable("") { "bluetooth_manufacturer_data".localized().format(it.manufacturerData?.toHexString() ?: "") }
 
     val _isFoldedOut = MutableStateFlow(false)
     val isFoldedOut = _isFoldedOut.toInitializedObservable(coroutineScope)
 
-    private fun <T> deviceStateObservable(mapper: (DeviceState) -> T): UninitializedObservable<T> = device.state().map { mapper(it) }.toUninitializedObservable(coroutineScope)
-    private fun <T> advertisementObservable(mapper: (BaseAdvertisementData) -> T): UninitializedObservable<T> = device.advertisement().map {
+    private fun <T> deviceStateObservable(initialValue: T, mapper: (DeviceState) -> T): BaseInitializedObservable<T> = device.state()
+        .map { mapper(it) }
+        .toInitializedObservable(initialValue, coroutineScope)
+    private fun <T> advertisementObservable(initialValue: T, mapper: (BaseAdvertisementData) -> T): BaseInitializedObservable<T> = device.advertisement().map {
         mapper(it)
-    }.toUninitializedObservable(coroutineScope)
+    }.toInitializedObservable(initialValue, coroutineScope)
 
     fun toggleFoldOut() = coroutineScope.launch {
         _isFoldedOut.value = !_isFoldedOut.value
     }
 
-    fun onConnectPressed() = coroutineScope.launch {
+    private fun onConnectPressed() = coroutineScope.launch {
         try {
             withTimeout(5.minutes) {
                 device.connect()
@@ -104,7 +111,7 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
         } catch (_: TimeoutCancellationException) {}
     }
 
-    fun onDisconnectPressed() = coroutineScope.launch {
+    private fun onDisconnectPressed() = coroutineScope.launch {
         device.disconnect()
     }
 
@@ -123,9 +130,5 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
             if (result.isEmpty()) nextString else "$result\n$nextString"
         }
         return "bluetooth_service_data".localized().format(dataString)
-    }
-
-    public override fun onCleared() {
-        super.onCleared()
     }
 }

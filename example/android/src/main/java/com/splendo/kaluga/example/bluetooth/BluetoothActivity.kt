@@ -44,8 +44,6 @@ class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
         )
     }
 
-    private lateinit var adapter: BluetoothAdapter
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -53,9 +51,12 @@ class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         setContentView(binding.root)
-        adapter = BluetoothAdapter(this)
-        binding.devicesList.adapter = adapter
-        binding.devicesList.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
+        val pairingAdapter = BluetoothAdapter(this)
+        binding.pairedDevicesList.adapter = pairingAdapter
+        binding.pairedDevicesList.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
+        val scanningAdapter = BluetoothAdapter(this)
+        binding.scannedDevicesList.adapter = scanningAdapter
+        binding.scannedDevicesList.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
 
         viewModel.isScanning.observe {
             invalidateOptionsMenu()

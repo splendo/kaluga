@@ -7,7 +7,6 @@
             type="com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListDeviceViewModel" />
 
         <import type="android.view.View"/>
-        <import type="com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListDeviceViewModel.ConnectButtonState"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/button_container"
+            app:layout_constraintEnd_toStartOf="@id/connect_button"
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
@@ -66,8 +65,8 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/button_container"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/connect_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -75,25 +74,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/name"
             app:layout_constraintTop_toTopOf="@id/name"
-            android:visibility="@{viewModel.isConnectButtonVisible().stateFlow ? View.VISIBLE : View.GONE}">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/connect_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/bluetooth_connect"
-                android:onClick="@{view -> viewModel.onConnectPressed()}"
-                android:visibility="@{viewModel.connectButtonState.stateFlow == ConnectButtonState.Connect ? View.VISIBLE : View.GONE}"/>
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/disconnect_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/bluetooth_disconnect"
-                android:onClick="@{view -> viewModel.onDisconnectPressed()}"
-                android:visibility="@{viewModel.connectButtonState.stateFlow == ConnectButtonState.Disconnect ? View.VISIBLE : View.GONE}" />
-
-        </LinearLayout>
+            android:text="@string/bluetooth_connect"
+            app:kalugaButton="@{viewModel.connectButton.stateFlow}"
+            android:visibility="@{viewModel.isConnectButtonVisible().stateFlow ? View.VISIBLE : View.GONE}"/>
 
         <TextView
             android:id="@+id/status"

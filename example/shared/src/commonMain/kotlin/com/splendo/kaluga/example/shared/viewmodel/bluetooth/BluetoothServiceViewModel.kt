@@ -28,41 +28,24 @@ import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.bluetooth.uuidString
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class BluetoothServiceViewModel(private val bluetooth: Bluetooth, private val deviceIdentifier: Identifier, private val serviceUUID: UUID) : BaseLifecycleViewModel() {
+class BluetoothServiceViewModel(private val bluetooth: Bluetooth, private val deviceIdentifier: Identifier, private val serviceUUID: UUID, private val coroutineScope: CoroutineScope) {
 
     private val service: Flow<Service?> get() = bluetooth.scannedDevices()[deviceIdentifier].services()[serviceUUID]
 
     val uuid = serviceUUID.uuidString
-    private val _characteristics = MutableStateFlow(emptyList<BluetoothCharacteristicViewModel>())
-    val characteristics = _characteristics.toInitializedObservable(coroutineScope)
-
-    override fun onResume(scope: CoroutineScope) {
-        super.onResume(scope)
-
-        scope.launch {
-            service.characteristics().map { characteristics ->
-                characteristics.map {
-                    BluetoothCharacteristicViewModel(bluetooth, deviceIdentifier, serviceUUID, it.uuid)
-                }
-            }.collect {
-                cleanCharacteristics()
-                _characteristics.value = it
-            }
+    private val characteristicsJob = Job(coroutineScope.coroutineContext[Job])
+    val characteristics =  service.characteristics().map { characteristics ->
+        characteristicsJob.cancelChildren()
+        characteristics.map {
+            BluetoothCharacteristicViewModel(bluetooth, deviceIdentifier, serviceUUID, it.uuid, CoroutineScope(coroutineScope.coroutineContext + characteristicsJob))
         }
-    }
-
-    public override fun onCleared() {
-        super.onCleared()
-        cleanCharacteristics()
-    }
-
-    private fun cleanCharacteristics() {
-        _characteristics.value.forEach { it.onCleared() }
-    }
+    }.toInitializedObservable(emptyList(), coroutineScope)
 }
