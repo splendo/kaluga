@@ -170,6 +170,8 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
             val device = createMockDevice(deviceWrapper, coroutineScope) {
                 deviceName = name
             }
+            pairedDevicesTimer.tryEmit(Unit)
+            yieldMultiple(10)
             scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter), times = 2)
             scanner.pairedDeviceDiscoveredEvents.emit(
                 listOf(completablePairedDevice.await(), device).map { deviceToAdd ->

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.text.lowerCased
 import com.splendo.kaluga.base.utils.KalugaLocale
@@ -215,18 +216,18 @@ class Bluetooth constructor(
     internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings? = null, timer: Flow<Unit>): Flow<List<Device>> =
         timer.flatMapLatest {
             var hasTriggeredUpdate = false
-            scanningStateRepo.map { state ->
+            scanningStateRepo.filterOnlyImportant().map { state ->
                 if (state is ScanningState.Enabled) {
                     if (!hasTriggeredUpdate) {
                         state.retrievePairedDevices(filter, removeForAllPairedFilters, connectionSettings)
                         hasTriggeredUpdate = true
                     }
-                    state.devices.devicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Paired(filter)).sortedBy { it.identifier.stringValue }
+                    state.devices.devicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Paired(filter))
                 } else {
                     emptyList()
                 }
-            }.distinctUntilChanged()
-        }
+            }
+        }.distinctUntilChanged()
 
     private fun devicesForScanMode(): Flow<ScanningState.Devices> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
         when (scanState) {
