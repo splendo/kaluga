@@ -47,7 +47,7 @@ import org.koin.core.component.inject
 
 class BluetoothListViewModel(
     private val alertPresenterBuilder: AlertPresenter.Builder,
-    navigator: Navigator<DeviceDetails>
+    navigator: Navigator<DeviceDetails>,
 ) : NavigatingViewModel<DeviceDetails>(navigator, alertPresenterBuilder), KoinComponent {
 
     private val bluetooth: Bluetooth by inject()
@@ -121,11 +121,14 @@ class BluetoothListViewModel(
             val cleanMode = when (action?.style) {
                 null -> return@launch
                 Alert.Action.Style.DEFAULT,
-                Alert.Action.Style.POSITIVE -> BluetoothService.CleanMode.RETAIN_ALL
+                Alert.Action.Style.POSITIVE,
+                -> BluetoothService.CleanMode.RETAIN_ALL
                 Alert.Action.Style.DESTRUCTIVE,
-                Alert.Action.Style.NEUTRAL -> BluetoothService.CleanMode.ONLY_PROVIDED_FILTER
+                Alert.Action.Style.NEUTRAL,
+                -> BluetoothService.CleanMode.ONLY_PROVIDED_FILTER
                 Alert.Action.Style.CANCEL,
-                Alert.Action.Style.NEGATIVE -> BluetoothService.CleanMode.REMOVE_ALL
+                Alert.Action.Style.NEGATIVE,
+                -> BluetoothService.CleanMode.REMOVE_ALL
             }
 
             if (isScanning) {

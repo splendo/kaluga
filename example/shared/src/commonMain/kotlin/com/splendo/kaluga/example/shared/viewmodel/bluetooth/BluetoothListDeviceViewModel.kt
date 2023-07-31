@@ -19,11 +19,7 @@ package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.BaseInitializedObservable
-import com.splendo.kaluga.architecture.observable.InitializedObservable
-import com.splendo.kaluga.architecture.observable.UninitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
-import com.splendo.kaluga.architecture.observable.toUninitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.Bluetooth
@@ -55,7 +51,7 @@ class BluetoothListDeviceViewModel(
     private val identifier: Identifier,
     bluetooth: Bluetooth,
     private val coroutineScope: CoroutineScope,
-    private val navigator: Navigator<DeviceDetails>
+    private val navigator: Navigator<DeviceDetails>,
 ) {
 
     private val device = bluetooth.allDevices()[identifier]

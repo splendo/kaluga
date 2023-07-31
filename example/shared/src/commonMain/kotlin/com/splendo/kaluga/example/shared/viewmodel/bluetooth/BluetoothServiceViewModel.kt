@@ -18,7 +18,6 @@
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
@@ -31,18 +30,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
-class BluetoothServiceViewModel(private val bluetooth: Bluetooth, private val deviceIdentifier: Identifier, private val serviceUUID: UUID, private val coroutineScope: CoroutineScope) {
+class BluetoothServiceViewModel(
+    private val bluetooth: Bluetooth,
+    private val deviceIdentifier: Identifier,
+    private val serviceUUID: UUID,
+    private val coroutineScope: CoroutineScope,
+) {
 
     private val service: Flow<Service?> get() = bluetooth.scannedDevices()[deviceIdentifier].services()[serviceUUID]
 
     val uuid = serviceUUID.uuidString
     private val characteristicsJob = Job(coroutineScope.coroutineContext[Job])
-    val characteristics =  service.characteristics().map { characteristics ->
+    val characteristics = service.characteristics().map { characteristics ->
         characteristicsJob.cancelChildren()
         characteristics.map {
             BluetoothCharacteristicViewModel(bluetooth, deviceIdentifier, serviceUUID, it.uuid, CoroutineScope(coroutineScope.coroutineContext + characteristicsJob))

@@ -63,7 +63,7 @@ class BluetoothCharacteristicViewModel(
                 serviceUUID,
                 characteristicUUID,
                 it.uuid,
-                CoroutineScope(coroutineScope.coroutineContext + descriptorsJob)
+                CoroutineScope(coroutineScope.coroutineContext + descriptorsJob),
             )
         }
     }.toInitializedObservable(emptyList(), coroutineScope)

@@ -253,9 +253,9 @@ actual class DefaultScanner internal constructor(
             ?.filter {
                 // If no filter available return this device
                 // Otherwise check if it contains any of given service uuid
-                if (withServices.isEmpty())
+                if (withServices.isEmpty()) {
                     true
-                else {
+                } else {
                     it.uuids?.map(ParcelUuid::getUuid).orEmpty().containsAny(withServices)
                 }
             }
