@@ -58,7 +58,7 @@ class BluetoothListDeviceViewModel(
     private val navigator: Navigator<DeviceDetails>
 ) {
 
-    private val device = bluetooth.scannedDevices()[identifier]
+    private val device = bluetooth.allDevices()[identifier]
 
     val name = advertisementObservable("bluetooth_no_name".localized()) { it.name ?: "bluetooth_no_name".localized() }
     val identifierString = identifier.stringValue

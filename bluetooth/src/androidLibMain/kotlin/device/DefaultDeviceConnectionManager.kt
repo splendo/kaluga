@@ -169,18 +169,11 @@ internal actual class DefaultDeviceConnectionManager(
 
     @SuppressLint("MissingPermission")
     override fun connect() {
-        if (lastKnownState != BluetoothProfile.STATE_CONNECTED || !gatt.isCompleted) {
-            if (gatt.isCompleted) {
-                if (!gatt.getCompleted().connect()) {
-                    handleDisconnect { closeGatt() }
-                } else if (lastKnownState != BluetoothProfile.STATE_CONNECTED) {
-                    handleConnect()
-                }
-            } else {
-                gatt.complete(deviceWrapper.connectGatt(context, false, callback))
-            }
-        } else {
-            handleConnect()
+        when {
+            !gatt.isCompleted -> gatt.complete(deviceWrapper.connectGatt(context, false, callback))
+            lastKnownState == BluetoothProfile.STATE_CONNECTED -> handleConnect()
+            !gatt.getCompleted().connect() -> handleDisconnect { closeGatt() }
+            else -> {}
         }
     }
 

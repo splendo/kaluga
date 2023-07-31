@@ -52,7 +52,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -214,17 +213,20 @@ class Bluetooth constructor(
         connectionSettings: ConnectionSettings?,
     ): Flow<List<Device>> = pairedDevices(filter, removeForAllPairedFilters, connectionSettings, timer)
     internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings? = null, timer: Flow<Unit>): Flow<List<Device>> =
-        combine(scanningStateRepo, timer) { scanningState, _ -> scanningState }
-            .transform { state ->
+        timer.flatMapLatest {
+            var hasTriggeredUpdate = false
+            scanningStateRepo.map { state ->
                 if (state is ScanningState.Enabled) {
-                    // trigger retrieve paired devices list
-                    state.retrievePairedDevices(filter, removeForAllPairedFilters, connectionSettings)
-                    emit(state.devices.devicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Paired(filter)))
+                    if (!hasTriggeredUpdate) {
+                        state.retrievePairedDevices(filter, removeForAllPairedFilters, connectionSettings)
+                        hasTriggeredUpdate = true
+                    }
+                    state.devices.devicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Paired(filter)).sortedBy { it.identifier.stringValue }
                 } else {
-                    emit(emptyList())
+                    emptyList()
                 }
-            }
-            .distinctUntilChanged()
+            }.distinctUntilChanged()
+        }
 
     private fun devicesForScanMode(): Flow<ScanningState.Devices> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
         when (scanState) {

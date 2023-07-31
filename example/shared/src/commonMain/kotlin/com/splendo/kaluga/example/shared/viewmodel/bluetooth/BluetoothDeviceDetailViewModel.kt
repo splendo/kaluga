@@ -61,7 +61,7 @@ class BluetoothDeviceDetailViewModel(private val identifier: Identifier) : BaseL
     }
 
     private val bluetooth: Bluetooth by inject()
-    private val device = bluetooth.scannedDevices()[identifier]
+    private val device = bluetooth.allDevices()[identifier]
 
     val name = device.info().map { it.name ?: "bluetooth_no_name".localized() }.toInitializedObservable("", coroutineScope)
     val identifierString = identifier.stringValue
