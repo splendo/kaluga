@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.test.base.mock.parameters
 
-import com.splendo.kaluga.test.base.mock.MethodMock
-import com.splendo.kaluga.test.base.mock.SuspendMethodMock
 import com.splendo.kaluga.test.base.mock.answer.Answer
 import com.splendo.kaluga.test.base.mock.answer.SuspendedAnswer
 import com.splendo.kaluga.test.base.mock.matcher.Captor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcherOrCaptor
 import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.quadrupleParametersMock
+import com.splendo.kaluga.test.base.mock.suspendQuadrupleParametersMock
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
@@ -101,13 +101,7 @@ class QuadrupleParameters<T0, T1, T2, T3> :
     }
 }
 
-internal fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).asMock() = MethodMock<
-    QuadrupleParameters.Matchers<T0, T1, T2, T3>,
-    QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>,
-    QuadrupleParameters.Values<T0, T1, T2, T3>,
-    QuadrupleParameters<T0, T1, T2, T3>,
-    R,
-    >(QuadrupleParameters())
+internal fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).asMock() = quadrupleParametersMock<T0, T1, T2, T3, R>()
 
 fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).mockWithDefaultAnswer(
     defaultAnswer: Answer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>,
@@ -245,13 +239,7 @@ fun <T0, T1, T2, T3, R : Any> ((T0, T1, T2, T3) -> R?).mock() = mockWithDefaultV
 @JsName("mockQuadrupleNonNullable")
 fun <T0, T1, T2, T3, R : Any> ((T0, T1, T2, T3) -> R).mock() = asMock()
 
-internal fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).asSuspendedMock() = SuspendMethodMock<
-    QuadrupleParameters.Matchers<T0, T1, T2, T3>,
-    QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>,
-    QuadrupleParameters.Values<T0, T1, T2, T3>,
-    QuadrupleParameters<T0, T1, T2, T3>,
-    R,
-    >(QuadrupleParameters())
+internal fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).asSuspendedMock() = suspendQuadrupleParametersMock<T0, T1, T2, T3, R>()
 
 fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).mockWithDefaultAnswer(
     defaultAnswer: SuspendedAnswer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>,

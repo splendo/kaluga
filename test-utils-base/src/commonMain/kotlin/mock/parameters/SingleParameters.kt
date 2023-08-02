@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.test.base.mock.parameters
 
-import com.splendo.kaluga.test.base.mock.MethodMock
-import com.splendo.kaluga.test.base.mock.SuspendMethodMock
 import com.splendo.kaluga.test.base.mock.answer.Answer
 import com.splendo.kaluga.test.base.mock.answer.SuspendedAnswer
 import com.splendo.kaluga.test.base.mock.matcher.Captor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcherOrCaptor
 import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.singleParametersMock
+import com.splendo.kaluga.test.base.mock.suspendSingleParametersMock
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
@@ -63,13 +63,7 @@ class SingleParameters<T0> : ParametersSpec<SingleParameters.Matchers<T0>, Singl
     }
 }
 
-internal fun <T0, R> ((T0) -> R).asMock() = MethodMock<
-    SingleParameters.Matchers<T0>,
-    SingleParameters.MatchersOrCaptor<T0>,
-    SingleParameters.Values<T0>,
-    SingleParameters<T0>,
-    R,
-    >(SingleParameters())
+internal fun <T0, R> ((T0) -> R).asMock() = singleParametersMock<T0, R>()
 
 fun <T0, R> ((T0) -> R).mockWithDefaultAnswer(
     defaultAnswer: Answer<SingleParameters.Values<T0>, R>,
@@ -196,13 +190,7 @@ fun <T0, R : Any> ((T0) -> R?).mock() = mockWithDefaultValue(null)
 @JsName("mockSingleNonNullable")
 fun <T0, R : Any> ((T0) -> R).mock() = asMock()
 
-internal fun <T0, R> (suspend (T0) -> R).asSuspendedMock() = SuspendMethodMock<
-    SingleParameters.Matchers<T0>,
-    SingleParameters.MatchersOrCaptor<T0>,
-    SingleParameters.Values<T0>,
-    SingleParameters<T0>,
-    R,
-    >(SingleParameters())
+internal fun <T0, R> (suspend (T0) -> R).asSuspendedMock() = suspendSingleParametersMock<T0, R>()
 
 fun <T0, R> (suspend (T0) -> R).mockWithDefaultAnswer(
     defaultAnswer: SuspendedAnswer<SingleParameters.Values<T0>, R>,

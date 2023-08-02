@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.test.base.mock.parameters
 
-import com.splendo.kaluga.test.base.mock.MethodMock
-import com.splendo.kaluga.test.base.mock.SuspendMethodMock
 import com.splendo.kaluga.test.base.mock.answer.Answer
 import com.splendo.kaluga.test.base.mock.answer.SuspendedAnswer
 import com.splendo.kaluga.test.base.mock.matcher.Captor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcherOrCaptor
 import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.quintupleParametersMock
+import com.splendo.kaluga.test.base.mock.suspendQuintupleParametersMock
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
@@ -104,13 +104,7 @@ class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<
     }
 }
 
-internal fun <T0, T1, T2, T3, T4, R> ((T0, T1, T2, T3, T4) -> R).asMock() = MethodMock<
-    QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
-    QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>,
-    QuintupleParameters.Values<T0, T1, T2, T3, T4>,
-    QuintupleParameters<T0, T1, T2, T3, T4>,
-    R,
-    >(QuintupleParameters())
+internal fun <T0, T1, T2, T3, T4, R> ((T0, T1, T2, T3, T4) -> R).asMock() = quintupleParametersMock<T0, T1, T2, T3, T4, R>()
 
 fun <T0, T1, T2, T3, T4, R> ((T0, T1, T2, T3, T4) -> R).mockWithDefaultAnswer(
     defaultAnswer: Answer<QuintupleParameters.Values<T0, T1, T2, T3, T4>, R>,
@@ -237,13 +231,7 @@ fun <T0, T1, T2, T3, T4, R : Any> ((T0, T1, T2, T3, T4) -> R?).mock() = mockWith
 @JsName("mockQuintupleNonNullable")
 fun <T0, T1, T2, T3, T4, R : Any> ((T0, T1, T2, T3, T4) -> R).mock() = asMock()
 
-internal fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).asSuspendedMock() = SuspendMethodMock<
-    QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
-    QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>,
-    QuintupleParameters.Values<T0, T1, T2, T3, T4>,
-    QuintupleParameters<T0, T1, T2, T3, T4>,
-    R,
-    >(QuintupleParameters())
+internal fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).asSuspendedMock() = suspendQuintupleParametersMock<T0, T1, T2, T3, T4, R>()
 
 fun <T0, T1, T2, T3, T4, R> (suspend (T0, T1, T2, T3, T4) -> R).mockWithDefaultAnswer(
     defaultAnswer: SuspendedAnswer<QuintupleParameters.Values<T0, T1, T2, T3, T4>, R>,
