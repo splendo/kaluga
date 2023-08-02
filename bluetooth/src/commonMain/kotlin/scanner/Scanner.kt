@@ -229,6 +229,8 @@ interface Scanner {
      * @param connectionSettings the [ConnectionSettings] to apply to the paired devices found. If `null` the default will be used
      */
     suspend fun retrievePairedDevices(withServices: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?)
+
+    fun cancelRetrievingPairedDevices()
 }
 
 /**
@@ -425,12 +427,17 @@ abstract class BaseScanner constructor(
         connectionSettings: ConnectionSettings?,
     ) = isRetrievingPairedDevicesMutex.withLock {
         if (!checkIfNewPairingDiscoveryShouldBeStarted(withServices)) return
-
         retrievingPairedDevicesJob = this@BaseScanner.launch {
             // We have to call even with empty list to clean up cached devices
             val devices = retrievePairedDeviceDiscoveredEvents(withServices, connectionSettings)
             handlePairedDevices(devices, withServices, removeForAllPairedFilters)
         }
+    }
+
+    override fun cancelRetrievingPairedDevices() {
+        retrievingPairedDevicesJob?.cancel()
+        retrievingPairedDevicesJob = null
+        isRetrievingPairedDevicesFilter = null
     }
 
     private fun checkIfNewPairingDiscoveryShouldBeStarted(withServices: Filter): Boolean = when (isRetrievingPairedDevicesFilter) {

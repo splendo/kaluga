@@ -36,7 +36,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
 import kotlin.coroutines.CoroutineContext
 
 class MockScanner(
@@ -76,6 +75,9 @@ class MockScanner(
         removeForAllPairedFilters: Boolean,
         connectionSettings: ConnectionSettings?,
     ): Unit = retrievePairedDevicesMock.call(withServices, removeForAllPairedFilters, connectionSettings)
+
+    val cancelRetrievingPairedDevicesMock = ::cancelRetrievingPairedDevices.mock()
+    override fun cancelRetrievingPairedDevices(): Unit = cancelRetrievingPairedDevicesMock.call()
 }
 
 /**
@@ -176,20 +178,10 @@ class MockBaseScanner(
      */
     val generateEnableSensorsActionsMock = ::generateEnableSensorsActions.mock()
 
-    val pairedDeviceDiscoveredEvents = MutableSharedFlow<List<Scanner.DeviceDiscovered>>()
-
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [pairedDevices]
      */
     val retrievePairedDeviceDiscoveredEventsMock = ::retrievePairedDeviceDiscoveredEvents.mock()
-
-    init {
-        if (setupMocks) {
-            retrievePairedDeviceDiscoveredEventsMock.on().doExecuteSuspended {
-                pairedDeviceDiscoveredEvents.first()
-            }
-        }
-    }
 
     override suspend fun startMonitoringPermissions() {
         super.startMonitoringPermissions()
