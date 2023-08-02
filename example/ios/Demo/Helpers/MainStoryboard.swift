@@ -31,10 +31,6 @@ enum MainStoryboard {
         return instantiate(identifier: "ArchitectureDetails")
     }
 
-    static func instantiateBluetoothDeviceDetailsViewController() -> BluetoothDeviceDetailsViewController {
-        return instantiate(identifier: "BluetoothDeviceDetails")
-    }
-
     static func instantiateBottomSheetViewController() -> BottomSheetViewController {
         return instantiate(identifier: "BottomSheet")
     }

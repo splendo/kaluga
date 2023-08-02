@@ -533,6 +533,9 @@ internal sealed class ScanningStateImpl {
 
         override suspend fun afterNewStateIsSet(newState: ScanningState) {
             super.afterNewStateIsSet(newState)
+            if (newState !is ScanningState.Enabled) {
+                scanner.cancelRetrievingPairedDevices()
+            }
             permittedHandler.afterNewStateIsSet(newState)
         }
 
@@ -569,8 +572,9 @@ internal sealed class ScanningStateImpl {
                 filter: Filter,
                 removeForAllPairedFilters: Boolean,
             ): suspend () -> ScanningState.Enabled = suspend {
+                val newDevices = devicesForPairedDevices(devices, filter, removeForAllPairedFilters)
                 Idle(
-                    devicesForPairedDevices(devices, filter, removeForAllPairedFilters),
+                    newDevices,
                     scanner,
                 )
             }

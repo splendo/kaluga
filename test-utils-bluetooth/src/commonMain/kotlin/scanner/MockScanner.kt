@@ -36,7 +36,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
 import kotlin.coroutines.CoroutineContext
 
 class MockScanner(
@@ -76,6 +75,9 @@ class MockScanner(
         removeForAllPairedFilters: Boolean,
         connectionSettings: ConnectionSettings?,
     ): Unit = retrievePairedDevicesMock.call(withServices, removeForAllPairedFilters, connectionSettings)
+
+    val cancelRetrievingPairedDevicesMock = ::cancelRetrievingPairedDevices.mock()
+    override fun cancelRetrievingPairedDevices(): Unit = cancelRetrievingPairedDevicesMock.call()
 }
 
 /**
@@ -85,7 +87,6 @@ class MockScanner(
  * @param coroutineScope The [CoroutineScope] to run this Scanner on
  * @param scanningDispatcher the [CoroutineDispatcher] to which scanning should be dispatched. It is recommended to make this a dispatcher that can handle high frequency of events
  * @param isSupported Indicates whether the system supports Bluetooth scanning
- * @param setupMocks If `true` this will automatically configure some mocks
  */
 class MockBaseScanner(
     initialBluetoothEnabled: Boolean,
@@ -93,7 +94,6 @@ class MockBaseScanner(
     coroutineScope: CoroutineScope,
     scanningDispatcher: CoroutineDispatcher,
     override val isSupported: Boolean = true,
-    setupMocks: Boolean = true,
 ) : BaseScanner(
     settings,
     coroutineScope,
@@ -176,20 +176,10 @@ class MockBaseScanner(
      */
     val generateEnableSensorsActionsMock = ::generateEnableSensorsActions.mock()
 
-    val pairedDeviceDiscoveredEvents = MutableSharedFlow<List<Scanner.DeviceDiscovered>>()
-
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [pairedDevices]
      */
     val retrievePairedDeviceDiscoveredEventsMock = ::retrievePairedDeviceDiscoveredEvents.mock()
-
-    init {
-        if (setupMocks) {
-            retrievePairedDeviceDiscoveredEventsMock.on().doExecuteSuspended {
-                pairedDeviceDiscoveredEvents.first()
-            }
-        }
-    }
 
     override suspend fun startMonitoringPermissions() {
         super.startMonitoringPermissions()

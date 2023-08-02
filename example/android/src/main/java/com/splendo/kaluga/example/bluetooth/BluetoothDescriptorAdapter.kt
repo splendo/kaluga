@@ -65,12 +65,12 @@ class BluetoothDescriptorAdapter(private val lifecycleOwner: LifecycleOwner) : R
     override fun onViewAttachedToWindow(holder: BluetoothDescriptorItemViewHolder) {
         super.onViewAttachedToWindow(holder)
 
-        holder.descriptorItem.viewModel?.didResume()
+        holder.descriptorItem.viewModel?.onResume()
     }
 
     override fun onViewDetachedFromWindow(holder: BluetoothDescriptorItemViewHolder) {
         super.onViewDetachedFromWindow(holder)
 
-        holder.descriptorItem.viewModel?.didPause()
+        holder.descriptorItem.viewModel?.onPause()
     }
 }

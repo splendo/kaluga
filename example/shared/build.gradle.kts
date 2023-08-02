@@ -66,10 +66,12 @@ listOf(
     "releaseFrameworkIosX64",
     "releaseFrameworkIosFat",
 ).forEach {
-    configurations.named(it).configure {
-        attributes {
+    if (configurations.names.contains(it)) {
+        configurations.named(it).configure {
             attributes {
-                attribute(Attribute.of("KT-55751", String::class.java), it)
+                attributes {
+                    attribute(Attribute.of("KT-55751", String::class.java), it)
+                }
             }
         }
     }

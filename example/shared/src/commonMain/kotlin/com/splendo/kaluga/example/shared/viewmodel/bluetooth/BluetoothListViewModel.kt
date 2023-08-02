@@ -17,14 +17,27 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
+import com.splendo.kaluga.alerts.Alert
+import com.splendo.kaluga.alerts.AlertPresenter
+import com.splendo.kaluga.alerts.buildAlert
+import com.splendo.kaluga.alerts.buildAlertWithInput
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.BluetoothService
+import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.UUIDException
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.uuidFrom
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
@@ -32,45 +45,105 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
 
-class BluetoothListViewModel(navigator: Navigator<DeviceDetails>) : NavigatingViewModel<DeviceDetails>(navigator), KoinComponent {
+class BluetoothListViewModel(
+    private val alertPresenterBuilder: AlertPresenter.Builder,
+    navigator: Navigator<DeviceDetails>,
+) : NavigatingViewModel<DeviceDetails>(navigator, alertPresenterBuilder), KoinComponent {
 
     private val bluetooth: Bluetooth by inject()
-    private val _isScanning = MutableStateFlow(false)
-    val isScanning = _isScanning.toInitializedObservable(coroutineScope)
+    private val isResumed = MutableStateFlow(false)
+    val isScanning = observeWhenResumed(false) {
+        bluetooth.isScanning()
+    }
 
     val title = bluetooth.isEnabled
         .mapLatest { if (it) "Enabled" else "Disabled" }
         .toInitializedObservable("Initializing...", coroutineScope)
 
-    private val _devices = MutableStateFlow(emptyList<BluetoothListDeviceViewModel>())
-    val devices = _devices.toInitializedObservable(coroutineScope)
-
-    override fun onResume(scope: CoroutineScope) {
-        super.onResume(scope)
-
-        scope.launch { bluetooth.isScanning().collect { _isScanning.value = it } }
-        scope.launch {
-            bluetooth.scannedDevices().map { devices -> devices.map { BluetoothListDeviceViewModel(it.identifier, bluetooth, navigator) } }.collect { devices ->
-                cleanDevices()
-                _devices.value = devices.sortedByDescending { it.name.currentOrNull }
+    private val pairedDevicesJob = Job(coroutineScope.coroutineContext[Job])
+    val pairedDevices = observeWhenResumed(emptyList()) {
+        pairedDevicesJob.cancelChildren()
+        bluetooth.pairedDevices(emptySet()).map { devices ->
+            devices.map { device ->
+                BluetoothListDeviceViewModel(device.identifier, bluetooth, CoroutineScope(coroutineScope.coroutineContext + pairedDevicesJob), navigator)
             }
         }
     }
 
-    fun onScanPressed() {
-        if (_isScanning.value) {
-            bluetooth.stopScanning(BluetoothService.CleanMode.RETAIN_ALL)
-        } else {
-            bluetooth.startScanning(cleanMode = BluetoothService.CleanMode.REMOVE_ALL, connectionSettings = ConnectionSettings(logger = get()))
+    private val scannedDevicesJob = Job(coroutineScope.coroutineContext[Job])
+    val scannedDevices = observeWhenResumed(emptyList()) {
+        scannedDevicesJob.cancelChildren()
+        bluetooth.devices().map { devices ->
+            devices.map { device ->
+                BluetoothListDeviceViewModel(device.identifier, bluetooth, CoroutineScope(coroutineScope.coroutineContext + scannedDevicesJob), navigator)
+            }
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        cleanDevices()
+    override fun onResume(scope: CoroutineScope) {
+        super.onResume(scope)
+
+        isResumed.value = true
     }
 
-    private fun cleanDevices() {
-        _devices.value.forEach { it.onCleared() }
+    override fun onPause() {
+        super.onPause()
+
+        isResumed.value = false
     }
+
+    fun onScanPressed() {
+        coroutineScope.launch {
+            val isScanning = bluetooth.isScanning().first()
+            val builder = if (isScanning) alertPresenterBuilder::buildAlert else alertPresenterBuilder::buildAlertWithInput
+            val filter = mutableSetOf<UUID>()
+            val action = builder.invoke(coroutineScope) {
+                if (isScanning) {
+                    setTitle("Stop Scanning")
+                } else {
+                    setTitle("Start Scanning")
+                    setTextInput("", "Filter for UUIDS") { text ->
+                        filter.clear()
+                        text.split(",").mapNotNull {
+                            try {
+                                uuidFrom(it.trim())
+                            } catch (e: UUIDException.InvalidFormat) {
+                                null
+                            }
+                        }
+                    }
+                }
+                setMessage("Select Clean Mode")
+                setPositiveButton("Retain All")
+                setNeutralButton("Clean Only Provided Filter")
+                setNegativeButton("Remove All")
+            }.show()
+            val cleanMode = when (action?.style) {
+                null -> return@launch
+                Alert.Action.Style.DEFAULT,
+                Alert.Action.Style.POSITIVE,
+                -> BluetoothService.CleanMode.RETAIN_ALL
+                Alert.Action.Style.DESTRUCTIVE,
+                Alert.Action.Style.NEUTRAL,
+                -> BluetoothService.CleanMode.ONLY_PROVIDED_FILTER
+                Alert.Action.Style.CANCEL,
+                Alert.Action.Style.NEGATIVE,
+                -> BluetoothService.CleanMode.REMOVE_ALL
+            }
+
+            if (isScanning) {
+                bluetooth.stopScanning(cleanMode = cleanMode)
+            } else {
+                bluetooth.startScanning(cleanMode = cleanMode, connectionSettings = ConnectionSettings(logger = get()))
+            }
+        }
+    }
+
+    private fun <T> observeWhenResumed(default: T, flow: suspend () -> Flow<T>) = isResumed.flatMapLatest {
+        if (it) {
+            flow()
+        } else {
+            flowOf(default)
+        }
+    }.toInitializedObservable(default, coroutineScope)
 }

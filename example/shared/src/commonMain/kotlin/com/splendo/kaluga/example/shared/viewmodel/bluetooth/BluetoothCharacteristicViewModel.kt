@@ -18,8 +18,6 @@
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
-import com.splendo.kaluga.architecture.observable.toUninitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.Characteristic
@@ -32,9 +30,9 @@ import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.bluetooth.value
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -47,38 +45,38 @@ class BluetoothCharacteristicViewModel(
     private val deviceIdentifier: Identifier,
     private val serviceUUID: UUID,
     private val characteristicUUID: UUID,
-) : BaseLifecycleViewModel() {
+    private val coroutineScope: CoroutineScope,
+) {
 
     private val characteristic: Flow<Characteristic?> get() = bluetooth.scannedDevices()[deviceIdentifier].services()[serviceUUID].characteristics()[characteristicUUID]
 
     val uuid = characteristicUUID.uuidString
-    val value = characteristic.value().map { it?.toHexString() ?: "" }.toUninitializedObservable(coroutineScope)
+    val value = characteristic.value().map { it?.toHexString() ?: "" }.toInitializedObservable("", coroutineScope)
 
-    private val _descriptors = MutableStateFlow(emptyList<BluetoothDescriptorViewModel>())
-    val descriptors = _descriptors.toInitializedObservable(coroutineScope)
-
-    override fun onResume(scope: CoroutineScope) {
-        super.onResume(scope)
-
-        scope.launch { characteristic.flatMapLatest { characteristic -> characteristic?.let { flowOf(it) } ?: emptyFlow() }.first().readValue() }
-        scope.launch {
-            characteristic.descriptors().map { descriptors ->
-                descriptors.map {
-                    BluetoothDescriptorViewModel(bluetooth, deviceIdentifier, serviceUUID, characteristicUUID, it.uuid)
-                }
-            }.collect {
-                clearDescriptors()
-                _descriptors.value = it
-            }
+    private val descriptorsJob = Job(coroutineScope.coroutineContext[Job])
+    val descriptors = characteristic.descriptors().map { descriptors ->
+        descriptorsJob.cancelChildren()
+        descriptors.map {
+            BluetoothDescriptorViewModel(
+                bluetooth,
+                deviceIdentifier,
+                serviceUUID,
+                characteristicUUID,
+                it.uuid,
+                CoroutineScope(coroutineScope.coroutineContext + descriptorsJob),
+            )
         }
+    }.toInitializedObservable(emptyList(), coroutineScope)
+
+    private var readValueJob: Job? = null
+
+    fun onResume() {
+        readValueJob?.cancel()
+        readValueJob = coroutineScope.launch { characteristic.flatMapLatest { characteristic -> characteristic?.let { flowOf(it) } ?: emptyFlow() }.first().readValue() }
     }
 
-    public override fun onCleared() {
-        super.onCleared()
-        clearDescriptors()
-    }
-
-    private fun clearDescriptors() {
-        _descriptors.value.forEach { it.onCleared() }
+    fun onPause() {
+        readValueJob?.cancel()
+        readValueJob = null
     }
 }

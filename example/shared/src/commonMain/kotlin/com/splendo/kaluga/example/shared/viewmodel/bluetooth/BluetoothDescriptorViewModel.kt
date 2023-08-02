@@ -17,8 +17,7 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
-import com.splendo.kaluga.architecture.observable.toUninitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.Descriptor
@@ -31,6 +30,7 @@ import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.bluetooth.value
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
@@ -45,7 +45,8 @@ class BluetoothDescriptorViewModel(
     private val serviceUUID: UUID,
     private val characteristicUUID: UUID,
     private val descriptorUUID: UUID,
-) : BaseLifecycleViewModel() {
+    private val coroutineScope: CoroutineScope,
+) {
 
     private val descriptor: Flow<Descriptor?> get() = bluetooth
         .scannedDevices()[deviceIdentifier]
@@ -54,17 +55,18 @@ class BluetoothDescriptorViewModel(
         .descriptors()[descriptorUUID]
 
     val uuid = descriptorUUID.uuidString
-    val value = descriptor.value().map { it?.toHexString() ?: "" }.toUninitializedObservable(coroutineScope)
+    val value = descriptor.value().map { it?.toHexString() ?: "" }.toInitializedObservable("", coroutineScope)
+    var readValueJob: Job? = null
 
-    override fun onResume(scope: CoroutineScope) {
-        super.onResume(scope)
-
-        scope.launch {
+    fun onResume() {
+        readValueJob?.cancel()
+        readValueJob = coroutineScope.launch {
             descriptor.flatMapLatest { descriptor -> descriptor?.let { flowOf(it) } ?: emptyFlow() }.first().readValue()
         }
     }
 
-    public override fun onCleared() {
-        super.onCleared()
+    fun onPause() {
+        readValueJob?.cancel()
+        readValueJob = null
     }
 }

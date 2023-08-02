@@ -4,8 +4,8 @@ public final class com/splendo/kaluga/test/base/AwaitAllBlockingKt {
 
 public abstract class com/splendo/kaluga/test/base/BaseFlowTest : com/splendo/kaluga/test/base/BaseUIThreadTest, kotlinx/coroutines/CoroutineScope {
 	public fun <init> ()V
-	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
-	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;)V
+	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun action (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterTest ()V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
@@ -13,6 +13,7 @@ public abstract class com/splendo/kaluga/test/base/BaseFlowTest : com/splendo/ka
 	public final fun getFirstTestBlock ()Z
 	public abstract fun getFlowFromTestContext ()Lkotlin/jvm/functions/Function2;
 	public final fun getJob ()Lkotlinx/coroutines/Job;
+	public final fun getLogger ()Lcom/splendo/kaluga/logging/Logger;
 	public final fun getScope ()Lkotlinx/coroutines/CoroutineScope;
 	protected final fun getWaitForTestToSucceed-UwyO8pc ()J
 	public final fun mainAction (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

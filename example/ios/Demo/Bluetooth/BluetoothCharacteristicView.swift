@@ -14,115 +14,43 @@
 //    limitations under the License.
 //
 
-import UIKit
+import SwiftUI
 import KalugaExampleShared
 
-class BluetoothCharacteristicView: UICollectionViewCell {
-
-    enum Companion {
-        static let identifier = "BluetoothCharacteristicView"
+struct BluetoothCharacteristicView: View {
+    
+    let characteristic: BluetoothCharacteristicViewModel
+    
+    @ObservedObject private var value: StringObservable
+    @ObservedObject private var descriptors: ListObservable<BluetoothDescriptorViewModel>
+    
+    init(characteristic: BluetoothCharacteristicViewModel) {
+        self.characteristic = characteristic
+        
+        value = StringObservable(characteristic.value)
+        descriptors = ListObservable(characteristic.descriptors)
     }
-
-    weak var parent: BluetoothServiceView?
-    var characteristic: BluetoothCharacteristicViewModel?
-    private let disposeBag = DisposeBag()
-
-    private var isInvalidating = false
-
-    @IBOutlet var characteristicIdentifier: UILabel!
-    @IBOutlet var characteristicValue: UILabel!
-    @IBOutlet var descriptorsHeader: UILabel!
-    @IBOutlet var descriptorsList: UICollectionView!
-
-    @IBOutlet var descriptorsListHeight: NSLayoutConstraint!
-
-    private var descriptors: [BluetoothDescriptorViewModel] = []
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-
-        descriptorsHeader.text = "bluetooth_descriptors".localized()
-
-        let flowLayout = FittingWidthAutomaticHeightCollectionViewFlowLayout()
-        flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-        flowLayout.sectionInset = UIEdgeInsets(top: 10, left: 8, bottom: 10, right: 8)
-        flowLayout.minimumLineSpacing = 4
-        descriptorsList.collectionViewLayout = flowLayout
-        descriptorsList.register(
-            UINib(nibName: "BluetoothDescriptorCell", bundle: nil),
-            forCellWithReuseIdentifier: BluetoothDescriptorView.Companion.identifier
-        )
-    }
-
-    func startMonitoring() {
-        disposeBag.dispose()
-        guard let characteristic = self.characteristic else {
-            return
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Text(characteristic.uuid).font(.system(size: 12.0)).opacity(0.8)
+                Spacer()
+                Text(value.value).font(.system(size: 12.0)).opacity(0.8)
+            }
+            HStack {
+                Spacer().frame(width: 10)
+                VStack {
+                    Text("Descriptors").font(.system(size: 12.0))
+                    ForEach(descriptors.value, id: \.self) { descriptor in
+                        BluetoothDescriptorView(descriptor: descriptor)
+                    }
+                }
+            }.background(Color("darker_color"))
+        }.onAppear {
+            characteristic.onResume()
+        }.onDisappear {
+            characteristic.onPause()
         }
-        characteristic.didResume()
-
-        characteristicIdentifier.text = characteristic.uuid
-        characteristic.descriptors.observe { [weak self] descriptors in
-            self?.descriptors = descriptors as? [BluetoothDescriptorViewModel] ?? []
-            self?.descriptorsList.reloadData()
-            self?.updateListSize(isInvalidating: false)
-        }
-        .addTo(disposeBag: disposeBag)
-
-        characteristic.value.observe { [weak self] value in
-            self?.characteristicValue.text = value as String?
-        }
-        .addTo(disposeBag: disposeBag)
-    }
-
-    func stopMonitoring() {
-        disposeBag.dispose()
-        characteristic?.didPause()
-    }
-
-    private func updateListSize(isInvalidating: Bool) {
-        self.isInvalidating = isInvalidating
-        descriptorsList.collectionViewLayout.invalidateLayout()
-        descriptorsList.layoutIfNeeded()
-        let height = descriptorsList.contentSize.height
-        descriptorsListHeight.constant = height
-        parent?.updateListSize(isInvalidating: true)
-        self.isInvalidating = false
-    }
-
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return descriptors.count
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return collectionView.dequeueTypedReusableCell(
-            withReuseIdentifier: BluetoothDescriptorView.Companion.identifier,
-            for: indexPath
-        ) { (descriptorCell: BluetoothDescriptorView) in
-            descriptorCell.descriptor = descriptors[indexPath.row]
-        }
-    }
-
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if !isInvalidating {
-            (cell as? BluetoothDescriptorView)?.startMonitoring()
-        }
-    }
-
-    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if !isInvalidating {
-            (cell as? BluetoothDescriptorView)?.stopMonitoring()
-        }
-    }
-
-    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
-        let layoutAttributes = super.preferredLayoutAttributesFitting(layoutAttributes)
-        layoutIfNeeded()
-        layoutAttributes.frame.size = systemLayoutSizeFitting(
-            UIView.layoutFittingCompressedSize,
-            withHorizontalFittingPriority: .required,
-            verticalFittingPriority: .fittingSizeLevel
-        )
-        return layoutAttributes
     }
 }
