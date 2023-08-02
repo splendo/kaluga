@@ -185,6 +185,18 @@ public final class com/splendo/kaluga/test/base/mock/MethodMock$Stub : com/splen
 
 public final class com/splendo/kaluga/test/base/mock/MockMethodKt {
 	public static final fun doReturn (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;)V
+	public static final fun pairParametersMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun quadrupleParametersMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun quintupleParametersMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun singleParametersMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun suspendPairParametersMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun suspendQuadrupleParametersMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun suspendQuintupleParametersMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun suspendSingleParametersMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun suspendTripleParametersMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun suspendVoidParametersMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun tripleParametersMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun voidParametersMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 }
 
 public final class com/splendo/kaluga/test/base/mock/OnKt {
