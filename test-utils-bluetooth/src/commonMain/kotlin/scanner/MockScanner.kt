@@ -87,7 +87,6 @@ class MockScanner(
  * @param coroutineScope The [CoroutineScope] to run this Scanner on
  * @param scanningDispatcher the [CoroutineDispatcher] to which scanning should be dispatched. It is recommended to make this a dispatcher that can handle high frequency of events
  * @param isSupported Indicates whether the system supports Bluetooth scanning
- * @param setupMocks If `true` this will automatically configure some mocks
  */
 class MockBaseScanner(
     initialBluetoothEnabled: Boolean,
@@ -95,7 +94,6 @@ class MockBaseScanner(
     coroutineScope: CoroutineScope,
     scanningDispatcher: CoroutineDispatcher,
     override val isSupported: Boolean = true,
-    setupMocks: Boolean = true,
 ) : BaseScanner(
     settings,
     coroutineScope,
