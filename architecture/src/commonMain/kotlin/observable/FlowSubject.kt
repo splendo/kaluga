@@ -160,7 +160,7 @@ open class SharedFlowSubject<T>(
                 observation.setValue(ObservableOptional.Value(it))
             }
             sharedFlow.emit(it)
-         },
+        },
         observation = observation,
     ) {
     init {
