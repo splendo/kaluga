@@ -334,7 +334,9 @@ fun <R : T, T, OO : ObservableOptional<R>> observeFlow(
     observation.onFirstObservation = {
         coroutineScope.launch(context) {
             flow.collect {
-                observation.setValue(ObservableOptional.Value(it))
+                if (observation.currentOrNull != it) {
+                    observation.setValue(ObservableOptional.Value(it))
+                }
             }
         }
     }

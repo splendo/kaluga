@@ -65,8 +65,18 @@ open class StateFlowInitializedSubject<T>(
         coroutineScope,
         context,
         { observedStateFlow },
-        { observedStateFlow.value = it },
-        { observedStateFlow.value = it },
+        {
+            if (observation.currentOrNull != it) {
+                observation.setValue(ObservableOptional.Value(it))
+            }
+            observedStateFlow.value = it
+        },
+        {
+            if (observation.observedValue.valueOrNull != it) {
+                observation.observedValue = ObservableOptional.Value(it)
+            }
+            observedStateFlow.value = it
+        },
         observation,
     ) {
     init {
@@ -102,8 +112,18 @@ open class StateFlowDefaultSubject<R : T?, T>(
         coroutineScope,
         context,
         { observedStateFlow },
-        { observedStateFlow.value = it },
-        { observedStateFlow.value = it },
+        {
+            if (observation.currentOrNull != it) {
+                observation.setValue(ObservableOptional.Value(it))
+            }
+            observedStateFlow.value = it
+        },
+        {
+            if (observation.observedValue.valueOrNull != it) {
+                observation.observedValue = ObservableOptional.Value(it)
+            }
+            observedStateFlow.value = it
+        },
         observation,
     ) {
     init {
@@ -132,10 +152,15 @@ open class SharedFlowSubject<T>(
     observation,
 ),
     SuspendableSetter<T> by MutableFlowSubjectHelper(
-        coroutineScope,
-        context,
-        { sharedFlow },
-        { sharedFlow.emit(it) },
+        coroutineScope = coroutineScope,
+        context = context,
+        flow = { sharedFlow },
+        setter = {
+            if (observation.currentOrNull != it) {
+                observation.setValue(ObservableOptional.Value(it))
+            }
+            sharedFlow.emit(it)
+         },
         observation = observation,
     ) {
     init {
@@ -169,7 +194,12 @@ open class SharedFlowInitializedSubject<T>(
         coroutineScope,
         context,
         { sharedFlow },
-        { sharedFlow.emit(it) },
+        {
+            if (observation.currentOrNull != it) {
+                observation.setValue(ObservableOptional.Value(it))
+            }
+            sharedFlow.emit(it)
+        },
         observation = observation,
     ) {
     init {
@@ -208,7 +238,12 @@ open class SharedFlowDefaultSubject<R : T?, T>(
         coroutineScope,
         context,
         { sharedFlow },
-        { sharedFlow.emit(it) },
+        {
+            if (observation.currentOrNull != it) {
+                observation.setValue(ObservableOptional.Value(it))
+            }
+            sharedFlow.emit(it)
+        },
         observation = observation,
     ) {
     init {
