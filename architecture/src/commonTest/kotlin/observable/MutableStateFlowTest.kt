@@ -69,6 +69,13 @@ class MutableStateFlowTest : BaseTest() {
         assertEquals(4, stateFlow.value)
         assertEquals(4, value)
 
+        stateFlow.value = 5
+        delay(10)
+        assertEquals(5, subject.current)
+        assertEquals(5, subject.stateFlow.value)
+        assertEquals(5, stateFlow.value)
+        assertEquals(5, value)
+
         scope.cancel()
     }
 
@@ -107,7 +114,7 @@ class MutableStateFlowTest : BaseTest() {
     }
 
     @Test
-    fun testUpdateStateflowBeforeObservingInitializedSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
+    fun testUpdateSubjectStateflowBeforeObservingInitializedSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
         val scope = CoroutineScope(Dispatchers.Main)
         val stateFlow = MutableStateFlow(0)
         val subject = stateFlow.toInitializedSubject(scope)
@@ -133,6 +140,24 @@ class MutableStateFlowTest : BaseTest() {
         var value: Int by subject.valueDelegate
         value = 1
         delay(10)
+        assertEquals(1, subject.current)
+        assertEquals(1, subject.stateFlow.value)
+        assertEquals(1, stateFlow.value)
+        assertEquals(1, value)
+
+        scope.cancel()
+    }
+
+    @Test
+    fun testUpdateStateflowBeforeObservingInitializedSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
+        val scope = CoroutineScope(Dispatchers.Main)
+        val stateFlow = MutableStateFlow(0)
+        val subject = stateFlow.toInitializedSubject(scope)
+
+        delay(10)
+        stateFlow.value = 1
+        delay(10)
+        val value: Int by subject.valueDelegate
         assertEquals(1, subject.current)
         assertEquals(1, subject.stateFlow.value)
         assertEquals(1, stateFlow.value)
@@ -181,6 +206,13 @@ class MutableStateFlowTest : BaseTest() {
         assertEquals(4, stateFlow.value)
         assertEquals(4, value)
 
+        stateFlow.value = 5
+        delay(10)
+        assertEquals(5, subject.current)
+        assertEquals(5, subject.stateFlow.value)
+        assertEquals(5, stateFlow.value)
+        assertEquals(5, value)
+
         scope.cancel()
     }
 
@@ -219,7 +251,7 @@ class MutableStateFlowTest : BaseTest() {
     }
 
     @Test
-    fun testUpdateStateFlowBeforeObservingDefaultSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
+    fun testUpdateSubjectStateFlowBeforeObservingDefaultSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
         val scope = CoroutineScope(Dispatchers.Main)
         val stateFlow = MutableStateFlow<Int?>(null)
         val subject = stateFlow.toDefaultSubject(0, scope)
@@ -244,6 +276,24 @@ class MutableStateFlowTest : BaseTest() {
         var value: Int by subject.valueDelegate
         value = 1
         delay(10)
+        assertEquals(1, subject.current)
+        assertEquals(1, subject.stateFlow.value)
+        assertEquals(1, stateFlow.value)
+        assertEquals(1, value)
+
+        scope.cancel()
+    }
+
+    @Test
+    fun testUpdateStateFlowBeforeObservingDefaultSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
+        val scope = CoroutineScope(Dispatchers.Main)
+        val stateFlow = MutableStateFlow<Int?>(null)
+        val subject = stateFlow.toDefaultSubject(0, scope)
+
+        delay(10)
+        stateFlow.value = 1
+        delay(10)
+        val value: Int by subject.valueDelegate
         assertEquals(1, subject.current)
         assertEquals(1, subject.stateFlow.value)
         assertEquals(1, stateFlow.value)

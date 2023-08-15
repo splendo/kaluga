@@ -72,6 +72,13 @@ class MutableSharedFlowTest : BaseTest() {
         assertEquals(4, stateFlow.value)
         assertEquals(4, value)
 
+        sharedFlow.emit(5)
+        delay(10)
+        assertEquals(5, subject.current)
+        assertEquals(5, subject.stateFlow.value)
+        assertEquals(5, stateFlow.value)
+        assertEquals(5, value)
+
         scope.cancel()
     }
 
@@ -112,7 +119,7 @@ class MutableSharedFlowTest : BaseTest() {
     }
 
     @Test
-    fun testUpdateStateflowBeforeObservingInitializedSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
+    fun testUpdateSubjectStateflowBeforeObservingInitializedSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
         val scope = CoroutineScope(Dispatchers.Main)
         val sharedFlow = MutableSharedFlow<Int>()
         val stateFlow = sharedFlow.stateIn(scope, SharingStarted.Eagerly, initialValue = -1)
@@ -140,6 +147,25 @@ class MutableSharedFlowTest : BaseTest() {
         var value: Int by subject.valueDelegate
         value = 1
         delay(10)
+        assertEquals(1, subject.current)
+        assertEquals(1, subject.stateFlow.value)
+        assertEquals(1, stateFlow.value)
+        assertEquals(1, value)
+
+        scope.cancel()
+    }
+
+    @Test
+    fun testUpdateSharedFlowBeforeObservingInitializedSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
+        val scope = CoroutineScope(Dispatchers.Main)
+        val sharedFlow = MutableSharedFlow<Int>()
+        val stateFlow = sharedFlow.stateIn(scope, SharingStarted.Eagerly, initialValue = -1)
+        val subject = sharedFlow.toInitializedSubject(0, scope)
+
+        delay(10)
+        sharedFlow.emit(1)
+        delay(10)
+        val value: Int by subject.valueDelegate
         assertEquals(1, subject.current)
         assertEquals(1, subject.stateFlow.value)
         assertEquals(1, stateFlow.value)
@@ -189,6 +215,13 @@ class MutableSharedFlowTest : BaseTest() {
         assertEquals(4, stateFlow.value)
         assertEquals(4, value)
 
+        sharedFlow.emit(5)
+        delay(10)
+        assertEquals(5, subject.current)
+        assertEquals(5, subject.stateFlow.value)
+        assertEquals(5, stateFlow.value)
+        assertEquals(5, value)
+
         scope.cancel()
     }
 
@@ -229,7 +262,7 @@ class MutableSharedFlowTest : BaseTest() {
     }
 
     @Test
-    fun testUpdateStateFlowBeforeObservingDefaultSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
+    fun testUpdateSubjectStateFlowBeforeObservingDefaultSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
         val scope = CoroutineScope(Dispatchers.Main)
         val sharedFlow = MutableSharedFlow<Int?>()
         val stateFlow = sharedFlow.stateIn(scope, SharingStarted.Eagerly, initialValue = null)
@@ -256,6 +289,25 @@ class MutableSharedFlowTest : BaseTest() {
         var value: Int by subject.valueDelegate
         value = 1
         delay(10)
+        assertEquals(1, subject.current)
+        assertEquals(1, subject.stateFlow.value)
+        assertEquals(1, stateFlow.value)
+        assertEquals(1, value)
+
+        scope.cancel()
+    }
+
+    @Test
+    fun testUpdateSharedFlowBeforeObservingDefaultSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
+        val scope = CoroutineScope(Dispatchers.Main)
+        val sharedFlow = MutableSharedFlow<Int?>()
+        val stateFlow = sharedFlow.stateIn(scope, SharingStarted.Eagerly, initialValue = null)
+        val subject = sharedFlow.toDefaultSubject(0, null, scope)
+
+        delay(10)
+        sharedFlow.emit(1)
+        delay(10)
+        val value: Int by subject.valueDelegate
         assertEquals(1, subject.current)
         assertEquals(1, subject.stateFlow.value)
         assertEquals(1, stateFlow.value)
@@ -305,6 +357,13 @@ class MutableSharedFlowTest : BaseTest() {
         assertEquals(4, stateFlow.value)
         assertEquals(4, value)
 
+        sharedFlow.emit(5)
+        delay(10)
+        assertEquals(5, subject.currentOrNull)
+        assertEquals(5, subject.stateFlow.value)
+        assertEquals(5, stateFlow.value)
+        assertEquals(5, value)
+
         scope.cancel()
     }
 
@@ -345,7 +404,7 @@ class MutableSharedFlowTest : BaseTest() {
     }
 
     @Test
-    fun testUpdateStateFlowBeforeObservingUninitializedSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
+    fun testUpdateSubjectStateFlowBeforeObservingUninitializedSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
         val scope = CoroutineScope(Dispatchers.Main)
         val sharedFlow = MutableSharedFlow<Int>()
         val stateFlow = sharedFlow.stateIn(scope, SharingStarted.Eagerly, initialValue = 0)
@@ -372,6 +431,25 @@ class MutableSharedFlowTest : BaseTest() {
         var value: Int? by subject.valueDelegate
         value = 1
         delay(10)
+        assertEquals(1, subject.currentOrNull)
+        assertEquals(1, subject.stateFlow.value)
+        assertEquals(1, stateFlow.value)
+        assertEquals(1, value)
+
+        scope.cancel()
+    }
+
+    @Test
+    fun testUpdateSharedFlowBeforeObservingUninitializedSubject() = testBlockingAndCancelScope(Dispatchers.Main) {
+        val scope = CoroutineScope(Dispatchers.Main)
+        val sharedFlow = MutableSharedFlow<Int>()
+        val stateFlow = sharedFlow.stateIn(scope, SharingStarted.Eagerly, initialValue = 0)
+        val subject = sharedFlow.toUninitializedSubject(scope)
+
+        delay(10)
+        sharedFlow.emit(1)
+        delay(10)
+        val value: Int? by subject.valueDelegate
         assertEquals(1, subject.currentOrNull)
         assertEquals(1, subject.stateFlow.value)
         assertEquals(1, stateFlow.value)
