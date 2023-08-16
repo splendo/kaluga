@@ -334,10 +334,28 @@ fun <R : T, T, OO : ObservableOptional<R>> observeFlow(
     observation.onFirstObservation = {
         coroutineScope.launch(context) {
             flow.collect {
-                if (observation.currentOrNull != it) {
-                    observation.setValue(ObservableOptional.Value(it))
-                }
+                observation.setSuspendedIfNot(it)
             }
         }
+    }
+}
+
+internal fun <R : T, T, OO : ObservableOptional<R>> Observation<R, T, OO>.setIfNot(value: T) {
+    if (when (val current = observedValue) {
+            is ObservableOptional.Value<T> -> current.value != value
+            is ObservableOptional.Nothing<T> -> true
+        }
+    ) {
+        observedValue = ObservableOptional.Value(value)
+    }
+}
+
+internal suspend fun <R : T, T, OO : ObservableOptional<R>> Observation<R, T, OO>.setSuspendedIfNot(value: T) {
+    if (when (val current = observedValue) {
+            is ObservableOptional.Value<T> -> current.value != value
+            is ObservableOptional.Nothing<T> -> true
+        }
+    ) {
+        setValue(ObservableOptional.Value(value))
     }
 }

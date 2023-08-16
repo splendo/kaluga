@@ -66,15 +66,11 @@ open class StateFlowInitializedSubject<T>(
         context,
         { observedStateFlow },
         {
-            if (observation.currentOrNull != it) {
-                observation.setValue(ObservableOptional.Value(it))
-            }
+            observation.setSuspendedIfNot(it)
             observedStateFlow.value = it
         },
         {
-            if (observation.observedValue.valueOrNull != it) {
-                observation.observedValue = ObservableOptional.Value(it)
-            }
+            observation.setIfNot(it)
             observedStateFlow.value = it
         },
         observation,
@@ -113,15 +109,11 @@ open class StateFlowDefaultSubject<R : T?, T>(
         context,
         { observedStateFlow },
         {
-            if (observation.currentOrNull != it) {
-                observation.setValue(ObservableOptional.Value(it))
-            }
+            observation.setSuspendedIfNot(it)
             observedStateFlow.value = it
         },
         {
-            if (observation.observedValue.valueOrNull != it) {
-                observation.observedValue = ObservableOptional.Value(it)
-            }
+            observation.setIfNot(it)
             observedStateFlow.value = it
         },
         observation,
@@ -156,9 +148,7 @@ open class SharedFlowSubject<T>(
         context = context,
         flow = { sharedFlow },
         setter = {
-            if (observation.currentOrNull != it) {
-                observation.setValue(ObservableOptional.Value(it))
-            }
+            observation.setSuspendedIfNot(it)
             sharedFlow.emit(it)
         },
         observation = observation,
@@ -195,9 +185,7 @@ open class SharedFlowInitializedSubject<T>(
         context,
         { sharedFlow },
         {
-            if (observation.currentOrNull != it) {
-                observation.setValue(ObservableOptional.Value(it))
-            }
+            observation.setSuspendedIfNot(it)
             sharedFlow.emit(it)
         },
         observation = observation,
@@ -239,9 +227,7 @@ open class SharedFlowDefaultSubject<R : T?, T>(
         context,
         { sharedFlow },
         {
-            if (observation.currentOrNull != it) {
-                observation.setValue(ObservableOptional.Value(it))
-            }
+            observation.setSuspendedIfNot(it)
             sharedFlow.emit(it)
         },
         observation = observation,
