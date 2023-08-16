@@ -19,10 +19,12 @@ package com.splendo.kaluga.test.architecture
 
 import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
 import com.splendo.kaluga.test.architecture.UIThreadViewModelTest.ViewModelTestContext
+import com.splendo.kaluga.test.architecture.viewmodel.cleanUp
 import com.splendo.kaluga.test.base.BaseTest
 import com.splendo.kaluga.test.base.BaseUIThreadTest
 import com.splendo.kaluga.test.base.UIThreadTest
 import kotlinx.coroutines.CoroutineScope
+import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 
 abstract class ViewModelTest<ViewModel : LifecycleViewModel> : BaseTest() {
@@ -35,6 +37,12 @@ abstract class ViewModelTest<ViewModel : LifecycleViewModel> : BaseTest() {
     override fun beforeTest() {
         super.beforeTest()
         viewModel = createViewModel()
+    }
+
+    @AfterTest
+    override fun afterTest() {
+        super.afterTest()
+        viewModel.cleanUp()
     }
 }
 
@@ -90,5 +98,9 @@ abstract class BaseUIThreadViewModelTest<Configuration, Context : BaseUIThreadVi
      */
     interface ViewModelTestContext<ViewModel : LifecycleViewModel> : TestContext {
         val viewModel: ViewModel
+
+        override fun dispose() {
+            viewModel.cleanUp()
+        }
     }
 }

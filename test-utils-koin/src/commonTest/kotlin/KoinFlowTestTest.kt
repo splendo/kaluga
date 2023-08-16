@@ -21,8 +21,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.core.component.inject
 import org.koin.dsl.module
+import org.koin.mp.KoinPlatformTools
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class KoinFlowTestTest :
     KoinFlowTest<KoinFlowTestTest.TestContext, Int, MutableStateFlow<Int>>() {
@@ -43,12 +47,17 @@ class KoinFlowTestTest :
 
     @Test
     fun testFlowActionFirst() = testWithFlow { flow ->
-
         mainAction {
+            assertNotNull(KoinPlatformTools.defaultContext().getOrNull())
             flow.emit(i)
         }
         test {
             assertEquals(1, it, "should not be 2 but 1 as injected by Koin")
         }
+    }
+
+    @AfterTest
+    fun testCleared() {
+        assertNull(KoinPlatformTools.defaultContext().getOrNull())
     }
 }
