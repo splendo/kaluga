@@ -65,8 +65,14 @@ open class StateFlowInitializedSubject<T>(
         coroutineScope,
         context,
         { observedStateFlow },
-        { observedStateFlow.value = it },
-        { observedStateFlow.value = it },
+        {
+            observation.setSuspendedIfNot(it)
+            observedStateFlow.value = it
+        },
+        {
+            observation.setIfNot(it)
+            observedStateFlow.value = it
+        },
         observation,
     ) {
     init {
@@ -102,8 +108,14 @@ open class StateFlowDefaultSubject<R : T?, T>(
         coroutineScope,
         context,
         { observedStateFlow },
-        { observedStateFlow.value = it },
-        { observedStateFlow.value = it },
+        {
+            observation.setSuspendedIfNot(it)
+            observedStateFlow.value = it
+        },
+        {
+            observation.setIfNot(it)
+            observedStateFlow.value = it
+        },
         observation,
     ) {
     init {
@@ -132,10 +144,13 @@ open class SharedFlowSubject<T>(
     observation,
 ),
     SuspendableSetter<T> by MutableFlowSubjectHelper(
-        coroutineScope,
-        context,
-        { sharedFlow },
-        { sharedFlow.emit(it) },
+        coroutineScope = coroutineScope,
+        context = context,
+        flow = { sharedFlow },
+        setter = {
+            observation.setSuspendedIfNot(it)
+            sharedFlow.emit(it)
+        },
         observation = observation,
     ) {
     init {
@@ -169,7 +184,10 @@ open class SharedFlowInitializedSubject<T>(
         coroutineScope,
         context,
         { sharedFlow },
-        { sharedFlow.emit(it) },
+        {
+            observation.setSuspendedIfNot(it)
+            sharedFlow.emit(it)
+        },
         observation = observation,
     ) {
     init {
@@ -208,7 +226,10 @@ open class SharedFlowDefaultSubject<R : T?, T>(
         coroutineScope,
         context,
         { sharedFlow },
-        { sharedFlow.emit(it) },
+        {
+            observation.setSuspendedIfNot(it)
+            sharedFlow.emit(it)
+        },
         observation = observation,
     ) {
     init {

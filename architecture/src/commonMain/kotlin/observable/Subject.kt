@@ -96,7 +96,9 @@ abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(
     override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         coroutineScope.launch(context) {
             @Suppress("UNCHECKED_CAST")
-            stateFlowToBind().collect { set(it as T) }
+            stateFlowToBind().collect {
+                set(it as T)
+            }
         }
     }
 }
