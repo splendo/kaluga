@@ -18,19 +18,34 @@
 package com.splendo.kaluga.test.koin
 
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.mock.voidParametersMock
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.logger.Level
 import org.koin.dsl.module
+import org.koin.mp.KoinPlatformTools
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class KoinUIThreadViewModelTestTest :
     KoinUIThreadViewModelTest<KoinUIThreadViewModelTestTest.MyKoinViewModelTestContext, KoinUIThreadViewModelTestTest.KoinViewModel>() {
 
+    companion object {
+        val onClearedMock = voidParametersMock<Unit>().apply {
+            on().doReturn(Unit)
+        }
+    }
+
     class KoinViewModel : BaseLifecycleViewModel(), KoinComponent {
         val s: String by inject() // test injecting into ViewModel
+        override fun onCleared() = onClearedMock.call()
     }
 
     class MyKoinViewModelTestContext :
@@ -53,11 +68,19 @@ class KoinUIThreadViewModelTestTest :
 
     @Test
     fun testKoinViewModelTestContext() = testOnUIThread {
+        assertNotNull(KoinPlatformTools.defaultContext().getOrNull())
         assertEquals("S", viewModel.s)
         assertEquals(
             Level.DEBUG,
             viewModel.getKoin().logger.level,
             "KoinApplicationDeclaration should have changed the Logger",
         )
+    }
+
+    @AfterTest
+    fun testCleared() {
+        assertNull(KoinPlatformTools.defaultContext().getOrNull())
+        onClearedMock.verify()
+        onClearedMock.resetCalls()
     }
 }

@@ -20,8 +20,12 @@ package com.splendo.kaluga.test.koin
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.component.inject
 import org.koin.dsl.module
+import org.koin.mp.KoinPlatformTools
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class KoinUIThreadTestTest : KoinUIThreadTest<KoinUIThreadTestTest.MyKoinTestContext>() {
 
@@ -38,6 +42,12 @@ class KoinUIThreadTestTest : KoinUIThreadTest<KoinUIThreadTestTest.MyKoinTestCon
 
     @Test
     fun testKoinUIThreadTest() = testOnUIThread {
+        assertNotNull(KoinPlatformTools.defaultContext().getOrNull())
         assertEquals("K", k)
+    }
+
+    @AfterTest
+    fun testCleared() {
+        assertNull(KoinPlatformTools.defaultContext().getOrNull())
     }
 }

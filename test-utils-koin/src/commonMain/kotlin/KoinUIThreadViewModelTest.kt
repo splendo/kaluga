@@ -20,6 +20,8 @@ package com.splendo.kaluga.test.koin
 import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
 import com.splendo.kaluga.test.architecture.BaseUIThreadViewModelTest
 import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
+import com.splendo.kaluga.test.architecture.viewmodel.cleanUp
+import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
@@ -36,6 +38,11 @@ abstract class KoinUIThreadViewModelTest<Context : KoinUIThreadViewModelTest.Koi
             appDeclaration,
             koinModules.toList(),
         )
+
+        override fun dispose() {
+            viewModel.cleanUp()
+            stopKoin()
+        }
     }
 }
 
@@ -52,5 +59,9 @@ abstract class BaseKoinUIThreadViewModelTest<Configuration, Context : BaseKoinUI
             appDeclaration,
             koinModules.toList(),
         )
+        override fun dispose() {
+            viewModel.cleanUp()
+            stopKoin()
+        }
     }
 }

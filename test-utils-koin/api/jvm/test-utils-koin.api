@@ -24,6 +24,7 @@ public abstract class com/splendo/kaluga/test/koin/BaseKoinUIThreadViewModelTest
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Lkotlin/jvm/functions/Function1;[Lorg/koin/core/module/Module;)V
 	public fun <init> ([Lorg/koin/core/module/Module;)V
+	public fun dispose ()V
 }
 
 public abstract class com/splendo/kaluga/test/koin/KoinFlowTest : com/splendo/kaluga/test/koin/BaseKoinFlowTest {
@@ -57,5 +58,6 @@ public abstract class com/splendo/kaluga/test/koin/KoinUIThreadViewModelTest$Koi
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Lkotlin/jvm/functions/Function1;[Lorg/koin/core/module/Module;)V
 	public fun <init> ([Lorg/koin/core/module/Module;)V
+	public fun dispose ()V
 }
 

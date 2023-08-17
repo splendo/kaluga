@@ -9,6 +9,7 @@ public class com/splendo/kaluga/test/architecture/BaseUIThreadViewModelTest$Lazy
 }
 
 public abstract interface class com/splendo/kaluga/test/architecture/BaseUIThreadViewModelTest$ViewModelTestContext : com/splendo/kaluga/test/base/BaseUIThreadTest$TestContext {
+	public fun dispose ()V
 	public abstract fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
 }
 
@@ -65,9 +66,14 @@ public abstract interface class com/splendo/kaluga/test/architecture/UIThreadVie
 public abstract class com/splendo/kaluga/test/architecture/ViewModelTest : com/splendo/kaluga/test/base/BaseTest {
 	public field viewModel Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
 	public fun <init> ()V
+	public fun afterTest ()V
 	public fun beforeTest ()V
 	protected abstract fun createViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
 	public final fun getViewModel ()Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;
 	public final fun setViewModel (Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;)V
+}
+
+public final class com/splendo/kaluga/test/architecture/viewmodel/CleanUpKt {
+	public static final fun cleanUp (Lcom/splendo/kaluga/architecture/viewmodel/LifecycleViewModel;)V
 }
 
