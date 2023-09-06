@@ -106,7 +106,7 @@ class BluetoothListViewModel(
                         filter.clear()
                         text.split(",").mapNotNull {
                             try {
-                                uuidFrom(it.trim())
+                                filter.add(uuidFrom(it.trim()))
                             } catch (e: UUIDException.InvalidFormat) {
                                 null
                             }
@@ -134,7 +134,11 @@ class BluetoothListViewModel(
             if (isScanning) {
                 bluetooth.stopScanning(cleanMode = cleanMode)
             } else {
-                bluetooth.startScanning(cleanMode = cleanMode, connectionSettings = ConnectionSettings(logger = get()))
+                bluetooth.startScanning(
+                    filter = filter,
+                    cleanMode = cleanMode,
+                    connectionSettings = ConnectionSettings(logger = get())
+                )
             }
         }
     }
