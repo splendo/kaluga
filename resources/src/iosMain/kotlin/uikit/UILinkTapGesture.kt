@@ -53,7 +53,7 @@ import kotlin.math.min
 internal class UILinkTapGesture(private val label: UILabel, private val urlRanges: List<Pair<CValue<NSRange>, NSURL>>) : NSObject() {
 
     object Registry {
-        val registeredGestures = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0)
+        val registeredGestures = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0U)
     }
 
     private val attributedText: NSAttributedString? get() = label.attributedText?.let { attributedText ->
@@ -74,7 +74,7 @@ internal class UILinkTapGesture(private val label: UILabel, private val urlRange
                 ),
                 stringRange,
             )
-            attributedText.enumerateAttributesInRange(stringRange, 0) { attributes, range, _ ->
+            attributedText.enumerateAttributesInRange(stringRange, 0U) { attributes, range, _ ->
                 attributes?.let {
                     addAttributes(it, range)
                 }
@@ -171,7 +171,7 @@ internal class UILinkTapGesture(private val label: UILabel, private val urlRange
 
     private fun NSLayoutManager.boundingRectForCharacterAtIndex(index: NSUInteger, textContainer: NSTextContainer): CValue<CGRect> {
         val glyphIndexOfNextCharacter = glyphIndexForCharacterAtIndex(index)
-        return boundingRectForGlyphRange(NSMakeRange(glyphIndexOfNextCharacter, 1), textContainer)
+        return boundingRectForGlyphRange(NSMakeRange(glyphIndexOfNextCharacter, 1U), textContainer)
     }
 
     private fun CValue<CGRect>.isOnSameLine(other: CValue<CGRect>) = useContents {

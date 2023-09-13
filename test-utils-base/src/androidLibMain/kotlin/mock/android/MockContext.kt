@@ -271,7 +271,7 @@ class MockContext : Context() {
 
     override fun stopService(service: Intent?): Boolean = error("not implemented")
 
-    override fun bindService(service: Intent?, conn: ServiceConnection, flags: Int): Boolean = error("not implemented")
+    override fun bindService(service: Intent, conn: ServiceConnection, flags: Int): Boolean = error("not implemented")
 
     override fun unbindService(conn: ServiceConnection) = error("not implemented")
 

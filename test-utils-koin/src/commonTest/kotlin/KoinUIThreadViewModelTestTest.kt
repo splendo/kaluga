@@ -23,6 +23,7 @@ import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.mock.voidParametersMock
 import kotlinx.coroutines.CoroutineScope
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.logger.Level
@@ -66,6 +67,7 @@ class KoinUIThreadViewModelTestTest :
     override val createTestContext: suspend (scope: CoroutineScope) -> MyKoinViewModelTestContext =
         { MyKoinViewModelTestContext() }
 
+    @OptIn(KoinInternalApi::class)
     @Test
     fun testKoinViewModelTestContext() = testOnUIThread {
         assertNotNull(KoinPlatformTools.defaultContext().getOrNull())

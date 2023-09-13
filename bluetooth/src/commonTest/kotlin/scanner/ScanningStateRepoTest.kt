@@ -73,6 +73,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         }
         mainAction {
             permissionStateRepo.takeAndChangeState { state ->
+                @Suppress("UNCHECKED_CAST")
                 (state as MockPermissionState<BluetoothPermission>).allow
             }
         }
@@ -274,6 +275,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         }
         mainAction {
             permissionStateRepo.takeAndChangeState { state ->
+                @Suppress("UNCHECKED_CAST")
                 (state as MockPermissionState<BluetoothPermission>).lock
             }
         }
@@ -314,6 +316,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
         }
         mainAction {
             permissionStateRepo.takeAndChangeState { state ->
+                @Suppress("UNCHECKED_CAST")
                 (state as MockPermissionState<BluetoothPermission>).lock
             }
         }

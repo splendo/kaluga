@@ -55,10 +55,10 @@ class LibraryImpl(project: Project) {
 
     object Android {
         const val minSdk = 23
-        const val compileSdk = 33
-        const val targetSdk = 33
-        const val buildTools = "33.0.2"
-        const val composeCompiler = "1.4.7"
+        const val compileSdk = 34
+        const val targetSdk = 34
+        const val buildTools = "34.0.0"
+        const val composeCompiler = "1.5.3"
     }
 
     class IOSLibrary(props: Properties, logger: Logger) {
