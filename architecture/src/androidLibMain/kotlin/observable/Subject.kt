@@ -133,8 +133,7 @@ actual abstract class BaseUninitializedSubject<T> actual constructor(
  * @param T the type of value to expect.
  * @param observation The [ObservationInitialized] to handle value being observed
  */
-actual abstract class BaseInitializedSubject<T> actual constructor(observation: ObservationInitialized<T>) :
-    AbstractBaseInitializedSubject<T>(observation) {
+actual abstract class BaseInitializedSubject<T> actual constructor(observation: ObservationInitialized<T>) : AbstractBaseInitializedSubject<T>(observation) {
 
     override fun createLiveData(): MutableLiveData<T> = this.mutableLiveData()
     override fun liveDataObserver() = liveDataObserver

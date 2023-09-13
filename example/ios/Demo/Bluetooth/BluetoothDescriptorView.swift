@@ -38,10 +38,8 @@ struct BluetoothDescriptorView: View, Equatable {
             Text(descriptor.uuid).font(.system(size: 12.0)).opacity(0.8)
             Spacer()
             Text(value.value).font(.system(size: 12.0)).opacity(0.8)
-        }.onAppear {
-            descriptor.onResume()
-        }.onDisappear {
-            descriptor.onPause()
         }
+        .onAppear { descriptor.onResume() }
+        .onDisappear { descriptor.onPause() }
     }
 }

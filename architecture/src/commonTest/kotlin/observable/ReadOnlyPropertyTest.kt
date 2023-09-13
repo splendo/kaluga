@@ -61,8 +61,14 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
             observable = ro.toInitializedObservable(),
             initialExpected = "initial",
             shortDelayAfterUpdate = false,
-            { s.value = "new"; "new" }, //
-            { s.value = "other"; "other" },
+            {
+                s.value = "new"
+                "new"
+            }, //
+            {
+                s.value = "other"
+                "other"
+            },
         )
     }
 
@@ -79,9 +85,18 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
             observable = ro.toInitializedObservable(),
             initialExpected = initial,
             shortDelayAfterUpdate = false,
-            { s.value = "new"; "new" },
-            { s.value = null; null },
-            { s.value = "other"; "other" },
+            {
+                s.value = "new"
+                "new"
+            },
+            {
+                s.value = null
+                null
+            },
+            {
+                s.value = "other"
+                "other"
+            },
         )
     }
 }

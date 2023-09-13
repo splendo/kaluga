@@ -313,7 +313,10 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    private suspend inline fun <K : State> doTakeAndChangeState(remainIfStateNot: KClass<K>?, crossinline action: suspend(K) -> suspend () -> State): State = coroutineScope { // scope around the mutex so asynchronously scheduled coroutines that also use this method can run before the scope completed without deadlocks
+    private suspend inline fun <K : State> doTakeAndChangeState(
+        remainIfStateNot: KClass<K>?,
+        crossinline action: suspend(K) -> suspend () -> State,
+    ): State = coroutineScope { // scope around the mutex so asynchronously scheduled coroutines that also use this method can run before the scope completed without deadlocks
         initialize()
         stateMutex.withPermit {
             val result = CompletableDeferred<State>()
@@ -403,8 +406,8 @@ abstract class BaseHotStateRepo<State : KalugaState, F : MutableSharedFlow<State
  */
 abstract class HotStateRepo<State : KalugaState>(coroutineContext: CoroutineContext = Dispatchers.Main.immediate) :
     BaseHotStateRepo<State, MutableSharedFlow<State>>(coroutineContext) {
-    final override val lazyMutableSharedFlow: Lazy<MutableSharedFlow<State>> = defaultLazySharedFlow()
-}
+        final override val lazyMutableSharedFlow: Lazy<MutableSharedFlow<State>> = defaultLazySharedFlow()
+    }
 
 /**
  * An abstract [BaseHotStateRepo] that uses a [MutableStateFlow] to back up its data.
@@ -418,13 +421,13 @@ abstract class HotStateFlowRepo<State : KalugaState>(
 ) : StateFlowRepo<State>,
     BaseHotStateRepo<State, MutableStateFlow<State>>(coroutineContext) {
 
-    override val lazyMutableSharedFlow = lazy { MutableStateFlow(initialState(this)) }
+        override val lazyMutableSharedFlow = lazy { MutableStateFlow(initialState(this)) }
 
-    override val stateFlow
-        get() = mutableFlow.asStateFlow()
+        override val stateFlow
+            get() = mutableFlow.asStateFlow()
 
-    final override suspend fun initialValue(): State = mutableFlow.value
-}
+        final override suspend fun initialValue(): State = mutableFlow.value
+    }
 
 /**
  * A Cold [StateRepo], using a [MutableSharedFlow] as it's backing implementation.
@@ -498,70 +501,70 @@ open class ColdStateFlowRepo<State : KalugaState>(
         context = coroutineContext,
     ) {
 
-    /**
-     * Constructor
-     * @param coroutineContext the [CoroutineContext] used to create a coroutine scope for this state machine. Make sure that if you pass a coroutine context that has sequential execution if you do not want simultaneous state changes. The default Main dispatcher meets these criteria.
-     * @param firstState Creates the first [State] when observation first takes place.
-     * @param initChangeState method called when the repo transitions from no subscriptions to being subscribed to. Contains the last known [State] and should result in a state transition.
-     * @param deinitChangeState method called when the repo transitions from being subscribed to to no subscriptions. Contains the last known [State] and should result in a state transition.
-     */
-    constructor(
-        coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
-        // order is different than below because here firstState is mandatory, and to avoid JVM signature clashes
-        firstState: () -> State,
-        initChangeState: suspend (State) -> (suspend () -> State),
-        deinitChangeState: suspend (State) -> (suspend () -> State),
-    ) : this(
-        coroutineContext,
-        initChangeStateWithRepo = { state, _ -> initChangeState(state) },
-        deinitChangeStateWithRepo = { state, _ -> deinitChangeState(state) },
-        firstState = firstState,
-    )
+        /**
+         * Constructor
+         * @param coroutineContext the [CoroutineContext] used to create a coroutine scope for this state machine. Make sure that if you pass a coroutine context that has sequential execution if you do not want simultaneous state changes. The default Main dispatcher meets these criteria.
+         * @param firstState Creates the first [State] when observation first takes place.
+         * @param initChangeState method called when the repo transitions from no subscriptions to being subscribed to. Contains the last known [State] and should result in a state transition.
+         * @param deinitChangeState method called when the repo transitions from being subscribed to to no subscriptions. Contains the last known [State] and should result in a state transition.
+         */
+        constructor(
+            coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+            // order is different than below because here firstState is mandatory, and to avoid JVM signature clashes
+            firstState: () -> State,
+            initChangeState: suspend (State) -> (suspend () -> State),
+            deinitChangeState: suspend (State) -> (suspend () -> State),
+        ) : this(
+            coroutineContext,
+            initChangeStateWithRepo = { state, _ -> initChangeState(state) },
+            deinitChangeStateWithRepo = { state, _ -> deinitChangeState(state) },
+            firstState = firstState,
+        )
 
-    /**
-     * Constructor
-     * @param coroutineContext the [CoroutineContext] used to create a coroutine scope for this state machine. Make sure that if you pass a coroutine context that has sequential execution if you do not want simultaneous state changes. The default Main dispatcher meets these criteria.
-     * @param init method called when the repo transitions from no subscriptions to being subscribed to. Contains a reference to the [ColdStateFlowRepo] and should result in a [State] to transition to.
-     * @param deinit method called when the repo transitions from being subscribed to to no subscriptions. Contains a reference to the [ColdStateFlowRepo] and should result in a [State] to transition to.
-     * @param firstState Creates the first [State] when observation first takes place.
-     * */
-    constructor(
-        coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
-        init: suspend (ColdStateFlowRepo<State>) -> State,
-        deinit: suspend (ColdStateFlowRepo<State>) -> State?,
-        firstState: () -> State,
-    ) : this(
-        coroutineContext,
-        initChangeStateWithRepo = { _, repo -> { init(repo) } },
-        deinitChangeStateWithRepo = { state, repo -> { deinit(repo) ?: state } },
-        firstState = firstState,
-    )
+        /**
+         * Constructor
+         * @param coroutineContext the [CoroutineContext] used to create a coroutine scope for this state machine. Make sure that if you pass a coroutine context that has sequential execution if you do not want simultaneous state changes. The default Main dispatcher meets these criteria.
+         * @param init method called when the repo transitions from no subscriptions to being subscribed to. Contains a reference to the [ColdStateFlowRepo] and should result in a [State] to transition to.
+         * @param deinit method called when the repo transitions from being subscribed to to no subscriptions. Contains a reference to the [ColdStateFlowRepo] and should result in a [State] to transition to.
+         * @param firstState Creates the first [State] when observation first takes place.
+         * */
+        constructor(
+            coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+            init: suspend (ColdStateFlowRepo<State>) -> State,
+            deinit: suspend (ColdStateFlowRepo<State>) -> State?,
+            firstState: () -> State,
+        ) : this(
+            coroutineContext,
+            initChangeStateWithRepo = { _, repo -> { init(repo) } },
+            deinitChangeStateWithRepo = { state, repo -> { deinit(repo) ?: state } },
+            firstState = firstState,
+        )
 
-    override val stateFlow: StateFlow<State>
-        get() = mutableFlow.asStateFlow()
+        override val stateFlow: StateFlow<State>
+            get() = mutableFlow.asStateFlow()
 
-    // the first initialization is done in the lazy block below since StateFlow requires an initial value
-    final override suspend fun initialValue(): State = mutableFlow.value
+        // the first initialization is done in the lazy block below since StateFlow requires an initial value
+        final override suspend fun initialValue(): State = mutableFlow.value
 
-    final override suspend fun noMoreCollections() = takeAndChangeState { state ->
-        deinitChangeStateWithRepo(state, this) ?: state.remain()
-    }
-
-    override val lazyMutableFlow: Lazy<MutableStateFlow<State>> =
-        lazy {
-            MutableStateFlow(
-                firstState(),
-            )
+        final override suspend fun noMoreCollections() = takeAndChangeState { state ->
+            deinitChangeStateWithRepo(state, this) ?: state.remain()
         }
 
-    override suspend fun firstCollection() {
-        laterCollections()
-    }
+        override val lazyMutableFlow: Lazy<MutableStateFlow<State>> =
+            lazy {
+                MutableStateFlow(
+                    firstState(),
+                )
+            }
 
-    override suspend fun laterCollections() = takeAndChangeState { state ->
-        initChangeStateWithRepo(state, this@ColdStateFlowRepo)
+        override suspend fun firstCollection() {
+            laterCollections()
+        }
+
+        override suspend fun laterCollections() = takeAndChangeState { state ->
+            initChangeStateWithRepo(state, this@ColdStateFlowRepo)
+        }
     }
-}
 
 /**
  * A [BaseColdStateRepo] that represents its [State] as a Cold flow. Data will only be set when the state is observed.
@@ -585,7 +588,9 @@ abstract class ColdStateRepo<State : KalugaState>(
     }
 
     final override suspend fun laterCollections() = takeAndChangeState {
-        { initialValue() }
+        {
+            initialValue()
+        }
     }
 
     final override suspend fun noMoreCollections(): State = takeAndChangeState {

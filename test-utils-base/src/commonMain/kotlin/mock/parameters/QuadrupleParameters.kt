@@ -48,8 +48,8 @@ class QuadrupleParameters<T0, T1, T2, T3> :
         val fourth: ParameterMatcher<T3>,
     ) :
         ParametersSpec.Matchers {
-        override fun asList() = listOf(first, second, third, fourth)
-    }
+            override fun asList() = listOf(first, second, third, fourth)
+        }
 
     /**
      * The [ParametersSpec.MatchersOrCaptor] for four parameters
@@ -65,13 +65,13 @@ class QuadrupleParameters<T0, T1, T2, T3> :
         val fourth: ParameterMatcherOrCaptor<T3>,
     ) :
         ParametersSpec.MatchersOrCaptor<Matchers<T0, T1, T2, T3>> {
-        override fun asMatchers(): Matchers<T0, T1, T2, T3> = Matchers(
-            first.asMatcher(),
-            second.asMatcher(),
-            third.asMatcher(),
-            fourth.asMatcher(),
-        )
-    }
+            override fun asMatchers(): Matchers<T0, T1, T2, T3> = Matchers(
+                first.asMatcher(),
+                second.asMatcher(),
+                third.asMatcher(),
+                fourth.asMatcher(),
+            )
+        }
 
     /**
      * The [ParametersSpec.Values] for four parameters

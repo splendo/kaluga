@@ -75,12 +75,12 @@ open class StateFlowInitializedSubject<T>(
         },
         observation,
     ) {
-    init {
-        if (autoBind) {
-            bind(coroutineScope, context)
+        init {
+            if (autoBind) {
+                bind(coroutineScope, context)
+            }
         }
     }
-}
 
 /**
  * A [BaseDefaultSubject] that matches the state of a [MutableStateFlow].
@@ -118,12 +118,12 @@ open class StateFlowDefaultSubject<R : T?, T>(
         },
         observation,
     ) {
-    init {
-        if (autoBind) {
-            bind(coroutineScope, context)
+        init {
+            if (autoBind) {
+                bind(coroutineScope, context)
+            }
         }
     }
-}
 
 /**
  * A [BaseUninitializedSubject] that matches the state of a [MutableSharedFlow].
@@ -153,12 +153,12 @@ open class SharedFlowSubject<T>(
         },
         observation = observation,
     ) {
-    init {
-        if (autoBind) {
-            bind(coroutineScope, context)
+        init {
+            if (autoBind) {
+                bind(coroutineScope, context)
+            }
         }
     }
-}
 
 /**
  * A [BaseInitializedSubject] that matches the state of a [MutableSharedFlow].
@@ -190,12 +190,12 @@ open class SharedFlowInitializedSubject<T>(
         },
         observation = observation,
     ) {
-    init {
-        if (autoBind) {
-            bind(coroutineScope, context)
+        init {
+            if (autoBind) {
+                bind(coroutineScope, context)
+            }
         }
     }
-}
 
 /**
  * A [BaseDefaultSubject] that matches the state of a [MutableSharedFlow].
@@ -232,12 +232,12 @@ open class SharedFlowDefaultSubject<R : T?, T>(
         },
         observation = observation,
     ) {
-    init {
-        if (autoBind) {
-            bind(coroutineScope, context)
+        init {
+            if (autoBind) {
+                bind(coroutineScope, context)
+            }
         }
     }
-}
 
 /**
  * Converts a [MutableSharedFlow] to a [SharedFlowSubject]

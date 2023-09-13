@@ -53,31 +53,31 @@ object MockSpec : NavigationBundleSpec<MockSpecRow<*>>(
 
 sealed class MockSpecRow<V>(associatedType: NavigationBundleSpecType<V>) :
     NavigationBundleSpecRow<V>(associatedType) {
-    object StringSpecRow : MockSpecRow<String>(NavigationBundleSpecType.StringType)
-    object BooleanSpecRow : MockSpecRow<Boolean>(NavigationBundleSpecType.BooleanType)
-    object FloatSpecRow : MockSpecRow<Float>(NavigationBundleSpecType.FloatType)
-    object SerializableSpecRow : MockSpecRow<MockSerializable>(
-        NavigationBundleSpecType.SerializedType(MockSerializable.serializer()),
-    )
-    object OptionalString : MockSpecRow<String?>(
-        NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType),
-    )
-    object OptionalFloat : MockSpecRow<Float?>(
-        NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType),
-    )
-    object OptionalMockSerializable : MockSpecRow<MockSerializable?>(
-        NavigationBundleSpecType.SerializedType(MockSerializable.serializer().nullable),
-    )
-    object DateSpecRow : MockSpecRow<KalugaDate>(NavigationBundleSpecType.DateType)
-}
+        object StringSpecRow : MockSpecRow<String>(NavigationBundleSpecType.StringType)
+        object BooleanSpecRow : MockSpecRow<Boolean>(NavigationBundleSpecType.BooleanType)
+        object FloatSpecRow : MockSpecRow<Float>(NavigationBundleSpecType.FloatType)
+        object SerializableSpecRow : MockSpecRow<MockSerializable>(
+            NavigationBundleSpecType.SerializedType(MockSerializable.serializer()),
+        )
+        object OptionalString : MockSpecRow<String?>(
+            NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType),
+        )
+        object OptionalFloat : MockSpecRow<Float?>(
+            NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType),
+        )
+        object OptionalMockSerializable : MockSpecRow<MockSerializable?>(
+            NavigationBundleSpecType.SerializedType(MockSerializable.serializer().nullable),
+        )
+        object DateSpecRow : MockSpecRow<KalugaDate>(NavigationBundleSpecType.DateType)
+    }
 
 class NestedSpec : NavigationBundleSpec<NestedSpecRow<*>>(setOf(NestedSpecRow.StringSpecRow))
 
 sealed class NestedSpecRow<V>(associatedType: NavigationBundleSpecType<V>) :
     NavigationBundleSpecRow<V>(associatedType) {
 
-    object StringSpecRow : NestedSpecRow<String>(NavigationBundleSpecType.StringType)
-}
+        object StringSpecRow : NestedSpecRow<String>(NavigationBundleSpecType.StringType)
+    }
 
 class TestNavigationAction(bundle: NavigationBundle<MockSpecRow<*>>) :
     NavigationAction<MockSpecRow<*>>(bundle)

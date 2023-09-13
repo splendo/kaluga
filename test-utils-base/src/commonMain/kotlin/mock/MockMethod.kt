@@ -190,18 +190,21 @@ fun <
     M : ParametersSpec.Matchers,
     V : ParametersSpec.Values,
     A : BaseAnswer<V, Unit>,
-    Stub : BaseMethodMock.Stub<M, V, Unit, A>,> Stub.doReturn() {
+    Stub : BaseMethodMock.Stub<M, V, Unit, A>,
+    > Stub.doReturn() {
     doExecute { }
 }
 
 /**
  * A [BaseMethodMock] for non-suspending methods.
  */
-class MethodMock<M : ParametersSpec.Matchers,
+class MethodMock<
+    M : ParametersSpec.Matchers,
     C : ParametersSpec.MatchersOrCaptor<M>,
     V : ParametersSpec.Values,
     W : ParametersSpec<M, C, V>,
-    R,>(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, Answer<V, R>, MethodMock.Stub<M, V, R>>() {
+    R,
+    >(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, Answer<V, R>, MethodMock.Stub<M, V, R>>() {
     internal fun callWithValues(values: V): R = getStubFor(values).call(values)
 
     override fun createStub(matcher: M): Stub<M, V, R> = Stub(matcher)
@@ -212,7 +215,8 @@ class MethodMock<M : ParametersSpec.Matchers,
     class Stub<
         M : ParametersSpec.Matchers,
         V : ParametersSpec.Values,
-        R,>(override val matchers: M) : BaseMethodMock.Stub<M, V, R, Answer<V, R>>() {
+        R,
+        >(override val matchers: M) : BaseMethodMock.Stub<M, V, R, Answer<V, R>>() {
         override fun createAnswer(result: (V) -> R): Answer<V, R> = object : Answer<V, R> {
             override fun call(values: V): R = result(values)
         }
@@ -236,7 +240,8 @@ class SuspendMethodMock<
     C : ParametersSpec.MatchersOrCaptor<M>,
     V : ParametersSpec.Values,
     W : ParametersSpec<M, C, V>,
-    R,>(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, SuspendedAnswer<V, R>, SuspendMethodMock.Stub<M, V, R>>() {
+    R,
+    >(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, SuspendedAnswer<V, R>, SuspendMethodMock.Stub<M, V, R>>() {
 
     internal suspend fun callWithValues(values: V): R = getStubFor(values).call(values)
 

@@ -47,10 +47,8 @@ struct BluetoothCharacteristicView: View {
                     }
                 }
             }.background(Color("darker_color"))
-        }.onAppear {
-            characteristic.onResume()
-        }.onDisappear {
-            characteristic.onPause()
         }
+        .onAppear { characteristic.onResume() }
+        .onDisappear { characteristic.onPause() }
     }
 }
