@@ -23,7 +23,6 @@ public final class com/splendo/kaluga/keyboard/compose/ComposeKeyboardManager$Bu
 	public static final field $stable I
 	public fun <init> ()V
 	public fun create (Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/keyboard/BaseKeyboardManager;
-	public synthetic fun getModifier ()Lkotlin/jvm/functions/Function2;
 	public fun getModifier ()Lkotlin/jvm/functions/Function4;
 }
 

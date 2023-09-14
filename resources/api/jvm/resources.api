@@ -763,6 +763,7 @@ public final class com/splendo/kaluga/resources/stylable/GradientStyle$Linear$Or
 	public static final field TOP_BOTTOM Lcom/splendo/kaluga/resources/stylable/GradientStyle$Linear$Orientation;
 	public static final field TOP_LEFT_BOTTOM_RIGHT Lcom/splendo/kaluga/resources/stylable/GradientStyle$Linear$Orientation;
 	public static final field TOP_RIGHT_BOTTOM_LEFT Lcom/splendo/kaluga/resources/stylable/GradientStyle$Linear$Orientation;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/resources/stylable/GradientStyle$Linear$Orientation;
 	public static fun values ()[Lcom/splendo/kaluga/resources/stylable/GradientStyle$Linear$Orientation;
 }
@@ -856,6 +857,7 @@ public final class com/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$S
 	public static final field BOTTOM_RIGHT Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape$Rectangle$Corner;
 	public static final field TOP_LEFT Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape$Rectangle$Corner;
 	public static final field TOP_RIGHT Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape$Rectangle$Corner;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape$Rectangle$Corner;
 	public static fun values ()[Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape$Rectangle$Corner;
 }
@@ -912,6 +914,7 @@ public final class com/splendo/kaluga/resources/stylable/KalugaTextAlignment : j
 	public static final field LEFT Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
 	public static final field RIGHT Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
 	public static final field START Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
 	public static fun values ()[Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
 }

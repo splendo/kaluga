@@ -498,6 +498,7 @@ public final class com/splendo/kaluga/media/TrackInfo$Type : java/lang/Enum {
 	public static final field TIMED_TEXT Lcom/splendo/kaluga/media/TrackInfo$Type;
 	public static final field UNKNOWN Lcom/splendo/kaluga/media/TrackInfo$Type;
 	public static final field VIDEO Lcom/splendo/kaluga/media/TrackInfo$Type;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/media/TrackInfo$Type;
 	public static fun values ()[Lcom/splendo/kaluga/media/TrackInfo$Type;
 }

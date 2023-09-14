@@ -51,6 +51,7 @@ public final class com/splendo/kaluga/system/network/NetworkConnectionType$Unkno
 	public static final field CONNECTING Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown$Reason;
 	public static final field LOSING Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown$Reason;
 	public static final field NOT_CLEAR Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown$Reason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown$Reason;
 	public static fun values ()[Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown$Reason;
 }

@@ -88,6 +88,7 @@ public final class com/splendo/kaluga/logging/LogLevel : java/lang/Enum {
 	public static final field ERROR Lcom/splendo/kaluga/logging/LogLevel;
 	public static final field INFO Lcom/splendo/kaluga/logging/LogLevel;
 	public static final field WARN Lcom/splendo/kaluga/logging/LogLevel;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/logging/LogLevel;
 	public static fun values ()[Lcom/splendo/kaluga/logging/LogLevel;
 }
