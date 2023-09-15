@@ -32,7 +32,6 @@ import com.splendo.kaluga.test.bluetooth.createMockDevice
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
@@ -114,12 +113,16 @@ class BluetoothPairedDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configura
                 deviceName = name
             }
             scannedDevice.complete(device)
+            val didStartScanningCalled = EmptyCompletableDeferred()
+            scanner.didStartScanningMock.on().doExecuteSuspended {
+                didStartScanningCalled.complete()
+            }
             scanDevice(device, deviceWrapper, rssi = 0, advertisementData = MockAdvertisementData())
             val job = launch {
                 bluetooth.scannedDevices().collect() // trigger scanning
             }
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
-            delay(10)
+            didStartScanningCalled.await()
             scanner.didStartScanningMock.verify(eq(emptySet()))
             scanner.retrievePairedDeviceDiscoveredEventsMock.verify(eq(pairedFilter))
             job.cancel()
