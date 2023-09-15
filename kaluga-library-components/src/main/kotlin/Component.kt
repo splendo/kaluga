@@ -108,7 +108,7 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
         }
     }
 
-    android("androidLib").publishAllLibraryVariants()
+    androidTarget("androidLib").publishAllLibraryVariants()
     val target: KotlinNativeTarget.() -> Unit =
         {
             iosMainInterop?.let { mainInterop ->
@@ -227,6 +227,11 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
             optIn("kotlin.ExperimentalStdlibApi")
             optIn("kotlin.time.ExperimentalTime")
             optIn("kotlin.ExperimentalStdlibApi")
+            if (this@all.name.lowercase().contains("ios")) {
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+                optIn("kotlinx.cinterop.BetaInteropApi")
+                optIn("kotlin.experimental.ExperimentalNativeApi")
+            }
             enableLanguageFeature("InlineClasses")
         }
     }

@@ -85,11 +85,6 @@ fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentTyp
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlinOptions {
-        jvmTarget = "11"
-        freeCompilerArgs = freeCompilerArgs + listOf("-XXLanguage:+InlineClasses", "-Xjvm-default=all")
-    }
-
     when (componentType) {
         is ComponentType.Compose -> {
             project.logger.lifecycle("This project module is a Compose only module")

@@ -25,7 +25,9 @@ import androidx.fragment.app.Fragment
 /**
  * Convenience [Fragment] that is bound to a [LifecycleViewModel]
  */
-abstract class KalugaViewModelFragment<VM : BaseLifecycleViewModel>(@LayoutRes layout: Int = 0) : Fragment(layout) {
+abstract class KalugaViewModelFragment<VM : BaseLifecycleViewModel>(
+    @LayoutRes layout: Int = 0,
+) : Fragment(layout) {
 
     abstract val viewModel: VM
 

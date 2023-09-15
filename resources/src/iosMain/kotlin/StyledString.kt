@@ -158,7 +158,7 @@ actual class StyledStringBuilder constructor(
     private fun StringStyleAttribute.ParagraphStyleAttribute.updateParagraphAttribute(range: IntRange, defaultAlignment: KalugaTextAlignment) {
         // First search for all existing paragraph attributes within range
         val rangesWithParagraphStyle = mutableListOf<Pair<IntRange, NSParagraphStyle>>()
-        attributedString.enumerateAttribute("NSParagraphStyle", (0 until attributedString.string.length).nsRange, 0) { match, matchedNSRange, _ ->
+        attributedString.enumerateAttribute("NSParagraphStyle", (0 until attributedString.string.length).nsRange, 0U) { match, matchedNSRange, _ ->
             val matchedRange = matchedNSRange.range
             if (matchedRange.any { range.contains(it) } && match is NSParagraphStyle) {
                 rangesWithParagraphStyle.add(maxOf(matchedRange.first, range.first)..minOf(matchedRange.last, range.last) to match)
@@ -226,7 +226,7 @@ actual class StyledStringBuilder constructor(
 
 internal val NSAttributedString.urlRanges: List<Pair<CValue<NSRange>, NSURL>> get() {
     val result = mutableListOf<Pair<CValue<NSRange>, NSURL>>()
-    enumerateAttribute("NSLink", IntRange(0, length.toInt() - 1).nsRange, 0) { match, matchedRange, _ ->
+    enumerateAttribute("NSLink", IntRange(0, length.toInt() - 1).nsRange, 0U) { match, matchedRange, _ ->
         if (match is NSURL) {
             result.add(matchedRange to match)
         }

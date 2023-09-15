@@ -15,7 +15,6 @@
 
  */
 
-import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.Action
@@ -43,9 +42,8 @@ fun Project.publishing(action: org.gradle.api.publish.PublishingExtension.() -> 
     configureAction("publishing", action)
 }
 
-fun CommonExtension<*, *, *, *>.kotlinOptions(action: org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions.() -> Unit) {
+fun LibraryExtension.kotlinOptions(action: org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions.() -> Unit): Unit =
     (this as org.gradle.api.plugins.ExtensionAware).configureAction("kotlinOptions", action)
-}
 
 private inline fun <reified T : Any> org.gradle.api.plugins.ExtensionAware.configureAction(fieldName: String, crossinline action: T.() -> Unit) {
     val optionsAction = object : Action<T> {

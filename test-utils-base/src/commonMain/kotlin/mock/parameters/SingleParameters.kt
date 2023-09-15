@@ -39,8 +39,8 @@ class SingleParameters<T0> : ParametersSpec<SingleParameters.Matchers<T0>, Singl
      */
     data class Matchers<T0>(val value: ParameterMatcher<T0>) :
         ParametersSpec.Matchers {
-        override fun asList() = listOf(value)
-    }
+            override fun asList() = listOf(value)
+        }
 
     /**
      * The [ParametersSpec.MatchersOrCaptor] for a single
@@ -48,8 +48,8 @@ class SingleParameters<T0> : ParametersSpec<SingleParameters.Matchers<T0>, Singl
      */
     data class MatchersOrCaptor<T0>(val value: ParameterMatcherOrCaptor<T0>) :
         ParametersSpec.MatchersOrCaptor<Matchers<T0>> {
-        override fun asMatchers(): Matchers<T0> = Matchers(value.asMatcher())
-    }
+            override fun asMatchers(): Matchers<T0> = Matchers(value.asMatcher())
+        }
 
     /**
      * The [ParametersSpec.Values] for a single parameter

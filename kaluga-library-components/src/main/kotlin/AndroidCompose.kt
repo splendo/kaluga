@@ -30,10 +30,17 @@ fun org.gradle.api.Project.composeAndroidComponent(packageName: String) {
     }
 
     kotlinAndroid {
+
         sourceSets.all {
             languageSettings {
                 optIn("androidx.compose.material.ExperimentalMaterialApi")
             }
+        }
+    }
+
+    androidLibrary {
+        kotlinOptions {
+            jvmTarget = "11"
         }
     }
 

@@ -21,13 +21,13 @@ import com.splendo.kaluga.base.utils.KalugaLocale
 
 internal class FixedString internal constructor(private val out: StringBuilder, private val s: String, private val start: Int, private val end: Int) :
     FormatString {
-    override val index: Int = -2
+        override val index: Int = -2
 
-    override fun print(arg: Any?, locale: KalugaLocale) {
-        out.append(s, start, end)
-    }
+        override fun print(arg: Any?, locale: KalugaLocale) {
+            out.append(s, start, end)
+        }
 
-    override fun toString(): String {
-        return s.substring(start, end)
+        override fun toString(): String {
+            return s.substring(start, end)
+        }
     }
-}

@@ -26,11 +26,12 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.milliseconds
 
 abstract class ObservableBaseTest : BaseTest() {
 
     companion object {
-        const val DELAY_MS = 30L
+        val DELAY_MS = 100.milliseconds
     }
 
     fun <V : String?, O> ((O) -> V).asUpdate() = { observable: O -> Value(this(observable)) }
@@ -49,6 +50,7 @@ abstract class ObservableBaseTest : BaseTest() {
         *updates.map { it.asNullableUpdate() }.toTypedArray(),
     )
 
+    @Suppress("UNCHECKED_CAST")
     suspend fun <V : String?, O : InitializedObservable<V>> testInitializedStringObservable(
         observable: O,
         initialExpected: V,
@@ -75,6 +77,7 @@ abstract class ObservableBaseTest : BaseTest() {
         *updates.map { it.asUpdate<V, OO, S>(useSuspendableSetter) }.toTypedArray(),
     )
 
+    @Suppress("UNCHECKED_CAST")
     suspend fun <V : String?, OO : ObservableOptional<V>, O : BasicObservable<V, V, OO>> testUninitializedStringObservable(
         observable: O,
         shortDelayAfterUpdate: Boolean = false,
@@ -100,6 +103,7 @@ abstract class ObservableBaseTest : BaseTest() {
         *updates.map { it.asUpdate() }.toTypedArray(),
     )
 
+    @Suppress("UNCHECKED_CAST")
     suspend fun <R : T, T : String?, OO : ObservableOptional<R>, O : BasicObservable<R, T, OO>> testStringObservable(
         observable: O,
         initialExpected: T,
@@ -113,6 +117,7 @@ abstract class ObservableBaseTest : BaseTest() {
         *updates,
     )
 
+    @Suppress("UNCHECKED_CAST")
     fun <O : BasicObservable<String, String?, Value<String>>> Pair<String?, String>.asNullableUpdate(useSetter: Boolean): (O) -> Value<String> = {
         if (useSetter) {
             (it as? SuspendableSetter<String?>)?.let { runBlocking { it.set(this@asNullableUpdate.first) } }
@@ -123,6 +128,7 @@ abstract class ObservableBaseTest : BaseTest() {
         Value(this.second)
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <V : String?, OO : ObservableOptional<V>, O : BasicObservable<V, V, OO>> Pair<V, V>.asUpdate(useSetter: Boolean): (O) -> Value<V> = {
         if (useSetter) {
             (it as? SuspendableSetter<V>)?.let {
@@ -209,6 +215,7 @@ abstract class ObservableBaseTest : BaseTest() {
         var disposableInitialized: Disposable? = null
         if (observable is Initialized<*, *>) {
             observedInitializedValue = unusedValue
+            @Suppress("UNCHECKED_CAST")
             disposableInitialized = (observable as Initialized<R, T>).observeInitialized { observedInitializedValue = it }
         }
 
@@ -219,10 +226,14 @@ abstract class ObservableBaseTest : BaseTest() {
 
         if (observedInitializedValue != null) {
             assertTrue(initialExpected is Value<*>)
+            @Suppress("UNCHECKED_CAST")
             assertEquals(initialExpected.value as R, observedInitializedValue)
         }
 
         semaphore.release()
+        if (shortDelayAfterUpdate) {
+            delay(DELAY_MS)
+        }
 
         updates.forEachIndexed { count, update ->
 
@@ -239,6 +250,7 @@ abstract class ObservableBaseTest : BaseTest() {
 
             assertEquals(expected, observableOptional)
             assertEquals(expected.valueOrNull, observable.currentOrNull)
+            @Suppress("UNCHECKED_CAST")
             assertEquals(expected.valueOrNull, (observable as? WithState<R>)?.stateFlow?.value)
 
             if (observable is DefaultObservable<*, *>) {

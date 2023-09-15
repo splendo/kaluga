@@ -70,31 +70,31 @@ object ResourcesBinding {
 class ResourcesAdapter(private val viewModel: ResourcesListViewModel) :
     RecyclerView.Adapter<ResourcesAdapter.ResourceViewHolder>() {
 
-    class ResourceViewHolder(val binding: ViewListButtonBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        val button = binding.button
-    }
+        class ResourceViewHolder(val binding: ViewListButtonBinding) :
+            RecyclerView.ViewHolder(binding.root) {
+                val button = binding.button
+            }
 
-    var resources: List<Resource> = emptyList()
-        set(newValue) {
-            field = newValue
-            notifyDataSetChanged()
+        var resources: List<Resource> = emptyList()
+            set(newValue) {
+                field = newValue
+                notifyDataSetChanged()
+            }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResourceViewHolder {
+            val binding = ViewListButtonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return ResourceViewHolder(binding)
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResourceViewHolder {
-        val binding = ViewListButtonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ResourceViewHolder(binding)
-    }
+        override fun getItemCount(): Int = resources.size
 
-    override fun getItemCount(): Int = resources.size
-
-    override fun onBindViewHolder(holder: ResourceViewHolder, position: Int) {
-        resources.getOrNull(position)?.let { resource ->
-            holder.button.text = resource.title
-            holder.button.setOnClickListener { viewModel.onResourceSelected(resource) }
-        } ?: run {
-            holder.button.text = null
-            holder.button.setOnClickListener(null)
+        override fun onBindViewHolder(holder: ResourceViewHolder, position: Int) {
+            resources.getOrNull(position)?.let { resource ->
+                holder.button.text = resource.title
+                holder.button.setOnClickListener { viewModel.onResourceSelected(resource) }
+            } ?: run {
+                holder.button.text = null
+                holder.button.setOnClickListener(null)
+            }
         }
     }
-}

@@ -54,11 +54,11 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewMode
     class CustomLazyViewModelTestContext(coroutineScope: CoroutineScope) :
         LazyViewModelTestContext<ViewModel>(coroutineScope, { ViewModel() }) {
 
-        override fun dispose() {
-            super.dispose()
-            isDisposed.value = true
+            override fun dispose() {
+                super.dispose()
+                isDisposed.value = true
+            }
         }
-    }
 
     override val createTestContext: suspend (scope: CoroutineScope) -> CustomLazyViewModelTestContext =
         { CustomLazyViewModelTestContext(it) }

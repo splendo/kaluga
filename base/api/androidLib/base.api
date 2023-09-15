@@ -32,10 +32,6 @@ public final class com/splendo/kaluga/base/KalugaThreadKt {
 	public static final fun isOnMainThread ()Z
 }
 
-public final class com/splendo/kaluga/base/MainQueueDispatcherKt {
-	public static final fun getMainQueueDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
-}
-
 public final class com/splendo/kaluga/base/MultiplatformMainScopeKt {
 	public static final fun MultiplatformMainScope ()Lkotlinx/coroutines/CoroutineScope;
 }
@@ -191,6 +187,7 @@ public final class com/splendo/kaluga/base/flow/SharedFlowCollectionEvent : java
 	public static final field FirstCollection Lcom/splendo/kaluga/base/flow/SharedFlowCollectionEvent;
 	public static final field LaterCollections Lcom/splendo/kaluga/base/flow/SharedFlowCollectionEvent;
 	public static final field NoMoreCollections Lcom/splendo/kaluga/base/flow/SharedFlowCollectionEvent;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/flow/SharedFlowCollectionEvent;
 	public static fun values ()[Lcom/splendo/kaluga/base/flow/SharedFlowCollectionEvent;
 }
@@ -289,7 +286,11 @@ public abstract class com/splendo/kaluga/base/state/HotStateRepo : com/splendo/k
 }
 
 public abstract interface class com/splendo/kaluga/base/state/KalugaState {
-	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public abstract fun remain ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/splendo/kaluga/base/state/KalugaState$DefaultImpls {
+	public static fun remain (Lcom/splendo/kaluga/base/state/KalugaState;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/base/state/StateFlowRepo {
@@ -391,6 +392,7 @@ public final class com/splendo/kaluga/base/text/DateFormatStyle : java/lang/Enum
 	public static final field Long Lcom/splendo/kaluga/base/text/DateFormatStyle;
 	public static final field Medium Lcom/splendo/kaluga/base/text/DateFormatStyle;
 	public static final field Short Lcom/splendo/kaluga/base/text/DateFormatStyle;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/text/DateFormatStyle;
 	public static fun values ()[Lcom/splendo/kaluga/base/text/DateFormatStyle;
 }
@@ -407,6 +409,7 @@ public final class com/splendo/kaluga/base/text/Flag : java/lang/Enum {
 	public static final field UPPERCASE Lcom/splendo/kaluga/base/text/Flag;
 	public static final field ZERO_PAD Lcom/splendo/kaluga/base/text/Flag;
 	public final fun getChar ()C
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/text/Flag;
 	public static fun values ()[Lcom/splendo/kaluga/base/text/Flag;
 }
@@ -669,6 +672,7 @@ public final class com/splendo/kaluga/base/text/RoundingMode : java/lang/Enum {
 	public static final field HalfEven Lcom/splendo/kaluga/base/text/RoundingMode;
 	public static final field HalfUp Lcom/splendo/kaluga/base/text/RoundingMode;
 	public static final field Up Lcom/splendo/kaluga/base/text/RoundingMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/text/RoundingMode;
 	public static fun values ()[Lcom/splendo/kaluga/base/text/RoundingMode;
 }
@@ -1233,6 +1237,7 @@ public final class com/splendo/kaluga/base/utils/RoundingMode$RoundUp : com/sple
 public final class com/splendo/kaluga/base/utils/TimeZoneNameStyle : java/lang/Enum {
 	public static final field Long Lcom/splendo/kaluga/base/utils/TimeZoneNameStyle;
 	public static final field Short Lcom/splendo/kaluga/base/utils/TimeZoneNameStyle;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/TimeZoneNameStyle;
 	public static fun values ()[Lcom/splendo/kaluga/base/utils/TimeZoneNameStyle;
 }
@@ -1242,6 +1247,7 @@ public final class com/splendo/kaluga/base/utils/UnitSystem : java/lang/Enum {
 	public static final field IMPERIAL Lcom/splendo/kaluga/base/utils/UnitSystem;
 	public static final field METRIC Lcom/splendo/kaluga/base/utils/UnitSystem;
 	public static final field MIXED Lcom/splendo/kaluga/base/utils/UnitSystem;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/UnitSystem;
 	public static fun values ()[Lcom/splendo/kaluga/base/utils/UnitSystem;
 }

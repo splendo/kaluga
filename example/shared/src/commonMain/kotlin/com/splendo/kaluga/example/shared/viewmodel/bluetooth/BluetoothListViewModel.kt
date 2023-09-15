@@ -137,7 +137,7 @@ class BluetoothListViewModel(
                 bluetooth.startScanning(
                     filter = filter,
                     cleanMode = cleanMode,
-                    connectionSettings = ConnectionSettings(logger = get())
+                    connectionSettings = ConnectionSettings(logger = get()),
                 )
             }
         }

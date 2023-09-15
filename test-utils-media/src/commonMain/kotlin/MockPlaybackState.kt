@@ -92,7 +92,9 @@ sealed class MockPlaybackState {
         override val playbackState: PlaybackState = this
         override fun initialize(source: MediaSource): suspend () -> PlaybackState.InitializedOrError =
             configuration.mediaProvider(source)?.let {
-                { Initialized(it, configuration) }
+                {
+                    Initialized(it, configuration)
+                }
             } ?: failWithError(PlaybackError.MalformedMediaSource)
     }
 

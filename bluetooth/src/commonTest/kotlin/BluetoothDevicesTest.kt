@@ -17,13 +17,15 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.firstInstance
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.verify
-import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager
@@ -58,9 +60,13 @@ class BluetoothDevicesTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.B
         val deferredDevice = CompletableDeferred<Device>()
 
         mainAction {
+            val didStartScanningCalled = EmptyCompletableDeferred()
+            scanner.didStartScanningMock.on().doExecuteSuspended {
+                didStartScanningCalled.complete()
+            }
             bluetooth.startScanning()
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
-            yieldMultiple(10)
+            didStartScanningCalled.await()
             scanner.didStartScanningMock.verify(eq(emptySet()))
             bluetooth.startScanning(filter)
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Idle>()

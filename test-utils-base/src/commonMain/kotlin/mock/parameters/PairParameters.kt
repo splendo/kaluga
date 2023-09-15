@@ -42,8 +42,8 @@ class PairParameters<T0, T1> : ParametersSpec<PairParameters.Matchers<T0, T1>, P
      */
     data class Matchers<T0, T1>(val first: ParameterMatcher<T0>, val second: ParameterMatcher<T1>) :
         ParametersSpec.Matchers {
-        override fun asList() = listOf(first, second)
-    }
+            override fun asList() = listOf(first, second)
+        }
 
     /**
      * The [ParametersSpec.MatchersOrCaptor] for two parameters
@@ -54,8 +54,8 @@ class PairParameters<T0, T1> : ParametersSpec<PairParameters.Matchers<T0, T1>, P
      */
     data class MatchersOrCaptor<T0, T1>(val first: ParameterMatcherOrCaptor<T0>, val second: ParameterMatcherOrCaptor<T1>) :
         ParametersSpec.MatchersOrCaptor<Matchers<T0, T1>> {
-        override fun asMatchers(): Matchers<T0, T1> = Matchers(first.asMatcher(), second.asMatcher())
-    }
+            override fun asMatchers(): Matchers<T0, T1> = Matchers(first.asMatcher(), second.asMatcher())
+        }
 
     /**
      * The [ParametersSpec.Values] for two parameters

@@ -73,14 +73,15 @@ struct BluetoothListView: View {
                 state: deviceRoute,
                 id: device.identifierString,
                 type: .sheet,
-                didSelect: { }
-            ) {
-            if let route = deviceRoute.object {
-                switch route {
-                case .details(let uuid): BluetoothDeviceDetailsView(identifier: uuid).equatable()
+                didSelect: { },
+                content: {
+                    if let route = deviceRoute.object {
+                        switch route {
+                        case .details(let uuid): BluetoothDeviceDetailsView(identifier: uuid).equatable()
+                        }
+                    }
                 }
-            }
-            }
+            )
     }
 }
 

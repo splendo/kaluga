@@ -59,22 +59,22 @@ abstract class BaseKoinUIThreadTest<C, TC : BaseKoinUIThreadTest.KoinTestContext
     ) :
         TestContext, KoinComponent {
 
-        constructor(vararg koinModules: Module) : this(null, koinModules.toList())
-        constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
-            appDeclaration,
-            koinModules.toList(),
-        )
+            constructor(vararg koinModules: Module) : this(null, koinModules.toList())
+            constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
+                appDeclaration,
+                koinModules.toList(),
+            )
 
-        init {
-            startKoin {
-                appDeclaration?.invoke(this)
-                modules(koinModules)
+            init {
+                startKoin {
+                    appDeclaration?.invoke(this)
+                    modules(koinModules)
+                }
+                loadKoinModules(koinModules.toList())
             }
-            loadKoinModules(koinModules.toList())
-        }
 
-        override fun dispose() {
-            stopKoin()
+            override fun dispose() {
+                stopKoin()
+            }
         }
-    }
 }

@@ -131,7 +131,9 @@ fun String.styled(
     defaultTextStyle,
     linkStyle,
     *attributes.map<StringStyleAttribute, String.() -> Pair<StringStyleAttribute, IntRange>?> { attribute ->
-        { attributeSubstring(this, attribute) }
+        {
+            attributeSubstring(this, attribute)
+        }
     }.toTypedArray(),
 )
 

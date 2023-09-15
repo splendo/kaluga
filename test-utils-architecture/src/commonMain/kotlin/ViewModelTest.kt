@@ -90,8 +90,8 @@ abstract class BaseUIThreadViewModelTest<Configuration, Context : BaseUIThreadVi
      */
     open class LazyViewModelTestContext<ViewModel : LifecycleViewModel>(coroutineScope: CoroutineScope, private val createViewModel: () -> ViewModel) :
         ViewModelTestContext<ViewModel>, CoroutineScope by coroutineScope {
-        override val viewModel: ViewModel by lazy { createViewModel() }
-    }
+            override val viewModel: ViewModel by lazy { createViewModel() }
+        }
 
     /**
      * A [BaseUIThreadTest.TestContext] that provides a [LifecycleViewModel]

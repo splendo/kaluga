@@ -44,8 +44,8 @@ sealed class MockScanningState {
         override val previousDevices: ScanningState.Devices,
     ) :
         Inactive(), ScanningState.Deinitialized {
-        override val reinitialize = suspend { Initializing(previousDevices) }
-    }
+            override val reinitialize = suspend { Initializing(previousDevices) }
+        }
 
     sealed class Active : MockScanningState() {
         abstract val devices: ScanningState.Devices
@@ -137,56 +137,56 @@ sealed class MockScanningState {
         ) : Enabled(),
             ScanningState.Enabled.Scanning {
 
-            override val permittedHandler: PermittedHandler = PermittedHandler(devices)
+                override val permittedHandler: PermittedHandler = PermittedHandler(devices)
 
-            val retrievePairedDevicesMock = this::retrievePairedDevices.mock()
+                val retrievePairedDevicesMock = this::retrievePairedDevices.mock()
 
-            override suspend fun retrievePairedDevices(
-                filter: Filter,
-                removeForAllPairedFilters: Boolean,
-                connectionSettings: ConnectionSettings?,
-            ): Unit = retrievePairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
+                override suspend fun retrievePairedDevices(
+                    filter: Filter,
+                    removeForAllPairedFilters: Boolean,
+                    connectionSettings: ConnectionSettings?,
+                ): Unit = retrievePairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
 
-            override fun pairedDevices(
-                devices: Map<Identifier, () -> Device>,
-                filter: Filter,
-                removeForAllPairedFilters: Boolean,
-            ): suspend () -> ScanningState.Enabled = {
-                Scanning(
-                    devicesForPairedDevices(devices, filter, removeForAllPairedFilters),
-                )
-            }
-
-            override suspend fun discoverDevices(
-                devices: List<ScanningState.Enabled.Scanning.DiscoveredDevice>,
-            ): suspend () -> ScanningState.Enabled.Scanning {
-                devices.mapNotNull { device ->
-                    this.devices.allDevices[device.identifier]?.let { knownDevice ->
-                        knownDevice.rssiDidUpdate(device.rssi)
-                        knownDevice.advertisementDataDidUpdate(device.advertisementData)
-                    }
+                override fun pairedDevices(
+                    devices: Map<Identifier, () -> Device>,
+                    filter: Filter,
+                    removeForAllPairedFilters: Boolean,
+                ): suspend () -> ScanningState.Enabled = {
+                    Scanning(
+                        devicesForPairedDevices(devices, filter, removeForAllPairedFilters),
+                    )
                 }
-                val unknownDevices = devices.filter {
-                    !this.devices.identifiersForCurrentScanFilter.contains(it.identifier)
-                }
-                return if (unknownDevices.isEmpty()) {
-                    remain()
-                } else {
-                    suspend {
-                        val newDiscovered = unknownDevices.fold(this.devices) { acc, discoveredDevice ->
-                            acc.copyAndAddScanned(discoveredDevice.identifier, discoveredDevice.deviceCreator)
+
+                override suspend fun discoverDevices(
+                    devices: List<ScanningState.Enabled.Scanning.DiscoveredDevice>,
+                ): suspend () -> ScanningState.Enabled.Scanning {
+                    devices.mapNotNull { device ->
+                        this.devices.allDevices[device.identifier]?.let { knownDevice ->
+                            knownDevice.rssiDidUpdate(device.rssi)
+                            knownDevice.advertisementDataDidUpdate(device.advertisementData)
                         }
-                        Scanning(
-                            newDiscovered,
-                        )
+                    }
+                    val unknownDevices = devices.filter {
+                        !this.devices.identifiersForCurrentScanFilter.contains(it.identifier)
+                    }
+                    return if (unknownDevices.isEmpty()) {
+                        remain()
+                    } else {
+                        suspend {
+                            val newDiscovered = unknownDevices.fold(this.devices) { acc, discoveredDevice ->
+                                acc.copyAndAddScanned(discoveredDevice.identifier, discoveredDevice.deviceCreator)
+                            }
+                            Scanning(
+                                newDiscovered,
+                            )
+                        }
                     }
                 }
-            }
 
-            override fun stopScanning(cleanMode: BluetoothService.CleanMode): suspend () -> ScanningState.Enabled.Idle = {
-                Idle(devices.updateScanFilter(devices.currentScanFilter.filter, cleanMode))
+                override fun stopScanning(cleanMode: BluetoothService.CleanMode): suspend () -> ScanningState.Enabled.Idle = {
+                    Idle(devices.updateScanFilter(devices.currentScanFilter.filter, cleanMode))
+                }
             }
-        }
     }
 
     sealed class NoBluetooth : Active() {

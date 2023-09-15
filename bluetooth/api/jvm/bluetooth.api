@@ -83,6 +83,7 @@ public final class com/splendo/kaluga/bluetooth/BluetoothService$CleanMode : jav
 	public static final field ONLY_PROVIDED_FILTER Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
 	public static final field REMOVE_ALL Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
 	public static final field RETAIN_ALL Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
 	public static fun values ()[Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
 }
@@ -595,6 +596,7 @@ public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$S
 	public static final field CONNECTING Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$State;
 	public static final field DISCONNECTED Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$State;
 	public static final field DISCONNECTING Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$State;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$State;
 	public static fun values ()[Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$State;
 }

@@ -101,7 +101,10 @@ actual class HUD private constructor(
         }
 
         @ColorInt
-        private fun resolveAttrColor(context: Context, @AttrRes colorAttrRes: Int): Int {
+        private fun resolveAttrColor(
+            context: Context,
+            @AttrRes colorAttrRes: Int,
+        ): Int {
             val typedValue = TypedValue()
             context.theme.resolveAttribute(colorAttrRes, typedValue, true)
             return typedValue.data
@@ -113,7 +116,10 @@ actual class HUD private constructor(
             private const val STYLE_KEY = "style"
             private const val TITLE_KEY = "title"
 
-            fun newInstance(@LayoutRes viewResId: Int, hudConfig: HudConfig) = LoadingDialog().apply {
+            fun newInstance(
+                @LayoutRes viewResId: Int,
+                hudConfig: HudConfig,
+            ) = LoadingDialog().apply {
                 arguments = Bundle().apply {
                     putInt(RESOURCE_ID_KEY, viewResId)
                     putInt(STYLE_KEY, hudConfig.style.ordinal)

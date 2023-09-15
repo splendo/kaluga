@@ -67,7 +67,10 @@ class GetOrPutAndRemoveOnDestroyFromCacheTest : BaseTest() {
         assertSame(dummy, returnedDummy)
 
         val defaultValueSecondTime = EmptyCompletableDeferred()
-        val returnedSecondTime = activity?.getOrPutAndRemoveOnDestroyFromCache { defaultValueSecondTime.complete(); mutableListOf("second") }
+        val returnedSecondTime = activity?.getOrPutAndRemoveOnDestroyFromCache {
+            defaultValueSecondTime.complete()
+            mutableListOf("second")
+        }
 
         assertSame(returnedFirstTime, returnedSecondTime)
         assertFalse(defaultValueSecondTime.isCompleted)
@@ -78,7 +81,10 @@ class GetOrPutAndRemoveOnDestroyFromCacheTest : BaseTest() {
         }
 
         // normally you should not use this method after onDestroy, but this way we can test if the previous object was cleaned up
-        val returnedThirdTime = activity?.getOrPutAndRemoveOnDestroyFromCache { defaultValueSecondTime.complete(); mutableListOf("third") }
+        val returnedThirdTime = activity?.getOrPutAndRemoveOnDestroyFromCache {
+            defaultValueSecondTime.complete()
+            mutableListOf("third")
+        }
 
         assertEquals("third", returnedThirdTime!![0], "After onDestroy the previous entry should be removed")
     }
