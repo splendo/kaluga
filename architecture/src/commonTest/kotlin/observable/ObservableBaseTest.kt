@@ -26,11 +26,12 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.milliseconds
 
 abstract class ObservableBaseTest : BaseTest() {
 
     companion object {
-        const val DELAY_MS = 30L
+        val DELAY_MS = 100.milliseconds
     }
 
     fun <V : String?, O> ((O) -> V).asUpdate() = { observable: O -> Value(this(observable)) }
@@ -230,6 +231,9 @@ abstract class ObservableBaseTest : BaseTest() {
         }
 
         semaphore.release()
+        if (shortDelayAfterUpdate) {
+            delay(DELAY_MS)
+        }
 
         updates.forEachIndexed { count, update ->
 
