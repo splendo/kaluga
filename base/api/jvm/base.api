@@ -21,10 +21,6 @@ public final class com/splendo/kaluga/base/KalugaThreadKt {
 	public static final fun isOnMainThread ()Z
 }
 
-public final class com/splendo/kaluga/base/MainQueueDispatcherKt {
-	public static final fun getMainQueueDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
-}
-
 public final class com/splendo/kaluga/base/MultiplatformMainScopeKt {
 	public static final fun MultiplatformMainScope ()Lkotlinx/coroutines/CoroutineScope;
 }
