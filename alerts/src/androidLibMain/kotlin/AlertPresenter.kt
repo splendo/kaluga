@@ -28,6 +28,10 @@ import android.widget.LinearLayout
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.base.utils.applyIf
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
+import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.resources.dpToPixel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +47,7 @@ import kotlinx.coroutines.launch
 actual class AlertPresenter(
     private val alert: Alert,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
+    private val logger: Logger,
     coroutineScope: CoroutineScope,
 ) : BaseAlertPresenter(alert), CoroutineScope by coroutineScope {
 
@@ -52,6 +57,7 @@ actual class AlertPresenter(
      */
     actual class Builder(
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
+        private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     ) : BaseAlertPresenter.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
 
         /**
@@ -62,7 +68,7 @@ actual class AlertPresenter(
          * @return The created [AlertPresenter]
          */
         actual override fun create(alert: Alert, coroutineScope: CoroutineScope) =
-            AlertPresenter(alert, lifecycleManagerObserver, coroutineScope)
+            AlertPresenter(alert, lifecycleManagerObserver, logger, coroutineScope)
     }
 
     private companion object {
@@ -96,9 +102,14 @@ actual class AlertPresenter(
             }.collect { contextPresentation ->
                 when (val dialogPresentation = contextPresentation.second) {
                     is DialogPresentation.Showing -> contextPresentation.first?.activity?.let {
+                        logger.info(TAG, "Displaying alert dialog with title: ${alert.title}")
                         presentDialog(it, dialogPresentation)
                     } ?: run { alertDialog = null }
-                    is DialogPresentation.Hidden -> alertDialog?.dismiss()
+
+                    is DialogPresentation.Hidden -> {
+                        logger.info(TAG, "Dismissing alert dialog with title: ${alert.title}")
+                        alertDialog?.dismiss()
+                    }
                 }
             }
         }
@@ -123,7 +134,10 @@ actual class AlertPresenter(
             .applyIf(alert.style == Alert.Style.ACTION_LIST) {
                 val titles = alert.actions.map { it.title }.toTypedArray()
                 setItems(titles) { _, which ->
-                    val action = alert.actions[which].apply { handler() }
+                    val action = alert.actions[which].apply {
+                        logger.info(TAG, "Action ${this.title} was called on dialog with title: ${alert.title}")
+                        handler()
+                    }
                     presentation.afterHandler(action)
                 }
             }
@@ -138,6 +152,7 @@ actual class AlertPresenter(
                 }
                 alert.actions.forEach { action ->
                     setButton(transform(action.style), action.title) { _, _ ->
+                        logger.info(TAG, "Action ${action.title} was called on dialog with title: ${alert.title}")
                         action.handler()
                         presentation.afterHandler(action)
                     }
@@ -146,6 +161,7 @@ actual class AlertPresenter(
             .applyIf(alert.style == Alert.Style.ALERT) {
                 alert.actions.forEach { action ->
                     setButton(transform(action.style), action.title) { _, _ ->
+                        logger.info(TAG, "Action ${action.title} was called on dialog with title: ${alert.title}")
                         action.handler()
                         presentation.afterHandler(action)
                     }
@@ -156,7 +172,10 @@ actual class AlertPresenter(
                     alertDialog = null
                     this@AlertPresenter.presentation.value = DialogPresentation.Hidden
                 }
-                setOnCancelListener { presentation.afterHandler(null) }
+                setOnCancelListener {
+                    logger.info(TAG, "Canceling alert dialog with title: ${alert.title}")
+                    presentation.afterHandler(null)
+                }
                 show()
             }
         presentation.completion()

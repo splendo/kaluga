@@ -18,6 +18,10 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.alerts
 
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
+import com.splendo.kaluga.logging.info
 import kotlinx.cinterop.ObjCAction
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSString
@@ -44,7 +48,8 @@ import platform.objc.sel_registerName
 actual class AlertPresenter(
     private val alert: Alert,
     private val parent: UIViewController,
-) : BaseAlertPresenter(alert) {
+    private val logger: Logger,
+    ) : BaseAlertPresenter(alert) {
 
     /** Ref to alert's [UITextField] of type [Alert.Style.TEXT_INPUT] */
     private var textField: UITextField? = null
@@ -85,7 +90,10 @@ actual class AlertPresenter(
      * A [BaseAlertPresenter.Builder] for creating an [AlertPresenter]
      * @param viewController The [UIViewController] to present any [AlertPresenter] built using this builder.
      */
-    actual class Builder(private val viewController: UIViewController) : BaseAlertPresenter.Builder() {
+    actual class Builder(
+        private val viewController: UIViewController,
+        private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
+    ) : BaseAlertPresenter.Builder() {
 
         /**
          * Creates an [AlertPresenter]
@@ -94,7 +102,7 @@ actual class AlertPresenter(
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The created [AlertPresenter]
          */
-        actual override fun create(alert: Alert, coroutineScope: CoroutineScope) = AlertPresenter(alert, viewController)
+        actual override fun create(alert: Alert, coroutineScope: CoroutineScope) = AlertPresenter(alert, viewController, logger)
     }
 
     override fun dismissAlert(animated: Boolean) {
@@ -117,6 +125,7 @@ actual class AlertPresenter(
                         action.title,
                         transform(action.style),
                     ) {
+                        logger.info(TAG, "Action ${action.title} was called on dialog with title: ${alert.title}")
                         action.handler()
                         afterHandler(action)
                     },
@@ -132,6 +141,7 @@ actual class AlertPresenter(
                         NSString.localizedStringWithFormat("Cancel"),
                         UIAlertActionStyleCancel,
                     ) {
+                        logger.info(TAG, "Canceling alert dialog with title: ${alert.title}")
                         afterHandler(null)
                     },
                 )
@@ -143,7 +153,11 @@ actual class AlertPresenter(
                 }
             }
         }.run {
-            parent.presentViewController(this, animated, completion)
+            logger.info(TAG, "Displaying alert dialog with title: ${alert.title}")
+            parent.presentViewController(this, animated) {
+                logger.info(TAG, "Dismissing alert dialog with title: ${alert.title}")
+                completion()
+            }
         }
     }
 

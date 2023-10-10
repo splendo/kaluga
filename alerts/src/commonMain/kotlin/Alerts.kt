@@ -296,6 +296,10 @@ interface AlertActions {
  */
 abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 
+    companion object {
+        const val TAG = "AlertDialog"
+    }
+
     /**
      * Abstract alert builder class, used to create a [BaseAlertPresenter].
      *
