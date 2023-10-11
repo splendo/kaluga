@@ -18,6 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.alerts
 
+import com.splendo.kaluga.logging.Logger
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -29,12 +30,13 @@ import kotlinx.coroutines.CoroutineScope
  */
 actual class AlertPresenter(
     alert: Alert,
-) : BaseAlertPresenter(alert) {
+    logger: Logger
+) : BaseAlertPresenter(alert, logger) {
 
     /**
      * A [BaseAlertPresenter.Builder] for creating an [AlertPresenter]
      */
-    actual class Builder : BaseAlertPresenter.Builder() {
+    actual class Builder(private val logger: Logger) : BaseAlertPresenter.Builder() {
 
         /**
          * Creates an [AlertPresenter]
@@ -44,7 +46,7 @@ actual class AlertPresenter(
          * @return The created [AlertPresenter]
          */
         actual override fun create(alert: Alert, coroutineScope: CoroutineScope): AlertPresenter {
-            return AlertPresenter(alert)
+            return AlertPresenter(alert, logger)
         }
     }
 

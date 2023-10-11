@@ -296,7 +296,7 @@ interface AlertActions {
  *
  * @param alert The [Alert] to present (and dismiss if needed)
  */
-abstract class BaseAlertPresenter(private val alert: Alert, protected val logger: Logger) : AlertActions {
+abstract class BaseAlertPresenter(private val alert: Alert, private val logger: Logger) : AlertActions {
 
     companion object {
         const val TAG = "AlertDialog"

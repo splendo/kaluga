@@ -49,7 +49,7 @@ actual class AlertPresenter(
     private val alert: Alert,
     private val parent: UIViewController,
     private val logger: Logger,
-) : BaseAlertPresenter(alert) {
+) : BaseAlertPresenter(alert, logger) {
 
     /** Ref to alert's [UITextField] of type [Alert.Style.TEXT_INPUT] */
     private var textField: UITextField? = null
@@ -91,10 +91,11 @@ actual class AlertPresenter(
      * A [BaseAlertPresenter.Builder] for creating an [AlertPresenter]
      * @param viewController The [UIViewController] to present any [AlertPresenter] built using this builder.
      */
-    actual class Builder(
-        private val viewController: UIViewController,
-        private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
-    ) : BaseAlertPresenter.Builder() {
+    actual class Builder(private val viewController: UIViewController, private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)) : BaseAlertPresenter.Builder() {
+
+        constructor(
+            viewController: UIViewController
+        ) : this(viewController, RestrictedLogger(RestrictedLogLevel.None))
 
         /**
          * Creates an [AlertPresenter]
