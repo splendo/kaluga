@@ -93,7 +93,7 @@ actual class AlertPresenter(
      */
     actual class Builder(
         private val viewController: UIViewController,
-        private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)
+        private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     ) : BaseAlertPresenter.Builder() {
 
         /**
@@ -107,6 +107,7 @@ actual class AlertPresenter(
     }
 
     override fun dismissAlert(animated: Boolean) {
+        super.dismissAlert(animated)
         parent.dismissModalViewControllerAnimated(animated)
     }
 
@@ -115,6 +116,7 @@ actual class AlertPresenter(
         afterHandler: (Alert.Action?) -> Unit,
         completion: () -> Unit,
     ) {
+        super.showAlert(animated, afterHandler, completion)
         UIAlertController.alertControllerWithTitle(
             alert.title,
             alert.message,
@@ -128,11 +130,7 @@ actual class AlertPresenter(
                         action.title,
                         transform(action.style),
                     ) {
-                        if (action.isCancelAction()) {
-                            logger.info(TAG, "Dismissing alert dialog with title: ${alert.title}")
-                        } else {
-                            logger.info(TAG, "Action ${action.title} was called on dialog with title: ${alert.title}")
-                        }
+                        logger.info(TAG, "Action ${action.title} was called on dialog with title: ${alert.title}")
                         action.handler()
                         afterHandler(action)
                     },
@@ -148,7 +146,7 @@ actual class AlertPresenter(
                         NSString.localizedStringWithFormat("Cancel"),
                         UIAlertActionStyleCancel,
                     ) {
-                        logger.info(TAG, "Dismissing alert dialog with title: ${alert.title}")
+                        logger.info(TAG, "Action Cancel was called on dialog with title: ${alert.title}")
                         afterHandler(null)
                     },
                 )
@@ -161,7 +159,6 @@ actual class AlertPresenter(
             }
         }.run {
             parent.presentViewController(this, animated) {
-                logger.info(TAG, "Displaying alert dialog with title: ${alert.title}")
                 completion()
             }
         }

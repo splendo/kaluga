@@ -47,9 +47,9 @@ import kotlinx.coroutines.launch
 actual class AlertPresenter(
     private val alert: Alert,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-    private val logger: Logger,
+    logger: Logger,
     coroutineScope: CoroutineScope,
-) : BaseAlertPresenter(alert), CoroutineScope by coroutineScope {
+) : BaseAlertPresenter(alert, logger), CoroutineScope by coroutineScope {
 
     /**
      * A [BaseAlertPresenter.Builder] for creating an [AlertPresenter]
@@ -102,12 +102,10 @@ actual class AlertPresenter(
             }.collect { contextPresentation ->
                 when (val dialogPresentation = contextPresentation.second) {
                     is DialogPresentation.Showing -> contextPresentation.first?.activity?.let {
-                        logger.info(TAG, "Displaying alert dialog with title: ${alert.title}")
                         presentDialog(it, dialogPresentation)
                     } ?: run { alertDialog = null }
 
                     is DialogPresentation.Hidden -> {
-                        logger.info(TAG, "Dismissing alert dialog with title: ${alert.title}")
                         alertDialog?.dismiss()
                     }
                 }
@@ -116,6 +114,7 @@ actual class AlertPresenter(
     }
 
     override fun dismissAlert(animated: Boolean) {
+        super.dismissAlert(animated)
         presentation.value = DialogPresentation.Hidden
     }
 
@@ -124,6 +123,7 @@ actual class AlertPresenter(
         afterHandler: (Alert.Action?) -> Unit,
         completion: () -> Unit,
     ) {
+        super.showAlert(animated, afterHandler, completion)
         presentation.value = DialogPresentation.Showing(animated, afterHandler, completion)
     }
 

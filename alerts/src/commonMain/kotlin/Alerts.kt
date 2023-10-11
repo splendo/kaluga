@@ -20,6 +20,8 @@ package com.splendo.kaluga.alerts
 
 import com.splendo.kaluga.alerts.Alert.Action.Style
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -294,7 +296,7 @@ interface AlertActions {
  *
  * @param alert The [Alert] to present (and dismiss if needed)
  */
-abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
+abstract class BaseAlertPresenter(private val alert: Alert, protected val logger: Logger) : AlertActions {
 
     companion object {
         const val TAG = "AlertDialog"
@@ -343,13 +345,17 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         dismissAlert(animated)
     }
 
-    protected abstract fun dismissAlert(animated: Boolean = true)
+    protected open fun dismissAlert(animated: Boolean = true) {
+        logger.info(TAG, "Dismissing alert dialog with title: ${alert.title}")
+    }
 
-    protected abstract fun showAlert(
+    protected open fun showAlert(
         animated: Boolean = true,
         afterHandler: (Alert.Action?) -> Unit = {},
         completion: () -> Unit = {},
-    )
+    ) {
+        logger.info(TAG, "Displaying alert dialog with title: ${alert.title}")
+    }
 }
 
 /**
