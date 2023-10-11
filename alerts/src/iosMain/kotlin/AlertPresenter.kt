@@ -49,7 +49,7 @@ actual class AlertPresenter(
     private val alert: Alert,
     private val parent: UIViewController,
     private val logger: Logger,
-    ) : BaseAlertPresenter(alert) {
+) : BaseAlertPresenter(alert) {
 
     /** Ref to alert's [UITextField] of type [Alert.Style.TEXT_INPUT] */
     private var textField: UITextField? = null
@@ -73,6 +73,7 @@ actual class AlertPresenter(
             Alert.Action.Style.POSITIVE,
             Alert.Action.Style.NEUTRAL,
             -> UIAlertActionStyleDefault
+
             Alert.Action.Style.DESTRUCTIVE -> UIAlertActionStyleDestructive
             Alert.Action.Style.CANCEL,
             Alert.Action.Style.NEGATIVE,
@@ -119,20 +120,26 @@ actual class AlertPresenter(
             alert.message,
             transform(alert.style),
         ).apply {
+            fun Alert.Action.isCancelAction(): Boolean =
+                (this.style == Alert.Action.Style.CANCEL) or (this.style == Alert.Action.Style.NEGATIVE)
             alert.actions.forEach { action ->
                 addAction(
                     UIAlertAction.actionWithTitle(
                         action.title,
                         transform(action.style),
                     ) {
-                        logger.info(TAG, "Action ${action.title} was called on dialog with title: ${alert.title}")
+                        if (action.isCancelAction()) {
+                            logger.info(TAG, "Dismissing alert dialog with title: ${alert.title}")
+                        } else {
+                            logger.info(TAG, "Action ${action.title} was called on dialog with title: ${alert.title}")
+                        }
                         action.handler()
                         afterHandler(action)
                     },
                 )
             }
             val cancelButtonIndex = alert.actions.indexOfFirst {
-                (it.style == Alert.Action.Style.CANCEL) or (it.style == Alert.Action.Style.NEGATIVE)
+                it.isCancelAction()
             }
             // If there is no Cancel action inject it by default for alerts if type ACTION_LIST
             if (alert.style == Alert.Style.ACTION_LIST && cancelButtonIndex == -1) {
@@ -141,7 +148,7 @@ actual class AlertPresenter(
                         NSString.localizedStringWithFormat("Cancel"),
                         UIAlertActionStyleCancel,
                     ) {
-                        logger.info(TAG, "Canceling alert dialog with title: ${alert.title}")
+                        logger.info(TAG, "Dismissing alert dialog with title: ${alert.title}")
                         afterHandler(null)
                     },
                 )
@@ -153,9 +160,8 @@ actual class AlertPresenter(
                 }
             }
         }.run {
-            logger.info(TAG, "Displaying alert dialog with title: ${alert.title}")
             parent.presentViewController(this, animated) {
-                logger.info(TAG, "Dismissing alert dialog with title: ${alert.title}")
+                logger.info(TAG, "Displaying alert dialog with title: ${alert.title}")
                 completion()
             }
         }
