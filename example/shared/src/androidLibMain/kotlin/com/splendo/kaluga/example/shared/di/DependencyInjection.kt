@@ -146,7 +146,7 @@ internal val androidModule = module {
     }
 
     viewModel {
-        TimerViewModel()
+        TimerViewModel(AlertPresenter.Builder())
     }
 
     viewModel {
