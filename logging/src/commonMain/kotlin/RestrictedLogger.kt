@@ -72,6 +72,10 @@ infix fun RestrictedLogLevel.or(other: RestrictedLogLevel): RestrictedLogLevel =
  */
 class RestrictedLogger(private val restrictedLogLevel: RestrictedLogLevel, private val logger: Logger = defaultLogger) : Logger {
 
+    constructor(
+        restrictedLogLevel: RestrictedLogLevel
+    ) : this(restrictedLogLevel, defaultLogger)
+
     override fun log(
         level: LogLevel,
         tag: String?,

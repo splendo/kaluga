@@ -31,7 +31,6 @@ import com.splendo.kaluga.base.utils.applyIf
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
-import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.resources.dpToPixel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -118,12 +117,11 @@ actual class AlertPresenter(
         presentation.value = DialogPresentation.Hidden
     }
 
-    override fun showAlert(
+    override fun handleShowAlert(
         animated: Boolean,
         afterHandler: (Alert.Action?) -> Unit,
         completion: () -> Unit,
     ) {
-        super.showAlert(animated, afterHandler, completion)
         presentation.value = DialogPresentation.Showing(animated, afterHandler, completion)
     }
 
@@ -135,7 +133,6 @@ actual class AlertPresenter(
                 val titles = alert.actions.map { it.title }.toTypedArray()
                 setItems(titles) { _, which ->
                     val action = alert.actions[which].apply {
-                        logger.info(TAG, "Action ${this.title} was called on dialog with title: ${alert.title}")
                         handler()
                     }
                     presentation.afterHandler(action)
@@ -152,7 +149,6 @@ actual class AlertPresenter(
                 }
                 alert.actions.forEach { action ->
                     setButton(transform(action.style), action.title) { _, _ ->
-                        logger.info(TAG, "Action ${action.title} was called on dialog with title: ${alert.title}")
                         action.handler()
                         presentation.afterHandler(action)
                     }
@@ -161,7 +157,6 @@ actual class AlertPresenter(
             .applyIf(alert.style == Alert.Style.ALERT) {
                 alert.actions.forEach { action ->
                     setButton(transform(action.style), action.title) { _, _ ->
-                        logger.info(TAG, "Action ${action.title} was called on dialog with title: ${alert.title}")
                         action.handler()
                         presentation.afterHandler(action)
                     }
@@ -173,7 +168,6 @@ actual class AlertPresenter(
                     this@AlertPresenter.presentation.value = DialogPresentation.Hidden
                 }
                 setOnCancelListener {
-                    logger.info(TAG, "Canceling alert dialog with title: ${alert.title}")
                     presentation.afterHandler(null)
                 }
                 show()

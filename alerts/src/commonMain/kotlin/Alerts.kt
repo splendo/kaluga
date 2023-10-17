@@ -334,6 +334,10 @@ abstract class BaseAlertPresenter(private val alert: Alert, private val logger: 
             showAlert(
                 animated,
                 afterHandler = { action ->
+                    // Null action is passed on cancel for both platforms
+                    action?.let {
+                        logger.info(TAG, "Action ${it.title} was called on dialog with title: ${alert.title}")
+                    } ?: logger.info(TAG, "Action Cancel was called on dialog with title: ${alert.title}")
                     continuation.tryResume(action)?.let {
                         continuation.completeResume(it)
                     }
@@ -349,13 +353,20 @@ abstract class BaseAlertPresenter(private val alert: Alert, private val logger: 
         logger.info(TAG, "Dismissing alert dialog with title: ${alert.title}")
     }
 
-    protected open fun showAlert(
+    private fun showAlert(
         animated: Boolean = true,
         afterHandler: (Alert.Action?) -> Unit = {},
         completion: () -> Unit = {},
     ) {
         logger.info(TAG, "Displaying alert dialog with title: ${alert.title}")
+        handleShowAlert(animated, afterHandler, completion)
     }
+
+    protected abstract fun handleShowAlert(
+        animated: Boolean = true,
+        afterHandler: (Alert.Action?) -> Unit = {},
+        completion: () -> Unit = {},
+    )
 }
 
 /**

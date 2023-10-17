@@ -21,7 +21,6 @@ package com.splendo.kaluga.alerts
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
-import com.splendo.kaluga.logging.info
 import kotlinx.cinterop.ObjCAction
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSString
@@ -112,12 +111,11 @@ actual class AlertPresenter(
         parent.dismissModalViewControllerAnimated(animated)
     }
 
-    override fun showAlert(
+    override fun handleShowAlert(
         animated: Boolean,
         afterHandler: (Alert.Action?) -> Unit,
         completion: () -> Unit,
     ) {
-        super.showAlert(animated, afterHandler, completion)
         UIAlertController.alertControllerWithTitle(
             alert.title,
             alert.message,
@@ -131,7 +129,6 @@ actual class AlertPresenter(
                         action.title,
                         transform(action.style),
                     ) {
-                        logger.info(TAG, "Action ${action.title} was called on dialog with title: ${alert.title}")
                         action.handler()
                         afterHandler(action)
                     },
@@ -147,7 +144,6 @@ actual class AlertPresenter(
                         NSString.localizedStringWithFormat("Cancel"),
                         UIAlertActionStyleCancel,
                     ) {
-                        logger.info(TAG, "Action Cancel was called on dialog with title: ${alert.title}")
                         afterHandler(null)
                     },
                 )

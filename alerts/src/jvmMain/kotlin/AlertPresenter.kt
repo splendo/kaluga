@@ -30,7 +30,7 @@ import kotlinx.coroutines.CoroutineScope
  */
 actual class AlertPresenter(
     alert: Alert,
-    logger: Logger
+    logger: Logger,
 ) : BaseAlertPresenter(alert, logger) {
 
     /**
@@ -66,7 +66,7 @@ actual class AlertPresenter(
         TODO("not implemented")
     }
 
-    override fun showAlert(
+    override fun handleShowAlert(
         animated: Boolean,
         afterHandler: (Alert.Action?) -> Unit,
         completion: () -> Unit,
