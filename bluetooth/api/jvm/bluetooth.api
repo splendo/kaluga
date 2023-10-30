@@ -83,6 +83,7 @@ public final class com/splendo/kaluga/bluetooth/BluetoothService$CleanMode : jav
 	public static final field ONLY_PROVIDED_FILTER Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
 	public static final field REMOVE_ALL Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
 	public static final field RETAIN_ALL Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
 	public static fun values ()[Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
 }
@@ -595,6 +596,7 @@ public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$S
 	public static final field CONNECTING Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$State;
 	public static final field DISCONNECTED Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$State;
 	public static final field DISCONNECTING Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$State;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$State;
 	public static fun values ()[Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$State;
 }
@@ -703,6 +705,7 @@ public abstract class com/splendo/kaluga/bluetooth/scanner/BaseScanner : com/spl
 	public static final field Companion Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Companion;
 	public fun <init> (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineDispatcher;)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineDispatcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun cancelRetrievingPairedDevices ()V
 	protected abstract fun didStartScanning (Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun didStopScanning (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun generateEnableSensorsActions ()Ljava/util/List;
@@ -800,6 +803,7 @@ public final class com/splendo/kaluga/bluetooth/scanner/DefaultScanner$Builder :
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/Scanner {
+	public abstract fun cancelRetrievingPairedDevices ()V
 	public abstract fun getConnectionEvents ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun getDiscoveryEvents ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun getEvents ()Lkotlinx/coroutines/flow/Flow;

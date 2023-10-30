@@ -146,7 +146,7 @@ internal val androidModule = module {
     }
 
     viewModel {
-        TimerViewModel()
+        TimerViewModel(AlertPresenter.Builder())
     }
 
     viewModel {
@@ -180,7 +180,7 @@ internal val androidModule = module {
     }
 
     viewModel { (navigator: Navigator<DeviceDetails>) ->
-        BluetoothListViewModel(navigator)
+        BluetoothListViewModel(AlertPresenter.Builder(), navigator)
     }
 
     viewModel { (identifier: com.splendo.kaluga.bluetooth.device.Identifier) ->

@@ -79,10 +79,10 @@ class ReadWritePropertyInitializedSubject<T>(
         observation,
     ),
     SuspendableSetter<T> by ReadWritePropertyObservableHelper(readWriteProperty, observation) {
-    init {
-        coroutineScope?.let { bind(it, context ?: coroutineScope.coroutineContext) }
+        init {
+            coroutineScope?.let { bind(it, context ?: coroutineScope.coroutineContext) }
+        }
     }
-}
 
 /**
  * A [BaseDefaultSubject] that matches its value to a [ReadWriteProperty].
@@ -114,12 +114,12 @@ class ReadWritePropertyDefaultSubject<R : T?, T>(
         observation,
     ),
     SuspendableSetter<T?> by ReadWritePropertyObservableHelper(readWriteProperty, observation) {
-    init {
-        coroutineScope?.let {
-            bind(coroutineScope, context ?: coroutineScope.coroutineContext)
+        init {
+            coroutineScope?.let {
+                bind(coroutineScope, context ?: coroutineScope.coroutineContext)
+            }
         }
     }
-}
 
 /**
  * Converts a [ReadWriteProperty] to a [ReadWritePropertyInitializedSubject]

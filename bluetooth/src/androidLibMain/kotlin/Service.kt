@@ -93,8 +93,7 @@ actual interface ServiceWrapper {
  * Default implementation of [ServiceWrapper]
  * @param gattService the [BluetoothGattService] to wrap
  */
-class DefaultGattServiceWrapper(private val gattService: BluetoothGattService) :
-    ServiceWrapper {
+class DefaultGattServiceWrapper(private val gattService: BluetoothGattService) : ServiceWrapper {
 
     override val uuid: java.util.UUID
         get() = gattService.uuid

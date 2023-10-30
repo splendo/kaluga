@@ -60,16 +60,4 @@ class BluetoothAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerVie
         val viewModel = bluetoothDevices[position]
         holder.binding.viewModel = viewModel
     }
-
-    override fun onViewAttachedToWindow(holder: BluetoothItemViewHolder) {
-        super.onViewAttachedToWindow(holder)
-
-        holder.binding.viewModel?.didResume()
-    }
-
-    override fun onViewDetachedFromWindow(holder: BluetoothItemViewHolder) {
-        super.onViewDetachedFromWindow(holder)
-
-        holder.binding.viewModel?.didPause()
-    }
 }

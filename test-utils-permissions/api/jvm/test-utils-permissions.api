@@ -57,6 +57,7 @@ public final class com/splendo/kaluga/test/permissions/MockPermissionState$Activ
 	public static final field ALLOWED Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
 	public static final field LOCKED Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
 	public static final field REQUESTABLE Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
 	public static fun values ()[Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
 }

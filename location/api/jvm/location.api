@@ -88,6 +88,7 @@ public final class com/splendo/kaluga/location/DMSCoordinate$WindDirection : jav
 	public static final field North Lcom/splendo/kaluga/location/DMSCoordinate$WindDirection;
 	public static final field South Lcom/splendo/kaluga/location/DMSCoordinate$WindDirection;
 	public static final field West Lcom/splendo/kaluga/location/DMSCoordinate$WindDirection;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/location/DMSCoordinate$WindDirection;
 	public static fun values ()[Lcom/splendo/kaluga/location/DMSCoordinate$WindDirection;
 }
@@ -149,6 +150,7 @@ public final class com/splendo/kaluga/location/Location$UnknownLocation$Reason :
 	public static final field NOT_CLEAR Lcom/splendo/kaluga/location/Location$UnknownLocation$Reason;
 	public static final field NO_GPS Lcom/splendo/kaluga/location/Location$UnknownLocation$Reason;
 	public static final field PERMISSION_DENIED Lcom/splendo/kaluga/location/Location$UnknownLocation$Reason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/location/Location$UnknownLocation$Reason;
 	public static fun values ()[Lcom/splendo/kaluga/location/Location$UnknownLocation$Reason;
 }

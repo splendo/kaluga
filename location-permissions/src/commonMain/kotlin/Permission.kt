@@ -32,13 +32,13 @@ import kotlin.time.Duration
  */
 data class LocationPermission(val background: Boolean = false, val precise: Boolean = false) :
     Permission() {
-    override val name: String = listOfNotNull(
-        if (background) "Background" else null,
-        "Location",
-        "-",
-        if (precise) "Precise" else "Coarse",
-    ).joinToString(" ")
-}
+        override val name: String = listOfNotNull(
+            if (background) "Background" else null,
+            "Location",
+            "-",
+            if (precise) "Precise" else "Coarse",
+        ).joinToString(" ")
+    }
 
 /**
  * Registers a [BaseLocationPermissionManagerBuilder] and [PermissionStateRepo] for [LocationPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively

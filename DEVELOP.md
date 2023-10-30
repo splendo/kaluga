@@ -175,3 +175,4 @@ e: org.jetbrains.kotlin.konan.KonanExternalToolFailure: The /usr/bin/xcrun comma
 Go to `XCode` -> `Preferences` -> `Locations tab` -> `Command Line Tools` dropdown.
 
 It should show none selected, so select any item.
+

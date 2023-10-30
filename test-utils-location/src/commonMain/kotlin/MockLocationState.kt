@@ -34,8 +34,8 @@ sealed class MockLocationState {
 
     data class Deinitialized(override val location: Location) :
         Inactive(), LocationState.Deinitialized {
-        override val reinitialize = suspend { Initializing(location) }
-    }
+            override val reinitialize = suspend { Initializing(location) }
+        }
 
     sealed class Active : MockLocationState() {
         abstract val location: Location

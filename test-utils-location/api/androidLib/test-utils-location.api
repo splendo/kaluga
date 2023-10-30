@@ -77,6 +77,7 @@ public final class com/splendo/kaluga/test/location/MockLocationState$Deinitiali
 	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
 	public fun getReinitialize ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
+	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -88,12 +89,14 @@ public final class com/splendo/kaluga/test/location/MockLocationState$Disabled$N
 	public fun getEnable ()Lkotlin/jvm/functions/Function1;
 	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
 	public fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/test/location/MockLocationState$Disabled$NotPermitted : com/splendo/kaluga/test/location/MockLocationState$Disabled, com/splendo/kaluga/location/LocationState$Disabled$NotPermitted {
 	public fun <init> (Lcom/splendo/kaluga/location/Location;)V
 	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
 	public fun permit (Z)Lkotlin/jvm/functions/Function1;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/test/location/MockLocationState$Enabled : com/splendo/kaluga/test/location/MockLocationState$Active, com/splendo/kaluga/location/LocationState$Enabled {
@@ -106,6 +109,7 @@ public final class com/splendo/kaluga/test/location/MockLocationState$Enabled : 
 	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
 	public fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
+	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 	public fun updateWithLocation (Lcom/splendo/kaluga/location/Location$KnownLocation;)Lkotlin/jvm/functions/Function1;
 }
@@ -122,12 +126,14 @@ public final class com/splendo/kaluga/test/location/MockLocationState$Initializi
 	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
 	public fun hashCode ()I
 	public fun initialize (ZZ)Lkotlin/jvm/functions/Function1;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/test/location/MockLocationState$NotInitialized : com/splendo/kaluga/test/location/MockLocationState$Inactive, com/splendo/kaluga/location/LocationState$NotInitialized {
 	public static final field INSTANCE Lcom/splendo/kaluga/test/location/MockLocationState$NotInitialized;
 	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public final fun startInitializing ()Lkotlin/jvm/functions/Function0;
 }
 

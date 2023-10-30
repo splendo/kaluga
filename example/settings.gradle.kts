@@ -71,7 +71,7 @@ dependencyResolutionManagement {
                     logger.lifecycle("local.properties read (kaluga.exampleMavenRepo=$exampleMavenRepoLocalProperties, using $it)")
                 }
                     ?: "local".also {
-                        logger.lifecycle("local.properties not found, using default value ($it)")
+                        logger.info("local.properties not found, using default value ($it)")
                     }
             }
             logger.lifecycle("Using repo: $exampleMavenRepo for resolving dependencies")

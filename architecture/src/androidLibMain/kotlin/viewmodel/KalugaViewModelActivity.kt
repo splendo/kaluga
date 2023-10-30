@@ -24,7 +24,9 @@ import androidx.appcompat.app.AppCompatActivity
 /**
  * Convenience [AppCompatActivity] that is bound to a [LifecycleViewModel]
  */
-abstract class KalugaViewModelActivity<ViewModel : BaseLifecycleViewModel>(@LayoutRes layout: Int = 0) : AppCompatActivity(layout) {
+abstract class KalugaViewModelActivity<ViewModel : BaseLifecycleViewModel>(
+    @LayoutRes layout: Int = 0,
+) : AppCompatActivity(layout) {
 
     abstract val viewModel: ViewModel
 

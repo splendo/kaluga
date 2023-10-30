@@ -380,7 +380,7 @@ sealed class ComposableNavSpec {
         @Composable
         override fun createLauncher(viewModel: BaseLifecycleViewModel, onDispose: () -> Unit): () -> Unit {
             val context = LocalContext.current
-            val intent = context.activity?.intent
+            val intent = context.activity?.let { createIntent(it) }
             return {
                 intent?.let {
                     context.startActivity(it)

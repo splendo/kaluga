@@ -18,7 +18,6 @@
 package com.splendo.kaluga.architecture.navigation
 
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import com.splendo.kaluga.base.GCScheduler
 import kotlinx.cinterop.pointed
 import platform.CoreGraphics.CGFloat
 import platform.Foundation.NSNumber
@@ -127,8 +126,6 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(
             is NavigationSpec.Browser -> openBrowser(spec)
             is NavigationSpec.ThirdParty -> openThirdPartyApp(spec)
         }
-        // Since navigation often references UIViewControllers they should be freed up to keep ARC working
-        GCScheduler.schedule()
     }
 
     private fun pushViewController(pushSpec: NavigationSpec.Push) {

@@ -22,7 +22,13 @@ import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.test.base.mock.answer.Answer
 import com.splendo.kaluga.test.base.mock.answer.BaseAnswer
 import com.splendo.kaluga.test.base.mock.answer.SuspendedAnswer
+import com.splendo.kaluga.test.base.mock.parameters.PairParameters
 import com.splendo.kaluga.test.base.mock.parameters.ParametersSpec
+import com.splendo.kaluga.test.base.mock.parameters.QuadrupleParameters
+import com.splendo.kaluga.test.base.mock.parameters.QuintupleParameters
+import com.splendo.kaluga.test.base.mock.parameters.SingleParameters
+import com.splendo.kaluga.test.base.mock.parameters.TripleParameters
+import com.splendo.kaluga.test.base.mock.parameters.VoidParameters
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
@@ -184,18 +190,21 @@ fun <
     M : ParametersSpec.Matchers,
     V : ParametersSpec.Values,
     A : BaseAnswer<V, Unit>,
-    Stub : BaseMethodMock.Stub<M, V, Unit, A>,> Stub.doReturn() {
+    Stub : BaseMethodMock.Stub<M, V, Unit, A>,
+    > Stub.doReturn() {
     doExecute { }
 }
 
 /**
  * A [BaseMethodMock] for non-suspending methods.
  */
-class MethodMock<M : ParametersSpec.Matchers,
+class MethodMock<
+    M : ParametersSpec.Matchers,
     C : ParametersSpec.MatchersOrCaptor<M>,
     V : ParametersSpec.Values,
     W : ParametersSpec<M, C, V>,
-    R,>(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, Answer<V, R>, MethodMock.Stub<M, V, R>>() {
+    R,
+    >(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, Answer<V, R>, MethodMock.Stub<M, V, R>>() {
     internal fun callWithValues(values: V): R = getStubFor(values).call(values)
 
     override fun createStub(matcher: M): Stub<M, V, R> = Stub(matcher)
@@ -206,7 +215,8 @@ class MethodMock<M : ParametersSpec.Matchers,
     class Stub<
         M : ParametersSpec.Matchers,
         V : ParametersSpec.Values,
-        R,>(override val matchers: M) : BaseMethodMock.Stub<M, V, R, Answer<V, R>>() {
+        R,
+        >(override val matchers: M) : BaseMethodMock.Stub<M, V, R, Answer<V, R>>() {
         override fun createAnswer(result: (V) -> R): Answer<V, R> = object : Answer<V, R> {
             override fun call(values: V): R = result(values)
         }
@@ -230,7 +240,8 @@ class SuspendMethodMock<
     C : ParametersSpec.MatchersOrCaptor<M>,
     V : ParametersSpec.Values,
     W : ParametersSpec<M, C, V>,
-    R,>(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, SuspendedAnswer<V, R>, SuspendMethodMock.Stub<M, V, R>>() {
+    R,
+    >(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, SuspendedAnswer<V, R>, SuspendMethodMock.Stub<M, V, R>>() {
 
     internal suspend fun callWithValues(values: V): R = getStubFor(values).call(values)
 
@@ -283,3 +294,103 @@ class SuspendMethodMock<
         }
     }
 }
+
+typealias VoidParametersMock<Result> = MethodMock<VoidParameters.Matchers, VoidParameters.MatchersOrCaptor, VoidParameters.Values, VoidParameters, Result>
+fun <Result> voidParametersMock() = VoidParametersMock<Result>(VoidParameters)
+
+typealias SingleParametersMock<ValueOne, Result> = MethodMock<
+    SingleParameters.Matchers<ValueOne>,
+    SingleParameters.MatchersOrCaptor<ValueOne>,
+    SingleParameters.Values<ValueOne>,
+    SingleParameters<ValueOne>,
+    Result,
+    >
+fun <ValueOne, Result> singleParametersMock() = SingleParametersMock<ValueOne, Result>(SingleParameters())
+
+typealias PairParametersMock<ValueOne, ValueTwo, Result> = MethodMock<
+    PairParameters.Matchers<ValueOne, ValueTwo>,
+    PairParameters.MatchersOrCaptor<ValueOne, ValueTwo>,
+    PairParameters.Values<ValueOne, ValueTwo>,
+    PairParameters<ValueOne, ValueTwo>,
+    Result,
+    >
+fun <ValueOne, ValueTwo, Result> pairParametersMock() = PairParametersMock<ValueOne, ValueTwo, Result>(PairParameters())
+
+typealias TripleParametersMock<ValueOne, ValueTwo, ValueThree, Result> = MethodMock<
+    TripleParameters.Matchers<ValueOne, ValueTwo, ValueThree>,
+    TripleParameters.MatchersOrCaptor<ValueOne, ValueTwo, ValueThree>,
+    TripleParameters.Values<ValueOne, ValueTwo, ValueThree>,
+    TripleParameters<ValueOne, ValueTwo, ValueThree>,
+    Result,
+    >
+fun <ValueOne, ValueTwo, ValueThree, Result> tripleParametersMock() = TripleParametersMock<ValueOne, ValueTwo, ValueThree, Result>(TripleParameters())
+
+typealias QuadrupleParametersMock<ValueOne, ValueTwo, ValueThree, ValueFour, Result> = MethodMock<
+    QuadrupleParameters.Matchers<ValueOne, ValueTwo, ValueThree, ValueFour>,
+    QuadrupleParameters.MatchersOrCaptor<ValueOne, ValueTwo, ValueThree, ValueFour>,
+    QuadrupleParameters.Values<ValueOne, ValueTwo, ValueThree, ValueFour>,
+    QuadrupleParameters<ValueOne, ValueTwo, ValueThree, ValueFour>,
+    Result,
+    >
+fun <ValueOne, ValueTwo, ValueThree, ValueFour, Result> quadrupleParametersMock() =
+    QuadrupleParametersMock<ValueOne, ValueTwo, ValueThree, ValueFour, Result>(QuadrupleParameters())
+
+typealias QuintupleParametersMock<ValueOne, ValueTwo, ValueThree, ValueFour, ValueFive, Result> = MethodMock<
+    QuintupleParameters.Matchers<ValueOne, ValueTwo, ValueThree, ValueFour, ValueFive>,
+    QuintupleParameters.MatchersOrCaptor<ValueOne, ValueTwo, ValueThree, ValueFour, ValueFive>,
+    QuintupleParameters.Values<ValueOne, ValueTwo, ValueThree, ValueFour, ValueFive>,
+    QuintupleParameters<ValueOne, ValueTwo, ValueThree, ValueFour, ValueFive>,
+    Result,
+    >
+fun <ValueOne, ValueTwo, ValueThree, ValueFour, ValueFive, Result> quintupleParametersMock() =
+    QuintupleParametersMock<ValueOne, ValueTwo, ValueThree, ValueFour, ValueFive, Result>(QuintupleParameters())
+
+typealias SuspendVoidParametersMock<Result> = SuspendMethodMock<VoidParameters.Matchers, VoidParameters.MatchersOrCaptor, VoidParameters.Values, VoidParameters, Result>
+fun <Result> suspendVoidParametersMock() = SuspendVoidParametersMock<Result>(VoidParameters)
+
+typealias SuspendSingleParametersMock<ValueOne, Result> = SuspendMethodMock<
+    SingleParameters.Matchers<ValueOne>,
+    SingleParameters.MatchersOrCaptor<ValueOne>,
+    SingleParameters.Values<ValueOne>,
+    SingleParameters<ValueOne>,
+    Result,
+    >
+fun <ValueOne, Result> suspendSingleParametersMock() = SuspendSingleParametersMock<ValueOne, Result>(SingleParameters())
+
+typealias SuspendPairParametersMock<ValueOne, ValueTwo, Result> = SuspendMethodMock<
+    PairParameters.Matchers<ValueOne, ValueTwo>,
+    PairParameters.MatchersOrCaptor<ValueOne, ValueTwo>,
+    PairParameters.Values<ValueOne, ValueTwo>,
+    PairParameters<ValueOne, ValueTwo>,
+    Result,
+    >
+fun <ValueOne, ValueTwo, Result> suspendPairParametersMock() = SuspendPairParametersMock<ValueOne, ValueTwo, Result>(PairParameters())
+
+typealias SuspendTripleParametersMock<ValueOne, ValueTwo, ValueThree, Result> = SuspendMethodMock<
+    TripleParameters.Matchers<ValueOne, ValueTwo, ValueThree>,
+    TripleParameters.MatchersOrCaptor<ValueOne, ValueTwo, ValueThree>,
+    TripleParameters.Values<ValueOne, ValueTwo, ValueThree>,
+    TripleParameters<ValueOne, ValueTwo, ValueThree>,
+    Result,
+    >
+fun <ValueOne, ValueTwo, ValueThree, Result> suspendTripleParametersMock() = SuspendTripleParametersMock<ValueOne, ValueTwo, ValueThree, Result>(TripleParameters())
+
+typealias SuspendQuadrupleParametersMock<ValueOne, ValueTwo, ValueThree, ValueFour, Result> = SuspendMethodMock<
+    QuadrupleParameters.Matchers<ValueOne, ValueTwo, ValueThree, ValueFour>,
+    QuadrupleParameters.MatchersOrCaptor<ValueOne, ValueTwo, ValueThree, ValueFour>,
+    QuadrupleParameters.Values<ValueOne, ValueTwo, ValueThree, ValueFour>,
+    QuadrupleParameters<ValueOne, ValueTwo, ValueThree, ValueFour>,
+    Result,
+    >
+fun <ValueOne, ValueTwo, ValueThree, ValueFour, Result> suspendQuadrupleParametersMock() =
+    SuspendQuadrupleParametersMock<ValueOne, ValueTwo, ValueThree, ValueFour, Result>(QuadrupleParameters())
+
+typealias SuspendQuintupleParametersMock<ValueOne, ValueTwo, ValueThree, ValueFour, ValueFive, Result> = SuspendMethodMock<
+    QuintupleParameters.Matchers<ValueOne, ValueTwo, ValueThree, ValueFour, ValueFive>,
+    QuintupleParameters.MatchersOrCaptor<ValueOne, ValueTwo, ValueThree, ValueFour, ValueFive>,
+    QuintupleParameters.Values<ValueOne, ValueTwo, ValueThree, ValueFour, ValueFive>,
+    QuintupleParameters<ValueOne, ValueTwo, ValueThree, ValueFour, ValueFive>,
+    Result,
+    >
+fun <ValueOne, ValueTwo, ValueThree, ValueFour, ValueFive, Result> suspendQuintupleParametersMock() =
+    SuspendQuintupleParametersMock<ValueOne, ValueTwo, ValueThree, ValueFour, ValueFive, Result>(QuintupleParameters())

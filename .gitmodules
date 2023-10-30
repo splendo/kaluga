@@ -1,3 +1,6 @@
 [submodule "example/ios/Kaluga-SwiftUI"]
 	path = example/ios/Kaluga-SwiftUI
 	url = https://github.com/splendo/kaluga-swiftui.git
+[submodule "gradle-test-recorder"]
+	path = gradle-test-recorder
+	url =  https://github.com/thoutbeckers/gradle-test-recorder.git

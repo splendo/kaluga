@@ -45,7 +45,7 @@ class LibraryImpl(project: Project) {
     val version: String by lazy {
         val libraryVersionLocalProperties: String? = props["kaluga.libraryVersion"] as? String
         (libraryVersionLocalProperties ?: "$baseVersion${project.GitBranch.kalugaBranchPostfix}").also {
-            println("Library version $it")
+            logger.info("Library version $it")
         }
     }
     val kotlinVersion = project.extra["kaluga.kotlinVersion"] as? String ?: kotlin.run {
@@ -55,27 +55,27 @@ class LibraryImpl(project: Project) {
 
     object Android {
         const val minSdk = 23
-        const val compileSdk = 33
-        const val targetSdk = 33
-        const val buildTools = "33.0.2"
-        const val composeCompiler = "1.4.7"
+        const val compileSdk = 34
+        const val targetSdk = 34
+        const val buildTools = "34.0.0"
+        const val composeCompiler = "1.5.3"
     }
 
     class IOSLibrary(props: Properties, logger: Logger) {
         // based on https://github.com/Kotlin/xcode-compat/blob/d677a43edc46c50888bca0a7890a81f976a42809/xcode-compat/src/main/kotlin/org/jetbrains/kotlin/xcodecompat/XcodeCompatPlugin.kt#L16
         val sdkName = System.getenv("SDK_NAME") ?: "unknown"
         val isRealIOSDevice = sdkName.startsWith("iphoneos").also {
-            logger.lifecycle("Run on real ios device: $it from sdk: $sdkName")
+            logger.info("Run on real ios device: $it from sdk: $sdkName")
         }
 
         // Run on IntelliJ
         val ideaActive = (System.getProperty("idea.active") == "true").also {
-            logger.lifecycle("Run on IntelliJ: $it")
+            logger.info("Run on IntelliJ: $it")
         }
 
         // Run on apple silicon
         val isAppleSilicon = (System.getProperty("os.arch") == "aarch64").also {
-            logger.lifecycle("Run on apple silicon: $it")
+            logger.info("Run on apple silicon: $it")
         }
 
         val targets = when {
@@ -84,7 +84,7 @@ class LibraryImpl(project: Project) {
             isAppleSilicon -> setOf(IOSTarget.SimulatorArm64)
             else -> setOf(IOSTarget.X64)
         }.also { targets ->
-            logger.lifecycle("Run on ios targets: ${targets.joinToString(" ") { it.name }}")
+            logger.info("Run on ios targets: ${targets.joinToString(" ") { it.name }}")
         }
 
         val TestRunnerDeviceId by lazy {
@@ -100,16 +100,22 @@ class LibraryImpl(project: Project) {
                     logger.lifecycle("local.properties read (kaluga.iosTestRunnerDeviceIdLocalProperty=$iosTestRunnerDeviceIdLocalProperty, using $it)")
                 }
                     ?: "iPhone 14".also {
-                        logger.lifecycle("local.properties not found, using default value ($it)")
+                        logger.info("local.properties not found, using default value ($it)")
                     }
             }
         }
     }
     val IOS = IOSLibrary(props, logger)
 
-    val connectCheckExpansion = (System.getenv().containsKey("CONNECTED_CHECK_EXPANSION") or System.getenv().containsKey("CI")).also {
+    private val testDependentProjectsEnvName = "TEST_DEPENDENT_PROJECTS"
+    private val testDependentProjects = System.getenv().containsKey(testDependentProjectsEnvName)
+
+    private val onCiEnvName = "CI"
+    private val onCI = System.getenv().containsKey(onCiEnvName)
+
+    val enableDependentProjects = (testDependentProjects or onCI).also {
         if (it) {
-            logger.lifecycle("Adding extra dependend task to connected checks of similarly named modules (CONNECTED_CHECK_EXPANSION env present: ${ System.getenv().containsKey("CONNECTED_CHECK_EXPANSION") })")
+            logger.info("Adding extra dependent tasks to test tasks of similarly named modules ($testDependentProjectsEnvName env present: $testDependentProjects $onCiEnvName env present: $onCI)")
         }
     }
 }

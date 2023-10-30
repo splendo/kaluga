@@ -58,3 +58,21 @@ android {
         apiDependency(Dependencies.Koin.Android)
     }
 }
+
+// Use Gradle 8 before Kotlin 1.9 https://youtrack.jetbrains.com/issue/KT-55751
+listOf(
+    "debugFrameworkIosFat",
+    "debugFrameworkIosX64",
+    "releaseFrameworkIosX64",
+    "releaseFrameworkIosFat",
+).forEach {
+    if (configurations.names.contains(it)) {
+        configurations.named(it).configure {
+            attributes {
+                attributes {
+                    attribute(Attribute.of("KT-55751", String::class.java), it)
+                }
+            }
+        }
+    }
+}

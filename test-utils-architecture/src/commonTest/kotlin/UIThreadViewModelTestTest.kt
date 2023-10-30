@@ -20,6 +20,10 @@ package com.splendo.kaluga.test.architecture
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedSubject
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import com.splendo.kaluga.test.base.mock.call
+import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.test.base.mock.voidParametersMock
 import com.splendo.kaluga.test.base.yieldMultiple
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineScope
@@ -36,19 +40,25 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewMode
 
     companion object {
         val isDisposed = atomic(false)
+        val onClearedMock = voidParametersMock<Unit>().apply {
+            on().doReturn(Unit)
+        }
     }
 
     class ViewModel : BaseLifecycleViewModel() {
         var v: String = ""
+
+        override fun onCleared() = onClearedMock.call()
     }
 
     class CustomLazyViewModelTestContext(coroutineScope: CoroutineScope) :
         LazyViewModelTestContext<ViewModel>(coroutineScope, { ViewModel() }) {
 
-        override fun dispose() {
-            isDisposed.value = true
+            override fun dispose() {
+                super.dispose()
+                isDisposed.value = true
+            }
         }
-    }
 
     override val createTestContext: suspend (scope: CoroutineScope) -> CustomLazyViewModelTestContext =
         { CustomLazyViewModelTestContext(it) }
@@ -79,14 +89,24 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewMode
     @AfterTest
     fun testDisposed() {
         assertTrue(isDisposed.value)
+        onClearedMock.verify()
+        onClearedMock.resetCalls()
     }
 }
 
 class CustomUIThreadViewModelTestTest : UIThreadViewModelTest<CustomUIThreadViewModelTestTest.CustomViewModelTestContext, CustomUIThreadViewModelTestTest.MyViewModel>() {
 
+    companion object {
+        val onClearedMock = voidParametersMock<Unit>().apply {
+            on().doReturn(Unit)
+        }
+    }
+
     class MyViewModel(testFlow: MutableStateFlow<Int>) : BaseLifecycleViewModel() {
         val testObservable = testFlow.map { it.toString() }.toInitializedObservable("", coroutineScope)
         val testSubject = testFlow.toInitializedSubject(coroutineScope)
+
+        override fun onCleared() = onClearedMock.call()
     }
 
     class CustomViewModelTestContext : ViewModelTestContext<MyViewModel> {
@@ -115,5 +135,11 @@ class CustomUIThreadViewModelTestTest : UIThreadViewModelTest<CustomUIThreadView
 
         observableDisposable.dispose()
         subjectDisposable.dispose()
+    }
+
+    @AfterTest
+    fun testCleared() {
+        onClearedMock.verify()
+        onClearedMock.resetCalls()
     }
 }

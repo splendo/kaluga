@@ -65,16 +65,22 @@ open class StateFlowInitializedSubject<T>(
         coroutineScope,
         context,
         { observedStateFlow },
-        { observedStateFlow.value = it },
-        { observedStateFlow.value = it },
+        {
+            observation.setSuspendedIfNot(it)
+            observedStateFlow.value = it
+        },
+        {
+            observation.setIfNot(it)
+            observedStateFlow.value = it
+        },
         observation,
     ) {
-    init {
-        if (autoBind) {
-            bind(coroutineScope, context)
+        init {
+            if (autoBind) {
+                bind(coroutineScope, context)
+            }
         }
     }
-}
 
 /**
  * A [BaseDefaultSubject] that matches the state of a [MutableStateFlow].
@@ -102,16 +108,22 @@ open class StateFlowDefaultSubject<R : T?, T>(
         coroutineScope,
         context,
         { observedStateFlow },
-        { observedStateFlow.value = it },
-        { observedStateFlow.value = it },
+        {
+            observation.setSuspendedIfNot(it)
+            observedStateFlow.value = it
+        },
+        {
+            observation.setIfNot(it)
+            observedStateFlow.value = it
+        },
         observation,
     ) {
-    init {
-        if (autoBind) {
-            bind(coroutineScope, context)
+        init {
+            if (autoBind) {
+                bind(coroutineScope, context)
+            }
         }
     }
-}
 
 /**
  * A [BaseUninitializedSubject] that matches the state of a [MutableSharedFlow].
@@ -132,18 +144,21 @@ open class SharedFlowSubject<T>(
     observation,
 ),
     SuspendableSetter<T> by MutableFlowSubjectHelper(
-        coroutineScope,
-        context,
-        { sharedFlow },
-        { sharedFlow.emit(it) },
+        coroutineScope = coroutineScope,
+        context = context,
+        flow = { sharedFlow },
+        setter = {
+            observation.setSuspendedIfNot(it)
+            sharedFlow.emit(it)
+        },
         observation = observation,
     ) {
-    init {
-        if (autoBind) {
-            bind(coroutineScope, context)
+        init {
+            if (autoBind) {
+                bind(coroutineScope, context)
+            }
         }
     }
-}
 
 /**
  * A [BaseInitializedSubject] that matches the state of a [MutableSharedFlow].
@@ -169,15 +184,18 @@ open class SharedFlowInitializedSubject<T>(
         coroutineScope,
         context,
         { sharedFlow },
-        { sharedFlow.emit(it) },
+        {
+            observation.setSuspendedIfNot(it)
+            sharedFlow.emit(it)
+        },
         observation = observation,
     ) {
-    init {
-        if (autoBind) {
-            bind(coroutineScope, context)
+        init {
+            if (autoBind) {
+                bind(coroutineScope, context)
+            }
         }
     }
-}
 
 /**
  * A [BaseDefaultSubject] that matches the state of a [MutableSharedFlow].
@@ -208,15 +226,18 @@ open class SharedFlowDefaultSubject<R : T?, T>(
         coroutineScope,
         context,
         { sharedFlow },
-        { sharedFlow.emit(it) },
+        {
+            observation.setSuspendedIfNot(it)
+            sharedFlow.emit(it)
+        },
         observation = observation,
     ) {
-    init {
-        if (autoBind) {
-            bind(coroutineScope, context)
+        init {
+            if (autoBind) {
+                bind(coroutineScope, context)
+            }
         }
     }
-}
 
 /**
  * Converts a [MutableSharedFlow] to a [SharedFlowSubject]

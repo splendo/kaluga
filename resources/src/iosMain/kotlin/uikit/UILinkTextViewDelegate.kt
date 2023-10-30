@@ -33,7 +33,7 @@ import platform.darwin.NSObject
 internal class UILinkTextViewDelegate : NSObject(), UITextViewDelegateProtocol {
 
     object Registry {
-        val registeredDelegates = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0)
+        val registeredDelegates = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0U)
     }
 
     override fun textView(

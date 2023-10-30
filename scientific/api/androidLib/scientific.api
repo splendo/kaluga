@@ -1,9 +1,15 @@
 public abstract interface class com/splendo/kaluga/scientific/ByteScientificArray : com/splendo/kaluga/scientific/ScientificArray {
-	public fun get (I)Ljava/lang/Byte;
-	public synthetic fun get (I)Ljava/lang/Number;
-	public fun getSize ()I
+	public abstract fun get (I)Ljava/lang/Byte;
+	public abstract fun getSize ()I
 	public abstract fun getValues ()[B
-	public fun iterator ()Ljava/util/Iterator;
+	public abstract fun iterator ()Ljava/util/Iterator;
+}
+
+public final class com/splendo/kaluga/scientific/ByteScientificArray$DefaultImpls {
+	public static fun get (Lcom/splendo/kaluga/scientific/ByteScientificArray;I)Ljava/lang/Byte;
+	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/ByteScientificArray;)Ljava/util/List;
+	public static fun getSize (Lcom/splendo/kaluga/scientific/ByteScientificArray;)I
+	public static fun iterator (Lcom/splendo/kaluga/scientific/ByteScientificArray;)Ljava/util/Iterator;
 }
 
 public final class com/splendo/kaluga/scientific/ConvertScientificValueKt {
@@ -128,10 +134,15 @@ public final class com/splendo/kaluga/scientific/DefaultScientificArray : com/sp
 	public final fun copy ([DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/DefaultScientificArray;[DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public fun equals (Ljava/lang/Object;)Z
+	public fun get (I)Ljava/lang/Double;
+	public synthetic fun get (I)Ljava/lang/Number;
+	public fun getDecimalValues ()Ljava/util/List;
+	public fun getSize ()I
 	public fun getUnit ()Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;
 	public synthetic fun getUnit ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
 	public fun getValues ()[D
 	public fun hashCode ()I
+	public fun iterator ()Ljava/util/Iterator;
 	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/splendo/kaluga/scientific/DefaultScientificArray;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
 }
@@ -156,11 +167,14 @@ public final class com/splendo/kaluga/scientific/DefaultScientificValue : com/sp
 	public fun <init> (DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)V
 	public synthetic fun <init> (IDLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)V
+	public fun compareTo (Lcom/splendo/kaluga/scientific/ScientificValue;)I
+	public synthetic fun compareTo (Ljava/lang/Object;)I
 	public final fun component1 ()D
 	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;
 	public final fun copy (DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/DefaultScientificValue;DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public fun equals (Ljava/lang/Object;)Z
+	public fun getDecimalValue ()Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getUnit ()Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;
 	public synthetic fun getUnit ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
 	public fun getValue ()Ljava/lang/Double;
@@ -202,35 +216,59 @@ public final class com/splendo/kaluga/scientific/DefaultUndefinedScientificValue
 }
 
 public abstract interface class com/splendo/kaluga/scientific/DoubleScientificArray : com/splendo/kaluga/scientific/ScientificArray {
-	public fun get (I)Ljava/lang/Double;
-	public synthetic fun get (I)Ljava/lang/Number;
-	public fun getSize ()I
+	public abstract fun get (I)Ljava/lang/Double;
+	public abstract fun getSize ()I
 	public abstract fun getValues ()[D
-	public fun iterator ()Ljava/util/Iterator;
+	public abstract fun iterator ()Ljava/util/Iterator;
+}
+
+public final class com/splendo/kaluga/scientific/DoubleScientificArray$DefaultImpls {
+	public static fun get (Lcom/splendo/kaluga/scientific/DoubleScientificArray;I)Ljava/lang/Double;
+	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/DoubleScientificArray;)Ljava/util/List;
+	public static fun getSize (Lcom/splendo/kaluga/scientific/DoubleScientificArray;)I
+	public static fun iterator (Lcom/splendo/kaluga/scientific/DoubleScientificArray;)Ljava/util/Iterator;
 }
 
 public abstract interface class com/splendo/kaluga/scientific/FloatScientificArray : com/splendo/kaluga/scientific/ScientificArray {
-	public fun get (I)Ljava/lang/Float;
-	public synthetic fun get (I)Ljava/lang/Number;
-	public fun getSize ()I
+	public abstract fun get (I)Ljava/lang/Float;
+	public abstract fun getSize ()I
 	public abstract fun getValues ()[F
-	public fun iterator ()Ljava/util/Iterator;
+	public abstract fun iterator ()Ljava/util/Iterator;
+}
+
+public final class com/splendo/kaluga/scientific/FloatScientificArray$DefaultImpls {
+	public static fun get (Lcom/splendo/kaluga/scientific/FloatScientificArray;I)Ljava/lang/Float;
+	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/FloatScientificArray;)Ljava/util/List;
+	public static fun getSize (Lcom/splendo/kaluga/scientific/FloatScientificArray;)I
+	public static fun iterator (Lcom/splendo/kaluga/scientific/FloatScientificArray;)Ljava/util/Iterator;
 }
 
 public abstract interface class com/splendo/kaluga/scientific/IntScientificArray : com/splendo/kaluga/scientific/ScientificArray {
-	public fun get (I)Ljava/lang/Integer;
-	public synthetic fun get (I)Ljava/lang/Number;
-	public fun getSize ()I
+	public abstract fun get (I)Ljava/lang/Integer;
+	public abstract fun getSize ()I
 	public abstract fun getValues ()[I
-	public fun iterator ()Ljava/util/Iterator;
+	public abstract fun iterator ()Ljava/util/Iterator;
+}
+
+public final class com/splendo/kaluga/scientific/IntScientificArray$DefaultImpls {
+	public static fun get (Lcom/splendo/kaluga/scientific/IntScientificArray;I)Ljava/lang/Integer;
+	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/IntScientificArray;)Ljava/util/List;
+	public static fun getSize (Lcom/splendo/kaluga/scientific/IntScientificArray;)I
+	public static fun iterator (Lcom/splendo/kaluga/scientific/IntScientificArray;)Ljava/util/Iterator;
 }
 
 public abstract interface class com/splendo/kaluga/scientific/LongScientificArray : com/splendo/kaluga/scientific/ScientificArray {
-	public fun get (I)Ljava/lang/Long;
-	public synthetic fun get (I)Ljava/lang/Number;
-	public fun getSize ()I
+	public abstract fun get (I)Ljava/lang/Long;
+	public abstract fun getSize ()I
 	public abstract fun getValues ()[J
-	public fun iterator ()Ljava/util/Iterator;
+	public abstract fun iterator ()Ljava/util/Iterator;
+}
+
+public final class com/splendo/kaluga/scientific/LongScientificArray$DefaultImpls {
+	public static fun get (Lcom/splendo/kaluga/scientific/LongScientificArray;I)Ljava/lang/Long;
+	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/LongScientificArray;)Ljava/util/List;
+	public static fun getSize (Lcom/splendo/kaluga/scientific/LongScientificArray;)I
+	public static fun iterator (Lcom/splendo/kaluga/scientific/LongScientificArray;)Ljava/util/Iterator;
 }
 
 public abstract class com/splendo/kaluga/scientific/PhysicalQuantity : java/io/Serializable {
@@ -600,10 +638,14 @@ public final class com/splendo/kaluga/scientific/PhysicalQuantity$Yank : com/spl
 
 public abstract interface class com/splendo/kaluga/scientific/ScientificArray : java/io/Serializable {
 	public abstract fun get (I)Ljava/lang/Number;
-	public fun getDecimalValues ()Ljava/util/List;
+	public abstract fun getDecimalValues ()Ljava/util/List;
 	public abstract fun getSize ()I
 	public abstract fun getUnit ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
 	public abstract fun iterator ()Ljava/util/Iterator;
+}
+
+public final class com/splendo/kaluga/scientific/ScientificArray$DefaultImpls {
+	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/ScientificArray;)Ljava/util/List;
 }
 
 public final class com/splendo/kaluga/scientific/ScientificArrayKt {
@@ -637,11 +679,15 @@ public final class com/splendo/kaluga/scientific/ScientificArrayKt {
 }
 
 public abstract interface class com/splendo/kaluga/scientific/ScientificValue : java/io/Serializable, java/lang/Comparable {
-	public fun compareTo (Lcom/splendo/kaluga/scientific/ScientificValue;)I
-	public synthetic fun compareTo (Ljava/lang/Object;)I
-	public fun getDecimalValue ()Lcom/splendo/kaluga/base/utils/Decimal;
+	public abstract fun compareTo (Lcom/splendo/kaluga/scientific/ScientificValue;)I
+	public abstract fun getDecimalValue ()Lcom/splendo/kaluga/base/utils/Decimal;
 	public abstract fun getUnit ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
 	public abstract fun getValue ()Ljava/lang/Number;
+}
+
+public final class com/splendo/kaluga/scientific/ScientificValue$DefaultImpls {
+	public static fun compareTo (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)I
+	public static fun getDecimalValue (Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
 public final class com/splendo/kaluga/scientific/ScientificValueKt {
@@ -681,11 +727,17 @@ public final class com/splendo/kaluga/scientific/ScientificValueKt {
 }
 
 public abstract interface class com/splendo/kaluga/scientific/ShortScientificArray : com/splendo/kaluga/scientific/ScientificArray {
-	public synthetic fun get (I)Ljava/lang/Number;
-	public fun get (I)Ljava/lang/Short;
-	public fun getSize ()I
+	public abstract fun get (I)Ljava/lang/Short;
+	public abstract fun getSize ()I
 	public abstract fun getValues ()[S
-	public fun iterator ()Ljava/util/Iterator;
+	public abstract fun iterator ()Ljava/util/Iterator;
+}
+
+public final class com/splendo/kaluga/scientific/ShortScientificArray$DefaultImpls {
+	public static fun get (Lcom/splendo/kaluga/scientific/ShortScientificArray;I)Ljava/lang/Short;
+	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/ShortScientificArray;)Ljava/util/List;
+	public static fun getSize (Lcom/splendo/kaluga/scientific/ShortScientificArray;)I
+	public static fun iterator (Lcom/splendo/kaluga/scientific/ShortScientificArray;)Ljava/util/Iterator;
 }
 
 public abstract class com/splendo/kaluga/scientific/UndefinedQuantityType {

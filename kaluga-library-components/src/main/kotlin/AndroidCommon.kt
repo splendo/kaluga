@@ -62,20 +62,27 @@ fun LibraryExtension.androidCommon(project: org.gradle.api.Project, componentTyp
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("stableDebug") {
+            storeFile = project.rootProject.file("keystore/stableDebug.keystore")
+            storePassword = "stableDebug"
+            keyAlias = "stableDebug"
+            keyPassword = "stableDebug"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+        }
+        debug {
+            signingConfig = signingConfigs.getByName("stableDebug")
         }
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = "11"
-        freeCompilerArgs = freeCompilerArgs + listOf("-XXLanguage:+InlineClasses", "-Xjvm-default=all")
     }
 
     when (componentType) {

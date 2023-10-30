@@ -20,17 +20,11 @@ import com.splendo.kaluga.logging.LogLevel as KalugaLogLevel
 import io.github.aakira.napier.Antilog as NapierLog
 import io.github.aakira.napier.LogLevel as NapierLogLevel
 
-internal val logLevel = arrayOf(
-    NapierLogLevel.VERBOSE,
-    NapierLogLevel.DEBUG,
-    NapierLogLevel.INFO,
-    NapierLogLevel.WARNING,
-    NapierLogLevel.ERROR,
-    NapierLogLevel.ASSERT,
-)
-
-internal fun KalugaLogLevel.logLevel(): NapierLogLevel {
-    return logLevel[this.ordinal]
+internal val KalugaLogLevel.napierLogLevel: NapierLogLevel get() = when (this) {
+    KalugaLogLevel.DEBUG -> NapierLogLevel.DEBUG
+    KalugaLogLevel.ERROR -> NapierLogLevel.ERROR
+    KalugaLogLevel.WARN -> NapierLogLevel.WARNING
+    KalugaLogLevel.INFO -> NapierLogLevel.INFO
 }
 
 /**
@@ -39,6 +33,6 @@ internal fun KalugaLogLevel.logLevel(): NapierLogLevel {
  */
 class NapierLogger(val logger: NapierLog) : Logger {
     override fun log(level: KalugaLogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
-        logger.log(priority = level.logLevel(), tag = tag, throwable = throwable, message = message?.invoke())
+        logger.log(priority = level.napierLogLevel, tag = tag, throwable = throwable, message = message?.invoke())
     }
 }

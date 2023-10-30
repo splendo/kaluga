@@ -41,6 +41,7 @@ public final class com/splendo/kaluga/alerts/Alert$Action$Style : java/lang/Enum
 	public static final field NEGATIVE Lcom/splendo/kaluga/alerts/Alert$Action$Style;
 	public static final field NEUTRAL Lcom/splendo/kaluga/alerts/Alert$Action$Style;
 	public static final field POSITIVE Lcom/splendo/kaluga/alerts/Alert$Action$Style;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getValue ()I
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/alerts/Alert$Action$Style;
 	public static fun values ()[Lcom/splendo/kaluga/alerts/Alert$Action$Style;
@@ -69,6 +70,7 @@ public final class com/splendo/kaluga/alerts/Alert$Style : java/lang/Enum {
 	public static final field ACTION_LIST Lcom/splendo/kaluga/alerts/Alert$Style;
 	public static final field ALERT Lcom/splendo/kaluga/alerts/Alert$Style;
 	public static final field TEXT_INPUT Lcom/splendo/kaluga/alerts/Alert$Style;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/alerts/Alert$Style;
 	public static fun values ()[Lcom/splendo/kaluga/alerts/Alert$Style;
 }

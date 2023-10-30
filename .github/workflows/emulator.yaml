@@ -1,6 +1,21 @@
-#### for keeping up to date with settings.gradle.kts see instructions in `test:` job
 name: Android Emulator tests
-on: pull_request
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'Project (Gradle module) to run tests for'
+        required: false
+        type: string
+      video:
+        description: 'Record video'
+        required: false
+        type: boolean
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false -Dkotlin.daemon.jvm.options=-Xmx8G,-XX:MaxMetaspaceSize=512m,-Dorg.gradle.daemon=false,-Dkotlin.incremental=false"
   JAVA_OPTS: "-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
@@ -8,99 +23,30 @@ env:
 
 jobs:
   build:
-    runs-on: macos-12
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-
-      # remove VM settings as defined for using the IDE
-      - run: sed -i '' -e '/org.gradle.jvmargs/d' gradle.properties; cat gradle.properties
-
-      - name : set up JDK 17
-        uses : actions/setup-java@v3
-        with :
-          distribution : 'temurin'
-          java-version : 17
-
-      - name: Gradle cache
-        uses: gradle/gradle-build-action@v2
-        with:
-          cache-read-only: false
-          gradle-home-cache-includes: |
-            caches
-            notifications
-            configuration-cache
-
-      - name: Konan cache
-        uses: actions/cache@v3
-        id: konan-cache
-        with:
-          path: ~/.konan/*
-          key: konan
-
-      - name: Make cache of workspace
-        uses: actions/cache@v3
-        id: restore-build
-        with:
-          path: |
-            ./*
-            !/.gradle
-          key: build-${{ github.sha }}
-
-      - run: ./gradlew --parallel bundleLibRuntimeToJarDebug
+    uses: ./.github/workflows/setup_macos.yaml
+    with:
+      gradleTask: bundleLibRuntimeToJarDebug
+      project: ${{ inputs.project }}
+      projectBlacklist: hud
 
   test:
     needs: build
-    runs-on: macos-12
+    runs-on: macos-13
     strategy:
       fail-fast: false
       matrix:
         api-level: [23, 33]
-        # some custom gradle magic makes tests run grouped for `$module-*` and `*-$module` on CI so there is no need to add these to the matrix
-        module: [
-          "base",
-          "beacons",
-          "bluetooth",
-          "architecture",
-          "alerts",
-          "date-time",
-          "logging",
-          "hud",
-          "permissions",
-          "location",
-          "keyboard",
-          "media",
-          "links",
-          "resources",
-          "review",
-          "scientific",
-          "service",
-          "system",
-          "test-utils"
-        ]
+        project: ${{ fromJSON(needs.build.outputs.projects) }}
     steps:
-      - name: Gradle cache
-        uses: gradle/gradle-build-action@v2
+      - name: checkout
+        uses: actions/checkout@v3
         with:
-          gradle-home-cache-includes: |
-            caches
-            notifications
-            configuration-cache
+          submodules: recursive
 
-      - name: Get cache of workspace
-        uses: actions/cache@v3
-        id: restore-build
+      - name: Setup tools and cache for workspace
+        uses: ./.github/workflows/setup_tools_macos/
         with:
-          path: |
-            ./*
-            !/.gradle
-          key: build-${{ github.sha }}
-
-      - name: set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: 17
+          kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
 
       - name: AVD cache
         uses: actions/cache@v3
@@ -109,14 +55,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd.v3-${{ matrix.api-level }}
-
-      - name: Konan cache
-        uses: actions/cache@v3
-        id: konan-cache
-        with:
-          path: ~/.konan/*
-          key: konan
+          key: avd.v11-${{ matrix.api-level }}
 
       - name: create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
@@ -131,7 +70,18 @@ jobs:
           disk-size: 3G
           ram-size: 3G
           heap-size: 1500M
-          script: echo "Generated AVD snapshot for caching."
+          profile: 3.4in WQVGA
+          channel: canary
+          cores: 6
+          script: ./script/check_emulator.sh
+
+      - name: install ffmpeg
+        if: inputs.video
+        uses: FedericoCarboni/setup-ffmpeg@v2
+
+      - name: pregenerate test package
+        if: inputs.video
+        run: ./gradlew :${{ matrix.project }}:packageDebugAndroidTest
 
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -139,10 +89,27 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: google_apis
           force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot-save -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           arch: x86_64
           disk-size: 3G
           ram-size: 3G
           heap-size: 1500M
-          script: ./gradlew --parallel :${{ matrix.module }}:connectedDebugAndroidTest
+          profile: 3.4in WQVGA
+          channel: canary
+          cores: 6
+          script: |
+            ./script/check_emulator.sh
+            ./gradlew ${{ inputs.video && 'recordAndroid' }} :${{ matrix.project }}:connectedDebugAndroidTest
+
+      - name: rename video
+        if: always() && inputs.video    
+        run: mv build/video.mp4 recording-${{ matrix.project }}-${{ matrix.api-level }}.mp4
+
+      - name: upload video
+        if: always() && inputs.video
+        continue-on-error: true
+        uses: actions/upload-artifact@master
+        with:
+          name: recording-${{ matrix.project }}-${{ matrix.api-level }}
+          path: recording-${{ matrix.project }}-${{ matrix.api-level }}.mp4
