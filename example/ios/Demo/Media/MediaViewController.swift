@@ -46,7 +46,7 @@ class MediaViewController: UIViewController {
     
     private lazy var viewModel = MediaViewModel(
         mediaSurfaceProvider: mediaSurfaceProvider,
-        builder: DefaultMediaManager.Builder(),
+        builder: DefaultMediaManager.Builder(settings: DefaultMediaManager.Settings(playInBackground: true, playAfterDeviceUnavailable: true)),
         alertPresenterBuilder: AlertPresenter.Builder(viewController: self),
         navigator: navigator
     )

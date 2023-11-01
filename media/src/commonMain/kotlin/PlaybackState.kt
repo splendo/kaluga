@@ -54,6 +54,11 @@ sealed class PlaybackError : Exception() {
     object PlaybackHasEnded : PlaybackError()
 
     /**
+     * A [PlaybackError] that indicates that playback has not been initialized.
+     */
+    object Uninitalized : PlaybackError()
+
+    /**
      * An unknown [PlaybackError].
      */
     object Unknown : PlaybackError()
@@ -355,7 +360,6 @@ internal sealed class PlaybackStateImpl {
     ) : Prepared(), PlaybackState.Playing, HandleBeforeOldStateIsRemoved<PlaybackState> {
 
         override val completedLoop: suspend () -> PlaybackState.PlayingOrCompleted = {
-            println("MediaPlayer completed loop")
             val newLoopMode = when (val loopMode = playbackParameters.loopMode) {
                 is PlaybackState.LoopMode.NotLooping -> PlaybackState.LoopMode.NotLooping
                 is PlaybackState.LoopMode.LoopingForever -> PlaybackState.LoopMode.LoopingForever

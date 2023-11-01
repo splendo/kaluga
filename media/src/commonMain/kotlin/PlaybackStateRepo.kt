@@ -64,6 +64,16 @@ open class PlaybackStateRepo(
                 when (event) {
                     is MediaManager.Event.DidPrepare -> takeAndChangeState(PlaybackState.Initialized::class) { it.prepared(event.playableMedia) }
                     is MediaManager.Event.DidFailWithError -> takeAndChangeState(PlaybackState.Active::class) { it.failWithError(event.error) }
+                    is MediaManager.Event.RateDidChange -> takeAndChangeState(PlaybackState.Started::class) { state ->
+                        when (event.newRate) {
+                            0.0f -> when (state) {
+                                is PlaybackState.Playing -> state.pause
+                                is PlaybackState.Paused -> state.remain()
+                            }
+                            state.playbackParameters.rate -> state.remain()
+                            else -> state.updatePlaybackParameters(state.playbackParameters.copy(rate = event.newRate))
+                        }
+                    }
                     is MediaManager.Event.DidComplete -> takeAndChangeState(PlaybackState.Playing::class) { it.completedLoop }
                     is MediaManager.Event.DidEnd -> takeAndChangeState(PlaybackState.Active::class) { it.end }
                 }

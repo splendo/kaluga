@@ -82,13 +82,14 @@ actual sealed class MediaSource {
             }
 
             data class ReferenceRestrictions(val restrictions: List<AVAssetReferenceRestrictions>) : Options() {
-                override val entry: Pair<String, Any?> = AVURLAssetReferenceRestrictionsKey to NSNumber(unsignedInteger = restrictions.fold(0UL) { acc, restriction -> acc or restriction })
+                override val entry: Pair<String, Any?> = AVURLAssetReferenceRestrictionsKey to NSNumber(
+                    unsignedInteger = restrictions.fold(0UL) { acc, restriction -> acc or restriction },
+                )
             }
 
             data class RequestAttribution(val attribution: NSURLRequestAttribution) : Options() {
                 override val entry: Pair<String, Any?> = AVURLAssetURLRequestAttributionKey to attribution
             }
-
         }
     }
 }
@@ -98,4 +99,6 @@ actual sealed class MediaSource {
  * @param url the url String of the media source
  * @return the [MediaSource] associated with [url] or `null` if none could be created
  */
-actual fun mediaSourceFromUrl(url: String): MediaSource? = NSURL.URLWithString(url)?.let { MediaSource.URL(it) }
+actual fun mediaSourceFromUrl(
+    url: String,
+): MediaSource? = NSURL.URLWithString(url)?.let { MediaSource.URL(it, options = listOf(MediaSource.URL.Options.PreferPreciseDurationAndTiming(true))) }
