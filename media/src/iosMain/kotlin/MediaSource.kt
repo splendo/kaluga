@@ -18,7 +18,21 @@
 package com.splendo.kaluga.media
 
 import platform.AVFoundation.AVAsset
+import platform.AVFoundation.AVAssetReferenceRestrictions
+import platform.AVFoundation.AVURLAssetAllowsCellularAccessKey
+import platform.AVFoundation.AVURLAssetAllowsConstrainedNetworkAccessKey
+import platform.AVFoundation.AVURLAssetAllowsExpensiveNetworkAccessKey
+import platform.AVFoundation.AVURLAssetHTTPCookiesKey
+import platform.AVFoundation.AVURLAssetHTTPUserAgentKey
+import platform.AVFoundation.AVURLAssetPreferPreciseDurationAndTimingKey
+import platform.AVFoundation.AVURLAssetPrimarySessionIdentifierKey
+import platform.AVFoundation.AVURLAssetReferenceRestrictionsKey
+import platform.AVFoundation.AVURLAssetURLRequestAttributionKey
+import platform.Foundation.NSHTTPCookie
+import platform.Foundation.NSNumber
 import platform.Foundation.NSURL
+import platform.Foundation.NSURLRequestAttribution
+import platform.Foundation.NSUUID
 
 /**
  * The source at which [PlayableMedia] can be found
@@ -35,7 +49,48 @@ actual sealed class MediaSource {
      * A [MediaSource] that is located at a [NSURL]
      * @property url the [NSURL] at which the media is located
      */
-    data class URL(val url: NSURL) : MediaSource()
+    data class URL(val url: NSURL, val options: List<Options> = emptyList()) : MediaSource() {
+        sealed class Options {
+            abstract val entry: Pair<String, Any?>
+
+            data class AllowsCellularAccess(val isAllowed: Boolean) : Options() {
+                override val entry: Pair<String, Any?> = AVURLAssetAllowsCellularAccessKey to isAllowed
+            }
+
+            data class AllowsConstrainedNetworkAccess(val isAllowed: Boolean) : Options() {
+                override val entry: Pair<String, Any?> = AVURLAssetAllowsConstrainedNetworkAccessKey to isAllowed
+            }
+
+            data class AllowsExpensiveNetworkAccess(val isAllowed: Boolean) : Options() {
+                override val entry: Pair<String, Any?> = AVURLAssetAllowsExpensiveNetworkAccessKey to isAllowed
+            }
+
+            data class HTTPCookies(val cookies: List<NSHTTPCookie>) : Options() {
+                override val entry: Pair<String, Any?> = AVURLAssetHTTPCookiesKey to cookies
+            }
+
+            data class UserAgent(val userAgent: String) : Options() {
+                override val entry: Pair<String, Any?> = AVURLAssetHTTPUserAgentKey to userAgent
+            }
+
+            data class PreferPreciseDurationAndTiming(val isPreferred: Boolean) : Options() {
+                override val entry: Pair<String, Any?> = AVURLAssetPreferPreciseDurationAndTimingKey to isPreferred
+            }
+
+            data class PrimarySessionIdentifier(val identifier: NSUUID) : Options() {
+                override val entry: Pair<String, Any?> = AVURLAssetPrimarySessionIdentifierKey to identifier
+            }
+
+            data class ReferenceRestrictions(val restrictions: List<AVAssetReferenceRestrictions>) : Options() {
+                override val entry: Pair<String, Any?> = AVURLAssetReferenceRestrictionsKey to NSNumber(unsignedInteger = restrictions.fold(0UL) { acc, restriction -> acc or restriction })
+            }
+
+            data class RequestAttribution(val attribution: NSURLRequestAttribution) : Options() {
+                override val entry: Pair<String, Any?> = AVURLAssetURLRequestAttributionKey to attribution
+            }
+
+        }
+    }
 }
 
 /**

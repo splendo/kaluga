@@ -178,7 +178,7 @@ extension MediaViewController: MPMediaPickerControllerDelegate {
         if !mediaItemCollection.items.isEmpty {
             let item = mediaItemCollection.items[0]
             if let url = item.value(forProperty: MPMediaItemPropertyAssetURL) as? NSURL {
-                viewModel.didSelectFileAt(source: MediaSource.URL(url: url as URL))
+                viewModel.didSelectFileAt(source: MediaSource.URL(url: url as URL, options: [MediaSource.URLOptionsPreferPreciseDurationAndTiming(isPreferred: true)]))
             } else {
                 viewModel.didSelectFileAt(source: nil)
             }

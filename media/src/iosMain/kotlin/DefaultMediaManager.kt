@@ -57,8 +57,10 @@ import platform.AVFoundation.AVPlayerStatus
 import platform.AVFoundation.AVPlayerStatusFailed
 import platform.AVFoundation.AVPlayerStatusReadyToPlay
 import platform.AVFoundation.AVPlayerStatusUnknown
+import platform.AVFoundation.AVURLAsset
 import platform.AVFoundation.currentItem
 import platform.AVFoundation.currentTime
+import platform.AVFoundation.defaultRate
 import platform.AVFoundation.duration
 import platform.AVFoundation.languageCode
 import platform.AVFoundation.mediaType
@@ -70,8 +72,13 @@ import platform.AVFoundation.replaceCurrentItemWithPlayerItem
 import platform.AVFoundation.seekToTime
 import platform.AVFoundation.tracks
 import platform.AVFoundation.volume
+import platform.CoreMedia.CMTimeCompare
+import platform.CoreMedia.CMTimeConvertScale
 import platform.CoreMedia.CMTimeGetSeconds
 import platform.CoreMedia.CMTimeMakeWithSeconds
+import platform.CoreMedia.CMTimeRoundingMethod
+import platform.CoreMedia.CMTimeSubtract
+import platform.CoreMedia.kCMTimeIndefinite
 import platform.CoreMedia.kCMTimeZero
 import platform.Foundation.NSError
 import platform.Foundation.NSKeyValueObservingOptionInitial
@@ -80,7 +87,9 @@ import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSOperationQueue.Companion.currentQueue
 import platform.Foundation.NSOperationQueue.Companion.mainQueue
 import platform.darwin.NSObjectProtocol
+import platform.posix.scandir
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.absoluteValue
 import kotlin.properties.Delegates
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -175,7 +184,17 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
                 null,
                 currentQueue ?: mainQueue,
             ) {
-                handleCompleted()
+                avPlayer.currentItem?.let { currentItem ->
+                    // Completion event may come in after a rewind has occurred. To ensure it is intended to complete, we compare current time to duration
+                    // Current time may be slightly off however, so we maintain a margin of 1 second
+                    val secondsFromCompletion = CMTimeGetSeconds(CMTimeSubtract(currentItem.duration, currentItem.currentTime()))
+                    if (CMTimeCompare(currentItem.duration, kCMTimeIndefinite.readValue()) == 0 || secondsFromCompletion.absoluteValue < 1.0) {
+                        handleCompleted()
+                    } else {
+                        // Otherwise reset the rate since completion events will pause playback
+                        avPlayer.rate = avPlayer.defaultRate
+                    }
+                }
             },
             NSNotificationCenter.defaultCenter.addObserverForName(
                 AVPlayerItemFailedToPlayToEndTimeNotification,
@@ -211,7 +230,7 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
 
     private val MediaSource.avPlayerItem: AVPlayerItem get() = when (this) {
         is MediaSource.Asset -> AVPlayerItem(asset)
-        is MediaSource.URL -> AVPlayerItem(url)
+        is MediaSource.URL -> AVPlayerItem(AVURLAsset.URLAssetWithURL(url, options.associate { it.entry }))
     }
 
     override suspend fun renderVideoOnSurface(surface: MediaSurface?) {
@@ -221,6 +240,7 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
     override fun play(rate: Float) {
         avPlayer.play()
         avPlayer.rate = rate
+        avPlayer.defaultRate = rate
     }
 
     override fun pause() = avPlayer.pause()

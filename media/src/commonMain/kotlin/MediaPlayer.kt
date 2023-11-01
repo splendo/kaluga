@@ -414,8 +414,11 @@ class DefaultMediaPlayer(
                     }
                 } else {
                     if (restartIfStarted) {
-                        state.seekTo(Duration.ZERO)
+                        state.seekTo(Duration.ZERO).also {
+                            println("MediaPlayer did Seek to $it")
+                        }
                     }
+                    println("MediaPlayer did Play")
                     emit(Unit)
                 }
             }
