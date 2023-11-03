@@ -20,6 +20,7 @@ package com.splendo.kaluga.media
 import com.splendo.kaluga.base.kvo.observeKeyValueAsFlow
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
+import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ObjCObjectVar
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.memScoped
@@ -30,7 +31,6 @@ import kotlinx.cinterop.value
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -148,6 +148,7 @@ private fun AVPlayerItemTrack?.asTrackInfo(): TrackInfo? = this?.assetTrack?.let
 /**
  * Default implementation of [BaseMediaManager]
  * @param mediaSurfaceProvider a [MediaSurfaceProvider] that will automatically call [renderVideoOnSurface] for the latest [MediaSurface]
+ * @param settings the [Settings] used to configure the Media Manager
  * @param coroutineContext the [CoroutineContext] on which the media will be managed
  */
 actual class DefaultMediaManager(
@@ -156,6 +157,11 @@ actual class DefaultMediaManager(
     coroutineContext: CoroutineContext,
 ) : BaseMediaManager(mediaSurfaceProvider, coroutineContext) {
 
+    /**
+     * Settings used for configuring a [DefaultMediaManager]
+     * @property playInBackground if `true` playback will resume when the app moves to the background. Note that this will not loop
+     * @property playAfterDeviceUnavailable if `true` playback will continue after the device on which audio was playing becomes unavailable (e.g. headphones disconnect).
+     */
     data class Settings(
         val playInBackground: Boolean = false,
         val playAfterDeviceUnavailable: Boolean = false,
@@ -163,6 +169,7 @@ actual class DefaultMediaManager(
 
     /**
      * Builder for creating a [DefaultMediaManager]
+     * @param settings the [Settings] used to configure the [DefaultMediaManager] created
      */
     class Builder(
         private val settings: Settings,
@@ -193,12 +200,8 @@ actual class DefaultMediaManager(
     private var itemJob: Job? = null
 
     init {
-        if (settings.playInBackground) {
-            memScoped {
-                val error = alloc<ObjCObjectVar<NSError?>>()
-                AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, error.ptr)
-                error.value?.handleError()
-            }
+        handleIfPlayingInBackgroundEnabled { error ->
+            AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, error)
         }
         launch {
             avPlayer.observeKeyValueAsFlow<AVPlayerStatus>("status", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew).collect { status ->
@@ -222,58 +225,7 @@ actual class DefaultMediaManager(
 
     override fun initialize(playableMedia: PlayableMedia) {
         removeObservers()
-        observers.value.forEach { NSNotificationCenter.defaultCenter.removeObserver(it) }
-        observers.value = listOf(
-            observeNotification(AVPlayerItemDidPlayToEndTimeNotification) {
-                avPlayer.currentItem?.let { currentItem ->
-                    // Completion event may come in after a rewind has occurred. To ensure it is intended to complete, we compare current time to duration
-                    // Current time may be slightly off however, so we maintain a margin of 1 second
-                    val secondsFromCompletion = CMTimeGetSeconds(CMTimeSubtract(currentItem.duration, currentItem.currentTime()))
-                    if (CMTimeCompare(currentItem.duration, kCMTimeIndefinite.readValue()) == 0 || secondsFromCompletion.absoluteValue < 1.0) {
-                        handleCompleted()
-                    } else {
-                        // Otherwise reset the rate since completion events will pause playback
-                        avPlayer.rate = avPlayer.defaultRate
-                    }
-                }
-            },
-            observeNotification(AVPlayerItemFailedToPlayToEndTimeNotification) {
-                (it?.userInfo?.get(AVPlayerItemFailedToPlayToEndTimeErrorKey) as? NSError)?.handleError()
-            },
-            observeNotification(AVPlayerRateDidChangeNotification) { notification ->
-                // When no reason is given, it is unknown. This includes completion and Audio Session Route changes, which are covered by other notifications
-                notification?.userInfo?.get(AVPlayerRateDidChangeReasonKey)?.let {
-                    handleRateChanged(avPlayer.rate)
-                }
-            },
-            observeNotification(UIApplicationDidEnterBackgroundNotification) {
-                surface?.bind?.invoke(null)
-            },
-            observeNotification(UIApplicationWillEnterForegroundNotification) {
-                surface?.bind?.invoke(avPlayer)
-            },
-            observeNotification(AVAudioSessionRouteChangeNotification) { notification ->
-                val reason = notification?.userInfo?.get(AVAudioSessionRouteChangeReasonKey) as Int
-                when (reason.toULong()) {
-                    AVAudioSessionRouteChangeReasonUnknown,
-                    AVAudioSessionRouteChangeReasonOldDeviceUnavailable,
-                    -> {
-                        // This Route change will cause rate to be set to 0.0
-                        // If we dont want that, we should wait until the change has occurred and then revert it
-                        if (settings.playAfterDeviceUnavailable) {
-                            launch {
-                                avPlayer.observeKeyValueAsFlow<Float>("rate").first { it == 0.0f }
-                                avPlayer.rate = avPlayer.defaultRate
-                            }
-                        } else {
-                            // This is an unknown reason for a rate change so we handle it here
-                            handleRateChanged(0.0f)
-                        }
-                    }
-                    else -> {}
-                }
-            },
-        )
+        observers.value = createObservers()
         val avPlayerItem = playableMedia.source.avPlayerItem
         avPlayer.replaceCurrentItemWithPlayerItem(avPlayerItem)
         itemJob = launch {
@@ -290,6 +242,57 @@ actual class DefaultMediaManager(
         }
     }
 
+    private fun createObservers() = listOf(
+        observeNotification(AVPlayerItemDidPlayToEndTimeNotification) {
+            avPlayer.currentItem?.let { currentItem ->
+                // Completion event may come in after a rewind has occurred. To ensure it is intended to complete, we compare current time to duration
+                // Current time may be slightly off however, so we maintain a margin of 1 second
+                val secondsFromCompletion = CMTimeGetSeconds(CMTimeSubtract(currentItem.duration, currentItem.currentTime()))
+                if (CMTimeCompare(currentItem.duration, kCMTimeIndefinite.readValue()) == 0 || secondsFromCompletion.absoluteValue < 1.0) {
+                    handleCompleted()
+                } else {
+                    // Otherwise reset the rate since completion events will pause playback
+                    avPlayer.rate = avPlayer.defaultRate
+                }
+            }
+        },
+        observeNotification(AVPlayerItemFailedToPlayToEndTimeNotification) {
+            (it?.userInfo?.get(AVPlayerItemFailedToPlayToEndTimeErrorKey) as? NSError)?.handleError()
+        },
+        observeNotification(AVPlayerRateDidChangeNotification) { notification ->
+            // When no reason is given, it is unknown. This includes completion and Audio Session Route changes, which are covered by other notifications
+            notification?.userInfo?.get(AVPlayerRateDidChangeReasonKey)?.let {
+                handleRateChanged(avPlayer.rate)
+            }
+        },
+        observeNotification(UIApplicationDidEnterBackgroundNotification) {
+            surface?.bind?.invoke(null)
+        },
+        observeNotification(UIApplicationWillEnterForegroundNotification) {
+            surface?.bind?.invoke(avPlayer)
+        },
+        observeNotification(AVAudioSessionRouteChangeNotification) { notification ->
+            val reason = notification?.userInfo?.get(AVAudioSessionRouteChangeReasonKey) as Int
+            when (reason.toULong()) {
+                AVAudioSessionRouteChangeReasonUnknown,
+                AVAudioSessionRouteChangeReasonOldDeviceUnavailable,
+                -> {
+                    // This Route change will cause rate to be set to 0.0
+                    // If we don't want that, we should wait until the change has occurred and then revert it
+                    launch {
+                        avPlayer.observeKeyValueAsFlow<Float>("rate").first { it == 0.0f }
+                        if (settings.playAfterDeviceUnavailable) {
+                            avPlayer.rate = avPlayer.defaultRate
+                        } else {
+                            handleRateChanged(0.0f)
+                        }
+                    }
+                }
+                else -> {}
+            }
+        },
+    )
+
     private val MediaSource.avPlayerItem: AVPlayerItem get() = when (this) {
         is MediaSource.Asset -> AVPlayerItem(asset)
         is MediaSource.URL -> AVPlayerItem(AVURLAsset.URLAssetWithURL(url, options.associate { it.entry }))
@@ -302,12 +305,8 @@ actual class DefaultMediaManager(
     override fun play(rate: Float) {
         avPlayer.defaultRate = rate
         avPlayer.rate = rate
-        if (settings.playInBackground) {
-            memScoped {
-                val error = alloc<ObjCObjectVar<NSError?>>()
-                AVAudioSession.sharedInstance().setActive(true, error.ptr)
-                error.value?.handleError()
-            }
+        handleIfPlayingInBackgroundEnabled { error ->
+            AVAudioSession.sharedInstance().setActive(true, error)
         }
     }
 
@@ -315,12 +314,8 @@ actual class DefaultMediaManager(
     override fun stop() {
         avPlayer.seekToTime(kCMTimeZero.readValue(), kCMTimeZero.readValue(), kCMTimeZero.readValue()) {}
         avPlayer.replaceCurrentItemWithPlayerItem(null)
-        if (settings.playInBackground) {
-            memScoped {
-                val error = alloc<ObjCObjectVar<NSError?>>()
-                AVAudioSession.sharedInstance().setActive(false, error.ptr)
-                error.value?.handleError()
-            }
+        handleIfPlayingInBackgroundEnabled { error ->
+            AVAudioSession.sharedInstance().setActive(false, error)
         }
     }
 
@@ -341,18 +336,24 @@ actual class DefaultMediaManager(
     override fun handleReset() {
         removeObservers()
         avPlayer.replaceCurrentItemWithPlayerItem(null)
-        if (settings.playInBackground) {
-            memScoped {
-                val error = alloc<ObjCObjectVar<NSError?>>()
-                AVAudioSession.sharedInstance().setActive(false, error.ptr)
-                error.value?.handleError()
-            }
+        handleIfPlayingInBackgroundEnabled { error ->
+            AVAudioSession.sharedInstance().setActive(false, error)
         }
     }
 
     private fun removeObservers() {
         observers.getAndUpdate { emptyList() }.forEach { observer ->
             NSNotificationCenter.defaultCenter.removeObserver(observer)
+        }
+    }
+
+    private fun handleIfPlayingInBackgroundEnabled(action: (CPointer<ObjCObjectVar<NSError?>>) -> Unit) {
+        if (settings.playInBackground) {
+            memScoped {
+                val error = alloc<ObjCObjectVar<NSError?>>()
+                action(error.ptr)
+                error.value?.handleError()
+            }
         }
     }
 

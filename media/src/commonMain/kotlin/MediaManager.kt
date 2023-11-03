@@ -82,6 +82,10 @@ interface MediaManager : VolumeController, MediaSurfaceController {
          */
         data class DidFailWithError(val error: PlaybackError) : Event()
 
+        /**
+         * An [Event] indicating the rate was changed
+         * @property newRate the new rate at which playback occurs
+         */
         data class RateDidChange(val newRate: Float) : Event()
 
         /**
