@@ -27,6 +27,7 @@ import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -80,6 +81,12 @@ interface MediaManager : VolumeController, MediaSurfaceController {
          * @property error the [PlaybackError] that occurred
          */
         data class DidFailWithError(val error: PlaybackError) : Event()
+
+        /**
+         * An [Event] indicating the rate was changed
+         * @property newRate the new rate at which playback occurs
+         */
+        data class RateDidChange(val newRate: Float) : Event()
 
         /**
          * An [Event] indicating playback completed
@@ -153,7 +160,7 @@ interface MediaManager : VolumeController, MediaSurfaceController {
  */
 abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext) :
     MediaManager,
-    CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("MediaManager")) {
+    CoroutineScope by CoroutineScope(coroutineContext + Job(coroutineContext.job) + CoroutineName("MediaManager")) {
 
         /**
          * Builder for creating a [BaseMediaManager]
@@ -205,6 +212,10 @@ abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfacePr
 
         protected open fun handleCompleted() {
             _events.trySend(MediaManager.Event.DidComplete)
+        }
+
+        protected open fun handleRateChanged(newRate: Float) {
+            _events.trySend(MediaManager.Event.RateDidChange(newRate))
         }
 
         final override suspend fun seekTo(duration: Duration): Boolean {

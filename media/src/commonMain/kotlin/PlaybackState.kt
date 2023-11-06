@@ -54,6 +54,11 @@ sealed class PlaybackError : Exception() {
     object PlaybackHasEnded : PlaybackError()
 
     /**
+     * A [PlaybackError] that indicates that playback has not been initialized.
+     */
+    object Uninitalized : PlaybackError()
+
+    /**
      * An unknown [PlaybackError].
      */
     object Unknown : PlaybackError()
@@ -234,6 +239,8 @@ sealed interface PlaybackState : KalugaState {
          * Transitions into a [PlayingOrCompleted] state
          */
         val completedLoop: suspend () -> PlayingOrCompleted
+
+        override fun updatePlaybackParameters(new: PlaybackParameters): suspend () -> Playing
     }
 
     /**
@@ -245,6 +252,17 @@ sealed interface PlaybackState : KalugaState {
          * Transitions back into a [Playing] state
          */
         val play: suspend () -> Playing
+
+        /**
+         * Will transition into a [Playing] state with new [PlaybackParameters]
+         * @param new the [PlaybackParameters] to update to
+         * @return a method for transitioning into a new [Playing] state
+         */
+        fun playWithUpdatedPlaybackParameters(new: PlaybackParameters) = suspend {
+            updatePlaybackParameters(new)().play()
+        }
+
+        override fun updatePlaybackParameters(new: PlaybackParameters): suspend () -> Paused
     }
 
     /**
