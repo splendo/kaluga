@@ -27,6 +27,7 @@ plugins {
 
 allprojects {
     repositories {
+        maven("https://androidx.dev/storage/compose-compiler/repository/")
         mavenCentral()
         google()
         // only enable temporarily if needed:

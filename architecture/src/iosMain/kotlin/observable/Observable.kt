@@ -58,7 +58,7 @@ actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual c
     stateFlowToBind: suspend () -> StateFlow<R?>,
 ) : AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
 
-    final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
+    actual final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         super.bind(coroutineScope, context)
     }
 }

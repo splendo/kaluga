@@ -99,7 +99,7 @@ actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual c
      */
     abstract fun liveDataObserver(): Observer<R>
 
-    final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
+    actual final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         super.bind(coroutineScope, context)
         this.coroutineScope = coroutineScope
         if (mutableLiveDataDelegate.isInitialized()) {

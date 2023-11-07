@@ -115,7 +115,9 @@ expect abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>>(
     observation: Observation<R, T, OO>,
     stateFlowToBind: suspend () -> StateFlow<R?>,
 ) :
-    AbstractBaseSubject<R, T, OO>
+    AbstractBaseSubject<R, T, OO> {
+    final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext)
+}
 
 /**
  * An abstract class extending [BaseSubject] that implements [InitializedSubject].

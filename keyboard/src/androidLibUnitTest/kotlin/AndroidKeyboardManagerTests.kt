@@ -43,7 +43,7 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<ViewFocusHandler, Andro
         val handler = mock(Handler::class.java)
 
         override val focusHandler get() = ViewFocusHandler(viewId, handler)
-        override lateinit var builder: ViewKeyboardManager.Builder
+        override var builder: ViewKeyboardManager.Builder
 
         val mockActivity: Activity = mock(Activity::class.java)
         var mockView: View = mock(View::class.java)
