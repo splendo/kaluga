@@ -18,6 +18,7 @@
 package com.splendo.kaluga.example.scientific
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
@@ -75,9 +76,14 @@ class ScientificConverterActivity : KalugaViewModelActivity<ScientificConverterV
         setContentView(binding.root)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-    }
 
-    override fun onBackPressed() {
-        viewModel.onClosePressed()
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    viewModel.onClosePressed()
+                }
+            },
+        )
     }
 }

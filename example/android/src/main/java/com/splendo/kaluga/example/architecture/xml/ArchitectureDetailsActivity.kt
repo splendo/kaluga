@@ -19,6 +19,8 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.example.architecture.xml
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.parseTypeOfOrNull
@@ -59,9 +61,14 @@ class ArchitectureDetailsActivity : KalugaViewModelActivity<ArchitectureDetailsV
         setContentView(binding.root)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-    }
 
-    override fun onBackPressed() {
-        viewModel.onBackPressed()
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    viewModel.onBackPressed()
+                }
+            },
+        )
     }
 }
