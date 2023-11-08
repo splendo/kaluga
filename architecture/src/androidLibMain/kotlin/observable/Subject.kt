@@ -66,6 +66,14 @@ fun <T> LiveData<T>.observeOnCoroutine(
     }
 }
 
+actual interface PlatformSubjectObserver<R> {
+    fun createLiveData(): MutableLiveData<R>
+    /**
+     * Gets an [Observer] to observe changes to this subject.
+     */
+    fun liveDataObserver(): Observer<R>
+}
+
 /**
  * An abstract class that extends [AbstractBaseSubject].
  * @param T the type of value to expect.
@@ -81,9 +89,9 @@ actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual c
 
     private var coroutineScope: CoroutineScope? = null
     private val mutableLiveDataDelegate = lazy {
-        createLiveData().also {
+        platformSubjectObserver.createLiveData().also {
             coroutineScope?.let { coroutineScope ->
-                it.observeOnCoroutine(coroutineScope, observer = liveDataObserver())
+                it.observeOnCoroutine(coroutineScope, observer = platformSubjectObserver.liveDataObserver())
             }
         }
     }
@@ -92,18 +100,18 @@ actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual c
      * The [MutableLiveData] synchronizing the value of the subject.
      */
     val mutableLiveData by mutableLiveDataDelegate
-    protected abstract fun createLiveData(): MutableLiveData<R>
+    protected actual abstract val platformSubjectObserver: PlatformSubjectObserver<R>
 
     /**
      * Gets an [Observer] to observe changes to this subject.
      */
-    abstract fun liveDataObserver(): Observer<R>
+    fun liveDataObserver(): Observer<R> = platformSubjectObserver.liveDataObserver()
 
     actual final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         super.bind(coroutineScope, context)
         this.coroutineScope = coroutineScope
         if (mutableLiveDataDelegate.isInitialized()) {
-            mutableLiveData.observeOnCoroutine(coroutineScope, observer = liveDataObserver())
+            mutableLiveData.observeOnCoroutine(coroutineScope, observer = platformSubjectObserver.liveDataObserver())
         }
     }
 }
@@ -117,15 +125,16 @@ actual abstract class BaseUninitializedSubject<T> actual constructor(
     observation: ObservationUninitialized<T>,
 ) : AbstractBaseUninitializedSubject<T>(observation) {
 
-    override fun createLiveData(): MutableLiveData<T> {
-        val mediatorLiveData = MediatorLiveData<T>()
-        mediatorLiveData.addSource(stateFlow.asLiveData()) { value ->
-            mediatorLiveData.postValue(value)
+    actual final override val platformSubjectObserver: PlatformSubjectObserver<T> = object : PlatformSubjectObserver<T> {
+        override fun createLiveData(): MutableLiveData<T> {
+            val mediatorLiveData = MediatorLiveData<T>()
+            mediatorLiveData.addSource(stateFlow.asLiveData()) { value ->
+                mediatorLiveData.postValue(value)
+            }
+            return mediatorLiveData
         }
-        return mediatorLiveData
+        override fun liveDataObserver() = Observer<T> { value -> value?.let { post(it) } }
     }
-
-    override fun liveDataObserver() = Observer<T> { value -> value?.let { post(it) } }
 }
 
 /**
@@ -135,9 +144,6 @@ actual abstract class BaseUninitializedSubject<T> actual constructor(
  */
 actual abstract class BaseInitializedSubject<T> actual constructor(observation: ObservationInitialized<T>) : AbstractBaseInitializedSubject<T>(observation) {
 
-    override fun createLiveData(): MutableLiveData<T> = this.mutableLiveData()
-    override fun liveDataObserver() = liveDataObserver
-
     /**
      * Constructor using an inital value.
      * @param initialValue The [Value] to use as the initial value.
@@ -145,6 +151,11 @@ actual abstract class BaseInitializedSubject<T> actual constructor(observation: 
     actual constructor(
         initialValue: Value<T>,
     ) : this (ObservationInitialized(initialValue))
+
+    actual final override val platformSubjectObserver: PlatformSubjectObserver<T> = object : PlatformSubjectObserver<T> {
+        override fun createLiveData(): MutableLiveData<T> = mutableLiveData()
+        override fun liveDataObserver() = liveDataObserver
+    }
 }
 
 /**
@@ -157,9 +168,6 @@ actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
     observation: ObservationDefault<R, T?>,
 ) : AbstractBaseDefaultSubject<R, T>(observation) {
 
-    override fun createLiveData(): MutableLiveData<R> = this.mutableLiveData()
-    override fun liveDataObserver() = Observer<R> { post(it) }
-
     /**
      * Constructor
      * @param defaultValue The default [Value] of [R] to return if the current value is [ObservableOptional.Nothing] or [ObservableOptional.Value] containing `null`.
@@ -169,4 +177,9 @@ actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
         defaultValue: Value<R>,
         initialValue: Value<T?>,
     ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue))
+
+    actual final override val platformSubjectObserver: PlatformSubjectObserver<R> = object : PlatformSubjectObserver<R> {
+        override fun createLiveData(): MutableLiveData<R> = mutableLiveData()
+        override fun liveDataObserver() = Observer<R> { post(it) }
+    }
 }

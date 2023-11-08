@@ -103,6 +103,8 @@ abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(
         }
     }
 
+expect interface PlatformSubjectObserver<R>
+
 /**
  * An abstract class that extends [AbstractBaseSubject].
  * @param T the type of value to expect.
@@ -116,7 +118,8 @@ expect abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>>(
     stateFlowToBind: suspend () -> StateFlow<R?>,
 ) :
     AbstractBaseSubject<R, T, OO> {
-    final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext)
+        protected abstract val platformSubjectObserver: PlatformSubjectObserver<R>
+        final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext)
 }
 
 /**
@@ -165,6 +168,8 @@ expect abstract class BaseInitializedSubject<T>(observation: ObservationInitiali
         constructor(
             initialValue: Value<T>,
         )
+
+        final override val platformSubjectObserver: PlatformSubjectObserver<T>
     }
 
 /**
@@ -192,7 +197,9 @@ abstract class AbstractBaseUninitializedSubject<T>(
  */
 expect abstract class BaseUninitializedSubject<T>(
     observation: ObservationUninitialized<T>,
-) : AbstractBaseUninitializedSubject<T>
+) : AbstractBaseUninitializedSubject<T> {
+    final override val platformSubjectObserver: PlatformSubjectObserver<T>
+}
 
 /**
  * An abstract class extending [BaseSubject] that implements [DefaultSubject].
@@ -237,6 +244,8 @@ expect abstract class BaseDefaultSubject<R : T?, T>(
         defaultValue: Value<R>,
         initialValue: Value<T?>,
     )
+
+    final override val platformSubjectObserver: PlatformSubjectObserver<R>
 }
 
 /**
