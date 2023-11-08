@@ -36,24 +36,20 @@ import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("metricKinematicViscosityTimesMetricDensity")
-infix operator fun ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>.times(
-    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>,
-) = (Pascal x unit.time).dynamicViscosity(this, density)
+infix operator fun ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>.times(density: ScientificValue<PhysicalQuantity.Density, MetricDensity>) =
+    (Pascal x unit.time).dynamicViscosity(this, density)
 
 @JvmName("imperialKinematicViscosityTimesImperialDensity")
-infix operator fun ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>.times(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
-) = (PoundSquareInch x unit.time).dynamicViscosity(this, density)
+infix operator fun ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>.times(density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>) =
+    (PoundSquareInch x unit.time).dynamicViscosity(this, density)
 
 @JvmName("imperialKinematicViscosityTimesUKImperialDensity")
-infix operator fun ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>.times(
-    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>,
-) = (PoundSquareInch.ukImperial x unit.time).dynamicViscosity(this, density)
+infix operator fun ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>.times(density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>) =
+    (PoundSquareInch.ukImperial x unit.time).dynamicViscosity(this, density)
 
 @JvmName("imperialKinematicViscosityTimesUSCustomaryDensity")
-infix operator fun ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>.times(
-    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>,
-) = (PoundSquareInch.usCustomary x unit.time).dynamicViscosity(this, density)
+infix operator fun ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>.times(density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>) =
+    (PoundSquareInch.usCustomary x unit.time).dynamicViscosity(this, density)
 
 @JvmName("kinematicViscosityTimesDensity")
 infix operator fun <KinematicViscosityUnit : KinematicViscosity, DensityUnit : Density> ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>.times(

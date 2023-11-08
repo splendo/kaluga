@@ -40,29 +40,24 @@ import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("metricWeightDivMetricDensity")
-infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>,
-) = density.unit.per.volume(this, density)
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(density: ScientificValue<PhysicalQuantity.Density, MetricDensity>) =
+    density.unit.per.volume(this, density)
 
 @JvmName("imperialWeightDivImperialDensity")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
-) = density.unit.per.volume(this, density)
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>) =
+    density.unit.per.volume(this, density)
 
 @JvmName("imperialWeightDivUKImperialDensity")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>,
-) = density.unit.per.volume(this, density)
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>) =
+    density.unit.per.volume(this, density)
 
 @JvmName("imperialWeightDivUSCustomaryDensity")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>,
-) = density.unit.per.volume(this, density)
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>) =
+    density.unit.per.volume(this, density)
 
 @JvmName("ukImperialWeightDivImperialDensity")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
-) = density.unit.per.volume(this, density)
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>) =
+    density.unit.per.volume(this, density)
 
 @JvmName("ukImperialWeightDivUKImperialDensity")
 infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
@@ -70,9 +65,8 @@ infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuant
 ) = density.unit.per.volume(this, density)
 
 @JvmName("usCustomaryWeightDivImperialDensity")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
-) = density.unit.per.volume(this, density)
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>) =
+    density.unit.per.volume(this, density)
 
 @JvmName("usCustomaryWeightDivUSCustomaryDensity")
 infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(

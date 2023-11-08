@@ -30,8 +30,7 @@ import com.splendo.kaluga.scientific.unit.Volt
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivAbcoulomb")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(charge: ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>) =
-    Abvolt.voltage(this, charge)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(charge: ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>) = Abvolt.voltage(this, charge)
 
 @JvmName("ergMultipleDivAbcoulomb")
 infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(charge: ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>) =

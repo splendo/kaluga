@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
 sealed class ScientificConverterNavigationAction<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
-    object Close : ScientificConverterNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
+    data object Close : ScientificConverterNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
     sealed class SelectUnit(quantity: PhysicalQuantity) : ScientificConverterNavigationAction<PhysicalQuantity>(
         quantity,
         NavigationBundleSpecType.SerializedType(PhysicalQuantity.serializer()),

@@ -110,8 +110,7 @@ fun debug(message: () -> String) = logger.debug(message = message)
  * @param throwable Error or Exception. Optional
  * @param message Message to be written into log.
  */
-fun debug(tag: String? = null, throwable: Throwable? = null, message: () -> String) =
-    logger.debug(tag, throwable, message)
+fun debug(tag: String? = null, throwable: Throwable? = null, message: () -> String) = logger.debug(tag, throwable, message)
 
 /**
  * Writes log with DEBUG log level and provided tag.

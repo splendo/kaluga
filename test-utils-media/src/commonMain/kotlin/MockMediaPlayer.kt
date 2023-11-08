@@ -78,10 +78,8 @@ class MockMediaPlayer(
 
     override suspend fun initializeFor(source: MediaSource): Unit = initializeForMock.call(source)
 
-    override suspend fun forceStart(
-        playbackParameters: PlaybackState.PlaybackParameters,
-        restartIfStarted: Boolean,
-    ): Unit = forceStartMock.call(playbackParameters, restartIfStarted)
+    override suspend fun forceStart(playbackParameters: PlaybackState.PlaybackParameters, restartIfStarted: Boolean): Unit =
+        forceStartMock.call(playbackParameters, restartIfStarted)
 
     override suspend fun awaitCompletion(): Unit = awaitCompletionMock.call()
     override suspend fun reset(): Unit = resetMock.call()

@@ -63,8 +63,8 @@ sealed class MetricAndUKImperialTemperature(override val symbol: String) :
     Temperature(),
     MetricAndUKImperialScientificUnit<PhysicalQuantity.Temperature>,
     MeasurementUsage.UsedInUKImperial {
-        override val system = MeasurementSystem.MetricAndUKImperial
-    }
+    override val system = MeasurementSystem.MetricAndUKImperial
+}
 
 /**
  * A [Temperature] for [MeasurementSystem.USCustomary]
@@ -109,19 +109,9 @@ object Rankine : USCustomaryTemperature("°R") {
     override fun deltaFromSIUnitDelta(delta: Decimal): Decimal = fromSIUnit(delta)
 }
 
-fun Temperature.convertDelta(
-    value: Number,
-    to: Temperature,
-) = convertDelta(value.toDecimal(), to).toDouble()
+fun Temperature.convertDelta(value: Number, to: Temperature) = convertDelta(value.toDecimal(), to).toDouble()
 
-fun Temperature.convertDelta(
-    value: Number,
-    to: Temperature,
-    round: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-) = convertDelta(value.toDecimal(), to).round(round, roundingMode).toDouble()
+fun Temperature.convertDelta(value: Number, to: Temperature, round: Int, roundingMode: RoundingMode = RoundingMode.RoundHalfEven) =
+    convertDelta(value.toDecimal(), to).round(round, roundingMode).toDouble()
 
-fun Temperature.convertDelta(
-    value: Decimal,
-    to: Temperature,
-) = if (this == to) value else to.deltaFromSIUnitDelta(deltaToSIUnitDelta(value))
+fun Temperature.convertDelta(value: Decimal, to: Temperature) = if (this == to) value else to.deltaFromSIUnitDelta(deltaToSIUnitDelta(value))

@@ -34,14 +34,11 @@ import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("radTimesGram")
-infix operator fun ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad>.times(
-    weight: ScientificValue<PhysicalQuantity.Weight, Gram>,
-) = Erg.energy(this, weight)
+infix operator fun ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad>.times(weight: ScientificValue<PhysicalQuantity.Weight, Gram>) = Erg.energy(this, weight)
 
 @JvmName("radMultipleTimesGram")
-infix operator fun <RadUnit : RadMultiple> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, RadUnit>.times(
-    weight: ScientificValue<PhysicalQuantity.Weight, Gram>,
-) = Erg.energy(this, weight)
+infix operator fun <RadUnit : RadMultiple> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, RadUnit>.times(weight: ScientificValue<PhysicalQuantity.Weight, Gram>) =
+    Erg.energy(this, weight)
 
 @JvmName("absorbedDoseTimesImperialWeight")
 infix operator fun <AbsorbedDoseUnit, WeightUnit> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.times(

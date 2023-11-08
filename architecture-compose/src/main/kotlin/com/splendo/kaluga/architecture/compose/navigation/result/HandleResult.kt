@@ -36,11 +36,8 @@ import kotlinx.serialization.KSerializer
  * @throws [BundleConversionError] if the [Bundle] does not contain the correct keys or values associated with the [NavigationBundleSpec]
  */
 @Composable
-fun <Row : NavigationBundleSpecRow<*>> NavHostController.HandleResult(
-    spec: NavigationBundleSpec<Row>,
-    retain: Boolean = false,
-    onResult: NavigationBundle<Row>.() -> Unit,
-) = HandleResult(retain) { toNavigationBundle(spec).onResult() }
+fun <Row : NavigationBundleSpecRow<*>> NavHostController.HandleResult(spec: NavigationBundleSpec<Row>, retain: Boolean = false, onResult: NavigationBundle<Row>.() -> Unit) =
+    HandleResult(retain) { toNavigationBundle(spec).onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a given [NavigationBundleSpecType]
@@ -52,11 +49,8 @@ fun <Row : NavigationBundleSpecRow<*>> NavHostController.HandleResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec]
  */
 @Composable
-fun <T> NavHostController.HandleResult(
-    type: NavigationBundleSpecType<T>,
-    retain: Boolean = false,
-    onResult: T.() -> Unit,
-) = HandleResult(retain) { toTypedProperty(type).onResult() }
+fun <T> NavHostController.HandleResult(type: NavigationBundleSpecType<T>, retain: Boolean = false, onResult: T.() -> Unit) =
+    HandleResult(retain) { toTypedProperty(type).onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a given [NavigationBundleSpecType]
@@ -67,11 +61,8 @@ fun <T> NavHostController.HandleResult(
  * @param onResult Method for handling the received result
  */
 @Composable
-fun <T : Any> NavHostController.HandleResultOrNull(
-    type: NavigationBundleSpecType<T>,
-    retain: Boolean = false,
-    onResult: T?.() -> Unit,
-) = HandleResult(retain) { toTypedPropertyOrNull(type).onResult() }
+fun <T : Any> NavHostController.HandleResultOrNull(type: NavigationBundleSpecType<T>, retain: Boolean = false, onResult: T?.() -> Unit) =
+    HandleResult(retain) { toTypedPropertyOrNull(type).onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a given [NavigationBundleSpecType]
@@ -83,11 +74,8 @@ fun <T : Any> NavHostController.HandleResultOrNull(
  */
 @Composable
 @JvmName("HandleNullableResultOrNull")
-fun <T> NavHostController.HandleResultOrNull(
-    type: NavigationBundleSpecType<T>,
-    retain: Boolean = false,
-    onResult: T?.() -> Unit,
-) = HandleResult(retain) { toTypedPropertyOrNull(type).onResult() }
+fun <T> NavHostController.HandleResultOrNull(type: NavigationBundleSpecType<T>, retain: Boolean = false, onResult: T?.() -> Unit) =
+    HandleResult(retain) { toTypedPropertyOrNull(type).onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Boolean
@@ -97,10 +85,7 @@ fun <T> NavHostController.HandleResultOrNull(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.BooleanType].
  */
 @Composable
-fun NavHostController.HandleBooleanResult(
-    retain: Boolean = false,
-    onResult: Boolean.() -> Unit,
-) = HandleResult(retain) { asBoolean().onResult() }
+fun NavHostController.HandleBooleanResult(retain: Boolean = false, onResult: Boolean.() -> Unit) = HandleResult(retain) { asBoolean().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Boolean or `null`
@@ -109,10 +94,7 @@ fun NavHostController.HandleBooleanResult(
  * @param onResult Method for handling the received Boolean
  */
 @Composable
-fun NavHostController.HandleBooleanOrNullResult(
-    retain: Boolean = false,
-    onResult: Boolean?.() -> Unit,
-) = HandleResult(retain) { asBooleanOrNull().onResult() }
+fun NavHostController.HandleBooleanOrNullResult(retain: Boolean = false, onResult: Boolean?.() -> Unit) = HandleResult(retain) { asBooleanOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [BooleanArray]
@@ -122,10 +104,7 @@ fun NavHostController.HandleBooleanOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.BooleanArrayType].
  */
 @Composable
-fun NavHostController.HandleBooleanArrayResult(
-    retain: Boolean = false,
-    onResult: BooleanArray.() -> Unit,
-) = HandleResult(retain) { asBooleanArray().onResult() }
+fun NavHostController.HandleBooleanArrayResult(retain: Boolean = false, onResult: BooleanArray.() -> Unit) = HandleResult(retain) { asBooleanArray().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [BooleanArray] or `null`
@@ -134,10 +113,7 @@ fun NavHostController.HandleBooleanArrayResult(
  * @param onResult Method for handling the received Boolean
  */
 @Composable
-fun NavHostController.HandleBooleanArrayOrNullResult(
-    retain: Boolean = false,
-    onResult: BooleanArray?.() -> Unit,
-) = HandleResult(retain) { asBooleanArrayOrNull().onResult() }
+fun NavHostController.HandleBooleanArrayOrNullResult(retain: Boolean = false, onResult: BooleanArray?.() -> Unit) = HandleResult(retain) { asBooleanArrayOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Byte
@@ -147,10 +123,7 @@ fun NavHostController.HandleBooleanArrayOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ByteType].
  */
 @Composable
-fun NavHostController.HandleByteResult(
-    retain: Boolean = false,
-    onResult: Byte.() -> Unit,
-) = HandleResult(retain) { asByte().onResult() }
+fun NavHostController.HandleByteResult(retain: Boolean = false, onResult: Byte.() -> Unit) = HandleResult(retain) { asByte().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Byte or `null`
@@ -159,10 +132,7 @@ fun NavHostController.HandleByteResult(
  * @param onResult Method for handling the received Byte
  */
 @Composable
-fun NavHostController.HandleByteOrNullResult(
-    retain: Boolean = false,
-    onResult: Byte?.() -> Unit,
-) = HandleResult(retain) { asByteOrNull().onResult() }
+fun NavHostController.HandleByteOrNullResult(retain: Boolean = false, onResult: Byte?.() -> Unit) = HandleResult(retain) { asByteOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [ByteArray]
@@ -172,10 +142,7 @@ fun NavHostController.HandleByteOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ByteArrayType].
  */
 @Composable
-fun NavHostController.HandleByteArrayResult(
-    retain: Boolean = false,
-    onResult: ByteArray.() -> Unit,
-) = HandleResult(retain) { asByteArray().onResult() }
+fun NavHostController.HandleByteArrayResult(retain: Boolean = false, onResult: ByteArray.() -> Unit) = HandleResult(retain) { asByteArray().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [ByteArray] or `null`
@@ -184,10 +151,7 @@ fun NavHostController.HandleByteArrayResult(
  * @param onResult Method for handling the received [ByteArray] or`null`
  */
 @Composable
-fun NavHostController.HandleByteArrayOrNullResult(
-    retain: Boolean = false,
-    onResult: ByteArray?.() -> Unit,
-) = HandleResult(retain) { asByteArrayOrNull().onResult() }
+fun NavHostController.HandleByteArrayOrNullResult(retain: Boolean = false, onResult: ByteArray?.() -> Unit) = HandleResult(retain) { asByteArrayOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Char
@@ -197,10 +161,7 @@ fun NavHostController.HandleByteArrayOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharType].
  */
 @Composable
-fun NavHostController.HandleCharResult(
-    retain: Boolean = false,
-    onResult: Char.() -> Unit,
-) = HandleResult(retain) { asChar().onResult() }
+fun NavHostController.HandleCharResult(retain: Boolean = false, onResult: Char.() -> Unit) = HandleResult(retain) { asChar().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Char or `null`
@@ -209,10 +170,7 @@ fun NavHostController.HandleCharResult(
  * @param onResult Method for handling the received Char or`null`
  */
 @Composable
-fun NavHostController.HandleCharOrNullResult(
-    retain: Boolean = false,
-    onResult: Char?.() -> Unit,
-) = HandleResult(retain) { asCharOrNull().onResult() }
+fun NavHostController.HandleCharOrNullResult(retain: Boolean = false, onResult: Char?.() -> Unit) = HandleResult(retain) { asCharOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [CharArray]
@@ -222,10 +180,7 @@ fun NavHostController.HandleCharOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharArrayType].
  */
 @Composable
-fun NavHostController.HandleCharArrayResult(
-    retain: Boolean = false,
-    onResult: CharArray.() -> Unit,
-) = HandleResult(retain) { asCharArray().onResult() }
+fun NavHostController.HandleCharArrayResult(retain: Boolean = false, onResult: CharArray.() -> Unit) = HandleResult(retain) { asCharArray().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [CharArray] or `null`
@@ -234,10 +189,7 @@ fun NavHostController.HandleCharArrayResult(
  * @param onResult Method for handling the received [CharArray] or`null`
  */
 @Composable
-fun NavHostController.HandleCharArrayOrNullResult(
-    retain: Boolean = false,
-    onResult: CharArray?.() -> Unit,
-) = HandleResult(retain) { asCharArrayOrNull().onResult() }
+fun NavHostController.HandleCharArrayOrNullResult(retain: Boolean = false, onResult: CharArray?.() -> Unit) = HandleResult(retain) { asCharArrayOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [CharSequence]
@@ -247,10 +199,7 @@ fun NavHostController.HandleCharArrayOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.CharSequenceType].
  */
 @Composable
-fun NavHostController.HandleCharSequenceResult(
-    retain: Boolean = false,
-    onResult: CharSequence.() -> Unit,
-) = HandleResult(retain) { asCharSequence().onResult() }
+fun NavHostController.HandleCharSequenceResult(retain: Boolean = false, onResult: CharSequence.() -> Unit) = HandleResult(retain) { asCharSequence().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [CharSequence] or `null`
@@ -259,10 +208,7 @@ fun NavHostController.HandleCharSequenceResult(
  * @param onResult Method for handling the received [CharSequence] or`null`
  */
 @Composable
-fun NavHostController.HandleCharSequenceOrNullResult(
-    retain: Boolean = false,
-    onResult: CharSequence?.() -> Unit,
-) = HandleResult(retain) { asCharSequenceOrNull().onResult() }
+fun NavHostController.HandleCharSequenceOrNullResult(retain: Boolean = false, onResult: CharSequence?.() -> Unit) = HandleResult(retain) { asCharSequenceOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [KalugaDate]
@@ -272,10 +218,7 @@ fun NavHostController.HandleCharSequenceOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DateType].
  */
 @Composable
-fun NavHostController.HandleDateResult(
-    retain: Boolean = false,
-    onResult: KalugaDate.() -> Unit,
-) = HandleResult(retain) { asDate().onResult() }
+fun NavHostController.HandleDateResult(retain: Boolean = false, onResult: KalugaDate.() -> Unit) = HandleResult(retain) { asDate().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [KalugaDate] or `null`
@@ -284,10 +227,7 @@ fun NavHostController.HandleDateResult(
  * @param onResult Method for handling the received [KalugaDate] or`null`
  */
 @Composable
-fun NavHostController.HandleDateOrNullResult(
-    retain: Boolean = false,
-    onResult: KalugaDate?.() -> Unit,
-) = HandleResult(retain) { asDateOrNull().onResult() }
+fun NavHostController.HandleDateOrNullResult(retain: Boolean = false, onResult: KalugaDate?.() -> Unit) = HandleResult(retain) { asDateOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a list of [KalugaDate]
@@ -297,10 +237,7 @@ fun NavHostController.HandleDateOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DateArrayType].
  */
 @Composable
-fun NavHostController.HandleDateArrayResult(
-    retain: Boolean = false,
-    onResult: List<KalugaDate>.() -> Unit,
-) = HandleResult(retain) { asDateArray().onResult() }
+fun NavHostController.HandleDateArrayResult(retain: Boolean = false, onResult: List<KalugaDate>.() -> Unit) = HandleResult(retain) { asDateArray().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a list of [KalugaDate] or `null`
@@ -309,10 +246,7 @@ fun NavHostController.HandleDateArrayResult(
  * @param onResult Method for handling the received list of [KalugaDate] or`null`
  */
 @Composable
-fun NavHostController.HandleDateArrayOrNullResult(
-    retain: Boolean = false,
-    onResult: List<KalugaDate>?.() -> Unit,
-) = HandleResult(retain) { asDateArrayOrNull().onResult() }
+fun NavHostController.HandleDateArrayOrNullResult(retain: Boolean = false, onResult: List<KalugaDate>?.() -> Unit) = HandleResult(retain) { asDateArrayOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Double
@@ -322,10 +256,7 @@ fun NavHostController.HandleDateArrayOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DoubleType].
  */
 @Composable
-fun NavHostController.HandleDoubleResult(
-    retain: Boolean = false,
-    onResult: Double.() -> Unit,
-) = HandleResult(retain) { asDouble().onResult() }
+fun NavHostController.HandleDoubleResult(retain: Boolean = false, onResult: Double.() -> Unit) = HandleResult(retain) { asDouble().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Double or `null`
@@ -334,10 +265,7 @@ fun NavHostController.HandleDoubleResult(
  * @param onResult Method for handling the received Double or`null`
  */
 @Composable
-fun NavHostController.HandleDoubleOrNullResult(
-    retain: Boolean = false,
-    onResult: Double?.() -> Unit,
-) = HandleResult(retain) { asDoubleOrNull().onResult() }
+fun NavHostController.HandleDoubleOrNullResult(retain: Boolean = false, onResult: Double?.() -> Unit) = HandleResult(retain) { asDoubleOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [DoubleArray]
@@ -347,10 +275,7 @@ fun NavHostController.HandleDoubleOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.DoubleArrayType].
  */
 @Composable
-fun NavHostController.HandleDoubleArrayResult(
-    retain: Boolean = false,
-    onResult: DoubleArray.() -> Unit,
-) = HandleResult(retain) { asDoubleArray().onResult() }
+fun NavHostController.HandleDoubleArrayResult(retain: Boolean = false, onResult: DoubleArray.() -> Unit) = HandleResult(retain) { asDoubleArray().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [DoubleArray] or `null`
@@ -359,10 +284,7 @@ fun NavHostController.HandleDoubleArrayResult(
  * @param onResult Method for handling the received [DoubleArray] or`null`
  */
 @Composable
-fun NavHostController.HandleDoubleArrayOrNullResult(
-    retain: Boolean = false,
-    onResult: DoubleArray?.() -> Unit,
-) = HandleResult(retain) { asDoubleArrayOrNull().onResult() }
+fun NavHostController.HandleDoubleArrayOrNullResult(retain: Boolean = false, onResult: DoubleArray?.() -> Unit) = HandleResult(retain) { asDoubleArrayOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Float
@@ -372,10 +294,7 @@ fun NavHostController.HandleDoubleArrayOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.FloatType].
  */
 @Composable
-fun NavHostController.HandleFloatResult(
-    retain: Boolean = false,
-    onResult: Float.() -> Unit,
-) = HandleResult(retain) { asFloat().onResult() }
+fun NavHostController.HandleFloatResult(retain: Boolean = false, onResult: Float.() -> Unit) = HandleResult(retain) { asFloat().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Float or `null`
@@ -384,10 +303,7 @@ fun NavHostController.HandleFloatResult(
  * @param onResult Method for handling the received Float or`null`
  */
 @Composable
-fun NavHostController.HandleFloatOrNullResult(
-    retain: Boolean = false,
-    onResult: Float?.() -> Unit,
-) = HandleResult(retain) { asFloatOrNull().onResult() }
+fun NavHostController.HandleFloatOrNullResult(retain: Boolean = false, onResult: Float?.() -> Unit) = HandleResult(retain) { asFloatOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [FloatArray]
@@ -397,10 +313,7 @@ fun NavHostController.HandleFloatOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.FloatArrayType].
  */
 @Composable
-fun NavHostController.HandleFloatArrayResult(
-    retain: Boolean = false,
-    onResult: FloatArray.() -> Unit,
-) = HandleResult(retain) { asFloatArray().onResult() }
+fun NavHostController.HandleFloatArrayResult(retain: Boolean = false, onResult: FloatArray.() -> Unit) = HandleResult(retain) { asFloatArray().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [FloatArray] or `null`
@@ -409,10 +322,7 @@ fun NavHostController.HandleFloatArrayResult(
  * @param onResult Method for handling the received [FloatArray] or`null`
  */
 @Composable
-fun NavHostController.HandleFloatArrayOrNullResult(
-    retain: Boolean = false,
-    onResult: FloatArray?.() -> Unit,
-) = HandleResult(retain) { asFloatArrayOrNull().onResult() }
+fun NavHostController.HandleFloatArrayOrNullResult(retain: Boolean = false, onResult: FloatArray?.() -> Unit) = HandleResult(retain) { asFloatArrayOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching an Int
@@ -422,10 +332,7 @@ fun NavHostController.HandleFloatArrayOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.IntegerType].
  */
 @Composable
-fun NavHostController.HandleIntResult(
-    retain: Boolean = false,
-    onResult: Int.() -> Unit,
-) = HandleResult(retain) { asInt().onResult() }
+fun NavHostController.HandleIntResult(retain: Boolean = false, onResult: Int.() -> Unit) = HandleResult(retain) { asInt().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching an Int or `null`
@@ -434,10 +341,7 @@ fun NavHostController.HandleIntResult(
  * @param onResult Method for handling the received Int or`null`
  */
 @Composable
-fun NavHostController.HandleIntOrNullResult(
-    retain: Boolean = false,
-    onResult: Int?.() -> Unit,
-) = HandleResult(retain) { asIntOrNull().onResult() }
+fun NavHostController.HandleIntOrNullResult(retain: Boolean = false, onResult: Int?.() -> Unit) = HandleResult(retain) { asIntOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching an [IntArray]
@@ -447,10 +351,7 @@ fun NavHostController.HandleIntOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.IntegerArrayType].
  */
 @Composable
-fun NavHostController.HandleIntArrayResult(
-    retain: Boolean = false,
-    onResult: IntArray.() -> Unit,
-) = HandleResult(retain) { asIntArray().onResult() }
+fun NavHostController.HandleIntArrayResult(retain: Boolean = false, onResult: IntArray.() -> Unit) = HandleResult(retain) { asIntArray().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching an [IntArray] or `null`
@@ -459,10 +360,7 @@ fun NavHostController.HandleIntArrayResult(
  * @param onResult Method for handling the received [IntArray] or`null`
  */
 @Composable
-fun NavHostController.HandleIntArrayOrNullResult(
-    retain: Boolean = false,
-    onResult: IntArray?.() -> Unit,
-) = HandleResult(retain) { asIntArrayOrNull().onResult() }
+fun NavHostController.HandleIntArrayOrNullResult(retain: Boolean = false, onResult: IntArray?.() -> Unit) = HandleResult(retain) { asIntArrayOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Long
@@ -472,10 +370,7 @@ fun NavHostController.HandleIntArrayOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.LongType].
  */
 @Composable
-fun NavHostController.HandleLongResult(
-    retain: Boolean = false,
-    onResult: Long.() -> Unit,
-) = HandleResult(retain) { asLong().onResult() }
+fun NavHostController.HandleLongResult(retain: Boolean = false, onResult: Long.() -> Unit) = HandleResult(retain) { asLong().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Long or `null`
@@ -484,10 +379,7 @@ fun NavHostController.HandleLongResult(
  * @param onResult Method for handling the received Long or`null`
  */
 @Composable
-fun NavHostController.HandleLongOrNullResult(
-    retain: Boolean = false,
-    onResult: Long?.() -> Unit,
-) = HandleResult(retain) { asLongOrNull().onResult() }
+fun NavHostController.HandleLongOrNullResult(retain: Boolean = false, onResult: Long?.() -> Unit) = HandleResult(retain) { asLongOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [LongArray]
@@ -497,10 +389,7 @@ fun NavHostController.HandleLongOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.LongArrayType].
  */
 @Composable
-fun NavHostController.HandleLongArrayResult(
-    retain: Boolean = false,
-    onResult: LongArray.() -> Unit,
-) = HandleResult(retain) { asLongArray().onResult() }
+fun NavHostController.HandleLongArrayResult(retain: Boolean = false, onResult: LongArray.() -> Unit) = HandleResult(retain) { asLongArray().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [LongArray] or `null`
@@ -509,10 +398,7 @@ fun NavHostController.HandleLongArrayResult(
  * @param onResult Method for handling the received [LongArray] or`null`
  */
 @Composable
-fun NavHostController.HandleLongArrayOrNullResult(
-    retain: Boolean = false,
-    onResult: LongArray?.() -> Unit,
-) = HandleResult(retain) { asLongArrayOrNull().onResult() }
+fun NavHostController.HandleLongArrayOrNullResult(retain: Boolean = false, onResult: LongArray?.() -> Unit) = HandleResult(retain) { asLongArrayOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Short
@@ -522,10 +408,7 @@ fun NavHostController.HandleLongArrayOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ShortType].
  */
 @Composable
-fun NavHostController.HandleShortResult(
-    retain: Boolean = false,
-    onResult: Short.() -> Unit,
-) = HandleResult(retain) { asShort().onResult() }
+fun NavHostController.HandleShortResult(retain: Boolean = false, onResult: Short.() -> Unit) = HandleResult(retain) { asShort().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Short or `null`
@@ -534,10 +417,7 @@ fun NavHostController.HandleShortResult(
  * @param onResult Method for handling the received Short or`null`
  */
 @Composable
-fun NavHostController.HandleShortOrNullResult(
-    retain: Boolean = false,
-    onResult: Short?.() -> Unit,
-) = HandleResult(retain) { asShortOrNull().onResult() }
+fun NavHostController.HandleShortOrNullResult(retain: Boolean = false, onResult: Short?.() -> Unit) = HandleResult(retain) { asShortOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [ShortArray]
@@ -547,10 +427,7 @@ fun NavHostController.HandleShortOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.ShortArrayType].
  */
 @Composable
-fun NavHostController.HandleShortArrayResult(
-    retain: Boolean = false,
-    onResult: ShortArray.() -> Unit,
-) = HandleResult(retain) { asShortArray().onResult() }
+fun NavHostController.HandleShortArrayResult(retain: Boolean = false, onResult: ShortArray.() -> Unit) = HandleResult(retain) { asShortArray().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a [ShortArray] or `null`
@@ -559,10 +436,7 @@ fun NavHostController.HandleShortArrayResult(
  * @param onResult Method for handling the received [ShortArray] or`null`
  */
 @Composable
-fun NavHostController.HandleShortArrayOrNullResult(
-    retain: Boolean = false,
-    onResult: ShortArray?.() -> Unit,
-) = HandleResult(retain) { asShortArrayOrNull().onResult() }
+fun NavHostController.HandleShortArrayOrNullResult(retain: Boolean = false, onResult: ShortArray?.() -> Unit) = HandleResult(retain) { asShortArrayOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a String
@@ -572,10 +446,7 @@ fun NavHostController.HandleShortArrayOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.StringType].
  */
 @Composable
-fun NavHostController.HandleStringResult(
-    retain: Boolean = false,
-    onResult: String.() -> Unit,
-) = HandleResult(retain) { asString().onResult() }
+fun NavHostController.HandleStringResult(retain: Boolean = false, onResult: String.() -> Unit) = HandleResult(retain) { asString().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a String or `null`
@@ -584,10 +455,7 @@ fun NavHostController.HandleStringResult(
  * @param onResult Method for handling the received String or `null`
  */
 @Composable
-fun NavHostController.HandleStringOrNullResult(
-    retain: Boolean = false,
-    onResult: String?.() -> Unit,
-) = HandleResult(retain) { asStringOrNull().onResult() }
+fun NavHostController.HandleStringOrNullResult(retain: Boolean = false, onResult: String?.() -> Unit) = HandleResult(retain) { asStringOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a list of [String]
@@ -597,10 +465,7 @@ fun NavHostController.HandleStringOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.StringArrayType].
  */
 @Composable
-fun NavHostController.HandleStringListResult(
-    retain: Boolean = false,
-    onResult: List<String>.() -> Unit,
-) = HandleResult(retain) { asStringList().onResult() }
+fun NavHostController.HandleStringListResult(retain: Boolean = false, onResult: List<String>.() -> Unit) = HandleResult(retain) { asStringList().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a list of [String] or `null`
@@ -609,10 +474,7 @@ fun NavHostController.HandleStringListResult(
  * @param onResult Method for handling the received list of [String] or `null`
  */
 @Composable
-fun NavHostController.HandleStringListOrNullResult(
-    retain: Boolean = false,
-    onResult: List<String>?.() -> Unit,
-) = HandleResult(retain) { asStringListOrNull().onResult() }
+fun NavHostController.HandleStringListOrNullResult(retain: Boolean = false, onResult: List<String>?.() -> Unit) = HandleResult(retain) { asStringListOrNull().onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a given type [T].
@@ -624,11 +486,7 @@ fun NavHostController.HandleStringListOrNullResult(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.SerializedType] with [serializer].
  */
 @Composable
-fun <T> NavHostController.HandleResultOfType(
-    serializer: KSerializer<T>,
-    retain: Boolean = false,
-    onResult: T.() -> Unit,
-) = HandleResult(retain) { asTypeOf(serializer).onResult() }
+fun <T> NavHostController.HandleResultOfType(serializer: KSerializer<T>, retain: Boolean = false, onResult: T.() -> Unit) = HandleResult(retain) { asTypeOf(serializer).onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a given type [T].
@@ -639,11 +497,8 @@ fun <T> NavHostController.HandleResultOfType(
  * @param onResult Method for handling the received [T] or `null`
  */
 @Composable
-fun <T : Any> NavHostController.HandleResultOfTypeOrNull(
-    serializer: KSerializer<T>,
-    retain: Boolean = false,
-    onResult: T?.() -> Unit,
-) = HandleResult(retain) { asTypeOfOrNull(serializer).onResult() }
+fun <T : Any> NavHostController.HandleResultOfTypeOrNull(serializer: KSerializer<T>, retain: Boolean = false, onResult: T?.() -> Unit) =
+    HandleResult(retain) { asTypeOfOrNull(serializer).onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a given type [T].
@@ -655,11 +510,8 @@ fun <T : Any> NavHostController.HandleResultOfTypeOrNull(
  */
 @Composable
 @JvmName("HandleResultOfNullableTypeOrNull")
-fun <T> NavHostController.HandleResultOfTypeOrNull(
-    serializer: KSerializer<T>,
-    retain: Boolean = false,
-    onResult: T?.() -> Unit,
-) = HandleResult(retain) { asTypeOfOrNull(serializer).onResult() }
+fun <T> NavHostController.HandleResultOfTypeOrNull(serializer: KSerializer<T>, retain: Boolean = false, onResult: T?.() -> Unit) =
+    HandleResult(retain) { asTypeOfOrNull(serializer).onResult() }
 
 /**
  * Handles a [Route.Result.Data] matching a Unit
@@ -669,10 +521,7 @@ fun <T> NavHostController.HandleResultOfTypeOrNull(
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec] matching [NavigationBundleSpecType.UnitType].
  */
 @Composable
-fun NavHostController.HandleUnitResult(
-    retain: Boolean = false,
-    onResult: () -> Unit,
-) = HandleResult(retain) {
+fun NavHostController.HandleUnitResult(retain: Boolean = false, onResult: () -> Unit) = HandleResult(retain) {
     asUnit()
     onResult()
 }
@@ -684,10 +533,7 @@ fun NavHostController.HandleUnitResult(
  * @param onResult Method for handling the result
  */
 @Composable
-fun NavHostController.HandleUnitOrNullResult(
-    retain: Boolean = false,
-    onResult: () -> Unit,
-) = HandleResult(retain) {
+fun NavHostController.HandleUnitOrNullResult(retain: Boolean = false, onResult: () -> Unit) = HandleResult(retain) {
     asUnitNull()
     onResult()
 }

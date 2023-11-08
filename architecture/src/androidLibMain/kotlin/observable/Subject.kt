@@ -51,10 +51,7 @@ private fun <B, R : T, T, OO : ObservableOptional<R>> B.mutableLiveData(): Mutab
  * @param coroutineScope The [CoroutineScope] on which to observe.
  * @param observer The [Observer] to observe the [LiveData]
  */
-fun <T> LiveData<T>.observeOnCoroutine(
-    coroutineScope: CoroutineScope,
-    observer: Observer<T>,
-) {
+fun <T> LiveData<T>.observeOnCoroutine(coroutineScope: CoroutineScope, observer: Observer<T>) {
     // Live Data mutations should only ever be done from the main thread, so we don't (any longer) allow passing a context
     coroutineScope.launch(Dispatchers.Main.immediate) {
         val currentValue = value
@@ -68,6 +65,7 @@ fun <T> LiveData<T>.observeOnCoroutine(
 
 actual interface PlatformSubjectObserver<R> {
     fun createLiveData(): MutableLiveData<R>
+
     /**
      * Gets an [Observer] to observe changes to this subject.
      */

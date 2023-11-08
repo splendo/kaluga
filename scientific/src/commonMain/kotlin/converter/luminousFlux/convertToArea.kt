@@ -31,9 +31,8 @@ import com.splendo.kaluga.scientific.unit.SquareMeter
 import kotlin.jvm.JvmName
 
 @JvmName("fluxDivPhot")
-infix operator fun <FluxUnit : LuminousFlux> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(
-    phot: ScientificValue<PhysicalQuantity.Illuminance, Phot>,
-) = SquareCentimeter.area(this, phot)
+infix operator fun <FluxUnit : LuminousFlux> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(phot: ScientificValue<PhysicalQuantity.Illuminance, Phot>) =
+    SquareCentimeter.area(this, phot)
 
 @JvmName("fluxDivPhotMultiple")
 infix operator fun <FluxUnit : LuminousFlux, PhotUnit : PhotMultiple> ScientificValue<PhysicalQuantity.LuminousFlux, FluxUnit>.div(

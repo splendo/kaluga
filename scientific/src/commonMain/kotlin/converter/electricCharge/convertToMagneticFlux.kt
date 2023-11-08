@@ -27,8 +27,7 @@ import com.splendo.kaluga.scientific.unit.ElectricResistance
 import kotlin.jvm.JvmName
 
 @JvmName("abcoulombTimesAbohm")
-infix operator fun ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>.times(resistance: ScientificValue<PhysicalQuantity.ElectricResistance, Abohm>) =
-    resistance * this
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>.times(resistance: ScientificValue<PhysicalQuantity.ElectricResistance, Abohm>) = resistance * this
 
 @JvmName("chargeTimesResistance")
 infix operator fun <ResistanceUnit : ElectricResistance, ChargeUnit : ElectricCharge> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.times(

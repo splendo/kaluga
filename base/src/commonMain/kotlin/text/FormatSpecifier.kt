@@ -289,14 +289,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
     }
 
     // !Double.isInfinite(value) && !Double.isNaN(value)
-    private fun print(
-        sb: StringBuilder,
-        value: Double,
-        locale: KalugaLocale,
-        c: ParsingCharacter.RegularCharacter,
-        precision: Int,
-        neg: Boolean,
-    ) {
+    private fun print(sb: StringBuilder, value: Double, locale: KalugaLocale, c: ParsingCharacter.RegularCharacter, precision: Int, neg: Boolean) {
         when (c.regular) {
             RegularFormatCharacter.SCIENTIFIC -> {
                 val prec = if (precision == -1) 6 else precision
@@ -612,24 +605,11 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         return sb
     }
 
-    private fun localizedMagnitude(
-        sb: StringBuilder = StringBuilder(),
-        value: Int,
-        flags: Set<Flag>,
-        width: Int,
-        locale: KalugaLocale,
-    ): StringBuilder {
+    private fun localizedMagnitude(sb: StringBuilder = StringBuilder(), value: Int, flags: Set<Flag>, width: Int, locale: KalugaLocale): StringBuilder {
         return localizedMagnitude(sb, value.toString(10), 0, flags, width, locale)
     }
 
-    private fun localizedMagnitude(
-        sb: StringBuilder = StringBuilder(),
-        value: CharSequence,
-        offset: Int,
-        flags: Set<Flag>,
-        width: Int,
-        locale: KalugaLocale,
-    ): StringBuilder {
+    private fun localizedMagnitude(sb: StringBuilder = StringBuilder(), value: CharSequence, offset: Int, flags: Set<Flag>, width: Int, locale: KalugaLocale): StringBuilder {
         val begin: Int = sb.length
         val zero: Char = getZero(locale)
 

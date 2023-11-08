@@ -30,12 +30,10 @@ import com.splendo.kaluga.scientific.unit.Watt
 import kotlin.jvm.JvmName
 
 @JvmName("abvoltTimesAbampere")
-infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) =
-    ErgPerSecond.power(this, current)
+infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) = ErgPerSecond.power(this, current)
 
 @JvmName("abvoltTimesBiot")
-infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) =
-    ErgPerSecond.power(this, current)
+infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) = ErgPerSecond.power(this, current)
 
 @JvmName("voltageTimesCurrent")
 infix operator fun <VoltageUnit : Voltage, ElectricCurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.times(

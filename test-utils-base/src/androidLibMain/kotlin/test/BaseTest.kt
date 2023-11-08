@@ -80,12 +80,7 @@ actual open class BaseTest {
             Dispatchers.setMain(mainDispatcher)
 
             logger = object : Logger {
-                override fun log(
-                    level: LogLevel,
-                    tag: String?,
-                    throwable: Throwable?,
-                    message: (() -> String)?,
-                ) {
+                override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
                     println("$level: ${tag?.let { "[$it]" } ?: ""} ${message?.invoke() ?: ""} ${throwable?.message ?: ""}".trim())
                     throwable?.printStackTrace(System.out)
                 }

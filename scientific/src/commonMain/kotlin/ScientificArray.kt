@@ -248,7 +248,10 @@ operator fun <
     Unit : ScientificUnit<Quantity>,
     NumberType : Number,
     Array : ScientificArray<NumberType, Quantity, Unit>,
-    > List<Number>.invoke(unit: Unit, factory: (List<Decimal>, Unit) -> Array) = this.toDecimalList()(unit, factory)
+    > List<Number>.invoke(
+    unit: Unit,
+    factory: (List<Decimal>, Unit) -> Array,
+) = this.toDecimalList()(unit, factory)
 
 /**
  * Creates a [DefaultScientificArray] containing this list of [Decimal] using a given [AbstractScientificUnit]
@@ -279,7 +282,10 @@ operator fun <
     Unit : ScientificUnit<Quantity>,
     NumberType : Number,
     Array : ScientificArray<NumberType, Quantity, Unit>,
-    > List<Decimal>.invoke(unit: Unit, factory: (List<Decimal>, Unit) -> Array) = factory(this, unit)
+    > List<Decimal>.invoke(
+    unit: Unit,
+    factory: (List<Decimal>, Unit) -> Array,
+) = factory(this, unit)
 
 // Group and Split
 
@@ -332,7 +338,8 @@ fun <
     Quantity : PhysicalQuantity,
     Unit : AbstractScientificUnit<Quantity>,
     NumberType : Number,
-    > ScientificArray<NumberType, Quantity, Unit>.split() = split(unit, ::DefaultScientificValue)
+    > ScientificArray<NumberType, Quantity, Unit>.split() =
+    split(unit, ::DefaultScientificValue)
 
 /**
  * Splits a [ScientificArray] into a list of [DefaultScientificValue] in [TargetUnit] of all the values in the array
@@ -706,7 +713,9 @@ infix operator fun <
     Unit : AbstractScientificUnit<Quantity>,
     RightNumberType : Number,
     RightUnit : ScientificUnit<Quantity>,
-    > ScientificArray<NumberType, Quantity, Unit>.plus(right: ScientificArray<RightNumberType, Quantity, RightUnit>) = concat(right)
+    > ScientificArray<NumberType, Quantity, Unit>.plus(
+    right: ScientificArray<RightNumberType, Quantity, RightUnit>,
+) = concat(right)
 
 /**
  * Creates a [DefaultScientificArray] in [Unit] by adding a [ScientificValue] to this [ScientificArray]
@@ -722,7 +731,9 @@ infix operator fun <
     NumberType : Number,
     Unit : AbstractScientificUnit<Quantity>,
     RightUnit : AbstractScientificUnit<Quantity>,
-    > ScientificArray<NumberType, Quantity, Unit>.plus(right: ScientificValue<Quantity, RightUnit>) = concat(listOf(right).toScientificArray(right.unit))
+    > ScientificArray<NumberType, Quantity, Unit>.plus(
+    right: ScientificValue<Quantity, RightUnit>,
+) = concat(listOf(right).toScientificArray(right.unit))
 
 /**
  * Creates a [DefaultScientificArray] in [Unit] by adding a [ScientificArray] to this [ScientificValue]
@@ -739,7 +750,9 @@ infix operator fun <
     NumberType : Number,
     Unit : AbstractScientificUnit<Quantity>,
     RightUnit : ScientificUnit<Quantity>,
-    > ScientificValue<Quantity, Unit>.plus(right: ScientificArray<NumberType, Quantity, RightUnit>) = listOf(this).toScientificArray(unit).concat(right)
+    > ScientificValue<Quantity, Unit>.plus(
+    right: ScientificArray<NumberType, Quantity, RightUnit>,
+) = listOf(this).toScientificArray(unit).concat(right)
 
 /**
  * Creates a [DefaultScientificArray] containing all values of this [ScientificArray] and [right]

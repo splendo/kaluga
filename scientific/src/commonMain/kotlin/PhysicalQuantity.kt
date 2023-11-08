@@ -28,7 +28,7 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
      * A [PhysicalQuantity] that has no specific dimension
      */
     @Serializable
-    object Dimensionless : PhysicalQuantity()
+    data object Dimensionless : PhysicalQuantity()
 
     /**
      * A [PhysicalQuantity] that has a specific dimension
@@ -40,37 +40,37 @@ sealed class PhysicalQuantity : com.splendo.kaluga.base.utils.Serializable {
      * A [PhysicalQuantityWithDimension] representing the rate of change of velocity per unit time
      */
     @Serializable
-    object Acceleration : PhysicalQuantityWithDimension()
+    data object Acceleration : PhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing momentum of particle multiplied by distance travelled
      */
     @Serializable
-    object Action : PhysicalQuantityWithDimension()
+    data object Action : PhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing the quantity proportional to the number of particles in a sample
      */
     @Serializable
-    object AmountOfSubstance : PhysicalQuantityWithDimension()
+    data object AmountOfSubstance : PhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing the ratio of circular arc length to radius
      */
     @Serializable
-    object Angle : PhysicalQuantityWithDimension()
+    data object Angle : PhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing change in angular velocity per unit time
      */
     @Serializable
-    object AngularAcceleration : PhysicalQuantityWithDimension()
+    data object AngularAcceleration : PhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing the angle incremented in a plane by a segment connecting an object and a reference point per unit time
      */
     @Serializable
-    object AngularVelocity : PhysicalQuantityWithDimension()
+    data object AngularVelocity : PhysicalQuantityWithDimension()
 
     /**
      * A [PhysicalQuantityWithDimension] representing the extent of a surface

@@ -21,11 +21,7 @@ import com.splendo.kaluga.base.utils.round
 import com.splendo.kaluga.base.utils.toDouble
 import kotlin.test.assertEquals
 
-fun <Quantity : PhysicalQuantity> assertEqualScientificValue(
-    expected: ScientificValue<Quantity, *>,
-    actual: ScientificValue<Quantity, *>,
-    round: Int? = null,
-) {
+fun <Quantity : PhysicalQuantity> assertEqualScientificValue(expected: ScientificValue<Quantity, *>, actual: ScientificValue<Quantity, *>, round: Int? = null) {
     assertEquals(expected.unit, actual.unit)
     val actualValue = round?.let { actual.decimalValue.round(it) } ?: actual.decimalValue
     val expectedValue = round?.let { expected.decimalValue.round(it) } ?: expected.decimalValue

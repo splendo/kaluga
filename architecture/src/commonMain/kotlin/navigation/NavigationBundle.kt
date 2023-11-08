@@ -47,7 +47,7 @@ sealed class NavigationBundleValue<T> {
     /**
      * A [NonNullableNavigationBundleValue] containing a [Unit]
      */
-    object UnitValue : NonNullableNavigationBundleValue<Unit>() {
+    data object UnitValue : NonNullableNavigationBundleValue<Unit>() {
         override val value: Unit = Unit
     }
 

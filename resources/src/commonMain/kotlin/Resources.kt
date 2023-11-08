@@ -105,10 +105,7 @@ expect class DefaultFontLoader() : FontLoader
  * @param defaultValue The [String] to return if no match was found for the identifier. Defaults to `this`.
  * @return The [String] associated with the identifier represented by this String, or [defaultValue] if no such [String] could be found.
  */
-fun String.localized(
-    stringLoader: StringLoader = DefaultStringLoader(),
-    defaultValue: String = this,
-) = stringLoader.loadString(this, defaultValue)
+fun String.localized(stringLoader: StringLoader = DefaultStringLoader(), defaultValue: String = this) = stringLoader.loadString(this, defaultValue)
 
 /**
  * Treats this string as a resource identifier for a plural string format [String] and
@@ -118,11 +115,8 @@ fun String.localized(
  * @param defaultValue The [String] to return if no match was found for the identifier. Defaults to `this`.
  * @return The [String] associated with the identifier represented by this String, or [defaultValue] if no such [String] could be found.
  */
-fun String.quantity(
-    quantity: Int,
-    stringLoader: StringLoader = DefaultStringLoader(),
-    defaultValue: String = this,
-): String = stringLoader.loadQuantityString(this, quantity, defaultValue)
+fun String.quantity(quantity: Int, stringLoader: StringLoader = DefaultStringLoader(), defaultValue: String = this): String =
+    stringLoader.loadQuantityString(this, quantity, defaultValue)
 
 /**
  * Treats this string as a resource identifier for a [KalugaColor] and grabs the associated [KalugaColor]
@@ -130,10 +124,7 @@ fun String.quantity(
  * @param defaultValue The [KalugaColor] to return if no match was found for the identifier. Defaults to `null`.
  * @return The [KalugaColor] associated with the identifier represented by this String, or [defaultValue] if no such [KalugaColor] could be found.
  */
-fun String.asColor(
-    colorLoader: KalugaColorLoader = DefaultColorLoader(),
-    defaultValue: KalugaColor? = null,
-): KalugaColor? = colorLoader.loadColor(this, defaultValue)
+fun String.asColor(colorLoader: KalugaColorLoader = DefaultColorLoader(), defaultValue: KalugaColor? = null): KalugaColor? = colorLoader.loadColor(this, defaultValue)
 
 /**
  * Treats this string as a resource identifier for a [KalugaColor] and grabs the associated [KalugaImage]
@@ -141,10 +132,7 @@ fun String.asColor(
  * @param defaultValue The [KalugaImage] to return if no match was found for the identifier. Defaults to `null`.
  * @return The [KalugaImage] associated with the identifier represented by this String, or [defaultValue] if no such [KalugaImage] could be found.
  */
-fun String.asImage(
-    imageLoader: ImageLoader = DefaultImageLoader(),
-    defaultValue: KalugaImage? = null,
-): KalugaImage? = imageLoader.loadImage(this, defaultValue)
+fun String.asImage(imageLoader: ImageLoader = DefaultImageLoader(), defaultValue: KalugaImage? = null): KalugaImage? = imageLoader.loadImage(this, defaultValue)
 
 /**
  * Treats this string as a resource identifier for a [KalugaFont] and grabs the associated [KalugaFont]
@@ -152,7 +140,4 @@ fun String.asImage(
  * @param defaultValue The [KalugaFont] to return if no match was found for the identifier. Defaults to `null`.
  * @return The [KalugaFont] associated with the identifier represented by this String, or [defaultValue] if no such [KalugaFont] could be found.
  */
-suspend fun String.asFont(
-    fontLoader: FontLoader = DefaultFontLoader(),
-    defaultValue: KalugaFont? = null,
-): KalugaFont? = fontLoader.loadFont(this, defaultValue)
+suspend fun String.asFont(fontLoader: FontLoader = DefaultFontLoader(), defaultValue: KalugaFont? = null): KalugaFont? = fontLoader.loadFont(this, defaultValue)

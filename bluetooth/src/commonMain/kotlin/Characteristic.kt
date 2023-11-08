@@ -53,7 +53,9 @@ open class Characteristic(
      */
     var isNotifying: Boolean
         get() = _isNotifying.value
-        set(value) { _isNotifying.value = value }
+        set(value) {
+            _isNotifying.value = value
+        }
 
     /**
      * Enables notification or indication for this [Characteristic].
@@ -175,7 +177,9 @@ expect interface CharacteristicWrapper {
  */
 fun CharacteristicWrapper.containsAnyOf(vararg property: Int) = if (property.isNotEmpty()) {
     properties and property.reduce { acc, i -> acc.or(i) } != 0
-} else { false }
+} else {
+    false
+}
 
 /**
  * The properties associated with a Bluetooth Characteristic

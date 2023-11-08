@@ -179,15 +179,14 @@ internal class RelativeSweepGradient internal constructor(
         center = center,
     )
 
-    override fun createShader(size: Size): Shader =
-        SweepGradientShader(
-            Offset(
-                center.x * size.width,
-                center.y * size.height,
-            ),
-            colors,
-            stops,
-        )
+    override fun createShader(size: Size): Shader = SweepGradientShader(
+        Offset(
+            center.x * size.width,
+            center.y * size.height,
+        ),
+        colors,
+        stops,
+    )
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

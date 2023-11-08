@@ -38,6 +38,5 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Speed, Imp
     (unit per time.unit).acceleration(this, time)
 
 @JvmName("speedDivTime")
-infix operator fun <SpeedUnit : Speed, TimeUnit : Time> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = (Meter per Second per time.unit).acceleration(this, time)
+infix operator fun <SpeedUnit : Speed, TimeUnit : Time> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    (Meter per Second per time.unit).acceleration(this, time)

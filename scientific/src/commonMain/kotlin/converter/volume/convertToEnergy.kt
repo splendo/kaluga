@@ -43,41 +43,32 @@ import com.splendo.kaluga.scientific.unit.Volume
 import kotlin.jvm.JvmName
 
 @JvmName("cubicCentimeterTimesBarye")
-infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, Barye>) =
-    pressure * this
+infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, Barye>) = pressure * this
 
 @JvmName("cubicCentimeterTimesBaryeMultiple")
-infix operator fun <BaryeUnit : BaryeMultiple> ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>.times(
-    pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>,
-) = pressure * this
+infix operator fun <BaryeUnit : BaryeMultiple> ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>) =
+    pressure * this
 
 @JvmName("cubicFootTimesPoundSquareFoot")
-infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicFoot>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, PoundSquareFoot>) =
-    pressure * this
+infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicFoot>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, PoundSquareFoot>) = pressure * this
 
 @JvmName("cubicInchTimesPoundSquareInch")
-infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicInch>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, PoundSquareInch>) =
-    pressure * this
+infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicInch>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, PoundSquareInch>) = pressure * this
 
 @JvmName("cubicInchTimesOunceSquareInch")
-infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicInch>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, OunceSquareInch>) =
-    pressure * this
+infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicInch>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, OunceSquareInch>) = pressure * this
 
 @JvmName("cubicInchTimesKilopoundSquareInch")
-infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicInch>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, KiloPoundSquareInch>) =
-    pressure * this
+infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicInch>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, KiloPoundSquareInch>) = pressure * this
 
 @JvmName("cubicInchTimesKipSquareInch")
-infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicInch>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, KipSquareInch>) =
-    pressure * this
+infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicInch>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, KipSquareInch>) = pressure * this
 
 @JvmName("cubicInchTimesUSTonSquareInch")
-infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicInch>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, USTonSquareInch>) =
-    pressure * this
+infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicInch>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, USTonSquareInch>) = pressure * this
 
 @JvmName("cubicInchTimesImperialTonSquareInch")
-infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicInch>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, ImperialTonSquareInch>) =
-    pressure * this
+infix operator fun ScientificValue<PhysicalQuantity.Volume, CubicInch>.times(pressure: ScientificValue<PhysicalQuantity.Pressure, ImperialTonSquareInch>) = pressure * this
 
 @JvmName("imperialVolumeTimesImperialPressure")
 infix operator fun <PressureUnit : ImperialPressure, VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(

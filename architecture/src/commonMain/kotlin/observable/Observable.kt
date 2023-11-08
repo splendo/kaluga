@@ -73,10 +73,10 @@ abstract class BaseObservable<R : T, T, OO : ObservableOptional<R>>(
     protected open val observation: Observation<R, T, OO>,
 ) : BasicObservable<R, T, OO>,
     Initial<R, T> by observation {
-        constructor(
-            initialValue: ObservableOptional<T>,
-        ) : this(Observation(initialValue))
-    }
+    constructor(
+        initialValue: ObservableOptional<T>,
+    ) : this(Observation(initialValue))
+}
 
 /**
  * A [BaseObservable] that implements [InitializedObservable]
@@ -90,13 +90,12 @@ abstract class BaseInitializedObservable<T>(
     InitializedObservable<T>,
     Initialized<T, T> by observation {
 
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Value<T> =
-            observation.currentObserved
+    override fun getValue(thisRef: Any?, property: KProperty<*>): Value<T> = observation.currentObserved
 
-        constructor(
-            initialValue: Value<T>,
-        ) : this(ObservationInitialized(initialValue))
-    }
+    constructor(
+        initialValue: Value<T>,
+    ) : this(ObservationInitialized(initialValue))
+}
 
 /**
  * An abstract class extending [BaseObservable] that implements [UninitializedObservable]
@@ -112,9 +111,8 @@ abstract class BaseUninitializedObservable<T>(
     UninitializedObservable<T>,
     Uninitialized<T> by observation {
 
-        override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> =
-            observation.currentObserved
-    }
+    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> = observation.currentObserved
+}
 
 /**
  * An abstract class extending [BaseObservable] that implements [DefaultObservable]
@@ -130,19 +128,18 @@ abstract class BaseDefaultObservable<R : T?, T>(
     DefaultObservable<R, T?>,
     DefaultInitialized<R, T?> by observation {
 
-        /**
-         * Constructor
-         * @param defaultValue The default value of [R] to return if the current value is [ObservableOptional.Nothing] or [ObservableOptional.Value] containing `null`.
-         * @param initialValue A [Value] of [T] to use as the initial value
-         */
-        constructor(
-            defaultValue: R,
-            initialValue: Value<T?>,
-        ) : this(ObservationDefault<R, T?>(Value(defaultValue), initialValue))
+    /**
+     * Constructor
+     * @param defaultValue The default value of [R] to return if the current value is [ObservableOptional.Nothing] or [ObservableOptional.Value] containing `null`.
+     * @param initialValue A [Value] of [T] to use as the initial value
+     */
+    constructor(
+        defaultValue: R,
+        initialValue: Value<T?>,
+    ) : this(ObservationDefault<R, T?>(Value(defaultValue), initialValue))
 
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
-            observation.currentObserved
-    }
+    override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> = observation.currentObserved
+}
 
 /**
  * A [BaseInitializedObservable] that has a fixed value.

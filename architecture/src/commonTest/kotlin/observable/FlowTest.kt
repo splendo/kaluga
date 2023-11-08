@@ -29,34 +29,23 @@ import kotlin.test.Test
 
 class FlowTest : ObservableBaseTest() {
 
-    private fun <V : String?> flowOfWithDelays(vararg values: V) =
-        flowOf(*values).onStart { waitForUpdate() }.onEach { waitForUpdate() }
+    private fun <V : String?> flowOfWithDelays(vararg values: V) = flowOf(*values).onStart { waitForUpdate() }.onEach { waitForUpdate() }
 
-    private suspend fun <V : String?> testUninitializedFlow(
-        observable: UninitializedObservable<V>,
-        vararg furtherUpdates: ObservableOptional<V>,
-    ) = testUninitializedStringObservable(
-        observable,
-        true,
-        *furtherUpdates.map { { _: UninitializedObservable<V> -> it } }.toTypedArray(),
-    )
+    private suspend fun <V : String?> testUninitializedFlow(observable: UninitializedObservable<V>, vararg furtherUpdates: ObservableOptional<V>) =
+        testUninitializedStringObservable(
+            observable,
+            true,
+            *furtherUpdates.map { { _: UninitializedObservable<V> -> it } }.toTypedArray(),
+        )
 
-    private suspend fun testDefaultFlow(
-        observable: DefaultObservable<String, String?>,
-        initialExcepted: String,
-        vararg furtherUpdates: String,
-    ) = testDefaultStringObservable(
+    private suspend fun testDefaultFlow(observable: DefaultObservable<String, String?>, initialExcepted: String, vararg furtherUpdates: String) = testDefaultStringObservable(
         observable,
         initialExcepted,
         true,
         *furtherUpdates.map { { _: DefaultObservable<String, String?> -> it } }.toTypedArray(),
     )
 
-    private suspend fun <V : String?> testInitializedFlow(
-        observable: InitializedObservable<V>,
-        initialExcepted: V,
-        vararg furtherUpdates: V,
-    ) = testInitializedStringObservable(
+    private suspend fun <V : String?> testInitializedFlow(observable: InitializedObservable<V>, initialExcepted: V, vararg furtherUpdates: V) = testInitializedStringObservable(
         observable,
         initialExcepted,
         true,

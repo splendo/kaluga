@@ -35,14 +35,12 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricVolumetricFlowDivMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.VolumetricFlow, MetricVolumetricFlow>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-) = (unit per area.unit).volumetricFlux(this, area)
+infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.VolumetricFlow, MetricVolumetricFlow>.div(area: ScientificValue<PhysicalQuantity.Area, AreaUnit>) =
+    (unit per area.unit).volumetricFlux(this, area)
 
 @JvmName("imperialVolumetricFlowDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.VolumetricFlow, ImperialVolumetricFlow>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-) = (unit per area.unit).volumetricFlux(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.VolumetricFlow, ImperialVolumetricFlow>.div(area: ScientificValue<PhysicalQuantity.Area, AreaUnit>) =
+    (unit per area.unit).volumetricFlux(this, area)
 
 @JvmName("ukImperialVolumetricFlowDivImperialArea")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.VolumetricFlow, UKImperialVolumetricFlow>.div(

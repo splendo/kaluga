@@ -58,10 +58,7 @@ class MockDateTimePickerPresenter(public override val dateTimePicker: DateTimePi
             }
         }
 
-        override fun create(
-            dateTimePicker: DateTimePicker,
-            coroutineScope: CoroutineScope,
-        ): MockDateTimePickerPresenter = createMock.call(dateTimePicker, coroutineScope)
+        override fun create(dateTimePicker: DateTimePicker, coroutineScope: CoroutineScope): MockDateTimePickerPresenter = createMock.call(dateTimePicker, coroutineScope)
     }
 
     /**

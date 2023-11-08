@@ -55,12 +55,7 @@ private class KVOObserver<T>(nsObject: NSObject, keyPath: String, options: NSKey
         }
     }
 
-    override fun observeValueForKeyPath(
-        keyPath: String?,
-        ofObject: Any?,
-        change: Map<Any?, *>?,
-        context: COpaquePointer?,
-    ) {
+    override fun observeValueForKeyPath(keyPath: String?, ofObject: Any?, change: Map<Any?, *>?, context: COpaquePointer?) {
         val value = (ofObject as NSObject).valueForKeyPath(keyPath!!)
         _observedValue.tryEmit(value as T)
     }
@@ -73,10 +68,7 @@ private class KVOObserver<T>(nsObject: NSObject, keyPath: String, options: NSKey
  * @param options A combination of the [NSKeyValueObservingOptions] values that specifies what is included in observation notifications.
  * @return a [Flow] containing the [T] observed at [keyPath]
  */
-fun <T> NSObject.observeKeyValueAsFlow(
-    keyPath: String,
-    options: NSKeyValueObservingOptions = NSKeyValueObservingOptionNew,
-): Flow<T> {
+fun <T> NSObject.observeKeyValueAsFlow(keyPath: String, options: NSKeyValueObservingOptions = NSKeyValueObservingOptionNew): Flow<T> {
     val observer = KVOObserver<T>(this, keyPath, options)
     return observer.observedValue
 }

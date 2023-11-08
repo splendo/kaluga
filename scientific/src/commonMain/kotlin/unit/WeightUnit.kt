@@ -144,36 +144,36 @@ object Nanogram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, P
 object Microgram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Micro(Gram)
 
 @Serializable
-object Milligram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Milli(Gram)
+data object Milligram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Milli(Gram)
 
 @Serializable
-object Centigram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Centi(Gram)
+data object Centigram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Centi(Gram)
 
 @Serializable
-object Decigram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Deci(Gram)
+data object Decigram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Deci(Gram)
 
 @Serializable
-object Decagram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Deca(Gram)
+data object Decagram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Deca(Gram)
 
 @Serializable
-object Hectogram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Hecto(Gram)
+data object Hectogram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Hecto(Gram)
 
 @Serializable
-object Kilogram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Kilo(Gram)
+data object Kilogram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Kilo(Gram)
 
 @Serializable
-object Megagram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Mega(Gram)
+data object Megagram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Mega(Gram)
 
 @Serializable
-object Gigagram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Giga(Gram)
+data object Gigagram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Giga(Gram)
 
 @Serializable
-object Tonne : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Mega(Gram) {
+data object Tonne : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Mega(Gram) {
     override val symbol: String = "t"
 }
 
 @Serializable
-object Dalton : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight> {
+data object Dalton : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight> {
     override val symbol: String = "Da"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Weight
@@ -185,38 +185,38 @@ object Dalton : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, Physica
 sealed class DaltonMultiple : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton>
 
 @Serializable
-object Nanodalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Nano(Dalton)
+data object Nanodalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Nano(Dalton)
 
 @Serializable
-object Microdalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Micro(Dalton)
+data object Microdalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Micro(Dalton)
 
 @Serializable
-object Millidalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Milli(Dalton)
+data object Millidalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Milli(Dalton)
 
 @Serializable
-object Centidalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Centi(Dalton)
+data object Centidalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Centi(Dalton)
 
 @Serializable
-object Decidalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Deci(Dalton)
+data object Decidalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Deci(Dalton)
 
 @Serializable
-object Decadalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Deca(Dalton)
+data object Decadalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Deca(Dalton)
 
 @Serializable
-object HectoDalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Hecto(Dalton)
+data object HectoDalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Hecto(Dalton)
 
 @Serializable
-object Kilodalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Kilo(Dalton)
+data object Kilodalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Kilo(Dalton)
 
 @Serializable
-object Megadalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Mega(Dalton)
+data object Megadalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Mega(Dalton)
 
 @Serializable
-object Gigadalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Giga(Dalton)
+data object Gigadalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Giga(Dalton)
 
 // Imperial Weight
 @Serializable
-object Grain : ImperialWeight() {
+data object Grain : ImperialWeight() {
     private const val GRAIN_IN_POUND = 7000
     override val symbol: String = "gr"
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value / GRAIN_IN_POUND.toDecimal())
@@ -224,7 +224,7 @@ object Grain : ImperialWeight() {
 }
 
 @Serializable
-object Dram : ImperialWeight() {
+data object Dram : ImperialWeight() {
     private const val DRAMS_IN_POUND = 256
     override val symbol: String = "dr"
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value / DRAMS_IN_POUND.toDecimal())
@@ -232,7 +232,7 @@ object Dram : ImperialWeight() {
 }
 
 @Serializable
-object Ounce : ImperialWeight() {
+data object Ounce : ImperialWeight() {
     private const val OUNCES_IN_POUND = 16
     override val symbol: String = "oz"
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value / OUNCES_IN_POUND.toDecimal())
@@ -240,7 +240,7 @@ object Ounce : ImperialWeight() {
 }
 
 @Serializable
-object Pound : ImperialWeight() {
+data object Pound : ImperialWeight() {
     private const val KILOGRAM_IN_POUND = 0.45359237
     override val symbol: String = "lb"
     override fun toSIUnit(value: Decimal): Decimal = value * KILOGRAM_IN_POUND.toDecimal()
@@ -248,7 +248,7 @@ object Pound : ImperialWeight() {
 }
 
 @Serializable
-object Stone : ImperialWeight() {
+data object Stone : ImperialWeight() {
     private const val STONES_IN_POUND = 14
     override val symbol: String = "st"
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value * STONES_IN_POUND.toDecimal())
@@ -256,7 +256,7 @@ object Stone : ImperialWeight() {
 }
 
 @Serializable
-object Slug : ImperialWeight() {
+data object Slug : ImperialWeight() {
     override val symbol: String = "slug"
     override fun toSIUnit(value: Decimal): Decimal = PoundForce.toSIUnit((Foot per Second).fromSIUnit(value))
     override fun fromSIUnit(value: Decimal): Decimal = (Foot per Second).toSIUnit(PoundForce.fromSIUnit(value))
@@ -264,7 +264,7 @@ object Slug : ImperialWeight() {
 
 // also long ton
 @Serializable
-object ImperialTon : UKImperialWeight() {
+data object ImperialTon : UKImperialWeight() {
     private const val POUND_IN_LONG_TONES = 2240
     override val symbol: String = "ton"
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value * POUND_IN_LONG_TONES.toDecimal())
@@ -290,7 +290,7 @@ val <WeightUnit : ImperialWeight> WeightUnit.ukImperial get() = UKImperialImperi
 
 // also short ton
 @Serializable
-object UsTon : USCustomaryWeight() {
+data object UsTon : USCustomaryWeight() {
     private const val POUND_IN_SHORT_TONES = 2000
     override val symbol: String = "ton"
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value * POUND_IN_SHORT_TONES.toDecimal())

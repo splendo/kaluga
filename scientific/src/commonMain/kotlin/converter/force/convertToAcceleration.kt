@@ -82,6 +82,5 @@ infix operator fun <ForceUnit : USCustomaryForce, WeightUnit : USCustomaryWeight
 ) = (Foot per Second per Second).acceleration(this, mass)
 
 @JvmName("forceDivWeight")
-infix operator fun <ForceUnit : Force, WeightUnit : Weight> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = (Meter per Second per Second).acceleration(this, mass)
+infix operator fun <ForceUnit : Force, WeightUnit : Weight> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    (Meter per Second per Second).acceleration(this, mass)

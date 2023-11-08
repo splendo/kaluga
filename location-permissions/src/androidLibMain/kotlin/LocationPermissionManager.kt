@@ -69,11 +69,7 @@ actual class DefaultLocationPermissionManager(
  */
 actual class LocationPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseLocationPermissionManagerBuilder {
 
-    override fun create(
-        locationPermission: LocationPermission,
-        settings: Settings,
-        coroutineScope: CoroutineScope,
-    ): LocationPermissionManager {
+    override fun create(locationPermission: LocationPermission, settings: Settings, coroutineScope: CoroutineScope): LocationPermissionManager {
         return DefaultLocationPermissionManager(context.context, locationPermission, settings, coroutineScope)
     }
 }

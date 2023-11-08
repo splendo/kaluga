@@ -65,11 +65,8 @@ actual data class KalugaLocale internal constructor(val nsLocale: NSLocale) : Ba
          * @param variant Arbitrary value used to indicate a variation of a [KalugaLocale]
          * @return The [KalugaLocale] for the given [language], [country], and [variant]
          */
-        actual fun createLocale(
-            language: String,
-            country: String,
-            variant: String,
-        ): KalugaLocale = KalugaLocale(NSLocale(listOf(language, country, variant).filter { it.isNotEmpty() }.joinToString("_")))
+        actual fun createLocale(language: String, country: String, variant: String): KalugaLocale =
+            KalugaLocale(NSLocale(listOf(language, country, variant).filter { it.isNotEmpty() }.joinToString("_")))
 
         /**
          * The default [KalugaLocale] of the user

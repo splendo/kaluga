@@ -436,9 +436,7 @@ inline fun <reified Activity : android.app.Activity, reified ViewModel : BaseLif
  * @param Activity The type of [android.app.Activity] to launch.
  * @param flags A set of [IntentFlag] to be applied to the next screen.
  */
-inline fun <reified Activity : android.app.Activity> NavigationAction<*>.ShowActivity(
-    flags: Set<IntentFlag> = emptySet(),
-) = ComposableNavSpec.IntentLauncher {
+inline fun <reified Activity : android.app.Activity> NavigationAction<*>.ShowActivity(flags: Set<IntentFlag> = emptySet()) = ComposableNavSpec.IntentLauncher {
     Intent(this, Activity::class.java).apply {
         bundle?.let {
             putExtras(it.toBundle())

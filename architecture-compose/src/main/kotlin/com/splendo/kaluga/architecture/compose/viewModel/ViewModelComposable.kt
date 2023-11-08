@@ -28,10 +28,7 @@ import com.splendo.kaluga.architecture.viewmodel.LifecycleSubscribableManager
  * @param content content based on [viewModel]
  */
 @Composable
-fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
-    viewModel: ViewModel,
-    content: @Composable (ViewModel.() -> Unit)? = null,
-) {
+fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(viewModel: ViewModel, content: @Composable (ViewModel.() -> Unit)? = null) {
     LocalContext.current.activity?.let {
         ViewModelComposable(it, it.supportFragmentManager, viewModel, content)
     }
@@ -46,11 +43,8 @@ fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
  * @param content content based on [viewModel]
  */
 @Composable
-fun <ViewModel : BaseLifecycleViewModel> FragmentViewModelComposable(
-    viewModel: ViewModel,
-    fragmentManager: FragmentManager,
-    content: @Composable (ViewModel.() -> Unit)? = null,
-) = ViewModelComposable(LocalContext.current.activity, fragmentManager, viewModel, content)
+fun <ViewModel : BaseLifecycleViewModel> FragmentViewModelComposable(viewModel: ViewModel, fragmentManager: FragmentManager, content: @Composable (ViewModel.() -> Unit)? = null) =
+    ViewModelComposable(LocalContext.current.activity, fragmentManager, viewModel, content)
 
 @Composable
 private fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
@@ -91,8 +85,7 @@ private fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
     "Does not work for configuration changes (e.g. rotation).",
     replaceWith = ReplaceWith("viewModel()", "androidx.lifecycle.viewmodel.compose.viewModel"),
 )
-fun <ViewModel : BaseLifecycleViewModel> store(provider: @Composable () -> ViewModel): ViewModel =
-    provider().also { handleLocalViewModelStore(it) }
+fun <ViewModel : BaseLifecycleViewModel> store(provider: @Composable () -> ViewModel): ViewModel = provider().also { handleLocalViewModelStore(it) }
 
 /**
  * Stores and remembers a view model in the local [ViewModelStore].
@@ -135,8 +128,7 @@ private fun <ViewModel : BaseLifecycleViewModel> handleLocalViewModelStore(viewM
             viewModelStoreOwner,
             @Suppress("UNCHECKED_CAST")
             object : ViewModelProvider.Factory {
-                override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T =
-                    viewModel as T
+                override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T = viewModel as T
             },
         )
     }

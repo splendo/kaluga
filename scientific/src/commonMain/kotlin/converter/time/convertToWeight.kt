@@ -29,19 +29,16 @@ import com.splendo.kaluga.scientific.unit.USCustomaryMassFlowRate
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricMassFlowRate")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MetricMassFlowRate>,
-) = massFlowRate * this
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, MetricMassFlowRate>) =
+    massFlowRate * this
 
 @JvmName("timeTimesImperialMassFlowRate")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, ImperialMassFlowRate>,
-) = massFlowRate * this
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, ImperialMassFlowRate>) =
+    massFlowRate * this
 
 @JvmName("timeUKImperialMassFlowRate")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, UKImperialMassFlowRate>,
-) = massFlowRate * this
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(massFlowRate: ScientificValue<PhysicalQuantity.MassFlowRate, UKImperialMassFlowRate>) =
+    massFlowRate * this
 
 @JvmName("timeTimesUSCustomaryMassFlowRate")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(

@@ -48,11 +48,7 @@ class PairingUtilsTests : BaseTest() {
         val mockConnectionManager = CompletableDeferred<MockDeviceConnectionManager>()
 
         private val manager = object : DeviceConnectionManager.Builder {
-            override fun create(
-                deviceWrapper: DeviceWrapper,
-                settings: ConnectionSettings,
-                coroutineScope: CoroutineScope,
-            ): MockDeviceConnectionManager {
+            override fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): MockDeviceConnectionManager {
                 val connectionManager = MockDeviceConnectionManager(
                     true,
                     deviceWrapper,

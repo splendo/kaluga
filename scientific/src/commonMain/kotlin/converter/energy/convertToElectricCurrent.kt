@@ -30,8 +30,7 @@ import com.splendo.kaluga.scientific.unit.Maxwell
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivMaxwell")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(flux: ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>) =
-    Abampere.current(this, flux)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(flux: ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>) = Abampere.current(this, flux)
 
 @JvmName("ergMultipleDivMaxwell")
 infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(flux: ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>) =

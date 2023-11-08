@@ -39,10 +39,7 @@ actual class DefaultLocationManager(
      * Builder for creating a [DefaultLocationManager]
      */
     class Builder : BaseLocationManager.Builder {
-        override fun create(
-            settings: Settings,
-            coroutineScope: CoroutineScope,
-        ): BaseLocationManager {
+        override fun create(settings: Settings, coroutineScope: CoroutineScope): BaseLocationManager {
             return DefaultLocationManager(settings, coroutineScope)
         }
     }

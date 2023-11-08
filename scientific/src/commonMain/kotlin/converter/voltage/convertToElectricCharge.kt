@@ -27,8 +27,7 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("abvoltTimesAbfarad")
-infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.times(capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, Abfarad>) =
-    capacitance * this
+infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.times(capacitance: ScientificValue<PhysicalQuantity.ElectricCapacitance, Abfarad>) = capacitance * this
 
 @JvmName("voltageTimesCapacitance")
 infix operator fun <CapacitanceUnit : ElectricCapacitance, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.times(

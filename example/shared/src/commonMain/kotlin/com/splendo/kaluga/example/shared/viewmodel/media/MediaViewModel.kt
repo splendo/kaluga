@@ -61,7 +61,7 @@ import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.milliseconds
 
 sealed class MediaNavigationAction : SingleValueNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType) {
-    object SelectLocal : MediaNavigationAction()
+    data object SelectLocal : MediaNavigationAction()
 }
 
 class MediaViewModel(

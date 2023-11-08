@@ -29,10 +29,7 @@ import kotlin.coroutines.CoroutineContext
  * @param context the context of the coroutine. The default value is an event loop on the current thread.
  * @param block the coroutine code.
  */
-actual fun <T> runBlocking(
-    context: CoroutineContext,
-    block: suspend CoroutineScope.() -> T,
-): dynamic {
+actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T): dynamic {
     // this does not wait for the result unfortunately
     return GlobalScope.launch { block(this) }
 }

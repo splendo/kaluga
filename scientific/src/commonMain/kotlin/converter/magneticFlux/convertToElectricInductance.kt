@@ -34,8 +34,7 @@ infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(c
     Abhenry.inductance(this, current)
 
 @JvmName("maxwellDivBiot")
-infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) =
-    Abhenry.inductance(this, current)
+infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) = Abhenry.inductance(this, current)
 
 @JvmName("fluxDivCurrent")
 infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.div(

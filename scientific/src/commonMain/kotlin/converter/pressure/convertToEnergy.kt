@@ -48,8 +48,7 @@ import com.splendo.kaluga.scientific.unit.Volume
 import kotlin.jvm.JvmName
 
 @JvmName("baryeTimesCubicCentimeter")
-infix operator fun ScientificValue<PhysicalQuantity.Pressure, Barye>.times(volume: ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>) =
-    Erg.energy(this, volume)
+infix operator fun ScientificValue<PhysicalQuantity.Pressure, Barye>.times(volume: ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>) = Erg.energy(this, volume)
 
 @JvmName("baryeMultipleTimesCubicCentimeter")
 infix operator fun <BaryeUnit : BaryeMultiple> ScientificValue<PhysicalQuantity.Pressure, BaryeUnit>.times(volume: ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>) =

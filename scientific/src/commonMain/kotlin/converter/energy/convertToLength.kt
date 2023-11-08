@@ -45,8 +45,7 @@ import com.splendo.kaluga.scientific.unit.USCustomaryForce
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivDyne")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(force: ScientificValue<PhysicalQuantity.Force, Dyne>) =
-    Centimeter.distance(this, force)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(force: ScientificValue<PhysicalQuantity.Force, Dyne>) = Centimeter.distance(this, force)
 
 @JvmName("ergMultipleDivDyne")
 infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(force: ScientificValue<PhysicalQuantity.Force, Dyne>) =
@@ -62,24 +61,16 @@ infix operator fun <ErgUnit : ErgMultiple, DyneUnit : DyneMultiple> ScientificVa
 ) = Centimeter.distance(this, force)
 
 @JvmName("footPoundalDivPoundal")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundal>.div(
-    force: ScientificValue<PhysicalQuantity.Force, Poundal>,
-) = Foot.distance(this, force)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundal>.div(force: ScientificValue<PhysicalQuantity.Force, Poundal>) = Foot.distance(this, force)
 
 @JvmName("footPoundForceDivPoundForce")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundForce>.div(
-    force: ScientificValue<PhysicalQuantity.Force, PoundForce>,
-) = Foot.distance(this, force)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundForce>.div(force: ScientificValue<PhysicalQuantity.Force, PoundForce>) = Foot.distance(this, force)
 
 @JvmName("inchPoundForceDivPoundForce")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, InchPoundForce>.div(
-    force: ScientificValue<PhysicalQuantity.Force, PoundForce>,
-) = Inch.distance(this, force)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, InchPoundForce>.div(force: ScientificValue<PhysicalQuantity.Force, PoundForce>) = Inch.distance(this, force)
 
 @JvmName("inchOunceForceDivOunceForce")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, InchOunceForce>.div(
-    force: ScientificValue<PhysicalQuantity.Force, OunceForce>,
-) = Inch.distance(this, force)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, InchOunceForce>.div(force: ScientificValue<PhysicalQuantity.Force, OunceForce>) = Inch.distance(this, force)
 
 @JvmName("imperialEnergyDivImperialForce")
 infix operator fun <EnergyUnit : ImperialEnergy, ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
@@ -112,6 +103,5 @@ infix operator fun <EnergyUnit : MetricAndImperialEnergy, ForceUnit : USCustomar
 ) = Foot.distance(this, force)
 
 @JvmName("energyDivForce")
-infix operator fun <EnergyUnit : Energy, ForceUnit : Force> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
-) = Meter.distance(this, force)
+infix operator fun <EnergyUnit : Energy, ForceUnit : Force> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(force: ScientificValue<PhysicalQuantity.Force, ForceUnit>) =
+    Meter.distance(this, force)

@@ -32,7 +32,9 @@ fun <
     Result,
     Answer,
     Stub,
-    >.verify(times: Int = 1) {
+    >.verify(
+    times: Int = 1,
+) {
     verifyWithParameters(VoidParameters.MatchersOrCaptor, times)
 }
 
@@ -57,7 +59,9 @@ fun <
     Result,
     Answer,
     Stub,
-    >.verify(rule: VerificationRule) {
+    >.verify(
+    rule: VerificationRule,
+) {
     verifyWithParameters(VoidParameters.MatchersOrCaptor, rule)
 }
 
@@ -84,7 +88,10 @@ fun <
     Result,
     Answer,
     Stub,
-    >.verify(value: ParameterMatcherOrCaptor<Value> = ParameterMatcher.any(), times: Int = 1) {
+    >.verify(
+    value: ParameterMatcherOrCaptor<Value> = ParameterMatcher.any(),
+    times: Int = 1,
+) {
     verifyWithParameters(SingleParameters.MatchersOrCaptor(value), times)
 }
 

@@ -19,12 +19,12 @@ package com.splendo.kaluga.permissions.microphone
 import com.splendo.kaluga.permissions.base.av.AVType
 import platform.AVFoundation.AVMediaTypeAudio
 
-const val NSMicrophoneUsageDescription = "NSMicrophoneUsageDescription"
+private const val NS_MICROPHONE_USAGE_DESCRIPTION = "NSMicrophoneUsageDescription"
 
 /**
  * The [AVType] of the [MicrophonePermission]
  */
 class AVTypeMicrophone : AVType() {
     override val avMediaType = AVMediaTypeAudio
-    override val declarationName = NSMicrophoneUsageDescription
+    override val declarationName = NS_MICROPHONE_USAGE_DESCRIPTION
 }

@@ -96,10 +96,7 @@ class MockBaseLocationManager(
             }
         }
 
-        override fun create(
-            settings: Settings,
-            coroutineScope: CoroutineScope,
-        ): BaseLocationManager = createMock.call(settings, coroutineScope)
+        override fun create(settings: Settings, coroutineScope: CoroutineScope): BaseLocationManager = createMock.call(settings, coroutineScope)
     }
 
     /**
