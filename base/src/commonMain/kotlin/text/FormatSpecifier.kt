@@ -31,7 +31,7 @@ import kotlin.time.Duration.Companion.milliseconds
 internal sealed class ParsingCharacter(val char: Char) {
     data class RegularCharacter(val regular: RegularFormatCharacter) : ParsingCharacter(regular.char)
     data class DateTime(val dateTime: com.splendo.kaluga.base.text.DateTime) : ParsingCharacter(dateTime.char)
-    object None : ParsingCharacter(Char.MIN_VALUE)
+    data object None : ParsingCharacter(Char.MIN_VALUE)
 }
 
 internal class FormatSpecifier(private val out: StringBuilder, matchResult: MatchResult) : FormatString {

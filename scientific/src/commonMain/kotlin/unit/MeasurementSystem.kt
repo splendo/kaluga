@@ -70,37 +70,37 @@ sealed class MeasurementSystem : MeasurementUsage, com.splendo.kaluga.base.utils
      * The metric system
      */
     @Serializable
-    object Metric : MeasurementSystem(), MeasurementUsage.UsedInMetric
+    data object Metric : MeasurementSystem(), MeasurementUsage.UsedInMetric
 
     /**
      * The Imperial system (both UK Imperial and US Customary)
      */
     @Serializable
-    object Imperial : MeasurementSystem(), MeasurementUsage.UsedInImperial
+    data object Imperial : MeasurementSystem(), MeasurementUsage.UsedInImperial
 
     /**
      * The US Customary system
      */
     @Serializable
-    object USCustomary : MeasurementSystem(), MeasurementUsage.UsedInUSCustomary
+    data object USCustomary : MeasurementSystem(), MeasurementUsage.UsedInUSCustomary
 
     /**
      * The UK Imperial system
      */
     @Serializable
-    object UKImperial : MeasurementSystem(), MeasurementUsage.UsedInUKImperial
+    data object UKImperial : MeasurementSystem(), MeasurementUsage.UsedInUKImperial
 
     /**
      * System shared between Metric and UK Imperial
      */
     @Serializable
-    object MetricAndUKImperial : MeasurementSystem(), MeasurementUsage.UsedInMetricAndUKImperial
+    data object MetricAndUKImperial : MeasurementSystem(), MeasurementUsage.UsedInMetricAndUKImperial
 
     /**
      * A global system
      */
     @Serializable
-    object MetricAndImperial : MeasurementSystem(), MeasurementUsage.UsedInMetricAndImperial
+    data object MetricAndImperial : MeasurementSystem(), MeasurementUsage.UsedInMetricAndImperial
 }
 
 /**

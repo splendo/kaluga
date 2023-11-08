@@ -28,7 +28,7 @@ import kotlin.time.Duration
 /**
  * [Permission] to access the Bluetooth scanner
  */
-object BluetoothPermission : Permission() {
+data object BluetoothPermission : Permission() {
     override val name: String = "Bluetooth"
 }
 

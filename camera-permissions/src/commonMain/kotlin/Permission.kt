@@ -28,7 +28,7 @@ import kotlin.time.Duration
 /**
  * [Permission] to access the users Camera
  */
-object CameraPermission : Permission() {
+data object CameraPermission : Permission() {
     override val name: String = "Camera"
 }
 

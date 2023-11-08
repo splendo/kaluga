@@ -46,7 +46,7 @@ val ElectricCapacitanceUnits: Set<ElectricCapacitance> get() = setOf(
 sealed class ElectricCapacitance : AbstractScientificUnit<PhysicalQuantity.ElectricCapacitance>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricCapacitance>
 
 @Serializable
-object Farad : ElectricCapacitance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance> {
+data object Farad : ElectricCapacitance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance> {
     override val symbol = "F"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.ElectricCapacitance
@@ -58,36 +58,36 @@ object Farad : ElectricCapacitance(), MetricBaseUnit<MeasurementSystem.MetricAnd
 sealed class FaradMultiple : ElectricCapacitance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad>
 
 @Serializable
-object Nanofarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Nano(Farad)
+data object Nanofarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Nano(Farad)
 
 @Serializable
-object Microfarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Micro(Farad)
+data object Microfarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Micro(Farad)
 
 @Serializable
-object Millifarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Milli(Farad)
+data object Millifarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Milli(Farad)
 
 @Serializable
-object Centifarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Centi(Farad)
+data object Centifarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Centi(Farad)
 
 @Serializable
-object Decifarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Deci(Farad)
+data object Decifarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Deci(Farad)
 
 @Serializable
-object Decafarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Deca(Farad)
+data object Decafarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Deca(Farad)
 
 @Serializable
-object Hectofarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Hecto(Farad)
+data object Hectofarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Hecto(Farad)
 
 @Serializable
-object Kilofarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Kilo(Farad)
+data object Kilofarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Kilo(Farad)
 
 @Serializable
-object Megafarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Mega(Farad)
+data object Megafarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Mega(Farad)
 
 @Serializable
-object Gigafarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Giga(Farad)
+data object Gigafarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Giga(Farad)
 
 @Serializable
-object Abfarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Giga(Farad) {
+data object Abfarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Giga(Farad) {
     override val symbol: String = "abF"
 }

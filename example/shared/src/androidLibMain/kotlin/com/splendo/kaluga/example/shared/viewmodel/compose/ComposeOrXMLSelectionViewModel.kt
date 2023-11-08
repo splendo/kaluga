@@ -25,13 +25,13 @@ import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.resources.localized
 
 sealed class ComposeOrXMLNavigationAction : SingleValueNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType) {
-    object Compose : ComposeOrXMLNavigationAction()
-    object XML : ComposeOrXMLNavigationAction()
+    data object Compose : ComposeOrXMLNavigationAction()
+    data object XML : ComposeOrXMLNavigationAction()
 }
 
 sealed class UIType(val title: String) {
-    object Compose : UIType("android_ui_compose".localized())
-    object XML : UIType("android_ui_xml".localized())
+    data object Compose : UIType("android_ui_compose".localized())
+    data object XML : UIType("android_ui_xml".localized())
 }
 
 class ComposeOrXMLSelectionViewModel(

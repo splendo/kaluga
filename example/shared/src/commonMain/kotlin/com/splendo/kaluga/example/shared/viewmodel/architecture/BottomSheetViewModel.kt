@@ -25,8 +25,8 @@ import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton
 
 sealed class BottomSheetNavigation : NavigationAction<Nothing>(null) {
-    object Close : BottomSheetNavigation()
-    object SubPage : BottomSheetNavigation()
+    data object Close : BottomSheetNavigation()
+    data object SubPage : BottomSheetNavigation()
 }
 
 class BottomSheetViewModel(navigator: Navigator<BottomSheetNavigation>) : NavigatingViewModel<BottomSheetNavigation>(navigator) {

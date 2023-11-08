@@ -29,17 +29,17 @@ sealed class Decimal : Comparable<Decimal> {
     /**
      * [Decimal] representing Not A Number
      */
-    object NaN : Decimal()
+    data object NaN : Decimal()
 
     /**
      * [Decimal] representing Positive Infinity
      */
-    object PositiveInfinity : Decimal()
+    data object PositiveInfinity : Decimal()
 
     /**
      * [Decimal] representing Negative Infinity
      */
-    object NegativeInfinity : Decimal()
+    data object NegativeInfinity : Decimal()
 
     /**
      * [Decimal] representing a finite number
@@ -286,17 +286,17 @@ sealed class RoundingMode {
     /**
      * Rounds values down
      */
-    object RoundDown : RoundingMode()
+    data object RoundDown : RoundingMode()
 
     /**
      * Rounds values to the closest possible return value; when halfway between two possibilities, return the possibility whose last digit is even.
      */
-    object RoundHalfEven : RoundingMode()
+    data object RoundHalfEven : RoundingMode()
 
     /**
      * Rounds values up
      */
-    object RoundUp : RoundingMode()
+    data object RoundUp : RoundingMode()
 }
 
 /**

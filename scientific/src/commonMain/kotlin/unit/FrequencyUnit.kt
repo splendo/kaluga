@@ -50,7 +50,7 @@ val FrequencyUnits: Set<Frequency> get() = setOf(
 sealed class Frequency : AbstractScientificUnit<PhysicalQuantity.Frequency>(), MetricAndImperialScientificUnit<PhysicalQuantity.Frequency>
 
 @Serializable
-object Hertz : Frequency(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency> {
+data object Hertz : Frequency(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency> {
     override val symbol: String = "Hz"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Frequency
@@ -62,37 +62,37 @@ object Hertz : Frequency(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, 
 sealed class HertzMultiple : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz>
 
 @Serializable
-object Nanohertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Nano(Hertz)
+data object Nanohertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Nano(Hertz)
 
 @Serializable
-object Microhertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Micro(Hertz)
+data object Microhertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Micro(Hertz)
 
 @Serializable
-object Millihertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Milli(Hertz)
+data object Millihertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Milli(Hertz)
 
 @Serializable
-object Centihertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Centi(Hertz)
+data object Centihertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Centi(Hertz)
 
 @Serializable
-object Decihertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Deci(Hertz)
+data object Decihertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Deci(Hertz)
 
 @Serializable
-object Decahertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Deca(Hertz)
+data object Decahertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Deca(Hertz)
 
 @Serializable
-object Hectohertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Hecto(Hertz)
+data object Hectohertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Hecto(Hertz)
 
 @Serializable
-object Kilohertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Kilo(Hertz)
+data object Kilohertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Kilo(Hertz)
 
 @Serializable
-object Megahertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Mega(Hertz)
+data object Megahertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Mega(Hertz)
 
 @Serializable
-object Gigahertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Giga(Hertz)
+data object Gigahertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Giga(Hertz)
 
 @Serializable
-object BeatsPerMinute : Frequency() {
+data object BeatsPerMinute : Frequency() {
     override val symbol: String = "bpm"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Frequency

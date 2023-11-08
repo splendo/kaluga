@@ -125,7 +125,7 @@ sealed class UKImperialWeight : Weight(), UKImperialScientificUnit<PhysicalQuant
 // Metric Weight
 
 @Serializable
-object Gram : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight> {
+data object Gram : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight> {
     override val symbol: String = "g"
     private const val GRAMS_IN_KILOGRAM = 1000.0
     override val system = MeasurementSystem.Metric
@@ -138,10 +138,10 @@ object Gram : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQ
 sealed class GramMultiple : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram>
 
 @Serializable
-object Nanogram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Nano(Gram)
+data object Nanogram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Nano(Gram)
 
 @Serializable
-object Microgram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Micro(Gram)
+data object Microgram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Micro(Gram)
 
 @Serializable
 data object Milligram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Milli(Gram)

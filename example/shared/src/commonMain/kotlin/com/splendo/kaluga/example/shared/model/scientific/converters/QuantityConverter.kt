@@ -58,11 +58,11 @@ sealed class QuantityConverter<From : PhysicalQuantity, Result : PhysicalQuantit
 
             abstract val operatorSymbol: String
 
-            object Multiplication : Type() {
+            data object Multiplication : Type() {
                 override val operatorSymbol: String = "*"
             }
 
-            object Division : Type() {
+            data object Division : Type() {
                 override val operatorSymbol: String = "/"
             }
 

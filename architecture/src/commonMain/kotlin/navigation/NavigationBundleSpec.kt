@@ -188,7 +188,7 @@ sealed class NavigationBundleSpecType<T> {
     /**
      * A [NonNullableNavigationBundleSpecType] that represents an [Int]
      */
-    object IntegerType : NonNullableNavigationBundleSpecType<Int>() {
+    data object IntegerType : NonNullableNavigationBundleSpecType<Int>() {
         override fun convertValue(value: Int): NavigationBundleValue.IntegerValue {
             return NavigationBundleValue.IntegerValue(value)
         }
@@ -278,7 +278,7 @@ sealed class NavigationBundleSpecType<T> {
     /**
      * A [NonNullableNavigationBundleSpecType] that represents a List of [String]
      */
-    object StringArrayType : NonNullableNavigationBundleSpecType<List<String>>() {
+    data object StringArrayType : NonNullableNavigationBundleSpecType<List<String>>() {
         override fun convertValue(value: List<String>): NavigationBundleValue.StringArrayValue {
             return NavigationBundleValue.StringArrayValue(value)
         }
@@ -287,7 +287,7 @@ sealed class NavigationBundleSpecType<T> {
     /**
      * A [NonNullableNavigationBundleSpecType] that represents a [KalugaDate]
      */
-    object DateType : NonNullableNavigationBundleSpecType<KalugaDate>() {
+    data object DateType : NonNullableNavigationBundleSpecType<KalugaDate>() {
         override fun convertValue(value: KalugaDate): NavigationBundleValue.DateValue {
             return NavigationBundleValue.DateValue(value)
         }
@@ -296,7 +296,7 @@ sealed class NavigationBundleSpecType<T> {
     /**
      * A [NonNullableNavigationBundleSpecType] that represents a List of [KalugaDate]
      */
-    object DateArrayType : NonNullableNavigationBundleSpecType<List<KalugaDate>>() {
+    data object DateArrayType : NonNullableNavigationBundleSpecType<List<KalugaDate>>() {
         override fun convertValue(value: List<KalugaDate>): NavigationBundleValue.DateArrayValue {
             return NavigationBundleValue.DateArrayValue(value)
         }

@@ -75,7 +75,7 @@ sealed class USCustomaryTemperature(override val symbol: String) : Temperature()
 }
 
 @Serializable
-object Celsius : MetricAndUKImperialTemperature("°C") {
+data object Celsius : MetricAndUKImperialTemperature("°C") {
     override fun toSIUnit(value: Decimal): Decimal = value + Kelvin.KELVIN_FREEZING.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value - Kelvin.KELVIN_FREEZING.toDecimal()
     override fun deltaToSIUnitDelta(delta: Decimal): Decimal = Kelvin.toSIUnit(delta)
@@ -83,7 +83,7 @@ object Celsius : MetricAndUKImperialTemperature("°C") {
 }
 
 @Serializable
-object Kelvin : MetricAndUKImperialTemperature("K") {
+data object Kelvin : MetricAndUKImperialTemperature("K") {
     internal const val KELVIN_FREEZING = 273.15
     override fun toSIUnit(value: Decimal): Decimal = value
     override fun fromSIUnit(value: Decimal): Decimal = value
@@ -92,7 +92,7 @@ object Kelvin : MetricAndUKImperialTemperature("K") {
 }
 
 @Serializable
-object Fahrenheit : USCustomaryTemperature("°F") {
+data object Fahrenheit : USCustomaryTemperature("°F") {
     override fun toSIUnit(value: Decimal): Decimal = Rankine.toSIUnit(value + Rankine.RANKINE_FREEZING.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Rankine.fromSIUnit(value) - Rankine.RANKINE_FREEZING.toDecimal()
     override fun deltaToSIUnitDelta(delta: Decimal): Decimal = Rankine.toSIUnit(delta)
@@ -100,7 +100,7 @@ object Fahrenheit : USCustomaryTemperature("°F") {
 }
 
 @Serializable
-object Rankine : USCustomaryTemperature("°R") {
+data object Rankine : USCustomaryTemperature("°R") {
     internal const val RANKINE_FREEZING = 459.67
     private const val FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE = 5.0 / 9.0
     override fun toSIUnit(value: Decimal): Decimal = value * FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE.toDecimal()
