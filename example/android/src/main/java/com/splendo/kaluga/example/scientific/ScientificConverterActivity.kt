@@ -33,15 +33,15 @@ import org.koin.core.parameter.parametersOf
 class ScientificConverterActivity : KalugaViewModelActivity<ScientificConverterViewModel>() {
 
     companion object {
-        const val leftUnitRequestKey: String = "ConverterLeftUnit"
-        const val rightUnitRequestKey: String = "ConverterRightUnit"
+        const val LEFT_UNIT_REQUEST_KEY: String = "ConverterLeftUnit"
+        const val RIGHT_UNIT_REQUEST_KEY: String = "ConverterRightUnit"
     }
     class LeftUnitDialogSelectionFragment : ScientificUnitSelectionDialogFragment() {
-        override val requestKey: String = leftUnitRequestKey
+        override val requestKey: String = LEFT_UNIT_REQUEST_KEY
     }
 
     class RightUnitSelectionDialogFragment : ScientificUnitSelectionDialogFragment() {
-        override val requestKey: String = rightUnitRequestKey
+        override val requestKey: String = RIGHT_UNIT_REQUEST_KEY
     }
 
     override val viewModel: ScientificConverterViewModel by viewModel {
@@ -64,10 +64,10 @@ class ScientificConverterActivity : KalugaViewModelActivity<ScientificConverterV
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportFragmentManager.setFragmentResultListener(leftUnitRequestKey, this) { _, result ->
+        supportFragmentManager.setFragmentResultListener(LEFT_UNIT_REQUEST_KEY, this) { _, result ->
             viewModel.didSelectLeftUnit(result.toTypedProperty(NavigationBundleSpecType.IntegerType))
         }
-        supportFragmentManager.setFragmentResultListener(rightUnitRequestKey, this) { _, result ->
+        supportFragmentManager.setFragmentResultListener(RIGHT_UNIT_REQUEST_KEY, this) { _, result ->
             viewModel.didSelectRightUnit(result.toTypedProperty(NavigationBundleSpecType.IntegerType))
         }
 

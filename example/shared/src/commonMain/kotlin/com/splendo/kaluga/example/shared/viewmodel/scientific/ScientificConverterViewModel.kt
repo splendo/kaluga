@@ -143,11 +143,9 @@ class ScientificConverterViewModel internal constructor(
     }
 }
 
-fun ScientificConverterViewModel(
-    arguments: ScientificConverterViewModel.Arguments,
-    navigator: Navigator<ScientificConverterNavigationAction<*>>,
-) = arguments.physicalQuantity.quantityDetails?.let { details ->
-    details.converters.getOrNull(arguments.converterIndex)?.let { converter ->
-        ScientificConverterViewModel(details.units, converter, navigator)
-    }
-} ?: ScientificConverterViewModel(emptySet(), null, navigator)
+fun ScientificConverterViewModel(arguments: ScientificConverterViewModel.Arguments, navigator: Navigator<ScientificConverterNavigationAction<*>>) =
+    arguments.physicalQuantity.quantityDetails?.let { details ->
+        details.converters.getOrNull(arguments.converterIndex)?.let { converter ->
+            ScientificConverterViewModel(details.units, converter, navigator)
+        }
+    } ?: ScientificConverterViewModel(emptySet(), null, navigator)

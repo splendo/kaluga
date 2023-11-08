@@ -22,23 +22,17 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.ViewControllerNavigator
 import platform.UIKit.UIViewController
 
-fun ArchitectureNavigator(
-    onDetails: (InputDetails) -> Unit,
-    onBottomSheet: () -> Unit,
-) = DefaultNavigator<ArchitectureNavigationAction<*>> { action ->
+fun ArchitectureNavigator(onDetails: (InputDetails) -> Unit, onBottomSheet: () -> Unit) = DefaultNavigator<ArchitectureNavigationAction<*>> { action ->
     when (action) {
         is ArchitectureNavigationAction.Details -> onDetails(action.value)
         is ArchitectureNavigationAction.BottomSheet -> onBottomSheet()
     }
 }
 
-fun ArchitectureViewControllerNavigator(
-    parent: UIViewController,
-    onDetails: (InputDetails) -> NavigationSpec,
-    onBottomSheet: () -> NavigationSpec,
-) = ViewControllerNavigator<ArchitectureNavigationAction<*>>(parent) { action ->
-    when (action) {
-        is ArchitectureNavigationAction.Details -> onDetails(action.value)
-        is ArchitectureNavigationAction.BottomSheet -> onBottomSheet()
+fun ArchitectureViewControllerNavigator(parent: UIViewController, onDetails: (InputDetails) -> NavigationSpec, onBottomSheet: () -> NavigationSpec) =
+    ViewControllerNavigator<ArchitectureNavigationAction<*>>(parent) { action ->
+        when (action) {
+            is ArchitectureNavigationAction.Details -> onDetails(action.value)
+            is ArchitectureNavigationAction.BottomSheet -> onBottomSheet()
+        }
     }
-}

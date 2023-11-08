@@ -20,14 +20,11 @@ package com.splendo.kaluga.example.shared.viewmodel.scientific
 import com.splendo.kaluga.architecture.navigation.DefaultNavigator
 import com.splendo.kaluga.scientific.PhysicalQuantity
 
-fun ScientificConverterNavigator(
-    onSelectLeftUnit: (PhysicalQuantity) -> Unit,
-    onSelectRightUnit: (PhysicalQuantity) -> Unit,
-    onClose: () -> Unit,
-) = DefaultNavigator<ScientificConverterNavigationAction<*>> { action ->
-    when (action) {
-        is ScientificConverterNavigationAction.SelectUnit.Left -> onSelectLeftUnit(action.value)
-        is ScientificConverterNavigationAction.SelectUnit.Right -> onSelectRightUnit(action.value)
-        is ScientificConverterNavigationAction.Close -> onClose()
+fun ScientificConverterNavigator(onSelectLeftUnit: (PhysicalQuantity) -> Unit, onSelectRightUnit: (PhysicalQuantity) -> Unit, onClose: () -> Unit) =
+    DefaultNavigator<ScientificConverterNavigationAction<*>> { action ->
+        when (action) {
+            is ScientificConverterNavigationAction.SelectUnit.Left -> onSelectLeftUnit(action.value)
+            is ScientificConverterNavigationAction.SelectUnit.Right -> onSelectRightUnit(action.value)
+            is ScientificConverterNavigationAction.Close -> onClose()
+        }
     }
-}
