@@ -18,6 +18,9 @@ public abstract class com/splendo/kaluga/system/network/NetworkConnectionType$Kn
 
 public final class com/splendo/kaluga/system/network/NetworkConnectionType$Known$Absent : com/splendo/kaluga/system/network/NetworkConnectionType$Known {
 	public static final field INSTANCE Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Absent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class com/splendo/kaluga/system/network/NetworkConnectionType$Known$Available : com/splendo/kaluga/system/network/NetworkConnectionType$Known {
@@ -26,7 +29,10 @@ public abstract class com/splendo/kaluga/system/network/NetworkConnectionType$Kn
 
 public final class com/splendo/kaluga/system/network/NetworkConnectionType$Known$Cellular : com/splendo/kaluga/system/network/NetworkConnectionType$Known$Available {
 	public static final field INSTANCE Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Cellular;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun isExpensive ()Z
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/system/network/NetworkConnectionType$Known$Wifi : com/splendo/kaluga/system/network/NetworkConnectionType$Known$Available {

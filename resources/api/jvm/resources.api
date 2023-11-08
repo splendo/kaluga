@@ -5,56 +5,89 @@ public abstract class com/splendo/kaluga/resources/BlendMode {
 public final class com/splendo/kaluga/resources/BlendMode$ColorBlend : com/splendo/kaluga/resources/BlendMode$NonSeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$ColorBlend;
 	public fun blendColor (II)I
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/BlendMode$ColorBurn : com/splendo/kaluga/resources/BlendMode$SeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$ColorBurn;
 	public fun blendColorChannel (DD)D
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/BlendMode$ColorDodge : com/splendo/kaluga/resources/BlendMode$SeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$ColorDodge;
 	public fun blendColorChannel (DD)D
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/BlendMode$Darken : com/splendo/kaluga/resources/BlendMode$SeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$Darken;
 	public fun blendColorChannel (DD)D
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/BlendMode$Difference : com/splendo/kaluga/resources/BlendMode$SeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$Difference;
 	public fun blendColorChannel (DD)D
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/BlendMode$Exclusion : com/splendo/kaluga/resources/BlendMode$SeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$Exclusion;
 	public fun blendColorChannel (DD)D
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/BlendMode$HardLight : com/splendo/kaluga/resources/BlendMode$SeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$HardLight;
 	public fun blendColorChannel (DD)D
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/BlendMode$Hue : com/splendo/kaluga/resources/BlendMode$NonSeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$Hue;
 	public fun blendColor (II)I
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/BlendMode$Lighten : com/splendo/kaluga/resources/BlendMode$SeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$Lighten;
 	public fun blendColorChannel (DD)D
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/BlendMode$Luminosity : com/splendo/kaluga/resources/BlendMode$NonSeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$Luminosity;
 	public fun blendColor (II)I
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/BlendMode$Multiply : com/splendo/kaluga/resources/BlendMode$SeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$Multiply;
 	public fun blendColorChannel (DD)D
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class com/splendo/kaluga/resources/BlendMode$NonSeparableBlendMode : com/splendo/kaluga/resources/BlendMode {
@@ -85,21 +118,33 @@ protected final class com/splendo/kaluga/resources/BlendMode$NonSeparableBlendMo
 public final class com/splendo/kaluga/resources/BlendMode$Normal : com/splendo/kaluga/resources/BlendMode$SeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$Normal;
 	public fun blendColorChannel (DD)D
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/BlendMode$Overlay : com/splendo/kaluga/resources/BlendMode$SeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$Overlay;
 	public fun blendColorChannel (DD)D
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/BlendMode$Saturation : com/splendo/kaluga/resources/BlendMode$NonSeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$Saturation;
 	public fun blendColor (II)I
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/BlendMode$Screen : com/splendo/kaluga/resources/BlendMode$SeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$Screen;
 	public fun blendColorChannel (DD)D
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class com/splendo/kaluga/resources/BlendMode$SeparableBlendMode : com/splendo/kaluga/resources/BlendMode {
@@ -110,6 +155,9 @@ public abstract class com/splendo/kaluga/resources/BlendMode$SeparableBlendMode 
 public final class com/splendo/kaluga/resources/BlendMode$SoftLight : com/splendo/kaluga/resources/BlendMode$SeparableBlendMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/BlendMode$SoftLight;
 	public fun blendColorChannel (DD)D
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/ColorBlendingKt {
@@ -330,7 +378,6 @@ public final class com/splendo/kaluga/resources/HSLColor {
 	public static final field Companion Lcom/splendo/kaluga/resources/HSLColor$Companion;
 	public fun <init> (DDDD)V
 	public synthetic fun <init> (DDDDILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (IDDDDLkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public final fun component1 ()D
 	public final fun component2 ()D
 	public final fun component3 ()D
@@ -344,7 +391,6 @@ public final class com/splendo/kaluga/resources/HSLColor {
 	public final fun getSaturation ()D
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public static final synthetic fun write$Self (Lcom/splendo/kaluga/resources/HSLColor;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/splendo/kaluga/resources/HSLColor$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -529,6 +575,9 @@ public final class com/splendo/kaluga/resources/StringStyleAttribute$CharacterSt
 
 public final class com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$Strikethrough : com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$Strikethrough;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$Stroke : com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute {
@@ -546,10 +595,16 @@ public final class com/splendo/kaluga/resources/StringStyleAttribute$CharacterSt
 
 public final class com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$SubScript : com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$SubScript;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$SuperScript : com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$SuperScript;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$TextStyle : com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute {
@@ -565,6 +620,9 @@ public final class com/splendo/kaluga/resources/StringStyleAttribute$CharacterSt
 
 public final class com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$Underline : com/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/StringStyleAttribute$CharacterStyleAttribute$Underline;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/StringStyleAttribute$Link : com/splendo/kaluga/resources/StringStyleAttribute {
@@ -832,6 +890,9 @@ public abstract class com/splendo/kaluga/resources/stylable/KalugaBackgroundStyl
 
 public final class com/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape$Oval : com/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape$Oval;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape$Rectangle : com/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape {
@@ -867,6 +928,9 @@ public abstract class com/splendo/kaluga/resources/stylable/KalugaBackgroundStyl
 
 public final class com/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$StrokeStyle$None : com/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$StrokeStyle {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$StrokeStyle$None;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$StrokeStyle$Stroke : com/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$StrokeStyle {

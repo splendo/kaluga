@@ -123,34 +123,58 @@ public abstract class com/splendo/kaluga/bluetooth/CharacteristicProperties {
 
 public final class com/splendo/kaluga/bluetooth/CharacteristicProperties$Broadcast : com/splendo/kaluga/bluetooth/CharacteristicProperties {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/CharacteristicProperties$Broadcast;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/CharacteristicProperties$ExtendedProperties : com/splendo/kaluga/bluetooth/CharacteristicProperties {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/CharacteristicProperties$ExtendedProperties;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/CharacteristicProperties$Indicate : com/splendo/kaluga/bluetooth/CharacteristicProperties {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/CharacteristicProperties$Indicate;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/CharacteristicProperties$Notify : com/splendo/kaluga/bluetooth/CharacteristicProperties {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/CharacteristicProperties$Notify;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/CharacteristicProperties$Read : com/splendo/kaluga/bluetooth/CharacteristicProperties {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/CharacteristicProperties$Read;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/CharacteristicProperties$SignedWrite : com/splendo/kaluga/bluetooth/CharacteristicProperties {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/CharacteristicProperties$SignedWrite;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/CharacteristicProperties$Write : com/splendo/kaluga/bluetooth/CharacteristicProperties {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/CharacteristicProperties$Write;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/CharacteristicProperties$WriteWithoutResponse : com/splendo/kaluga/bluetooth/CharacteristicProperties {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/CharacteristicProperties$WriteWithoutResponse;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/CharacteristicWrapper {
@@ -481,10 +505,16 @@ public abstract class com/splendo/kaluga/bluetooth/device/ConnectionSettings$Rec
 
 public final class com/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings$Always : com/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings$Always;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings$Never : com/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings$Never;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/device/DefaultBluetoothGattWrapper : com/splendo/kaluga/bluetooth/device/BluetoothGattWrapper {
@@ -621,6 +651,9 @@ public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$E
 
 public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event$CancelledConnecting : com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event$CancelledConnecting;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event$CompletedAction : com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event {
@@ -638,6 +671,9 @@ public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$E
 
 public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event$Connected : com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event$Connected;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event$Connecting : com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event {
@@ -664,6 +700,9 @@ public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$E
 
 public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event$Disconnecting : com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event$Disconnecting;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event$DiscoveredServices : com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event {
@@ -679,6 +718,9 @@ public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$E
 
 public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event$Discovering : com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event$Discovering;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event$MtuUpdated : com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event {
@@ -988,14 +1030,23 @@ public abstract class com/splendo/kaluga/bluetooth/scanner/Scanner$Event {
 
 public final class com/splendo/kaluga/bluetooth/scanner/Scanner$Event$BluetoothDisabled : com/splendo/kaluga/bluetooth/scanner/Scanner$Event {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$BluetoothDisabled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/scanner/Scanner$Event$BluetoothEnabled : com/splendo/kaluga/bluetooth/scanner/Scanner$Event {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$BluetoothEnabled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/scanner/Scanner$Event$FailedScanning : com/splendo/kaluga/bluetooth/scanner/Scanner$Event {
 	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/scanner/Scanner$Event$FailedScanning;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/bluetooth/scanner/Scanner$Event$PairedDevicesRetrieved : com/splendo/kaluga/bluetooth/scanner/Scanner$Event {

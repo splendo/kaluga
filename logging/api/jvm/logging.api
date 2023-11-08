@@ -195,18 +195,30 @@ public final class com/splendo/kaluga/logging/RestrictedLogLevel$Companion {
 
 public final class com/splendo/kaluga/logging/RestrictedLogLevel$Debug : com/splendo/kaluga/logging/RestrictedLogLevel {
 	public static final field INSTANCE Lcom/splendo/kaluga/logging/RestrictedLogLevel$Debug;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/logging/RestrictedLogLevel$Error : com/splendo/kaluga/logging/RestrictedLogLevel {
 	public static final field INSTANCE Lcom/splendo/kaluga/logging/RestrictedLogLevel$Error;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/logging/RestrictedLogLevel$Info : com/splendo/kaluga/logging/RestrictedLogLevel {
 	public static final field INSTANCE Lcom/splendo/kaluga/logging/RestrictedLogLevel$Info;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/logging/RestrictedLogLevel$Warn : com/splendo/kaluga/logging/RestrictedLogLevel {
 	public static final field INSTANCE Lcom/splendo/kaluga/logging/RestrictedLogLevel$Warn;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/logging/RestrictedLogger : com/splendo/kaluga/logging/Logger {
