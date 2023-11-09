@@ -66,11 +66,7 @@ class InfoFragment : KalugaViewModelFragment<InfoViewModel>(R.layout.fragment_in
         )
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
         val binding = FragmentInfoBinding.inflate(inflater, container, false)
@@ -120,11 +116,7 @@ class InfoAdapter(private val viewModel: InfoViewModel) : RecyclerView.Adapter<I
 
 class InfoDialog(private val dialogSpec: DialogSpec) : DialogFragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.dialog_info, container, false)
 
         v.findViewById<TextView>(R.id.title).text = dialogSpec.title

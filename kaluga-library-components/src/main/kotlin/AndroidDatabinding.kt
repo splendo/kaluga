@@ -20,5 +20,11 @@ fun org.gradle.api.Project.databindingAndroidComponent(packageName: String) {
     version = Library.version
     commonAndroidComponent(ComponentType.DataBinding, packageName)
 
+    androidLibrary {
+        kotlinOptions {
+            jvmTarget = "11"
+        }
+    }
+
     publish(ComponentType.DataBinding)
 }

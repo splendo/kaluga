@@ -22,9 +22,13 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.jolt.times
 import com.splendo.kaluga.scientific.unit.ImperialJolt
 import com.splendo.kaluga.scientific.unit.Jolt
+import com.splendo.kaluga.scientific.unit.MetricAndImperialJolt
 import com.splendo.kaluga.scientific.unit.MetricJolt
 import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
+
+@JvmName("timeTimesMetricAndImperialJolt")
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(jolt: ScientificValue<PhysicalQuantity.Jolt, MetricAndImperialJolt>) = jolt * this
 
 @JvmName("timeTimesMetricJolt")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(jolt: ScientificValue<PhysicalQuantity.Jolt, MetricJolt>) = jolt * this

@@ -30,8 +30,7 @@ import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("ergEquivalentDoseByGram")
-infix fun ScientificValue<PhysicalQuantity.Energy, Erg>.equivalentDoseBy(gram: ScientificValue<PhysicalQuantity.Weight, Gram>) =
-    RoentgenEquivalentMan.equivalentDose(this, gram)
+infix fun ScientificValue<PhysicalQuantity.Energy, Erg>.equivalentDoseBy(gram: ScientificValue<PhysicalQuantity.Weight, Gram>) = RoentgenEquivalentMan.equivalentDose(this, gram)
 
 @JvmName("ergMultipleEquivalentDoseByGram")
 infix fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.equivalentDoseBy(gram: ScientificValue<PhysicalQuantity.Weight, Gram>) =

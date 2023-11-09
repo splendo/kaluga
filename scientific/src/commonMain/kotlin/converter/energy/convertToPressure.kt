@@ -42,16 +42,14 @@ import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivCubicCentimeter")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(volume: ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>) =
-    Barye.pressure(this, volume)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(volume: ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>) = Barye.pressure(this, volume)
 
 @JvmName("ergMultipleDivCubicCentimeter")
 infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(volume: ScientificValue<PhysicalQuantity.Volume, CubicCentimeter>) =
     Barye.pressure(this, volume)
 
 @JvmName("footPoundalDivCubicFoot")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundal>.div(volume: ScientificValue<PhysicalQuantity.Volume, CubicFoot>) =
-    PoundSquareFoot.pressure(this, volume)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundal>.div(volume: ScientificValue<PhysicalQuantity.Volume, CubicFoot>) = PoundSquareFoot.pressure(this, volume)
 
 @JvmName("footPoundForceDivCubicFoot")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundForce>.div(volume: ScientificValue<PhysicalQuantity.Volume, CubicFoot>) =

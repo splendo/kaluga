@@ -49,6 +49,18 @@ class JoltUnitTest {
             (2(Foot per Second per Second) / 2(Second)),
         )
         assertEquals(
+            1.0(GUnit per Second),
+            (2(GUnit) / 2(Second)),
+        )
+        assertEquals(
+            1.0(GUnit.metric per Second),
+            (2(GUnit.metric) / 2(Second)),
+        )
+        assertEquals(
+            1.0(GUnit.imperial per Second),
+            (2(GUnit.imperial) / 2(Second)),
+        )
+        assertEquals(
             1.0(Meter per Second per Second per Second),
             (2((Meter per Second per Second) as Acceleration) / 2(Second)),
         )

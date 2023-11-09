@@ -38,6 +38,30 @@ class AccelerationUnitTest {
             Foot per Millisecond per Hour,
             6,
         )
+
+        assertScientificConversion(100, Gal, 1, Meter per Second per Second)
+        assertScientificConversion(1.0, Gal, 1e+9, NanoGal)
+        assertScientificConversion(1.0, Gal, 1e+6, MicroGal)
+        assertScientificConversion(1.0, Gal, 1_000.0, MilliGal)
+        assertScientificConversion(1.0, Gal, 100.0, CentiGal)
+        assertScientificConversion(1.0, Gal, 10.0, DeciGal)
+        assertScientificConversion(1.0, Gal, 0.1, DecaGal)
+        assertScientificConversion(1.0, Gal, 0.01, HectoGal)
+        assertScientificConversion(1.0, Gal, 0.001, KiloGal)
+        assertScientificConversion(1.0, Gal, 1e-6, MegaGal)
+        assertScientificConversion(1.0, Gal, 1e-9, GigaGal)
+
+        assertScientificConversion(MetricStandardGravityAcceleration.value, Meter per Second per Second, 1.0, GUnit)
+        assertScientificConversion(1.0, GUnit, 1e+9, Nanog)
+        assertScientificConversion(1.0, GUnit, 1e+6, Microg)
+        assertScientificConversion(1.0, GUnit, 1_000.0, Millig)
+        assertScientificConversion(1.0, GUnit, 100.0, Centig)
+        assertScientificConversion(1.0, GUnit, 10.0, Decig)
+        assertScientificConversion(1.0, GUnit, 0.1, Decag)
+        assertScientificConversion(1.0, GUnit, 0.01, Hectog)
+        assertScientificConversion(1.0, GUnit, 0.001, Kilog)
+        assertScientificConversion(1.0, GUnit, 1e-6, Megag)
+        assertScientificConversion(1.0, GUnit, 1e-9, Gigag)
     }
 
     @Test
@@ -65,6 +89,14 @@ class AccelerationUnitTest {
         assertEquals(
             4(Meter per Second per Second),
             2(Second) * 2(Meter per Second per Second per Second),
+        )
+        assertEqualScientificValue(
+            4(GUnit),
+            2(GUnit per Second) * 2(Second),
+        )
+        assertEqualScientificValue(
+            4(GUnit),
+            2(Second) * 2(GUnit per Second),
         )
         assertEquals(
             4(Foot per Second per Second),

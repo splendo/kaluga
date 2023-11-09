@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.logging.warn
@@ -72,14 +73,14 @@ abstract class FlowTest<T, F : Flow<T>>(scope: CoroutineScope = MainScope()) : B
 
     abstract val flow: suspend () -> F
 
-    fun testWithFlow(block: FlowTestBlock<T, F>) =
-        super.testWithFlowAndTestContext(Unit, createFlowInMainScope = false, retainContextAfterTest = false) {
-            block(this@FlowTest, it)
-        }
+    fun testWithFlow(block: FlowTestBlock<T, F>) = super.testWithFlowAndTestContext(Unit, createFlowInMainScope = false, retainContextAfterTest = false) {
+        block(this@FlowTest, it)
+    }
 }
 
 abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>(
     val scope: CoroutineScope = MainScope(),
+    val logger: Logger? = null,
 ) :
     BaseUIThreadTest<Configration, Context>(),
     CoroutineScope by scope {
@@ -281,5 +282,9 @@ abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>
                 return nextContext
             }
         }
+    }
+
+    private fun debug(message: String) {
+        logger?.debug(message)
     }
 }

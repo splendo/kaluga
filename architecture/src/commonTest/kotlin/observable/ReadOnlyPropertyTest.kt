@@ -40,11 +40,12 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
             observable = observable,
             initialExpected = "default",
             shortDelayAfterUpdate = false,
+            // when we actually read the property to test this, the new value will propagate
             {
                 nullableString.value = "new"
                 assertEquals("default", observed, "the property will only report the new value upon read")
                 "new"
-            }, // when we actually read the property to test this, the new value will propagate
+            },
             {
                 nullableString.value = null
                 "default"
@@ -61,8 +62,14 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
             observable = ro.toInitializedObservable(),
             initialExpected = "initial",
             shortDelayAfterUpdate = false,
-            { s.value = "new"; "new" }, //
-            { s.value = "other"; "other" },
+            {
+                s.value = "new"
+                "new"
+            },
+            {
+                s.value = "other"
+                "other"
+            },
         )
     }
 
@@ -79,9 +86,18 @@ class ReadOnlyPropertyTest : ObservableBaseTest() {
             observable = ro.toInitializedObservable(),
             initialExpected = initial,
             shortDelayAfterUpdate = false,
-            { s.value = "new"; "new" },
-            { s.value = null; null },
-            { s.value = "other"; "other" },
+            {
+                s.value = "new"
+                "new"
+            },
+            {
+                s.value = null
+                null
+            },
+            {
+                s.value = "other"
+                "other"
+            },
         )
     }
 }

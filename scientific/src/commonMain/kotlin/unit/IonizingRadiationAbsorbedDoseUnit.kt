@@ -61,7 +61,7 @@ sealed class IonizingRadiationAbsorbedDose :
     AbstractScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>(), MetricAndImperialScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>
 
 @Serializable
-object Gray : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose> {
+data object Gray : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose> {
     override val symbol = "Gy"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.IonizingRadiationAbsorbedDose
@@ -73,37 +73,37 @@ object Gray : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSystem.
 sealed class GrayMultiple : IonizingRadiationAbsorbedDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray>
 
 @Serializable
-object Nanogray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Nano(Gray)
+data object Nanogray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Nano(Gray)
 
 @Serializable
-object Microgray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Micro(Gray)
+data object Microgray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Micro(Gray)
 
 @Serializable
-object Milligray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Milli(Gray)
+data object Milligray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Milli(Gray)
 
 @Serializable
-object Centigray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Centi(Gray)
+data object Centigray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Centi(Gray)
 
 @Serializable
-object Decigray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Deci(Gray)
+data object Decigray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Deci(Gray)
 
 @Serializable
-object Decagray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Deca(Gray)
+data object Decagray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Deca(Gray)
 
 @Serializable
-object Hectogray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Hecto(Gray)
+data object Hectogray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Hecto(Gray)
 
 @Serializable
-object Kilogray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Kilo(Gray)
+data object Kilogray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Kilo(Gray)
 
 @Serializable
-object Megagray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Mega(Gray)
+data object Megagray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Mega(Gray)
 
 @Serializable
-object Gigagray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Giga(Gray)
+data object Gigagray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Giga(Gray)
 
 @Serializable
-object Rad : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose> {
+data object Rad : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose> {
     const val GRAY_IN_RAD = 0.01
     override val symbol = "rad"
     override val system = MeasurementSystem.MetricAndImperial
@@ -116,31 +116,31 @@ object Rad : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSystem.M
 sealed class RadMultiple : IonizingRadiationAbsorbedDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad>
 
 @Serializable
-object Nanorad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Nano(Rad)
+data object Nanorad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Nano(Rad)
 
 @Serializable
-object Microrad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Micro(Rad)
+data object Microrad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Micro(Rad)
 
 @Serializable
-object Millirad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Milli(Rad)
+data object Millirad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Milli(Rad)
 
 @Serializable
-object Centirad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Centi(Rad)
+data object Centirad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Centi(Rad)
 
 @Serializable
-object Decirad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Deci(Rad)
+data object Decirad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Deci(Rad)
 
 @Serializable
-object Decarad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Deca(Rad)
+data object Decarad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Deca(Rad)
 
 @Serializable
-object Hectorad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Hecto(Rad)
+data object Hectorad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Hecto(Rad)
 
 @Serializable
-object Kilorad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Kilo(Rad)
+data object Kilorad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Kilo(Rad)
 
 @Serializable
-object Megarad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Mega(Rad)
+data object Megarad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Mega(Rad)
 
 @Serializable
-object Gigarad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Giga(Rad)
+data object Gigarad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Giga(Rad)

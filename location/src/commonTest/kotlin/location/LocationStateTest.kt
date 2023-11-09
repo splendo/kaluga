@@ -89,12 +89,10 @@ class LocationStateTest :
             MockBaseLocationManager.Builder(configuration.locationEnabled),
         )
 
-        private fun settingsBuilder(
-            autoRequestPermission: Boolean,
-            autoEnableLocations: Boolean,
-        ): (LocationPermission, Permissions) -> BaseLocationManager.Settings = { locationPermission, permissions ->
-            BaseLocationManager.Settings(locationPermission, permissions, autoRequestPermission = autoRequestPermission, autoEnableLocations = autoEnableLocations)
-        }
+        private fun settingsBuilder(autoRequestPermission: Boolean, autoEnableLocations: Boolean): (LocationPermission, Permissions) -> BaseLocationManager.Settings =
+            { locationPermission, permissions ->
+                BaseLocationManager.Settings(locationPermission, permissions, autoRequestPermission = autoRequestPermission, autoEnableLocations = autoEnableLocations)
+            }
 
         val locationStateRepo = locationStateRepoBuilder.create(
             configuration.locationPermission,
@@ -191,6 +189,7 @@ class LocationStateTest :
         mainAction {
             locationManager.locationEnabled.value = true
             permissionStateRepo.takeAndChangeState { state ->
+                @Suppress("UNCHECKED_CAST")
                 (state as MockPermissionState<LocationPermission>).allow
             }
         }
@@ -234,6 +233,7 @@ class LocationStateTest :
         }
         mainAction {
             permissionStateRepo.takeAndChangeState { state ->
+                @Suppress("UNCHECKED_CAST")
                 (state as MockPermissionState<LocationPermission>).allow
             }
         }
@@ -432,6 +432,7 @@ class LocationStateTest :
         }
         mainAction {
             permissionStateRepo.takeAndChangeState { state ->
+                @Suppress("UNCHECKED_CAST")
                 (state as MockPermissionState<LocationPermission>).lock
             }
             yieldMultiple(3)
@@ -594,6 +595,7 @@ class LocationStateTest :
             locationManager.stopMonitoringLocationEnabledMock.verify()
 
             permissionStateRepo.takeAndChangeState { state ->
+                @Suppress("UNCHECKED_CAST")
                 (state as MockPermissionState<LocationPermission>).lock
             }
         }

@@ -34,25 +34,20 @@ import com.splendo.kaluga.scientific.unit.Speed
 import kotlin.jvm.JvmName
 
 @JvmName("ergPerSecondDivMetricSpeed")
-infix operator fun ScientificValue<PhysicalQuantity.Power, ErgPerSecond>.div(speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>) =
-    Dyne.force(this, speed)
+infix operator fun ScientificValue<PhysicalQuantity.Power, ErgPerSecond>.div(speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>) = Dyne.force(this, speed)
 
 @JvmName("metricPowerDivMetricSpeed")
-infix operator fun <PowerUnit : MetricPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
-    speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>,
-) = Newton.force(this, speed)
+infix operator fun <PowerUnit : MetricPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>) =
+    Newton.force(this, speed)
 
 @JvmName("imperialPowerDivImperialSpeed")
-infix operator fun <PowerUnit : ImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
-    speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>,
-) = PoundForce.force(this, speed)
+infix operator fun <PowerUnit : ImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) =
+    PoundForce.force(this, speed)
 
 @JvmName("metricAndImperialPowerDivImperialSpeed")
-infix operator fun <PowerUnit : MetricAndImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
-    speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>,
-) = PoundForce.force(this, speed)
+infix operator fun <PowerUnit : MetricAndImperialPower> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) =
+    PoundForce.force(this, speed)
 
 @JvmName("powerDivSpeed")
-infix operator fun <PowerUnit : Power, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
-    speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>,
-) = Newton.force(this, speed)
+infix operator fun <PowerUnit : Power, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(speed: ScientificValue<PhysicalQuantity.Speed, SpeedUnit>) =
+    Newton.force(this, speed)

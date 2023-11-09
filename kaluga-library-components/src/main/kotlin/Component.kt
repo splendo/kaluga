@@ -19,6 +19,7 @@ import com.android.build.gradle.LibraryExtension
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
+import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
@@ -26,6 +27,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultCInteropSettings
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests
+import org.jmailen.gradle.kotlinter.tasks.LintTask
 
 sealed class ComponentType {
     object Default : ComponentType()
@@ -56,6 +58,11 @@ fun Project.commonComponent(
         }
     }
 
+    // output all reports to a single location
+    tasks.withType<LintTask>().configureEach {
+        reports.set(mapOf("plain" to rootProject.buildDir.resolve("reports/ktlint/${project.path}-${this.name}.txt")))
+    }
+
     afterEvaluate {
         Library.IOS.targets.forEach { target ->
             val targetName = target.sourceSetName
@@ -74,7 +81,7 @@ fun Project.commonComponent(
         }
     }
 
-    if (Library.connectCheckExpansion) {
+    if (Library.enableDependentProjects) {
         parent?.subprojects?.filter {
             it.name.startsWith("${project.name}-") || it.name.endsWith("-${project.name}")
         }?.forEach { module ->
@@ -93,15 +100,14 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
     iosTestInterop: (NamedDomainObjectContainer<DefaultCInteropSettings>.() -> Unit)? = null,
     iosExport: (Framework.() -> Unit)? = null
 ) {
-    targets {
-        configureEach {
-            compilations.configureEach {
-                (kotlinOptions as? KotlinJvmOptions)?.jvmTarget = "11"
-            }
+    targets.configureEach {
+        compilations.configureEach {
+            (kotlinOptions as? KotlinJvmOptions)?.jvmTarget = "11"
+            kotlinOptions.freeCompilerArgs += "-Xexpect-actual-classes"
         }
     }
 
-    android("androidLib").publishAllLibraryVariants()
+    androidTarget("androidLib").publishAllLibraryVariants()
     val target: KotlinNativeTarget.() -> Unit =
         {
             iosMainInterop?.let { mainInterop ->
@@ -144,7 +150,9 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
         binaries.executable()
     }
 
-    val commonMain = sourceSets.getByName("commonMain").apply {
+    applyDefaultHierarchyTemplate()
+
+    sourceSets.getByName("commonMain").apply {
         dependencies {
             implementationDependency(Dependencies.KotlinX.Coroutines.Core)
         }
@@ -166,7 +174,6 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
     }
 
     sourceSets.getByName("jvmTest").apply {
-        dependsOn(commonTest)
         dependencies {
             implementation(kotlin("test"))
             implementation(kotlin("test-junit"))
@@ -186,25 +193,6 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
         }
     }
 
-    val iosMain = sourceSets.maybeCreate("iosMain").apply {
-        dependsOn(commonMain)
-    }
-
-    val iosTest = sourceSets.maybeCreate("iosTest").apply {
-        dependsOn(commonTest)
-    }
-
-    targets.forEach {
-        val sourceSetName = it.sourceSetName
-
-        sourceSets.getByName("${sourceSetName}Main").apply {
-            dependsOn(iosMain)
-        }
-        sourceSets.getByName("${sourceSetName}Test").apply {
-            dependsOn(iosTest)
-        }
-    }
-
     sourceSets.maybeCreate("androidLibInstrumentedTest").apply {
         dependsOn(commonTest)
     }
@@ -220,6 +208,11 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
             optIn("kotlin.ExperimentalStdlibApi")
             optIn("kotlin.time.ExperimentalTime")
             optIn("kotlin.ExperimentalStdlibApi")
+            if (this@all.name.lowercase().contains("ios")) {
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+                optIn("kotlinx.cinterop.BetaInteropApi")
+                optIn("kotlin.experimental.ExperimentalNativeApi")
+            }
             enableLanguageFeature("InlineClasses")
         }
     }

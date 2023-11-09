@@ -104,17 +104,17 @@ interface Scanner {
         /**
          * An [Event] indicating the Bluetooth service has become enabled
          */
-        object BluetoothEnabled : Event()
+        data object BluetoothEnabled : Event()
 
         /**
          * An [Event] indicating the Bluetooth service has become disabled
          */
-        object BluetoothDisabled : Event()
+        data object BluetoothDisabled : Event()
 
         /**
          * An [Event] indicating the Scanner failed to start scanning
          */
-        object FailedScanning : Event()
+        data object FailedScanning : Event()
 
         /**
          * An [Event] indicating a list of [DeviceDiscovered] events are paired to the system
@@ -229,6 +229,8 @@ interface Scanner {
      * @param connectionSettings the [ConnectionSettings] to apply to the paired devices found. If `null` the default will be used
      */
     suspend fun retrievePairedDevices(withServices: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?)
+
+    fun cancelRetrievingPairedDevices()
 }
 
 /**
@@ -419,18 +421,20 @@ abstract class BaseScanner constructor(
 
     protected abstract fun generateEnableSensorsActions(): List<EnableSensorAction>
 
-    override suspend fun retrievePairedDevices(
-        withServices: Filter,
-        removeForAllPairedFilters: Boolean,
-        connectionSettings: ConnectionSettings?,
-    ) = isRetrievingPairedDevicesMutex.withLock {
-        if (!checkIfNewPairingDiscoveryShouldBeStarted(withServices)) return
-
-        retrievingPairedDevicesJob = this@BaseScanner.launch {
-            // We have to call even with empty list to clean up cached devices
-            val devices = retrievePairedDeviceDiscoveredEvents(withServices, connectionSettings)
-            handlePairedDevices(devices, withServices, removeForAllPairedFilters)
+    override suspend fun retrievePairedDevices(withServices: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?) =
+        isRetrievingPairedDevicesMutex.withLock {
+            if (!checkIfNewPairingDiscoveryShouldBeStarted(withServices)) return
+            retrievingPairedDevicesJob = this@BaseScanner.launch {
+                // We have to call even with empty list to clean up cached devices
+                val devices = retrievePairedDeviceDiscoveredEvents(withServices, connectionSettings)
+                handlePairedDevices(devices, withServices, removeForAllPairedFilters)
+            }
         }
+
+    override fun cancelRetrievingPairedDevices() {
+        retrievingPairedDevicesJob?.cancel()
+        retrievingPairedDevicesJob = null
+        isRetrievingPairedDevicesFilter = null
     }
 
     private fun checkIfNewPairingDiscoveryShouldBeStarted(withServices: Filter): Boolean = when (isRetrievingPairedDevicesFilter) {
@@ -462,12 +466,7 @@ abstract class BaseScanner constructor(
         )(coroutineContext)
     }
 
-    protected open fun handleDeviceDiscovered(
-        deviceWrapper: DeviceWrapper,
-        rssi: RSSI,
-        advertisementData: BaseAdvertisementData,
-        deviceCreator: (CoroutineContext) -> Device,
-    ) {
+    protected open fun handleDeviceDiscovered(deviceWrapper: DeviceWrapper, rssi: RSSI, advertisementData: BaseAdvertisementData, deviceCreator: (CoroutineContext) -> Device) {
         logger.info(LOG_TAG) { "Device ${deviceWrapper.identifier.stringValue} discovered with rssi: $rssi" }
         logger.debug(LOG_TAG) { "Device ${deviceWrapper.identifier.stringValue} discovered with advertisement data:\n ${advertisementData.description}" }
 

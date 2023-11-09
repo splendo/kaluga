@@ -42,6 +42,10 @@ actual interface DeviceWrapper {
  */
 class DefaultCBPeripheralWrapper(private val peripheral: CBPeripheral) : DeviceWrapper {
 
-    override val name: String? get() { return peripheral.name }
-    override val identifier: NSUUID get() { return peripheral.identifier }
+    override val name: String? get() {
+        return peripheral.name
+    }
+    override val identifier: NSUUID get() {
+        return peripheral.identifier
+    }
 }

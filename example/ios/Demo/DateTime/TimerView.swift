@@ -22,14 +22,21 @@ struct TimerView: View {
     private let lifecycleViewModel: LifecycleViewModel<TimerViewModel>
     @ObservedObject var elapsed: StringObservable
     @ObservedObject var button: ButtonObservable
+    
+    @ObservedObject var currentTime: StringObservable
+    @ObservedObject var timeZonePickerButton: ButtonObservable
 
     init() {
-        let viewModel = TimerViewModel()
+        let containerView = ContainerView(.alert)
+        let viewModel = TimerViewModel(alertPresenterBuilder: containerView.alertBuilder)
 
         elapsed = StringObservable(viewModel.elapsed)
         button = ButtonObservable(viewModel.button)
+        
+        currentTime = StringObservable(viewModel.currentTime)
+        timeZonePickerButton = ButtonObservable(viewModel.timeZonePickerButton)
 
-        lifecycleViewModel = LifecycleViewModel(viewModel)
+        lifecycleViewModel = LifecycleViewModel(viewModel, containerView: containerView)
     }
 
     var body: some View {
@@ -37,6 +44,9 @@ struct TimerView: View {
             VStack(alignment: .center, spacing: 10.0) {
                 Text(elapsed.value).font(.system(size: 32))
                 button.value.toButton(buttonFrame: .frame(maxWidth: .infinity))
+                Spacer().frame(height: 30)
+                Text(currentTime.value).font(.system(size: 12))
+                timeZonePickerButton.value.toButton(buttonFrame: .frame(maxWidth: .infinity))
                 Spacer()
             }
             .padding(10.0)

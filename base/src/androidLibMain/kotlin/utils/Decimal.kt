@@ -34,35 +34,21 @@ actual typealias FiniteDecimal = BigDecimal
 
 actual operator fun FiniteDecimal.plus(value: FiniteDecimal) = this.add(value)
 
-actual fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int) =
-    this.add(value).setScale(scale, NativeRoundingMode.HALF_EVEN)
+actual fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int) = this.add(value).setScale(scale, NativeRoundingMode.HALF_EVEN)
 
-actual fun FiniteDecimal.plus(
-    value: FiniteDecimal,
-    scale: Int,
-    roundingMode: RoundingMode,
-) = this.add(value).setScale(scale, roundingMode.android)
+actual fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode) = this.add(value).setScale(scale, roundingMode.android)
 
 actual operator fun FiniteDecimal.minus(value: FiniteDecimal) = this.subtract(value)
 
-actual fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int) =
-    this.subtract(value).setScale(scale, NativeRoundingMode.HALF_EVEN)
+actual fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int) = this.subtract(value).setScale(scale, NativeRoundingMode.HALF_EVEN)
 
-actual fun FiniteDecimal.minus(
-    value: FiniteDecimal,
-    scale: Int,
-    roundingMode: RoundingMode,
-) = this.subtract(value).setScale(scale, roundingMode.android)
+actual fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode) = this.subtract(value).setScale(scale, roundingMode.android)
 
 actual operator fun FiniteDecimal.div(value: FiniteDecimal) = this.divide(value, MathContext.DECIMAL128)
 
 actual fun FiniteDecimal.div(value: FiniteDecimal, scale: Int) = this.divide(value, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
 
-actual fun FiniteDecimal.div(
-    value: FiniteDecimal,
-    scale: Int,
-    roundingMode: RoundingMode,
-) = this.divide(
+actual fun FiniteDecimal.div(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode) = this.divide(
     value,
     MathContext(
         MathContext.DECIMAL128.precision,
@@ -70,17 +56,11 @@ actual fun FiniteDecimal.div(
     ),
 ).setScale(scale, roundingMode.android)
 
-actual operator fun FiniteDecimal.times(value: FiniteDecimal) =
-    this.multiply(value, MathContext.DECIMAL128)
+actual operator fun FiniteDecimal.times(value: FiniteDecimal) = this.multiply(value, MathContext.DECIMAL128)
 
-actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int) =
-    this.multiply(value, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
+actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int) = this.multiply(value, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
 
-actual fun FiniteDecimal.times(
-    value: FiniteDecimal,
-    scale: Int,
-    roundingMode: RoundingMode,
-) = this.multiply(
+actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode) = this.multiply(
     value,
     MathContext(
         MathContext.DECIMAL128.precision,
@@ -88,19 +68,14 @@ actual fun FiniteDecimal.times(
     ),
 ).setScale(scale, roundingMode.android)
 
-actual fun FiniteDecimal.round(scale: Int, roundingMode: RoundingMode) =
-    this.setScale(
-        scale,
-        roundingMode.android,
-    )
+actual fun FiniteDecimal.round(scale: Int, roundingMode: RoundingMode) = this.setScale(
+    scale,
+    roundingMode.android,
+)
 
 actual infix fun FiniteDecimal.pow(n: Int): FiniteDecimal = this.pow(n, MathContext.DECIMAL128)
 actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = this.pow(n, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
-actual fun FiniteDecimal.pow(
-    n: Int,
-    scale: Int,
-    roundingMode: RoundingMode,
-): FiniteDecimal = this.pow(
+actual fun FiniteDecimal.pow(n: Int, scale: Int, roundingMode: RoundingMode): FiniteDecimal = this.pow(
     n,
     MathContext(
         MathContext.DECIMAL128.precision,

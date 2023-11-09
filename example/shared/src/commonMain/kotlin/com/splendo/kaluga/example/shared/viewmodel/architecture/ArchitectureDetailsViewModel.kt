@@ -35,7 +35,7 @@ data class InputDetails(
 )
 
 sealed class ArchitectureDetailsNavigationAction<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
-    object Close : ArchitectureDetailsNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
+    data object Close : ArchitectureDetailsNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
     class FinishWithDetails(details: InputDetails) : ArchitectureDetailsNavigationAction<InputDetails>(details, NavigationBundleSpecType.SerializedType(InputDetails.serializer()))
 }
 

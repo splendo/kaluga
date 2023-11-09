@@ -153,15 +153,14 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(
 
     private val initialized = atomic(false)
 
-    internal open suspend fun initialize(initialValue: State? = null): State =
-        if (initialized.compareAndSet(expect = false, update = true)) {
-            (initialValue ?: initialValue()).also { value ->
-                mutableFlow.emit(value)
-                stateMutex.release() // release the initial permit held
-            }
-        } else {
-            state()
+    internal open suspend fun initialize(initialValue: State? = null): State = if (initialized.compareAndSet(expect = false, update = true)) {
+        (initialValue ?: initialValue()).also { value ->
+            mutableFlow.emit(value)
+            stateMutex.release() // release the initial permit held
         }
+    } else {
+        state()
+    }
 
     /**
      * Gets the initial value of the repo
@@ -242,10 +241,7 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(
      * @param action The action to execute on the current [State]
      * @see [useState]
      */
-    fun <Result> launchUseState(
-        context: CoroutineContext = coroutineContext,
-        action: suspend (State) -> Result,
-    ) = launch(context) {
+    fun <Result> launchUseState(context: CoroutineContext = coroutineContext, action: suspend (State) -> Result) = launch(context) {
         useState(action)
     }
 
@@ -260,8 +256,7 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(
      *
      * @param action Function to determine the [State] to be transitioned to from the current [State]. If no state transition should occur, return [KalugaState.remain]
      */
-    suspend fun takeAndChangeState(action: suspend(State) -> suspend () -> State) =
-        doTakeAndChangeState(remainIfStateNot = null, action)
+    suspend fun takeAndChangeState(action: suspend(State) -> suspend () -> State) = doTakeAndChangeState(remainIfStateNot = null, action)
 
     /**
      * Changes from the current [State] to a new [State]. This operation ensures atomic state changes.
@@ -275,10 +270,9 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(
      * @param remainIfStateNot If the current state at the time of Action is not an instance of this class, the state will automatically remain.
      * @param action Function to determine the [State] to be transitioned to from the current [State]. If no state transition should occur, return [KalugaState.remain]
      */
-    suspend fun <K : State> takeAndChangeState(remainIfStateNot: KClass<K>, action: suspend(K) -> suspend () -> State) =
-        doTakeAndChangeState(remainIfStateNot) {
-            action(it)
-        }
+    suspend fun <K : State> takeAndChangeState(remainIfStateNot: KClass<K>, action: suspend(K) -> suspend () -> State) = doTakeAndChangeState(remainIfStateNot) {
+        action(it)
+    }
 
     /**
      * Launches in a given [CoroutineContext] to change from the current [State] to a new [State]. This operation ensures atomic state changes.
@@ -287,10 +281,7 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(
      * @param action Function to determine the [State] to be transitioned to from the current [State]. If no state transition should occur, return [KalugaState.remain]
      * @see [takeAndChangeState]
      */
-    fun launchTakeAndChangeState(
-        context: CoroutineContext = coroutineContext,
-        action: suspend(State) -> suspend () -> State,
-    ) = launch(context) {
+    fun launchTakeAndChangeState(context: CoroutineContext = coroutineContext, action: suspend(State) -> suspend () -> State) = launch(context) {
         takeAndChangeState(action)
     }
 
@@ -302,51 +293,49 @@ abstract class StateRepo<State : KalugaState, F : MutableSharedFlow<State>>(
      * @param action Function to determine the [State] to be transitioned to from the current [State]. If no state transition should occur, return [KalugaState.remain]
      * @see [takeAndChangeState]
      */
-    fun <K : State> launchTakeAndChangeState(
-        context: CoroutineContext = coroutineContext,
-        remainIfStateNot: KClass<K>,
-        action: suspend(K) -> suspend () -> State,
-    ) = launch(context) {
-        takeAndChangeState(remainIfStateNot) {
-            action(it)
+    fun <K : State> launchTakeAndChangeState(context: CoroutineContext = coroutineContext, remainIfStateNot: KClass<K>, action: suspend(K) -> suspend () -> State) =
+        launch(context) {
+            takeAndChangeState(remainIfStateNot) {
+                action(it)
+            }
         }
-    }
 
     @Suppress("UNCHECKED_CAST")
-    private suspend inline fun <K : State> doTakeAndChangeState(remainIfStateNot: KClass<K>?, crossinline action: suspend(K) -> suspend () -> State): State = coroutineScope { // scope around the mutex so asynchronously scheduled coroutines that also use this method can run before the scope completed without deadlocks
-        initialize()
-        stateMutex.withPermit {
-            val result = CompletableDeferred<State>()
-            launch {
-                try {
-                    val beforeState = state()
-                    // There are only two methods calling this private method.
-                    // either K is the same as S (no `remainIfStateNot` parameter), or we do the isInstance check
-                    val transition = // if remainIfNot was passes, only execute action if the beforeState matches
-                        when {
-                            remainIfStateNot == null || remainIfStateNot.isInstance(beforeState) -> action(beforeState as K)
-                            else -> beforeState.remain() // else just remain
-                        }
+    private suspend inline fun <K : State> doTakeAndChangeState(remainIfStateNot: KClass<K>?, crossinline action: suspend(K) -> suspend () -> State): State =
+        coroutineScope { // scope around the mutex so asynchronously scheduled coroutines that also use this method can run before the scope completed without deadlocks
+            initialize()
+            stateMutex.withPermit {
+                val result = CompletableDeferred<State>()
+                launch {
+                    try {
+                        val beforeState = state()
+                        // There are only two methods calling this private method.
+                        // either K is the same as S (no `remainIfStateNot` parameter), or we do the isInstance check
+                        val transition = // if remainIfNot was passes, only execute action if the beforeState matches
+                            when {
+                                remainIfStateNot == null || remainIfStateNot.isInstance(beforeState) -> action(beforeState as K)
+                                else -> beforeState.remain() // else just remain
+                            }
 
-                    if (beforeState.remain<State>() === transition) {
-                        result.complete(beforeState)
-                    } else {
-                        (beforeState as? HandleBeforeCreating)?.beforeCreatingNewState()
-                        val newState = transition()
-                        (beforeState as? HandleAfterCreating<State>)?.afterCreatingNewState(newState)
-                        (newState as? HandleBeforeOldStateIsRemoved<State>)?.beforeOldStateIsRemoved(beforeState)
-                        mutableFlow.emit(newState)
-                        (beforeState as? HandleAfterNewStateIsSet<State>)?.afterNewStateIsSet(newState)
-                        (newState as? HandleAfterOldStateIsRemoved<State>)?.afterOldStateIsRemoved(beforeState)
-                        result.complete(newState)
+                        if (beforeState.remain<State>() === transition) {
+                            result.complete(beforeState)
+                        } else {
+                            (beforeState as? HandleBeforeCreating)?.beforeCreatingNewState()
+                            val newState = transition()
+                            (beforeState as? HandleAfterCreating<State>)?.afterCreatingNewState(newState)
+                            (newState as? HandleBeforeOldStateIsRemoved<State>)?.beforeOldStateIsRemoved(beforeState)
+                            mutableFlow.emit(newState)
+                            (beforeState as? HandleAfterNewStateIsSet<State>)?.afterNewStateIsSet(newState)
+                            (newState as? HandleAfterOldStateIsRemoved<State>)?.afterOldStateIsRemoved(beforeState)
+                            result.complete(newState)
+                        }
+                    } catch (t: Throwable) {
+                        result.completeExceptionally(t)
                     }
-                } catch (t: Throwable) {
-                    result.completeExceptionally(t)
                 }
+                return@coroutineScope result.await()
             }
-            return@coroutineScope result.await()
         }
-    }
 }
 
 @Suppress("NOTHING_TO_INLINE")
@@ -585,7 +574,9 @@ abstract class ColdStateRepo<State : KalugaState>(
     }
 
     final override suspend fun laterCollections() = takeAndChangeState {
-        { initialValue() }
+        {
+            initialValue()
+        }
     }
 
     final override suspend fun noMoreCollections(): State = takeAndChangeState {

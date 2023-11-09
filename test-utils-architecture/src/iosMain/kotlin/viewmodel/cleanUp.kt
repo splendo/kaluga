@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,8 +15,11 @@
 
  */
 
-package com.splendo.kaluga.architecture.navigation
+package com.splendo.kaluga.test.architecture.viewmodel
 
-import platform.MessageUI.MFMessageComposeViewController
+import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
 
-actual fun MFMessageComposeViewController.setMessageWorkAround(message: platform.Messages.MSMessage?) = this.setMessage(message)
+/**
+ * Ensure a [LifecycleViewModel] calls its [LifecycleViewModel.onCleared] method
+ */
+actual fun LifecycleViewModel.cleanUp() = clear()

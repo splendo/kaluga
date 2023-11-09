@@ -46,16 +46,16 @@ object ScientificConverterButtonBinding {
 class ScientificActivity : KalugaViewModelActivity<ScientificViewModel>() {
 
     companion object {
-        const val leftUnitRequestKey: String = "LeftUnit"
-        const val rightUnitRequestKey: String = "RightUnit"
+        const val LEFT_UNIT_REQUEST_KEY: String = "LeftUnit"
+        const val RIGHT_UNIT_REQUEST_KEY: String = "RightUnit"
     }
 
     class LeftUnitDialogSelectionFragment : ScientificUnitSelectionDialogFragment() {
-        override val requestKey: String = leftUnitRequestKey
+        override val requestKey: String = LEFT_UNIT_REQUEST_KEY
     }
 
     class RightUnitSelectionDialogFragment : ScientificUnitSelectionDialogFragment() {
-        override val requestKey: String = rightUnitRequestKey
+        override val requestKey: String = RIGHT_UNIT_REQUEST_KEY
     }
 
     override val viewModel: ScientificViewModel by viewModel {
@@ -79,10 +79,10 @@ class ScientificActivity : KalugaViewModelActivity<ScientificViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportFragmentManager.setFragmentResultListener(leftUnitRequestKey, this) { _, result ->
+        supportFragmentManager.setFragmentResultListener(LEFT_UNIT_REQUEST_KEY, this) { _, result ->
             viewModel.didSelectLeftUnit(result.toTypedProperty(NavigationBundleSpecType.IntegerType))
         }
-        supportFragmentManager.setFragmentResultListener(rightUnitRequestKey, this) { _, result ->
+        supportFragmentManager.setFragmentResultListener(RIGHT_UNIT_REQUEST_KEY, this) { _, result ->
             viewModel.didSelectRightUnit(result.toTypedProperty(NavigationBundleSpecType.IntegerType))
         }
 

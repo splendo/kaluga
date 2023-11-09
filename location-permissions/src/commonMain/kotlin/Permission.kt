@@ -53,10 +53,9 @@ fun PermissionsBuilder.registerLocationPermission(
     locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-) =
-    registerLocationPermission(locationPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
-        LocationPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
-    }
+) = registerLocationPermission(locationPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
+    LocationPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
+}
 
 /**
  * Registers a [BaseLocationPermissionManagerBuilder] and [PermissionStateRepo] for [LocationPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
@@ -88,10 +87,9 @@ fun PermissionsBuilder.registerLocationPermissionIfNotRegistered(
     locationPermissionManagerBuilderBuilder: (PermissionContext) -> BaseLocationPermissionManagerBuilder = ::LocationPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-) =
-    registerLocationPermissionIfNotRegistered(locationPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
-        LocationPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
-    }
+) = registerLocationPermissionIfNotRegistered(locationPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
+    LocationPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
+}
 
 /**
  * Gets the [BaseLocationPermissionManagerBuilder] registered

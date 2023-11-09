@@ -14,49 +14,32 @@
 //    limitations under the License.
 //
 
-import UIKit
+import SwiftUI
 import KalugaExampleShared
 
-class BluetoothDescriptorView: UICollectionViewCell {
-
-    enum Companion {
-        static let identifier = "BluetoothDescriptorView"
+struct BluetoothDescriptorView: View, Equatable {
+    
+    static func == (lhs: BluetoothDescriptorView, rhs: BluetoothDescriptorView) -> Bool {
+        lhs.descriptor.uuid == rhs.descriptor.uuid
+    }    
+    
+    let descriptor: BluetoothDescriptorViewModel
+    
+    @ObservedObject private var value: StringObservable
+    
+    init(descriptor: BluetoothDescriptorViewModel) {
+        self.descriptor = descriptor
+        
+        value = StringObservable(descriptor.value)
     }
-
-    var descriptor: BluetoothDescriptorViewModel?
-    private let disposeBag = DisposeBag()
-
-    @IBOutlet var descriptorIdentifier: UILabel!
-    @IBOutlet var descriptorValue: UILabel!
-
-    func startMonitoring() {
-        disposeBag.dispose()
-        guard let descriptor = self.descriptor else {
-            return
+    
+    var body: some View {
+        HStack {
+            Text(descriptor.uuid).font(.system(size: 12.0)).opacity(0.8)
+            Spacer()
+            Text(value.value).font(.system(size: 12.0)).opacity(0.8)
         }
-        descriptor.didResume()
-
-        descriptorIdentifier.text = descriptor.uuid
-
-        descriptor.value.observe { [weak self] value in
-            self?.descriptorValue.text = value as String?
-        }
-        .addTo(disposeBag: disposeBag)
-    }
-
-    func stopMonitoring() {
-        disposeBag.dispose()
-        descriptor?.didResume()
-    }
-
-    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
-        let layoutAttributes = super.preferredLayoutAttributesFitting(layoutAttributes)
-        layoutIfNeeded()
-        layoutAttributes.frame.size = systemLayoutSizeFitting(
-            UIView.layoutFittingCompressedSize,
-            withHorizontalFittingPriority: .required,
-            verticalFittingPriority: .fittingSizeLevel
-        )
-        return layoutAttributes
+        .onAppear { descriptor.onResume() }
+        .onDisappear { descriptor.onPause() }
     }
 }

@@ -103,7 +103,7 @@ data class KalugaBackgroundStyle(
         /**
          * An oval [Shape] matching the width and height of a background view
          */
-        object Oval : Shape()
+        data object Oval : Shape()
     }
 
     /**
@@ -114,7 +114,7 @@ data class KalugaBackgroundStyle(
         /**
          * A [StrokeStyle] where no stroke is applied
          */
-        object None : StrokeStyle()
+        data object None : StrokeStyle()
 
         /**
          * A [StrokeStyle] with a solid color

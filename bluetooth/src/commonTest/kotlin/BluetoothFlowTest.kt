@@ -50,7 +50,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : BluetoothFlowTest.Context<C>, T> : BaseFlowTest<C, TC, T, Flow<T>>() {
+abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : BluetoothFlowTest.Context<C>, T> : BaseFlowTest<C, TC, T, Flow<T>>(logger = null) {
 
     companion object {
         fun defaultService(): ServiceWrapperBuilder.() -> Unit = {
@@ -197,22 +197,12 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             }
         }
 
-        private suspend fun awaitScanDevice(
-            device: Device,
-            deviceWrapper: DeviceWrapper,
-            rssi: RSSI,
-            advertisementData: BaseAdvertisementData,
-        ) {
+        private suspend fun awaitScanDevice(device: Device, deviceWrapper: DeviceWrapper, rssi: RSSI, advertisementData: BaseAdvertisementData) {
             bluetooth.scanningStateRepo.firstInstance<ScanningState.Enabled.Scanning>()
             scanner.handleDeviceDiscovered(deviceWrapper, rssi, advertisementData) { device }
         }
 
-        fun scanDevice(
-            device: Device,
-            deviceWrapper: DeviceWrapper,
-            rssi: RSSI,
-            advertisementData: BaseAdvertisementData,
-        ) {
+        fun scanDevice(device: Device, deviceWrapper: DeviceWrapper, rssi: RSSI, advertisementData: BaseAdvertisementData) {
             coroutineScope.launch {
                 awaitScanDevice(device, deviceWrapper, rssi, advertisementData)
             }
@@ -254,10 +244,8 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
             deviceConnectionManagerBuilder.create(deviceWrapper, configuration.connectionSettings, coroutineScope)
         }
 
-        fun scanDevice(
-            rssi: RSSI = configuration.rssi,
-            advertisementData: BaseAdvertisementData = configuration.advertisementData,
-        ) = super.scanDevice(device, deviceWrapper, rssi, advertisementData)
+        fun scanDevice(rssi: RSSI = configuration.rssi, advertisementData: BaseAdvertisementData = configuration.advertisementData) =
+            super.scanDevice(device, deviceWrapper, rssi, advertisementData)
         suspend fun connectDevice() = connectDevice(device, connectionManager)
         suspend fun disconnectDevice() = disconnectDevice(device, connectionManager)
     }
@@ -271,8 +259,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
     ) : BaseDeviceContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Service {
         val serviceUuid = serviceWrapper.uuid
         val service by lazy { connectionManager.createService(serviceWrapper) }
-        suspend fun discoverService() =
-            discoverService(service, device, connectionManager)
+        suspend fun discoverService() = discoverService(service, device, connectionManager)
     }
     class ServiceContext(
         configuration: Configuration.DeviceWithService,

@@ -36,9 +36,8 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("molarMassDivMetricDensity")
-infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>,
-) = (density.unit.per per unit.per).molarVolume(this, density)
+infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>.div(density: ScientificValue<PhysicalQuantity.Density, MetricDensity>) =
+    (density.unit.per per unit.per).molarVolume(this, density)
 
 @JvmName("molarMassDivImperialDensity")
 infix operator fun <MolarMassUnit : MolarMass> ScientificValue<PhysicalQuantity.MolarMass, MolarMassUnit>.div(

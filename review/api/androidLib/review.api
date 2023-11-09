@@ -17,6 +17,7 @@ public final class com/splendo/kaluga/review/ReviewManager$Builder : com/splendo
 public final class com/splendo/kaluga/review/ReviewManager$Type : java/lang/Enum {
 	public static final field Fake Lcom/splendo/kaluga/review/ReviewManager$Type;
 	public static final field Live Lcom/splendo/kaluga/review/ReviewManager$Type;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/review/ReviewManager$Type;
 	public static fun values ()[Lcom/splendo/kaluga/review/ReviewManager$Type;
 }

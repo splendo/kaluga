@@ -26,7 +26,7 @@ import com.splendo.kaluga.location.unknownLocationOf
 sealed class MockLocationState {
 
     sealed class Inactive : MockLocationState()
-    object NotInitialized : Inactive(), LocationState.NotInitialized {
+    data object NotInitialized : Inactive(), LocationState.NotInitialized {
 
         override val location: Location = Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)
         fun startInitializing() = { Initializing(location) }
@@ -50,14 +50,13 @@ sealed class MockLocationState {
         override val location: Location,
     ) : Active(), LocationState.Initializing {
 
-        override fun initialize(hasPermission: Boolean, enabled: Boolean): suspend () -> LocationState.Initialized =
-            suspend {
-                when {
-                    !hasPermission -> Disabled.NotPermitted(location)
-                    !enabled -> Disabled.NoGPS(location)
-                    else -> Enabled(location.known.orUnknown)
-                }
+        override fun initialize(hasPermission: Boolean, enabled: Boolean): suspend () -> LocationState.Initialized = suspend {
+            when {
+                !hasPermission -> Disabled.NotPermitted(location)
+                !enabled -> Disabled.NoGPS(location)
+                else -> Enabled(location.known.orUnknown)
             }
+        }
     }
 
     data class Enabled(override val location: Location) : Active(), LocationState.Enabled {

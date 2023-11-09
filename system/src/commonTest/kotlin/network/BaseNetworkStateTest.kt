@@ -39,10 +39,7 @@ abstract class BaseNetworkStateTest<T, F : Flow<T>> : BaseFlowTest<BaseNetworkSt
     override val createTestContextWithConfiguration: suspend (configuration: Configuration, scope: CoroutineScope) -> Context =
         { configuration, scope -> Context(configuration, scope) }
 
-    protected fun testNetworkState(
-        initialNetworkConnectionType: NetworkConnectionType,
-        test: suspend BaseFlowTest<Configuration, Context, T, F>.(F) -> Unit,
-    ) {
+    protected fun testNetworkState(initialNetworkConnectionType: NetworkConnectionType, test: suspend BaseFlowTest<Configuration, Context, T, F>.(F) -> Unit) {
         testWithFlowAndTestContext(
             Configuration(initialNetworkConnectionType),
             blockWithContext = test,

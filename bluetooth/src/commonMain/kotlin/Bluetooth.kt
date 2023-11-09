@@ -44,6 +44,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
@@ -52,7 +53,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -208,23 +209,35 @@ class Bluetooth constructor(
             delay(PAIRED_DEVICES_REFRESH_RATE)
         }
     }
-    override fun pairedDevices(
-        filter: Filter,
-        removeForAllPairedFilters: Boolean,
-        connectionSettings: ConnectionSettings?,
-    ): Flow<List<Device>> = pairedDevices(filter, removeForAllPairedFilters, connectionSettings, timer)
-    internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings? = null, timer: Flow<Unit>): Flow<List<Device>> =
-        combine(scanningStateRepo, timer) { scanningState, _ -> scanningState }
-            .transform { state ->
-                if (state is ScanningState.Enabled) {
-                    // trigger retrieve paired devices list
-                    state.retrievePairedDevices(filter, removeForAllPairedFilters, connectionSettings)
-                    emit(state.devices.devicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Paired(filter)))
-                } else {
+
+    override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Flow<List<Device>> =
+        pairedDevices(filter, removeForAllPairedFilters, connectionSettings, timer)
+
+    internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings? = null, timer: Flow<Unit>): Flow<List<Device>> {
+        var shouldStartRetrievingPairing = true
+        return combineTransform(
+            timer.onEach { shouldStartRetrievingPairing = true },
+            scanningStateRepo,
+        ) { _, scanState ->
+            when (scanState) {
+                is ScanningState.Enabled -> {
+                    if (shouldStartRetrievingPairing) {
+                        scanState.retrievePairedDevices(filter, removeForAllPairedFilters, connectionSettings)
+                        shouldStartRetrievingPairing = false
+                    }
+                    emit(scanState.devices.devicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Paired(filter)))
+                }
+
+                is ScanningState.Initialized -> {
+                    shouldStartRetrievingPairing = true
                     emit(emptyList())
                 }
+                else -> {
+                    shouldStartRetrievingPairing = true
+                }
             }
-            .distinctUntilChanged()
+        }.distinctUntilChanged()
+    }
 
     private fun devicesForScanMode(): Flow<ScanningState.Devices> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
         when (scanState) {
@@ -520,7 +533,9 @@ fun Flow<Characteristic?>.descriptors(): Flow<List<Descriptor>> {
  * @return the [Flow] of the [AttributeType] with [uuid] in the list of [AttributeType] in the given [Flow]
  */
 @JvmName("getAttribute")
-operator fun <AttributeType, ReadAction, WriteAction> Flow<List<AttributeType>>.get(uuid: UUID): Flow<AttributeType?>
+operator fun <AttributeType, ReadAction, WriteAction> Flow<List<AttributeType>>.get(
+    uuid: UUID,
+): Flow<AttributeType?>
     where AttributeType : Attribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write {
     return this.map { attribute ->
         attribute.firstOrNull {

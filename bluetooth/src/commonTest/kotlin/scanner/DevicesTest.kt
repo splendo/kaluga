@@ -149,33 +149,19 @@ class DevicesTest {
 
     private fun ScanningState.Devices.addScannedAndValidate(device: Device, validation: ScanningState.Devices.() -> Unit) = copyAndAddScanned(device.identifier) { device }
         .apply(validation)
-    private fun ScanningState.Devices.addPairedAndValidate(
-        filter: Filter,
-        removeAllPairedFilters: Boolean,
-        vararg device: Device,
-        validation: ScanningState.Devices.() -> Unit,
-    ) = copyAndSetPaired(device.associate { it.identifier to { it } }, filter, removeAllPairedFilters).apply(validation)
+    private fun ScanningState.Devices.addPairedAndValidate(filter: Filter, removeAllPairedFilters: Boolean, vararg device: Device, validation: ScanningState.Devices.() -> Unit) =
+        copyAndSetPaired(device.associate { it.identifier to { it } }, filter, removeAllPairedFilters).apply(validation)
 
-    private fun ScanningState.Devices.setFilterValidate(
-        filter: Filter,
-        cleanMode: BluetoothService.CleanMode,
-        validation: ScanningState.Devices.() -> Unit,
-    ) = updateScanFilter(filter, cleanMode).apply(validation)
+    private fun ScanningState.Devices.setFilterValidate(filter: Filter, cleanMode: BluetoothService.CleanMode, validation: ScanningState.Devices.() -> Unit) =
+        updateScanFilter(filter, cleanMode).apply(validation)
 
     private fun ScanningState.Devices.validateAllDevices(vararg device: Device) = assertEquals(device.associateBy { it.identifier }, allDevices)
 
-    private fun ScanningState.Devices.validateDevicesForScanningFilter(
-        filter: Filter,
-        vararg device: Device,
-    ) = validateDevicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Scanning(filter), *device)
-    private fun ScanningState.Devices.validateDevicesForPairingFilter(
-        filter: Filter,
-        vararg device: Device,
-    ) = validateDevicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Paired(filter), *device)
-    private fun ScanningState.Devices.validateDevicesForDiscoveryMode(
-        discoveryMode: ScanningState.DeviceDiscoveryMode,
-        vararg device: Device,
-    ) {
+    private fun ScanningState.Devices.validateDevicesForScanningFilter(filter: Filter, vararg device: Device) =
+        validateDevicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Scanning(filter), *device)
+    private fun ScanningState.Devices.validateDevicesForPairingFilter(filter: Filter, vararg device: Device) =
+        validateDevicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Paired(filter), *device)
+    private fun ScanningState.Devices.validateDevicesForDiscoveryMode(discoveryMode: ScanningState.DeviceDiscoveryMode, vararg device: Device) {
         assertEquals(device.map { it.identifier }.toSet(), identifiersFoundForDeviceDiscoveryMode[discoveryMode] ?: emptySet())
         assertEquals(device.toList(), devicesForDiscoveryMode(discoveryMode))
     }

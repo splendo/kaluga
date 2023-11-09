@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.test.base.mock.parameters
 
-import com.splendo.kaluga.test.base.mock.MethodMock
-import com.splendo.kaluga.test.base.mock.SuspendMethodMock
 import com.splendo.kaluga.test.base.mock.answer.Answer
 import com.splendo.kaluga.test.base.mock.answer.SuspendedAnswer
 import com.splendo.kaluga.test.base.mock.matcher.Captor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcherOrCaptor
 import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.suspendTripleParametersMock
+import com.splendo.kaluga.test.base.mock.tripleParametersMock
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
@@ -76,17 +76,9 @@ class TripleParameters<T0, T1, T2> : ParametersSpec<TripleParameters.Matchers<T0
     }
 }
 
-internal fun <T0, T1, T2, R> ((T0, T1, T2) -> R).asMock() = MethodMock<
-    TripleParameters.Matchers<T0, T1, T2>,
-    TripleParameters.MatchersOrCaptor<T0, T1, T2>,
-    TripleParameters.Values<T0, T1, T2>,
-    TripleParameters<T0, T1, T2>,
-    R,
-    >(TripleParameters())
+internal fun <T0, T1, T2, R> ((T0, T1, T2) -> R).asMock() = tripleParametersMock<T0, T1, T2, R>()
 
-fun <T0, T1, T2, R> ((T0, T1, T2) -> R).mockWithDefaultAnswer(
-    defaultAnswer: Answer<TripleParameters.Values<T0, T1, T2>, R>,
-) = asMock().also {
+fun <T0, T1, T2, R> ((T0, T1, T2) -> R).mockWithDefaultAnswer(defaultAnswer: Answer<TripleParameters.Values<T0, T1, T2>, R>) = asMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>()).doAnswer(defaultAnswer)
 }
 fun <T0, T1, T2, R> ((T0, T1, T2) -> R).mockWithDefaultValue(defaultValue: R) = asMock().also {
@@ -209,17 +201,9 @@ fun <T0, T1, T2, R : Any> ((T0, T1, T2) -> R?).mock() = mockWithDefaultValue(nul
 @JsName("mockTripleNonNullable")
 fun <T0, T1, T2, R : Any> ((T0, T1, T2) -> R).mock() = asMock()
 
-internal fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).asSuspendedMock() = SuspendMethodMock<
-    TripleParameters.Matchers<T0, T1, T2>,
-    TripleParameters.MatchersOrCaptor<T0, T1, T2>,
-    TripleParameters.Values<T0, T1, T2>,
-    TripleParameters<T0, T1, T2>,
-    R,
-    >(TripleParameters())
+internal fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).asSuspendedMock() = suspendTripleParametersMock<T0, T1, T2, R>()
 
-fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).mockWithDefaultAnswer(
-    defaultAnswer: SuspendedAnswer<TripleParameters.Values<T0, T1, T2>, R>,
-) = asSuspendedMock().also {
+fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).mockWithDefaultAnswer(defaultAnswer: SuspendedAnswer<TripleParameters.Values<T0, T1, T2>, R>) = asSuspendedMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>()).doAnswer(defaultAnswer)
 }
 fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).mockWithDefaultValue(defaultValue: R) = asSuspendedMock().also {

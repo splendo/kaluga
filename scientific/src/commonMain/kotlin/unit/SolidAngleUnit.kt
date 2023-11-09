@@ -47,7 +47,7 @@ val SolidAngleUnits: Set<SolidAngle> get() = setOf(
 sealed class SolidAngle : AbstractScientificUnit<PhysicalQuantity.SolidAngle>(), MetricAndImperialScientificUnit<PhysicalQuantity.SolidAngle>
 
 @Serializable
-object Steradian : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle> {
+data object Steradian : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle> {
     override val symbol = "sr"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.SolidAngle
@@ -59,22 +59,22 @@ object Steradian : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImper
 sealed class SteradianMultiple : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian>
 
 @Serializable
-object Nanosteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Nano(Steradian)
+data object Nanosteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Nano(Steradian)
 
 @Serializable
-object Microsteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Micro(Steradian)
+data object Microsteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Micro(Steradian)
 
 @Serializable
-object Millisteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Milli(Steradian)
+data object Millisteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Milli(Steradian)
 
 @Serializable
-object Centisteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Centi(Steradian)
+data object Centisteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Centi(Steradian)
 
 @Serializable
-object Decisteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Deci(Steradian)
+data object Decisteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Deci(Steradian)
 
 @Serializable
-object Spat : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle> {
+data object Spat : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle> {
     private const val STERADIAN_IN_SPAT = 4.0 * PI
     override val symbol = "sp"
     override val system = MeasurementSystem.MetricAndImperial
@@ -84,7 +84,7 @@ object Spat : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, 
 }
 
 @Serializable
-object SquareDegree : SolidAngle() {
+data object SquareDegree : SolidAngle() {
     override val symbol = "°2"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.SolidAngle

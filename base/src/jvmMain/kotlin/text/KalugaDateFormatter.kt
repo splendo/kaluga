@@ -42,11 +42,8 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun dateFormat(
-            style: DateFormatStyle,
-            timeZone: KalugaTimeZone,
-            locale: KalugaLocale,
-        ): KalugaDateFormatter = createDateFormatter(DateFormat.getDateInstance(style.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
+        actual fun dateFormat(style: DateFormatStyle, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter =
+            createDateFormatter(DateFormat.getDateInstance(style.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
         /**
          * Creates a [KalugaDateFormatter] that only formats the time components of a [KalugaDate]
@@ -54,11 +51,8 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun timeFormat(
-            style: DateFormatStyle,
-            timeZone: KalugaTimeZone,
-            locale: KalugaLocale,
-        ): KalugaDateFormatter = createDateFormatter(DateFormat.getTimeInstance(style.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
+        actual fun timeFormat(style: DateFormatStyle, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter =
+            createDateFormatter(DateFormat.getTimeInstance(style.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
         /**
          * Creates a [KalugaDateFormatter] that formats both date and time components of a [KalugaDate]
@@ -67,12 +61,8 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun dateTimeFormat(
-            dateStyle: DateFormatStyle,
-            timeStyle: DateFormatStyle,
-            timeZone: KalugaTimeZone,
-            locale: KalugaLocale,
-        ): KalugaDateFormatter = createDateFormatter(DateFormat.getDateTimeInstance(dateStyle.javaStyle(), timeStyle.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
+        actual fun dateTimeFormat(dateStyle: DateFormatStyle, timeStyle: DateFormatStyle, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter =
+            createDateFormatter(DateFormat.getDateTimeInstance(dateStyle.javaStyle(), timeStyle.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
 
         /**
          * Creates a [KalugaDateFormatter] using a custom Date format pattern.
@@ -83,11 +73,8 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun patternFormat(
-            pattern: String,
-            timeZone: KalugaTimeZone,
-            locale: KalugaLocale,
-        ): KalugaDateFormatter = createDateFormatter(SimpleDateFormat(pattern, locale.locale), timeZone)
+        actual fun patternFormat(pattern: String, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter =
+            createDateFormatter(SimpleDateFormat(pattern, locale.locale), timeZone)
 
         private fun createDateFormatter(simpleDateFormat: SimpleDateFormat, timeZone: KalugaTimeZone): KalugaDateFormatter {
             return KalugaDateFormatter(simpleDateFormat).apply {
@@ -104,18 +91,26 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
 
     override var timeZone: KalugaTimeZone
         get() = KalugaTimeZone(format.timeZone)
-        set(value) { format.timeZone = value.timeZone }
+        set(value) {
+            format.timeZone = value.timeZone
+        }
 
     override var eras: List<String>
         get() = symbols.eras.toList()
-        set(value) { updateSymbols { it.eras = value.toTypedArray() } }
+        set(value) {
+            updateSymbols { it.eras = value.toTypedArray() }
+        }
 
     override var months: List<String>
         get() = symbols.months.toList()
-        set(value) { updateSymbols { it.months = value.toTypedArray() } }
+        set(value) {
+            updateSymbols { it.months = value.toTypedArray() }
+        }
     override var shortMonths: List<String>
         get() = symbols.shortMonths.toList()
-        set(value) { updateSymbols { it.shortMonths = value.toTypedArray() } }
+        set(value) {
+            updateSymbols { it.shortMonths = value.toTypedArray() }
+        }
 
     override var weekdays: List<String>
         get() {
@@ -154,10 +149,14 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
 
     override var amString: String
         get() = symbols.amPmStrings.toList()[0]
-        set(value) { updateSymbols { it.amPmStrings = it.amPmStrings.toMutableList().apply { this[0] = value }.toTypedArray() } }
+        set(value) {
+            updateSymbols { it.amPmStrings = it.amPmStrings.toMutableList().apply { this[0] = value }.toTypedArray() }
+        }
     override var pmString: String
         get() = symbols.amPmStrings.toList()[1]
-        set(value) { updateSymbols { it.amPmStrings = it.amPmStrings.toMutableList().apply { this[1] = value }.toTypedArray() } }
+        set(value) {
+            updateSymbols { it.amPmStrings = it.amPmStrings.toMutableList().apply { this[1] = value }.toTypedArray() }
+        }
 
     override fun format(date: KalugaDate): String = format.format(date.date)
     override fun parse(string: String): KalugaDate? {

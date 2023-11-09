@@ -4,8 +4,8 @@ public final class com/splendo/kaluga/test/base/AwaitAllBlockingKt {
 
 public abstract class com/splendo/kaluga/test/base/BaseFlowTest : com/splendo/kaluga/test/base/BaseUIThreadTest, kotlinx/coroutines/CoroutineScope {
 	public fun <init> ()V
-	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
-	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;)V
+	public synthetic fun <init> (Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun action (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterTest ()V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
@@ -13,6 +13,7 @@ public abstract class com/splendo/kaluga/test/base/BaseFlowTest : com/splendo/ka
 	public final fun getFirstTestBlock ()Z
 	public abstract fun getFlowFromTestContext ()Lkotlin/jvm/functions/Function2;
 	public final fun getJob ()Lkotlinx/coroutines/Job;
+	public final fun getLogger ()Lcom/splendo/kaluga/logging/Logger;
 	public final fun getScope ()Lkotlinx/coroutines/CoroutineScope;
 	protected final fun getWaitForTestToSucceed-UwyO8pc ()J
 	public final fun mainAction (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -61,6 +62,12 @@ public final class com/splendo/kaluga/test/base/DeliberateCancellationException 
 }
 
 public final class com/splendo/kaluga/test/base/FlowExtensionsKt {
+	public static final fun assertEmits-1Y68eR8 (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;JLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun assertEmits-1Y68eR8$default (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;JLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun assertEmits-zkXUZaI (Lkotlinx/coroutines/flow/Flow;Ljava/lang/Object;Ljava/lang/String;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun assertEmits-zkXUZaI$default (Lkotlinx/coroutines/flow/Flow;Ljava/lang/Object;Ljava/lang/String;JLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun awaitFirst-1Y68eR8 (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;JLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun awaitFirst-1Y68eR8$default (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;JLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun captureFor-8Mi8wO0 (Lkotlinx/coroutines/flow/Flow;JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -179,6 +186,18 @@ public final class com/splendo/kaluga/test/base/mock/MethodMock$Stub : com/splen
 
 public final class com/splendo/kaluga/test/base/mock/MockMethodKt {
 	public static final fun doReturn (Lcom/splendo/kaluga/test/base/mock/BaseMethodMock$Stub;)V
+	public static final fun pairParametersMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun quadrupleParametersMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun quintupleParametersMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun singleParametersMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun suspendPairParametersMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun suspendQuadrupleParametersMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun suspendQuintupleParametersMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun suspendSingleParametersMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun suspendTripleParametersMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun suspendVoidParametersMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
+	public static final fun tripleParametersMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public static final fun voidParametersMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 }
 
 public final class com/splendo/kaluga/test/base/mock/OnKt {
@@ -1122,7 +1141,10 @@ public final class com/splendo/kaluga/test/base/mock/verification/VerificationRu
 
 public final class com/splendo/kaluga/test/base/mock/verification/VerificationRule$Never : com/splendo/kaluga/test/base/mock/verification/VerificationRule {
 	public static final field INSTANCE Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Never;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun matches (I)Z
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/test/base/mock/verification/VerificationRule$Range : com/splendo/kaluga/test/base/mock/verification/VerificationRule {

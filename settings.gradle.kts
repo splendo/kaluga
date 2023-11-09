@@ -16,8 +16,7 @@ pluginManagement {
     resolutionStrategy {
         eachPlugin {
 
-            val kalugaAndroidGradlePluginVersion =
-                settings.extra["kaluga.androidGradlePluginVersion"]
+            val kalugaAndroidGradlePluginVersion = settings.extra["kaluga.androidGradlePluginVersion"]
             val kalugaKotlinVersion = settings.extra["kaluga.kotlinVersion"]
             val kalugaKotlinterGradlePluginVersion = settings.extra["kaluga.kotlinterGradlePluginVersion"]
             val kalugaGoogleServicesGradlePluginVersion = settings.extra["kaluga.googleServicesGradlePluginVersion"]
@@ -50,6 +49,7 @@ pluginManagement {
 
 includeBuild("kaluga-library-components")
 includeBuild("convention-plugins")
+includeBuild("gradle-test-recorder/plugin-build/")
 
 rootProject.name = "Kaluga"
 

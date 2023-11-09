@@ -31,8 +31,7 @@ actual typealias UUID = CBUUID
 actual val UUID.uuidString: String
     get() = UUIDString
 
-internal actual fun unsafeUUIDFrom(uuidString: String) =
-    CBUUID.UUIDWithString(uuidString)
+internal actual fun unsafeUUIDFrom(uuidString: String) = CBUUID.UUIDWithString(uuidString)
 
 /**
  * Gets a random [UUID]

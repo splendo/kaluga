@@ -83,11 +83,7 @@ class MockDeviceConnectionManager(
             }
         }
 
-        override fun create(
-            deviceWrapper: DeviceWrapper,
-            settings: ConnectionSettings,
-            coroutineScope: CoroutineScope,
-        ): BaseDeviceConnectionManager {
+        override fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
             return createMock.call(deviceWrapper, settings, coroutineScope)
         }
     }
@@ -226,19 +222,11 @@ class MockDeviceConnectionManager(
         return super.handleCurrentActionCompleted(succeeded)
     }
 
-    public override fun handleUpdatedCharacteristic(
-        uuid: UUID,
-        succeeded: Boolean,
-        onUpdate: ((Characteristic) -> Unit)?,
-    ) {
+    public override fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)?) {
         super.handleUpdatedCharacteristic(uuid, succeeded, onUpdate)
     }
 
-    public override fun handleUpdatedDescriptor(
-        uuid: UUID,
-        succeeded: Boolean,
-        onUpdate: ((Descriptor) -> Unit)?,
-    ) {
+    public override fun handleUpdatedDescriptor(uuid: UUID, succeeded: Boolean, onUpdate: ((Descriptor) -> Unit)?) {
         super.handleUpdatedDescriptor(uuid, succeeded, onUpdate)
     }
 

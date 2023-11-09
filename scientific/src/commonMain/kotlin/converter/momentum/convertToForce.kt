@@ -33,24 +33,20 @@ import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.jvm.JvmName
 
 @JvmName("metricMomentumDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Momentum, MetricMomentum>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = Newton.force(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Momentum, MetricMomentum>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    Newton.force(this, time)
 
 @JvmName("imperialMomentumDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Momentum, ImperialMomentum>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = PoundForce.force(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Momentum, ImperialMomentum>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    PoundForce.force(this, time)
 
 @JvmName("ukImperialMomentumDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Momentum, UKImperialMomentum>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = PoundForce.ukImperial.force(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Momentum, UKImperialMomentum>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    PoundForce.ukImperial.force(this, time)
 
 @JvmName("usCustomaryMomentumDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Momentum, USCustomaryMomentum>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = PoundForce.usCustomary.force(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Momentum, USCustomaryMomentum>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    PoundForce.usCustomary.force(this, time)
 
 @JvmName("momentumDivTime")
 infix operator fun <MomentumUnit : Momentum, TimeUnit : Time> ScientificValue<PhysicalQuantity.Momentum, MomentumUnit>.div(

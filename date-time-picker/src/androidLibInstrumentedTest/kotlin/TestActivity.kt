@@ -1,11 +1,16 @@
 package com.splendo.kaluga.datetimepicker
 
+import android.os.Bundle
 import androidx.activity.viewModels
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.test.datetimepicker.datePickerPresenterBuilder
 
 class TestActivity : KalugaViewModelActivity<DateTimePickerViewModel>() {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        this.supportActionBar?.hide()
+    }
     override val viewModel: DateTimePickerViewModel by viewModels()
 
     suspend fun showDatePicker() {

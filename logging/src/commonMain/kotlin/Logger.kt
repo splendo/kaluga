@@ -118,8 +118,7 @@ fun Logger.debug(message: () -> String) = log(LogLevel.DEBUG, message = message)
  * @param throwable Error or Exception. Optional
  * @param message Message to be written into log.
  */
-fun Logger.debug(tag: String? = null, throwable: Throwable? = null, message: () -> String) =
-    log(LogLevel.DEBUG, tag, throwable, message)
+fun Logger.debug(tag: String? = null, throwable: Throwable? = null, message: () -> String) = log(LogLevel.DEBUG, tag, throwable, message)
 
 /**
  * Writes log with DEBUG log level and provided tag.
@@ -227,8 +226,7 @@ fun Logger.info(message: () -> String) = log(LogLevel.INFO, message = message)
  * @param throwable Error or Exception. Optional
  * @param message Message to be written into log.
  */
-fun Logger.info(tag: String? = null, throwable: Throwable? = null, message: () -> String) =
-    log(LogLevel.INFO, tag, throwable, message)
+fun Logger.info(tag: String? = null, throwable: Throwable? = null, message: () -> String) = log(LogLevel.INFO, tag, throwable, message)
 
 /**
  * Writes log with INFO log level and provided tag.
@@ -336,8 +334,7 @@ fun Logger.warn(message: () -> String) = log(LogLevel.WARN, message = message)
  * @param throwable Error or Exception. Optional
  * @param message Message to be written into log.
  */
-fun Logger.warn(tag: String? = null, throwable: Throwable? = null, message: () -> String) =
-    log(LogLevel.WARN, tag, throwable, message)
+fun Logger.warn(tag: String? = null, throwable: Throwable? = null, message: () -> String) = log(LogLevel.WARN, tag, throwable, message)
 
 /**
  * Writes log with WARN log level and provided tag.
@@ -445,8 +442,7 @@ fun Logger.error(message: () -> String) = log(LogLevel.ERROR, message = message)
  * @param throwable Error or Exception. Optional
  * @param message Message to be written into log.
  */
-fun Logger.error(tag: String? = null, throwable: Throwable? = null, message: () -> String) =
-    log(LogLevel.ERROR, tag, throwable, message)
+fun Logger.error(tag: String? = null, throwable: Throwable? = null, message: () -> String) = log(LogLevel.ERROR, tag, throwable, message)
 
 /**
  * Writes log with ERROR log level and provided tag.

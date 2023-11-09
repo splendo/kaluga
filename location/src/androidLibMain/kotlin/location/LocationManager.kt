@@ -85,10 +85,7 @@ actual class DefaultLocationManager(
             },
         )
 
-        override fun create(
-            settings: Settings,
-            coroutineScope: CoroutineScope,
-        ): BaseLocationManager {
+        override fun create(settings: Settings, coroutineScope: CoroutineScope): BaseLocationManager {
             return DefaultLocationManager(
                 context,
                 locationManager,

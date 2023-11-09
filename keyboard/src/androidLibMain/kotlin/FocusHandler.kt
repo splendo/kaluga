@@ -40,7 +40,9 @@ data class ViewFocusHandler(
      * Constructor
      * @param id the ID of the View to focus on
      */
-    constructor(@IdRes id: Int) : this(id, Handler(Looper.getMainLooper()))
+    constructor(
+        @IdRes id: Int,
+    ) : this(id, Handler(Looper.getMainLooper()))
 
     fun requestFocus(activity: Activity?) {
         if (activity == null) return

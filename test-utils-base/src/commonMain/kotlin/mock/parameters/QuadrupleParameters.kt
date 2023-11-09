@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.test.base.mock.parameters
 
-import com.splendo.kaluga.test.base.mock.MethodMock
-import com.splendo.kaluga.test.base.mock.SuspendMethodMock
 import com.splendo.kaluga.test.base.mock.answer.Answer
 import com.splendo.kaluga.test.base.mock.answer.SuspendedAnswer
 import com.splendo.kaluga.test.base.mock.matcher.Captor
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcherOrCaptor
 import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.quadrupleParametersMock
+import com.splendo.kaluga.test.base.mock.suspendQuadrupleParametersMock
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
@@ -87,11 +87,10 @@ class QuadrupleParameters<T0, T1, T2, T3> :
         val fourth: T3,
     ) : ParametersSpec.Values
 
-    override fun Matchers<T0, T1, T2, T3>.matches(values: Values<T0, T1, T2, T3>): Boolean =
-        first.matches(values.first) &&
-            second.matches(values.second) &&
-            third.matches(values.third) &&
-            fourth.matches(values.fourth)
+    override fun Matchers<T0, T1, T2, T3>.matches(values: Values<T0, T1, T2, T3>): Boolean = first.matches(values.first) &&
+        second.matches(values.second) &&
+        third.matches(values.third) &&
+        fourth.matches(values.fourth)
 
     override fun MatchersOrCaptor<T0, T1, T2, T3>.capture(values: Values<T0, T1, T2, T3>) {
         (first as? Captor<T0>)?.capture(values.first)
@@ -101,17 +100,9 @@ class QuadrupleParameters<T0, T1, T2, T3> :
     }
 }
 
-internal fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).asMock() = MethodMock<
-    QuadrupleParameters.Matchers<T0, T1, T2, T3>,
-    QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>,
-    QuadrupleParameters.Values<T0, T1, T2, T3>,
-    QuadrupleParameters<T0, T1, T2, T3>,
-    R,
-    >(QuadrupleParameters())
+internal fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).asMock() = quadrupleParametersMock<T0, T1, T2, T3, R>()
 
-fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).mockWithDefaultAnswer(
-    defaultAnswer: Answer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>,
-) = asMock().also {
+fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).mockWithDefaultAnswer(defaultAnswer: Answer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>) = asMock().also {
     it.on(
         ParameterMatcher.any<T0>(),
         ParameterMatcher.any<T1>(),
@@ -245,24 +236,17 @@ fun <T0, T1, T2, T3, R : Any> ((T0, T1, T2, T3) -> R?).mock() = mockWithDefaultV
 @JsName("mockQuadrupleNonNullable")
 fun <T0, T1, T2, T3, R : Any> ((T0, T1, T2, T3) -> R).mock() = asMock()
 
-internal fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).asSuspendedMock() = SuspendMethodMock<
-    QuadrupleParameters.Matchers<T0, T1, T2, T3>,
-    QuadrupleParameters.MatchersOrCaptor<T0, T1, T2, T3>,
-    QuadrupleParameters.Values<T0, T1, T2, T3>,
-    QuadrupleParameters<T0, T1, T2, T3>,
-    R,
-    >(QuadrupleParameters())
+internal fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).asSuspendedMock() = suspendQuadrupleParametersMock<T0, T1, T2, T3, R>()
 
-fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).mockWithDefaultAnswer(
-    defaultAnswer: SuspendedAnswer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>,
-) = asSuspendedMock().also {
-    it.on(
-        ParameterMatcher.any<T0>(),
-        ParameterMatcher.any<T1>(),
-        ParameterMatcher.any<T2>(),
-        ParameterMatcher.any<T3>(),
-    ).doAnswer(defaultAnswer)
-}
+fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).mockWithDefaultAnswer(defaultAnswer: SuspendedAnswer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>) =
+    asSuspendedMock().also {
+        it.on(
+            ParameterMatcher.any<T0>(),
+            ParameterMatcher.any<T1>(),
+            ParameterMatcher.any<T2>(),
+            ParameterMatcher.any<T3>(),
+        ).doAnswer(defaultAnswer)
+    }
 
 fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).mockWithDefaultValue(defaultValue: R) = asSuspendedMock().also {
     it.on(
@@ -292,8 +276,7 @@ fun <T0, T1, T2, T3> (suspend (T0, T1, T2, T3) -> Char).mock() = mockWithDefault
 fun <T0, T1, T2, T3> (suspend (T0, T1, T2, T3) -> CharArray).mock() = mockWithDefaultValue(charArrayOf())
 
 @JvmName("mockCharRange")
-fun <T0, T1, T2, T3> (suspend (T0, T1, T2, T3) -> CharRange).mock() =
-    mockWithDefaultValue(CharRange.EMPTY)
+fun <T0, T1, T2, T3> (suspend (T0, T1, T2, T3) -> CharRange).mock() = mockWithDefaultValue(CharRange.EMPTY)
 
 @JvmName("mockDouble")
 fun <T0, T1, T2, T3> (suspend (T0, T1, T2, T3) -> Double).mock() = mockWithDefaultValue(0.0)
@@ -371,8 +354,7 @@ fun <T0, T1, T2, T3> (suspend (T0, T1, T2, T3) -> UShortArray).mock() = mockWith
 fun <T0, T1, T2, T3> (suspend (T0, T1, T2, T3) -> Unit).mock() = mockWithDefaultValue(Unit)
 
 @JvmName("mockArray")
-inline fun <T0, T1, T2, T3, reified R> (suspend (T0, T1, T2, T3) -> Array<R>).mock() =
-    mockWithDefaultValue(emptyArray())
+inline fun <T0, T1, T2, T3, reified R> (suspend (T0, T1, T2, T3) -> Array<R>).mock() = mockWithDefaultValue(emptyArray())
 
 @JvmName("mockList")
 fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> List<R>).mock() = mockWithDefaultValue(emptyList())

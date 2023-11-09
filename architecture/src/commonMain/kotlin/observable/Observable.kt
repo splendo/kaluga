@@ -90,8 +90,7 @@ abstract class BaseInitializedObservable<T>(
     InitializedObservable<T>,
     Initialized<T, T> by observation {
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): Value<T> =
-        observation.currentObserved
+    override fun getValue(thisRef: Any?, property: KProperty<*>): Value<T> = observation.currentObserved
 
     constructor(
         initialValue: Value<T>,
@@ -112,8 +111,7 @@ abstract class BaseUninitializedObservable<T>(
     UninitializedObservable<T>,
     Uninitialized<T> by observation {
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> =
-        observation.currentObserved
+    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> = observation.currentObserved
 }
 
 /**
@@ -140,8 +138,7 @@ abstract class BaseDefaultObservable<R : T?, T>(
         initialValue: Value<T?>,
     ) : this(ObservationDefault<R, T?>(Value(defaultValue), initialValue))
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
-        observation.currentObserved
+    override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> = observation.currentObserved
 }
 
 /**

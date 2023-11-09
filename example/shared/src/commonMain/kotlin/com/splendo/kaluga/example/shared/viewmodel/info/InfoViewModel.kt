@@ -45,11 +45,11 @@ class InfoViewModel(
 ) : NavigatingViewModel<InfoNavigation<*>>(navigator, reviewManagerBuilder) {
 
     sealed class Button(val title: String) {
-        object About : Button("About")
-        object Website : Button("Kaluga.io")
-        object GitHub : Button("GitHub")
-        object Mail : Button("Contact")
-        object Review : Button("Review")
+        data object About : Button("About")
+        data object Website : Button("Kaluga.io")
+        data object GitHub : Button("GitHub")
+        data object Mail : Button("Contact")
+        data object Review : Button("Review")
     }
 
     val reviewManager = reviewManagerBuilder.create()

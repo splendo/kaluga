@@ -94,12 +94,10 @@ class ReadOnlyPropertyDefaultObservable<R : T?, T>(
 /**
  * Converts a [ReadOnlyProperty] into a [ReadOnlyPropertyInitializedObservable]
  */
-fun <T> ReadOnlyProperty<Any?, T>.toInitializedObservable() =
-    ReadOnlyPropertyInitializedObservable(this)
+fun <T> ReadOnlyProperty<Any?, T>.toInitializedObservable() = ReadOnlyPropertyInitializedObservable(this)
 
 /**
  * Converts a [ReadOnlyProperty] into a [ReadOnlyPropertyDefaultObservable]
  * @param defaultValue The default value of [R] to observe if the [ReadOnlyProperty] has a value of `null`.
  */
-fun <R : T, T> ReadOnlyProperty<Any?, T?>.toDefaultObservable(defaultValue: R) =
-    ReadOnlyPropertyDefaultObservable(defaultValue, this)
+fun <R : T, T> ReadOnlyProperty<Any?, T?>.toDefaultObservable(defaultValue: R) = ReadOnlyPropertyDefaultObservable(defaultValue, this)

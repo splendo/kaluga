@@ -96,10 +96,14 @@ abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(
     override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         coroutineScope.launch(context) {
             @Suppress("UNCHECKED_CAST")
-            stateFlowToBind().collect { set(it as T) }
+            stateFlowToBind().collect {
+                set(it as T)
+            }
         }
     }
 }
+
+expect interface PlatformSubjectObserver<R>
 
 /**
  * An abstract class that extends [AbstractBaseSubject].
@@ -113,7 +117,10 @@ expect abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>>(
     observation: Observation<R, T, OO>,
     stateFlowToBind: suspend () -> StateFlow<R?>,
 ) :
-    AbstractBaseSubject<R, T, OO>
+    AbstractBaseSubject<R, T, OO> {
+    protected abstract val platformSubjectObserver: PlatformSubjectObserver<R>
+    final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext)
+}
 
 /**
  * An abstract class extending [BaseSubject] that implements [InitializedSubject].
@@ -142,8 +149,7 @@ abstract class AbstractBaseInitializedSubject<T>(override val observation: Obser
         initialValue: Value<T>,
     ) : this(ObservationInitialized(initialValue))
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): Value<T> =
-        observation.currentObserved
+    override fun getValue(thisRef: Any?, property: KProperty<*>): Value<T> = observation.currentObserved
 }
 
 /**
@@ -161,6 +167,8 @@ expect abstract class BaseInitializedSubject<T>(observation: ObservationInitiali
     constructor(
         initialValue: Value<T>,
     )
+
+    final override val platformSubjectObserver: PlatformSubjectObserver<T>
 }
 
 /**
@@ -177,8 +185,7 @@ abstract class AbstractBaseUninitializedSubject<T>(
 ),
     UninitializedSubject<T>,
     MutableUninitialized<T> by observation {
-    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> =
-        observation.observedValue
+    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> = observation.observedValue
 }
 
 /**
@@ -188,7 +195,9 @@ abstract class AbstractBaseUninitializedSubject<T>(
  */
 expect abstract class BaseUninitializedSubject<T>(
     observation: ObservationUninitialized<T>,
-) : AbstractBaseUninitializedSubject<T>
+) : AbstractBaseUninitializedSubject<T> {
+    final override val platformSubjectObserver: PlatformSubjectObserver<T>
+}
 
 /**
  * An abstract class extending [BaseSubject] that implements [DefaultSubject].
@@ -210,8 +219,7 @@ abstract class AbstractBaseDefaultSubject<R : T?, T>(
         initialValue: Value<T?>,
     ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue))
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
-        observation.currentObserved
+    override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> = observation.currentObserved
 }
 
 /**
@@ -233,6 +241,8 @@ expect abstract class BaseDefaultSubject<R : T?, T>(
         defaultValue: Value<R>,
         initialValue: Value<T?>,
     )
+
+    final override val platformSubjectObserver: PlatformSubjectObserver<R>
 }
 
 /**

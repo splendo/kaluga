@@ -81,7 +81,7 @@ sealed class MetricIlluminance : Illuminance(), MetricScientificUnit<PhysicalQua
 sealed class ImperialIlluminance : Illuminance(), ImperialScientificUnit<PhysicalQuantity.Illuminance>
 
 @Serializable
-object Lux : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance> {
+data object Lux : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance> {
     override val symbol = "lx"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Illuminance
@@ -93,37 +93,37 @@ object Lux : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, Physi
 sealed class LuxMultiple : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux>
 
 @Serializable
-object Nanolux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Nano(Lux)
+data object Nanolux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Nano(Lux)
 
 @Serializable
-object Microlux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Micro(Lux)
+data object Microlux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Micro(Lux)
 
 @Serializable
-object Millilux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Milli(Lux)
+data object Millilux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Milli(Lux)
 
 @Serializable
-object Centilux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Centi(Lux)
+data object Centilux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Centi(Lux)
 
 @Serializable
-object Decilux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Deci(Lux)
+data object Decilux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Deci(Lux)
 
 @Serializable
-object Decalux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Deca(Lux)
+data object Decalux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Deca(Lux)
 
 @Serializable
-object Hectolux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Hecto(Lux)
+data object Hectolux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Hecto(Lux)
 
 @Serializable
-object Kilolux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Kilo(Lux)
+data object Kilolux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Kilo(Lux)
 
 @Serializable
-object Megalux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Mega(Lux)
+data object Megalux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Mega(Lux)
 
 @Serializable
-object Gigalux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Giga(Lux)
+data object Gigalux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Giga(Lux)
 
 @Serializable
-object Phot : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance> {
+data object Phot : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance> {
     override val symbol = "ph"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Illuminance
@@ -135,37 +135,37 @@ object Phot : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, Phys
 sealed class PhotMultiple : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot>
 
 @Serializable
-object Nanophot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Nano(Phot)
+data object Nanophot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Nano(Phot)
 
 @Serializable
-object Microphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Micro(Phot)
+data object Microphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Micro(Phot)
 
 @Serializable
-object Milliphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Milli(Phot)
+data object Milliphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Milli(Phot)
 
 @Serializable
-object Centiphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Centi(Phot)
+data object Centiphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Centi(Phot)
 
 @Serializable
-object Deciphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Deci(Phot)
+data object Deciphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Deci(Phot)
 
 @Serializable
-object Decaphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Deca(Phot)
+data object Decaphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Deca(Phot)
 
 @Serializable
-object Hectophot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Hecto(Phot)
+data object Hectophot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Hecto(Phot)
 
 @Serializable
-object Kilophot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Kilo(Phot)
+data object Kilophot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Kilo(Phot)
 
 @Serializable
-object Megaphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Mega(Phot)
+data object Megaphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Mega(Phot)
 
 @Serializable
-object Gigaphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Giga(Phot)
+data object Gigaphot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Giga(Phot)
 
 @Serializable
-object FootCandle : ImperialIlluminance() {
+data object FootCandle : ImperialIlluminance() {
     override val symbol: String = "fc"
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Illuminance

@@ -31,7 +31,6 @@ import com.splendo.kaluga.test.architecture.lifecycleManagerObserver
  * which can automatically track which Activity is active for it.
  *
  */
-fun AppCompatActivity.datePickerPresenterBuilder(themeResourceId: Int = 0): DateTimePickerPresenter.Builder =
-    getOrPutAndRemoveOnDestroyFromCache {
-        DateTimePickerPresenter.Builder(themeResourceId, lifecycleManagerObserver())
-    }
+fun AppCompatActivity.datePickerPresenterBuilder(themeResourceId: Int = 0): DateTimePickerPresenter.Builder = getOrPutAndRemoveOnDestroyFromCache {
+    DateTimePickerPresenter.Builder(themeResourceId, lifecycleManagerObserver())
+}

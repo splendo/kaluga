@@ -53,12 +53,11 @@ fun <ViewModel : BaseLifecycleViewModel> ViewModel.bind(activity: AppCompatActiv
  * Binds a [Fragment] to the [LifecycleViewModel] to manage the viewmodel lifecycle
  * @param fragment The [Fragment] to bind to.
  */
-fun <ViewModel : BaseLifecycleViewModel> ViewModel.bind(fragment: Fragment) =
-    fragment.lifecycle.addObserver(
-        KalugaViewModelLifecycleObserver(
-            viewModel = this,
-            activity = fragment.activity,
-            fragmentManager = fragment.parentFragmentManager,
-            childFragmentManager = fragment.childFragmentManager,
-        ),
-    )
+fun <ViewModel : BaseLifecycleViewModel> ViewModel.bind(fragment: Fragment) = fragment.lifecycle.addObserver(
+    KalugaViewModelLifecycleObserver(
+        viewModel = this,
+        activity = fragment.activity,
+        fragmentManager = fragment.parentFragmentManager,
+        childFragmentManager = fragment.childFragmentManager,
+    ),
+)

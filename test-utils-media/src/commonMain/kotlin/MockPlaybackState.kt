@@ -90,10 +90,11 @@ sealed class MockPlaybackState {
         override val configuration: Configuration,
     ) : Active(), PlaybackState.Uninitialized {
         override val playbackState: PlaybackState = this
-        override fun initialize(source: MediaSource): suspend () -> PlaybackState.InitializedOrError =
-            configuration.mediaProvider(source)?.let {
-                { Initialized(it, configuration) }
-            } ?: failWithError(PlaybackError.MalformedMediaSource)
+        override fun initialize(source: MediaSource): suspend () -> PlaybackState.InitializedOrError = configuration.mediaProvider(source)?.let {
+            {
+                Initialized(it, configuration)
+            }
+        } ?: failWithError(PlaybackError.MalformedMediaSource)
     }
 
     /**
@@ -107,8 +108,7 @@ sealed class MockPlaybackState {
     ) : Active(), PlaybackState.Initialized {
         override val source: MediaSource get() = playableMedia.source
         override val playbackState: PlaybackState = this
-        override fun prepared(media: PlayableMedia): suspend () -> PlaybackState.Idle =
-            { Idle(media, configuration) }
+        override fun prepared(media: PlayableMedia): suspend () -> PlaybackState.Idle = { Idle(media, configuration) }
     }
 
     /**
@@ -133,10 +133,9 @@ sealed class MockPlaybackState {
         override val configuration: Configuration,
     ) : Prepared(), PlaybackState.Idle {
         override val playbackState: PlaybackState = this
-        override fun play(playbackParameters: PlaybackState.PlaybackParameters): suspend () -> PlaybackState.Playing =
-            {
-                Playing(playbackParameters, playableMedia, configuration)
-            }
+        override fun play(playbackParameters: PlaybackState.PlaybackParameters): suspend () -> PlaybackState.Playing = {
+            Playing(playbackParameters, playableMedia, configuration)
+        }
     }
 
     /**
@@ -174,10 +173,9 @@ sealed class MockPlaybackState {
         override val pause: suspend () -> PlaybackState.Paused =
             { Paused(playbackParameters, playableMedia, configuration) }
 
-        override fun updatePlaybackParameters(new: PlaybackState.PlaybackParameters): suspend () -> PlaybackState.Playing =
-            {
-                copy(playbackParameters = new)
-            }
+        override fun updatePlaybackParameters(new: PlaybackState.PlaybackParameters): suspend () -> PlaybackState.Playing = {
+            copy(playbackParameters = new)
+        }
     }
 
     /**
@@ -196,8 +194,7 @@ sealed class MockPlaybackState {
         override val play: suspend () -> PlaybackState.Playing =
             { Playing(playbackParameters, playableMedia, configuration) }
 
-        override fun updatePlaybackParameters(new: PlaybackState.PlaybackParameters): suspend () -> PlaybackState.Paused =
-            { copy(playbackParameters = new) }
+        override fun updatePlaybackParameters(new: PlaybackState.PlaybackParameters): suspend () -> PlaybackState.Paused = { copy(playbackParameters = new) }
     }
 
     /**
@@ -226,10 +223,9 @@ sealed class MockPlaybackState {
     ) : Prepared(), PlaybackState.Completed {
 
         override val playbackState: PlaybackState = this
-        override fun start(playbackParameters: PlaybackState.PlaybackParameters): suspend () -> PlaybackState.Playing =
-            {
-                Playing(playbackParameters, playableMedia, configuration)
-            }
+        override fun start(playbackParameters: PlaybackState.PlaybackParameters): suspend () -> PlaybackState.Playing = {
+            Playing(playbackParameters, playableMedia, configuration)
+        }
     }
 
     /**
@@ -247,7 +243,7 @@ sealed class MockPlaybackState {
     /**
      * Mock implementation of [PlaybackState.Closed]
      */
-    object Closed : MockPlaybackState(), PlaybackState.Closed {
+    data object Closed : MockPlaybackState(), PlaybackState.Closed {
         override val playbackState: PlaybackState = this
     }
 }

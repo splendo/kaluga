@@ -28,7 +28,7 @@ import kotlin.time.Duration
 /**
  * [Permission] to access the users Microphone
  */
-object MicrophonePermission : Permission() {
+data object MicrophonePermission : Permission() {
     override val name: String = "Microphone"
 }
 
@@ -45,10 +45,9 @@ fun PermissionsBuilder.registerMicrophonePermission(
     microphonePermissionManagerBuilderBuilder: (PermissionContext) -> BaseMicrophonePermissionManagerBuilder = ::MicrophonePermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-) =
-    registerMicrophonePermission(microphonePermissionManagerBuilderBuilder) { builder, coroutineContext ->
-        MicrophonePermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
-    }
+) = registerMicrophonePermission(microphonePermissionManagerBuilderBuilder) { builder, coroutineContext ->
+    MicrophonePermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
+}
 
 /**
  * Registers a [BaseMicrophonePermissionManagerBuilder] and [PermissionStateRepo] for [MicrophonePermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
@@ -80,10 +79,9 @@ fun PermissionsBuilder.registerMicrophonePermissionIfNotRegistered(
     microphonePermissionManagerBuilderBuilder: (PermissionContext) -> BaseMicrophonePermissionManagerBuilder = ::MicrophonePermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-) =
-    registerMicrophonePermissionIfNotRegistered(microphonePermissionManagerBuilderBuilder) { builder, coroutineContext ->
-        MicrophonePermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
-    }
+) = registerMicrophonePermissionIfNotRegistered(microphonePermissionManagerBuilderBuilder) { builder, coroutineContext ->
+    MicrophonePermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
+}
 
 /**
  * Gets the [BaseMicrophonePermissionManagerBuilder] registered

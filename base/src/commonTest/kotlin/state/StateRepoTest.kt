@@ -242,7 +242,10 @@ class StateRepoTest : FlowTest<TrafficLightState, TrafficLight>() {
                     transitionsCompleted.complete()
                 }
                 // yield a few times to give async block a chance to run
-                repeat(10) { yield(); delay(10) }
+                repeat(10) {
+                    yield()
+                    delay(10)
+                }
 
                 when (state) {
                     is TrafficLightState.RedLight -> state.becomeGreen

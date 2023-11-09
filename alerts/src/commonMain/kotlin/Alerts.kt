@@ -131,11 +131,7 @@ data class Alert(
          * @param textObserver The callback for text change events of inout field
          * @return The modified [Alert.Builder]
          */
-        fun setTextInput(
-            text: String? = null,
-            placeholder: String?,
-            textObserver: AlertTextObserver,
-        ) = apply {
+        fun setTextInput(text: String? = null, placeholder: String?, textObserver: AlertTextObserver) = apply {
             setTextInputAction(TextInputAction(text, placeholder, textObserver))
         }
 
@@ -177,8 +173,7 @@ data class Alert(
          * @param action The action object
          * @return The modified [Alert.Builder]
          */
-        private fun setTextInputAction(action: TextInputAction) =
-            apply { this.textInputAction = action }
+        private fun setTextInputAction(action: TextInputAction) = apply { this.textInputAction = action }
 
         /**
          * Creates an [Alert] based on [title], [message], [actions] and [textInputAction] properties
@@ -317,23 +312,22 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         showAlert(animated, completion = completion)
     }
 
-    override suspend fun show(animated: Boolean): Alert.Action? =
-        suspendCancellableCoroutine { continuation ->
-            continuation.invokeOnCancellation {
-                dismissAlert(animated)
-                continuation.tryResume(null)?.let {
+    override suspend fun show(animated: Boolean): Alert.Action? = suspendCancellableCoroutine { continuation ->
+        continuation.invokeOnCancellation {
+            dismissAlert(animated)
+            continuation.tryResume(null)?.let {
+                continuation.completeResume(it)
+            }
+        }
+        showAlert(
+            animated,
+            afterHandler = { action ->
+                continuation.tryResume(action)?.let {
                     continuation.completeResume(it)
                 }
-            }
-            showAlert(
-                animated,
-                afterHandler = { action ->
-                    continuation.tryResume(action)?.let {
-                        continuation.completeResume(it)
-                    }
-                },
-            )
-        }
+            },
+        )
+    }
 
     override fun dismiss(animated: Boolean) {
         dismissAlert(animated)
@@ -341,11 +335,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 
     protected abstract fun dismissAlert(animated: Boolean = true)
 
-    protected abstract fun showAlert(
-        animated: Boolean = true,
-        afterHandler: (Alert.Action?) -> Unit = {},
-        completion: () -> Unit = {},
-    )
+    protected abstract fun showAlert(animated: Boolean = true, afterHandler: (Alert.Action?) -> Unit = {}, completion: () -> Unit = {})
 }
 
 /**
@@ -375,10 +365,7 @@ expect class AlertPresenter : BaseAlertPresenter {
  * @param initialize The block to construct an [Alert]
  * @return The built [BaseAlertPresenter]
  */
-fun BaseAlertPresenter.Builder.buildAlert(
-    coroutineScope: CoroutineScope,
-    initialize: Alert.Builder.() -> Unit,
-): BaseAlertPresenter = create(
+fun BaseAlertPresenter.Builder.buildAlert(coroutineScope: CoroutineScope, initialize: Alert.Builder.() -> Unit): BaseAlertPresenter = create(
     Alert.Builder(Alert.Style.ALERT).apply {
         initialize()
     }.build(),
@@ -392,10 +379,7 @@ fun BaseAlertPresenter.Builder.buildAlert(
  * @param initialize The block to construct an [Alert]
  * @return The built [BaseAlertPresenter]
  */
-fun BaseAlertPresenter.Builder.buildActionSheet(
-    coroutineScope: CoroutineScope,
-    initialize: Alert.Builder.() -> Unit,
-): BaseAlertPresenter = create(
+fun BaseAlertPresenter.Builder.buildActionSheet(coroutineScope: CoroutineScope, initialize: Alert.Builder.() -> Unit): BaseAlertPresenter = create(
     Alert.Builder(Alert.Style.ACTION_LIST).apply {
         initialize()
     }.build(),
@@ -409,10 +393,7 @@ fun BaseAlertPresenter.Builder.buildActionSheet(
  * @param initialize The block to construct an [Alert]
  * @return The built [BaseAlertPresenter]
  */
-fun BaseAlertPresenter.Builder.buildAlertWithInput(
-    coroutineScope: CoroutineScope,
-    initialize: Alert.Builder.() -> Unit,
-): BaseAlertPresenter = create(
+fun BaseAlertPresenter.Builder.buildAlertWithInput(coroutineScope: CoroutineScope, initialize: Alert.Builder.() -> Unit): BaseAlertPresenter = create(
     Alert.Builder(Alert.Style.TEXT_INPUT).apply {
         initialize()
     }.build(),

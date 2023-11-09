@@ -82,6 +82,5 @@ infix operator fun <EnergyUnit : ImperialEnergy, AreaUnit : ImperialArea> Scient
 ) = (PoundForce per Foot).surfaceTension(this, area)
 
 @JvmName("energyDivArea")
-infix operator fun <EnergyUnit : Energy, AreaUnit : Area> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-) = (Newton per Meter).surfaceTension(this, area)
+infix operator fun <EnergyUnit : Energy, AreaUnit : Area> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(area: ScientificValue<PhysicalQuantity.Area, AreaUnit>) =
+    (Newton per Meter).surfaceTension(this, area)

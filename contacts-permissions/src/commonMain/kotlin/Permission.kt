@@ -46,10 +46,9 @@ fun PermissionsBuilder.registerContactsPermission(
     contactsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseContactsPermissionManagerBuilder = ::ContactsPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-) =
-    registerContactsPermission(contactsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
-        ContactsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
-    }
+) = registerContactsPermission(contactsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
+    ContactsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
+}
 
 /**
  * Registers a [BaseContactsPermissionManagerBuilder] and [PermissionStateRepo] for [ContactsPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
@@ -81,10 +80,9 @@ fun PermissionsBuilder.registerContactsPermissionIfNotRegistered(
     contactsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseContactsPermissionManagerBuilder = ::ContactsPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-) =
-    registerContactsPermissionIfNotRegistered(contactsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
-        ContactsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
-    }
+) = registerContactsPermissionIfNotRegistered(contactsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
+    ContactsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
+}
 
 /**
  * Gets the [BaseContactsPermissionManagerBuilder] registered

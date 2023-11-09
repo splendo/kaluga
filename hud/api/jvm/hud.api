@@ -44,6 +44,7 @@ public final class com/splendo/kaluga/hud/HUDKt {
 public final class com/splendo/kaluga/hud/HUDStyle : java/lang/Enum {
 	public static final field CUSTOM Lcom/splendo/kaluga/hud/HUDStyle;
 	public static final field SYSTEM Lcom/splendo/kaluga/hud/HUDStyle;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/hud/HUDStyle;
 	public static fun values ()[Lcom/splendo/kaluga/hud/HUDStyle;
 }

@@ -73,7 +73,7 @@ data class DateTimePicker(
         /**
          * Selects a Time
          */
-        object TimeType : Type()
+        data object TimeType : Type()
     }
 
     /**
@@ -216,20 +216,19 @@ abstract class BaseDateTimePickerPresenter(protected open val dateTimePicker: Da
         showDateTimePicker(animated, completion = completion)
     }
 
-    override suspend fun show(animated: Boolean): KalugaDate? =
-        suspendCancellableCoroutine { continuation ->
-            continuation.invokeOnCancellation {
-                dismissDateTimePicker(animated)
-                continuation.tryResume(null)?.let {
-                    continuation.completeResume(it)
-                }
-            }
-            showDateTimePicker(animated) { pickedDate ->
-                continuation.tryResume(pickedDate)?.let {
-                    continuation.completeResume(it)
-                }
+    override suspend fun show(animated: Boolean): KalugaDate? = suspendCancellableCoroutine { continuation ->
+        continuation.invokeOnCancellation {
+            dismissDateTimePicker(animated)
+            continuation.tryResume(null)?.let {
+                continuation.completeResume(it)
             }
         }
+        showDateTimePicker(animated) { pickedDate ->
+            continuation.tryResume(pickedDate)?.let {
+                continuation.completeResume(it)
+            }
+        }
+    }
 
     override fun dismiss(animated: Boolean) {
         dismissDateTimePicker(animated)
@@ -237,10 +236,7 @@ abstract class BaseDateTimePickerPresenter(protected open val dateTimePicker: Da
 
     protected abstract fun dismissDateTimePicker(animated: Boolean = true)
 
-    protected abstract fun showDateTimePicker(
-        animated: Boolean = true,
-        completion: (KalugaDate?) -> Unit = {},
-    )
+    protected abstract fun showDateTimePicker(animated: Boolean = true, completion: (KalugaDate?) -> Unit = {})
 }
 
 /**
@@ -291,10 +287,7 @@ fun BaseDateTimePickerPresenter.Builder.buildDatePicker(
  * @param initialize The block to construct a [DateTimePicker] with type [DateTimePicker.Type.TimeType]
  * @return The built alert interface object
  */
-fun BaseDateTimePickerPresenter.Builder.buildTimePicker(
-    coroutineScope: CoroutineScope,
-    initialize: DateTimePicker.Builder.() -> Unit,
-): BaseDateTimePickerPresenter = create(
+fun BaseDateTimePickerPresenter.Builder.buildTimePicker(coroutineScope: CoroutineScope, initialize: DateTimePicker.Builder.() -> Unit): BaseDateTimePickerPresenter = create(
     DateTimePicker.Builder(DateTimePicker.Type.TimeType).apply {
         initialize()
     }.build(),

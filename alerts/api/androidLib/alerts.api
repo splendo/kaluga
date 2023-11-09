@@ -41,6 +41,7 @@ public final class com/splendo/kaluga/alerts/Alert$Action$Style : java/lang/Enum
 	public static final field NEGATIVE Lcom/splendo/kaluga/alerts/Alert$Action$Style;
 	public static final field NEUTRAL Lcom/splendo/kaluga/alerts/Alert$Action$Style;
 	public static final field POSITIVE Lcom/splendo/kaluga/alerts/Alert$Action$Style;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getValue ()I
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/alerts/Alert$Action$Style;
 	public static fun values ()[Lcom/splendo/kaluga/alerts/Alert$Action$Style;
@@ -69,6 +70,7 @@ public final class com/splendo/kaluga/alerts/Alert$Style : java/lang/Enum {
 	public static final field ACTION_LIST Lcom/splendo/kaluga/alerts/Alert$Style;
 	public static final field ALERT Lcom/splendo/kaluga/alerts/Alert$Style;
 	public static final field TEXT_INPUT Lcom/splendo/kaluga/alerts/Alert$Style;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/alerts/Alert$Style;
 	public static fun values ()[Lcom/splendo/kaluga/alerts/Alert$Style;
 }
@@ -90,10 +92,13 @@ public final class com/splendo/kaluga/alerts/Alert$TextInputAction {
 
 public abstract interface class com/splendo/kaluga/alerts/AlertActions {
 	public abstract fun dismiss (Z)V
-	public static synthetic fun dismiss$default (Lcom/splendo/kaluga/alerts/AlertActions;ZILjava/lang/Object;)V
 	public abstract fun show (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun show$default (Lcom/splendo/kaluga/alerts/AlertActions;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun showAsync (ZLkotlin/jvm/functions/Function0;)V
+}
+
+public final class com/splendo/kaluga/alerts/AlertActions$DefaultImpls {
+	public static synthetic fun dismiss$default (Lcom/splendo/kaluga/alerts/AlertActions;ZILjava/lang/Object;)V
+	public static synthetic fun show$default (Lcom/splendo/kaluga/alerts/AlertActions;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun showAsync$default (Lcom/splendo/kaluga/alerts/AlertActions;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
 }
 

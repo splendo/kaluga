@@ -46,7 +46,7 @@ val LuminousIntensityUnits: Set<LuminousIntensity> get() = setOf(
 sealed class LuminousIntensity : AbstractScientificUnit<PhysicalQuantity.LuminousIntensity>(), MetricAndImperialScientificUnit<PhysicalQuantity.LuminousIntensity>
 
 @Serializable
-object Candela : LuminousIntensity(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity> {
+data object Candela : LuminousIntensity(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity> {
     override val symbol = "cd"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.LuminousIntensity
@@ -58,31 +58,31 @@ object Candela : LuminousIntensity(), MetricBaseUnit<MeasurementSystem.MetricAnd
 sealed class CandelaMultiple : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela>
 
 @Serializable
-object Nanocandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Nano(Candela)
+data object Nanocandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Nano(Candela)
 
 @Serializable
-object Microcandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Micro(Candela)
+data object Microcandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Micro(Candela)
 
 @Serializable
-object Millicandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Milli(Candela)
+data object Millicandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Milli(Candela)
 
 @Serializable
-object Centicandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Centi(Candela)
+data object Centicandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Centi(Candela)
 
 @Serializable
-object Decicandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Deci(Candela)
+data object Decicandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Deci(Candela)
 
 @Serializable
-object Decacandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Deca(Candela)
+data object Decacandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Deca(Candela)
 
 @Serializable
-object Hectocandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Hecto(Candela)
+data object Hectocandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Hecto(Candela)
 
 @Serializable
-object Kilocandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Kilo(Candela)
+data object Kilocandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Kilo(Candela)
 
 @Serializable
-object Megacandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Mega(Candela)
+data object Megacandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Mega(Candela)
 
 @Serializable
-object Gigacandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Giga(Candela)
+data object Gigacandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Giga(Candela)

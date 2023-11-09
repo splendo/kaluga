@@ -45,11 +45,7 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun dateFormat(
-            style: DateFormatStyle,
-            timeZone: KalugaTimeZone,
-            locale: KalugaLocale,
-        ): KalugaDateFormatter = createDateFormatter(style, null, timeZone, locale)
+        actual fun dateFormat(style: DateFormatStyle, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter = createDateFormatter(style, null, timeZone, locale)
 
         /**
          * Creates a [KalugaDateFormatter] that only formats the time components of a [KalugaDate]
@@ -57,11 +53,7 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun timeFormat(
-            style: DateFormatStyle,
-            timeZone: KalugaTimeZone,
-            locale: KalugaLocale,
-        ): KalugaDateFormatter = createDateFormatter(null, style, timeZone, locale)
+        actual fun timeFormat(style: DateFormatStyle, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter = createDateFormatter(null, style, timeZone, locale)
 
         /**
          * Creates a [KalugaDateFormatter] that formats both date and time components of a [KalugaDate]
@@ -70,12 +62,8 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun dateTimeFormat(
-            dateStyle: DateFormatStyle,
-            timeStyle: DateFormatStyle,
-            timeZone: KalugaTimeZone,
-            locale: KalugaLocale,
-        ): KalugaDateFormatter = createDateFormatter(dateStyle, timeStyle, timeZone, locale)
+        actual fun dateTimeFormat(dateStyle: DateFormatStyle, timeStyle: DateFormatStyle, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter =
+            createDateFormatter(dateStyle, timeStyle, timeZone, locale)
 
         /**
          * Creates a [KalugaDateFormatter] using a custom Date format pattern.
@@ -95,79 +83,92 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
             },
         )
 
-        fun createDateFormatter(
-            dateStyle: DateFormatStyle?,
-            timeStyle: DateFormatStyle?,
-            timeZone: KalugaTimeZone,
-            locale: KalugaLocale,
-        ): KalugaDateFormatter = KalugaDateFormatter(
-            NSDateFormatter().apply {
-                this.locale = locale.nsLocale
-                this.timeZone = timeZone.timeZone
-                this.defaultDate = defaultDate(timeZone)
-                this.dateStyle = dateStyle.nsDateFormatterStyle()
-                this.timeStyle = timeStyle.nsDateFormatterStyle()
-            },
-        )
+        fun createDateFormatter(dateStyle: DateFormatStyle?, timeStyle: DateFormatStyle?, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter =
+            KalugaDateFormatter(
+                NSDateFormatter().apply {
+                    this.locale = locale.nsLocale
+                    this.timeZone = timeZone.timeZone
+                    this.defaultDate = defaultDate(timeZone)
+                    this.dateStyle = dateStyle.nsDateFormatterStyle()
+                    this.timeStyle = timeStyle.nsDateFormatterStyle()
+                },
+            )
 
         // Due to a problem related to the commonizer we need to supply all the
         // default arguments expected from the method signature
-        private fun defaultDate(timeZone: KalugaTimeZone) =
-            DefaultKalugaDate.now(
+        private fun defaultDate(timeZone: KalugaTimeZone) = DefaultKalugaDate.now(
+            offset = Duration.ZERO,
+            timeZone = timeZone,
+            locale = KalugaLocale.defaultLocale,
+        ).apply {
+            // Cannot use .utc since it may not be available when this method is called
+            // This is likely caused by https://youtrack.jetbrains.com/issue/KT-38181
+            // TODO When moving Date and Date formatter to separate modules, this should be updated to use .utc
+            val epoch = DefaultKalugaDate.epoch(
                 offset = Duration.ZERO,
-                timeZone = timeZone,
+                timeZone = KalugaTimeZone.get("UTC")!!,
                 locale = KalugaLocale.defaultLocale,
-            ).apply {
-                // Cannot use .utc since it may not be available when this method is called
-                // This is likely caused by https://youtrack.jetbrains.com/issue/KT-38181
-                // TODO When moving Date and Date formatter to separate modules, this should be updated to use .utc
-                val epoch = DefaultKalugaDate.epoch(
-                    offset = Duration.ZERO,
-                    timeZone = KalugaTimeZone.get("UTC")!!,
-                    locale = KalugaLocale.defaultLocale,
-                )
-                this.era = epoch.era
-                this.year = epoch.year
-                this.month = epoch.month
-                this.day = epoch.day
-                this.hour = epoch.hour
-                this.minute = epoch.minute
-                this.second = epoch.second
-            }.date
+            )
+            this.era = epoch.era
+            this.year = epoch.year
+            this.month = epoch.month
+            this.day = epoch.day
+            this.hour = epoch.hour
+            this.minute = epoch.minute
+            this.second = epoch.second
+        }.date
     }
 
     override var pattern: String
         get() = format.dateFormat
-        set(value) { format.dateFormat = value }
+        set(value) {
+            format.dateFormat = value
+        }
 
     override var timeZone: KalugaTimeZone
         get() = KalugaTimeZone(format.timeZone)
-        set(value) { format.timeZone = value.timeZone }
+        set(value) {
+            format.timeZone = value.timeZone
+        }
 
     override var eras: List<String>
         get() = format.eraSymbols.typedList()
-        set(value) { format.eraSymbols = value }
+        set(value) {
+            format.eraSymbols = value
+        }
 
     override var months: List<String>
         get() = format.monthSymbols.typedList()
-        set(value) { format.monthSymbols = value }
+        set(value) {
+            format.monthSymbols = value
+        }
     override var shortMonths: List<String>
         get() = format.shortMonthSymbols.typedList()
-        set(value) { format.shortMonthSymbols = value }
+        set(value) {
+            format.shortMonthSymbols = value
+        }
 
     override var weekdays: List<String>
         get() = format.weekdaySymbols.typedList()
-        set(value) { format.weekdaySymbols = value }
+        set(value) {
+            format.weekdaySymbols = value
+        }
     override var shortWeekdays: List<String>
         get() = format.shortWeekdaySymbols.typedList()
-        set(value) { format.shortWeekdaySymbols = value }
+        set(value) {
+            format.shortWeekdaySymbols = value
+        }
 
     override var amString: String
         get() = format.AMSymbol
-        set(value) { format.AMSymbol = value }
+        set(value) {
+            format.AMSymbol = value
+        }
     override var pmString: String
         get() = format.PMSymbol
-        set(value) { format.PMSymbol = value }
+        set(value) {
+            format.PMSymbol = value
+        }
 
     override fun format(date: KalugaDate): String = format.stringFromDate(date.date)
     override fun parse(string: String): KalugaDate? {

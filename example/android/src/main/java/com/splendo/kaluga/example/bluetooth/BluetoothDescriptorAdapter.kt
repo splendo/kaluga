@@ -45,10 +45,7 @@ class BluetoothDescriptorAdapter(private val lifecycleOwner: LifecycleOwner) : R
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int,
-    ): BluetoothDescriptorItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BluetoothDescriptorItemViewHolder {
         val binding = BluetoothDescriptorItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         binding.lifecycleOwner = lifecycleOwner
         return BluetoothDescriptorItemViewHolder(binding)
@@ -65,12 +62,12 @@ class BluetoothDescriptorAdapter(private val lifecycleOwner: LifecycleOwner) : R
     override fun onViewAttachedToWindow(holder: BluetoothDescriptorItemViewHolder) {
         super.onViewAttachedToWindow(holder)
 
-        holder.descriptorItem.viewModel?.didResume()
+        holder.descriptorItem.viewModel?.onResume()
     }
 
     override fun onViewDetachedFromWindow(holder: BluetoothDescriptorItemViewHolder) {
         super.onViewDetachedFromWindow(holder)
 
-        holder.descriptorItem.viewModel?.didPause()
+        holder.descriptorItem.viewModel?.onPause()
     }
 }

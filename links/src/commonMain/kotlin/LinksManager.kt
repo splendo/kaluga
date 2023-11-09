@@ -75,8 +75,7 @@ class DefaultLinksManager(
 
         constructor() : this(PlatformLinksHandler())
 
-        override fun create(): LinksManager =
-            DefaultLinksManager(handler)
+        override fun create(): LinksManager = DefaultLinksManager(handler)
     }
 
     override fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>): T? {

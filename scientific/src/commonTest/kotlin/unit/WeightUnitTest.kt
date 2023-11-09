@@ -205,23 +205,55 @@ class WeightUnitTest {
     @Test
     fun weightFromForceAndAccelerationTest() {
         assertEqualScientificValue(1(Gram), 2(Dyne) / 2(Centimeter per Second per Second))
+        assertEqualScientificValue((1 / MetricStandardGravityAcceleration.value)(Gram), 2(Dyne) / 2(Centig))
         assertEqualScientificValue(1(Gram), 20(Decidyne) / 2(Centimeter per Second per Second))
+        assertEqualScientificValue((1 / MetricStandardGravityAcceleration.value)(Gram), 20(Decidyne) / 2(Centig))
+
         assertEqualScientificValue(1(Kilogram), 2(Newton) / 2(Meter per Second per Second))
         assertEqualScientificValue(
             1(Kilogram),
             2(KilogramForce) / (2 * MetricStandardGravityAcceleration),
         )
+        assertEqualScientificValue(
+            1(Kilogram),
+            2(KilogramForce) / 2(GUnit),
+        )
+        assertEqualScientificValue(
+            1(Kilogram),
+            2(KilogramForce) / 2(GUnit.metric),
+        )
+
+        assertEqualScientificValue(1(Gram), 2(GramForce) / 2(GUnit))
         assertEqualScientificValue(1(Gram), 2(GramForce) / (2 * MetricStandardGravityAcceleration))
+        assertEqualScientificValue(
+            1(Milligram),
+            2(MilligramForce) / 2(GUnit),
+        )
         assertEqualScientificValue(
             1(Milligram),
             2(MilligramForce) / (2 * MetricStandardGravityAcceleration),
         )
         assertEqualScientificValue(
             1(Tonne),
+            2(TonneForce) / 2(GUnit),
+        )
+        assertEqualScientificValue(
+            1(Tonne),
             2(TonneForce) / (2 * MetricStandardGravityAcceleration),
         )
 
+        assertEqualScientificValue((1 / ImperialStandardGravityAcceleration.value)(Pound), 2(Poundal) / 2(GUnit), round = 10)
         assertEqualScientificValue(1(Pound), 2(Poundal) / 2(Foot per Second per Second))
+        assertEqualScientificValue(
+            1(Pound),
+            2(PoundForce) / 2(GUnit),
+            8,
+        )
+        assertEqualScientificValue(
+            1(Pound),
+            2(PoundForce) / 2(GUnit.imperial),
+            8,
+        )
         assertEqualScientificValue(
             1(Pound),
             2(PoundForce) / (2 * ImperialStandardGravityAcceleration),
@@ -229,7 +261,17 @@ class WeightUnitTest {
         )
         assertEqualScientificValue(
             1(Ounce),
+            2(OunceForce) / 2(GUnit),
+            8,
+        )
+        assertEqualScientificValue(
+            1(Ounce),
             2(OunceForce) / (2 * ImperialStandardGravityAcceleration),
+            8,
+        )
+        assertEqualScientificValue(
+            1(Grain),
+            2(GrainForce) / 2(GUnit),
             8,
         )
         assertEqualScientificValue(
@@ -240,7 +282,17 @@ class WeightUnitTest {
 
         assertEqualScientificValue(
             1000(Pound.usCustomary),
+            2(Kip) / 2(GUnit),
+            8,
+        )
+        assertEqualScientificValue(
+            1000(Pound.usCustomary),
             2(Kip) / (2 * ImperialStandardGravityAcceleration),
+            8,
+        )
+        assertEqualScientificValue(
+            1(UsTon),
+            2(UsTonForce) / 2(GUnit),
             8,
         )
         assertEqualScientificValue(
@@ -250,7 +302,17 @@ class WeightUnitTest {
         )
         assertEqualScientificValue(
             1(Pound.ukImperial),
+            2(PoundForce.ukImperial) / 2(GUnit),
+            8,
+        )
+        assertEqualScientificValue(
+            1(Pound.ukImperial),
             2(PoundForce.ukImperial) / (2 * ImperialStandardGravityAcceleration),
+            8,
+        )
+        assertEqualScientificValue(
+            1(ImperialTon),
+            2(ImperialTonForce) / 2(GUnit),
             8,
         )
         assertEqualScientificValue(

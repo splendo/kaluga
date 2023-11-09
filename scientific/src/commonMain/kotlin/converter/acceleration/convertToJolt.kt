@@ -24,18 +24,24 @@ import com.splendo.kaluga.scientific.unit.Acceleration
 import com.splendo.kaluga.scientific.unit.ImperialAcceleration
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.MetricAcceleration
+import com.splendo.kaluga.scientific.unit.MetricAndImperialAcceleration
 import com.splendo.kaluga.scientific.unit.Second
 import com.splendo.kaluga.scientific.unit.Time
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
+@JvmName("metricAndImperialAccelerationDivTime")
+infix operator fun <AccelerationUnit : MetricAndImperialAcceleration, TimeUnit : Time> ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>.div(
+    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
+) = (unit per time.unit).jolt(this, time)
+
 @JvmName("metricAccelerationDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Acceleration, MetricAcceleration>.div(
+infix operator fun <AccelerationUnit : MetricAcceleration, TimeUnit : Time> ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>.div(
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit per time.unit).jolt(this, time)
 
 @JvmName("imperialAccelerationDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Acceleration, ImperialAcceleration>.div(
+infix operator fun <AccelerationUnit : ImperialAcceleration, TimeUnit : Time> ScientificValue<PhysicalQuantity.Acceleration, AccelerationUnit>.div(
     time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = (unit per time.unit).jolt(this, time)
 

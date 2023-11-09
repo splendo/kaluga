@@ -126,10 +126,7 @@ class ReadWritePropertyDefaultSubject<R : T?, T>(
  * @param coroutineScope The [CoroutineScope] on which to emit changes to the [ReadWriteProperty]
  * @param context The [CoroutineContext] in which to emit changes to the [ReadWriteProperty]
  */
-fun <T> ReadWriteProperty<Any?, T>.toInitializedSubject(
-    coroutineScope: CoroutineScope? = null,
-    context: CoroutineContext? = coroutineScope?.coroutineContext,
-) =
+fun <T> ReadWriteProperty<Any?, T>.toInitializedSubject(coroutineScope: CoroutineScope? = null, context: CoroutineContext? = coroutineScope?.coroutineContext) =
     ReadWritePropertyInitializedSubject(this, context = context, coroutineScope = coroutineScope)
 
 /**
@@ -142,10 +139,9 @@ fun <R : T, T> ReadWriteProperty<Any?, T?>.toDefaultSubject(
     defaultValue: R,
     coroutineScope: CoroutineScope? = null,
     context: CoroutineContext? = coroutineScope?.coroutineContext,
-): ReadWritePropertyDefaultSubject<R, T?> =
-    ReadWritePropertyDefaultSubject(
-        defaultValue = defaultValue,
-        readWriteProperty = this,
-        coroutineScope = coroutineScope,
-        context = context,
-    )
+): ReadWritePropertyDefaultSubject<R, T?> = ReadWritePropertyDefaultSubject(
+    defaultValue = defaultValue,
+    readWriteProperty = this,
+    coroutineScope = coroutineScope,
+    context = context,
+)

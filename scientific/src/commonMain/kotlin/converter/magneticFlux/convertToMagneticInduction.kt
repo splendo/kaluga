@@ -29,8 +29,7 @@ import com.splendo.kaluga.scientific.unit.Tesla
 import kotlin.jvm.JvmName
 
 @JvmName("maxwellDivSquareCentimeter")
-infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>) =
-    Gauss.induction(this, area)
+infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(area: ScientificValue<PhysicalQuantity.Area, SquareCentimeter>) = Gauss.induction(this, area)
 
 @JvmName("fluxDivArea")
 infix operator fun <FluxUnit : MagneticFlux, AreaUnit : Area> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.div(

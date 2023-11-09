@@ -28,6 +28,7 @@ import com.splendo.kaluga.media.MediaPlayer.Controls.Stop
 import com.splendo.kaluga.media.MediaPlayer.Controls.Unpause
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -40,6 +41,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.js.JsName
@@ -135,7 +137,7 @@ interface MediaPlayer : VolumeController, MediaSurfaceController {
         /**
          * A [ControlType] that indicates a [MediaPlayer] is preparing its [PlayableMedia]
          */
-        object AwaitPreparation : ControlType()
+        data object AwaitPreparation : ControlType()
 
         /**
          * A [ControlType] that indicates a [MediaPlayer] is in an error state
@@ -200,16 +202,12 @@ interface MediaPlayer : VolumeController, MediaSurfaceController {
          */
         suspend fun trySetLoopMode(loopMode: PlaybackState.LoopMode): Boolean = tryPerformControlType<SetLoopMode> { perform(loopMode) }
 
-        private inline fun <reified Type : ControlType> tryPerformControlType(
-            block: Type.() -> Unit,
-        ): Boolean = tryPerformControlTypeWithResult<Type> {
+        private inline fun <reified Type : ControlType> tryPerformControlType(block: Type.() -> Unit): Boolean = tryPerformControlTypeWithResult<Type> {
             block()
             true
         }
 
-        private inline fun <reified Type : ControlType> tryPerformControlTypeWithResult(
-            block: Type.() -> Boolean,
-        ): Boolean = getControlType<Type>()?.let {
+        private inline fun <reified Type : ControlType> tryPerformControlTypeWithResult(block: Type.() -> Boolean): Boolean = getControlType<Type>()?.let {
             block.invoke(it)
         } ?: false
     }
@@ -265,7 +263,7 @@ interface MediaPlayer : VolumeController, MediaSurfaceController {
 class DefaultMediaPlayer(
     createPlaybackStateRepo: (CoroutineContext) -> BasePlaybackStateRepo,
     coroutineContext: CoroutineContext,
-) : MediaPlayer, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("MediaPlayer")) {
+) : MediaPlayer, CoroutineScope by CoroutineScope(coroutineContext + Job(coroutineContext.job) + CoroutineName("MediaPlayer")) {
 
     /**
      * Constructor that provides a [BaseMediaManager] to manage media playback
@@ -466,6 +464,7 @@ class DefaultMediaPlayer(
             is PlaybackState.Completed -> emit(Unit)
             is PlaybackState.Closed -> throw PlaybackError.PlaybackHasEnded
             is PlaybackState.Error -> throw state.error
+            is PlaybackState.Uninitialized -> throw PlaybackError.Uninitalized
             is PlaybackState.Active -> {} // Wait until completed
         }
     }.first()
@@ -481,9 +480,8 @@ class DefaultMediaPlayer(
         }.first()
     }
 
-    private suspend inline fun <reified State : PlaybackState> changePlaybackState(
-        noinline action: suspend (State) -> suspend () -> PlaybackState,
-    ) = playbackStateRepo.takeAndChangeState(remainIfStateNot = State::class, action)
+    private suspend inline fun <reified State : PlaybackState> changePlaybackState(noinline action: suspend (State) -> suspend () -> PlaybackState) =
+        playbackStateRepo.takeAndChangeState(remainIfStateNot = State::class, action)
 
     override fun close() {
         launch {

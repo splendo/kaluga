@@ -29,16 +29,15 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 sealed class ExampleTabNavigation : NavigationAction<Nothing>(null) {
-
-    object FeatureList : ExampleTabNavigation()
-    object Info : ExampleTabNavigation()
+    data object FeatureList : ExampleTabNavigation()
+    data object Info : ExampleTabNavigation()
 }
 
 class ExampleViewModel(navigator: Navigator<ExampleTabNavigation>) : NavigatingViewModel<ExampleTabNavigation>(navigator) {
 
     sealed class Tab(val title: String) {
-        object FeatureList : Tab("Features")
-        object Info : Tab("About")
+        data object FeatureList : Tab("Features")
+        data object Info : Tab("About")
     }
 
     val tabs = observableOf(listOf(Tab.FeatureList, Tab.Info))

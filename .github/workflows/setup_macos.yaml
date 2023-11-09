@@ -1,0 +1,90 @@
+name: 'Setup macOS workspace reusable workflow'
+
+env:
+  GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false -Dkotlin.daemon.jvm.options=-Xmx8G,-XX:MaxMetaspaceSize=512m,-Dorg.gradle.daemon=false,-Dkotlin.incremental=false"
+  JAVA_OPTS: "-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+
+on:
+  workflow_call:
+    inputs:
+      gradleTask:
+        required: false
+        type: string
+      project:
+        required: false
+        type: string
+      projectBlacklist:
+        required: false
+        type: string
+
+    outputs:
+      kotlinVersion:
+        description: "kaluga.kotlinVersion property from gradle.propertoes"
+        value: ${{ jobs.setup.outputs.kotlinVersion }}
+      projects:
+        description: "Gradle projects that do not dependent on another project or have other projects dependent on them"
+        value: ${{ jobs.setup.outputs.projects }}
+jobs:
+  setup:
+
+    runs-on: macos-13
+
+    outputs:
+      projects: ${{ steps.envFile.outputs.projects }}
+      kotlinVersion: ${{ steps.kotlinVersion.outputs.kotlinVersion }}
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: remove VM settings as defined in gradle.properties (for using in the IDE)
+        run: sed -i '' -e '/org.gradle.jvmargs/d' gradle.properties; cat gradle.properties
+
+      - name: get Kotlin version
+        id: kotlinVersion
+        run: grep kaluga.kotlinVersion= gradle.properties | sed s/"kaluga."// >> $GITHUB_OUTPUT
+
+      - name: setup tools and enable Gradle cache writing
+        uses: ./.github/workflows/setup_tools_macos/
+        with:
+          gradle-cache-read-only: 'false'
+          restore-workspace-cache: 'false'
+          kotlinVersion: ${{ steps.kotlinVersion.outputs.kotlinVersion }}
+          project: ${{ inputs.project }}
+
+      - name: generate file with projects for build matrix
+        if: inputs.project == ''
+        run: ./gradlew generateNonDependentProjectsFile -PgenerateNonDependentProjectsFile.blacklist=${{ inputs.projectBlacklist }}
+
+      - name: generate file with single requested project for build matrix
+        if: inputs.project != ''
+        run: echo "projects=['${{ inputs.project }}']" > non_dependent_projects.properties
+
+      - name: show projects for Matrix
+        run: cat non_dependent_projects.properties
+
+      - name: load projects for build matrix
+        uses: cardinalby/export-env-action@v2
+        id: envFile
+        with:
+          envFile: 'non_dependent_projects.properties'
+          export: 'false'
+
+      - name: run custom Gradle task for all projects
+        if: inputs.project == ''
+        run: ./gradlew ${{ inputs.gradleTask }}
+
+      - name: run custom Gradle task for single project
+        if: inputs.project != ''
+        run: ./gradlew :${{ inputs.project }}:${{ inputs.gradleTask }}
+
+      - name: Make cache of workspace
+        uses: actions/cache/save@v3
+        id: store-build
+        with:
+          path: |
+            ./*
+            !/.gradle
+          key: build-iOS-${{ github.sha }}-${{ inputs.project }}

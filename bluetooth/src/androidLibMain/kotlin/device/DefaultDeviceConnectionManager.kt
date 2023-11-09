@@ -54,11 +54,7 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : DeviceConnectionManager.Builder {
-        override fun create(
-            deviceWrapper: DeviceWrapper,
-            settings: ConnectionSettings,
-            coroutineScope: CoroutineScope,
-        ): BaseDeviceConnectionManager {
+        override fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
             return DefaultDeviceConnectionManager(context, deviceWrapper, settings, coroutineScope = coroutineScope)
         }
     }
@@ -85,12 +81,8 @@ internal actual class DefaultDeviceConnectionManager(
             updateCharacteristic(characteristic, characteristic.value, status)
         }
 
-        override fun onCharacteristicRead(
-            gatt: BluetoothGatt,
-            characteristic: BluetoothGattCharacteristic,
-            value: ByteArray,
-            status: Int,
-        ) = updateCharacteristic(characteristic, value, status)
+        override fun onCharacteristicRead(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray, status: Int) =
+            updateCharacteristic(characteristic, value, status)
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
@@ -111,11 +103,8 @@ internal actual class DefaultDeviceConnectionManager(
             updateCharacteristic(characteristic, characteristic.value, status = GATT_SUCCESS)
         }
 
-        override fun onCharacteristicChanged(
-            gatt: BluetoothGatt,
-            characteristic: BluetoothGattCharacteristic,
-            value: ByteArray,
-        ) = updateCharacteristic(characteristic, value, status = GATT_SUCCESS)
+        override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray) =
+            updateCharacteristic(characteristic, value, status = GATT_SUCCESS)
 
         @Deprecated("Deprecated in Java")
         override fun onDescriptorRead(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
@@ -124,12 +113,7 @@ internal actual class DefaultDeviceConnectionManager(
             updateDescriptor(descriptor, descriptor.value, status)
         }
 
-        override fun onDescriptorRead(
-            gatt: BluetoothGatt,
-            descriptor: BluetoothGattDescriptor,
-            status: Int,
-            value: ByteArray,
-        ) = updateDescriptor(descriptor, value, status)
+        override fun onDescriptorRead(gatt: BluetoothGatt, descriptor: BluetoothGattDescriptor, status: Int, value: ByteArray) = updateDescriptor(descriptor, value, status)
 
         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
             descriptor ?: return
@@ -169,18 +153,11 @@ internal actual class DefaultDeviceConnectionManager(
 
     @SuppressLint("MissingPermission")
     override fun connect() {
-        if (lastKnownState != BluetoothProfile.STATE_CONNECTED || !gatt.isCompleted) {
-            if (gatt.isCompleted) {
-                if (!gatt.getCompleted().connect()) {
-                    handleDisconnect { closeGatt() }
-                } else if (lastKnownState != BluetoothProfile.STATE_CONNECTED) {
-                    handleConnect()
-                }
-            } else {
-                gatt.complete(deviceWrapper.connectGatt(context, false, callback))
-            }
-        } else {
-            handleConnect()
+        when {
+            !gatt.isCompleted -> gatt.complete(deviceWrapper.connectGatt(context, false, callback))
+            lastKnownState == BluetoothProfile.STATE_CONNECTED -> handleConnect()
+            !gatt.getCompleted().connect() -> handleDisconnect { closeGatt() }
+            else -> {}
         }
     }
 

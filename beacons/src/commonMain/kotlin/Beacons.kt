@@ -108,7 +108,9 @@ class DefaultBeacons(
     coroutineContext: CoroutineContext = defaultBeaconsDispatcher,
 ) : Beacons, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("Beacons")) {
 
-    private companion object { const val TAG = "Beacons" }
+    private companion object {
+        const val TAG = "Beacons"
+    }
 
     private val monitoringLock = Mutex()
     private val updateLock = Mutex()

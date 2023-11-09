@@ -31,12 +31,10 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("specificEnergyFromRad")
-fun ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad>.asSpecificEnergy() =
-    (Erg per Gram).specificEnergy(this)
+fun ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad>.asSpecificEnergy() = (Erg per Gram).specificEnergy(this)
 
 @JvmName("specificEnergyFromRadMultiple")
-fun <RadUnit : RadMultiple> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, RadUnit>.asSpecificEnergy() =
-    (Erg per Gram).specificEnergy(this)
+fun <RadUnit : RadMultiple> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, RadUnit>.asSpecificEnergy() = (Erg per Gram).specificEnergy(this)
 
 @JvmName("specificEnergyFromAbsorbedDose")
 fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose> ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.asSpecificEnergy() =

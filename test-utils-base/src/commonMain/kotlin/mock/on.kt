@@ -57,7 +57,9 @@ fun <
     Result,
     Answer,
     Stub,
-    >.on(value: ParameterMatcher<Value> = ParameterMatcher.any()): Stub {
+    >.on(
+    value: ParameterMatcher<Value> = ParameterMatcher.any(),
+): Stub {
     return onMatcher(SingleParameters.Matchers(value))
 }
 

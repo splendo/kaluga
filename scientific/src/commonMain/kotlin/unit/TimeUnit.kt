@@ -46,7 +46,7 @@ val TimeUnits: Set<Time> get() = setOf(
 sealed class Time : AbstractScientificUnit<PhysicalQuantity.Time>(), MetricAndImperialScientificUnit<PhysicalQuantity.Time>
 
 @Serializable
-object Second : Time(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time> {
+data object Second : Time(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time> {
     override val symbol = "s"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Time
@@ -58,22 +58,22 @@ object Second : Time(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, Phys
 sealed class SecondMultiple : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second>
 
 @Serializable
-object Decisecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Deci(Second)
+data object Decisecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Deci(Second)
 
 @Serializable
-object Centisecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Centi(Second)
+data object Centisecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Centi(Second)
 
 @Serializable
-object Millisecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Milli(Second)
+data object Millisecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Milli(Second)
 
 @Serializable
-object Microsecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Micro(Second)
+data object Microsecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Micro(Second)
 
 @Serializable
-object Nanosecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Nano(Second)
+data object Nanosecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Nano(Second)
 
 @Serializable
-object Minute : Time() {
+data object Minute : Time() {
     private const val SECOND_PER_MINUTE = 60.0
     override val symbol: String = "min"
     override val system = MeasurementSystem.MetricAndImperial
@@ -83,7 +83,7 @@ object Minute : Time() {
 }
 
 @Serializable
-object Hour : Time() {
+data object Hour : Time() {
     private const val SECOND_PER_HOUR = 3600.0
     override val symbol: String = "h"
     override val system = MeasurementSystem.MetricAndImperial

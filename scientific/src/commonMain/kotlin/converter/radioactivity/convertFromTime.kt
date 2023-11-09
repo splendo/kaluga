@@ -36,9 +36,8 @@ import kotlin.jvm.JvmName
 fun <
     TimeUnit : Time,
     RadioactivityUnit : Radioactivity,
-    > RadioactivityUnit.radioactivity(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = radioactivity(time, ::DefaultScientificValue)
+    > RadioactivityUnit.radioactivity(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    radioactivity(time, ::DefaultScientificValue)
 
 @JvmName("radioactivityFromInvertedTime")
 fun <
@@ -53,10 +52,8 @@ fun <
 fun <
     RadioactivityUnit : Radioactivity,
     TimeUnit : Time,
-    > RadioactivityUnit.radioactivity(
-    decays: Decimal,
-    per: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = radioactivity(decays, per, ::DefaultScientificValue)
+    > RadioactivityUnit.radioactivity(decays: Decimal, per: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    radioactivity(decays, per, ::DefaultScientificValue)
 
 fun <
     RadioactivityUnit : Radioactivity,

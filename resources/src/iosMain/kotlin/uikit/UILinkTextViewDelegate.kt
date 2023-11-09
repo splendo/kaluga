@@ -33,15 +33,11 @@ import platform.darwin.NSObject
 internal class UILinkTextViewDelegate : NSObject(), UITextViewDelegateProtocol {
 
     object Registry {
-        val registeredDelegates = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0)
+        val registeredDelegates = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0U)
     }
 
-    override fun textView(
-        textView: UITextView,
-        shouldInteractWithURL: NSURL,
-        inRange: CValue<NSRange>,
-        interaction: UITextItemInteraction,
-    ): Boolean = textView(textView, shouldInteractWithURL, inRange)
+    override fun textView(textView: UITextView, shouldInteractWithURL: NSURL, inRange: CValue<NSRange>, interaction: UITextItemInteraction): Boolean =
+        textView(textView, shouldInteractWithURL, inRange)
 
     override fun textView(textView: UITextView, shouldInteractWithURL: NSURL, inRange: CValue<NSRange>): Boolean {
         return textView.attributedText.urlRanges.let { urls ->
@@ -60,12 +56,7 @@ class UILinkTextViewDelegateWrapper(private val wrapped: UITextViewDelegateProto
         replacementText,
     )
 
-    override fun textView(
-        textView: UITextView,
-        shouldInteractWithURL: NSURL,
-        inRange: CValue<NSRange>,
-        interaction: UITextItemInteraction,
-    ): Boolean {
+    override fun textView(textView: UITextView, shouldInteractWithURL: NSURL, inRange: CValue<NSRange>, interaction: UITextItemInteraction): Boolean {
         return linkDelegate.textView(textView, shouldInteractWithURL, inRange, interaction) || wrapped.textView(textView, shouldInteractWithURL, inRange, interaction)
     }
 
@@ -80,11 +71,8 @@ class UILinkTextViewDelegateWrapper(private val wrapped: UITextViewDelegateProto
         return linkDelegate.textView(textView, shouldInteractWithURL, inRange) || wrapped.textView(textView, shouldInteractWithURL, inRange)
     }
 
-    override fun textView(
-        textView: UITextView,
-        shouldInteractWithTextAttachment: platform.UIKit.NSTextAttachment,
-        inRange: CValue<NSRange>,
-    ): Boolean = wrapped.textView(textView, shouldInteractWithTextAttachment, inRange)
+    override fun textView(textView: UITextView, shouldInteractWithTextAttachment: platform.UIKit.NSTextAttachment, inRange: CValue<NSRange>): Boolean =
+        wrapped.textView(textView, shouldInteractWithTextAttachment, inRange)
 
     override fun textViewDidBeginEditing(textView: UITextView) = wrapped.textViewDidBeginEditing(textView)
 
@@ -106,11 +94,8 @@ class UILinkTextViewDelegateWrapper(private val wrapped: UITextViewDelegateProto
 
     override fun scrollViewDidEndScrollingAnimation(scrollView: platform.UIKit.UIScrollView) = wrapped.scrollViewDidEndScrollingAnimation(scrollView)
 
-    override fun scrollViewDidEndZooming(
-        scrollView: platform.UIKit.UIScrollView,
-        withView: platform.UIKit.UIView?,
-        atScale: platform.CoreGraphics.CGFloat,
-    ) = wrapped.scrollViewDidEndZooming(scrollView, withView, atScale)
+    override fun scrollViewDidEndZooming(scrollView: platform.UIKit.UIScrollView, withView: platform.UIKit.UIView?, atScale: platform.CoreGraphics.CGFloat) =
+        wrapped.scrollViewDidEndZooming(scrollView, withView, atScale)
 
     override fun scrollViewDidScroll(scrollView: platform.UIKit.UIScrollView) = wrapped.scrollViewDidScroll(scrollView)
 
@@ -126,11 +111,8 @@ class UILinkTextViewDelegateWrapper(private val wrapped: UITextViewDelegateProto
 
     override fun scrollViewWillBeginZooming(scrollView: platform.UIKit.UIScrollView, withView: platform.UIKit.UIView?) = wrapped.scrollViewWillBeginZooming(scrollView, withView)
 
-    override fun scrollViewWillEndDragging(
-        scrollView: platform.UIKit.UIScrollView,
-        withVelocity: CValue<CGPoint>,
-        targetContentOffset: kotlinx.cinterop.CPointer<CGPoint>?,
-    ) = wrapped.scrollViewWillEndDragging(scrollView, withVelocity, targetContentOffset)
+    override fun scrollViewWillEndDragging(scrollView: platform.UIKit.UIScrollView, withVelocity: CValue<CGPoint>, targetContentOffset: kotlinx.cinterop.CPointer<CGPoint>?) =
+        wrapped.scrollViewWillEndDragging(scrollView, withVelocity, targetContentOffset)
 
     override fun viewForZoomingInScrollView(scrollView: platform.UIKit.UIScrollView): platform.UIKit.UIView? = wrapped.viewForZoomingInScrollView(scrollView)
 }

@@ -45,10 +45,7 @@ class BluetoothServiceAdapter(private val lifecycleOwner: LifecycleOwner) : Recy
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int,
-    ): BluetoothServiceItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BluetoothServiceItemViewHolder {
         val binding = BluetoothServiceItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         binding.lifecycleOwner = lifecycleOwner
         binding.characteristicsList.adapter = BluetoothCharacteristicAdapter(lifecycleOwner)
@@ -61,17 +58,5 @@ class BluetoothServiceAdapter(private val lifecycleOwner: LifecycleOwner) : Recy
 
     override fun onBindViewHolder(holder: BluetoothServiceItemViewHolder, position: Int) {
         holder.serviceItem.viewModel = services[position]
-    }
-
-    override fun onViewAttachedToWindow(holder: BluetoothServiceItemViewHolder) {
-        super.onViewAttachedToWindow(holder)
-
-        holder.serviceItem.viewModel?.didResume()
-    }
-
-    override fun onViewDetachedFromWindow(holder: BluetoothServiceItemViewHolder) {
-        super.onViewDetachedFromWindow(holder)
-
-        holder.serviceItem.viewModel?.didPause()
     }
 }

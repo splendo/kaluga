@@ -81,7 +81,7 @@ object Dependencies {
         private const val group = "org.jetbrains.kotlinx"
 
         object Coroutines {
-            private const val version = "1.7.1"
+            private const val version = "1.7.3"
             val Android = Dependency(group, "kotlinx-coroutines-android", version)
             val Core = Dependency(group, "kotlinx-coroutines-core", version)
             val Swing = Dependency(group, "kotlinx-coroutines-swing", version)
@@ -92,17 +92,17 @@ object Dependencies {
         }
 
         object Serialization {
-            private const val version =  "1.5.1"
+            private const val version =  "1.6.0"
             val Core = Dependency(group, "kotlinx-serialization-core", version)
             val Json = Dependency(group, "kotlinx-serialization-json", version)
         }
 
-        val AtomicFu = Dependency(group, "atomicfu", "0.20.2")
+        val AtomicFu = Dependency(group, "atomicfu", "0.22.0")
     }
 
     object Accompanist {
         private const val groupBase = "com.google.accompanist"
-        private const val version = "0.30.1"
+        private const val version = "0.32.0"
 
         val DrawablePainter = Dependency(groupBase, "accompanist-drawablepainter", version)
         val MaterialThemeAdapter = Dependency(groupBase, "accompanist-themeadapter-material", version)
@@ -112,7 +112,7 @@ object Dependencies {
         internal const val groupBase = "com.google.android"
         private const val materialBase = "$groupBase.material"
 
-        val Material = Dependency(materialBase, "material", "1.9.0")
+        val Material = Dependency(materialBase, "material", "1.10.0")
 
         object Play {
             private const val group = "$groupBase.play"
@@ -134,17 +134,17 @@ object Dependencies {
 
         object Activity {
             private const val group = "$groupBase.activity"
-            private const val version = "1.7.1"
+            private const val version = "1.8.0"
             val Activity = Dependency(group, "activity", version)
             val Ktx = Dependency(group, "activity-ktx", version)
             val Compose = Dependency(group, "activity-compose", version)
         }
         val AppCompat = Dependency("$groupBase.appcompat", "appcompat", "1.6.1")
         val ArchCore = Dependency("$groupBase.arch.core", "core-testing", "2.2.0")
-        val Browser = Dependency("$groupBase.browser", "browser", "1.5.0")
+        val Browser = Dependency("$groupBase.browser", "browser", "1.6.0")
         object Compose {
-            private const val version = "1.4.3"
-            private const val uiVersion = "1.4.3"
+            private const val version = "1.5.4"
+            private const val uiVersion = "1.5.4"
             private const val composeGroupBase = "$groupBase.compose"
 
             val Foundation = Dependency("$composeGroupBase.foundation", "foundation", version)
@@ -154,22 +154,22 @@ object Dependencies {
             val UIToolingPreview = Dependency("$composeGroupBase.ui", "ui-tooling-preview", uiVersion)
         }
         val ConstraintLayout = Dependency("$groupBase.constraintlayout", "constraintlayout", "2.1.4")
-        val Core = Dependency("$groupBase.core", "core", "1.10.0")
+        val Core = Dependency("$groupBase.core", "core", "1.12.0")
         val Fragment = Dependency(fragmentGroup, "fragment", fragmentVersion)
         val FragmentKtx = Dependency(fragmentGroup, "fragment-ktx", fragmentVersion)
         object Lifecycle {
             private const val group = "$groupBase.lifecycle"
-            private const val version = "2.6.1"
+            private const val version = "2.6.2"
 
             val LiveData = Dependency(group, "lifecycle-livedata-ktx", version)
             val Runtime = Dependency(group, "lifecycle-runtime-ktx", version)
             val Service = Dependency(group, "lifecycle-service", version)
             val ViewModel = Dependency(group, "lifecycle-viewmodel-ktx", version)
-            val ViewModelCompose = Dependency(group, "lifecycle-viewmodel-compose", "2.5.1")
+            val ViewModelCompose = Dependency(group, "lifecycle-viewmodel-compose", "2.6.2")
         }
         object Navigation {
             private const val group = "$groupBase.navigation"
-            private const val version = "2.5.3"
+            private const val version = "2.7.5"
 
             val Compose = Dependency(group, "navigation-compose", version)
         }
@@ -196,9 +196,9 @@ object Dependencies {
 
     object Koin {
         private const val group = "io.insert-koin"
-        private const val version = "3.4.0"
-        private const val androidVersion = "3.4.0"
-        private const val composeVersion = "3.4.4"
+        private const val version = "3.5.0"
+        private const val androidVersion = "3.5.0"
+        private const val composeVersion = "3.5.0"
         val Android = Dependency(group, "koin-android", androidVersion)
         val AndroidXCompose = Dependency(group, "koin-androidx-compose", composeVersion)
         val Core = Dependency(group, "koin-core", version)

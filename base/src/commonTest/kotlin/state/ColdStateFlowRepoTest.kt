@@ -20,6 +20,7 @@ package com.splendo.kaluga.base.state
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.BaseTest
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -72,11 +73,9 @@ class ColdStateFlowRepoTest : BaseTest() {
             assertEquals(state, active)
         }
 
-        job.cancel()
-        delay(40)
-        repo.useState { state ->
-            assertEquals(deinit, state)
-        }
+        job.cancelAndJoin()
+        delay(100)
+        assertEquals(deinit, repo.peekState())
 
         // we might get deinit first (this is not guaranteed), but this is already tested above
         assertEquals(active, repo.filter { it != deinit }.first())

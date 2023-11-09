@@ -87,14 +87,13 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
     /**
      *  set the value of this Observable from a suspended context.
      */
-    suspend fun setValue(value: ObservableOptional<T>): ObservableOptional<T> =
-        if (isOnMainThread) {
+    suspend fun setValue(value: ObservableOptional<T>): ObservableOptional<T> = if (isOnMainThread) {
+        setValueUnconfined(value)
+    } else {
+        withContext(Dispatchers.Main) {
             setValueUnconfined(value)
-        } else {
-            withContext(Dispatchers.Main) {
-                setValueUnconfined(value)
-            }
         }
+    }
 
     @Suppress("UNCHECKED_CAST") // should always downcast as R extends T
     /**
@@ -253,8 +252,7 @@ class ObservationUninitialized<T> :
 
     override val initialValue: ObservableOptional.Nothing<T> = ObservableOptional.Nothing()
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): T? =
-        currentObserved.valueOrNull
+    override fun getValue(thisRef: Any?, property: KProperty<*>): T? = currentObserved.valueOrNull
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: T?) {
         observedValue = value?.let { ObservableOptional.Value(value) } ?: ObservableOptional.Nothing()
@@ -334,8 +332,28 @@ fun <R : T, T, OO : ObservableOptional<R>> observeFlow(
     observation.onFirstObservation = {
         coroutineScope.launch(context) {
             flow.collect {
-                observation.setValue(ObservableOptional.Value(it))
+                observation.setSuspendedIfNot(it)
             }
         }
+    }
+}
+
+internal fun <R : T, T, OO : ObservableOptional<R>> Observation<R, T, OO>.setIfNot(value: T) {
+    if (when (val current = observedValue) {
+            is ObservableOptional.Value<T> -> current.value != value
+            is ObservableOptional.Nothing<T> -> true
+        }
+    ) {
+        observedValue = ObservableOptional.Value(value)
+    }
+}
+
+internal suspend fun <R : T, T, OO : ObservableOptional<R>> Observation<R, T, OO>.setSuspendedIfNot(value: T) {
+    if (when (val current = observedValue) {
+            is ObservableOptional.Value<T> -> current.value != value
+            is ObservableOptional.Nothing<T> -> true
+        }
+    ) {
+        setValue(ObservableOptional.Value(value))
     }
 }

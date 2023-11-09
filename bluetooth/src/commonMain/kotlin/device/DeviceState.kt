@@ -306,7 +306,7 @@ sealed interface ConnectableDeviceState : DeviceState, KalugaState {
     suspend fun unpair()
 }
 
-internal object NotConnectableDeviceStateImpl : NotConnectableDeviceState
+internal data object NotConnectableDeviceStateImpl : NotConnectableDeviceState
 
 internal sealed class ConnectableDeviceStateImpl {
 

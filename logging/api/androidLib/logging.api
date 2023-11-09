@@ -88,12 +88,16 @@ public final class com/splendo/kaluga/logging/LogLevel : java/lang/Enum {
 	public static final field ERROR Lcom/splendo/kaluga/logging/LogLevel;
 	public static final field INFO Lcom/splendo/kaluga/logging/LogLevel;
 	public static final field WARN Lcom/splendo/kaluga/logging/LogLevel;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/logging/LogLevel;
 	public static fun values ()[Lcom/splendo/kaluga/logging/LogLevel;
 }
 
 public abstract interface class com/splendo/kaluga/logging/Logger {
 	public abstract fun log (Lcom/splendo/kaluga/logging/LogLevel;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+}
+
+public final class com/splendo/kaluga/logging/Logger$DefaultImpls {
 	public static synthetic fun log$default (Lcom/splendo/kaluga/logging/Logger;Lcom/splendo/kaluga/logging/LogLevel;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
 }
 
@@ -191,18 +195,30 @@ public final class com/splendo/kaluga/logging/RestrictedLogLevel$Companion {
 
 public final class com/splendo/kaluga/logging/RestrictedLogLevel$Debug : com/splendo/kaluga/logging/RestrictedLogLevel {
 	public static final field INSTANCE Lcom/splendo/kaluga/logging/RestrictedLogLevel$Debug;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/logging/RestrictedLogLevel$Error : com/splendo/kaluga/logging/RestrictedLogLevel {
 	public static final field INSTANCE Lcom/splendo/kaluga/logging/RestrictedLogLevel$Error;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/logging/RestrictedLogLevel$Info : com/splendo/kaluga/logging/RestrictedLogLevel {
 	public static final field INSTANCE Lcom/splendo/kaluga/logging/RestrictedLogLevel$Info;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/logging/RestrictedLogLevel$Warn : com/splendo/kaluga/logging/RestrictedLogLevel {
 	public static final field INSTANCE Lcom/splendo/kaluga/logging/RestrictedLogLevel$Warn;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/logging/RestrictedLogger : com/splendo/kaluga/logging/Logger {

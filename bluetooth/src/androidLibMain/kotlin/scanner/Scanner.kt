@@ -89,11 +89,7 @@ actual class DefaultScanner internal constructor(
         private val scanSettings: ScanSettings = defaultScanSettings,
     ) : BaseScanner.Builder {
 
-        override fun create(
-            settings: Settings,
-            coroutineScope: CoroutineScope,
-            scanningDispatcher: CoroutineDispatcher,
-        ): BaseScanner {
+        override fun create(settings: Settings, coroutineScope: CoroutineScope, scanningDispatcher: CoroutineDispatcher): BaseScanner {
             return DefaultScanner(applicationContext, bluetoothScanner, bluetoothAdapter, scanSettings, settings, coroutineScope, scanningDispatcher)
         }
     }
@@ -251,9 +247,13 @@ actual class DefaultScanner internal constructor(
         }
         return bluetoothAdapter?.bondedDevices
             ?.filter {
-                // If no uuids available return this device
+                // If no filter available return this device
                 // Otherwise check if it contains any of given service uuid
-                it.uuids?.map(ParcelUuid::getUuid)?.containsAny(withServices) ?: true
+                if (withServices.isEmpty()) {
+                    true
+                } else {
+                    it.uuids?.map(ParcelUuid::getUuid).orEmpty().containsAny(withServices)
+                }
             }
             ?.map { device ->
                 val deviceWrapper = DefaultDeviceWrapper(device)

@@ -161,8 +161,8 @@ actual class HUD private constructor(
     }
 
     private sealed class DialogState {
-        object Gone : DialogState()
-        object Visible : DialogState()
+        data object Gone : DialogState()
+        data object Visible : DialogState()
     }
 
     private val loadingDialog = LoadingDialog.newInstance(viewResId, hudConfig)

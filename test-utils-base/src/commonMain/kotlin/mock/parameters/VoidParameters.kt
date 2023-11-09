@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.test.base.mock.parameters
 
-import com.splendo.kaluga.test.base.mock.MethodMock
-import com.splendo.kaluga.test.base.mock.SuspendMethodMock
 import com.splendo.kaluga.test.base.mock.answer.Answer
 import com.splendo.kaluga.test.base.mock.answer.SuspendedAnswer
 import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
 import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.base.mock.suspendVoidParametersMock
+import com.splendo.kaluga.test.base.mock.voidParametersMock
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 
@@ -54,11 +54,9 @@ object VoidParameters : ParametersSpec<VoidParameters.Matchers, VoidParameters.M
     override fun MatchersOrCaptor.capture(values: Values) {}
 }
 
-internal fun <R> (() -> R).asMock() = MethodMock<VoidParameters.Matchers, VoidParameters.MatchersOrCaptor, VoidParameters.Values, VoidParameters, R>(VoidParameters)
+internal fun <R> (() -> R).asMock() = voidParametersMock<R>()
 
-fun <R> (() -> R).mockWithDefaultAnswer(
-    defaultAnswer: Answer<VoidParameters.Values, R>,
-) = asMock().also {
+fun <R> (() -> R).mockWithDefaultAnswer(defaultAnswer: Answer<VoidParameters.Values, R>) = asMock().also {
     it.on().doAnswer(defaultAnswer)
 }
 fun <R> (() -> R).mockWithDefaultValue(defaultValue: R) = asMock().also {
@@ -181,17 +179,9 @@ fun <R : Any> (() -> R?).mock() = mockWithDefaultValue(null)
 @JsName("mockVoidNonNullable")
 fun <R : Any> (() -> R).mock() = asMock()
 
-internal fun <R> (suspend () -> R).asSuspendedMock() = SuspendMethodMock<
-    VoidParameters.Matchers,
-    VoidParameters.MatchersOrCaptor,
-    VoidParameters.Values,
-    VoidParameters,
-    R,
-    >(VoidParameters)
+internal fun <R> (suspend () -> R).asSuspendedMock() = suspendVoidParametersMock<R>()
 
-fun <R> (suspend () -> R).mockWithDefaultAnswer(
-    defaultAnswer: SuspendedAnswer<VoidParameters.Values, R>,
-) = asSuspendedMock().also {
+fun <R> (suspend () -> R).mockWithDefaultAnswer(defaultAnswer: SuspendedAnswer<VoidParameters.Values, R>) = asSuspendedMock().also {
     it.on().doAnswer(defaultAnswer)
 }
 

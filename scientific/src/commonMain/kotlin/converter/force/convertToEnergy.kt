@@ -44,13 +44,11 @@ import com.splendo.kaluga.scientific.unit.USCustomaryForce
 import kotlin.jvm.JvmName
 
 @JvmName("dyneTimesCentimeter")
-infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.times(distance: ScientificValue<PhysicalQuantity.Length, Centimeter>) =
-    Erg.energy(this, distance)
+infix operator fun ScientificValue<PhysicalQuantity.Force, Dyne>.times(distance: ScientificValue<PhysicalQuantity.Length, Centimeter>) = Erg.energy(this, distance)
 
 @JvmName("dyneMultipleTimesCentimeter")
-infix operator fun <DyneUnit : DyneMultiple> ScientificValue<PhysicalQuantity.Force, DyneUnit>.times(
-    distance: ScientificValue<PhysicalQuantity.Length, Centimeter>,
-) = Erg.energy(this, distance)
+infix operator fun <DyneUnit : DyneMultiple> ScientificValue<PhysicalQuantity.Force, DyneUnit>.times(distance: ScientificValue<PhysicalQuantity.Length, Centimeter>) =
+    Erg.energy(this, distance)
 
 @JvmName("metricForceTimesMetricLength")
 infix operator fun <ForceUnit : MetricForce, LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(
@@ -58,24 +56,18 @@ infix operator fun <ForceUnit : MetricForce, LengthUnit : MetricLength> Scientif
 ) = Joule.energy(this, distance)
 
 @JvmName("poundalTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Force, Poundal>.times(
-    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-) = FootPoundal.energy(this, distance)
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Force, Poundal>.times(distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>) =
+    FootPoundal.energy(this, distance)
 
 @JvmName("poundForceTimesInch")
-infix operator fun ScientificValue<PhysicalQuantity.Force, PoundForce>.times(
-    distance: ScientificValue<PhysicalQuantity.Length, Inch>,
-) = InchPoundForce.energy(this, distance)
+infix operator fun ScientificValue<PhysicalQuantity.Force, PoundForce>.times(distance: ScientificValue<PhysicalQuantity.Length, Inch>) = InchPoundForce.energy(this, distance)
 
 @JvmName("ounceForceTimesInch")
-infix operator fun ScientificValue<PhysicalQuantity.Force, OunceForce>.times(
-    distance: ScientificValue<PhysicalQuantity.Length, Inch>,
-) = InchOunceForce.energy(this, distance)
+infix operator fun ScientificValue<PhysicalQuantity.Force, OunceForce>.times(distance: ScientificValue<PhysicalQuantity.Length, Inch>) = InchOunceForce.energy(this, distance)
 
 @JvmName("poundForceTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Force, PoundForce>.times(
-    distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-) = FootPoundForce.energy(this, distance)
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Force, PoundForce>.times(distance: ScientificValue<PhysicalQuantity.Length, LengthUnit>) =
+    FootPoundForce.energy(this, distance)
 
 @JvmName("imperialForceTimesImperialLength")
 infix operator fun <ForceUnit : ImperialForce, LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Force, ForceUnit>.times(

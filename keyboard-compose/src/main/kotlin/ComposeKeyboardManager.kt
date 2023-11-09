@@ -52,9 +52,7 @@ class ComposeKeyboardManager(internal var currentFocusManager: FocusManager? = n
         private val builtManagers = WeakHashMap<Int, ComposeKeyboardManager>()
         private val focusHandlerQueue = MutableStateFlow<FocusRequester?>(null)
 
-        override fun create(
-            coroutineScope: CoroutineScope,
-        ): BaseKeyboardManager<ComposeFocusHandler> = ComposeKeyboardManager(focusHandlerQueue = focusHandlerQueue).also {
+        override fun create(coroutineScope: CoroutineScope): BaseKeyboardManager<ComposeFocusHandler> = ComposeKeyboardManager(focusHandlerQueue = focusHandlerQueue).also {
             builtManagers[it.hashCode()] = it
         }
 

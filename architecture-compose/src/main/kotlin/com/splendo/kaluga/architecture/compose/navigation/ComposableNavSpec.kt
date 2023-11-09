@@ -380,7 +380,7 @@ sealed class ComposableNavSpec {
         @Composable
         override fun createLauncher(viewModel: BaseLifecycleViewModel, onDispose: () -> Unit): () -> Unit {
             val context = LocalContext.current
-            val intent = context.activity?.intent
+            val intent = context.activity?.let { createIntent(it) }
             return {
                 intent?.let {
                     context.startActivity(it)
@@ -436,9 +436,7 @@ inline fun <reified Activity : android.app.Activity, reified ViewModel : BaseLif
  * @param Activity The type of [android.app.Activity] to launch.
  * @param flags A set of [IntentFlag] to be applied to the next screen.
  */
-inline fun <reified Activity : android.app.Activity> NavigationAction<*>.ShowActivity(
-    flags: Set<IntentFlag> = emptySet(),
-) = ComposableNavSpec.IntentLauncher {
+inline fun <reified Activity : android.app.Activity> NavigationAction<*>.ShowActivity(flags: Set<IntentFlag> = emptySet()) = ComposableNavSpec.IntentLauncher {
     Intent(this, Activity::class.java).apply {
         bundle?.let {
             putExtras(it.toBundle())

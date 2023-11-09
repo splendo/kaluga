@@ -35,11 +35,8 @@ actual class KalugaDateFormatter private constructor(initialTimeZone: KalugaTime
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun dateFormat(
-            style: DateFormatStyle,
-            timeZone: KalugaTimeZone,
-            locale: KalugaLocale,
-        ): KalugaDateFormatter = KalugaDateFormatter(timeZone) { date -> date.toLocaleDateString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
+        actual fun dateFormat(style: DateFormatStyle, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter =
+            KalugaDateFormatter(timeZone) { date -> date.toLocaleDateString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
 
         /**
          * Creates a [KalugaDateFormatter] that only formats the time components of a [KalugaDate]
@@ -47,11 +44,8 @@ actual class KalugaDateFormatter private constructor(initialTimeZone: KalugaTime
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun timeFormat(
-            style: DateFormatStyle,
-            timeZone: KalugaTimeZone,
-            locale: KalugaLocale,
-        ): KalugaDateFormatter = KalugaDateFormatter(timeZone) { date -> date.toLocaleTimeString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
+        actual fun timeFormat(style: DateFormatStyle, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter =
+            KalugaDateFormatter(timeZone) { date -> date.toLocaleTimeString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
 
         /**
          * Creates a [KalugaDateFormatter] that formats both date and time components of a [KalugaDate]
@@ -60,12 +54,8 @@ actual class KalugaDateFormatter private constructor(initialTimeZone: KalugaTime
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun dateTimeFormat(
-            dateStyle: DateFormatStyle,
-            timeStyle: DateFormatStyle,
-            timeZone: KalugaTimeZone,
-            locale: KalugaLocale,
-        ): KalugaDateFormatter = KalugaDateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
+        actual fun dateTimeFormat(dateStyle: DateFormatStyle, timeStyle: DateFormatStyle, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter =
+            KalugaDateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
 
         /**
          * Creates a [KalugaDateFormatter] using a custom Date format pattern.
@@ -76,11 +66,8 @@ actual class KalugaDateFormatter private constructor(initialTimeZone: KalugaTime
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        actual fun patternFormat(
-            pattern: String,
-            timeZone: KalugaTimeZone,
-            locale: KalugaLocale,
-        ): KalugaDateFormatter = KalugaDateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
+        actual fun patternFormat(pattern: String, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter =
+            KalugaDateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
     }
 
     override var pattern: String = ""

@@ -25,11 +25,11 @@ import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.resources.localized
 
 sealed class SystemFeatures(val name: String) {
-    object Network : SystemFeatures("network_feature".localized())
+    data object Network : SystemFeatures("network_feature".localized())
 }
 
 sealed class SystemNavigationActions : SingleValueNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType) {
-    object Network : SystemNavigationActions()
+    data object Network : SystemNavigationActions()
 }
 
 class SystemViewModel(

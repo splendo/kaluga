@@ -92,11 +92,8 @@ expect val StyledString.rawString: String
  * @param attributes a collection of [StringStyleAttribute] to apply to the entire string
  * @return a [StyledString] styled with all [attributes]
  */
-fun String.styled(
-    provider: StyledStringBuilder.Provider,
-    defaultTextStyle: KalugaTextStyle,
-    vararg attributes: StringStyleAttribute,
-) = styled(provider, defaultTextStyle, null, *attributes)
+fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: KalugaTextStyle, vararg attributes: StringStyleAttribute) =
+    styled(provider, defaultTextStyle, null, *attributes)
 
 /**
  * Creates a [StyledString] from a [String]
@@ -106,12 +103,8 @@ fun String.styled(
  * @param attributes a collection of [StringStyleAttribute] to apply to the entire string
  * @return a [StyledString] styled with all [attributes]
  */
-fun String.styled(
-    provider: StyledStringBuilder.Provider,
-    defaultTextStyle: KalugaTextStyle,
-    linkColor: KalugaColor,
-    vararg attributes: StringStyleAttribute,
-) = styled(provider, defaultTextStyle, LinkStyle(linkColor, true), *attributes)
+fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: KalugaTextStyle, linkColor: KalugaColor, vararg attributes: StringStyleAttribute) =
+    styled(provider, defaultTextStyle, LinkStyle(linkColor, true), *attributes)
 
 /**
  * Creates a [StyledString] from a [String]
@@ -121,17 +114,14 @@ fun String.styled(
  * @param attributes a collection of [StringStyleAttribute] to apply to the entire string
  * @return a [StyledString] styled with all [attributes]
  */
-fun String.styled(
-    provider: StyledStringBuilder.Provider,
-    defaultTextStyle: KalugaTextStyle,
-    linkStyle: LinkStyle?,
-    vararg attributes: StringStyleAttribute,
-) = styled(
+fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: KalugaTextStyle, linkStyle: LinkStyle?, vararg attributes: StringStyleAttribute) = styled(
     provider,
     defaultTextStyle,
     linkStyle,
     *attributes.map<StringStyleAttribute, String.() -> Pair<StringStyleAttribute, IntRange>?> { attribute ->
-        { attributeSubstring(this, attribute) }
+        {
+            attributeSubstring(this, attribute)
+        }
     }.toTypedArray(),
 )
 
@@ -143,11 +133,8 @@ fun String.styled(
  * @return a [StyledString] styled with all [attributes]
  * @throws [IndexOutOfBoundsException] if [attributes] returns an [IntRange] out of bounds for the String
  */
-fun String.styled(
-    provider: StyledStringBuilder.Provider,
-    defaultTextStyle: KalugaTextStyle,
-    vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?,
-) = styled(provider, defaultTextStyle, null, *attributes)
+fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: KalugaTextStyle, vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?) =
+    styled(provider, defaultTextStyle, null, *attributes)
 
 /**
  * Creates a [StyledString] from a [String]
@@ -267,22 +254,22 @@ sealed class StringStyleAttribute {
         /**
          * A [CharacterStyleAttribute] that adds a strike through to the character
          */
-        object Strikethrough : CharacterStyleAttribute()
+        data object Strikethrough : CharacterStyleAttribute()
 
         /**
          * A [CharacterStyleAttribute] that adds an underline to the character
          */
-        object Underline : CharacterStyleAttribute()
+        data object Underline : CharacterStyleAttribute()
 
         /**
          * A [CharacterStyleAttribute] that makes the character appear in superscript
          */
-        object SuperScript : CharacterStyleAttribute()
+        data object SuperScript : CharacterStyleAttribute()
 
         /**
          * A [CharacterStyleAttribute] that makes the character appear in subscript
          */
-        object SubScript : CharacterStyleAttribute()
+        data object SubScript : CharacterStyleAttribute()
     }
 
     /**

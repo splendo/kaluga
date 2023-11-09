@@ -35,11 +35,7 @@ import platform.UIKit.labelFontSize
 actual class DefaultStringLoader(private val bundle: NSBundle, private val table: String?) : StringLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
     override fun loadString(identifier: String, defaultValue: String): String = bundle.localizedStringForKey(identifier, defaultValue, table)
-    override fun loadQuantityString(
-        identifier: String,
-        quantity: Int,
-        defaultValue: String,
-    ): String {
+    override fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String {
         val format = bundle.localizedStringForKey(identifier, defaultValue, table)
         return NSString.localizedStringWithFormat(format, quantity)
     }

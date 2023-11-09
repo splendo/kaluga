@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,8 +15,11 @@
 
  */
 
-package com.splendo.kaluga.architecture.navigation
+package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
-import platform.MessageUI.MFMessageComposeViewController
+import com.splendo.kaluga.architecture.navigation.DefaultNavigator
+import platform.Foundation.NSUUID
 
-actual fun MFMessageComposeViewController.setMessageWorkAround(message: platform.Messages.MSMessage?) = this.setMessage(message)
+fun BluetoothListNavigator(onDetailsPressed: (NSUUID) -> Unit) = DefaultNavigator<DeviceDetails> { action ->
+    onDetailsPressed(action.value.identifier)
+}

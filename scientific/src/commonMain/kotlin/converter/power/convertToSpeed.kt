@@ -50,37 +50,31 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("ergPerSecondDivDyne")
-infix operator fun ScientificValue<PhysicalQuantity.Power, ErgPerSecond>.div(force: ScientificValue<PhysicalQuantity.Force, Dyne>) =
-    (Centimeter per Second).speed(this, force)
+infix operator fun ScientificValue<PhysicalQuantity.Power, ErgPerSecond>.div(force: ScientificValue<PhysicalQuantity.Force, Dyne>) = (Centimeter per Second).speed(this, force)
 
 @JvmName("ergPerSecondDivDyneMultiple")
 infix operator fun <DyneUnit : DyneMultiple> ScientificValue<PhysicalQuantity.Power, ErgPerSecond>.div(force: ScientificValue<PhysicalQuantity.Force, DyneUnit>) =
     (Centimeter per Second).speed(this, force)
 
 @JvmName("metricPowerDivMetricForce")
-infix operator fun <PowerUnit : MetricPower, ForceUnit : Force> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
-    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
-) = (Meter per Second).speed(this, force)
+infix operator fun <PowerUnit : MetricPower, ForceUnit : Force> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(force: ScientificValue<PhysicalQuantity.Force, ForceUnit>) =
+    (Meter per Second).speed(this, force)
 
 @JvmName("footPoundForcePerSecondDivImperialForce")
-infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Power, FootPoundForcePerSecond>.div(
-    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
-) = (Foot per Second).speed(this, force)
+infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Power, FootPoundForcePerSecond>.div(force: ScientificValue<PhysicalQuantity.Force, ForceUnit>) =
+    (Foot per Second).speed(this, force)
 
 @JvmName("footPoundForcePerMinuteDivImperialForce")
-infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Power, FootPoundForcePerMinute>.div(
-    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
-) = (Foot per Minute).speed(this, force)
+infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Power, FootPoundForcePerMinute>.div(force: ScientificValue<PhysicalQuantity.Force, ForceUnit>) =
+    (Foot per Minute).speed(this, force)
 
 @JvmName("inchPoundForcePerSecondDivImperialForce")
-infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Power, InchPoundForcePerSecond>.div(
-    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
-) = (Inch per Second).speed(this, force)
+infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Power, InchPoundForcePerSecond>.div(force: ScientificValue<PhysicalQuantity.Force, ForceUnit>) =
+    (Inch per Second).speed(this, force)
 
 @JvmName("inchPoundForcePerMinuteDivImperialForce")
-infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Power, InchPoundForcePerMinute>.div(
-    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
-) = (Inch per Minute).speed(this, force)
+infix operator fun <ForceUnit : ImperialForce> ScientificValue<PhysicalQuantity.Power, InchPoundForcePerMinute>.div(force: ScientificValue<PhysicalQuantity.Force, ForceUnit>) =
+    (Inch per Minute).speed(this, force)
 
 @JvmName("britishThermalUnitPerSecondDivPoundForce")
 infix operator fun ScientificValue<PhysicalQuantity.Power, BritishThermalUnitPerSecond>.div(force: ScientificValue<PhysicalQuantity.Force, PoundForce>) =
@@ -125,6 +119,5 @@ infix operator fun <PowerUnit : MetricAndImperialPower, ForceUnit : USCustomaryF
 ) = (Foot per Second).speed(this, force)
 
 @JvmName("powerDivForce")
-infix operator fun <PowerUnit : Power, ForceUnit : Force> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(
-    force: ScientificValue<PhysicalQuantity.Force, ForceUnit>,
-) = (Meter per Second).speed(this, force)
+infix operator fun <PowerUnit : Power, ForceUnit : Force> ScientificValue<PhysicalQuantity.Power, PowerUnit>.div(force: ScientificValue<PhysicalQuantity.Force, ForceUnit>) =
+    (Meter per Second).speed(this, force)

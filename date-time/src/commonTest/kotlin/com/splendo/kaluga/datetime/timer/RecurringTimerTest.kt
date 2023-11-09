@@ -19,6 +19,9 @@ package com.splendo.kaluga.datetime.timer
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.base.captureFor
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeout
@@ -35,10 +38,11 @@ class RecurringTimerTest {
 
     @Test
     fun stateTransitions(): Unit = runBlocking {
+        val timerScope = CoroutineScope(Dispatchers.Default)
         val timer = RecurringTimer(
             duration = 100.milliseconds,
             interval = 10.milliseconds,
-            coroutineScope = this,
+            coroutineScope = timerScope,
         )
         assertIs<Timer.State.NotRunning.Paused>(timer.state.first(), "timer was not paused after creation")
         timer.start()
@@ -55,35 +59,39 @@ class RecurringTimerTest {
         assertIs<Timer.State.NotRunning.Finished>(timer.state.first(), "was able to start timer after finish")
         timer.pause()
         assertIs<Timer.State.NotRunning.Finished>(timer.state.first(), "was able to pause timer after finish")
+        timerScope.cancel()
     }
 
     @Test
     fun awaitFinish(): Unit = runBlocking {
+        val timerScope = CoroutineScope(Dispatchers.Default)
         val timer = RecurringTimer(
             duration = 100.milliseconds,
             interval = 10.milliseconds,
-            coroutineScope = this,
+            coroutineScope = timerScope,
         )
 
         withTimeout(500.milliseconds) {
             timer.start()
             timer.awaitFinish()
         }
+        timerScope.cancel()
     }
 
     @Test
     fun elapsedFlow(): Unit = runBlocking {
-        fun List<Duration>.isAscending(): Boolean =
-            windowed(size = 2).map { it[0] <= it[1] }.all { it }
+        val timerScope = CoroutineScope(Dispatchers.Default)
+        fun List<Duration>.isAscending(): Boolean = windowed(size = 2).map { it[0] <= it[1] }.all { it }
 
         val duration = 500.milliseconds
         val timer = RecurringTimer(
             duration = duration,
             interval = 50.milliseconds,
-            coroutineScope = this,
+            coroutineScope = timerScope,
         )
 
         // capture and validate an initial state
+        timer.elapsed().first()
         val initial = timer.elapsed().captureFor(100.milliseconds)
         assertEquals(listOf(Duration.ZERO), initial, "timer was not started in paused state")
 
@@ -106,21 +114,20 @@ class RecurringTimerTest {
         val final = timer.elapsed().captureFor(100.milliseconds)
         assertEquals(listOf(duration), final, "timer did not finish in the right state")
         assertTrue(result1.last() <= final.first(), "values are not in ascending order")
+        timerScope.cancel()
     }
 
     // MARK - elapsedIrregularFlow test
     /** Provides mock time ticks. */
     private class PredefinedTimeSource(val ticks: List<Duration>) : TimeSource {
-        override fun markNow(): TimeMark =
-            object : TimeMark {
-                var index = 0
-                override fun elapsedNow(): Duration =
-                    if (index < ticks.size) {
-                        ticks[index].also { index++ }
-                    } else {
-                        throw IllegalStateException("Unexpected elapsedNow() call")
-                    }
+        override fun markNow(): TimeMark = object : TimeMark {
+            var index = 0
+            override fun elapsedNow(): Duration = if (index < ticks.size) {
+                ticks[index].also { index++ }
+            } else {
+                throw IllegalStateException("Unexpected elapsedNow() call")
             }
+        }
     }
 
     /** Validates requested delays. */
@@ -186,7 +193,7 @@ class RecurringTimerTest {
         )
 
         // capture and validate an initial state
-        val initial = timer.elapsed().captureFor(100.milliseconds)
+        val initial = timer.elapsed().captureFor(200.milliseconds)
         assertEquals(listOf(Duration.ZERO), initial, "timer was not started in paused state")
         // capture and validate a first chunk of data
         timer.start()
