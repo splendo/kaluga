@@ -75,12 +75,12 @@ open class StateFlowInitializedSubject<T>(
         },
         observation,
     ) {
-        init {
-            if (autoBind) {
-                bind(coroutineScope, context)
-            }
+    init {
+        if (autoBind) {
+            bind(coroutineScope, context)
         }
     }
+}
 
 /**
  * A [BaseDefaultSubject] that matches the state of a [MutableStateFlow].
@@ -118,12 +118,12 @@ open class StateFlowDefaultSubject<R : T?, T>(
         },
         observation,
     ) {
-        init {
-            if (autoBind) {
-                bind(coroutineScope, context)
-            }
+    init {
+        if (autoBind) {
+            bind(coroutineScope, context)
         }
     }
+}
 
 /**
  * A [BaseUninitializedSubject] that matches the state of a [MutableSharedFlow].
@@ -153,12 +153,12 @@ open class SharedFlowSubject<T>(
         },
         observation = observation,
     ) {
-        init {
-            if (autoBind) {
-                bind(coroutineScope, context)
-            }
+    init {
+        if (autoBind) {
+            bind(coroutineScope, context)
         }
     }
+}
 
 /**
  * A [BaseInitializedSubject] that matches the state of a [MutableSharedFlow].
@@ -190,12 +190,12 @@ open class SharedFlowInitializedSubject<T>(
         },
         observation = observation,
     ) {
-        init {
-            if (autoBind) {
-                bind(coroutineScope, context)
-            }
+    init {
+        if (autoBind) {
+            bind(coroutineScope, context)
         }
     }
+}
 
 /**
  * A [BaseDefaultSubject] that matches the state of a [MutableSharedFlow].
@@ -232,22 +232,19 @@ open class SharedFlowDefaultSubject<R : T?, T>(
         },
         observation = observation,
     ) {
-        init {
-            if (autoBind) {
-                bind(coroutineScope, context)
-            }
+    init {
+        if (autoBind) {
+            bind(coroutineScope, context)
         }
     }
+}
 
 /**
  * Converts a [MutableSharedFlow] to a [SharedFlowSubject]
  * @param coroutineScope The [CoroutineScope] on which to observe the [MutableSharedFlow]
  * @param context The [CoroutineContext] in which to observe the [MutableSharedFlow]
  */
-fun <T> MutableSharedFlow<T>.toUninitializedSubject(
-    coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext,
-) = SharedFlowSubject(
+fun <T> MutableSharedFlow<T>.toUninitializedSubject(coroutineScope: CoroutineScope, context: CoroutineContext = coroutineScope.coroutineContext) = SharedFlowSubject(
     coroutineScope,
     context,
     this,
@@ -258,10 +255,8 @@ fun <T> MutableSharedFlow<T>.toUninitializedSubject(
  * @param coroutineScope The [CoroutineScope] on which to observe the [MutableStateFlow]
  * @param context The [CoroutineContext] in which to observe the [MutableStateFlow]
  */
-fun <T> MutableStateFlow<T>.toInitializedSubject(
-    coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext,
-) = StateFlowInitializedSubject(coroutineScope, context, this)
+fun <T> MutableStateFlow<T>.toInitializedSubject(coroutineScope: CoroutineScope, context: CoroutineContext = coroutineScope.coroutineContext) =
+    StateFlowInitializedSubject(coroutineScope, context, this)
 
 /**
  * Converts a [MutableSharedFlow] to a [SharedFlowInitializedSubject]
@@ -269,16 +264,13 @@ fun <T> MutableStateFlow<T>.toInitializedSubject(
  * @param coroutineScope The [CoroutineScope] on which to observe the [MutableSharedFlow]
  * @param context The [CoroutineContext] in which to observe the [MutableSharedFlow]
  */
-fun <T> MutableSharedFlow<T>.toInitializedSubject(
-    initialValue: T,
-    coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext,
-) = SharedFlowInitializedSubject(
-    initialValue,
-    coroutineScope,
-    context,
-    this,
-)
+fun <T> MutableSharedFlow<T>.toInitializedSubject(initialValue: T, coroutineScope: CoroutineScope, context: CoroutineContext = coroutineScope.coroutineContext) =
+    SharedFlowInitializedSubject(
+        initialValue,
+        coroutineScope,
+        context,
+        this,
+    )
 
 /**
  * Converts a [MutableStateFlow] to a [StateFlowDefaultSubject]
@@ -286,11 +278,8 @@ fun <T> MutableSharedFlow<T>.toInitializedSubject(
  * @param coroutineScope The [CoroutineScope] on which to observe the [MutableStateFlow]
  * @param context The [CoroutineContext] in which to observe the [MutableStateFlow]
  */
-fun <R : T, T> MutableStateFlow<T?>.toDefaultSubject(
-    defaultValue: R,
-    coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext,
-) = StateFlowDefaultSubject(defaultValue, coroutineScope, context, this)
+fun <R : T, T> MutableStateFlow<T?>.toDefaultSubject(defaultValue: R, coroutineScope: CoroutineScope, context: CoroutineContext = coroutineScope.coroutineContext) =
+    StateFlowDefaultSubject(defaultValue, coroutineScope, context, this)
 
 /**
  * Converts a [MutableSharedFlow] to a [SharedFlowDefaultSubject]

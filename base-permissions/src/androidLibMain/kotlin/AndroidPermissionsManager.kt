@@ -110,7 +110,7 @@ class AndroidPermissionsManager constructor(
     coroutineScope: CoroutineScope,
     private val logTag: String = "AndroidPermissionManager",
     private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
-    private val onPermissionChanged: AndroidPermissionStateHandler, // what
+    private val onPermissionChanged: AndroidPermissionStateHandler,
 ) : CoroutineScope by coroutineScope {
 
     internal companion object {

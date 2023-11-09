@@ -68,6 +68,9 @@ public final class com/splendo/kaluga/datetimepicker/DateTimePicker$Type$DateTyp
 
 public final class com/splendo/kaluga/datetimepicker/DateTimePicker$Type$TimeType : com/splendo/kaluga/datetimepicker/DateTimePicker$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/datetimepicker/DateTimePicker$Type$TimeType;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class com/splendo/kaluga/datetimepicker/DateTimePickerActions {

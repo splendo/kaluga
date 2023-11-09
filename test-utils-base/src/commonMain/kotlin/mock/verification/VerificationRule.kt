@@ -58,7 +58,7 @@ sealed interface VerificationRule {
         fun atMost(times: Int) = Range(0..times)
     }
 
-    object Never : VerificationRule {
+    data object Never : VerificationRule {
         override fun matches(times: Int) = times == 0
     }
 

@@ -42,49 +42,47 @@ import java.util.WeakHashMap
 class ComposeKeyboardManager(internal var currentFocusManager: FocusManager? = null, private val focusHandlerQueue: MutableSharedFlow<FocusRequester?>) :
     BaseKeyboardManager<ComposeFocusHandler> {
 
-        /**
-         * A [BaseKeyboardManager.Builder] for creating a [ComposeKeyboardManager]
-         */
-        class Builder :
-            BaseKeyboardManager.Builder<ComposeFocusHandler>,
-            ComposableLifecycleSubscribable {
+    /**
+     * A [BaseKeyboardManager.Builder] for creating a [ComposeKeyboardManager]
+     */
+    class Builder :
+        BaseKeyboardManager.Builder<ComposeFocusHandler>,
+        ComposableLifecycleSubscribable {
 
-            private val builtManagers = WeakHashMap<Int, ComposeKeyboardManager>()
-            private val focusHandlerQueue = MutableStateFlow<FocusRequester?>(null)
+        private val builtManagers = WeakHashMap<Int, ComposeKeyboardManager>()
+        private val focusHandlerQueue = MutableStateFlow<FocusRequester?>(null)
 
-            override fun create(
-                coroutineScope: CoroutineScope,
-            ): BaseKeyboardManager<ComposeFocusHandler> = ComposeKeyboardManager(focusHandlerQueue = focusHandlerQueue).also {
-                builtManagers[it.hashCode()] = it
-            }
-
-            override val modifier: @Composable BaseLifecycleViewModel.(
-                @Composable BaseLifecycleViewModel.() -> Unit,
-            ) -> Unit = { content ->
-                val windowInfo = LocalWindowInfo.current
-                val focusManager = LocalFocusManager.current
-
-                val currentFocus = focusHandlerQueue.collectAsState()
-                currentFocus.value?.let {
-                    LaunchedEffect(windowInfo) {
-                        snapshotFlow { windowInfo.isWindowFocused }.first { it }
-                        it.requestFocus()
-                        focusHandlerQueue.tryEmit(null)
-                    }
-                }
-
-                builtManagers.values.forEach {
-                    it.currentFocusManager = focusManager
-                }
-                content()
-            }
+        override fun create(coroutineScope: CoroutineScope): BaseKeyboardManager<ComposeFocusHandler> = ComposeKeyboardManager(focusHandlerQueue = focusHandlerQueue).also {
+            builtManagers[it.hashCode()] = it
         }
 
-        override fun show(focusHandler: ComposeFocusHandler) {
-            focusHandlerQueue.tryEmit(focusHandler.focusRequester)
-        }
+        override val modifier: @Composable BaseLifecycleViewModel.(
+            @Composable BaseLifecycleViewModel.() -> Unit,
+        ) -> Unit = { content ->
+            val windowInfo = LocalWindowInfo.current
+            val focusManager = LocalFocusManager.current
 
-        override fun hide() {
-            currentFocusManager?.clearFocus()
+            val currentFocus = focusHandlerQueue.collectAsState()
+            currentFocus.value?.let {
+                LaunchedEffect(windowInfo) {
+                    snapshotFlow { windowInfo.isWindowFocused }.first { it }
+                    it.requestFocus()
+                    focusHandlerQueue.tryEmit(null)
+                }
+            }
+
+            builtManagers.values.forEach {
+                it.currentFocusManager = focusManager
+            }
+            content()
         }
     }
+
+    override fun show(focusHandler: ComposeFocusHandler) {
+        focusHandlerQueue.tryEmit(focusHandler.focusRequester)
+    }
+
+    override fun hide() {
+        currentFocusManager?.clearFocus()
+    }
+}

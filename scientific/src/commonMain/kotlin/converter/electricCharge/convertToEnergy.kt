@@ -29,8 +29,7 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("abcoulombTimesAbvolt")
-infix operator fun ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>.times(voltage: ScientificValue<PhysicalQuantity.Voltage, Abvolt>) =
-    Erg.energy(this, voltage)
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>.times(voltage: ScientificValue<PhysicalQuantity.Voltage, Abvolt>) = Erg.energy(this, voltage)
 
 @JvmName("chargeTimesVoltage")
 infix operator fun <ChargeUnit : ElectricCharge, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.times(

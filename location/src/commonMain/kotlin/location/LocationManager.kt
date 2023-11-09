@@ -59,12 +59,12 @@ interface LocationManager {
         /**
          * An [Event] indicating the location service has become enabled
          */
-        object LocationEnabled : Event()
+        data object LocationEnabled : Event()
 
         /**
          * An [Event] indicating the location service has become disabled
          */
-        object LocationDisabled : Event()
+        data object LocationDisabled : Event()
     }
 
     /**
@@ -173,10 +173,7 @@ abstract class BaseLocationManager(
          * @param settings the [Settings] to configure the location manager
          * @param coroutineScope the [CoroutineScope] the location manager runs on
          */
-        fun create(
-            settings: Settings,
-            coroutineScope: CoroutineScope,
-        ): BaseLocationManager
+        fun create(settings: Settings, coroutineScope: CoroutineScope): BaseLocationManager
     }
 
     private val logger = settings.logger

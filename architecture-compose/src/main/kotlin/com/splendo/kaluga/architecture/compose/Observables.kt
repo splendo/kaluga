@@ -29,8 +29,7 @@ import com.splendo.kaluga.architecture.observable.WithState
  */
 @Suppress("NOTHING_TO_INLINE")
 @Composable
-inline fun <R> WithState<R>.state(): State<R> =
-    this.stateFlow.collectAsState()
+inline fun <R> WithState<R>.state(): State<R> = this.stateFlow.collectAsState()
 
 /**
  * Creates a [MutableState] that is synchronized with a [WithMutableState].

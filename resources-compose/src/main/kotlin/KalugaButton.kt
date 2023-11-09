@@ -56,11 +56,7 @@ import com.splendo.kaluga.resources.view.KalugaLabel
  * @param contentPadding The spacing values to apply internally between the container and the content
  */
 @Composable
-fun KalugaButton.Composable(
-    modifier: Modifier,
-    elevation: ButtonElevation = ButtonDefaults.elevation(),
-    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
-) {
+fun KalugaButton.Composable(modifier: Modifier, elevation: ButtonElevation = ButtonDefaults.elevation(), contentPadding: PaddingValues = ButtonDefaults.ContentPadding) {
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     val stateStyle = style.getStateStyle(isEnabled, pressed)

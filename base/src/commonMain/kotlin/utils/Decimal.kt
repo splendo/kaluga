@@ -29,17 +29,17 @@ sealed class Decimal : Comparable<Decimal> {
     /**
      * [Decimal] representing Not A Number
      */
-    object NaN : Decimal()
+    data object NaN : Decimal()
 
     /**
      * [Decimal] representing Positive Infinity
      */
-    object PositiveInfinity : Decimal()
+    data object PositiveInfinity : Decimal()
 
     /**
      * [Decimal] representing Negative Infinity
      */
-    object NegativeInfinity : Decimal()
+    data object NegativeInfinity : Decimal()
 
     /**
      * [Decimal] representing a finite number
@@ -97,11 +97,7 @@ fun Decimal.plus(value: Decimal, scale: Int): Decimal = if (this is Decimal.Fini
  * @param roundingMode The [RoundingMode] to apply when scaling.
  * @return the [Decimal] that is the total of the two provided decimals.
  */
-fun Decimal.plus(
-    value: Decimal,
-    scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
+fun Decimal.plus(value: Decimal, scale: Int, roundingMode: RoundingMode = RoundingMode.RoundHalfEven): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal.plus(value.finiteDecimal, scale, roundingMode))
 } else {
     calculateToDecimal(value, Double::plus)
@@ -109,11 +105,7 @@ fun Decimal.plus(
 
 internal expect operator fun FiniteDecimal.plus(value: FiniteDecimal): FiniteDecimal
 internal expect fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int): FiniteDecimal
-internal expect fun FiniteDecimal.plus(
-    value: FiniteDecimal,
-    scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-): FiniteDecimal
+internal expect fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode = RoundingMode.RoundHalfEven): FiniteDecimal
 
 /**
  * Subtracts two [Decimal].
@@ -145,11 +137,7 @@ fun Decimal.minus(value: Decimal, scale: Int): Decimal = if (this is Decimal.Fin
  * @param roundingMode The [RoundingMode] to apply when scaling.
  * @return the [Decimal] that is the subtraction of the two provided decimals.
  */
-fun Decimal.minus(
-    value: Decimal,
-    scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
+fun Decimal.minus(value: Decimal, scale: Int, roundingMode: RoundingMode = RoundingMode.RoundHalfEven): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal.minus(value.finiteDecimal, scale, roundingMode))
 } else {
     calculateToDecimal(value, Double::minus)
@@ -157,11 +145,7 @@ fun Decimal.minus(
 
 internal expect operator fun FiniteDecimal.minus(value: FiniteDecimal): FiniteDecimal
 internal expect fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int): FiniteDecimal
-internal expect fun FiniteDecimal.minus(
-    value: FiniteDecimal,
-    scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-): FiniteDecimal
+internal expect fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode = RoundingMode.RoundHalfEven): FiniteDecimal
 
 /**
  * Divides two [Decimal].
@@ -201,11 +185,7 @@ fun Decimal.div(value: Decimal, scale: Int): Decimal = if (this is Decimal.Finit
  * @param roundingMode The [RoundingMode] to apply when scaling.
  * @return the [Decimal] that is the division of the two provided decimals.
  */
-fun Decimal.div(
-    value: Decimal,
-    scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
+fun Decimal.div(value: Decimal, scale: Int, roundingMode: RoundingMode = RoundingMode.RoundHalfEven): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     if (value.toDouble() == 0.0) {
         (toDouble() / value.toDouble()).toDecimal()
     } else {
@@ -217,11 +197,7 @@ fun Decimal.div(
 
 internal expect operator fun FiniteDecimal.div(value: FiniteDecimal): FiniteDecimal
 internal expect fun FiniteDecimal.div(value: FiniteDecimal, scale: Int): FiniteDecimal
-internal expect fun FiniteDecimal.div(
-    value: FiniteDecimal,
-    scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-): FiniteDecimal
+internal expect fun FiniteDecimal.div(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode = RoundingMode.RoundHalfEven): FiniteDecimal
 
 /**
  * Multiplies two [Decimal].
@@ -253,11 +229,7 @@ fun Decimal.times(value: Decimal, scale: Int): Decimal = if (this is Decimal.Fin
  * @param roundingMode The [RoundingMode] to apply when scaling.
  * @return the [Decimal] that is the multiplication of the two provided decimals.
  */
-fun Decimal.times(
-    value: Decimal,
-    scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
+fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode = RoundingMode.RoundHalfEven): Decimal = if (this is Decimal.Finite && value is Decimal.Finite) {
     Decimal.Finite(finiteDecimal.times(value.finiteDecimal, scale, roundingMode))
 } else {
     calculateToDecimal(value, Double::times)
@@ -265,11 +237,7 @@ fun Decimal.times(
 
 internal expect operator fun FiniteDecimal.times(value: FiniteDecimal): FiniteDecimal
 internal expect fun FiniteDecimal.times(value: FiniteDecimal, scale: Int): FiniteDecimal
-internal expect fun FiniteDecimal.times(
-    value: FiniteDecimal,
-    scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-): FiniteDecimal
+internal expect fun FiniteDecimal.times(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode = RoundingMode.RoundHalfEven): FiniteDecimal
 
 /**
  * Raises two [Decimal].
@@ -301,11 +269,7 @@ fun Decimal.pow(n: Int, scale: Int): Decimal = if (this is Decimal.Finite) {
  * @param roundingMode The [RoundingMode] to apply when scaling.
  * @return the [Decimal] that is the exponent of the two provided decimals.
  */
-fun Decimal.pow(
-    n: Int,
-    scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-): Decimal = if (this is Decimal.Finite) {
+fun Decimal.pow(n: Int, scale: Int, roundingMode: RoundingMode = RoundingMode.RoundHalfEven): Decimal = if (this is Decimal.Finite) {
     Decimal.Finite(finiteDecimal.pow(n, scale, roundingMode))
 } else {
     (this.toDouble().pow(n)).toDecimal()
@@ -313,11 +277,7 @@ fun Decimal.pow(
 
 internal expect infix fun FiniteDecimal.pow(n: Int): FiniteDecimal
 internal expect fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal
-internal expect fun FiniteDecimal.pow(
-    n: Int,
-    scale: Int,
-    roundingMode: RoundingMode = RoundingMode.RoundHalfEven,
-): FiniteDecimal
+internal expect fun FiniteDecimal.pow(n: Int, scale: Int, roundingMode: RoundingMode = RoundingMode.RoundHalfEven): FiniteDecimal
 
 /**
  * Rounding Mode for rounding a [Decimal]
@@ -326,17 +286,17 @@ sealed class RoundingMode {
     /**
      * Rounds values down
      */
-    object RoundDown : RoundingMode()
+    data object RoundDown : RoundingMode()
 
     /**
      * Rounds values to the closest possible return value; when halfway between two possibilities, return the possibility whose last digit is even.
      */
-    object RoundHalfEven : RoundingMode()
+    data object RoundHalfEven : RoundingMode()
 
     /**
      * Rounds values up
      */
-    object RoundUp : RoundingMode()
+    data object RoundUp : RoundingMode()
 }
 
 /**

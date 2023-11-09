@@ -55,11 +55,7 @@ class MockStringLoader(private val returnMock: Boolean = false) : StringLoader {
 
     override fun loadString(identifier: String, defaultValue: String): String = loadStringMock.call(identifier, defaultValue)
 
-    override fun loadQuantityString(
-        identifier: String,
-        quantity: Int,
-        defaultValue: String,
-    ): String = loadQuantityStringMock.call(identifier, quantity, defaultValue)
+    override fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String = loadQuantityStringMock.call(identifier, quantity, defaultValue)
 }
 
 /**
@@ -119,8 +115,7 @@ class MockFontLoader(private val returnMock: Boolean = false) : FontLoader {
         }
     }
 
-    override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? =
-        loadFontMock.call(identifier, defaultValue)
+    override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? = loadFontMock.call(identifier, defaultValue)
 }
 
 /**

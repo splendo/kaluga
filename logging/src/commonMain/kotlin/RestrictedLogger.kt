@@ -39,22 +39,22 @@ sealed class RestrictedLogLevel(val levels: Set<LogLevel>) {
     /**
      * A [RestrictedLogLevel] that logs only [LogLevel.INFO]
      */
-    object Info : RestrictedLogLevel(setOf(LogLevel.INFO))
+    data object Info : RestrictedLogLevel(setOf(LogLevel.INFO))
 
     /**
      * A [RestrictedLogLevel] that logs only [LogLevel.ERROR]
      */
-    object Error : RestrictedLogLevel(setOf(LogLevel.ERROR))
+    data object Error : RestrictedLogLevel(setOf(LogLevel.ERROR))
 
     /**
      * A [RestrictedLogLevel] that logs only [LogLevel.DEBUG]
      */
-    object Debug : RestrictedLogLevel(setOf(LogLevel.DEBUG))
+    data object Debug : RestrictedLogLevel(setOf(LogLevel.DEBUG))
 
     /**
      * A [RestrictedLogLevel] that logs only [LogLevel.WARN]
      */
-    object Warn : RestrictedLogLevel(setOf(LogLevel.WARN))
+    data object Warn : RestrictedLogLevel(setOf(LogLevel.WARN))
     internal class Custom(levels: Set<LogLevel>) : RestrictedLogLevel(levels)
 }
 
@@ -72,12 +72,7 @@ infix fun RestrictedLogLevel.or(other: RestrictedLogLevel): RestrictedLogLevel =
  */
 class RestrictedLogger(private val restrictedLogLevel: RestrictedLogLevel, private val logger: Logger = defaultLogger) : Logger {
 
-    override fun log(
-        level: LogLevel,
-        tag: String?,
-        throwable: Throwable?,
-        message: (() -> String)?,
-    ) {
+    override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
         if (restrictedLogLevel.levels.contains(level)) {
             logger.log(level = level, tag = tag, throwable = throwable, message = message)
         }

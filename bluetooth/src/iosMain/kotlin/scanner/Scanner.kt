@@ -66,11 +66,7 @@ actual class DefaultScanner internal constructor(
      */
     class Builder(private val scanSettings: ScanSettings = ScanSettings.defaultScanOptions) : BaseScanner.Builder {
 
-        override fun create(
-            settings: Settings,
-            coroutineScope: CoroutineScope,
-            scanningDispatcher: CoroutineDispatcher,
-        ): BaseScanner {
+        override fun create(settings: Settings, coroutineScope: CoroutineScope, scanningDispatcher: CoroutineDispatcher): BaseScanner {
             return DefaultScanner(settings, scanSettings, coroutineScope, scanningDispatcher)
         }
     }
@@ -112,16 +108,14 @@ actual class DefaultScanner internal constructor(
              * @param allow if `true` a new discovery event will be sent each time advertisement data is received. Otherwise multiple discoveries will be grouped into a single discovery event
              * @return the [Builder]
              */
-            fun allowDuplicateKeys(allow: Boolean) =
-                apply { allowDuplicateKeys = allow }
+            fun allowDuplicateKeys(allow: Boolean) = apply { allowDuplicateKeys = allow }
 
             /**
              * Sets the list of [UUID] corresponding with services the scanner will also scan for
              * @param keys when not empty the scanner will also scan for peripherals soliciting any services matching the [UUID]
              * @return the [Builder]
              */
-            fun solicitedServiceUUIDsKey(keys: List<UUID>) =
-                apply { solicitedServiceUUIDsKey = keys }
+            fun solicitedServiceUUIDsKey(keys: List<UUID>) = apply { solicitedServiceUUIDsKey = keys }
 
             /**
              * Creates [ScanSettings]
@@ -143,12 +137,7 @@ actual class DefaultScanner internal constructor(
             }
         }
 
-        override fun centralManager(
-            central: CBCentralManager,
-            didDiscoverPeripheral: CBPeripheral,
-            advertisementData: Map<Any?, *>,
-            RSSI: NSNumber,
-        ) {
+        override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
             scanner.discoverPeripheral(
                 central,
                 didDiscoverPeripheral,
@@ -161,19 +150,11 @@ actual class DefaultScanner internal constructor(
             scanner.handleDeviceConnected(didConnectPeripheral.identifier)
         }
 
-        override fun centralManager(
-            central: CBCentralManager,
-            didDisconnectPeripheral: CBPeripheral,
-            error: NSError?,
-        ) {
+        override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
             scanner.handleDeviceDisconnected(didDisconnectPeripheral.identifier)
         }
 
-        override fun centralManager(
-            central: CBCentralManager,
-            didFailToConnectPeripheral: CBPeripheral,
-            error: NSError?,
-        ) {
+        override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
             scanner.handleDeviceDisconnected(didFailToConnectPeripheral.identifier)
         }
     }
@@ -238,10 +219,7 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun retrievePairedDeviceDiscoveredEvents(
-        withServices: Filter,
-        connectionSettings: ConnectionSettings?,
-    ): List<Scanner.DeviceDiscovered> {
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Filter, connectionSettings: ConnectionSettings?): List<Scanner.DeviceDiscovered> {
         val centralManager = getOrCreateCentralManager()
         return centralManager
             .retrieveConnectedPeripheralsWithServices(withServices.toList())

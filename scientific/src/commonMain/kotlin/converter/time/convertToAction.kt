@@ -43,6 +43,5 @@ infix operator fun <EnergyUnit : ImperialEnergy, TimeUnit : Time> ScientificValu
 ) = energy * this
 
 @JvmName("timeTimesEnergy")
-infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>,
-) = energy * this
+infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(energy: ScientificValue<PhysicalQuantity.Energy, EnergyUnit>) =
+    energy * this

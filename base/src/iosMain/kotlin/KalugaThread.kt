@@ -49,7 +49,9 @@ actual data class KalugaThread(val thread: NSThread) {
             "Thread ${(threadDescription["number"] ?: threadDescription["num"]).orEmpty().ifEmpty { "Unknown" }}"
         }
     }
-        set(value) { thread.name = value }
+        set(value) {
+            thread.name = value
+        }
 
     /**
      * When `true` this thread is the main thread.

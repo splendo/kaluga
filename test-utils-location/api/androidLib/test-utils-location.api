@@ -132,9 +132,12 @@ public final class com/splendo/kaluga/test/location/MockLocationState$Initializi
 
 public final class com/splendo/kaluga/test/location/MockLocationState$NotInitialized : com/splendo/kaluga/test/location/MockLocationState$Inactive, com/splendo/kaluga/location/LocationState$NotInitialized {
 	public static final field INSTANCE Lcom/splendo/kaluga/test/location/MockLocationState$NotInitialized;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getLocation ()Lcom/splendo/kaluga/location/Location;
+	public fun hashCode ()I
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public final fun startInitializing ()Lkotlin/jvm/functions/Function0;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/test/location/MockLocationState$PermittedHandler {

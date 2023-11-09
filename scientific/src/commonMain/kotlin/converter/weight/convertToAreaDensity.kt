@@ -54,6 +54,5 @@ infix operator fun <WeightUnit : USCustomaryWeight, AreaUnit : ImperialArea> Sci
 ) = (unit per area.unit).areaDensity(this, area)
 
 @JvmName("weightDivArea")
-infix operator fun <WeightUnit : Weight, AreaUnit : Area> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-) = (Kilogram per SquareMeter).areaDensity(this, area)
+infix operator fun <WeightUnit : Weight, AreaUnit : Area> ScientificValue<PhysicalQuantity.Weight, WeightUnit>.div(area: ScientificValue<PhysicalQuantity.Area, AreaUnit>) =
+    (Kilogram per SquareMeter).areaDensity(this, area)

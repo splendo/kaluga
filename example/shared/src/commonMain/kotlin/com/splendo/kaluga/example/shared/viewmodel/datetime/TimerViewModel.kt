@@ -20,16 +20,13 @@ package com.splendo.kaluga.example.shared.viewmodel.datetime
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.alerts.buildActionSheet
-import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.base.text.DateFormatStyle
 import com.splendo.kaluga.base.text.KalugaDateFormatter
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
-import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.KalugaTimeZone
 import com.splendo.kaluga.base.utils.TimeZoneNameStyle
-import com.splendo.kaluga.base.utils.utc
 import com.splendo.kaluga.datetime.timer.RecurringTimer
 import com.splendo.kaluga.datetime.timer.Timer
 import com.splendo.kaluga.datetime.timer.elapsed
@@ -83,7 +80,7 @@ class TimerViewModel(private val alertPresenterBuilder: AlertPresenter.Builder) 
                 emit(Unit)
                 delay(100)
             }
-        }
+        },
     ) { format, _ ->
         format.format(DefaultKalugaDate.now())
     }.toInitializedObservable("", coroutineScope)

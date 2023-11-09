@@ -133,11 +133,7 @@ actual class AlertPresenter(
         parent.dismissModalViewControllerAnimated(animated)
     }
 
-    override fun showAlert(
-        animated: Boolean,
-        afterHandler: (Alert.Action?) -> Unit,
-        completion: () -> Unit,
-    ) {
+    override fun showAlert(animated: Boolean, afterHandler: (Alert.Action?) -> Unit, completion: () -> Unit) {
         UIAlertController.alertControllerWithTitle(
             alert.title,
             alert.message,

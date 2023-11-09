@@ -53,7 +53,7 @@ sealed class BaseMethodMock<
     > {
 
     /**
-     * A Stub is a class that provides a [BaseAnswer] [A] for a set of [ParametersSpec.Values] [V]
+     * A Stub is a class that provides a [BaseAnswer] [A] for a set of [parametersSpec.Values] [V]
      */
     abstract class Stub<
         M : ParametersSpec.Matchers,
@@ -96,14 +96,13 @@ sealed class BaseMethodMock<
 
     private val stubs = concurrentMutableMapOf<M, S>()
     private val callParameters = concurrentMutableListOf<V>()
-    protected abstract val ParametersSpec: W
+    protected abstract val parametersSpec: W
 
     protected abstract fun createStub(matcher: M): S
 
-    internal fun onMatcher(matcher: M): S =
-        createStub(matcher).also {
-            stubs[matcher] = it
-        }
+    internal fun onMatcher(matcher: M): S = createStub(matcher).also {
+        stubs[matcher] = it
+    }
 
     protected fun getStubFor(values: V): S {
         callParameters.add(values)
@@ -111,7 +110,7 @@ sealed class BaseMethodMock<
         val matchingStubs = stubs.synchronized {
             keys.mapNotNull { matchers ->
                 val stub = this[matchers]
-                if (ParametersSpec.run { matchers.matches(values) } && stub != null) {
+                if (parametersSpec.run { matchers.matches(values) } && stub != null) {
                     matchers.asList().sorted() to stub
                 } else {
                     null
@@ -119,7 +118,9 @@ sealed class BaseMethodMock<
             }
         }
         // Ensure there is at least one stub. Otherwise fail
-        if (matchingStubs.isEmpty()) { fail { "No matching stubs found for $values" } }
+        if (matchingStubs.isEmpty()) {
+            fail { "No matching stubs found for $values" }
+        }
         val matchedStubs = (0..matchingStubs.first().first.size).fold(matchingStubs) { remainingMatches, index ->
             // Find the best matching stub.
             // Iterate over the length of the number of parameters passed to the method
@@ -139,7 +140,9 @@ sealed class BaseMethodMock<
             }
         }
         // Return the first element of the remaining list of stubbs
-        if (matchedStubs.isEmpty()) { fail { "No matching stubs found for $values" } }
+        if (matchedStubs.isEmpty()) {
+            fail { "No matching stubs found for $values" }
+        }
         return matchedStubs.first().second
     }
 
@@ -169,7 +172,7 @@ sealed class BaseMethodMock<
         verifyWithParameters(parameters, VerificationRule.times(times))
     }
 
-    internal fun verifyWithParameters(parameters: C, verificationRule: VerificationRule) = ParametersSpec.apply {
+    internal fun verifyWithParameters(parameters: C, verificationRule: VerificationRule) = parametersSpec.apply {
         val matchers = parameters.asMatchers()
         val matchedCalls = callParameters.filter {
             matchers.matches(it)
@@ -204,7 +207,7 @@ class MethodMock<
     V : ParametersSpec.Values,
     W : ParametersSpec<M, C, V>,
     R,
-    >(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, Answer<V, R>, MethodMock.Stub<M, V, R>>() {
+    >(override val parametersSpec: W) : BaseMethodMock<M, C, V, W, R, Answer<V, R>, MethodMock.Stub<M, V, R>>() {
     internal fun callWithValues(values: V): R = getStubFor(values).call(values)
 
     override fun createStub(matcher: M): Stub<M, V, R> = Stub(matcher)
@@ -241,12 +244,11 @@ class SuspendMethodMock<
     V : ParametersSpec.Values,
     W : ParametersSpec<M, C, V>,
     R,
-    >(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, SuspendedAnswer<V, R>, SuspendMethodMock.Stub<M, V, R>>() {
+    >(override val parametersSpec: W) : BaseMethodMock<M, C, V, W, R, SuspendedAnswer<V, R>, SuspendMethodMock.Stub<M, V, R>>() {
 
     internal suspend fun callWithValues(values: V): R = getStubFor(values).call(values)
 
-    override fun createStub(matcher: M): Stub<M, V, R> =
-        Stub(matcher)
+    override fun createStub(matcher: M): Stub<M, V, R> = Stub(matcher)
 
     /**
      * A [BaseMethodMock.Stub] for suspending methods.

@@ -55,7 +55,7 @@ class DeviceDetails(value: Identifier) : SingleValueNavigationAction<Serializabl
 class BluetoothDeviceDetailViewModel(private val identifier: Identifier) : BaseLifecycleViewModel(), KoinComponent {
 
     companion object {
-        private const val rssi_frequency = 1000L
+        private const val RSSI_FREQUENCY = 1000L
     }
 
     private val bluetooth: Bluetooth by inject()
@@ -87,7 +87,7 @@ class BluetoothDeviceDetailViewModel(private val identifier: Identifier) : BaseL
         scope.launch {
             while (true) {
                 device.updateRssi()
-                delay(rssi_frequency)
+                delay(RSSI_FREQUENCY)
             }
         }
     }

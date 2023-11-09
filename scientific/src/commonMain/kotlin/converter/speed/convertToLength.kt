@@ -31,11 +31,9 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Speed, Met
     unit.distance.distance(this, time)
 
 @JvmName("imperialSpeedTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = unit.distance.distance(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    unit.distance.distance(this, time)
 
 @JvmName("speedTimesTime")
-infix operator fun <SpeedUnit : Speed, TimeUnit : Time> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = unit.distance.distance(this, time)
+infix operator fun <SpeedUnit : Speed, TimeUnit : Time> ScientificValue<PhysicalQuantity.Speed, SpeedUnit>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    unit.distance.distance(this, time)

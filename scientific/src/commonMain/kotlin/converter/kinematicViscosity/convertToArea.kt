@@ -27,9 +27,8 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("metricKinematicViscosityTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = (unit.area).area(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    (unit.area).area(this, time)
 
 @JvmName("imperialKinematicViscosityTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>.times(

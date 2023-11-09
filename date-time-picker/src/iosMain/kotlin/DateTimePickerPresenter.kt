@@ -65,10 +65,7 @@ actual class DateTimePickerPresenter(
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The created [DateTimePickerPresenter]
          */
-        actual override fun create(
-            dateTimePicker: DateTimePicker,
-            coroutineScope: CoroutineScope,
-        ) = DateTimePickerPresenter(dateTimePicker, viewController)
+        actual override fun create(dateTimePicker: DateTimePicker, coroutineScope: CoroutineScope) = DateTimePickerPresenter(dateTimePicker, viewController)
     }
 
     private inner class DateTimePickerViewController(private val completion: (KalugaDate?) -> Unit) : UIViewController(null, null) {

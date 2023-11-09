@@ -130,8 +130,11 @@ public abstract class com/splendo/kaluga/test/media/MockPlaybackState$Active : c
 
 public final class com/splendo/kaluga/test/media/MockPlaybackState$Closed : com/splendo/kaluga/test/media/MockPlaybackState, com/splendo/kaluga/media/PlaybackState$Closed {
 	public static final field INSTANCE Lcom/splendo/kaluga/test/media/MockPlaybackState$Closed;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getPlaybackState ()Lcom/splendo/kaluga/media/PlaybackState;
+	public fun hashCode ()I
 	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/test/media/MockPlaybackState$Companion {

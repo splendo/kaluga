@@ -146,7 +146,7 @@ sealed interface NetworkState : KalugaState {
 internal sealed class NetworkStateImpl {
     abstract val networkConnectionType: NetworkConnectionType
 
-    object NotInitialized : NetworkStateImpl(), NetworkState.NotInitialized {
+    data object NotInitialized : NetworkStateImpl(), NetworkState.NotInitialized {
         override val networkConnectionType: NetworkConnectionType = NetworkConnectionType.Unknown.WithoutLastNetwork(
             NetworkConnectionType.Unknown.Reason.NOT_CLEAR,
         )

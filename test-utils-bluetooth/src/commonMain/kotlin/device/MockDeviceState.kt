@@ -25,7 +25,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.NotConnectableDeviceState
 
 sealed class MockDeviceState {
-    object NotConnectable : MockDeviceState(), NotConnectableDeviceState
+    data object NotConnectable : MockDeviceState(), NotConnectableDeviceState
     sealed class Connectable : MockDeviceState() {
 
         abstract val mockConnectableDeviceManager: MockConnectableDeviceManager

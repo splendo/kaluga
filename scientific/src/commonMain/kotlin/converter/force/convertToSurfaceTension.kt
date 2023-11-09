@@ -54,6 +54,5 @@ infix operator fun <ForceUnit : USCustomaryForce, LengthUnit : ImperialLength> S
 ) = (unit per length.unit).surfaceTension(this, length)
 
 @JvmName("forceDivLength")
-infix operator fun <ForceUnit : Force, LengthUnit : Length> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-) = (Newton per Meter).surfaceTension(this, length)
+infix operator fun <ForceUnit : Force, LengthUnit : Length> ScientificValue<PhysicalQuantity.Force, ForceUnit>.div(length: ScientificValue<PhysicalQuantity.Length, LengthUnit>) =
+    (Newton per Meter).surfaceTension(this, length)

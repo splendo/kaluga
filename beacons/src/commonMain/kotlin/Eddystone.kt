@@ -53,8 +53,7 @@ class Eddystone {
         private const val VALID_FRAME_SIZE = 18
         private const val UID_FRAME_TYPE = 0x00
 
-        private fun ByteArray.isValidUIDFrame() =
-            this.size == VALID_FRAME_SIZE && this[0] == UID_FRAME_TYPE.toByte()
+        private fun ByteArray.isValidUIDFrame() = this.size == VALID_FRAME_SIZE && this[0] == UID_FRAME_TYPE.toByte()
 
         internal fun unpack(data: ByteArray) = if (data.isValidUIDFrame()) {
             val txPower = data[1]

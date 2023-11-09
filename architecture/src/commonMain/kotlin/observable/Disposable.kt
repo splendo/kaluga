@@ -35,8 +35,7 @@ internal fun <R : T, T, OO : ObservableOptional<R>> removeObserver(observation: 
     observation.observers.remove(observer)
 }
 
-internal fun <R : T, T, OO : ObservableOptional<R>> observers(observation: Observation<R, T, OO>): List<(R) -> Unit> =
-    observation.observers
+internal fun <R : T, T, OO : ObservableOptional<R>> observers(observation: Observation<R, T, OO>): List<(R) -> Unit> = observation.observers
 
 /**
  * Reference to an object that should be disposed in time

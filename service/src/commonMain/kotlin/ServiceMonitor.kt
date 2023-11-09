@@ -56,13 +56,13 @@ interface ServiceMonitor {
  */
 abstract class DefaultServiceMonitor(protected val logger: Logger = RestrictedLogger(RestrictedLogLevel.None)) : ServiceMonitor {
 
-    protected open val TAG: String = this::class.simpleName ?: "ServiceMonitor"
+    protected open val logTag: String = this::class.simpleName ?: "ServiceMonitor"
 
     private val _isEnabled = MutableStateFlow<Boolean?>(null)
     override val isEnabled get() = _isEnabled.filterNotNull()
 
     final override fun startMonitoring() {
-        logger.debug(TAG) { "Start monitoring service state ($isServiceEnabled)" }
+        logger.debug(logTag) { "Start monitoring service state ($isServiceEnabled)" }
         updateState()
         monitoringDidStart()
     }
@@ -70,7 +70,7 @@ abstract class DefaultServiceMonitor(protected val logger: Logger = RestrictedLo
     protected abstract fun monitoringDidStart()
 
     final override fun stopMonitoring() {
-        logger.debug(TAG) { "Stop monitoring service state" }
+        logger.debug(logTag) { "Stop monitoring service state" }
         _isEnabled.value = null
         monitoringDidStop()
     }
@@ -78,7 +78,7 @@ abstract class DefaultServiceMonitor(protected val logger: Logger = RestrictedLo
     protected abstract fun monitoringDidStop()
 
     protected fun updateState() {
-        logger.debug(TAG) { "updateState isLocationEnabled = $isServiceEnabled" }
+        logger.debug(logTag) { "updateState isLocationEnabled = $isServiceEnabled" }
         _isEnabled.value = isServiceEnabled
     }
 }

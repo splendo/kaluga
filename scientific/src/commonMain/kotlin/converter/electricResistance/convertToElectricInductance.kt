@@ -39,9 +39,8 @@ infix operator fun <ResistanceUnit : ElectricResistance, FrequencyUnit : Frequen
 ) = Henry.inductance(this, frequency)
 
 @JvmName("abohmTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricResistance, Abohm>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = Abhenry.inductance(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricResistance, Abohm>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    Abhenry.inductance(this, time)
 
 @JvmName("resistanceTimesTime")
 infix operator fun <ResistanceUnit : ElectricResistance, TimeUnit : Time> ScientificValue<PhysicalQuantity.ElectricResistance, ResistanceUnit>.times(

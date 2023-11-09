@@ -81,8 +81,7 @@ class RecurringTimerTest {
     @Test
     fun elapsedFlow(): Unit = runBlocking {
         val timerScope = CoroutineScope(Dispatchers.Default)
-        fun List<Duration>.isAscending(): Boolean =
-            windowed(size = 2).map { it[0] <= it[1] }.all { it }
+        fun List<Duration>.isAscending(): Boolean = windowed(size = 2).map { it[0] <= it[1] }.all { it }
 
         val duration = 500.milliseconds
         val timer = RecurringTimer(
@@ -121,16 +120,14 @@ class RecurringTimerTest {
     // MARK - elapsedIrregularFlow test
     /** Provides mock time ticks. */
     private class PredefinedTimeSource(val ticks: List<Duration>) : TimeSource {
-        override fun markNow(): TimeMark =
-            object : TimeMark {
-                var index = 0
-                override fun elapsedNow(): Duration =
-                    if (index < ticks.size) {
-                        ticks[index].also { index++ }
-                    } else {
-                        throw IllegalStateException("Unexpected elapsedNow() call")
-                    }
+        override fun markNow(): TimeMark = object : TimeMark {
+            var index = 0
+            override fun elapsedNow(): Duration = if (index < ticks.size) {
+                ticks[index].also { index++ }
+            } else {
+                throw IllegalStateException("Unexpected elapsedNow() call")
             }
+        }
     }
 
     /** Validates requested delays. */

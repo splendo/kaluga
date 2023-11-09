@@ -8,7 +8,10 @@ public final class com/splendo/kaluga/permissions/camera/BaseCameraPermissionMan
 
 public final class com/splendo/kaluga/permissions/camera/CameraPermission : com/splendo/kaluga/permissions/base/Permission {
 	public static final field INSTANCE Lcom/splendo/kaluga/permissions/camera/CameraPermission;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/permissions/camera/CameraPermissionManagerBuilder : com/splendo/kaluga/permissions/camera/BaseCameraPermissionManagerBuilder {

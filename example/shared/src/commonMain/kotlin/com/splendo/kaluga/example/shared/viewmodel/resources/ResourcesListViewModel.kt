@@ -8,10 +8,10 @@ import com.splendo.kaluga.resources.localized
 
 sealed class ResourcesListNavigationAction : NavigationAction<Nothing>(null) {
 
-    object Color : ResourcesListNavigationAction()
-    object Button : ResourcesListNavigationAction()
-    object Image : ResourcesListNavigationAction()
-    object Label : ResourcesListNavigationAction()
+    data object Color : ResourcesListNavigationAction()
+    data object Button : ResourcesListNavigationAction()
+    data object Image : ResourcesListNavigationAction()
+    data object Label : ResourcesListNavigationAction()
 }
 
 enum class Resource(private val titleKey: String) {

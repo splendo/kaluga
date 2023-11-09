@@ -1,6 +1,9 @@
 public final class com/splendo/kaluga/test/permissions/DummyPermission : com/splendo/kaluga/permissions/base/Permission {
 	public static final field INSTANCE Lcom/splendo/kaluga/test/permissions/DummyPermission;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/test/permissions/MockBasePermissionStateRepo : com/splendo/kaluga/permissions/base/BasePermissionStateRepo {

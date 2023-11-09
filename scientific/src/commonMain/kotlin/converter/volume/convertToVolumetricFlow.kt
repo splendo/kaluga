@@ -32,9 +32,8 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricVolumeDivTime")
-infix operator fun <VolumeUnit : MetricVolume, TimeUnit : Time> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = (unit per time.unit).volumetricFlow(this, time)
+infix operator fun <VolumeUnit : MetricVolume, TimeUnit : Time> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    (unit per time.unit).volumetricFlow(this, time)
 
 @JvmName("imperialVolumeDivTime")
 infix operator fun <VolumeUnit : ImperialVolume, TimeUnit : Time> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
@@ -52,6 +51,5 @@ infix operator fun <VolumeUnit : USCustomaryVolume, TimeUnit : Time> ScientificV
 ) = (unit per time.unit).volumetricFlow(this, time)
 
 @JvmName("volumeDivTime")
-infix operator fun <VolumeUnit : Volume, TimeUnit : Time> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = (CubicMeter per Second).volumetricFlow(this, time)
+infix operator fun <VolumeUnit : Volume, TimeUnit : Time> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    (CubicMeter per Second).volumetricFlow(this, time)

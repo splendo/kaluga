@@ -50,10 +50,8 @@ sealed class NavigationSpec {
          * @param flags Set of [IntentFlag] to add to the navigation [Intent]
          * @param launchType The [LaunchType] to determine how the [Activity] should be launched
          */
-        inline fun <reified A : android.app.Activity> Activity(
-            flags: Set<IntentFlag> = emptySet(),
-            launchType: LaunchType = LaunchType.NoResult,
-        ) = Activity(A::class.java, flags, launchType)
+        inline fun <reified A : android.app.Activity> Activity(flags: Set<IntentFlag> = emptySet(), launchType: LaunchType = LaunchType.NoResult) =
+            Activity(A::class.java, flags, launchType)
 
         /**
          * Navigates using an [ActivityResultLauncher]
@@ -63,10 +61,8 @@ sealed class NavigationSpec {
          * @param provideResultLauncher A callback method called on an instance of [Activity] to provide an [ActivityResultLauncher] to launch with [input].
          * Note that this method may be called after the instance of [Activity] has been created.
          */
-        inline fun <reified Activity : android.app.Activity, Input> Contract(
-            input: Input,
-            noinline provideResultLauncher: Activity.() -> ActivityResultLauncher<Input>,
-        ) = Contract(Activity::class, input, provideResultLauncher)
+        inline fun <reified Activity : android.app.Activity, Input> Contract(input: Input, noinline provideResultLauncher: Activity.() -> ActivityResultLauncher<Input>) =
+            Contract(Activity::class, input, provideResultLauncher)
     }
 
     /**
@@ -96,18 +92,17 @@ sealed class NavigationSpec {
                  * @param provideResultLauncher A callback method called on an instance of [activityClass] to provide an [ActivityResultLauncher] to launch the new activity with.
                  * Note that this method may be called after the instance of [activityClass] has been created.
                  */
-                inline fun <reified Activity : android.app.Activity> ActivityContract(
-                    noinline provideResultLauncher: Activity.() -> ActivityResultLauncher<Intent>,
-                ) = ActivityContract(
-                    Activity::class,
-                    provideResultLauncher,
-                )
+                inline fun <reified Activity : android.app.Activity> ActivityContract(noinline provideResultLauncher: Activity.() -> ActivityResultLauncher<Intent>) =
+                    ActivityContract(
+                        Activity::class,
+                        provideResultLauncher,
+                    )
             }
 
             /**
              * [Activity] will launch using [android.app.Activity.startActivity]
              */
-            object NoResult : LaunchType()
+            data object NoResult : LaunchType()
 
             /**
              * [Activity] will launch using [android.app.Activity.startActivityForResult]
@@ -188,12 +183,12 @@ sealed class NavigationSpec {
             /**
              * Adds a [androidx.fragment.app.Fragment] without removing any other fragments that may have been added
              */
-            object Add : Type()
+            data object Add : Type()
 
             /**
              * Replaces the existing [androidx.fragment.app.Fragment]. If no fragment has been added yet, this just adds the fragment.
              */
-            object Replace : Type()
+            data object Replace : Type()
         }
 
         /**
@@ -203,7 +198,7 @@ sealed class NavigationSpec {
             /**
              * Doesn't add the [androidx.fragment.app.Fragment] to the backstack
              */
-            object DontAdd : BackStackSettings()
+            data object DontAdd : BackStackSettings()
 
             /**
              * Adds the [androidx.fragment.app.Fragment] to the backstack
@@ -309,8 +304,8 @@ sealed class NavigationSpec {
          * Type of media the camera can capture
          */
         sealed class Type {
-            object Image : Type()
-            object Video : Type()
+            data object Image : Type()
+            data object Video : Type()
         }
     }
 
@@ -324,8 +319,8 @@ sealed class NavigationSpec {
          * The type of formatting used for composing the email
          */
         sealed class Type {
-            object Plain : Type()
-            object Stylized : Type()
+            data object Plain : Type()
+            data object Stylized : Type()
         }
 
         /**
@@ -415,12 +410,12 @@ sealed class NavigationSpec {
             /**
              * Opens the Dialer screen and pre-fills the phone number
              */
-            object Dial : Type()
+            data object Dial : Type()
 
             /**
              * Opens the phone screen and calls the phone number
              */
-            object Call : Type()
+            data object Call : Type()
         }
     }
 
@@ -433,60 +428,60 @@ sealed class NavigationSpec {
 
             abstract fun intent(activity: android.app.Activity): Intent
 
-            object General : Type() {
+            data object General : Type() {
                 override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_SETTINGS)
             }
-            object Wireless : Type() {
+            data object Wireless : Type() {
                 override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS)
             }
-            object AirplaneMode : Type() {
+            data object AirplaneMode : Type() {
                 override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_AIRPLANE_MODE_SETTINGS)
             }
-            object Wifi : Type() {
+            data object Wifi : Type() {
                 override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_WIFI_SETTINGS)
             }
 
-            object Apn : Type() {
+            data object Apn : Type() {
                 override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_APN_SETTINGS)
             }
 
-            object Bluetooth : Type() {
+            data object Bluetooth : Type() {
                 override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS)
             }
 
-            object Date : Type() {
+            data object Date : Type() {
                 override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_DATE_SETTINGS)
             }
 
-            object Locale : Type() {
+            data object Locale : Type() {
                 override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_LOCALE_SETTINGS)
             }
 
-            object InputMethod : Type() {
+            data object InputMethod : Type() {
                 override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS)
             }
 
-            object Display : Type() {
+            data object Display : Type() {
                 override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_DISPLAY_SETTINGS)
             }
 
-            object Security : Type() {
+            data object Security : Type() {
                 override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS)
             }
 
-            object LocationSource : Type() {
+            data object LocationSource : Type() {
                 override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             }
 
-            object InternalStorage : Type() {
+            data object InternalStorage : Type() {
                 override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_INTERNAL_STORAGE_SETTINGS)
             }
 
-            object MemoryCard : Type() {
+            data object MemoryCard : Type() {
                 override fun intent(activity: android.app.Activity): Intent = Intent(android.provider.Settings.ACTION_MEMORY_CARD_SETTINGS)
             }
 
-            object AppDetails : Type() {
+            data object AppDetails : Type() {
                 override fun intent(activity: android.app.Activity): Intent {
                     val uri = Uri.fromParts("package", activity.packageName, null)
                     return Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri)
@@ -504,9 +499,9 @@ sealed class NavigationSpec {
          * The type of Text Message to send
          */
         sealed class Type {
-            object Plain : Type()
-            object Image : Type()
-            object Video : Type()
+            data object Plain : Type()
+            data object Image : Type()
+            data object Video : Type()
         }
 
         /**
@@ -562,8 +557,8 @@ sealed class NavigationSpec {
      */
     data class Browser(val url: URL, val viewType: Type) : NavigationSpec() {
         sealed class Type {
-            object CustomTab : Type()
-            object Normal : Type()
+            data object CustomTab : Type()
+            data object Normal : Type()
         }
     }
 

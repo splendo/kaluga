@@ -161,7 +161,7 @@ internal sealed class LocationStateImpl {
 
     abstract val location: Location
 
-    object NotInitialized : LocationStateImpl(), LocationState.NotInitialized {
+    data object NotInitialized : LocationStateImpl(), LocationState.NotInitialized {
         override val location: Location = Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)
 
         fun startInitializing(locationManager: LocationManager): suspend () -> Initializing = { Initializing(location, locationManager) }

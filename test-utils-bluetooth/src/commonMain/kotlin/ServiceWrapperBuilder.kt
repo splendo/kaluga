@@ -28,9 +28,7 @@ annotation class MockBuilderDsl
 @MockBuilderDsl
 typealias CharacteristicList = ArrayList<ServiceWrapperBuilder.Characteristic>
 
-fun CharacteristicList.characteristic(
-    builder: ServiceWrapperBuilder.Characteristic.Builder.() -> Unit,
-) = add(
+fun CharacteristicList.characteristic(builder: ServiceWrapperBuilder.Characteristic.Builder.() -> Unit) = add(
     ServiceWrapperBuilder.Characteristic.Builder().apply(builder).build(),
 )
 

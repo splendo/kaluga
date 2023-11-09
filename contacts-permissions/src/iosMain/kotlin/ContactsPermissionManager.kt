@@ -38,7 +38,7 @@ import platform.Contacts.CNEntityType
 import platform.Foundation.NSBundle
 import kotlin.time.Duration
 
-const val NSContactsUsageDescription = "NSContactsUsageDescription"
+private const val NS_CONTACTS_USAGE_DESCRIPTION = "NSContactsUsageDescription"
 
 /**
  * The [BasePermissionManager] to use as a default for [ContactsPermission]
@@ -66,7 +66,7 @@ actual class DefaultContactsPermissionManager(
     private var timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
     override fun requestPermissionDidStart() {
-        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSContactsUsageDescription).isEmpty()) {
+        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NS_CONTACTS_USAGE_DESCRIPTION).isEmpty()) {
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<Boolean>()
                 contactStore.requestAccessForEntityType(

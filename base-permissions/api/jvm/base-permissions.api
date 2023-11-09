@@ -73,6 +73,9 @@ public final class com/splendo/kaluga/permissions/base/PermissionManager$Event$P
 
 public final class com/splendo/kaluga/permissions/base/PermissionManager$Event$PermissionGranted : com/splendo/kaluga/permissions/base/PermissionManager$Event {
 	public static final field INSTANCE Lcom/splendo/kaluga/permissions/base/PermissionManager$Event$PermissionGranted;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class com/splendo/kaluga/permissions/base/PermissionState : com/splendo/kaluga/base/state/KalugaState {

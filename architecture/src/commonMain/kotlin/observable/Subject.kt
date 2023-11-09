@@ -93,15 +93,15 @@ abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(
 ) :
     BaseObservable<R, T, OO>(observation), BasicSubject<R, T, OO> {
 
-        override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
-            coroutineScope.launch(context) {
-                @Suppress("UNCHECKED_CAST")
-                stateFlowToBind().collect {
-                    set(it as T)
-                }
+    override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
+        coroutineScope.launch(context) {
+            @Suppress("UNCHECKED_CAST")
+            stateFlowToBind().collect {
+                set(it as T)
             }
         }
     }
+}
 
 expect interface PlatformSubjectObserver<R>
 
@@ -118,8 +118,8 @@ expect abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>>(
     stateFlowToBind: suspend () -> StateFlow<R?>,
 ) :
     AbstractBaseSubject<R, T, OO> {
-        protected abstract val platformSubjectObserver: PlatformSubjectObserver<R>
-        final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext)
+    protected abstract val platformSubjectObserver: PlatformSubjectObserver<R>
+    final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext)
 }
 
 /**
@@ -141,17 +141,16 @@ abstract class AbstractBaseInitializedSubject<T>(override val observation: Obser
     InitializedSubject<T>,
     MutableInitialized<T, T> by observation {
 
-        /**
-         * Constructor using an inital value.
-         * @param initialValue The [Value] to use as the initial value.
-         */
-        constructor(
-            initialValue: Value<T>,
-        ) : this(ObservationInitialized(initialValue))
+    /**
+     * Constructor using an inital value.
+     * @param initialValue The [Value] to use as the initial value.
+     */
+    constructor(
+        initialValue: Value<T>,
+    ) : this(ObservationInitialized(initialValue))
 
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Value<T> =
-            observation.currentObserved
-    }
+    override fun getValue(thisRef: Any?, property: KProperty<*>): Value<T> = observation.currentObserved
+}
 
 /**
  * Abstract class implementing [AbstractBaseInitializedSubject]
@@ -161,16 +160,16 @@ abstract class AbstractBaseInitializedSubject<T>(override val observation: Obser
 expect abstract class BaseInitializedSubject<T>(observation: ObservationInitialized<T>) :
     AbstractBaseInitializedSubject<T> {
 
-        /**
-         * Constructor using an inital value.
-         * @param initialValue The [Value] to use as the initial value.
-         */
-        constructor(
-            initialValue: Value<T>,
-        )
+    /**
+     * Constructor using an inital value.
+     * @param initialValue The [Value] to use as the initial value.
+     */
+    constructor(
+        initialValue: Value<T>,
+    )
 
-        final override val platformSubjectObserver: PlatformSubjectObserver<T>
-    }
+    final override val platformSubjectObserver: PlatformSubjectObserver<T>
+}
 
 /**
  * An abstract class extending [BaseSubject] that implements [UninitializedSubject].
@@ -186,9 +185,8 @@ abstract class AbstractBaseUninitializedSubject<T>(
 ),
     UninitializedSubject<T>,
     MutableUninitialized<T> by observation {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> =
-            observation.observedValue
-    }
+    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> = observation.observedValue
+}
 
 /**
  * An abstract class extending [AbstractBaseUninitializedSubject].
@@ -216,14 +214,13 @@ abstract class AbstractBaseDefaultSubject<R : T?, T>(
 ),
     DefaultSubject<R, T>,
     MutableDefaultInitialized<R, T?> by observation {
-        constructor(
-            defaultValue: Value<R>,
-            initialValue: Value<T?>,
-        ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue))
+    constructor(
+        defaultValue: Value<R>,
+        initialValue: Value<T?>,
+    ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue))
 
-        override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
-            observation.currentObserved
-    }
+    override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> = observation.currentObserved
+}
 
 /**
  * An abstract class extending [AbstractBaseDefaultSubject].
@@ -301,14 +298,14 @@ class SimpleDefaultSubject<R : T?, T>(
         Value(initialValue),
     ) {
 
-        override fun post(newValue: T?) {
-            observation.observedValue = Value(newValue)
-        }
-
-        override suspend fun set(newValue: T?) {
-            observation.setValue(Value(newValue))
-        }
+    override fun post(newValue: T?) {
+        observation.observedValue = Value(newValue)
     }
+
+    override suspend fun set(newValue: T?) {
+        observation.setValue(Value(newValue))
+    }
+}
 
 /**
  * Creates a [SimpleInitializedSubject] with an initial value

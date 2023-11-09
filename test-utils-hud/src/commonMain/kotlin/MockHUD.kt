@@ -53,8 +53,7 @@ class MockHUD(
          */
         val createMock = ::create.mock()
 
-        override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope): MockHUD =
-            createMock.call(hudConfig, coroutineScope)
+        override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope): MockHUD = createMock.call(hudConfig, coroutineScope)
 
         init {
             if (setupMocks) {

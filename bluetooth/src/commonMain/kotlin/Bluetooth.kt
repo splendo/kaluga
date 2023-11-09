@@ -210,11 +210,8 @@ class Bluetooth constructor(
         }
     }
 
-    override fun pairedDevices(
-        filter: Filter,
-        removeForAllPairedFilters: Boolean,
-        connectionSettings: ConnectionSettings?,
-    ): Flow<List<Device>> = pairedDevices(filter, removeForAllPairedFilters, connectionSettings, timer)
+    override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Flow<List<Device>> =
+        pairedDevices(filter, removeForAllPairedFilters, connectionSettings, timer)
 
     internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings? = null, timer: Flow<Unit>): Flow<List<Device>> {
         var shouldStartRetrievingPairing = true
@@ -536,7 +533,9 @@ fun Flow<Characteristic?>.descriptors(): Flow<List<Descriptor>> {
  * @return the [Flow] of the [AttributeType] with [uuid] in the list of [AttributeType] in the given [Flow]
  */
 @JvmName("getAttribute")
-operator fun <AttributeType, ReadAction, WriteAction> Flow<List<AttributeType>>.get(uuid: UUID): Flow<AttributeType?>
+operator fun <AttributeType, ReadAction, WriteAction> Flow<List<AttributeType>>.get(
+    uuid: UUID,
+): Flow<AttributeType?>
     where AttributeType : Attribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write {
     return this.map { attribute ->
         attribute.firstOrNull {
