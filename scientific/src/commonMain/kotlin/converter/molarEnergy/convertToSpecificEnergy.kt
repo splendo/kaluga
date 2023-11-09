@@ -40,24 +40,20 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndImperialMolarEnergyDivMetricMolarMass")
-infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.div(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, MetricMolarMass>,
-) = (unit.energy per molarMass.unit.weight).specificEnergy(this, molarMass)
+infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.div(molarMass: ScientificValue<PhysicalQuantity.MolarMass, MetricMolarMass>) =
+    (unit.energy per molarMass.unit.weight).specificEnergy(this, molarMass)
 
 @JvmName("metricAndImperialMolarEnergyDivImperialMolarMass")
-infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.div(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, ImperialMolarMass>,
-) = (unit.energy per molarMass.unit.weight).specificEnergy(this, molarMass)
+infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.div(molarMass: ScientificValue<PhysicalQuantity.MolarMass, ImperialMolarMass>) =
+    (unit.energy per molarMass.unit.weight).specificEnergy(this, molarMass)
 
 @JvmName("metricAndImperialMolarEnergyDivUKImperialMolarMass")
-infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.div(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, UKImperialMolarMass>,
-) = (unit.energy per molarMass.unit.weight).specificEnergy(this, molarMass)
+infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.div(molarMass: ScientificValue<PhysicalQuantity.MolarMass, UKImperialMolarMass>) =
+    (unit.energy per molarMass.unit.weight).specificEnergy(this, molarMass)
 
 @JvmName("metricAndImperialMolarEnergyDivUSCustomaryMolarMass")
-infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.div(
-    molarMass: ScientificValue<PhysicalQuantity.MolarMass, USCustomaryMolarMass>,
-) = (unit.energy per molarMass.unit.weight).specificEnergy(this, molarMass)
+infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.div(molarMass: ScientificValue<PhysicalQuantity.MolarMass, USCustomaryMolarMass>) =
+    (unit.energy per molarMass.unit.weight).specificEnergy(this, molarMass)
 
 @JvmName("metricMolarEnergyDivMetricMolarMass")
 infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricMolarEnergy>.div(molarMass: ScientificValue<PhysicalQuantity.MolarMass, MetricMolarMass>) =
@@ -81,24 +77,20 @@ infix operator fun <MolarEnergyUnit : MolarEnergy, MolarMassUnit : MolarMass> Sc
 ) = (Joule per Kilogram).specificEnergy(this, molarMass)
 
 @JvmName("metricAndImperialMolarEnergyTimesMetricMolality")
-infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, MetricMolality>,
-) = (unit.energy per molality.unit.per).specificEnergy(this, molality)
+infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.times(molality: ScientificValue<PhysicalQuantity.Molality, MetricMolality>) =
+    (unit.energy per molality.unit.per).specificEnergy(this, molality)
 
 @JvmName("metricAndImperialMolarEnergyTimesImperialMolality")
-infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, ImperialMolality>,
-) = (unit.energy per molality.unit.per).specificEnergy(this, molality)
+infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.times(molality: ScientificValue<PhysicalQuantity.Molality, ImperialMolality>) =
+    (unit.energy per molality.unit.per).specificEnergy(this, molality)
 
 @JvmName("metricAndImperialMolarEnergyTimesUKImperialMolality")
-infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, UKImperialMolality>,
-) = (unit.energy per molality.unit.per).specificEnergy(this, molality)
+infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.times(molality: ScientificValue<PhysicalQuantity.Molality, UKImperialMolality>) =
+    (unit.energy per molality.unit.per).specificEnergy(this, molality)
 
 @JvmName("metricAndImperialMolarEnergyTimesUSCustomaryMolality")
-infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.times(
-    molality: ScientificValue<PhysicalQuantity.Molality, USCustomaryMolality>,
-) = (unit.energy per molality.unit.per).specificEnergy(this, molality)
+infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricAndImperialMolarEnergy>.times(molality: ScientificValue<PhysicalQuantity.Molality, USCustomaryMolality>) =
+    (unit.energy per molality.unit.per).specificEnergy(this, molality)
 
 @JvmName("metricMolarEnergyTimesMetricMolality")
 infix operator fun ScientificValue<PhysicalQuantity.MolarEnergy, MetricMolarEnergy>.times(molality: ScientificValue<PhysicalQuantity.Molality, MetricMolality>) =

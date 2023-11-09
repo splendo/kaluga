@@ -42,6 +42,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([Z)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$BooleanArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$BooleanType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -49,6 +52,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue (Z)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$BooleanValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$BundleType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -63,6 +69,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([B)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ByteArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$ByteType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -70,6 +79,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (B)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ByteValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$CharArrayType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -77,6 +89,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([C)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$CharSequenceType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -84,6 +99,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (Ljava/lang/CharSequence;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharSequenceValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$CharType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -91,6 +109,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (C)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$DateArrayType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -98,6 +119,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue (Ljava/util/List;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DateArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$DateType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -105,6 +129,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (Lcom/splendo/kaluga/base/utils/KalugaDate;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DateValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$DoubleArrayType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -112,6 +139,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([D)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DoubleArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$DoubleType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -119,6 +149,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (D)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DoubleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$FloatArrayType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -126,6 +159,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([F)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$FloatArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$FloatType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -133,6 +169,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (F)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$FloatValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$IntegerArrayType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -140,6 +179,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([I)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$IntegerArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$IntegerType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -147,6 +189,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (I)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$IntegerValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$LongArrayType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -154,6 +199,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([J)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$LongArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$LongType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -161,6 +209,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (J)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$LongValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType {
@@ -199,6 +250,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([S)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ShortArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$ShortType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -206,6 +260,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue (S)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ShortValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$StringArrayType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -213,6 +270,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue (Ljava/util/List;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$StringArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$StringType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -220,6 +280,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue (Ljava/lang/String;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$StringValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$UnitType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -227,6 +290,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue (Lkotlin/Unit;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$UnitValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class com/splendo/kaluga/architecture/navigation/NavigationBundleValue {
@@ -511,8 +577,11 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$UnitValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$UnitValue;
+	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()Lkotlin/Unit;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public class com/splendo/kaluga/architecture/navigation/NavigationException : java/lang/RuntimeException {
@@ -630,6 +699,7 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseDefaultObse
 public abstract class com/splendo/kaluga/architecture/observable/BaseDefaultSubject : com/splendo/kaluga/architecture/observable/AbstractBaseDefaultSubject {
 	public fun <init> (Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;)V
 	public fun <init> (Lcom/splendo/kaluga/architecture/observable/ObservationDefault;)V
+	protected final fun getPlatformSubjectObserver ()Lcom/splendo/kaluga/architecture/observable/PlatformSubjectObserver;
 }
 
 public abstract class com/splendo/kaluga/architecture/observable/BaseInitializedObservable : com/splendo/kaluga/architecture/observable/BaseObservable, com/splendo/kaluga/architecture/observable/Initialized, com/splendo/kaluga/architecture/observable/InitializedObservable {
@@ -650,6 +720,7 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseInitialized
 public abstract class com/splendo/kaluga/architecture/observable/BaseInitializedSubject : com/splendo/kaluga/architecture/observable/AbstractBaseInitializedSubject {
 	public fun <init> (Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;)V
 	public fun <init> (Lcom/splendo/kaluga/architecture/observable/ObservationInitialized;)V
+	protected final fun getPlatformSubjectObserver ()Lcom/splendo/kaluga/architecture/observable/PlatformSubjectObserver;
 }
 
 public abstract class com/splendo/kaluga/architecture/observable/BaseObservable : com/splendo/kaluga/architecture/observable/BasicObservable, com/splendo/kaluga/architecture/observable/Initial {
@@ -671,6 +742,7 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseSimpleDispo
 public abstract class com/splendo/kaluga/architecture/observable/BaseSubject : com/splendo/kaluga/architecture/observable/AbstractBaseSubject {
 	public fun <init> (Lcom/splendo/kaluga/architecture/observable/Observation;Lkotlin/jvm/functions/Function1;)V
 	public final fun bind (Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;)V
+	protected abstract fun getPlatformSubjectObserver ()Lcom/splendo/kaluga/architecture/observable/PlatformSubjectObserver;
 }
 
 public abstract class com/splendo/kaluga/architecture/observable/BaseUninitializedObservable : com/splendo/kaluga/architecture/observable/BaseObservable, com/splendo/kaluga/architecture/observable/Uninitialized, com/splendo/kaluga/architecture/observable/UninitializedObservable {
@@ -689,6 +761,7 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseUninitializ
 
 public abstract class com/splendo/kaluga/architecture/observable/BaseUninitializedSubject : com/splendo/kaluga/architecture/observable/AbstractBaseUninitializedSubject {
 	public fun <init> (Lcom/splendo/kaluga/architecture/observable/ObservationUninitialized;)V
+	protected final fun getPlatformSubjectObserver ()Lcom/splendo/kaluga/architecture/observable/PlatformSubjectObserver;
 }
 
 public abstract interface class com/splendo/kaluga/architecture/observable/BasicObservable : com/splendo/kaluga/architecture/observable/Initial, kotlin/properties/ReadOnlyProperty {
@@ -887,6 +960,9 @@ public final class com/splendo/kaluga/architecture/observable/ObservationUniniti
 	public synthetic fun getValueDelegate ()Lkotlin/properties/ReadOnlyProperty;
 	public fun getValueDelegate ()Lkotlin/properties/ReadWriteProperty;
 	public fun setValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public abstract interface class com/splendo/kaluga/architecture/observable/PlatformSubjectObserver {
 }
 
 public abstract interface class com/splendo/kaluga/architecture/observable/Postable {

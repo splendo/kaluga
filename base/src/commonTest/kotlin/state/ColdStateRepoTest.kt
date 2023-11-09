@@ -35,9 +35,8 @@ import kotlin.test.assertEquals
 class ColdStateRepoTest : BaseTest() {
 
     sealed class CircuitState : KalugaState {
-
-        object Open : CircuitState()
-        object Closed : CircuitState()
+        data object Open : CircuitState()
+        data object Closed : CircuitState()
     }
 
     class Repo(coroutineContext: CoroutineContext) : ColdStateRepo<CircuitState>(coroutineContext = coroutineContext) {

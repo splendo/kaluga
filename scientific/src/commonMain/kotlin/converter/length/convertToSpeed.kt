@@ -30,9 +30,8 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricLengthDivTime")
-infix operator fun <LengthUnit : MetricLength, TimeUnit : Time> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = (unit per time.unit).speed(this, time)
+infix operator fun <LengthUnit : MetricLength, TimeUnit : Time> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    (unit per time.unit).speed(this, time)
 
 @JvmName("imperialLengthDivTime")
 infix operator fun <LengthUnit : ImperialLength, TimeUnit : Time> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
@@ -40,6 +39,5 @@ infix operator fun <LengthUnit : ImperialLength, TimeUnit : Time> ScientificValu
 ) = (unit per time.unit).speed(this, time)
 
 @JvmName("lengthDivTime")
-infix operator fun <LengthUnit : Length, TimeUnit : Time> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = (Meter per Second).speed(this, time)
+infix operator fun <LengthUnit : Length, TimeUnit : Time> ScientificValue<PhysicalQuantity.Length, LengthUnit>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    (Meter per Second).speed(this, time)

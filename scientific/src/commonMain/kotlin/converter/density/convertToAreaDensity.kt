@@ -36,19 +36,16 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricDensityTimesMetricLength")
-infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.Density, MetricDensity>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-) = (unit.weight per (1(unit.per) / length).unit).areaDensity(this, length)
+infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.Density, MetricDensity>.times(length: ScientificValue<PhysicalQuantity.Length, LengthUnit>) =
+    (unit.weight per (1(unit.per) / length).unit).areaDensity(this, length)
 
 @JvmName("imperialDensityTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Density, ImperialDensity>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-) = (unit.weight per (1(unit.per) / length).unit).areaDensity(this, length)
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Density, ImperialDensity>.times(length: ScientificValue<PhysicalQuantity.Length, LengthUnit>) =
+    (unit.weight per (1(unit.per) / length).unit).areaDensity(this, length)
 
 @JvmName("ukImperialDensityTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Density, UKImperialDensity>.times(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-) = (unit.weight per (1(unit.per) / length).unit).areaDensity(this, length)
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Density, UKImperialDensity>.times(length: ScientificValue<PhysicalQuantity.Length, LengthUnit>) =
+    (unit.weight per (1(unit.per) / length).unit).areaDensity(this, length)
 
 @JvmName("usCustomaryDensityTimesImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>.times(

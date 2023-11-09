@@ -100,11 +100,10 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
     iosTestInterop: (NamedDomainObjectContainer<DefaultCInteropSettings>.() -> Unit)? = null,
     iosExport: (Framework.() -> Unit)? = null
 ) {
-    targets {
-        configureEach {
-            compilations.configureEach {
-                (kotlinOptions as? KotlinJvmOptions)?.jvmTarget = "11"
-            }
+    targets.configureEach {
+        compilations.configureEach {
+            (kotlinOptions as? KotlinJvmOptions)?.jvmTarget = "11"
+            kotlinOptions.freeCompilerArgs += "-Xexpect-actual-classes"
         }
     }
 
@@ -151,7 +150,9 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
         binaries.executable()
     }
 
-    val commonMain = sourceSets.getByName("commonMain").apply {
+    applyDefaultHierarchyTemplate()
+
+    sourceSets.getByName("commonMain").apply {
         dependencies {
             implementationDependency(Dependencies.KotlinX.Coroutines.Core)
         }
@@ -173,7 +174,6 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
     }
 
     sourceSets.getByName("jvmTest").apply {
-        dependsOn(commonTest)
         dependencies {
             implementation(kotlin("test"))
             implementation(kotlin("test-junit"))
@@ -190,25 +190,6 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
     sourceSets.getByName("jsTest").apply {
         dependencies {
             implementation(kotlin("test-js"))
-        }
-    }
-
-    val iosMain = sourceSets.maybeCreate("iosMain").apply {
-        dependsOn(commonMain)
-    }
-
-    val iosTest = sourceSets.maybeCreate("iosTest").apply {
-        dependsOn(commonTest)
-    }
-
-    targets.forEach {
-        val sourceSetName = it.sourceSetName
-
-        sourceSets.getByName("${sourceSetName}Main").apply {
-            dependsOn(iosMain)
-        }
-        sourceSets.getByName("${sourceSetName}Test").apply {
-            dependsOn(iosTest)
         }
     }
 

@@ -40,9 +40,7 @@ interface BufferedAsListChannel<T : Any> : SendChannel<T>, ReceiveChannel<List<T
  * @param coroutineContext the [CoroutineContext] to use for batching
  * @return the [BufferedAsListChannel] created
  */
-fun <T : Any> BufferedAsListChannel(
-    coroutineContext: CoroutineContext,
-): BufferedAsListChannel<T> = BufferedAsListChannelInt(coroutineContext)
+fun <T : Any> BufferedAsListChannel(coroutineContext: CoroutineContext): BufferedAsListChannel<T> = BufferedAsListChannelInt(coroutineContext)
 
 /**
  * Creates a [BufferedAsListChannel] that batches its elements with a given [CoroutineContext]
@@ -52,11 +50,8 @@ fun <T : Any> BufferedAsListChannel(
  * @param closeDispatcherOnCompletion if `true` the [dispatcher] will be closed once the channel is closed
  * @return the [BufferedAsListChannel] created
  */
-fun <T : Any> BufferedAsListChannel(
-    coroutineContext: CoroutineContext,
-    dispatcher: CloseableCoroutineDispatcher,
-    closeDispatcherOnCompletion: Boolean,
-): BufferedAsListChannel<T> = BufferedAsListChannelInt(coroutineContext, dispatcher, closeDispatcherOnCompletion)
+fun <T : Any> BufferedAsListChannel(coroutineContext: CoroutineContext, dispatcher: CloseableCoroutineDispatcher, closeDispatcherOnCompletion: Boolean): BufferedAsListChannel<T> =
+    BufferedAsListChannelInt(coroutineContext, dispatcher, closeDispatcherOnCompletion)
 
 internal class BufferedAsListChannelInt<T : Any> private constructor(
     private val sendChannel: Channel<T>,

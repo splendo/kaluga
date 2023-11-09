@@ -50,12 +50,12 @@ sealed class RippleStyle {
     /**
      * A [RippleStyle] where no Ripple effect is applied
      */
-    object None : RippleStyle()
+    data object None : RippleStyle()
 
     /**
      * A [RippleStyle] where the ripple has the color of the [com.splendo.kaluga.resources.stylable.ButtonStateStyle.textColor] of the [KalugaButtonStyle.pressedStyle]
      */
-    object ForegroundRipple : RippleStyle()
+    data object ForegroundRipple : RippleStyle()
 
     /**
      * A [RippleStyle] where the ripple has a custom [KalugaColor]

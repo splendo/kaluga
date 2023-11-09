@@ -78,9 +78,7 @@ class TripleParameters<T0, T1, T2> : ParametersSpec<TripleParameters.Matchers<T0
 
 internal fun <T0, T1, T2, R> ((T0, T1, T2) -> R).asMock() = tripleParametersMock<T0, T1, T2, R>()
 
-fun <T0, T1, T2, R> ((T0, T1, T2) -> R).mockWithDefaultAnswer(
-    defaultAnswer: Answer<TripleParameters.Values<T0, T1, T2>, R>,
-) = asMock().also {
+fun <T0, T1, T2, R> ((T0, T1, T2) -> R).mockWithDefaultAnswer(defaultAnswer: Answer<TripleParameters.Values<T0, T1, T2>, R>) = asMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>()).doAnswer(defaultAnswer)
 }
 fun <T0, T1, T2, R> ((T0, T1, T2) -> R).mockWithDefaultValue(defaultValue: R) = asMock().also {
@@ -205,9 +203,7 @@ fun <T0, T1, T2, R : Any> ((T0, T1, T2) -> R).mock() = asMock()
 
 internal fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).asSuspendedMock() = suspendTripleParametersMock<T0, T1, T2, R>()
 
-fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).mockWithDefaultAnswer(
-    defaultAnswer: SuspendedAnswer<TripleParameters.Values<T0, T1, T2>, R>,
-) = asSuspendedMock().also {
+fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).mockWithDefaultAnswer(defaultAnswer: SuspendedAnswer<TripleParameters.Values<T0, T1, T2>, R>) = asSuspendedMock().also {
     it.on(ParameterMatcher.any<T0>(), ParameterMatcher.any<T1>(), ParameterMatcher.any<T2>()).doAnswer(defaultAnswer)
 }
 fun <T0, T1, T2, R> (suspend (T0, T1, T2) -> R).mockWithDefaultValue(defaultValue: R) = asSuspendedMock().also {

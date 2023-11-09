@@ -45,7 +45,7 @@ class PermissionRefreshScheduler(
 ) : CoroutineScope by coroutineScope {
 
     private sealed class TimerJobState {
-        object TimerNotRunning : TimerJobState() {
+        data object TimerNotRunning : TimerJobState() {
             fun startTimer(interval: Duration, coroutineScope: CoroutineScope, block: suspend () -> Unit): TimerJobState = TimerRunning(interval, block, coroutineScope)
         }
 

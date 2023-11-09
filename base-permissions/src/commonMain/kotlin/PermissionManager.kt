@@ -43,7 +43,7 @@ interface PermissionManager<P : Permission> {
         /**
          * An [Event] indicating the permission has been granted by the user.
          */
-        object PermissionGranted : Event()
+        data object PermissionGranted : Event()
 
         /**
          * An [Event] indicating the permission has been denied by the user

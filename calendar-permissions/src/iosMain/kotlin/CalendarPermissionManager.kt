@@ -38,7 +38,7 @@ import platform.EventKit.EKEventStore
 import platform.Foundation.NSBundle
 import kotlin.time.Duration
 
-const val NSCalendarsUsageDescription = "NSCalendarsUsageDescription"
+private const val NS_CALENDARS_USAGE_DESCRIPTION = "NSCalendarsUsageDescription"
 
 /**
  * The [BasePermissionManager] to use as a default for [CalendarPermission]
@@ -67,7 +67,7 @@ actual class DefaultCalendarPermissionManager(
     private var timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
     override fun requestPermissionDidStart() {
-        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSCalendarsUsageDescription).isEmpty()) {
+        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NS_CALENDARS_USAGE_DESCRIPTION).isEmpty()) {
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<Boolean>()
                 eventStore.requestAccessToEntityType(

@@ -23,7 +23,8 @@ import kotlin.test.assertEquals
 
 class ByOrdinalOrDefaultTest {
     enum class Numbers {
-        ONE, TWO
+        ONE,
+        TWO,
     }
 
     @Test

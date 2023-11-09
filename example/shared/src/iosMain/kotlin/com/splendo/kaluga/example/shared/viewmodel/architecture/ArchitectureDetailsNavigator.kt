@@ -22,23 +22,17 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.ViewControllerNavigator
 import platform.UIKit.UIViewController
 
-fun ArchitectureDetailsNavigator(
-    onFinishWithDetails: (InputDetails) -> Unit,
-    onClose: () -> Unit,
-) = DefaultNavigator<ArchitectureDetailsNavigationAction<*>> { action ->
+fun ArchitectureDetailsNavigator(onFinishWithDetails: (InputDetails) -> Unit, onClose: () -> Unit) = DefaultNavigator<ArchitectureDetailsNavigationAction<*>> { action ->
     when (action) {
         is ArchitectureDetailsNavigationAction.FinishWithDetails -> onFinishWithDetails(action.value)
         is ArchitectureDetailsNavigationAction.Close -> onClose()
     }
 }
 
-fun ArchitectureDetailsViewControllerNavigator(
-    parent: UIViewController,
-    onFinishWithDetails: (InputDetails) -> NavigationSpec,
-    onClose: () -> NavigationSpec,
-) = ViewControllerNavigator<ArchitectureDetailsNavigationAction<*>>(parent) { action ->
-    when (action) {
-        is ArchitectureDetailsNavigationAction.FinishWithDetails -> onFinishWithDetails(action.value)
-        is ArchitectureDetailsNavigationAction.Close -> onClose()
+fun ArchitectureDetailsViewControllerNavigator(parent: UIViewController, onFinishWithDetails: (InputDetails) -> NavigationSpec, onClose: () -> NavigationSpec) =
+    ViewControllerNavigator<ArchitectureDetailsNavigationAction<*>>(parent) { action ->
+        when (action) {
+            is ArchitectureDetailsNavigationAction.FinishWithDetails -> onFinishWithDetails(action.value)
+            is ArchitectureDetailsNavigationAction.Close -> onClose()
+        }
     }
-}

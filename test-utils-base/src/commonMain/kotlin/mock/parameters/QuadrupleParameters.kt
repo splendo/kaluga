@@ -48,8 +48,8 @@ class QuadrupleParameters<T0, T1, T2, T3> :
         val fourth: ParameterMatcher<T3>,
     ) :
         ParametersSpec.Matchers {
-            override fun asList() = listOf(first, second, third, fourth)
-        }
+        override fun asList() = listOf(first, second, third, fourth)
+    }
 
     /**
      * The [ParametersSpec.MatchersOrCaptor] for four parameters
@@ -65,13 +65,13 @@ class QuadrupleParameters<T0, T1, T2, T3> :
         val fourth: ParameterMatcherOrCaptor<T3>,
     ) :
         ParametersSpec.MatchersOrCaptor<Matchers<T0, T1, T2, T3>> {
-            override fun asMatchers(): Matchers<T0, T1, T2, T3> = Matchers(
-                first.asMatcher(),
-                second.asMatcher(),
-                third.asMatcher(),
-                fourth.asMatcher(),
-            )
-        }
+        override fun asMatchers(): Matchers<T0, T1, T2, T3> = Matchers(
+            first.asMatcher(),
+            second.asMatcher(),
+            third.asMatcher(),
+            fourth.asMatcher(),
+        )
+    }
 
     /**
      * The [ParametersSpec.Values] for four parameters
@@ -87,11 +87,10 @@ class QuadrupleParameters<T0, T1, T2, T3> :
         val fourth: T3,
     ) : ParametersSpec.Values
 
-    override fun Matchers<T0, T1, T2, T3>.matches(values: Values<T0, T1, T2, T3>): Boolean =
-        first.matches(values.first) &&
-            second.matches(values.second) &&
-            third.matches(values.third) &&
-            fourth.matches(values.fourth)
+    override fun Matchers<T0, T1, T2, T3>.matches(values: Values<T0, T1, T2, T3>): Boolean = first.matches(values.first) &&
+        second.matches(values.second) &&
+        third.matches(values.third) &&
+        fourth.matches(values.fourth)
 
     override fun MatchersOrCaptor<T0, T1, T2, T3>.capture(values: Values<T0, T1, T2, T3>) {
         (first as? Captor<T0>)?.capture(values.first)
@@ -103,9 +102,7 @@ class QuadrupleParameters<T0, T1, T2, T3> :
 
 internal fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).asMock() = quadrupleParametersMock<T0, T1, T2, T3, R>()
 
-fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).mockWithDefaultAnswer(
-    defaultAnswer: Answer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>,
-) = asMock().also {
+fun <T0, T1, T2, T3, R> ((T0, T1, T2, T3) -> R).mockWithDefaultAnswer(defaultAnswer: Answer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>) = asMock().also {
     it.on(
         ParameterMatcher.any<T0>(),
         ParameterMatcher.any<T1>(),
@@ -241,16 +238,15 @@ fun <T0, T1, T2, T3, R : Any> ((T0, T1, T2, T3) -> R).mock() = asMock()
 
 internal fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).asSuspendedMock() = suspendQuadrupleParametersMock<T0, T1, T2, T3, R>()
 
-fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).mockWithDefaultAnswer(
-    defaultAnswer: SuspendedAnswer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>,
-) = asSuspendedMock().also {
-    it.on(
-        ParameterMatcher.any<T0>(),
-        ParameterMatcher.any<T1>(),
-        ParameterMatcher.any<T2>(),
-        ParameterMatcher.any<T3>(),
-    ).doAnswer(defaultAnswer)
-}
+fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).mockWithDefaultAnswer(defaultAnswer: SuspendedAnswer<QuadrupleParameters.Values<T0, T1, T2, T3>, R>) =
+    asSuspendedMock().also {
+        it.on(
+            ParameterMatcher.any<T0>(),
+            ParameterMatcher.any<T1>(),
+            ParameterMatcher.any<T2>(),
+            ParameterMatcher.any<T3>(),
+        ).doAnswer(defaultAnswer)
+    }
 
 fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> R).mockWithDefaultValue(defaultValue: R) = asSuspendedMock().also {
     it.on(
@@ -280,8 +276,7 @@ fun <T0, T1, T2, T3> (suspend (T0, T1, T2, T3) -> Char).mock() = mockWithDefault
 fun <T0, T1, T2, T3> (suspend (T0, T1, T2, T3) -> CharArray).mock() = mockWithDefaultValue(charArrayOf())
 
 @JvmName("mockCharRange")
-fun <T0, T1, T2, T3> (suspend (T0, T1, T2, T3) -> CharRange).mock() =
-    mockWithDefaultValue(CharRange.EMPTY)
+fun <T0, T1, T2, T3> (suspend (T0, T1, T2, T3) -> CharRange).mock() = mockWithDefaultValue(CharRange.EMPTY)
 
 @JvmName("mockDouble")
 fun <T0, T1, T2, T3> (suspend (T0, T1, T2, T3) -> Double).mock() = mockWithDefaultValue(0.0)
@@ -359,8 +354,7 @@ fun <T0, T1, T2, T3> (suspend (T0, T1, T2, T3) -> UShortArray).mock() = mockWith
 fun <T0, T1, T2, T3> (suspend (T0, T1, T2, T3) -> Unit).mock() = mockWithDefaultValue(Unit)
 
 @JvmName("mockArray")
-inline fun <T0, T1, T2, T3, reified R> (suspend (T0, T1, T2, T3) -> Array<R>).mock() =
-    mockWithDefaultValue(emptyArray())
+inline fun <T0, T1, T2, T3, reified R> (suspend (T0, T1, T2, T3) -> Array<R>).mock() = mockWithDefaultValue(emptyArray())
 
 @JvmName("mockList")
 fun <T0, T1, T2, T3, R> (suspend (T0, T1, T2, T3) -> List<R>).mock() = mockWithDefaultValue(emptyList())

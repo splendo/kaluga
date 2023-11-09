@@ -112,7 +112,7 @@ object Dependencies {
         internal const val groupBase = "com.google.android"
         private const val materialBase = "$groupBase.material"
 
-        val Material = Dependency(materialBase, "material", "1.9.0")
+        val Material = Dependency(materialBase, "material", "1.10.0")
 
         object Play {
             private const val group = "$groupBase.play"
@@ -134,7 +134,7 @@ object Dependencies {
 
         object Activity {
             private const val group = "$groupBase.activity"
-            private const val version = "1.7.2"
+            private const val version = "1.8.0"
             val Activity = Dependency(group, "activity", version)
             val Ktx = Dependency(group, "activity-ktx", version)
             val Compose = Dependency(group, "activity-compose", version)
@@ -143,8 +143,8 @@ object Dependencies {
         val ArchCore = Dependency("$groupBase.arch.core", "core-testing", "2.2.0")
         val Browser = Dependency("$groupBase.browser", "browser", "1.6.0")
         object Compose {
-            private const val version = "1.5.1"
-            private const val uiVersion = "1.5.1"
+            private const val version = "1.5.4"
+            private const val uiVersion = "1.5.4"
             private const val composeGroupBase = "$groupBase.compose"
 
             val Foundation = Dependency("$composeGroupBase.foundation", "foundation", version)
@@ -169,7 +169,7 @@ object Dependencies {
         }
         object Navigation {
             private const val group = "$groupBase.navigation"
-            private const val version = "2.7.2"
+            private const val version = "2.7.5"
 
             val Compose = Dependency(group, "navigation-compose", version)
         }

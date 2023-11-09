@@ -51,10 +51,7 @@ actual class DefaultLocationManager(
      */
     class Builder : BaseLocationManager.Builder {
 
-        override fun create(
-            settings: Settings,
-            coroutineScope: CoroutineScope,
-        ): BaseLocationManager = DefaultLocationManager(
+        override fun create(settings: Settings, coroutineScope: CoroutineScope): BaseLocationManager = DefaultLocationManager(
             settings,
             coroutineScope,
         )
@@ -77,10 +74,9 @@ actual class DefaultLocationManager(
         override fun locationManager(manager: CLLocationManager, didFinishDeferredUpdatesWithError: NSError?) {
         }
 
-        private fun handleLocationChanged(locations: List<Location.KnownLocation>) =
-            locations.forEach {
-                onLocationsChanged.tryEmit(it) // should always works as the buffer is DROP_OLDEST
-            }
+        private fun handleLocationChanged(locations: List<Location.KnownLocation>) = locations.forEach {
+            onLocationsChanged.tryEmit(it) // should always works as the buffer is DROP_OLDEST
+        }
     }
 
     override val locationMonitor: LocationMonitor = LocationMonitor.Builder(CLLocationManager()).create()

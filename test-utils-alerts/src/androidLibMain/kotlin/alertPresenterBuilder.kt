@@ -31,7 +31,6 @@ import com.splendo.kaluga.test.architecture.lifecycleManagerObserver
  * which can automatically track which Activity is active for it.
  *
  */
-fun AppCompatActivity.alertPresenterBuilder(): AlertPresenter.Builder =
-    getOrPutAndRemoveOnDestroyFromCache {
-        AlertPresenter.Builder(lifecycleManagerObserver())
-    }
+fun AppCompatActivity.alertPresenterBuilder(): AlertPresenter.Builder = getOrPutAndRemoveOnDestroyFromCache {
+    AlertPresenter.Builder(lifecycleManagerObserver())
+}

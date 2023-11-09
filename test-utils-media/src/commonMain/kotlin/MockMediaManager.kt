@@ -196,10 +196,8 @@ class MockBaseMediaManager(
             }
         }
 
-        override fun create(
-            mediaSurfaceProvider: MediaSurfaceProvider?,
-            coroutineContext: CoroutineContext,
-        ): BaseMediaManager = createMock.call(mediaSurfaceProvider, coroutineContext)
+        override fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): BaseMediaManager =
+            createMock.call(mediaSurfaceProvider, coroutineContext)
     }
 
     /**

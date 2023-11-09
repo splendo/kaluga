@@ -178,11 +178,7 @@ actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = if (n < 0) {
     )
 }
 
-actual fun FiniteDecimal.pow(
-    n: Int,
-    scale: Int,
-    roundingMode: RoundingMode,
-): FiniteDecimal = if (n < 0) {
+actual fun FiniteDecimal.pow(n: Int, scale: Int, roundingMode: RoundingMode): FiniteDecimal = if (n < 0) {
     1.toFiniteDecimal()!! / pow(n.absoluteValue, scale, roundingMode)
 } else {
     copy(

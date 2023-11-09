@@ -53,9 +53,7 @@ val NavigationBundleSpecRow<*>.argumentKey: String get() = key ?: javaClass.simp
  * @param Action the type [NavigationAction] to create the route string for.
  * @param spec The [NavigationBundleSpec] describing the [Action]
  */
-inline fun <SpecRow : NavigationBundleSpecRow<*>, reified Action : NavigationAction<SpecRow>> route(
-    spec: NavigationBundleSpec<SpecRow>,
-): String = route(Action::class, spec)
+inline fun <SpecRow : NavigationBundleSpecRow<*>, reified Action : NavigationAction<SpecRow>> route(spec: NavigationBundleSpec<SpecRow>): String = route(Action::class, spec)
 
 /**
  * Creates a route string associated with a [NavigationAction] class given its [NavigationBundleSpec].
@@ -65,10 +63,7 @@ inline fun <SpecRow : NavigationBundleSpecRow<*>, reified Action : NavigationAct
  * @param actionClass The [KClass] of the [Action] to create the route for
  * @param spec The [NavigationBundleSpec] describing the associated [NavigationAction]
  */
-fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> route(
-    actionClass: KClass<Action>,
-    spec: NavigationBundleSpec<SpecRow>,
-): String {
+fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> route(actionClass: KClass<Action>, spec: NavigationBundleSpec<SpecRow>): String {
     val arguments = spec.rows.mapNotNull { row ->
         val key = row.argumentKey
         when (row.associatedType) {
@@ -99,10 +94,7 @@ fun <SpecRow : NavigationBundleSpecRow<*>> NavigationAction<SpecRow>.route(): St
 
 private data class RouteArgument(val key: String, val value: String, val isRequired: Boolean)
 
-private fun route(
-    navigationActionClass: KClass<out NavigationAction<*>>,
-    vararg arguments: RouteArgument,
-): String {
+private fun route(navigationActionClass: KClass<out NavigationAction<*>>, vararg arguments: RouteArgument): String {
     val allArguments = arguments.toList()
         .groupBy(keySelector = { it.isRequired }, valueTransform = { it.key to it.value })
     val requiredArguments = allArguments[true] ?: emptyList()
@@ -196,7 +188,7 @@ sealed class Route : ComposableNavSpec() {
         /**
          * An empty result
          */
-        object Empty : Result()
+        data object Empty : Result()
 
         /**
          * Result of a given type
@@ -294,7 +286,7 @@ sealed class Route : ComposableNavSpec() {
     /**
      * [Route] that closes all screens in the navigation stack
      */
-    object Close : Route()
+    data object Close : Route()
 }
 
 /**
@@ -313,8 +305,7 @@ val <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> A
  * @param Action the type [NavigationAction] to create the [Route] for.
  * @param route The string route to navigate from
  */
-fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.from(route: String) =
-    Route.FromRoute(this, route)
+fun <SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> Action.from(route: String) = Route.FromRoute(this, route)
 
 /**
  * Creates a [Route.FromRoute] that navigates to the Root view from [Action]

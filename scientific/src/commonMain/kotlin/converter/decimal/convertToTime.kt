@@ -30,16 +30,14 @@ import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("numberDivBPM")
-infix operator fun Number.div(frequency: ScientificValue<PhysicalQuantity.Frequency, BeatsPerMinute>): ScientificValue<PhysicalQuantity.Time, Hour> =
-    toDecimal() / frequency
+infix operator fun Number.div(frequency: ScientificValue<PhysicalQuantity.Frequency, BeatsPerMinute>): ScientificValue<PhysicalQuantity.Time, Hour> = toDecimal() / frequency
 
 @JvmName("numberDivFrequency")
 infix operator fun <FrequencyUnit : Frequency> Number.div(frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>): ScientificValue<PhysicalQuantity.Time, Second> =
     toDecimal() / frequency
 
 @JvmName("decimalDivBPM")
-infix operator fun Decimal.div(frequency: ScientificValue<PhysicalQuantity.Frequency, BeatsPerMinute>): ScientificValue<PhysicalQuantity.Time, Hour> =
-    Hour.time(this, frequency)
+infix operator fun Decimal.div(frequency: ScientificValue<PhysicalQuantity.Frequency, BeatsPerMinute>): ScientificValue<PhysicalQuantity.Time, Hour> = Hour.time(this, frequency)
 
 @JvmName("decimalDivFrequency")
 infix operator fun <FrequencyUnit : Frequency> Decimal.div(frequency: ScientificValue<PhysicalQuantity.Frequency, FrequencyUnit>): ScientificValue<PhysicalQuantity.Time, Second> =

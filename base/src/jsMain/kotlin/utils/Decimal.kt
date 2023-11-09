@@ -61,11 +61,7 @@ actual data class FiniteDecimal(val bd: BigDecimal) : Comparable<FiniteDecimal> 
 
 private val ZERO = BigDecimal.BigDecimal(0)
 
-private fun round(
-    a: BigDecimal,
-    roundingMode: RoundingMode,
-    maximumFractionDigits: Int? = null,
-): FiniteDecimal {
+private fun round(a: BigDecimal, roundingMode: RoundingMode, maximumFractionDigits: Int? = null): FiniteDecimal {
     val mode = if (BigDecimal.lessThan(a, ZERO)) {
         when (roundingMode) {
             RoundDown -> CEIL
@@ -84,72 +80,34 @@ private fun round(
 
 actual operator fun FiniteDecimal.plus(value: FiniteDecimal): FiniteDecimal = FiniteDecimal(BigDecimal.add(bd, value.bd))
 
-actual fun FiniteDecimal.plus(
-    value: FiniteDecimal,
-    scale: Int,
-): FiniteDecimal = FiniteDecimal(BigDecimal.add(bd, value.bd, Rounding(scale)))
+actual fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int): FiniteDecimal = FiniteDecimal(BigDecimal.add(bd, value.bd, Rounding(scale)))
 
-actual fun FiniteDecimal.plus(
-    value: FiniteDecimal,
-    scale: Int,
-    roundingMode: RoundingMode,
-): FiniteDecimal = round(BigDecimal.add(bd, value.bd), roundingMode, scale)
+actual fun FiniteDecimal.plus(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode): FiniteDecimal = round(BigDecimal.add(bd, value.bd), roundingMode, scale)
 
 actual operator fun FiniteDecimal.minus(value: FiniteDecimal): FiniteDecimal = FiniteDecimal(BigDecimal.subtract(bd, value.bd))
 
-actual fun FiniteDecimal.minus(
-    value: FiniteDecimal,
-    scale: Int,
-): FiniteDecimal = FiniteDecimal(BigDecimal.subtract(bd, value.bd, Rounding(scale)))
+actual fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int): FiniteDecimal = FiniteDecimal(BigDecimal.subtract(bd, value.bd, Rounding(scale)))
 
-actual fun FiniteDecimal.minus(
-    value: FiniteDecimal,
-    scale: Int,
-    roundingMode: RoundingMode,
-): FiniteDecimal = round(BigDecimal.subtract(bd, value.bd), roundingMode, scale)
+actual fun FiniteDecimal.minus(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode): FiniteDecimal = round(BigDecimal.subtract(bd, value.bd), roundingMode, scale)
 
-actual operator fun FiniteDecimal.div(
-    value: FiniteDecimal,
-): FiniteDecimal = FiniteDecimal(BigDecimal.divide(bd, value.bd, Rounding()))
+actual operator fun FiniteDecimal.div(value: FiniteDecimal): FiniteDecimal = FiniteDecimal(BigDecimal.divide(bd, value.bd, Rounding()))
 
-actual fun FiniteDecimal.div(
-    value: FiniteDecimal,
-    scale: Int,
-): FiniteDecimal = FiniteDecimal(BigDecimal.divide(bd, value.bd, Rounding(scale)))
+actual fun FiniteDecimal.div(value: FiniteDecimal, scale: Int): FiniteDecimal = FiniteDecimal(BigDecimal.divide(bd, value.bd, Rounding(scale)))
 
-actual fun FiniteDecimal.div(
-    value: FiniteDecimal,
-    scale: Int,
-    roundingMode: RoundingMode,
-): FiniteDecimal = round(BigDecimal.divide(bd, value.bd, Rounding(scale + 1, ROUNDING_MODE, DIV_DECIMAL_128_SIGNIFICANT_DIGITS)), roundingMode, scale)
+actual fun FiniteDecimal.div(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode): FiniteDecimal =
+    round(BigDecimal.divide(bd, value.bd, Rounding(scale + 1, ROUNDING_MODE, DIV_DECIMAL_128_SIGNIFICANT_DIGITS)), roundingMode, scale)
 
-actual operator fun FiniteDecimal.times(
-    value: FiniteDecimal,
-): FiniteDecimal = FiniteDecimal(BigDecimal.multiply(bd, value.bd, Rounding()))
+actual operator fun FiniteDecimal.times(value: FiniteDecimal): FiniteDecimal = FiniteDecimal(BigDecimal.multiply(bd, value.bd, Rounding()))
 
-actual fun FiniteDecimal.times(
-    value: FiniteDecimal,
-    scale: Int,
-): FiniteDecimal = FiniteDecimal(BigDecimal.multiply(bd, value.bd, Rounding(scale)))
+actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int): FiniteDecimal = FiniteDecimal(BigDecimal.multiply(bd, value.bd, Rounding(scale)))
 
-actual fun FiniteDecimal.times(
-    value: FiniteDecimal,
-    scale: Int,
-    roundingMode: RoundingMode,
-): FiniteDecimal = round(BigDecimal.multiply(bd, value.bd), roundingMode, scale)
+actual fun FiniteDecimal.times(value: FiniteDecimal, scale: Int, roundingMode: RoundingMode): FiniteDecimal = round(BigDecimal.multiply(bd, value.bd), roundingMode, scale)
 
 actual infix fun FiniteDecimal.pow(n: Int): FiniteDecimal = FiniteDecimal(BigDecimal.BigDecimal(toDouble().pow(n)))
 actual fun FiniteDecimal.pow(n: Int, scale: Int): FiniteDecimal = FiniteDecimal(BigDecimal.round((this pow n).bd, Rounding(scale)))
-actual fun FiniteDecimal.pow(
-    n: Int,
-    scale: Int,
-    roundingMode: RoundingMode,
-): FiniteDecimal = this pow n
+actual fun FiniteDecimal.pow(n: Int, scale: Int, roundingMode: RoundingMode): FiniteDecimal = this pow n
 
-actual fun FiniteDecimal.round(
-    scale: Int,
-    roundingMode: RoundingMode,
-): FiniteDecimal = round(bd, roundingMode, scale)
+actual fun FiniteDecimal.round(scale: Int, roundingMode: RoundingMode): FiniteDecimal = round(bd, roundingMode, scale)
 
 actual fun Number.toFiniteDecimal(): FiniteDecimal? = this.toString().toFiniteDecimal()
 actual fun String.toFiniteDecimal(): FiniteDecimal? = try {

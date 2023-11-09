@@ -71,39 +71,37 @@ class LocationStateTest :
 
     class Context(private val configuration: Configuration, coroutineScope: CoroutineScope) :
         TestContext {
-            val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder(
-                initialActiveState = configuration.initialPermissionState,
-            )
+        val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder(
+            initialActiveState = configuration.initialPermissionState,
+        )
 
-            val locationStateRepoBuilder = MockLocationStateRepoBuilder(
-                {
-                    permissionsBuilder.registerAllPermissionsBuilders()
-                    Permissions(
-                        permissionsBuilder,
-                        coroutineContext = coroutineScope.coroutineContext,
-                    ).apply {
-                        // Make sure permissionState has been created as it may break the tests otherwise
-                        get(configuration.locationPermission)
-                    }
-                },
-                MockBaseLocationManager.Builder(configuration.locationEnabled),
-            )
+        val locationStateRepoBuilder = MockLocationStateRepoBuilder(
+            {
+                permissionsBuilder.registerAllPermissionsBuilders()
+                Permissions(
+                    permissionsBuilder,
+                    coroutineContext = coroutineScope.coroutineContext,
+                ).apply {
+                    // Make sure permissionState has been created as it may break the tests otherwise
+                    get(configuration.locationPermission)
+                }
+            },
+            MockBaseLocationManager.Builder(configuration.locationEnabled),
+        )
 
-            private fun settingsBuilder(
-                autoRequestPermission: Boolean,
-                autoEnableLocations: Boolean,
-            ): (LocationPermission, Permissions) -> BaseLocationManager.Settings = { locationPermission, permissions ->
+        private fun settingsBuilder(autoRequestPermission: Boolean, autoEnableLocations: Boolean): (LocationPermission, Permissions) -> BaseLocationManager.Settings =
+            { locationPermission, permissions ->
                 BaseLocationManager.Settings(locationPermission, permissions, autoRequestPermission = autoRequestPermission, autoEnableLocations = autoEnableLocations)
             }
 
-            val locationStateRepo = locationStateRepoBuilder.create(
-                configuration.locationPermission,
-                settingsBuilder(configuration.autoRequestPermission, configuration.autoEnableLocations),
-                coroutineContext = coroutineScope.coroutineContext,
-            )
-            val locationManager get() = locationStateRepoBuilder.locationManagerBuilder.builtLocationManagers.first()
-            val permissionStateRepo get() = permissionsBuilder.buildLocationStateRepos.first()
-        }
+        val locationStateRepo = locationStateRepoBuilder.create(
+            configuration.locationPermission,
+            settingsBuilder(configuration.autoRequestPermission, configuration.autoEnableLocations),
+            coroutineContext = coroutineScope.coroutineContext,
+        )
+        val locationManager get() = locationStateRepoBuilder.locationManagerBuilder.builtLocationManagers.first()
+        val permissionStateRepo get() = permissionsBuilder.buildLocationStateRepos.first()
+    }
 
     override val createTestContextWithConfiguration: suspend (configuration: Configuration, scope: CoroutineScope) -> Context =
         { configuration, scope -> Context(configuration, scope) }

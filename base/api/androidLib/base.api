@@ -941,14 +941,23 @@ public final class com/splendo/kaluga/base/utils/Decimal$Finite : com/splendo/ka
 
 public final class com/splendo/kaluga/base/utils/Decimal$NaN : com/splendo/kaluga/base/utils/Decimal {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/utils/Decimal$NaN;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/base/utils/Decimal$NegativeInfinity : com/splendo/kaluga/base/utils/Decimal {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/utils/Decimal$NegativeInfinity;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/base/utils/Decimal$PositiveInfinity : com/splendo/kaluga/base/utils/Decimal {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/utils/Decimal$PositiveInfinity;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/base/utils/DecimalAndroid {
@@ -1224,14 +1233,23 @@ public abstract class com/splendo/kaluga/base/utils/RoundingMode {
 
 public final class com/splendo/kaluga/base/utils/RoundingMode$RoundDown : com/splendo/kaluga/base/utils/RoundingMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/utils/RoundingMode$RoundDown;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/base/utils/RoundingMode$RoundHalfEven : com/splendo/kaluga/base/utils/RoundingMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/utils/RoundingMode$RoundHalfEven;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/base/utils/RoundingMode$RoundUp : com/splendo/kaluga/base/utils/RoundingMode {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/utils/RoundingMode$RoundUp;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/base/utils/TimeZoneNameStyle : java/lang/Enum {

@@ -93,8 +93,7 @@ actual class StyledStringBuilder constructor(
          * @param linkStyle the [LinkStyle] to apply when [StringStyleAttribute.Link] is applied
          * @return the [StyledStringBuilder] to build a [StyledString] for [string]
          */
-        actual fun provide(string: String, defaultTextStyle: KalugaTextStyle, linkStyle: LinkStyle?) =
-            StyledStringBuilder(string, defaultTextStyle, linkStyle, context)
+        actual fun provide(string: String, defaultTextStyle: KalugaTextStyle, linkStyle: LinkStyle?) = StyledStringBuilder(string, defaultTextStyle, linkStyle, context)
     }
 
     private class CustomCharacterStyle(val modify: TextPaint.() -> Unit) : CharacterStyle() {
@@ -127,93 +126,92 @@ actual class StyledStringBuilder constructor(
         )
     }
 
-    private fun StringStyleAttribute.CharacterStyleAttribute.characterStyle(range: IntRange): CharacterStyle =
-        when (this) {
-            is StringStyleAttribute.CharacterStyleAttribute.BackgroundColor -> BackgroundColorSpan(
+    private fun StringStyleAttribute.CharacterStyleAttribute.characterStyle(range: IntRange): CharacterStyle = when (this) {
+        is StringStyleAttribute.CharacterStyleAttribute.BackgroundColor -> BackgroundColorSpan(
+            color,
+        )
+        is StringStyleAttribute.CharacterStyleAttribute.ForegroundColor -> ForegroundColorSpan(
+            color,
+        )
+        is StringStyleAttribute.CharacterStyleAttribute.Font -> CustomCharacterStyle {
+            typeface = font
+            textSize = size.spToPixel(context)
+        }
+        is StringStyleAttribute.CharacterStyleAttribute.Kerning -> CustomCharacterStyle {
+            letterSpacing = kern
+        }
+        is StringStyleAttribute.CharacterStyleAttribute.TextStyle -> CustomCharacterStyle {
+            typeface = textStyle.font
+            textSize = textStyle.size.spToPixel(context)
+            color = textStyle.color
+        }
+        is StringStyleAttribute.CharacterStyleAttribute.Shadow -> CustomCharacterStyle {
+            setShadowLayer(
+                blurRadius.spToPixel(context),
+                xOffset.spToPixel(context),
+                yOffset.spToPixel(context),
                 color,
             )
-            is StringStyleAttribute.CharacterStyleAttribute.ForegroundColor -> ForegroundColorSpan(
-                color,
-            )
-            is StringStyleAttribute.CharacterStyleAttribute.Font -> CustomCharacterStyle {
-                typeface = font
-                textSize = size.spToPixel(context)
-            }
-            is StringStyleAttribute.CharacterStyleAttribute.Kerning -> CustomCharacterStyle {
-                letterSpacing = kern
-            }
-            is StringStyleAttribute.CharacterStyleAttribute.TextStyle -> CustomCharacterStyle {
-                typeface = textStyle.font
-                textSize = textStyle.size.spToPixel(context)
-                color = textStyle.color
-            }
-            is StringStyleAttribute.CharacterStyleAttribute.Shadow -> CustomCharacterStyle {
-                setShadowLayer(
-                    blurRadius.spToPixel(context),
-                    xOffset.spToPixel(context),
-                    yOffset.spToPixel(context),
-                    color,
-                )
-            }
-            is StringStyleAttribute.CharacterStyleAttribute.Strikethrough -> StrikethroughSpan()
-            is StringStyleAttribute.CharacterStyleAttribute.SubScript -> SubscriptSpan()
-            is StringStyleAttribute.CharacterStyleAttribute.SuperScript -> SuperscriptSpan()
-            is StringStyleAttribute.CharacterStyleAttribute.Underline -> UnderlineSpan()
-            is StringStyleAttribute.CharacterStyleAttribute.Stroke ->
-                object : MetricAffectingSpan(), LineBackgroundSpan {
-                    override fun updateMeasureState(textPaint: TextPaint) {
-                        textPaint.style = Paint.Style.FILL_AND_STROKE
-                        textPaint.strokeWidth = width
+        }
+        is StringStyleAttribute.CharacterStyleAttribute.Strikethrough -> StrikethroughSpan()
+        is StringStyleAttribute.CharacterStyleAttribute.SubScript -> SubscriptSpan()
+        is StringStyleAttribute.CharacterStyleAttribute.SuperScript -> SuperscriptSpan()
+        is StringStyleAttribute.CharacterStyleAttribute.Underline -> UnderlineSpan()
+        is StringStyleAttribute.CharacterStyleAttribute.Stroke ->
+            object : MetricAffectingSpan(), LineBackgroundSpan {
+                override fun updateMeasureState(textPaint: TextPaint) {
+                    textPaint.style = Paint.Style.FILL_AND_STROKE
+                    textPaint.strokeWidth = width
+                }
+
+                override fun updateDrawState(tp: TextPaint?) {
+                    val textPaint = tp ?: return
+                    textPaint.style = Paint.Style.FILL
+                    textPaint.strokeWidth = width
+                }
+
+                override fun drawBackground(
+                    canvas: Canvas,
+                    paint: Paint,
+                    left: Int,
+                    right: Int,
+                    top: Int,
+                    baseline: Int,
+                    bottom: Int,
+                    text: CharSequence,
+                    start: Int,
+                    end: Int,
+                    lineNumber: Int,
+                ) {
+                    val strokePaint = TextPaint(paint).apply {
+                        style = Paint.Style.STROKE
+                        strokeWidth = width
+                        color = this@characterStyle.color
                     }
 
-                    override fun updateDrawState(tp: TextPaint?) {
-                        val textPaint = tp ?: return
-                        textPaint.style = Paint.Style.FILL
-                        textPaint.strokeWidth = width
-                    }
-
-                    override fun drawBackground(
-                        canvas: Canvas,
-                        paint: Paint,
-                        left: Int,
-                        right: Int,
-                        top: Int,
-                        baseline: Int,
-                        bottom: Int,
-                        text: CharSequence,
-                        start: Int,
-                        end: Int,
-                        lineNumber: Int,
-                    ) {
-                        val strokePaint = TextPaint(paint).apply {
-                            style = Paint.Style.STROKE
-                            strokeWidth = width
-                            color = this@characterStyle.color
-                        }
-
-                        if (start < range.first) {
-                            val offset = paint.measureText(text, start, range.first)
-                            canvas.drawText(
-                                text,
-                                range.first,
-                                min(range.last + 1, end),
-                                left.toFloat() + offset,
-                                baseline.toFloat(),
-                                strokePaint,
-                            )
-                        } else {
-                            canvas.drawText(
-                                text,
-                                start,
-                                min(range.last + 1, end),
-                                left.toFloat(),
-                                baseline.toFloat(),
-                                strokePaint,
-                            )
-                        }
+                    if (start < range.first) {
+                        val offset = paint.measureText(text, start, range.first)
+                        canvas.drawText(
+                            text,
+                            range.first,
+                            min(range.last + 1, end),
+                            left.toFloat() + offset,
+                            baseline.toFloat(),
+                            strokePaint,
+                        )
+                    } else {
+                        canvas.drawText(
+                            text,
+                            start,
+                            min(range.last + 1, end),
+                            left.toFloat(),
+                            baseline.toFloat(),
+                            strokePaint,
+                        )
                     }
                 }
-        }
+            }
+    }
 
     private val StringStyleAttribute.ParagraphStyleAttribute.paragraphStyle: ParagraphStyle
         get() = when (this) {
@@ -222,14 +220,7 @@ actual class StyledStringBuilder constructor(
                 indent.spToPixel(context).toInt(),
             )
             is StringStyleAttribute.ParagraphStyleAttribute.LineSpacing -> object : LineHeightSpan {
-                override fun chooseHeight(
-                    text: CharSequence,
-                    start: Int,
-                    end: Int,
-                    spanstartv: Int,
-                    lineHeight: Int,
-                    fm: Paint.FontMetricsInt?,
-                ) {
+                override fun chooseHeight(text: CharSequence, start: Int, end: Int, spanstartv: Int, lineHeight: Int, fm: Paint.FontMetricsInt?) {
                     val fontMetrics = fm ?: return
                     val halfLineSpacing = (spacing * 0.5f).spToPixel(context).roundToInt()
                     fontMetrics.descent = fontMetrics.bottom + halfLineSpacing

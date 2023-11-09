@@ -23,8 +23,8 @@ import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.resources.localized
 
 sealed class BottomSheetSubPageNavigation : NavigationAction<Nothing>(null) {
-    object Back : BottomSheetSubPageNavigation()
-    object Close : BottomSheetSubPageNavigation()
+    data object Back : BottomSheetSubPageNavigation()
+    data object Close : BottomSheetSubPageNavigation()
 }
 
 class BottomSheetSubPageViewModel(navigator: Navigator<BottomSheetSubPageNavigation>) : NavigatingViewModel<BottomSheetSubPageNavigation>(navigator) {

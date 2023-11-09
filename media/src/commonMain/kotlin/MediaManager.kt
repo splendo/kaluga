@@ -91,12 +91,12 @@ interface MediaManager : VolumeController, MediaSurfaceController {
         /**
          * An [Event] indicating playback completed
          */
-        object DidComplete : Event()
+        data object DidComplete : Event()
 
         /**
          * An [Event] indicating the manager was ended
          */
-        object DidEnd : Event()
+        data object DidEnd : Event()
     }
 
     /**
@@ -162,116 +162,116 @@ abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfacePr
     MediaManager,
     CoroutineScope by CoroutineScope(coroutineContext + Job(coroutineContext.job) + CoroutineName("MediaManager")) {
 
+    /**
+     * Builder for creating a [BaseMediaManager]
+     */
+    interface Builder {
+
         /**
-         * Builder for creating a [BaseMediaManager]
+         * Creates a [BaseMediaManager]
+         * @param mediaSurfaceProvider a [MediaSurfaceProvider] that will automatically call [renderVideoOnSurface] for the latest [MediaSurface]
+         * @param coroutineContext the [CoroutineContext] on which the media will be managed
          */
-        interface Builder {
-
-            /**
-             * Creates a [BaseMediaManager]
-             * @param mediaSurfaceProvider a [MediaSurfaceProvider] that will automatically call [renderVideoOnSurface] for the latest [MediaSurface]
-             * @param coroutineContext the [CoroutineContext] on which the media will be managed
-             */
-            fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): BaseMediaManager
-        }
-
-        private val _events = Channel<MediaManager.Event>(UNLIMITED)
-        override val events: Flow<MediaManager.Event> = _events.receiveAsFlow()
-
-        private val mediaMutex = Mutex()
-        private var mediaSurfaceJob: Job? = null
-
-        private val seekMutex = Mutex()
-        private var activeSeek: Pair<Duration, CompletableDeferred<Boolean>>? = null
-        private var queuedSeek: Pair<Duration, CompletableDeferred<Boolean>>? = null
-
-        final override suspend fun createPlayableMedia(source: MediaSource): PlayableMedia? = mediaMutex.withLock {
-            handleCreatePlayableMedia(source).also {
-                mediaSurfaceJob?.cancelAndJoin()
-                mediaSurfaceJob = mediaSurfaceProvider?.let {
-                    this@BaseMediaManager.launch {
-                        mediaSurfaceProvider.surface.onCompletion {
-                            renderVideoOnSurface(null)
-                        }.collect {
-                            renderVideoOnSurface(it)
-                        }
-                    }
-                }
-            }
-        }
-
-        protected abstract fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia?
-
-        protected open fun handlePrepared(playableMedia: PlayableMedia) {
-            _events.trySend(MediaManager.Event.DidPrepare(playableMedia))
-        }
-
-        protected open fun handleError(error: PlaybackError) {
-            _events.trySend(MediaManager.Event.DidFailWithError(error))
-        }
-
-        protected open fun handleCompleted() {
-            _events.trySend(MediaManager.Event.DidComplete)
-        }
-
-        protected open fun handleRateChanged(newRate: Float) {
-            _events.trySend(MediaManager.Event.RateDidChange(newRate))
-        }
-
-        final override suspend fun seekTo(duration: Duration): Boolean {
-            val result = CompletableDeferred<Boolean>()
-            return seekMutex.withLock {
-                val queuedSeek = queuedSeek
-                when {
-                    activeSeek == null -> {
-                        activeSeek = duration to result
-                        startSeek(duration)
-                        result
-                    }
-                    queuedSeek != null && queuedSeek.first == duration -> queuedSeek.second
-                    else -> {
-                        this.queuedSeek?.second?.complete(false)
-                        this.queuedSeek = duration to result
-                        result
-                    }
-                }
-            }.await()
-        }
-
-        final override fun reset() {
-            mediaSurfaceJob?.cancel()
-            handleReset()
-        }
-
-        protected abstract fun handleReset()
-
-        override fun close() {
-            cleanUp()
-            _events.trySend(MediaManager.Event.DidEnd)
-        }
-
-        protected open fun handleSeekCompleted(success: Boolean) {
-            launch {
-                seekMutex.withLock {
-                    activeSeek?.second?.complete(success)
-                    val queuedSeek = queuedSeek
-                    activeSeek = when {
-                        queuedSeek == null -> null
-                        activeSeek?.first == queuedSeek.first -> {
-                            queuedSeek.second.complete(success)
-                            null
-                        }
-                        else -> queuedSeek
-                    }
-                    activeSeek?.let { startSeek(it.first) }
-                }
-            }
-        }
-
-        protected abstract fun startSeek(duration: Duration)
-
-        protected abstract fun cleanUp()
+        fun create(mediaSurfaceProvider: MediaSurfaceProvider?, coroutineContext: CoroutineContext): BaseMediaManager
     }
+
+    private val _events = Channel<MediaManager.Event>(UNLIMITED)
+    override val events: Flow<MediaManager.Event> = _events.receiveAsFlow()
+
+    private val mediaMutex = Mutex()
+    private var mediaSurfaceJob: Job? = null
+
+    private val seekMutex = Mutex()
+    private var activeSeek: Pair<Duration, CompletableDeferred<Boolean>>? = null
+    private var queuedSeek: Pair<Duration, CompletableDeferred<Boolean>>? = null
+
+    final override suspend fun createPlayableMedia(source: MediaSource): PlayableMedia? = mediaMutex.withLock {
+        handleCreatePlayableMedia(source).also {
+            mediaSurfaceJob?.cancelAndJoin()
+            mediaSurfaceJob = mediaSurfaceProvider?.let {
+                this@BaseMediaManager.launch {
+                    mediaSurfaceProvider.surface.onCompletion {
+                        renderVideoOnSurface(null)
+                    }.collect {
+                        renderVideoOnSurface(it)
+                    }
+                }
+            }
+        }
+    }
+
+    protected abstract fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia?
+
+    protected open fun handlePrepared(playableMedia: PlayableMedia) {
+        _events.trySend(MediaManager.Event.DidPrepare(playableMedia))
+    }
+
+    protected open fun handleError(error: PlaybackError) {
+        _events.trySend(MediaManager.Event.DidFailWithError(error))
+    }
+
+    protected open fun handleCompleted() {
+        _events.trySend(MediaManager.Event.DidComplete)
+    }
+
+    protected open fun handleRateChanged(newRate: Float) {
+        _events.trySend(MediaManager.Event.RateDidChange(newRate))
+    }
+
+    final override suspend fun seekTo(duration: Duration): Boolean {
+        val result = CompletableDeferred<Boolean>()
+        return seekMutex.withLock {
+            val queuedSeek = queuedSeek
+            when {
+                activeSeek == null -> {
+                    activeSeek = duration to result
+                    startSeek(duration)
+                    result
+                }
+                queuedSeek != null && queuedSeek.first == duration -> queuedSeek.second
+                else -> {
+                    this.queuedSeek?.second?.complete(false)
+                    this.queuedSeek = duration to result
+                    result
+                }
+            }
+        }.await()
+    }
+
+    final override fun reset() {
+        mediaSurfaceJob?.cancel()
+        handleReset()
+    }
+
+    protected abstract fun handleReset()
+
+    override fun close() {
+        cleanUp()
+        _events.trySend(MediaManager.Event.DidEnd)
+    }
+
+    protected open fun handleSeekCompleted(success: Boolean) {
+        launch {
+            seekMutex.withLock {
+                activeSeek?.second?.complete(success)
+                val queuedSeek = queuedSeek
+                activeSeek = when {
+                    queuedSeek == null -> null
+                    activeSeek?.first == queuedSeek.first -> {
+                        queuedSeek.second.complete(success)
+                        null
+                    }
+                    else -> queuedSeek
+                }
+                activeSeek?.let { startSeek(it.first) }
+            }
+        }
+    }
+
+    protected abstract fun startSeek(duration: Duration)
+
+    protected abstract fun cleanUp()
+}
 
 /**
  * Default implementation of [BaseMediaManager]

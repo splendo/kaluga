@@ -77,12 +77,10 @@ import com.splendo.kaluga.scientific.unit.Yard
 import kotlin.jvm.JvmName
 
 @JvmName("squareMeterTimesMeter")
-infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMeter>.times(height: ScientificValue<PhysicalQuantity.Length, Meter>) =
-    CubicMeter.volume(this, height)
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMeter>.times(height: ScientificValue<PhysicalQuantity.Length, Meter>) = CubicMeter.volume(this, height)
 
 @JvmName("squareNanometerTimesNanometer")
-infix operator fun ScientificValue<PhysicalQuantity.Area, SquareNanometer>.times(height: ScientificValue<PhysicalQuantity.Length, Nanometer>) =
-    CubicNanometer.volume(this, height)
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareNanometer>.times(height: ScientificValue<PhysicalQuantity.Length, Nanometer>) = CubicNanometer.volume(this, height)
 
 @JvmName("squareMicrometerTimesMicrometer")
 infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMicrometer>.times(height: ScientificValue<PhysicalQuantity.Length, Micrometer>) =
@@ -97,28 +95,23 @@ infix operator fun ScientificValue<PhysicalQuantity.Area, SquareCentimeter>.time
     CubicCentimeter.volume(this, height)
 
 @JvmName("squareDecimeterTimesDecimeter")
-infix operator fun ScientificValue<PhysicalQuantity.Area, SquareDecimeter>.times(height: ScientificValue<PhysicalQuantity.Length, Decimeter>) =
-    CubicDecimeter.volume(this, height)
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareDecimeter>.times(height: ScientificValue<PhysicalQuantity.Length, Decimeter>) = CubicDecimeter.volume(this, height)
 
 @JvmName("squareDecameterTimesDecameter")
-infix operator fun ScientificValue<PhysicalQuantity.Area, SquareDecameter>.times(height: ScientificValue<PhysicalQuantity.Length, Decameter>) =
-    CubicDecameter.volume(this, height)
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareDecameter>.times(height: ScientificValue<PhysicalQuantity.Length, Decameter>) = CubicDecameter.volume(this, height)
 
 @JvmName("squareHectometerTimesHectometer")
 infix operator fun ScientificValue<PhysicalQuantity.Area, SquareHectometer>.times(height: ScientificValue<PhysicalQuantity.Length, Hectometer>) =
     CubicHectometer.volume(this, height)
 
 @JvmName("squareKilometerTimesKilometer")
-infix operator fun ScientificValue<PhysicalQuantity.Area, SquareKilometer>.times(height: ScientificValue<PhysicalQuantity.Length, Kilometer>) =
-    CubicKilometer.volume(this, height)
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareKilometer>.times(height: ScientificValue<PhysicalQuantity.Length, Kilometer>) = CubicKilometer.volume(this, height)
 
 @JvmName("squareMegameterTimesMegameter")
-infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMegameter>.times(height: ScientificValue<PhysicalQuantity.Length, Megameter>) =
-    CubicMegameter.volume(this, height)
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMegameter>.times(height: ScientificValue<PhysicalQuantity.Length, Megameter>) = CubicMegameter.volume(this, height)
 
 @JvmName("squareGigameterTimesGigameter")
-infix operator fun ScientificValue<PhysicalQuantity.Area, SquareGigameter>.times(height: ScientificValue<PhysicalQuantity.Length, Gigameter>) =
-    CubicGigameter.volume(this, height)
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareGigameter>.times(height: ScientificValue<PhysicalQuantity.Length, Gigameter>) = CubicGigameter.volume(this, height)
 
 @JvmName("metricAreaTimesMetricLength")
 infix operator fun <AreaUnit : MetricArea, HeightUnit : MetricLength> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
@@ -126,28 +119,22 @@ infix operator fun <AreaUnit : MetricArea, HeightUnit : MetricLength> Scientific
 ) = CubicMeter.volume(this, height)
 
 @JvmName("squareInchTimesInch")
-infix operator fun ScientificValue<PhysicalQuantity.Area, SquareInch>.times(height: ScientificValue<PhysicalQuantity.Length, Inch>) =
-    CubicInch.volume(this, height)
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareInch>.times(height: ScientificValue<PhysicalQuantity.Length, Inch>) = CubicInch.volume(this, height)
 
 @JvmName("squareFootTimesFoot")
-infix operator fun ScientificValue<PhysicalQuantity.Area, SquareFoot>.times(height: ScientificValue<PhysicalQuantity.Length, Foot>) =
-    CubicFoot.volume(this, height)
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareFoot>.times(height: ScientificValue<PhysicalQuantity.Length, Foot>) = CubicFoot.volume(this, height)
 
 @JvmName("squareYardTimesYard")
-infix operator fun ScientificValue<PhysicalQuantity.Area, SquareYard>.times(height: ScientificValue<PhysicalQuantity.Length, Yard>) =
-    CubicYard.volume(this, height)
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareYard>.times(height: ScientificValue<PhysicalQuantity.Length, Yard>) = CubicYard.volume(this, height)
 
 @JvmName("squareMileTimesMile")
-infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMile>.times(height: ScientificValue<PhysicalQuantity.Length, Mile>) =
-    CubicMile.volume(this, height)
+infix operator fun ScientificValue<PhysicalQuantity.Area, SquareMile>.times(height: ScientificValue<PhysicalQuantity.Length, Mile>) = CubicMile.volume(this, height)
 
 @JvmName("acreTimesInch")
-infix operator fun ScientificValue<PhysicalQuantity.Area, Acre>.times(height: ScientificValue<PhysicalQuantity.Length, Inch>) =
-    AcreInch.volume(this, height)
+infix operator fun ScientificValue<PhysicalQuantity.Area, Acre>.times(height: ScientificValue<PhysicalQuantity.Length, Inch>) = AcreInch.volume(this, height)
 
 @JvmName("acreTimesFoot")
-infix operator fun ScientificValue<PhysicalQuantity.Area, Acre>.times(height: ScientificValue<PhysicalQuantity.Length, Foot>) =
-    AcreFoot.volume(this, height)
+infix operator fun ScientificValue<PhysicalQuantity.Area, Acre>.times(height: ScientificValue<PhysicalQuantity.Length, Foot>) = AcreFoot.volume(this, height)
 
 @JvmName("imperialAreaTimesImperialLength")
 infix operator fun <AreaUnit : ImperialArea, HeightUnit : ImperialLength> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
@@ -155,6 +142,5 @@ infix operator fun <AreaUnit : ImperialArea, HeightUnit : ImperialLength> Scient
 ) = CubicFoot.volume(this, height)
 
 @JvmName("areaTimesLength")
-infix operator fun <AreaUnit : Area, HeightUnit : Length> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    height: ScientificValue<PhysicalQuantity.Length, HeightUnit>,
-) = CubicMeter.volume(this, height)
+infix operator fun <AreaUnit : Area, HeightUnit : Length> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(height: ScientificValue<PhysicalQuantity.Length, HeightUnit>) =
+    CubicMeter.volume(this, height)

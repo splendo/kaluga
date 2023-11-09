@@ -327,6 +327,9 @@ public final class com/splendo/kaluga/architecture/compose/navigation/Route$Back
 public final class com/splendo/kaluga/architecture/compose/navigation/Route$Close : com/splendo/kaluga/architecture/compose/navigation/Route {
 	public static final field $stable I
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/compose/navigation/Route$Close;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/Route$Companion {
@@ -433,6 +436,9 @@ public final class com/splendo/kaluga/architecture/compose/navigation/Route$Resu
 public final class com/splendo/kaluga/architecture/compose/navigation/Route$Result$Empty : com/splendo/kaluga/architecture/compose/navigation/Route$Result {
 	public static final field $stable I
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result$Empty;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class com/splendo/kaluga/architecture/compose/navigation/RouteController {

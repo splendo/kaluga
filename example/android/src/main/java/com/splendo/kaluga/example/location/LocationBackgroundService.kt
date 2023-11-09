@@ -42,9 +42,9 @@ import kotlinx.coroutines.launch
 class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
 
     companion object {
-        const val notificationId = 1
-        const val channelId = "location_channel"
-        const val channelName = "Kaluga Location"
+        private const val NOTIFICATION_ID = 1
+        private const val CHANNEL_ID = "location_channel"
+        private const val CHANNEL_NAME = "Kaluga Location"
 
         private val locationPermission = LocationPermission(background = true, precise = true)
     }
@@ -71,7 +71,7 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
                         ) == PackageManager.PERMISSION_GRANTED
                     ) {
                         NotificationManagerCompat.from(applicationContext)
-                            .notify(notificationId, getNotification(message))
+                            .notify(NOTIFICATION_ID, getNotification(message))
                     }
                 }
         }
@@ -85,7 +85,7 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
                 }
         }
 
-        startForeground(notificationId, getNotification(""))
+        startForeground(NOTIFICATION_ID, getNotification(""))
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -107,16 +107,16 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
             @Suppress("DEPRECATION")
             stopForeground(true)
         }
-        NotificationManagerCompat.from(applicationContext).cancel(notificationId)
+        NotificationManagerCompat.from(applicationContext).cancel(NOTIFICATION_ID)
     }
 
     private fun createChannelIfNeeded() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationService.getNotificationChannel(
-                channelId,
+                CHANNEL_ID,
             ) == null
         ) {
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(channelId, channelName, importance)
+            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance)
             channel.setSound(null, null)
             channel.enableVibration(false)
             channel.setShowBadge(false)
@@ -126,7 +126,7 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService() {
 
     private fun getNotification(message: String): Notification {
         createChannelIfNeeded()
-        val builder = NotificationCompat.Builder(applicationContext, channelId)
+        val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(applicationContext.getString(R.string.location_background))
             .setContentText(message)

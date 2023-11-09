@@ -137,7 +137,7 @@ interface MediaPlayer : VolumeController, MediaSurfaceController {
         /**
          * A [ControlType] that indicates a [MediaPlayer] is preparing its [PlayableMedia]
          */
-        object AwaitPreparation : ControlType()
+        data object AwaitPreparation : ControlType()
 
         /**
          * A [ControlType] that indicates a [MediaPlayer] is in an error state
@@ -202,16 +202,12 @@ interface MediaPlayer : VolumeController, MediaSurfaceController {
          */
         suspend fun trySetLoopMode(loopMode: PlaybackState.LoopMode): Boolean = tryPerformControlType<SetLoopMode> { perform(loopMode) }
 
-        private inline fun <reified Type : ControlType> tryPerformControlType(
-            block: Type.() -> Unit,
-        ): Boolean = tryPerformControlTypeWithResult<Type> {
+        private inline fun <reified Type : ControlType> tryPerformControlType(block: Type.() -> Unit): Boolean = tryPerformControlTypeWithResult<Type> {
             block()
             true
         }
 
-        private inline fun <reified Type : ControlType> tryPerformControlTypeWithResult(
-            block: Type.() -> Boolean,
-        ): Boolean = getControlType<Type>()?.let {
+        private inline fun <reified Type : ControlType> tryPerformControlTypeWithResult(block: Type.() -> Boolean): Boolean = getControlType<Type>()?.let {
             block.invoke(it)
         } ?: false
     }
@@ -484,9 +480,8 @@ class DefaultMediaPlayer(
         }.first()
     }
 
-    private suspend inline fun <reified State : PlaybackState> changePlaybackState(
-        noinline action: suspend (State) -> suspend () -> PlaybackState,
-    ) = playbackStateRepo.takeAndChangeState(remainIfStateNot = State::class, action)
+    private suspend inline fun <reified State : PlaybackState> changePlaybackState(noinline action: suspend (State) -> suspend () -> PlaybackState) =
+        playbackStateRepo.takeAndChangeState(remainIfStateNot = State::class, action)
 
     override fun close() {
         launch {

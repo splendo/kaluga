@@ -29,9 +29,8 @@ import com.splendo.kaluga.scientific.unit.One
 
 infix operator fun <
     Unit : Dimensionless,
-    > ScientificValue<PhysicalQuantity.Dimensionless, Unit>.times(
-    decimal: Decimal,
-) = convertToOneByMultiplying(decimal, ::DefaultScientificValue)
+    > ScientificValue<PhysicalQuantity.Dimensionless, Unit>.times(decimal: Decimal) =
+    convertToOneByMultiplying(decimal, ::DefaultScientificValue)
 
 fun <
     Unit : Dimensionless,
@@ -43,9 +42,8 @@ fun <
 
 infix operator fun <
     Unit : Dimensionless,
-    > ScientificValue<PhysicalQuantity.Dimensionless, Unit>.div(
-    decimal: Decimal,
-) = convertToOneByDividing(decimal, ::DefaultScientificValue)
+    > ScientificValue<PhysicalQuantity.Dimensionless, Unit>.div(decimal: Decimal) =
+    convertToOneByDividing(decimal, ::DefaultScientificValue)
 
 fun <
     Unit : Dimensionless,

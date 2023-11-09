@@ -141,6 +141,5 @@ actual sealed class MediaSource {
  * @param url the url String of the media source
  * @return the [MediaSource] associated with [url] or `null` if none could be created
  */
-actual fun mediaSourceFromUrl(
-    url: String,
-): MediaSource? = NSURL.URLWithString(url)?.let { MediaSource.URL(it, options = listOf(MediaSource.URL.Option.PreferPreciseDurationAndTiming(true))) }
+actual fun mediaSourceFromUrl(url: String): MediaSource? =
+    NSURL.URLWithString(url)?.let { MediaSource.URL(it, options = listOf(MediaSource.URL.Option.PreferPreciseDurationAndTiming(true))) }

@@ -99,11 +99,8 @@ fun ActivityLifecycleSubscribable.subscribe(fragment: Fragment) = subscribe(
  * @param owner The [LifecycleOwner] owning the lifecycle.
  * @param fragmentManager The [FragmentManager] attached to the lifecycle.
  */
-fun ActivityLifecycleSubscribable.subscribe(
-    activity: Activity?,
-    owner: LifecycleOwner,
-    fragmentManager: FragmentManager,
-) = subscribe(ActivityLifecycleSubscribable.LifecycleManager(activity, owner, fragmentManager))
+fun ActivityLifecycleSubscribable.subscribe(activity: Activity?, owner: LifecycleOwner, fragmentManager: FragmentManager) =
+    subscribe(ActivityLifecycleSubscribable.LifecycleManager(activity, owner, fragmentManager))
 
 /**
  * Subscribes a [LifecycleOwner] to this [ActivityLifecycleSubscribable].
@@ -112,9 +109,5 @@ fun ActivityLifecycleSubscribable.subscribe(
  * @param parentFragmentManager The [FragmentManager] attached to the lifecycle.
  * @param childFragmentManager Optional [FragmentManager] that hosts [androidx.fragment.app.Fragment] with the Fragment owning the lifecycle.
  */
-fun ActivityLifecycleSubscribable.subscribe(
-    activity: Activity?,
-    owner: LifecycleOwner,
-    parentFragmentManager: FragmentManager,
-    childFragmentManager: FragmentManager,
-) = subscribe(ActivityLifecycleSubscribable.LifecycleManager(activity, owner, parentFragmentManager, childFragmentManager))
+fun ActivityLifecycleSubscribable.subscribe(activity: Activity?, owner: LifecycleOwner, parentFragmentManager: FragmentManager, childFragmentManager: FragmentManager) =
+    subscribe(ActivityLifecycleSubscribable.LifecycleManager(activity, owner, parentFragmentManager, childFragmentManager))

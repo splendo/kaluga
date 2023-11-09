@@ -25,7 +25,9 @@ import kotlin.test.assertTrue
 
 @Serializable
 enum class MyEnum {
-    A, B, C
+    A,
+    B,
+    C,
 }
 
 @Serializable
@@ -46,22 +48,36 @@ data class DataTypesValues(
 class LinksDecoderTest {
 
     companion object {
-        private const val byteValue: Byte = 1
+        private const val BYTE_VALUE: Byte = 1
         private val queryValues = listOf<Any>(
-            "Test", // stringValue
-            'A', // charValue
-            0, // intValue
-            3L, // longValue
-            3.14f, // floatValue
-            3.14, // doubleValue
-            true, // booleanValue
-            "1", // byteValue
-            "A", // enumValue
-            3, // listValue size
-            "zero", // listValue[0]
-            "one", // listValue[1]
-            "two", // listValue[2]
-            "NULL", // nullableValue
+            // stringValue
+            "Test",
+            // charValue
+            'A',
+            // intValue
+            0,
+            // longValue
+            3L,
+            // floatValue
+            3.14f,
+            // doubleValue
+            3.14,
+            // booleanValue
+            true,
+            // byteValue
+            "1",
+            // enumValue
+            "A",
+            // listValue size
+            3,
+            // listValue[0]
+            "zero",
+            // listValue[1]
+            "one",
+            // listValue[2]
+            "two",
+            // nullableValue
+            "NULL",
         )
         private val expextedValue = DataTypesValues(
             "Test",
@@ -71,7 +87,7 @@ class LinksDecoderTest {
             3.14f,
             3.14,
             true,
-            byteValue,
+            BYTE_VALUE,
             MyEnum.A,
             listOf("zero", "one", "two"),
             null,

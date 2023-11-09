@@ -87,14 +87,13 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
     /**
      *  set the value of this Observable from a suspended context.
      */
-    suspend fun setValue(value: ObservableOptional<T>): ObservableOptional<T> =
-        if (isOnMainThread) {
+    suspend fun setValue(value: ObservableOptional<T>): ObservableOptional<T> = if (isOnMainThread) {
+        setValueUnconfined(value)
+    } else {
+        withContext(Dispatchers.Main) {
             setValueUnconfined(value)
-        } else {
-            withContext(Dispatchers.Main) {
-                setValueUnconfined(value)
-            }
         }
+    }
 
     @Suppress("UNCHECKED_CAST") // should always downcast as R extends T
     /**
@@ -213,34 +212,34 @@ open class ObservationInitialized<T>(
     ReadWriteProperty<Any?, T>,
     MutableInitialized<T, T> {
 
-        /**
-         * Constructor
-         * @param initialValue The initial [T] this observation should contain.
-         */
-        constructor(initialValue: T) : this(ObservableOptional.Value(initialValue))
+    /**
+     * Constructor
+     * @param initialValue The initial [T] this observation should contain.
+     */
+    constructor(initialValue: T) : this(ObservableOptional.Value(initialValue))
 
-        override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-            observedValue = ObservableOptional.Value(value)
-        }
-
-        override fun getValue(thisRef: Any?, property: KProperty<*>): T = current
-        override val current: T
-            get() = currentObserved.value
-
-        override val stateFlow: MutableStateFlow<T> by lazy {
-            MutableStateFlow(current).also { stateFlow ->
-                observeInitialized { stateFlow.value = it }
-            }
-        }
-
-        override fun observeInitialized(onNext: (T) -> Unit): Disposable {
-            @Suppress("UNCHECKED_CAST")
-            return observe { onNext(it as T) }
-        }
-
-        override val valueDelegate: ReadWriteProperty<Any?, T>
-            get() = this
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+        observedValue = ObservableOptional.Value(value)
     }
+
+    override fun getValue(thisRef: Any?, property: KProperty<*>): T = current
+    override val current: T
+        get() = currentObserved.value
+
+    override val stateFlow: MutableStateFlow<T> by lazy {
+        MutableStateFlow(current).also { stateFlow ->
+            observeInitialized { stateFlow.value = it }
+        }
+    }
+
+    override fun observeInitialized(onNext: (T) -> Unit): Disposable {
+        @Suppress("UNCHECKED_CAST")
+        return observe { onNext(it as T) }
+    }
+
+    override val valueDelegate: ReadWriteProperty<Any?, T>
+        get() = this
+}
 
 /**
  * An [Observation] that implements [MutableUninitialized]
@@ -253,8 +252,7 @@ class ObservationUninitialized<T> :
 
     override val initialValue: ObservableOptional.Nothing<T> = ObservableOptional.Nothing()
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): T? =
-        currentObserved.valueOrNull
+    override fun getValue(thisRef: Any?, property: KProperty<*>): T? = currentObserved.valueOrNull
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: T?) {
         observedValue = value?.let { ObservableOptional.Value(value) } ?: ObservableOptional.Nothing()
@@ -283,40 +281,40 @@ open class ObservationDefault<R : T?, T>(
     ReadWriteProperty<Any?, R>,
     MutableDefaultInitialized<R, T?> {
 
-        /**
-         * Constructor
-         * @param defaultValue The default [R] to return if the current value is [ObservableOptional.Nothing] or [ObservableOptional.Value] containing `null`.
-         * @param initialValue The initial [ObservableOptional.Value] this observation should contain.
-         */
-        constructor(
-            defaultValue: R,
-            initialValue: ObservableOptional.Value<T?>,
-        ) : this(ObservableOptional.Value<R>(defaultValue), initialValue)
+    /**
+     * Constructor
+     * @param defaultValue The default [R] to return if the current value is [ObservableOptional.Nothing] or [ObservableOptional.Value] containing `null`.
+     * @param initialValue The initial [ObservableOptional.Value] this observation should contain.
+     */
+    constructor(
+        defaultValue: R,
+        initialValue: ObservableOptional.Value<T?>,
+    ) : this(ObservableOptional.Value<R>(defaultValue), initialValue)
 
-        override fun getValue(thisRef: Any?, property: KProperty<*>): R = current
-        override fun setValue(thisRef: Any?, property: KProperty<*>, value: R) {
-            observedValue = ObservableOptional.Value(value)
-        }
+    override fun getValue(thisRef: Any?, property: KProperty<*>): R = current
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: R) {
+        observedValue = ObservableOptional.Value(value)
+    }
 
-        override val current: R
-            get() = currentObserved.value
+    override val current: R
+        get() = currentObserved.value
 
-        override val stateFlow: MutableStateFlow<R> by lazy {
-            MutableStateFlow(current).also { stateFlow ->
-                this.observeInitialized {
-                    stateFlow.value = it
-                }
+    override val stateFlow: MutableStateFlow<R> by lazy {
+        MutableStateFlow(current).also { stateFlow ->
+            this.observeInitialized {
+                stateFlow.value = it
             }
         }
-
-        override val valueDelegate: ReadWriteProperty<Any?, R>
-            get() = this
-
-        override fun observeInitialized(onNext: (R) -> Unit): Disposable {
-            @Suppress("UNCHECKED_CAST")
-            return observe { onNext(it as R) }
-        }
     }
+
+    override val valueDelegate: ReadWriteProperty<Any?, R>
+        get() = this
+
+    override fun observeInitialized(onNext: (R) -> Unit): Disposable {
+        @Suppress("UNCHECKED_CAST")
+        return observe { onNext(it as R) }
+    }
+}
 
 /**
  * Observes a [Flow] and sets updates value to an [Observation] while it is being observed

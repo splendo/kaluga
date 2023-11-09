@@ -40,10 +40,7 @@ import kotlin.time.Duration.Companion.minutes
 typealias LocationStateRepoBuilderBuilder = (suspend (CoroutineContext) -> Permissions) -> LocationStateRepoBuilder
 typealias BluetoothBuilderBuilder = (suspend (CoroutineContext) -> Permissions) -> BluetoothBuilder
 
-private fun sharedModule(
-    locationStateRepoBuilderBuilder: LocationStateRepoBuilderBuilder,
-    bluetoothBuilderBuilder: BluetoothBuilderBuilder,
-) = module {
+private fun sharedModule(locationStateRepoBuilderBuilder: LocationStateRepoBuilderBuilder, bluetoothBuilderBuilder: BluetoothBuilderBuilder) = module {
     single<Logger> { RestrictedLogger(RestrictedLogLevel.None) }
     single { PermissionsBuilder() }
     single {

@@ -32,10 +32,10 @@ import org.koin.core.qualifier.named
 class XMLKeyboardActivity : KalugaViewModelActivity<KeyboardViewModel<ViewFocusHandler>>() {
 
     companion object {
-        const val viewModelName = "ViewKeyboardViewModel"
+        const val VIEW_MODEL_NAME = "ViewKeyboardViewModel"
     }
 
-    override val viewModel: KeyboardViewModel<ViewFocusHandler> by viewModel(named(viewModelName)) {
+    override val viewModel: KeyboardViewModel<ViewFocusHandler> by viewModel(named(VIEW_MODEL_NAME)) {
         parametersOf(
             ViewKeyboardManager.Builder(),
         )

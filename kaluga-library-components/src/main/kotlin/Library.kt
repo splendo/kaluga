@@ -58,7 +58,7 @@ class LibraryImpl(project: Project) {
         const val compileSdk = 34
         const val targetSdk = 34
         const val buildTools = "34.0.0"
-        const val composeCompiler = "1.5.3"
+        const val composeCompiler = "1.5.4"
     }
 
     class IOSLibrary(props: Properties, logger: Logger) {

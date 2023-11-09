@@ -67,8 +67,7 @@ sealed class CommonScientificValueFormatter private constructor(builder: Builder
         return customFormatter?.let { it(value.value.pretty()) } ?: defaultFormat(value)
     }
 
-    private fun defaultFormat(value: ScientificValue<*, *>): String =
-        "${value.value.pretty()} ${value.unit.symbol.withoutSpaces()}"
+    private fun defaultFormat(value: ScientificValue<*, *>): String = "${value.value.pretty()} ${value.unit.symbol.withoutSpaces()}"
 
     /**
      *   The custom formatter with customisation applied using builder

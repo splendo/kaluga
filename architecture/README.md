@@ -275,8 +275,8 @@ The Navigation action specifies the action(s) that can navigate.
 
 ```kotlin
 sealed class SomeNavigationAction : NavigationAction<Nothing>(null) {
-    object ActionA : SomeNavigationAction()
-    object ActionB : SomeNavigationAction()
+    data object ActionA : SomeNavigationAction()
+    data object ActionB : SomeNavigationAction()
 }
 
 class SomeNavigatingViewModel(navigator: Navigator<SomeNavigationAction>): NavigatingViewModel<SomeNavigationAction>(navigator) {
@@ -323,10 +323,10 @@ Note that it is possible to request a navigationSpecRow not supported by the bun
 
 ```kotlin
 sealed class SomeSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
-    object BooleanSpecRow : SomeSpecRow<Boolean>(NavigationBundleSpecType.BooleanType)
-    object SerializableSpecRow : SomeSpecRow<MockSerializable>(NavigationBundleSpecType.SerializedType(SomeSerializable.serializer()))
-    object OptionalString : SomeSpecRow<String?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType))
-    object OptionalFloat : SomeSpecRow<Float?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType))
+    data object BooleanSpecRow : SomeSpecRow<Boolean>(NavigationBundleSpecType.BooleanType)
+    data object SerializableSpecRow : SomeSpecRow<MockSerializable>(NavigationBundleSpecType.SerializedType(SomeSerializable.serializer()))
+    data object OptionalString : SomeSpecRow<String?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType))
+    data object OptionalFloat : SomeSpecRow<Float?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType))
 }
 
 class SomeBundleSpec : NavigationBundleSpec<SomeSpecRow<*>>(setOf(SomeSpecRow.BooleanSpecRow, SomeSpecRow.SerializableSpecRow, SomeSpecRow.OptionalString, SomeSpecRow.OptionalFloat))
@@ -364,7 +364,7 @@ Use the `SingleValueNavigationAction` to reduce boilerplate code in these cases
 ```kotlin
 sealed class Navigation<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
     class A(string: String) : TestNavigation<String>(string, NavigationBundleSpecType.StringType)
-    object B : TestNavigation<Unit>(Unit, NavigationBundleSpecType.UnitType)
+    data object B : TestNavigation<Unit>(Unit, NavigationBundleSpecType.UnitType)
 }
 ```
 

@@ -32,24 +32,20 @@ import com.splendo.kaluga.scientific.unit.USCustomaryAreaDensity
 import kotlin.jvm.JvmName
 
 @JvmName("metricAreaDensityTimesMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>.times(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-) = unit.weight.mass(this, area)
+infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>.times(area: ScientificValue<PhysicalQuantity.Area, AreaUnit>) =
+    unit.weight.mass(this, area)
 
 @JvmName("imperialAreaDensityTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>.times(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-) = unit.weight.mass(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>.times(area: ScientificValue<PhysicalQuantity.Area, AreaUnit>) =
+    unit.weight.mass(this, area)
 
 @JvmName("ukImperialAreaDensityTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>.times(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-) = unit.weight.mass(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.AreaDensity, UKImperialAreaDensity>.times(area: ScientificValue<PhysicalQuantity.Area, AreaUnit>) =
+    unit.weight.mass(this, area)
 
 @JvmName("usCustomaryAreaDensityTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>.times(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-) = unit.weight.mass(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.AreaDensity, USCustomaryAreaDensity>.times(area: ScientificValue<PhysicalQuantity.Area, AreaUnit>) =
+    unit.weight.mass(this, area)
 
 @JvmName("areaDensityTimesArea")
 infix operator fun <AreaDensityUnit : AreaDensity, AreaUnit : Area> ScientificValue<PhysicalQuantity.AreaDensity, AreaDensityUnit>.times(

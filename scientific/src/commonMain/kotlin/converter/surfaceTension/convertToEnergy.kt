@@ -41,24 +41,20 @@ infix operator fun ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfac
     Erg.energy(this, area)
 
 @JvmName("metricSurfaceTensionTimesMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfaceTension>.times(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-) = Joule.energy(this, area)
+infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.SurfaceTension, MetricSurfaceTension>.times(area: ScientificValue<PhysicalQuantity.Area, AreaUnit>) =
+    Joule.energy(this, area)
 
 @JvmName("imperialSurfaceTensionTimesSquareInch")
-infix operator fun ScientificValue<PhysicalQuantity.SurfaceTension, ImperialSurfaceTension>.times(
-    area: ScientificValue<PhysicalQuantity.Area, SquareInch>,
-) = InchPoundForce.energy(this, area)
+infix operator fun ScientificValue<PhysicalQuantity.SurfaceTension, ImperialSurfaceTension>.times(area: ScientificValue<PhysicalQuantity.Area, SquareInch>) =
+    InchPoundForce.energy(this, area)
 
 @JvmName("ukImperialSurfaceTensionTimesSquareInch")
-infix operator fun ScientificValue<PhysicalQuantity.SurfaceTension, UKImperialSurfaceTension>.times(
-    area: ScientificValue<PhysicalQuantity.Area, SquareInch>,
-) = InchPoundForce.energy(this, area)
+infix operator fun ScientificValue<PhysicalQuantity.SurfaceTension, UKImperialSurfaceTension>.times(area: ScientificValue<PhysicalQuantity.Area, SquareInch>) =
+    InchPoundForce.energy(this, area)
 
 @JvmName("usCustomarySurfaceTensionTimesSquareInch")
-infix operator fun ScientificValue<PhysicalQuantity.SurfaceTension, USCustomarySurfaceTension>.times(
-    area: ScientificValue<PhysicalQuantity.Area, SquareInch>,
-) = InchPoundForce.energy(this, area)
+infix operator fun ScientificValue<PhysicalQuantity.SurfaceTension, USCustomarySurfaceTension>.times(area: ScientificValue<PhysicalQuantity.Area, SquareInch>) =
+    InchPoundForce.energy(this, area)
 
 @JvmName("imperialSurfaceTensionTimesImperialArea")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.SurfaceTension, ImperialSurfaceTension>.times(

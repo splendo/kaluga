@@ -46,10 +46,9 @@ fun PermissionsBuilder.registerNotificationsPermission(
     notificationsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseNotificationsPermissionManagerBuilder = ::NotificationsPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-) =
-    registerNotificationsPermission(notificationsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
-        NotificationsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
-    }
+) = registerNotificationsPermission(notificationsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
+    NotificationsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
+}
 
 /**
  * Registers a [BaseNotificationsPermissionManagerBuilder] and [PermissionStateRepo] for [NotificationsPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
@@ -81,10 +80,9 @@ fun PermissionsBuilder.registerNotificationsPermissionIfNotRegistered(
     notificationsPermissionManagerBuilderBuilder: (PermissionContext) -> BaseNotificationsPermissionManagerBuilder = ::NotificationsPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-) =
-    registerNotificationsPermissionIfNotRegistered(notificationsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
-        NotificationsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
-    }
+) = registerNotificationsPermissionIfNotRegistered(notificationsPermissionManagerBuilderBuilder) { permission, builder, coroutineContext ->
+    NotificationsPermissionStateRepo(permission, builder, monitoringInterval, settings, coroutineContext)
+}
 
 /**
  * Gets the [BaseNotificationsPermissionManagerBuilder] registered

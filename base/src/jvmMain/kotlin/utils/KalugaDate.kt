@@ -62,52 +62,82 @@ actual class DefaultKalugaDate internal constructor(internal val calendar: Calen
 
     override var timeZone: KalugaTimeZone
         get() = KalugaTimeZone(calendar.timeZone)
-        set(value) { calendar.timeZone = value.timeZone }
+        set(value) {
+            calendar.timeZone = value.timeZone
+        }
 
     override var era: Int
         get() = calendar.get(Calendar.ERA)
-        set(value) { calendar.set(Calendar.ERA, value) }
+        set(value) {
+            calendar.set(Calendar.ERA, value)
+        }
     override var year: Int
         get() = calendar.get(Calendar.YEAR)
-        set(value) { calendar.set(Calendar.YEAR, value) }
+        set(value) {
+            calendar.set(Calendar.YEAR, value)
+        }
     override var month: Int
         get() = calendar.get(Calendar.MONTH) + 1
-        set(value) { calendar.set(Calendar.MONTH, value - 1) }
+        set(value) {
+            calendar.set(Calendar.MONTH, value - 1)
+        }
     override val daysInMonth: Int get() = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
     override var weekOfYear: Int
         get() = calendar.get(Calendar.WEEK_OF_YEAR)
-        set(value) { calendar.set(Calendar.WEEK_OF_YEAR, value) }
+        set(value) {
+            calendar.set(Calendar.WEEK_OF_YEAR, value)
+        }
     override var weekOfMonth: Int
         get() = calendar.get(Calendar.WEEK_OF_MONTH)
-        set(value) { calendar.set(Calendar.WEEK_OF_MONTH, value) }
+        set(value) {
+            calendar.set(Calendar.WEEK_OF_MONTH, value)
+        }
     override var day: Int
         get() = calendar.get(Calendar.DAY_OF_MONTH)
-        set(value) { calendar.set(Calendar.DAY_OF_MONTH, value) }
+        set(value) {
+            calendar.set(Calendar.DAY_OF_MONTH, value)
+        }
     override var dayOfYear: Int
         get() = calendar.get(Calendar.DAY_OF_YEAR)
-        set(value) { calendar.set(Calendar.DAY_OF_YEAR, value) }
+        set(value) {
+            calendar.set(Calendar.DAY_OF_YEAR, value)
+        }
     override var weekDay: Int
         get() = calendar.get(Calendar.DAY_OF_WEEK)
-        set(value) { calendar.set(Calendar.DAY_OF_WEEK, value) }
+        set(value) {
+            calendar.set(Calendar.DAY_OF_WEEK, value)
+        }
     override var firstWeekDay: Int
         get() = calendar.firstDayOfWeek
-        set(value) { calendar.firstDayOfWeek = value }
+        set(value) {
+            calendar.firstDayOfWeek = value
+        }
 
     override var hour: Int
         get() = calendar.get(Calendar.HOUR_OF_DAY)
-        set(value) { calendar.set(Calendar.HOUR_OF_DAY, value) }
+        set(value) {
+            calendar.set(Calendar.HOUR_OF_DAY, value)
+        }
     override var minute: Int
         get() = calendar.get(Calendar.MINUTE)
-        set(value) { calendar.set(Calendar.MINUTE, value) }
+        set(value) {
+            calendar.set(Calendar.MINUTE, value)
+        }
     override var second: Int
         get() = calendar.get(Calendar.SECOND)
-        set(value) { calendar.set(Calendar.SECOND, value) }
+        set(value) {
+            calendar.set(Calendar.SECOND, value)
+        }
     override var millisecond: Int
         get() = calendar.get(Calendar.MILLISECOND)
-        set(value) { calendar.set(Calendar.MILLISECOND, value) }
+        set(value) {
+            calendar.set(Calendar.MILLISECOND, value)
+        }
     override var durationSinceEpoch: Duration
         get() = calendar.timeInMillis.milliseconds
-        set(value) { calendar.timeInMillis = value.inWholeMilliseconds }
+        set(value) {
+            calendar.timeInMillis = value.inWholeMilliseconds
+        }
 
     override fun copy(): KalugaDate = DefaultKalugaDate(calendar.clone() as Calendar)
 

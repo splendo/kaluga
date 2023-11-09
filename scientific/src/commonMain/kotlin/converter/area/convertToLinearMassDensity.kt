@@ -42,24 +42,20 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricAreaTimesMetricDensity")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>,
-) = density * this
+infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(density: ScientificValue<PhysicalQuantity.Density, MetricDensity>) =
+    density * this
 
 @JvmName("imperialAreaTimesImperialDensity")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
-) = density * this
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>) =
+    density * this
 
 @JvmName("imperialAreaTimesUKImperialDensity")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>,
-) = density * this
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>) =
+    density * this
 
 @JvmName("imperialAreaTimesUSCustomaryDensity")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>,
-) = density * this
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>) =
+    density * this
 
 @JvmName("areaTimesDensity")
 infix operator fun <DensityUnit : Density, AreaUnit : Area> ScientificValue<PhysicalQuantity.Area, AreaUnit>.times(

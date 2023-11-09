@@ -41,44 +41,36 @@ import com.splendo.kaluga.scientific.unit.USCustomarySpecificVolume
 import kotlin.jvm.JvmName
 
 @JvmName("metricLinearMassDensityDivMetricDensity")
-infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, MetricLinearMassDensity>.div(
-    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>,
-) = (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
+infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, MetricLinearMassDensity>.div(density: ScientificValue<PhysicalQuantity.Density, MetricDensity>) =
+    (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
 
 @JvmName("imperialLinearMassDensityDivImperialDensity")
-infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>.div(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
-) = (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
+infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>.div(density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>) =
+    (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
 
 @JvmName("imperialLinearMassDensityDivUKImperialDensity")
-infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>.div(
-    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>,
-) = (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
+infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>.div(density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>) =
+    (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
 
 @JvmName("imperialLinearMassDensityDivUSCustomaryDensity")
-infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>.div(
-    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>,
-) = (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
+infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, ImperialLinearMassDensity>.div(density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>) =
+    (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
 
 @JvmName("ukImperialLinearMassDensityDivImperialDensity")
-infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>.div(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
-) = (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
+infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>.div(density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>) =
+    (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
 
 @JvmName("ukImperialLinearMassDensityDivUKImperialDensity")
-infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>.div(
-    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>,
-) = (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
+infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, UKImperialLinearMassDensity>.div(density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>) =
+    (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
 
 @JvmName("usCustomaryLinearMassDensityDivImperialDensity")
-infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>.div(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
-) = (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
+infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>.div(density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>) =
+    (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
 
 @JvmName("usCustomaryLinearMassDensityDivUSCustomaryDensity")
-infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>.div(
-    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>,
-) = (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
+infix operator fun ScientificValue<PhysicalQuantity.LinearMassDensity, USCustomaryLinearMassDensity>.div(density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>) =
+    (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
 
 @JvmName("linearMassDensityDivDensity")
 infix operator fun <LinearMassDensityUnit : LinearMassDensity, DensityUnit : Density> ScientificValue<PhysicalQuantity.LinearMassDensity, LinearMassDensityUnit>.div(

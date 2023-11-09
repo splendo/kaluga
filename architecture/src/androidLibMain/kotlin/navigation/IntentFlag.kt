@@ -27,111 +27,111 @@ sealed class IntentFlag {
 
     abstract val value: Int
 
-    object GrantReadUriPermission : IntentFlag() {
+    data object GrantReadUriPermission : IntentFlag() {
         override val value: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION
     }
-    object GrantWriteUriPermission : IntentFlag() {
+    data object GrantWriteUriPermission : IntentFlag() {
         override val value: Int = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
     }
-    object FromBackground : IntentFlag() {
+    data object FromBackground : IntentFlag() {
         override val value: Int = Intent.FLAG_FROM_BACKGROUND
     }
-    object DebugLogResolution : IntentFlag() {
+    data object DebugLogResolution : IntentFlag() {
         override val value: Int = Intent.FLAG_DEBUG_LOG_RESOLUTION
     }
-    object ExcludeStoppedPackages : IntentFlag() {
+    data object ExcludeStoppedPackages : IntentFlag() {
         override val value: Int = Intent.FLAG_EXCLUDE_STOPPED_PACKAGES
     }
-    object IncludeStoppedPackages : IntentFlag() {
+    data object IncludeStoppedPackages : IntentFlag() {
         override val value: Int = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
     }
-    object GrantPersistableUriPermission : IntentFlag() {
+    data object GrantPersistableUriPermission : IntentFlag() {
         override val value: Int = Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
     }
-    object GrantPrefixUriPermission : IntentFlag() {
+    data object GrantPrefixUriPermission : IntentFlag() {
         override val value: Int = Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
     }
-    object ActivityMatchExternal : IntentFlag() {
+    data object ActivityMatchExternal : IntentFlag() {
         override val value: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             Intent.FLAG_ACTIVITY_MATCH_EXTERNAL
         } else {
             0
         }
     }
-    object ActivityNoHistory : IntentFlag() {
+    data object ActivityNoHistory : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_NO_HISTORY
     }
-    object ActivitySingleTop : IntentFlag() {
+    data object ActivitySingleTop : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_SINGLE_TOP
     }
-    object ActivityNewTask : IntentFlag() {
+    data object ActivityNewTask : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_NEW_TASK
     }
-    object ActivityMultipleTask : IntentFlag() {
+    data object ActivityMultipleTask : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_MULTIPLE_TASK
     }
-    object ActivityClearTop : IntentFlag() {
+    data object ActivityClearTop : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_CLEAR_TOP
     }
-    object ActivityForwardResult : IntentFlag() {
+    data object ActivityForwardResult : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_FORWARD_RESULT
     }
-    object ActivityPreviousIsTop : IntentFlag() {
+    data object ActivityPreviousIsTop : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP
     }
-    object ActivityExcludeFromRecents : IntentFlag() {
+    data object ActivityExcludeFromRecents : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
     }
-    object ActivityBroughtToFront : IntentFlag() {
+    data object ActivityBroughtToFront : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
     }
-    object ActivityResetTaskIfNeeded : IntentFlag() {
+    data object ActivityResetTaskIfNeeded : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
     }
-    object ActivityLaunchedFromHistory : IntentFlag() {
+    data object ActivityLaunchedFromHistory : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY
     }
-    object ActivityNewDocument : IntentFlag() {
+    data object ActivityNewDocument : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_NEW_DOCUMENT
     }
-    object ActivityNoUserAction : IntentFlag() {
+    data object ActivityNoUserAction : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_NO_USER_ACTION
     }
-    object ActivityReorderToFront : IntentFlag() {
+    data object ActivityReorderToFront : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
     }
-    object ActivityNoAnimation : IntentFlag() {
+    data object ActivityNoAnimation : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_NO_ANIMATION
     }
-    object ActivityClearTask : IntentFlag() {
+    data object ActivityClearTask : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
-    object ActivityTaskOnHome : IntentFlag() {
+    data object ActivityTaskOnHome : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_TASK_ON_HOME
     }
-    object ActivityRetainInRecents : IntentFlag() {
+    data object ActivityRetainInRecents : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_RETAIN_IN_RECENTS
     }
-    object ActivityLaunchAdjacent : IntentFlag() {
+    data object ActivityLaunchAdjacent : IntentFlag() {
         override val value: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT
         } else {
             0
         }
     }
-    object ReceiverRegisterOnly : IntentFlag() {
+    data object ReceiverRegisterOnly : IntentFlag() {
         override val value: Int = Intent.FLAG_RECEIVER_REGISTERED_ONLY
     }
-    object ReceiverReplacePending : IntentFlag() {
+    data object ReceiverReplacePending : IntentFlag() {
         override val value: Int = Intent.FLAG_RECEIVER_REPLACE_PENDING
     }
-    object ReceiverForeground : IntentFlag() {
+    data object ReceiverForeground : IntentFlag() {
         override val value: Int = Intent.FLAG_RECEIVER_FOREGROUND
     }
-    object ReceiverNoAbort : IntentFlag() {
+    data object ReceiverNoAbort : IntentFlag() {
         override val value: Int = Intent.FLAG_RECEIVER_NO_ABORT
     }
-    object ReceiverVisibleToInstantApps : IntentFlag() {
+    data object ReceiverVisibleToInstantApps : IntentFlag() {
         override val value: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Intent.FLAG_RECEIVER_VISIBLE_TO_INSTANT_APPS
         } else {

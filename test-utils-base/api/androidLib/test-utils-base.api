@@ -1284,7 +1284,10 @@ public final class com/splendo/kaluga/test/base/mock/verification/VerificationRu
 
 public final class com/splendo/kaluga/test/base/mock/verification/VerificationRule$Never : com/splendo/kaluga/test/base/mock/verification/VerificationRule {
 	public static final field INSTANCE Lcom/splendo/kaluga/test/base/mock/verification/VerificationRule$Never;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun matches (I)Z
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/test/base/mock/verification/VerificationRule$Range : com/splendo/kaluga/test/base/mock/verification/VerificationRule {

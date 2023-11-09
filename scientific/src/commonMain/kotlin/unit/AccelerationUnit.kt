@@ -122,7 +122,7 @@ data class MetricMetricAndImperialAccelerationWrapper(val metricAndImperial: Met
 }
 
 @Serializable
-object Gal : MetricAcceleration(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration> {
+data object Gal : MetricAcceleration(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration> {
     override val symbol: String = "Gal"
     override val speed = Centimeter per Second
     override val per: Time = Second
@@ -136,61 +136,61 @@ sealed class GalMultiple : MetricAcceleration(), MetricMultipleUnit<MeasurementS
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object NanoGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Nano(Gal) {
+data object NanoGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Nano(Gal) {
     override val symbol: String = "nanog"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object MicroGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Micro(Gal) {
+data object MicroGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Micro(Gal) {
     override val symbol: String = "microg"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object MilliGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Milli(Gal) {
+data object MilliGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Milli(Gal) {
     override val symbol: String = "millig"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object CentiGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Centi(Gal) {
+data object CentiGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Centi(Gal) {
     override val symbol: String = "centig"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object DeciGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Deci(Gal) {
+data object DeciGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Deci(Gal) {
     override val symbol: String = "decig"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object DecaGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Deca(Gal) {
+data object DecaGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Deca(Gal) {
     override val symbol: String = "decag"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object HectoGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Hecto(Gal) {
+data object HectoGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Hecto(Gal) {
     override val symbol: String = "hectog"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object KiloGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Kilo(Gal) {
+data object KiloGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Kilo(Gal) {
     override val symbol: String = "kilog"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object MegaGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Mega(Gal) {
+data object MegaGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Mega(Gal) {
     override val symbol: String = "megag"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object GigaGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Giga(Gal) {
+data object GigaGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> by Giga(Gal) {
     override val symbol: String = "gigag"
 }
 
@@ -239,7 +239,7 @@ infix fun MetricSpeed.per(time: Time): MetricAcceleration = CombinedMetricAccele
 infix fun ImperialSpeed.per(time: Time): ImperialAcceleration = CombinedImperialAcceleration(this, time)
 
 @Serializable
-object GUnit : MetricAndImperialAcceleration(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration> {
+data object GUnit : MetricAndImperialAcceleration(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration> {
 
     private val standardGravity = 9.80665.toDecimal()
 
@@ -264,61 +264,61 @@ sealed class GUnitMultiple : MetricAndImperialAcceleration(), MetricMultipleUnit
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object Nanog : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Nano(GUnit) {
+data object Nanog : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Nano(GUnit) {
     override val symbol: String = "nanog"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object Microg : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Micro(GUnit) {
+data object Microg : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Micro(GUnit) {
     override val symbol: String = "microg"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object Millig : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Milli(GUnit) {
+data object Millig : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Milli(GUnit) {
     override val symbol: String = "millig"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object Centig : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Centi(GUnit) {
+data object Centig : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Centi(GUnit) {
     override val symbol: String = "centig"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object Decig : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Deci(GUnit) {
+data object Decig : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Deci(GUnit) {
     override val symbol: String = "decig"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object Decag : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Deca(GUnit) {
+data object Decag : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Deca(GUnit) {
     override val symbol: String = "decag"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object Hectog : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Hecto(GUnit) {
+data object Hectog : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Hecto(GUnit) {
     override val symbol: String = "hectog"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object Kilog : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Kilo(GUnit) {
+data object Kilog : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Kilo(GUnit) {
     override val symbol: String = "kilog"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object Megag : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Mega(GUnit) {
+data object Megag : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Mega(GUnit) {
     override val symbol: String = "megag"
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @Serializable
-object Gigag : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Giga(GUnit) {
+data object Gigag : GUnitMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> by Giga(GUnit) {
     override val symbol: String = "gigag"
 }
 

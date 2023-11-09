@@ -39,11 +39,11 @@ data class ConnectionSettings(
         /**
          * Should always try to reconnect when an unexpected disconnect occurs
          */
-        object Always : ReconnectionSettings()
+        data object Always : ReconnectionSettings()
 
         /**
          * Should never try to reconnect when an unexpected disconnect occurs
          */
-        object Never : ReconnectionSettings()
+        data object Never : ReconnectionSettings()
     }
 }

@@ -154,7 +154,7 @@ sealed class NavigationSpec {
             /**
              * Adds the [UIViewController] to the container without removing any other views from the container
              */
-            object Add : Type()
+            data object Add : Type()
 
             /**
              * Replaces the current content matching a tag from the container before adding the new view
@@ -308,8 +308,8 @@ sealed class NavigationSpec {
          * The type of formatting used for composing the email
          */
         sealed class Type {
-            object Plain : Type()
-            object Stylized : Type()
+            data object Plain : Type()
+            data object Stylized : Type()
         }
 
         /**
@@ -384,7 +384,7 @@ sealed class NavigationSpec {
     /**
      * Opens the Phone settings
      */
-    object Settings : NavigationSpec()
+    data object Settings : NavigationSpec()
 
     /**
      * Presents a [MFMessageComposeViewController]
@@ -433,7 +433,7 @@ sealed class NavigationSpec {
     data class Browser(val url: NSURL, val viewType: Type) : NavigationSpec() {
         sealed class Type {
             data class SafariView(val animated: Boolean, val completion: (() -> Unit)? = null) : Type()
-            object Normal : Type()
+            data object Normal : Type()
         }
     }
 

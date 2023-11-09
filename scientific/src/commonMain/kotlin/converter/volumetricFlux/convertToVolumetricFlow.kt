@@ -34,9 +34,8 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricVolumetricFluxTimesMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.VolumetricFlux, MetricVolumetricFlux>.times(
-    area: ScientificValue<PhysicalQuantity.Area, AreaUnit>,
-) = (unit.volumetricFlow).volumetricFlow(this, area)
+infix operator fun <AreaUnit : MetricArea> ScientificValue<PhysicalQuantity.VolumetricFlux, MetricVolumetricFlux>.times(area: ScientificValue<PhysicalQuantity.Area, AreaUnit>) =
+    (unit.volumetricFlow).volumetricFlow(this, area)
 
 @JvmName("imperialVolumetricFluxTimesImperialArea")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<PhysicalQuantity.VolumetricFlux, ImperialVolumetricFlux>.times(

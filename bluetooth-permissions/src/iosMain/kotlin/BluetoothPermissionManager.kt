@@ -46,8 +46,8 @@ import platform.Foundation.NSBundle
 import platform.darwin.dispatch_queue_create
 import kotlin.time.Duration
 
-const val NSBluetoothAlwaysUsageDescription = "NSBluetoothAlwaysUsageDescription"
-const val NSBluetoothPeripheralUsageDescription = "NSBluetoothPeripheralUsageDescription"
+private const val NS_BLUETOOTH_ALWAYS_USAGE_DESCRIPTION = "NSBluetoothAlwaysUsageDescription"
+private const val NS_BLUETOOTH_PERIPHERAL_USAGE_DESCRIPTION = "NSBluetoothPeripheralUsageDescription"
 
 /**
  * The [BasePermissionManager] to use as a default for [BluetoothPermission]
@@ -94,8 +94,8 @@ actual class DefaultBluetoothPermissionManager(
     override fun requestPermissionDidStart() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(
                 bundle,
-                NSBluetoothAlwaysUsageDescription,
-                NSBluetoothPeripheralUsageDescription,
+                NS_BLUETOOTH_ALWAYS_USAGE_DESCRIPTION,
+                NS_BLUETOOTH_PERIPHERAL_USAGE_DESCRIPTION,
             ).isEmpty()
         ) {
             centralManager.value
@@ -124,10 +124,7 @@ actual class BluetoothPermissionManagerBuilder actual constructor(
     private val context: PermissionContext,
 ) : BaseBluetoothPermissionManagerBuilder {
 
-    override fun create(
-        settings: Settings,
-        coroutineScope: CoroutineScope,
-    ): BluetoothPermissionManager {
+    override fun create(settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager {
         return DefaultBluetoothPermissionManager(context, settings, coroutineScope)
     }
 }

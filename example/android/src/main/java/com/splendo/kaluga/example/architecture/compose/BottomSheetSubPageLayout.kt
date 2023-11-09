@@ -38,9 +38,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun BottomSheetSubPageLayout(
-    bottomSheetNavigationState: StateFlow<BottomSheetNavigatorState?>,
-) {
+fun BottomSheetSubPageLayout(bottomSheetNavigationState: StateFlow<BottomSheetNavigatorState?>) {
     val viewModel = koinViewModel<BottomSheetSubPageViewModel> {
         parametersOf(
             ModalBottomSheetNavigator<BottomSheetSubPageNavigation>(

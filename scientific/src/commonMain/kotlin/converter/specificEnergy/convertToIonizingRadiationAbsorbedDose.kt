@@ -23,5 +23,4 @@ import com.splendo.kaluga.scientific.converter.ionizingRadiationAbsorbedDose.abs
 import com.splendo.kaluga.scientific.unit.Gray
 import com.splendo.kaluga.scientific.unit.SpecificEnergy
 
-fun <SpecificEnergyUnit : SpecificEnergy> ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>.asAbsorbedDose() =
-    Gray.absorbedDose(this)
+fun <SpecificEnergyUnit : SpecificEnergy> ScientificValue<PhysicalQuantity.SpecificEnergy, SpecificEnergyUnit>.asAbsorbedDose() = Gray.absorbedDose(this)

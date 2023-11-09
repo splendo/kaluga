@@ -40,11 +40,7 @@ actual class DefaultScanner(
      */
     class Builder : BaseScanner.Builder {
 
-        override fun create(
-            settings: Settings,
-            coroutineScope: CoroutineScope,
-            scanningDispatcher: CoroutineDispatcher,
-        ): BaseScanner {
+        override fun create(settings: Settings, coroutineScope: CoroutineScope, scanningDispatcher: CoroutineDispatcher): BaseScanner {
             return DefaultScanner(settings, coroutineScope, scanningDispatcher)
         }
     }
@@ -62,10 +58,7 @@ actual class DefaultScanner(
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = emptyList()
 
-    override suspend fun retrievePairedDeviceDiscoveredEvents(
-        withServices: Filter,
-        connectionSettings: ConnectionSettings?,
-    ): List<Scanner.DeviceDiscovered> {
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Filter, connectionSettings: ConnectionSettings?): List<Scanner.DeviceDiscovered> {
         TODO("Not yet implemented")
     }
 }

@@ -50,8 +50,7 @@ abstract class Attribute<ReadAction : DeviceAction.Read, WriteAction : DeviceAct
      */
     abstract val uuid: UUID
 
-    override suspend fun collect(collector: FlowCollector<ByteArray?>) =
-        sharedFlow.collect(collector)
+    override suspend fun collect(collector: FlowCollector<ByteArray?>) = sharedFlow.collect(collector)
 
     // TODO make configurable
     private val sharedFlow = MutableSharedFlow<ByteArray?>(0, 256, BufferOverflow.DROP_OLDEST).also { it.tryEmit(initialValue) }

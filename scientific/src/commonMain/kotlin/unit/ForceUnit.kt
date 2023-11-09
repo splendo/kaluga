@@ -132,7 +132,7 @@ sealed class UKImperialForce : Force(), UKImperialScientificUnit<PhysicalQuantit
 }
 
 @Serializable
-object Newton : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Force> {
+data object Newton : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Force> {
     override val symbol: String = "N"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Force
@@ -144,37 +144,37 @@ object Newton : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, Physical
 sealed class NewtonMultiple : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton>
 
 @Serializable
-object Nanonewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Nano(Newton)
+data object Nanonewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Nano(Newton)
 
 @Serializable
-object Micronewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Micro(Newton)
+data object Micronewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Micro(Newton)
 
 @Serializable
-object Millinewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Milli(Newton)
+data object Millinewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Milli(Newton)
 
 @Serializable
-object Centinewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Centi(Newton)
+data object Centinewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Centi(Newton)
 
 @Serializable
-object Decinewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Deci(Newton)
+data object Decinewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Deci(Newton)
 
 @Serializable
-object Decanewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Deca(Newton)
+data object Decanewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Deca(Newton)
 
 @Serializable
-object Hectonewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Hecto(Newton)
+data object Hectonewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Hecto(Newton)
 
 @Serializable
-object Kilonewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Kilo(Newton)
+data object Kilonewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Kilo(Newton)
 
 @Serializable
-object Meganewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Mega(Newton)
+data object Meganewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Mega(Newton)
 
 @Serializable
-object Giganewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Giga(Newton)
+data object Giganewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Giga(Newton)
 
 @Serializable
-object Dyne : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Force> {
+data object Dyne : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Force> {
     override val symbol: String = "dyn"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Force
@@ -186,37 +186,37 @@ object Dyne : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQu
 sealed class DyneMultiple : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne>
 
 @Serializable
-object Nanodyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Nano(Dyne)
+data object Nanodyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Nano(Dyne)
 
 @Serializable
-object Microdyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Micro(Dyne)
+data object Microdyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Micro(Dyne)
 
 @Serializable
-object Millidyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Milli(Dyne)
+data object Millidyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Milli(Dyne)
 
 @Serializable
-object Centidyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Centi(Dyne)
+data object Centidyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Centi(Dyne)
 
 @Serializable
-object Decidyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Deci(Dyne)
+data object Decidyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Deci(Dyne)
 
 @Serializable
-object Decadyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Deca(Dyne)
+data object Decadyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Deca(Dyne)
 
 @Serializable
-object Hectodyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Hecto(Dyne)
+data object Hectodyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Hecto(Dyne)
 
 @Serializable
-object Kilodyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Kilo(Dyne)
+data object Kilodyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Kilo(Dyne)
 
 @Serializable
-object Megadyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Mega(Dyne)
+data object Megadyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Mega(Dyne)
 
 @Serializable
-object Gigadyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Giga(Dyne)
+data object Gigadyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Giga(Dyne)
 
 @Serializable
-object KilogramForce : MetricForce() {
+data object KilogramForce : MetricForce() {
     override val symbol: String = "kgf"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Force
@@ -225,7 +225,7 @@ object KilogramForce : MetricForce() {
 }
 
 @Serializable
-object TonneForce : MetricForce() {
+data object TonneForce : MetricForce() {
     override val symbol: String = "tf"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Force
@@ -234,7 +234,7 @@ object TonneForce : MetricForce() {
 }
 
 @Serializable
-object GramForce : MetricForce() {
+data object GramForce : MetricForce() {
     override val symbol: String = "gf"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Force
@@ -243,7 +243,7 @@ object GramForce : MetricForce() {
 }
 
 @Serializable
-object MilligramForce : MetricForce() {
+data object MilligramForce : MetricForce() {
     override val symbol: String = "gf"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Force
@@ -253,35 +253,35 @@ object MilligramForce : MetricForce() {
 
 // Imperial
 @Serializable
-object Poundal : ImperialForce() {
+data object Poundal : ImperialForce() {
     override val symbol: String = "pdl"
     override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) * 1(Meter per Second per Second).convertValue(Foot per Second per Second)
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value) * 1(Foot per Second per Second).convertValue(Meter per Second per Second)
 }
 
 @Serializable
-object PoundForce : ImperialForce() {
+data object PoundForce : ImperialForce() {
     override val symbol: String = "lbf"
     override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
 
 @Serializable
-object OunceForce : ImperialForce() {
+data object OunceForce : ImperialForce() {
     override val symbol: String = "ozf"
     override fun fromSIUnit(value: Decimal): Decimal = Ounce.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
     override fun toSIUnit(value: Decimal): Decimal = Ounce.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
 
 @Serializable
-object GrainForce : ImperialForce() {
+data object GrainForce : ImperialForce() {
     override val symbol: String = "grf"
     override fun fromSIUnit(value: Decimal): Decimal = Grain.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
     override fun toSIUnit(value: Decimal): Decimal = Grain.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
 
 @Serializable
-object Kip : USCustomaryForce() {
+data object Kip : USCustomaryForce() {
     private const val POUNDS_FORCE_IN_KIP = 1000.0
     override val symbol: String = "kip"
     override fun fromSIUnit(value: Decimal): Decimal = PoundForce.fromSIUnit(value) / POUNDS_FORCE_IN_KIP.toDecimal()
@@ -289,7 +289,7 @@ object Kip : USCustomaryForce() {
 }
 
 @Serializable
-object UsTonForce : USCustomaryForce() {
+data object UsTonForce : USCustomaryForce() {
     override val symbol: String = "STf"
     override fun fromSIUnit(value: Decimal): Decimal = UsTon.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
     override fun toSIUnit(value: Decimal): Decimal = UsTon.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
@@ -313,7 +313,7 @@ data class USCustomaryImperialForceWrapper(val imperial: ImperialForce) : USCust
 val <ForceUnit : ImperialForce> ForceUnit.usCustomary get() = USCustomaryImperialForceWrapper(this)
 
 @Serializable
-object ImperialTonForce : UKImperialForce() {
+data object ImperialTonForce : UKImperialForce() {
     override val symbol: String = "LTf"
     override fun fromSIUnit(value: Decimal): Decimal = ImperialTon.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
     override fun toSIUnit(value: Decimal): Decimal = ImperialTon.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue

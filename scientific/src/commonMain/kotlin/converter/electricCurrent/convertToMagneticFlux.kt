@@ -28,12 +28,10 @@ import com.splendo.kaluga.scientific.unit.ElectricInductance
 import kotlin.jvm.JvmName
 
 @JvmName("abampereTimesAbhenry")
-infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>.times(inductance: ScientificValue<PhysicalQuantity.ElectricInductance, Abhenry>) =
-    inductance * this
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>.times(inductance: ScientificValue<PhysicalQuantity.ElectricInductance, Abhenry>) = inductance * this
 
 @JvmName("biotTimesAbhenry")
-infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.times(inductance: ScientificValue<PhysicalQuantity.ElectricInductance, Abhenry>) =
-    inductance * this
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.times(inductance: ScientificValue<PhysicalQuantity.ElectricInductance, Abhenry>) = inductance * this
 
 @JvmName("currentTimesInductance")
 infix operator fun <InductanceUnit : ElectricInductance, CurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>.times(

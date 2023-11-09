@@ -31,7 +31,9 @@ import kotlinx.coroutines.flow.transformWhile
 import kotlinx.coroutines.flow.withIndex
 
 enum class SharedFlowCollectionEvent {
-    NoMoreCollections, FirstCollection, LaterCollections
+    NoMoreCollections,
+    FirstCollection,
+    LaterCollections,
 }
 
 /**
@@ -45,21 +47,20 @@ enum class SharedFlowCollectionEvent {
  * Note that if this [MutableSharedFlow] was subscribed and unsubscribed before this method was called,
  * a new subscription will still raise the [FirstCollection] event
  */
-suspend fun <T> MutableSharedFlow<T>.onCollectionEvent(onEvent: suspend MutableSharedFlow<T>.(SharedFlowCollectionEvent) -> Unit): Unit =
-    subscriptionCount
-        .map { it > 0 } // simplify to zero (false) or one-or-more (true)
-        .dropWhile { !it } // do not report until the first collection
-        .distinctUntilChanged() // report as state not an event
-        .withIndex() // add an index so we distinguish the first event
-        .collect { subscriptionState ->
-            onEvent(
-                when {
-                    subscriptionState.value && subscriptionState.index == 0 -> FirstCollection
-                    subscriptionState.value && subscriptionState.index != 0 -> LaterCollections
-                    else -> NoMoreCollections
-                },
-            )
-        }
+suspend fun <T> MutableSharedFlow<T>.onCollectionEvent(onEvent: suspend MutableSharedFlow<T>.(SharedFlowCollectionEvent) -> Unit): Unit = subscriptionCount
+    .map { it > 0 } // simplify to zero (false) or one-or-more (true)
+    .dropWhile { !it } // do not report until the first collection
+    .distinctUntilChanged() // report as state not an event
+    .withIndex() // add an index so we distinguish the first event
+    .collect { subscriptionState ->
+        onEvent(
+            when {
+                subscriptionState.value && subscriptionState.index == 0 -> FirstCollection
+                subscriptionState.value && subscriptionState.index != 0 -> LaterCollections
+                else -> NoMoreCollections
+            },
+        )
+    }
 
 /**
  * These interfaces can be used to mark object you emit to a Flow as a special value.
@@ -106,26 +107,18 @@ inline fun <T> Flow<T>.filterOnlyImportant(): Flow<T> =
  * @param includeLast if `true` the first [SpecialFlowValue.Last] will be collected before emission stops.
  * @param collector The [FlowCollector] to collect the values.
  */
-suspend inline fun <T> Flow<T>.collectUntilLast(
-    includeLast: Boolean = true,
-    collector: FlowCollector<T>,
-) =
-    takeUntilLast(includeLast).collect(collector)
+suspend inline fun <T> Flow<T>.collectUntilLast(includeLast: Boolean = true, collector: FlowCollector<T>) = takeUntilLast(includeLast).collect(collector)
 
 /**
  * Collects all elements not implementing [SpecialFlowValue.NotImportant] from a [Flow].
  * @param collector The [FlowCollector] to collect the values.
  */
-suspend inline fun <T> Flow<T>.collectImportant(collector: FlowCollector<T>) =
-    filterOnlyImportant().collect(collector)
+suspend inline fun <T> Flow<T>.collectImportant(collector: FlowCollector<T>) = filterOnlyImportant().collect(collector)
 
 /**
  * Collects all elements not implementing [SpecialFlowValue.NotImportant] from a [Flow] up to the first [SpecialFlowValue.Last] received.
  * @param includeLast if `true` the first [SpecialFlowValue.Last] will be collected before emission stops.
  * @param collector The [FlowCollector] to collect the values.
  */
-suspend inline fun <T> Flow<T>.collectImportantUntilLast(
-    includeLast: Boolean = true,
-    collector: FlowCollector<T>,
-) =
+suspend inline fun <T> Flow<T>.collectImportantUntilLast(includeLast: Boolean = true, collector: FlowCollector<T>) =
     takeUntilLast(includeLast).filterOnlyImportant().collect(collector)

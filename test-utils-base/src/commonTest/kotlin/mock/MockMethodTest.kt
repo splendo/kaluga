@@ -54,12 +54,7 @@ class MockableTestMethodsImpl : MockableTestMethods {
         throw NotImplementedError()
     }
 
-    override fun methodWithMultipleParamsAndReturnType(
-        first: Int,
-        second: String,
-        third: String?,
-        fourth: Int?,
-    ): String {
+    override fun methodWithMultipleParamsAndReturnType(first: Int, second: String, third: String?, fourth: Int?): String {
         throw NotImplementedError()
     }
 
