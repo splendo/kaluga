@@ -46,7 +46,7 @@ class MediaViewController: UIViewController {
     
     private lazy var viewModel = MediaViewModel(
         mediaSurfaceProvider: mediaSurfaceProvider,
-        builder: DefaultMediaManager.Builder(),
+        builder: DefaultMediaManager.Builder(settings: DefaultMediaManager.Settings(playInBackground: true, playAfterDeviceUnavailable: true)),
         alertPresenterBuilder: AlertPresenter.Builder(viewController: self),
         navigator: navigator
     )
@@ -178,7 +178,7 @@ extension MediaViewController: MPMediaPickerControllerDelegate {
         if !mediaItemCollection.items.isEmpty {
             let item = mediaItemCollection.items[0]
             if let url = item.value(forProperty: MPMediaItemPropertyAssetURL) as? NSURL {
-                viewModel.didSelectFileAt(source: MediaSource.URL(url: url as URL))
+                viewModel.didSelectFileAt(source: MediaSource.URL(url: url as URL, options: [MediaSource.URLOptionPreferPreciseDurationAndTiming(isPreferred: true)]))
             } else {
                 viewModel.didSelectFileAt(source: nil)
             }

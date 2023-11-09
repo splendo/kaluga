@@ -28,6 +28,7 @@ import com.splendo.kaluga.media.MediaPlayer.Controls.Stop
 import com.splendo.kaluga.media.MediaPlayer.Controls.Unpause
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -40,6 +41,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.js.JsName
@@ -261,7 +263,7 @@ interface MediaPlayer : VolumeController, MediaSurfaceController {
 class DefaultMediaPlayer(
     createPlaybackStateRepo: (CoroutineContext) -> BasePlaybackStateRepo,
     coroutineContext: CoroutineContext,
-) : MediaPlayer, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("MediaPlayer")) {
+) : MediaPlayer, CoroutineScope by CoroutineScope(coroutineContext + Job(coroutineContext.job) + CoroutineName("MediaPlayer")) {
 
     /**
      * Constructor that provides a [BaseMediaManager] to manage media playback
@@ -462,6 +464,7 @@ class DefaultMediaPlayer(
             is PlaybackState.Completed -> emit(Unit)
             is PlaybackState.Closed -> throw PlaybackError.PlaybackHasEnded
             is PlaybackState.Error -> throw state.error
+            is PlaybackState.Uninitialized -> throw PlaybackError.Uninitalized
             is PlaybackState.Active -> {} // Wait until completed
         }
     }.first()

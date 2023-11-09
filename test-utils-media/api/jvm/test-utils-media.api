@@ -236,6 +236,7 @@ public final class com/splendo/kaluga/test/media/MockPlaybackState$Paused : com/
 	public fun getPlaybackParameters ()Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;
 	public fun getPlaybackState ()Lcom/splendo/kaluga/media/PlaybackState;
 	public fun hashCode ()I
+	public fun playWithUpdatedPlaybackParameters (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 	public fun updatePlaybackParameters (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
