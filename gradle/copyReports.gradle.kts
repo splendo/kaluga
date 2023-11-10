@@ -20,7 +20,7 @@ tasks.register<Copy>("copyReports") {
     group = "publishing"
     into(layout.buildDirectory.dir("allReports"))
     subprojects.forEach { module ->
-        from(module.buildDir) {
+        from(module.layout.buildDirectory.get().asFile) {
             include("reports/**")
             into(module.name)
         }

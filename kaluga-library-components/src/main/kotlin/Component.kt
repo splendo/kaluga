@@ -60,7 +60,7 @@ fun Project.commonComponent(
 
     // output all reports to a single location
     tasks.withType<LintTask>().configureEach {
-        reports.set(mapOf("plain" to rootProject.buildDir.resolve("reports/ktlint/${project.path}-${this.name}.txt")))
+        reports.set(mapOf("plain" to rootProject.layout.buildDirectory.get().asFile.resolve("reports/ktlint/${project.path}-${this.name}.txt")))
     }
 
     afterEvaluate {
@@ -70,7 +70,7 @@ fun Project.commonComponent(
                 // creating copy task for the target
                 val copyTask = tasks.create("copy${targetName.replaceFirstChar { it.titlecase() } }TestResources", Copy::class.java) {
                     from("src/iosTest/resources/.")
-                    into("$buildDir/bin/$targetName/debugTest")
+                    into("${layout.buildDirectory.get().asFile}/bin/$targetName/debugTest")
                 }
 
                 // apply copy task to the target
