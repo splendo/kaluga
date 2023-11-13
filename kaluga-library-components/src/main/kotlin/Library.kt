@@ -32,7 +32,7 @@ val Project.Library get() = libraries.getOrPut(this) { LibraryImpl(this) }
 
 class LibraryImpl(project: Project) {
 
-    private val props: Properties = File("${project.rootProject.buildDir.absolutePath}/../local.properties").let { file ->
+    private val props: Properties = File("${project.rootProject.layout.buildDirectory.asFile.get().absolutePath}/../local.properties").let { file ->
         if (file.exists) {
             file.loadProperties()
         } else {
