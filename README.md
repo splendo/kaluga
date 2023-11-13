@@ -84,7 +84,7 @@ You can also use the `SNAPSHOT` version based on the latest in the `develop` bra
 
 ```kotlin
 repositories {
-    maven("https://s01,oss.sonatype.org/content/repositories/snapshots/")
+    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 dependencies {
     implementation("com.splendo.kaluga:alerts:$kalugaDevelopVersion-SNAPSHOT")
