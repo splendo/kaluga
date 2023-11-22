@@ -147,7 +147,6 @@ actual class AlertPresenter(
             alert.message,
             transform(alert.style),
         ).apply {
-            fun Alert.Action.isCancelAction(): Boolean = (this.style == Alert.Action.Style.CANCEL) or (this.style == Alert.Action.Style.NEGATIVE)
             alert.actions.forEach { action ->
                 addAction(
                     UIAlertAction.actionWithTitle(
@@ -160,7 +159,7 @@ actual class AlertPresenter(
                 )
             }
             val cancelButtonIndex = alert.actions.indexOfFirst {
-                it.isCancelAction()
+                (it.style == Alert.Action.Style.CANCEL) or (it.style == Alert.Action.Style.NEGATIVE)
             }
             // If there is no Cancel action inject it by default for alerts if type ACTION_LIST
             if (alert.style == Alert.Style.ACTION_LIST && cancelButtonIndex == -1) {
