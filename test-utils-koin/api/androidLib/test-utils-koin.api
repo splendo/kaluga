@@ -4,6 +4,7 @@ public abstract class com/splendo/kaluga/test/koin/BaseKoinFlowTest : com/splend
 
 public abstract class com/splendo/kaluga/test/koin/BaseKoinUIThreadTest : com/splendo/kaluga/test/base/BaseUIThreadTest {
 	public fun <init> ()V
+	public fun getOnFailedToCreateTestContextWithConfiguration ()Lkotlin/jvm/functions/Function1;
 }
 
 public class com/splendo/kaluga/test/koin/BaseKoinUIThreadTest$KoinTestContext : com/splendo/kaluga/test/base/BaseUIThreadTest$TestContext, org/koin/core/component/KoinComponent {
