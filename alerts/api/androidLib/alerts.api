@@ -103,8 +103,8 @@ public final class com/splendo/kaluga/alerts/AlertActions$DefaultImpls {
 }
 
 public final class com/splendo/kaluga/alerts/AlertPresenter : com/splendo/kaluga/alerts/BaseAlertPresenter, kotlinx/coroutines/CoroutineScope {
-	public fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lcom/splendo/kaluga/logging/Logger;Lkotlinx/coroutines/CoroutineScope;)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lcom/splendo/kaluga/logging/Logger;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 }
 

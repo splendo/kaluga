@@ -46,8 +46,8 @@ import kotlinx.coroutines.launch
 actual class AlertPresenter(
     private val alert: Alert,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-    private val logger: Logger,
     coroutineScope: CoroutineScope,
+    logger: Logger,
 ) : BaseAlertPresenter(alert, logger), CoroutineScope by coroutineScope {
 
     /**
@@ -66,7 +66,7 @@ actual class AlertPresenter(
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The created [AlertPresenter]
          */
-        actual override fun create(alert: Alert, coroutineScope: CoroutineScope) = AlertPresenter(alert, lifecycleManagerObserver, logger, coroutineScope)
+        actual override fun create(alert: Alert, coroutineScope: CoroutineScope) = AlertPresenter(alert, lifecycleManagerObserver, coroutineScope, logger)
     }
 
     private companion object {

@@ -54,7 +54,7 @@ import platform.objc.sel_registerName
 actual class AlertPresenter(
     private val alert: Alert,
     private val parent: UIViewController,
-    private val logger: Logger,
+    logger: Logger,
     private val delegateBuilder: (Alert) -> UIPopoverPresentationControllerDelegateProtocol,
 ) : BaseAlertPresenter(alert, logger) {
 
