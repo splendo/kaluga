@@ -62,25 +62,24 @@ fun CALayer.applyBackgroundStyle(style: KalugaBackgroundStyle, bounds: CValue<CG
     applyStroke(style.strokeStyle, maskPath, bounds)
 }
 
-private fun pathForShape(shape: KalugaBackgroundStyle.Shape, bounds: CValue<CGRect>): CGPathRef? =
-    when (shape) {
-        is KalugaBackgroundStyle.Shape.Rectangle -> UIBezierPath.bezierPathWithRoundedRect(
-            bounds,
-            shape.roundedCorners.fold(0U) { acc, corner ->
-                acc or when (corner) {
-                    KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT -> UIRectCornerTopLeft
-                    KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT -> UIRectCornerTopRight
-                    KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT -> UIRectCornerBottomLeft
-                    KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT -> UIRectCornerBottomRight
-                }
-            },
-            CGSizeMake(
-                shape.cornerRadiusX.toDouble(),
-                shape.cornerRadiusY.toDouble(),
-            ),
-        )
-        is KalugaBackgroundStyle.Shape.Oval -> UIBezierPath.bezierPathWithOvalInRect(bounds)
-    }.CGPath
+private fun pathForShape(shape: KalugaBackgroundStyle.Shape, bounds: CValue<CGRect>): CGPathRef? = when (shape) {
+    is KalugaBackgroundStyle.Shape.Rectangle -> UIBezierPath.bezierPathWithRoundedRect(
+        bounds,
+        shape.roundedCorners.fold(0U) { acc, corner ->
+            acc or when (corner) {
+                KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT -> UIRectCornerTopLeft
+                KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT -> UIRectCornerTopRight
+                KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT -> UIRectCornerBottomLeft
+                KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT -> UIRectCornerBottomRight
+            }
+        },
+        CGSizeMake(
+            shape.cornerRadiusX.toDouble(),
+            shape.cornerRadiusY.toDouble(),
+        ),
+    )
+    is KalugaBackgroundStyle.Shape.Oval -> UIBezierPath.bezierPathWithOvalInRect(bounds)
+}.CGPath
 
 private fun CALayer.applyFillStyle(fillStyle: KalugaBackgroundStyle.FillStyle, bounds: CValue<CGRect>) {
     addSublayer(
@@ -111,10 +110,7 @@ private fun List<CGColorRef>.mapToCGColor() = map {
     CFBridgingRelease(CFRetain(it))
 }
 
-private fun CAGradientLayer.applyGradientStyle(
-    gradientStyle: GradientStyle,
-    bounds: CValue<CGRect>,
-) = when (gradientStyle) {
+private fun CAGradientLayer.applyGradientStyle(gradientStyle: GradientStyle, bounds: CValue<CGRect>) = when (gradientStyle) {
     is GradientStyle.Linear -> {
         type = kCAGradientLayerAxial
         val startAndEndPoint = when (gradientStyle.orientation) {
@@ -172,11 +168,7 @@ private fun CAGradientLayer.applyGradientStyle(
     }
 }
 
-private fun CALayer.applyStroke(
-    strokeStyle: KalugaBackgroundStyle.StrokeStyle,
-    path: CGPathRef?,
-    bounds: CValue<CGRect>,
-) {
+private fun CALayer.applyStroke(strokeStyle: KalugaBackgroundStyle.StrokeStyle, path: CGPathRef?, bounds: CValue<CGRect>) {
     addSublayer(
         CAShapeLayer(this).apply {
             frame = bounds

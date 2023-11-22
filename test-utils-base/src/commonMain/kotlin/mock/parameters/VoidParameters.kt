@@ -56,9 +56,7 @@ object VoidParameters : ParametersSpec<VoidParameters.Matchers, VoidParameters.M
 
 internal fun <R> (() -> R).asMock() = voidParametersMock<R>()
 
-fun <R> (() -> R).mockWithDefaultAnswer(
-    defaultAnswer: Answer<VoidParameters.Values, R>,
-) = asMock().also {
+fun <R> (() -> R).mockWithDefaultAnswer(defaultAnswer: Answer<VoidParameters.Values, R>) = asMock().also {
     it.on().doAnswer(defaultAnswer)
 }
 fun <R> (() -> R).mockWithDefaultValue(defaultValue: R) = asMock().also {
@@ -183,9 +181,7 @@ fun <R : Any> (() -> R).mock() = asMock()
 
 internal fun <R> (suspend () -> R).asSuspendedMock() = suspendVoidParametersMock<R>()
 
-fun <R> (suspend () -> R).mockWithDefaultAnswer(
-    defaultAnswer: SuspendedAnswer<VoidParameters.Values, R>,
-) = asSuspendedMock().also {
+fun <R> (suspend () -> R).mockWithDefaultAnswer(defaultAnswer: SuspendedAnswer<VoidParameters.Values, R>) = asSuspendedMock().also {
     it.on().doAnswer(defaultAnswer)
 }
 

@@ -452,6 +452,9 @@ public final class com/splendo/kaluga/test/bluetooth/device/MockDeviceState$Disc
 
 public final class com/splendo/kaluga/test/bluetooth/device/MockDeviceState$NotConnectable : com/splendo/kaluga/test/bluetooth/device/MockDeviceState, com/splendo/kaluga/bluetooth/device/NotConnectableDeviceState {
 	public static final field INSTANCE Lcom/splendo/kaluga/test/bluetooth/device/MockDeviceState$NotConnectable;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockBaseScanner : com/splendo/kaluga/bluetooth/scanner/BaseScanner {
@@ -622,8 +625,11 @@ public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$N
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$NoHardware : com/splendo/kaluga/test/bluetooth/scanner/MockScanningState, com/splendo/kaluga/bluetooth/scanner/ScanningState$NoHardware {
 	public static final field INSTANCE Lcom/splendo/kaluga/test/bluetooth/scanner/MockScanningState$NoHardware;
+	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getNothingFound ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
+	public fun hashCode ()I
 	public fun remain ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$NotInitialized : com/splendo/kaluga/test/bluetooth/scanner/MockScanningState$Inactive, com/splendo/kaluga/bluetooth/scanner/ScanningState$NotInitialized {

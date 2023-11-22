@@ -57,11 +57,7 @@ object BeaconMock {
         )
     }
 
-    private fun makeDevice(
-        deviceWrapper: DeviceWrapper,
-        serviceData: ServiceData = emptyMap(),
-        coroutineScope: CoroutineScope,
-    ) = DeviceImpl(
+    private fun makeDevice(deviceWrapper: DeviceWrapper, serviceData: ServiceData = emptyMap(), coroutineScope: CoroutineScope) = DeviceImpl(
         deviceWrapper.identifier,
         makeDeviceInfo(deviceWrapper.name.orEmpty(), serviceData),
         settings,

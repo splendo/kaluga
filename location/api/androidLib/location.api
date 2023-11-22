@@ -244,10 +244,16 @@ public abstract class com/splendo/kaluga/location/LocationManager$Event {
 
 public final class com/splendo/kaluga/location/LocationManager$Event$LocationDisabled : com/splendo/kaluga/location/LocationManager$Event {
 	public static final field INSTANCE Lcom/splendo/kaluga/location/LocationManager$Event$LocationDisabled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/location/LocationManager$Event$LocationEnabled : com/splendo/kaluga/location/LocationManager$Event {
 	public static final field INSTANCE Lcom/splendo/kaluga/location/LocationManager$Event$LocationEnabled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/location/LocationManager$Event$PermissionChanged : com/splendo/kaluga/location/LocationManager$Event {

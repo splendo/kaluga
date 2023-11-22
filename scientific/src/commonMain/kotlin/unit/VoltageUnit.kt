@@ -50,7 +50,7 @@ val VoltageUnits: Set<Voltage> get() = setOf(
 sealed class Voltage : AbstractScientificUnit<PhysicalQuantity.Voltage>(), MetricAndImperialScientificUnit<PhysicalQuantity.Voltage>
 
 @Serializable
-object Volt : Voltage(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage> {
+data object Volt : Voltage(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage> {
     override val symbol = "V"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Voltage
@@ -59,10 +59,10 @@ object Volt : Voltage(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, Phy
 }
 
 @Serializable
-object Nanovolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Nano(Volt)
+data object Nanovolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Nano(Volt)
 
 @Serializable
-object Abvolt : Voltage() {
+data object Abvolt : Voltage() {
     private const val ABVOLT_IN_VOLT = 100000000.0
     override val symbol = "abV"
     override val system = MeasurementSystem.MetricAndImperial
@@ -75,28 +75,28 @@ object Abvolt : Voltage() {
 sealed class VoltMultiple : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt>
 
 @Serializable
-object Microvolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Micro(Volt)
+data object Microvolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Micro(Volt)
 
 @Serializable
-object Millivolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Milli(Volt)
+data object Millivolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Milli(Volt)
 
 @Serializable
-object Centivolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Centi(Volt)
+data object Centivolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Centi(Volt)
 
 @Serializable
-object Decivolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Deci(Volt)
+data object Decivolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Deci(Volt)
 
 @Serializable
-object Decavolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Deca(Volt)
+data object Decavolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Deca(Volt)
 
 @Serializable
-object Hectovolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Hecto(Volt)
+data object Hectovolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Hecto(Volt)
 
 @Serializable
-object Kilovolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Kilo(Volt)
+data object Kilovolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Kilo(Volt)
 
 @Serializable
-object Megavolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Mega(Volt)
+data object Megavolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Mega(Volt)
 
 @Serializable
-object Gigavolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Giga(Volt)
+data object Gigavolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Giga(Volt)

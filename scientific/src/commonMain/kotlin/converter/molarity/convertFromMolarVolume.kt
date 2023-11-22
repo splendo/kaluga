@@ -30,9 +30,8 @@ import kotlin.jvm.JvmName
 fun <
     MolarityUnit : Molarity,
     MolarVolumeUnit : MolarVolume,
-    > MolarityUnit.molarity(
-    molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>,
-) = molarity(molarVolume, ::DefaultScientificValue)
+    > MolarityUnit.molarity(molarVolume: ScientificValue<PhysicalQuantity.MolarVolume, MolarVolumeUnit>) =
+    molarity(molarVolume, ::DefaultScientificValue)
 
 @JvmName("molarityFromInvertedMolarVolume")
 fun <

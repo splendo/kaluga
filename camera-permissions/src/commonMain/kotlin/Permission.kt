@@ -28,7 +28,7 @@ import kotlin.time.Duration
 /**
  * [Permission] to access the users Camera
  */
-object CameraPermission : Permission() {
+data object CameraPermission : Permission() {
     override val name: String = "Camera"
 }
 
@@ -45,10 +45,9 @@ fun PermissionsBuilder.registerCameraPermission(
     cameraPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCameraPermissionManagerBuilder = ::CameraPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-) =
-    registerCameraPermission(cameraPermissionManagerBuilderBuilder) { builder, coroutineContext ->
-        CameraPermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
-    }
+) = registerCameraPermission(cameraPermissionManagerBuilderBuilder) { builder, coroutineContext ->
+    CameraPermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
+}
 
 /**
  * Registers a [BaseCameraPermissionManagerBuilder] and [PermissionStateRepo] for [CameraPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
@@ -80,10 +79,9 @@ fun PermissionsBuilder.registerCameraPermissionIfNotRegistered(
     cameraPermissionManagerBuilderBuilder: (PermissionContext) -> BaseCameraPermissionManagerBuilder = ::CameraPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-) =
-    registerCameraPermissionIfNotRegistered(cameraPermissionManagerBuilderBuilder) { builder, coroutineContext ->
-        CameraPermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
-    }
+) = registerCameraPermissionIfNotRegistered(cameraPermissionManagerBuilderBuilder) { builder, coroutineContext ->
+    CameraPermissionStateRepo(builder, monitoringInterval, settings, coroutineContext)
+}
 
 /**
  * Gets the [BaseCameraPermissionManagerBuilder] registered

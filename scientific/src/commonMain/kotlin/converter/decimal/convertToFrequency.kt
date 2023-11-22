@@ -29,12 +29,10 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("numberDivMinute")
-infix operator fun Number.div(minute: ScientificValue<PhysicalQuantity.Time, Minute>): ScientificValue<PhysicalQuantity.Frequency, BeatsPerMinute> =
-    toDecimal() / minute
+infix operator fun Number.div(minute: ScientificValue<PhysicalQuantity.Time, Minute>): ScientificValue<PhysicalQuantity.Frequency, BeatsPerMinute> = toDecimal() / minute
 
 @JvmName("numberDivTime")
-infix operator fun <TimeUnit : Time> Number.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>): ScientificValue<PhysicalQuantity.Frequency, Hertz> =
-    toDecimal() / time
+infix operator fun <TimeUnit : Time> Number.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>): ScientificValue<PhysicalQuantity.Frequency, Hertz> = toDecimal() / time
 
 @JvmName("decimalDivMinute")
 infix operator fun Decimal.div(minute: ScientificValue<PhysicalQuantity.Time, Minute>): ScientificValue<PhysicalQuantity.Frequency, BeatsPerMinute> =

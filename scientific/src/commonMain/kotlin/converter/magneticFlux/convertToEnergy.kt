@@ -30,12 +30,10 @@ import com.splendo.kaluga.scientific.unit.Maxwell
 import kotlin.jvm.JvmName
 
 @JvmName("maxwellTimesAbampere")
-infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) =
-    Erg.energy(this, current)
+infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) = Erg.energy(this, current)
 
 @JvmName("maxwellTimesBiot")
-infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) =
-    Erg.energy(this, current)
+infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.times(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) = Erg.energy(this, current)
 
 @JvmName("fluxTimesCurrent")
 infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.times(

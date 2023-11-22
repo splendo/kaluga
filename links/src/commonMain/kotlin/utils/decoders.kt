@@ -43,13 +43,11 @@ internal class LinksDecoder(
         return elementIndex++
     }
 
-    override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder =
-        LinksDecoder(list, descriptor.elementsCount)
+    override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder = LinksDecoder(list, descriptor.elementsCount)
 
-    override fun decodeCollectionSize(descriptor: SerialDescriptor): Int =
-        decodeInt().also {
-            elementsCount = it
-        }
+    override fun decodeCollectionSize(descriptor: SerialDescriptor): Int = decodeInt().also {
+        elementsCount = it
+    }
 
     override fun decodeValue(): Any = list.removeFirst()
 

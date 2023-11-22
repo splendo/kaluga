@@ -27,8 +27,7 @@ import kotlin.coroutines.CoroutineContext
  * Since JavaScript does not have threading support, this will just return [Dispatchers.Default]
  * @param name The name of the thread to be created.
  */
-actual fun singleThreadDispatcher(name: String): CloseableCoroutineDispatcher =
-    CoroutineDispatcherWrapper(Dispatchers.Default)
+actual fun singleThreadDispatcher(name: String): CloseableCoroutineDispatcher = CoroutineDispatcherWrapper(Dispatchers.Default)
 
 /**
  * Creates a coroutine execution context using a thread pool.
@@ -36,8 +35,7 @@ actual fun singleThreadDispatcher(name: String): CloseableCoroutineDispatcher =
  * @param numberOfThreads The number of the threads that the thread pool should consist of.
  * @param name The name of the thread pool to be created.
  */
-actual fun threadPoolDispatcher(numberOfThreads: UInt, name: String): CloseableCoroutineDispatcher =
-    CoroutineDispatcherWrapper(Dispatchers.Default)
+actual fun threadPoolDispatcher(numberOfThreads: UInt, name: String): CloseableCoroutineDispatcher = CoroutineDispatcherWrapper(Dispatchers.Default)
 
 private class CoroutineDispatcherWrapper(
     private val base: CoroutineDispatcher,

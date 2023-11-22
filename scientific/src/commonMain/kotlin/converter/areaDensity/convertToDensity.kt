@@ -36,9 +36,8 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricAreaDensityDivMetricLength")
-infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>.div(
-    length: ScientificValue<PhysicalQuantity.Length, LengthUnit>,
-) = (unit.weight per (1(unit.per) * 1(length.unit)).unit).density(this, length)
+infix operator fun <LengthUnit : MetricLength> ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>.div(length: ScientificValue<PhysicalQuantity.Length, LengthUnit>) =
+    (unit.weight per (1(unit.per) * 1(length.unit)).unit).density(this, length)
 
 @JvmName("imperialAreaDensityDivImperialLength")
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<PhysicalQuantity.AreaDensity, ImperialAreaDensity>.div(

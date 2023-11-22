@@ -37,5 +37,4 @@ interface ScientificValueFormatter {
  * @param formatter the [ScientificValueFormatter] to use for formatting
  * @return the String representation of the [ScientificValue]
  */
-fun ScientificValue<*, *>.toString(formatter: ScientificValueFormatter = CommonScientificValueFormatter): String =
-    formatter.format(this)
+fun ScientificValue<*, *>.toString(formatter: ScientificValueFormatter = CommonScientificValueFormatter): String = formatter.format(this)

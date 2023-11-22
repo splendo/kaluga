@@ -28,7 +28,7 @@ private object Constants {
         "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9a-f]{4}",
         RegexOption.IGNORE_CASE,
     )
-    const val baseBluetoothUUID = "0000%s-0000-1000-8000-00805f9b34fb"
+    const val BASE_BLUETOOTH_UUID = "0000%s-0000-1000-8000-00805f9b34fb"
 }
 
 /**
@@ -62,8 +62,7 @@ expect val UUID.uuidString: String
  * @throws [UUIDException] if [uuidString] is not a valid [UUID]
  */
 @Throws(UUIDException::class)
-fun uuidFrom(uuidString: String): UUID =
-    if (uuidString.isValidUUIDString()) unsafeUUIDFrom(uuidString) else throw UUIDException.InvalidFormat(uuidString)
+fun uuidFrom(uuidString: String): UUID = if (uuidString.isValidUUIDString()) unsafeUUIDFrom(uuidString) else throw UUIDException.InvalidFormat(uuidString)
 
 /**
  * Gets a random [UUID]
@@ -77,8 +76,7 @@ expect fun randomUUID(): UUID
  * @see <a href="https://www.bluetooth.com/specifications/gatt/characteristics/">GATT Characteristics specification</a>
  * @see <a href="https://btprodspecificationrefs.blob.core.windows.net/assigned-numbers/Assigned%20Number%20Types/Service%20Discovery.pdf">Service discovery</a>
  */
-internal fun uuidFromShort(uuidString: String): UUID =
-    uuidFrom(Constants.baseBluetoothUUID.format(uuidString))
+internal fun uuidFromShort(uuidString: String): UUID = uuidFrom(Constants.BASE_BLUETOOTH_UUID.format(uuidString))
 
 /**
  * Meant for internal usage. It takes string which already passed validation

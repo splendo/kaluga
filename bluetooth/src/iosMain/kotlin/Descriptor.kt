@@ -67,7 +67,9 @@ actual interface DescriptorWrapper {
  */
 class DefaultDescriptorWrapper(private val descriptor: CBDescriptor) : DescriptorWrapper {
 
-    override val uuid: CBUUID get() { return descriptor.UUID }
+    override val uuid: CBUUID get() {
+        return descriptor.UUID
+    }
     override val value: NSData? get() {
         return when (descriptor.UUID.uuidString) {
             CBUUIDCharacteristicFormatString -> {

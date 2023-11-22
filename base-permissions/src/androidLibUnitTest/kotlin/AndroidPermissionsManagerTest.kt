@@ -41,7 +41,7 @@ import kotlin.test.assertEquals
 class AndroidPermissionsManagerTest : BaseTest() {
 
     companion object {
-        private const val packageName = "package"
+        private const val PACKAGE_NAME = "package"
         private val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
 
@@ -70,11 +70,11 @@ class AndroidPermissionsManagerTest : BaseTest() {
         MockitoAnnotations.openMocks(this)
 
         `when`(context.packageManager).thenReturn(packageManager)
-        `when`(context.packageName).thenReturn(packageName)
+        `when`(context.packageName).thenReturn(PACKAGE_NAME)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             `when`(
                 packageManager.getPackageInfo(
-                    Mockito.eq(packageName),
+                    Mockito.eq(PACKAGE_NAME),
                     Mockito.eq(PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong())),
                 ),
             )
@@ -82,7 +82,7 @@ class AndroidPermissionsManagerTest : BaseTest() {
             @Suppress("DEPRECATION")
             `when`(
                 packageManager.getPackageInfo(
-                    Mockito.eq(packageName),
+                    Mockito.eq(PACKAGE_NAME),
                     Mockito.eq(PackageManager.GET_PERMISSIONS),
                 ),
             )

@@ -112,22 +112,34 @@ actual class NumberFormatter actual constructor(override val locale: KalugaLocal
 
     override var percentSymbol: Char
         get() = formatter.percentSymbol.getOrNull(0) ?: Char.MIN_VALUE
-        set(value) { formatter.percentSymbol = charArrayOf(value).concatToString() }
+        set(value) {
+            formatter.percentSymbol = charArrayOf(value).concatToString()
+        }
     override var perMillSymbol: Char
         get() = formatter.perMillSymbol.getOrNull(0) ?: Char.MIN_VALUE
-        set(value) { formatter.perMillSymbol = charArrayOf(value).concatToString() }
+        set(value) {
+            formatter.perMillSymbol = charArrayOf(value).concatToString()
+        }
     override var minusSign: Char
         get() = formatter.minusSign.getOrNull(0) ?: Char.MIN_VALUE
-        set(value) { formatter.minusSign = charArrayOf(value).concatToString() }
+        set(value) {
+            formatter.minusSign = charArrayOf(value).concatToString()
+        }
     override var exponentSymbol: String
         get() = formatter.exponentSymbol
-        set(value) { formatter.exponentSymbol = value }
+        set(value) {
+            formatter.exponentSymbol = value
+        }
     override var zeroSymbol: Char
         get() = formatter.zeroSymbol?.getOrNull(0) ?: '0'
-        set(value) { formatter.zeroSymbol = charArrayOf(value).concatToString() }
+        set(value) {
+            formatter.zeroSymbol = charArrayOf(value).concatToString()
+        }
     override var notANumberSymbol: String
         get() = formatter.notANumberSymbol
-        set(value) { formatter.notANumberSymbol = value }
+        set(value) {
+            formatter.notANumberSymbol = value
+        }
     override var infinitySymbol: String
         get() = formatter.positiveInfinitySymbol
         set(value) {
@@ -136,22 +148,34 @@ actual class NumberFormatter actual constructor(override val locale: KalugaLocal
         }
     override var currencySymbol: String
         get() = formatter.currencySymbol
-        set(value) { formatter.currencySymbol = value }
+        set(value) {
+            formatter.currencySymbol = value
+        }
     override var currencyCode: String
         get() = formatter.currencyCode
-        set(value) { formatter.currencyCode = value }
+        set(value) {
+            formatter.currencyCode = value
+        }
     override var positivePrefix: String
         get() = formatter.positivePrefix
-        set(value) { formatter.positivePrefix = value }
+        set(value) {
+            formatter.positivePrefix = value
+        }
     override var positiveSuffix: String
         get() = formatter.positiveSuffix
-        set(value) { formatter.positiveSuffix = value }
+        set(value) {
+            formatter.positiveSuffix = value
+        }
     override var negativePrefix: String
         get() = formatter.negativePrefix
-        set(value) { formatter.negativePrefix = value }
+        set(value) {
+            formatter.negativePrefix = value
+        }
     override var negativeSuffix: String
         get() = formatter.negativeSuffix
-        set(value) { formatter.negativeSuffix = value }
+        set(value) {
+            formatter.negativeSuffix = value
+        }
     override var groupingSeparator: Char
         get() = formatter.groupingSeparator.getOrNull(0) ?: Char.MIN_VALUE
         set(value) {
@@ -161,16 +185,24 @@ actual class NumberFormatter actual constructor(override val locale: KalugaLocal
         }
     override var usesGroupingSeparator: Boolean
         get() = formatter.usesGroupingSeparator
-        set(value) { formatter.usesGroupingSeparator = value }
+        set(value) {
+            formatter.usesGroupingSeparator = value
+        }
     override var decimalSeparator: Char
         get() = formatter.decimalSeparator.getOrNull(0) ?: Char.MIN_VALUE
-        set(value) { formatter.decimalSeparator = charArrayOf(value).concatToString() }
+        set(value) {
+            formatter.decimalSeparator = charArrayOf(value).concatToString()
+        }
     override var alwaysShowsDecimalSeparator: Boolean
         get() = formatter.alwaysShowsDecimalSeparator
-        set(value) { formatter.alwaysShowsDecimalSeparator = value }
+        set(value) {
+            formatter.alwaysShowsDecimalSeparator = value
+        }
     override var currencyDecimalSeparator: Char
         get() = formatter.currencyDecimalSeparator.getOrNull(0) ?: Char.MIN_VALUE
-        set(value) { formatter.currencyDecimalSeparator = charArrayOf(value).concatToString() }
+        set(value) {
+            formatter.currencyDecimalSeparator = charArrayOf(value).concatToString()
+        }
     override var groupingSize: Int
         get() = formatter.groupingSize.toInt()
         set(value) {
@@ -179,7 +211,9 @@ actual class NumberFormatter actual constructor(override val locale: KalugaLocal
         }
     override var multiplier: Int
         get() = formatter.multiplier?.intValue ?: 1
-        set(value) { formatter.multiplier = NSNumber.numberWithInt(value) }
+        set(value) {
+            formatter.multiplier = NSNumber.numberWithInt(value)
+        }
 
     @Suppress("CAST_NEVER_SUCCEEDS") // Should succeed just fine
     override fun format(number: Number): String {

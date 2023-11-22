@@ -18,8 +18,8 @@
 package com.splendo.kaluga.architecture.navigation
 
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import kotlinx.cinterop.pointed
 import platform.CoreGraphics.CGFloat
+import platform.Foundation.CFBridgingRelease
 import platform.Foundation.NSNumber
 import platform.Foundation.NSURL
 import platform.Foundation.numberWithInt
@@ -213,7 +213,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(
 
     private fun presentImagePicker(imagePickerSpec: NavigationSpec.ImagePicker) {
         if (!UIImagePickerController.isSourceTypeAvailable(imagePickerSpec.sourceType)) throw ImagePickerSourceNotAvailableNavigationException(imagePickerSpec.sourceType)
-        val mediaTypes = imagePickerSpec.mediaType.map { it.typeString?.pointed.toString() }
+        val mediaTypes = imagePickerSpec.mediaType.map { CFBridgingRelease(it.typeString) as? String }
         val isMediaTypesAvailable = UIImagePickerController.availableMediaTypesForSourceType(imagePickerSpec.sourceType)?.containsAll(mediaTypes) == true
         if (!isMediaTypesAvailable) throw ImagePickerMediaNotAvailableNavigationException(imagePickerSpec.mediaType)
         val pickerVC = UIImagePickerController()
@@ -291,7 +291,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(
             }
         }
         settings.body?.let { composeVC.setBody(it) }
-        settings.message?.let { composeVC.setMessageWorkAround(it) }
+        settings.message?.let { composeVC.setMessage(it as? objcnames.classes.MSMessage) }
 
         if (MFMessageComposeViewController.canSendAttachments()) {
             settings.attachments.forEach {
@@ -383,6 +383,3 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(
 
     private fun assertParent() = parent.get() ?: throw MissingViewControllerNavigationException
 }
-
-// Seems to be a bug on commonizer using new targets sourcesets which is preventing to infer the correct type
-expect fun MFMessageComposeViewController.setMessageWorkAround(message: platform.Messages.MSMessage?)

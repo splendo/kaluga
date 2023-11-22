@@ -30,24 +30,20 @@ import com.splendo.kaluga.scientific.unit.USCustomaryMassFlowRate
 import kotlin.jvm.JvmName
 
 @JvmName("metricMassFlowRateTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.MassFlowRate, MetricMassFlowRate>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = unit.weight.mass(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.MassFlowRate, MetricMassFlowRate>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    unit.weight.mass(this, time)
 
 @JvmName("imperialMassFlowRateTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.MassFlowRate, ImperialMassFlowRate>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = unit.weight.mass(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.MassFlowRate, ImperialMassFlowRate>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    unit.weight.mass(this, time)
 
 @JvmName("ukImperialMassFlowRateTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.MassFlowRate, UKImperialMassFlowRate>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = unit.weight.mass(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.MassFlowRate, UKImperialMassFlowRate>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    unit.weight.mass(this, time)
 
 @JvmName("usCustomaryMassFlowRateTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.MassFlowRate, USCustomaryMassFlowRate>.times(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = unit.weight.mass(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.MassFlowRate, USCustomaryMassFlowRate>.times(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    unit.weight.mass(this, time)
 
 @JvmName("massFlowRateTimesTime")
 infix operator fun <MassFlowRateUnit : MassFlowRate, TimeUnit : Time> ScientificValue<PhysicalQuantity.MassFlowRate, MassFlowRateUnit>.times(

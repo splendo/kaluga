@@ -70,11 +70,7 @@ class BottomSheetRootDialogFragment : KalugaViewModelBottomSheetDialogFragment<B
         )
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
         val binding = FragmentBottomSheetRootBinding.inflate(inflater, container, false)
@@ -105,11 +101,7 @@ class BottomSheetRootDialogFragment : KalugaViewModelBottomSheetDialogFragment<B
 
 class BottomSheetFragment(val viewModel: BottomSheetViewModel) : Fragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
         val binding = FragmentBottomSheetBinding.inflate(inflater, container, false)

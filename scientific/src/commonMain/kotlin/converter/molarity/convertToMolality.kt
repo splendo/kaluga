@@ -36,24 +36,20 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("molarityDivMetricDensity")
-infix operator fun <MolarityUnit : Molarity> ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>,
-) = (unit.amountOfSubstance per density.unit.weight).molality(this, density)
+infix operator fun <MolarityUnit : Molarity> ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>.div(density: ScientificValue<PhysicalQuantity.Density, MetricDensity>) =
+    (unit.amountOfSubstance per density.unit.weight).molality(this, density)
 
 @JvmName("molarityDivImperialDensity")
-infix operator fun <MolarityUnit : Molarity> ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
-) = (unit.amountOfSubstance per density.unit.weight).molality(this, density)
+infix operator fun <MolarityUnit : Molarity> ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>.div(density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>) =
+    (unit.amountOfSubstance per density.unit.weight).molality(this, density)
 
 @JvmName("molarityDivUKImperialDensity")
-infix operator fun <MolarityUnit : Molarity> ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>,
-) = (unit.amountOfSubstance per density.unit.weight).molality(this, density)
+infix operator fun <MolarityUnit : Molarity> ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>.div(density: ScientificValue<PhysicalQuantity.Density, UKImperialDensity>) =
+    (unit.amountOfSubstance per density.unit.weight).molality(this, density)
 
 @JvmName("molarityDivUSCustomaryDensity")
-infix operator fun <MolarityUnit : Molarity> ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>.div(
-    density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>,
-) = (unit.amountOfSubstance per density.unit.weight).molality(this, density)
+infix operator fun <MolarityUnit : Molarity> ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>.div(density: ScientificValue<PhysicalQuantity.Density, USCustomaryDensity>) =
+    (unit.amountOfSubstance per density.unit.weight).molality(this, density)
 
 @JvmName("molarityDivDensity")
 infix operator fun <MolarityUnit : Molarity, DensityUnit : Density> ScientificValue<PhysicalQuantity.Molarity, MolarityUnit>.div(

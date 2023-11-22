@@ -45,6 +45,8 @@ actual interface WithState<T> {
     actual val valueDelegate: ReadOnlyProperty<Any?, T>
 }
 
+actual interface PlatformSubjectObserver<R>
+
 /**
  * An abstract class that extends [AbstractBaseSubject].
  * @param T the type of value to expect.
@@ -58,9 +60,11 @@ actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual c
     stateFlowToBind: suspend () -> StateFlow<R?>,
 ) : AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
 
-    final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
+    actual final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         super.bind(coroutineScope, context)
     }
+
+    protected actual abstract val platformSubjectObserver: PlatformSubjectObserver<R>
 }
 
 /**
@@ -70,7 +74,9 @@ actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual c
  */
 actual abstract class BaseUninitializedSubject<T> actual constructor(
     observation: ObservationUninitialized<T>,
-) : AbstractBaseUninitializedSubject<T>(observation)
+) : AbstractBaseUninitializedSubject<T>(observation) {
+    actual final override val platformSubjectObserver: PlatformSubjectObserver<T> = object : PlatformSubjectObserver<T> {}
+}
 
 /**
  * Abstract class implementing [AbstractBaseInitializedSubject]
@@ -86,6 +92,8 @@ actual abstract class BaseInitializedSubject<T> actual constructor(observation: 
     actual constructor(
         initialValue: Value<T>,
     ) : this (ObservationInitialized(initialValue))
+
+    actual final override val platformSubjectObserver: PlatformSubjectObserver<T> = object : PlatformSubjectObserver<T> {}
 }
 
 /**
@@ -107,4 +115,6 @@ actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
         defaultValue: Value<R>,
         initialValue: Value<T?>,
     ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue))
+
+    actual final override val platformSubjectObserver: PlatformSubjectObserver<R> = object : PlatformSubjectObserver<R> {}
 }

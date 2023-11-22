@@ -61,7 +61,7 @@ import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.milliseconds
 
 sealed class MediaNavigationAction : SingleValueNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType) {
-    object SelectLocal : MediaNavigationAction()
+    data object SelectLocal : MediaNavigationAction()
 }
 
 class MediaViewModel(
@@ -84,7 +84,7 @@ class MediaViewModel(
         it.controlTypes.isNotEmpty() && it.getControlType<MediaPlayer.Controls.AwaitPreparation>() == null
     }.toInitializedObservable(false, coroutineScope)
     private val _totalDuration = mediaPlayer.duration.stateIn(coroutineScope, SharingStarted.Eagerly, ZERO)
-    private val _controls = mediaPlayer.controls.stateIn(coroutineScope, SharingStarted.Eagerly, MediaPlayer.Controls())
+    private val controls = mediaPlayer.controls.stateIn(coroutineScope, SharingStarted.Eagerly, MediaPlayer.Controls())
 
     val totalDuration = _totalDuration.map {
         it.format()
@@ -102,9 +102,9 @@ class MediaViewModel(
         }.toFloat()
     }.toInitializedObservable(0.0f, coroutineScope)
 
-    val isSeekEnabled = _controls.map { it.seek != null }.toInitializedObservable(false, coroutineScope)
+    val isSeekEnabled = controls.map { it.seek != null }.toInitializedObservable(false, coroutineScope)
 
-    val playButton = _controls.map { controls ->
+    val playButton = controls.map { controls ->
         KalugaButton.Plain("\u23F5", ButtonStyles.mediaButton, controls.play != null || controls.unpause != null) {
             coroutineScope.launch {
                 when {
@@ -116,19 +116,19 @@ class MediaViewModel(
         }
     }.toUninitializedObservable(coroutineScope)
 
-    val pauseButton = _controls.map {
+    val pauseButton = controls.map {
         KalugaButton.Plain("\u23F8", ButtonStyles.mediaButton, it.pause != null) {
             coroutineScope.launch { it.tryPause() }
         }
     }.toUninitializedObservable(coroutineScope)
 
-    val stopButton = _controls.map {
+    val stopButton = controls.map {
         KalugaButton.Plain("\u23F9", ButtonStyles.mediaButton, it.stop != null) {
             coroutineScope.launch { it.tryStop() }
         }
     }.toUninitializedObservable(coroutineScope)
 
-    val loopButton = _controls.map { controls ->
+    val loopButton = controls.map { controls ->
         controls.setLoopMode?.let { setLoopMode ->
             when (val loopMode = setLoopMode.currentLoopMode) {
                 PlaybackState.LoopMode.NotLooping -> KalugaButton.Plain("\uD83D\uDD01", ButtonStyles.mediaButton, true) {
@@ -150,7 +150,7 @@ class MediaViewModel(
         } ?: KalugaButton.Plain("\uD83D\uDD01", ButtonStyles.mediaButton, false) {}
     }.toUninitializedObservable(coroutineScope)
 
-    val rateButton = _controls.map { controls ->
+    val rateButton = controls.map { controls ->
         controls.setRate?.let { setRate ->
             KalugaButton.Plain(playbackFormatter.format(setRate.currentRate), ButtonStyles.mediaButton, true) {
                 coroutineScope.launch {
@@ -181,7 +181,7 @@ class MediaViewModel(
 
     fun seekTo(progress: Double) {
         coroutineScope.launch {
-            _controls.value.trySeek(_totalDuration.value * progress)
+            controls.value.trySeek(_totalDuration.value * progress)
         }
     }
 
@@ -249,7 +249,7 @@ class MediaViewModel(
 
     init {
         coroutineScope.launch {
-            _controls.mapNotNull { it.displayError }.collect { error ->
+            controls.mapNotNull { it.displayError }.collect { error ->
                 alertPresenterBuilder.buildAlert(coroutineScope) {
                     setTitle("media_error_title".localized())
                     setMessage(error.error.message ?: error.error::class.simpleName.orEmpty())

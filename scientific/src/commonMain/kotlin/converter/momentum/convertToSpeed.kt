@@ -36,39 +36,32 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricMomentumDivMetricMass")
-infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Momentum, MetricMomentum>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = unit.speed.speed(this, mass)
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Momentum, MetricMomentum>.div(mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    unit.speed.speed(this, mass)
 
 @JvmName("imperialMomentumDivImperialMass")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Momentum, ImperialMomentum>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = unit.speed.speed(this, mass)
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Momentum, ImperialMomentum>.div(mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    unit.speed.speed(this, mass)
 
 @JvmName("imperialMomentumDivUKImperialMass")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Momentum, ImperialMomentum>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = unit.speed.speed(this, mass)
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Momentum, ImperialMomentum>.div(mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    unit.speed.speed(this, mass)
 
 @JvmName("imperialMomentumDivUSCustomaryMass")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Momentum, ImperialMomentum>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = unit.speed.speed(this, mass)
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Momentum, ImperialMomentum>.div(mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    unit.speed.speed(this, mass)
 
 @JvmName("ukImperialMomentumDivImperialMass")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Momentum, UKImperialMomentum>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = unit.speed.speed(this, mass)
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Momentum, UKImperialMomentum>.div(mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    unit.speed.speed(this, mass)
 
 @JvmName("ukImperialMomentumDivUKImperialMass")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Momentum, UKImperialMomentum>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = unit.speed.speed(this, mass)
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Momentum, UKImperialMomentum>.div(mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    unit.speed.speed(this, mass)
 
 @JvmName("usCustomaryMomentumDivImperialMass")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Momentum, USCustomaryMomentum>.div(
-    mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = unit.speed.speed(this, mass)
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Momentum, USCustomaryMomentum>.div(mass: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    unit.speed.speed(this, mass)
 
 @JvmName("usCustomaryMomentumDivUSCustomaryMass")
 infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Momentum, USCustomaryMomentum>.div(

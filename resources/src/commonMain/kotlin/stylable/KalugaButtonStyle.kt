@@ -82,8 +82,7 @@ data class KalugaButtonStyle(
      * @param isPressed if `true` the button is pressed
      * @return the [KalugaTextStyle] to apply to the text of the button in the current state
      */
-    fun getStateTextStyle(isEnabled: Boolean, isPressed: Boolean) =
-        KalugaTextStyle(font, getStateStyle(isEnabled, isPressed).textColor, textSize, textAlignment)
+    fun getStateTextStyle(isEnabled: Boolean, isPressed: Boolean) = KalugaTextStyle(font, getStateStyle(isEnabled, isPressed).textColor, textSize, textAlignment)
 
     /**
      * Gets the [ButtonStateStyle] of the button depending on the state

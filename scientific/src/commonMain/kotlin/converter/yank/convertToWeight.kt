@@ -49,6 +49,5 @@ infix operator fun ScientificValue<PhysicalQuantity.Yank, USCustomaryYank>.div(j
     (1.0(unit.force) / 1.0(jolt.unit.acceleration)).unit.mass(this, jolt)
 
 @JvmName("yankDivJolt")
-infix operator fun <YankUnit : Yank, JoltUnit : Jolt> ScientificValue<PhysicalQuantity.Yank, YankUnit>.div(
-    jolt: ScientificValue<PhysicalQuantity.Jolt, JoltUnit>,
-) = (1.0(unit.force) / 1.0(jolt.unit.acceleration)).unit.mass(this, jolt)
+infix operator fun <YankUnit : Yank, JoltUnit : Jolt> ScientificValue<PhysicalQuantity.Yank, YankUnit>.div(jolt: ScientificValue<PhysicalQuantity.Jolt, JoltUnit>) =
+    (1.0(unit.force) / 1.0(jolt.unit.acceleration)).unit.mass(this, jolt)

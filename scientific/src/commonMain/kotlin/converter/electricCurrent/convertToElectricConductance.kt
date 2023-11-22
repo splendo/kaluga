@@ -34,8 +34,7 @@ infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>.d
     Absiemens.conductance(this, voltage)
 
 @JvmName("biotDivAbvolt")
-infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.div(voltage: ScientificValue<PhysicalQuantity.Voltage, Abvolt>) =
-    Absiemens.conductance(this, voltage)
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>.div(voltage: ScientificValue<PhysicalQuantity.Voltage, Abvolt>) = Absiemens.conductance(this, voltage)
 
 @JvmName("currentDivVoltage")
 infix operator fun <CurrentUnit : ElectricCurrent, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.ElectricCurrent, CurrentUnit>.div(

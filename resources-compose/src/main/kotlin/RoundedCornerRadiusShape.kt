@@ -47,19 +47,17 @@ internal fun CornerRadiusSize(x: Dp, y: Dp): CornerRadiusSize = DpCornerRadiusSi
 private data class DpCornerRadiusSize(private val radiusSize: RadiusSize) :
     CornerRadiusSize,
     InspectableValue {
-        constructor(x: Dp, y: Dp) : this (RadiusSize(x, y))
-        data class RadiusSize(val x: Dp, val y: Dp)
-        override fun xToPx(shapeSize: Size, density: Density) =
-            with(density) { radiusSize.x.toPx() }
-        override fun yToPx(shapeSize: Size, density: Density) =
-            with(density) { radiusSize.y.toPx() }
+    constructor(x: Dp, y: Dp) : this (RadiusSize(x, y))
+    data class RadiusSize(val x: Dp, val y: Dp)
+    override fun xToPx(shapeSize: Size, density: Density) = with(density) { radiusSize.x.toPx() }
+    override fun yToPx(shapeSize: Size, density: Density) = with(density) { radiusSize.y.toPx() }
 
-        override fun toString(): String = "CornerRadiusSize(x = ${radiusSize.x.value}.dp," +
-            "y = ${radiusSize.y.value}.dp)"
+    override fun toString(): String = "CornerRadiusSize(x = ${radiusSize.x.value}.dp," +
+        "y = ${radiusSize.y.value}.dp)"
 
-        override val valueOverride: RadiusSize
-            get() = radiusSize
-    }
+    override val valueOverride: RadiusSize
+        get() = radiusSize
+}
 
 internal class RoundedCornerRadiusShape(
     private val topStart: CornerRadiusSize,
@@ -68,11 +66,7 @@ internal class RoundedCornerRadiusShape(
     private val bottomStart: CornerRadiusSize,
 ) : Shape {
 
-    override fun createOutline(
-        size: Size,
-        layoutDirection: LayoutDirection,
-        density: Density,
-    ): Outline {
+    override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
         var topStartX = topStart.xToPx(size, density)
         var topStartY = topStart.yToPx(size, density)
         var topEndX = topEnd.xToPx(size, density)

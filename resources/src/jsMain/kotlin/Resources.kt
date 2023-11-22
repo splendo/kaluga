@@ -30,14 +30,9 @@ actual class DefaultStringLoader(
 ) : StringLoader {
     actual constructor() : this({ it }, { format, value -> format.format(value) })
 
-    override fun loadString(identifier: String, defaultValue: String): String =
-        transformer(identifier) ?: defaultValue
+    override fun loadString(identifier: String, defaultValue: String): String = transformer(identifier) ?: defaultValue
 
-    override fun loadQuantityString(
-        identifier: String,
-        quantity: Int,
-        defaultValue: String,
-    ): String = formatter(identifier, quantity) ?: defaultValue
+    override fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String = formatter(identifier, quantity) ?: defaultValue
 }
 
 /**
@@ -47,8 +42,7 @@ actual class DefaultStringLoader(
 actual class DefaultColorLoader(private val transformer: (String) -> KalugaColor?) : KalugaColorLoader {
     actual constructor() : this({ null })
 
-    override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? =
-        transformer(identifier) ?: defaultValue
+    override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? = transformer(identifier) ?: defaultValue
 }
 
 /**
@@ -58,8 +52,7 @@ actual class DefaultColorLoader(private val transformer: (String) -> KalugaColor
 actual class DefaultImageLoader(private val transformer: (String) -> KalugaImage?) : ImageLoader {
     actual constructor() : this({ null })
 
-    override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? =
-        transformer(identifier) ?: defaultValue
+    override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? = transformer(identifier) ?: defaultValue
 }
 
 /**
@@ -69,6 +62,5 @@ actual class DefaultImageLoader(private val transformer: (String) -> KalugaImage
 actual class DefaultFontLoader(private val transformer: suspend (String) -> KalugaFont?) : FontLoader {
     actual constructor() : this({ null })
 
-    override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? =
-        transformer(identifier) ?: defaultValue
+    override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? = transformer(identifier) ?: defaultValue
 }

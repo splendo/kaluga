@@ -82,52 +82,40 @@ import com.splendo.kaluga.scientific.unit.metric
 import kotlin.jvm.JvmName
 
 @JvmName("wattHourDivHour")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, WattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
-    Watt.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, WattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) = Watt.power(this, time)
 
 @JvmName("nanowattHourDivHour")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, NanowattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
-    Nanowatt.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, NanowattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) = Nanowatt.power(this, time)
 
 @JvmName("microwattHourDivHour")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MicrowattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
-    Microwatt.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, MicrowattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) = Microwatt.power(this, time)
 
 @JvmName("milliwattHourDivHour")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MilliwattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
-    Milliwatt.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, MilliwattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) = Milliwatt.power(this, time)
 
 @JvmName("centiwattHourDivHour")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, CentiwattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
-    Centiwatt.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, CentiwattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) = Centiwatt.power(this, time)
 
 @JvmName("deciwattHourDivHour")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, DeciwattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
-    Deciwatt.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, DeciwattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) = Deciwatt.power(this, time)
 
 @JvmName("decawattHourDivHour")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, DecawattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
-    Decawatt.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, DecawattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) = Decawatt.power(this, time)
 
 @JvmName("hectowattHourDivHour")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, HectowattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
-    Hectowatt.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, HectowattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) = Hectowatt.power(this, time)
 
 @JvmName("kilowattHourDivHour")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, KilowattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
-    Kilowatt.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, KilowattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) = Kilowatt.power(this, time)
 
 @JvmName("megawattHourDivHour")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, MegawattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
-    Megawatt.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, MegawattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) = Megawatt.power(this, time)
 
 @JvmName("gigawattHourDivHour")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, GigawattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
-    Gigawatt.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, GigawattHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) = Gigawatt.power(this, time)
 
 @JvmName("jouleDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, Joule>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
-    Watt.metric.power(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, Joule>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) = Watt.metric.power(this, time)
 
 @JvmName("nanojouleDivTime")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, Nanojoule>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
@@ -170,48 +158,38 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, Gi
     Gigawatt.metric.power(this, time)
 
 @JvmName("ergDivSecond")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) =
-    ErgPerSecond.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) = ErgPerSecond.power(this, time)
 
 @JvmName("ergMultipleDivSecond")
 infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) =
     ErgPerSecond.power(this, time)
 
 @JvmName("footPoundalDivSecond")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundal>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) =
-    FootPoundForcePerSecond.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundal>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) = FootPoundForcePerSecond.power(this, time)
 
 @JvmName("footPoundalDivMinute")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundal>.div(time: ScientificValue<PhysicalQuantity.Time, Minute>) =
-    FootPoundForcePerMinute.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundal>.div(time: ScientificValue<PhysicalQuantity.Time, Minute>) = FootPoundForcePerMinute.power(this, time)
 
 @JvmName("footPoundForceDivSecond")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundForce>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) =
-    FootPoundForcePerSecond.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundForce>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) = FootPoundForcePerSecond.power(this, time)
 
 @JvmName("footPoundForceDivMinute")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundForce>.div(time: ScientificValue<PhysicalQuantity.Time, Minute>) =
-    FootPoundForcePerMinute.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, FootPoundForce>.div(time: ScientificValue<PhysicalQuantity.Time, Minute>) = FootPoundForcePerMinute.power(this, time)
 
 @JvmName("inchPoundForceDivSecond")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, InchPoundForce>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) =
-    InchPoundForcePerSecond.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, InchPoundForce>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) = InchPoundForcePerSecond.power(this, time)
 
 @JvmName("inchPoundForceDivMinute")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, InchPoundForce>.div(time: ScientificValue<PhysicalQuantity.Time, Minute>) =
-    InchPoundForcePerMinute.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, InchPoundForce>.div(time: ScientificValue<PhysicalQuantity.Time, Minute>) = InchPoundForcePerMinute.power(this, time)
 
 @JvmName("inchOunceForceDivSecond")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, InchOunceForce>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) =
-    InchPoundForcePerSecond.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, InchOunceForce>.div(time: ScientificValue<PhysicalQuantity.Time, Second>) = InchPoundForcePerSecond.power(this, time)
 
 @JvmName("inchOunceForceDivMinute")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, InchOunceForce>.div(time: ScientificValue<PhysicalQuantity.Time, Minute>) =
-    InchPoundForcePerMinute.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, InchOunceForce>.div(time: ScientificValue<PhysicalQuantity.Time, Minute>) = InchPoundForcePerMinute.power(this, time)
 
 @JvmName("horsepowerHourDivHour")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, HorsepowerHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
-    Horsepower.power(this, time)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, HorsepowerHour>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) = Horsepower.power(this, time)
 
 @JvmName("britishThermalUnitDivHour")
 infix operator fun ScientificValue<PhysicalQuantity.Energy, BritishThermalUnit>.div(time: ScientificValue<PhysicalQuantity.Time, Hour>) =
@@ -226,9 +204,8 @@ infix operator fun ScientificValue<PhysicalQuantity.Energy, BritishThermalUnit>.
     BritishThermalUnitPerSecond.power(this, time)
 
 @JvmName("metricEnergyDivTime")
-infix operator fun <EnergyUnit : MetricEnergy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = Watt.metric.power(this, time)
+infix operator fun <EnergyUnit : MetricEnergy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    Watt.metric.power(this, time)
 
 @JvmName("imperialEnergyDivTime")
 infix operator fun <EnergyUnit : ImperialEnergy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
@@ -236,6 +213,5 @@ infix operator fun <EnergyUnit : ImperialEnergy, TimeUnit : Time> ScientificValu
 ) = Watt.imperial.power(this, time)
 
 @JvmName("energyDivTime")
-infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = Watt.power(this, time)
+infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<PhysicalQuantity.Energy, EnergyUnit>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    Watt.power(this, time)

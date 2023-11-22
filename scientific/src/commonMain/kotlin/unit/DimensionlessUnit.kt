@@ -83,7 +83,7 @@ val DimensionlessUnits: Set<Dimensionless> get() = setOf(
 )
 
 @Serializable
-object One : Dimensionless() {
+data object One : Dimensionless() {
     const val UNIT_VALUE = 1.0
     override val symbol: String = ""
     override val system = MeasurementSystem.MetricAndImperial
@@ -95,7 +95,7 @@ object One : Dimensionless() {
 val One.constant get() = UNIT_VALUE.invoke(One)
 
 @Serializable
-object Percent : Dimensionless() {
+data object Percent : Dimensionless() {
     const val PARTS_PER_HUNDRED = 100.0
     override val symbol: String = "%"
     override val system = MeasurementSystem.MetricAndImperial
@@ -105,7 +105,7 @@ object Percent : Dimensionless() {
 }
 
 @Serializable
-object Permill : Dimensionless() {
+data object Permill : Dimensionless() {
     const val PARTS_PER_THOUSAND = 1000.0
     override val symbol: String = "‰"
     override val system = MeasurementSystem.MetricAndImperial

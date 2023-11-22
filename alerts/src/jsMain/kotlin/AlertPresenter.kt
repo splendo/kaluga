@@ -68,7 +68,7 @@ actual class AlertPresenter(
         TODO("not implemented")
     }
 
-    override fun handleShowAlert(animated: Boolean, afterHandler: (Alert.Action?) -> Unit, completion: () -> Unit) {
-        TODO("Not yet implemented")
+    override fun showAlert(animated: Boolean, afterHandler: (Alert.Action?) -> Unit, completion: () -> Unit) {
+        TODO("not implemented")
     }
 }

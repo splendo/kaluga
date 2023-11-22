@@ -36,11 +36,7 @@ class BottomSheetSubPageFragment(private val navigator: Navigator<BottomSheetSub
         parametersOf(navigator)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
         val binding = FragmentBottomSheetSubPageBinding.inflate(inflater, container, false)

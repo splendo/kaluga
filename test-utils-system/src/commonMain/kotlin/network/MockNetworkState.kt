@@ -25,7 +25,7 @@ sealed class MockNetworkState {
     abstract val networkConnectionType: NetworkConnectionType
 
     sealed class Inactive : MockNetworkState()
-    object NotInitialized : Inactive(), NetworkState.NotInitialized {
+    data object NotInitialized : Inactive(), NetworkState.NotInitialized {
         override val networkConnectionType: NetworkConnectionType = NetworkConnectionType.Unknown.WithoutLastNetwork(
             NetworkConnectionType.Unknown.Reason.NOT_CLEAR,
         )
@@ -71,7 +71,7 @@ sealed class MockNetworkState {
         override val unavailable: suspend () -> NetworkState.Unavailable = { Unavailable }
     }
 
-    object Unavailable : Initialized(), NetworkState.Unavailable {
+    data object Unavailable : Initialized(), NetworkState.Unavailable {
         override val networkConnectionType: NetworkConnectionType.Known.Absent = NetworkConnectionType.Known.Absent
     }
 }

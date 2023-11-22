@@ -64,6 +64,7 @@ open class PlaybackStateRepo(
                 when (event) {
                     is MediaManager.Event.DidPrepare -> takeAndChangeState(PlaybackState.Initialized::class) { it.prepared(event.playableMedia) }
                     is MediaManager.Event.DidFailWithError -> takeAndChangeState(PlaybackState.Active::class) { it.failWithError(event.error) }
+                    is MediaManager.Event.RateDidChange -> updateToRate(event.newRate)
                     is MediaManager.Event.DidComplete -> takeAndChangeState(PlaybackState.Playing::class) { it.completedLoop }
                     is MediaManager.Event.DidEnd -> takeAndChangeState(PlaybackState.Active::class) { it.end }
                 }
@@ -73,6 +74,21 @@ open class PlaybackStateRepo(
             takeUntilLast(false).last()
         }.invokeOnCompletion {
             mediaManager.close()
+        }
+    }
+
+    private suspend fun updateToRate(newRate: Float) = takeAndChangeState(PlaybackState.Started::class) { state ->
+        when (state) {
+            is PlaybackState.Playing -> when (newRate) {
+                0.0f -> state.pause
+                state.playbackParameters.rate -> state.remain()
+                else -> state.updatePlaybackParameters(state.playbackParameters.copy(rate = newRate))
+            }
+            is PlaybackState.Paused -> when (newRate) {
+                0.0f -> state.remain()
+                state.playbackParameters.rate -> state.play
+                else -> state.playWithUpdatedPlaybackParameters(state.playbackParameters.copy(rate = newRate))
+            }
         }
     }
 }

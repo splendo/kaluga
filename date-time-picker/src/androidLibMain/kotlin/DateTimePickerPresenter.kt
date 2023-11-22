@@ -62,15 +62,13 @@ actual class DateTimePickerPresenter(
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The created [DateTimePickerPresenter]
          */
-        actual override fun create(
-            dateTimePicker: DateTimePicker,
-            coroutineScope: CoroutineScope,
-        ) = DateTimePickerPresenter(dateTimePicker, themeResourceId, lifecycleManagerObserver, coroutineScope)
+        actual override fun create(dateTimePicker: DateTimePicker, coroutineScope: CoroutineScope) =
+            DateTimePickerPresenter(dateTimePicker, themeResourceId, lifecycleManagerObserver, coroutineScope)
     }
 
     private sealed class DialogPresentation {
         data class Showing(val animated: Boolean, val completion: (KalugaDate?) -> Unit) : DialogPresentation()
-        object Hidden : DialogPresentation()
+        data object Hidden : DialogPresentation()
     }
 
     private val presentation = MutableStateFlow<DialogPresentation>(DialogPresentation.Hidden)

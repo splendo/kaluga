@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
 sealed class ScientificConverterNavigationAction<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
-    object Close : ScientificConverterNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
+    data object Close : ScientificConverterNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
     sealed class SelectUnit(quantity: PhysicalQuantity) : ScientificConverterNavigationAction<PhysicalQuantity>(
         quantity,
         NavigationBundleSpecType.SerializedType(PhysicalQuantity.serializer()),
@@ -143,11 +143,9 @@ class ScientificConverterViewModel internal constructor(
     }
 }
 
-fun ScientificConverterViewModel(
-    arguments: ScientificConverterViewModel.Arguments,
-    navigator: Navigator<ScientificConverterNavigationAction<*>>,
-) = arguments.physicalQuantity.quantityDetails?.let { details ->
-    details.converters.getOrNull(arguments.converterIndex)?.let { converter ->
-        ScientificConverterViewModel(details.units, converter, navigator)
-    }
-} ?: ScientificConverterViewModel(emptySet(), null, navigator)
+fun ScientificConverterViewModel(arguments: ScientificConverterViewModel.Arguments, navigator: Navigator<ScientificConverterNavigationAction<*>>) =
+    arguments.physicalQuantity.quantityDetails?.let { details ->
+        details.converters.getOrNull(arguments.converterIndex)?.let { converter ->
+            ScientificConverterViewModel(details.units, converter, navigator)
+        }
+    } ?: ScientificConverterViewModel(emptySet(), null, navigator)

@@ -33,17 +33,17 @@ abstract class KoinUIThreadViewModelTest<Context : KoinUIThreadViewModelTest.Koi
         koinModules: List<Module>,
     ) : KoinTestContext(appDeclaration, koinModules),
         UIThreadViewModelTest.ViewModelTestContext<ViewModel> {
-            constructor(vararg koinModules: Module) : this(null, koinModules.toList())
-            constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
-                appDeclaration,
-                koinModules.toList(),
-            )
+        constructor(vararg koinModules: Module) : this(null, koinModules.toList())
+        constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
+            appDeclaration,
+            koinModules.toList(),
+        )
 
-            override fun dispose() {
-                viewModel.cleanUp()
-                stopKoin()
-            }
+        override fun dispose() {
+            viewModel.cleanUp()
+            stopKoin()
         }
+    }
 }
 
 abstract class BaseKoinUIThreadViewModelTest<Configuration, Context : BaseKoinUIThreadViewModelTest.KoinViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel> :
@@ -54,14 +54,14 @@ abstract class BaseKoinUIThreadViewModelTest<Configuration, Context : BaseKoinUI
         koinModules: List<Module>,
     ) : KoinTestContext(appDeclaration, koinModules),
         BaseUIThreadViewModelTest.ViewModelTestContext<ViewModel> {
-            constructor(vararg koinModules: Module) : this(null, koinModules.toList())
-            constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
-                appDeclaration,
-                koinModules.toList(),
-            )
-            override fun dispose() {
-                viewModel.cleanUp()
-                stopKoin()
-            }
+        constructor(vararg koinModules: Module) : this(null, koinModules.toList())
+        constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
+            appDeclaration,
+            koinModules.toList(),
+        )
+        override fun dispose() {
+            viewModel.cleanUp()
+            stopKoin()
         }
+    }
 }

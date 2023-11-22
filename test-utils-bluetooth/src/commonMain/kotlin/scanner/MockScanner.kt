@@ -70,11 +70,8 @@ class MockScanner(
     override suspend fun stopScanning(): Unit = stopScanningMock.call()
 
     val retrievePairedDevicesMock = ::retrievePairedDevices.mock()
-    override suspend fun retrievePairedDevices(
-        withServices: Filter,
-        removeForAllPairedFilters: Boolean,
-        connectionSettings: ConnectionSettings?,
-    ): Unit = retrievePairedDevicesMock.call(withServices, removeForAllPairedFilters, connectionSettings)
+    override suspend fun retrievePairedDevices(withServices: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Unit =
+        retrievePairedDevicesMock.call(withServices, removeForAllPairedFilters, connectionSettings)
 
     val cancelRetrievingPairedDevicesMock = ::cancelRetrievingPairedDevices.mock()
     override fun cancelRetrievingPairedDevices(): Unit = cancelRetrievingPairedDevicesMock.call()
@@ -127,11 +124,8 @@ class MockBaseScanner(
             }
         }
 
-        override fun create(
-            settings: Settings,
-            coroutineScope: CoroutineScope,
-            scanningDispatcher: CoroutineDispatcher,
-        ): BaseScanner = createMock.call(settings, coroutineScope, scanningDispatcher)
+        override fun create(settings: Settings, coroutineScope: CoroutineScope, scanningDispatcher: CoroutineDispatcher): BaseScanner =
+            createMock.call(settings, coroutineScope, scanningDispatcher)
     }
 
     /**
@@ -207,17 +201,10 @@ class MockBaseScanner(
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
 
-    public override fun handleDeviceDiscovered(
-        deviceWrapper: DeviceWrapper,
-        rssi: RSSI,
-        advertisementData: BaseAdvertisementData,
-        deviceCreator: (CoroutineContext) -> Device,
-    ) {
+    public override fun handleDeviceDiscovered(deviceWrapper: DeviceWrapper, rssi: RSSI, advertisementData: BaseAdvertisementData, deviceCreator: (CoroutineContext) -> Device) {
         super.handleDeviceDiscovered(deviceWrapper, rssi, advertisementData, deviceCreator)
     }
 
-    override suspend fun retrievePairedDeviceDiscoveredEvents(
-        withServices: Filter,
-        connectionSettings: ConnectionSettings?,
-    ): List<Scanner.DeviceDiscovered> = retrievePairedDeviceDiscoveredEventsMock.call(withServices, connectionSettings)
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Filter, connectionSettings: ConnectionSettings?): List<Scanner.DeviceDiscovered> =
+        retrievePairedDeviceDiscoveredEventsMock.call(withServices, connectionSettings)
 }

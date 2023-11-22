@@ -47,7 +47,7 @@ val ElectricConductanceUnits: Set<ElectricConductance> get() = setOf(
 sealed class ElectricConductance : AbstractScientificUnit<PhysicalQuantity.ElectricConductance>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricConductance>
 
 @Serializable
-object Siemens : ElectricConductance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance> {
+data object Siemens : ElectricConductance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance> {
     override val symbol = "S"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.ElectricConductance
@@ -59,36 +59,36 @@ object Siemens : ElectricConductance(), MetricBaseUnit<MeasurementSystem.MetricA
 sealed class SiemensMultiple : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens>
 
 @Serializable
-object Nanosiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Nano(Siemens)
+data object Nanosiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Nano(Siemens)
 
 @Serializable
-object Microsiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Micro(Siemens)
+data object Microsiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Micro(Siemens)
 
 @Serializable
-object Millisiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Milli(Siemens)
+data object Millisiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Milli(Siemens)
 
 @Serializable
-object Centisiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Centi(Siemens)
+data object Centisiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Centi(Siemens)
 
 @Serializable
-object Decisiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Deci(Siemens)
+data object Decisiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Deci(Siemens)
 
 @Serializable
-object Decasiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Deca(Siemens)
+data object Decasiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Deca(Siemens)
 
 @Serializable
-object Hectosiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Hecto(Siemens)
+data object Hectosiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Hecto(Siemens)
 
 @Serializable
-object Kilosiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Kilo(Siemens)
+data object Kilosiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Kilo(Siemens)
 
 @Serializable
-object Megasiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Mega(Siemens)
+data object Megasiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Mega(Siemens)
 
 @Serializable
-object Gigasiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Giga(Siemens)
+data object Gigasiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Giga(Siemens)
 
 @Serializable
-object Absiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Giga(Siemens) {
+data object Absiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Giga(Siemens) {
     override val symbol: String = "abS"
 }

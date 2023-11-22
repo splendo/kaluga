@@ -46,71 +46,53 @@ import com.splendo.kaluga.scientific.unit.Watt
 import kotlin.jvm.JvmName
 
 @JvmName("hourTimesWatt")
-infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Watt>) =
-    power * this
+infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Watt>) = power * this
 
 @JvmName("hourTimesNanowatt")
-infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Nanowatt>) =
-    power * this
+infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Nanowatt>) = power * this
 
 @JvmName("hourTimesMicrowatt")
-infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Microwatt>) =
-    power * this
+infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Microwatt>) = power * this
 
 @JvmName("hourTimesMilliwatt")
-infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Milliwatt>) =
-    power * this
+infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Milliwatt>) = power * this
 
 @JvmName("hourTimesCentiwatt")
-infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Centiwatt>) =
-    power * this
+infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Centiwatt>) = power * this
 
 @JvmName("hourTimesDeciwatt")
-infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Deciwatt>) =
-    power * this
+infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Deciwatt>) = power * this
 
 @JvmName("hourTimesDecawatt")
-infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Decawatt>) =
-    power * this
+infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Decawatt>) = power * this
 
 @JvmName("hourTimesHectowatt")
-infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Hectowatt>) =
-    power * this
+infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Hectowatt>) = power * this
 
 @JvmName("hourTimesKilowatt")
-infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Kilowatt>) =
-    power * this
+infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Kilowatt>) = power * this
 
 @JvmName("hourTimesMegawatt")
-infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Megawatt>) =
-    power * this
+infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Megawatt>) = power * this
 
 @JvmName("hourTimesGigawatt")
-infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Gigawatt>) =
-    power * this
+infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Gigawatt>) = power * this
 
 @JvmName("timeTimesErgPerSecond")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(power: ScientificValue<PhysicalQuantity.Power, ErgPerSecond>) =
-    power * this
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(power: ScientificValue<PhysicalQuantity.Power, ErgPerSecond>) = power * this
 
 @JvmName("timeTimesMetricPower")
-infix operator fun <PowerUnit : MetricPower, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>,
-) = power * this
+infix operator fun <PowerUnit : MetricPower, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(power: ScientificValue<PhysicalQuantity.Power, PowerUnit>) =
+    power * this
 
 @JvmName("timeTimesInchPoundForcePerSecond")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    power: ScientificValue<PhysicalQuantity.Power, InchPoundForcePerSecond>,
-) = power * this
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(power: ScientificValue<PhysicalQuantity.Power, InchPoundForcePerSecond>) = power * this
 
 @JvmName("timeTimesInchPoundForcePerMinute")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    power: ScientificValue<PhysicalQuantity.Power, InchPoundForcePerMinute>,
-) = power * this
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(power: ScientificValue<PhysicalQuantity.Power, InchPoundForcePerMinute>) = power * this
 
 @JvmName("hourTimesHorsepower")
-infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Horsepower>) =
-    power * this
+infix operator fun ScientificValue<PhysicalQuantity.Time, Hour>.times(power: ScientificValue<PhysicalQuantity.Power, Horsepower>) = power * this
 
 @JvmName("timeTimesBritishThermalUnitPerSecond")
 infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(power: ScientificValue<PhysicalQuantity.Power, BritishThermalUnitPerSecond>) =
@@ -125,11 +107,9 @@ infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, Time
     power * this
 
 @JvmName("timeTimesImperialPower")
-infix operator fun <PowerUnit : ImperialPower, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>,
-) = power * this
+infix operator fun <PowerUnit : ImperialPower, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(power: ScientificValue<PhysicalQuantity.Power, PowerUnit>) =
+    power * this
 
 @JvmName("timeTimesPower")
-infix operator fun <PowerUnit : Power, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(
-    power: ScientificValue<PhysicalQuantity.Power, PowerUnit>,
-) = power * this
+infix operator fun <PowerUnit : Power, TimeUnit : Time> ScientificValue<PhysicalQuantity.Time, TimeUnit>.times(power: ScientificValue<PhysicalQuantity.Power, PowerUnit>) =
+    power * this

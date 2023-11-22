@@ -66,8 +66,7 @@ actual class AlertPresenter(
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The created [AlertPresenter]
          */
-        actual override fun create(alert: Alert, coroutineScope: CoroutineScope) =
-            AlertPresenter(alert, lifecycleManagerObserver, logger, coroutineScope)
+        actual override fun create(alert: Alert, coroutineScope: CoroutineScope) = AlertPresenter(alert, lifecycleManagerObserver, logger, coroutineScope)
     }
 
     private companion object {
@@ -85,7 +84,7 @@ actual class AlertPresenter(
             val completion: () -> Unit,
         ) : DialogPresentation()
 
-        object Hidden : DialogPresentation()
+        data object Hidden : DialogPresentation()
     }
 
     private val presentation = MutableStateFlow<DialogPresentation>(DialogPresentation.Hidden)
@@ -117,11 +116,7 @@ actual class AlertPresenter(
         presentation.value = DialogPresentation.Hidden
     }
 
-    override fun handleShowAlert(
-        animated: Boolean,
-        afterHandler: (Alert.Action?) -> Unit,
-        completion: () -> Unit,
-    ) {
+    override fun showAlert(animated: Boolean, afterHandler: (Alert.Action?) -> Unit, completion: () -> Unit) {
         presentation.value = DialogPresentation.Showing(animated, afterHandler, completion)
     }
 
@@ -181,10 +176,7 @@ actual class AlertPresenter(
      * @param context The Android context used to create view
      * @param textInputAction The [Alert.TextInputAction] used for initializing the [EditText]
      */
-    private fun createEditTextView(
-        context: Context,
-        textInputAction: Alert.TextInputAction,
-    ): LinearLayout {
+    private fun createEditTextView(context: Context, textInputAction: Alert.TextInputAction): LinearLayout {
         val linearLayout = LinearLayout(context)
         val layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -198,21 +190,11 @@ actual class AlertPresenter(
         linearLayout.setPaddingRelative(padding, 0, padding, 0)
         editText.inputType = InputType.TYPE_CLASS_TEXT
         editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int,
-            ) {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // Do nothing
             }
 
-            override fun onTextChanged(
-                s: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int,
-            ) {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 // Do nothing
             }
 

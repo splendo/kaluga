@@ -47,7 +47,7 @@ val AmountOfSubstanceUnits: Set<AmountOfSubstance> get() = setOf(
 sealed class AmountOfSubstance : AbstractScientificUnit<PhysicalQuantity.AmountOfSubstance>(), MetricAndImperialScientificUnit<PhysicalQuantity.AmountOfSubstance>
 
 @Serializable
-object Mole : AmountOfSubstance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance> {
+data object Mole : AmountOfSubstance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance> {
     override val symbol = "mol"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.AmountOfSubstance
@@ -59,34 +59,34 @@ object Mole : AmountOfSubstance(), MetricBaseUnit<MeasurementSystem.MetricAndImp
 sealed class MoleMultiple : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole>
 
 @Serializable
-object Nanomole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Nano(Mole)
+data object Nanomole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Nano(Mole)
 
 @Serializable
-object Micromole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Micro(Mole)
+data object Micromole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Micro(Mole)
 
 @Serializable
-object Millimole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Milli(Mole)
+data object Millimole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Milli(Mole)
 
 @Serializable
-object Centimole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Centi(Mole)
+data object Centimole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Centi(Mole)
 
 @Serializable
-object Decimole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Deci(Mole)
+data object Decimole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Deci(Mole)
 
 @Serializable
-object Decamole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Deca(Mole)
+data object Decamole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Deca(Mole)
 
 @Serializable
-object Hectomole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Hecto(Mole)
+data object Hectomole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Hecto(Mole)
 
 @Serializable
-object Kilomole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Kilo(Mole)
+data object Kilomole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Kilo(Mole)
 
 @Serializable
-object Megamole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Mega(Mole)
+data object Megamole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Mega(Mole)
 
 @Serializable
-object Gigamole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Giga(Mole)
+data object Gigamole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Giga(Mole)
 
 /**
  * The proportionality factor that relates the number of constituent particles (usually molecules, atoms or ions) in a sample with the amount of substance in that sample

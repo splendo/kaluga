@@ -69,10 +69,7 @@ class IOSPermissionsHelper {
          * @param requiredDeclarationName List of declarations that should be present in the PList
          * @return The list of declarations not present in the PList. If empty all declarations where provided.
          */
-        fun missingDeclarationsInPList(
-            bundle: NSBundle,
-            vararg requiredDeclarationName: String,
-        ) = requiredDeclarationName.mapNotNull { declaration ->
+        fun missingDeclarationsInPList(bundle: NSBundle, vararg requiredDeclarationName: String) = requiredDeclarationName.mapNotNull { declaration ->
             try {
                 if (bundle.objectForInfoDictionaryKey(declaration) == null) {
                     error(TAG, "$declaration was not declared")

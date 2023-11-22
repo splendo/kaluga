@@ -79,7 +79,7 @@ sealed class MetricLuminance : Luminance(), MetricScientificUnit<PhysicalQuantit
 sealed class ImperialLuminance : Luminance(), ImperialScientificUnit<PhysicalQuantity.Luminance>
 
 @Serializable
-object Nit : MetricLuminance(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance> {
+data object Nit : MetricLuminance(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance> {
     override val symbol: String = "nt"
     override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
@@ -91,37 +91,37 @@ object Nit : MetricLuminance(), MetricBaseUnit<MeasurementSystem.Metric, Physica
 sealed class NitMultiple : MetricLuminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit>
 
 @Serializable
-object Nanonit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Nano(Nit)
+data object Nanonit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Nano(Nit)
 
 @Serializable
-object Micronit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Micro(Nit)
+data object Micronit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Micro(Nit)
 
 @Serializable
-object Millinit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Milli(Nit)
+data object Millinit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Milli(Nit)
 
 @Serializable
-object Centinit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Centi(Nit)
+data object Centinit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Centi(Nit)
 
 @Serializable
-object Decinit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Deci(Nit)
+data object Decinit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Deci(Nit)
 
 @Serializable
-object Decanit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Deca(Nit)
+data object Decanit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Deca(Nit)
 
 @Serializable
-object Hectonit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Hecto(Nit)
+data object Hectonit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Hecto(Nit)
 
 @Serializable
-object Kilonit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Kilo(Nit)
+data object Kilonit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Kilo(Nit)
 
 @Serializable
-object Meganit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Mega(Nit)
+data object Meganit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Mega(Nit)
 
 @Serializable
-object Giganit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Giga(Nit)
+data object Giganit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Giga(Nit)
 
 @Serializable
-object Stilb : MetricLuminance() {
+data object Stilb : MetricLuminance() {
     override val symbol: String = "sb"
     override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
@@ -130,7 +130,7 @@ object Stilb : MetricLuminance() {
 }
 
 @Serializable
-object Apostilb : MetricLuminance() {
+data object Apostilb : MetricLuminance() {
     private const val APOSTILB_IN_NIT = PI
     override val symbol: String = "asb"
     override val quantity = PhysicalQuantity.Luminance
@@ -140,7 +140,7 @@ object Apostilb : MetricLuminance() {
 }
 
 @Serializable
-object Lambert : MetricLuminance() {
+data object Lambert : MetricLuminance() {
     override val symbol: String = "L"
     override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
@@ -149,7 +149,7 @@ object Lambert : MetricLuminance() {
 }
 
 @Serializable
-object Skot : MetricLuminance() {
+data object Skot : MetricLuminance() {
     private const val SKOT_IN_APOSTILB = 1000.0
     override val symbol: String = "sk"
     override val quantity = PhysicalQuantity.Luminance
@@ -159,7 +159,7 @@ object Skot : MetricLuminance() {
 }
 
 @Serializable
-object Bril : MetricLuminance() {
+data object Bril : MetricLuminance() {
     private const val BRIL_IN_APOSTILB = 10000000.0
     override val symbol: String = "Bril"
     override val quantity = PhysicalQuantity.Luminance
@@ -169,7 +169,7 @@ object Bril : MetricLuminance() {
 }
 
 @Serializable
-object FootLambert : ImperialLuminance() {
+data object FootLambert : ImperialLuminance() {
     override val symbol: String = "fL"
     override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Imperial

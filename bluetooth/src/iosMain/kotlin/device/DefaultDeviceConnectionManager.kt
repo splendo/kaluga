@@ -52,11 +52,7 @@ internal actual class DefaultDeviceConnectionManager(
 ) : BaseDeviceConnectionManager(deviceWrapper, settings, coroutineScope) {
 
     class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : DeviceConnectionManager.Builder {
-        override fun create(
-            deviceWrapper: DeviceWrapper,
-            settings: ConnectionSettings,
-            coroutineScope: CoroutineScope,
-        ): DefaultDeviceConnectionManager {
+        override fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): DefaultDeviceConnectionManager {
             return DefaultDeviceConnectionManager(
                 cbCentralManager,
                 peripheral,

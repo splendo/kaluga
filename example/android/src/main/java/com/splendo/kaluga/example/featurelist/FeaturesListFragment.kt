@@ -76,11 +76,7 @@ class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>() {
         )
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
         val binding = FragmentFeaturesListBinding.inflate(inflater, container, false)

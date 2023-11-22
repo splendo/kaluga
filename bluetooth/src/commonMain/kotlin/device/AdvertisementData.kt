@@ -70,8 +70,16 @@ val BaseAdvertisementData.description: String get() = listOfNotNull(
     name?.let { "Name: $it" },
     manufacturerId?.let { "ManufacturerId: $it" },
     manufacturerData?.let { "ManufacturerData: $it" },
-    if (serviceUUIDs.isEmpty()) null else { "ServiceUUIDS: ${serviceUUIDs.joinToString(", ") { it.uuidString }}" },
-    if (serviceData.isEmpty()) null else { "ServiceData: ${serviceData.entries.joinToString(",") { (uuid, data) -> "[${uuid.uuidString} : $data]" } }" },
+    if (serviceUUIDs.isEmpty()) {
+        null
+    } else {
+        "ServiceUUIDS: ${serviceUUIDs.joinToString(", ") { it.uuidString }}"
+    },
+    if (serviceData.isEmpty()) {
+        null
+    } else {
+        "ServiceData: ${serviceData.entries.joinToString(",") { (uuid, data) -> "[${uuid.uuidString} : $data]" } }"
+    },
     "TxPowerLevel: $txPowerLevel",
     "IsConnectable: $isConnectable",
 ).joinToString("\n")

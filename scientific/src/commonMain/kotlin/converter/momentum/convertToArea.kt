@@ -35,12 +35,11 @@ import com.splendo.kaluga.scientific.unit.USCustomaryMomentum
 import kotlin.jvm.JvmName
 
 @JvmName("metricMomentumDivMetricDynamicViscosity")
-infix operator fun ScientificValue<PhysicalQuantity.Momentum, MetricMomentum>.div(
-    dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, MetricDynamicViscosity>,
-) = ((this / 1(unit.speed.per)) / 1(dynamicViscosity.unit.pressure)).unit.area(
-    this,
-    dynamicViscosity,
-)
+infix operator fun ScientificValue<PhysicalQuantity.Momentum, MetricMomentum>.div(dynamicViscosity: ScientificValue<PhysicalQuantity.DynamicViscosity, MetricDynamicViscosity>) =
+    ((this / 1(unit.speed.per)) / 1(dynamicViscosity.unit.pressure)).unit.area(
+        this,
+        dynamicViscosity,
+    )
 
 @JvmName("imperialMomentumDivImperialDynamicViscosity")
 infix operator fun ScientificValue<PhysicalQuantity.Momentum, ImperialMomentum>.div(

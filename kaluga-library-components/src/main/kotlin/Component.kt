@@ -20,9 +20,11 @@ import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultCInteropSettings
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
@@ -60,7 +62,7 @@ fun Project.commonComponent(
 
     // output all reports to a single location
     tasks.withType<LintTask>().configureEach {
-        reports.set(mapOf("plain" to rootProject.buildDir.resolve("reports/ktlint/${project.path}-${this.name}.txt")))
+        reports.set(mapOf("plain" to rootProject.layout.buildDirectory.get().asFile.resolve("reports/ktlint/${project.path}-${this.name}.txt")))
     }
 
     afterEvaluate {
@@ -70,7 +72,7 @@ fun Project.commonComponent(
                 // creating copy task for the target
                 val copyTask = tasks.create("copy${targetName.replaceFirstChar { it.titlecase() } }TestResources", Copy::class.java) {
                     from("src/iosTest/resources/.")
-                    into("$buildDir/bin/$targetName/debugTest")
+                    into("${layout.buildDirectory.get().asFile}/bin/$targetName/debugTest")
                 }
 
                 // apply copy task to the target
@@ -94,21 +96,25 @@ fun Project.commonComponent(
     }
 }
 
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 fun KotlinMultiplatformExtension.commonMultiplatformComponent(
     currentProject: Project,
     iosMainInterop: (NamedDomainObjectContainer<DefaultCInteropSettings>.() -> Unit)? = null,
     iosTestInterop: (NamedDomainObjectContainer<DefaultCInteropSettings>.() -> Unit)? = null,
     iosExport: (Framework.() -> Unit)? = null
 ) {
-    targets {
-        configureEach {
-            compilations.configureEach {
-                (kotlinOptions as? KotlinJvmOptions)?.jvmTarget = "11"
-            }
+    targets.configureEach {
+        compilations.configureEach {
+            (kotlinOptions as? KotlinJvmOptions)?.jvmTarget = "11"
+            kotlinOptions.freeCompilerArgs += "-Xexpect-actual-classes"
         }
     }
 
-    androidTarget("androidLib").publishAllLibraryVariants()
+    androidTarget("androidLib") {
+        instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
+        unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
+        publishAllLibraryVariants()
+    }
     val target: KotlinNativeTarget.() -> Unit =
         {
             iosMainInterop?.let { mainInterop ->
@@ -151,13 +157,15 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
         binaries.executable()
     }
 
-    val commonMain = sourceSets.getByName("commonMain").apply {
+    applyDefaultHierarchyTemplate()
+
+    sourceSets.getByName("commonMain").apply {
         dependencies {
             implementationDependency(Dependencies.KotlinX.Coroutines.Core)
         }
     }
 
-    val commonTest = sourceSets.getByName("commonTest").apply {
+    sourceSets.getByName("commonTest").apply {
         dependencies {
             implementation(kotlin("test"))
             implementation(kotlin("test-common"))
@@ -173,7 +181,6 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
     }
 
     sourceSets.getByName("jvmTest").apply {
-        dependsOn(commonTest)
         dependencies {
             implementation(kotlin("test"))
             implementation(kotlin("test-junit"))
@@ -191,29 +198,6 @@ fun KotlinMultiplatformExtension.commonMultiplatformComponent(
         dependencies {
             implementation(kotlin("test-js"))
         }
-    }
-
-    val iosMain = sourceSets.maybeCreate("iosMain").apply {
-        dependsOn(commonMain)
-    }
-
-    val iosTest = sourceSets.maybeCreate("iosTest").apply {
-        dependsOn(commonTest)
-    }
-
-    targets.forEach {
-        val sourceSetName = it.sourceSetName
-
-        sourceSets.getByName("${sourceSetName}Main").apply {
-            dependsOn(iosMain)
-        }
-        sourceSets.getByName("${sourceSetName}Test").apply {
-            dependsOn(iosTest)
-        }
-    }
-
-    sourceSets.maybeCreate("androidLibInstrumentedTest").apply {
-        dependsOn(commonTest)
     }
 
     sourceSets.all {

@@ -36,46 +36,37 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricYankDivMetricWeight")
-infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Yank, MetricYank>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<PhysicalQuantity.Yank, MetricYank>.div(weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
 
 @JvmName("imperialYankDivImperialWeight")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Yank, ImperialYank>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Yank, ImperialYank>.div(weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
 
 @JvmName("imperialYankDivUKImperialWeight")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Yank, ImperialYank>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Yank, ImperialYank>.div(weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
 
 @JvmName("imperialYankDivUSCustomaryWeight")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Yank, ImperialYank>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Yank, ImperialYank>.div(weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
 
 @JvmName("ukImperialYankDivImperialWeight")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Yank, UKImperialYank>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Yank, UKImperialYank>.div(weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
 
 @JvmName("ukImperialYankDivUKImperialWeight")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Yank, UKImperialYank>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<PhysicalQuantity.Yank, UKImperialYank>.div(weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
 
 @JvmName("usCustomaryYankDivImperialWeight")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Yank, USCustomaryYank>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<PhysicalQuantity.Yank, USCustomaryYank>.div(weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
 
 @JvmName("usCustomaryYankDivUSCustomaryWeight")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Yank, USCustomaryYank>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<PhysicalQuantity.Yank, USCustomaryYank>.div(weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
 
 @JvmName("yankDivWeight")
-infix operator fun <YankUnit : Yank, WeightUnit : Weight> ScientificValue<PhysicalQuantity.Yank, YankUnit>.div(
-    weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>,
-) = ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)
+infix operator fun <YankUnit : Yank, WeightUnit : Weight> ScientificValue<PhysicalQuantity.Yank, YankUnit>.div(weight: ScientificValue<PhysicalQuantity.Weight, WeightUnit>) =
+    ((1.0(unit.force) / weight).unit per unit.per).jolt(this, weight)

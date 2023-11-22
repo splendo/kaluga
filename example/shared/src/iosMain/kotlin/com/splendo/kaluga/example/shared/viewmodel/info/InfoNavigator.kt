@@ -20,16 +20,11 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.ViewControllerNavigator
 import platform.UIKit.UIViewController
 
-fun InfoNavigator(
-    parent: UIViewController,
-    onDialogSpec: (DialogSpec) -> NavigationSpec,
-    onLink: (String) -> NavigationSpec,
-    onMailSpec: (MailSpec) -> NavigationSpec,
-
-) = ViewControllerNavigator<InfoNavigation<*>>(parent) { action ->
-    when (action) {
-        is InfoNavigation.Dialog -> onDialogSpec(action.value)
-        is InfoNavigation.Link -> onLink(action.value)
-        is InfoNavigation.Mail -> onMailSpec(action.value)
+fun InfoNavigator(parent: UIViewController, onDialogSpec: (DialogSpec) -> NavigationSpec, onLink: (String) -> NavigationSpec, onMailSpec: (MailSpec) -> NavigationSpec) =
+    ViewControllerNavigator<InfoNavigation<*>>(parent) { action ->
+        when (action) {
+            is InfoNavigation.Dialog -> onDialogSpec(action.value)
+            is InfoNavigation.Link -> onLink(action.value)
+            is InfoNavigation.Mail -> onMailSpec(action.value)
+        }
     }
-}

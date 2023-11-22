@@ -12,7 +12,10 @@ public final class com/splendo/kaluga/permissions/microphone/DefaultMicrophonePe
 
 public final class com/splendo/kaluga/permissions/microphone/MicrophonePermission : com/splendo/kaluga/permissions/base/Permission {
 	public static final field INSTANCE Lcom/splendo/kaluga/permissions/microphone/MicrophonePermission;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/permissions/microphone/MicrophonePermissionManagerBuilder : com/splendo/kaluga/permissions/microphone/BaseMicrophonePermissionManagerBuilder {

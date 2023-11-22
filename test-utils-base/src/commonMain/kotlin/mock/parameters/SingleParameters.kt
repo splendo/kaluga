@@ -39,8 +39,8 @@ class SingleParameters<T0> : ParametersSpec<SingleParameters.Matchers<T0>, Singl
      */
     data class Matchers<T0>(val value: ParameterMatcher<T0>) :
         ParametersSpec.Matchers {
-            override fun asList() = listOf(value)
-        }
+        override fun asList() = listOf(value)
+    }
 
     /**
      * The [ParametersSpec.MatchersOrCaptor] for a single
@@ -48,8 +48,8 @@ class SingleParameters<T0> : ParametersSpec<SingleParameters.Matchers<T0>, Singl
      */
     data class MatchersOrCaptor<T0>(val value: ParameterMatcherOrCaptor<T0>) :
         ParametersSpec.MatchersOrCaptor<Matchers<T0>> {
-            override fun asMatchers(): Matchers<T0> = Matchers(value.asMatcher())
-        }
+        override fun asMatchers(): Matchers<T0> = Matchers(value.asMatcher())
+    }
 
     /**
      * The [ParametersSpec.Values] for a single parameter
@@ -65,9 +65,7 @@ class SingleParameters<T0> : ParametersSpec<SingleParameters.Matchers<T0>, Singl
 
 internal fun <T0, R> ((T0) -> R).asMock() = singleParametersMock<T0, R>()
 
-fun <T0, R> ((T0) -> R).mockWithDefaultAnswer(
-    defaultAnswer: Answer<SingleParameters.Values<T0>, R>,
-) = asMock().also {
+fun <T0, R> ((T0) -> R).mockWithDefaultAnswer(defaultAnswer: Answer<SingleParameters.Values<T0>, R>) = asMock().also {
     it.on(ParameterMatcher.any<T0>()).doAnswer(defaultAnswer)
 }
 fun <T0, R> ((T0) -> R).mockWithDefaultValue(defaultValue: R) = asMock().also {
@@ -192,9 +190,7 @@ fun <T0, R : Any> ((T0) -> R).mock() = asMock()
 
 internal fun <T0, R> (suspend (T0) -> R).asSuspendedMock() = suspendSingleParametersMock<T0, R>()
 
-fun <T0, R> (suspend (T0) -> R).mockWithDefaultAnswer(
-    defaultAnswer: SuspendedAnswer<SingleParameters.Values<T0>, R>,
-) = asSuspendedMock().also {
+fun <T0, R> (suspend (T0) -> R).mockWithDefaultAnswer(defaultAnswer: SuspendedAnswer<SingleParameters.Values<T0>, R>) = asSuspendedMock().also {
     it.on(ParameterMatcher.any<T0>()).doAnswer(defaultAnswer)
 }
 fun <T0, R> (suspend (T0) -> R).mockWithDefaultValue(defaultValue: R) = asSuspendedMock().also {

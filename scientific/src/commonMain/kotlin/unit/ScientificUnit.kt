@@ -119,10 +119,7 @@ sealed class AbstractScientificUnit<Quantity : PhysicalQuantity> : ScientificUni
  * @param to the [ScientificUnit] to convert the value into
  * @return the [Double] value in [to] that is equivalent to [value] in this unit
  */
-fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
-    value: Number,
-    to: ScientificUnit<Quantity>,
-) = convert(value.toDecimal(), to).toDouble()
+fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(value: Number, to: ScientificUnit<Quantity>) = convert(value.toDecimal(), to).toDouble()
 
 /**
  * Converts a value in a [ScientificUnit] to the value of another unit with the same [PhysicalQuantity] and rounds it
@@ -163,10 +160,7 @@ fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
  * @param to the [ScientificUnit] to convert the value into
  * @return the [Decimal] value in [to] that is equivalent to [value] in this unit
  */
-fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
-    value: Decimal,
-    to: ScientificUnit<Quantity>,
-) = if (this == to) value else to.fromSIUnit(toSIUnit(value))
+fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(value: Decimal, to: ScientificUnit<Quantity>) = if (this == to) value else to.fromSIUnit(toSIUnit(value))
 
 /**
  * The set of all [AbstractScientificUnit] supported by this library

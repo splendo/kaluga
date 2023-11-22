@@ -79,12 +79,10 @@ infix operator fun <MolarityUnit : Molarity, MolalityUnit : Molality> Scientific
 ) = (Kilogram per CubicMeter).density(this, molality)
 
 @JvmName("metricMolarityTimesMetricMolarMass")
-infix operator fun ScientificValue<PhysicalQuantity.Molarity, MetricMolarity>.times(molarMass: ScientificValue<PhysicalQuantity.MolarMass, MetricMolarMass>) =
-    molarMass * this
+infix operator fun ScientificValue<PhysicalQuantity.Molarity, MetricMolarity>.times(molarMass: ScientificValue<PhysicalQuantity.MolarMass, MetricMolarMass>) = molarMass * this
 
 @JvmName("imperialMolarityTimesImperialMolarMass")
-infix operator fun ScientificValue<PhysicalQuantity.Molarity, ImperialMolarity>.times(molarMass: ScientificValue<PhysicalQuantity.MolarMass, ImperialMolarMass>) =
-    molarMass * this
+infix operator fun ScientificValue<PhysicalQuantity.Molarity, ImperialMolarity>.times(molarMass: ScientificValue<PhysicalQuantity.MolarMass, ImperialMolarMass>) = molarMass * this
 
 @JvmName("imperialMolarityTimesUKImperialMolarMass")
 infix operator fun ScientificValue<PhysicalQuantity.Molarity, ImperialMolarity>.times(molarMass: ScientificValue<PhysicalQuantity.MolarMass, UKImperialMolarMass>) =

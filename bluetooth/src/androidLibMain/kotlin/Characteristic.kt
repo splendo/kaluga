@@ -100,7 +100,9 @@ actual interface CharacteristicWrapper {
 class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGattCharacteristic) : CharacteristicWrapper {
 
     override val uuid: java.util.UUID
-        get() { return gattCharacteristic.uuid }
+        get() {
+            return gattCharacteristic.uuid
+        }
     override var value: ByteArray? = null
         private set
 
@@ -111,18 +113,26 @@ class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGatt
     override val service: ServiceWrapper
         get() = DefaultGattServiceWrapper(gattCharacteristic.service)
     override val descriptors: List<DescriptorWrapper>
-        get() { return gattCharacteristic.descriptors.map { DefaultDescriptorWrapper(it) } }
+        get() {
+            return gattCharacteristic.descriptors.map { DefaultDescriptorWrapper(it) }
+        }
     override val permissions: Int
-        get() { return gattCharacteristic.permissions }
+        get() {
+            return gattCharacteristic.permissions
+        }
     override val properties: Int
-        get() { return gattCharacteristic.properties }
+        get() {
+            return gattCharacteristic.properties
+        }
     override var writeType: CharacteristicWrapper.WriteType
         get() = when (gattCharacteristic.writeType) {
             BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE -> CharacteristicWrapper.WriteType.NO_RESPONSE
             BluetoothGattCharacteristic.WRITE_TYPE_SIGNED -> CharacteristicWrapper.WriteType.SIGNED
             else -> CharacteristicWrapper.WriteType.DEFAULT
         }
-        set(value) { gattCharacteristic.writeType = value.rawValue }
+        set(value) {
+            gattCharacteristic.writeType = value.rawValue
+        }
 
     override fun getDescriptor(uuid: java.util.UUID): DescriptorWrapper? {
         return gattCharacteristic.getDescriptor(uuid)?.let { DefaultDescriptorWrapper(it) }

@@ -47,7 +47,7 @@ val ElectricInductanceUnits: Set<ElectricInductance> get() = setOf(
 sealed class ElectricInductance : AbstractScientificUnit<PhysicalQuantity.ElectricInductance>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricInductance>
 
 @Serializable
-object Henry : ElectricInductance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance> {
+data object Henry : ElectricInductance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance> {
     override val symbol = "H"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.ElectricInductance
@@ -59,36 +59,36 @@ object Henry : ElectricInductance(), MetricBaseUnit<MeasurementSystem.MetricAndI
 sealed class HenryMultiple : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry>
 
 @Serializable
-object Nanohenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Nano(Henry)
+data object Nanohenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Nano(Henry)
 
 @Serializable
-object Abhenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Nano(Henry) {
+data object Abhenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Nano(Henry) {
     override val symbol: String = "abH"
 }
 
 @Serializable
-object Microhenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Micro(Henry)
+data object Microhenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Micro(Henry)
 
 @Serializable
-object Millihenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Milli(Henry)
+data object Millihenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Milli(Henry)
 
 @Serializable
-object Centihenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Centi(Henry)
+data object Centihenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Centi(Henry)
 
 @Serializable
-object Decihenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Deci(Henry)
+data object Decihenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Deci(Henry)
 
 @Serializable
-object Decahenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Deca(Henry)
+data object Decahenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Deca(Henry)
 
 @Serializable
-object Hectohenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Hecto(Henry)
+data object Hectohenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Hecto(Henry)
 
 @Serializable
-object Kilohenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Kilo(Henry)
+data object Kilohenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Kilo(Henry)
 
 @Serializable
-object Megahenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Mega(Henry)
+data object Megahenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Mega(Henry)
 
 @Serializable
-object Gigahenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Giga(Henry)
+data object Gigahenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Giga(Henry)

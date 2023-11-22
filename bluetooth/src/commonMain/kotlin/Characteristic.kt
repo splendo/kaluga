@@ -53,7 +53,9 @@ open class Characteristic(
      */
     var isNotifying: Boolean
         get() = _isNotifying.value
-        set(value) { _isNotifying.value = value }
+        set(value) {
+            _isNotifying.value = value
+        }
 
     /**
      * Enables notification or indication for this [Characteristic].
@@ -175,7 +177,9 @@ expect interface CharacteristicWrapper {
  */
 fun CharacteristicWrapper.containsAnyOf(vararg property: Int) = if (property.isNotEmpty()) {
     properties and property.reduce { acc, i -> acc.or(i) } != 0
-} else { false }
+} else {
+    false
+}
 
 /**
  * The properties associated with a Bluetooth Characteristic
@@ -186,42 +190,42 @@ sealed class CharacteristicProperties(val rawValue: Int) {
     /**
      * Characteristic is broadcastable
      */
-    object Broadcast : CharacteristicProperties(0x01)
+    data object Broadcast : CharacteristicProperties(0x01)
 
     /**
      * Characteristic is readable
      */
-    object Read : CharacteristicProperties(0x02)
+    data object Read : CharacteristicProperties(0x02)
 
     /**
      * Characteristic can be written without response
      */
-    object WriteWithoutResponse : CharacteristicProperties(0x04)
+    data object WriteWithoutResponse : CharacteristicProperties(0x04)
 
     /**
      * Characteristic can be written
      */
-    object Write : CharacteristicProperties(0x08)
+    data object Write : CharacteristicProperties(0x08)
 
     /**
      * Characteristic supports notification
      */
-    object Notify : CharacteristicProperties(0x10)
+    data object Notify : CharacteristicProperties(0x10)
 
     /**
      * Characteristic supports indication
      */
-    object Indicate : CharacteristicProperties(0x20)
+    data object Indicate : CharacteristicProperties(0x20)
 
     /**
      * Characteristic supports write with signature
      */
-    object SignedWrite : CharacteristicProperties(0x40)
+    data object SignedWrite : CharacteristicProperties(0x40)
 
     /**
      * Characteristic has extended properties
      */
-    object ExtendedProperties : CharacteristicProperties(0x80)
+    data object ExtendedProperties : CharacteristicProperties(0x80)
 
     /**
      * Gets a [CharacteristicProperties] by combining two [CharacteristicProperties]

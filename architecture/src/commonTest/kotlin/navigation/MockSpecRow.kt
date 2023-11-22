@@ -36,18 +36,17 @@ class MockSpec : NavigationBundleSpec<MockSpecRow<*>>(
 )
 
 sealed class MockSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
-    object BooleanSpecRow : MockSpecRow<Boolean>(NavigationBundleSpecType.BooleanType)
-    object SerializableSpecRow : MockSpecRow<MockSerializable>(NavigationBundleSpecType.SerializedType(MockSerializable.serializer()))
-    object NestedBundleSpecRow : MockSpecRow<NavigationBundle<NestedSpecRow<*>>>(NavigationBundleSpecType.BundleType(NestedSpec()))
-    object OptionalString : MockSpecRow<String?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType))
-    object OptionalFloat : MockSpecRow<Float?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType))
-    object DateSpecRow : MockSpecRow<KalugaDate>(NavigationBundleSpecType.DateType)
-    object DateArraySpecRow : MockSpecRow<List<KalugaDate>>(NavigationBundleSpecType.DateArrayType)
+    data object BooleanSpecRow : MockSpecRow<Boolean>(NavigationBundleSpecType.BooleanType)
+    data object SerializableSpecRow : MockSpecRow<MockSerializable>(NavigationBundleSpecType.SerializedType(MockSerializable.serializer()))
+    data object NestedBundleSpecRow : MockSpecRow<NavigationBundle<NestedSpecRow<*>>>(NavigationBundleSpecType.BundleType(NestedSpec()))
+    data object OptionalString : MockSpecRow<String?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType))
+    data object OptionalFloat : MockSpecRow<Float?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType))
+    data object DateSpecRow : MockSpecRow<KalugaDate>(NavigationBundleSpecType.DateType)
+    data object DateArraySpecRow : MockSpecRow<List<KalugaDate>>(NavigationBundleSpecType.DateArrayType)
 }
 
 class NestedSpec : NavigationBundleSpec<NestedSpecRow<*>>(setOf(NestedSpecRow.StringSpecRow))
 
 sealed class NestedSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
-
-    object StringSpecRow : NestedSpecRow<String>(NavigationBundleSpecType.StringType)
+    data object StringSpecRow : NestedSpecRow<String>(NavigationBundleSpecType.StringType)
 }

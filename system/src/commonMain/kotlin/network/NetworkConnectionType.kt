@@ -84,7 +84,7 @@ sealed class NetworkConnectionType {
         /**
          * An [Available] network connected to the cellular network
          */
-        object Cellular : Available() {
+        data object Cellular : Available() {
             override val isExpensive: Boolean = true
         }
 
@@ -97,7 +97,7 @@ sealed class NetworkConnectionType {
         /**
          * A [Known] network type where no network is available
          */
-        object Absent : Known()
+        data object Absent : Known()
     }
 }
 

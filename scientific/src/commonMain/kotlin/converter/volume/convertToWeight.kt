@@ -42,14 +42,12 @@ import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.jvm.JvmName
 
 @JvmName("metricVolumeTimesMetricDensity")
-infix operator fun <VolumeUnit : MetricVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>,
-) = density * this
+infix operator fun <VolumeUnit : MetricVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(density: ScientificValue<PhysicalQuantity.Density, MetricDensity>) =
+    density * this
 
 @JvmName("imperialVolumeTimesImperialDensity")
-infix operator fun <VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
-) = density * this
+infix operator fun <VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>) =
+    density * this
 
 @JvmName("imperialVolumeTimesUKImperialDensity")
 infix operator fun <VolumeUnit : ImperialVolume> ScientificValue<PhysicalQuantity.Volume, VolumeUnit>.times(

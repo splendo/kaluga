@@ -32,14 +32,12 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricKinematicViscosityDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = (Joule per Kilogram).specificEnergy(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.KinematicViscosity, MetricKinematicViscosity>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    (Joule per Kilogram).specificEnergy(this, time)
 
 @JvmName("imperialKinematicViscosityDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>.div(
-    time: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
-) = (FootPoundForce per Pound).specificEnergy(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<PhysicalQuantity.KinematicViscosity, ImperialKinematicViscosity>.div(time: ScientificValue<PhysicalQuantity.Time, TimeUnit>) =
+    (FootPoundForce per Pound).specificEnergy(this, time)
 
 @JvmName("kinematicViscosityDivTime")
 infix operator fun <KinematicViscosityUnit : KinematicViscosity, TimeUnit : Time> ScientificValue<PhysicalQuantity.KinematicViscosity, KinematicViscosityUnit>.div(
