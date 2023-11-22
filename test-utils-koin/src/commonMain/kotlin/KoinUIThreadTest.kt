@@ -66,15 +66,23 @@ abstract class BaseKoinUIThreadTest<C, TC : BaseKoinUIThreadTest.KoinTestContext
         )
 
         init {
-            startKoin {
-                appDeclaration?.invoke(this)
-                modules(koinModules)
+            stopKoin()
+            try {
+                startKoin {
+                    appDeclaration?.invoke(this)
+                    modules(koinModules)
+                }
+                loadKoinModules(koinModules.toList())
+            } catch (error: Throwable) {
+                stopKoin()
+                throw error
             }
-            loadKoinModules(koinModules.toList())
         }
 
         override fun dispose() {
             stopKoin()
         }
     }
+
+    override val onFailedToCreateTestContextWithConfiguration: (configuration: C) -> Unit = { stopKoin() }
 }
