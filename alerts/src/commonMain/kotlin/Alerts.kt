@@ -315,6 +315,7 @@ abstract class BaseAlertPresenter(private val alert: Alert, private val logger: 
     }
 
     override fun showAsync(animated: Boolean, completion: () -> Unit) {
+        logger.info(TAG, "Displaying alert dialog with title: ${alert.title}")
         showAlert(animated, completion = completion)
     }
 
@@ -325,6 +326,7 @@ abstract class BaseAlertPresenter(private val alert: Alert, private val logger: 
                 continuation.completeResume(it)
             }
         }
+        logger.info(TAG, "Displaying alert dialog with title: ${alert.title}")
         showAlert(
             animated,
             afterHandler = { action ->
