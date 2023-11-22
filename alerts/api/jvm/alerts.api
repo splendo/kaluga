@@ -103,14 +103,14 @@ public final class com/splendo/kaluga/alerts/AlertActions$DefaultImpls {
 }
 
 public final class com/splendo/kaluga/alerts/AlertPresenter : com/splendo/kaluga/alerts/BaseAlertPresenter {
-	public fun <init> (Lcom/splendo/kaluga/alerts/Alert;)V
+	public fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/logging/Logger;)V
 	public fun dismiss (Z)V
 	public fun show (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun showAsync (ZLkotlin/jvm/functions/Function0;)V
 }
 
 public final class com/splendo/kaluga/alerts/AlertPresenter$Builder : com/splendo/kaluga/alerts/BaseAlertPresenter$Builder {
-	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/logging/Logger;)V
 	public fun create (Lcom/splendo/kaluga/alerts/Alert;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/alerts/AlertPresenter;
 	public synthetic fun create (Lcom/splendo/kaluga/alerts/Alert;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
 }
@@ -122,9 +122,11 @@ public final class com/splendo/kaluga/alerts/AlertsKt {
 }
 
 public abstract class com/splendo/kaluga/alerts/BaseAlertPresenter : com/splendo/kaluga/alerts/AlertActions {
-	public fun <init> (Lcom/splendo/kaluga/alerts/Alert;)V
+	public static final field Companion Lcom/splendo/kaluga/alerts/BaseAlertPresenter$Companion;
+	public static final field TAG Ljava/lang/String;
+	public fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/logging/Logger;)V
 	public fun dismiss (Z)V
-	protected abstract fun dismissAlert (Z)V
+	protected fun dismissAlert (Z)V
 	public static synthetic fun dismissAlert$default (Lcom/splendo/kaluga/alerts/BaseAlertPresenter;ZILjava/lang/Object;)V
 	public fun show (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun showAlert (ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;)V
@@ -135,5 +137,8 @@ public abstract class com/splendo/kaluga/alerts/BaseAlertPresenter : com/splendo
 public abstract class com/splendo/kaluga/alerts/BaseAlertPresenter$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
 	public fun <init> ()V
 	public abstract fun create (Lcom/splendo/kaluga/alerts/Alert;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
+}
+
+public final class com/splendo/kaluga/alerts/BaseAlertPresenter$Companion {
 }
 
