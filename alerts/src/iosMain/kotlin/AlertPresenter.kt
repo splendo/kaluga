@@ -147,8 +147,7 @@ actual class AlertPresenter(
             alert.message,
             transform(alert.style),
         ).apply {
-            fun Alert.Action.isCancelAction(): Boolean =
-                (this.style == Alert.Action.Style.CANCEL) or (this.style == Alert.Action.Style.NEGATIVE)
+            fun Alert.Action.isCancelAction(): Boolean = (this.style == Alert.Action.Style.CANCEL) or (this.style == Alert.Action.Style.NEGATIVE)
             alert.actions.forEach { action ->
                 addAction(
                     UIAlertAction.actionWithTitle(
