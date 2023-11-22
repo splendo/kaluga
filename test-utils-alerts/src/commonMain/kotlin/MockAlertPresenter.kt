@@ -18,6 +18,8 @@ package com.splendo.kaluga.test.alerts
 
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.BaseAlertPresenter
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
@@ -28,7 +30,7 @@ import kotlinx.coroutines.CoroutineScope
  * @param alert The [Alert] to display
  * @param setupMocks if `true` this automatically sets up mocks to handle displaying this [MockAlertPresenter]
  */
-class MockAlertPresenter(val alert: Alert, setupMocks: Boolean = true) : BaseAlertPresenter(alert) {
+class MockAlertPresenter(val alert: Alert, setupMocks: Boolean = true) : BaseAlertPresenter(alert, RestrictedLogger(RestrictedLogLevel.None)) {
 
     /**
      * Mock implementation of [BaseAlertPresenter.Builder]
