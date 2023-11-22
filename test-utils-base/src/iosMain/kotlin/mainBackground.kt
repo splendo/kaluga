@@ -27,7 +27,6 @@ import kotlin.system.exitProcess
 
 @OptIn(ObsoleteWorkersApi::class)
 fun mainBackground(args: Array<String>) {
-    kotlin.native.internal.NativePtr
     debug("using background thread for iOS tests")
     val worker = Worker.start(name = "kaluga-test-background")
     worker.execute(TransferMode.SAFE, { args }) { // TransferMode has no effect with the new memory manager in use
