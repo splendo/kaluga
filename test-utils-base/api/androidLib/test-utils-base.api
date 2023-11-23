@@ -36,6 +36,7 @@ public class com/splendo/kaluga/test/base/BaseTest {
 public abstract class com/splendo/kaluga/test/base/BaseUIThreadTest : com/splendo/kaluga/test/base/BaseTest {
 	public fun <init> ()V
 	public abstract fun getCreateTestContextWithConfiguration ()Lkotlin/jvm/functions/Function3;
+	public fun getOnFailedToCreateTestContextWithConfiguration ()Lkotlin/jvm/functions/Function1;
 	public final fun testOnUIThread (Ljava/lang/Object;ZLkotlin/jvm/functions/Function2;)V
 	public static synthetic fun testOnUIThread$default (Lcom/splendo/kaluga/test/base/BaseUIThreadTest;Ljava/lang/Object;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
