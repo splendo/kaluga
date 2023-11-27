@@ -180,7 +180,7 @@ sealed class MockDeviceState : KalugaState {
     }
 
     data class Disconnecting(
-        override val mockConnectableDeviceManager: MockConnectableDeviceManager
+        override val mockConnectableDeviceManager: MockConnectableDeviceManager,
     ) : Connectable(), ConnectableDeviceState.Disconnecting, HandleAfterOldStateIsRemoved<MockDeviceState> {
         override val asDeviceState: ConnectableDeviceState = this
 
