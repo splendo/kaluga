@@ -36,7 +36,7 @@ val device = buildMockDevice(coroutineContext) {
 }
 ```
 
-Simulate connection to the device after given delay (`connectionDelay`) and check connected state afterwords:
+Simulate connection to the device after given delay (`connectionDelay`) and check connected state afterwards:
 
 ```kotlin
 device.connect()
