@@ -63,6 +63,34 @@ public final class com/splendo/kaluga/test/bluetooth/MockDescriptor : com/splend
 public abstract interface class com/splendo/kaluga/test/bluetooth/MockDescriptorWrapper : com/splendo/kaluga/bluetooth/DescriptorWrapper, com/splendo/kaluga/test/bluetooth/CanUpdateMockValue {
 }
 
+public final class com/splendo/kaluga/test/bluetooth/MockDeviceBuilder {
+	public fun <init> (Lkotlin/coroutines/CoroutineContext;)V
+	public final fun build ()Lcom/splendo/kaluga/test/bluetooth/device/MockDevice;
+	public final fun getConnectionDelay-UwyO8pc ()J
+	public final fun getIdentifier ()Lcom/splendo/kaluga/bluetooth/UUID;
+	public final fun getManufacturerData ()[B
+	public final fun getManufacturerId ()Ljava/lang/Integer;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getRssi ()I
+	public final fun getSetupMocks ()Z
+	public final fun getTxPower ()I
+	public final fun isConnectable ()Z
+	public final fun services (Lkotlin/jvm/functions/Function1;)V
+	public final fun setConnectable (Z)V
+	public final fun setConnectionDelay-LRDsOJo (J)V
+	public final fun setIdentifier (Lcom/splendo/kaluga/bluetooth/UUID;)V
+	public final fun setManufacturerData ([B)V
+	public final fun setManufacturerId (Ljava/lang/Integer;)V
+	public final fun setName (Ljava/lang/String;)V
+	public final fun setRssi (I)V
+	public final fun setSetupMocks (Z)V
+	public final fun setTxPower (I)V
+}
+
+public final class com/splendo/kaluga/test/bluetooth/MockDeviceBuilderKt {
+	public static final fun buildMockDevice (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/bluetooth/device/MockDevice;
+}
+
 public final class com/splendo/kaluga/test/bluetooth/MockDeviceInfoBuilder {
 	public fun <init> ()V
 	public final fun build ()Lcom/splendo/kaluga/bluetooth/device/DeviceInfoImpl;
