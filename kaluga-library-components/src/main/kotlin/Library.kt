@@ -99,7 +99,7 @@ class LibraryImpl(project: Project) {
                 iosTestRunnerDeviceIdLocalProperty?.also {
                     logger.lifecycle("local.properties read (kaluga.iosTestRunnerDeviceIdLocalProperty=$iosTestRunnerDeviceIdLocalProperty, using $it)")
                 }
-                    ?: "iPhone 14".also {
+                    ?: "iPhone 15".also {
                         logger.info("local.properties not found, using default value ($it)")
                     }
             }
