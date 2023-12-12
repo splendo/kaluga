@@ -17,6 +17,7 @@ kotlin {
                 // these are not coming from component.gradle because they need to be in the main scope
                 api(kotlin("test"))
                 api(kotlin("test-junit"))
+                apiDependency(Dependencies.KotlinX.Coroutines.Test)
 
                 // these dependencies make test linking slow, but Kotlin/Native cannot handle `compileOnly`
                 // https://github.com/splendo/kaluga/issues/208
