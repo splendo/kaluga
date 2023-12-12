@@ -175,6 +175,41 @@ sealed class BaseMethodMock<
         resetStubs()
     }
 
+    internal suspend fun verifyWithParametersWithin(duration: Duration, parameters: C, times: Int = 1) {
+        verifyWithParametersWithin(duration, parameters, VerificationRule.times(times))
+    }
+
+    internal suspend fun verifyWithParametersWithin(duration: Duration, parameters: C, verificationRule: VerificationRule) = parametersSpec.apply {
+        val matchers = parameters.asMatchers()
+        var errorMessage = "No calls could be verified yet (perhaps you paused with the debugger)."
+        try {
+            withTimeout(duration) {
+                callParametersStateFlow.transformWhile { callParameters ->
+                    val matchedCalls = callParameters.filter {
+                        matchers.matches(it)
+                    }
+
+                    val matches = verificationRule.matches(matchedCalls.size)
+                    if (matches) {
+                        matchedCalls.forEach {
+                            parameters.capture(it)
+                        }
+                    } else {
+                        emit("got ${matchedCalls.size} matches.")
+                    }
+                    !matches
+                }.collectIndexed { index, newErrorMessage ->
+                    when (index) {
+                        0 -> errorMessage = "Expected $verificationRule matches but $newErrorMessage"
+                        else -> errorMessage += " Then $newErrorMessage"
+                    }
+                }
+            }
+        } catch (t: TimeoutCancellationException) {
+            fail { "$errorMessage Then got a timeout after $duration" }
+        }
+    }
+
     internal fun verifyWithParameters(parameters: C, times: Int = 1) {
         verifyWithParameters(parameters, VerificationRule.times(times))
     }
