@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.base.mock
 
-import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.test.base.mock.answer.Answer
 import com.splendo.kaluga.test.base.mock.answer.BaseAnswer
@@ -32,6 +31,13 @@ import com.splendo.kaluga.test.base.mock.parameters.VoidParameters
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.getAndUpdate
+import kotlinx.coroutines.flow.transformWhile
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration
 
 private fun expect(condition: Boolean, message: () -> String) {
     if (!condition) fail(message)
@@ -95,7 +101,8 @@ sealed class BaseMethodMock<
     }
 
     private val stubs = concurrentMutableMapOf<M, S>()
-    private val callParameters = concurrentMutableListOf<V>()
+    private val callParametersStateFlow = MutableStateFlow<List<V>>(listOf())
+    private val callParameters: List<V> get() = callParametersStateFlow.value
     protected abstract val parametersSpec: W
 
     protected abstract fun createStub(matcher: M): S
@@ -105,7 +112,7 @@ sealed class BaseMethodMock<
     }
 
     protected fun getStubFor(values: V): S {
-        callParameters.add(values)
+        callParametersStateFlow.getAndUpdate { it + values }
         // First find all the stubs whose matchers match the values received and sort their matchers per parameter in order of strongest constraint.
         val matchingStubs = stubs.synchronized {
             keys.mapNotNull { matchers ->
@@ -139,7 +146,7 @@ sealed class BaseMethodMock<
                 }
             }
         }
-        // Return the first element of the remaining list of stubbs
+        // Return the first element of the remaining list of stubs
         if (matchedStubs.isEmpty()) {
             fail { "No matching stubs found for $values" }
         }
@@ -150,7 +157,7 @@ sealed class BaseMethodMock<
      * Resets all calls to this mock method. This means that `verify(times=0)` should succeed
      */
     fun resetCalls() {
-        callParameters.clear()
+        callParametersStateFlow.value = listOf()
     }
 
     /**
