@@ -59,7 +59,7 @@ sealed class BaseMethodMock<
     > {
 
     /**
-     * A Stub is a class that provides a [BaseAnswer] [A] for a set of [parametersSpec.Values] [V]
+     * A Stub is a class that provides a [BaseAnswer] [A] for a set of [ParametersSpec.Values] [V]
      */
     abstract class Stub<
         M : ParametersSpec.Matchers,
@@ -132,7 +132,7 @@ sealed class BaseMethodMock<
             // Find the best matching stub.
             // Iterate over the length of the number of parameters passed to the method
             remainingMatches.fold(emptyList()) inner@{ acc, possibleBestMatch ->
-                // If we dont have a best possible match yet, just use the first element.
+                // If we don't have a best possible match yet, just use the first element.
                 if (acc.isEmpty()) {
                     return@inner listOf(possibleBestMatch)
                 }
@@ -161,14 +161,14 @@ sealed class BaseMethodMock<
     }
 
     /**
-     * Removes all stubbs from this mock method. Note that this also removes any default stubbs that may have been created when declaring the mock.
+     * Removes all stubs from this mock method. Note that this also removes any default stubs that may have been created when declaring the mock.
      */
     fun resetStubs() {
         stubs.clear()
     }
 
     /**
-     * Resets both calls and stubbs. Shorthand for [resetCalls] and [resetStubs]
+     * Resets both calls and stubs. Shorthand for [resetCalls] and [resetStubs]
      */
     fun reset() {
         resetCalls()
