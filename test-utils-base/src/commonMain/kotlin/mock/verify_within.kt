@@ -30,7 +30,7 @@ import com.splendo.kaluga.test.base.mock.verification.VerificationRule
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-val DEFAULT_WITHIN = 1.seconds
+private val DEFAULT_WITHIN = 1.seconds
 
 /**
  * Verifies that a [BaseMethodMock] without parameters has been called within the duration
