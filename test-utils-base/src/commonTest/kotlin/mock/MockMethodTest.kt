@@ -32,40 +32,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-interface MockableTestMethods {
-    fun methodWithoutParamsAndReturnType()
-    fun methodWithoutParamsButWithReturnType(): String
-    fun methodWithParamsAndReturnType(string: String): String
-    fun methodWithMultipleParamsAndReturnType(first: Int, second: String, third: String?, fourth: Int?): String
-    suspend fun suspendMethodWithParamsAndReturnType(string: String): String
-}
-
-class MockableTestMethodsImpl : MockableTestMethods {
-
-    override fun methodWithoutParamsAndReturnType() {
-        throw NotImplementedError()
-    }
-
-    override fun methodWithoutParamsButWithReturnType(): String {
-        throw NotImplementedError()
-    }
-
-    override fun methodWithParamsAndReturnType(string: String): String {
-        throw NotImplementedError()
-    }
-
-    override fun methodWithMultipleParamsAndReturnType(first: Int, second: String, third: String?, fourth: Int?): String {
-        throw NotImplementedError()
-    }
-
-    override suspend fun suspendMethodWithParamsAndReturnType(string: String): String {
-        throw NotImplementedError()
-    }
-}
-
 class MockMethodTest {
 
-    private class TestException : Exception()
     private val mockableTestMethods: MockableTestMethods = MockableTestMethodsImpl()
 
     @Test
@@ -87,9 +55,8 @@ class MockMethodTest {
         assertEquals("", mock.call())
         mock.verify()
         mock.reset()
-        val result = "Result"
-        mock.on().doReturn(result)
-        assertEquals(result, mock.call())
+        mock.on().doReturn(RESULT)
+        assertEquals(RESULT, mock.call())
         mock.verify()
         mock.on().doThrow(TestException())
         assertFailsWith(TestException::class) { mock.call() }
@@ -100,57 +67,44 @@ class MockMethodTest {
     fun testMockMethodWithParamsAndReturnType() {
         val mock = mockableTestMethods::methodWithParamsAndReturnType.mock()
         mock.verify(rule = never())
-        val paramA = "A"
-        val paramB = "B"
-        assertEquals("", mock.call(paramA))
+        assertEquals("", mock.call(PARAM_A))
         mock.verify()
-        mock.verify(eq(paramA))
-        mock.verify(eq(paramB), never())
+        mock.verify(eq(PARAM_A))
+        mock.verify(eq(PARAM_B), never())
         mock.reset()
-        val resultA = "Result A"
-        val resultB = "Result B"
-        val resultNotA = "Result Not A"
-        val resultNotAOrB = "Result A nor B"
-        mock.on(eq(paramA)).doReturn(resultA)
-        mock.on(eq(paramB)).doReturn(resultB)
-        mock.on(notEq(paramA)).doReturn(resultNotA)
-        mock.on(any()).doReturn(resultNotAOrB)
-        assertEquals(resultA, mock.call(paramA))
-        assertEquals(resultB, mock.call(paramB))
+        mock.on(eq(PARAM_A)).doReturn(RESULT_A)
+        mock.on(eq(PARAM_B)).doReturn(RESULT_B)
+        mock.on(notEq(PARAM_A)).doReturn(RESULT_NOT_A)
+        mock.on(any()).doReturn(RESULT_NOT_A_OR_B)
+        assertEquals(RESULT_A, mock.call(PARAM_A))
+        assertEquals(RESULT_B, mock.call(PARAM_B))
         mock.verify(times = 2)
-        mock.verify(eq(paramA))
-        mock.verify(notEq(paramA))
-        mock.verify(eq(paramB))
+        mock.verify(eq(PARAM_A))
+        mock.verify(notEq(PARAM_A))
+        mock.verify(eq(PARAM_B))
         mock.reset()
-        mock.on(eq(paramB)).doExecute { (parameter) ->
-            assertEquals(paramB, parameter)
-            resultB
+        mock.on(eq(PARAM_B)).doExecute { (parameter) ->
+            assertEquals(PARAM_B, parameter)
+            RESULT_B
         }
-        assertEquals(resultB, mock.call(paramB))
+        assertEquals(RESULT_B, mock.call(PARAM_B))
         val captor = AnyCaptor<String>()
         mock.verify(captor)
-        assertEquals(paramB, captor.lastCaptured)
+        assertEquals(PARAM_B, captor.lastCaptured)
     }
 
     @Test
     fun testMockMethodWithMultipleParamsAndReturnType() {
         val mock = mockableTestMethods::methodWithMultipleParamsAndReturnType.mock()
         mock.verify(rule = never())
-        val paramA1 = 1
-        val paramA2 = "A"
-        val paramA3 = "Something"
-        val paramA4 = 10
-        val paramB1 = 2
-        assertEquals("", mock.call(paramA1, paramA2, paramA3, paramA4))
+        assertEquals("", mock.call(PARAM_A1, PARAM_A2, PARAM_A3, PARAM_A4))
         mock.verify()
-        mock.verify(eq(paramA1), eq(paramA2), eq(paramA3), eq(paramA4))
-        mock.verify(first = eq(paramB1), rule = never())
+        mock.verify(eq(PARAM_A1), eq(PARAM_A2), eq(PARAM_A3), eq(PARAM_A4))
+        mock.verify(first = eq(PARAM_B1), rule = never())
         mock.reset()
-        val result1 = "Result 1"
-        val result2 = "Result 2"
-        mock.on(eq(paramA1), eq(paramA2), notNull(), notNull()).doReturn(result1)
-        mock.on(any(), eq(paramA2), eq(paramA3), eq(paramA4)).doReturn(result2)
-        assertEquals(result2, mock.call(paramA1, paramA2, paramA3, paramA4))
+        mock.on(eq(PARAM_A1), eq(PARAM_A2), notNull(), notNull()).doReturn(RESULT_1)
+        mock.on(any(), eq(PARAM_A2), eq(PARAM_A3), eq(PARAM_A4)).doReturn(RESULT_2)
+        assertEquals(RESULT_2, mock.call(PARAM_A1, PARAM_A2, PARAM_A3, PARAM_A4))
     }
 
     @Test
@@ -159,14 +113,13 @@ class MockMethodTest {
         mock.verify(rule = never())
         assertEquals("", mock.call(""))
         mock.reset()
-        val result = "Result"
         val deferred = CompletableDeferred<String>()
         val didCall = mock.on().doAwait(deferred)
         launch {
-            assertEquals(result, mock.call("Value"))
+            assertEquals(RESULT, mock.call("Value"))
         }
         didCall.await()
-        deferred.complete(result)
+        deferred.complete(RESULT)
         mock.verify()
     }
 }
