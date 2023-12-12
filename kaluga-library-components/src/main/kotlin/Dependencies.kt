@@ -134,14 +134,14 @@ object Dependencies {
 
         object Activity {
             private const val group = "$groupBase.activity"
-            private const val version = "1.8.0"
+            private const val version = "1.8.1"
             val Activity = Dependency(group, "activity", version)
             val Ktx = Dependency(group, "activity-ktx", version)
             val Compose = Dependency(group, "activity-compose", version)
         }
         val AppCompat = Dependency("$groupBase.appcompat", "appcompat", "1.6.1")
         val ArchCore = Dependency("$groupBase.arch.core", "core-testing", "2.2.0")
-        val Browser = Dependency("$groupBase.browser", "browser", "1.6.0")
+        val Browser = Dependency("$groupBase.browser", "browser", "1.7.0")
         object Compose {
             private const val version = "1.5.4"
             private const val uiVersion = "1.5.4"
@@ -196,9 +196,9 @@ object Dependencies {
 
     object Koin {
         private const val group = "io.insert-koin"
-        private const val version = "3.5.0"
-        private const val androidVersion = "3.5.0"
-        private const val composeVersion = "3.5.0"
+        private const val version = "3.5.1"
+        private const val androidVersion = "3.5.1"
+        private const val composeVersion = "3.5.1"
         val Android = Dependency(group, "koin-android", androidVersion)
         val AndroidXCompose = Dependency(group, "koin-androidx-compose", composeVersion)
         val Core = Dependency(group, "koin-core", version)
