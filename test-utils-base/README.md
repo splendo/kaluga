@@ -198,7 +198,7 @@ launch {
 methodMock.verifyWithin(duration = 2.seconds, times = 2) // at the time this is called the method will only have been called once, but it will wait for 2 more seconds to see if additional calls are made
 ```
 
-Note that fast successive invocations of mocks might mean the number of invocations goes up grouped (e.g. from 1 to 3). If you still want your `verifyWithin` call to pass, use a rule like `atLeast`:
+Note that the increase of calls for fast successive invocations may be conflated (e.g. from 1 to 3). If you still want your `verifyWithin` call to pass, use a rule like `atLeast`:
 
 ```kotlin
 mock.verifyWithin(rule = atLeast(2))
