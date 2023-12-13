@@ -206,7 +206,7 @@ sealed class BaseMethodMock<
                 }
             }
         } catch (t: TimeoutCancellationException) {
-            fail { "$errorMessage Then got a timeout after $duration" }
+            fail { "$errorMessage Then got a timeout after $duration." }
         }
     }
 
