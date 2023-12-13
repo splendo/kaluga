@@ -30,9 +30,11 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.time.Duration.Companion.seconds
 
 @Suppress("SuspendFunctionOnCoroutineScope")
 class WithinMockMethodTest {
@@ -50,6 +52,46 @@ class WithinMockMethodTest {
         launch {
             delay(60000) // since runTest is used the delay is actually not that long.
             fn()
+        }
+    }
+
+    @Test
+    fun testMockMethodWithoutParamsAndReturnTypeMultipleInvocationsWithin() = runTest {
+        val mock = mockableTestMethods::methodWithoutParamsAndReturnType.mock().also {
+            it.verifyWithin(rule = never())
+        }
+        coroutineScope {
+            assertEquals(Unit, mock.call())
+            launch {
+                delay(500)
+                assertEquals(Unit, mock.call())
+                yield() // without this yield the count would jump from 1 to 3
+                assertEquals(Unit, mock.call()) // despite this being the third call, by now verifyWith should have succeeded
+            }
+            mock.verifyWithin(times = 2)
+        }
+    }
+
+    @Test
+    fun testMockMethodWithoutParamsAndReturnTypeInsufficientInvocationsWithin() = runTest {
+        val mock = mockableTestMethods::methodWithoutParamsAndReturnType.mock().also {
+            it.verifyWithin(rule = never())
+        }
+        coroutineScope {
+            assertEquals(Unit, mock.call())
+            launch {
+                delay(500)
+                assertEquals(Unit, mock.call())
+                delay(250)
+                assertEquals(Unit, mock.call())
+                delay(2000)
+                assertEquals(Unit, mock.call())
+                assertEquals(Unit, mock.call())
+            }
+            val assertionError = assertFailsWith<AssertionError> {
+                mock.verifyWithin(duration = 2.seconds, times = 4)
+            }
+            assertEquals("Expected Exactly(times=4) matches but got 1 matches. Then got 2 matches. Then got 3 matches. Then got a timeout after 2s.", assertionError.message)
         }
     }
 
