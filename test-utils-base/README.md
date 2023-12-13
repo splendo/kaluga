@@ -178,12 +178,30 @@ Call `resetStubs` to reset all stubbing (note this will also remove any default 
 
 ### Verification
 Calls to a `MethodMock` can be verified using the `verify` method. Like with stubbing, verification can use `ParameterMatchers` to filter for a given parameter. In addition, a `Captor` can be passed to capture an argument when called.
-By default, verify will check that the method has been called with the given `ParameterMatchers` exectly once. Pass a `VerificationRule` or simply the number of times the method should be called to verify different calls.
+By default, verify will check that the method has been called with the given `ParameterMatchers` exactly once. Pass a `VerificationRule` or simply the number of times the method should be called to verify different calls.
 
 ```kotlin
 methodMock.verify(rule = never()) // Verifies the method has never been called
 method("", false, 0.0)
 methodMock.verify(second = eq(false))
+```
+
+A special `suspend` version of `verify()` is also available, `verifyWithin()`. 
+Instead of failing if the rules are not immediately met, it will wait for a certain `Duration` to see if the mock will be called again, each time re-evaluating the `VerificationRule`.     
+
+```kotlin
+method("", false, 0.0)
+launch {
+    delay(1500)
+    method("", false, 0.0)
+}
+methodMock.verifyWithin(duration = 2.seconds, times = 2) // at the time this is called the method will only have been called once, but it will wait for 2 more seconds to see if additional calls are made
+```
+
+Note that fast successive invocations of mocks might mean the number of invocations goes up grouped (e.g. from 1 to 3). If you still want your `verifyWithin` call to pass, use a rule like `atLeast`:
+
+```kotlin
+mock.verifyWithin(rule = atLeast(2))
 ```
 
 Call `resetCalls` to reset all calls to a `MethodMock`.
