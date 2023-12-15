@@ -29,8 +29,6 @@ import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.base.utils.applyIf
 import com.splendo.kaluga.logging.Logger
-import com.splendo.kaluga.logging.RestrictedLogLevel
-import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.resources.dpToPixel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,17 +54,17 @@ actual class AlertPresenter(
      */
     actual class Builder(
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-        private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     ) : BaseAlertPresenter.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
 
         /**
          * Creates an [AlertPresenter]
          *
          * @param alert The [Alert] to be presented with the built presenter.
+         * @param logger The [Logger] that logs the logs of the presenter.
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The created [AlertPresenter]
          */
-        actual override fun create(alert: Alert, coroutineScope: CoroutineScope) = AlertPresenter(alert, lifecycleManagerObserver, coroutineScope, logger)
+        actual override fun create(alert: Alert, logger: Logger, coroutineScope: CoroutineScope) = AlertPresenter(alert, lifecycleManagerObserver, coroutineScope, logger)
     }
 
     private companion object {
@@ -112,7 +110,6 @@ actual class AlertPresenter(
     }
 
     override fun dismissAlert(animated: Boolean) {
-        super.dismissAlert(animated)
         presentation.value = DialogPresentation.Hidden
     }
 

@@ -19,8 +19,6 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.alerts
 
 import com.splendo.kaluga.logging.Logger
-import com.splendo.kaluga.logging.RestrictedLogLevel
-import com.splendo.kaluga.logging.RestrictedLogger
 import kotlinx.cinterop.ObjCAction
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSString
@@ -102,7 +100,6 @@ actual class AlertPresenter(
      */
     actual class Builder(
         private val viewController: UIViewController,
-        private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
         private val delegateBuilder: (Alert) -> UIPopoverPresentationControllerDelegateProtocol,
     ) : BaseAlertPresenter.Builder() {
 
@@ -114,7 +111,6 @@ actual class AlertPresenter(
             viewController: UIViewController,
         ) : this(
             viewController,
-            RestrictedLogger(RestrictedLogLevel.None),
             { DefaultUIPopoverPresentationControllerDelegateProtocol(viewController.view) },
         )
 
@@ -122,10 +118,11 @@ actual class AlertPresenter(
          * Creates an [AlertPresenter]
          *
          * @param alert The [Alert] to be presented with the built presenter.
+         * @param logger The [Logger] that logs the logs of the presenter.
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The created [AlertPresenter]
          */
-        actual override fun create(alert: Alert, coroutineScope: CoroutineScope) = AlertPresenter(alert, viewController, logger, delegateBuilder)
+        actual override fun create(alert: Alert, logger: Logger, coroutineScope: CoroutineScope) = AlertPresenter(alert, viewController, logger, delegateBuilder)
     }
 
     class DefaultUIPopoverPresentationControllerDelegateProtocol(private val sourceView: UIView) : NSObject(), UIPopoverPresentationControllerDelegateProtocol {
@@ -137,7 +134,6 @@ actual class AlertPresenter(
     }
 
     override fun dismissAlert(animated: Boolean) {
-        super.dismissAlert(animated)
         parent.dismissModalViewControllerAnimated(animated)
     }
 

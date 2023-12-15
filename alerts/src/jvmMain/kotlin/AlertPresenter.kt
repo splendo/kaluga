@@ -36,16 +36,17 @@ actual class AlertPresenter(
     /**
      * A [BaseAlertPresenter.Builder] for creating an [AlertPresenter]
      */
-    actual class Builder(private val logger: Logger) : BaseAlertPresenter.Builder() {
+    actual class Builder : BaseAlertPresenter.Builder() {
 
         /**
          * Creates an [AlertPresenter]
          *
          * @param alert The [Alert] to be presented with the built presenter.
+         * @param logger The [Logger] that logs the logs of the presenter.
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The created [AlertPresenter]
          */
-        actual override fun create(alert: Alert, coroutineScope: CoroutineScope): AlertPresenter {
+        actual override fun create(alert: Alert, logger: Logger, coroutineScope: CoroutineScope): AlertPresenter {
             return AlertPresenter(alert, logger)
         }
     }
