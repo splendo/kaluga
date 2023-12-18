@@ -35,7 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [23, 33]
+        api-level: [23, 34]
         project: ${{ fromJSON(needs.build.outputs.projects) }}
     steps:
       - name: checkout
