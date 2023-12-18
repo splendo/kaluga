@@ -20,7 +20,6 @@ package com.splendo.kaluga.test.bluetooth
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.firstInstance
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
-import com.splendo.kaluga.bluetooth.device.identifierFromString
 import com.splendo.kaluga.bluetooth.uuidFrom
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
@@ -32,7 +31,7 @@ class MockDeviceTest {
     @Test
     fun mock_device_connect_disconnect(): Unit = runBlocking {
         val device = buildMockDevice(coroutineContext) {
-            identifier = identifierFromString("1234")!!
+            identifier = randomIdentifier()
             services {
                 add(uuidFrom("2345"))
             }

@@ -383,14 +383,14 @@ expect class AlertPresenter : BaseAlertPresenter {
 /**
  * Builds a [BaseAlertPresenter] of type [Alert.Style.ALERT] using DSL syntax (thread safe)
  *
- * @param logger The [Logger] that logs the logs of the presenter.
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+ * @param logger The [Logger] that logs the logs of the presenter.
  * @param initialize The block to construct an [Alert]
  * @return The built [BaseAlertPresenter]
  */
 fun BaseAlertPresenter.Builder.buildAlert(
-    logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     coroutineScope: CoroutineScope,
+    logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     initialize: Alert.Builder.() -> Unit,
 ): BaseAlertPresenter = create(
     Alert.Builder(Alert.Style.ALERT).apply {
@@ -403,14 +403,14 @@ fun BaseAlertPresenter.Builder.buildAlert(
 /**
  * Builds a [BaseAlertPresenter] of type [Alert.Style.ACTION_LIST] using DSL syntax (thread safe)
  *
- * @param logger The [Logger] that logs the logs of the presenter.
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+ * @param logger The [Logger] that logs the logs of the presenter.
  * @param initialize The block to construct an [Alert]
  * @return The built [BaseAlertPresenter]
  */
 fun BaseAlertPresenter.Builder.buildActionSheet(
-    logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     coroutineScope: CoroutineScope,
+    logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     initialize: Alert.Builder.() -> Unit,
 ): BaseAlertPresenter = create(
     Alert.Builder(Alert.Style.ACTION_LIST).apply {
@@ -423,14 +423,14 @@ fun BaseAlertPresenter.Builder.buildActionSheet(
 /**
  * Builds a [BaseAlertPresenter] of type [Alert.Style.TEXT_INPUT] using DSL syntax (thread safe)
  *
- * @param logger The [Logger] that logs the logs of the presenter.
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+ * @param logger The [Logger] that logs the logs of the presenter.
  * @param initialize The block to construct an [Alert]
  * @return The built [BaseAlertPresenter]
  */
 fun BaseAlertPresenter.Builder.buildAlertWithInput(
-    logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     coroutineScope: CoroutineScope,
+    logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     initialize: Alert.Builder.() -> Unit,
 ): BaseAlertPresenter = create(
     Alert.Builder(Alert.Style.TEXT_INPUT).apply {
