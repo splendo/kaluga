@@ -21,6 +21,7 @@ kotlin {
             dependencies {
                 implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
+                implementation(project(":logging", ""))
                 implementation(project(":resources", ""))
             }
         }

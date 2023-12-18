@@ -15,11 +15,6 @@
 
  */
 
-import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.tasks.bundling.Jar
-import org.gradle.kotlin.dsl.`maven-publish`
-import org.gradle.kotlin.dsl.signing
-
 plugins {
     `maven-publish`
     signing
@@ -57,7 +52,7 @@ publishing {
     repositories {
         maven {
             name = "sonatype"
-            setUrl("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
             credentials {
                 username = getExtraString("ossrhUsername")
                 password = getExtraString("ossrhPassword")
@@ -66,7 +61,7 @@ publishing {
 
         maven {
             name = "snapshots"
-            setUrl("https://oss.sonatype.org/content/repositories/snapshots/")
+            setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots/")
             credentials {
                 username = getExtraString("ossrhUsername")
                 password = getExtraString("ossrhPassword")

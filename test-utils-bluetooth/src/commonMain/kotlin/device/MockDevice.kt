@@ -27,12 +27,19 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.randomIdentifier
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.test.base.mock.on
+import com.splendo.kaluga.test.bluetooth.createServiceWrapper
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class MockDevice(
     override val identifier: Identifier = randomIdentifier(),
@@ -40,9 +47,12 @@ class MockDevice(
     private val connectionSettings: ConnectionSettings = ConnectionSettings(),
     private val coroutineContext: CoroutineContext,
     setupMocks: Boolean = true,
+    private val connectionDelay: Duration = 1.seconds,
+    private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
 ) : Device {
 
     val mockConnectableDeviceManager = MockConnectableDeviceManager()
+
     private val connectableDeviceStateRepo = MockConnectableDeviceStateRepo(mockConnectableDeviceManager, coroutineContext)
 
     init {
@@ -56,6 +66,17 @@ class MockDevice(
             }
             mockConnectableDeviceManager.mockStartConnecting.on().doExecute {
                 handleConnecting()
+            }
+            mockConnectableDeviceManager.mockConnect.on().doExecuteSuspended {
+                delay(connectionDelay)
+                handleConnected()
+            }
+            mockConnectableDeviceManager.mockDisconnect.on().doExecuteSuspended {
+                delay(connectionDelay)
+                handleDisconnected()
+            }
+            mockConnectableDeviceManager.mockDiscoverServices.on().doExecute {
+                handleDiscoverServices(buildServices())
             }
             mockConnectableDeviceManager.mockStartDiscovering.on().doExecute {
                 handleStartDiscoveringServices()
@@ -71,9 +92,18 @@ class MockDevice(
 
     override val state: Flow<DeviceState> = info.flatMapLatest {
         when {
-            it.advertisementData.isConnectable -> flowOf(MockDeviceState.NotConnectable)
+            !it.advertisementData.isConnectable -> flowOf(MockDeviceState.NotConnectable)
             else -> connectableDeviceStateRepo
         }
+    }
+
+    private fun buildServices() = info.value.advertisementData.serviceUUIDs.map {
+        Service(
+            service = createServiceWrapper { uuid = it },
+            emitNewAction = {},
+            parentLogTag = "MockDeviceService",
+            logger = logger,
+        )
     }
 
     fun handleConnecting() {

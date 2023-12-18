@@ -103,8 +103,8 @@ public final class com/splendo/kaluga/alerts/AlertActions$DefaultImpls {
 }
 
 public final class com/splendo/kaluga/alerts/AlertPresenter : com/splendo/kaluga/alerts/BaseAlertPresenter, kotlinx/coroutines/CoroutineScope {
-	public fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lkotlinx/coroutines/CoroutineScope;)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 }
 
@@ -112,24 +112,31 @@ public final class com/splendo/kaluga/alerts/AlertPresenter$Builder : com/splend
 	public fun <init> ()V
 	public fun <init> (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun create (Lcom/splendo/kaluga/alerts/Alert;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/alerts/AlertPresenter;
-	public synthetic fun create (Lcom/splendo/kaluga/alerts/Alert;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
+	public fun create (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/logging/Logger;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/alerts/AlertPresenter;
+	public synthetic fun create (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/logging/Logger;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
 	public fun getManager ()Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;
 	public fun subscribe (Lcom/splendo/kaluga/architecture/lifecycle/ActivityLifecycleSubscribable$LifecycleManager;)V
 	public fun unsubscribe ()V
 }
 
 public final class com/splendo/kaluga/alerts/AlertsKt {
-	public static final fun buildActionSheet (Lcom/splendo/kaluga/alerts/BaseAlertPresenter$Builder;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
-	public static final fun buildAlert (Lcom/splendo/kaluga/alerts/BaseAlertPresenter$Builder;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
-	public static final fun buildAlertWithInput (Lcom/splendo/kaluga/alerts/BaseAlertPresenter$Builder;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
+	public static final fun buildActionSheet (Lcom/splendo/kaluga/alerts/BaseAlertPresenter$Builder;Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
+	public static synthetic fun buildActionSheet$default (Lcom/splendo/kaluga/alerts/BaseAlertPresenter$Builder;Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
+	public static final fun buildAlert (Lcom/splendo/kaluga/alerts/BaseAlertPresenter$Builder;Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
+	public static synthetic fun buildAlert$default (Lcom/splendo/kaluga/alerts/BaseAlertPresenter$Builder;Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
+	public static final fun buildAlertWithInput (Lcom/splendo/kaluga/alerts/BaseAlertPresenter$Builder;Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
+	public static synthetic fun buildAlertWithInput$default (Lcom/splendo/kaluga/alerts/BaseAlertPresenter$Builder;Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
 }
 
 public abstract class com/splendo/kaluga/alerts/BaseAlertPresenter : com/splendo/kaluga/alerts/AlertActions {
-	public fun <init> (Lcom/splendo/kaluga/alerts/Alert;)V
+	public static final field Companion Lcom/splendo/kaluga/alerts/BaseAlertPresenter$Companion;
+	public static final field TAG Ljava/lang/String;
+	public fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/logging/Logger;)V
 	public fun dismiss (Z)V
 	protected abstract fun dismissAlert (Z)V
 	public static synthetic fun dismissAlert$default (Lcom/splendo/kaluga/alerts/BaseAlertPresenter;ZILjava/lang/Object;)V
+	protected final fun dismissAlertWithLog (Z)V
+	public static synthetic fun dismissAlertWithLog$default (Lcom/splendo/kaluga/alerts/BaseAlertPresenter;ZILjava/lang/Object;)V
 	public fun show (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun showAlert (ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;)V
 	public static synthetic fun showAlert$default (Lcom/splendo/kaluga/alerts/BaseAlertPresenter;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
@@ -138,6 +145,10 @@ public abstract class com/splendo/kaluga/alerts/BaseAlertPresenter : com/splendo
 
 public abstract class com/splendo/kaluga/alerts/BaseAlertPresenter$Builder : com/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable {
 	public fun <init> ()V
-	public abstract fun create (Lcom/splendo/kaluga/alerts/Alert;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
+	public abstract fun create (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/logging/Logger;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
+	public static synthetic fun create$default (Lcom/splendo/kaluga/alerts/BaseAlertPresenter$Builder;Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/logging/Logger;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
+}
+
+public final class com/splendo/kaluga/alerts/BaseAlertPresenter$Companion {
 }
 

@@ -90,15 +90,15 @@ For example if the base version is `1.1` and `feature/123_fix_bug` is the curren
 
 #### Local Testing
 
-Before doing any publishing, make sure that changes are working with the one available in [Nexus Repository Manager](`oss.sonatype.org`).
+Before doing any publishing, make sure that changes are working with the one available in [Nexus Repository Manager](`s01.oss.sonatype.org`).
 Just adding the following code inside the `local.properties` file you can test both Android and iOS example app in `kaluga/example/`.
 ```
 kaluga.exampleEmbeddingMethod=repo
-kaluga.exampleMavenRepo=https://oss.sonatype.org/service/local/repositories/comsplendo-REPO_NUMBER/
+kaluga.exampleMavenRepo=https://s01.oss.sonatype.org/service/local/repositories/comsplendo-REPO_NUMBER/
 kaluga.libraryVersion=LIBRARY_VERSION
 ```
 Where 
-`REPO_NUMBER` is the id of the staging repository created to do the release (normally done automatically by GitHub Actions upon a `master` commit, the number can be found on the https://oss.sonatype.org console under "staging repositories")
+`REPO_NUMBER` is the id of the staging repository created to do the release (normally done automatically by GitHub Actions upon a `master` commit, the number can be found on the https://s01.oss.sonatype.org console under "staging repositories")
 `LIBRARY_VERSION` is the version of the library that we are publish
 
 Don't forget to remove these when you are done.
@@ -127,11 +127,11 @@ If these values are present as environment variables they will also be picked up
 
 #### Publishing via CI
 
-GitHub Actions automatically publishes every branch (except `master`) to the Sonatype snapshot repository (`https://oss.sonatype.org/content/repositories/snapshots/`). Commits on `master` are send to the Sonatype staging repository as the first step of a Maven Central release.
+GitHub Actions automatically publishes every branch (except `master`) to the Sonatype snapshot repository (`https://s01.oss.sonatype.org/content/repositories/snapshots/`). Commits on `master` are send to the Sonatype staging repository as the first step of a Maven Central release.
 
 #### Releasing to Maven Central
 
-Projects publishing to Sonatype's staging repository need to be manually closed and released (promoted) before they will appear on Maven Central. This can only be done by people with access to https://oss.sonatype.org.
+Projects publishing to Sonatype's staging repository need to be manually closed and released (promoted) before they will appear on Maven Central. This can only be done by people with access to https://s01.oss.sonatype.org.
 
 #### Increase version after publishing
 
@@ -175,4 +175,3 @@ e: org.jetbrains.kotlin.konan.KonanExternalToolFailure: The /usr/bin/xcrun comma
 Go to `XCode` -> `Preferences` -> `Locations tab` -> `Command Line Tools` dropdown.
 
 It should show none selected, so select any item.
-

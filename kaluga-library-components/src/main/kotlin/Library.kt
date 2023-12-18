@@ -32,7 +32,7 @@ val Project.Library get() = libraries.getOrPut(this) { LibraryImpl(this) }
 
 class LibraryImpl(project: Project) {
 
-    private val props: Properties = File("${project.rootProject.buildDir.absolutePath}/../local.properties").let { file ->
+    private val props: Properties = File("${project.rootProject.layout.buildDirectory.asFile.get().absolutePath}/../local.properties").let { file ->
         if (file.exists) {
             file.loadProperties()
         } else {
@@ -40,7 +40,7 @@ class LibraryImpl(project: Project) {
         }
     }
     private val logger = project.logger
-    private val baseVersion = "1.3.0"
+    private val baseVersion = "1.3.1"
     val group = "com.splendo.kaluga"
     val version: String by lazy {
         val libraryVersionLocalProperties: String? = props["kaluga.libraryVersion"] as? String
@@ -58,7 +58,7 @@ class LibraryImpl(project: Project) {
         const val compileSdk = 34
         const val targetSdk = 34
         const val buildTools = "34.0.0"
-        const val composeCompiler = "1.5.4"
+        const val composeCompiler = "1.5.6"
     }
 
     class IOSLibrary(props: Properties, logger: Logger) {
@@ -99,7 +99,7 @@ class LibraryImpl(project: Project) {
                 iosTestRunnerDeviceIdLocalProperty?.also {
                     logger.lifecycle("local.properties read (kaluga.iosTestRunnerDeviceIdLocalProperty=$iosTestRunnerDeviceIdLocalProperty, using $it)")
                 }
-                    ?: "iPhone 14".also {
+                    ?: "iPhone 15".also {
                         logger.info("local.properties not found, using default value ($it)")
                     }
             }

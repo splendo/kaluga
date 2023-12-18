@@ -24,7 +24,7 @@ By default Kaluga dependency is included as a composite build. You also can put 
 You can also set the `kaluga.exampleMavenRepo` property to specify which maven repo to look in. By default this is `mavenLocal()` (this can also be used by explicitly setting the value `local`). For example to set this to the sonatype snapshot repository use:
 
 ```properties
-kaluga.exampleMavenRepo=https://oss.sonatype.org/content/repositories/snapshots/
+kaluga.exampleMavenRepo=https://s01.oss.sonatype.org/content/repositories/snapshots/
 ```
 
 In conjunction, you can set the `kaluga.libraryVersion` property. This will override the version of Kaluga to look for. For example:

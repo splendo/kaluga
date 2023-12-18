@@ -18,6 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.alerts
 
+import com.splendo.kaluga.logging.Logger
 import kotlinx.cinterop.ObjCAction
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSString
@@ -51,8 +52,9 @@ import platform.objc.sel_registerName
 actual class AlertPresenter(
     private val alert: Alert,
     private val parent: UIViewController,
+    logger: Logger,
     private val delegateBuilder: (Alert) -> UIPopoverPresentationControllerDelegateProtocol,
-) : BaseAlertPresenter(alert) {
+) : BaseAlertPresenter(alert, logger) {
 
     /** Ref to alert's [UITextField] of type [Alert.Style.TEXT_INPUT] */
     private var textField: UITextField? = null
@@ -76,6 +78,7 @@ actual class AlertPresenter(
             Alert.Action.Style.POSITIVE,
             Alert.Action.Style.NEUTRAL,
             -> UIAlertActionStyleDefault
+
             Alert.Action.Style.DESTRUCTIVE -> UIAlertActionStyleDestructive
             Alert.Action.Style.CANCEL,
             Alert.Action.Style.NEGATIVE,
@@ -115,10 +118,11 @@ actual class AlertPresenter(
          * Creates an [AlertPresenter]
          *
          * @param alert The [Alert] to be presented with the built presenter.
+         * @param logger The [Logger] that logs the logs of the presenter.
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The created [AlertPresenter]
          */
-        actual override fun create(alert: Alert, coroutineScope: CoroutineScope) = AlertPresenter(alert, viewController, delegateBuilder)
+        actual override fun create(alert: Alert, logger: Logger, coroutineScope: CoroutineScope) = AlertPresenter(alert, viewController, logger, delegateBuilder)
     }
 
     class DefaultUIPopoverPresentationControllerDelegateProtocol(private val sourceView: UIView) : NSObject(), UIPopoverPresentationControllerDelegateProtocol {

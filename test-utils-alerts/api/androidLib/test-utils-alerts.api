@@ -3,8 +3,8 @@ public final class com/splendo/kaluga/test/alerts/AlertPresenterBuilderKt {
 }
 
 public final class com/splendo/kaluga/test/alerts/MockAlertPresenter : com/splendo/kaluga/alerts/BaseAlertPresenter {
-	public fun <init> (Lcom/splendo/kaluga/alerts/Alert;Z)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/alerts/Alert;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/logging/Logger;Z)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/logging/Logger;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun closeWithAction (Lcom/splendo/kaluga/alerts/Alert$Action;)V
 	public fun dismiss (Z)V
 	public final fun getAlert ()Lcom/splendo/kaluga/alerts/Alert;
@@ -19,7 +19,7 @@ public final class com/splendo/kaluga/test/alerts/MockAlertPresenter$Builder : c
 	public fun <init> ()V
 	public fun <init> (Z)V
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun create (Lcom/splendo/kaluga/alerts/Alert;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
+	public fun create (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/logging/Logger;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/alerts/BaseAlertPresenter;
 	public final fun getBuiltAlerts ()Ljava/util/List;
 	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 }

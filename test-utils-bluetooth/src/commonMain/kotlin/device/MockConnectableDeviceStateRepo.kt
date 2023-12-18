@@ -49,6 +49,15 @@ class MockConnectableDeviceManager {
     val mockUnpair = this::unpair.mock()
     suspend fun unpair(): Unit = mockUnpair.call()
 
+    val mockConnect = this::connect.mock()
+    suspend fun connect(): Unit = mockConnect.call()
+
+    val mockDisconnect = this::disconnect.mock()
+    suspend fun disconnect(): Unit = mockDisconnect.call()
+
+    val mockDiscoverServices = this::discoverServices.mock()
+    suspend fun discoverServices(): Unit = mockDiscoverServices.call()
+
     val mockStartDiscovering = this::startDiscovering.mock()
     fun startDiscovering(): Unit = mockStartDiscovering.call()
 
