@@ -30,6 +30,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.UUIDException
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.uuidFrom
+import com.splendo.kaluga.logging.defaultLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
@@ -97,7 +98,7 @@ class BluetoothListViewModel(
             val isScanning = bluetooth.isScanning().first()
             val builder = if (isScanning) alertPresenterBuilder::buildAlert else alertPresenterBuilder::buildAlertWithInput
             val filter = mutableSetOf<UUID>()
-            val action = builder.invoke(coroutineScope) {
+            val action = builder.invoke(coroutineScope, defaultLogger) {
                 if (isScanning) {
                     setTitle("Stop Scanning")
                 } else {
