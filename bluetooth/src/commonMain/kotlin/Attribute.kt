@@ -53,7 +53,7 @@ abstract class Attribute<ReadAction : DeviceAction.Read, WriteAction : DeviceAct
     override suspend fun collect(collector: FlowCollector<ByteArray?>) = sharedFlow.collect(collector)
 
     // TODO make configurable
-    private val sharedFlow = MutableSharedFlow<ByteArray?>(0, 256, BufferOverflow.DROP_OLDEST).also { it.tryEmit(initialValue) }
+    private val sharedFlow = MutableSharedFlow<ByteArray?>(0, 1024, BufferOverflow.SUSPEND).also { it.tryEmit(initialValue) }
 
     /**
      * Creates and emits a [ReadAction]
