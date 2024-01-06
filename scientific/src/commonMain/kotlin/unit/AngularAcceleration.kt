@@ -43,7 +43,7 @@ data class AngularAcceleration(
     override val system = MeasurementSystem.MetricAndImperial
     override val symbol: String by lazy {
         if (angularVelocity.per == per) {
-            "${angularVelocity.angle.symbol} / ${per.symbol}2"
+            "${angularVelocity.angle.symbol} / ${per.symbol}²"
         } else {
             "${angularVelocity.angle.symbol} / (${angularVelocity.per.symbol} * ${per.symbol})"
         }

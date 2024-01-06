@@ -55,10 +55,10 @@ sealed class Jolt : AbstractScientificUnit<PhysicalQuantity.Jolt>() {
             "${acceleration.symbol} / ${per.symbol}"
         } else {
             val perSymbol = when {
-                per == acceleration.per && acceleration.speed.per == per -> "${per.symbol}3"
-                per == acceleration.per -> "${per.symbol}2*${acceleration.speed.per}"
-                per == acceleration.speed.per -> "${per.symbol}2*${acceleration.per}"
-                acceleration.per == acceleration.speed.per -> "${per.symbol}*${acceleration.per}2"
+                per == acceleration.per && acceleration.speed.per == per -> "${per.symbol}³"
+                per == acceleration.per -> "${per.symbol}²*${acceleration.speed.per}"
+                per == acceleration.speed.per -> "${per.symbol}²*${acceleration.per}"
+                acceleration.per == acceleration.speed.per -> "${per.symbol}*${acceleration.per}²"
                 else -> "${per.symbol}*${acceleration.per.symbol}*${acceleration.speed.per.symbol}"
             }
             "${acceleration.speed.distance.symbol} / $perSymbol"

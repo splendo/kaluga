@@ -76,7 +76,7 @@ sealed class MetricArea : Area(), MetricScientificUnit<PhysicalQuantity.Area>
 sealed class ImperialArea : Area(), ImperialScientificUnit<PhysicalQuantity.Area>
 
 internal class Square<S : MeasurementSystem, U : SystemScientificUnit<S, PhysicalQuantity.Length>>(private val unit: U) : SystemScientificUnit<S, PhysicalQuantity.Area> {
-    override val symbol: String = "${unit.symbol}2"
+    override val symbol: String = "${unit.symbol}²"
     override val system: S = unit.system
     override val quantity = PhysicalQuantity.Area
     override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(unit.fromSIUnit(value))

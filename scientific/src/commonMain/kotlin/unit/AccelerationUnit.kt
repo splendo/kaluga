@@ -78,7 +78,7 @@ sealed class Acceleration : AbstractScientificUnit<PhysicalQuantity.Acceleration
 }
 
 internal val Acceleration.defaultSymbol: String get() = if (speed.per == per) {
-    "${speed.distance.symbol} / ${per.symbol}2"
+    "${speed.distance.symbol} / ${per.symbol}²"
 } else {
     "${speed.distance.symbol} / (${speed.per.symbol} * ${per.symbol})"
 }

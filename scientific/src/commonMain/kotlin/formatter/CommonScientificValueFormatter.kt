@@ -17,17 +17,31 @@
 
 package com.splendo.kaluga.scientific.formatter
 
+import com.splendo.kaluga.base.text.NumberFormatStyle
+import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.unit.ScientificUnit
-import kotlin.math.roundToLong
 
-private typealias CustomFormatHandler = (Number) -> String
+internal typealias CustomFormatHandler = (Number) -> String
 
 /**
  * An implementation of [ScientificValueFormatter]
  * Use [CommonScientificValueFormatter.Builder] to create an instance that can be customized per [ScientificUnit] type
  */
-sealed class CommonScientificValueFormatter private constructor(builder: Builder) : ScientificValueFormatter {
+class CommonScientificValueFormatter internal constructor(
+    private val defaultValueFormatter: NumberFormatter,
+    private val customSymbols: Map<ScientificUnit<*>, String>,
+    private val customFormatters: Map<ScientificUnit<*>, CustomFormatHandler>,
+) : ScientificValueFormatter {
+
+    companion object {
+        internal val defaultUnitFormatter = NumberFormatter(style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
+        fun where(builder: Builder.() -> Unit): CommonScientificValueFormatter {
+            return Builder().apply(builder).build()
+        }
+        val default = where {}
+    }
+
 
     /**
      * Builder for creating a [CommonScientificValueFormatter]
@@ -40,14 +54,16 @@ sealed class CommonScientificValueFormatter private constructor(builder: Builder
              * @param build method for configuring the [Builder]
              * @return the built [ScientificValueFormatter]
              */
+            @Deprecated("Use CommonScientificValueFormatter.where", replaceWith = ReplaceWith("CommonScientificValueFormatter.where { build }"))
             fun build(build: Builder.() -> Unit = {}): ScientificValueFormatter {
                 val builder = Builder()
-                build(builder)
-                return Buildable(builder)
+                return builder.build()
             }
         }
 
-        internal val customFormatters = mutableMapOf<ScientificUnit<*>, CustomFormatHandler>()
+        var defaultValueFormatter = CommonScientificValueFormatter.defaultUnitFormatter
+        private val customFormatters = mutableMapOf<ScientificUnit<*>, CustomFormatHandler>()
+        private val customSymbols = mutableMapOf<ScientificUnit<*>, String>()
 
         /**
          * Sets a method for converting a [Number] in a given [ScientificUnit] into a String representation of its value
@@ -55,34 +71,31 @@ sealed class CommonScientificValueFormatter private constructor(builder: Builder
          * @param unit the [ScientificUnit] to apply the formatting to
          * @param format method for formatting a value in the given [ScientificUnit]
          */
+        @Deprecated("Use formatUsing", replaceWith = ReplaceWith("unit formatUsing format"))
         fun useFormat(unit: ScientificUnit<*>, format: CustomFormatHandler) {
-            customFormatters[unit] = format
+            unit formatUsing format
+        }
+
+        infix fun ScientificUnit<*>.formatUsing(handler: CustomFormatHandler) {
+            customFormatters[this] = handler
+        }
+
+        infix fun ScientificUnit<*>.usesCustomSymbol(symbol: String) {
+            customSymbols[this] = symbol
+        }
+
+        fun build(): CommonScientificValueFormatter {
+            return CommonScientificValueFormatter(this.defaultValueFormatter, emptyMap(), customFormatters)
         }
     }
 
-    private val customFormatters = builder.customFormatters
-
     override fun format(value: ScientificValue<*, *>): String {
         val customFormatter = customFormatters[value.unit]
-        return customFormatter?.let { it(value.value.pretty()) } ?: defaultFormat(value)
+        return customFormatter?.let { it(value.value) } ?: defaultFormat(value)
     }
 
-    private fun defaultFormat(value: ScientificValue<*, *>): String = "${value.value.pretty()} ${value.unit.symbol.withoutSpaces()}"
-
-    /**
-     *   The custom formatter with customisation applied using builder
-     *   Is private as formatter of this type can be only created using builder
-     */
-    private class Buildable(builder: Builder) : CommonScientificValueFormatter(builder)
-
-    /**
-     *   Default [CommonScientificValueFormatter] with no customisation applied
-     */
-    companion object Default : CommonScientificValueFormatter(Builder())
-}
-
-private fun Number.pretty() = toDouble().let {
-    if (it.compareTo(it.roundToLong()) == 0) it.toLong() else this
+    private fun defaultFormat(value: ScientificValue<*, *>): String =
+        "${defaultValueFormatter.format(value.value)}${Typography.nbsp}${customSymbols[value.unit] ?: value.unit.symbol.withoutSpaces()}"
 }
 
 private fun String.withoutSpaces() = filterNot(Char::isWhitespace)
