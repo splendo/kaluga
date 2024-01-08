@@ -21,12 +21,14 @@ import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.enUsPosix
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.Candela
 import com.splendo.kaluga.scientific.unit.Centimeter
 import com.splendo.kaluga.scientific.unit.Decameter
 import com.splendo.kaluga.scientific.unit.Decimeter
+import com.splendo.kaluga.scientific.unit.Foot
 import com.splendo.kaluga.scientific.unit.FootCandle
 import com.splendo.kaluga.scientific.unit.Gigameter
 import com.splendo.kaluga.scientific.unit.Hectometer
@@ -53,11 +55,10 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 class CommonScientificValueFormatterTest {
-    lateinit var formatter: ScientificValueFormatter
 
     @Test
     fun format__it_converts_scientific_value_to_string() {
-        formatter = CommonScientificValueFormatter.default
+        val formatter = CommonScientificValueFormatter.default
         val value = randomScientificValue()
 
         assertIs<String>(formatter.format(value), "It should convert scientific value to string")
@@ -65,7 +66,7 @@ class CommonScientificValueFormatterTest {
 
     @Test
     fun format__defaultFormatter__it_uses_value_and_symbol() {
-        formatter = CommonScientificValueFormatter.where {
+        val formatter = CommonScientificValueFormatter.where {
             defaultValueFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
         }
 
@@ -96,8 +97,32 @@ class CommonScientificValueFormatterTest {
     }
 
     @Test
+    fun formatAllForQuantity() {
+        val formatter = CommonScientificValueFormatter.where {
+            defaultValueFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
+            PhysicalQuantity.Length formatAs Meter
+        }
+
+        assertEquals("1000 m", formatter.format(1(Kilometer)))
+        assertEquals("0.001 m", formatter.format(1(Millimeter)))
+        assertEquals("0.3048 m", formatter.format(1(Foot)))
+    }
+
+    @Test
+    fun formatUnitAsDifferentUnit() {
+        val formatter = CommonScientificValueFormatter.where {
+            defaultValueFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
+            Kilometer formatAs Meter
+        }
+
+        assertEquals("1000 m", formatter.format(1(Kilometer)))
+        assertEquals("1 mm", formatter.format(1(Millimeter)))
+        assertEquals("1 ft", formatter.format(1(Foot)))
+    }
+
+    @Test
     fun format__custom_format_added__it_uses_custom_formatter() {
-        formatter = CommonScientificValueFormatter.where {
+        val formatter = CommonScientificValueFormatter.where {
             defaultValueFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
             Kilometer per Hour formatUsing { "${defaultValueFormatter.format(it)} км/ч" }
             Newton formatUsing { "🍏_${defaultValueFormatter.format(it)}" }

@@ -73,7 +73,7 @@ sealed class SpecificVolume : AbstractScientificUnit<PhysicalQuantity.SpecificVo
      * The [Weight] component
      */
     abstract val per: Weight
-    override val symbol: String by lazy { "${volume.symbol} / ${per.symbol}" }
+    override val symbol: String by lazy { "${volume.symbol}/${per.symbol}" }
     override val quantity = PhysicalQuantity.SpecificVolume
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(volume.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = volume.toSIUnit(per.fromSIUnit(value))

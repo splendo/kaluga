@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific.formatter
 
 import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 
@@ -30,6 +31,8 @@ internal typealias CustomFormatHandler = (Number) -> String
  */
 class CommonScientificValueFormatter internal constructor(
     private val defaultValueFormatter: NumberFormatter,
+    private val customUnitTargets: Map<ScientificUnit<*>, ScientificUnit<*>>,
+    private val customQuantityTargets: Map<PhysicalQuantity, ScientificUnit<*>>,
     private val customSymbols: Map<ScientificUnit<*>, String>,
     private val customFormatters: Map<ScientificUnit<*>, CustomFormatHandler>,
 ) : ScientificValueFormatter {
@@ -62,6 +65,8 @@ class CommonScientificValueFormatter internal constructor(
         }
 
         var defaultValueFormatter = CommonScientificValueFormatter.defaultUnitFormatter
+        private val customUnitTargets =  mutableMapOf<ScientificUnit<*>, ScientificUnit<*>>()
+        private val customQuantityTargets =mutableMapOf<PhysicalQuantity, ScientificUnit<*>>()
         private val customFormatters = mutableMapOf<ScientificUnit<*>, CustomFormatHandler>()
         private val customSymbols = mutableMapOf<ScientificUnit<*>, String>()
 
@@ -76,26 +81,57 @@ class CommonScientificValueFormatter internal constructor(
             unit formatUsing format
         }
 
+        /**
+         * Formats any [ScientificValue] with quantity [Quantity] as a unit of [unit]
+         * Is overruled by [ScientificUnit.formatAs]
+         * @param Quantity the [PhysicalQuantity] whose units should be formatted as [unit]
+         * @param unit the [ScientificUnit] to which all [ScientificValue] of [Quantity] should be converted before formatting.
+         */
+        infix fun <Quantity : PhysicalQuantity> Quantity.formatAs(unit: ScientificUnit<Quantity>) {
+            customQuantityTargets[this] = unit
+        }
+
+        /**
+         * Formats any [ScientificValue] of this unit into [unit]
+         * Overrules [PhysicalQuantity.formatAs]
+         * @param Quantity the [PhysicalQuantity] of the unit that should be formatted as [unit]
+         * @param unit the [ScientificUnit] to which this unit should be converted before formatting.
+         */
+        infix fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.formatAs(unit: ScientificUnit<Quantity>) {
+            customUnitTargets[this] = unit
+        }
+
+        /**
+         * Formats a value in a [ScientificUnit] using [CustomFormatHandler]
+         * @param handler the handler to format the unit as
+         */
         infix fun ScientificUnit<*>.formatUsing(handler: CustomFormatHandler) {
             customFormatters[this] = handler
         }
 
+        /**
+         * Sets a custom symbol for formatting a value of a [ScientificUnit]
+         */
         infix fun ScientificUnit<*>.usesCustomSymbol(symbol: String) {
             customSymbols[this] = symbol
         }
 
         fun build(): CommonScientificValueFormatter {
-            return CommonScientificValueFormatter(this.defaultValueFormatter, emptyMap(), customFormatters)
+            return CommonScientificValueFormatter(this.defaultValueFormatter, customUnitTargets, customQuantityTargets, customSymbols, customFormatters)
         }
     }
 
     override fun format(value: ScientificValue<*, *>): String {
+        val customUnit = customUnitTargets[value.unit] ?: customQuantityTargets[value.unit.quantity]
+        val valueToFormat = if (customUnit != null && customUnit != value.unit) {
+            FormatterScientificValue(customUnit, customUnit.fromSIUnit(value.unit.toSIUnit(value.decimalValue)))
+        } else {
+            value
+        }
         val customFormatter = customFormatters[value.unit]
-        return customFormatter?.let { it(value.value) } ?: defaultFormat(value)
+        return customFormatter?.let { it(value.value) } ?: defaultFormat(valueToFormat)
     }
 
     private fun defaultFormat(value: ScientificValue<*, *>): String =
-        "${defaultValueFormatter.format(value.value)}${Typography.nbsp}${customSymbols[value.unit] ?: value.unit.symbol.withoutSpaces()}"
+        "${defaultValueFormatter.format(value.value)}${Typography.nbsp}${customSymbols[value.unit] ?: value.unit.symbol}"
 }
-
-private fun String.withoutSpaces() = filterNot(Char::isWhitespace)

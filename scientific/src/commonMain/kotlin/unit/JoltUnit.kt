@@ -52,16 +52,16 @@ sealed class Jolt : AbstractScientificUnit<PhysicalQuantity.Jolt>() {
     override val quantity = PhysicalQuantity.Jolt
     override val symbol: String by lazy {
         if (acceleration.symbol != acceleration.defaultSymbol) {
-            "${acceleration.symbol} / ${per.symbol}"
+            "${acceleration.symbol}/${per.symbol}"
         } else {
             val perSymbol = when {
                 per == acceleration.per && acceleration.speed.per == per -> "${per.symbol}³"
-                per == acceleration.per -> "${per.symbol}²*${acceleration.speed.per}"
-                per == acceleration.speed.per -> "${per.symbol}²*${acceleration.per}"
-                acceleration.per == acceleration.speed.per -> "${per.symbol}*${acceleration.per}²"
-                else -> "${per.symbol}*${acceleration.per.symbol}*${acceleration.speed.per.symbol}"
+                per == acceleration.per -> "${per.symbol}²·${acceleration.speed.per}"
+                per == acceleration.speed.per -> "${per.symbol}²·${acceleration.per}"
+                acceleration.per == acceleration.speed.per -> "${per.symbol}·${acceleration.per}²"
+                else -> "${per.symbol}·${acceleration.per.symbol}·${acceleration.speed.per.symbol}"
             }
-            "${acceleration.speed.distance.symbol} / $perSymbol"
+            "${acceleration.speed.distance.symbol}/$perSymbol"
         }
     }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(acceleration.fromSIUnit(value))

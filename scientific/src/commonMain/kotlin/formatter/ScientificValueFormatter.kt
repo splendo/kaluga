@@ -17,7 +17,11 @@
 
 package com.splendo.kaluga.scientific.formatter
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.toDouble
+import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.unit.ScientificUnit
 
 /**
  * Interface for formatting a [ScientificValue] to a String
@@ -38,3 +42,10 @@ interface ScientificValueFormatter {
  * @return the String representation of the [ScientificValue]
  */
 fun ScientificValue<*, *>.toString(formatter: ScientificValueFormatter = CommonScientificValueFormatter.default): String = formatter.format(this)
+
+internal class FormatterScientificValue<Quantity : PhysicalQuantity, Unit : ScientificUnit<Quantity>>(
+    override val unit: Unit,
+    override val decimalValue: Decimal
+) : ScientificValue<Quantity, Unit> {
+    override val value: Number = decimalValue.toDouble()
+}

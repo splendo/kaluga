@@ -41,7 +41,7 @@ data class AngularVelocity(
 ) : AbstractScientificUnit<PhysicalQuantity.AngularVelocity>(), MetricAndImperialScientificUnit<PhysicalQuantity.AngularVelocity> {
     override val quantity = PhysicalQuantity.AngularVelocity
     override val system = MeasurementSystem.MetricAndImperial
-    override val symbol: String by lazy { "${angle.symbol} / ${per.symbol}" }
+    override val symbol: String by lazy { "${angle.symbol}/${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(angle.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = angle.toSIUnit(per.fromSIUnit(value))
 }
