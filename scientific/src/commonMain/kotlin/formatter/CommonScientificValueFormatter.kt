@@ -35,11 +35,11 @@ class CommonScientificValueFormatter internal constructor(
 ) : ScientificValueFormatter {
 
     companion object {
-        internal val defaultUnitFormatter = NumberFormatter(style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
+        internal val defaultUnitFormatter get() = NumberFormatter(style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
         fun where(builder: Builder.() -> Unit): CommonScientificValueFormatter {
             return Builder().apply(builder).build()
         }
-        val default = where {}
+        val default get() = where {}
     }
 
 

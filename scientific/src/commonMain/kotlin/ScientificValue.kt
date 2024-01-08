@@ -28,7 +28,6 @@ import com.splendo.kaluga.base.utils.toDouble
 import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.convert
-import kotlinx.serialization.Serializable
 
 /**
  * A Value in a given [ScientificUnit]
@@ -59,15 +58,27 @@ interface ScientificValue<Quantity : PhysicalQuantity, Unit : ScientificUnit<Qua
  * A class implementation of [ScientificValue]
  * @param Quantity the type of [PhysicalQuantity] of the unit
  * @param Unit the type of [AbstractScientificUnit] this value represents
- * @param value the value component
+ * @param decimalValue the [Decimal] component
  * @param unit the [Unit] component
  */
-@Serializable
 data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(
-    override val value: Double,
+    override val decimalValue: Decimal,
     override val unit: Unit,
 ) : ScientificValue<Quantity, Unit> {
-    constructor(value: Decimal, unit: Unit) : this(value.toDouble(), unit)
+
+    /**
+     * Constructor
+     * @param value the value component
+     * @param unit the [Unit] component
+     */
+    constructor(value: Number, unit: Unit) : this(value.toDecimal(), unit)
+
+    override val value = decimalValue.toDouble()
+
+    override fun equals(other: Any?): Boolean {
+        val otherValue = other as? DefaultScientificValue<*, *> ?: return false
+        return value.compareTo(other.value) == 0 && unit == otherValue.unit
+    }
 }
 
 // Creation

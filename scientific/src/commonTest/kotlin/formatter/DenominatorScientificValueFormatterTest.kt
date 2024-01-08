@@ -36,19 +36,20 @@ class DenominatorScientificValueFormatterTest {
     fun testDenominatorFormatting() {
         val formatter = DenominatorScientificValueFormatter.with {
             Yard denominateBy listOf(Foot, Inch)
-            denominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U, maxFractionDigits = 0U))
-            lastDenominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U, maxFractionDigits = 0U))
+            denominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Integer(minDigits = 1U))
+            lastDenominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Integer(minDigits = 1U))
             defaultUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
         }
 
-        assertEquals("5 yd 2 ft 6 in", formatter.format(5(Yard) + 2(Foot) + 6(Inch)))
-        assertEquals("5 yd 6 in", formatter.format(5(Yard) + 6(Inch)))
-        assertEquals("5 yd 2 ft", formatter.format(5(Yard) + 2(Foot)))
+        assertEquals("5 yd 2 ft 6 in", formatter.format(5(Yard) + 2(Foot) + 6(Inch)))
+        assertEquals("5 yd 6 in", formatter.format(5(Yard) + 6(Inch)))
+        assertEquals("5 yd 2 ft", formatter.format(5(Yard) + 2(Foot)))
         assertEquals("5 yd", formatter.format(5(Yard)))
         assertEquals("2 ft", formatter.format(0(Yard) + 2(Foot)))
         assertEquals("2 ft", formatter.format(0(Yard) + 2(Foot) + 0.1(Inch)))
         assertEquals("0 yd", formatter.format(0(Yard)))
         assertEquals("0 yd", formatter.format(0.00000000001(Yard)))
+        assertEquals("1 yd", formatter.format(0.999999999(Yard)))
         assertEquals("1.5 m", formatter.format(1.5(Meter)))
     }
 
@@ -56,19 +57,103 @@ class DenominatorScientificValueFormatterTest {
     fun testDenominatorFormattingWithLastNotRounded() {
         val formatter = DenominatorScientificValueFormatter.with {
             Yard denominateBy listOf(Foot, Inch)
-            denominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U, maxFractionDigits = 0U))
-            lastDenominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
+            denominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Integer(minDigits = 1U))
+            lastDenominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U, maxFractionDigits = 10U))
             defaultUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
         }
 
-        assertEquals("5 yd 2 ft 6 in", formatter.format(5(Yard) + 2(Foot) + 6(Inch)))
-        assertEquals("5 yd 6 in", formatter.format(5(Yard) + 6(Inch)))
-        assertEquals("5 yd 2 ft", formatter.format(5(Yard) + 2(Foot)))
+        assertEquals("5 yd 2 ft 6 in", formatter.format(5(Yard) + 2(Foot) + 6(Inch)))
+        assertEquals("5 yd 6 in", formatter.format(5(Yard) + 6(Inch)))
+        assertEquals("5 yd 2 ft", formatter.format(5(Yard) + 2(Foot)))
         assertEquals("5 yd", formatter.format(5(Yard)))
         assertEquals("2 ft", formatter.format(0(Yard) + 2(Foot)))
-        assertEquals("2 ft 0.1ft", formatter.format(0(Yard) + 2(Foot) + 0.1(Inch)))
+        assertEquals("2 ft 0.1 in", formatter.format(0(Yard) + 2(Foot) + 0.1(Inch)))
         assertEquals("0 yd", formatter.format(0(Yard)))
-        assertEquals("0.00000000001 yd", formatter.format(0.00000000001(Yard)))
+        assertEquals("0.0000000004 in", formatter.format(0.00000000001(Yard)))
+        assertEquals("1.5 m", formatter.format(1.5(Meter)))
+    }
+
+    @Test
+    fun testDenominatorFormattingFirstZero() {
+        val formatter = DenominatorScientificValueFormatter.with {
+            Yard denominateBy listOf(Foot, Inch)
+            includeZeroValues = DenominatorScientificValueFormatter.IncludeZeroValues.FIRST
+            denominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Integer(minDigits = 1U))
+            lastDenominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Integer(minDigits = 1U))
+            defaultUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
+        }
+
+        assertEquals("5 yd 2 ft 6 in", formatter.format(5(Yard) + 2(Foot) + 6(Inch)))
+        assertEquals("5 yd 6 in", formatter.format(5(Yard) + 6(Inch)))
+        assertEquals("5 yd 2 ft 0 in", formatter.format(5(Yard) + 2(Foot)))
+        assertEquals("5 yd 0 ft", formatter.format(5(Yard)))
+        assertEquals("2 ft 0 in", formatter.format(0(Yard) + 2(Foot)))
+        assertEquals("2 ft 0 in", formatter.format(0(Yard) + 2(Foot) + 0.1(Inch)))
+        assertEquals("0 yd", formatter.format(0(Yard)))
+        assertEquals("0 yd", formatter.format(0.00000000001(Yard)))
+        assertEquals("1.5 m", formatter.format(1.5(Meter)))
+    }
+
+    @Test
+    fun testDenominatorFormattingFirstZeroWithLastNotRounded() {
+        val formatter = DenominatorScientificValueFormatter.with {
+            Yard denominateBy listOf(Foot, Inch)
+            includeZeroValues = DenominatorScientificValueFormatter.IncludeZeroValues.FIRST
+            denominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Integer(minDigits = 1U))
+            lastDenominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U, maxFractionDigits = 10U))
+            defaultUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
+        }
+
+        assertEquals("5 yd 2 ft 6 in", formatter.format(5(Yard) + 2(Foot) + 6(Inch)))
+        assertEquals("5 yd 6 in", formatter.format(5(Yard) + 6(Inch)))
+        assertEquals("5 yd 2 ft 0 in", formatter.format(5(Yard) + 2(Foot)))
+        assertEquals("5 yd 0 ft", formatter.format(5(Yard)))
+        assertEquals("2 ft 0 in", formatter.format(0(Yard) + 2(Foot)))
+        assertEquals("2 ft 0.1 in", formatter.format(0(Yard) + 2(Foot) + 0.1(Inch)))
+        assertEquals("0 yd", formatter.format(0(Yard)))
+        assertEquals("0.0000000004 in", formatter.format(0.00000000001(Yard)))
+        assertEquals("1.5 m", formatter.format(1.5(Meter)))
+    }
+
+    @Test
+    fun testDenominatorFormattingAllZero() {
+        val formatter = DenominatorScientificValueFormatter.with {
+            Yard denominateBy listOf(Foot, Inch)
+            includeZeroValues = DenominatorScientificValueFormatter.IncludeZeroValues.ALL
+            denominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Integer(minDigits = 1U))
+            lastDenominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Integer(minDigits = 1U))
+            defaultUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
+        }
+
+        assertEquals("5 yd 2 ft 6 in", formatter.format(5(Yard) + 2(Foot) + 6(Inch)))
+        assertEquals("5 yd 0 ft 6 in", formatter.format(5(Yard) + 6(Inch)))
+        assertEquals("5 yd 2 ft 0 in", formatter.format(5(Yard) + 2(Foot)))
+        assertEquals("5 yd 0 ft 0 in", formatter.format(5(Yard)))
+        assertEquals("0 yd 2 ft 0 in", formatter.format(0(Yard) + 2(Foot)))
+        assertEquals("0 yd 2 ft 0 in", formatter.format(0(Yard) + 2(Foot) + 0.1(Inch)))
+        assertEquals("0 yd 0 ft 0 in", formatter.format(0(Yard)))
+        assertEquals("0 yd 0 ft 0 in", formatter.format(0.00000000001(Yard)))
+        assertEquals("1.5 m", formatter.format(1.5(Meter)))
+    }
+
+    @Test
+    fun testDenominatorFormattingAllZeroWithLastNotRounded() {
+        val formatter = DenominatorScientificValueFormatter.with {
+            Yard denominateBy listOf(Foot, Inch)
+            includeZeroValues = DenominatorScientificValueFormatter.IncludeZeroValues.ALL
+            denominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Integer(minDigits = 1U))
+            lastDenominatorUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U, maxFractionDigits = 10U))
+            defaultUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
+        }
+
+        assertEquals("5 yd 2 ft 6 in", formatter.format(5(Yard) + 2(Foot) + 6(Inch)))
+        assertEquals("5 yd 0 ft 6 in", formatter.format(5(Yard) + 6(Inch)))
+        assertEquals("5 yd 2 ft 0 in", formatter.format(5(Yard) + 2(Foot)))
+        assertEquals("5 yd 0 ft 0 in", formatter.format(5(Yard)))
+        assertEquals("0 yd 2 ft 0 in", formatter.format(0(Yard) + 2(Foot)))
+        assertEquals("0 yd 2 ft 0.1 in", formatter.format(0(Yard) + 2(Foot) + 0.1(Inch)))
+        assertEquals("0 yd 0 ft 0 in", formatter.format(0(Yard)))
+        assertEquals("0 yd 0 ft 0.0000000004 in", formatter.format(0.00000000001(Yard)))
         assertEquals("1.5 m", formatter.format(1.5(Meter)))
     }
 }

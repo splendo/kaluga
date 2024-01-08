@@ -99,8 +99,8 @@ class CommonScientificValueFormatterTest {
     fun format__custom_format_added__it_uses_custom_formatter() {
         formatter = CommonScientificValueFormatter.where {
             defaultValueFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
-            Kilometer per Hour formatUsing { "$it км/ч" }
-            Newton formatUsing { "🍏_$it" }
+            Kilometer per Hour formatUsing { "${defaultValueFormatter.format(it)} км/ч" }
+            Newton formatUsing { "🍏_${defaultValueFormatter.format(it)}" }
         }
 
         assertEquals("1 m", formatter.format(1(Meter)))
