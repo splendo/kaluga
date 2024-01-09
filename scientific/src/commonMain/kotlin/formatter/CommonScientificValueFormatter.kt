@@ -27,7 +27,7 @@ internal typealias CustomFormatHandler = (Number) -> String
 
 /**
  * An implementation of [ScientificValueFormatter]
- * Use [CommonScientificValueFormatter.Builder] to create an instance that can be customized per [ScientificUnit] type
+ * Use [CommonScientificValueFormatter.with] to create an instance that can be customized per [ScientificUnit] type
  */
 class CommonScientificValueFormatter internal constructor(
     private val defaultValueFormatter: NumberFormatter,
@@ -39,12 +39,21 @@ class CommonScientificValueFormatter internal constructor(
 
     companion object {
         internal val defaultUnitFormatter get() = NumberFormatter(style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
-        fun where(builder: Builder.() -> Unit): CommonScientificValueFormatter {
+
+        /**
+         * Creates a [CommonScientificValueFormatter]
+         * @param builder the [Builder] function to build the [CommonScientificValueFormatter]
+         * @return the created [CommonScientificValueFormatter]
+         */
+        fun with(builder: Builder.() -> Unit): CommonScientificValueFormatter {
             return Builder().apply(builder).build()
         }
-        val default get() = where {}
-    }
 
+        /**
+         * A default [CommonScientificValueFormatter] that formats all units as themselves using the current user [com.splendo.kaluga.base.utils.KalugaLocale]
+         */
+        val default get() = with {}
+    }
 
     /**
      * Builder for creating a [CommonScientificValueFormatter]
@@ -65,8 +74,8 @@ class CommonScientificValueFormatter internal constructor(
         }
 
         var defaultValueFormatter = CommonScientificValueFormatter.defaultUnitFormatter
-        private val customUnitTargets =  mutableMapOf<ScientificUnit<*>, ScientificUnit<*>>()
-        private val customQuantityTargets =mutableMapOf<PhysicalQuantity, ScientificUnit<*>>()
+        private val customUnitTargets = mutableMapOf<ScientificUnit<*>, ScientificUnit<*>>()
+        private val customQuantityTargets = mutableMapOf<PhysicalQuantity, ScientificUnit<*>>()
         private val customFormatters = mutableMapOf<ScientificUnit<*>, CustomFormatHandler>()
         private val customSymbols = mutableMapOf<ScientificUnit<*>, String>()
 

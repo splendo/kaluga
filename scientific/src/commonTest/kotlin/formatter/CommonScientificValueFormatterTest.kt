@@ -66,7 +66,7 @@ class CommonScientificValueFormatterTest {
 
     @Test
     fun format__defaultFormatter__it_uses_value_and_symbol() {
-        val formatter = CommonScientificValueFormatter.where {
+        val formatter = CommonScientificValueFormatter.with {
             defaultValueFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
         }
 
@@ -98,7 +98,7 @@ class CommonScientificValueFormatterTest {
 
     @Test
     fun formatAllForQuantity() {
-        val formatter = CommonScientificValueFormatter.where {
+        val formatter = CommonScientificValueFormatter.with {
             defaultValueFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
             PhysicalQuantity.Length formatAs Meter
         }
@@ -110,7 +110,7 @@ class CommonScientificValueFormatterTest {
 
     @Test
     fun formatUnitAsDifferentUnit() {
-        val formatter = CommonScientificValueFormatter.where {
+        val formatter = CommonScientificValueFormatter.with {
             defaultValueFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
             Kilometer formatAs Meter
         }
@@ -122,7 +122,7 @@ class CommonScientificValueFormatterTest {
 
     @Test
     fun format__custom_format_added__it_uses_custom_formatter() {
-        val formatter = CommonScientificValueFormatter.where {
+        val formatter = CommonScientificValueFormatter.with {
             defaultValueFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
             Kilometer per Hour formatUsing { "${defaultValueFormatter.format(it)} км/ч" }
             Newton formatUsing { "🍏_${defaultValueFormatter.format(it)}" }

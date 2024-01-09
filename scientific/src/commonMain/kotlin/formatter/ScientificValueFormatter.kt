@@ -45,7 +45,7 @@ fun ScientificValue<*, *>.toString(formatter: ScientificValueFormatter = CommonS
 
 internal class FormatterScientificValue<Quantity : PhysicalQuantity, Unit : ScientificUnit<Quantity>>(
     override val unit: Unit,
-    override val decimalValue: Decimal
+    override val decimalValue: Decimal,
 ) : ScientificValue<Quantity, Unit> {
     override val value: Number = decimalValue.toDouble()
 }

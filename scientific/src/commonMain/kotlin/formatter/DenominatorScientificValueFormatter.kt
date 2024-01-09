@@ -54,7 +54,8 @@ class DenominatorScientificValueFormatter private constructor(
 
         /**
          * Creates a [DenominatorScientificValueFormatter]
-         * @param builder the Builder function to build the [DenominatorScientificValueFormatter]
+         * @param builder the [Builder] function to build the [DenominatorScientificValueFormatter]
+         * @return the created [DenominatorScientificValueFormatter]
          */
         fun with(builder: Builder.() -> Unit): DenominatorScientificValueFormatter {
             return Builder().apply(builder).build()
@@ -63,11 +64,11 @@ class DenominatorScientificValueFormatter private constructor(
 
     internal data class ScientificValueDenominators<
         Quantity : PhysicalQuantity,
-        System: MeasurementSystem,
-        Unit : SystemScientificUnit<System, Quantity>
+        System : MeasurementSystem,
+        Unit : SystemScientificUnit<System, Quantity>,
         >(
         val unit: Unit,
-        val denominators: List<SystemScientificUnit<System, Quantity>>
+        val denominators: List<SystemScientificUnit<System, Quantity>>,
     ) {
         fun convertToIndexWithRemainder(value: Decimal, index: Int, scale: UInt, precision: Double): Pair<ScientificValue<Quantity, *>, Decimal> {
             // First get the value in the unit of the denominator at the given index
@@ -108,6 +109,7 @@ class DenominatorScientificValueFormatter private constructor(
      * Setting for formatting zero values
      */
     enum class IncludeZeroValues {
+
         /**
          * Does not format a zero value unless not a single denominator is non-zero.
          */
@@ -121,7 +123,17 @@ class DenominatorScientificValueFormatter private constructor(
         /**
          * Format only the first zero denominator that occurs at the end of the format.
          */
-        FIRST
+        ONLY_FIRST_ENDING,
+
+        /**
+         * Formats only zero denominators surrounded by non-zero denominators.
+         */
+        ONLY_NON_ENDING,
+
+        /**
+         * Formats only zero denominators surrounded by non-zero denominators and the first zero denominator that occurs at the end of the format.
+         */
+        ONLY_NON_ENDING_AND_FIRST_ENDING,
     }
 
     /**
@@ -164,8 +176,8 @@ class DenominatorScientificValueFormatter private constructor(
          */
         var includeZeroValues: IncludeZeroValues = IncludeZeroValues.NONE
         private val denominatorMap = mutableMapOf<ScientificUnit<*>, ScientificValueDenominators<*, *, *>>()
-        private val customUnitTargets =  mutableMapOf<ScientificUnit<*>, ScientificUnit<*>>()
-        private val customQuantityTargets =mutableMapOf<PhysicalQuantity, ScientificUnit<*>>()
+        private val customUnitTargets = mutableMapOf<ScientificUnit<*>, ScientificUnit<*>>()
+        private val customQuantityTargets = mutableMapOf<PhysicalQuantity, ScientificUnit<*>>()
         private val customFormatters = mutableMapOf<ScientificUnit<*>, CustomFormatHandler>()
         private val customSymbols = mutableMapOf<ScientificUnit<*>, String>()
 
@@ -179,8 +191,11 @@ class DenominatorScientificValueFormatter private constructor(
          */
         infix fun <
             Quantity : PhysicalQuantity,
-            System: MeasurementSystem,
-            Unit : SystemScientificUnit<System, Quantity>> Unit.denominateBy(denominators: List<SystemScientificUnit<System, Quantity>>) {
+            System : MeasurementSystem,
+            Unit : SystemScientificUnit<System, Quantity>,
+            > Unit.denominateBy(
+            denominators: List<SystemScientificUnit<System, Quantity>>,
+        ) {
             denominatorMap[this] = ScientificValueDenominators(this, (denominators + this).toSet().sortedByDescending { it.convert(1, this) })
         }
 
@@ -269,16 +284,23 @@ class DenominatorScientificValueFormatter private constructor(
                     val isEndingZeroOrLastNonZeroElement = formattedRemainderIsZero || index == denominators.denominators.size - 1
                     val useLastDenominatorFormat = when (includeZeroValues) {
                         IncludeZeroValues.ALL -> index == denominators.denominators.size - 1
-                        IncludeZeroValues.FIRST -> isEndingZeroOrLastNonZeroElement
+                        IncludeZeroValues.ONLY_FIRST_ENDING -> isEndingZeroOrLastNonZeroElement
+                        IncludeZeroValues.ONLY_NON_ENDING -> isEndingZeroOrLastNonZeroElement
+                        IncludeZeroValues.ONLY_NON_ENDING_AND_FIRST_ENDING -> isEndingZeroOrLastNonZeroElement
                         IncludeZeroValues.NONE -> isEndingZeroOrLastNonZeroElement
                     }
                     val formatter = if (useLastDenominatorFormat) lastDenominatorFormatter else denominatorFormatter
                     val toAdd = when {
                         !denominators.equalsToZeroForFormat(valueInUnit.decimalValue, index, formatter) -> listOf(valueInUnit)
                         includeZeroValues == IncludeZeroValues.ALL -> listOf(valueInUnit)
-                        !isEndingZeroOrLastNonZeroElement -> listOf(null)
+                        !isEndingZeroOrLastNonZeroElement -> when (includeZeroValues) {
+                            IncludeZeroValues.ONLY_NON_ENDING -> listOf(valueInUnit)
+                            IncludeZeroValues.ONLY_NON_ENDING_AND_FIRST_ENDING -> listOf(valueInUnit)
+                            else -> listOf(null)
+                        }
                         accumulator.isEmpty() -> listOf(valueInUnit, null)
                         includeZeroValues == IncludeZeroValues.NONE -> listOf(null)
+                        includeZeroValues == IncludeZeroValues.ONLY_NON_ENDING -> listOf(null)
                         accumulator.last() != null -> listOf(valueInUnit, null)
                         else -> listOf(null)
                     }
