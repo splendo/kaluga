@@ -66,7 +66,7 @@ class CommonScientificValueFormatter internal constructor(
              * @param build method for configuring the [Builder]
              * @return the built [ScientificValueFormatter]
              */
-            @Deprecated("Use CommonScientificValueFormatter.where", replaceWith = ReplaceWith("CommonScientificValueFormatter.where { build }"))
+            @Deprecated("Use CommonScientificValueFormatter.with", replaceWith = ReplaceWith("CommonScientificValueFormatter.with { build }"))
             fun build(build: Builder.() -> Unit = {}): ScientificValueFormatter {
                 val builder = Builder()
                 return builder.build()
