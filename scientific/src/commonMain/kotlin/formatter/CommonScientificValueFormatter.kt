@@ -141,6 +141,8 @@ class CommonScientificValueFormatter internal constructor(
         return customFormatter?.let { it(value.value) } ?: defaultFormat(valueToFormat)
     }
 
-    private fun defaultFormat(value: ScientificValue<*, *>): String =
-        "${defaultValueFormatter.format(value.value)}${Typography.nbsp}${customSymbols[value.unit] ?: value.unit.symbol}"
+    private fun defaultFormat(value: ScientificValue<*, *>): String = listOfNotNull(
+        defaultValueFormatter.format(value.value),
+        (customSymbols[value.unit] ?: value.unit.symbol).takeIf(String::isNotBlank),
+    ).joinToString(separator = Typography.nbsp.toString())
 }
