@@ -137,7 +137,7 @@ sealed class UKImperialVolume : Volume(), UKImperialScientificUnit<PhysicalQuant
 sealed class ImperialVolume : Volume(), ImperialScientificUnit<PhysicalQuantity.Volume>
 
 internal class Cubic<S : MeasurementSystem, U : SystemScientificUnit<S, PhysicalQuantity.Length>>(private val unit: U) : SystemScientificUnit<S, PhysicalQuantity.Volume> {
-    override val symbol: String = "${unit.symbol}3"
+    override val symbol: String = "${unit.symbol}³"
     override val system: S = unit.system
     override val quantity = PhysicalQuantity.Volume
     override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(unit.fromSIUnit(unit.fromSIUnit(value)))

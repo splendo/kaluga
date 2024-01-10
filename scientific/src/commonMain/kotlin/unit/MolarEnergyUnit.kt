@@ -66,7 +66,7 @@ sealed class MolarEnergy : AbstractScientificUnit<PhysicalQuantity.MolarEnergy>(
      */
     abstract val per: AmountOfSubstance
     override val quantity = PhysicalQuantity.MolarEnergy
-    override val symbol: String by lazy { "${energy.symbol} / ${per.symbol}" }
+    override val symbol: String by lazy { "${energy.symbol}/${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(energy.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(per.fromSIUnit(value))
 }

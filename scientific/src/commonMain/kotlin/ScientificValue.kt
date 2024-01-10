@@ -59,7 +59,7 @@ interface ScientificValue<Quantity : PhysicalQuantity, Unit : ScientificUnit<Qua
  * A class implementation of [ScientificValue]
  * @param Quantity the type of [PhysicalQuantity] of the unit
  * @param Unit the type of [AbstractScientificUnit] this value represents
- * @param value the value component
+ * @param value the [Decimal] component
  * @param unit the [Unit] component
  */
 @Serializable
@@ -67,6 +67,12 @@ data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractSc
     override val value: Double,
     override val unit: Unit,
 ) : ScientificValue<Quantity, Unit> {
+
+    /**
+     * Constructor
+     * @param value the [Decimal] component
+     * @param unit the [Unit] component
+     */
     constructor(value: Decimal, unit: Unit) : this(value.toDouble(), unit)
 }
 

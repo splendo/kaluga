@@ -59,7 +59,7 @@ sealed class Speed : AbstractScientificUnit<PhysicalQuantity.Speed>() {
      */
     abstract val per: Time
     override val quantity = PhysicalQuantity.Speed
-    override val symbol: String by lazy { "${distance.symbol} / ${per.symbol}" }
+    override val symbol: String by lazy { "${distance.symbol}/${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(distance.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = distance.toSIUnit(per.fromSIUnit(value))
 }
