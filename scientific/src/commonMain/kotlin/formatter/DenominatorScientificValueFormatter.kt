@@ -21,12 +21,11 @@ import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.text.RoundingMode
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.minus
-import com.splendo.kaluga.base.utils.plus
-import com.splendo.kaluga.base.utils.round
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.convert
+import com.splendo.kaluga.scientific.split
 import com.splendo.kaluga.scientific.unit.MeasurementSystem
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.SystemScientificUnit
@@ -70,38 +69,88 @@ class DenominatorScientificValueFormatter private constructor(
         val unit: Unit,
         val denominators: List<SystemScientificUnit<System, Quantity>>,
     ) {
-        fun convertToIndexWithRemainder(value: Decimal, index: Int, scale: UInt, precision: Double): Pair<ScientificValue<Quantity, *>, Decimal> {
-            // First get the value in the unit of the denominator at the given index
-            val valueInUnitOfDenominator = unit.convert(value, denominators[index])
-            // When at the last element there is no lower denominator, otherwise split into this denominator and the remainder
-            return if (index < denominators.size - 1) {
-                // Round down to scale taking into account the precision to prevent conversion errors
-                val roundedValue = valueInUnitOfDenominator.roundDown(scale, precision)
-                // Calculate the remainder in the original unit
-                val remainder = if (roundedValue < valueInUnitOfDenominator) value - denominators[index].convert(roundedValue, unit) else 0.0.toDecimal()
-                FormatterScientificValue(denominators[index], roundedValue) to remainder
-            } else {
-                FormatterScientificValue(denominators[index], valueInUnitOfDenominator) to 0.0.toDecimal()
+
+        fun formatValue(
+            value: Decimal,
+            separator: String,
+            scale: UInt,
+            precision: Decimal,
+            denominatorFormatter: CommonScientificValueFormatter,
+            lastDenominatorFormatter: CommonScientificValueFormatter,
+            includeZeroValues: IncludeZeroValues,
+        ) = when (denominators.size) {
+            0 -> lastDenominatorFormatter.format(FormatterScientificValue(value, unit))
+            1 -> lastDenominatorFormatter.format(FormatterScientificValue(value, unit).convert(denominators.first(), ::FormatterScientificValue))
+            else -> {
+                // Convert the initial value to the first denominator value
+                val initialValue = FormatterScientificValue(value, unit).convert(denominators.first(), ::FormatterScientificValue)
+                // For the remaining units, split into them using scale and precision
+                val (values, remainder) = denominators.drop(
+                    1,
+                ).fold(emptyList<ScientificValue<Quantity, *>>() to initialValue) { (accumulator, previousRemainder), unitToSplitInto ->
+                    val (splitValue, remainder) = previousRemainder.split(unitToSplitInto, scale, precision, ::FormatterScientificValue, ::FormatterScientificValue)
+                    accumulator + splitValue to remainder
+                }
+
+                // Format all split values
+                val splitValues = values + remainder
+                splitValues.format(denominatorFormatter, lastDenominatorFormatter, includeZeroValues).joinToString(separator)
             }
         }
 
-        fun remainderEqualsToZeroFormat(remainder: Decimal, formatter: ScientificValueFormatter): Boolean {
-            val remainderInFinalUnit = unit.convert(remainder, denominators.last())
-            return equalsToZeroForFormat(remainderInFinalUnit, denominators.size - 1, formatter)
-        }
-
-        fun equalsToZeroForFormat(value: Decimal, indexOfUnit: Int, formatter: ScientificValueFormatter): Boolean {
-            val valueUnit = denominators[indexOfUnit]
+        private fun ScientificValue<Quantity, *>.equalsToZeroForFormat(formatter: ScientificValueFormatter): Boolean {
             // Format 0.0
-            val zeroFormatted = formatter.format(FormatterScientificValue(valueUnit, 0.0.toDecimal()))
+            val zeroFormatted = formatter.format(FormatterScientificValue(0.0.toDecimal(), unit))
             // Format the value in the given unit
-            val formatted = formatter.format(FormatterScientificValue(valueUnit, value))
+            val formatted = formatter.format(this)
             // If they are the same, the value is 0
             return zeroFormatted == formatted
         }
 
-        private fun Decimal.roundDown(scale: UInt, precision: Double): Decimal {
-            return (this + precision.toDecimal()).round(scale.toInt(), com.splendo.kaluga.base.utils.RoundingMode.RoundDown)
+        private fun List<ScientificValue<Quantity, *>>.format(
+            formatter: ScientificValueFormatter,
+            lastFormatter: ScientificValueFormatter,
+            includeZeroValues: IncludeZeroValues,
+        ): List<String> {
+            val valuesToFormat = when (includeZeroValues) {
+                IncludeZeroValues.ALL -> this
+                IncludeZeroValues.NONE -> removeZeroElements(formatter, lastFormatter)
+                IncludeZeroValues.ONLY_NON_ENDING -> removeEndingZeroes(lastFormatter)
+                IncludeZeroValues.ONLY_FIRST_ENDING -> {
+                    // Remove ending zeroes and for remaining values remove zeroes
+                    when (val indexOfFirstEnding = removeEndingZeroes(lastFormatter).size) {
+                        size -> subList(0, indexOfFirstEnding).removeZeroElements(formatter, lastFormatter)
+                        0 -> emptyList()
+                        else -> subList(0, indexOfFirstEnding).removeZeroElements(formatter) + get(indexOfFirstEnding)
+                    }
+                }
+                IncludeZeroValues.ONLY_NON_ENDING_AND_FIRST_ENDING -> {
+                    // Get sublist up to and including first ending element
+                    when (val indexOfFirstEnding = removeEndingZeroes(lastFormatter).size) {
+                        size -> this
+                        0 -> emptyList()
+                        else -> subList(0, indexOfFirstEnding + 1)
+                    }
+                }
+            }.ifEmpty { subList(0, 1) }
+
+            return valuesToFormat.mapIndexed { index, scientificValue ->
+                val formatterForIndex = if (index < valuesToFormat.size - 1) {
+                    formatter
+                } else {
+                    lastFormatter
+                }
+                formatterForIndex.format(scientificValue)
+            }
+        }
+
+        private fun List<ScientificValue<Quantity, *>>.removeZeroElements(formatter: ScientificValueFormatter, lastFormatter: ScientificValueFormatter = formatter) =
+            filterIndexed { index, scientificValue ->
+                !scientificValue.equalsToZeroForFormat(if (index < size - 1) formatter else lastFormatter)
+            }
+
+        private fun List<ScientificValue<Quantity, *>>.removeEndingZeroes(formatter: ScientificValueFormatter) = dropLastWhile { scientificValue ->
+            scientificValue.equalsToZeroForFormat(formatter)
         }
     }
 
@@ -269,45 +318,22 @@ class DenominatorScientificValueFormatter private constructor(
     override fun format(value: ScientificValue<*, *>): String {
         val customUnit = customUnitTargets[value.unit] ?: customQuantityTargets[value.unit.quantity]
         val valueToFormat = if (customUnit != null && customUnit != value.unit) {
-            FormatterScientificValue(customUnit, customUnit.fromSIUnit(value.unit.toSIUnit(value.decimalValue)))
+            FormatterScientificValue(customUnit.fromSIUnit(value.unit.toSIUnit(value.decimalValue)), customUnit)
         } else {
             value
         }
         val denominators = denominators[valueToFormat.unit]
         return when {
             denominators == null || denominators.denominators.isEmpty() -> defaultFormatter.format(valueToFormat)
-            denominators.denominators.size == 1 -> lastDenominatorFormatter.format(valueToFormat)
-            else -> {
-                denominators.denominators.indices.fold(valueToFormat.decimalValue to emptyList<String?>()) { (remainder, accumulator), index ->
-                    val (valueInUnit, newRemainder) = denominators.convertToIndexWithRemainder(remainder, index, scale, roundingPrecision)
-                    val formattedRemainderIsZero = denominators.remainderEqualsToZeroFormat(newRemainder, lastDenominatorFormatter)
-                    val isEndingZeroOrLastNonZeroElement = formattedRemainderIsZero || index == denominators.denominators.size - 1
-                    val useLastDenominatorFormat = when (includeZeroValues) {
-                        IncludeZeroValues.ALL -> index == denominators.denominators.size - 1
-                        IncludeZeroValues.ONLY_FIRST_ENDING -> isEndingZeroOrLastNonZeroElement
-                        IncludeZeroValues.ONLY_NON_ENDING -> isEndingZeroOrLastNonZeroElement
-                        IncludeZeroValues.ONLY_NON_ENDING_AND_FIRST_ENDING -> isEndingZeroOrLastNonZeroElement
-                        IncludeZeroValues.NONE -> isEndingZeroOrLastNonZeroElement
-                    }
-                    val formatter = if (useLastDenominatorFormat) lastDenominatorFormatter else denominatorFormatter
-                    val toAdd = when {
-                        !denominators.equalsToZeroForFormat(valueInUnit.decimalValue, index, formatter) -> listOf(valueInUnit)
-                        includeZeroValues == IncludeZeroValues.ALL -> listOf(valueInUnit)
-                        !isEndingZeroOrLastNonZeroElement -> when (includeZeroValues) {
-                            IncludeZeroValues.ONLY_NON_ENDING -> listOf(valueInUnit)
-                            IncludeZeroValues.ONLY_NON_ENDING_AND_FIRST_ENDING -> listOf(valueInUnit)
-                            else -> listOf(null)
-                        }
-                        accumulator.isEmpty() -> listOf(valueInUnit, null)
-                        includeZeroValues == IncludeZeroValues.NONE -> listOf(null)
-                        includeZeroValues == IncludeZeroValues.ONLY_NON_ENDING -> listOf(null)
-                        accumulator.last() != null -> listOf(valueInUnit, null)
-                        else -> listOf(null)
-                    }
-                    val newAccumulator = accumulator + toAdd.map { value -> value?.let { formatter.format(it) } }
-                    newRemainder to newAccumulator
-                }.second.filterNotNull().joinToString(separator = separator)
-            }
+            else -> denominators.formatValue(
+                valueToFormat.decimalValue,
+                separator,
+                scale,
+                roundingPrecision.toDecimal(),
+                denominatorFormatter,
+                lastDenominatorFormatter,
+                includeZeroValues,
+            )
         }
     }
 }

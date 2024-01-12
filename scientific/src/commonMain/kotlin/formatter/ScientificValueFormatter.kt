@@ -44,8 +44,8 @@ interface ScientificValueFormatter {
 fun ScientificValue<*, *>.toString(formatter: ScientificValueFormatter = CommonScientificValueFormatter.default): String = formatter.format(this)
 
 internal class FormatterScientificValue<Quantity : PhysicalQuantity, Unit : ScientificUnit<Quantity>>(
-    override val unit: Unit,
     override val decimalValue: Decimal,
+    override val unit: Unit,
 ) : ScientificValue<Quantity, Unit> {
     override val value: Number = decimalValue.toDouble()
 }

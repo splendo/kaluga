@@ -133,7 +133,7 @@ class CommonScientificValueFormatter internal constructor(
     override fun format(value: ScientificValue<*, *>): String {
         val customUnit = customUnitTargets[value.unit] ?: customQuantityTargets[value.unit.quantity]
         val valueToFormat = if (customUnit != null && customUnit != value.unit) {
-            FormatterScientificValue(customUnit, customUnit.fromSIUnit(value.unit.toSIUnit(value.decimalValue)))
+            FormatterScientificValue(customUnit.fromSIUnit(value.unit.toSIUnit(value.decimalValue)), customUnit)
         } else {
             value
         }
