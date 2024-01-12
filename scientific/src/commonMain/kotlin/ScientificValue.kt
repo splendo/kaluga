@@ -855,7 +855,6 @@ val <Unit : ScientificUnit<PhysicalQuantity.Dimensionless>> ScientificValue<Phys
 /**
  * Splits a [ScientificValue] of [ValueUnit] into a [LeftValue] and [RightValue] so that left and right together are equal to the original value.
  * Splitting happens by rounding the [ValueUnit] down to [scale] and returning it and the remainder converted to [RightUnit].
- * If `1` [RightUnit] if larger than `1` [ValueUnit] the [RightValue] will therefore always be `0`.
  *
  * Splitting can only be done between [SystemScientificUnit] using the same [MeasurementSystem].
  * To account for rounding errors, a [roundingThreshold] can be set. If the non-rounded [LeftValue] is within this threshold, it will be rounded up.
@@ -891,7 +890,6 @@ fun <
 /**
  * Splits a [ScientificValue] of [ValueUnit] into a [DefaultScientificValue] of [ValueUnit] and [DefaultScientificValue] of [RightUnit] so that left and right together are equal to the original value.
  * Splitting happens by rounding the [ValueUnit] down to [scale] and returning it and the remainder converted to [RightUnit].
- * If `1` [RightUnit] if larger than `1` [ValueUnit] the value in [RightUnit] will therefore always be `0`.
  *
  * Splitting can only be done between [SystemScientificUnit] using the same [MeasurementSystem].
  * To account for rounding errors, a [roundingThreshold] can be set. If the non-rounded value in [ValueUnit] is within this threshold, it will be rounded up.
@@ -924,7 +922,6 @@ fun <
 /**
  * Splits a [ScientificValue] of [ValueUnit] into a [LeftValue] and [RightValue] so that left and right together are equal to the original value.
  * Splitting happens by converting the [ValueUnit] to [LeftUnit] and then rounding down to [scale] and returning it and the remainder converted to [RightUnit].
- * If `1` [RightUnit] if larger than `1` [LeftUnit] the [RightValue] will therefore always be `0`.
  *
  * Splitting can only be done between [SystemScientificUnit] using the same [MeasurementSystem].
  * To account for rounding errors, a [roundingThreshold] can be set. If the non-rounded [LeftValue] is within this threshold, it will be rounded up.
@@ -974,7 +971,6 @@ fun <
 /**
  * Splits a [ScientificValue] of [ValueUnit] into a [DefaultScientificValue] of [LeftUnit] and [DefaultScientificValue] of [RightUnit] so that left and right together are equal to the original value.
  * Splitting happens by converting the [ValueUnit] to [LeftUnit] and then rounding down to [scale] and returning it and the remainder converted to [RightUnit].
- * If `1` [RightUnit] if larger than `1` [LeftUnit] the value in [RightUnit] will therefore always be `0`.
  *
  * Splitting can only be done between [SystemScientificUnit] using the same [MeasurementSystem].
  * To account for rounding errors, a [roundingThreshold] can be set. If the non-rounded value in [LeftUnit] is within this threshold, it will be rounded up.
@@ -1011,7 +1007,6 @@ fun <
 /**
  * Breaks up a [ScientificValue] of [Quantity] into its components in [UnitOne], [UnitTwo] and executes the given [action] with these components.
  * A value is broken up into its components by converting the value to to [UnitOne] and splitting into [UnitTwo] using [scale].
- * If `1` [UnitTwo] if larger than `1` [UnitOne] the value in [UnitTwo] will therefore always be `0` (the same applies to next units in the components).
  *
  * Splitting can only be done between [AbstractScientificUnit] using the same [MeasurementSystem].
  * To account for rounding errors, a [roundingThreshold] can be set. If the non-rounded value in [UnitOne] is within this threshold, it will be rounded up.
@@ -1054,7 +1049,6 @@ fun <
 /**
  * Breaks up a [ScientificValue] of [Quantity] into its components in [UnitOne], [UnitTwo], [UnitThree] and executes the given [action] with these components.
  * A value is broken up into its components by converting the value to to [UnitOne] and splitting into [UnitTwo] using [scale], then splitting the remainder into [UnitThree].
- * If `1` [UnitTwo] if larger than `1` [UnitOne] the value in [UnitTwo] will therefore always be `0` (the same applies to next units in the components).
  *
  * Splitting can only be done between [AbstractScientificUnit] using the same [MeasurementSystem].
  * To account for rounding errors, a [roundingThreshold] can be set. If the non-rounded value in any unit (except for [UnitThree]) is within this threshold, it will be rounded up.
@@ -1104,7 +1098,6 @@ fun <
 /**
  * Breaks up a [ScientificValue] of [Quantity] into its components in [UnitOne], [UnitTwo], [UnitThree], [UnitFour] and executes the given [action] with these components.
  * A value is broken up into its components by converting the value to to [UnitOne] and splitting into [UnitTwo] using [scale], then splitting the remainder into [UnitThree] and so on.
- * If `1` [UnitTwo] if larger than `1` [UnitOne] the value in [UnitTwo] will therefore always be `0` (the same applies to next units in the components).
  *
  * Splitting can only be done between [AbstractScientificUnit] using the same [MeasurementSystem].
  * To account for rounding errors, a [roundingThreshold] can be set. If the non-rounded value in any unit (except for [UnitFour]) is within this threshold, it will be rounded up.
@@ -1166,7 +1159,6 @@ fun <
 /**
  * Breaks up a [ScientificValue] of [Quantity] into its components in [UnitOne], [UnitTwo], [UnitThree], [UnitFour], [UnitFive] and executes the given [action] with these components.
  * A value is broken up into its components by converting the value to to [UnitOne] and splitting into [UnitTwo] using [scale], then splitting the remainder into [UnitThree] and so on.
- * If `1` [UnitTwo] if larger than `1` [UnitOne] the value in [UnitTwo] will therefore always be `0` (the same applies to next units in the components).
  *
  * Splitting can only be done between [AbstractScientificUnit] using the same [MeasurementSystem].
  * To account for rounding errors, a [roundingThreshold] can be set. If the non-rounded value in any unit (except for [UnitFive]) is within this threshold, it will be rounded up.
