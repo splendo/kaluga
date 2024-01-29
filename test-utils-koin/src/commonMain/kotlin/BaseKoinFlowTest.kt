@@ -20,6 +20,7 @@ package com.splendo.kaluga.test.koin
 import com.splendo.kaluga.test.base.BaseFlowTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import org.koin.core.context.stopKoin
 
 typealias KoinFlowTestBlock<TC, T, F> = suspend KoinFlowTest<TC, T, F>.(F) -> Unit
 
@@ -36,4 +37,6 @@ abstract class KoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T
         block(this@KoinFlowTest, it)
     }
 }
-abstract class BaseKoinFlowTest<C, TC : BaseKoinUIThreadTest.KoinTestContext, T, F : Flow<T>> : BaseFlowTest<C, TC, T, F>()
+abstract class BaseKoinFlowTest<C, TC : BaseKoinUIThreadTest.KoinTestContext, T, F : Flow<T>> : BaseFlowTest<C, TC, T, F>() {
+    override val onFailedToCreateTestContextWithConfiguration: (configuration: C) -> Unit = { stopKoin() }
+}
