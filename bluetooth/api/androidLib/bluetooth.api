@@ -857,6 +857,20 @@ public final class com/splendo/kaluga/bluetooth/device/SerializableIdentifier$Co
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class com/splendo/kaluga/bluetooth/extensions/AccessorsKt {
+	public static final fun characteristic (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun characteristicsFlow (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun dataFlow (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/splendo/kaluga/bluetooth/extensions/CharacteristicKt {
+	public static final fun getCharacteristic (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/splendo/kaluga/bluetooth/extensions/ServiceKt {
+	public static final fun getService (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
+}
+
 public abstract class com/splendo/kaluga/bluetooth/scanner/BaseScanner : com/splendo/kaluga/bluetooth/scanner/Scanner, kotlinx/coroutines/CoroutineScope {
 	public static final field Companion Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Companion;
 	public fun <init> (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineDispatcher;)V
