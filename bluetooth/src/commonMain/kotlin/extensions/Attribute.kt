@@ -14,5 +14,7 @@ import kotlin.jvm.JvmName
  * @throws UUIDException.InvalidFormat
  */
 @JvmName("getAttribute")
-operator fun <AttributeType, ReadAction, WriteAction> Flow<List<AttributeType>>.get(uuidString: String) : Flow<AttributeType?>
+operator fun <AttributeType, ReadAction, WriteAction> Flow<List<AttributeType>>.get(
+    uuidString: String,
+): Flow<AttributeType?>
 where AttributeType : Attribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write = this[uuidFrom(uuidString)]

@@ -33,7 +33,7 @@ fun Flow<Device?>.notifyingDataFlow(serviceUUID: String, characteristicUUID: Str
     var job: Job? = null
     val shared = MutableSharedFlow<ByteArray>()
     coroutineScope.launch {
-        shared.subscriptionCount.map {it > 0 }.distinctUntilChanged().collect { isCollecting ->
+        shared.subscriptionCount.map { it > 0 }.distinctUntilChanged().collect { isCollecting ->
             job?.cancel()
             val characteristic = characteristic(serviceUUID, characteristicUUID)
             if (isCollecting) {
@@ -65,9 +65,10 @@ fun Flow<Device?>.dataFlow(serviceUUID: String, characteristicUUID: String) = ch
  * @param characteristicUUID string characteristic uuid representation
  * @throws UUIDException.InvalidFormat
  */
-fun Flow<Device?>.dataFlow(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) = descriptorsFlow(serviceUUID, characteristicUUID, descriptorUUID).flatMapLatest { descriptor ->
-    descriptor.map { it ?: byteArrayOf() }
-}
+fun Flow<Device?>.dataFlow(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) =
+    descriptorsFlow(serviceUUID, characteristicUUID, descriptorUUID).flatMapLatest { descriptor ->
+        descriptor.map { it ?: byteArrayOf() }
+    }
 
 /**
  * Provides access to characteristic's flow by service and characteristic string uuids.
@@ -113,6 +114,6 @@ fun Flow<Device?>.descriptorsFlow(serviceUUID: String, characteristicUUID: Strin
  */
 suspend fun Flow<Device?>.descriptor(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) = services()[serviceUUID]
     .characteristics()[characteristicUUID]
-        .descriptors()[descriptorUUID]
+    .descriptors()[descriptorUUID]
     .filterNotNull()
     .first()
