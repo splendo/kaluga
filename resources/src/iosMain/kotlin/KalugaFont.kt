@@ -63,7 +63,7 @@ actual fun createDefaultFont(weight: Int, style: Style, traits: Set<Traits>): Ka
         val difference = factor * ((fontWeight.value - weight).toDouble() / 100.0)
         uiFontWeight - difference
     }
-    // UIFontWeight is rather weird in that it is not evently distributed.
+    // UIFontWeight is rather weird in that it is not evenly distributed.
     // For instance, UIFontWeightRegular is 0.0, UIFontWeightMedium is 0.23000000417232513, and UIFontWeightLight is -0.4000000059604645
     // To account for these inconsistencies, we interpolate between the steps
     val actualWeight = when {
