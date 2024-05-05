@@ -20,6 +20,7 @@
 package com.splendo.kaluga.resources
 
 import android.graphics.Typeface
+import android.os.Build
 
 /**
  * Class describing a font
@@ -45,3 +46,27 @@ actual val defaultItalicFont: KalugaFont get() = Typeface.create(Typeface.DEFAUL
  * The default monospace system [KalugaFont]
  */
 actual val defaultMonospaceFont: KalugaFont get() = Typeface.MONOSPACE
+
+actual fun createDefaultFont(weight: Int, style: Style, traits: Set<Traits>): KalugaFont {
+    val typeface = when (style) {
+        Style.DEFAULT -> Typeface.DEFAULT
+        Style.SERIF -> Typeface.SERIF
+        Style.MONOSPACE -> Typeface.MONOSPACE
+    }
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        Typeface.create(typeface, weight, Traits.ITALIC in traits)
+    } else {
+        val typefaceStyle = traits.fold(
+            if (weight >= FontWeight.SEMI_BOLD.value) {
+                Typeface.BOLD
+            } else {
+                Typeface.NORMAL
+            },
+        ) { acc, trait ->
+            acc or when (trait) {
+                Traits.ITALIC -> Typeface.ITALIC
+            }
+        }
+        Typeface.create(typeface, typefaceStyle)
+    }
+}

@@ -47,3 +47,29 @@ expect val defaultItalicFont: KalugaFont
  * The default monospace system [KalugaFont]
  */
 expect val defaultMonospaceFont: KalugaFont
+
+enum class Style {
+    DEFAULT,
+    SERIF,
+    MONOSPACE,
+}
+
+enum class Traits {
+    ITALIC,
+}
+
+enum class FontWeight(val value: Int) {
+    THIN(100),
+    EXTRA_LIGHT(200),
+    LIGHT(300),
+    NORMAL(400),
+    MEDIUM(500),
+    SEMI_BOLD(600),
+    BOLD(700),
+    EXTRA_BOLD(800),
+    BLACK(900),
+}
+
+fun createDefaultFont(weight: FontWeight, style: Style = Style.DEFAULT, traits: Set<Traits> = emptySet()): KalugaFont = createDefaultFont(weight.value, style, traits)
+
+expect fun createDefaultFont(weight: Int, style: Style = Style.DEFAULT, traits: Set<Traits> = emptySet()): KalugaFont

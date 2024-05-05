@@ -41,3 +41,5 @@ actual val defaultItalicFont: KalugaFont get() = KalugaFont()
  * The default monospace system [KalugaFont]
  */
 actual val defaultMonospaceFont: KalugaFont get() = KalugaFont()
+
+actual fun createDefaultFont(weight: Int, style: Style, traits: Set<Traits>): KalugaFont = KalugaFont()
