@@ -58,7 +58,14 @@ actual val defaultItalicFont: KalugaFont get() = UIFont.italicSystemFontOfSize(U
  */
 actual val defaultMonospaceFont: KalugaFont get() = UIFont.monospacedSystemFontOfSize(UIFont.labelFontSize, UIFontWeightRegular)
 
-actual fun createDefaultFont(weight: Int, style: Style, traits: Set<Traits>): KalugaFont {
+/**
+ * Creates a system font with a given weight, [FontStyle] and [FontTrait]
+ * @param weight the weight to apply. Must be in range [1, 100]
+ * @param style the [FontStyle] to apply
+ * @param traits the set of [FontTrait] to apply
+ * @return a [KalugaFont] representing the system font with the given specifications
+ */
+actual fun createDefaultFont(weight: Int, style: FontStyle, traits: Set<FontTrait>): KalugaFont {
     val calculateWeight: (Double, Double, FontWeight) -> Double = { uiFontWeight, factor, fontWeight ->
         val difference = factor * ((fontWeight.value - weight).toDouble() / 100.0)
         uiFontWeight - difference
@@ -102,13 +109,13 @@ actual fun createDefaultFont(weight: Int, style: Style, traits: Set<Traits>): Ka
     }
     val font = UIFont.systemFontOfSize(UIFont.labelFontSize, actualWeight)
     val design = when (style) {
-        Style.DEFAULT -> UIFontDescriptorSystemDesignDefault
-        Style.SERIF -> UIFontDescriptorSystemDesignSerif
-        Style.MONOSPACE -> UIFontDescriptorSystemDesignMonospaced
+        FontStyle.DEFAULT -> UIFontDescriptorSystemDesignDefault
+        FontStyle.SERIF -> UIFontDescriptorSystemDesignSerif
+        FontStyle.MONOSPACE -> UIFontDescriptorSystemDesignMonospaced
     }
     val symbolicTraits = traits.fold(0U) { acc, trait ->
         when (trait) {
-            Traits.ITALIC -> acc or UIFontDescriptorTraitItalic
+            FontTrait.ITALIC -> acc or UIFontDescriptorTraitItalic
         }
     }
     return UIFont.fontWithDescriptor(

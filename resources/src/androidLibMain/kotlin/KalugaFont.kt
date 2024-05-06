@@ -47,14 +47,21 @@ actual val defaultItalicFont: KalugaFont get() = Typeface.create(Typeface.DEFAUL
  */
 actual val defaultMonospaceFont: KalugaFont get() = Typeface.MONOSPACE
 
-actual fun createDefaultFont(weight: Int, style: Style, traits: Set<Traits>): KalugaFont {
+/**
+ * Creates a system font with a given weight, [FontStyle] and [FontTrait]
+ * @param weight the weight to apply. Must be in range [1, 100]
+ * @param style the [FontStyle] to apply
+ * @param traits the set of [FontTrait] to apply
+ * @return a [KalugaFont] representing the system font with the given specifications
+ */
+actual fun createDefaultFont(weight: Int, style: FontStyle, traits: Set<FontTrait>): KalugaFont {
     val typeface = when (style) {
-        Style.DEFAULT -> Typeface.DEFAULT
-        Style.SERIF -> Typeface.SERIF
-        Style.MONOSPACE -> Typeface.MONOSPACE
+        FontStyle.DEFAULT -> Typeface.DEFAULT
+        FontStyle.SERIF -> Typeface.SERIF
+        FontStyle.MONOSPACE -> Typeface.MONOSPACE
     }
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        Typeface.create(typeface, weight, Traits.ITALIC in traits)
+        Typeface.create(typeface, weight, FontTrait.ITALIC in traits)
     } else {
         val typefaceStyle = traits.fold(
             if (weight >= FontWeight.SEMI_BOLD.value) {
@@ -64,7 +71,7 @@ actual fun createDefaultFont(weight: Int, style: Style, traits: Set<Traits>): Ka
             },
         ) { acc, trait ->
             acc or when (trait) {
-                Traits.ITALIC -> Typeface.ITALIC
+                FontTrait.ITALIC -> Typeface.ITALIC
             }
         }
         Typeface.create(typeface, typefaceStyle)

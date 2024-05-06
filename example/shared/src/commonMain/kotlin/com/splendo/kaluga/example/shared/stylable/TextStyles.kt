@@ -18,9 +18,9 @@
 package com.splendo.kaluga.example.shared.stylable
 
 import com.splendo.kaluga.resources.DefaultColors
+import com.splendo.kaluga.resources.FontStyle
+import com.splendo.kaluga.resources.FontTrait
 import com.splendo.kaluga.resources.FontWeight
-import com.splendo.kaluga.resources.Style
-import com.splendo.kaluga.resources.Traits
 import com.splendo.kaluga.resources.createDefaultFont
 import com.splendo.kaluga.resources.defaultBoldFont
 import com.splendo.kaluga.resources.defaultFont
@@ -50,13 +50,13 @@ object TextStyles {
         KalugaTextStyle(createDefaultFont(FontWeight.SEMI_BOLD), DefaultColors.dimGray, 12.0f)
     }
     val serifText by lazy {
-        KalugaTextStyle(createDefaultFont(FontWeight.NORMAL, Style.SERIF), DefaultColors.dimGray, 12.0f)
+        KalugaTextStyle(createDefaultFont(FontWeight.NORMAL, FontStyle.SERIF), DefaultColors.dimGray, 12.0f)
     }
     val italicBoldText by lazy {
-        KalugaTextStyle(createDefaultFont(FontWeight.BOLD, traits = setOf(Traits.ITALIC)), DefaultColors.dimGray, 12.0f)
+        KalugaTextStyle(createDefaultFont(FontWeight.BOLD, traits = setOf(FontTrait.ITALIC)), DefaultColors.dimGray, 12.0f)
     }
     val lightItalicMonospaceText by lazy {
-        KalugaTextStyle(createDefaultFont(FontWeight.LIGHT, Style.MONOSPACE, traits = setOf(Traits.ITALIC)), DefaultColors.dimGray, 12.0f)
+        KalugaTextStyle(createDefaultFont(FontWeight.LIGHT, FontStyle.MONOSPACE, traits = setOf(FontTrait.ITALIC)), DefaultColors.dimGray, 12.0f)
     }
     val whiteText by lazy {
         KalugaTextStyle(defaultFont, DefaultColors.white, 12.0f)

@@ -42,4 +42,11 @@ actual val defaultItalicFont: KalugaFont get() = KalugaFont()
  */
 actual val defaultMonospaceFont: KalugaFont get() = KalugaFont()
 
-actual fun createDefaultFont(weight: Int, style: Style, traits: Set<Traits>): KalugaFont = KalugaFont()
+/**
+ * Creates a system font with a given weight, [FontStyle] and [FontTrait]
+ * @param weight the weight to apply. Must be in range [1, 100]
+ * @param style the [FontStyle] to apply
+ * @param traits the set of [FontTrait] to apply
+ * @return a [KalugaFont] representing the system font with the given specifications
+ */
+actual fun createDefaultFont(weight: Int, style: FontStyle, traits: Set<FontTrait>): KalugaFont = KalugaFont()
