@@ -1,4 +1,6 @@
 public final class com/splendo/kaluga/resources/AndroidFont {
+	public static final fun createDefaultFont (ILcom/splendo/kaluga/resources/FontStyle;Ljava/util/Set;)Landroid/graphics/Typeface;
+	public static synthetic fun createDefaultFont$default (ILcom/splendo/kaluga/resources/FontStyle;Ljava/util/Set;ILjava/lang/Object;)Landroid/graphics/Typeface;
 	public static final fun getDefaultBoldFont ()Landroid/graphics/Typeface;
 	public static final fun getDefaultFont ()Landroid/graphics/Typeface;
 	public static final fun getDefaultItalicFont ()Landroid/graphics/Typeface;
@@ -396,6 +398,38 @@ public abstract interface class com/splendo/kaluga/resources/FontLoader {
 	public abstract fun loadFont (Ljava/lang/String;Landroid/graphics/Typeface;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class com/splendo/kaluga/resources/FontStyle : java/lang/Enum {
+	public static final field DEFAULT Lcom/splendo/kaluga/resources/FontStyle;
+	public static final field MONOSPACE Lcom/splendo/kaluga/resources/FontStyle;
+	public static final field SERIF Lcom/splendo/kaluga/resources/FontStyle;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/resources/FontStyle;
+	public static fun values ()[Lcom/splendo/kaluga/resources/FontStyle;
+}
+
+public final class com/splendo/kaluga/resources/FontTrait : java/lang/Enum {
+	public static final field ITALIC Lcom/splendo/kaluga/resources/FontTrait;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/resources/FontTrait;
+	public static fun values ()[Lcom/splendo/kaluga/resources/FontTrait;
+}
+
+public final class com/splendo/kaluga/resources/FontWeight : java/lang/Enum {
+	public static final field BLACK Lcom/splendo/kaluga/resources/FontWeight;
+	public static final field BOLD Lcom/splendo/kaluga/resources/FontWeight;
+	public static final field EXTRA_BOLD Lcom/splendo/kaluga/resources/FontWeight;
+	public static final field EXTRA_LIGHT Lcom/splendo/kaluga/resources/FontWeight;
+	public static final field LIGHT Lcom/splendo/kaluga/resources/FontWeight;
+	public static final field MEDIUM Lcom/splendo/kaluga/resources/FontWeight;
+	public static final field NORMAL Lcom/splendo/kaluga/resources/FontWeight;
+	public static final field SEMI_BOLD Lcom/splendo/kaluga/resources/FontWeight;
+	public static final field THIN Lcom/splendo/kaluga/resources/FontWeight;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue ()I
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/resources/FontWeight;
+	public static fun values ()[Lcom/splendo/kaluga/resources/FontWeight;
+}
+
 public final class com/splendo/kaluga/resources/HSLColor {
 	public static final field Companion Lcom/splendo/kaluga/resources/HSLColor$Companion;
 	public fun <init> (DDDD)V
@@ -443,6 +477,11 @@ public abstract interface class com/splendo/kaluga/resources/ImageLoader {
 
 public abstract interface class com/splendo/kaluga/resources/KalugaColorLoader {
 	public abstract fun loadColor (Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/Integer;
+}
+
+public final class com/splendo/kaluga/resources/KalugaFontKt {
+	public static final fun createDefaultFont (Lcom/splendo/kaluga/resources/FontWeight;Lcom/splendo/kaluga/resources/FontStyle;Ljava/util/Set;)Landroid/graphics/Typeface;
+	public static synthetic fun createDefaultFont$default (Lcom/splendo/kaluga/resources/FontWeight;Lcom/splendo/kaluga/resources/FontStyle;Ljava/util/Set;ILjava/lang/Object;)Landroid/graphics/Typeface;
 }
 
 public final class com/splendo/kaluga/resources/KalugaImage {
