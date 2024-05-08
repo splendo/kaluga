@@ -47,12 +47,12 @@ class MockDeviceInfoBuilder {
     var rssi: RSSI = 0
     var manufacturerId: Int? = null
     var manufacturerData: ByteArray? = null
-    private val _serviceUUIDs = ArrayList<UUID>()
-    private val serviceUUIDs get() = _serviceUUIDs.toList()
+    private val serviceUUIDsArray = ArrayList<UUID>()
+    private val serviceUUIDs get() = serviceUUIDsArray.toList()
     var serviceData: Map<UUID, ByteArray?> = emptyMap()
     var txPowerLevel: TxPower = Int.MIN_VALUE
 
-    fun services(builder: ServiceUUIDsList.() -> Unit) = builder(_serviceUUIDs)
+    fun services(builder: ServiceUUIDsList.() -> Unit) = builder(serviceUUIDsArray)
 
     fun build() = DeviceInfoImpl(
         deviceName,
