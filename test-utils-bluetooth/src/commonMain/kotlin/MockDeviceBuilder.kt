@@ -56,14 +56,13 @@ class MockDeviceBuilder(
     /** Setup mocks */
     var setupMocks = true
 
-    private val serviceUUIDsArray = ArrayList<UUID>()
-    private val serviceUUIDs get() = serviceUUIDsArray.toList()
+    private val serviceUUIDs = ArrayList<UUID>()
 
     /** Delay before connection and disconnection from the MockDevice */
     var connectionDelay = 500.milliseconds
 
     /** Add services advertised by the MockDevice */
-    fun services(builder: ServiceUUIDsList.() -> Unit) = builder(serviceUUIDsArray)
+    fun services(builder: ServiceUUIDsList.() -> Unit) = builder(serviceUUIDs)
 
     fun build(): MockDevice = MockDevice(
         identifier = identifier,
@@ -75,7 +74,7 @@ class MockDeviceBuilder(
                     name = name,
                     manufacturerId = manufacturerId,
                     manufacturerData = manufacturerData,
-                    serviceUUIDs = serviceUUIDs,
+                    serviceUUIDs = serviceUUIDs.toList(),
                     txPowerLevel = txPower,
                     isConnectable = isConnectable,
                 ),
