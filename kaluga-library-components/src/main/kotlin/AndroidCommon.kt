@@ -28,8 +28,6 @@ fun org.gradle.api.Project.commonAndroidComponent(type: ComponentType = Componen
         implementationDependency(Dependencies.KotlinX.Coroutines.Android)
         implementationDependency(Dependencies.AndroidX.AppCompat)
         implementationDependency(Dependencies.AndroidX.Activity.Ktx)
-        implementationDependency(Dependencies.AndroidX.Lifecycle.ViewModel)
-        implementationDependency(Dependencies.AndroidX.Navigation.FragmentKtx)
 
         testImplementationDependency(Dependencies.JUnit)
         testImplementationDependency(Dependencies.Mockito.Core)
