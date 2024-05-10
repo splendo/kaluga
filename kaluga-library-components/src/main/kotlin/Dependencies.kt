@@ -172,6 +172,7 @@ object Dependencies {
             private const val version = "2.7.7"
 
             val Compose = Dependency(group, "navigation-compose", version)
+            val FragmentKtx = Dependency(group, "navigation-fragment-ktx", version)
         }
         object Test {
             private const val group = "$groupBase.test"
