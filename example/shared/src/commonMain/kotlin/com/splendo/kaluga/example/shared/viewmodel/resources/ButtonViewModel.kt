@@ -75,7 +75,7 @@ class ButtonViewModel(
         }
     }
 
-    private fun String.toButton(style: KalugaButtonStyle, isEnabled: Boolean = true): List<KalugaButton.Plain> = listOf(
+    private fun String.toButton(style: KalugaButtonStyle.WithText<*>, isEnabled: Boolean = true): List<KalugaButton.Plain> = listOf(
         KalugaButton.Plain(this, style, isEnabled) {
             showAlert(this)
         },

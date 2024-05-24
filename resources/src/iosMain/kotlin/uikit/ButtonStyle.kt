@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.resources.uikit
 
-import com.splendo.kaluga.resources.stylable.ButtonStateStyle
+import com.splendo.kaluga.resources.stylable.TextButtonStateStyle
 import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.cinterop.ObjCAction
@@ -81,7 +81,7 @@ fun UIButton.applyStyle(buttonStyle: KalugaButtonStyle) {
     applyButtonStateStyle(buttonStyle.disabledStyle, UIControlStateDisabled)
 }
 
-private fun UIButton.applyButtonStateStyle(style: ButtonStateStyle, state: UIControlState) {
+private fun UIButton.applyButtonStateStyle(style: TextButtonStateStyle, state: UIControlState) {
     setTitleColor(style.textColor.uiColor, state)
     val bounds = bounds
     UIGraphicsBeginImageContext(CGSizeMake(bounds.useContents { size.width }, bounds.useContents { size.height }))

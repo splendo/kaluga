@@ -40,9 +40,11 @@ import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.StringStyleAttribute
 import com.splendo.kaluga.resources.StyledStringBuilder
+import com.splendo.kaluga.resources.defaultFont
 import com.splendo.kaluga.resources.stylable.ButtonStateStyle
 import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
+import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 import com.splendo.kaluga.resources.styled
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.resources.view.KalugaLabel
@@ -60,7 +62,6 @@ fun KalugaButton.Composable(modifier: Modifier, elevation: ButtonElevation = But
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     val stateStyle = style.getStateStyle(isEnabled, pressed)
-    val textStyle = style.getStateTextStyle(isEnabled, pressed)
     Button(
         modifier = modifier,
         enabled = isEnabled,
@@ -78,7 +79,8 @@ fun KalugaButton.Composable(modifier: Modifier, elevation: ButtonElevation = But
                 .then(modifier),
         ) {
             when (this@Composable) {
-                is KalugaButton.Plain -> KalugaLabel.Plain(text, textStyle)
+                is KalugaButton.NoText -> KalugaLabel.Plain("", KalugaTextStyle(defaultFont, DefaultColors.clear, 0.0f))
+                is KalugaButton.Plain -> KalugaLabel.Plain(text, style.getStateTextStyle(isEnabled, pressed))
                 is KalugaButton.Styled -> KalugaLabel.Styled(text)
                 else -> error("unknown button type")
             }.Composable(modifier = modifier)
@@ -89,24 +91,21 @@ fun KalugaButton.Composable(modifier: Modifier, elevation: ButtonElevation = But
 @Composable
 @Preview
 fun PreviewKalugaButton() {
-    val buttonStyle = KalugaButtonStyle(
+    val buttonStyle = KalugaButtonStyle.TextOnly(
         font = Typeface.DEFAULT_BOLD,
         textSize = 14.0f,
-        defaultStyle = ButtonStateStyle(
-            DefaultColors.white,
-            DefaultColors.red,
-            shape = KalugaBackgroundStyle.Shape.Rectangle(5.0f),
-        ),
-        pressedStyle = ButtonStateStyle(
-            DefaultColors.red,
-            DefaultColors.white,
-            shape = KalugaBackgroundStyle.Shape.Rectangle(5.0f),
-        ),
-        disabledStyle = ButtonStateStyle(
-            DefaultColors.black,
-            DefaultColors.white,
-            shape = KalugaBackgroundStyle.Shape.Rectangle(5.0f),
-        ),
+        defaultStyle = ButtonStateStyle.textOnly {
+            textColor = DefaultColors.white
+            setBackgroundStyle(DefaultColors.red, KalugaBackgroundStyle.Shape.Rectangle(5.0f))
+        },
+        pressedStyle = ButtonStateStyle.textOnly {
+            textColor = DefaultColors.red
+            setBackgroundStyle(DefaultColors.white, KalugaBackgroundStyle.Shape.Rectangle(5.0f))
+        },
+        disabledStyle = ButtonStateStyle.textOnly {
+            textColor = DefaultColors.black
+            setBackgroundStyle(DefaultColors.white, KalugaBackgroundStyle.Shape.Rectangle(5.0f))
+        },
     )
     Column(modifier = Modifier.size(100.dp)) {
         KalugaButton.Plain("Plain Text", buttonStyle, true) {}.Composable(
