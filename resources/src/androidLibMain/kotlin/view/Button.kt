@@ -45,11 +45,15 @@ import com.splendo.kaluga.resources.stylable.Padding
  * @param rippleStyle a [RippleStyle] that is applied when the button is pressed
  */
 fun android.widget.Button.bindButton(button: KalugaButton, rippleStyle: RippleStyle = RippleStyle.ForegroundRipple) {
-    text = when (button) {
-        is KalugaButton.NoText -> ""
-        is KalugaButton.Plain -> button.text
-        is KalugaButton.Styled -> button.text.spannable
+    text = if (button is KalugaButton.WithText) {
+        when (button) {
+            is KalugaButton.Plain -> button.text
+            is KalugaButton.Styled -> button.text.spannable
+        }
+    } else {
+        null
     }
+
     applyButtonStyle(button.style, rippleStyle)
     isAllCaps = false
     isEnabled = button.isEnabled
@@ -122,32 +126,47 @@ private fun android.widget.Button.applyButtonStyleWithImage(style: KalugaButtonS
     val stateListDrawable = StateListDrawable().apply {
         addState(
             intArrayOf(android.R.attr.state_pressed),
-            (style.pressedStyle as ButtonStateStyle.WithImage).drawable(context),
+            (style.pressedStyle as ButtonStateStyle.WithImage).drawable,
         )
         addState(
             intArrayOf(-android.R.attr.state_enabled),
-            (style.disabledStyle as ButtonStateStyle.WithImage).drawable(context),
+            (style.disabledStyle as ButtonStateStyle.WithImage).drawable,
         )
         addState(
             StateSet.WILD_CARD,
-            (style.defaultStyle as ButtonStateStyle.WithImage).drawable(context),
+            (style.defaultStyle as ButtonStateStyle.WithImage).drawable,
         )
     }
 
-    when (style) {
+    val gravity = when (style) {
         is KalugaButtonStyle.WithImageAndText -> {
-            when (style.imageGravity) {
-                ImageGravity.START -> setCompoundDrawablesRelativeWithIntrinsicBounds(stateListDrawable, null, null, null)
-                ImageGravity.END -> setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, stateListDrawable, null)
-                ImageGravity.LEFT -> setCompoundDrawablesWithIntrinsicBounds(stateListDrawable, null, null, null)
-                ImageGravity.RIGHT -> setCompoundDrawablesWithIntrinsicBounds(null, null, stateListDrawable, null)
-                ImageGravity.TOP -> setCompoundDrawablesWithIntrinsicBounds(null, stateListDrawable, null, null)
-                ImageGravity.BOTTOM -> setCompoundDrawablesWithIntrinsicBounds(null, null, null, stateListDrawable)
-            }
             compoundDrawablePadding = style.spacing.dpToPixel(context).toInt()
+            style.imageGravity
         }
         is KalugaButtonStyle.ImageOnly -> {
-            setCompoundDrawablesRelative(stateListDrawable, null, null, null)
+            ImageGravity.TOP
+        }
+    }
+
+    when (val imageSize = style.imageSize) {
+        ImageSize.Intrinsic -> when (gravity) {
+            ImageGravity.START -> setCompoundDrawablesRelativeWithIntrinsicBounds(stateListDrawable, null, null, null)
+            ImageGravity.END -> setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, stateListDrawable, null)
+            ImageGravity.LEFT -> setCompoundDrawablesWithIntrinsicBounds(stateListDrawable, null, null, null)
+            ImageGravity.RIGHT -> setCompoundDrawablesWithIntrinsicBounds(null, null, stateListDrawable, null)
+            ImageGravity.TOP -> setCompoundDrawablesWithIntrinsicBounds(null, stateListDrawable, null, null)
+            ImageGravity.BOTTOM -> setCompoundDrawablesWithIntrinsicBounds(null, null, null, stateListDrawable)
+        }
+        is ImageSize.Sized -> {
+            stateListDrawable.setBounds(0, 0, imageSize.width.dpToPixel(context).toInt(), imageSize.height.dpToPixel(context).toInt())
+            when (gravity) {
+                ImageGravity.START -> setCompoundDrawablesRelative(stateListDrawable, null, null, null)
+                ImageGravity.END -> setCompoundDrawablesRelative(null, null, stateListDrawable, null)
+                ImageGravity.LEFT -> setCompoundDrawables(stateListDrawable, null, null, null)
+                ImageGravity.RIGHT -> setCompoundDrawables(null, null, stateListDrawable, null)
+                ImageGravity.TOP -> setCompoundDrawables(null, stateListDrawable, null, null)
+                ImageGravity.BOTTOM -> setCompoundDrawables(null, null, null, stateListDrawable)
+            }
         }
     }
 }
@@ -214,17 +233,11 @@ private fun View.setPadding(padding: Padding): Unit = with(padding) {
     setPadding(left.dpToPixel(context).toInt(), top.dpToPixel(context).toInt(), right.dpToPixel(context).toInt(), bottom.dpToPixel(context).toInt())
 }
 
-private fun ButtonStateStyle.WithImage.drawable(context: Context): Drawable = (when (val image = image) {
+private val ButtonStateStyle.WithImage.drawable: Drawable get() = when (val image = image) {
     is ButtonImage.Image -> image.image.drawable
     is ButtonImage.Tinted -> image.image.drawable
     is ButtonImage.Hidden -> null
-} ?: ShapeDrawable()).apply {
-    when (val size = size) {
-        is ImageSize.Sized ->
-            setBounds(0, 0, size.width.dpToPixel(context).toInt(), size.height.dpToPixel(context).toInt())
-        is ImageSize.Intrinsic -> {}
-    }
-}
+} ?: ShapeDrawable()
 
 private val defaultRippleForeground: KalugaColor get() = if (isInDarkMode) {
     colorFrom(0.0, 0.0, 0.0, 0.25)

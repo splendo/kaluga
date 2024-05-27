@@ -79,7 +79,7 @@ fun KalugaButton.Composable(modifier: Modifier, elevation: ButtonElevation = But
                 .then(modifier),
         ) {
             when (this@Composable) {
-                is KalugaButton.NoText -> KalugaLabel.Plain("", KalugaTextStyle(defaultFont, DefaultColors.clear, 0.0f))
+                is KalugaButton.WithoutText -> KalugaLabel.Plain("", KalugaTextStyle(defaultFont, DefaultColors.clear, 0.0f))
                 is KalugaButton.Plain -> KalugaLabel.Plain(text, style.getStateTextStyle(isEnabled, pressed))
                 is KalugaButton.Styled -> KalugaLabel.Styled(text)
                 else -> error("unknown button type")
@@ -91,22 +91,22 @@ fun KalugaButton.Composable(modifier: Modifier, elevation: ButtonElevation = But
 @Composable
 @Preview
 fun PreviewKalugaButton() {
-    val buttonStyle = KalugaButtonStyle.TextOnly(
-        font = Typeface.DEFAULT_BOLD,
-        textSize = 14.0f,
+    val buttonStyle = KalugaButtonStyle.textOnly {
+        font = Typeface.DEFAULT_BOLD
+        textSize = 14.0f
         defaultStyle = ButtonStateStyle.textOnly {
             textColor = DefaultColors.white
             setBackgroundStyle(DefaultColors.red, KalugaBackgroundStyle.Shape.Rectangle(5.0f))
-        },
+        }
         pressedStyle = ButtonStateStyle.textOnly {
             textColor = DefaultColors.red
             setBackgroundStyle(DefaultColors.white, KalugaBackgroundStyle.Shape.Rectangle(5.0f))
-        },
+        }
         disabledStyle = ButtonStateStyle.textOnly {
             textColor = DefaultColors.black
             setBackgroundStyle(DefaultColors.white, KalugaBackgroundStyle.Shape.Rectangle(5.0f))
-        },
-    )
+        }
+    }
     Column(modifier = Modifier.size(100.dp)) {
         KalugaButton.Plain("Plain Text", buttonStyle, true) {}.Composable(
             modifier = Modifier.fillMaxWidth(),

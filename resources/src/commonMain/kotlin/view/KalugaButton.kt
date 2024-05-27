@@ -40,11 +40,15 @@ sealed class KalugaButton {
      */
     abstract val action: () -> Unit
 
-    data class NoText(
+    data class WithoutText(
         override val style: KalugaButtonStyle.WithoutText<*>,
         override val isEnabled: Boolean = true,
         override val action: () -> Unit
     ) : KalugaButton()
+
+    sealed class WithText : KalugaButton() {
+        abstract override val style: KalugaButtonStyle.WithText<*>
+    }
 
     /**
      * A [KalugaButton] that displays a regular text
@@ -58,7 +62,7 @@ sealed class KalugaButton {
         override val style: KalugaButtonStyle.WithText<*>,
         override val isEnabled: Boolean = true,
         override val action: () -> Unit,
-    ) : KalugaButton()
+    ) : WithText()
 
     /**
      * A [KalugaButton] that displays a [StyledString]
@@ -72,5 +76,5 @@ sealed class KalugaButton {
         override val style: KalugaButtonStyle.WithText<*>,
         override val isEnabled: Boolean = true,
         override val action: () -> Unit,
-    ) : KalugaButton()
+    ) : WithText()
 }

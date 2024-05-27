@@ -47,6 +47,7 @@ class ButtonViewModel(
             "Radial Gradient Button".toButton(ButtonStyles.radialGradientButton),
             "Angular Gradient Button".toButton(ButtonStyles.angularGradientButton),
             "Disabled Button".toButton(ButtonStyles.redButton, false),
+            "Image Button".toButton(ButtonStyles.textButtonWithImageLeft),
             listOf(
                 KalugaButton.Styled(
                     "Styled Button".styled(

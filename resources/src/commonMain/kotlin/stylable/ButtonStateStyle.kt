@@ -22,12 +22,16 @@ import com.splendo.kaluga.resources.KalugaColor
 import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.TintedImage
 import com.splendo.kaluga.resources.tinted
+import com.splendo.kaluga.resources.view.KalugaButton
 
 sealed interface ButtonStateStyle {
 
     companion object {
 
-        @Deprecated("Use ButtonStateStyle.textOnly")
+        @Deprecated("Use ButtonStateStyle.textOnly", replaceWith = ReplaceWith("ButtonStateStyle.textOnly {\n" +
+                "            this.textColor = textColor\n" +
+                "            this.backgroundStyle = backgroundStyle\n" +
+                "        }"))
         operator fun invoke(
             textColor: KalugaColor,
             backgroundStyle: KalugaBackgroundStyle,
@@ -36,7 +40,10 @@ sealed interface ButtonStateStyle {
             this.backgroundStyle = backgroundStyle
         }
 
-        @Deprecated("Use ButtonStateStyle.textOnly")
+        @Deprecated("Use ButtonStateStyle.textOnly", replaceWith = ReplaceWith("ButtonStateStyle.textOnly{\n" +
+                "            this.textColor = textColor\n" +
+                "            setBackgroundStyle(backgroundColor, shape)\n" +
+                "        }"))
         operator fun invoke(
             textColor: KalugaColor,
             backgroundColor: KalugaColor = DefaultColors.clear,
@@ -58,47 +65,44 @@ sealed interface ButtonStateStyle {
 
         fun imageOnly(dsl: ButtonStateStyleDSL.ImageOnly.() -> Unit): ImageOnly {
             val builder = ButtonStateStyleDSL.ImageOnly().apply(dsl)
-            return ImageOnly(builder.image, builder.size, builder.backgroundStyle)
+            return ImageOnly(builder.image, builder.backgroundStyle)
         }
 
         fun withImageAndText(dsl: ButtonStateStyleDSL.WithImageAndText.() -> Unit): WithImageAndText {
             val builder = ButtonStateStyleDSL.WithImageAndText().apply(dsl)
-            return WithImageAndText(builder.textColor, builder.image, builder.size, builder.backgroundStyle)
+            return WithImageAndText(builder.textColor, builder.image, builder.backgroundStyle)
         }
     }
 
     val backgroundStyle: KalugaBackgroundStyle
 
     sealed interface WithoutText : ButtonStateStyle
-    data class WithoutContent(override val backgroundStyle: KalugaBackgroundStyle) : WithoutText
+    data class WithoutContent internal constructor(override val backgroundStyle: KalugaBackgroundStyle) : WithoutText
     sealed interface WithText : ButtonStateStyle {
         val textColor: KalugaColor
     }
 
-    data class TextOnly(
+    data class TextOnly internal constructor(
         override val textColor: KalugaColor,
         override val backgroundStyle: KalugaBackgroundStyle,
     ) : WithText
 
-    sealed interface WithImage {
+    sealed interface WithImage : ButtonStateStyle {
         val image: ButtonImage
-        val size: ImageSize
     }
 
-    data class ImageOnly(
+    data class ImageOnly internal constructor(
         override val image: ButtonImage,
-        override val size: ImageSize,
         override val backgroundStyle: KalugaBackgroundStyle,
     ) : WithoutText, WithImage
 
-    data class WithImageAndText(
+    data class WithImageAndText internal constructor(
         override val textColor: KalugaColor,
         override val image: ButtonImage,
-        override val size: ImageSize,
         override val backgroundStyle: KalugaBackgroundStyle,
     ) : WithText, WithImage
 }
-sealed class ButtonStateStyleDSL {
+sealed interface ButtonStateStyleDSL {
 
     private companion object {
         fun createBackgroundStyle(
@@ -110,24 +114,31 @@ sealed class ButtonStateStyleDSL {
         )
     }
 
-    var backgroundStyle: KalugaBackgroundStyle = createBackgroundStyle()
+    var backgroundStyle: KalugaBackgroundStyle
 
     fun setBackgroundStyle(
         backgroundColor: KalugaColor = DefaultColors.clear,
-        shape: KalugaBackgroundStyle.Shape,
+        shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle(),
     ) {
         backgroundStyle = createBackgroundStyle(backgroundColor, shape)
     }
 
-    class WithoutContent : ButtonStateStyleDSL()
-
-    class TextOnly : ButtonStateStyleDSL() {
-        var textColor: KalugaColor = DefaultColors.black
+    class WithoutContent internal constructor() : ButtonStateStyleDSL {
+        override var backgroundStyle: KalugaBackgroundStyle = createBackgroundStyle()
     }
 
-    sealed class WithImage : ButtonStateStyleDSL() {
+    sealed interface WithText : ButtonStateStyleDSL {
+        var textColor: KalugaColor
+    }
+
+    class TextOnly internal constructor() : WithText {
+        override var textColor: KalugaColor = DefaultColors.black
+        override var backgroundStyle: KalugaBackgroundStyle = createBackgroundStyle()
+    }
+
+    sealed class WithImage : ButtonStateStyleDSL {
         internal var image: ButtonImage = ButtonImage.Hidden
-        var size: ImageSize = ImageSize.Intrinsic
+        override var backgroundStyle: KalugaBackgroundStyle = createBackgroundStyle()
 
         fun hide() {
             image = ButtonImage.Hidden
@@ -146,9 +157,9 @@ sealed class ButtonStateStyleDSL {
         }
     }
 
-    class ImageOnly : WithImage()
+    class ImageOnly internal constructor() : WithImage()
 
-    class WithImageAndText : WithImage() {
-        var textColor: KalugaColor = DefaultColors.black
+    class WithImageAndText internal constructor() : WithImage(), WithText {
+        override var textColor: KalugaColor = DefaultColors.black
     }
 }
