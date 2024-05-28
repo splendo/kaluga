@@ -152,6 +152,13 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
                 builder.disabledStyle ?: builder.defaultStyle,
             )
         }
+
+        internal val hiddenTextStyle = textOnly {
+            textSize = 0.0f
+            defaultStyle {
+                textColor = DefaultColors.clear
+            }
+        }
     }
 
     sealed interface WithoutText<StateStyle : ButtonStateStyle.WithoutText> : KalugaButtonStyle<StateStyle>

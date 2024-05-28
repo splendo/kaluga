@@ -26,7 +26,6 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.StateListDrawable
 import android.util.StateSet
 import android.view.View
-import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.KalugaColor
 import com.splendo.kaluga.resources.colorFrom
 import com.splendo.kaluga.resources.dpToPixel
@@ -37,6 +36,7 @@ import com.splendo.kaluga.resources.stylable.ButtonStateStyle
 import com.splendo.kaluga.resources.stylable.ImageGravity
 import com.splendo.kaluga.resources.stylable.ImageSize
 import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
+import com.splendo.kaluga.resources.stylable.KalugaButtonStyle.Companion.hiddenTextStyle
 import com.splendo.kaluga.resources.stylable.Padding
 
 /**
@@ -249,11 +249,4 @@ private val defaultRippleForeground: KalugaColor get() = if (isInDarkMode) {
     colorFrom(0.0, 0.0, 0.0, 0.25)
 } else {
     colorFrom(1.0, 1.0, 1.0, 0.25)
-}
-
-private val hiddenTextStyle = KalugaButtonStyle.textOnly {
-    textSize = 0.0f
-    defaultStyle {
-        textColor = DefaultColors.clear
-    }
 }
