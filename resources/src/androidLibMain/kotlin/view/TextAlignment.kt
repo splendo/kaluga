@@ -31,7 +31,6 @@ import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
  * @return the [Layout.Alignment] associated with this [KalugaTextAlignment]
  */
 fun KalugaTextAlignment.alignment(context: Context): Layout.Alignment {
-
     return when (this) {
         KalugaTextAlignment.LEFT -> if (context.isLayoutLeftToRight()) {
             Layout.Alignment.ALIGN_NORMAL

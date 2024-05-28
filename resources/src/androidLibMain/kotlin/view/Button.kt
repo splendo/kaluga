@@ -19,7 +19,6 @@
 
 package com.splendo.kaluga.resources.view
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
@@ -27,6 +26,7 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.StateListDrawable
 import android.util.StateSet
 import android.view.View
+import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.KalugaColor
 import com.splendo.kaluga.resources.colorFrom
 import com.splendo.kaluga.resources.dpToPixel
@@ -90,10 +90,15 @@ sealed class RippleStyle {
 fun android.widget.Button.applyButtonStyle(style: KalugaButtonStyle<*>, rippleStyle: RippleStyle = RippleStyle.ForegroundRipple) {
     if (style is KalugaButtonStyle.WithText<*>) {
         applyButtonStyleWithText(style)
+    } else {
+        applyButtonStyleWithText(hiddenTextStyle)
     }
 
     if (style is KalugaButtonStyle.WithImage<*>) {
         applyButtonStyleWithImage(style)
+    } else {
+        setCompoundDrawables(null, null, null, null)
+        compoundDrawablePadding = 0
     }
 
     setPadding(style.padding)
@@ -122,7 +127,6 @@ private fun android.widget.Button.applyButtonStyleWithText(style: KalugaButtonSt
 }
 
 private fun android.widget.Button.applyButtonStyleWithImage(style: KalugaButtonStyle.WithImage<*>) {
-
     val stateListDrawable = StateListDrawable().apply {
         addState(
             intArrayOf(android.R.attr.state_pressed),
@@ -144,6 +148,7 @@ private fun android.widget.Button.applyButtonStyleWithImage(style: KalugaButtonS
             style.imageGravity
         }
         is KalugaButtonStyle.ImageOnly -> {
+            compoundDrawablePadding = 0
             ImageGravity.TOP
         }
     }
@@ -196,7 +201,8 @@ private fun android.widget.Button.applyBackgroundStyle(style: KalugaButtonStyle<
                     when (val image = withImage.image) {
                         is ButtonImage.Tinted -> image.image.tint
                         is ButtonImage.Image,
-                        is ButtonImage.Hidden -> {
+                        is ButtonImage.Hidden,
+                        -> {
                             defaultRippleForeground
                         }
                     }
@@ -243,4 +249,11 @@ private val defaultRippleForeground: KalugaColor get() = if (isInDarkMode) {
     colorFrom(0.0, 0.0, 0.0, 0.25)
 } else {
     colorFrom(1.0, 1.0, 1.0, 0.25)
+}
+
+private val hiddenTextStyle = KalugaButtonStyle.textOnly {
+    textSize = 0.0f
+    defaultStyle {
+        textColor = DefaultColors.clear
+    }
 }

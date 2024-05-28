@@ -43,7 +43,7 @@ sealed class KalugaButton {
     data class WithoutText(
         override val style: KalugaButtonStyle.WithoutText<*>,
         override val isEnabled: Boolean = true,
-        override val action: () -> Unit
+        override val action: () -> Unit,
     ) : KalugaButton()
 
     sealed class WithText : KalugaButton() {

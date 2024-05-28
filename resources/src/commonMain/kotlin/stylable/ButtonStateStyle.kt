@@ -22,28 +22,34 @@ import com.splendo.kaluga.resources.KalugaColor
 import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.TintedImage
 import com.splendo.kaluga.resources.tinted
-import com.splendo.kaluga.resources.view.KalugaButton
 
 sealed interface ButtonStateStyle {
 
     companion object {
 
-        @Deprecated("Use ButtonStateStyle.textOnly", replaceWith = ReplaceWith("ButtonStateStyle.textOnly {\n" +
-                "            this.textColor = textColor\n" +
-                "            this.backgroundStyle = backgroundStyle\n" +
-                "        }"))
-        operator fun invoke(
-            textColor: KalugaColor,
-            backgroundStyle: KalugaBackgroundStyle,
-        ) = textOnly {
+        @Deprecated(
+            "Use ButtonStateStyle.textOnly",
+            replaceWith = ReplaceWith(
+                "ButtonStateStyle.textOnly {\n" +
+                    "            this.textColor = textColor\n" +
+                    "            this.backgroundStyle = backgroundStyle\n" +
+                    "        }",
+            ),
+        )
+        operator fun invoke(textColor: KalugaColor, backgroundStyle: KalugaBackgroundStyle) = textOnly {
             this.textColor = textColor
             this.backgroundStyle = backgroundStyle
         }
 
-        @Deprecated("Use ButtonStateStyle.textOnly", replaceWith = ReplaceWith("ButtonStateStyle.textOnly{\n" +
-                "            this.textColor = textColor\n" +
-                "            setBackgroundStyle(backgroundColor, shape)\n" +
-                "        }"))
+        @Deprecated(
+            "Use ButtonStateStyle.textOnly",
+            replaceWith = ReplaceWith(
+                "ButtonStateStyle.textOnly{\n" +
+                    "            this.textColor = textColor\n" +
+                    "            setBackgroundStyle(backgroundColor, shape)\n" +
+                    "        }",
+            ),
+        )
         operator fun invoke(
             textColor: KalugaColor,
             backgroundColor: KalugaColor = DefaultColors.clear,
@@ -105,21 +111,16 @@ sealed interface ButtonStateStyle {
 sealed interface ButtonStateStyleDSL {
 
     private companion object {
-        fun createBackgroundStyle(
-            backgroundColor: KalugaColor = DefaultColors.clear,
-            shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle(),
-        ) = KalugaBackgroundStyle(
-            KalugaBackgroundStyle.FillStyle.Solid(backgroundColor),
-            shape = shape,
-        )
+        fun createBackgroundStyle(backgroundColor: KalugaColor = DefaultColors.clear, shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle()) =
+            KalugaBackgroundStyle(
+                KalugaBackgroundStyle.FillStyle.Solid(backgroundColor),
+                shape = shape,
+            )
     }
 
     var backgroundStyle: KalugaBackgroundStyle
 
-    fun setBackgroundStyle(
-        backgroundColor: KalugaColor = DefaultColors.clear,
-        shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle(),
-    ) {
+    fun setBackgroundStyle(backgroundColor: KalugaColor = DefaultColors.clear, shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle()) {
         backgroundStyle = createBackgroundStyle(backgroundColor, shape)
     }
 

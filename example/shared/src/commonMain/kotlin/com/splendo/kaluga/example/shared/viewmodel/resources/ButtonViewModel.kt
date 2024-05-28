@@ -47,7 +47,14 @@ class ButtonViewModel(
             "Radial Gradient Button".toButton(ButtonStyles.radialGradientButton),
             "Angular Gradient Button".toButton(ButtonStyles.angularGradientButton),
             "Disabled Button".toButton(ButtonStyles.redButton, false),
-            "Image Button".toButton(ButtonStyles.textButtonWithImageLeft),
+            "Left Image Button".toButton(ButtonStyles.textButtonWithImageLeft),
+            "Start Image Button".toButton(ButtonStyles.textButtonWithImageStart),
+            "Right Image Button".toButton(ButtonStyles.textButtonWithImageRight),
+            "End Image Button".toButton(ButtonStyles.textButtonWithImageEnd),
+            "Top Image Button".toButton(ButtonStyles.textButtonWithImageTop),
+            "Bottom Image Button".toButton(ButtonStyles.textButtonWithImageBottom),
+            "Intrinsic Size Image Button".toButton(ButtonStyles.textButtonWithImageIntrinsicSize),
+            "State Image Button".toButton(ButtonStyles.textButtonWithStateImage),
             listOf(
                 KalugaButton.Styled(
                     "Styled Button".styled(
@@ -62,6 +69,9 @@ class ButtonViewModel(
                 ) {
                     showAlert("Styled Button")
                 },
+                KalugaButton.WithoutText(ButtonStyles.imageOnly) { showAlert("Image Only") },
+                KalugaButton.WithoutText(ButtonStyles.imageOnlyIntrinsic) { showAlert("Image Only Intrinsic") },
+                KalugaButton.WithoutText(ButtonStyles.noContent) { showAlert("No Content") },
             ),
         ).flatten(),
     )
