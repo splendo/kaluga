@@ -312,7 +312,15 @@ object ButtonStyles {
         imageSize = ImageSize.Sized(24.0f, 24.0f)
         spacing = 8.0f
         imageGravity = gravity
-        setTextStyle(KalugaTextStyle(defaultBoldFont, DefaultColors.white, 12.0f, KalugaTextAlignment.LEFT), DefaultColors.azure, DefaultColors.black)
+        val textAlignment = when (gravity) {
+            ImageGravity.LEFT -> KalugaTextAlignment.LEFT
+            ImageGravity.START -> KalugaTextAlignment.START
+            ImageGravity.RIGHT -> KalugaTextAlignment.RIGHT
+            ImageGravity.END -> KalugaTextAlignment.END
+            ImageGravity.BOTTOM -> KalugaTextAlignment.CENTER
+            ImageGravity.TOP -> KalugaTextAlignment.CENTER
+        }
+        setTextStyle(KalugaTextStyle(defaultBoldFont, DefaultColors.white, 12.0f, textAlignment), DefaultColors.azure, DefaultColors.black)
         setImage("star".asImage()!!, DefaultColors.gold, DefaultColors.goldenrod, DefaultColors.white)
         setBackground(DefaultColors.lightGray, DefaultColors.gray, DefaultColors.dimGray)
     }
