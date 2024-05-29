@@ -71,7 +71,10 @@ sealed class RippleStyle {
     data object None : RippleStyle()
 
     /**
-     * A [RippleStyle] where the ripple has the color of the [com.splendo.kaluga.resources.stylable.TextButtonStateStyle.textColor] of the [KalugaButtonStyle.pressedStyle]
+     * A [RippleStyle] where the ripple has the color of foreground color of the button.
+     * For [KalugaButtonStyle.WithText] this will be [ButtonStateStyle.WithText.textColor]
+     * For [KalugaButtonStyle.ImageOnly] it will be the [com.splendo.kaluga.resources.TintedImage.tint] if [ButtonImage.Tinted] was set
+     * For all other cases, the background will simply be lightened/darkened depending on whether dark mode is active or not
      */
     data object ForegroundRipple : RippleStyle()
 
