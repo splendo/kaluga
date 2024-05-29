@@ -130,15 +130,15 @@ private fun android.widget.Button.applyButtonStyleWithImage(style: KalugaButtonS
     val stateListDrawable = StateListDrawable().apply {
         addState(
             intArrayOf(android.R.attr.state_pressed),
-            (style.pressedStyle as ButtonStateStyle.WithImage).drawable,
+            style.pressedStyle.drawable,
         )
         addState(
             intArrayOf(-android.R.attr.state_enabled),
-            (style.disabledStyle as ButtonStateStyle.WithImage).drawable,
+            style.disabledStyle.drawable,
         )
         addState(
             StateSet.WILD_CARD,
-            (style.defaultStyle as ButtonStateStyle.WithImage).drawable,
+            style.defaultStyle.drawable,
         )
     }
 
@@ -197,7 +197,7 @@ private fun android.widget.Button.applyBackgroundStyle(style: KalugaButtonStyle<
             val foregroundColor = when (style) {
                 is KalugaButtonStyle.WithText<*> -> style.pressedStyle.textColor
                 is KalugaButtonStyle.WithImage<*> -> {
-                    val withImage = style.pressedStyle as ButtonStateStyle.WithImage
+                    val withImage = style.pressedStyle
                     when (val image = withImage.image) {
                         is ButtonImage.Tinted -> image.image.tint
                         is ButtonImage.Image,

@@ -173,12 +173,11 @@ private fun KalugaButtonStyle.WithText<*>.Composable(modifier: Modifier, isEnabl
 
 @Composable
 private fun KalugaButtonStyle.WithImage<*>.Composable(isEnabled: Boolean, isPressed: Boolean) {
-    val stateStyle = getStateStyle(isEnabled, isPressed)
     val modifier = when (val size = imageSize) {
         is ImageSize.Sized -> Modifier.size(size.width.dp, size.height.dp)
         is ImageSize.Intrinsic -> Modifier
     }
-    when (val image = stateStyle.image) {
+    when (val image = getStateImage(isEnabled, isPressed)) {
         is ButtonImage.Hidden -> Spacer(modifier = modifier)
         is ButtonImage.Image -> image.image.Composable(contentDescription = null, modifier = modifier)
         is ButtonImage.Tinted -> image.image.Composable(contentDescription = null, modifier = modifier)

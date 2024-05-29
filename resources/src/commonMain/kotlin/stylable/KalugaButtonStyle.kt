@@ -23,7 +23,6 @@ import com.splendo.kaluga.resources.KalugaFont
 import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.TintedImage
 import com.splendo.kaluga.resources.defaultBoldFont
-import kotlin.jvm.JvmInline
 
 sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
     val padding: Padding
@@ -195,6 +194,14 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
 
     sealed interface WithImage<StateStyle : ButtonStateStyle.WithImage> : KalugaButtonStyle<StateStyle> {
         val imageSize: ImageSize
+
+        /**
+         * Gets the [ButtonImage] of the button depending on the state
+         * @param isEnabled if `true` the button is enabled
+         * @param isPressed if `true` the button is pressed
+         * @return the [ButtonImage] to set as the image of the button in the current state
+         */
+        fun getStateImage(isEnabled: Boolean, isPressed: Boolean) = getStateStyle(isEnabled, isPressed).image
     }
 
     data class ImageOnly internal constructor(
@@ -385,23 +392,15 @@ sealed interface ButtonImage {
 
     data object Hidden : ButtonImage
 
-    @JvmInline
-    value class Image(val image: KalugaImage) : ButtonImage
+    data class Image(val image: KalugaImage) : ButtonImage
 
-    @JvmInline
-    value class Tinted(val image: TintedImage) : ButtonImage
+    data class Tinted(val image: TintedImage) : ButtonImage
 }
 
 sealed interface ImageSize {
     data object Intrinsic : ImageSize
 
-    @JvmInline
-    value class Sized private constructor(private val size: Pair<Float, Float>) : ImageSize {
-
-        constructor(width: Float, height: Float) : this(width to height)
-        val width: Float get() = size.first
-        val height: Float get() = size.second
-    }
+    data class Sized(val width: Float, val height: Float) : ImageSize
 }
 
 enum class ImageGravity {
