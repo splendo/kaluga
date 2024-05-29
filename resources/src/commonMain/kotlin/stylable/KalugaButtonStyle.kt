@@ -390,7 +390,7 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
         defaultColor: KalugaColor,
         pressedColor: KalugaColor = defaultColor,
         disabledColor: KalugaColor = defaultColor,
-        shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle()
+        shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle(),
     ) {
         defaultStyle {
             setBackgroundStyle(defaultColor, shape)
@@ -565,7 +565,7 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
          * @param pressedTint the [KalugaColor] to set the image as when pressed
          * @param disabledTint the [KalugaColor] to set the image as when disabled
          */
-        fun setImage(image: KalugaImage, defaultTint: KalugaColor,  pressedTint: KalugaColor = defaultTint, disabledTint: KalugaColor = defaultTint) {
+        fun setImage(image: KalugaImage, defaultTint: KalugaColor, pressedTint: KalugaColor = defaultTint, disabledTint: KalugaColor = defaultTint) {
             defaultStyle { setImage(image, defaultTint) }
             pressedStyle { setImage(image, pressedTint) }
             disabledStyle { setImage(image, pressedTint) }
