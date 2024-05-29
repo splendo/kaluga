@@ -45,6 +45,7 @@ import com.splendo.kaluga.media.duration
 import com.splendo.kaluga.media.isVideo
 import com.splendo.kaluga.media.mediaSourceFromUrl
 import com.splendo.kaluga.media.playTime
+import com.splendo.kaluga.resources.asImage
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.CompletableDeferred
@@ -105,7 +106,7 @@ class MediaViewModel(
     val isSeekEnabled = controls.map { it.seek != null }.toInitializedObservable(false, coroutineScope)
 
     val playButton = controls.map { controls ->
-        KalugaButton.Plain("\u23F5", ButtonStyles.mediaButton, controls.play != null || controls.unpause != null) {
+        KalugaButton.WithoutText(ButtonStyles.mediaButton("play_arrow".asImage()!!), controls.play != null || controls.unpause != null) {
             coroutineScope.launch {
                 when {
                     controls.unpause != null -> controls.tryUnpause()
@@ -117,13 +118,13 @@ class MediaViewModel(
     }.toUninitializedObservable(coroutineScope)
 
     val pauseButton = controls.map {
-        KalugaButton.Plain("\u23F8", ButtonStyles.mediaButton, it.pause != null) {
+        KalugaButton.WithoutText(ButtonStyles.mediaButton("pause".asImage()!!), it.pause != null) {
             coroutineScope.launch { it.tryPause() }
         }
     }.toUninitializedObservable(coroutineScope)
 
     val stopButton = controls.map {
-        KalugaButton.Plain("\u23F9", ButtonStyles.mediaButton, it.stop != null) {
+        KalugaButton.WithoutText(ButtonStyles.mediaButton("stop".asImage()!!), it.stop != null) {
             coroutineScope.launch { it.tryStop() }
         }
     }.toUninitializedObservable(coroutineScope)
@@ -131,28 +132,32 @@ class MediaViewModel(
     val loopButton = controls.map { controls ->
         controls.setLoopMode?.let { setLoopMode ->
             when (val loopMode = setLoopMode.currentLoopMode) {
-                PlaybackState.LoopMode.NotLooping -> KalugaButton.Plain("\uD83D\uDD01", ButtonStyles.mediaButton, true) {
+                PlaybackState.LoopMode.NotLooping -> KalugaButton.WithoutText(ButtonStyles.mediaButton("repeat".asImage()!!), true) {
                     coroutineScope.launch {
                         setLoopMode.perform(PlaybackState.LoopMode.LoopingForever)
                     }
                 }
-                is PlaybackState.LoopMode.LoopingForever -> KalugaButton.Plain("\uD83D\uDD01", ButtonStyles.mediaButtonFocus, true) {
+                is PlaybackState.LoopMode.LoopingForever -> KalugaButton.WithoutText(ButtonStyles.mediaButtonFocus("repeat_on".asImage()!!), true) {
                     coroutineScope.launch {
                         setLoopMode.perform(PlaybackState.LoopMode.LoopingForFixedNumber(1U))
                     }
                 }
-                is PlaybackState.LoopMode.LoopingForFixedNumber -> KalugaButton.Plain("\uD83D\uDD01 x${loopMode.loops}", ButtonStyles.mediaButtonFocus, true) {
+                is PlaybackState.LoopMode.LoopingForFixedNumber -> KalugaButton.Plain(
+                    "x${loopMode.loops}",
+                    ButtonStyles.mediaButtonFocusWithImageAndText("repeat_on".asImage()!!),
+                    true,
+                ) {
                     coroutineScope.launch {
                         setLoopMode.perform(PlaybackState.LoopMode.NotLooping)
                     }
                 }
             }
-        } ?: KalugaButton.Plain("\uD83D\uDD01", ButtonStyles.mediaButton, false) {}
+        } ?: KalugaButton.WithoutText(ButtonStyles.mediaButton("repeat".asImage()!!), false) {}
     }.toUninitializedObservable(coroutineScope)
 
     val rateButton = controls.map { controls ->
         controls.setRate?.let { setRate ->
-            KalugaButton.Plain(playbackFormatter.format(setRate.currentRate), ButtonStyles.mediaButton, true) {
+            KalugaButton.Plain(playbackFormatter.format(setRate.currentRate), ButtonStyles.mediaButtonText, true) {
                 coroutineScope.launch {
                     var selectedRate = setRate.currentRate
                     alertPresenterBuilder.buildActionSheet(this) {
@@ -167,7 +172,7 @@ class MediaViewModel(
                     setRate.perform(selectedRate)
                 }
             }
-        } ?: KalugaButton.Plain(playbackFormatter.format(1), ButtonStyles.mediaButton, false) {}
+        } ?: KalugaButton.Plain(playbackFormatter.format(1), ButtonStyles.mediaButtonText, false) {}
     }.toUninitializedObservable(coroutineScope)
 
     val volumeButton = mediaPlayer.currentVolume.map {

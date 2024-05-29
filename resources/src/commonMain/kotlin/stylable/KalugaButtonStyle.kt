@@ -20,6 +20,8 @@ package com.splendo.kaluga.resources.stylable
 import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.KalugaColor
 import com.splendo.kaluga.resources.KalugaFont
+import com.splendo.kaluga.resources.KalugaImage
+import com.splendo.kaluga.resources.TintedImage
 import com.splendo.kaluga.resources.defaultBoldFont
 
 /**
@@ -378,6 +380,30 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
     fun disabledStyle(dsl: StateStyleDSL.() -> Unit)
 
     /**
+     * Sets [backgroundStyle] to a [KalugaBackgroundStyle] with [KalugaBackgroundStyle.FillStyle.Solid] based on a [KalugaColor] and [shape]
+     * @param defaultColor the [KalugaColor] to set as the [KalugaBackgroundStyle.FillStyle.Solid.color] of the [KalugaBackgroundStyle] by default
+     * @param pressedColor the [KalugaColor] to set as the [KalugaBackgroundStyle.FillStyle.Solid.color] of the [KalugaBackgroundStyle] when pressed
+     * @param disabledColor the [KalugaColor] to set as the [KalugaBackgroundStyle.FillStyle.Solid.color] of the [KalugaBackgroundStyle] when disabled
+     * @param shape the [KalugaBackgroundStyle.Shape] of the [KalugaBackgroundStyle]
+     */
+    fun setBackground(
+        defaultColor: KalugaColor,
+        pressedColor: KalugaColor = defaultColor,
+        disabledColor: KalugaColor = defaultColor,
+        shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle()
+    ) {
+        defaultStyle {
+            setBackgroundStyle(defaultColor, shape)
+        }
+        pressedStyle {
+            setBackgroundStyle(pressedColor, shape)
+        }
+        disabledStyle {
+            setBackgroundStyle(disabledColor, shape)
+        }
+    }
+
+    /**
      * A [KalugaButtonStyleDSL] for creating a [KalugaButtonStyle.WithoutContent]
      * @property defaultStyle the [ButtonStateStyle.WithoutContent] that the button is in by default
      * @property pressedStyle the [ButtonStateStyle.WithoutContent] that the button is in when pressed. If `null` [defaultStyle] will be used.
@@ -439,8 +465,17 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
         /**
          * Sets [font], [textSize], and [textAlignment] according to a [KalugaTextStyle] and [ButtonStateStyle.WithText.textColor] for all states
          * @param textStyle the [KalugaTextStyle] to configure the button with
+         * @param pressedColor the [KalugaColor] to apply to [pressedStyle]
+         * @param disabledColor the [KalugaColor] to apply to [disabledColor]
          */
-        fun setTextStyle(textStyle: KalugaTextStyle)
+        fun setTextStyle(textStyle: KalugaTextStyle, pressedColor: KalugaColor = textStyle.color, disabledColor: KalugaColor = textStyle.color) {
+            font = textStyle.font
+            textSize = textStyle.size
+            textAlignment = textStyle.alignment
+            defaultStyle { textColor = textStyle.color }
+            pressedStyle { textColor = pressedColor }
+            disabledStyle { textColor = disabledColor }
+        }
     }
 
     /**
@@ -485,15 +520,6 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
             disabledStyle = copyAndUpdateStateStyle(disabledStyle ?: defaultStyle, dsl)
         }
 
-        override fun setTextStyle(textStyle: KalugaTextStyle) {
-            font = textStyle.font
-            textSize = textStyle.size
-            textAlignment = textStyle.alignment
-            defaultStyle = defaultStyle.copy(textColor = textStyle.color)
-            pressedStyle = pressedStyle?.copy(textColor = textStyle.color)
-            disabledStyle = disabledStyle?.copy(textColor = textStyle.color)
-        }
-
         private fun copyAndUpdateStateStyle(stateStyle: ButtonStateStyle.TextOnly, dsl: ButtonStateStyleDSL.TextOnly.() -> Unit) = ButtonStateStyle.textOnly {
             textColor = stateStyle.textColor
             backgroundStyle = stateStyle.backgroundStyle
@@ -509,6 +535,41 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
      */
     sealed interface WithImage<StateStyle : ButtonStateStyle.WithImage, StateStyleDSL : ButtonStateStyleDSL.WithImage> : KalugaButtonStyleDSL<StateStyle, StateStyleDSL> {
         var imageSize: ImageSize
+
+        /**
+         * Sets the [ButtonStateStyle.WithImage.image] to a [ButtonImage.Image] for all states
+         * @param image the [KalugaImage] to set as the image
+         */
+        fun setImage(image: KalugaImage) {
+            defaultStyle { setImage(image) }
+            pressedStyle { setImage(image) }
+            disabledStyle { setImage(image) }
+        }
+
+        /**
+         * Sets the [ButtonStateStyle.WithImage.image] to a [ButtonImage.Tinted] for all states
+         * @param image the [TintedImage] to set as the image
+         * @param pressedTint the [KalugaColor] to set the image as when pressed
+         * @param disabledTint the [KalugaColor] to set the image as when disabled
+         */
+        fun setImage(image: TintedImage, pressedTint: KalugaColor = image.tint, disabledTint: KalugaColor = image.tint) {
+            defaultStyle { setImage(image) }
+            pressedStyle { setImage(image.image, pressedTint) }
+            disabledStyle { setImage(image.image, pressedTint) }
+        }
+
+        /**
+         * Sets the [ButtonStateStyle.WithImage.image] to a [ButtonImage.Tinted] for all states
+         * @param image the [KalugaImage] to tint
+         * @param defaultTint the [KalugaColor] to set the image as by default
+         * @param pressedTint the [KalugaColor] to set the image as when pressed
+         * @param disabledTint the [KalugaColor] to set the image as when disabled
+         */
+        fun setImage(image: KalugaImage, defaultTint: KalugaColor,  pressedTint: KalugaColor = defaultTint, disabledTint: KalugaColor = defaultTint) {
+            defaultStyle { setImage(image, defaultTint) }
+            pressedStyle { setImage(image, pressedTint) }
+            disabledStyle { setImage(image, pressedTint) }
+        }
     }
 
     /**
@@ -604,15 +665,6 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
          */
         override fun disabledStyle(dsl: ButtonStateStyleDSL.WithImageAndText.() -> Unit) {
             disabledStyle = copyAndUpdateStateStyle(disabledStyle ?: defaultStyle, dsl)
-        }
-
-        override fun setTextStyle(textStyle: KalugaTextStyle) {
-            font = textStyle.font
-            textSize = textStyle.size
-            textAlignment = textStyle.alignment
-            defaultStyle = defaultStyle.copy(textColor = textStyle.color)
-            pressedStyle = pressedStyle?.copy(textColor = textStyle.color)
-            disabledStyle = disabledStyle?.copy(textColor = textStyle.color)
         }
 
         private fun copyAndUpdateStateStyle(stateStyle: ButtonStateStyle.WithImageAndText, dsl: ButtonStateStyleDSL.WithImageAndText.() -> Unit) =

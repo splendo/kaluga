@@ -18,6 +18,7 @@
 package com.splendo.kaluga.example.shared.stylable
 
 import com.splendo.kaluga.resources.DefaultColors
+import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.asImage
 import com.splendo.kaluga.resources.defaultBoldFont
 import com.splendo.kaluga.resources.defaultFont
@@ -28,71 +29,38 @@ import com.splendo.kaluga.resources.stylable.GradientStyle
 import com.splendo.kaluga.resources.stylable.ImageGravity
 import com.splendo.kaluga.resources.stylable.ImageSize
 import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
+import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 
 object ButtonStyles {
 
     val default by lazy {
-        val shape = KalugaBackgroundStyle.Shape.Rectangle(4.0f)
         KalugaButtonStyle.textOnly {
             setTextStyle(TextStyles.defaultTitle)
-            defaultStyle {
-                setBackgroundStyle(
-                    backgroundColor = DefaultColors.lightGray,
-                    shape = shape,
-                )
-            }
-            pressedStyle {
-                setBackgroundStyle(
-                    backgroundColor = DefaultColors.gray,
-                    shape = shape,
-                )
-            }
-            disabledStyle {
-                setBackgroundStyle(
-                    backgroundColor = DefaultColors.dimGray,
-                    shape = shape,
-                )
-            }
+            setBackground(
+                defaultColor = DefaultColors.lightGray,
+                pressedColor = DefaultColors.gray,
+                disabledColor = DefaultColors.dimGray,
+                shape = KalugaBackgroundStyle.Shape.Rectangle(4.0f),
+            )
         }
     }
 
     val textButton by lazy {
-        val shape = KalugaBackgroundStyle.Shape.Rectangle()
         KalugaButtonStyle.textOnly {
             setTextStyle(TextStyles.redText)
-            defaultStyle {
-                setBackgroundStyle(DefaultColors.clear, shape)
-            }
-            pressedStyle {
-                setBackgroundStyle(DefaultColors.clear, shape)
-            }
-            disabledStyle {
-                setBackgroundStyle(DefaultColors.clear, shape)
-            }
+            setBackground(DefaultColors.clear, shape = KalugaBackgroundStyle.Shape.Rectangle())
         }
     }
+
     val redButton by lazy {
-        val shape = KalugaBackgroundStyle.Shape.Rectangle()
         KalugaButtonStyle.textOnly {
             setTextStyle(TextStyles.whiteText)
-            defaultStyle {
-                setBackgroundStyle(
-                    backgroundColor = DefaultColors.red,
-                    shape = shape,
-                )
-            }
-            pressedStyle {
-                setBackgroundStyle(
-                    backgroundColor = DefaultColors.maroon,
-                    shape = shape,
-                )
-            }
-            disabledStyle {
-                setBackgroundStyle(
-                    backgroundColor = DefaultColors.lightGray,
-                    shape = shape,
-                )
-            }
+            setBackground(
+                defaultColor = DefaultColors.red,
+                pressedColor = DefaultColors.maroon,
+                disabledColor = DefaultColors.lightGray,
+                shape = KalugaBackgroundStyle.Shape.Rectangle(),
+            )
         }
     }
     val roundedButton by lazy {
@@ -127,20 +95,13 @@ object ButtonStyles {
     }
     val ovalButton by lazy {
         KalugaButtonStyle.textOnly {
-            font = defaultFont
-            textSize = 12.0f
-            defaultStyle {
-                textColor = DefaultColors.white
-                setBackgroundStyle(DefaultColors.deepSkyBlue, KalugaBackgroundStyle.Shape.Oval)
-            }
-            pressedStyle {
-                textColor = DefaultColors.azure
-                setBackgroundStyle(DefaultColors.lightSkyBlue, KalugaBackgroundStyle.Shape.Oval)
-            }
-            disabledStyle {
-                textColor = DefaultColors.black
-                setBackgroundStyle(DefaultColors.lightGray, KalugaBackgroundStyle.Shape.Oval)
-            }
+            setTextStyle(KalugaTextStyle(defaultFont, DefaultColors.white, 12.0f), DefaultColors.azure, DefaultColors.black)
+            setBackground(
+                defaultColor = DefaultColors.deepSkyBlue,
+                pressedColor = DefaultColors.lightSkyBlue,
+                disabledColor = DefaultColors.lightGray,
+                shape = KalugaBackgroundStyle.Shape.Oval,
+            )
         }
     }
     val redButtonWithStroke by lazy {
@@ -347,185 +308,47 @@ object ButtonStyles {
         }
     }
 
+    private fun createTextButtonWithImageStyle(gravity: ImageGravity) = KalugaButtonStyle.withImageAndText {
+        imageSize = ImageSize.Sized(24.0f, 24.0f)
+        spacing = 8.0f
+        imageGravity = gravity
+        setTextStyle(KalugaTextStyle(defaultBoldFont, DefaultColors.white, 12.0f, KalugaTextAlignment.LEFT), DefaultColors.azure, DefaultColors.black)
+        setImage("star".asImage()!!, DefaultColors.gold, DefaultColors.goldenrod, DefaultColors.white)
+        setBackground(DefaultColors.lightGray, DefaultColors.gray, DefaultColors.dimGray)
+    }
+
     val textButtonWithImageLeft by lazy {
-        KalugaButtonStyle.withImageAndText {
-            font = defaultBoldFont
-            textSize = 12.0f
-            textAlignment = KalugaTextAlignment.LEFT
-            imageSize = ImageSize.Sized(24.0f, 24.0f)
-            spacing = 8.0f
-            imageGravity = ImageGravity.LEFT
-            defaultStyle {
-                textColor = DefaultColors.white
-                setBackgroundStyle(DefaultColors.lightGray)
-                setImage("star".asImage()!!, tint = DefaultColors.gold)
-            }
-            pressedStyle {
-                textColor = DefaultColors.azure
-                setBackgroundStyle(DefaultColors.gray)
-                setImage("star".asImage()!!, tint = DefaultColors.goldenrod)
-            }
-            disabledStyle {
-                textColor = DefaultColors.black
-                setBackgroundStyle(DefaultColors.dimGray)
-                setImage("star".asImage()!!, tint = DefaultColors.white)
-            }
-        }
+        createTextButtonWithImageStyle(ImageGravity.LEFT)
     }
 
     val textButtonWithImageStart by lazy {
-        KalugaButtonStyle.withImageAndText {
-            font = defaultBoldFont
-            textSize = 12.0f
-            textAlignment = KalugaTextAlignment.START
-            imageSize = ImageSize.Sized(24.0f, 24.0f)
-            spacing = 8.0f
-            imageGravity = ImageGravity.START
-            defaultStyle {
-                textColor = DefaultColors.white
-                setBackgroundStyle(DefaultColors.lightGray)
-                setImage("star".asImage()!!, tint = DefaultColors.gold)
-            }
-            pressedStyle {
-                textColor = DefaultColors.azure
-                setBackgroundStyle(DefaultColors.gray)
-                setImage("star".asImage()!!, tint = DefaultColors.goldenrod)
-            }
-            disabledStyle {
-                textColor = DefaultColors.black
-                setBackgroundStyle(DefaultColors.dimGray)
-                setImage("star".asImage()!!, tint = DefaultColors.white)
-            }
-        }
+        createTextButtonWithImageStyle(ImageGravity.START)
     }
 
     val textButtonWithImageRight by lazy {
-        KalugaButtonStyle.withImageAndText {
-            font = defaultBoldFont
-            textSize = 12.0f
-            textAlignment = KalugaTextAlignment.RIGHT
-            imageSize = ImageSize.Sized(24.0f, 24.0f)
-            spacing = 8.0f
-            imageGravity = ImageGravity.RIGHT
-            defaultStyle {
-                textColor = DefaultColors.white
-                setBackgroundStyle(DefaultColors.lightGray)
-                setImage("star".asImage()!!, tint = DefaultColors.gold)
-            }
-            pressedStyle {
-                textColor = DefaultColors.azure
-                setBackgroundStyle(DefaultColors.gray)
-                setImage("star".asImage()!!, tint = DefaultColors.goldenrod)
-            }
-            disabledStyle {
-                textColor = DefaultColors.black
-                setBackgroundStyle(DefaultColors.dimGray)
-                setImage("star".asImage()!!, tint = DefaultColors.white)
-            }
-        }
+        createTextButtonWithImageStyle(ImageGravity.RIGHT)
     }
 
     val textButtonWithImageEnd by lazy {
-        KalugaButtonStyle.withImageAndText {
-            font = defaultBoldFont
-            textSize = 12.0f
-            textAlignment = KalugaTextAlignment.END
-            imageSize = ImageSize.Sized(24.0f, 24.0f)
-            spacing = 8.0f
-            imageGravity = ImageGravity.END
-            defaultStyle {
-                textColor = DefaultColors.white
-                setBackgroundStyle(DefaultColors.lightGray)
-                setImage("star".asImage()!!, tint = DefaultColors.gold)
-            }
-            pressedStyle {
-                textColor = DefaultColors.azure
-                setBackgroundStyle(DefaultColors.gray)
-                setImage("star".asImage()!!, tint = DefaultColors.goldenrod)
-            }
-            disabledStyle {
-                textColor = DefaultColors.black
-                setBackgroundStyle(DefaultColors.dimGray)
-                setImage("star".asImage()!!, tint = DefaultColors.white)
-            }
-        }
+        createTextButtonWithImageStyle(ImageGravity.END)
     }
 
     val textButtonWithImageTop by lazy {
-        KalugaButtonStyle.withImageAndText {
-            font = defaultBoldFont
-            textSize = 12.0f
-            textAlignment = KalugaTextAlignment.CENTER
-            imageSize = ImageSize.Sized(24.0f, 24.0f)
-            spacing = 8.0f
-            imageGravity = ImageGravity.TOP
-            defaultStyle {
-                textColor = DefaultColors.white
-                setBackgroundStyle(DefaultColors.lightGray)
-                setImage("star".asImage()!!, tint = DefaultColors.gold)
-            }
-            pressedStyle {
-                textColor = DefaultColors.azure
-                setBackgroundStyle(DefaultColors.gray)
-                setImage("star".asImage()!!, tint = DefaultColors.goldenrod)
-            }
-            disabledStyle {
-                textColor = DefaultColors.black
-                setBackgroundStyle(DefaultColors.dimGray)
-                setImage("star".asImage()!!, tint = DefaultColors.white)
-            }
-        }
+        createTextButtonWithImageStyle(ImageGravity.TOP)
     }
 
     val textButtonWithImageBottom by lazy {
-        KalugaButtonStyle.withImageAndText {
-            font = defaultBoldFont
-            textSize = 12.0f
-            textAlignment = KalugaTextAlignment.CENTER
-            imageSize = ImageSize.Sized(24.0f, 24.0f)
-            spacing = 8.0f
-            imageGravity = ImageGravity.BOTTOM
-            defaultStyle {
-                textColor = DefaultColors.white
-                setBackgroundStyle(DefaultColors.lightGray)
-                setImage("star".asImage()!!, tint = DefaultColors.gold)
-            }
-            pressedStyle {
-                textColor = DefaultColors.azure
-                setBackgroundStyle(DefaultColors.gray)
-                setImage("star".asImage()!!, tint = DefaultColors.goldenrod)
-            }
-            disabledStyle {
-                textColor = DefaultColors.black
-                setBackgroundStyle(DefaultColors.dimGray)
-                setImage("star".asImage()!!, tint = DefaultColors.white)
-            }
-        }
+        createTextButtonWithImageStyle(ImageGravity.BOTTOM)
     }
 
     val textButtonWithImageIntrinsicSize by lazy {
         KalugaButtonStyle.withImageAndText {
-            font = defaultBoldFont
-            textSize = 12.0f
-            textAlignment = KalugaTextAlignment.START
             imageSize = ImageSize.Intrinsic
             spacing = 8.0f
             imageGravity = ImageGravity.START
-            defaultStyle {
-                textColor = DefaultColors.white
-                setBackgroundStyle(DefaultColors.lightGray)
-                setImage("star".asImage()!!, tint = DefaultColors.gold)
-            }
-            pressedStyle {
-                textColor = DefaultColors.azure
-                setBackgroundStyle(DefaultColors.gray)
-                setImage("star".asImage()!!, tint = DefaultColors.goldenrod)
-            }
-            disabledStyle {
-                textColor = DefaultColors.black
-                setBackgroundStyle(DefaultColors.dimGray)
-                setImage("star".asImage()!!, tint = DefaultColors.white)
-            }
+            setTextStyle(KalugaTextStyle(defaultBoldFont, DefaultColors.white, 12.0f, KalugaTextAlignment.LEFT), DefaultColors.azure, DefaultColors.black)
+            setImage("star".asImage()!!, DefaultColors.gold, DefaultColors.goldenrod, DefaultColors.white)
+            setBackground(DefaultColors.lightGray, DefaultColors.gray, DefaultColors.dimGray)
         }
     }
 
@@ -593,71 +416,40 @@ object ButtonStyles {
 
     val noContent by lazy {
         KalugaButtonStyle.withoutContent {
-            defaultStyle {
-                setBackgroundStyle(DefaultColors.lightGray)
-            }
-            pressedStyle {
-                setBackgroundStyle(DefaultColors.gray)
-            }
-            disabledStyle {
-                setBackgroundStyle(DefaultColors.dimGray)
-            }
+            setBackground(DefaultColors.lightGray, DefaultColors.gray, DefaultColors.dimGray)
         }
     }
 
-    val mediaButton by lazy {
+    fun mediaButton(image: KalugaImage) = KalugaButtonStyle.imageOnly {
+        setImage(image, DefaultColors.black)
+        setBackground(DefaultColors.lightGray, DefaultColors.dimGray, DefaultColors.gray, KalugaBackgroundStyle.Shape.Oval)
+    }
+
+    val mediaButtonText by lazy {
         KalugaButtonStyle.textOnly {
-            font = defaultBoldFont
-            textSize = 12.0f
-            defaultStyle {
-                textColor = DefaultColors.black
-                setBackgroundStyle(
-                    DefaultColors.lightGray,
-                    KalugaBackgroundStyle.Shape.Oval,
-                )
-            }
-            pressedStyle {
-                textColor = DefaultColors.black
-                setBackgroundStyle(
-                    DefaultColors.dimGray,
-                    KalugaBackgroundStyle.Shape.Oval,
-                )
-            }
-            disabledStyle {
-                textColor = DefaultColors.dimGray
-                setBackgroundStyle(
-                    DefaultColors.gray,
-                    KalugaBackgroundStyle.Shape.Oval,
-                )
-            }
+            setTextStyle(KalugaTextStyle(defaultBoldFont, DefaultColors.black, 12.0f, KalugaTextAlignment.CENTER))
+            setBackground(DefaultColors.lightGray, DefaultColors.dimGray, DefaultColors.gray, KalugaBackgroundStyle.Shape.Oval)
         }
     }
 
-    val mediaButtonFocus by lazy {
-        KalugaButtonStyle.textOnly {
-            font = defaultBoldFont
-            textSize = 12.0f
-            defaultStyle {
-                textColor = DefaultColors.azure
-                setBackgroundStyle(
-                    DefaultColors.lightGray,
-                    KalugaBackgroundStyle.Shape.Oval,
-                )
-            }
-            pressedStyle {
-                textColor = DefaultColors.azure
-                setBackgroundStyle(
-                    DefaultColors.dimGray,
-                    KalugaBackgroundStyle.Shape.Oval,
-                )
-            }
-            disabledStyle {
-                textColor = DefaultColors.dimGray
-                setBackgroundStyle(
-                    DefaultColors.gray,
-                    KalugaBackgroundStyle.Shape.Oval,
-                )
-            }
-        }
+    fun mediaButtonWithImageAndText(image: KalugaImage) = KalugaButtonStyle.withImageAndText {
+        setImage(image, DefaultColors.black)
+        setTextStyle(KalugaTextStyle(defaultBoldFont, DefaultColors.black, 12.0f))
+        imageGravity = ImageGravity.START
+        spacing = 4.0f
+        setBackground(DefaultColors.lightGray, DefaultColors.dimGray, DefaultColors.gray, KalugaBackgroundStyle.Shape.Oval)
+    }
+
+    fun mediaButtonFocus(image: KalugaImage) = KalugaButtonStyle.imageOnly {
+        setImage(image, DefaultColors.azure, disabledTint = DefaultColors.dimGray)
+        setBackground(DefaultColors.lightGray, DefaultColors.dimGray, DefaultColors.gray, KalugaBackgroundStyle.Shape.Oval)
+    }
+
+    fun mediaButtonFocusWithImageAndText(image: KalugaImage) = KalugaButtonStyle.withImageAndText {
+        setImage(image, DefaultColors.azure, disabledTint = DefaultColors.dimGray)
+        setTextStyle(KalugaTextStyle(defaultBoldFont, DefaultColors.azure, 12.0f), disabledColor = DefaultColors.dimGray)
+        imageGravity = ImageGravity.START
+        spacing = 4.0f
+        setBackground(DefaultColors.lightGray, DefaultColors.dimGray, DefaultColors.gray, KalugaBackgroundStyle.Shape.Oval)
     }
 }
