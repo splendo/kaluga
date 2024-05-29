@@ -20,10 +20,16 @@ package com.splendo.kaluga.resources.stylable
 import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.KalugaColor
 import com.splendo.kaluga.resources.KalugaFont
-import com.splendo.kaluga.resources.KalugaImage
-import com.splendo.kaluga.resources.TintedImage
 import com.splendo.kaluga.resources.defaultBoldFont
 
+/**
+ * The style to apply to a [com.splendo.kaluga.resources.view.KalugaButton]
+ * @property StateStyle the [ButtonStateStyle] that [defaultStyle], [pressedStyle] and [disabledStyle] are in
+ * @property padding the [Padding] of the content of the button
+ * @property defaultStyle the [StateStyle] that the button is in by default
+ * @property pressedStyle the [StateStyle] that the button is in when pressed
+ * @property disabledStyle the [StateStyle] that the button is in when disabled
+ */
 sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
     val padding: Padding
     val defaultStyle: StateStyle
@@ -32,6 +38,15 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
 
     companion object {
 
+        /**
+         * Creates a [KalugaButtonStyle.TextOnly]
+         * @param font the [KalugaFont] that the text is in
+         * @param textSize the size of the text
+         * @param textAlignment the [KalugaTextAlignment] of the text
+         * @param defaultStyle the [ButtonStateStyle.TextOnly]  that the button is in by default
+         * @param pressedStyle the [ButtonStateStyle.TextOnly]  that the button is in when pressed
+         * @param disabledStyle the [ButtonStateStyle.TextOnly]  that the button is in when disabled
+         */
         @Deprecated(
             "Use KalugaButtonStyle.TextOnly",
             replaceWith = ReplaceWith(
@@ -61,6 +76,16 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
             this.disabledStyle = disabledStyle
         }
 
+        /**
+         * Creates a [KalugaButtonStyle.TextOnly]
+         * @param textStyle the [KalugaTextStyle] that the text is in
+         * @param textAlignment the [KalugaTextAlignment] of the text
+         * @param backgroundColor the [KalugaColor] to set as the [KalugaBackgroundStyle.FillStyle.Solid.color] of the [KalugaBackgroundStyle] by default
+         * @param pressedBackgroundColor the [KalugaColor] to set as the [KalugaBackgroundStyle.FillStyle.Solid.color] of the [KalugaBackgroundStyle] when pressed
+         * @param disabledBackgroundColor the [KalugaColor] to set as the [KalugaBackgroundStyle.FillStyle.Solid.color] of the [KalugaBackgroundStyle] when disabled
+         * @param shape the [KalugaBackgroundStyle.Shape] of the [KalugaBackgroundStyle]
+         * @return a [ButtonStateStyle.TextOnly]
+         */
         @Deprecated(
             "Use KalugaButtonStyle.TextOnly",
             replaceWith = ReplaceWith(
@@ -79,16 +104,14 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
                     "        }",
             ),
         )
-        /**
-         * Constructor
-         * @param textStyle the [KalugaTextStyle] of the button text
-         * @param textAlignment the [KalugaTextAlignment] of the text of the button
-         * @param backgroundColor the [KalugaColor] of the background of the button when not in a special state
-         * @param pressedBackgroundColor the [KalugaColor] of the background of the button when pressed
-         * @param disabledBackgroundColor the [KalugaColor] of the background of the button when disabled
-         * @param shape the [KalugaBackgroundStyle.Shape] of the background of the button
-         */
-        operator fun invoke(textStyle: KalugaTextStyle, textAlignment: KalugaTextAlignment = KalugaTextAlignment.CENTER, backgroundColor: KalugaColor = DefaultColors.clear, pressedBackgroundColor: KalugaColor = backgroundColor, disabledBackgroundColor: KalugaColor = backgroundColor, shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle()) = textOnly {
+        operator fun invoke(
+            textStyle: KalugaTextStyle,
+            textAlignment: KalugaTextAlignment = KalugaTextAlignment.CENTER,
+            backgroundColor: KalugaColor = DefaultColors.clear,
+            pressedBackgroundColor: KalugaColor = backgroundColor,
+            disabledBackgroundColor: KalugaColor = backgroundColor,
+            shape: KalugaBackgroundStyle.Shape = KalugaBackgroundStyle.Shape.Rectangle(),
+        ) = textOnly {
             setTextStyle(textStyle)
             this.textAlignment = textAlignment
             defaultStyle {
@@ -102,6 +125,11 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
             }
         }
 
+        /**
+         * Creates a [KalugaButtonStyle.WithoutContent]
+         * @param dsl configures the [KalugaButtonStyle.WithoutContent] using a [KalugaButtonStyleDSL.WithoutContent]
+         * @return a [KalugaButtonStyle.WithoutContent]
+         */
         fun withoutContent(dsl: KalugaButtonStyleDSL.WithoutContent.() -> Unit): WithoutContent {
             val builder = KalugaButtonStyleDSL.WithoutContent().apply(dsl)
             return WithoutContent(
@@ -112,6 +140,11 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
             )
         }
 
+        /**
+         * Creates a [KalugaButtonStyle.TextOnly]
+         * @param dsl configures the [KalugaButtonStyle.TextOnly] using a [KalugaButtonStyleDSL.TextOnly]
+         * @return a [KalugaButtonStyle.TextOnly]
+         */
         fun textOnly(dsl: KalugaButtonStyleDSL.TextOnly.() -> Unit): TextOnly {
             val builder = KalugaButtonStyleDSL.TextOnly().apply(dsl)
             return TextOnly(
@@ -125,6 +158,11 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
             )
         }
 
+        /**
+         * Creates a [KalugaButtonStyle.ImageOnly]
+         * @param dsl configures the [KalugaButtonStyle.ImageOnly] using a [KalugaButtonStyleDSL.ImageOnly]
+         * @return a [KalugaButtonStyle.ImageOnly]
+         */
         fun imageOnly(dsl: KalugaButtonStyleDSL.ImageOnly.() -> Unit): ImageOnly {
             val builder = KalugaButtonStyleDSL.ImageOnly().apply(dsl)
             return ImageOnly(
@@ -136,6 +174,11 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
             )
         }
 
+        /**
+         * Creates a [KalugaButtonStyle.WithImageAndText]
+         * @param dsl configures the [KalugaButtonStyle.WithImageAndText] using a [KalugaButtonStyleDSL.WithImageAndText]
+         * @return a [KalugaButtonStyle.WithImageAndText]
+         */
         fun withImageAndText(dsl: KalugaButtonStyleDSL.WithImageAndText.() -> Unit): WithImageAndText {
             val builder = KalugaButtonStyleDSL.WithImageAndText().apply(dsl)
             return WithImageAndText(
@@ -160,7 +203,18 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
         }
     }
 
+    /**
+     * A [KalugaButtonStyle] for a [com.splendo.kaluga.resources.view.KalugaButton.WithoutText]
+     * @property StateStyle the [ButtonStateStyle.WithoutText] that [defaultStyle], [pressedStyle] and [disabledStyle] are in
+     */
     sealed interface WithoutText<StateStyle : ButtonStateStyle.WithoutText> : KalugaButtonStyle<StateStyle>
+
+    /**
+     * A [KalugaButtonStyle.WithoutText] that does not display any content
+     * @property defaultStyle the [ButtonStateStyle.WithoutContent] that the button is in by default
+     * @property pressedStyle the [ButtonStateStyle.WithoutContent] that the button is in when pressed
+     * @property disabledStyle the [ButtonStateStyle.WithoutContent] that the button is in when disabled
+     */
     data class WithoutContent internal constructor(
         override val padding: Padding,
         override val defaultStyle: ButtonStateStyle.WithoutContent,
@@ -168,6 +222,12 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
         override val disabledStyle: ButtonStateStyle.WithoutContent,
     ) : WithoutText<ButtonStateStyle.WithoutContent>
 
+    /**
+     * A [KalugaButtonStyle] for a [com.splendo.kaluga.resources.view.KalugaButton.WithText]
+     * @property font the [KalugaFont] that the text is in
+     * @property textSize the size of the text
+     * @property textAlignment the [KalugaTextAlignment] of the text
+     */
     sealed interface WithText<StateStyle : ButtonStateStyle.WithText> : KalugaButtonStyle<StateStyle> {
         val font: KalugaFont
         val textSize: Float
@@ -182,6 +242,12 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
         fun getStateTextStyle(isEnabled: Boolean, isPressed: Boolean) = KalugaTextStyle(font, getStateStyle(isEnabled, isPressed).textColor, textSize, textAlignment)
     }
 
+    /**
+     * A [KalugaButtonStyle.WithText] that only displays text
+     * @property defaultStyle the [ButtonStateStyle.TextOnly] that the button is in by default
+     * @property pressedStyle the [ButtonStateStyle.TextOnly] that the button is in when pressed
+     * @property disabledStyle the [ButtonStateStyle.TextOnly] that the button is in when disabled
+     */
     data class TextOnly internal constructor(
         override val font: KalugaFont,
         override val textSize: Float,
@@ -192,6 +258,11 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
         override val disabledStyle: ButtonStateStyle.TextOnly,
     ) : WithText<ButtonStateStyle.TextOnly>
 
+    /**
+     * A [KalugaButtonStyle] that adds an image to the [com.splendo.kaluga.resources.view.KalugaButton]
+     * @property StateStyle the [ButtonStateStyle.WithImage] that [defaultStyle], [pressedStyle] and [disabledStyle] are in
+     * @property imageSize the [ImageSize] of the [ButtonImage]
+     */
     sealed interface WithImage<StateStyle : ButtonStateStyle.WithImage> : KalugaButtonStyle<StateStyle> {
         val imageSize: ImageSize
 
@@ -204,6 +275,12 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
         fun getStateImage(isEnabled: Boolean, isPressed: Boolean) = getStateStyle(isEnabled, isPressed).image
     }
 
+    /**
+     * A [KalugaButtonStyle.WithImage] that only displays a [ButtonImage]
+     * @property defaultStyle the [ButtonStateStyle.ImageOnly] that the button is in by default
+     * @property pressedStyle the [ButtonStateStyle.ImageOnly] that the button is in when pressed
+     * @property disabledStyle the [ButtonStateStyle.ImageOnly] that the button is in when disabled
+     */
     data class ImageOnly internal constructor(
         override val imageSize: ImageSize,
         override val padding: Padding,
@@ -212,6 +289,14 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
         override val disabledStyle: ButtonStateStyle.ImageOnly,
     ) : WithoutText<ButtonStateStyle.ImageOnly>, WithImage<ButtonStateStyle.ImageOnly>
 
+    /**
+     * A [KalugaButtonStyle.WithText] and [KalugaButtonStyle.WithImage] that displays both text and a [ButtonImage]
+     * @property imageGravity the [ImageGravity] to determine placement of the [ButtonImage] relative to the text
+     * @property spacing the spacing between the [ButtonImage] and text
+     * @property defaultStyle the [ButtonStateStyle.WithImageAndText] that the button is in by default
+     * @property pressedStyle the [ButtonStateStyle.WithImageAndText] that the button is in when pressed
+     * @property disabledStyle the [ButtonStateStyle.WithImageAndText] that the button is in when disabled
+     */
     data class WithImageAndText internal constructor(
         override val font: KalugaFont,
         override val textSize: Float,
@@ -242,29 +327,91 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
     }
 }
 
+/**
+ * DSL for creating a [KalugaButtonStyle]
+ * @property StateStyle the [ButtonStateStyle] associated with the [KalugaButtonStyle] to create
+ * @property StateStyleDSL the [ButtonStateStyleDSL] for creating the [ButtonStateStyle]
+ */
 sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleDSL : ButtonStateStyleDSL> {
 
+    /**
+     * Configured the [Padding] of the content of the button
+     */
     var padding: Padding
+
+    /**
+     * the [StateStyle] that the button is in by default
+     */
     var defaultStyle: StateStyle
+
+    /**
+     * the [StateStyle] that the button is in when pressed.
+     * If `null` [defaultStyle] will be used
+     */
     var pressedStyle: StateStyle?
+
+    /**
+     * the [StateStyle] that the button is in when disabled.
+     * If `null` [defaultStyle] will be used
+     */
     var disabledStyle: StateStyle?
+
+    /**
+     * Sets [defaultStyle] using the creation using a [StateStyleDSL]
+     * The [StateStyleDSL] will be preconfigured with the layout of the previous [defaultStyle]
+     * @param dsl configures the [StateStyle] for [defaultStyle]. Will be preconfigured with the last known [defaultStyle]
+     */
     fun defaultStyle(dsl: StateStyleDSL.() -> Unit)
+
+    /**
+     * Sets [pressedStyle] using the creation using a [StateStyleDSL]
+     * The [StateStyleDSL] will be preconfigured with the layout of the previous [pressedStyle] or [defaultStyle] if `null`
+     * @param dsl configures the [StateStyle] for [pressedStyle]. Will be preconfigured with the last known [pressedStyle] of [defaultStyle] if `null`
+     */
     fun pressedStyle(dsl: StateStyleDSL.() -> Unit)
+
+    /**
+     * Sets [disabledStyle] using the creation using a [StateStyleDSL]
+     * The [StateStyleDSL] will be preconfigured with the layout of the previous [disabledStyle] or [defaultStyle] if `null`
+     * @param dsl configures the [StateStyle] for [disabledStyle]. Will be preconfigured with the last known [disabledStyle] of [defaultStyle] if `null`
+     */
     fun disabledStyle(dsl: StateStyleDSL.() -> Unit)
 
+    /**
+     * A [KalugaButtonStyleDSL] for creating a [KalugaButtonStyle.WithoutContent]
+     * @property defaultStyle the [ButtonStateStyle.WithoutContent] that the button is in by default
+     * @property pressedStyle the [ButtonStateStyle.WithoutContent] that the button is in when pressed. If `null` [defaultStyle] will be used.
+     * @property disabledStyle the [ButtonStateStyle.WithoutContent] that the button is in when disabled. If `null` [defaultStyle] will be used.
+     */
     class WithoutContent internal constructor() : KalugaButtonStyleDSL<ButtonStateStyle.WithoutContent, ButtonStateStyleDSL.WithoutContent> {
         override var padding: Padding = Padding.defaultButtonPadding
         override var defaultStyle: ButtonStateStyle.WithoutContent = ButtonStateStyle.withoutContent { }
         override var pressedStyle: ButtonStateStyle.WithoutContent? = null
         override var disabledStyle: ButtonStateStyle.WithoutContent? = null
+
+        /**
+         * Sets [defaultStyle] using the creation using a [ButtonStateStyleDSL.WithoutContent]
+         * The [ButtonStateStyleDSL.WithoutContent] will be preconfigured with the layout of the previous [defaultStyle]
+         * @param dsl configures the [ButtonStateStyleDSL.WithoutContent] for [defaultStyle]. Will be preconfigured with the last known [defaultStyle]
+         */
         override fun defaultStyle(dsl: ButtonStateStyleDSL.WithoutContent.() -> Unit) {
             defaultStyle = copyAndUpdateStateStyle(defaultStyle, dsl)
         }
 
+        /**
+         * Sets [pressedStyle] using the creation using a [ButtonStateStyleDSL.WithoutContent]
+         * The [ButtonStateStyleDSL.WithoutContent] will be preconfigured with the layout of the previous [pressedStyle] or [defaultStyle] if `null`
+         * @param dsl configures the [ButtonStateStyleDSL.WithoutContent] for [pressedStyle]. Will be preconfigured with the last known [pressedStyle] of [defaultStyle] if `null`
+         */
         override fun pressedStyle(dsl: ButtonStateStyleDSL.WithoutContent.() -> Unit) {
             pressedStyle = copyAndUpdateStateStyle(pressedStyle ?: defaultStyle, dsl)
         }
 
+        /**
+         * Sets [disabledStyle] using the creation using a [ButtonStateStyleDSL.WithoutContent]
+         * The [ButtonStateStyleDSL.WithoutContent] will be preconfigured with the layout of the previous [disabledStyle] or [defaultStyle] if `null`
+         * @param dsl configures the [ButtonStateStyleDSL.WithoutContent] for [disabledStyle]. Will be preconfigured with the last known [disabledStyle] of [defaultStyle] if `null`
+         */
         override fun disabledStyle(dsl: ButtonStateStyleDSL.WithoutContent.() -> Unit) {
             disabledStyle = copyAndUpdateStateStyle(disabledStyle ?: defaultStyle, dsl)
         }
@@ -275,13 +422,33 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
         }
     }
 
+    /**
+     * A [KalugaButtonStyleDSL] for creating a [KalugaButtonStyle.WithText]
+     * @property StateStyle the [ButtonStateStyle.WithText] associated with the [KalugaButtonStyle.WithText] to create
+     * @property StateStyleDSL the [ButtonStateStyleDSL.WithText] for creating the [ButtonStateStyle.WithText]
+     * @property font the [KalugaFont] that the text is in
+     * @property textSize the size of the text
+     * @property textAlignment the [KalugaTextAlignment] of the text
+     */
     sealed interface WithText<StateStyle : ButtonStateStyle.WithText, StateStyleDSL : ButtonStateStyleDSL.WithText> : KalugaButtonStyleDSL<StateStyle, StateStyleDSL> {
+
         var font: KalugaFont
         var textSize: Float
         var textAlignment: KalugaTextAlignment
+
+        /**
+         * Sets [font], [textSize], and [textAlignment] according to a [KalugaTextStyle] and [ButtonStateStyle.WithText.textColor] for all states
+         * @param textStyle the [KalugaTextStyle] to configure the button with
+         */
         fun setTextStyle(textStyle: KalugaTextStyle)
     }
 
+    /**
+     * A [KalugaButtonStyleDSL.WithText] for creating a [KalugaButtonStyle.TextOnly]
+     * @property defaultStyle the [ButtonStateStyle.TextOnly] that the button is in by default
+     * @property pressedStyle the [ButtonStateStyle.TextOnly] that the button is in when pressed. If `null` [defaultStyle] will be used.
+     * @property disabledStyle the [ButtonStateStyle.TextOnly] that the button is in when disabled. If `null` [defaultStyle] will be used.
+     */
     class TextOnly internal constructor() : WithText<ButtonStateStyle.TextOnly, ButtonStateStyleDSL.TextOnly> {
         override var font: KalugaFont = defaultBoldFont
         override var textSize: Float = 12.0f
@@ -290,14 +457,30 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
         override var defaultStyle: ButtonStateStyle.TextOnly = ButtonStateStyle.textOnly { }
         override var pressedStyle: ButtonStateStyle.TextOnly? = null
         override var disabledStyle: ButtonStateStyle.TextOnly? = null
+
+        /**
+         * Sets [defaultStyle] using the creation using a [ButtonStateStyleDSL.TextOnly]
+         * The [ButtonStateStyleDSL.TextOnly] will be preconfigured with the layout of the previous [defaultStyle]
+         * @param dsl configures the [ButtonStateStyleDSL.TextOnly] for [defaultStyle]. Will be preconfigured with the last known [defaultStyle]
+         */
         override fun defaultStyle(dsl: ButtonStateStyleDSL.TextOnly.() -> Unit) {
             defaultStyle = copyAndUpdateStateStyle(defaultStyle, dsl)
         }
 
+        /**
+         * Sets [pressedStyle] using the creation using a [ButtonStateStyleDSL.TextOnly]
+         * The [ButtonStateStyleDSL.TextOnly] will be preconfigured with the layout of the previous [pressedStyle] or [defaultStyle] if `null`
+         * @param dsl configures the [ButtonStateStyleDSL.TextOnly] for [pressedStyle]. Will be preconfigured with the last known [pressedStyle] of [defaultStyle] if `null`
+         */
         override fun pressedStyle(dsl: ButtonStateStyleDSL.TextOnly.() -> Unit) {
             pressedStyle = copyAndUpdateStateStyle(pressedStyle ?: defaultStyle, dsl)
         }
 
+        /**
+         * Sets [disabledStyle] using the creation using a [ButtonStateStyleDSL.TextOnly]
+         * The [ButtonStateStyleDSL.TextOnly] will be preconfigured with the layout of the previous [disabledStyle] or [defaultStyle] if `null`
+         * @param dsl configures the [ButtonStateStyleDSL.TextOnly] for [disabledStyle]. Will be preconfigured with the last known [disabledStyle] of [defaultStyle] if `null`
+         */
         override fun disabledStyle(dsl: ButtonStateStyleDSL.TextOnly.() -> Unit) {
             disabledStyle = copyAndUpdateStateStyle(disabledStyle ?: defaultStyle, dsl)
         }
@@ -318,24 +501,52 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
         }
     }
 
+    /**
+     * A [KalugaButtonStyleDSL] for creating a [KalugaButtonStyle.WithImage]
+     * @property StateStyle the [ButtonStateStyle.WithImage] associated with the [KalugaButtonStyle.WithImage] to create
+     * @property StateStyleDSL the [ButtonStateStyleDSL.WithImage] for creating the [ButtonStateStyle.WithImage]
+     * @property imageSize the [ImageSize] of the [ButtonImage]
+     */
     sealed interface WithImage<StateStyle : ButtonStateStyle.WithImage, StateStyleDSL : ButtonStateStyleDSL.WithImage> : KalugaButtonStyleDSL<StateStyle, StateStyleDSL> {
         var imageSize: ImageSize
     }
 
+    /**
+     * A [KalugaButtonStyleDSL.WithImage] for creating a [KalugaButtonStyle.ImageOnly]
+     * @property defaultStyle the [ButtonStateStyle.ImageOnly] that the button is in by default
+     * @property pressedStyle the [ButtonStateStyle.ImageOnly] that the button is in when pressed. If `null` [defaultStyle] will be used.
+     * @property disabledStyle the [ButtonStateStyle.ImageOnly] that the button is in when disabled. If `null` [defaultStyle] will be used.
+     */
     class ImageOnly internal constructor() : WithImage<ButtonStateStyle.ImageOnly, ButtonStateStyleDSL.ImageOnly> {
         override var imageSize: ImageSize = ImageSize.Intrinsic
         override var padding: Padding = Padding.defaultButtonPadding
         override var defaultStyle: ButtonStateStyle.ImageOnly = ButtonStateStyle.imageOnly { }
         override var pressedStyle: ButtonStateStyle.ImageOnly? = null
         override var disabledStyle: ButtonStateStyle.ImageOnly? = null
+
+        /**
+         * Sets [defaultStyle] using the creation using a [ButtonStateStyleDSL.ImageOnly]
+         * The [ButtonStateStyleDSL.ImageOnly] will be preconfigured with the layout of the previous [defaultStyle]
+         * @param dsl configures the [ButtonStateStyleDSL.ImageOnly] for [defaultStyle]. Will be preconfigured with the last known [defaultStyle]
+         */
         override fun defaultStyle(dsl: ButtonStateStyleDSL.ImageOnly.() -> Unit) {
             defaultStyle = copyAndUpdateStateStyle(defaultStyle, dsl)
         }
 
+        /**
+         * Sets [pressedStyle] using the creation using a [ButtonStateStyleDSL.ImageOnly]
+         * The [ButtonStateStyleDSL.ImageOnly] will be preconfigured with the layout of the previous [pressedStyle] or [defaultStyle] if `null`
+         * @param dsl configures the [ButtonStateStyleDSL.ImageOnly] for [pressedStyle]. Will be preconfigured with the last known [pressedStyle] of [defaultStyle] if `null`
+         */
         override fun pressedStyle(dsl: ButtonStateStyleDSL.ImageOnly.() -> Unit) {
             pressedStyle = copyAndUpdateStateStyle(pressedStyle ?: defaultStyle, dsl)
         }
 
+        /**
+         * Sets [disabledStyle] using the creation using a [ButtonStateStyleDSL.ImageOnly]
+         * The [ButtonStateStyleDSL.ImageOnly] will be preconfigured with the layout of the previous [disabledStyle] or [defaultStyle] if `null`
+         * @param dsl configures the [ButtonStateStyleDSL.ImageOnly] for [disabledStyle]. Will be preconfigured with the last known [disabledStyle] of [defaultStyle] if `null`
+         */
         override fun disabledStyle(dsl: ButtonStateStyleDSL.ImageOnly.() -> Unit) {
             disabledStyle = copyAndUpdateStateStyle(disabledStyle ?: defaultStyle, dsl)
         }
@@ -346,7 +557,17 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
         }
     }
 
-    class WithImageAndText internal constructor() : WithText<ButtonStateStyle.WithImageAndText, ButtonStateStyleDSL.WithImageAndText>, WithImage<ButtonStateStyle.WithImageAndText, ButtonStateStyleDSL.WithImageAndText> {
+    /**
+     * A [KalugaButtonStyleDSL.WithText] and [KalugaButtonStyleDSL.WithImage] for creating a [KalugaButtonStyle.WithImageAndText]
+     * @property imageGravity the [ImageGravity] to determine placement of the [ButtonImage] relative to the text
+     * @property spacing the spacing between the [ButtonImage] and text
+     * @property defaultStyle the [ButtonStateStyle.WithImageAndText] that the button is in by default
+     * @property pressedStyle the [ButtonStateStyle.WithImageAndText] that the button is in when pressed. If `null` [defaultStyle] will be used.
+     * @property disabledStyle the [ButtonStateStyle.WithImageAndText] that the button is in when disabled. If `null` [defaultStyle] will be used.
+     */
+    class WithImageAndText internal constructor() :
+        WithText<ButtonStateStyle.WithImageAndText, ButtonStateStyleDSL.WithImageAndText>,
+        WithImage<ButtonStateStyle.WithImageAndText, ButtonStateStyleDSL.WithImageAndText> {
         override var font: KalugaFont = defaultBoldFont
         override var textSize: Float = 12.0f
         override var textAlignment: KalugaTextAlignment = KalugaTextAlignment.CENTER
@@ -357,14 +578,30 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
         override var defaultStyle: ButtonStateStyle.WithImageAndText = ButtonStateStyle.withImageAndText { }
         override var pressedStyle: ButtonStateStyle.WithImageAndText? = null
         override var disabledStyle: ButtonStateStyle.WithImageAndText? = null
+
+        /**
+         * Sets [defaultStyle] using the creation using a [ButtonStateStyleDSL.WithImageAndText]
+         * The [ButtonStateStyleDSL.WithImageAndText] will be preconfigured with the layout of the previous [defaultStyle]
+         * @param dsl configures the [ButtonStateStyleDSL.WithImageAndText] for [defaultStyle]. Will be preconfigured with the last known [defaultStyle]
+         */
         override fun defaultStyle(dsl: ButtonStateStyleDSL.WithImageAndText.() -> Unit) {
             defaultStyle = copyAndUpdateStateStyle(defaultStyle, dsl)
         }
 
+        /**
+         * Sets [pressedStyle] using the creation using a [ButtonStateStyleDSL.WithImageAndText]
+         * The [ButtonStateStyleDSL.WithImageAndText] will be preconfigured with the layout of the previous [pressedStyle] or [defaultStyle] if `null`
+         * @param dsl configures the [ButtonStateStyleDSL.WithImageAndText] for [pressedStyle]. Will be preconfigured with the last known [pressedStyle] of [defaultStyle] if `null`
+         */
         override fun pressedStyle(dsl: ButtonStateStyleDSL.WithImageAndText.() -> Unit) {
             pressedStyle = copyAndUpdateStateStyle(pressedStyle ?: defaultStyle, dsl)
         }
 
+        /**
+         * Sets [disabledStyle] using the creation using a [ButtonStateStyleDSL.WithImageAndText]
+         * The [ButtonStateStyleDSL.WithImageAndText] will be preconfigured with the layout of the previous [disabledStyle] or [defaultStyle] if `null`
+         * @param dsl configures the [ButtonStateStyleDSL.WithImageAndText] for [disabledStyle]. Will be preconfigured with the last known [disabledStyle] of [defaultStyle] if `null`
+         */
         override fun disabledStyle(dsl: ButtonStateStyleDSL.WithImageAndText.() -> Unit) {
             disabledStyle = copyAndUpdateStateStyle(disabledStyle ?: defaultStyle, dsl)
         }
@@ -386,37 +623,4 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
                 apply(dsl)
             }
     }
-}
-
-sealed interface ButtonImage {
-
-    data object Hidden : ButtonImage
-
-    data class Image(val image: KalugaImage) : ButtonImage
-
-    data class Tinted(val image: TintedImage) : ButtonImage
-}
-
-sealed interface ImageSize {
-    data object Intrinsic : ImageSize
-
-    data class Sized(val width: Float, val height: Float) : ImageSize
-}
-
-enum class ImageGravity {
-    START,
-    END,
-    LEFT,
-    RIGHT,
-    TOP,
-    BOTTOM,
-}
-
-data class Padding(val start: Float = 0.0f, val end: Float = 0.0f, val top: Float = 0.0f, val bottom: Float = 0.0f) {
-
-    companion object {
-        val defaultButtonPadding = Padding(horizontal = 16.0f, vertical = 8.0f)
-    }
-
-    constructor(horizontal: Float = 0.0f, vertical: Float = 0.0f) : this(horizontal, horizontal, vertical, vertical)
 }

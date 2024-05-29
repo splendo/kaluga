@@ -103,7 +103,10 @@ fun UIButton.applyStyle(buttonStyle: KalugaButtonStyle<*>) {
         configuration = UIButtonConfiguration.plainButtonConfiguration().apply {
             with(buttonStyle.padding) {
                 contentInsets = NSDirectionalEdgeInsetsMake(
-                    top.toDouble(), start.toDouble(), bottom.toDouble(), end.toDouble()
+                    top.toDouble(),
+                    start.toDouble(),
+                    bottom.toDouble(),
+                    end.toDouble(),
                 )
             }
             cornerStyle = UIButtonConfigurationCornerStyleFixed
@@ -130,8 +133,8 @@ fun UIButton.applyStyle(buttonStyle: KalugaButtonStyle<*>) {
                     top.toDouble(),
                     (if (isLeftToRight) start else end).toDouble(),
                     bottom.toDouble(),
-                    (if (isLeftToRight) end else start).toDouble()
-                )
+                    (if (isLeftToRight) end else start).toDouble(),
+                ),
             )
         }
 
@@ -169,7 +172,7 @@ private fun UIButton.applyButtonBackgroundStateStyle(style: ButtonStateStyle, st
 }
 
 private fun UIButtonConfiguration.applyButtonBackgroundStateStyle(style: KalugaButtonStyle<*>, button: UIButton) {
-    val stateStyle =  when (button.state) {
+    val stateStyle = when (button.state) {
         UIControlStateDisabled -> style.disabledStyle
         UIControlStateHighlighted -> style.pressedStyle
         else -> style.defaultStyle
@@ -179,18 +182,18 @@ private fun UIButtonConfiguration.applyButtonBackgroundStateStyle(style: KalugaB
 }
 
 private fun UIButton.backgroundImage(style: ButtonStateStyle): UIImage = try {
-        val bounds = bounds
-        UIGraphicsBeginImageContext(CGSizeMake(bounds.useContents { size.width }, bounds.useContents { size.height }))
-        CALayer().apply {
-            frame = bounds
-            applyBackgroundStyle(style.backgroundStyle, bounds)
-            renderInContext(UIGraphicsGetCurrentContext())
-        }
-
-        UIGraphicsGetImageFromCurrentImageContext()!!
-    } finally {
-        UIGraphicsEndImageContext()
+    val bounds = bounds
+    UIGraphicsBeginImageContext(CGSizeMake(bounds.useContents { size.width }, bounds.useContents { size.height }))
+    CALayer().apply {
+        frame = bounds
+        applyBackgroundStyle(style.backgroundStyle, bounds)
+        renderInContext(UIGraphicsGetCurrentContext())
     }
+
+    UIGraphicsGetImageFromCurrentImageContext()!!
+} finally {
+    UIGraphicsEndImageContext()
+}
 
 private fun UIButtonConfiguration.applyImageStyle(buttonStyle: KalugaButtonStyle.WithImage<*>, state: UIControlState) {
     when (buttonStyle) {
@@ -198,7 +201,7 @@ private fun UIButtonConfiguration.applyImageStyle(buttonStyle: KalugaButtonStyle
         is KalugaButtonStyle.WithImageAndText -> applyImageGravity(buttonStyle.imageGravity, buttonStyle.spacing)
     }
 
-    val stateStyle =  when (state) {
+    val stateStyle = when (state) {
         UIControlStateDisabled -> buttonStyle.disabledStyle
         UIControlStateHighlighted -> buttonStyle.pressedStyle
         else -> buttonStyle.defaultStyle
