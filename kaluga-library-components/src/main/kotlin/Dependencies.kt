@@ -130,7 +130,7 @@ object Dependencies {
 
         private const val groupBase = "androidx"
         private const val fragmentGroup = "$groupBase.fragment"
-        private const val fragmentVersion = "1.7.0"
+        private const val fragmentVersion = "1.7.1"
 
         object Activity {
             private const val group = "$groupBase.activity"
@@ -139,7 +139,7 @@ object Dependencies {
             val Ktx = Dependency(group, "activity-ktx", version)
             val Compose = Dependency(group, "activity-compose", version)
         }
-        val AppCompat = Dependency("$groupBase.appcompat", "appcompat", "1.6.1")
+        val AppCompat = Dependency("$groupBase.appcompat", "appcompat", "1.7.0")
         val ArchCore = Dependency("$groupBase.arch.core", "core-testing", "2.2.0")
         val Browser = Dependency("$groupBase.browser", "browser", "1.8.0")
         object Compose {
@@ -159,7 +159,7 @@ object Dependencies {
         val FragmentKtx = Dependency(fragmentGroup, "fragment-ktx", fragmentVersion)
         object Lifecycle {
             private const val group = "$groupBase.lifecycle"
-            private const val version = "2.7.0"
+            private const val version = "2.8.1"
 
             val LiveData = Dependency(group, "lifecycle-livedata-ktx", version)
             val Runtime = Dependency(group, "lifecycle-runtime-ktx", version)
