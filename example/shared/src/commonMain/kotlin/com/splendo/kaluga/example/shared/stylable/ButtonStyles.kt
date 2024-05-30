@@ -18,313 +18,446 @@
 package com.splendo.kaluga.example.shared.stylable
 
 import com.splendo.kaluga.resources.DefaultColors
+import com.splendo.kaluga.resources.KalugaImage
+import com.splendo.kaluga.resources.asImage
 import com.splendo.kaluga.resources.defaultBoldFont
 import com.splendo.kaluga.resources.defaultFont
 import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.ButtonStateStyle
 import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
 import com.splendo.kaluga.resources.stylable.GradientStyle
+import com.splendo.kaluga.resources.stylable.ImageGravity
+import com.splendo.kaluga.resources.stylable.ImageSize
+import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
+import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 
 object ButtonStyles {
 
     val default by lazy {
-        KalugaButtonStyle(
-            TextStyles.defaultTitle,
-            backgroundColor = DefaultColors.lightGray,
-            pressedBackgroundColor = DefaultColors.gray,
-            disabledBackgroundColor = DefaultColors.dimGray,
-            shape = KalugaBackgroundStyle.Shape.Rectangle(4.0f),
-        )
+        KalugaButtonStyle.textOnly {
+            setTextStyle(TextStyles.defaultTitle)
+            setBackground(
+                defaultColor = DefaultColors.lightGray,
+                pressedColor = DefaultColors.gray,
+                disabledColor = DefaultColors.dimGray,
+                shape = KalugaBackgroundStyle.Shape.Rectangle(4.0f),
+            )
+        }
     }
 
     val textButton by lazy {
-        KalugaButtonStyle(TextStyles.redText)
+        KalugaButtonStyle.textOnly {
+            setTextStyle(TextStyles.redText)
+            setBackground(DefaultColors.clear, shape = KalugaBackgroundStyle.Shape.Rectangle())
+        }
     }
+
     val redButton by lazy {
-        KalugaButtonStyle(
-            TextStyles.whiteText,
-            backgroundColor = DefaultColors.red,
-            pressedBackgroundColor = DefaultColors.maroon,
-            disabledBackgroundColor = DefaultColors.lightGray,
-        )
+        KalugaButtonStyle.textOnly {
+            setTextStyle(TextStyles.whiteText)
+            setBackground(
+                defaultColor = DefaultColors.red,
+                pressedColor = DefaultColors.maroon,
+                disabledColor = DefaultColors.lightGray,
+                shape = KalugaBackgroundStyle.Shape.Rectangle(),
+            )
+        }
     }
     val roundedButton by lazy {
-        KalugaButtonStyle(
-            defaultFont,
-            12.0f,
-            defaultStyle = ButtonStateStyle(
-                DefaultColors.white,
-                DefaultColors.deepSkyBlue,
-                KalugaBackgroundStyle.Shape.Rectangle(
-                    10.0f,
-                    setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT),
-                ),
-            ),
-            pressedStyle = ButtonStateStyle(
-                DefaultColors.azure,
-                DefaultColors.lightSkyBlue,
-                KalugaBackgroundStyle.Shape.Rectangle(
-                    5.0f,
-                    setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT),
-                ),
-            ),
-            disabledStyle = ButtonStateStyle(DefaultColors.black, DefaultColors.lightGray, KalugaBackgroundStyle.Shape.Rectangle(10.0f)),
-        )
+        KalugaButtonStyle.textOnly {
+            font = defaultFont
+            textSize = 12.0f
+            defaultStyle {
+                textColor = DefaultColors.white
+                setBackgroundStyle(
+                    DefaultColors.deepSkyBlue,
+                    KalugaBackgroundStyle.Shape.Rectangle(
+                        10.0f,
+                        setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT),
+                    ),
+                )
+            }
+            pressedStyle {
+                textColor = DefaultColors.azure
+                setBackgroundStyle(
+                    DefaultColors.lightSkyBlue,
+                    KalugaBackgroundStyle.Shape.Rectangle(
+                        5.0f,
+                        setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT),
+                    ),
+                )
+            }
+            disabledStyle {
+                textColor = DefaultColors.black
+                setBackgroundStyle(DefaultColors.lightGray, KalugaBackgroundStyle.Shape.Rectangle(10.0f))
+            }
+        }
     }
     val ovalButton by lazy {
-        KalugaButtonStyle(
-            defaultFont,
-            12.0f,
-            defaultStyle = ButtonStateStyle(DefaultColors.white, DefaultColors.deepSkyBlue, KalugaBackgroundStyle.Shape.Oval),
-            pressedStyle = ButtonStateStyle(DefaultColors.azure, DefaultColors.lightSkyBlue, KalugaBackgroundStyle.Shape.Oval),
-            disabledStyle = ButtonStateStyle(DefaultColors.black, DefaultColors.lightGray, KalugaBackgroundStyle.Shape.Oval),
-        )
+        KalugaButtonStyle.textOnly {
+            setTextStyle(KalugaTextStyle(defaultFont, DefaultColors.white, 12.0f), DefaultColors.azure, DefaultColors.black)
+            setBackground(
+                defaultColor = DefaultColors.deepSkyBlue,
+                pressedColor = DefaultColors.lightSkyBlue,
+                disabledColor = DefaultColors.lightGray,
+                shape = KalugaBackgroundStyle.Shape.Oval,
+            )
+        }
     }
     val redButtonWithStroke by lazy {
-        KalugaButtonStyle(
-            defaultFont,
-            12.0f,
-            defaultStyle = ButtonStateStyle(
-                DefaultColors.white,
-                KalugaBackgroundStyle(
+        KalugaButtonStyle.textOnly {
+            font = defaultFont
+            textSize = 12.0f
+            defaultStyle = ButtonStateStyle.textOnly {
+                textColor = DefaultColors.white
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.red),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.white),
                     KalugaBackgroundStyle.Shape.Rectangle(),
-                ),
-            ),
-            pressedStyle = ButtonStateStyle(
-                DefaultColors.white,
-                KalugaBackgroundStyle(
+                )
+            }
+            pressedStyle = ButtonStateStyle.textOnly {
+                textColor = DefaultColors.white
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.maroon),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.mistyRose),
                     KalugaBackgroundStyle.Shape.Rectangle(),
-                ),
-            ),
-            disabledStyle = ButtonStateStyle(
-                DefaultColors.black,
-                KalugaBackgroundStyle(
+                )
+            }
+            disabledStyle = ButtonStateStyle.textOnly {
+                textColor = DefaultColors.black
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.lightGray),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.black),
                     KalugaBackgroundStyle.Shape.Rectangle(),
-                ),
-            ),
-        )
+                )
+            }
+        }
     }
     val roundedButtonWithStroke by lazy {
-        KalugaButtonStyle(
-            defaultFont,
-            12.0f,
-            defaultStyle = ButtonStateStyle(
-                DefaultColors.white,
-                KalugaBackgroundStyle(
+        KalugaButtonStyle.textOnly {
+            font = defaultFont
+            textSize = 12.0f
+            defaultStyle {
+                textColor = DefaultColors.white
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.deepSkyBlue),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.white),
                     KalugaBackgroundStyle.Shape.Rectangle(
                         10.0f,
                         setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT),
                     ),
-                ),
-            ),
-            pressedStyle = ButtonStateStyle(
-                DefaultColors.azure,
-                KalugaBackgroundStyle(
+                )
+            }
+            pressedStyle {
+                textColor = DefaultColors.azure
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.lightSkyBlue),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.azure),
                     KalugaBackgroundStyle.Shape.Rectangle(
                         5.0f,
                         setOf(KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT),
                     ),
-                ),
-            ),
-            disabledStyle = ButtonStateStyle(
-                DefaultColors.black,
-                KalugaBackgroundStyle(
+                )
+            }
+            disabledStyle {
+                textColor = DefaultColors.black
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.lightGray),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.black),
                     KalugaBackgroundStyle.Shape.Rectangle(10.0f),
-                ),
-            ),
-        )
+                )
+            }
+        }
     }
     val ovalButtonWithStroke by lazy {
-        KalugaButtonStyle(
-            defaultFont,
-            12.0f,
-            defaultStyle = ButtonStateStyle(
-                DefaultColors.white,
-                KalugaBackgroundStyle(
+        KalugaButtonStyle.textOnly {
+            font = defaultFont
+            textSize = 12.0f
+            defaultStyle {
+                textColor = DefaultColors.white
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.deepSkyBlue),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.white),
                     KalugaBackgroundStyle.Shape.Oval,
-                ),
-            ),
-            pressedStyle = ButtonStateStyle(
-                DefaultColors.azure,
-                KalugaBackgroundStyle(
+                )
+            }
+            pressedStyle {
+                textColor = DefaultColors.azure
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.lightSkyBlue),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.azure),
                     KalugaBackgroundStyle.Shape.Oval,
-                ),
-            ),
-            disabledStyle = ButtonStateStyle(
-                DefaultColors.black,
-                KalugaBackgroundStyle(
+                )
+            }
+            disabledStyle {
+                textColor = DefaultColors.black
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Solid(DefaultColors.lightGray),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.black),
                     KalugaBackgroundStyle.Shape.Oval,
-                ),
-            ),
-        )
+                )
+            }
+        }
     }
 
     val linearGradientButton by lazy {
-        KalugaButtonStyle(
-            defaultFont,
-            12.0f,
-            defaultStyle = ButtonStateStyle(
-                DefaultColors.white,
-                KalugaBackgroundStyle(
+        KalugaButtonStyle.textOnly {
+            font = defaultFont
+            textSize = 12.0f
+            defaultStyle {
+                textColor = DefaultColors.white
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Gradient(
                         GradientStyle.Linear(listOf(DefaultColors.deepSkyBlue, DefaultColors.lightSkyBlue), GradientStyle.Linear.Orientation.LEFT_RIGHT),
                     ),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.white),
                     KalugaBackgroundStyle.Shape.Rectangle(),
-                ),
-            ),
-            pressedStyle = ButtonStateStyle(
-                DefaultColors.azure,
-                KalugaBackgroundStyle(
+                )
+            }
+            pressedStyle {
+                textColor = DefaultColors.azure
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Gradient(
                         GradientStyle.Linear(listOf(DefaultColors.midnightBlue, DefaultColors.deepSkyBlue), GradientStyle.Linear.Orientation.LEFT_RIGHT),
                     ),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.mistyRose),
                     KalugaBackgroundStyle.Shape.Rectangle(),
-                ),
-            ),
-            disabledStyle = ButtonStateStyle(
-                DefaultColors.black,
-                KalugaBackgroundStyle(
+                )
+            }
+            disabledStyle {
+                textColor = DefaultColors.black
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Gradient(
                         GradientStyle.Linear(listOf(DefaultColors.lightGray, DefaultColors.gray), GradientStyle.Linear.Orientation.LEFT_RIGHT),
                     ),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.black),
                     KalugaBackgroundStyle.Shape.Rectangle(),
-                ),
-            ),
-        )
+                )
+            }
+        }
     }
 
     val radialGradientButton by lazy {
-        KalugaButtonStyle(
-            defaultFont,
-            12.0f,
-            defaultStyle = ButtonStateStyle(
-                DefaultColors.white,
-                KalugaBackgroundStyle(
+        KalugaButtonStyle.textOnly {
+            font = defaultFont
+            textSize = 12.0f
+            defaultStyle {
+                textColor = DefaultColors.white
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Gradient(
                         GradientStyle.Radial(listOf(DefaultColors.deepSkyBlue, DefaultColors.lightSkyBlue), 50.0f, GradientStyle.CenterPoint(0.3f, 0.3f)),
                     ),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.white),
                     KalugaBackgroundStyle.Shape.Rectangle(),
-                ),
-            ),
-            pressedStyle = ButtonStateStyle(
-                DefaultColors.azure,
-                KalugaBackgroundStyle(
+                )
+            }
+            pressedStyle {
+                textColor = DefaultColors.azure
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Gradient(
                         GradientStyle.Radial(listOf(DefaultColors.midnightBlue, DefaultColors.deepSkyBlue), 25.0f, GradientStyle.CenterPoint(0.6f, 0.6f)),
                     ),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.mistyRose),
                     KalugaBackgroundStyle.Shape.Rectangle(),
-                ),
-            ),
-            disabledStyle = ButtonStateStyle(
-                DefaultColors.black,
-                KalugaBackgroundStyle(
+                )
+            }
+            disabledStyle {
+                textColor = DefaultColors.black
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Gradient(GradientStyle.Radial(listOf(DefaultColors.lightGray, DefaultColors.gray), 50.0f)),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.black),
                     KalugaBackgroundStyle.Shape.Rectangle(),
-                ),
-            ),
-        )
+                )
+            }
+        }
     }
 
     val angularGradientButton by lazy {
-        KalugaButtonStyle(
-            defaultFont,
-            12.0f,
-            defaultStyle = ButtonStateStyle(
-                DefaultColors.white,
-                KalugaBackgroundStyle(
+        KalugaButtonStyle.textOnly {
+            font = defaultFont
+            textSize = 12.0f
+            defaultStyle {
+                textColor = DefaultColors.white
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Gradient(
                         GradientStyle.Angular(listOf(DefaultColors.deepSkyBlue, DefaultColors.lightSkyBlue), GradientStyle.CenterPoint(0.3f, 0.3f)),
                     ),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.white),
                     KalugaBackgroundStyle.Shape.Rectangle(),
-                ),
-            ),
-            pressedStyle = ButtonStateStyle(
-                DefaultColors.azure,
-                KalugaBackgroundStyle(
+                )
+            }
+            pressedStyle {
+                textColor = DefaultColors.azure
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Gradient(
                         GradientStyle.Angular(listOf(DefaultColors.midnightBlue, DefaultColors.deepSkyBlue), GradientStyle.CenterPoint(0.6f, 0.6f)),
                     ),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.mistyRose),
                     KalugaBackgroundStyle.Shape.Rectangle(),
-                ),
-            ),
-            disabledStyle = ButtonStateStyle(
-                DefaultColors.black,
-                KalugaBackgroundStyle(
+                )
+            }
+            disabledStyle {
+                textColor = DefaultColors.black
+                backgroundStyle = KalugaBackgroundStyle(
                     KalugaBackgroundStyle.FillStyle.Gradient(GradientStyle.Angular(listOf(DefaultColors.lightGray, DefaultColors.gray))),
                     KalugaBackgroundStyle.StrokeStyle.Stroke(2.0f, DefaultColors.black),
                     KalugaBackgroundStyle.Shape.Rectangle(),
-                ),
-            ),
-        )
+                )
+            }
+        }
     }
 
-    val mediaButton by lazy {
-        KalugaButtonStyle(
-            defaultBoldFont,
-            12.0f,
-            defaultStyle = ButtonStateStyle(
-                DefaultColors.black,
-                DefaultColors.lightGray,
-                KalugaBackgroundStyle.Shape.Oval,
-            ),
-            pressedStyle = ButtonStateStyle(
-                DefaultColors.black,
-                DefaultColors.dimGray,
-                KalugaBackgroundStyle.Shape.Oval,
-            ),
-            disabledStyle = ButtonStateStyle(
-                DefaultColors.dimGray,
-                DefaultColors.gray,
-                KalugaBackgroundStyle.Shape.Oval,
-            ),
-        )
+    private fun createTextButtonWithImageStyle(gravity: ImageGravity) = KalugaButtonStyle.withImageAndText {
+        imageSize = ImageSize.Sized(24.0f, 24.0f)
+        spacing = 8.0f
+        imageGravity = gravity
+        val textAlignment = when (gravity) {
+            ImageGravity.LEFT -> KalugaTextAlignment.LEFT
+            ImageGravity.START -> KalugaTextAlignment.START
+            ImageGravity.RIGHT -> KalugaTextAlignment.RIGHT
+            ImageGravity.END -> KalugaTextAlignment.END
+            ImageGravity.BOTTOM -> KalugaTextAlignment.CENTER
+            ImageGravity.TOP -> KalugaTextAlignment.CENTER
+        }
+        setTextStyle(KalugaTextStyle(defaultBoldFont, DefaultColors.white, 12.0f, textAlignment), DefaultColors.azure, DefaultColors.black)
+        setImage("star".asImage()!!, DefaultColors.gold, DefaultColors.goldenrod, DefaultColors.white)
+        setBackground(DefaultColors.lightGray, DefaultColors.gray, DefaultColors.dimGray)
     }
 
-    val mediaButtonFocus by lazy {
-        KalugaButtonStyle(
-            defaultBoldFont,
-            12.0f,
-            defaultStyle = ButtonStateStyle(
-                DefaultColors.azure,
-                DefaultColors.lightGray,
-                KalugaBackgroundStyle.Shape.Oval,
-            ),
-            pressedStyle = ButtonStateStyle(
-                DefaultColors.azure,
-                DefaultColors.dimGray,
-                KalugaBackgroundStyle.Shape.Oval,
-            ),
-            disabledStyle = ButtonStateStyle(
-                DefaultColors.dimGray,
-                DefaultColors.gray,
-                KalugaBackgroundStyle.Shape.Oval,
-            ),
-        )
+    val textButtonWithImageLeft by lazy {
+        createTextButtonWithImageStyle(ImageGravity.LEFT)
+    }
+
+    val textButtonWithImageStart by lazy {
+        createTextButtonWithImageStyle(ImageGravity.START)
+    }
+
+    val textButtonWithImageRight by lazy {
+        createTextButtonWithImageStyle(ImageGravity.RIGHT)
+    }
+
+    val textButtonWithImageEnd by lazy {
+        createTextButtonWithImageStyle(ImageGravity.END)
+    }
+
+    val textButtonWithImageTop by lazy {
+        createTextButtonWithImageStyle(ImageGravity.TOP)
+    }
+
+    val textButtonWithImageBottom by lazy {
+        createTextButtonWithImageStyle(ImageGravity.BOTTOM)
+    }
+
+    val textButtonWithImageIntrinsicSize by lazy {
+        KalugaButtonStyle.withImageAndText {
+            imageSize = ImageSize.Intrinsic
+            spacing = 8.0f
+            imageGravity = ImageGravity.START
+            setTextStyle(KalugaTextStyle(defaultBoldFont, DefaultColors.white, 12.0f, KalugaTextAlignment.LEFT), DefaultColors.azure, DefaultColors.black)
+            setImage("star".asImage()!!, DefaultColors.gold, DefaultColors.goldenrod, DefaultColors.white)
+            setBackground(DefaultColors.lightGray, DefaultColors.gray, DefaultColors.dimGray)
+        }
+    }
+
+    val textButtonWithStateImage by lazy {
+        KalugaButtonStyle.withImageAndText {
+            font = defaultBoldFont
+            textSize = 12.0f
+            textAlignment = KalugaTextAlignment.LEFT
+            imageSize = ImageSize.Sized(24.0f, 24.0f)
+            spacing = 8.0f
+            imageGravity = ImageGravity.LEFT
+            defaultStyle {
+                textColor = DefaultColors.white
+                setBackgroundStyle(DefaultColors.lightGray)
+                setImage("star".asImage()!!, tint = DefaultColors.gold)
+            }
+            pressedStyle {
+                textColor = DefaultColors.azure
+                setBackgroundStyle(DefaultColors.gray)
+                setImage("check".asImage()!!, tint = DefaultColors.goldenrod)
+            }
+            disabledStyle {
+                textColor = DefaultColors.black
+                setBackgroundStyle(DefaultColors.dimGray)
+                setImage("cancel".asImage()!!, tint = DefaultColors.white)
+            }
+        }
+    }
+
+    val imageOnly by lazy {
+        KalugaButtonStyle.imageOnly {
+            imageSize = ImageSize.Sized(24.0f, 24.0f)
+            defaultStyle {
+                setBackgroundStyle(DefaultColors.lightGray)
+                setImage("star".asImage()!!, tint = DefaultColors.gold)
+            }
+            pressedStyle {
+                setBackgroundStyle(DefaultColors.gray)
+                setImage("check".asImage()!!, tint = DefaultColors.goldenrod)
+            }
+            disabledStyle {
+                setBackgroundStyle(DefaultColors.dimGray)
+                setImage("cancel".asImage()!!, tint = DefaultColors.white)
+            }
+        }
+    }
+
+    val imageOnlyIntrinsic by lazy {
+        KalugaButtonStyle.imageOnly {
+            imageSize = ImageSize.Intrinsic
+            defaultStyle {
+                setBackgroundStyle(DefaultColors.lightGray)
+                setImage("star".asImage()!!, tint = DefaultColors.gold)
+            }
+            pressedStyle {
+                setBackgroundStyle(DefaultColors.gray)
+                setImage("check".asImage()!!, tint = DefaultColors.goldenrod)
+            }
+            disabledStyle {
+                setBackgroundStyle(DefaultColors.dimGray)
+                setImage("cancel".asImage()!!, tint = DefaultColors.white)
+            }
+        }
+    }
+
+    val noContent by lazy {
+        KalugaButtonStyle.withoutContent {
+            setBackground(DefaultColors.lightGray, DefaultColors.gray, DefaultColors.dimGray)
+        }
+    }
+
+    fun mediaButton(image: KalugaImage) = KalugaButtonStyle.imageOnly {
+        setImage(image, DefaultColors.black)
+        setBackground(DefaultColors.lightGray, DefaultColors.dimGray, DefaultColors.gray, KalugaBackgroundStyle.Shape.Oval)
+    }
+
+    val mediaButtonText by lazy {
+        KalugaButtonStyle.textOnly {
+            setTextStyle(KalugaTextStyle(defaultBoldFont, DefaultColors.black, 12.0f, KalugaTextAlignment.CENTER))
+            setBackground(DefaultColors.lightGray, DefaultColors.dimGray, DefaultColors.gray, KalugaBackgroundStyle.Shape.Oval)
+        }
+    }
+
+    fun mediaButtonWithImageAndText(image: KalugaImage) = KalugaButtonStyle.withImageAndText {
+        setImage(image, DefaultColors.black)
+        setTextStyle(KalugaTextStyle(defaultBoldFont, DefaultColors.black, 12.0f))
+        imageGravity = ImageGravity.START
+        spacing = 4.0f
+        setBackground(DefaultColors.lightGray, DefaultColors.dimGray, DefaultColors.gray, KalugaBackgroundStyle.Shape.Oval)
+    }
+
+    fun mediaButtonFocus(image: KalugaImage) = KalugaButtonStyle.imageOnly {
+        setImage(image, DefaultColors.azure, disabledTint = DefaultColors.dimGray)
+        setBackground(DefaultColors.lightGray, DefaultColors.dimGray, DefaultColors.gray, KalugaBackgroundStyle.Shape.Oval)
+    }
+
+    fun mediaButtonFocusWithImageAndText(image: KalugaImage) = KalugaButtonStyle.withImageAndText {
+        setImage(image, DefaultColors.azure, disabledTint = DefaultColors.dimGray)
+        setTextStyle(KalugaTextStyle(defaultBoldFont, DefaultColors.azure, 12.0f), disabledColor = DefaultColors.dimGray)
+        imageGravity = ImageGravity.START
+        spacing = 4.0f
+        setBackground(DefaultColors.lightGray, DefaultColors.dimGray, DefaultColors.gray, KalugaBackgroundStyle.Shape.Oval)
     }
 }

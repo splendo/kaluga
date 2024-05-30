@@ -52,11 +52,9 @@ class LinksActivity : KalugaViewModelActivity<LinksViewModel>() {
         handleAppLinks(intent)
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent?.let {
-            handleAppLinks(it)
-        }
+        handleAppLinks(intent)
     }
 
     private fun handleAppLinks(intent: Intent) {

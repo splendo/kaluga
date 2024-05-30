@@ -40,7 +40,7 @@ class LibraryImpl(project: Project) {
         }
     }
     private val logger = project.logger
-    private val baseVersion = "1.3.1"
+    private val baseVersion = "1.4.0"
     val group = "com.splendo.kaluga"
     val version: String by lazy {
         val libraryVersionLocalProperties: String? = props["kaluga.libraryVersion"] as? String
@@ -58,7 +58,7 @@ class LibraryImpl(project: Project) {
         const val compileSdk = 34
         const val targetSdk = 34
         const val buildTools = "34.0.0"
-        const val composeCompiler = "1.5.6"
+        const val composeCompiler = "1.5.14"
     }
 
     class IOSLibrary(props: Properties, logger: Logger) {

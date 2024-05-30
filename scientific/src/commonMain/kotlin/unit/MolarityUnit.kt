@@ -73,7 +73,7 @@ sealed class Molarity : AbstractScientificUnit<PhysicalQuantity.Molarity>() {
      * The [Volume] component
      */
     abstract val per: Volume
-    override val symbol: String by lazy { "${amountOfSubstance.symbol} / ${per.symbol}" }
+    override val symbol: String by lazy { "${amountOfSubstance.symbol}/${per.symbol}" }
     override val quantity = PhysicalQuantity.Molarity
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(amountOfSubstance.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = amountOfSubstance.toSIUnit(per.fromSIUnit(value))

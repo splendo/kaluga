@@ -74,7 +74,7 @@ sealed class Yank : AbstractScientificUnit<PhysicalQuantity.Yank>() {
      */
     abstract val per: Time
     override val quantity = PhysicalQuantity.Yank
-    override val symbol: String by lazy { "${force.symbol} / ${per.symbol}" }
+    override val symbol: String by lazy { "${force.symbol}/${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(force.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = force.toSIUnit(per.fromSIUnit(value))
 }

@@ -47,3 +47,69 @@ expect val defaultItalicFont: KalugaFont
  * The default monospace system [KalugaFont]
  */
 expect val defaultMonospaceFont: KalugaFont
+
+/**
+ * Style of the system font
+ */
+enum class FontStyle {
+
+    /**
+     * Default system font style
+     */
+    DEFAULT,
+
+    /**
+     * Serif system font style
+     */
+    SERIF,
+
+    /**
+     * Monospace system font style
+     */
+    MONOSPACE,
+}
+
+/**
+ * Trait to add to a system font
+ */
+enum class FontTrait {
+
+    /**
+     * Makes the system font appear in italics
+     */
+    ITALIC,
+}
+
+/**
+ * Font weights as defined by [W3](https://www.w3.org/TR/css-fonts-4/#font-weight-prop)
+ * @property value the value of the weight. Must be in range [1, 100]
+ */
+enum class FontWeight(val value: Int) {
+    THIN(100),
+    EXTRA_LIGHT(200),
+    LIGHT(300),
+    NORMAL(400),
+    MEDIUM(500),
+    SEMI_BOLD(600),
+    BOLD(700),
+    EXTRA_BOLD(800),
+    BLACK(900),
+}
+
+/**
+ * Creates a system font with a given [FontWeight], [FontStyle] and [FontTrait]
+ * @param weight the [FontWeight] to apply
+ * @param style the [FontStyle] to apply
+ * @param traits the set of [FontTrait] to apply
+ * @return a [KalugaFont] representing the system font with the given specifications
+ */
+fun createDefaultFont(weight: FontWeight, style: FontStyle = FontStyle.DEFAULT, traits: Set<FontTrait> = emptySet()): KalugaFont = createDefaultFont(weight.value, style, traits)
+
+/**
+ * Creates a system font with a given weight, [FontStyle] and [FontTrait]
+ * @param weight the weight to apply. Must be in range [1, 100]
+ * @param style the [FontStyle] to apply
+ * @param traits the set of [FontTrait] to apply
+ * @return a [KalugaFont] representing the system font with the given specifications
+ */
+expect fun createDefaultFont(weight: Int, style: FontStyle = FontStyle.DEFAULT, traits: Set<FontTrait> = emptySet()): KalugaFont

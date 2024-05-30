@@ -31,19 +31,13 @@ import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
  * @return the [Layout.Alignment] associated with this [KalugaTextAlignment]
  */
 fun KalugaTextAlignment.alignment(context: Context): Layout.Alignment {
-    val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        context.resources.configuration.locales.get(0)
-    } else {
-        @Suppress("DEPRECATION")
-        context.resources.configuration.locale
-    }
     return when (this) {
-        KalugaTextAlignment.LEFT -> if (TextUtils.getLayoutDirectionFromLocale(locale) == View.LAYOUT_DIRECTION_RTL) {
-            Layout.Alignment.ALIGN_OPPOSITE
-        } else {
+        KalugaTextAlignment.LEFT -> if (context.isLayoutLeftToRight()) {
             Layout.Alignment.ALIGN_NORMAL
+        } else {
+            Layout.Alignment.ALIGN_OPPOSITE
         }
-        KalugaTextAlignment.RIGHT -> if (TextUtils.getLayoutDirectionFromLocale(locale) == View.LAYOUT_DIRECTION_LTR) {
+        KalugaTextAlignment.RIGHT -> if (context.isLayoutLeftToRight()) {
             Layout.Alignment.ALIGN_OPPOSITE
         } else {
             Layout.Alignment.ALIGN_NORMAL
@@ -72,4 +66,15 @@ val Layout.Alignment.gravity: Int get() = when (this) {
     Layout.Alignment.ALIGN_NORMAL -> Gravity.START
     Layout.Alignment.ALIGN_OPPOSITE -> Gravity.END
     Layout.Alignment.ALIGN_CENTER -> Gravity.CENTER_HORIZONTAL
+}
+
+internal fun Context.isLayoutLeftToRight(): Boolean {
+    val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        resources.configuration.locales.get(0)
+    } else {
+        @Suppress("DEPRECATION")
+        resources.configuration.locale
+    }
+
+    return TextUtils.getLayoutDirectionFromLocale(locale) == View.LAYOUT_DIRECTION_LTR
 }
