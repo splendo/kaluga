@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "stop_24dp.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

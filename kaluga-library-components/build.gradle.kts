@@ -21,6 +21,10 @@ gradlePlugin {
     }
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
 
     val properties = File("${rootDir.absolutePath}/../gradle.properties").loadProperties()
