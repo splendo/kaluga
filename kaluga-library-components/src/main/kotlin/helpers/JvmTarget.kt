@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2024 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,16 +15,9 @@
 
  */
 
-fun org.gradle.api.Project.databindingAndroidComponent(packageName: String) {
-    group = Library.group
-    version = Library.version
-    commonAndroidComponent(ComponentType.DataBinding, packageName)
+package helpers
 
-    androidLibrary {
-        kotlinOptions {
-            jvmTarget = "11"
-        }
-    }
+import org.gradle.api.artifacts.VersionCatalog
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-    publish(ComponentType.DataBinding)
-}
+val VersionCatalog.jvmTarget: JvmTarget get() = JvmTarget.fromTarget(findVersion("java").get().displayName)
