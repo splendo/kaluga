@@ -40,7 +40,11 @@ jobs:
         with:
           path: ~/.konan/*
           key: konan
-
+      # We're seeing some issues with publishing to Sonatype due to split up repos. By publishing to MavenLocal first we might circumvent this
+      - name: "Publish MavenLocal"
+        env:
+          MAVEN_CENTRAL_RELEASE: ${{ github.ref_name == 'master' }}
+        run: ./gradlew publishToMavenLocal --stacktrace
       - name: "Publish SNAPSHOT"
         if: ${{ github.ref_name != 'master' }}
         run: ./gradlew publishAllPublicationsToSnapshotsRepository --stacktrace
