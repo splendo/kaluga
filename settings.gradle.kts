@@ -58,7 +58,7 @@ include(":logging")
 // include(":resources-compose")
 // include(":resources-databinding")
 // include(":review")
-// include(":scientific")
+include(":scientific")
 // include(":service")
 // include(":system")
 // // Test Utils

@@ -158,8 +158,8 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
             updateSymbols { it.amPmStrings = it.amPmStrings.toMutableList().apply { this[1] = value }.toTypedArray() }
         }
 
-    override fun format(date: KalugaDate): String = format.format(date.date)
-    override fun parse(string: String): KalugaDate? {
+    actual override fun format(date: KalugaDate): String = format.format(date.date)
+    actual override fun parse(string: String): KalugaDate? {
         val currentTimeZone = timeZone
         return try {
             format.parse(string)?.let { date ->

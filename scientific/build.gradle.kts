@@ -1,27 +1,19 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("kaluga-library-components")
+    alias(libs.plugins.kotlin.serialization)
 }
 
-publishableComponent("scientific")
-
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
+kaluga {
+    moduleName = "scientific"
+    dependencies {
+        common {
+            main {
                 implementation(project(":base"))
-                apiDependency(Dependencies.KotlinX.Serialization.Core)
+                api(libs.kotlinx.serialization.core)
             }
-        }
-        commonTest {
-            dependencies {
+            test {
                 implementation(project(":test-utils-base"))
-                apiDependency(Dependencies.KotlinX.Serialization.Json)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
     }

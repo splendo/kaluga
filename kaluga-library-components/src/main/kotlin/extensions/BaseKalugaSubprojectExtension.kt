@@ -34,7 +34,7 @@ sealed class BaseKalugaSubprojectExtension(
     objects: ObjectFactory,
 ) : BaseKalugaExtension(versionCatalog, objects) {
 
-    var isPublished: Boolean = false
+    var isPublished: Boolean = true
 
     var moduleName: String
         get() = libraryExtension.namespace?.removePrefix("$baseGroup.").orEmpty()
