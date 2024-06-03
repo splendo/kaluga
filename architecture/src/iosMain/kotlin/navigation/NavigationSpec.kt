@@ -23,6 +23,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec.Email.EmailSett
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.ImagePicker.MediaType
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.Message.MessageSettings
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.ThirdParty.OpenMode
+import kotlinx.cinterop.ObjCSignatureOverride
 import platform.CoreFoundation.CFStringRef
 import platform.CoreServices.kUTTypeImage
 import platform.CoreServices.kUTTypeMovie
@@ -182,13 +183,14 @@ sealed class NavigationSpec {
         val completion: (() -> Unit)? = null,
     ) : NavigationSpec() {
 
-        @Suppress("CONFLICTING_OVERLOADS")
         internal val delegate: UINavigationControllerDelegateProtocol = object : NSObject(), UIImagePickerControllerDelegateProtocol, UINavigationControllerDelegateProtocol {
 
+            @ObjCSignatureOverride
             override fun navigationController(navigationController: UINavigationController, willShowViewController: UIViewController, animated: Boolean) {
                 navigationDelegate.navigationController(navigationController, willShowViewController = willShowViewController, animated = animated)
             }
 
+            @ObjCSignatureOverride
             override fun navigationController(navigationController: UINavigationController, didShowViewController: UIViewController, animated: Boolean) {
                 navigationDelegate.navigationController(navigationController, didShowViewController = didShowViewController, animated = animated)
             }

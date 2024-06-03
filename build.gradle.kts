@@ -1,5 +1,5 @@
 plugins {
-    id("kaluga-library-components")
+    id("com.splendo.kaluga.plugin")
     id("rs.houtbecke.gradle.recorder.plugin")
 }
 

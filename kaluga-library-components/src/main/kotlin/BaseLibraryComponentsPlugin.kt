@@ -15,11 +15,7 @@
 
  */
 
-import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.LibraryPlugin
 import extensions.BaseKalugaSubprojectExtension
-import extensions.KalugaAndroidSubprojectExtension
-import extensions.KalugaMultiplatformSubprojectExtension
 import extensions.KalugaRootExtension
 import kotlinx.kover.gradle.plugin.KoverGradlePlugin
 import kotlinx.validation.BinaryCompatibilityValidatorPlugin
@@ -32,16 +28,12 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.findByType
-import org.gradle.kotlin.dsl.hasPlugin
 import org.gradle.plugins.signing.SigningPlugin
 import org.jetbrains.dokka.gradle.DokkaPlugin
-import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformAndroidPlugin
 import org.jmailen.gradle.kotlinter.KotlinterPlugin
 import org.owasp.dependencycheck.gradle.DependencyCheckPlugin
 
-class LibraryComponentsPlugin: Plugin<Project> {
+abstract class BaseLibraryComponentsPlugin<SubExtension: BaseKalugaSubprojectExtension>: Plugin<Project> {
 
     companion object {
         const val EXTENSION_NAME = "kaluga"
@@ -64,9 +56,6 @@ class LibraryComponentsPlugin: Plugin<Project> {
         pluginManager.apply(KotlinterPlugin::class)
         pluginManager.apply(DependencyCheckPlugin::class)
         pluginManager.apply(DokkaPlugin::class)
-        if (this != rootProject) {
-            pluginManager.apply(LibraryPlugin::class)
-        }
 
         val kalugaExtension = when {
             rootProject == this -> {
@@ -74,13 +63,7 @@ class LibraryComponentsPlugin: Plugin<Project> {
                 pluginManager.apply(BinaryCompatibilityValidatorPlugin::class)
                 extensions.create(EXTENSION_NAME, KalugaRootExtension::class, versionCatalog)
             }
-            plugins.hasPlugin(KotlinPlatformAndroidPlugin::class) -> {
-                extensions.create(EXTENSION_NAME, KalugaAndroidSubprojectExtension::class.java, versionCatalog, project.extensions.findByType(LibraryExtension::class))
-            }
-            else -> {
-                pluginManager.apply(KotlinMultiplatformPluginWrapper::class)
-                extensions.create(EXTENSION_NAME, KalugaMultiplatformSubprojectExtension::class.java, versionCatalog, project.extensions.findByType(LibraryExtension::class))
-            }
+            else -> createBaseKalugaSubprojectExtension(versionCatalog)
         }
 
         if (kalugaExtension is BaseKalugaSubprojectExtension) {
@@ -91,4 +74,6 @@ class LibraryComponentsPlugin: Plugin<Project> {
             kalugaExtension.afterProjectEvaluated(this)
         }
     }
+
+    protected abstract fun Project.createBaseKalugaSubprojectExtension(versionCatalog: VersionCatalog): SubExtension
 }

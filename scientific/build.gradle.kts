@@ -1,5 +1,5 @@
 plugins {
-    id("kaluga-library-components")
+    id("com.splendo.kaluga.plugin")
     alias(libs.plugins.kotlin.serialization)
 }
 

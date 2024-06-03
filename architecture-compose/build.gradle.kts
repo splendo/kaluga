@@ -16,22 +16,21 @@
  */
 
 plugins {
-    id("com.android.library")
-    kotlin("android")
-    kotlin("plugin.serialization")
-    id("jacoco")
-    id("convention.publication")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin.android")
+    id(libs.plugins.compose.get().pluginId)
+    id(libs.plugins.kotlinx.atomicfu.get().pluginId)
+    alias(libs.plugins.kotlin.serialization)
 }
 
-composeAndroidComponent("architecture.compose")
+kaluga {
+    moduleName = "architecture.compose"
+}
 
 dependencies {
     api(project(":base"))
     api(project(":architecture"))
-    implementationDependency(Dependencies.AndroidX.Compose.Material)
-    implementationDependency(Dependencies.AndroidX.Navigation.Compose)
-    implementationDependency(Dependencies.KotlinX.Coroutines.Core)
-    implementationDependency(Dependencies.AndroidX.Browser)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.androidx.browser)
 }

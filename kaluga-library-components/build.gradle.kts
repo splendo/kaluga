@@ -16,9 +16,13 @@ repositories {
 }
 
 gradlePlugin {
-    plugins.register("kaluga-library-components") {
-        id = "kaluga-library-components"
-        implementationClass = "LibraryComponentsPlugin"
+    plugins.register("com.splendo.kaluga.plugin") {
+        id = "com.splendo.kaluga.plugin"
+        implementationClass = "MultiplatformLibraryComponentsPlugin"
+    }
+    plugins.register("com.splendo.kaluga.plugin.android") {
+        id = "com.splendo.kaluga.plugin.android"
+        implementationClass = "AndroidLibraryComponentsPlugin"
     }
 }
 
@@ -37,6 +41,7 @@ dependencies {
     implementation(libs.kotlinx.binarycompatibilityvalidator.gradle)
     implementation(libs.kotlinx.kover.gradle)
 }
+
 val compileKotlin: KotlinCompile by tasks
 
 compileKotlin.kotlinOptions {
