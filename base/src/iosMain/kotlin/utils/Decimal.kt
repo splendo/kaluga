@@ -27,7 +27,7 @@ import kotlin.math.absoluteValue
  * @property nsDecimal the [NSDecimalNumber] representing the finite decimal number
  */
 actual data class FiniteDecimal(val nsDecimal: NSDecimalNumber) : Comparable<FiniteDecimal> {
-    override fun compareTo(other: FiniteDecimal): Int = nsDecimal.compare(other.nsDecimal).toInt()
+    actual override fun compareTo(other: FiniteDecimal): Int = nsDecimal.compare(other.nsDecimal).toInt()
     override fun equals(other: Any?): Boolean = (other as? FiniteDecimal)?.let { nsDecimal.isEqualToNumber(it.nsDecimal) } ?: false
     override fun hashCode(): Int {
         return nsDecimal.hashCode()

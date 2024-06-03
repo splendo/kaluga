@@ -35,6 +35,7 @@ dependencies {
     implementation(libs.kotlinter.gradle)
     implementation(libs.kotlinx.atomicfu.gradle)
     implementation(libs.kotlinx.binarycompatibilityvalidator.gradle)
+    implementation(libs.kotlinx.kover.gradle)
 }
 val compileKotlin: KotlinCompile by tasks
 

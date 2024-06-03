@@ -32,10 +32,11 @@ import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginE
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import javax.inject.Inject
 
-class KalugaAndroidSubprojectExtension @Inject constructor(
+open class KalugaAndroidSubprojectExtension @Inject constructor(
     versionCatalog: VersionCatalog,
+    libraryExtension: LibraryExtension,
     objects: ObjectFactory,
-) : BaseKalugaSubprojectExtension(versionCatalog, objects) {
+) : BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, objects) {
 
     var isDatabindingEnabled: Boolean = false
     val Project.hasCompose: Boolean get() = extensions.findByType(ComposeCompilerGradlePluginExtension::class) != null

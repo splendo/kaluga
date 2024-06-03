@@ -22,7 +22,7 @@ import org.gradle.api.model.ObjectFactory
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import javax.inject.Inject
 
-class MultiplatformDependencyContainer @Inject constructor(
+open class MultiplatformDependencyContainer @Inject constructor(
     objects: ObjectFactory,
 ) {
 
@@ -39,8 +39,8 @@ class MultiplatformDependencyContainer @Inject constructor(
         }
     }
 
-    class Common : TargetDependencyContainer()
-    class Android : TargetDependencyContainer() {
+    open class Common : TargetDependencyContainer()
+    open class Android : TargetDependencyContainer() {
 
         internal val instrumentedTestDependencies = mutableListOf<Action<KotlinDependencyHandler>>()
 
@@ -49,10 +49,10 @@ class MultiplatformDependencyContainer @Inject constructor(
         }
     }
 
-    class Apple : TargetDependencyContainer()
-    class IOS : TargetDependencyContainer()
-    class JS : TargetDependencyContainer()
-    class JVM : TargetDependencyContainer()
+    open class Apple : TargetDependencyContainer()
+    open class IOS : TargetDependencyContainer()
+    open class JS : TargetDependencyContainer()
+    open class JVM : TargetDependencyContainer()
 
     internal val common = objects.newInstance(Common::class.java)
     internal val android = objects.newInstance(Android::class.java)

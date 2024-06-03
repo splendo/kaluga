@@ -23,7 +23,7 @@ import org.gradle.api.model.ObjectFactory
 import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultCInteropSettings
 import javax.inject.Inject
 
-class AppleInteropContainer @Inject constructor(
+open class AppleInteropContainer @Inject constructor(
     objects: ObjectFactory,
 ) {
     internal val main = mutableListOf<Action<NamedDomainObjectContainer<DefaultCInteropSettings>>>()

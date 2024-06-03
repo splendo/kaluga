@@ -14,8 +14,7 @@ pluginManagement {
     }
 
     includeBuild("kaluga-library-components")
-    // includeBuild("convention-plugins")
-    // includeBuild("gradle-test-recorder/plugin-build/")
+    includeBuild("gradle-test-recorder/plugin-build/")
 }
 
 dependencyResolutionManagement {
@@ -38,7 +37,7 @@ include(":base")
 // include(":alerts")
 // include(":date-time")
 // include(":date-time-picker")
-// include(":logging")
+include(":logging")
 // include(":hud")
 // include(":base-permissions")
 // include(":bluetooth-permissions")
@@ -64,7 +63,7 @@ include(":base")
 // include(":system")
 // // Test Utils
 // include(":test-utils")
-// include(":test-utils-base")
+include(":test-utils-base")
 // include(":test-utils-alerts")
 // include(":test-utils-architecture")
 // include(":test-utils-bluetooth")

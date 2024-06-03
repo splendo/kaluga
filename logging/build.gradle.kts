@@ -1,30 +1,24 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("com.android.library")
-    id("convention.publication")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
-    id("kotlinx-atomicfu")
+    id("kaluga-library-components")
+    id(libs.plugins.kotlinx.atomicfu.get().pluginId)
 }
 
-publishableComponent("logging")
-
-dependencies {
-    implementationDependency(Dependencies.KotlinX.AtomicFu)
-}
-
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
-                implementationDependency(Dependencies.Napier)
+kaluga {
+    moduleName = "logging"
+    dependencies {
+        android {
+            main {
+                implementation(libs.kotlinx.atomicfu)
             }
         }
-        commonTest {
-            dependencies {
+        common {
+            main {
+                implementation(libs.napier)
+            }
+            test {
                 api(project(":test-utils-base", ""))
             }
         }
+
     }
 }

@@ -39,10 +39,11 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import javax.inject.Inject
 
-class KalugaMultiplatformSubprojectExtension @Inject constructor(
+open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     versionCatalog: VersionCatalog,
+    libraryExtension: LibraryExtension,
     objects: ObjectFactory,
-) : BaseKalugaSubprojectExtension(versionCatalog, objects) {
+) : BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, objects) {
 
     private enum class IOSTarget {
         X64,
@@ -50,12 +51,12 @@ class KalugaMultiplatformSubprojectExtension @Inject constructor(
         SimulatorArm64,
     }
 
-    private val dependencies = objects.newInstance(MultiplatformDependencyContainer::class)
+    private val multiplatformDependencies = objects.newInstance(MultiplatformDependencyContainer::class)
     private val appleInterop = objects.newInstance(AppleInteropContainer::class)
     private var frameworkConfig: (Framework.() -> Unit)? = null
 
     fun dependencies(action: Action<MultiplatformDependencyContainer>) {
-        action.execute(dependencies)
+        action.execute(multiplatformDependencies)
     }
 
     fun appleInterop(action: Action<AppleInteropContainer>) {
@@ -65,9 +66,188 @@ class KalugaMultiplatformSubprojectExtension @Inject constructor(
     fun framework(action: (Framework.() -> Unit)) {
         frameworkConfig = action
     }
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     override fun Project.configureSubproject() {
         extensions.configure(KotlinMultiplatformExtension::class) {
+            compilerOptions {
+                freeCompilerArgs.add("-Xexpect-actual-classes")
+            }
+            targets.configureEach {
+                compilations.configureEach {
+                    compileTaskProvider.configure {
+                        compilerOptions {
+                            if (this is KotlinJvmCompilerOptions) {
+                                jvmTarget.set(versionCatalog.jvmTarget)
+                            }
+                            freeCompilerArgs.add("-Xexpect-actual-classes")
+                        }
+                    }
+                }
+            }
 
+            androidTarget("androidLib") {
+                instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
+                unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
+                publishAllLibraryVariants()
+            }
+            val target: KotlinNativeTarget.() -> Unit =
+                {
+                    compilations.getByName("main").cinterops.let { mainInterops ->
+                        appleInterop.main.forEach { it.execute(mainInterops) }
+                    }
+                    compilations.getByName("test").cinterops.let { mainInterops ->
+                        appleInterop.test.forEach { it.execute(mainInterops) }
+                    }
+                    binaries {
+                        frameworkConfig?.let { iosExport ->
+                            framework {
+                                iosExport()
+                            }
+                        }
+                        getTest("DEBUG").apply {
+                            freeCompilerArgs = freeCompilerArgs + listOf("-e", "com.splendo.kaluga.test.base.mainBackground")
+                        }
+                    }
+                }
+
+            val targets = project.iosTargets
+            targets.forEach { iosTarget ->
+                when (iosTarget) {
+                    IOSTarget.Arm64 -> iosArm64(target)
+                    IOSTarget.X64 -> iosX64(target)
+                    IOSTarget.SimulatorArm64 -> iosSimulatorArm64(target)
+                }
+            }
+
+            jvm()
+            js(KotlinJsCompilerType.IR) {
+                nodejs()
+                browser()
+                compilations.configureEach {
+                    compileTaskProvider.configure {
+                        compilerOptions {
+                            sourceMap.set(true)
+                            moduleKind.set(JsModuleKind.MODULE_UMD)
+                        }
+                    }
+                }
+            }
+
+            applyDefaultHierarchyTemplate()
+
+            afterEvaluate {
+                sourceSets.getByName("commonMain").apply {
+                    dependencies {
+                        implementation("kotlinx-coroutines-core".asDependency())
+                        multiplatformDependencies.common.mainDependencies.forEach { it.execute(this) }
+                    }
+                }
+
+                sourceSets.getByName("commonTest").apply {
+                    dependencies {
+                        implementation(kotlin("test"))
+                        implementation(kotlin("test-common"))
+                        implementation(kotlin("test-annotations-common"))
+                        multiplatformDependencies.common.testDependencies.forEach { it.execute(this) }
+                    }
+                }
+
+                sourceSets.getByName("androidLibMain").apply {
+                    dependencies {
+                        androidMainDependencies.forEach { implementation(it) }
+                        multiplatformDependencies.android.mainDependencies.forEach { it.execute(this) }
+                    }
+                }
+
+                sourceSets.getByName("androidLibUnitTest").apply {
+                    dependencies {
+                        androidTestDependencies.forEach { implementation(it) }
+                        multiplatformDependencies.android.testDependencies.forEach { it.execute(this) }
+                    }
+                }
+
+                sourceSets.getByName("androidLibInstrumentedTest").apply {
+                    dependencies {
+                        androidInstrumentedTestDependencies.forEach { implementation(it) }
+                        multiplatformDependencies.android.instrumentedTestDependencies.forEach { it.execute(this) }
+                    }
+                }
+
+                sourceSets.getByName("appleMain").apply {
+                    dependencies {
+                        multiplatformDependencies.apple.mainDependencies.forEach { it.execute(this) }
+                    }
+                }
+
+                sourceSets.getByName("appleTest").apply {
+                    dependencies {
+                        multiplatformDependencies.apple.testDependencies.forEach { it.execute(this) }
+                    }
+                }
+
+                sourceSets.getByName("iosMain").apply {
+                    dependencies {
+                        multiplatformDependencies.ios.mainDependencies.forEach { it.execute(this) }
+                    }
+                }
+
+                sourceSets.getByName("iosTest").apply {
+                    dependencies {
+                        multiplatformDependencies.ios.testDependencies.forEach { it.execute(this) }
+                    }
+                }
+
+                sourceSets.getByName("jvmMain").apply {
+                    dependencies {
+                        implementation(kotlin("stdlib"))
+                        implementation("kotlinx-coroutines-swing".asDependency())
+                        multiplatformDependencies.jvm.mainDependencies.forEach { it.execute(this) }
+                    }
+                }
+
+                sourceSets.getByName("jvmTest").apply {
+                    dependencies {
+                        implementation(kotlin("test"))
+                        implementation(kotlin("test-junit"))
+                        multiplatformDependencies.jvm.testDependencies.forEach { it.execute(this) }
+                    }
+                }
+                //
+                // sourceSets.getByName("jsMain").apply {
+                //     dependencies {
+                //         implementation(kotlin("stdlib-js"))
+                //         implementation("kotlinx-coroutines-js".asDependency())
+                //         multiplatformDependencies.js.mainDependencies.forEach { it.execute(this) }
+                //     }
+                // }
+                //
+                // sourceSets.getByName("jsTest").apply {
+                //     dependencies {
+                //         implementation(kotlin("test-js"))
+                //         multiplatformDependencies.js.testDependencies.forEach { it.execute(this) }
+                //     }
+                // }
+
+                sourceSets.all {
+                    languageSettings {
+                        optIn("kotlinx.coroutines.DelicateCoroutinesApi")
+                        optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                        optIn("kotlinx.coroutines.ObsoleteCoroutinesApi")
+                        optIn("kotlinx.coroutines.InternalCoroutinesApi")
+                        optIn("kotlinx.coroutines.FlowPreview")
+                        optIn("kotlin.ExperimentalUnsignedTypes")
+                        optIn("kotlin.ExperimentalStdlibApi")
+                        optIn("kotlin.time.ExperimentalTime")
+                        optIn("kotlin.ExperimentalStdlibApi")
+                        if (this@all.name.lowercase().contains("ios")) {
+                            optIn("kotlinx.cinterop.ExperimentalForeignApi")
+                            optIn("kotlinx.cinterop.BetaInteropApi")
+                            optIn("kotlin.experimental.ExperimentalNativeApi")
+                        }
+                        enableLanguageFeature("InlineClasses")
+                    }
+                }
+            }
         }
     }
 
@@ -99,187 +279,6 @@ class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 artifactId = project.name
                 groupId = baseGroup
                 version = this@KalugaMultiplatformSubprojectExtension.version
-            }
-        }
-    }
-
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    private fun KotlinMultiplatformExtension.commonMultiplatformComponent(
-        currentProject: Project,
-    ) {
-        targets.configureEach {
-            compilations.configureEach {
-                compileTaskProvider.configure {
-                    compilerOptions {
-                        if (this is KotlinJvmCompilerOptions) {
-                            jvmTarget.set(versionCatalog.jvmTarget)
-                        }
-                        freeCompilerArgs.add("-Xexpect-actual-classes")
-                    }
-                }
-            }
-        }
-
-        androidTarget("androidLib") {
-            instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-            unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-            publishAllLibraryVariants()
-        }
-        val target: KotlinNativeTarget.() -> Unit =
-            {
-                compilations.getByName("main").cinterops.let { mainInterops ->
-                    appleInterop.main.forEach { it.execute(mainInterops) }
-                }
-                compilations.getByName("test").cinterops.let { mainInterops ->
-                    appleInterop.test.forEach { it.execute(mainInterops) }
-                }
-                binaries {
-                    frameworkConfig?.let { iosExport ->
-                        framework {
-                            iosExport()
-                        }
-                    }
-                    getTest("DEBUG").apply {
-                        freeCompilerArgs = freeCompilerArgs + listOf("-e", "com.splendo.kaluga.test.base.mainBackground")
-                    }
-                }
-            }
-
-        val targets = currentProject.iosTargets
-        targets.forEach { iosTarget ->
-            when (iosTarget) {
-                IOSTarget.X64 -> iosX64(target)
-                IOSTarget.Arm64 -> iosArm64(target)
-                IOSTarget.SimulatorArm64 -> iosSimulatorArm64(target)
-            }
-        }
-
-        jvm()
-        js(KotlinJsCompilerType.IR) {
-            browser()
-            nodejs()
-            compilations.configureEach {
-                compileTaskProvider.configure {
-                    compilerOptions {
-                        sourceMap.set(true)
-                        moduleKind.set(JsModuleKind.MODULE_UMD)
-                    }
-                }
-            }
-            binaries.executable()
-        }
-
-        applyDefaultHierarchyTemplate()
-
-        sourceSets.getByName("commonMain").apply {
-            dependencies {
-                implementation("kotlinx-coroutines-core".asDependency())
-                dependencies.common.mainDependencies.forEach { it.execute(this) }
-            }
-        }
-
-        sourceSets.getByName("commonTest").apply {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-                dependencies.common.testDependencies.forEach { it.execute(this) }
-            }
-        }
-
-        sourceSets.getByName("androidLibMain").apply {
-            dependencies {
-                androidMainDependencies.forEach { implementation(it) }
-                dependencies.android.mainDependencies.forEach { it.execute(this) }
-            }
-        }
-
-        sourceSets.getByName("androidLibUnitTest").apply {
-            dependencies {
-                androidTestDependencies.forEach { implementation(it) }
-                dependencies.android.testDependencies.forEach { it.execute(this) }
-            }
-        }
-
-        sourceSets.getByName("androidLibInstrumentedTest").apply {
-            dependencies {
-                androidInstrumentedTestDependencies.forEach { implementation(it) }
-                dependencies.android.instrumentedTestDependencies.forEach { it.execute(this) }
-            }
-        }
-
-        sourceSets.getByName("appleMain").apply {
-            dependencies {
-                dependencies.apple.mainDependencies.forEach { it.execute(this) }
-            }
-        }
-
-        sourceSets.getByName("appleTest").apply {
-            dependencies {
-                dependencies.apple.testDependencies.forEach { it.execute(this) }
-            }
-        }
-
-        sourceSets.getByName("iosMain").apply {
-            dependencies {
-                dependencies.ios.mainDependencies.forEach { it.execute(this) }
-            }
-        }
-
-        sourceSets.getByName("iosTest").apply {
-            dependencies {
-                dependencies.ios.testDependencies.forEach { it.execute(this) }
-            }
-        }
-
-        sourceSets.getByName("jvmMain").apply {
-            dependencies {
-                implementation(kotlin("stdlib"))
-                implementation("kotlinx-coroutines-swing".asDependency())
-                dependencies.jvm.mainDependencies.forEach { it.execute(this) }
-            }
-        }
-
-        sourceSets.getByName("jvmTest").apply {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-junit"))
-                dependencies.jvm.testDependencies.forEach { it.execute(this) }
-            }
-        }
-
-        sourceSets.getByName("jsMain").apply {
-            dependencies {
-                implementation(kotlin("stdlib-js"))
-                implementation("kotlinx-coroutines-js".asDependency())
-                dependencies.js.mainDependencies.forEach { it.execute(this) }
-            }
-        }
-
-        sourceSets.getByName("jsTest").apply {
-            dependencies {
-                implementation(kotlin("test-js"))
-                dependencies.js.testDependencies.forEach { it.execute(this) }
-            }
-        }
-
-        sourceSets.all {
-            languageSettings {
-                optIn("kotlinx.coroutines.DelicateCoroutinesApi")
-                optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
-                optIn("kotlinx.coroutines.ObsoleteCoroutinesApi")
-                optIn("kotlinx.coroutines.InternalCoroutinesApi")
-                optIn("kotlinx.coroutines.FlowPreview")
-                optIn("kotlin.ExperimentalUnsignedTypes")
-                optIn("kotlin.ExperimentalStdlibApi")
-                optIn("kotlin.time.ExperimentalTime")
-                optIn("kotlin.ExperimentalStdlibApi")
-                if (this@all.name.lowercase().contains("ios")) {
-                    optIn("kotlinx.cinterop.ExperimentalForeignApi")
-                    optIn("kotlinx.cinterop.BetaInteropApi")
-                    optIn("kotlin.experimental.ExperimentalNativeApi")
-                }
-                enableLanguageFeature("InlineClasses")
             }
         }
     }

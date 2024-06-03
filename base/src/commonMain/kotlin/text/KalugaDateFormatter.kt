@@ -165,6 +165,19 @@ expect class KalugaDateFormatter : BaseDateFormatter {
          */
         fun patternFormat(pattern: String, timeZone: KalugaTimeZone = KalugaTimeZone.current(), locale: KalugaLocale = defaultLocale): KalugaDateFormatter
     }
+
+    override var pattern: String
+    override var timeZone: KalugaTimeZone
+    override var eras: List<String>
+    override var months: List<String>
+    override var shortMonths: List<String>
+    override var weekdays: List<String>
+    override var shortWeekdays: List<String>
+    override var amString: String
+    override var pmString: String
+
+    override fun format(date: KalugaDate): String
+    override fun parse(string: String): KalugaDate?
 }
 
 @Deprecated(

@@ -18,7 +18,6 @@
 package extensions
 
 import com.android.build.gradle.LibraryExtension
-import kotlinx.validation.ApiValidationExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
@@ -31,12 +30,17 @@ import org.gradle.plugins.signing.Sign
 
 sealed class BaseKalugaSubprojectExtension(
     versionCatalog: VersionCatalog,
+    private val libraryExtension: LibraryExtension,
     objects: ObjectFactory,
 ) : BaseKalugaExtension(versionCatalog, objects) {
 
     var isPublished: Boolean = false
 
-    var moduleName: String = ""
+    var moduleName: String
+        get() = libraryExtension.namespace?.removePrefix("$baseGroup.").orEmpty()
+        set(value) {
+            libraryExtension.namespace = "$baseGroup.$value"
+        }
 
     protected val androidMainDependencies = listOf(
         "androidx-activity-ktx",
@@ -73,7 +77,6 @@ sealed class BaseKalugaSubprojectExtension(
         }
 
         configureSubproject()
-        androidCommon()
         if (isPublished) {
             setupPublishing()
         }
@@ -81,10 +84,9 @@ sealed class BaseKalugaSubprojectExtension(
 
     protected abstract fun Project.configureSubproject()
 
-    fun Project.androidCommon() = extensions.configure(LibraryExtension::class)  {
+    fun androidCommon(project: Project) = libraryExtension.apply {
         compileSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
         buildToolsVersion = versionCatalog.findVersion("androidBuildTools").get().displayName
-        namespace = "${baseGroup}.$moduleName"
 
         defaultConfig {
             minSdk = versionCatalog.findVersion("androidMinSdk").get().displayName.toInt()
@@ -94,7 +96,7 @@ sealed class BaseKalugaSubprojectExtension(
 
         signingConfigs {
             create("stableDebug") {
-                storeFile = rootProject.file("keystore/stableDebug.keystore")
+                storeFile = project.rootProject.file("keystore/stableDebug.keystore")
                 storePassword = "stableDebug"
                 keyAlias = "stableDebug"
                 keyPassword = "stableDebug"
@@ -134,13 +136,6 @@ sealed class BaseKalugaSubprojectExtension(
     }
 
     protected abstract fun PublicationContainer.configure(project: Project)
-
-    override fun ApiValidationExtension.apiExtensions() {
-        ignoredClasses.add("com.splendo.kaluga.$moduleName.BuildConfig")
-        ignoredClasses.add("com.splendo.kaluga.${moduleName.replace("-", ".")}.BuildConfig")
-        ignoredClasses.add("com.splendo.kaluga.${moduleName.replace("-", "")}.BuildConfig")
-        ignoredClasses.add("com.splendo.kaluga.permissions.${moduleName.replace("-permissions", "")}.BuildConfig")
-    }
 
     protected fun String.asDependency() = versionCatalog.findLibrary(this).get()
 }

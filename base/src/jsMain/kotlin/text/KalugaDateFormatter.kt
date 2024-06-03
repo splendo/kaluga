@@ -70,22 +70,22 @@ actual class KalugaDateFormatter private constructor(initialTimeZone: KalugaTime
             KalugaDateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
     }
 
-    override var pattern: String = ""
+    actual override var pattern: String = ""
 
-    override var timeZone: KalugaTimeZone = initialTimeZone
-    override var eras: List<String> = emptyList()
+    actual override var timeZone: KalugaTimeZone = initialTimeZone
+    actual override var eras: List<String> = emptyList()
 
-    override var months: List<String> = emptyList()
-    override var shortMonths: List<String> = emptyList()
+    actual override var months: List<String> = emptyList()
+    actual override var shortMonths: List<String> = emptyList()
 
-    override var weekdays: List<String> = emptyList()
-    override var shortWeekdays: List<String> = emptyList()
+    actual override var weekdays: List<String> = emptyList()
+    actual override var shortWeekdays: List<String> = emptyList()
 
-    override var amString: String = ""
-    override var pmString: String = ""
+    actual override var amString: String = ""
+    actual override var pmString: String = ""
 
-    override fun format(date: KalugaDate): String = formatter(date.date)
-    override fun parse(string: String): KalugaDate? = null
+    actual override fun format(date: KalugaDate): String = formatter(date.date)
+    actual override fun parse(string: String): KalugaDate? = null
 }
 
 private fun DateFormatStyle.stringValue(): String = when (this) {

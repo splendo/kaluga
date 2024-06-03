@@ -97,7 +97,7 @@ abstract class BaseTimeZone {
 
     /**
      * Returns `true` if this [KalugaTimeZone] is observing daylight savings at a given [KalugaDate]
-     * @param date The [KalugaDate] for which to check whether daylight savings is observed. Defaults to [KalugaDate.now]
+     * @param date The [KalugaDate] for which to check whether daylight savings is observed. Defaults to [DefaultKalugaDate.now]
      * @return `true` if this [KalugaTimeZone] if observing daylight savings at [date]
      */
     abstract fun usesDaylightSavingsTime(date: KalugaDate = now()): Boolean
@@ -134,6 +134,15 @@ expect class KalugaTimeZone : BaseTimeZone {
          */
         val availableIdentifiers: List<String>
     }
+
+    override val identifier: String
+    override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: KalugaLocale): String
+    override val offsetFromGMT: Duration
+    override val daylightSavingsOffset: Duration
+
+    override fun offsetFromGMTAtDate(date: KalugaDate): Duration
+    override fun usesDaylightSavingsTime(date: KalugaDate): Boolean
+    override fun copy(): KalugaTimeZone
 }
 
 @Deprecated(

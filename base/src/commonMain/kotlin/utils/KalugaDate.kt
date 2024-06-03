@@ -171,6 +171,30 @@ expect class DefaultKalugaDate : KalugaDate {
          */
         fun epoch(offset: Duration = 0.milliseconds, timeZone: KalugaTimeZone = KalugaTimeZone.current(), locale: KalugaLocale = defaultLocale): KalugaDate
     }
+
+    override var timeZone: KalugaTimeZone
+    override var era: Int
+    override var year: Int
+    override var month: Int
+    override val daysInMonth: Int
+    override var weekOfYear: Int
+    override var weekOfMonth: Int
+    override var day: Int
+    override var dayOfYear: Int
+    override var weekDay: Int
+    override var firstWeekDay: Int
+    override var hour: Int
+    override var minute: Int
+    override var second: Int
+    override var millisecond: Int
+    override var durationSinceEpoch: Duration
+    override val date: KalugaDateHolder
+    override fun copy(): KalugaDate
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun compareTo(other: KalugaDate): Int
 }
 
 /**

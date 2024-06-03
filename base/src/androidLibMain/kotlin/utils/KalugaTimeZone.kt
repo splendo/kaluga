@@ -52,20 +52,22 @@ actual class KalugaTimeZone internal constructor(internal val timeZone: java.uti
         actual val availableIdentifiers get() = java.util.TimeZone.getAvailableIDs().asList()
     }
 
-    override val identifier: String = timeZone.id
-    override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: KalugaLocale): String {
+    actual override val identifier: String = timeZone.id
+    actual override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: KalugaLocale): String {
         val styleJava = when (style) {
             TimeZoneNameStyle.Short -> java.util.TimeZone.SHORT
             TimeZoneNameStyle.Long -> java.util.TimeZone.LONG
         }
         return timeZone.getDisplayName(withDaylightSavings, styleJava, locale.locale)
     }
-    override val offsetFromGMT = timeZone.rawOffset.milliseconds
-    override val daylightSavingsOffset = timeZone.dstSavings.milliseconds
-    override fun offsetFromGMTAtDate(date: KalugaDate): Duration = timeZone.getOffset(date.durationSinceEpoch.inWholeMilliseconds).milliseconds
-    override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = timeZone.inDaylightTime(date.date)
-    override fun copy(): KalugaTimeZone = KalugaTimeZone(timeZone.clone() as java.util.TimeZone)
+    actual override val offsetFromGMT = timeZone.rawOffset.milliseconds
+    actual override val daylightSavingsOffset = timeZone.dstSavings.milliseconds
+    actual override fun offsetFromGMTAtDate(date: KalugaDate): Duration = timeZone.getOffset(date.durationSinceEpoch.inWholeMilliseconds).milliseconds
+    actual override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = timeZone.inDaylightTime(date.date)
+    actual override fun copy(): KalugaTimeZone = KalugaTimeZone(timeZone.clone() as java.util.TimeZone)
     override fun equals(other: Any?): Boolean {
         return (other as? KalugaTimeZone)?.let { timeZone == other.timeZone } ?: false
     }
+
+    override fun hashCode(): Int = timeZone.hashCode()
 }

@@ -15,10 +15,13 @@
 
  */
 
+import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.LibraryPlugin
+import extensions.BaseKalugaSubprojectExtension
 import extensions.KalugaAndroidSubprojectExtension
 import extensions.KalugaMultiplatformSubprojectExtension
 import extensions.KalugaRootExtension
+import kotlinx.kover.gradle.plugin.KoverGradlePlugin
 import kotlinx.validation.BinaryCompatibilityValidatorPlugin
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Plugin
@@ -26,9 +29,13 @@ import org.gradle.api.Project
 import org.gradle.api.UnknownDomainObjectException
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.hasPlugin
+import org.gradle.plugins.signing.SigningPlugin
+import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformAndroidPlugin
 import org.jmailen.gradle.kotlinter.KotlinterPlugin
@@ -52,24 +59,32 @@ class LibraryComponentsPlugin: Plugin<Project> {
             )
             throw e
         }
+        pluginManager.apply(MavenPublishPlugin::class)
+        pluginManager.apply(SigningPlugin::class)
         pluginManager.apply(KotlinterPlugin::class)
         pluginManager.apply(DependencyCheckPlugin::class)
-        pluginManager.apply(BinaryCompatibilityValidatorPlugin::class)
+        pluginManager.apply(DokkaPlugin::class)
         if (this != rootProject) {
             pluginManager.apply(LibraryPlugin::class)
         }
 
         val kalugaExtension = when {
             rootProject == this -> {
+                pluginManager.apply(KoverGradlePlugin::class)
+                pluginManager.apply(BinaryCompatibilityValidatorPlugin::class)
                 extensions.create(EXTENSION_NAME, KalugaRootExtension::class, versionCatalog)
             }
             plugins.hasPlugin(KotlinPlatformAndroidPlugin::class) -> {
-                extensions.create(EXTENSION_NAME, KalugaAndroidSubprojectExtension::class.java, versionCatalog)
+                extensions.create(EXTENSION_NAME, KalugaAndroidSubprojectExtension::class.java, versionCatalog, project.extensions.findByType(LibraryExtension::class))
             }
             else -> {
                 pluginManager.apply(KotlinMultiplatformPluginWrapper::class)
-                extensions.create(EXTENSION_NAME, KalugaMultiplatformSubprojectExtension::class.java, versionCatalog)
+                extensions.create(EXTENSION_NAME, KalugaMultiplatformSubprojectExtension::class.java, versionCatalog, project.extensions.findByType(LibraryExtension::class))
             }
+        }
+
+        if (kalugaExtension is BaseKalugaSubprojectExtension) {
+            kalugaExtension.androidCommon(this)
         }
 
         afterEvaluate {

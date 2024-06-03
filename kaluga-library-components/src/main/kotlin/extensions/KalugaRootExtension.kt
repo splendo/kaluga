@@ -5,6 +5,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.closureOf
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.repositories
 import org.owasp.dependencycheck.gradle.extension.AnalyzerExtension
 import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
@@ -35,6 +36,9 @@ open class KalugaRootExtension @Inject constructor(
         }
 
         generateNonDependentProjectsFileTask()
+        project.extensions.configure(ApiValidationExtension::class) {
+            apiExtensions(project)
+        }
 
         afterEvaluate {
             // owasp dependency checker workaround
@@ -88,7 +92,14 @@ open class KalugaRootExtension @Inject constructor(
         }
     }
 
-    override fun ApiValidationExtension.apiExtensions() {
+    private fun ApiValidationExtension.apiExtensions(project: Project) {
+        project.subprojects.forEach { subproject ->
+            val moduleName = subproject.name
+            ignoredClasses.add("com.splendo.kaluga.$moduleName.BuildConfig")
+            ignoredClasses.add("com.splendo.kaluga.${moduleName.replace("-", ".")}.BuildConfig")
+            ignoredClasses.add("com.splendo.kaluga.${moduleName.replace("-", "")}.BuildConfig")
+            ignoredClasses.add("com.splendo.kaluga.permissions.${moduleName.replace("-permissions", "")}.BuildConfig")
+        }
         ignoredClasses.add("$baseGroup.permissions.BuildConfig")
         ignoredClasses.add("$baseGroup.test.BuildConfig")
         ignoredClasses.add("$baseGroup.datetime.timer.BuildConfig")

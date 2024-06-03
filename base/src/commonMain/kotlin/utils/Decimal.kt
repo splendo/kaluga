@@ -65,7 +65,9 @@ sealed class Decimal : Comparable<Decimal> {
 /**
  * Platform specific representation of a finite immutable, arbitrary-precision signed decimal number
  */
-expect class FiniteDecimal : Comparable<FiniteDecimal>
+expect class FiniteDecimal : Comparable<FiniteDecimal> {
+    override fun compareTo(other: FiniteDecimal): Int
+}
 
 /**
  * Adds two [Decimal] together.

@@ -1,4 +1,4 @@
-/*
+package helpers/*
  Copyright 2022 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,7 +47,7 @@ val Project.GitBranch: GitBranch get() {
     val kalugaBranchPostfix = (
         when (branch) {
             "master", "main", "develop" -> ""
-            else -> "-" + branch
+            else -> "-$branch"
         } + if (!release) "-SNAPSHOT" else ""
         ).also {
             logger.lifecycle("decided branch: '$branch' to postfix '$it', isRelease: $release (from: GITHUB_GIT_BRANCH env: $GITHUB_GIT_BRANCH, kaluga_branch property: $kaluga_branch , MAVEN_CENTRAL_RELEASE env: $MAVEN_CENTRAL_RELEASE , git cli: $branchFromGit)")
