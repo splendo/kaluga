@@ -23,6 +23,7 @@ import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
+import kotlinx.cinterop.ObjCSignatureOverride
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -71,13 +72,14 @@ internal actual class DefaultDeviceConnectionManager(
     private val discoveringServices = mutableListOf<CBUUID>()
     private val discoveringCharacteristics = mutableListOf<CBUUID>()
 
-    @Suppress("CONFLICTING_OVERLOADS")
     private val peripheralDelegate = object : NSObject(), CBPeripheralDelegateProtocol {
 
+        @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didDiscoverDescriptorsForCharacteristic: CBCharacteristic, error: NSError?) {
             didDiscoverDescriptors(didDiscoverDescriptorsForCharacteristic)
         }
 
+        @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic: CBCharacteristic, error: NSError?) {
             val action = currentAction
             if (action is DeviceAction.Notification && action.characteristic.wrapper.uuid == didUpdateNotificationStateForCharacteristic.UUID) {
@@ -87,18 +89,22 @@ internal actual class DefaultDeviceConnectionManager(
             }
         }
 
+        @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic: CBCharacteristic, error: NSError?) {
             updateCharacteristic(didUpdateValueForCharacteristic, error)
         }
 
+        @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic: CBCharacteristic, error: NSError?) {
             updateCharacteristic(didWriteValueForCharacteristic, error)
         }
 
+        @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor: CBDescriptor, error: NSError?) {
             updateDescriptor(didUpdateValueForDescriptor, error)
         }
 
+        @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForDescriptor: CBDescriptor, error: NSError?) {
             updateDescriptor(didWriteValueForDescriptor, error)
         }

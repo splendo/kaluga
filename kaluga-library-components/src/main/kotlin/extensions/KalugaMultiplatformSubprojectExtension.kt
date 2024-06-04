@@ -244,6 +244,9 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                             optIn("kotlinx.cinterop.BetaInteropApi")
                             optIn("kotlin.experimental.ExperimentalNativeApi")
                         }
+                        if (pluginManager.hasPlugin(versionCatalog.findPlugin("kotlin-serialization").get().get().pluginId)) {
+                            optIn("kotlinx.serialization.ExperimentalSerializationApi")
+                        }
                         enableLanguageFeature("InlineClasses")
                     }
                 }
