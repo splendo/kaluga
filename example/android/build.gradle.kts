@@ -94,11 +94,11 @@ dependencies {
     implementationDependency(Dependencies.AndroidX.Compose.UIToolingPreview)
     implementationDependency(Dependencies.AndroidX.Compose.Foundation)
     implementationDependency(Dependencies.AndroidX.Compose.Material)
-    implementationDependency(Dependencies.AndroidX.Activity.Compose)
+    implementationDependency(libs.androidx.activity.compose)
     implementationDependency(Dependencies.AndroidX.Navigation.Compose)
 
-    implementationDependency(Dependencies.AndroidX.Fragment)
-    implementationDependency(Dependencies.AndroidX.FragmentKtx)
+    implementationDependency(libs.androidx.fragment)
+    implementationDependency(libs.androidx.fragment.ktx)
     implementationDependency(Dependencies.AndroidX.ConstraintLayout)
     implementationDependency(Dependencies.AndroidX.Lifecycle.Service)
 
@@ -106,7 +106,7 @@ dependencies {
     implementationDependency(Dependencies.Android.Material)
     implementationDependency(Dependencies.Accompanist.MaterialThemeAdapter)
 
-    implementationDependency(Dependencies.KotlinX.Serialization.Core)
+    implementationDependency(libs.kotlinx.serialization.core)
     implementationDependency(Dependencies.KotlinX.Serialization.Json)
 
     implementationDependency(Dependencies.Koin.AndroidXCompose)

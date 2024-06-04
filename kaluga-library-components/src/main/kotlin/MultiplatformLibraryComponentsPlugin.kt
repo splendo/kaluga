@@ -15,20 +15,17 @@
 
  */
 
-import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.LibraryPlugin
 import extensions.KalugaMultiplatformSubprojectExtension
-import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalog
+import org.gradle.api.plugins.PluginManager
 import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
+import kotlin.reflect.KClass
 
 class MultiplatformLibraryComponentsPlugin: BaseLibraryComponentsPlugin<KalugaMultiplatformSubprojectExtension>() {
 
-    override fun Project.createBaseKalugaSubprojectExtension(versionCatalog: VersionCatalog): KalugaMultiplatformSubprojectExtension {
-        pluginManager.apply(KotlinMultiplatformPluginWrapper::class)
-        pluginManager.apply(LibraryPlugin::class)
-        return extensions.create(EXTENSION_NAME, KalugaMultiplatformSubprojectExtension::class.java, versionCatalog, project.extensions.findByType(LibraryExtension::class))
+    override val subExtensionClass: KClass<KalugaMultiplatformSubprojectExtension> = KalugaMultiplatformSubprojectExtension::class
+
+    override fun PluginManager.addSubprojectExtensionPlugins() {
+        apply(KotlinMultiplatformPluginWrapper::class)
     }
 }

@@ -15,6 +15,8 @@
 
  */
 
+import com.android.build.gradle.LibraryExtension
+import com.android.build.gradle.LibraryPlugin
 import extensions.BaseKalugaSubprojectExtension
 import extensions.KalugaRootExtension
 import kotlinx.kover.gradle.plugin.KoverGradlePlugin
@@ -25,19 +27,25 @@ import org.gradle.api.Project
 import org.gradle.api.UnknownDomainObjectException
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.api.plugins.PluginManager
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.findByType
 import org.gradle.plugins.signing.SigningPlugin
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jmailen.gradle.kotlinter.KotlinterPlugin
 import org.owasp.dependencycheck.gradle.DependencyCheckPlugin
+import kotlin.reflect.KClass
 
 abstract class BaseLibraryComponentsPlugin<SubExtension: BaseKalugaSubprojectExtension>: Plugin<Project> {
 
     companion object {
         const val EXTENSION_NAME = "kaluga"
     }
+
+    protected abstract val subExtensionClass: KClass<SubExtension>
+
     override fun apply(target: Project) = target.run {
         val versionCatalog: VersionCatalog = try {
             extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
@@ -63,7 +71,11 @@ abstract class BaseLibraryComponentsPlugin<SubExtension: BaseKalugaSubprojectExt
                 pluginManager.apply(BinaryCompatibilityValidatorPlugin::class)
                 extensions.create(EXTENSION_NAME, KalugaRootExtension::class, versionCatalog)
             }
-            else -> createBaseKalugaSubprojectExtension(versionCatalog)
+            else -> {
+                pluginManager.apply(LibraryPlugin::class)
+                pluginManager.addSubprojectExtensionPlugins()
+                extensions.create(EXTENSION_NAME, subExtensionClass, versionCatalog, project.extensions.findByType(LibraryExtension::class)!!)
+            }
         }
 
         if (kalugaExtension is BaseKalugaSubprojectExtension) {
@@ -75,5 +87,5 @@ abstract class BaseLibraryComponentsPlugin<SubExtension: BaseKalugaSubprojectExt
         }
     }
 
-    protected abstract fun Project.createBaseKalugaSubprojectExtension(versionCatalog: VersionCatalog): SubExtension
+    protected abstract fun PluginManager.addSubprojectExtensionPlugins()
 }

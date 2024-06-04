@@ -16,19 +16,16 @@
  */
 
 plugins {
-    id("com.android.library")
-    kotlin("android")
+    id("com.splendo.kaluga.plugin.android.databinding")
     kotlin("kapt")
-    id("jacoco")
-    id("convention.publication")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
 }
 
-databindingAndroidComponent("resources.databinding")
+kaluga {
+    moduleName = "resources"
+}
 
 dependencies {
     implementation(project(":base"))
     api(project(":resources"))
-    implementationDependency(Dependencies.Android.Material)
+    implementation(libs.android.material)
 }

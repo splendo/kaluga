@@ -43,7 +43,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     versionCatalog: VersionCatalog,
     libraryExtension: LibraryExtension,
     objects: ObjectFactory,
-) : BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, objects) {
+) : BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, null, objects) {
 
     private enum class IOSTarget {
         X64,
@@ -212,21 +212,21 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                         multiplatformDependencies.jvm.testDependencies.forEach { it.execute(this) }
                     }
                 }
-                //
-                // sourceSets.getByName("jsMain").apply {
-                //     dependencies {
-                //         implementation(kotlin("stdlib-js"))
-                //         implementation("kotlinx-coroutines-js".asDependency())
-                //         multiplatformDependencies.js.mainDependencies.forEach { it.execute(this) }
-                //     }
-                // }
-                //
-                // sourceSets.getByName("jsTest").apply {
-                //     dependencies {
-                //         implementation(kotlin("test-js"))
-                //         multiplatformDependencies.js.testDependencies.forEach { it.execute(this) }
-                //     }
-                // }
+
+                sourceSets.getByName("jsMain").apply {
+                    dependencies {
+                        implementation(kotlin("stdlib-js"))
+                        implementation("kotlinx-coroutines-js".asDependency())
+                        multiplatformDependencies.js.mainDependencies.forEach { it.execute(this) }
+                    }
+                }
+
+                sourceSets.getByName("jsTest").apply {
+                    dependencies {
+                        implementation(kotlin("test-js"))
+                        multiplatformDependencies.js.testDependencies.forEach { it.execute(this) }
+                    }
+                }
 
                 sourceSets.all {
                     languageSettings {

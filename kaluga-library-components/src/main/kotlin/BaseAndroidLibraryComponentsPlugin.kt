@@ -15,17 +15,17 @@
 
  */
 
-plugins {
-    id("com.splendo.kaluga.plugin.android.compose")
-}
+import extensions.BaseKalugaAndroidSubprojectExtension
+import org.gradle.api.plugins.PluginManager
+import org.gradle.kotlin.dsl.apply
+import org.jetbrains.kotlin.gradle.plugin.KotlinAndroidPluginWrapper
 
-kaluga {
-    moduleName = "resources"
-}
+abstract class BaseAndroidLibraryComponentsPlugin<Android : BaseKalugaAndroidSubprojectExtension>: BaseLibraryComponentsPlugin<Android>() {
 
-dependencies {
-    implementation(project(":base"))
-    api(project(":resources"))
-    implementation(libs.androidx.compose.material)
-    implementation(libs.accompanist.drawablepainter)
+    override fun PluginManager.addSubprojectExtensionPlugins() {
+        apply(KotlinAndroidPluginWrapper::class)
+        addAndroidExtensionPlugins()
+    }
+
+    protected abstract fun PluginManager.addAndroidExtensionPlugins()
 }

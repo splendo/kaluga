@@ -31,15 +31,18 @@ import org.gradle.plugins.signing.Sign
 sealed class BaseKalugaSubprojectExtension(
     versionCatalog: VersionCatalog,
     private val libraryExtension: LibraryExtension,
+    private val namespacePostfix: String?,
     objects: ObjectFactory,
 ) : BaseKalugaExtension(versionCatalog, objects) {
 
     var isPublished: Boolean = true
 
     var moduleName: String
-        get() = libraryExtension.namespace?.removePrefix("$baseGroup.").orEmpty()
+        get() = libraryExtension.namespace.orEmpty()
+            .removePrefix("$baseGroup.")
+            .removeSuffix(namespacePostfix?.let { ".$it" } ?: "")
         set(value) {
-            libraryExtension.namespace = "$baseGroup.$value"
+            libraryExtension.namespace = listOfNotNull(baseGroup, value, namespacePostfix).joinToString(".")
         }
 
     protected val androidMainDependencies = listOf(

@@ -1,5 +1,10 @@
+
+import extensions.DatabindingKalugaAndroidSubprojectExtension
+import org.gradle.api.plugins.PluginManager
+import kotlin.reflect.KClass
+
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2024 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,17 +20,8 @@
 
  */
 
-plugins {
-    id("com.splendo.kaluga.plugin.android.compose")
-}
+class DatabindingAndroidLibraryComponentsPlugin : BaseAndroidLibraryComponentsPlugin<DatabindingKalugaAndroidSubprojectExtension>() {
+    override val subExtensionClass: KClass<DatabindingKalugaAndroidSubprojectExtension> = DatabindingKalugaAndroidSubprojectExtension::class
 
-kaluga {
-    moduleName = "resources"
-}
-
-dependencies {
-    implementation(project(":base"))
-    api(project(":resources"))
-    implementation(libs.androidx.compose.material)
-    implementation(libs.accompanist.drawablepainter)
+    override fun PluginManager.addAndroidExtensionPlugins() {}
 }

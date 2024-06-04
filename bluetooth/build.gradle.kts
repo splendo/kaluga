@@ -23,7 +23,7 @@ kotlin {
             dependencies {
                 implementation(project(":service"))
                 api(project(":bluetooth-permissions", ""))
-                apiDependency(Dependencies.KotlinX.Serialization.Core)
+                apiDependency(libs.kotlinx.serialization.core)
             }
         }
         commonTest {

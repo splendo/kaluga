@@ -16,14 +16,13 @@
  */
 
 plugins {
-    id("com.splendo.kaluga.plugin.android")
-    id(libs.plugins.compose.get().pluginId)
+    id("com.splendo.kaluga.plugin.android.compose")
     id(libs.plugins.kotlinx.atomicfu.get().pluginId)
     alias(libs.plugins.kotlin.serialization)
 }
 
 kaluga {
-    moduleName = "architecture.compose"
+    moduleName = "architecture"
 }
 
 dependencies {

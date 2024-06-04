@@ -10,7 +10,7 @@ plugins {
 publishableComponent("datetimepicker")
 
 dependencies {
-    androidTestImplementationDependency(Dependencies.AndroidX.Activity.Ktx)
+    androidTestImplementationDependency(libs.androidx.activity.ktx)
 }
 
 kotlin {

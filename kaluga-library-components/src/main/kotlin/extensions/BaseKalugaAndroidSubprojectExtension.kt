@@ -24,22 +24,20 @@ import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.publish.PublicationContainer
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.findByType
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
-import javax.inject.Inject
+import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 
-open class KalugaAndroidSubprojectExtension @Inject constructor(
+abstract class BaseKalugaAndroidSubprojectExtension(
     versionCatalog: VersionCatalog,
     libraryExtension: LibraryExtension,
+    namespacePostfix: String,
     objects: ObjectFactory,
-) : BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, objects) {
+) : BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, namespacePostfix, objects) {
 
-    var isDatabindingEnabled: Boolean = false
-    val Project.hasCompose: Boolean get() = extensions.findByType(ComposeCompilerGradlePluginExtension::class) != null
     override fun Project.configureSubproject() {
         extensions.configure(KotlinAndroidProjectExtension::class) {
             compilerOptions {
@@ -47,9 +45,7 @@ open class KalugaAndroidSubprojectExtension @Inject constructor(
             }
             sourceSets.all {
                 languageSettings {
-                    if (hasCompose) {
-                        optIn("androidx.compose.material.ExperimentalMaterialApi")
-                    }
+                    languageSettings()
                 }
             }
         }
@@ -58,13 +54,7 @@ open class KalugaAndroidSubprojectExtension @Inject constructor(
                 add("implementation", it)
             }
 
-            if (hasCompose) {
-                add("implementation", "androidx-compose-foundation".asDependency())
-                add("implementation", "androidx-compose-ui".asDependency())
-                add("implementation", "androidx-compose-ui-tooling".asDependency())
-                add("implementation", "androidx-lifecycle-viewmodel-compose".asDependency())
-                add("implementation", "androidx-activity-compose".asDependency())
-            }
+            commonDependencies()
 
             androidTestDependencies.forEach {
                 add("testImplementation", it)
@@ -75,25 +65,23 @@ open class KalugaAndroidSubprojectExtension @Inject constructor(
         }
     }
 
-    override fun LibraryExtension.configure() {
-        buildFeatures {
-            dataBinding = isDatabindingEnabled
-        }
-    }
+    protected abstract fun LanguageSettingsBuilder.languageSettings()
+    protected abstract fun DependencyHandlerScope.commonDependencies()
+
     override fun PublicationContainer.configure(project: Project) {
         create("release", MavenPublication::class) {
             from(project.components.getByName("release"))
 
             artifactId = project.name
             groupId = baseGroup
-            version = this@KalugaAndroidSubprojectExtension.version
+            version = this@BaseKalugaAndroidSubprojectExtension.version
         }
         create("debug", MavenPublication::class) {
             from(project.components.getByName("debug"))
 
             artifactId = project.name
             groupId = baseGroup
-            version = this@KalugaAndroidSubprojectExtension.version
+            version = this@BaseKalugaAndroidSubprojectExtension.version
         }
     }
 }
