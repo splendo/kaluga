@@ -74,6 +74,45 @@ sealed class BaseKalugaSubprojectExtension(
         "mockito-core",
         "mockito-android",
     ).map { it.asDependency() }
+
+    override fun Project.beforeEvaluated() {
+        libraryExtension.apply {
+            compileSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
+            buildToolsVersion = versionCatalog.findVersion("androidBuildTools").get().displayName
+
+            defaultConfig {
+                minSdk = versionCatalog.findVersion("androidMinSdk").get().displayName.toInt()
+
+                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+            }
+
+            signingConfigs {
+                create("stableDebug") {
+                    storeFile = project.rootProject.file("keystore/stableDebug.keystore")
+                    storePassword = "stableDebug"
+                    keyAlias = "stableDebug"
+                    keyPassword = "stableDebug"
+                }
+            }
+
+            buildTypes {
+                release {
+                    isMinifyEnabled = false
+                }
+                debug {
+                    signingConfig = signingConfigs.getByName("stableDebug")
+                }
+            }
+
+            compileOptions {
+                val javaVersion = JavaVersion.toVersion(versionCatalog.findVersion("java").get().displayName)
+                sourceCompatibility = javaVersion
+                targetCompatibility = javaVersion
+            }
+
+            configure()
+        }
+    }
     override fun Project.afterProjectEvaluated() {
         if (moduleName.isEmpty()) {
             throw RuntimeException("moduleName must be configured")
@@ -86,43 +125,6 @@ sealed class BaseKalugaSubprojectExtension(
     }
 
     protected abstract fun Project.configureSubproject()
-
-    fun androidCommon(project: Project) = libraryExtension.apply {
-        compileSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
-        buildToolsVersion = versionCatalog.findVersion("androidBuildTools").get().displayName
-
-        defaultConfig {
-            minSdk = versionCatalog.findVersion("androidMinSdk").get().displayName.toInt()
-
-            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        }
-
-        signingConfigs {
-            create("stableDebug") {
-                storeFile = project.rootProject.file("keystore/stableDebug.keystore")
-                storePassword = "stableDebug"
-                keyAlias = "stableDebug"
-                keyPassword = "stableDebug"
-            }
-        }
-
-        buildTypes {
-            release {
-                isMinifyEnabled = false
-            }
-            debug {
-                signingConfig = signingConfigs.getByName("stableDebug")
-            }
-        }
-
-        compileOptions {
-            val javaVersion = JavaVersion.toVersion(versionCatalog.findVersion("java").get().displayName)
-            sourceCompatibility = javaVersion
-            targetCompatibility = javaVersion
-        }
-
-        configure()
-    }
 
     protected abstract fun LibraryExtension.configure()
     fun Project.setupPublishing() {

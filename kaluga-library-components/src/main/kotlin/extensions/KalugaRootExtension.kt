@@ -24,6 +24,7 @@ open class KalugaRootExtension @Inject constructor(
      */
     var includeMavenLocal = false
 
+    override fun Project.beforeEvaluated() {}
     override fun Project.afterProjectEvaluated() {
         allprojects {
             repositories {

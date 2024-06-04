@@ -42,10 +42,17 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
         testLogging.set(TestLoggingContainerAction(action))
     }
 
-    /**
-     * Compiler args to be added to the kotlinOptions
-     */
-    val additionalFreeCompilerArgs = mutableListOf<String>()
+    fun beforeProjectEvaluated(project: Project) {
+        project.tasks.withType(KotlinCompile::class.java) {
+            compilerOptions {
+                jvmTarget.set(versionCatalog.jvmTarget)
+                freeCompilerArgs.addAll("-Xjvm-default=all")
+            }
+        }
+        project.beforeEvaluated()
+    }
+
+    protected abstract fun Project.beforeEvaluated()
 
     /**
      * Sets up a [Project] with the configuration of this extension after it has been evaluated.
@@ -64,13 +71,6 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
                 showCauses = true
                 showStackTraces = true
                 this@BaseKalugaExtension.testLogging.orNull?.action?.execute(this)
-            }
-        }
-
-        project.tasks.withType(KotlinCompile::class.java) {
-            compilerOptions {
-                jvmTarget.set(versionCatalog.jvmTarget)
-                freeCompilerArgs.addAll(*additionalFreeCompilerArgs.toTypedArray(), "-Xjvm-default=all")
             }
         }
 

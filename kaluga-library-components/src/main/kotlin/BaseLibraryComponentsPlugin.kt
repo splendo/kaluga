@@ -78,10 +78,7 @@ abstract class BaseLibraryComponentsPlugin<SubExtension: BaseKalugaSubprojectExt
             }
         }
 
-        if (kalugaExtension is BaseKalugaSubprojectExtension) {
-            kalugaExtension.androidCommon(this)
-        }
-
+        kalugaExtension.beforeProjectEvaluated(this)
         afterEvaluate {
             kalugaExtension.afterProjectEvaluated(this)
         }
