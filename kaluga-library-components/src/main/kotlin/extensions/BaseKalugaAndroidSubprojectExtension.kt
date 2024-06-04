@@ -15,10 +15,10 @@
 
  */
 
-package extensions
+package com.splendo.kaluga.plugin.extensions
 
 import com.android.build.gradle.LibraryExtension
-import helpers.jvmTarget
+import com.splendo.kaluga.plugin.helpers.jvmTarget
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory

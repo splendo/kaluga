@@ -15,12 +15,12 @@
 
  */
 
-package extensions
+package com.splendo.kaluga.plugin.extensions
 
 import com.android.build.gradle.LibraryExtension
-import container.AppleInteropContainer
-import container.MultiplatformDependencyContainer
-import helpers.jvmTarget
+import com.splendo.kaluga.plugin.container.AppleInteropContainer
+import com.splendo.kaluga.plugin.container.MultiplatformDependencyContainer
+import com.splendo.kaluga.plugin.helpers.jvmTarget
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog

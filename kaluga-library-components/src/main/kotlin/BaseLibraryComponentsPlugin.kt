@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2024 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,10 +15,12 @@
 
  */
 
+package com.splendo.kaluga.plugin
+
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.LibraryPlugin
-import extensions.BaseKalugaSubprojectExtension
-import extensions.KalugaRootExtension
+import com.splendo.kaluga.plugin.extensions.BaseKalugaSubprojectExtension
+import com.splendo.kaluga.plugin.extensions.KalugaRootExtension
 import kotlinx.kover.gradle.plugin.KoverGradlePlugin
 import kotlinx.validation.BinaryCompatibilityValidatorPlugin
 import org.gradle.api.InvalidUserDataException

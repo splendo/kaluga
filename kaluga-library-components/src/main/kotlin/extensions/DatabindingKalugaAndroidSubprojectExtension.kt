@@ -15,7 +15,7 @@
 
  */
 
-package extensions
+package com.splendo.kaluga.plugin.extensions
 
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.artifacts.VersionCatalog

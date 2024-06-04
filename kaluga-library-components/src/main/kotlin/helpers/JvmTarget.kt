@@ -15,7 +15,7 @@
 
  */
 
-package helpers
+package com.splendo.kaluga.plugin.helpers
 
 import org.gradle.api.artifacts.VersionCatalog
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget

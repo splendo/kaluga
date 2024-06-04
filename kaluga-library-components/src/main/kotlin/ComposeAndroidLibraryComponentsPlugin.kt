@@ -1,10 +1,3 @@
-
-import extensions.ComposeKalugaAndroidSubprojectExtension
-import org.gradle.api.plugins.PluginManager
-import org.gradle.kotlin.dsl.apply
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradleSubplugin
-import kotlin.reflect.KClass
-
 /*
  Copyright 2024 Splendo Consulting B.V. The Netherlands
 
@@ -21,6 +14,14 @@ import kotlin.reflect.KClass
     limitations under the License.
 
  */
+
+package com.splendo.kaluga.plugin
+
+import com.splendo.kaluga.plugin.extensions.ComposeKalugaAndroidSubprojectExtension
+import org.gradle.api.plugins.PluginManager
+import org.gradle.kotlin.dsl.apply
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradleSubplugin
+import kotlin.reflect.KClass
 
 class ComposeAndroidLibraryComponentsPlugin : BaseAndroidLibraryComponentsPlugin<ComposeKalugaAndroidSubprojectExtension>() {
     override val subExtensionClass: KClass<ComposeKalugaAndroidSubprojectExtension> = ComposeKalugaAndroidSubprojectExtension::class

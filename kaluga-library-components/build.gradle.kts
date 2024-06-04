@@ -18,15 +18,15 @@ repositories {
 gradlePlugin {
     plugins.register("com.splendo.kaluga.plugin") {
         id = "com.splendo.kaluga.plugin"
-        implementationClass = "MultiplatformLibraryComponentsPlugin"
+        implementationClass = "com.splendo.kaluga.plugin.MultiplatformLibraryComponentsPlugin"
     }
     plugins.register("com.splendo.kaluga.plugin.android.compose") {
         id = "com.splendo.kaluga.plugin.android.compose"
-        implementationClass = "ComposeAndroidLibraryComponentsPlugin"
+        implementationClass = "com.splendo.kaluga.plugin.ComposeAndroidLibraryComponentsPlugin"
     }
     plugins.register("com.splendo.kaluga.plugin.android.databinding") {
         id = "com.splendo.kaluga.plugin.android.databinding"
-        implementationClass = "DatabindingAndroidLibraryComponentsPlugin"
+        implementationClass = "com.splendo.kaluga.plugin.DatabindingAndroidLibraryComponentsPlugin"
     }
 }
 

@@ -1,8 +1,4 @@
 
-import extensions.DatabindingKalugaAndroidSubprojectExtension
-import org.gradle.api.plugins.PluginManager
-import kotlin.reflect.KClass
-
 /*
  Copyright 2024 Splendo Consulting B.V. The Netherlands
 
@@ -19,6 +15,12 @@ import kotlin.reflect.KClass
     limitations under the License.
 
  */
+
+package com.splendo.kaluga.plugin
+
+import com.splendo.kaluga.plugin.extensions.DatabindingKalugaAndroidSubprojectExtension
+import org.gradle.api.plugins.PluginManager
+import kotlin.reflect.KClass
 
 class DatabindingAndroidLibraryComponentsPlugin : BaseAndroidLibraryComponentsPlugin<DatabindingKalugaAndroidSubprojectExtension>() {
     override val subExtensionClass: KClass<DatabindingKalugaAndroidSubprojectExtension> = DatabindingKalugaAndroidSubprojectExtension::class

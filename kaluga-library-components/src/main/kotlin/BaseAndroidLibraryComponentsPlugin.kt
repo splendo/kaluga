@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2024 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
 
  */
 
-import extensions.BaseKalugaAndroidSubprojectExtension
+package com.splendo.kaluga.plugin
+
+import com.splendo.kaluga.plugin.extensions.BaseKalugaAndroidSubprojectExtension
 import org.gradle.api.plugins.PluginManager
 import org.gradle.kotlin.dsl.apply
 import org.jetbrains.kotlin.gradle.plugin.KotlinAndroidPluginWrapper

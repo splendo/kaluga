@@ -15,7 +15,9 @@
 
  */
 
-import extensions.KalugaMultiplatformSubprojectExtension
+package com.splendo.kaluga.plugin
+
+import com.splendo.kaluga.plugin.extensions.KalugaMultiplatformSubprojectExtension
 import org.gradle.api.plugins.PluginManager
 import org.gradle.kotlin.dsl.apply
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper

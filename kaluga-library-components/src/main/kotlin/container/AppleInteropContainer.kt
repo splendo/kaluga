@@ -15,7 +15,7 @@
 
  */
 
-package container
+package com.splendo.kaluga.plugin.container
 
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
