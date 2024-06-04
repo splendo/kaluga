@@ -1,33 +1,26 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
-    id("kotlinx-atomicfu")
+    id("com.splendo.kaluga.plugin")
+    id(libs.plugins.kotlinx.atomicfu.get().pluginId)
+    alias(libs.plugins.kotlin.serialization)
 }
 
-publishableComponent("bluetooth")
-
-dependencies {
-    implementationDependency(Dependencies.BLEScanner)
-    implementation(project(":location", ""))
-    implementationDependency(Dependencies.KotlinX.AtomicFu)
-}
-
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
-                implementation(project(":service"))
-                api(project(":bluetooth-permissions", ""))
-                apiDependency(libs.kotlinx.serialization.core)
+kaluga {
+    moduleName = "bluetooth"
+    dependencies {
+        android {
+            main {
+                implementation(libs.nordic.support.scanner)
+                implementation(project(":location", ""))
+                implementation(libs.kotlinx.atomicfu)
             }
         }
-        commonTest {
-            dependencies {
+        common {
+            main {
+                implementation(project(":service"))
+                api(project(":bluetooth-permissions", ""))
+                api(libs.kotlinx.serialization.core)
+            }
+            test {
                 implementation(project(":test-utils-bluetooth", ""))
             }
         }

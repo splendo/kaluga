@@ -1,28 +1,21 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-publishableComponent("datetimepicker")
-
-dependencies {
-    androidTestImplementationDependency(libs.androidx.activity.ktx)
-}
-
-kotlin {
-    sourceSets {
-        getByName("commonMain") {
-            dependencies {
+kaluga {
+    moduleName = "datetimepicker"
+    dependencies {
+        android {
+            instrumented {
+                implementation(libs.androidx.activity.ktx)
+            }
+        }
+        common {
+            main {
                 implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
             }
-        }
-        getByName("commonTest") {
-            dependencies {
+            test {
                 implementation(project(":test-utils-date-time-picker", ""))
             }
         }

@@ -1,28 +1,20 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-publishableComponent("permissions.bluetooth")
-
-kotlin {
-    sourceSets {
-        getByName("commonMain") {
-            dependencies {
-                api(project(":base-permissions", ""))
-            }
-        }
-        getByName("androidLibMain") {
-            dependencies {
+kaluga {
+    moduleName = "permissions.bluetooth"
+    dependencies {
+        android {
+            main {
                 api(project(":location-permissions", ""))
             }
         }
-        getByName("commonTest") {
-            dependencies {
+        common {
+            main {
+                api(project(":base-permissions", ""))
+            }
+            test {
                 api(project(":test-utils-base", ""))
             }
         }
