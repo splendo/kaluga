@@ -1,6 +1,6 @@
 package extensions
 
-import helpers.GitBranch
+import helpers.gitBranch
 import helpers.jvmTarget
 import org.gradle.api.Action
 import org.gradle.api.Project
@@ -28,7 +28,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, objects: ObjectFactory) {
 
     companion object {
-        const val baseGroup = "com.splendo.kaluga"
+        const val BASE_GROUP = "com.splendo.kaluga"
     }
 
     val version = versionCatalog.findVersion("kaluga").get().displayName
@@ -60,8 +60,8 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
     @OptIn(ExperimentalStdlibApi::class)
     @JvmName("handleProjectEvaluated")
     fun afterProjectEvaluated(project: Project) {
-        project.group = baseGroup
-        project.version = "$version${project.GitBranch.kalugaBranchPostfix}"
+        project.group = BASE_GROUP
+        project.version = "$version${project.gitBranch.kalugaBranchPostfix}"
 
         project.tasks.withType(Test::class.java) {
             testLogging {
@@ -78,7 +78,7 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
             setRequired(
                 {
                     project.gradle.taskGraph.hasTask("publish") && project.extra.get("signingSecretKeyRingFile") != null
-                }
+                },
             )
         }
 

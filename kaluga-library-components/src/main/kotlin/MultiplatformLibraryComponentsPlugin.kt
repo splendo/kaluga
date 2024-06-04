@@ -21,7 +21,7 @@ import org.gradle.kotlin.dsl.apply
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import kotlin.reflect.KClass
 
-class MultiplatformLibraryComponentsPlugin: BaseLibraryComponentsPlugin<KalugaMultiplatformSubprojectExtension>() {
+class MultiplatformLibraryComponentsPlugin : BaseLibraryComponentsPlugin<KalugaMultiplatformSubprojectExtension>() {
 
     override val subExtensionClass: KClass<KalugaMultiplatformSubprojectExtension> = KalugaMultiplatformSubprojectExtension::class
 

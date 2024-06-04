@@ -39,10 +39,10 @@ sealed class BaseKalugaSubprojectExtension(
 
     var moduleName: String
         get() = libraryExtension.namespace.orEmpty()
-            .removePrefix("$baseGroup.")
+            .removePrefix("$BASE_GROUP.")
             .removeSuffix(namespacePostfix?.let { ".$it" } ?: "")
         set(value) {
-            libraryExtension.namespace = listOfNotNull(baseGroup, value, namespacePostfix).joinToString(".")
+            libraryExtension.namespace = listOfNotNull(BASE_GROUP, value, namespacePostfix).joinToString(".")
         }
 
     protected val androidMainDependencies = listOf(
@@ -133,7 +133,6 @@ sealed class BaseKalugaSubprojectExtension(
                 configure(project)
             }
         }
-
 
         tasks.withType(AbstractPublishToMaven::class.java).configureEach {
             dependsOn(tasks.withType(Sign::class.java))

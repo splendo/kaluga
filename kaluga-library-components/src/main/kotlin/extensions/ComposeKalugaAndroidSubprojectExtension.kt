@@ -42,6 +42,5 @@ open class ComposeKalugaAndroidSubprojectExtension @Inject constructor(
         add("implementation", "androidx-activity-compose".asDependency())
     }
     override fun LibraryExtension.configure() {
-
     }
 }

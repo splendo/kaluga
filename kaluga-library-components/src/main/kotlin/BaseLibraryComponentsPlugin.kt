@@ -38,7 +38,7 @@ import org.jmailen.gradle.kotlinter.KotlinterPlugin
 import org.owasp.dependencycheck.gradle.DependencyCheckPlugin
 import kotlin.reflect.KClass
 
-abstract class BaseLibraryComponentsPlugin<SubExtension: BaseKalugaSubprojectExtension>: Plugin<Project> {
+abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectExtension> : Plugin<Project> {
 
     companion object {
         const val EXTENSION_NAME = "kaluga"

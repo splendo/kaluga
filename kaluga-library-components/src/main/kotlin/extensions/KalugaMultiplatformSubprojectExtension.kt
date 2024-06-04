@@ -74,6 +74,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     fun framework(action: (Framework.() -> Unit)) {
         frameworkConfig = action
     }
+
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     override fun Project.configureSubproject() {
         extensions.configure(KotlinMultiplatformExtension::class) {
@@ -333,7 +334,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         getByName("kotlinMultiplatform") {
             (this as MavenPublication).let {
                 artifactId = project.name
-                groupId = baseGroup
+                groupId = BASE_GROUP
                 version = this@KalugaMultiplatformSubprojectExtension.version
             }
         }

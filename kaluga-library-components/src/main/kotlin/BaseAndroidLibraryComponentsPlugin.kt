@@ -20,7 +20,7 @@ import org.gradle.api.plugins.PluginManager
 import org.gradle.kotlin.dsl.apply
 import org.jetbrains.kotlin.gradle.plugin.KotlinAndroidPluginWrapper
 
-abstract class BaseAndroidLibraryComponentsPlugin<Android : BaseKalugaAndroidSubprojectExtension>: BaseLibraryComponentsPlugin<Android>() {
+abstract class BaseAndroidLibraryComponentsPlugin<Android : BaseKalugaAndroidSubprojectExtension> : BaseLibraryComponentsPlugin<Android>() {
 
     override fun PluginManager.addSubprojectExtensionPlugins() {
         apply(KotlinAndroidPluginWrapper::class)

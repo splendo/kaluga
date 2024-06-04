@@ -73,16 +73,29 @@ open class KalugaRootExtension @Inject constructor(
 
             subprojects.forEach { thisProject ->
 
-                val dependsOnOtherProject = subprojects.any { otherProject -> thisProject != otherProject && (thisProject.name.startsWith(otherProject.name) || thisProject.name.endsWith(otherProject.name)) }
-                val otherProjectsDependOn = subprojects.any { otherProject -> thisProject != otherProject && (otherProject.name.startsWith(thisProject.name) || otherProject.name.endsWith(thisProject.name)) }
+                val dependsOnOtherProject = subprojects.any { otherProject ->
+                    thisProject != otherProject && (
+                        thisProject.name.startsWith(
+                            otherProject.name,
+                        ) || thisProject.name.endsWith(otherProject.name)
+                        )
+                }
+                val otherProjectsDependOn = subprojects.any { otherProject ->
+                    thisProject != otherProject && (
+                        otherProject.name.startsWith(
+                            thisProject.name,
+                        ) || otherProject.name.endsWith(thisProject.name)
+                        )
+                }
 
                 if (!blacklist.contains(thisProject.name) && (!dependsOnOtherProject || otherProjectsDependOn)) {
                     logger.debug("main module: ${thisProject.name} dependsOnOtherProject:$dependsOnOtherProject otherProjectsDependOn:$otherProjectsDependOn")
 
-                    if (firstProject)
+                    if (firstProject) {
                         firstProject = false
-                    else
+                    } else {
                         file.appendText(",")
+                    }
                     file.appendText('"' + thisProject.name + '"')
                 } else {
                     logger.debug("not a main module: ${thisProject.name} dependsOnOtherProject:$dependsOnOtherProject otherProjectsDependOn:$otherProjectsDependOn")
@@ -101,8 +114,8 @@ open class KalugaRootExtension @Inject constructor(
             ignoredClasses.add("com.splendo.kaluga.${moduleName.replace("-", "")}.BuildConfig")
             ignoredClasses.add("com.splendo.kaluga.permissions.${moduleName.replace("-permissions", "")}.BuildConfig")
         }
-        ignoredClasses.add("$baseGroup.permissions.BuildConfig")
-        ignoredClasses.add("$baseGroup.test.BuildConfig")
-        ignoredClasses.add("$baseGroup.datetime.timer.BuildConfig")
+        ignoredClasses.add("$BASE_GROUP.permissions.BuildConfig")
+        ignoredClasses.add("$BASE_GROUP.test.BuildConfig")
+        ignoredClasses.add("$BASE_GROUP.datetime.timer.BuildConfig")
     }
 }
