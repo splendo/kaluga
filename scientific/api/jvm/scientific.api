@@ -1,15 +1,9 @@
 public abstract interface class com/splendo/kaluga/scientific/ByteScientificArray : com/splendo/kaluga/scientific/ScientificArray {
-	public abstract fun get (I)Ljava/lang/Byte;
-	public abstract fun getSize ()I
+	public fun get (I)Ljava/lang/Byte;
+	public synthetic fun get (I)Ljava/lang/Number;
+	public fun getSize ()I
 	public abstract fun getValues ()[B
-	public abstract fun iterator ()Ljava/util/Iterator;
-}
-
-public final class com/splendo/kaluga/scientific/ByteScientificArray$DefaultImpls {
-	public static fun get (Lcom/splendo/kaluga/scientific/ByteScientificArray;I)Ljava/lang/Byte;
-	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/ByteScientificArray;)Ljava/util/List;
-	public static fun getSize (Lcom/splendo/kaluga/scientific/ByteScientificArray;)I
-	public static fun iterator (Lcom/splendo/kaluga/scientific/ByteScientificArray;)Ljava/util/Iterator;
+	public fun iterator ()Ljava/util/Iterator;
 }
 
 public final class com/splendo/kaluga/scientific/DefaultScientificArray : com/splendo/kaluga/scientific/DoubleScientificArray {
@@ -21,27 +15,22 @@ public final class com/splendo/kaluga/scientific/DefaultScientificArray : com/sp
 	public final fun copy ([DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/DefaultScientificArray;[DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun get (I)Ljava/lang/Double;
-	public synthetic fun get (I)Ljava/lang/Number;
-	public fun getDecimalValues ()Ljava/util/List;
-	public fun getSize ()I
 	public fun getUnit ()Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;
 	public synthetic fun getUnit ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
 	public fun getValues ()[D
 	public fun hashCode ()I
-	public fun iterator ()Ljava/util/Iterator;
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/DefaultScientificArray$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public synthetic fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
+public synthetic class com/splendo/kaluga/scientific/DefaultScientificArray$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/DefaultScientificArray;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/DefaultScientificArray;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/DefaultScientificArray$Companion {
@@ -52,14 +41,11 @@ public final class com/splendo/kaluga/scientific/DefaultScientificValue : com/sp
 	public static final field Companion Lcom/splendo/kaluga/scientific/DefaultScientificValue$Companion;
 	public fun <init> (DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)V
 	public fun <init> (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)V
-	public fun compareTo (Lcom/splendo/kaluga/scientific/ScientificValue;)I
-	public synthetic fun compareTo (Ljava/lang/Object;)I
 	public final fun component1 ()D
 	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;
 	public final fun copy (DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/DefaultScientificValue;DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun getDecimalValue ()Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getUnit ()Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;
 	public synthetic fun getUnit ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
 	public fun getValue ()Ljava/lang/Double;
@@ -68,15 +54,15 @@ public final class com/splendo/kaluga/scientific/DefaultScientificValue : com/sp
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/DefaultScientificValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public synthetic fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+public synthetic class com/splendo/kaluga/scientific/DefaultScientificValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/DefaultScientificValue;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/DefaultScientificValue;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/DefaultScientificValue$Companion {
@@ -84,59 +70,35 @@ public final class com/splendo/kaluga/scientific/DefaultScientificValue$Companio
 }
 
 public abstract interface class com/splendo/kaluga/scientific/DoubleScientificArray : com/splendo/kaluga/scientific/ScientificArray {
-	public abstract fun get (I)Ljava/lang/Double;
-	public abstract fun getSize ()I
+	public fun get (I)Ljava/lang/Double;
+	public synthetic fun get (I)Ljava/lang/Number;
+	public fun getSize ()I
 	public abstract fun getValues ()[D
-	public abstract fun iterator ()Ljava/util/Iterator;
-}
-
-public final class com/splendo/kaluga/scientific/DoubleScientificArray$DefaultImpls {
-	public static fun get (Lcom/splendo/kaluga/scientific/DoubleScientificArray;I)Ljava/lang/Double;
-	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/DoubleScientificArray;)Ljava/util/List;
-	public static fun getSize (Lcom/splendo/kaluga/scientific/DoubleScientificArray;)I
-	public static fun iterator (Lcom/splendo/kaluga/scientific/DoubleScientificArray;)Ljava/util/Iterator;
+	public fun iterator ()Ljava/util/Iterator;
 }
 
 public abstract interface class com/splendo/kaluga/scientific/FloatScientificArray : com/splendo/kaluga/scientific/ScientificArray {
-	public abstract fun get (I)Ljava/lang/Float;
-	public abstract fun getSize ()I
+	public fun get (I)Ljava/lang/Float;
+	public synthetic fun get (I)Ljava/lang/Number;
+	public fun getSize ()I
 	public abstract fun getValues ()[F
-	public abstract fun iterator ()Ljava/util/Iterator;
-}
-
-public final class com/splendo/kaluga/scientific/FloatScientificArray$DefaultImpls {
-	public static fun get (Lcom/splendo/kaluga/scientific/FloatScientificArray;I)Ljava/lang/Float;
-	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/FloatScientificArray;)Ljava/util/List;
-	public static fun getSize (Lcom/splendo/kaluga/scientific/FloatScientificArray;)I
-	public static fun iterator (Lcom/splendo/kaluga/scientific/FloatScientificArray;)Ljava/util/Iterator;
+	public fun iterator ()Ljava/util/Iterator;
 }
 
 public abstract interface class com/splendo/kaluga/scientific/IntScientificArray : com/splendo/kaluga/scientific/ScientificArray {
-	public abstract fun get (I)Ljava/lang/Integer;
-	public abstract fun getSize ()I
+	public fun get (I)Ljava/lang/Integer;
+	public synthetic fun get (I)Ljava/lang/Number;
+	public fun getSize ()I
 	public abstract fun getValues ()[I
-	public abstract fun iterator ()Ljava/util/Iterator;
-}
-
-public final class com/splendo/kaluga/scientific/IntScientificArray$DefaultImpls {
-	public static fun get (Lcom/splendo/kaluga/scientific/IntScientificArray;I)Ljava/lang/Integer;
-	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/IntScientificArray;)Ljava/util/List;
-	public static fun getSize (Lcom/splendo/kaluga/scientific/IntScientificArray;)I
-	public static fun iterator (Lcom/splendo/kaluga/scientific/IntScientificArray;)Ljava/util/Iterator;
+	public fun iterator ()Ljava/util/Iterator;
 }
 
 public abstract interface class com/splendo/kaluga/scientific/LongScientificArray : com/splendo/kaluga/scientific/ScientificArray {
-	public abstract fun get (I)Ljava/lang/Long;
-	public abstract fun getSize ()I
+	public fun get (I)Ljava/lang/Long;
+	public synthetic fun get (I)Ljava/lang/Number;
+	public fun getSize ()I
 	public abstract fun getValues ()[J
-	public abstract fun iterator ()Ljava/util/Iterator;
-}
-
-public final class com/splendo/kaluga/scientific/LongScientificArray$DefaultImpls {
-	public static fun get (Lcom/splendo/kaluga/scientific/LongScientificArray;I)Ljava/lang/Long;
-	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/LongScientificArray;)Ljava/util/List;
-	public static fun getSize (Lcom/splendo/kaluga/scientific/LongScientificArray;)I
-	public static fun iterator (Lcom/splendo/kaluga/scientific/LongScientificArray;)Ljava/util/Iterator;
+	public fun iterator ()Ljava/util/Iterator;
 }
 
 public abstract class com/splendo/kaluga/scientific/PhysicalQuantity : java/io/Serializable {
@@ -649,14 +611,10 @@ public final class com/splendo/kaluga/scientific/PhysicalQuantity$Yank : com/spl
 
 public abstract interface class com/splendo/kaluga/scientific/ScientificArray : java/io/Serializable {
 	public abstract fun get (I)Ljava/lang/Number;
-	public abstract fun getDecimalValues ()Ljava/util/List;
+	public fun getDecimalValues ()Ljava/util/List;
 	public abstract fun getSize ()I
 	public abstract fun getUnit ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
 	public abstract fun iterator ()Ljava/util/Iterator;
-}
-
-public final class com/splendo/kaluga/scientific/ScientificArray$DefaultImpls {
-	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/ScientificArray;)Ljava/util/List;
 }
 
 public final class com/splendo/kaluga/scientific/ScientificArrayKt {
@@ -690,15 +648,11 @@ public final class com/splendo/kaluga/scientific/ScientificArrayKt {
 }
 
 public abstract interface class com/splendo/kaluga/scientific/ScientificValue : java/io/Serializable, java/lang/Comparable {
-	public abstract fun compareTo (Lcom/splendo/kaluga/scientific/ScientificValue;)I
-	public abstract fun getDecimalValue ()Lcom/splendo/kaluga/base/utils/Decimal;
+	public fun compareTo (Lcom/splendo/kaluga/scientific/ScientificValue;)I
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun getDecimalValue ()Lcom/splendo/kaluga/base/utils/Decimal;
 	public abstract fun getUnit ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
 	public abstract fun getValue ()Ljava/lang/Number;
-}
-
-public final class com/splendo/kaluga/scientific/ScientificValue$DefaultImpls {
-	public static fun compareTo (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)I
-	public static fun getDecimalValue (Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
 public final class com/splendo/kaluga/scientific/ScientificValueKt {
@@ -767,17 +721,11 @@ public final class com/splendo/kaluga/scientific/ScientificValueKt {
 }
 
 public abstract interface class com/splendo/kaluga/scientific/ShortScientificArray : com/splendo/kaluga/scientific/ScientificArray {
-	public abstract fun get (I)Ljava/lang/Short;
-	public abstract fun getSize ()I
+	public synthetic fun get (I)Ljava/lang/Number;
+	public fun get (I)Ljava/lang/Short;
+	public fun getSize ()I
 	public abstract fun getValues ()[S
-	public abstract fun iterator ()Ljava/util/Iterator;
-}
-
-public final class com/splendo/kaluga/scientific/ShortScientificArray$DefaultImpls {
-	public static fun get (Lcom/splendo/kaluga/scientific/ShortScientificArray;I)Ljava/lang/Short;
-	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/ShortScientificArray;)Ljava/util/List;
-	public static fun getSize (Lcom/splendo/kaluga/scientific/ShortScientificArray;)I
-	public static fun iterator (Lcom/splendo/kaluga/scientific/ShortScientificArray;)Ljava/util/Iterator;
+	public fun iterator ()Ljava/util/Iterator;
 }
 
 public final class com/splendo/kaluga/scientific/converter/acceleration/ConvertFromForceAndMassKt {
@@ -5193,13 +5141,13 @@ public final class com/splendo/kaluga/scientific/unit/AngularAcceleration : com/
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/AngularAcceleration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/AngularAcceleration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/AngularAcceleration$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/AngularAcceleration;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/AngularAcceleration;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/AngularAcceleration;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/AngularAcceleration;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -5234,13 +5182,13 @@ public final class com/splendo/kaluga/scientific/unit/AngularVelocity : com/sple
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/AngularVelocity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/AngularVelocity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/AngularVelocity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/AngularVelocity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/AngularVelocity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/AngularVelocity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/AngularVelocity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -6357,13 +6305,13 @@ public final class com/splendo/kaluga/scientific/unit/CombinedImperialAccelerati
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/CombinedImperialAcceleration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/CombinedImperialAcceleration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/CombinedImperialAcceleration$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/CombinedImperialAcceleration;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/CombinedImperialAcceleration;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/CombinedImperialAcceleration;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/CombinedImperialAcceleration;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -6387,13 +6335,13 @@ public final class com/splendo/kaluga/scientific/unit/CombinedMetricAcceleration
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/CombinedMetricAcceleration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/CombinedMetricAcceleration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/CombinedMetricAcceleration$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/CombinedMetricAcceleration;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/CombinedMetricAcceleration;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/CombinedMetricAcceleration;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/CombinedMetricAcceleration;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10034,13 +9982,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialAction : com/splen
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialAction$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialAction$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialAction$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialAction;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialAction;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialAction;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialAction;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10079,13 +10027,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialAreaDensity : com/
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialAreaDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialAreaDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialAreaDensity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialAreaDensity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialAreaDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialAreaDensity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialAreaDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10114,13 +10062,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialDensity : com/sple
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialDensity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialDensity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialDensity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10148,13 +10096,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialDynamicViscosity :
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialDynamicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialDynamicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialDynamicViscosity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialDynamicViscosity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialDynamicViscosity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialDynamicViscosity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialDynamicViscosity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10247,13 +10195,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialJolt : com/splendo
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialJolt$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialJolt$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialJolt$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialJolt;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialJolt;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialJolt;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialJolt;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10279,13 +10227,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialKinematicViscosity
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialKinematicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialKinematicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10328,13 +10276,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialLinearMassDensity 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialLinearMassDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialLinearMassDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialLinearMassDensity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialLinearMassDensity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialLinearMassDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialLinearMassDensity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialLinearMassDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10370,13 +10318,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialLuminousExposure :
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialLuminousExposure$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialLuminousExposure$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialLuminousExposure$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialLuminousExposure;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialLuminousExposure;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialLuminousExposure;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialLuminousExposure;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10404,13 +10352,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMassFlowRate : com
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialMassFlowRate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialMassFlowRate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMassFlowRate$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMassFlowRate;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMassFlowRate;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMassFlowRate;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMassFlowRate;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10437,13 +10385,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialA
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialAccelerationWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialAccelerationWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialAccelerationWrapper$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialAccelerationWrapper;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialAccelerationWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialAccelerationWrapper;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialAccelerationWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10471,13 +10419,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialE
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialEnergyWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialEnergyWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialEnergyWrapper$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialEnergyWrapper;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialEnergyWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialEnergyWrapper;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialEnergyWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10505,13 +10453,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialP
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialPowerWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialPowerWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialPowerWrapper$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialPowerWrapper;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialPowerWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialPowerWrapper;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialPowerWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10539,13 +10487,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMolality : com/spl
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialMolality$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialMolality$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMolality$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolality;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolality;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolality;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolality;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10571,13 +10519,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMolarEnergy : com/
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialMolarEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialMolarEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMolarEnergy$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolarEnergy;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolarEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolarEnergy;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolarEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10605,13 +10553,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMolarMass : com/sp
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialMolarMass$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialMolarMass$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMolarMass$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolarMass;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolarMass;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolarMass;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolarMass;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10639,13 +10587,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMolarVolume : com/
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialMolarVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialMolarVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMolarVolume$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolarVolume;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolarVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolarVolume;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolarVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10673,13 +10621,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMolarity : com/spl
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialMolarity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialMolarity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMolarity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolarity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMolarity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolarity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolarity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10708,13 +10656,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialMomentum : com/spl
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialMomentum$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialMomentum$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialMomentum$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMomentum;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialMomentum;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMomentum;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMomentum;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10792,13 +10740,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialSpecificEnergy : c
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialSpecificEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialSpecificEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialSpecificEnergy$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialSpecificEnergy;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialSpecificEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialSpecificEnergy;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialSpecificEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10827,13 +10775,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialSpecificVolume : c
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialSpecificVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialSpecificVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialSpecificVolume$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialSpecificVolume;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialSpecificVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialSpecificVolume;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialSpecificVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10859,13 +10807,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialSpeed : com/splend
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialSpeed$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialSpeed$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialSpeed$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialSpeed;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialSpeed;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialSpeed;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialSpeed;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10894,13 +10842,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialSurfaceTension : c
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialSurfaceTension$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialSurfaceTension$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialSurfaceTension$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialSurfaceTension;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialSurfaceTension;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialSurfaceTension;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialSurfaceTension;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -10982,13 +10930,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialVolumetricFlow : c
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialVolumetricFlow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialVolumetricFlow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlow$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlow;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlow;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlow;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlow;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -11017,13 +10965,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialVolumetricFlux : c
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialVolumetricFlux$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialVolumetricFlux$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlux$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlux;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlux;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlux;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlux;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -11065,13 +11013,13 @@ public final class com/splendo/kaluga/scientific/unit/ImperialYank : com/splendo
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialYank$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/ImperialYank$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/ImperialYank$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialYank;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/ImperialYank;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialYank;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialYank;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -12159,13 +12107,13 @@ public final class com/splendo/kaluga/scientific/unit/LuminousEnergy : com/splen
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/LuminousEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/LuminousEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/LuminousEnergy$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/LuminousEnergy;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/LuminousEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/LuminousEnergy;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/LuminousEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13102,13 +13050,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricAction : com/splendo
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricAction$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricAction$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAction$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAction;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAction;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAction;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAction;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13150,13 +13098,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricAndImperialAction : 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricAndImperialAction$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricAndImperialAction$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAndImperialAction$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndImperialAction;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndImperialAction;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndImperialAction;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndImperialAction;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13194,13 +13142,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricAndImperialJolt : co
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricAndImperialJolt$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricAndImperialJolt$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAndImperialJolt$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndImperialJolt;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndImperialJolt;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndImperialJolt;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndImperialJolt;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13228,13 +13176,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricAndImperialMolarEner
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricAndImperialMolarEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricAndImperialMolarEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAndImperialMolarEnergy$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndImperialMolarEnergy;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndImperialMolarEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndImperialMolarEnergy;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndImperialMolarEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13276,13 +13224,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCap
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCapacity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCapacity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCapacity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCapacity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCapacity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13328,13 +13276,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricAndUKImperialThermal
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricAndUKImperialThermalResistance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricAndUKImperialThermalResistance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialThermalResistance$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialThermalResistance;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialThermalResistance;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialThermalResistance;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialThermalResistance;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13371,13 +13319,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricAreaDensity : com/sp
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricAreaDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricAreaDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricAreaDensity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAreaDensity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricAreaDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAreaDensity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAreaDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13419,13 +13367,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricDensity : com/splend
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricDensity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricDensity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricDensity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13451,13 +13399,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricDynamicViscosity : c
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricDynamicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricDynamicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricDynamicViscosity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricDynamicViscosity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricDynamicViscosity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricDynamicViscosity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricDynamicViscosity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13504,13 +13452,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricHeatCapacity : com/s
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricHeatCapacity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricHeatCapacity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricHeatCapacity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricHeatCapacity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricHeatCapacity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13561,13 +13509,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricJolt : com/splendo/k
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricJolt$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricJolt$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricJolt$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricJolt;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricJolt;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricJolt;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricJolt;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13593,13 +13541,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricKinematicViscosity :
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricKinematicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricKinematicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13636,13 +13584,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricLinearMassDensity : 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricLinearMassDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricLinearMassDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricLinearMassDensity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricLinearMassDensity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricLinearMassDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricLinearMassDensity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricLinearMassDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13678,13 +13626,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricLuminousExposure : c
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricLuminousExposure$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricLuminousExposure$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricLuminousExposure$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricLuminousExposure;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricLuminousExposure;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricLuminousExposure;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricLuminousExposure;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13710,13 +13658,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricMassFlowRate : com/s
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricMassFlowRate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricMassFlowRate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMassFlowRate$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMassFlowRate;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMassFlowRate;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMassFlowRate;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMassFlowRate;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13743,13 +13691,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialAcc
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialAccelerationWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialAccelerationWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialAccelerationWrapper$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialAccelerationWrapper;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialAccelerationWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialAccelerationWrapper;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialAccelerationWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13777,13 +13725,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialEne
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialEnergyWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialEnergyWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialEnergyWrapper$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialEnergyWrapper;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialEnergyWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialEnergyWrapper;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialEnergyWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13811,13 +13759,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialPow
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialPowerWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialPowerWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialPowerWrapper$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialPowerWrapper;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialPowerWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialPowerWrapper;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialPowerWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13843,13 +13791,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricMolality : com/splen
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricMolality$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricMolality$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMolality$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolality;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolality;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolality;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolality;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13875,13 +13823,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricMolarEnergy : com/sp
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricMolarEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricMolarEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMolarEnergy$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolarEnergy;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolarEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolarEnergy;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolarEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13907,13 +13855,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricMolarMass : com/sple
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricMolarMass$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricMolarMass$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMolarMass$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolarMass;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolarMass;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolarMass;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolarMass;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13939,13 +13887,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricMolarVolume : com/sp
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricMolarVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricMolarVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMolarVolume$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolarVolume;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolarVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolarVolume;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolarVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -13971,13 +13919,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricMolarity : com/splen
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricMolarity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricMolarity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMolarity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolarity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMolarity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolarity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolarity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -14004,13 +13952,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricMomentum : com/splen
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricMomentum$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricMomentum$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricMomentum$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMomentum;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricMomentum;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMomentum;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMomentum;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -14063,13 +14011,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricSpecificEnergy : com
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricSpecificEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricSpecificEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricSpecificEnergy$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSpecificEnergy;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSpecificEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSpecificEnergy;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSpecificEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -14096,13 +14044,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricSpecificHeatCapacity
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricSpecificHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricSpecificHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricSpecificHeatCapacity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSpecificHeatCapacity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSpecificHeatCapacity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSpecificHeatCapacity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSpecificHeatCapacity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -14129,13 +14077,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricSpecificVolume : com
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricSpecificVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricSpecificVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricSpecificVolume$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSpecificVolume;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSpecificVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSpecificVolume;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSpecificVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -14161,13 +14109,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricSpeed : com/splendo/
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricSpeed$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricSpeed$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricSpeed$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSpeed;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSpeed;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSpeed;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSpeed;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -14194,13 +14142,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricSurfaceTension : com
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricSurfaceTension$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricSurfaceTension$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricSurfaceTension$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSurfaceTension;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricSurfaceTension;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSurfaceTension;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSurfaceTension;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -14227,13 +14175,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricThermalResistance : 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricThermalResistance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricThermalResistance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricThermalResistance$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricThermalResistance;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricThermalResistance;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricThermalResistance;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricThermalResistance;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -14269,13 +14217,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricVolumetricFlow : com
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricVolumetricFlow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricVolumetricFlow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlow$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlow;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlow;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlow;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlow;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -14302,13 +14250,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricVolumetricFlux : com
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricVolumetricFlux$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricVolumetricFlux$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlux$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlux;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlux;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlux;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlux;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -14344,13 +14292,13 @@ public final class com/splendo/kaluga/scientific/unit/MetricYank : com/splendo/k
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricYank$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/MetricYank$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/MetricYank$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricYank;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/MetricYank;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricYank;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricYank;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -17890,13 +17838,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialAreaDensity : co
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialAreaDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialAreaDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialAreaDensity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialAreaDensity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialAreaDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialAreaDensity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialAreaDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -17923,13 +17871,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialDensity : com/sp
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialDensity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialDensity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialDensity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -17955,13 +17903,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialDynamicViscosity
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialDynamicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialDynamicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialDynamicViscosity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialDynamicViscosity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialDynamicViscosity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialDynamicViscosity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialDynamicViscosity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18002,13 +17950,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialHeatCapacity : c
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialHeatCapacity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialHeatCapacity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialHeatCapacity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialHeatCapacity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialHeatCapacity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18032,13 +17980,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialImperialForceWra
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialImperialForceWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialImperialForceWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialImperialForceWrapper$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialImperialForceWrapper;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialImperialForceWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialImperialForceWrapper;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialImperialForceWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18062,13 +18010,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialImperialVolumeWr
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialImperialVolumeWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialImperialVolumeWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialImperialVolumeWrapper$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialImperialVolumeWrapper;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialImperialVolumeWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialImperialVolumeWrapper;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialImperialVolumeWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18092,13 +18040,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialImperialWeightWr
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialImperialWeightWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialImperialWeightWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialImperialWeightWrapper$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialImperialWeightWrapper;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialImperialWeightWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialImperialWeightWrapper;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialImperialWeightWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18125,13 +18073,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialLinearMassDensit
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialLinearMassDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialLinearMassDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialLinearMassDensity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialLinearMassDensity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialLinearMassDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialLinearMassDensity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialLinearMassDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18157,13 +18105,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialMassFlowRate : c
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialMassFlowRate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialMassFlowRate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialMassFlowRate$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMassFlowRate;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMassFlowRate;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMassFlowRate;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMassFlowRate;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18189,13 +18137,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialMolality : com/s
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialMolality$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialMolality$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialMolality$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMolality;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMolality;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMolality;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMolality;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18221,13 +18169,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialMolarMass : com/
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialMolarMass$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialMolarMass$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialMolarMass$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMolarMass;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMolarMass;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMolarMass;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMolarMass;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18253,13 +18201,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialMolarVolume : co
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialMolarVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialMolarVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialMolarVolume$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMolarVolume;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMolarVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMolarVolume;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMolarVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18285,13 +18233,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialMolarity : com/s
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialMolarity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialMolarity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialMolarity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMolarity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMolarity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMolarity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMolarity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18318,13 +18266,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialMomentum : com/s
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialMomentum$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialMomentum$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialMomentum$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMomentum;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialMomentum;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMomentum;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMomentum;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18362,13 +18310,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialPressureWrapper 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialPressureWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialPressureWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialPressureWrapper$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialPressureWrapper;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialPressureWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialPressureWrapper;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialPressureWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18398,13 +18346,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy :
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18431,13 +18379,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificHeatCapa
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialSpecificHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificHeatCapacity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificHeatCapacity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificHeatCapacity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificHeatCapacity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificHeatCapacity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18464,13 +18412,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificVolume :
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialSpecificVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificVolume$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificVolume;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificVolume;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18497,13 +18445,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialSurfaceTension :
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialSurfaceTension$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialSurfaceTension$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialSurfaceTension$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialSurfaceTension;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialSurfaceTension;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialSurfaceTension;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialSurfaceTension;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18530,13 +18478,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialThermalResistanc
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialThermalResistance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialThermalResistance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialThermalResistance$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialThermalResistance;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialThermalResistance;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialThermalResistance;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialThermalResistance;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18576,13 +18524,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialVolumetricFlow :
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialVolumetricFlow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialVolumetricFlow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlow$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlow;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlow;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlow;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlow;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18609,13 +18557,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialVolumetricFlux :
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialVolumetricFlux$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialVolumetricFlux$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlux$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlux;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlux;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlux;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlux;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18655,13 +18603,13 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialYank : com/splen
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UKImperialYank$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/UKImperialYank$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/UKImperialYank$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialYank;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/UKImperialYank;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialYank;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialYank;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18688,13 +18636,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryAreaDensity : c
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryAreaDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryAreaDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryAreaDensity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryAreaDensity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryAreaDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryAreaDensity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryAreaDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18721,13 +18669,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryDensity : com/s
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryDensity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryDensity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryDensity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18753,13 +18701,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryDynamicViscosit
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryDynamicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryDynamicViscosity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryDynamicViscosity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryDynamicViscosity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryDynamicViscosity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryDynamicViscosity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryDynamicViscosity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18800,13 +18748,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryHeatCapacity : 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryHeatCapacity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryHeatCapacity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryHeatCapacity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryHeatCapacity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryHeatCapacity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18830,13 +18778,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialForceWr
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialForceWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryImperialForceWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialForceWrapper$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialForceWrapper;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialForceWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialForceWrapper;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialForceWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18860,13 +18808,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialPressur
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialPressureWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryImperialPressureWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialPressureWrapper$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialPressureWrapper;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialPressureWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialPressureWrapper;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialPressureWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18890,13 +18838,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialVolumeW
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialVolumeWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryImperialVolumeWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialVolumeWrapper$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialVolumeWrapper;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialVolumeWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialVolumeWrapper;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialVolumeWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18920,13 +18868,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialWeightW
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialWeightWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryImperialWeightWrapper$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialWeightWrapper$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialWeightWrapper;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialWeightWrapper;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialWeightWrapper;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialWeightWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18953,13 +18901,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryLinearMassDensi
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryLinearMassDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryLinearMassDensity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryLinearMassDensity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryLinearMassDensity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryLinearMassDensity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryLinearMassDensity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryLinearMassDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -18985,13 +18933,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryMassFlowRate : 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryMassFlowRate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryMassFlowRate$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryMassFlowRate$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMassFlowRate;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMassFlowRate;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMassFlowRate;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMassFlowRate;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -19017,13 +18965,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryMolality : com/
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryMolality$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryMolality$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryMolality$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMolality;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMolality;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMolality;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMolality;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -19049,13 +18997,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarMass : com
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarMass$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryMolarMass$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarMass$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarMass;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarMass;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarMass;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarMass;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -19081,13 +19029,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarVolume : c
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryMolarVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarVolume$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarVolume;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarVolume;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -19113,13 +19061,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarity : com/
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryMolarity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -19146,13 +19094,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryMomentum : com/
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryMomentum$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryMomentum$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryMomentum$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMomentum;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryMomentum;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMomentum;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMomentum;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -19196,13 +19144,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -19229,13 +19177,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificHeatCap
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomarySpecificHeatCapacity$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificHeatCapacity$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificHeatCapacity;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificHeatCapacity;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificHeatCapacity;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificHeatCapacity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -19262,13 +19210,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificVolume 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomarySpecificVolume$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificVolume$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificVolume;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificVolume;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificVolume;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -19295,13 +19243,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomarySurfaceTension 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomarySurfaceTension$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomarySurfaceTension$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomarySurfaceTension$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomarySurfaceTension;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomarySurfaceTension;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomarySurfaceTension;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomarySurfaceTension;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -19342,13 +19290,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryThermalResistan
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryThermalResistance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryThermalResistance$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryThermalResistance$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryThermalResistance;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryThermalResistance;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryThermalResistance;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryThermalResistance;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -19388,13 +19336,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlow 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlow$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlow;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlow;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlow;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlow;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -19421,13 +19369,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlux 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlux$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlux$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlux$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlux;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlux;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlux;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlux;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -19467,13 +19415,13 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryYank : com/sple
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/scientific/unit/USCustomaryYank$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/scientific/unit/USCustomaryYank$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/USCustomaryYank$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryYank;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/unit/USCustomaryYank;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryYank;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryYank;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }

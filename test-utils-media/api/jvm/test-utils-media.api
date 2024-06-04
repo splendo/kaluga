@@ -133,7 +133,6 @@ public final class com/splendo/kaluga/test/media/MockPlaybackState$Closed : com/
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getPlaybackState ()Lcom/splendo/kaluga/media/PlaybackState;
 	public fun hashCode ()I
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -152,7 +151,6 @@ public final class com/splendo/kaluga/test/media/MockPlaybackState$Completed : c
 	public fun getPlayableMedia ()Lcom/splendo/kaluga/media/PlayableMedia;
 	public fun getPlaybackState ()Lcom/splendo/kaluga/media/PlaybackState;
 	public fun hashCode ()I
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun start (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
@@ -187,7 +185,6 @@ public final class com/splendo/kaluga/test/media/MockPlaybackState$Error : com/s
 	public fun getError ()Lcom/splendo/kaluga/media/PlaybackError;
 	public fun getPlaybackState ()Lcom/splendo/kaluga/media/PlaybackState;
 	public fun hashCode ()I
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -203,7 +200,6 @@ public final class com/splendo/kaluga/test/media/MockPlaybackState$Idle : com/sp
 	public fun getPlaybackState ()Lcom/splendo/kaluga/media/PlaybackState;
 	public fun hashCode ()I
 	public fun play (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -218,7 +214,6 @@ public final class com/splendo/kaluga/test/media/MockPlaybackState$Initialized :
 	public fun getSource ()Lcom/splendo/kaluga/media/MediaSource;
 	public fun hashCode ()I
 	public fun prepared (Lcom/splendo/kaluga/media/PlayableMedia;)Lkotlin/jvm/functions/Function1;
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -236,8 +231,6 @@ public final class com/splendo/kaluga/test/media/MockPlaybackState$Paused : com/
 	public fun getPlaybackParameters ()Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;
 	public fun getPlaybackState ()Lcom/splendo/kaluga/media/PlaybackState;
 	public fun hashCode ()I
-	public fun playWithUpdatedPlaybackParameters (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 	public fun updatePlaybackParameters (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
 }
@@ -257,7 +250,6 @@ public final class com/splendo/kaluga/test/media/MockPlaybackState$Playing : com
 	public fun getPlaybackParameters ()Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;
 	public fun getPlaybackState ()Lcom/splendo/kaluga/media/PlaybackState;
 	public fun hashCode ()I
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 	public fun updatePlaybackParameters (Lcom/splendo/kaluga/media/PlaybackState$PlaybackParameters;)Lkotlin/jvm/functions/Function1;
 }
@@ -278,7 +270,6 @@ public final class com/splendo/kaluga/test/media/MockPlaybackState$Stopped : com
 	public fun getPlaybackState ()Lcom/splendo/kaluga/media/PlaybackState;
 	public fun getReinitialize ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -292,7 +283,6 @@ public final class com/splendo/kaluga/test/media/MockPlaybackState$Uninitialized
 	public fun getPlaybackState ()Lcom/splendo/kaluga/media/PlaybackState;
 	public fun hashCode ()I
 	public fun initialize (Lcom/splendo/kaluga/media/MediaSource;)Lkotlin/jvm/functions/Function1;
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 

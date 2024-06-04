@@ -92,13 +92,10 @@ public final class com/splendo/kaluga/alerts/Alert$TextInputAction {
 
 public abstract interface class com/splendo/kaluga/alerts/AlertActions {
 	public abstract fun dismiss (Z)V
-	public abstract fun show (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun showAsync (ZLkotlin/jvm/functions/Function0;)V
-}
-
-public final class com/splendo/kaluga/alerts/AlertActions$DefaultImpls {
 	public static synthetic fun dismiss$default (Lcom/splendo/kaluga/alerts/AlertActions;ZILjava/lang/Object;)V
+	public abstract fun show (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun show$default (Lcom/splendo/kaluga/alerts/AlertActions;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun showAsync (ZLkotlin/jvm/functions/Function0;)V
 	public static synthetic fun showAsync$default (Lcom/splendo/kaluga/alerts/AlertActions;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
 }
 
@@ -133,6 +130,7 @@ public abstract class com/splendo/kaluga/alerts/BaseAlertPresenter : com/splendo
 	public static synthetic fun dismissAlert$default (Lcom/splendo/kaluga/alerts/BaseAlertPresenter;ZILjava/lang/Object;)V
 	protected final fun dismissAlertWithLog (Z)V
 	public static synthetic fun dismissAlertWithLog$default (Lcom/splendo/kaluga/alerts/BaseAlertPresenter;ZILjava/lang/Object;)V
+	public final fun getAlert ()Lcom/splendo/kaluga/alerts/Alert;
 	public fun show (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun showAlert (ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;)V
 	public static synthetic fun showAlert$default (Lcom/splendo/kaluga/alerts/BaseAlertPresenter;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V

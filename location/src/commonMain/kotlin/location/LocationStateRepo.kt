@@ -183,6 +183,6 @@ expect class LocationStateRepoBuilder : BaseLocationStateRepoBuilder {
     override fun create(
         locationPermission: LocationPermission,
         settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings,
-        coroutineContext: CoroutineContext
+        coroutineContext: CoroutineContext,
     ): LocationStateRepo
 }

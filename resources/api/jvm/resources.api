@@ -425,13 +425,13 @@ public final class com/splendo/kaluga/resources/HSLColor {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/resources/HSLColor$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class com/splendo/kaluga/resources/HSLColor$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/splendo/kaluga/resources/HSLColor$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/resources/HSLColor;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/resources/HSLColor;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/resources/HSLColor;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/resources/HSLColor;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -883,12 +883,8 @@ public abstract interface class com/splendo/kaluga/resources/stylable/ButtonStat
 
 public abstract interface class com/splendo/kaluga/resources/stylable/ButtonStateStyleDSL {
 	public abstract fun getBackgroundStyle ()Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle;
-	public abstract fun setBackgroundStyle (ILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
+	public fun setBackgroundStyle (ILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
 	public abstract fun setBackgroundStyle (Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle;)V
-}
-
-public final class com/splendo/kaluga/resources/stylable/ButtonStateStyleDSL$DefaultImpls {
-	public static fun setBackgroundStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyleDSL;ILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
 	public static synthetic fun setBackgroundStyle$default (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyleDSL;ILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;ILjava/lang/Object;)V
 }
 
@@ -898,7 +894,6 @@ public final class com/splendo/kaluga/resources/stylable/ButtonStateStyleDSL$Ima
 public final class com/splendo/kaluga/resources/stylable/ButtonStateStyleDSL$TextOnly : com/splendo/kaluga/resources/stylable/ButtonStateStyleDSL$WithText {
 	public fun getBackgroundStyle ()Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle;
 	public fun getTextColor ()I
-	public fun setBackgroundStyle (ILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
 	public fun setBackgroundStyle (Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle;)V
 	public fun setTextColor (I)V
 }
@@ -906,7 +901,6 @@ public final class com/splendo/kaluga/resources/stylable/ButtonStateStyleDSL$Tex
 public abstract class com/splendo/kaluga/resources/stylable/ButtonStateStyleDSL$WithImage : com/splendo/kaluga/resources/stylable/ButtonStateStyleDSL {
 	public fun getBackgroundStyle ()Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle;
 	public final fun hide ()V
-	public fun setBackgroundStyle (ILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
 	public fun setBackgroundStyle (Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle;)V
 	public final fun setImage (Lcom/splendo/kaluga/resources/KalugaImage;)V
 	public final fun setImage (Lcom/splendo/kaluga/resources/KalugaImage;I)V
@@ -923,13 +917,8 @@ public abstract interface class com/splendo/kaluga/resources/stylable/ButtonStat
 	public abstract fun setTextColor (I)V
 }
 
-public final class com/splendo/kaluga/resources/stylable/ButtonStateStyleDSL$WithText$DefaultImpls {
-	public static fun setBackgroundStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyleDSL$WithText;ILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
-}
-
 public final class com/splendo/kaluga/resources/stylable/ButtonStateStyleDSL$WithoutContent : com/splendo/kaluga/resources/stylable/ButtonStateStyleDSL {
 	public fun getBackgroundStyle ()Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle;
-	public fun setBackgroundStyle (ILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
 	public fun setBackgroundStyle (Lcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle;)V
 }
 
@@ -1169,7 +1158,7 @@ public abstract interface class com/splendo/kaluga/resources/stylable/KalugaButt
 	public abstract fun getDisabledStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
 	public abstract fun getPadding ()Lcom/splendo/kaluga/resources/stylable/Padding;
 	public abstract fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
-	public abstract fun getStateStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
+	public fun getStateStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
 }
 
 public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$Companion {
@@ -1181,10 +1170,6 @@ public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$Compa
 	public final fun textOnly (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle$TextOnly;
 	public final fun withImageAndText (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithImageAndText;
 	public final fun withoutContent (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithoutContent;
-}
-
-public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$DefaultImpls {
-	public static fun getStateStyle (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle;ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
 }
 
 public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$ImageOnly : com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithImage, com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithoutText {
@@ -1204,9 +1189,6 @@ public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$Image
 	public fun getPadding ()Lcom/splendo/kaluga/resources/stylable/Padding;
 	public fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$ImageOnly;
 	public synthetic fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
-	public fun getStateImage (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonImage;
-	public fun getStateStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$ImageOnly;
-	public synthetic fun getStateStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -1230,9 +1212,6 @@ public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$TextO
 	public fun getPadding ()Lcom/splendo/kaluga/resources/stylable/Padding;
 	public fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$TextOnly;
 	public synthetic fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
-	public fun getStateStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$TextOnly;
-	public synthetic fun getStateStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
-	public fun getStateTextStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
 	public fun getTextAlignment ()Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
 	public fun getTextSize ()F
 	public fun hashCode ()I
@@ -1241,12 +1220,7 @@ public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$TextO
 
 public abstract interface class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithImage : com/splendo/kaluga/resources/stylable/KalugaButtonStyle {
 	public abstract fun getImageSize ()Lcom/splendo/kaluga/resources/stylable/ImageSize;
-	public abstract fun getStateImage (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonImage;
-}
-
-public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithImage$DefaultImpls {
-	public static fun getStateImage (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithImage;ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonImage;
-	public static fun getStateStyle (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithImage;ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$WithImage;
+	public fun getStateImage (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonImage;
 }
 
 public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithImageAndText : com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithImage, com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithText {
@@ -1274,10 +1248,6 @@ public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithI
 	public fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$WithImageAndText;
 	public synthetic fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
 	public final fun getSpacing ()F
-	public fun getStateImage (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonImage;
-	public fun getStateStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$WithImageAndText;
-	public synthetic fun getStateStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
-	public fun getStateTextStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
 	public fun getTextAlignment ()Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
 	public fun getTextSize ()F
 	public fun hashCode ()I
@@ -1286,14 +1256,9 @@ public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithI
 
 public abstract interface class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithText : com/splendo/kaluga/resources/stylable/KalugaButtonStyle {
 	public abstract fun getFont ()Lcom/splendo/kaluga/resources/KalugaFont;
-	public abstract fun getStateTextStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
+	public fun getStateTextStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
 	public abstract fun getTextAlignment ()Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
 	public abstract fun getTextSize ()F
-}
-
-public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithText$DefaultImpls {
-	public static fun getStateStyle (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithText;ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$WithText;
-	public static fun getStateTextStyle (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithText;ZZ)Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;
 }
 
 public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithoutContent : com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithoutText {
@@ -1311,17 +1276,11 @@ public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$Witho
 	public fun getPadding ()Lcom/splendo/kaluga/resources/stylable/Padding;
 	public fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$WithoutContent;
 	public synthetic fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
-	public fun getStateStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$WithoutContent;
-	public synthetic fun getStateStyle (ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithoutText : com/splendo/kaluga/resources/stylable/KalugaButtonStyle {
-}
-
-public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithoutText$DefaultImpls {
-	public static fun getStateStyle (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyle$WithoutText;ZZ)Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$WithoutText;
 }
 
 public abstract interface class com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL {
@@ -1332,16 +1291,12 @@ public abstract interface class com/splendo/kaluga/resources/stylable/KalugaButt
 	public abstract fun getPadding ()Lcom/splendo/kaluga/resources/stylable/Padding;
 	public abstract fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
 	public abstract fun pressedStyle (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun setBackground (IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
+	public fun setBackground (IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
+	public static synthetic fun setBackground$default (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL;IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;ILjava/lang/Object;)V
 	public abstract fun setDefaultStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;)V
 	public abstract fun setDisabledStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;)V
 	public abstract fun setPadding (Lcom/splendo/kaluga/resources/stylable/Padding;)V
 	public abstract fun setPressedStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;)V
-}
-
-public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$DefaultImpls {
-	public static fun setBackground (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL;IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
-	public static synthetic fun setBackground$default (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL;IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;ILjava/lang/Object;)V
 }
 
 public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$ImageOnly : com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithImage {
@@ -1356,14 +1311,10 @@ public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$Im
 	public fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$ImageOnly;
 	public synthetic fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
 	public fun pressedStyle (Lkotlin/jvm/functions/Function1;)V
-	public fun setBackground (IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
 	public fun setDefaultStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$ImageOnly;)V
 	public synthetic fun setDefaultStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;)V
 	public fun setDisabledStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$ImageOnly;)V
 	public synthetic fun setDisabledStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;)V
-	public fun setImage (Lcom/splendo/kaluga/resources/KalugaImage;)V
-	public fun setImage (Lcom/splendo/kaluga/resources/KalugaImage;III)V
-	public fun setImage (Lcom/splendo/kaluga/resources/TintedImage;II)V
 	public fun setImageSize (Lcom/splendo/kaluga/resources/stylable/ImageSize;)V
 	public fun setPadding (Lcom/splendo/kaluga/resources/stylable/Padding;)V
 	public fun setPressedStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$ImageOnly;)V
@@ -1384,7 +1335,6 @@ public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$Te
 	public fun getTextAlignment ()Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
 	public fun getTextSize ()F
 	public fun pressedStyle (Lkotlin/jvm/functions/Function1;)V
-	public fun setBackground (IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
 	public fun setDefaultStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$TextOnly;)V
 	public synthetic fun setDefaultStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;)V
 	public fun setDisabledStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$TextOnly;)V
@@ -1395,24 +1345,16 @@ public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$Te
 	public synthetic fun setPressedStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;)V
 	public fun setTextAlignment (Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;)V
 	public fun setTextSize (F)V
-	public fun setTextStyle (Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;II)V
 }
 
 public abstract interface class com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithImage : com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL {
 	public abstract fun getImageSize ()Lcom/splendo/kaluga/resources/stylable/ImageSize;
-	public abstract fun setImage (Lcom/splendo/kaluga/resources/KalugaImage;)V
-	public abstract fun setImage (Lcom/splendo/kaluga/resources/KalugaImage;III)V
-	public abstract fun setImage (Lcom/splendo/kaluga/resources/TintedImage;II)V
-	public abstract fun setImageSize (Lcom/splendo/kaluga/resources/stylable/ImageSize;)V
-}
-
-public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithImage$DefaultImpls {
-	public static fun setBackground (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithImage;IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
-	public static fun setImage (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithImage;Lcom/splendo/kaluga/resources/KalugaImage;)V
-	public static fun setImage (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithImage;Lcom/splendo/kaluga/resources/KalugaImage;III)V
-	public static fun setImage (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithImage;Lcom/splendo/kaluga/resources/TintedImage;II)V
+	public fun setImage (Lcom/splendo/kaluga/resources/KalugaImage;)V
+	public fun setImage (Lcom/splendo/kaluga/resources/KalugaImage;III)V
+	public fun setImage (Lcom/splendo/kaluga/resources/TintedImage;II)V
 	public static synthetic fun setImage$default (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithImage;Lcom/splendo/kaluga/resources/KalugaImage;IIIILjava/lang/Object;)V
 	public static synthetic fun setImage$default (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithImage;Lcom/splendo/kaluga/resources/TintedImage;IIILjava/lang/Object;)V
+	public abstract fun setImageSize (Lcom/splendo/kaluga/resources/stylable/ImageSize;)V
 }
 
 public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithImageAndText : com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithImage, com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithText {
@@ -1432,15 +1374,11 @@ public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$Wi
 	public fun getTextAlignment ()Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;
 	public fun getTextSize ()F
 	public fun pressedStyle (Lkotlin/jvm/functions/Function1;)V
-	public fun setBackground (IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
 	public fun setDefaultStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$WithImageAndText;)V
 	public synthetic fun setDefaultStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;)V
 	public fun setDisabledStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$WithImageAndText;)V
 	public synthetic fun setDisabledStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;)V
 	public fun setFont (Lcom/splendo/kaluga/resources/KalugaFont;)V
-	public fun setImage (Lcom/splendo/kaluga/resources/KalugaImage;)V
-	public fun setImage (Lcom/splendo/kaluga/resources/KalugaImage;III)V
-	public fun setImage (Lcom/splendo/kaluga/resources/TintedImage;II)V
 	public final fun setImageGravity (Lcom/splendo/kaluga/resources/stylable/ImageGravity;)V
 	public fun setImageSize (Lcom/splendo/kaluga/resources/stylable/ImageSize;)V
 	public fun setPadding (Lcom/splendo/kaluga/resources/stylable/Padding;)V
@@ -1449,7 +1387,6 @@ public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$Wi
 	public final fun setSpacing (F)V
 	public fun setTextAlignment (Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;)V
 	public fun setTextSize (F)V
-	public fun setTextStyle (Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;II)V
 }
 
 public abstract interface class com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithText : com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL {
@@ -1459,12 +1396,7 @@ public abstract interface class com/splendo/kaluga/resources/stylable/KalugaButt
 	public abstract fun setFont (Lcom/splendo/kaluga/resources/KalugaFont;)V
 	public abstract fun setTextAlignment (Lcom/splendo/kaluga/resources/stylable/KalugaTextAlignment;)V
 	public abstract fun setTextSize (F)V
-	public abstract fun setTextStyle (Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;II)V
-}
-
-public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithText$DefaultImpls {
-	public static fun setBackground (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithText;IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
-	public static fun setTextStyle (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithText;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;II)V
+	public fun setTextStyle (Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;II)V
 	public static synthetic fun setTextStyle$default (Lcom/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$WithText;Lcom/splendo/kaluga/resources/stylable/KalugaTextStyle;IIILjava/lang/Object;)V
 }
 
@@ -1479,7 +1411,6 @@ public final class com/splendo/kaluga/resources/stylable/KalugaButtonStyleDSL$Wi
 	public fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$WithoutContent;
 	public synthetic fun getPressedStyle ()Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;
 	public fun pressedStyle (Lkotlin/jvm/functions/Function1;)V
-	public fun setBackground (IIILcom/splendo/kaluga/resources/stylable/KalugaBackgroundStyle$Shape;)V
 	public fun setDefaultStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$WithoutContent;)V
 	public synthetic fun setDefaultStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle;)V
 	public fun setDisabledStyle (Lcom/splendo/kaluga/resources/stylable/ButtonStateStyle$WithoutContent;)V

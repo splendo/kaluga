@@ -95,9 +95,6 @@ public final class com/splendo/kaluga/logging/LogLevel : java/lang/Enum {
 
 public abstract interface class com/splendo/kaluga/logging/Logger {
 	public abstract fun log (Lcom/splendo/kaluga/logging/LogLevel;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
-}
-
-public final class com/splendo/kaluga/logging/Logger$DefaultImpls {
 	public static synthetic fun log$default (Lcom/splendo/kaluga/logging/Logger;Lcom/splendo/kaluga/logging/LogLevel;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
 }
 

@@ -12,9 +12,6 @@ public abstract class com/splendo/kaluga/bluetooth/Attribute : kotlinx/coroutine
 
 public abstract interface class com/splendo/kaluga/bluetooth/BaseBluetoothBuilder {
 	public abstract fun create (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/bluetooth/Bluetooth;
-}
-
-public final class com/splendo/kaluga/bluetooth/BaseBluetoothBuilder$DefaultImpls {
 	public static synthetic fun create$default (Lcom/splendo/kaluga/bluetooth/BaseBluetoothBuilder;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/Bluetooth;
 }
 
@@ -75,9 +72,13 @@ public abstract interface class com/splendo/kaluga/bluetooth/BluetoothService {
 	public abstract fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun isScanning (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun pairedDevices (Ljava/util/Set;ZLcom/splendo/kaluga/bluetooth/device/ConnectionSettings;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun pairedDevices$default (Lcom/splendo/kaluga/bluetooth/BluetoothService;Ljava/util/Set;ZLcom/splendo/kaluga/bluetooth/device/ConnectionSettings;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 	public abstract fun scannedDevices (Ljava/util/Set;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun scannedDevices$default (Lcom/splendo/kaluga/bluetooth/BluetoothService;Ljava/util/Set;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 	public abstract fun startScanning (Ljava/util/Set;Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;)V
+	public static synthetic fun startScanning$default (Lcom/splendo/kaluga/bluetooth/BluetoothService;Ljava/util/Set;Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;ILjava/lang/Object;)V
 	public abstract fun stopScanning (Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;)V
+	public static synthetic fun stopScanning$default (Lcom/splendo/kaluga/bluetooth/BluetoothService;Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;ILjava/lang/Object;)V
 }
 
 public final class com/splendo/kaluga/bluetooth/BluetoothService$CleanMode : java/lang/Enum {
@@ -87,13 +88,6 @@ public final class com/splendo/kaluga/bluetooth/BluetoothService$CleanMode : jav
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
 	public static fun values ()[Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;
-}
-
-public final class com/splendo/kaluga/bluetooth/BluetoothService$DefaultImpls {
-	public static synthetic fun pairedDevices$default (Lcom/splendo/kaluga/bluetooth/BluetoothService;Ljava/util/Set;ZLcom/splendo/kaluga/bluetooth/device/ConnectionSettings;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun scannedDevices$default (Lcom/splendo/kaluga/bluetooth/BluetoothService;Ljava/util/Set;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
-	public static synthetic fun startScanning$default (Lcom/splendo/kaluga/bluetooth/BluetoothService;Ljava/util/Set;Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;ILjava/lang/Object;)V
-	public static synthetic fun stopScanning$default (Lcom/splendo/kaluga/bluetooth/BluetoothService;Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;ILjava/lang/Object;)V
 }
 
 public class com/splendo/kaluga/bluetooth/Characteristic : com/splendo/kaluga/bluetooth/Attribute {
@@ -403,24 +397,12 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableD
 	public abstract fun updateReconnectionSettings (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;)Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$DiscoveredServices : com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected {
 	public abstract fun getServices ()Ljava/util/List;
 }
 
-public final class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$DiscoveredServices$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$DiscoveredServices;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$Discovering : com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected {
 	public abstract fun didDiscoverServices (Ljava/util/List;)Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$Discovering$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$Discovering;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$HandlingAction : com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$DiscoveredServices {
@@ -430,25 +412,13 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableD
 	public abstract fun getNextActions ()Ljava/util/List;
 }
 
-public final class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$HandlingAction$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$HandlingAction;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$Idle : com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$DiscoveredServices {
 	public abstract fun handleAction (Lcom/splendo/kaluga/bluetooth/device/DeviceAction;)Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$Idle$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$Idle;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$NoServices : com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected {
 	public abstract fun getDiscoverServices ()Lkotlin/jvm/functions/Function1;
 	public abstract fun startDiscovering ()V
-}
-
-public final class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$NoServices$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$NoServices;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connecting : com/splendo/kaluga/bluetooth/device/ConnectableDeviceState {
@@ -457,28 +427,12 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableD
 	public abstract fun handleCancel ()V
 }
 
-public final class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connecting$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connecting;)Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/device/ConnectableDeviceState;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Disconnected : com/splendo/kaluga/bluetooth/device/ConnectableDeviceState {
 	public abstract fun connect (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;)Lkotlin/jvm/functions/Function1;
 	public abstract fun startConnecting (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;)V
 }
 
-public final class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Disconnected$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Disconnected;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Disconnecting : com/splendo/kaluga/bluetooth/device/ConnectableDeviceState {
-}
-
-public final class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Disconnecting$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Disconnecting;)Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/bluetooth/device/ConnectableDeviceStateImplRepo : com/splendo/kaluga/bluetooth/device/BaseConnectableDeviceStateRepo {
@@ -544,20 +498,17 @@ public final class com/splendo/kaluga/bluetooth/device/DefaultDeviceWrapper : co
 
 public abstract interface class com/splendo/kaluga/bluetooth/device/Device {
 	public abstract fun advertisementDataDidUpdate (Lcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;)V
-	public abstract fun connect (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun disconnect (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun connect (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun connect$default (Lcom/splendo/kaluga/bluetooth/device/Device;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun connect$suspendImpl (Lcom/splendo/kaluga/bluetooth/device/Device;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun disconnect (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun disconnect$suspendImpl (Lcom/splendo/kaluga/bluetooth/device/Device;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getIdentifier ()Ljava/lang/String;
 	public abstract fun getInfo ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun getState ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun handleConnected ()V
 	public abstract fun handleDisconnected ()V
 	public abstract fun rssiDidUpdate (I)V
-}
-
-public final class com/splendo/kaluga/bluetooth/device/Device$DefaultImpls {
-	public static fun connect (Lcom/splendo/kaluga/bluetooth/device/Device;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun connect$default (Lcom/splendo/kaluga/bluetooth/device/Device;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static fun disconnect (Lcom/splendo/kaluga/bluetooth/device/Device;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class com/splendo/kaluga/bluetooth/device/DeviceAction {
@@ -615,12 +566,14 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/DeviceConnec
 	public abstract fun getRssi ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun handleConnect ()V
 	public abstract fun handleDisconnect (Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun handleDisconnect$default (Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 	public abstract fun pair (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun performAction (Lcom/splendo/kaluga/bluetooth/device/DeviceAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun readRssi (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun requestMtu (ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun reset (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun startConnecting (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;)V
+	public static synthetic fun startConnecting$default (Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;ILjava/lang/Object;)V
 	public abstract fun startDisconnecting ()V
 	public abstract fun startDiscovering ()V
 	public abstract fun unpair (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -628,11 +581,6 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/DeviceConnec
 
 public abstract interface class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Builder {
 	public abstract fun create (Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager;
-}
-
-public final class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$DefaultImpls {
-	public static synthetic fun handleDisconnect$default (Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static synthetic fun startConnecting$default (Lcom/splendo/kaluga/bluetooth/device/DeviceConnectionManager;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;ILjava/lang/Object;)V
 }
 
 public abstract class com/splendo/kaluga/bluetooth/device/DeviceConnectionManager$Event {
@@ -750,8 +698,6 @@ public final class com/splendo/kaluga/bluetooth/device/DeviceImpl : com/splendo/
 	public fun <init> (Ljava/lang/String;Lcom/splendo/kaluga/bluetooth/device/DeviceInfoImpl;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/jvm/functions/Function1;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function2;)V
 	public synthetic fun <init> (Ljava/lang/String;Lcom/splendo/kaluga/bluetooth/device/DeviceInfoImpl;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/jvm/functions/Function1;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun advertisementDataDidUpdate (Lcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;)V
-	public fun connect (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun disconnect (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getIdentifier ()Ljava/lang/String;
 	public fun getInfo ()Lkotlinx/coroutines/flow/Flow;
@@ -765,17 +711,13 @@ public final class com/splendo/kaluga/bluetooth/device/DeviceImpl$Companion {
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/device/DeviceInfo {
-	public abstract fun distance (D)D
+	public fun distance (D)D
+	public static synthetic fun distance$default (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;DILjava/lang/Object;)D
 	public abstract fun getAdvertisementData ()Lcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;
 	public abstract fun getIdentifier ()Ljava/lang/String;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getRssi ()I
 	public abstract fun getUpdatedAt ()Lcom/splendo/kaluga/base/utils/KalugaDate;
-}
-
-public final class com/splendo/kaluga/bluetooth/device/DeviceInfo$DefaultImpls {
-	public static fun distance (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;D)D
-	public static synthetic fun distance$default (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;DILjava/lang/Object;)D
 }
 
 public final class com/splendo/kaluga/bluetooth/device/DeviceInfoAndroid {
@@ -793,7 +735,6 @@ public final class com/splendo/kaluga/bluetooth/device/DeviceInfoImpl : com/sple
 	public final fun component4 ()Lcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;
 	public final fun copy (Ljava/lang/String;Ljava/lang/String;ILcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;)Lcom/splendo/kaluga/bluetooth/device/DeviceInfoImpl;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/device/DeviceInfoImpl;Ljava/lang/String;Ljava/lang/String;ILcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/device/DeviceInfoImpl;
-	public fun distance (D)D
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getAdvertisementData ()Lcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;
 	public fun getIdentifier ()Ljava/lang/String;
@@ -890,9 +831,6 @@ public abstract class com/splendo/kaluga/bluetooth/scanner/BaseScanner : com/spl
 
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder {
 	public abstract fun create (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineDispatcher;)Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner;
-}
-
-public final class com/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder$DefaultImpls {
 	public static synthetic fun create$default (Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Settings;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineDispatcher;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner;
 }
 
@@ -935,12 +873,9 @@ public final class com/splendo/kaluga/bluetooth/scanner/DefaultDevices : com/spl
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/scanner/DefaultDevices;Ljava/util/Map;Ljava/util/Map;Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$DeviceDiscoveryMode$Scanning;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/DefaultDevices;
 	public fun copyAndAddScanned (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public fun copyAndSetPaired (Ljava/util/Map;Ljava/util/Set;Z)Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
-	public fun devicesForCurrentScanFilter ()Ljava/util/List;
-	public fun devicesForDiscoveryMode (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$DeviceDiscoveryMode;)Ljava/util/List;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getAllDevices ()Ljava/util/Map;
 	public fun getCurrentScanFilter ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$DeviceDiscoveryMode$Scanning;
-	public fun getIdentifiersForCurrentScanFilter ()Ljava/util/Set;
 	public fun getIdentifiersFoundForDeviceDiscoveryMode ()Ljava/util/Map;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -1086,21 +1021,9 @@ public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningSta
 	public abstract fun getDevices ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 }
 
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$Active$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Active;)Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$Deinitialized : com/splendo/kaluga/bluetooth/scanner/ScanningState$Inactive {
 	public abstract fun getPreviousDevices ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public abstract fun getReinitialize ()Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$Deinitialized$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Deinitialized;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract class com/splendo/kaluga/bluetooth/scanner/ScanningState$DeviceDiscoveryMode {
@@ -1132,19 +1055,13 @@ public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$DeviceDisc
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$Devices {
 	public abstract fun copyAndAddScanned (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
 	public abstract fun copyAndSetPaired (Ljava/util/Map;Ljava/util/Set;Z)Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
-	public abstract fun devicesForCurrentScanFilter ()Ljava/util/List;
-	public abstract fun devicesForDiscoveryMode (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$DeviceDiscoveryMode;)Ljava/util/List;
+	public fun devicesForCurrentScanFilter ()Ljava/util/List;
+	public fun devicesForDiscoveryMode (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$DeviceDiscoveryMode;)Ljava/util/List;
 	public abstract fun getAllDevices ()Ljava/util/Map;
 	public abstract fun getCurrentScanFilter ()Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$DeviceDiscoveryMode$Scanning;
-	public abstract fun getIdentifiersForCurrentScanFilter ()Ljava/util/Set;
+	public fun getIdentifiersForCurrentScanFilter ()Ljava/util/Set;
 	public abstract fun getIdentifiersFoundForDeviceDiscoveryMode ()Ljava/util/Map;
 	public abstract fun updateScanFilter (Ljava/util/Set;Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;)Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;
-}
-
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$Devices$DefaultImpls {
-	public static fun devicesForCurrentScanFilter (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;)Ljava/util/List;
-	public static fun devicesForDiscoveryMode (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$DeviceDiscoveryMode;)Ljava/util/List;
-	public static fun getIdentifiersForCurrentScanFilter (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Devices;)Ljava/util/Set;
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled : com/splendo/kaluga/bluetooth/scanner/ScanningState$Permitted {
@@ -1153,28 +1070,16 @@ public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningSta
 	public abstract fun retrievePairedDevices (Ljava/util/Set;ZLcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$Idle : com/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled {
 	public abstract fun refresh (Ljava/util/Set;Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;)Lkotlin/jvm/functions/Function1;
-	public abstract fun startScanning (Ljava/util/Set;Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;)Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$Idle$DefaultImpls {
 	public static synthetic fun refresh$default (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$Idle;Ljava/util/Set;Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;ILjava/lang/Object;)Lkotlin/jvm/functions/Function1;
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$Idle;)Lkotlin/jvm/functions/Function1;
+	public abstract fun startScanning (Ljava/util/Set;Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;)Lkotlin/jvm/functions/Function1;
 	public static synthetic fun startScanning$default (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$Idle;Ljava/util/Set;Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;ILjava/lang/Object;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$Scanning : com/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled {
 	public abstract fun discoverDevices (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun stopScanning (Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;)Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$Scanning$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$Scanning;)Lkotlin/jvm/functions/Function1;
 	public static synthetic fun stopScanning$default (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$Scanning;Lcom/splendo/kaluga/bluetooth/BluetoothService$CleanMode;ILjava/lang/Object;)Lkotlin/jvm/functions/Function1;
 }
 
@@ -1198,68 +1103,32 @@ public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$Enabled$Sc
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$Inactive : com/splendo/kaluga/base/flow/SpecialFlowValue$NotImportant, com/splendo/kaluga/bluetooth/scanner/ScanningState {
 }
 
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$Inactive$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Inactive;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$Initialized : com/splendo/kaluga/bluetooth/scanner/ScanningState$Active {
-}
-
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$Initialized$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Initialized;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$Initializing : com/splendo/kaluga/base/flow/SpecialFlowValue$NotImportant, com/splendo/kaluga/bluetooth/scanner/ScanningState$Active {
 	public abstract fun initialized (ZZ)Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$Initializing$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Initializing;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$NoBluetooth : com/splendo/kaluga/bluetooth/scanner/ScanningState$Initialized {
-}
-
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$NoBluetooth$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$NoBluetooth;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$NoBluetooth$Disabled : com/splendo/kaluga/bluetooth/scanner/ScanningState$NoBluetooth, com/splendo/kaluga/bluetooth/scanner/ScanningState$Permitted {
 	public abstract fun getEnable ()Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$NoBluetooth$Disabled$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$NoBluetooth$Disabled;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$NoBluetooth$MissingPermissions : com/splendo/kaluga/bluetooth/scanner/ScanningState$NoBluetooth {
 	public abstract fun permit (Z)Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$NoBluetooth$MissingPermissions$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$NoBluetooth$MissingPermissions;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$NoHardware : com/splendo/kaluga/bluetooth/scanner/ScanningState {
 }
 
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$NoHardware$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$NoHardware;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$NotInitialized : com/splendo/kaluga/bluetooth/scanner/ScanningState$Inactive {
-}
-
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$NotInitialized$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$NotInitialized;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/ScanningState$Permitted : com/splendo/kaluga/bluetooth/scanner/ScanningState$Initialized {
 	public abstract fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/bluetooth/scanner/ScanningState$Permitted$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/bluetooth/scanner/ScanningState$Permitted;)Lkotlin/jvm/functions/Function1;
 }
 
 public class com/splendo/kaluga/bluetooth/scanner/ScanningStateImplRepo : com/splendo/kaluga/bluetooth/scanner/BaseScanningStateRepo {

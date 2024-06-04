@@ -53,6 +53,7 @@ public abstract class com/splendo/kaluga/location/BaseLocationStateRepo : com/sp
 
 public abstract interface class com/splendo/kaluga/location/BaseLocationStateRepoBuilder {
 	public abstract fun create (Lcom/splendo/kaluga/permissions/location/LocationPermission;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/location/LocationStateRepo;
+	public static synthetic fun create$default (Lcom/splendo/kaluga/location/BaseLocationStateRepoBuilder;Lcom/splendo/kaluga/permissions/location/LocationPermission;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/location/LocationStateRepo;
 }
 
 public final class com/splendo/kaluga/location/BaseLocationStateRepoBuilder$DefaultImpls {

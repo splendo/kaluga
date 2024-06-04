@@ -35,7 +35,6 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Avail
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun getUnavailable ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -47,7 +46,6 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Deini
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun getReinitialize ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -68,7 +66,6 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Initi
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun hashCode ()I
 	public fun initialized (Lcom/splendo/kaluga/system/network/NetworkConnectionType;)Lkotlin/jvm/functions/Function1;
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -77,7 +74,6 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$NotIn
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun hashCode ()I
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -88,7 +84,6 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Unava
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known;
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun hashCode ()I
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -102,7 +97,6 @@ public final class com/splendo/kaluga/test/system/network/MockNetworkState$Unkno
 	public synthetic fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType;
 	public fun getUnavailable ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 

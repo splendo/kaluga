@@ -3,7 +3,6 @@ public final class com/splendo/kaluga/test/alerts/MockAlertPresenter : com/splen
 	public synthetic fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/logging/Logger;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun closeWithAction (Lcom/splendo/kaluga/alerts/Alert$Action;)V
 	public fun dismiss (Z)V
-	public final fun getAlert ()Lcom/splendo/kaluga/alerts/Alert;
 	public final fun getDismissMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun getShowAsyncMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
 	public final fun isPresented ()Z

@@ -1821,7 +1821,6 @@ public abstract class com/splendo/kaluga/architecture/observable/AbstractBaseDef
 	public fun getDefaultValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public synthetic fun getObservation ()Lcom/splendo/kaluga/architecture/observable/Observation;
 	protected fun getObservation ()Lcom/splendo/kaluga/architecture/observable/ObservationDefault;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
@@ -1841,7 +1840,6 @@ public abstract class com/splendo/kaluga/architecture/observable/AbstractBaseIni
 	public fun getCurrentOrNull ()Ljava/lang/Object;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public synthetic fun getObservation ()Lcom/splendo/kaluga/architecture/observable/Observation;
 	protected fun getObservation ()Lcom/splendo/kaluga/architecture/observable/ObservationInitialized;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
@@ -1864,7 +1862,6 @@ public abstract class com/splendo/kaluga/architecture/observable/AbstractBaseUni
 	public fun getCurrentOrNull ()Ljava/lang/Object;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Nothing;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public synthetic fun getObservation ()Lcom/splendo/kaluga/architecture/observable/Observation;
 	protected fun getObservation ()Lcom/splendo/kaluga/architecture/observable/ObservationUninitialized;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
@@ -1889,7 +1886,6 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseDefaultObse
 	public fun getDefaultValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public synthetic fun getObservation ()Lcom/splendo/kaluga/architecture/observable/Observation;
 	protected fun getObservation ()Lcom/splendo/kaluga/architecture/observable/ObservationDefault;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
@@ -1913,7 +1909,6 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseInitialized
 	public fun getCurrentOrNull ()Ljava/lang/Object;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public synthetic fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
@@ -1957,7 +1952,6 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseUninitializ
 	public fun getCurrentOrNull ()Ljava/lang/Object;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Nothing;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public synthetic fun getObservation ()Lcom/splendo/kaluga/architecture/observable/Observation;
 	protected fun getObservation ()Lcom/splendo/kaluga/architecture/observable/ObservationUninitialized;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
@@ -1988,22 +1982,10 @@ public abstract interface class com/splendo/kaluga/architecture/observable/Defau
 	public abstract fun getDefaultValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 }
 
-public final class com/splendo/kaluga/architecture/observable/DefaultInitialized$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/DefaultInitialized;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/DefaultObservable : com/splendo/kaluga/architecture/observable/BasicObservable, com/splendo/kaluga/architecture/observable/DefaultInitialized {
 }
 
-public final class com/splendo/kaluga/architecture/observable/DefaultObservable$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/DefaultObservable;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/DefaultSubject : com/splendo/kaluga/architecture/observable/BasicSubject, com/splendo/kaluga/architecture/observable/DefaultObservable, com/splendo/kaluga/architecture/observable/MutableDefaultInitialized {
-}
-
-public final class com/splendo/kaluga/architecture/observable/DefaultSubject$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/DefaultSubject;)Landroidx/lifecycle/LiveData;
 }
 
 public abstract interface class com/splendo/kaluga/architecture/observable/Disposable {
@@ -2069,43 +2051,19 @@ public abstract interface class com/splendo/kaluga/architecture/observable/Initi
 	public abstract fun observeInitialized (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/architecture/observable/Disposable;
 }
 
-public final class com/splendo/kaluga/architecture/observable/Initialized$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/Initialized;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/InitializedObservable : com/splendo/kaluga/architecture/observable/BasicObservable, com/splendo/kaluga/architecture/observable/Initialized {
-}
-
-public final class com/splendo/kaluga/architecture/observable/InitializedObservable$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/InitializedObservable;)Landroidx/lifecycle/LiveData;
 }
 
 public abstract interface class com/splendo/kaluga/architecture/observable/InitializedSubject : com/splendo/kaluga/architecture/observable/BasicSubject, com/splendo/kaluga/architecture/observable/InitializedObservable, com/splendo/kaluga/architecture/observable/MutableInitialized {
 }
 
-public final class com/splendo/kaluga/architecture/observable/InitializedSubject$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/InitializedSubject;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/MutableDefaultInitialized : com/splendo/kaluga/architecture/observable/DefaultInitialized, com/splendo/kaluga/architecture/observable/WithMutableState {
-}
-
-public final class com/splendo/kaluga/architecture/observable/MutableDefaultInitialized$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/MutableDefaultInitialized;)Landroidx/lifecycle/LiveData;
 }
 
 public abstract interface class com/splendo/kaluga/architecture/observable/MutableInitialized : com/splendo/kaluga/architecture/observable/Initialized, com/splendo/kaluga/architecture/observable/WithMutableState {
 }
 
-public final class com/splendo/kaluga/architecture/observable/MutableInitialized$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/MutableInitialized;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/MutableUninitialized : com/splendo/kaluga/architecture/observable/Uninitialized, com/splendo/kaluga/architecture/observable/WithMutableState {
-}
-
-public final class com/splendo/kaluga/architecture/observable/MutableUninitialized$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/MutableUninitialized;)Landroidx/lifecycle/LiveData;
 }
 
 public final class com/splendo/kaluga/architecture/observable/ObservableKt {
@@ -2165,7 +2123,6 @@ public class com/splendo/kaluga/architecture/observable/ObservationDefault : com
 	public fun getDefaultValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
 	public synthetic fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
@@ -2181,7 +2138,6 @@ public class com/splendo/kaluga/architecture/observable/ObservationInitialized :
 	public fun getCurrent ()Ljava/lang/Object;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
 	public synthetic fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
@@ -2200,7 +2156,6 @@ public final class com/splendo/kaluga/architecture/observable/ObservationUniniti
 	public fun <init> ()V
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Nothing;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
 	public synthetic fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
@@ -2330,22 +2285,10 @@ public abstract interface class com/splendo/kaluga/architecture/observable/Unini
 	public abstract fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Nothing;
 }
 
-public final class com/splendo/kaluga/architecture/observable/Uninitialized$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/Uninitialized;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/UninitializedObservable : com/splendo/kaluga/architecture/observable/BasicObservable, com/splendo/kaluga/architecture/observable/Uninitialized {
 }
 
-public final class com/splendo/kaluga/architecture/observable/UninitializedObservable$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/UninitializedObservable;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/UninitializedSubject : com/splendo/kaluga/architecture/observable/BasicSubject, com/splendo/kaluga/architecture/observable/MutableUninitialized, com/splendo/kaluga/architecture/observable/UninitializedObservable {
-}
-
-public final class com/splendo/kaluga/architecture/observable/UninitializedSubject$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/UninitializedSubject;)Landroidx/lifecycle/LiveData;
 }
 
 public abstract interface class com/splendo/kaluga/architecture/observable/WithMutableState : com/splendo/kaluga/architecture/observable/WithState {
@@ -2353,18 +2296,10 @@ public abstract interface class com/splendo/kaluga/architecture/observable/WithM
 	public abstract fun getValueDelegate ()Lkotlin/properties/ReadWriteProperty;
 }
 
-public final class com/splendo/kaluga/architecture/observable/WithMutableState$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/WithMutableState;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/WithState {
-	public abstract fun getLiveData ()Landroidx/lifecycle/LiveData;
+	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public abstract fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public abstract fun getValueDelegate ()Lkotlin/properties/ReadOnlyProperty;
-}
-
-public final class com/splendo/kaluga/architecture/observable/WithState$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/WithState;)Landroidx/lifecycle/LiveData;
 }
 
 public final class com/splendo/kaluga/architecture/observable/WithStateKt {
