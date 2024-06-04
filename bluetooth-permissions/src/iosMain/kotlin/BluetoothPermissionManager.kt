@@ -91,7 +91,7 @@ actual class DefaultBluetoothPermissionManager(
         timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
     }
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(
                 bundle,
                 NS_BLUETOOTH_ALWAYS_USAGE_DESCRIPTION,
@@ -105,13 +105,13 @@ actual class DefaultBluetoothPermissionManager(
         }
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         val permissionHandler = permissionHandler
         permissionHandler.status(checkAuthorization())
         timerHelper.startMonitoring(interval)
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         timerHelper.stopMonitoring()
     }
 }
@@ -124,7 +124,7 @@ actual class BluetoothPermissionManagerBuilder actual constructor(
     private val context: PermissionContext,
 ) : BaseBluetoothPermissionManagerBuilder {
 
-    override fun create(settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager {
+    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager {
         return DefaultBluetoothPermissionManager(context, settings, coroutineScope)
     }
 }

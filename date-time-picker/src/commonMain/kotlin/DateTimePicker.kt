@@ -257,6 +257,9 @@ expect class DateTimePickerPresenter : BaseDateTimePickerPresenter {
          */
         override fun create(dateTimePicker: DateTimePicker, coroutineScope: CoroutineScope): DateTimePickerPresenter
     }
+
+    override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit)
+    override fun dismissDateTimePicker(animated: Boolean)
 }
 
 /**

@@ -33,21 +33,21 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override fun getCurrentState(): DeviceConnectionManager.State = DeviceConnectionManager.State.DISCONNECTED
+    actual override fun getCurrentState(): DeviceConnectionManager.State = DeviceConnectionManager.State.DISCONNECTED
 
-    override fun connect() {}
+    actual override fun connect() {}
 
-    override suspend fun discoverServices() {}
+    actual override suspend fun discoverServices() {}
 
-    override fun disconnect() {}
+    actual override fun disconnect() {}
 
     override suspend fun readRssi() {}
 
-    override suspend fun requestMtu(mtu: MTU) = false
+    actual override suspend fun requestMtu(mtu: MTU) = false
 
-    override suspend fun didStartPerformingAction(action: DeviceAction) {}
+    actual override suspend fun didStartPerformingAction(action: DeviceAction) {}
 
-    override suspend fun requestStartPairing() {}
+    actual override suspend fun requestStartPairing() {}
 
-    override suspend fun requestStartUnpairing() {}
+    actual override suspend fun requestStartUnpairing() {}
 }

@@ -79,7 +79,7 @@ actual class DefaultLocationManager(
         }
     }
 
-    override val locationMonitor: LocationMonitor = LocationMonitor.Builder(CLLocationManager()).create()
+    actual override val locationMonitor: LocationMonitor = LocationMonitor.Builder(CLLocationManager()).create()
     private val locationManager = MainCLLocationManagerAccessor {
         desiredAccuracy = if (locationPermission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
         distanceFilter = settings.minUpdateDistanceMeters.toDouble()
@@ -91,12 +91,12 @@ actual class DefaultLocationManager(
         locationUpdateDelegate = Delegate(sharedLocations)
     }
 
-    override suspend fun requestEnableLocation() {
+    actual override suspend fun requestEnableLocation() {
         // No access to UIApplication.openSettingsURLString
         // We have to fallback to alert then?
     }
 
-    override suspend fun startMonitoringLocation() {
+    actual override suspend fun startMonitoringLocation() {
         val locationUpdateDelegate = locationUpdateDelegate
         locationManager.updateLocationManager {
             delegate = locationUpdateDelegate
@@ -104,7 +104,7 @@ actual class DefaultLocationManager(
         }
     }
 
-    override suspend fun stopMonitoringLocation() {
+    actual override suspend fun stopMonitoringLocation() {
         launch {
             locationManager.updateLocationManager {
                 stopUpdatingLocation()
@@ -140,7 +140,7 @@ actual class LocationStateRepoBuilder(
         },
     )
 
-    override fun create(
+    actual override fun create(
         locationPermission: LocationPermission,
         settingsBuilder: (LocationPermission, Permissions) -> Settings,
         coroutineContext: CoroutineContext,

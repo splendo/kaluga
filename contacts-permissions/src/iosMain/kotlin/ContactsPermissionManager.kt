@@ -65,7 +65,7 @@ actual class DefaultContactsPermissionManager(
     private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
     private var timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NS_CONTACTS_USAGE_DESCRIPTION).isEmpty()) {
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<Boolean>()
@@ -88,11 +88,11 @@ actual class DefaultContactsPermissionManager(
         }
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         timerHelper.startMonitoring(interval)
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         timerHelper.stopMonitoring()
     }
 }
@@ -103,7 +103,7 @@ actual class DefaultContactsPermissionManager(
  */
 actual class ContactsPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseContactsPermissionManagerBuilder {
 
-    override fun create(contactsPermission: ContactsPermission, settings: Settings, coroutineScope: CoroutineScope): ContactsPermissionManager {
+    actual override fun create(contactsPermission: ContactsPermission, settings: Settings, coroutineScope: CoroutineScope): ContactsPermissionManager {
         return DefaultContactsPermissionManager(context, contactsPermission, settings, coroutineScope)
     }
 }

@@ -122,7 +122,7 @@ internal actual class DefaultDeviceConnectionManager(
         peripheral.delegate = peripheralDelegate
     }
 
-    override fun getCurrentState(): DeviceConnectionManager.State = when (peripheral.state) {
+    actual override fun getCurrentState(): DeviceConnectionManager.State = when (peripheral.state) {
         CBPeripheralStateConnected -> DeviceConnectionManager.State.CONNECTED
         CBPeripheralStateConnecting -> DeviceConnectionManager.State.CONNECTING
         CBPeripheralStateDisconnected -> DeviceConnectionManager.State.DISCONNECTED
@@ -130,11 +130,11 @@ internal actual class DefaultDeviceConnectionManager(
         else -> DeviceConnectionManager.State.DISCONNECTED
     }
 
-    override fun connect() {
+    actual override fun connect() {
         cbCentralManager.connectPeripheral(peripheral, null)
     }
 
-    override suspend fun discoverServices() {
+    actual override suspend fun discoverServices() {
         discoveringMutex.withLock {
             discoveringServices.clear()
             discoveringCharacteristics.clear()
@@ -142,7 +142,7 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override fun disconnect() {
+    actual override fun disconnect() {
         val state = getCurrentState()
         cbCentralManager.cancelPeripheralConnection(peripheral)
         if (state != DeviceConnectionManager.State.CONNECTED) {
@@ -154,7 +154,7 @@ internal actual class DefaultDeviceConnectionManager(
         peripheral.readRSSI()
     }
 
-    override suspend fun requestMtu(mtu: MTU): Boolean {
+    actual override suspend fun requestMtu(mtu: MTU): Boolean {
         val max = peripheral.maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse)
         debug(TAG) {
             "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $max"
@@ -165,7 +165,7 @@ internal actual class DefaultDeviceConnectionManager(
         return false
     }
 
-    override suspend fun didStartPerformingAction(action: DeviceAction) {
+    actual override suspend fun didStartPerformingAction(action: DeviceAction) {
         currentAction = action
         when (action) {
             is DeviceAction.Read.Characteristic -> action.characteristic.wrapper.readValue(peripheral)
@@ -189,11 +189,11 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override suspend fun requestStartPairing() {
+    actual override suspend fun requestStartPairing() {
         // There is no iOS API to pair peripheral
     }
 
-    override suspend fun requestStartUnpairing() {
+    actual override suspend fun requestStartUnpairing() {
         // There is no iOS API to unpair peripheral
     }
 

@@ -40,4 +40,6 @@ interface BaseNetworkStateRepoBuilder {
 /**
  * Default implementation of [BaseNetworkStateRepoBuilder]
  */
-expect class NetworkStateRepoBuilder : BaseNetworkStateRepoBuilder
+expect class NetworkStateRepoBuilder : BaseNetworkStateRepoBuilder {
+    override fun create(coroutineContext: CoroutineContext): NetworkStateRepo
+}

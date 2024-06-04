@@ -54,4 +54,9 @@ interface NetworkManager {
 /**
  * Default implementation of [NetworkManager]
  */
-expect class DefaultNetworkManager : NetworkManager
+expect class DefaultNetworkManager : NetworkManager {
+    override val network: Flow<NetworkConnectionType>
+
+    override suspend fun startMonitoring()
+    override suspend fun stopMonitoring()
+}

@@ -179,4 +179,10 @@ interface BaseLocationStateRepoBuilder {
 /**
  * Default [BaseLocationStateRepoBuilder]
  */
-expect class LocationStateRepoBuilder : BaseLocationStateRepoBuilder
+expect class LocationStateRepoBuilder : BaseLocationStateRepoBuilder {
+    override fun create(
+        locationPermission: LocationPermission,
+        settingsBuilder: (LocationPermission, Permissions) -> BaseLocationManager.Settings,
+        coroutineContext: CoroutineContext
+    ): LocationStateRepo
+}

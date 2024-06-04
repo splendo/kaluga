@@ -43,7 +43,10 @@ interface StringLoader {
 /**
  * Default implementation of a [StringLoader].
  */
-expect class DefaultStringLoader() : StringLoader
+expect class DefaultStringLoader() : StringLoader {
+    override fun loadString(identifier: String, defaultValue: String): String
+    override fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String
+}
 
 /**
  * Loads a [KalugaColor] based on a provided identifier.
@@ -61,7 +64,9 @@ interface KalugaColorLoader {
 /**
  * Default implementation of a [KalugaColorLoader].
  */
-expect class DefaultColorLoader() : KalugaColorLoader
+expect class DefaultColorLoader() : KalugaColorLoader {
+    override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor?
+}
 
 /**
  * Loads a [KalugaImage] based on a provided identifier.
@@ -79,7 +84,9 @@ interface ImageLoader {
 /**
  * Default implementation of an [ImageLoader].
  */
-expect class DefaultImageLoader() : ImageLoader
+expect class DefaultImageLoader() : ImageLoader {
+    override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage?
+}
 
 /**
  * Loads a [KalugaFont] based on a provided identifier.
@@ -97,7 +104,9 @@ interface FontLoader {
 /**
  * Default implementation of a [FontLoader].
  */
-expect class DefaultFontLoader() : FontLoader
+expect class DefaultFontLoader() : FontLoader {
+    override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont?
+}
 
 /**
  * Treats this string as a resource identifier for a [String] and grabs the associated [String]

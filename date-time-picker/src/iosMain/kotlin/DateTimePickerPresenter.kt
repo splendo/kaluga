@@ -172,11 +172,11 @@ actual class DateTimePickerPresenter(
         }
     }
 
-    override fun dismissDateTimePicker(animated: Boolean) {
+    actual override fun dismissDateTimePicker(animated: Boolean) {
         parent.dismissModalViewControllerAnimated(animated)
     }
 
-    override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit) {
+    actual override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit) {
         parent.presentViewController(DateTimePickerViewController(completion), animated, null)
     }
 }

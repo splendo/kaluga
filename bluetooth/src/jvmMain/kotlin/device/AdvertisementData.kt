@@ -25,18 +25,18 @@ import com.splendo.kaluga.bluetooth.UUID
  */
 actual class AdvertisementData : BaseAdvertisementData {
 
-    override val name: String?
+    actual override val name: String?
         get() = null
-    override val manufacturerId: Int?
+    actual override val manufacturerId: Int?
         get() = null
-    override val manufacturerData: ByteArray?
+    actual override val manufacturerData: ByteArray?
         get() = null
-    override val serviceUUIDs: List<UUID>
+    actual override val serviceUUIDs: List<UUID>
         get() = emptyList()
-    override val serviceData: Map<UUID, ByteArray?>
+    actual override val serviceData: Map<UUID, ByteArray?>
         get() = emptyMap()
-    override val txPowerLevel: TxPower
+    actual override val txPowerLevel: TxPower
         get() = Int.MIN_VALUE
-    override val isConnectable: Boolean
+    actual override val isConnectable: Boolean
         get() = false
 }

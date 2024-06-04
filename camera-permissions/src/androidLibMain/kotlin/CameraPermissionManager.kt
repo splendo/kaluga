@@ -53,7 +53,7 @@ actual class DefaultCameraPermissionManager(
     )
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         if (supported) {
             permissionsManager.requestPermissions()
         } else {
@@ -61,7 +61,7 @@ actual class DefaultCameraPermissionManager(
         }
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         if (supported) {
             permissionsManager.startMonitoring(interval)
         } else {
@@ -69,7 +69,7 @@ actual class DefaultCameraPermissionManager(
         }
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         if (supported) {
             permissionsManager.stopMonitoring()
         }
@@ -82,7 +82,7 @@ actual class DefaultCameraPermissionManager(
  */
 actual class CameraPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(settings: Settings, coroutineScope: CoroutineScope): CameraPermissionManager {
+    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): CameraPermissionManager {
         return DefaultCameraPermissionManager(context.context, settings, coroutineScope)
     }
 }

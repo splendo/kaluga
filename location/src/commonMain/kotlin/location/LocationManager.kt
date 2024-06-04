@@ -286,4 +286,10 @@ abstract class BaseLocationManager(
 /**
  * A default implementation of [BaseLocationManager]
  */
-expect class DefaultLocationManager : BaseLocationManager
+expect class DefaultLocationManager : BaseLocationManager {
+    override val locationMonitor: LocationMonitor
+
+    override suspend fun requestEnableLocation()
+    override suspend fun startMonitoringLocation()
+    override suspend fun stopMonitoringLocation()
+}

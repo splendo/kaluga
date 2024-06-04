@@ -143,7 +143,7 @@ internal actual class DefaultDeviceConnectionManager(
     }
     private var lastKnownState = BluetoothProfile.STATE_DISCONNECTED
 
-    override fun getCurrentState(): DeviceConnectionManager.State = when (lastKnownState) {
+    actual override fun getCurrentState(): DeviceConnectionManager.State = when (lastKnownState) {
         BluetoothProfile.STATE_CONNECTED -> DeviceConnectionManager.State.CONNECTED
         BluetoothProfile.STATE_CONNECTING -> DeviceConnectionManager.State.CONNECTING
         BluetoothProfile.STATE_DISCONNECTED -> DeviceConnectionManager.State.DISCONNECTED
@@ -152,7 +152,7 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     @SuppressLint("MissingPermission")
-    override fun connect() {
+    actual override fun connect() {
         when {
             !gatt.isCompleted -> gatt.complete(deviceWrapper.connectGatt(context, false, callback))
             lastKnownState == BluetoothProfile.STATE_CONNECTED -> handleConnect()
@@ -161,11 +161,11 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override suspend fun discoverServices() {
+    actual override suspend fun discoverServices() {
         gatt.await().discoverServices()
     }
 
-    override fun disconnect() {
+    actual override fun disconnect() {
         val gatt = gatt.getCompletedOrNull()
         if (gatt != null && lastKnownState != BluetoothProfile.STATE_DISCONNECTED) {
             gatt.disconnect()
@@ -185,11 +185,11 @@ internal actual class DefaultDeviceConnectionManager(
         gatt.await().readRemoteRssi()
     }
 
-    override suspend fun requestMtu(mtu: MTU): Boolean {
+    actual override suspend fun requestMtu(mtu: MTU): Boolean {
         return gatt.await().requestMtu(mtu)
     }
 
-    override suspend fun didStartPerformingAction(action: DeviceAction) {
+    actual override suspend fun didStartPerformingAction(action: DeviceAction) {
         currentAction = action
         val succeeded = when (action) {
             is DeviceAction.Read.Characteristic -> gatt.await().readCharacteristic(action.characteristic.wrapper)
@@ -207,14 +207,14 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun requestStartPairing() {
+    actual override suspend fun requestStartPairing() {
         if (deviceWrapper.bondState == DeviceWrapper.BondState.NONE) {
             deviceWrapper.createBond()
         }
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun requestStartUnpairing() {
+    actual override suspend fun requestStartUnpairing() {
         if (deviceWrapper.bondState != DeviceWrapper.BondState.NONE) {
             deviceWrapper.removeBond()
         }

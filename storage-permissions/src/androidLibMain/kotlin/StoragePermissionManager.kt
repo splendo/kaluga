@@ -54,15 +54,15 @@ actual class DefaultStoragePermissionManager(
         permissionHandler,
     )
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         permissionsManager.requestPermissions()
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         permissionsManager.startMonitoring(interval)
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         permissionsManager.stopMonitoring()
     }
 }
@@ -73,7 +73,7 @@ actual class DefaultStoragePermissionManager(
  */
 actual class StoragePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storagePermission: StoragePermission, settings: Settings, coroutineScope: CoroutineScope): StoragePermissionManager {
+    actual override fun create(storagePermission: StoragePermission, settings: Settings, coroutineScope: CoroutineScope): StoragePermissionManager {
         return DefaultStoragePermissionManager(context.context, storagePermission, settings, coroutineScope)
     }
 }

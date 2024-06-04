@@ -44,17 +44,17 @@ actual class DefaultLocationManager(
         }
     }
 
-    override val locationMonitor: LocationMonitor = LocationMonitor.Builder().create()
+    actual override val locationMonitor: LocationMonitor = LocationMonitor.Builder().create()
 
-    override suspend fun requestEnableLocation() {
+    actual override suspend fun requestEnableLocation() {
         TODO("Not yet implemented")
     }
 
-    override suspend fun startMonitoringLocation() {
+    actual override suspend fun startMonitoringLocation() {
         TODO("not implemented")
     }
 
-    override suspend fun stopMonitoringLocation() {
+    actual override suspend fun stopMonitoringLocation() {
         TODO("not implemented")
     }
 }
@@ -73,7 +73,7 @@ actual class LocationStateRepoBuilder(
     },
 ) : BaseLocationStateRepoBuilder {
 
-    override fun create(
+    actual override fun create(
         locationPermission: LocationPermission,
         settingsBuilder: (LocationPermission, Permissions) -> Settings,
         coroutineContext: CoroutineContext,

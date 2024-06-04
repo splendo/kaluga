@@ -50,7 +50,7 @@ import platform.objc.sel_registerName
  * This allows for presentation of [Alert.Style.ACTION_LIST] on iPad.
  */
 actual class AlertPresenter(
-    private val alert: Alert,
+    alert: Alert,
     private val parent: UIViewController,
     logger: Logger,
     private val delegateBuilder: (Alert) -> UIPopoverPresentationControllerDelegateProtocol,
@@ -133,11 +133,11 @@ actual class AlertPresenter(
         }
     }
 
-    override fun dismissAlert(animated: Boolean) {
+    actual override fun dismissAlert(animated: Boolean) {
         parent.dismissModalViewControllerAnimated(animated)
     }
 
-    override fun showAlert(animated: Boolean, afterHandler: (Alert.Action?) -> Unit, completion: () -> Unit) {
+    actual override fun showAlert(animated: Boolean, afterHandler: (Alert.Action?) -> Unit, completion: () -> Unit) {
         UIAlertController.alertControllerWithTitle(
             alert.title,
             alert.message,

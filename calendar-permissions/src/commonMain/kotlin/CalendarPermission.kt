@@ -35,7 +35,11 @@ typealias CalendarPermissionManager = PermissionManager<CalendarPermission>
 /**
  * The [BasePermissionManager] to use as a default for [CalendarPermission]
  */
-expect class DefaultCalendarPermissionManager : BasePermissionManager<CalendarPermission>
+expect class DefaultCalendarPermissionManager : BasePermissionManager<CalendarPermission> {
+    override fun requestPermissionDidStart()
+    override fun monitoringDidStart(interval: Duration)
+    override fun monitoringDidStop()
+}
 
 /**
  * A [BasePermissionsBuilder] for [CalendarPermission]
@@ -60,7 +64,9 @@ interface BaseCalendarPermissionManagerBuilder : BasePermissionsBuilder<Calendar
  * A [BaseCalendarPermissionManagerBuilder]
  * @param context the [PermissionContext] this permissions manager builder runs on
  */
-expect class CalendarPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseCalendarPermissionManagerBuilder
+expect class CalendarPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseCalendarPermissionManagerBuilder {
+    override fun create(calendarPermission: CalendarPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CalendarPermissionManager
+}
 
 /**
  * A [PermissionStateRepo] for [CalendarPermission]

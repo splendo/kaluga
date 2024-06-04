@@ -34,15 +34,15 @@ actual class DefaultCameraPermissionManager(
     coroutineScope: CoroutineScope,
 ) : BasePermissionManager<CameraPermission>(CameraPermission, settings, coroutineScope) {
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         TODO("Not yet implemented")
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         TODO("Not yet implemented")
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         TODO("Not yet implemented")
     }
 }
@@ -53,7 +53,7 @@ actual class DefaultCameraPermissionManager(
  */
 actual class CameraPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(settings: Settings, coroutineScope: CoroutineScope): PermissionManager<CameraPermission> {
+    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): PermissionManager<CameraPermission> {
         return DefaultCameraPermissionManager(settings, coroutineScope)
     }
 }

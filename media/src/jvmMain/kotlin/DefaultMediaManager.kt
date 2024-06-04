@@ -28,11 +28,11 @@ import kotlin.time.Duration
  * Default implementation of [PlayableMedia]
  * @param source the [MediaSource] on which the media is found
  */
-actual class DefaultPlayableMedia(override val source: MediaSource) : PlayableMedia {
-    override val duration: Duration = Duration.ZERO
-    override val currentPlayTime: Duration = Duration.ZERO
-    override val tracks: List<TrackInfo> = emptyList()
-    override val resolution: Flow<Resolution> = flowOf(Resolution.ZERO)
+actual class DefaultPlayableMedia(actual override val source: MediaSource) : PlayableMedia {
+    actual override val duration: Duration = Duration.ZERO
+    actual override val currentPlayTime: Duration = Duration.ZERO
+    actual override val tracks: List<TrackInfo> = emptyList()
+    actual override val resolution: Flow<Resolution> = flowOf(Resolution.ZERO)
 }
 
 /**
@@ -54,42 +54,42 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
 
     private var mediaSurface: MediaSurface? = null
     private val volume = MutableStateFlow(1.0f)
-    override val currentVolume: Flow<Float> = volume.asSharedFlow()
-    override suspend fun updateVolume(volume: Float) {
+    actual override val currentVolume: Flow<Float> = volume.asSharedFlow()
+    actual override suspend fun updateVolume(volume: Float) {
         this.volume.value = volume
     }
 
-    override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia = DefaultPlayableMedia(source)
+    actual override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia? = DefaultPlayableMedia(source)
 
-    override fun initialize(playableMedia: PlayableMedia) {
+    actual override fun initialize(playableMedia: PlayableMedia) {
         handlePrepared(playableMedia)
     }
 
-    override suspend fun renderVideoOnSurface(surface: MediaSurface?) {
+    actual override suspend fun renderVideoOnSurface(surface: MediaSurface?) {
         this.mediaSurface = surface
     }
 
-    override fun play(rate: Float) {
+    actual override fun play(rate: Float) {
         TODO("Not yet implemented")
     }
 
-    override fun pause() {
+    actual override fun pause() {
         TODO("Not yet implemented")
     }
 
-    override fun stop() {
+    actual override fun stop() {
         TODO("Not yet implemented")
     }
 
-    override fun startSeek(duration: Duration) {
+    actual override fun startSeek(duration: Duration) {
         TODO("Not yet implemented")
     }
 
-    override fun cleanUp() {
+    actual override fun cleanUp() {
         TODO("Not yet implemented")
     }
 
-    override fun handleReset() {
+    actual override fun handleReset() {
         TODO("Not yet implemented")
     }
 }

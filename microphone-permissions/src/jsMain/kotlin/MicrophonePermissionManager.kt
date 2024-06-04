@@ -34,15 +34,15 @@ actual class DefaultMicrophonePermissionManager(
     coroutineScope: CoroutineScope,
 ) : BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope) {
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         TODO("Not yet implemented")
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         TODO("Not yet implemented")
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         TODO("Not yet implemented")
     }
 }
@@ -53,7 +53,7 @@ actual class DefaultMicrophonePermissionManager(
  */
 actual class MicrophonePermissionManagerBuilder actual constructor(context: PermissionContext) : BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(settings: Settings, coroutineScope: CoroutineScope): PermissionManager<MicrophonePermission> {
+    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): PermissionManager<MicrophonePermission> {
         return DefaultMicrophonePermissionManager(settings, coroutineScope)
     }
 }

@@ -324,7 +324,9 @@ interface BaseBluetoothBuilder {
 /**
  * A default implementation of [BaseBluetoothBuilder]
  */
-expect class BluetoothBuilder : BaseBluetoothBuilder
+expect class BluetoothBuilder : BaseBluetoothBuilder {
+    override fun create(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): Bluetooth
+}
 
 /**
  * Gets a ([Flow] of) [Device] with a given [Identifier] from a [Flow] of a list of [Device].

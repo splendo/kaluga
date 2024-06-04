@@ -36,15 +36,15 @@ actual class DefaultStoragePermissionManager(
     coroutineScope: CoroutineScope,
 ) : BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         TODO("Not yet implemented")
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         TODO("Not yet implemented")
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         TODO("Not yet implemented")
     }
 }
@@ -55,7 +55,7 @@ actual class DefaultStoragePermissionManager(
  */
 actual class StoragePermissionManagerBuilder actual constructor(context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storagePermission: StoragePermission, settings: Settings, coroutineScope: CoroutineScope): PermissionManager<StoragePermission> {
+    actual override fun create(storagePermission: StoragePermission, settings: Settings, coroutineScope: CoroutineScope): PermissionManager<StoragePermission> {
         return DefaultStoragePermissionManager(storagePermission, settings, coroutineScope)
     }
 }

@@ -41,15 +41,15 @@ actual class DefaultNotificationsPermissionManager(
     coroutineScope: CoroutineScope,
 ) : BasePermissionManager<NotificationsPermission>(notificationsPermission, settings, coroutineScope) {
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         TODO("Not yet implemented")
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         TODO("Not yet implemented")
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         TODO("Not yet implemented")
     }
 }
@@ -60,7 +60,7 @@ actual class DefaultNotificationsPermissionManager(
  */
 actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(notificationsPermission: NotificationsPermission, settings: Settings, coroutineScope: CoroutineScope): PermissionManager<NotificationsPermission> {
+    actual override fun create(notificationsPermission: NotificationsPermission, settings: Settings, coroutineScope: CoroutineScope): PermissionManager<NotificationsPermission> {
         return DefaultNotificationsPermissionManager(notificationsPermission, settings, coroutineScope)
     }
 }

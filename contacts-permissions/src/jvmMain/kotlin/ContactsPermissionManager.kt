@@ -36,15 +36,15 @@ actual class DefaultContactsPermissionManager(
     coroutineScope: CoroutineScope,
 ) : BasePermissionManager<ContactsPermission>(contactsPermission, settings, coroutineScope) {
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         TODO("Not yet implemented")
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         TODO("Not yet implemented")
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         TODO("Not yet implemented")
     }
 }
@@ -55,7 +55,7 @@ actual class DefaultContactsPermissionManager(
  */
 actual class ContactsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseContactsPermissionManagerBuilder {
 
-    override fun create(contactsPermission: ContactsPermission, settings: Settings, coroutineScope: CoroutineScope): PermissionManager<ContactsPermission> {
+    actual override fun create(contactsPermission: ContactsPermission, settings: Settings, coroutineScope: CoroutineScope): PermissionManager<ContactsPermission> {
         return DefaultContactsPermissionManager(contactsPermission, settings, coroutineScope)
     }
 }

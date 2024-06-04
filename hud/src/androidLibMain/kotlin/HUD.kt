@@ -52,7 +52,7 @@ import kotlin.coroutines.suspendCoroutine
  */
 actual class HUD private constructor(
     @LayoutRes viewResId: Int,
-    override val hudConfig: HudConfig,
+    actual override val hudConfig: HudConfig,
     lifecycleManagerObserver: LifecycleManagerObserver,
     coroutineScope: CoroutineScope,
 ) : BaseHUD(coroutineScope) {
@@ -181,9 +181,9 @@ actual class HUD private constructor(
         }
     }
 
-    override val isVisible get() = loadingDialog.isVisible
+    actual override val isVisible get() = loadingDialog.isVisible
 
-    override suspend fun present(animated: Boolean): HUD {
+    actual override suspend fun present(animated: Boolean): HUD {
         return suspendCoroutine { continuation ->
             loadingDialog.presentCompletionBlock = {
                 continuation.resume(this)
@@ -192,7 +192,7 @@ actual class HUD private constructor(
         }
     }
 
-    override suspend fun dismiss(animated: Boolean) {
+    actual override suspend fun dismiss(animated: Boolean) {
         suspendCoroutine<Unit> { continuation ->
             loadingDialog.dismissCompletionBlock = {
                 continuation.resume(Unit)
