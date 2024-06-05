@@ -312,6 +312,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         @Suppress("UnstableApiUsage")
         testOptions {
             unitTests.isReturnDefaultValues = true
+            targetSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
         }
 
         packaging {
