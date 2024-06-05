@@ -4,7 +4,7 @@ on: push
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false -Dkotlin.daemon.jvm.options=-Xmx8G,-XX:MaxMetaspaceSize=512m,-Dorg.gradle.daemon=false,-Dkotlin.incremental=false"
   JAVA_OPTS: "-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
-  SIGNING_SECRET_KEY_RING_FILE: "/Users/runner/work/kaluga/kaluga/convention-plugins/keys/secret-keys.gpg"
+  SIGNING_SECRET_KEY_RING_FILE: "/Users/runner/work/kaluga/kaluga/kaluga-library-components/keys/secret-keys.gpg"
 
 concurrency: publish-${{ github.ref_name }}
 
