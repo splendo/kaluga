@@ -17,7 +17,6 @@
 
 plugins {
     id("com.splendo.kaluga.plugin.android.databinding")
-    kotlin("kapt")
 }
 
 kaluga {
