@@ -74,14 +74,14 @@ abstract class BaseKalugaAndroidSubprojectExtension(
 
             artifactId = project.name
             groupId = BASE_GROUP
-            version = this@BaseKalugaAndroidSubprojectExtension.version
+            version = project.kalugaVersion
         }
         create("debug", MavenPublication::class) {
             from(project.components.getByName("debug"))
 
             artifactId = project.name
             groupId = BASE_GROUP
-            version = this@BaseKalugaAndroidSubprojectExtension.version
+            version = project.kalugaVersion
         }
     }
 }

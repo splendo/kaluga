@@ -52,7 +52,7 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
         private const val SIGNING_SECRET_KEY_RING_FILE = "SIGNING_SECRET_KEY_RING_FILE"
     }
 
-    val version = versionCatalog.findVersion("kaluga").get().displayName
+    val Project.kalugaVersion get() = "${versionCatalog.findVersion(" kaluga ").get().displayName}${gitBranch.kalugaBranchPostfix}"
     internal data class TestLoggingContainerAction(val action: Action<in TestLoggingContainer>)
     private val testLogging: Property<TestLoggingContainerAction> = objects.property(TestLoggingContainerAction::class.java)
 
@@ -82,7 +82,7 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
     @JvmName("handleProjectEvaluated")
     fun afterProjectEvaluated(project: Project) {
         project.group = BASE_GROUP
-        project.version = "$version${project.gitBranch.kalugaBranchPostfix}"
+        project.version = project.kalugaVersion
 
         project.tasks.withType(Test::class.java) {
             testLogging {

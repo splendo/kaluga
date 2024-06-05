@@ -335,7 +335,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             (this as MavenPublication).let {
                 artifactId = project.name
                 groupId = BASE_GROUP
-                version = this@KalugaMultiplatformSubprojectExtension.version
+                version = project.kalugaVersion
             }
         }
     }
