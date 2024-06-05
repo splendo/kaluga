@@ -31,7 +31,6 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLoggingContainer
 import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.extra
 import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.registering
@@ -46,6 +45,11 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
 
     companion object {
         const val BASE_GROUP = "com.splendo.kaluga"
+        private const val OSSRH_USERNAME = "OSSRH_USERNAME"
+        private const val OSSRH_PASSWORD = "OSSRH_PASSWORD"
+        private const val SIGNING_KEY_ID = "SIGNING_KEY_ID"
+        private const val SIGNING_PASSWORD = "SIGNING_PASSWORD"
+        private const val SIGNING_SECRET_KEY_RING_FILE = "SIGNING_SECRET_KEY_RING_FILE"
     }
 
     val version = versionCatalog.findVersion("kaluga").get().displayName
@@ -94,7 +98,7 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
         project.extensions.configure(SigningExtension::class) {
             setRequired(
                 {
-                    project.gradle.taskGraph.hasTask("publish") && project.extra.get("signingSecretKeyRingFile") != null
+                    project.gradle.taskGraph.hasTask("publish") && project.signingSecretKeyRingFile != null
                 },
             )
         }
@@ -136,6 +140,10 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
             }
 
             project.extensions.configure(SigningExtension::class) {
+                val signingKeyId = project.getStringPropertyOrSystemEnvironment("signingKeyId", SIGNING_KEY_ID)
+                val signingPassword = project.getStringPropertyOrSystemEnvironment("signingPassword", SIGNING_PASSWORD)
+
+                useInMemoryPgpKeys(signingKeyId, signingPassword, project.signingSecretKeyRingFile)
                 sign(publications)
             }
         }
@@ -149,26 +157,16 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
     protected abstract fun Project.afterProjectEvaluated()
 
     private fun PublishingExtension.configureRepositories(project: Project) {
-        val signingKeyId: String? by project
-        val signingPassword: String? by project
-        val signingSecretKeyRingFile: String? by project
-        val ossrhUsername: String? by project
-        val ossrhPassword: String? by project
-
-        // Stub secrets to let the project sync and build without the publication values set up
-        project.extra["signing.keyId"] = signingKeyId ?: System.getenv("SIGNING_KEY_ID")
-        project.extra["signing.password"] = signingPassword ?: System.getenv("SIGNING_PASSWORD")
-        project.extra["signing.secretKeyRingFile"] = signingSecretKeyRingFile ?: System.getenv("SIGNING_SECRET_KEY_RING_FILE")
-        project.extra["ossrhUsername"] = ossrhUsername ?: System.getenv("OSSRH_USERNAME")
-        project.extra["ossrhPassword"] = ossrhPassword ?: System.getenv("OSSRH_PASSWORD")
+        val ossrhUsername = project.getStringPropertyOrSystemEnvironment("ossrhUsername", OSSRH_USERNAME)
+        val ossrhPassword = project.getStringPropertyOrSystemEnvironment("ossrhPassword", OSSRH_PASSWORD)
 
         repositories {
             maven {
                 name = "sonatype"
                 setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
                 credentials {
-                    username = project.extra["ossrhUsername"].toString()
-                    password = project.extra["ossrhPassword"].toString()
+                    username = ossrhUsername
+                    password = ossrhPassword
                 }
             }
 
@@ -176,10 +174,14 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
                 name = "snapshots"
                 setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots/")
                 credentials {
-                    username = project.extra["ossrhUsername"].toString()
-                    password = project.extra["ossrhPassword"].toString()
+                    username = ossrhUsername
+                    password = ossrhPassword
                 }
             }
         }
     }
+
+    private val Project.signingSecretKeyRingFile: String? get() = getStringPropertyOrSystemEnvironment("signingSecretKeyRingFile", SIGNING_SECRET_KEY_RING_FILE)
+    private fun Project.getStringPropertyOrSystemEnvironment(propertyName: String, environmentPropertyName: String): String? =
+        properties[propertyName] as? String ?: System.getenv(environmentPropertyName)
 }
