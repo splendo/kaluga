@@ -56,10 +56,6 @@ public abstract interface class com/splendo/kaluga/location/BaseLocationStateRep
 	public static synthetic fun create$default (Lcom/splendo/kaluga/location/BaseLocationStateRepoBuilder;Lcom/splendo/kaluga/permissions/location/LocationPermission;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/location/LocationStateRepo;
 }
 
-public final class com/splendo/kaluga/location/BaseLocationStateRepoBuilder$DefaultImpls {
-	public static synthetic fun create$default (Lcom/splendo/kaluga/location/BaseLocationStateRepoBuilder;Lcom/splendo/kaluga/permissions/location/LocationPermission;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/location/LocationStateRepo;
-}
-
 public final class com/splendo/kaluga/location/DMSCoordinate {
 	public static final field Companion Lcom/splendo/kaluga/location/DMSCoordinate$Companion;
 	public fun <init> (IIDLcom/splendo/kaluga/location/DMSCoordinate$WindDirection;)V
@@ -244,43 +240,19 @@ public abstract interface class com/splendo/kaluga/location/LocationState$Active
 	public abstract fun getDeinitialized ()Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/location/LocationState$Active$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Active;)Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/location/LocationState$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/location/LocationState;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/location/LocationState$Deinitialized : com/splendo/kaluga/location/LocationState$Inactive {
 	public abstract fun getReinitialize ()Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/location/LocationState$Deinitialized$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Deinitialized;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/location/LocationState$Disabled : com/splendo/kaluga/location/LocationState$Initialized {
-}
-
-public final class com/splendo/kaluga/location/LocationState$Disabled$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Disabled;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/location/LocationState$Disabled$NoGPS : com/splendo/kaluga/location/LocationState$Disabled, com/splendo/kaluga/location/LocationState$Permitted {
 	public abstract fun getEnable ()Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/location/LocationState$Disabled$NoGPS$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Disabled$NoGPS;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/location/LocationState$Disabled$NotPermitted : com/splendo/kaluga/location/LocationState$Disabled {
 	public abstract fun permit (Z)Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/location/LocationState$Disabled$NotPermitted$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Disabled$NotPermitted;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/location/LocationState$Enabled : com/splendo/kaluga/location/LocationState$Permitted {
@@ -288,45 +260,21 @@ public abstract interface class com/splendo/kaluga/location/LocationState$Enable
 	public abstract fun updateWithLocation (Lcom/splendo/kaluga/location/Location$KnownLocation;)Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/location/LocationState$Enabled$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Enabled;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/location/LocationState$Inactive : com/splendo/kaluga/base/flow/SpecialFlowValue$NotImportant, com/splendo/kaluga/location/LocationState {
 }
 
-public final class com/splendo/kaluga/location/LocationState$Inactive$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Inactive;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/location/LocationState$Initialized : com/splendo/kaluga/location/LocationState$Active {
-}
-
-public final class com/splendo/kaluga/location/LocationState$Initialized$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Initialized;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/location/LocationState$Initializing : com/splendo/kaluga/base/flow/SpecialFlowValue$NotImportant, com/splendo/kaluga/location/LocationState$Active {
 	public abstract fun initialize (ZZ)Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/location/LocationState$Initializing$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Initializing;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/location/LocationState$NotInitialized : com/splendo/kaluga/location/LocationState$Inactive {
-}
-
-public final class com/splendo/kaluga/location/LocationState$NotInitialized$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/location/LocationState$NotInitialized;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/location/LocationState$Permitted : com/splendo/kaluga/location/LocationState$Initialized {
 	public abstract fun getRevokePermission ()Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/location/LocationState$Permitted$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/location/LocationState$Permitted;)Lkotlin/jvm/functions/Function1;
 }
 
 public class com/splendo/kaluga/location/LocationStateImplRepo : com/splendo/kaluga/location/BaseLocationStateRepo {
