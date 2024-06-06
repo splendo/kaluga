@@ -9,30 +9,7 @@ pluginManagement {
         mavenCentral()
     }
 
-    resolutionStrategy {
-        eachPlugin {
-
-            val kalugaAndroidGradlePluginVersion = settings.extra["kaluga.androidGradlePluginVersion"]
-            val kalugaKotlinVersion = settings.extra["kaluga.kotlinVersion"]
-            val kalugaKotlinterGradlePluginVersion = settings.extra["kaluga.kotlinterGradlePluginVersion"]
-            val kalugaGoogleServicesGradlePluginVersion = settings.extra["kaluga.googleServicesGradlePluginVersion"]
-
-            when (requested.id.id) {
-                "org.jetbrains.kotlin.multiplatform",
-                "org.jetbrains.kotlin.plugin.serialization",
-                "org.jetbrains.kotlin.android",
-                "org.jetbrains.kotlin.kapt",
-                -> useVersion("$kalugaKotlinVersion")
-                "com.android.library",
-                "com.android.application",
-                -> useVersion("$kalugaAndroidGradlePluginVersion")
-                "org.jmailen.kotlinter",
-                -> useVersion("$kalugaKotlinterGradlePluginVersion")
-                "com.google.gms:google-services"
-                -> useVersion("com.google.gms:google-services:$kalugaGoogleServicesGradlePluginVersion")
-            }
-        }
-    }
+    includeBuild("../kaluga-library-components")
 }
 
 val props = Properties()
@@ -58,6 +35,11 @@ val isCompositeBuild = when (exampleEmbeddingMethod) {
 }
 
 dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            from(files("../libs.versions.toml"))
+        }
+    }
     repositories {
         if (!isCompositeBuild) {
             val exampleMavenRepo = if (System.getenv().containsKey("EXAMPLE_MAVEN_REPO")) {
@@ -89,11 +71,8 @@ dependencyResolutionManagement {
     }
 }
 
-includeBuild("../kaluga-library-components")
-includeBuild("../convention-plugins")
-
 rootProject.name = "Kaluga Example"
-include(":android")
+//include(":android")
 include(":shared")
 
 if (isCompositeBuild) {

@@ -39,7 +39,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jmailen.gradle.kotlinter.tasks.LintTask
 import javax.inject.Inject
 
@@ -71,7 +70,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         action.execute(appleInterop)
     }
 
-    fun framework(action: (Framework.() -> Unit)) {
+    fun appleFramework(action: (Framework.() -> Unit)) {
         frameworkConfig = action
     }
 
@@ -145,32 +144,12 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
             publishAllLibraryVariants()
         }
-        val target: KotlinNativeTarget.() -> Unit =
-            {
-                compilations.getByName("main").cinterops.let { mainInterops ->
-                    appleInterop.main.forEach { it.execute(mainInterops) }
-                }
-                compilations.getByName("test").cinterops.let { mainInterops ->
-                    appleInterop.test.forEach { it.execute(mainInterops) }
-                }
-                binaries {
-                    frameworkConfig?.let { iosExport ->
-                        framework {
-                            iosExport()
-                        }
-                    }
-                    getTest("DEBUG").apply {
-                        freeCompilerArgs = freeCompilerArgs + listOf("-e", "com.splendo.kaluga.test.base.mainBackground")
-                    }
-                }
-            }
 
-        val targets = project.iosTargets
-        targets.forEach { iosTarget ->
+        val iosTargets = project.iosTargets.map { iosTarget ->
             when (iosTarget) {
-                IOSTarget.Arm64 -> iosArm64(target)
-                IOSTarget.X64 -> iosX64(target)
-                IOSTarget.SimulatorArm64 -> iosSimulatorArm64(target)
+                IOSTarget.Arm64 -> iosArm64()
+                IOSTarget.X64 -> iosX64()
+                IOSTarget.SimulatorArm64 -> iosSimulatorArm64()
             }
         }
 
@@ -280,6 +259,23 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 dependencies {
                     implementation(kotlin("test-js"))
                     multiplatformDependencies.js.testDependencies.forEach { it.execute(this) }
+                }
+            }
+
+            project.configure(iosTargets) {
+                compilations.getByName("main").cinterops.let { mainInterops ->
+                    appleInterop.main.forEach { it.execute(mainInterops) }
+                }
+                compilations.getByName("test").cinterops.let { mainInterops ->
+                    appleInterop.test.forEach { it.execute(mainInterops) }
+                }
+                binaries {
+                    frameworkConfig?.let { iosExport ->
+                        framework { iosExport() }
+                    }
+                    getTest("DEBUG").apply {
+                        freeCompilerArgs = freeCompilerArgs + listOf("-e", "com.splendo.kaluga.test.base.mainBackground")
+                    }
                 }
             }
 
