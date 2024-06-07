@@ -207,15 +207,19 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
             }
 
-            sourceSets.getByName("appleMain").apply {
-                dependencies {
-                    multiplatformDependencies.apple.mainDependencies.forEach { it.execute(this) }
+            if (multiplatformDependencies.apple.mainDependencies.isNotEmpty()) {
+                sourceSets.getByName("appleMain").apply {
+                    dependencies {
+                        multiplatformDependencies.apple.mainDependencies.forEach { it.execute(this) }
+                    }
                 }
             }
 
-            sourceSets.getByName("appleTest").apply {
-                dependencies {
-                    multiplatformDependencies.apple.testDependencies.forEach { it.execute(this) }
+            if (multiplatformDependencies.apple.testDependencies.isNotEmpty()) {
+                sourceSets.getByName("appleTest").apply {
+                    dependencies {
+                        multiplatformDependencies.apple.testDependencies.forEach { it.execute(this) }
+                    }
                 }
             }
 

@@ -23,6 +23,7 @@ import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.closureOf
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.repositories
 import org.owasp.dependencycheck.gradle.extension.AnalyzerExtension
 import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
@@ -41,12 +42,17 @@ open class KalugaRootExtension @Inject constructor(
      */
     var includeMavenLocal = false
 
+    val additionalMavenRepos = mutableListOf<String>()
+
     override fun Project.beforeEvaluated() {}
     override fun Project.afterProjectEvaluated() {
         allprojects {
             repositories {
                 if (includeMavenLocal) {
                     mavenLocal()
+                }
+                additionalMavenRepos.forEach {
+                    maven(it)
                 }
                 google()
                 mavenCentral()
