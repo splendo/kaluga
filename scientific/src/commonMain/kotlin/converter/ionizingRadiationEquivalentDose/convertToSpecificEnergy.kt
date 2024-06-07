@@ -31,8 +31,7 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("specificEnergyFromRoentgewnEquivalentMan")
-fun ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>.asSpecificEnergy() =
-    (Erg per Gram).specificEnergy(this)
+fun ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>.asSpecificEnergy() = (Erg per Gram).specificEnergy(this)
 
 @JvmName("specificEnergyFromRoentgenEquivalentManMultiple")
 fun <RoentgenEquivalentManUnit : RoentgenEquivalentManMultiple> ScientificValue<PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentManUnit>.asSpecificEnergy() =

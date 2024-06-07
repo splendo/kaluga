@@ -31,32 +31,37 @@ sealed class PlaybackError : Exception() {
     /**
      * A [PlaybackError] that indicates a [MediaSource] is not supported
      */
-    object Unsupported : PlaybackError()
+    data object Unsupported : PlaybackError()
 
     /**
      * A [PlaybackError] that indicates file or network related operation errors.
      */
-    object IO : PlaybackError()
+    data object IO : PlaybackError()
 
     /**
      * A [PlaybackError] that indicates some operation takes too long to complete, usually more than 3-5 seconds.
      */
-    object TimedOut : PlaybackError()
+    data object TimedOut : PlaybackError()
 
     /**
      * A [PlaybackError] that indicates bitstream is not conforming to the related coding standard or file spec.
      */
-    object MalformedMediaSource : PlaybackError()
+    data object MalformedMediaSource : PlaybackError()
 
     /**
      * A [PlaybackError] that indicates that playback has ended and resources have been released.
      */
-    object PlaybackHasEnded : PlaybackError()
+    data object PlaybackHasEnded : PlaybackError()
+
+    /**
+     * A [PlaybackError] that indicates that playback has not been initialized.
+     */
+    data object Uninitalized : PlaybackError()
 
     /**
      * An unknown [PlaybackError].
      */
-    object Unknown : PlaybackError()
+    data object Unknown : PlaybackError()
 }
 
 /**
@@ -82,12 +87,12 @@ sealed interface PlaybackState : KalugaState {
         /**
          * A [LoopMode] that never loops
          */
-        object NotLooping : LoopMode()
+        data object NotLooping : LoopMode()
 
         /**
          * A [LoopMode] that loops infinitely
          */
-        object LoopingForever : LoopMode()
+        data object LoopingForever : LoopMode()
 
         /**
          * A [LoopMode] that loops for a fixed number of times
@@ -234,6 +239,8 @@ sealed interface PlaybackState : KalugaState {
          * Transitions into a [PlayingOrCompleted] state
          */
         val completedLoop: suspend () -> PlayingOrCompleted
+
+        override fun updatePlaybackParameters(new: PlaybackParameters): suspend () -> Playing
     }
 
     /**
@@ -245,6 +252,17 @@ sealed interface PlaybackState : KalugaState {
          * Transitions back into a [Playing] state
          */
         val play: suspend () -> Playing
+
+        /**
+         * Will transition into a [Playing] state with new [PlaybackParameters]
+         * @param new the [PlaybackParameters] to update to
+         * @return a method for transitioning into a new [Playing] state
+         */
+        fun playWithUpdatedPlaybackParameters(new: PlaybackParameters) = suspend {
+            updatePlaybackParameters(new)().play()
+        }
+
+        override fun updatePlaybackParameters(new: PlaybackParameters): suspend () -> Paused
     }
 
     /**
@@ -427,5 +445,5 @@ internal sealed class PlaybackStateImpl {
 
     data class Error(override val error: PlaybackError, override val mediaManager: MediaManager) : Active(), PlaybackState.Error
 
-    object Closed : PlaybackStateImpl(), PlaybackState.Closed
+    data object Closed : PlaybackStateImpl(), PlaybackState.Closed
 }

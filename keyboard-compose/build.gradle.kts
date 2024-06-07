@@ -1,13 +1,10 @@
 plugins {
-    id("com.android.library")
-    kotlin("android")
-    id("jacoco")
-    id("convention.publication")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin.android.compose")
 }
 
-composeAndroidComponent("keyboard.compose")
+kaluga {
+    moduleName = "keyboard"
+}
 
 dependencies {
     implementation(project(":base"))

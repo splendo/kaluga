@@ -56,11 +56,7 @@ interface DeviceConnectionManager {
          * @param coroutineScope the [CoroutineScope] on which the device should be managed
          * @return the created [DeviceConnectionManager]
          */
-        fun create(
-            deviceWrapper: DeviceWrapper,
-            settings: ConnectionSettings,
-            coroutineScope: CoroutineScope,
-        ): DeviceConnectionManager
+        fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): DeviceConnectionManager
     }
 
     /**
@@ -102,17 +98,17 @@ interface DeviceConnectionManager {
         /**
          * [Event] indicating the device cancelled connecting
          */
-        object CancelledConnecting : Event()
+        data object CancelledConnecting : Event()
 
         /**
          * [Event] indicating the device did connect
          */
-        object Connected : Event()
+        data object Connected : Event()
 
         /**
          * [Event] indicating the device started disconnecting
          */
-        object Disconnecting : Event()
+        data object Disconnecting : Event()
 
         /**
          * [Event] indicating the device did disconnect
@@ -123,7 +119,7 @@ interface DeviceConnectionManager {
         /**
          * [Event] indicating the device started discovering services
          */
-        object Discovering : Event()
+        data object Discovering : Event()
 
         /**
          * [Event] indicating the device has discovered a list of [Service]
@@ -440,4 +436,13 @@ abstract class BaseDeviceConnectionManager(
     }
 }
 
-internal expect class DefaultDeviceConnectionManager : BaseDeviceConnectionManager
+internal expect class DefaultDeviceConnectionManager : BaseDeviceConnectionManager {
+    override fun connect()
+    override fun disconnect()
+    override fun getCurrentState(): DeviceConnectionManager.State
+    override suspend fun discoverServices()
+    override suspend fun didStartPerformingAction(action: DeviceAction)
+    override suspend fun requestStartPairing()
+    override suspend fun requestMtu(mtu: MTU): Boolean
+    override suspend fun requestStartUnpairing()
+}

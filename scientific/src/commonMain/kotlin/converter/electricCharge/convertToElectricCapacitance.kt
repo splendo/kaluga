@@ -29,8 +29,7 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("abcoulombDivAbVolt")
-infix operator fun ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>.div(voltage: ScientificValue<PhysicalQuantity.Voltage, Abvolt>) =
-    Abfarad.capacitance(this, voltage)
+infix operator fun ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>.div(voltage: ScientificValue<PhysicalQuantity.Voltage, Abvolt>) = Abfarad.capacitance(this, voltage)
 
 @JvmName("chargeDivVoltage")
 infix operator fun <ChargeUnit : ElectricCharge, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.ElectricCharge, ChargeUnit>.div(

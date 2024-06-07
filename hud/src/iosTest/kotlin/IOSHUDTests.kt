@@ -33,8 +33,7 @@ class IOSHUDTests : HUDTests<IOSHUDTests.IOSHUDTestContext>() {
 
         val hostView = HUDViewController()
         override val builder = createBuilder(hostView)
-        private fun createBuilder(hostView: UIViewController): HUD.Builder =
-            HUD.Builder(hostView) { MockPresentingHUD(it) }
+        private fun createBuilder(hostView: UIViewController): HUD.Builder = HUD.Builder(hostView) { MockPresentingHUD(it) }
     }
 
     override val createTestContext: suspend (scope: CoroutineScope) -> IOSHUDTestContext = { IOSHUDTestContext(it) }

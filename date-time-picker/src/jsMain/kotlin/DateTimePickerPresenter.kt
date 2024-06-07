@@ -61,11 +61,11 @@ actual class DateTimePickerPresenter(
         TODO("not implemented")
     }
 
-    override fun dismissDateTimePicker(animated: Boolean) {
+    actual override fun dismissDateTimePicker(animated: Boolean) {
         TODO("not implemented")
     }
 
-    override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit) {
+    actual override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit) {
         TODO("not implemented")
     }
 }

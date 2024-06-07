@@ -28,6 +28,7 @@ import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
 import com.splendo.kaluga.bluetooth.scanner.DefaultScanner.ScanSettings
+import kotlinx.cinterop.ObjCSignatureOverride
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
@@ -66,11 +67,7 @@ actual class DefaultScanner internal constructor(
      */
     class Builder(private val scanSettings: ScanSettings = ScanSettings.defaultScanOptions) : BaseScanner.Builder {
 
-        override fun create(
-            settings: Settings,
-            coroutineScope: CoroutineScope,
-            scanningDispatcher: CoroutineDispatcher,
-        ): BaseScanner {
+        override fun create(settings: Settings, coroutineScope: CoroutineScope, scanningDispatcher: CoroutineDispatcher): BaseScanner {
             return DefaultScanner(settings, scanSettings, coroutineScope, scanningDispatcher)
         }
     }
@@ -112,16 +109,14 @@ actual class DefaultScanner internal constructor(
              * @param allow if `true` a new discovery event will be sent each time advertisement data is received. Otherwise multiple discoveries will be grouped into a single discovery event
              * @return the [Builder]
              */
-            fun allowDuplicateKeys(allow: Boolean) =
-                apply { allowDuplicateKeys = allow }
+            fun allowDuplicateKeys(allow: Boolean) = apply { allowDuplicateKeys = allow }
 
             /**
              * Sets the list of [UUID] corresponding with services the scanner will also scan for
              * @param keys when not empty the scanner will also scan for peripherals soliciting any services matching the [UUID]
              * @return the [Builder]
              */
-            fun solicitedServiceUUIDsKey(keys: List<UUID>) =
-                apply { solicitedServiceUUIDsKey = keys }
+            fun solicitedServiceUUIDsKey(keys: List<UUID>) = apply { solicitedServiceUUIDsKey = keys }
 
             /**
              * Creates [ScanSettings]
@@ -131,7 +126,6 @@ actual class DefaultScanner internal constructor(
         }
     }
 
-    @Suppress("CONFLICTING_OVERLOADS")
     private class PoweredOnCBCentralManagerDelegate(
         private val scanner: DefaultScanner,
         private val isEnabledCompleted: EmptyCompletableDeferred,
@@ -143,12 +137,7 @@ actual class DefaultScanner internal constructor(
             }
         }
 
-        override fun centralManager(
-            central: CBCentralManager,
-            didDiscoverPeripheral: CBPeripheral,
-            advertisementData: Map<Any?, *>,
-            RSSI: NSNumber,
-        ) {
+        override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
             scanner.discoverPeripheral(
                 central,
                 didDiscoverPeripheral,
@@ -161,29 +150,24 @@ actual class DefaultScanner internal constructor(
             scanner.handleDeviceConnected(didConnectPeripheral.identifier)
         }
 
-        override fun centralManager(
-            central: CBCentralManager,
-            didDisconnectPeripheral: CBPeripheral,
-            error: NSError?,
-        ) {
+        @ObjCSignatureOverride
+        override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
             scanner.handleDeviceDisconnected(didDisconnectPeripheral.identifier)
         }
 
-        override fun centralManager(
-            central: CBCentralManager,
-            didFailToConnectPeripheral: CBPeripheral,
-            error: NSError?,
-        ) {
+        @ObjCSignatureOverride
+        override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
             scanner.handleDeviceDisconnected(didFailToConnectPeripheral.identifier)
         }
     }
 
     private val enabledQueue = dispatch_queue_create("ScannerMonitorEnabled", null)
     private val scanQueue = dispatch_queue_create("ScannerScanning", null)
-    override val isSupported: Boolean = true
-    override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor.Builder {
+    actual override val isSupported: Boolean = true
+    private val _bluetoothEnabledMonitor = BluetoothMonitor.Builder {
         CBCentralManager(null, enabledQueue, emptyMap<Any?, Any>())
     }.create()
+    actual override val bluetoothEnabledMonitor: BluetoothMonitor? = _bluetoothEnabledMonitor
 
     private var centralManager: CBCentralManager? = null
     private var centralManagerDelegate: CBCentralManagerDelegateProtocol? = null
@@ -214,23 +198,23 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun didStartScanning(filter: Filter) {
+    actual override suspend fun didStartScanning(filter: Filter) {
         scan(filter)
     }
 
-    override suspend fun didStopScanning() {
+    actual override suspend fun didStopScanning() {
         getOrCreateCentralManager().stopScan()
     }
 
-    override fun generateEnableSensorsActions(): List<EnableSensorAction> {
+    actual override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         // Trigger Enable Bluetooth popup
         return listOfNotNull(
-            if (!bluetoothEnabledMonitor.isServiceEnabled) {
+            if (!_bluetoothEnabledMonitor.isServiceEnabled) {
                 suspend {
                     // We want it to ask for permissions when the state machine requests it but NOT if the scanning starts
                     val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to true)
                     CBCentralManager(null, scanQueue, options)
-                    bluetoothEnabledMonitor.isEnabled.first { it }
+                    _bluetoothEnabledMonitor.isEnabled.first { it }
                 }
             } else {
                 null
@@ -238,10 +222,7 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun retrievePairedDeviceDiscoveredEvents(
-        withServices: Filter,
-        connectionSettings: ConnectionSettings?,
-    ): List<Scanner.DeviceDiscovered> {
+    actual override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Filter, connectionSettings: ConnectionSettings?): List<Scanner.DeviceDiscovered> {
         val centralManager = getOrCreateCentralManager()
         return centralManager
             .retrieveConnectedPeripheralsWithServices(withServices.toList())

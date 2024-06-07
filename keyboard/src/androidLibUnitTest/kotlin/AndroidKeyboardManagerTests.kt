@@ -35,15 +35,15 @@ import org.mockito.Mockito.`when`
 class AndroidKeyboardManagerTests : KeyboardManagerTests<ViewFocusHandler, AndroidKeyboardTestContext>() {
 
     companion object {
-        private const val viewId = 1
+        private const val VIEW_ID = 1
     }
 
     inner class AndroidKeyboardTestContext(coroutineScope: CoroutineScope) : KeyboardTestContext<ViewFocusHandler>(), CoroutineScope by coroutineScope {
 
         val handler = mock(Handler::class.java)
 
-        override val focusHandler get() = ViewFocusHandler(viewId, handler)
-        override lateinit var builder: ViewKeyboardManager.Builder
+        override val focusHandler get() = ViewFocusHandler(VIEW_ID, handler)
+        override var builder: ViewKeyboardManager.Builder
 
         val mockActivity: Activity = mock(Activity::class.java)
         var mockView: View = mock(View::class.java)
@@ -80,7 +80,7 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<ViewFocusHandler, Andro
                 mockInputMethodManager,
             )
             `when`(mockActivity.currentFocus).thenReturn(mockView)
-            `when`(mockActivity.findViewById<View>(ArgumentMatchers.eq(viewId))).thenReturn(mockView)
+            `when`(mockActivity.findViewById<View>(ArgumentMatchers.eq(VIEW_ID))).thenReturn(mockView)
             `when`(mockActivity.window).thenReturn(mockWindow)
             `when`(mockWindow.decorView).thenReturn(mockDecorView)
             `when`(mockDecorView.windowToken).thenReturn(mockWindowToken)

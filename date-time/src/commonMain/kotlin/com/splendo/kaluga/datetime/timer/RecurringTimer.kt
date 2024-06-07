@@ -128,21 +128,16 @@ private class TimerStateRepo(
 
                 override val timerState: Timer.State get() = this
 
-                fun start(
-                    interval: Duration,
-                    timeSource: TimeSource,
-                    delayFunction: DelayFunction,
-                    coroutineScope: CoroutineScope,
-                    finishCallback: suspend () -> Unit,
-                ): Running = Running(
-                    elapsedSoFar = elapsedSoFar,
-                    totalDuration = totalDuration,
-                    interval = interval,
-                    timeSource = timeSource,
-                    delayFunction = delayFunction,
-                    coroutineScope = coroutineScope,
-                    finishCallback = finishCallback,
-                )
+                fun start(interval: Duration, timeSource: TimeSource, delayFunction: DelayFunction, coroutineScope: CoroutineScope, finishCallback: suspend () -> Unit): Running =
+                    Running(
+                        elapsedSoFar = elapsedSoFar,
+                        totalDuration = totalDuration,
+                        interval = interval,
+                        timeSource = timeSource,
+                        delayFunction = delayFunction,
+                        coroutineScope = coroutineScope,
+                        finishCallback = finishCallback,
+                    )
             }
 
             /** Timer is finished. */
@@ -196,13 +191,7 @@ private class TimerStateRepo(
 /**
  * @return flow of ticks as close to [interval] intervals as possible. starting from [offset] to the [max]
  */
-private fun tickProvider(
-    offset: Duration,
-    max: Duration,
-    interval: Duration,
-    timeSource: TimeSource,
-    delayFunction: suspend (Duration) -> Unit,
-): Flow<Duration> {
+private fun tickProvider(offset: Duration, max: Duration, interval: Duration, timeSource: TimeSource, delayFunction: suspend (Duration) -> Unit): Flow<Duration> {
     val mark = timeSource.markNow()
 
     fun newElapsed() = offset + mark.elapsedNow()

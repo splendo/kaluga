@@ -21,13 +21,10 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.ViewControllerNavigator
 import platform.UIKit.UIViewController
 
-fun BottomSheetViewControllerNavigator(
-    parent: UIViewController,
-    onClose: () -> NavigationSpec,
-    onSubPage: () -> NavigationSpec,
-) = ViewControllerNavigator<BottomSheetNavigation>(parent) { action ->
-    when (action) {
-        is BottomSheetNavigation.Close -> onClose()
-        is BottomSheetNavigation.SubPage -> onSubPage()
+fun BottomSheetViewControllerNavigator(parent: UIViewController, onClose: () -> NavigationSpec, onSubPage: () -> NavigationSpec) =
+    ViewControllerNavigator<BottomSheetNavigation>(parent) { action ->
+        when (action) {
+            is BottomSheetNavigation.Close -> onClose()
+            is BottomSheetNavigation.SubPage -> onSubPage()
+        }
     }
-}

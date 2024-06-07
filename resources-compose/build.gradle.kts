@@ -16,23 +16,16 @@
  */
 
 plugins {
-    id("com.android.library")
-    kotlin("android")
-    id("jacoco")
-    id("convention.publication")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin.android.compose")
 }
 
-composeAndroidComponent("resources.compose")
+kaluga {
+    moduleName = "resources"
+}
 
 dependencies {
     implementation(project(":base"))
     api(project(":resources"))
-    implementationDependency(Dependencies.AndroidX.Compose.Foundation)
-    implementationDependency(Dependencies.AndroidX.Compose.Material)
-    implementationDependency(Dependencies.AndroidX.Compose.UI)
-    implementationDependency(Dependencies.AndroidX.Compose.UITooling)
-    implementationDependency(Dependencies.KotlinX.Coroutines.Core)
-    implementationDependency(Dependencies.Accompanist.DrawablePainter)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.accompanist.drawablepainter)
 }

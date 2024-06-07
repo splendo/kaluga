@@ -48,7 +48,7 @@ val ElectricChargeUnits: Set<ElectricCharge> get() = setOf(
 sealed class ElectricCharge : AbstractScientificUnit<PhysicalQuantity.ElectricCharge>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricCharge>
 
 @Serializable
-object Coulomb : ElectricCharge(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge> {
+data object Coulomb : ElectricCharge(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge> {
     override val symbol = "C"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.ElectricCharge
@@ -60,39 +60,39 @@ object Coulomb : ElectricCharge(), MetricBaseUnit<MeasurementSystem.MetricAndImp
 sealed class CoulombMultiple : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb>
 
 @Serializable
-object Nanocoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Nano(Coulomb)
+data object Nanocoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Nano(Coulomb)
 
 @Serializable
-object Microcoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Micro(Coulomb)
+data object Microcoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Micro(Coulomb)
 
 @Serializable
-object Millicoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Milli(Coulomb)
+data object Millicoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Milli(Coulomb)
 
 @Serializable
-object Centicoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Centi(Coulomb)
+data object Centicoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Centi(Coulomb)
 
 @Serializable
-object Decicoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Deci(Coulomb)
+data object Decicoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Deci(Coulomb)
 
 @Serializable
-object Decacoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Deca(Coulomb)
+data object Decacoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Deca(Coulomb)
 
 @Serializable
-object Abcoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Deca(Coulomb) {
+data object Abcoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Deca(Coulomb) {
     override val symbol: String = "abC"
 }
 
 @Serializable
-object Hectocoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Hecto(Coulomb)
+data object Hectocoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Hecto(Coulomb)
 
 @Serializable
-object Kilocoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Kilo(Coulomb)
+data object Kilocoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Kilo(Coulomb)
 
 @Serializable
-object Megacoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Mega(Coulomb)
+data object Megacoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Mega(Coulomb)
 
 @Serializable
-object Gigacoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Giga(Coulomb)
+data object Gigacoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Giga(Coulomb)
 
 /**
  * The [ElectricCharge] carried by a single proton

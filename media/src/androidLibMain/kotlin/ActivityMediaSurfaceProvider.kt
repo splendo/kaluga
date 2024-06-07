@@ -90,6 +90,5 @@ private fun SurfaceHolder.flowMediaSurface(): Flow<MediaSurface?> {
  * @param Activity the type of [android.app.Activity] that provides the [SurfaceHolder]
  * @param activitySurfaceHolder method for getting a [SurfaceHolder] from an instance of [Activity]
  */
-inline fun <reified Activity : android.app.Activity> ActivityMediaSurfaceProvider(
-    noinline activitySurfaceHolder: Activity.() -> SurfaceHolder?,
-) = ActivityMediaSurfaceProvider(Activity::class, activitySurfaceHolder)
+inline fun <reified Activity : android.app.Activity> ActivityMediaSurfaceProvider(noinline activitySurfaceHolder: Activity.() -> SurfaceHolder?) =
+    ActivityMediaSurfaceProvider(Activity::class, activitySurfaceHolder)

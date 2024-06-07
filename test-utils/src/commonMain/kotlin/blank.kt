@@ -1,3 +1,4 @@
+@file:Suppress("ktlint:standard:no-empty-file")
 /*
  Copyright 2023 Splendo Consulting B.V. The Netherlands
 

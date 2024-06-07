@@ -36,9 +36,8 @@ import com.splendo.kaluga.scientific.unit.USCustomarySpecificVolume
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificVolumeTimesMetricAreaDensity")
-infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>.times(
-    areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>,
-) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, MetricSpecificVolume>.times(areaDensity: ScientificValue<PhysicalQuantity.AreaDensity, MetricAreaDensity>) =
+    (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
 
 @JvmName("imperialSpecificVolumeTimesImperialAreaDensity")
 infix operator fun ScientificValue<PhysicalQuantity.SpecificVolume, ImperialSpecificVolume>.times(

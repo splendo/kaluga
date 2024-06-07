@@ -36,14 +36,12 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("molalityTimesMetricDensity")
-infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, MetricDensity>,
-) = (unit.amountOfSubstance per density.unit.per).molarity(this, density)
+infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.times(density: ScientificValue<PhysicalQuantity.Density, MetricDensity>) =
+    (unit.amountOfSubstance per density.unit.per).molarity(this, density)
 
 @JvmName("molalityTimesImperialDensity")
-infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.times(
-    density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>,
-) = (unit.amountOfSubstance per density.unit.per).molarity(this, density)
+infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.times(density: ScientificValue<PhysicalQuantity.Density, ImperialDensity>) =
+    (unit.amountOfSubstance per density.unit.per).molarity(this, density)
 
 @JvmName("molalityTimesUKImperialDensity")
 infix operator fun <MolalityUnit : Molality> ScientificValue<PhysicalQuantity.Molality, MolalityUnit>.times(

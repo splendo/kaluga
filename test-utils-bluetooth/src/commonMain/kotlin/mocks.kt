@@ -23,14 +23,9 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 
 expect fun randomIdentifier(): Identifier
 
-expect fun createDeviceWrapper(
-    deviceName: String? = null,
-    identifier: Identifier = randomIdentifier(),
-): DeviceWrapper
+expect fun createDeviceWrapper(deviceName: String? = null, identifier: Identifier = randomIdentifier()): DeviceWrapper
 
-fun createServiceWrapper(
-    builder: ServiceWrapperBuilder.() -> Unit,
-): ServiceWrapper = ServiceWrapperBuilder().apply(builder).build()
+fun createServiceWrapper(builder: ServiceWrapperBuilder.() -> Unit): ServiceWrapper = ServiceWrapperBuilder().apply(builder).build()
 
 interface CanUpdateMockValue {
     fun updateMockValue(value: ByteArray?)

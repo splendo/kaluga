@@ -39,10 +39,7 @@ class XMLArchitectureActivity : KalugaViewModelActivity<ArchitectureViewModel>()
 
         override fun createIntent(context: Context, input: Intent): Intent = input
 
-        override fun parseResult(
-            resultCode: Int,
-            intent: Intent?,
-        ): InputDetails? {
+        override fun parseResult(resultCode: Int, intent: Intent?): InputDetails? {
             return intent.parseTypeOfOrNull(InputDetails.serializer())
         }
     }

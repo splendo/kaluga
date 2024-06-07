@@ -20,8 +20,6 @@ package com.splendo.kaluga.test.koin
 import com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel
 import com.splendo.kaluga.test.architecture.BaseUIThreadViewModelTest
 import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
-import com.splendo.kaluga.test.architecture.viewmodel.cleanUp
-import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
@@ -33,17 +31,17 @@ abstract class KoinUIThreadViewModelTest<Context : KoinUIThreadViewModelTest.Koi
         koinModules: List<Module>,
     ) : KoinTestContext(appDeclaration, koinModules),
         UIThreadViewModelTest.ViewModelTestContext<ViewModel> {
-            constructor(vararg koinModules: Module) : this(null, koinModules.toList())
-            constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
-                appDeclaration,
-                koinModules.toList(),
-            )
+        constructor(vararg koinModules: Module) : this(null, koinModules.toList())
+        constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
+            appDeclaration,
+            koinModules.toList(),
+        )
 
-            override fun dispose() {
-                viewModel.cleanUp()
-                stopKoin()
-            }
+        override fun dispose() {
+            super<UIThreadViewModelTest.ViewModelTestContext>.dispose()
+            super<KoinTestContext>.dispose()
         }
+    }
 }
 
 abstract class BaseKoinUIThreadViewModelTest<Configuration, Context : BaseKoinUIThreadViewModelTest.KoinViewModelTestContext<ViewModel>, ViewModel : LifecycleViewModel> :
@@ -54,14 +52,14 @@ abstract class BaseKoinUIThreadViewModelTest<Configuration, Context : BaseKoinUI
         koinModules: List<Module>,
     ) : KoinTestContext(appDeclaration, koinModules),
         BaseUIThreadViewModelTest.ViewModelTestContext<ViewModel> {
-            constructor(vararg koinModules: Module) : this(null, koinModules.toList())
-            constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
-                appDeclaration,
-                koinModules.toList(),
-            )
-            override fun dispose() {
-                viewModel.cleanUp()
-                stopKoin()
-            }
+        constructor(vararg koinModules: Module) : this(null, koinModules.toList())
+        constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
+            appDeclaration,
+            koinModules.toList(),
+        )
+        override fun dispose() {
+            super<BaseUIThreadViewModelTest.ViewModelTestContext>.dispose()
+            super<KoinTestContext>.dispose()
         }
+    }
 }

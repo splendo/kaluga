@@ -94,20 +94,16 @@ class DefaultFlowObservable<R : T?, T>(
  * @param coroutineScope The [CoroutineScope] on which to observe the [Flow]
  * @param context The [CoroutineContext] in which to observe the [Flow]
  */
-fun <T> Flow<T>.toUninitializedObservable(
-    coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext,
-) = FlowObservable(coroutineScope, context, this)
+fun <T> Flow<T>.toUninitializedObservable(coroutineScope: CoroutineScope, context: CoroutineContext = coroutineScope.coroutineContext) =
+    FlowObservable(coroutineScope, context, this)
 
 /**
  * Converts a [MutableStateFlow] into a [FlowInitializedObservable]
  * @param coroutineScope The [CoroutineScope] on which to observe the [Flow]
  * @param context The [CoroutineContext] in which to observe the [Flow]
  */
-fun <T> MutableStateFlow<T>.toInitializedObservable(
-    coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext,
-) = FlowInitializedObservable(this.value, coroutineScope, context, this)
+fun <T> MutableStateFlow<T>.toInitializedObservable(coroutineScope: CoroutineScope, context: CoroutineContext = coroutineScope.coroutineContext) =
+    FlowInitializedObservable(this.value, coroutineScope, context, this)
 
 /**
  * Converts a [Flow] into a [FlowInitializedObservable]
@@ -115,11 +111,8 @@ fun <T> MutableStateFlow<T>.toInitializedObservable(
  * @param coroutineScope The [CoroutineScope] on which to observe the [Flow]
  * @param context The [CoroutineContext] in which to observe the [Flow]
  */
-fun <T> Flow<T>.toInitializedObservable(
-    initialValue: T,
-    coroutineScope: CoroutineScope,
-    context: CoroutineContext = coroutineScope.coroutineContext,
-) = FlowInitializedObservable(initialValue, coroutineScope, context, this)
+fun <T> Flow<T>.toInitializedObservable(initialValue: T, coroutineScope: CoroutineScope, context: CoroutineContext = coroutineScope.coroutineContext) =
+    FlowInitializedObservable(initialValue, coroutineScope, context, this)
 
 /**
  * Converts a [Flow] into a [DefaultFlowObservable]

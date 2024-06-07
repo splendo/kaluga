@@ -1,25 +1,17 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-publishableComponent("beacons")
-
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
+kaluga {
+    moduleName = "beacons"
+    dependencies {
+        common {
+            main {
                 implementation(project(":base"))
                 api(project(":bluetooth"))
                 api(project(":logging", ""))
             }
-        }
-        commonTest {
-            dependencies {
+            test {
                 implementation(project(":test-utils-bluetooth"))
             }
         }

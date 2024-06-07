@@ -40,14 +40,14 @@ typealias AndroidTrackInfo = android.media.MediaPlayer.TrackInfo
  * @param source the [MediaSource] on which the media is found
  * @param mediaPlayer the [android.media.MediaPlayer] playing the media
  */
-actual class DefaultPlayableMedia(override val source: MediaSource, private val mediaPlayer: AndroidMediaPlayer) : PlayableMedia {
-    override val duration: Duration get() = mediaPlayer.duration.milliseconds
-    override val currentPlayTime: Duration get() = mediaPlayer.currentPosition.milliseconds
-    override val tracks get() = mediaPlayer.trackInfo.mapIndexed { index, trackInfo -> trackInfo.asTrackInfo(index) }
+actual class DefaultPlayableMedia(actual override val source: MediaSource, private val mediaPlayer: AndroidMediaPlayer) : PlayableMedia {
+    actual override val duration: Duration get() = mediaPlayer.duration.milliseconds
+    actual override val currentPlayTime: Duration get() = mediaPlayer.currentPosition.milliseconds
+    actual override val tracks get() = mediaPlayer.trackInfo.mapIndexed { index, trackInfo -> trackInfo.asTrackInfo(index) }
     private val mutex = Mutex()
     private var videoSizeListener: android.media.MediaPlayer.OnVideoSizeChangedListener? = null
     private val _resolution = MutableStateFlow(Resolution.ZERO)
-    override val resolution: Flow<Resolution> = _resolution.asSharedFlow().onSubscription {
+    actual override val resolution: Flow<Resolution> = _resolution.asSharedFlow().onSubscription {
         mutex.withLock {
             if (_resolution.subscriptionCount.value > 0 && videoSizeListener == null) {
                 videoSizeListener = MediaPlayer.OnVideoSizeChangedListener { _, width, height ->
@@ -97,8 +97,8 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
 
     private val mediaPlayer = AndroidMediaPlayer()
     private val volume = MutableStateFlow(1.0f)
-    override val currentVolume: Flow<Float> = volume.asSharedFlow()
-    override suspend fun updateVolume(volume: Float) {
+    actual override val currentVolume: Flow<Float> = volume.asSharedFlow()
+    actual override suspend fun updateVolume(volume: Float) {
         mediaPlayer.setVolume(volume, volume)
         this.volume.value = volume
     }
@@ -122,17 +122,13 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
         }
     }
 
-    override fun cleanUp() {
+    actual override fun cleanUp() {
         mediaPlayer.release()
     }
 
-    override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia? = try {
+    actual override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia? = try {
         when (source) {
-            is MediaSource.Asset -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                mediaPlayer.setDataSource(source.descriptor)
-            } else {
-                mediaPlayer.setDataSource(source.descriptor.fileDescriptor)
-            }
+            is MediaSource.Asset -> mediaPlayer.setDataSource(source.descriptor)
             is MediaSource.File -> mediaPlayer.setDataSource(source.descriptor)
             is MediaSource.Url -> mediaPlayer.setDataSource(source.url.toExternalForm())
             is MediaSource.Content -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -152,7 +148,7 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
         }
     }
 
-    override fun initialize(playableMedia: PlayableMedia) {
+    actual override fun initialize(playableMedia: PlayableMedia) {
         mediaPlayer.setOnPreparedListener {
             mediaPlayer.setOnPreparedListener(null)
             handlePrepared(DefaultPlayableMedia(playableMedia.source, it))
@@ -160,7 +156,7 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
         mediaPlayer.prepareAsync()
     }
 
-    override suspend fun renderVideoOnSurface(surface: MediaSurface?) {
+    actual override suspend fun renderVideoOnSurface(surface: MediaSurface?) {
         try {
             mediaPlayer.setDisplay(surface?.holder)
         } catch (e: IllegalStateException) {
@@ -168,7 +164,7 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
         }
     }
 
-    override fun play(rate: Float) {
+    actual override fun play(rate: Float) {
         try {
             mediaPlayer.playbackParams = PlaybackParams().apply {
                 speed = rate
@@ -181,25 +177,25 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
         }
     }
 
-    override fun pause() = try {
+    actual override fun pause() = try {
         mediaPlayer.pause()
     } catch (e: IllegalStateException) {
         handleError(PlaybackError.Unknown)
     }
 
-    override fun stop() = try {
+    actual override fun stop() = try {
         mediaPlayer.stop()
     } catch (e: IllegalStateException) {
         handleError(PlaybackError.Unknown)
     }
 
-    override fun startSeek(duration: Duration) = try {
+    actual override fun startSeek(duration: Duration) = try {
         mediaPlayer.seekTo(duration.inWholeMilliseconds.toInt())
     } catch (e: IllegalStateException) {
         handleSeekCompleted(false)
     }
 
-    override fun handleReset() {
+    actual override fun handleReset() {
         mediaPlayer.reset()
     }
 }

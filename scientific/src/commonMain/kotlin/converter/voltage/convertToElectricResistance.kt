@@ -30,12 +30,10 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("abvoltDivAbampere")
-infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) =
-    Abohm.resistance(this, current)
+infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) = Abohm.resistance(this, current)
 
 @JvmName("abvoltDivBiot")
-infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) =
-    Abohm.resistance(this, current)
+infix operator fun ScientificValue<PhysicalQuantity.Voltage, Abvolt>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) = Abohm.resistance(this, current)
 
 @JvmName("voltageDivCurrent")
 infix operator fun <CurrentUnit : ElectricCurrent, VoltageUnit : Voltage> ScientificValue<PhysicalQuantity.Voltage, VoltageUnit>.div(

@@ -69,7 +69,7 @@ actual class DefaultBluetoothPermissionManager(
 
     private val supported: Boolean = bluetoothAdapter != null
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         if (supported) {
             permissionsManager.requestPermissions()
         } else {
@@ -77,7 +77,7 @@ actual class DefaultBluetoothPermissionManager(
         }
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         if (supported) {
             permissionsManager.startMonitoring(interval)
         } else {
@@ -85,7 +85,7 @@ actual class DefaultBluetoothPermissionManager(
         }
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         if (supported) {
             permissionsManager.stopMonitoring()
         }
@@ -108,7 +108,7 @@ actual class BluetoothPermissionManagerBuilder(
      */
     actual constructor(context: PermissionContext) : this(context, (context.context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter)
 
-    override fun create(settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager {
+    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager {
         return DefaultBluetoothPermissionManager(context.context, bluetoothAdapter, settings, coroutineScope)
     }
 }

@@ -33,10 +33,10 @@ import kotlin.test.assertEquals
 class SpecialFlowValueTest : BaseTest() {
 
     sealed class Special {
-        object Last : SpecialFlowValue.Last, Special()
-        object Normal : Special()
-        object NotImportant : SpecialFlowValue.NotImportant, Special()
-        object More : Special()
+        data object Last : SpecialFlowValue.Last, Special()
+        data object Normal : Special()
+        data object NotImportant : SpecialFlowValue.NotImportant, Special()
+        data object More : Special()
     }
 
     private fun flow() = flowOf(Normal, NotImportant, Last, More)

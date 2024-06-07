@@ -32,12 +32,12 @@ actual class DefaultNetworkManager : NetworkManager {
         override fun create(): NetworkManager = DefaultNetworkManager()
     }
 
-    override val network: Flow<NetworkConnectionType> = flowOf(NetworkConnectionType.Known.Absent)
-    override suspend fun startMonitoring() {
+    actual override val network: Flow<NetworkConnectionType> = flowOf(NetworkConnectionType.Known.Absent)
+    actual override suspend fun startMonitoring() {
         TODO("Not yet implemented")
     }
 
-    override suspend fun stopMonitoring() {
+    actual override suspend fun stopMonitoring() {
         TODO("Not yet implemented")
     }
 }

@@ -22,11 +22,11 @@ package com.splendo.kaluga.links.handler
  * Not implemented
  */
 actual class PlatformLinksHandler : LinksHandler {
-    override fun isValid(url: String): Boolean {
+    actual override fun isValid(url: String): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun extractQueryAsList(url: String): List<Any> {
+    actual override fun extractQueryAsList(url: String): List<Any> {
         TODO("Not yet implemented")
     }
 }

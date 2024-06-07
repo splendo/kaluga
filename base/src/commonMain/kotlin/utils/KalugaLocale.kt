@@ -158,6 +158,22 @@ expect class KalugaLocale : BaseLocale {
          */
         val availableLocales: List<KalugaLocale>
     }
+
+    override val countryCode: String
+    override val languageCode: String
+    override val scriptCode: String
+    override val variantCode: String
+    override val unitSystem: UnitSystem
+    override val quotationStart: String
+    override val quotationEnd: String
+    override val alternateQuotationStart: String
+    override val alternateQuotationEnd: String
+
+    override fun name(forLocale: KalugaLocale): String
+    override fun countryName(forLocale: KalugaLocale): String
+    override fun languageName(forLocale: KalugaLocale): String
+    override fun variantName(forLocale: KalugaLocale): String
+    override fun scriptName(forLocale: KalugaLocale): String
 }
 
 /**

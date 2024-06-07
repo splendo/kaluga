@@ -32,15 +32,12 @@ data class QuantityDetails<Quantity : PhysicalQuantity>(
     val converters: List<QuantityConverter<Quantity, *>>,
 ) {
     @Suppress("UNCHECKED_CAST")
-    fun convert(
-        value: Decimal,
-        unit: AbstractScientificUnit<*>,
-        to: AbstractScientificUnit<*>,
-    ): ScientificValue<Quantity, *>? = if (unit.quantity == quantity && to.quantity == quantity) {
-        DefaultScientificValue(value, unit as AbstractScientificUnit<Quantity>).convert(to as AbstractScientificUnit<Quantity>)
-    } else {
-        null
-    }
+    fun convert(value: Decimal, unit: AbstractScientificUnit<*>, to: AbstractScientificUnit<*>): ScientificValue<Quantity, *>? =
+        if (unit.quantity == quantity && to.quantity == quantity) {
+            DefaultScientificValue(value, unit as AbstractScientificUnit<Quantity>).convert(to as AbstractScientificUnit<Quantity>)
+        } else {
+            null
+        }
 }
 
 val allPhysicalQuantities: Set<PhysicalQuantity> = setOf(

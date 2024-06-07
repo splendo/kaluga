@@ -34,10 +34,7 @@ sealed class QuantityConverter<From : PhysicalQuantity, Result : PhysicalQuantit
     ) : QuantityConverter<From, Result>() {
 
         @Suppress("UNCHECKED_CAST")
-        fun convert(
-            value: Decimal,
-            unit: ScientificUnit<*>,
-        ): ScientificValue<*, *>? {
+        fun convert(value: Decimal, unit: ScientificUnit<*>): ScientificValue<*, *>? {
             return if (fromQuantity.isInstance(unit.quantity)) {
                 converter(value, unit as ScientificUnit<From>)
             } else {
@@ -58,11 +55,11 @@ sealed class QuantityConverter<From : PhysicalQuantity, Result : PhysicalQuantit
 
             abstract val operatorSymbol: String
 
-            object Multiplication : Type() {
+            data object Multiplication : Type() {
                 override val operatorSymbol: String = "*"
             }
 
-            object Division : Type() {
+            data object Division : Type() {
                 override val operatorSymbol: String = "/"
             }
 
@@ -70,12 +67,7 @@ sealed class QuantityConverter<From : PhysicalQuantity, Result : PhysicalQuantit
         }
 
         @Suppress("UNCHECKED_CAST")
-        fun convert(
-            left: Decimal,
-            leftUnit: ScientificUnit<*>,
-            right: Decimal,
-            rightUnit: ScientificUnit<*>,
-        ): ScientificValue<*, *>? {
+        fun convert(left: Decimal, leftUnit: ScientificUnit<*>, right: Decimal, rightUnit: ScientificUnit<*>): ScientificValue<*, *>? {
             return if (leftQuantity.isInstance(leftUnit.quantity) && rightQuantity::class.isInstance(
                     rightUnit.quantity,
                 )

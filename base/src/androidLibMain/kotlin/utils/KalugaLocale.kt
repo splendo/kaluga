@@ -78,15 +78,15 @@ actual data class KalugaLocale internal constructor(internal val locale: java.ut
         actual val availableLocales: List<KalugaLocale> = java.util.Locale.getAvailableLocales().asList().map { KalugaLocale(it) }
     }
 
-    override val countryCode: String
+    actual override val countryCode: String
         get() = locale.country
-    override val languageCode: String
+    actual override val languageCode: String
         get() = locale.language
-    override val scriptCode: String
+    actual override val scriptCode: String
         get() = locale.script
-    override val variantCode: String
+    actual override val variantCode: String
         get() = locale.variant
-    override val unitSystem: UnitSystem
+    actual override val unitSystem: UnitSystem
         get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             when (LocaleData.getMeasurementSystem(ULocale.forLocale(locale))) {
                 LocaleData.MeasurementSystem.US -> UnitSystem.IMPERIAL
@@ -97,31 +97,31 @@ actual data class KalugaLocale internal constructor(internal val locale: java.ut
             UnitSystem.withCountryCode(countryCode.upperCased(this))
         }
 
-    override fun name(forLocale: KalugaLocale): String = locale.getDisplayName(forLocale.locale)
-    override fun countryName(forLocale: KalugaLocale): String = locale.getDisplayCountry(forLocale.locale)
-    override fun languageName(forLocale: KalugaLocale): String = locale.getDisplayLanguage(forLocale.locale)
-    override fun variantName(forLocale: KalugaLocale): String = locale.getDisplayVariant(forLocale.locale)
-    override fun scriptName(forLocale: KalugaLocale): String = locale.getDisplayScript(forLocale.locale)
+    actual override fun name(forLocale: KalugaLocale): String = locale.getDisplayName(forLocale.locale)
+    actual override fun countryName(forLocale: KalugaLocale): String = locale.getDisplayCountry(forLocale.locale)
+    actual override fun languageName(forLocale: KalugaLocale): String = locale.getDisplayLanguage(forLocale.locale)
+    actual override fun variantName(forLocale: KalugaLocale): String = locale.getDisplayVariant(forLocale.locale)
+    actual override fun scriptName(forLocale: KalugaLocale): String = locale.getDisplayScript(forLocale.locale)
 
-    override val quotationStart: String
+    actual override val quotationStart: String
         get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             LocaleData.getInstance(ULocale.forLocale(locale)).getDelimiter(LocaleData.QUOTATION_START)
         } else {
             "\""
         }
-    override val quotationEnd: String
+    actual override val quotationEnd: String
         get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             LocaleData.getInstance(ULocale.forLocale(locale)).getDelimiter(LocaleData.QUOTATION_END)
         } else {
             "\""
         }
-    override val alternateQuotationStart: String
+    actual override val alternateQuotationStart: String
         get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             LocaleData.getInstance(ULocale.forLocale(locale)).getDelimiter(LocaleData.ALT_QUOTATION_START)
         } else {
             "\""
         }
-    override val alternateQuotationEnd: String
+    actual override val alternateQuotationEnd: String
         get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             LocaleData.getInstance(ULocale.forLocale(locale)).getDelimiter(LocaleData.ALT_QUOTATION_END)
         } else {

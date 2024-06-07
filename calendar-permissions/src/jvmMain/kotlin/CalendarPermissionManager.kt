@@ -36,15 +36,15 @@ actual class DefaultCalendarPermissionManager(
     coroutineScope: CoroutineScope,
 ) : BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         TODO("Not yet implemented")
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         TODO("Not yet implemented")
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         TODO("Not yet implemented")
     }
 }
@@ -55,7 +55,7 @@ actual class DefaultCalendarPermissionManager(
  */
 actual class CalendarPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseCalendarPermissionManagerBuilder {
 
-    override fun create(calendarPermission: CalendarPermission, settings: Settings, coroutineScope: CoroutineScope): PermissionManager<CalendarPermission> {
+    actual override fun create(calendarPermission: CalendarPermission, settings: Settings, coroutineScope: CoroutineScope): PermissionManager<CalendarPermission> {
         return DefaultCalendarPermissionManager(calendarPermission, settings, coroutineScope)
     }
 }

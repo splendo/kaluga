@@ -1,25 +1,15 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-publishableComponent("%PACKAGE%")
-
-dependencies { }
-
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
+kaluga {
+    moduleName = "%PACKAGE%"
+    dependencies {
+        common {
+            main {
                 implementation(project(":base"))
             }
-        }
-        commonTest {
-            dependencies {
+            test {
                 implementation(project(":test-utils-base"))
             }
         }

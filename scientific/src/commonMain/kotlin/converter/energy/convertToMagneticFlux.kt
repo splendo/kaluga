@@ -31,16 +31,14 @@ import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivAbampere")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) =
-    Maxwell.flux(this, current)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) = Maxwell.flux(this, current)
 
 @JvmName("ergMultipleDivAbampere")
 infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Abampere>) =
     Maxwell.flux(this, current)
 
 @JvmName("ergDivBiot")
-infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) =
-    Maxwell.flux(this, current)
+infix operator fun ScientificValue<PhysicalQuantity.Energy, Erg>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) = Maxwell.flux(this, current)
 
 @JvmName("ergMultipleDivBiot")
 infix operator fun <ErgUnit : ErgMultiple> ScientificValue<PhysicalQuantity.Energy, ErgUnit>.div(current: ScientificValue<PhysicalQuantity.ElectricCurrent, Biot>) =

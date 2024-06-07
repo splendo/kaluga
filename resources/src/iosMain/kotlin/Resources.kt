@@ -34,12 +34,8 @@ import platform.UIKit.labelFontSize
  */
 actual class DefaultStringLoader(private val bundle: NSBundle, private val table: String?) : StringLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
-    override fun loadString(identifier: String, defaultValue: String): String = bundle.localizedStringForKey(identifier, defaultValue, table)
-    override fun loadQuantityString(
-        identifier: String,
-        quantity: Int,
-        defaultValue: String,
-    ): String {
+    actual override fun loadString(identifier: String, defaultValue: String): String = bundle.localizedStringForKey(identifier, defaultValue, table)
+    actual override fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String {
         val format = bundle.localizedStringForKey(identifier, defaultValue, table)
         return NSString.localizedStringWithFormat(format, quantity)
     }
@@ -52,7 +48,7 @@ actual class DefaultStringLoader(private val bundle: NSBundle, private val table
  */
 actual class DefaultColorLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) : KalugaColorLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
-    override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? = UIColor
+    actual override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? = UIColor
         .colorNamed(identifier, bundle, traitCollection)
         ?.let { KalugaColor(it) } ?: defaultValue
 }
@@ -66,12 +62,12 @@ actual class DefaultColorLoader(private val bundle: NSBundle, private val traitC
  */
 actual class DefaultImageLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) : ImageLoader {
     actual constructor() : this(NSBundle.mainBundle, null)
-    override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? = UIImage.imageNamed(identifier, bundle, traitCollection) ?: defaultValue
+    actual override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? = UIImage.imageNamed(identifier, bundle, traitCollection) ?: defaultValue
 }
 
 /**
  * Default implementation of a [FontLoader].
  */
 actual class DefaultFontLoader actual constructor() : FontLoader {
-    override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? = UIFont.fontWithName(identifier, UIFont.labelFontSize) ?: defaultValue
+    actual override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? = UIFont.fontWithName(identifier, UIFont.labelFontSize) ?: defaultValue
 }

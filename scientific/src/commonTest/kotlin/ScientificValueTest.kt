@@ -23,10 +23,16 @@ import com.splendo.kaluga.scientific.converter.decimal.div
 import com.splendo.kaluga.scientific.converter.frequency.times
 import com.splendo.kaluga.scientific.converter.length.times
 import com.splendo.kaluga.scientific.converter.time.frequency
+import com.splendo.kaluga.scientific.unit.Centimeter
+import com.splendo.kaluga.scientific.unit.Decameter
 import com.splendo.kaluga.scientific.unit.Decimeter
+import com.splendo.kaluga.scientific.unit.Foot
 import com.splendo.kaluga.scientific.unit.Hectogram
+import com.splendo.kaluga.scientific.unit.Hectometer
 import com.splendo.kaluga.scientific.unit.Hertz
+import com.splendo.kaluga.scientific.unit.Inch
 import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Kilometer
 import com.splendo.kaluga.scientific.unit.Meter
 import com.splendo.kaluga.scientific.unit.Second
 import com.splendo.kaluga.scientific.unit.SquareMeter
@@ -72,5 +78,86 @@ class ScientificValueTest {
         val json = Json.encodeToString(ValueContainer.serializer(), container)
         val decoded = Json.decodeFromString(ValueContainer.serializer(), json)
         assertEquals(container, decoded)
+    }
+
+    @Test
+    fun testSplit() {
+        val (foot, inch) = 15(Inch).split(Foot, Inch)
+        assertEquals(1(Foot), foot)
+        assertEquals(3(Inch), inch)
+
+        val (fullInch, zeroFoot) = 15(Inch).split(Inch, Foot)
+        assertEquals(15(Inch), fullInch)
+        assertEquals(0(Foot), zeroFoot)
+
+        val (roundedFoot, roundedInch) = 11.999999999999(Inch).split(Foot, Inch)
+        assertEquals(1(Foot), roundedFoot)
+        assertEquals(0(Inch), roundedInch)
+
+        val (meter, centimeter) = 2.34(Meter).split(Centimeter, 1U)
+        assertEquals(2.3(Meter), meter)
+        assertEquals(4(Centimeter), centimeter)
+
+        val (roundedMeter, meterFraction) = 2.34(Meter).split(Meter)
+        assertEquals(2(Meter), roundedMeter)
+        assertEquals(0.34(Meter), meterFraction)
+    }
+
+    @Test
+    fun testToComponents() {
+        val length = 12345.678(Meter)
+
+        length.toComponents(Meter, Centimeter) { meter, centimeter ->
+            assertEquals(12345(Meter), meter)
+            assertEquals(67.8(Centimeter), centimeter)
+        }
+
+        length.toComponents(Kilometer, Meter, Centimeter) { kilometer, meter, centimeter ->
+            assertEquals(12(Kilometer), kilometer)
+            assertEquals(345(Meter), meter)
+            assertEquals(67.8(Centimeter), centimeter)
+        }
+
+        length.toComponents(Kilometer, Decameter, Meter, Centimeter) { kilometer, decameter, meter, centimeter ->
+            assertEquals(12(Kilometer), kilometer)
+            assertEquals(34(Decameter), decameter)
+            assertEquals(5(Meter), meter)
+            assertEquals(67.8(Centimeter), centimeter)
+        }
+
+        length.toComponents(Kilometer, Hectometer, Decameter, Meter, Centimeter) { kilometer, hectometer, decameter, meter, centimeter ->
+            assertEquals(12(Kilometer), kilometer)
+            assertEquals(3(Hectometer), hectometer)
+            assertEquals(4(Decameter), decameter)
+            assertEquals(5(Meter), meter)
+            assertEquals(67.8(Centimeter), centimeter)
+        }
+
+        length.toComponents(Kilometer, Centimeter, 3U) { kilometer, centimeter ->
+            assertEquals(12.345(Kilometer), kilometer)
+            assertEquals(67.8(Centimeter), centimeter)
+        }
+
+        length.toComponents(Meter, Kilometer) { meter, kilometer ->
+            assertEquals(12345.0(Meter), meter)
+            assertEquals(0.000678(Kilometer), kilometer)
+        }
+
+        length.toComponents(Kilometer, Kilometer) { kilometer, fractionKilometer ->
+            assertEquals(12(Kilometer), kilometer)
+            assertEquals(0.345678(Kilometer), fractionKilometer)
+        }
+
+        length.toComponents(Kilometer, Kilometer, Kilometer) { kilometer, zeroKilometer, fractionKilometer ->
+            assertEquals(12(Kilometer), kilometer)
+            assertEquals(0(Kilometer), zeroKilometer)
+            assertEquals(0.345678(Kilometer), fractionKilometer)
+        }
+
+        length.toComponents(Kilometer, Meter, Kilometer) { kilometer, meter, fractionKilometer ->
+            assertEquals(12(Kilometer), kilometer)
+            assertEquals(345(Meter), meter)
+            assertEquals(0.000678(Kilometer), fractionKilometer)
+        }
     }
 }

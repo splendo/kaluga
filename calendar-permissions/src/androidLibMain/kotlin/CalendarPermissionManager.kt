@@ -51,15 +51,15 @@ actual class DefaultCalendarPermissionManager(
         permissionHandler,
     )
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         permissionsManager.requestPermissions()
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         permissionsManager.startMonitoring(interval)
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         permissionsManager.stopMonitoring()
     }
 }
@@ -70,7 +70,7 @@ actual class DefaultCalendarPermissionManager(
  */
 actual class CalendarPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCalendarPermissionManagerBuilder {
 
-    override fun create(calendarPermission: CalendarPermission, settings: Settings, coroutineScope: CoroutineScope): CalendarPermissionManager {
+    actual override fun create(calendarPermission: CalendarPermission, settings: Settings, coroutineScope: CoroutineScope): CalendarPermissionManager {
         return DefaultCalendarPermissionManager(context.context, calendarPermission, settings, coroutineScope)
     }
 }

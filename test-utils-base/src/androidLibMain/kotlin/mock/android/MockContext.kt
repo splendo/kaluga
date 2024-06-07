@@ -112,24 +112,17 @@ class MockContext : Context() {
 
     override fun getExternalCacheDirs(): Array<File> = error("not implemented")
 
+    @Deprecated("Deprecated on Android", replaceWith = ReplaceWith(""))
     override fun getExternalMediaDirs(): Array<File> = error("not implemented")
 
     override fun fileList(): Array<String> = error("not implemented")
 
     override fun getDir(name: String?, mode: Int): File = error("not implemented")
 
-    override fun openOrCreateDatabase(
-        name: String?,
-        mode: Int,
-        factory: SQLiteDatabase.CursorFactory?,
-    ): SQLiteDatabase = error("not implemented")
+    override fun openOrCreateDatabase(name: String?, mode: Int, factory: SQLiteDatabase.CursorFactory?): SQLiteDatabase = error("not implemented")
 
-    override fun openOrCreateDatabase(
-        name: String?,
-        mode: Int,
-        factory: SQLiteDatabase.CursorFactory?,
-        errorHandler: DatabaseErrorHandler?,
-    ): SQLiteDatabase = error("not implemented")
+    override fun openOrCreateDatabase(name: String?, mode: Int, factory: SQLiteDatabase.CursorFactory?, errorHandler: DatabaseErrorHandler?): SQLiteDatabase =
+        error("not implemented")
 
     override fun moveDatabaseFrom(sourceContext: Context?, name: String?): Boolean = error("not implemented")
 
@@ -139,18 +132,25 @@ class MockContext : Context() {
 
     override fun databaseList(): Array<String> = error("not implemented")
 
+    @Deprecated("Deprecated on Android", replaceWith = ReplaceWith(""))
     override fun getWallpaper(): Drawable = error("not implemented")
 
+    @Deprecated("Deprecated on Android", replaceWith = ReplaceWith(""))
     override fun peekWallpaper(): Drawable = error("not implemented")
 
+    @Deprecated("Deprecated on Android", replaceWith = ReplaceWith(""))
     override fun getWallpaperDesiredMinimumWidth(): Int = error("not implemented")
 
+    @Deprecated("Deprecated on Android", replaceWith = ReplaceWith(""))
     override fun getWallpaperDesiredMinimumHeight(): Int = error("not implemented")
 
+    @Deprecated("Deprecated on Android", replaceWith = ReplaceWith(""))
     override fun setWallpaper(bitmap: Bitmap?) = error("not implemented")
 
+    @Deprecated("Deprecated on Android", replaceWith = ReplaceWith(""))
     override fun setWallpaper(data: InputStream?) = error("not implemented")
 
+    @Deprecated("Deprecated on Android", replaceWith = ReplaceWith(""))
     override fun clearWallpaper() = error("not implemented")
 
     override fun startActivity(intent: Intent?) = error("not implemented")
@@ -161,22 +161,9 @@ class MockContext : Context() {
 
     override fun startActivities(intents: Array<out Intent>?, options: Bundle?) = error("not implemented")
 
-    override fun startIntentSender(
-        intent: IntentSender?,
-        fillInIntent: Intent?,
-        flagsMask: Int,
-        flagsValues: Int,
-        extraFlags: Int,
-    ) = error("not implemented")
+    override fun startIntentSender(intent: IntentSender?, fillInIntent: Intent?, flagsMask: Int, flagsValues: Int, extraFlags: Int) = error("not implemented")
 
-    override fun startIntentSender(
-        intent: IntentSender?,
-        fillInIntent: Intent?,
-        flagsMask: Int,
-        flagsValues: Int,
-        extraFlags: Int,
-        options: Bundle?,
-    ) = error("not implemented")
+    override fun startIntentSender(intent: IntentSender?, fillInIntent: Intent?, flagsMask: Int, flagsValues: Int, extraFlags: Int, options: Bundle?) = error("not implemented")
 
     override fun sendBroadcast(intent: Intent?) = error("not implemented")
 
@@ -196,11 +183,7 @@ class MockContext : Context() {
 
     override fun sendBroadcastAsUser(intent: Intent?, user: UserHandle?) = error("not implemented")
 
-    override fun sendBroadcastAsUser(
-        intent: Intent?,
-        user: UserHandle?,
-        receiverPermission: String?,
-    ) = error("not implemented")
+    override fun sendBroadcastAsUser(intent: Intent?, user: UserHandle?, receiverPermission: String?) = error("not implemented")
 
     override fun sendOrderedBroadcastAsUser(
         intent: Intent?,
@@ -213,8 +196,10 @@ class MockContext : Context() {
         initialExtras: Bundle?,
     ) = error("not implemented")
 
+    @Deprecated("Deprecated on Android", replaceWith = ReplaceWith(""))
     override fun sendStickyBroadcast(intent: Intent?) = error("not implemented")
 
+    @Deprecated("Deprecated on Android", replaceWith = ReplaceWith(""))
     override fun sendStickyOrderedBroadcast(
         intent: Intent?,
         resultReceiver: BroadcastReceiver?,
@@ -224,10 +209,13 @@ class MockContext : Context() {
         initialExtras: Bundle?,
     ) = error("not implemented")
 
+    @Deprecated("Deprecated on Android", replaceWith = ReplaceWith(""))
     override fun removeStickyBroadcast(intent: Intent?) = error("not implemented")
 
+    @Deprecated("Deprecated on Android", replaceWith = ReplaceWith(""))
     override fun sendStickyBroadcastAsUser(intent: Intent?, user: UserHandle?) = error("not implemented")
 
+    @Deprecated("Deprecated on Android", replaceWith = ReplaceWith(""))
     override fun sendStickyOrderedBroadcastAsUser(
         intent: Intent?,
         user: UserHandle?,
@@ -238,30 +226,17 @@ class MockContext : Context() {
         initialExtras: Bundle?,
     ) = error("not implemented")
 
+    @Deprecated("Deprecated on Android", replaceWith = ReplaceWith(""))
     override fun removeStickyBroadcastAsUser(intent: Intent?, user: UserHandle?) = error("not implemented")
 
     override fun registerReceiver(receiver: BroadcastReceiver?, filter: IntentFilter?): Intent? = error("not implemented")
 
-    override fun registerReceiver(
-        receiver: BroadcastReceiver?,
-        filter: IntentFilter?,
-        flags: Int,
-    ): Intent? = error("not implemented")
+    override fun registerReceiver(receiver: BroadcastReceiver?, filter: IntentFilter?, flags: Int): Intent? = error("not implemented")
 
-    override fun registerReceiver(
-        receiver: BroadcastReceiver?,
-        filter: IntentFilter?,
-        broadcastPermission: String?,
-        scheduler: Handler?,
-    ): Intent? = error("not implemented")
+    override fun registerReceiver(receiver: BroadcastReceiver?, filter: IntentFilter?, broadcastPermission: String?, scheduler: Handler?): Intent? = error("not implemented")
 
-    override fun registerReceiver(
-        receiver: BroadcastReceiver?,
-        filter: IntentFilter?,
-        broadcastPermission: String?,
-        scheduler: Handler?,
-        flags: Int,
-    ): Intent? = error("not implemented")
+    override fun registerReceiver(receiver: BroadcastReceiver?, filter: IntentFilter?, broadcastPermission: String?, scheduler: Handler?, flags: Int): Intent? =
+        error("not implemented")
 
     override fun unregisterReceiver(receiver: BroadcastReceiver?) = error("not implemented")
 
@@ -275,11 +250,7 @@ class MockContext : Context() {
 
     override fun unbindService(conn: ServiceConnection) = error("not implemented")
 
-    override fun startInstrumentation(
-        className: ComponentName,
-        profileFile: String?,
-        arguments: Bundle?,
-    ): Boolean = error("not implemented")
+    override fun startInstrumentation(className: ComponentName, profileFile: String?, arguments: Bundle?): Boolean = error("not implemented")
 
     override fun getSystemService(name: String): Any = error("not implemented")
 
@@ -307,36 +278,15 @@ class MockContext : Context() {
 
     override fun checkUriPermission(uri: Uri?, pid: Int, uid: Int, modeFlags: Int): Int = error("not implemented")
 
-    override fun checkUriPermission(
-        uri: Uri?,
-        readPermission: String?,
-        writePermission: String?,
-        pid: Int,
-        uid: Int,
-        modeFlags: Int,
-    ): Int = error("not implemented")
+    override fun checkUriPermission(uri: Uri?, readPermission: String?, writePermission: String?, pid: Int, uid: Int, modeFlags: Int): Int = error("not implemented")
 
     override fun checkCallingUriPermission(uri: Uri?, modeFlags: Int): Int = error("not implemented")
 
     override fun checkCallingOrSelfUriPermission(uri: Uri?, modeFlags: Int): Int = error("not implemented")
 
-    override fun enforceUriPermission(
-        uri: Uri?,
-        pid: Int,
-        uid: Int,
-        modeFlags: Int,
-        message: String?,
-    ) = error("not implemented")
+    override fun enforceUriPermission(uri: Uri?, pid: Int, uid: Int, modeFlags: Int, message: String?) = error("not implemented")
 
-    override fun enforceUriPermission(
-        uri: Uri?,
-        readPermission: String?,
-        writePermission: String?,
-        pid: Int,
-        uid: Int,
-        modeFlags: Int,
-        message: String?,
-    ) = error("not implemented")
+    override fun enforceUriPermission(uri: Uri?, readPermission: String?, writePermission: String?, pid: Int, uid: Int, modeFlags: Int, message: String?) = error("not implemented")
 
     override fun enforceCallingUriPermission(uri: Uri?, modeFlags: Int, message: String?) = error("not implemented")
 

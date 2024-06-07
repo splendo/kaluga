@@ -1,4 +1,7 @@
 name: Rerun failed emulator tests
+permissions:
+  contents: write
+  
 on:
   workflow_run:
     workflows: ["Android Emulator tests"]
@@ -9,5 +12,11 @@ jobs:
   on-failure:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' && github.event.workflow_run.run_attempt < 2 }}
+    env: 
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: checkout 
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
       - run: gh run rerun ${{ github.event.workflow_run.id }} --failed

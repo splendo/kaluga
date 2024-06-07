@@ -98,7 +98,7 @@ sealed class MetricPower : Power(), MetricScientificUnit<PhysicalQuantity.Power>
 sealed class ImperialPower : Power(), ImperialScientificUnit<PhysicalQuantity.Power>
 
 @Serializable
-object Watt : MetricAndImperialPower(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power> {
+data object Watt : MetricAndImperialPower(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power> {
     override val symbol: String = "W"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Power
@@ -110,37 +110,37 @@ object Watt : MetricAndImperialPower(), MetricBaseUnit<MeasurementSystem.MetricA
 sealed class WattMultiple : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt>
 
 @Serializable
-object Nanowatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Nano(Watt)
+data object Nanowatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Nano(Watt)
 
 @Serializable
-object Microwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Micro(Watt)
+data object Microwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Micro(Watt)
 
 @Serializable
-object Milliwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Milli(Watt)
+data object Milliwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Milli(Watt)
 
 @Serializable
-object Centiwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Centi(Watt)
+data object Centiwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Centi(Watt)
 
 @Serializable
-object Deciwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Deci(Watt)
+data object Deciwatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Deci(Watt)
 
 @Serializable
-object Decawatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Deca(Watt)
+data object Decawatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Deca(Watt)
 
 @Serializable
-object Hectowatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Hecto(Watt)
+data object Hectowatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Hecto(Watt)
 
 @Serializable
-object Kilowatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Kilo(Watt)
+data object Kilowatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Kilo(Watt)
 
 @Serializable
-object Megawatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Mega(Watt)
+data object Megawatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Mega(Watt)
 
 @Serializable
-object Gigawatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Giga(Watt)
+data object Gigawatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Giga(Watt)
 
 @Serializable
-object ErgPerSecond : MetricPower(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Power> {
+data object ErgPerSecond : MetricPower(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Power> {
     override val symbol: String = "erg/s"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Power
@@ -149,7 +149,7 @@ object ErgPerSecond : MetricPower(), MetricBaseUnit<MeasurementSystem.Metric, Ph
 }
 
 @Serializable
-object MetricHorsepower : MetricPower() {
+data object MetricHorsepower : MetricPower() {
     private const val KILOGRAM_FORCE_METER_SECOND_TO_WATT = 75.0
     override val symbol: String = "PS"
     override val system = MeasurementSystem.Metric
@@ -159,7 +159,7 @@ object MetricHorsepower : MetricPower() {
 }
 
 @Serializable
-object Horsepower : ImperialPower() {
+data object Horsepower : ImperialPower() {
     private const val FOOTPOUND_PER_MINUTE = 33000
     override val symbol: String = "hp"
     override val system = MeasurementSystem.Imperial
@@ -169,7 +169,7 @@ object Horsepower : ImperialPower() {
 }
 
 @Serializable
-object FootPoundForcePerSecond : ImperialPower() {
+data object FootPoundForcePerSecond : ImperialPower() {
     override val symbol: String = "${FootPoundForce.symbol} / ${Second.symbol}"
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Power
@@ -178,7 +178,7 @@ object FootPoundForcePerSecond : ImperialPower() {
 }
 
 @Serializable
-object FootPoundForcePerMinute : ImperialPower() {
+data object FootPoundForcePerMinute : ImperialPower() {
     override val symbol: String = "${FootPoundForce.symbol} / ${Minute.symbol}"
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Power
@@ -187,7 +187,7 @@ object FootPoundForcePerMinute : ImperialPower() {
 }
 
 @Serializable
-object InchPoundForcePerSecond : ImperialPower() {
+data object InchPoundForcePerSecond : ImperialPower() {
     override val symbol: String = "${FootPoundForce.symbol} / ${Second.symbol}"
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Power
@@ -196,7 +196,7 @@ object InchPoundForcePerSecond : ImperialPower() {
 }
 
 @Serializable
-object InchPoundForcePerMinute : ImperialPower() {
+data object InchPoundForcePerMinute : ImperialPower() {
     override val symbol: String = "${FootPoundForce.symbol} / ${Minute.symbol}"
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Power
@@ -205,7 +205,7 @@ object InchPoundForcePerMinute : ImperialPower() {
 }
 
 @Serializable
-object BritishThermalUnitPerSecond : ImperialPower() {
+data object BritishThermalUnitPerSecond : ImperialPower() {
     override val symbol: String = "${BritishThermalUnit.symbol} / ${Second.symbol}"
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Power
@@ -214,7 +214,7 @@ object BritishThermalUnitPerSecond : ImperialPower() {
 }
 
 @Serializable
-object BritishThermalUnitPerMinute : ImperialPower() {
+data object BritishThermalUnitPerMinute : ImperialPower() {
     override val symbol: String = "${BritishThermalUnit.symbol} / ${Minute.symbol}"
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Power
@@ -223,7 +223,7 @@ object BritishThermalUnitPerMinute : ImperialPower() {
 }
 
 @Serializable
-object BritishThermalUnitPerHour : ImperialPower() {
+data object BritishThermalUnitPerHour : ImperialPower() {
     override val symbol: String = "${BritishThermalUnit.symbol} / ${Hour.symbol}"
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Power

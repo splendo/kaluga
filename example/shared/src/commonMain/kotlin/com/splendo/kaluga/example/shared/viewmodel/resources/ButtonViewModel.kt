@@ -47,6 +47,14 @@ class ButtonViewModel(
             "Radial Gradient Button".toButton(ButtonStyles.radialGradientButton),
             "Angular Gradient Button".toButton(ButtonStyles.angularGradientButton),
             "Disabled Button".toButton(ButtonStyles.redButton, false),
+            "Left Image Button".toButton(ButtonStyles.textButtonWithImageLeft),
+            "Start Image Button".toButton(ButtonStyles.textButtonWithImageStart),
+            "Right Image Button".toButton(ButtonStyles.textButtonWithImageRight),
+            "End Image Button".toButton(ButtonStyles.textButtonWithImageEnd),
+            "Top Image Button".toButton(ButtonStyles.textButtonWithImageTop),
+            "Bottom Image Button".toButton(ButtonStyles.textButtonWithImageBottom),
+            "Intrinsic Size Image Button".toButton(ButtonStyles.textButtonWithImageIntrinsicSize),
+            "State Image Button".toButton(ButtonStyles.textButtonWithStateImage),
             listOf(
                 KalugaButton.Styled(
                     "Styled Button".styled(
@@ -61,6 +69,9 @@ class ButtonViewModel(
                 ) {
                     showAlert("Styled Button")
                 },
+                KalugaButton.WithoutText(ButtonStyles.imageOnly) { showAlert("Image Only") },
+                KalugaButton.WithoutText(ButtonStyles.imageOnlyIntrinsic) { showAlert("Image Only Intrinsic") },
+                KalugaButton.WithoutText(ButtonStyles.noContent) { showAlert("No Content") },
             ),
         ).flatten(),
     )
@@ -75,10 +86,7 @@ class ButtonViewModel(
         }
     }
 
-    private fun String.toButton(
-        style: KalugaButtonStyle,
-        isEnabled: Boolean = true,
-    ): List<KalugaButton.Plain> = listOf(
+    private fun String.toButton(style: KalugaButtonStyle.WithText<*>, isEnabled: Boolean = true): List<KalugaButton.Plain> = listOf(
         KalugaButton.Plain(this, style, isEnabled) {
             showAlert(this)
         },

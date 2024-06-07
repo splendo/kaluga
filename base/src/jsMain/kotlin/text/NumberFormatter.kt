@@ -25,28 +25,28 @@ import com.splendo.kaluga.base.utils.KalugaLocale
  * @param locale The [KalugaLocale] used for parsing. Defaults to [KalugaLocale.defaultLocale].
  * @param style The [NumberFormatStyle] to configure the format to use. Defaults to [NumberFormatStyle.Decimal].
  */
-actual class NumberFormatter actual constructor(override val locale: KalugaLocale, style: NumberFormatStyle) : BaseNumberFormatter {
-    override var percentSymbol: Char = '%'
-    override var perMillSymbol: Char = '\u2030'
-    override var minusSign: Char = '-'
-    override var exponentSymbol: String = "E"
-    override var zeroSymbol: Char = '0'
-    override var notANumberSymbol: String = "NaN"
-    override var infinitySymbol: String = "\u221E"
-    override var currencySymbol: String = ""
-    override var currencyCode: String = ""
-    override var positivePrefix: String = ""
-    override var positiveSuffix: String = ""
-    override var negativePrefix: String = "-"
-    override var negativeSuffix: String = ""
-    override var groupingSeparator: Char = ','
-    override var usesGroupingSeparator: Boolean = false
-    override var decimalSeparator: Char = '.'
-    override var alwaysShowsDecimalSeparator: Boolean = false
-    override var currencyDecimalSeparator: Char = '.'
-    override var groupingSize: Int = 0
-    override var multiplier: Int = 1
+actual class NumberFormatter actual constructor(actual override val locale: KalugaLocale, style: NumberFormatStyle) : BaseNumberFormatter {
+    actual override var percentSymbol: Char = '%'
+    actual override var perMillSymbol: Char = '\u2030'
+    actual override var minusSign: Char = '-'
+    actual override var exponentSymbol: String = "E"
+    actual override var zeroSymbol: Char = '0'
+    actual override var notANumberSymbol: String = "NaN"
+    actual override var infinitySymbol: String = "\u221E"
+    actual override var currencySymbol: String = ""
+    actual override var currencyCode: String = ""
+    actual override var positivePrefix: String = ""
+    actual override var positiveSuffix: String = ""
+    actual override var negativePrefix: String = "-"
+    actual override var negativeSuffix: String = ""
+    actual override var groupingSeparator: Char = ','
+    actual override var usesGroupingSeparator: Boolean = false
+    actual override var decimalSeparator: Char = '.'
+    actual override var alwaysShowsDecimalSeparator: Boolean = false
+    actual override var currencyDecimalSeparator: Char = '.'
+    actual override var groupingSize: Int = 0
+    actual override var multiplier: Int = 1
 
-    override fun format(number: Number): String = "$number"
-    override fun parse(string: String): Number? = string.toFloatOrNull()
+    actual override fun format(number: Number): String = "$number"
+    actual override fun parse(string: String): Number? = string.toFloatOrNull()
 }

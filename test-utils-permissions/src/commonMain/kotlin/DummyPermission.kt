@@ -22,6 +22,6 @@ import com.splendo.kaluga.permissions.base.Permission
 /**
  * A mocked [Permission]
  */
-object DummyPermission : Permission() {
+data object DummyPermission : Permission() {
     override val name: String = "Dummy"
 }

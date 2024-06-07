@@ -1,6 +1,9 @@
 public final class com/splendo/kaluga/test/permissions/DummyPermission : com/splendo/kaluga/permissions/base/Permission {
 	public static final field INSTANCE Lcom/splendo/kaluga/test/permissions/DummyPermission;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/test/permissions/MockBasePermissionStateRepo : com/splendo/kaluga/permissions/base/BasePermissionStateRepo {
@@ -69,37 +72,31 @@ public final class com/splendo/kaluga/test/permissions/MockPermissionState$Activ
 public final class com/splendo/kaluga/test/permissions/MockPermissionState$Allowed : com/splendo/kaluga/test/permissions/MockPermissionState, com/splendo/kaluga/permissions/base/PermissionState$Allowed {
 	public fun <init> ()V
 	public fun getActiveState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/test/permissions/MockPermissionState$Deinitialized : com/splendo/kaluga/test/permissions/MockPermissionState, com/splendo/kaluga/permissions/base/PermissionState$Deinitialized {
 	public fun <init> (Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;)V
 	public fun getActiveState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/test/permissions/MockPermissionState$Initializing : com/splendo/kaluga/test/permissions/MockPermissionState, com/splendo/kaluga/permissions/base/PermissionState$Initializing {
 	public fun <init> (Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;)V
 	public fun getActiveState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/test/permissions/MockPermissionState$Locked : com/splendo/kaluga/test/permissions/MockPermissionState, com/splendo/kaluga/permissions/base/PermissionState$Denied$Locked {
 	public fun <init> ()V
 	public fun getActiveState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/test/permissions/MockPermissionState$Requestable : com/splendo/kaluga/test/permissions/MockPermissionState, com/splendo/kaluga/permissions/base/PermissionState$Denied$Requestable {
 	public fun <init> ()V
 	public fun getActiveState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/test/permissions/MockPermissionState$Uninitialized : com/splendo/kaluga/test/permissions/MockPermissionState, com/splendo/kaluga/permissions/base/PermissionState$Uninitialized {
 	public fun <init> (Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;)V
 	public fun getActiveState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
-	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/test/permissions/MockPermissionStateRepo : com/splendo/kaluga/permissions/base/PermissionStateRepo {

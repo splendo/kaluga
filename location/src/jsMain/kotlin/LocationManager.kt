@@ -39,25 +39,22 @@ actual class DefaultLocationManager(
      * Builder for creating a [DefaultLocationManager]
      */
     class Builder : BaseLocationManager.Builder {
-        override fun create(
-            settings: Settings,
-            coroutineScope: CoroutineScope,
-        ): BaseLocationManager {
+        override fun create(settings: Settings, coroutineScope: CoroutineScope): BaseLocationManager {
             return DefaultLocationManager(settings, coroutineScope)
         }
     }
 
-    override val locationMonitor: LocationMonitor = LocationMonitor.Builder().create()
+    actual override val locationMonitor: LocationMonitor = LocationMonitor.Builder().create()
 
-    override suspend fun requestEnableLocation() {
+    actual override suspend fun requestEnableLocation() {
         TODO("Not yet implemented")
     }
 
-    override suspend fun startMonitoringLocation() {
+    actual override suspend fun startMonitoringLocation() {
         TODO("not implemented")
     }
 
-    override suspend fun stopMonitoringLocation() {
+    actual override suspend fun stopMonitoringLocation() {
         TODO("not implemented")
     }
 }
@@ -76,7 +73,7 @@ actual class LocationStateRepoBuilder(
     },
 ) : BaseLocationStateRepoBuilder {
 
-    override fun create(
+    actual override fun create(
         locationPermission: LocationPermission,
         settingsBuilder: (LocationPermission, Permissions) -> Settings,
         coroutineContext: CoroutineContext,

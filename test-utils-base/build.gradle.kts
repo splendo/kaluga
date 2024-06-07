@@ -1,56 +1,45 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
-    id("kotlinx-atomicfu")
+    id("com.splendo.kaluga.plugin")
+    id(libs.plugins.kotlinx.atomicfu.get().pluginId)
 }
 
-publishableComponent("test.base")
+kaluga {
+    moduleName = "test.base"
+    dependencies {
+        android {
+            main {
+                api(kotlin("test-junit"))
+                api(libs.androidx.arch.core.testing)
 
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
+                implementation(libs.mockito.core)
+                implementation(libs.bytebuddy.agent)
+
+                api(libs.kotlinx.coroutines.test)
+                api(libs.kotlinx.coroutines.debug)
+            }
+        }
+        common {
+            main {
                 // these are not coming from component.gradle because they need to be in the main scope
                 api(kotlin("test"))
-                api(kotlin("test-junit"))
+                api(libs.kotlin.test)
+                api(libs.kotlinx.coroutines.test)
 
-                // these dependencies make test linking slow, but Kotlin/Native cannot handle `compileOnly`
-                // https://github.com/splendo/kaluga/issues/208
                 api(project(":base", ""))
                 api(project(":logging", ""))
             }
         }
-
-        getByName("androidLibMain") {
-        }
-
-        getByName("jsMain") {
-            dependencies {
+        js {
+            main {
                 api(kotlin("test-js"))
             }
         }
-
-        getByName("jvmMain") {
-            dependencies {
-                apiDependency(Dependencies.KotlinX.Coroutines.Test)
-                apiDependency(Dependencies.KotlinX.Coroutines.Debug)
+        jvm {
+            main {
+                api(kotlin("test-junit"))
+                api(libs.kotlinx.coroutines.test)
+                api(libs.kotlinx.coroutines.debug)
             }
         }
-    }
-}
-
-android {
-    dependencies {
-        apiDependency(Dependencies.AndroidX.ArchCore)
-
-        implementationDependency(Dependencies.Mockito.Core)
-        implementationDependency(Dependencies.ByteBuddy.Agent)
-
-        apiDependency(Dependencies.KotlinX.Coroutines.Test)
-        apiDependency(Dependencies.KotlinX.Coroutines.Debug)
     }
 }

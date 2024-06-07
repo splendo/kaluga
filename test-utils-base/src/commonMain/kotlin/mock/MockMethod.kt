@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.base.mock
 
-import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.test.base.mock.answer.Answer
 import com.splendo.kaluga.test.base.mock.answer.BaseAnswer
@@ -32,6 +31,13 @@ import com.splendo.kaluga.test.base.mock.parameters.VoidParameters
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.getAndUpdate
+import kotlinx.coroutines.flow.transformWhile
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration
 
 private fun expect(condition: Boolean, message: () -> String) {
     if (!condition) fail(message)
@@ -95,23 +101,23 @@ sealed class BaseMethodMock<
     }
 
     private val stubs = concurrentMutableMapOf<M, S>()
-    private val callParameters = concurrentMutableListOf<V>()
-    protected abstract val ParametersSpec: W
+    private val callParametersStateFlow = MutableStateFlow<List<V>>(listOf())
+    private val callParameters: List<V> get() = callParametersStateFlow.value
+    protected abstract val parametersSpec: W
 
     protected abstract fun createStub(matcher: M): S
 
-    internal fun onMatcher(matcher: M): S =
-        createStub(matcher).also {
-            stubs[matcher] = it
-        }
+    internal fun onMatcher(matcher: M): S = createStub(matcher).also {
+        stubs[matcher] = it
+    }
 
     protected fun getStubFor(values: V): S {
-        callParameters.add(values)
+        callParametersStateFlow.getAndUpdate { it + values }
         // First find all the stubs whose matchers match the values received and sort their matchers per parameter in order of strongest constraint.
         val matchingStubs = stubs.synchronized {
             keys.mapNotNull { matchers ->
                 val stub = this[matchers]
-                if (ParametersSpec.run { matchers.matches(values) } && stub != null) {
+                if (parametersSpec.run { matchers.matches(values) } && stub != null) {
                     matchers.asList().sorted() to stub
                 } else {
                     null
@@ -119,12 +125,14 @@ sealed class BaseMethodMock<
             }
         }
         // Ensure there is at least one stub. Otherwise fail
-        if (matchingStubs.isEmpty()) { fail { "No matching stubs found for $values" } }
+        if (matchingStubs.isEmpty()) {
+            fail { "No matching stubs found for $values" }
+        }
         val matchedStubs = (0..matchingStubs.first().first.size).fold(matchingStubs) { remainingMatches, index ->
             // Find the best matching stub.
             // Iterate over the length of the number of parameters passed to the method
             remainingMatches.fold(emptyList()) inner@{ acc, possibleBestMatch ->
-                // If we dont have a best possible match yet, just use the first element.
+                // If we don't have a best possible match yet, just use the first element.
                 if (acc.isEmpty()) {
                     return@inner listOf(possibleBestMatch)
                 }
@@ -138,8 +146,10 @@ sealed class BaseMethodMock<
                 }
             }
         }
-        // Return the first element of the remaining list of stubbs
-        if (matchedStubs.isEmpty()) { fail { "No matching stubs found for $values" } }
+        // Return the first element of the remaining list of stubs
+        if (matchedStubs.isEmpty()) {
+            fail { "No matching stubs found for $values" }
+        }
         return matchedStubs.first().second
     }
 
@@ -147,29 +157,64 @@ sealed class BaseMethodMock<
      * Resets all calls to this mock method. This means that `verify(times=0)` should succeed
      */
     fun resetCalls() {
-        callParameters.clear()
+        callParametersStateFlow.value = listOf()
     }
 
     /**
-     * Removes all stubbs from this mock method. Note that this also removes any default stubbs that may have been created when declaring the mock.
+     * Removes all stubs from this mock method. Note that this also removes any default stubs that may have been created when declaring the mock.
      */
     fun resetStubs() {
         stubs.clear()
     }
 
     /**
-     * Resets both calls and stubbs. Shorthand for [resetCalls] and [resetStubs]
+     * Resets both calls and stubs. Shorthand for [resetCalls] and [resetStubs]
      */
     fun reset() {
         resetCalls()
         resetStubs()
     }
 
+    internal suspend fun verifyWithParametersWithin(duration: Duration, parameters: C, times: Int = 1) {
+        verifyWithParametersWithin(duration, parameters, VerificationRule.times(times))
+    }
+
+    internal suspend fun verifyWithParametersWithin(duration: Duration, parameters: C, verificationRule: VerificationRule) = parametersSpec.apply {
+        val matchers = parameters.asMatchers()
+        var errorMessage = "No calls could be verified yet (perhaps you paused with the debugger)."
+        try {
+            withTimeout(duration) {
+                callParametersStateFlow.transformWhile { callParameters ->
+                    val matchedCalls = callParameters.filter {
+                        matchers.matches(it)
+                    }
+
+                    val matches = verificationRule.matches(matchedCalls.size)
+                    if (matches) {
+                        matchedCalls.forEach {
+                            parameters.capture(it)
+                        }
+                    } else {
+                        emit("got ${matchedCalls.size} matches.")
+                    }
+                    !matches
+                }.collectIndexed { index, newErrorMessage ->
+                    when (index) {
+                        0 -> errorMessage = "Expected $verificationRule matches but $newErrorMessage"
+                        else -> errorMessage += " Then $newErrorMessage"
+                    }
+                }
+            }
+        } catch (t: TimeoutCancellationException) {
+            fail { "$errorMessage Then got a timeout after $duration." }
+        }
+    }
+
     internal fun verifyWithParameters(parameters: C, times: Int = 1) {
         verifyWithParameters(parameters, VerificationRule.times(times))
     }
 
-    internal fun verifyWithParameters(parameters: C, verificationRule: VerificationRule) = ParametersSpec.apply {
+    internal fun verifyWithParameters(parameters: C, verificationRule: VerificationRule) = parametersSpec.apply {
         val matchers = parameters.asMatchers()
         val matchedCalls = callParameters.filter {
             matchers.matches(it)
@@ -204,7 +249,7 @@ class MethodMock<
     V : ParametersSpec.Values,
     W : ParametersSpec<M, C, V>,
     R,
-    >(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, Answer<V, R>, MethodMock.Stub<M, V, R>>() {
+    >(override val parametersSpec: W) : BaseMethodMock<M, C, V, W, R, Answer<V, R>, MethodMock.Stub<M, V, R>>() {
     internal fun callWithValues(values: V): R = getStubFor(values).call(values)
 
     override fun createStub(matcher: M): Stub<M, V, R> = Stub(matcher)
@@ -241,12 +286,11 @@ class SuspendMethodMock<
     V : ParametersSpec.Values,
     W : ParametersSpec<M, C, V>,
     R,
-    >(override val ParametersSpec: W) : BaseMethodMock<M, C, V, W, R, SuspendedAnswer<V, R>, SuspendMethodMock.Stub<M, V, R>>() {
+    >(override val parametersSpec: W) : BaseMethodMock<M, C, V, W, R, SuspendedAnswer<V, R>, SuspendMethodMock.Stub<M, V, R>>() {
 
     internal suspend fun callWithValues(values: V): R = getStubFor(values).call(values)
 
-    override fun createStub(matcher: M): Stub<M, V, R> =
-        Stub(matcher)
+    override fun createStub(matcher: M): Stub<M, V, R> = Stub(matcher)
 
     /**
      * A [BaseMethodMock.Stub] for suspending methods.

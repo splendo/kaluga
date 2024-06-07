@@ -84,10 +84,7 @@ class ActivityNavigator<Action : NavigationAction<*>>(
         }
     }
 
-    private fun navigateToActivity(
-        activitySpec: NavigationSpec.Activity<*>,
-        bundle: NavigationBundle<*>?,
-    ) {
+    private fun navigateToActivity(activitySpec: NavigationSpec.Activity<*>, bundle: NavigationBundle<*>?) {
         val activity = getActivity()
         val intent = Intent(activity, activitySpec.activityClass).apply {
             bundle?.let {
@@ -104,9 +101,7 @@ class ActivityNavigator<Action : NavigationAction<*>>(
         }
     }
 
-    private fun navigateForContract(
-        contractSpec: NavigationSpec.Contract<*, *>,
-    ) {
+    private fun navigateForContract(contractSpec: NavigationSpec.Contract<*, *>) {
         val activity = getActivity()
         contractSpec.tryAndLaunch(activity) ?: throw RuntimeException("Activity is not an instance of ${contractSpec.activityClass.simpleName}")
     }

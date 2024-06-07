@@ -86,11 +86,7 @@ fun SetupNavHost(
  * @param builder The [RouteContentBuilder] for building the content of the [NavHost]
  */
 @Composable
-fun SetupNavHost(
-    navHostController: NavHostController,
-    startDestination: String,
-    builder: NavGraphBuilder.() -> Unit,
-) {
+fun SetupNavHost(navHostController: NavHostController, startDestination: String, builder: NavGraphBuilder.() -> Unit) {
     NavHost(
         navController = navHostController,
         startDestination = startDestination,

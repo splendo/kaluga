@@ -55,7 +55,7 @@ val AngleUnits: Set<Angle> get() = setOf(
 sealed class Angle : AbstractScientificUnit<PhysicalQuantity.Angle>(), MetricAndImperialScientificUnit<PhysicalQuantity.Angle>
 
 @Serializable
-object Radian : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle> {
+data object Radian : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle> {
     override val symbol = "rad"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Angle
@@ -67,22 +67,22 @@ object Radian : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, Phy
 sealed class RadianMultiple : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian>
 
 @Serializable
-object Nanoradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Nano(Radian)
+data object Nanoradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Nano(Radian)
 
 @Serializable
-object Microradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Micro(Radian)
+data object Microradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Micro(Radian)
 
 @Serializable
-object Milliradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Milli(Radian)
+data object Milliradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Milli(Radian)
 
 @Serializable
-object Centiradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Centi(Radian)
+data object Centiradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Centi(Radian)
 
 @Serializable
-object Deciradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Deci(Radian)
+data object Deciradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Deci(Radian)
 
 @Serializable
-object Turn : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle> {
+data object Turn : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle> {
     private const val RADIAN_IN_TURN = 2.0 * PI
     override val symbol = "tr"
     override val system = MeasurementSystem.MetricAndImperial
@@ -95,22 +95,22 @@ object Turn : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, Physi
 sealed class TurnMultiple : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn>
 
 @Serializable
-object Nanoturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Nano(Turn)
+data object Nanoturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Nano(Turn)
 
 @Serializable
-object Microturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Micro(Turn)
+data object Microturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Micro(Turn)
 
 @Serializable
-object Milliturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Milli(Turn)
+data object Milliturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Milli(Turn)
 
 @Serializable
-object Centiturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Centi(Turn)
+data object Centiturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Centi(Turn)
 
 @Serializable
-object Deciturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Deci(Turn)
+data object Deciturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Deci(Turn)
 
 @Serializable
-object Degree : Angle() {
+data object Degree : Angle() {
     private const val DEGREE_IN_TURN = 360.0
     override val symbol = "°"
     override val system = MeasurementSystem.MetricAndImperial
@@ -120,7 +120,7 @@ object Degree : Angle() {
 }
 
 @Serializable
-object Gradian : Angle() {
+data object Gradian : Angle() {
     private const val GRADIAN_IN_TURN = 400.0
     override val symbol = "gon"
     override val system = MeasurementSystem.MetricAndImperial
@@ -130,7 +130,7 @@ object Gradian : Angle() {
 }
 
 @Serializable
-object ArcMinute : Angle() {
+data object ArcMinute : Angle() {
     private const val ARCMINUTE_IN_TURN = 21600.0
     override val symbol = "′"
     override val system = MeasurementSystem.MetricAndImperial
@@ -140,7 +140,7 @@ object ArcMinute : Angle() {
 }
 
 @Serializable
-object ArcSecond : Angle() {
+data object ArcSecond : Angle() {
     private const val ARCSECOND_IN_TURN = 1296000.0
     override val symbol = "″"
     override val system = MeasurementSystem.MetricAndImperial

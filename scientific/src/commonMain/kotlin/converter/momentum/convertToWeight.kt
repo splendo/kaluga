@@ -31,20 +31,16 @@ import com.splendo.kaluga.scientific.unit.USCustomaryMomentum
 import kotlin.jvm.JvmName
 
 @JvmName("metricMomentumDivMetricSpeed")
-infix operator fun ScientificValue<PhysicalQuantity.Momentum, MetricMomentum>.div(speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>) =
-    unit.mass.mass(this, speed)
+infix operator fun ScientificValue<PhysicalQuantity.Momentum, MetricMomentum>.div(speed: ScientificValue<PhysicalQuantity.Speed, MetricSpeed>) = unit.mass.mass(this, speed)
 
 @JvmName("imperialMomentumDivImperialSpeed")
-infix operator fun ScientificValue<PhysicalQuantity.Momentum, ImperialMomentum>.div(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) =
-    unit.mass.mass(this, speed)
+infix operator fun ScientificValue<PhysicalQuantity.Momentum, ImperialMomentum>.div(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) = unit.mass.mass(this, speed)
 
 @JvmName("ukImperialMomentumDivImperialSpeed")
-infix operator fun ScientificValue<PhysicalQuantity.Momentum, UKImperialMomentum>.div(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) =
-    unit.mass.mass(this, speed)
+infix operator fun ScientificValue<PhysicalQuantity.Momentum, UKImperialMomentum>.div(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) = unit.mass.mass(this, speed)
 
 @JvmName("usCustomaryMomentumDivImperialSpeed")
-infix operator fun ScientificValue<PhysicalQuantity.Momentum, USCustomaryMomentum>.div(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) =
-    unit.mass.mass(this, speed)
+infix operator fun ScientificValue<PhysicalQuantity.Momentum, USCustomaryMomentum>.div(speed: ScientificValue<PhysicalQuantity.Speed, ImperialSpeed>) = unit.mass.mass(this, speed)
 
 @JvmName("momentumDivSpeed")
 infix operator fun <MomentumUnit : Momentum, SpeedUnit : Speed> ScientificValue<PhysicalQuantity.Momentum, MomentumUnit>.div(

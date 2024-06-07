@@ -87,59 +87,90 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
         }
     }
 
-    override var date: NSDate = initialDate
+    private var _date: NSDate = initialDate
+    actual override val date: NSDate get() = _date
 
-    override var timeZone: KalugaTimeZone
+    actual override var timeZone: KalugaTimeZone
         get() = KalugaTimeZone(calendar.timeZone)
-        set(value) { calendar.timeZone = value.timeZone }
-    override var era: Int
+        set(value) {
+            calendar.timeZone = value.timeZone
+        }
+    actual override var era: Int
         get() = calendar.component(NSCalendarUnitEra, fromDate = date).toInt()
-        set(value) { updateDateForComponent(NSCalendarUnitEra, value) }
-    override var year: Int
+        set(value) {
+            updateDateForComponent(NSCalendarUnitEra, value)
+        }
+    actual override var year: Int
         get() = calendar.component(NSCalendarUnitYear, fromDate = date).toInt()
-        set(value) { updateDateForComponent(NSCalendarUnitYear, value) }
-    override var month: Int
+        set(value) {
+            updateDateForComponent(NSCalendarUnitYear, value)
+        }
+    actual override var month: Int
         get() = calendar.component(NSCalendarUnitMonth, fromDate = date).toInt()
-        set(value) { updateDateForComponent(NSCalendarUnitMonth, value) }
-    override val daysInMonth: Int get() = calendar.rangeOfUnit(NSCalendarUnitDay, NSCalendarUnitMonth, forDate = date).useContents { this.length.toInt() }
-    override var weekOfYear: Int
+        set(value) {
+            updateDateForComponent(NSCalendarUnitMonth, value)
+        }
+    actual override val daysInMonth: Int get() = calendar.rangeOfUnit(NSCalendarUnitDay, NSCalendarUnitMonth, forDate = date).useContents { this.length.toInt() }
+    actual override var weekOfYear: Int
         get() = calendar.component(NSCalendarUnitWeekOfYear, fromDate = date).toInt()
-        set(value) { updateDateForComponent(NSCalendarUnitWeekOfYear, value) }
-    override var weekOfMonth: Int
+        set(value) {
+            updateDateForComponent(NSCalendarUnitWeekOfYear, value)
+        }
+    actual override var weekOfMonth: Int
         get() = calendar.component(NSCalendarUnitWeekOfMonth, fromDate = date).toInt()
-        set(value) { updateDateForComponent(NSCalendarUnitWeekOfMonth, value) }
-    override var day: Int
+        set(value) {
+            updateDateForComponent(NSCalendarUnitWeekOfMonth, value)
+        }
+    actual override var day: Int
         get() = calendar.component(NSCalendarUnitDay, fromDate = date).toInt()
-        set(value) { updateDateForComponent(NSCalendarUnitDay, value) }
-    override var dayOfYear: Int
+        set(value) {
+            updateDateForComponent(NSCalendarUnitDay, value)
+        }
+    actual override var dayOfYear: Int
         get() = calendar.ordinalityOfUnit(NSCalendarUnitDay, NSCalendarUnitYear, date).toInt()
-        set(value) { updateDateForComponent(NSCalendarUnitDay, value - dayOfYear + day) }
-    override var weekDay: Int
+        set(value) {
+            updateDateForComponent(NSCalendarUnitDay, value - dayOfYear + day)
+        }
+    actual override var weekDay: Int
         get() = calendar.component(NSCalendarUnitWeekday, fromDate = date).toInt()
-        set(value) { updateDateForComponent(NSCalendarUnitWeekday, value) }
-    override var firstWeekDay: Int
+        set(value) {
+            updateDateForComponent(NSCalendarUnitWeekday, value)
+        }
+    actual override var firstWeekDay: Int
         get() = (calendar.firstWeekday.toInt())
-        set(value) { calendar.firstWeekday = value.toULong() }
+        set(value) {
+            calendar.firstWeekday = value.toULong()
+        }
 
-    override var hour: Int
+    actual override var hour: Int
         get() = calendar.component(NSCalendarUnitHour, fromDate = date).toInt()
-        set(value) { updateDateForComponent(NSCalendarUnitHour, value) }
-    override var minute: Int
+        set(value) {
+            updateDateForComponent(NSCalendarUnitHour, value)
+        }
+    actual override var minute: Int
         get() = calendar.component(NSCalendarUnitMinute, fromDate = date).toInt()
-        set(value) { updateDateForComponent(NSCalendarUnitMinute, value) }
-    override var second: Int
+        set(value) {
+            updateDateForComponent(NSCalendarUnitMinute, value)
+        }
+    actual override var second: Int
         get() = calendar.component(NSCalendarUnitSecond, fromDate = date).toInt()
-        set(value) { updateDateForComponent(NSCalendarUnitSecond, value) }
-    override var millisecond: Int
+        set(value) {
+            updateDateForComponent(NSCalendarUnitSecond, value)
+        }
+    actual override var millisecond: Int
         get() = calendar.component(NSCalendarUnitNanosecond, fromDate = date).toInt() / nanoSecondPerMilliSecond
-        set(value) { updateDateForComponent(NSCalendarUnitNanosecond, value * nanoSecondPerMilliSecond) }
-    override var durationSinceEpoch: Duration
+        set(value) {
+            updateDateForComponent(NSCalendarUnitNanosecond, value * nanoSecondPerMilliSecond)
+        }
+    actual override var durationSinceEpoch: Duration
         get() = date.timeIntervalSince1970.seconds
-        set(value) { date = NSDate.dateWithTimeIntervalSince1970(value.toDouble(DurationUnit.SECONDS)) }
+        set(value) {
+            _date = NSDate.dateWithTimeIntervalSince1970(value.toDouble(DurationUnit.SECONDS))
+        }
 
-    override fun copy(): KalugaDate = DefaultKalugaDate(calendar.copy() as NSCalendar, date.copy() as NSDate)
+    actual override fun copy(): KalugaDate = DefaultKalugaDate(calendar.copy() as NSCalendar, date.copy() as NSDate)
 
-    override fun equals(other: Any?): Boolean {
+    actual override fun equals(other: Any?): Boolean {
         return if (other is DefaultKalugaDate) {
             calendar.calendarIdentifier == other.calendar.calendarIdentifier && durationSinceEpoch == other.durationSinceEpoch && this.calendar.timeZone == other.calendar.timeZone
         } else {
@@ -147,13 +178,13 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
         }
     }
 
-    override fun hashCode(): Int {
+    actual override fun hashCode(): Int {
         var result = calendar.calendarIdentifier.hashCode()
         result = 31 * result + date.hashCode()
         return result
     }
 
-    override fun compareTo(other: KalugaDate): Int = this.date.compare(other.date).toInt()
+    actual override fun compareTo(other: KalugaDate): Int = this.date.compare(other.date).toInt()
 
     private fun updateDateForComponent(component: NSCalendarUnit, value: Int) {
         // Check whether this component update can use dateBySettingUnit.
@@ -193,7 +224,7 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
                 0UL,
             )
         }?.let {
-            date = it
+            _date = it
         }
     }
 

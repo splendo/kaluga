@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 
 sealed class ArchitectureNavigationAction<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
     class Details(inputDetails: InputDetails) : ArchitectureNavigationAction<InputDetails>(inputDetails, NavigationBundleSpecType.SerializedType(InputDetails.serializer()))
-    object BottomSheet : ArchitectureNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
+    data object BottomSheet : ArchitectureNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
 }
 
 class ArchitectureViewModel(navigator: Navigator<ArchitectureNavigationAction<*>>) : NavigatingViewModel<ArchitectureNavigationAction<*>>(navigator) {

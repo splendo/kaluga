@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.test.bluetooth.device
 
+import com.splendo.kaluga.base.state.HandleAfterOldStateIsRemoved
+import com.splendo.kaluga.base.state.KalugaState
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
@@ -24,8 +26,8 @@ import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.NotConnectableDeviceState
 
-sealed class MockDeviceState {
-    object NotConnectable : MockDeviceState(), NotConnectableDeviceState
+sealed class MockDeviceState : KalugaState {
+    data object NotConnectable : MockDeviceState(), NotConnectableDeviceState
     sealed class Connectable : MockDeviceState() {
 
         abstract val mockConnectableDeviceManager: MockConnectableDeviceManager
@@ -73,7 +75,7 @@ sealed class MockDeviceState {
             override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
             override val mtu: MTU?,
             override val mockConnectableDeviceManager: MockConnectableDeviceManager,
-        ) : Connected(), ConnectableDeviceState.Connected.Discovering {
+        ) : Connected(), ConnectableDeviceState.Connected.Discovering, HandleAfterOldStateIsRemoved<MockDeviceState> {
             override fun didDiscoverServices(services: List<Service>): suspend () -> ConnectableDeviceState.Connected.Idle = {
                 Idle(reconnectionSettings, mtu, services, mockConnectableDeviceManager)
             }
@@ -86,6 +88,10 @@ sealed class MockDeviceState {
             override val reconnect: suspend () -> ConnectableDeviceState.Connecting = { Connecting(reconnectionSettings, mockConnectableDeviceManager) }
 
             override val asDeviceState: ConnectableDeviceState = this
+
+            override suspend fun afterOldStateIsRemoved(oldState: MockDeviceState) {
+                mockConnectableDeviceManager.discoverServices()
+            }
         }
 
         sealed class DiscoveredServices : Connected()
@@ -144,7 +150,7 @@ sealed class MockDeviceState {
     data class Connecting(
         private val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
         override val mockConnectableDeviceManager: MockConnectableDeviceManager,
-    ) : Connectable(), ConnectableDeviceState.Connecting {
+    ) : Connectable(), ConnectableDeviceState.Connecting, HandleAfterOldStateIsRemoved<MockDeviceState> {
 
         override val cancelConnection: suspend () -> Disconnecting = { Disconnecting(mockConnectableDeviceManager) }
 
@@ -153,6 +159,13 @@ sealed class MockDeviceState {
         override fun handleCancel() = mockConnectableDeviceManager.handleCancelConnecting()
 
         override val asDeviceState: ConnectableDeviceState = this
+
+        override suspend fun afterOldStateIsRemoved(oldState: MockDeviceState) {
+            when (oldState) {
+                is Disconnected -> mockConnectableDeviceManager.connect()
+                else -> Unit
+            }
+        }
     }
 
     data class Disconnected(override val mockConnectableDeviceManager: MockConnectableDeviceManager) : Connectable(), ConnectableDeviceState.Disconnected {
@@ -166,7 +179,16 @@ sealed class MockDeviceState {
         override val asDeviceState: ConnectableDeviceState = this
     }
 
-    data class Disconnecting(override val mockConnectableDeviceManager: MockConnectableDeviceManager) : Connectable(), ConnectableDeviceState.Disconnecting {
+    data class Disconnecting(
+        override val mockConnectableDeviceManager: MockConnectableDeviceManager,
+    ) : Connectable(), ConnectableDeviceState.Disconnecting, HandleAfterOldStateIsRemoved<MockDeviceState> {
         override val asDeviceState: ConnectableDeviceState = this
+
+        override suspend fun afterOldStateIsRemoved(oldState: MockDeviceState) {
+            when (oldState) {
+                is Connecting, is Connected -> mockConnectableDeviceManager.disconnect()
+                else -> Unit
+            }
+        }
     }
 }

@@ -25,13 +25,13 @@ import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.resources.localized
 
 sealed class SwiftUIOrUIKitNavigationAction : SingleValueNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType) {
-    object SwiftUI : SwiftUIOrUIKitNavigationAction()
-    object UIKit : SwiftUIOrUIKitNavigationAction()
+    data object SwiftUI : SwiftUIOrUIKitNavigationAction()
+    data object UIKit : SwiftUIOrUIKitNavigationAction()
 }
 
 sealed class UIType(val title: String) {
-    object SwiftUI : UIType("ios_swift_ui".localized())
-    object UIKit : UIType("ios_ui_kit".localized())
+    data object SwiftUI : UIType("ios_swift_ui".localized())
+    data object UIKit : UIType("ios_ui_kit".localized())
 }
 
 class SwiftUIOrUIKitSelectionViewModel(

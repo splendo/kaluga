@@ -73,7 +73,7 @@ sealed class SurfaceTension : AbstractScientificUnit<PhysicalQuantity.SurfaceTen
      * The [Length] component
      */
     abstract val per: Length
-    override val symbol: String by lazy { "${force.symbol} / ${per.symbol}" }
+    override val symbol: String by lazy { "${force.symbol}/${per.symbol}" }
     override val quantity = PhysicalQuantity.SurfaceTension
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(force.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = force.toSIUnit(per.fromSIUnit(value))

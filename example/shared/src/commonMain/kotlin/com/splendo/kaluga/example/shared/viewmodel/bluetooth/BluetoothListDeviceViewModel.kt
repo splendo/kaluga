@@ -85,7 +85,7 @@ class BluetoothListDeviceViewModel(
     val manufacturerId = advertisementObservable("") { "bluetooth_manufacturer_id".localized().format(it.manufacturerId ?: -1) }
     val manufacturerData = advertisementObservable("") { "bluetooth_manufacturer_data".localized().format(it.manufacturerData?.toHexString() ?: "") }
 
-    val _isFoldedOut = MutableStateFlow(false)
+    private val _isFoldedOut = MutableStateFlow(false)
     val isFoldedOut = _isFoldedOut.toInitializedObservable(coroutineScope)
 
     private fun <T> deviceStateObservable(initialValue: T, mapper: (DeviceState) -> T): BaseInitializedObservable<T> = device.state()

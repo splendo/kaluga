@@ -184,12 +184,7 @@ class LogTest {
         )
     }
 
-    private fun assertLog(
-        logLevel: LogLevel,
-        tag: String? = null,
-        throwable: Exception? = null,
-        message: String? = null,
-    ) {
+    private fun assertLog(logLevel: LogLevel, tag: String? = null, throwable: Exception? = null, message: String? = null) {
         listOf(
             mockLogger.tagList.size,
             mockLogger.levelList.size,

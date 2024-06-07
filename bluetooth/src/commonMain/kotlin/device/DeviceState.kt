@@ -306,7 +306,7 @@ sealed interface ConnectableDeviceState : DeviceState, KalugaState {
     suspend fun unpair()
 }
 
-internal object NotConnectableDeviceStateImpl : NotConnectableDeviceState
+internal data object NotConnectableDeviceStateImpl : NotConnectableDeviceState
 
 internal sealed class ConnectableDeviceStateImpl {
 
@@ -343,20 +343,20 @@ internal sealed class ConnectableDeviceStateImpl {
             ConnectableDeviceState.Connected.Discovering,
             HandleAfterOldStateIsRemoved<ConnectableDeviceState> {
 
-                override fun didDiscoverServices(services: List<Service>): suspend () -> Idle {
-                    return { Idle(reconnectionSettings, mtu, services, deviceConnectionManager) }
-                }
-
-                override fun didUpdateMtu(mtu: MTU) = suspend { copy(mtu = mtu) }
-
-                override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
-                    copy(reconnectionSettings = reconnectionSettings)
-                }
-
-                override suspend fun afterOldStateIsRemoved(oldState: ConnectableDeviceState) {
-                    deviceConnectionManager.discoverServices()
-                }
+            override fun didDiscoverServices(services: List<Service>): suspend () -> Idle {
+                return { Idle(reconnectionSettings, mtu, services, deviceConnectionManager) }
             }
+
+            override fun didUpdateMtu(mtu: MTU) = suspend { copy(mtu = mtu) }
+
+            override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
+                copy(reconnectionSettings = reconnectionSettings)
+            }
+
+            override suspend fun afterOldStateIsRemoved(oldState: ConnectableDeviceState) {
+                deviceConnectionManager.discoverServices()
+            }
+        }
 
         data class Idle constructor(
             override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,

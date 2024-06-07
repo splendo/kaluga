@@ -50,15 +50,15 @@ actual class DefaultLocationPermissionManager(
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(context, permissions, coroutineScope, logTag, logger, permissionHandler)
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         permissionsManager.requestPermissions()
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         permissionsManager.startMonitoring(interval)
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         permissionsManager.stopMonitoring()
     }
 }
@@ -69,11 +69,7 @@ actual class DefaultLocationPermissionManager(
  */
 actual class LocationPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseLocationPermissionManagerBuilder {
 
-    override fun create(
-        locationPermission: LocationPermission,
-        settings: Settings,
-        coroutineScope: CoroutineScope,
-    ): LocationPermissionManager {
+    actual override fun create(locationPermission: LocationPermission, settings: Settings, coroutineScope: CoroutineScope): LocationPermissionManager {
         return DefaultLocationPermissionManager(context.context, locationPermission, settings, coroutineScope)
     }
 }

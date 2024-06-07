@@ -59,11 +59,7 @@ abstract class ScientificUnitSelectionDialogFragment : KalugaViewModelDialogFrag
         )
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = DialogScientificUnitSelectionBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.currentUnits.adapter = ButtonAdapter()

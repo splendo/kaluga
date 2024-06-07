@@ -61,10 +61,8 @@ class MockPermissionsBuilder(
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [CameraPermission]
      */
     val cameraStateRepoBuilderMock = ::cameraStateRepoBuilder.mock()
-    private fun cameraStateRepoBuilder(
-        cameraPermission: CameraPermission,
-        context: CoroutineContext,
-    ): BasePermissionStateRepo<CameraPermission> = cameraStateRepoBuilderMock.call(cameraPermission, context)
+    private fun cameraStateRepoBuilder(cameraPermission: CameraPermission, context: CoroutineContext): BasePermissionStateRepo<CameraPermission> =
+        cameraStateRepoBuilderMock.call(cameraPermission, context)
 
     /**
      * List of created [PermissionStateRepo] for [ContactsPermission]
@@ -75,10 +73,8 @@ class MockPermissionsBuilder(
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [ContactsPermission]
      */
     val contactsStateRepoBuilderMock = ::contactsStateRepoBuilder.mock()
-    private fun contactsStateRepoBuilder(
-        contactsPermission: ContactsPermission,
-        context: CoroutineContext,
-    ): BasePermissionStateRepo<ContactsPermission> = contactsStateRepoBuilderMock.call(contactsPermission, context)
+    private fun contactsStateRepoBuilder(contactsPermission: ContactsPermission, context: CoroutineContext): BasePermissionStateRepo<ContactsPermission> =
+        contactsStateRepoBuilderMock.call(contactsPermission, context)
 
     /**
      * List of created [PermissionStateRepo] for [MicrophonePermission]
@@ -89,10 +85,8 @@ class MockPermissionsBuilder(
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [MicrophonePermission]
      */
     val microphoneStateRepoBuilderMock = ::microphoneStateRepoBuilder.mock()
-    private fun microphoneStateRepoBuilder(
-        microphonePermission: MicrophonePermission,
-        context: CoroutineContext,
-    ): BasePermissionStateRepo<MicrophonePermission> = microphoneStateRepoBuilderMock.call(microphonePermission, context)
+    private fun microphoneStateRepoBuilder(microphonePermission: MicrophonePermission, context: CoroutineContext): BasePermissionStateRepo<MicrophonePermission> =
+        microphoneStateRepoBuilderMock.call(microphonePermission, context)
 
     /**
      * List of created [PermissionStateRepo] for [NotificationsPermission]
@@ -103,10 +97,8 @@ class MockPermissionsBuilder(
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [NotificationsPermission]
      */
     val notificationsStateRepoBuilderMock = ::notificationsStateRepoBuilder.mock()
-    private fun notificationsStateRepoBuilder(
-        notificationsPermission: NotificationsPermission,
-        context: CoroutineContext,
-    ): BasePermissionStateRepo<NotificationsPermission> = notificationsStateRepoBuilderMock.call(notificationsPermission, context)
+    private fun notificationsStateRepoBuilder(notificationsPermission: NotificationsPermission, context: CoroutineContext): BasePermissionStateRepo<NotificationsPermission> =
+        notificationsStateRepoBuilderMock.call(notificationsPermission, context)
 
     /**
      * List of created [PermissionStateRepo] for [BluetoothPermission]
@@ -117,10 +109,8 @@ class MockPermissionsBuilder(
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [BluetoothPermission]
      */
     val bluetoothStateRepoBuilderMock = ::bluetoothStateRepoBuilder.mock()
-    private fun bluetoothStateRepoBuilder(
-        bluetoothPermission: BluetoothPermission,
-        context: CoroutineContext,
-    ): BasePermissionStateRepo<BluetoothPermission> = bluetoothStateRepoBuilderMock.call(bluetoothPermission, context)
+    private fun bluetoothStateRepoBuilder(bluetoothPermission: BluetoothPermission, context: CoroutineContext): BasePermissionStateRepo<BluetoothPermission> =
+        bluetoothStateRepoBuilderMock.call(bluetoothPermission, context)
 
     /**
      * List of created [PermissionStateRepo] for [LocationPermission]
@@ -131,10 +121,8 @@ class MockPermissionsBuilder(
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [LocationPermission]
      */
     val locationStateRepoBuilderMock = ::locationStateRepoBuilder.mock()
-    private fun locationStateRepoBuilder(
-        locationPermission: LocationPermission,
-        context: CoroutineContext,
-    ): BasePermissionStateRepo<LocationPermission> = locationStateRepoBuilderMock.call(locationPermission, context)
+    private fun locationStateRepoBuilder(locationPermission: LocationPermission, context: CoroutineContext): BasePermissionStateRepo<LocationPermission> =
+        locationStateRepoBuilderMock.call(locationPermission, context)
 
     /**
      * List of created [PermissionStateRepo] for [CalendarPermission]
@@ -145,10 +133,8 @@ class MockPermissionsBuilder(
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [CalendarPermission]
      */
     val calendarStateRepoBuilderMock = ::calendarStateRepoBuilder.mock()
-    private fun calendarStateRepoBuilder(
-        calendarPermission: CalendarPermission,
-        context: CoroutineContext,
-    ): BasePermissionStateRepo<CalendarPermission> = calendarStateRepoBuilderMock.call(calendarPermission, context)
+    private fun calendarStateRepoBuilder(calendarPermission: CalendarPermission, context: CoroutineContext): BasePermissionStateRepo<CalendarPermission> =
+        calendarStateRepoBuilderMock.call(calendarPermission, context)
 
     /**
      * List of created [PermissionStateRepo] for [StoragePermission]
@@ -159,10 +145,8 @@ class MockPermissionsBuilder(
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for creating [PermissionStateRepo] for [StoragePermission]
      */
     val storageStateRepoBuilderMock = ::storageStateRepoBuilder.mock()
-    private fun storageStateRepoBuilder(
-        storagePermission: StoragePermission,
-        context: CoroutineContext,
-    ): BasePermissionStateRepo<StoragePermission> = storageStateRepoBuilderMock.call(storagePermission, context)
+    private fun storageStateRepoBuilder(storagePermission: StoragePermission, context: CoroutineContext): BasePermissionStateRepo<StoragePermission> =
+        storageStateRepoBuilderMock.call(storagePermission, context)
 
     init {
         if (setupMocks) {

@@ -17,14 +17,9 @@
 
 package com.splendo.kaluga.system.network
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
-import androidx.annotation.RequiresApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -36,9 +31,9 @@ actual class DefaultNetworkManager internal constructor(
     private val androidNetworkManager: AndroidNetworkManager,
 ) : NetworkManager {
 
-    override val network: Flow<NetworkConnectionType> get() = androidNetworkManager.network
-    override suspend fun startMonitoring() = androidNetworkManager.startMonitoring()
-    override suspend fun stopMonitoring() = androidNetworkManager.stopMonitoring()
+    actual override val network: Flow<NetworkConnectionType> get() = androidNetworkManager.network
+    actual override suspend fun startMonitoring() = androidNetworkManager.startMonitoring()
+    actual override suspend fun stopMonitoring() = androidNetworkManager.stopMonitoring()
 
     /**
      * Builder for creating a [DefaultNetworkManager]
@@ -47,24 +42,16 @@ actual class DefaultNetworkManager internal constructor(
     class Builder(private val context: Context) : NetworkManager.Builder {
         override fun create(): NetworkManager {
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val androidNetworkManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val androidNetworkManager =
                 AndroidConnectivityCallbackManager(
                     connectivityManager,
                 )
-            } else {
-                @Suppress("DEPRECATION")
-                AndroidConnectivityReceiverManager(
-                    connectivityManager,
-                    context,
-                )
-            }
             return DefaultNetworkManager(androidNetworkManager)
         }
     }
 
     internal interface AndroidNetworkManager : NetworkManager
 
-    @RequiresApi(Build.VERSION_CODES.N)
     internal class AndroidConnectivityCallbackManager(
         private val connectivityManager: ConnectivityManager,
     ) : AndroidNetworkManager {
@@ -116,41 +103,6 @@ actual class DefaultNetworkManager internal constructor(
                     NetworkConnectionType.Known.Wifi(!capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED))
                 }
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> NetworkConnectionType.Known.Cellular
-                else -> NetworkConnectionType.Known.Absent
-            }
-        }
-    }
-
-    @Suppress("DEPRECATION")
-    @Deprecated("Deprecated on Android")
-    internal class AndroidConnectivityReceiverManager(
-        private val connectivityManager: ConnectivityManager,
-        private val context: Context,
-    ) : AndroidNetworkManager {
-
-        private val networkChannel = Channel<NetworkConnectionType>(Channel.UNLIMITED)
-        override val network: Flow<NetworkConnectionType> = networkChannel.receiveAsFlow()
-        private val networkHandler = object : BroadcastReceiver() {
-            override fun onReceive(c: Context, intent: Intent) {
-                networkChannel.trySend(determineNetworkType())
-            }
-        }
-
-        override suspend fun startMonitoring() {
-            context.registerReceiver(networkHandler, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-            networkChannel.trySend(determineNetworkType())
-        }
-
-        override suspend fun stopMonitoring() {
-            context.unregisterReceiver(networkHandler)
-        }
-
-        private fun determineNetworkType(): NetworkConnectionType {
-            val isMetered = connectivityManager.isActiveNetworkMetered
-            return when {
-                connectivityManager.activeNetworkInfo?.isConnectedOrConnecting != true -> NetworkConnectionType.Known.Absent
-                (!isMetered && connectivityManager.isDefaultNetworkActive) -> NetworkConnectionType.Known.Wifi()
-                isMetered -> NetworkConnectionType.Known.Cellular
                 else -> NetworkConnectionType.Known.Absent
             }
         }

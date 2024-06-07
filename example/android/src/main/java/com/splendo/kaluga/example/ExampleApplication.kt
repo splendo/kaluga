@@ -42,7 +42,7 @@ class ExampleApplication : Application() {
                     viewModel(named(composeKeyboardViewModel)) { (keyboardBuilder: ComposeKeyboardManager.Builder) ->
                         KeyboardViewModel(keyboardBuilder)
                     }
-                    viewModel(named(XMLKeyboardActivity.viewModelName)) { (keyboardBuilder: ViewKeyboardManager.Builder) ->
+                    viewModel(named(XMLKeyboardActivity.VIEW_MODEL_NAME)) { (keyboardBuilder: ViewKeyboardManager.Builder) ->
                         KeyboardViewModel(keyboardBuilder)
                     }
                 },

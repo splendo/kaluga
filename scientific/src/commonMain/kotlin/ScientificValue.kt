@@ -21,7 +21,6 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.minus
 import com.splendo.kaluga.base.utils.plus
-import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
 import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
@@ -57,7 +56,7 @@ interface ScientificValue<Quantity : PhysicalQuantity, Unit : ScientificUnit<Qua
  * A class implementation of [ScientificValue]
  * @param Quantity the type of [PhysicalQuantity] of the unit
  * @param Unit the type of [AbstractScientificUnit] this value represents
- * @param value the value component
+ * @param value the [Decimal] component
  * @param unit the [Unit] component
  */
 @Serializable
@@ -65,6 +64,12 @@ data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractSc
     override val value: Double,
     override val unit: Unit,
 ) : ScientificValue<Quantity, Unit> {
+
+    /**
+     * Constructor
+     * @param value the [Decimal] component
+     * @param unit the [Unit] component
+     */
     constructor(value: Decimal, unit: Unit) : this(value.toDouble(), unit)
 }
 
@@ -80,7 +85,8 @@ data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractSc
 infix operator fun <
     Quantity : PhysicalQuantity,
     Unit : AbstractScientificUnit<Quantity>,
-    > ScientificValue<Quantity, Unit>.plus(value: Number) = this + value.toDecimal()
+    > ScientificValue<Quantity, Unit>.plus(value: Number) =
+    this + value.toDecimal()
 
 /**
  * Creates a [DefaultScientificValue] equal to a [ScientificValue.value] increased by this [Number]
@@ -104,7 +110,8 @@ infix operator fun <
 infix operator fun <
     Quantity : PhysicalQuantity,
     Unit : AbstractScientificUnit<Quantity>,
-    > ScientificValue<Quantity, Unit>.plus(value: Decimal) = plus(value, ::DefaultScientificValue)
+    > ScientificValue<Quantity, Unit>.plus(value: Decimal) =
+    plus(value, ::DefaultScientificValue)
 
 /**
  * Creates a [DefaultScientificValue] equal to a [ScientificValue.value] increased by this [Decimal]
@@ -116,7 +123,8 @@ infix operator fun <
 infix operator fun <
     Quantity : PhysicalQuantity,
     Unit : AbstractScientificUnit<Quantity>,
-    > Decimal.plus(value: ScientificValue<Quantity, Unit>) = plus(value, ::DefaultScientificValue)
+    > Decimal.plus(value: ScientificValue<Quantity, Unit>) =
+    plus(value, ::DefaultScientificValue)
 
 /**
  * Creates a [Value] equal to the [ScientificValue.value] increased by [value]
@@ -166,7 +174,9 @@ infix operator fun <
     Quantity : PhysicalQuantity,
     LeftUnit : AbstractScientificUnit<Quantity>,
     RightUnit : ScientificUnit<Quantity>,
-    > ScientificValue<Quantity, LeftUnit>.plus(right: ScientificValue<Quantity, RightUnit>) = unit.plus(this, right, ::DefaultScientificValue)
+    > ScientificValue<Quantity, LeftUnit>.plus(
+    right: ScientificValue<Quantity, RightUnit>,
+) = unit.plus(this, right, ::DefaultScientificValue)
 
 /**
  * Adds the [ScientificValue.value] of two [ScientificValue] into a [Value] with [TargetUnit] as its unit
@@ -202,7 +212,8 @@ fun <
 infix operator fun <
     Quantity : PhysicalQuantity,
     Unit : AbstractScientificUnit<Quantity>,
-    > ScientificValue<Quantity, Unit>.minus(value: Number) = this - value.toDecimal()
+    > ScientificValue<Quantity, Unit>.minus(value: Number) =
+    this - value.toDecimal()
 
 /**
  * Creates a [DefaultScientificValue] equal to a [ScientificValue.value] decreased from this [Number]
@@ -226,7 +237,8 @@ infix operator fun <
 infix operator fun <
     Quantity : PhysicalQuantity,
     Unit : AbstractScientificUnit<Quantity>,
-    > ScientificValue<Quantity, Unit>.minus(value: Decimal) = minus(value, ::DefaultScientificValue)
+    > ScientificValue<Quantity, Unit>.minus(value: Decimal) =
+    minus(value, ::DefaultScientificValue)
 
 /**
  * Creates a [DefaultScientificValue] equal to a [ScientificValue.value] decreased from this [Decimal]
@@ -238,7 +250,8 @@ infix operator fun <
 infix operator fun <
     Quantity : PhysicalQuantity,
     Unit : AbstractScientificUnit<Quantity>,
-    > Decimal.minus(value: ScientificValue<Quantity, Unit>) = minus(value, ::DefaultScientificValue)
+    > Decimal.minus(value: ScientificValue<Quantity, Unit>) =
+    minus(value, ::DefaultScientificValue)
 
 /**
  * Creates a [Value] equal to the [ScientificValue.value] decreased by [value]
@@ -288,7 +301,9 @@ infix operator fun <
     Quantity : PhysicalQuantity,
     LeftUnit : AbstractScientificUnit<Quantity>,
     RightUnit : ScientificUnit<Quantity>,
-    > ScientificValue<Quantity, LeftUnit>.minus(right: ScientificValue<Quantity, RightUnit>) = unit.minus(this, right, ::DefaultScientificValue)
+    > ScientificValue<Quantity, LeftUnit>.minus(
+    right: ScientificValue<Quantity, RightUnit>,
+) = unit.minus(this, right, ::DefaultScientificValue)
 
 /**
  * Subtracts the [ScientificValue.value] of two [ScientificValue] into a [Value] with [TargetUnit] as its unit
@@ -324,7 +339,8 @@ fun <
 infix operator fun <
     Quantity : PhysicalQuantity,
     Unit : AbstractScientificUnit<Quantity>,
-    > ScientificValue<Quantity, Unit>.div(value: Number) = this / value.toDecimal()
+    > ScientificValue<Quantity, Unit>.div(value: Number) =
+    this / value.toDecimal()
 
 /**
  * Creates a [DefaultScientificValue] equal to a [ScientificValue.value] divided from this [Number]
@@ -348,7 +364,8 @@ infix operator fun <
 infix operator fun <
     Quantity : PhysicalQuantity,
     Unit : AbstractScientificUnit<Quantity>,
-    > ScientificValue<Quantity, Unit>.div(value: Decimal) = div(value, ::DefaultScientificValue)
+    > ScientificValue<Quantity, Unit>.div(value: Decimal) =
+    div(value, ::DefaultScientificValue)
 
 /**
  * Creates a [DefaultScientificValue] equal to a [ScientificValue.value] divided from this [Decimal]
@@ -360,7 +377,8 @@ infix operator fun <
 infix operator fun <
     Quantity : PhysicalQuantity,
     Unit : AbstractScientificUnit<Quantity>,
-    > Decimal.div(value: ScientificValue<Quantity, Unit>) = div(value, ::DefaultScientificValue)
+    > Decimal.div(value: ScientificValue<Quantity, Unit>) =
+    div(value, ::DefaultScientificValue)
 
 /**
  * Creates a [Value] equal to the [ScientificValue.value] divided by [value]
@@ -410,7 +428,9 @@ infix operator fun <
     Quantity : PhysicalQuantity,
     LeftUnit : AbstractScientificUnit<Quantity>,
     RightUnit : ScientificUnit<Quantity>,
-    > ScientificValue<Quantity, LeftUnit>.div(right: ScientificValue<Quantity, RightUnit>) = unit.div(this, right, ::DefaultScientificValue)
+    > ScientificValue<Quantity, LeftUnit>.div(
+    right: ScientificValue<Quantity, RightUnit>,
+) = unit.div(this, right, ::DefaultScientificValue)
 
 /**
  * Divides the [ScientificValue.value] of two [ScientificValue] into a [Value] with [TargetUnit] as its unit

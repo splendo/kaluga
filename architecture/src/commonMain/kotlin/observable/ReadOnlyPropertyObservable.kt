@@ -56,10 +56,10 @@ class ReadOnlyPropertyInitializedObservable<T>(
 ) :
     BaseInitializedObservable<T>(observation), InitializedObservable<T> {
 
-        init {
-            readOnlyPropertyObservableHelper(readOnlyProperty, observation)
-        }
+    init {
+        readOnlyPropertyObservableHelper(readOnlyProperty, observation)
     }
+}
 
 /**
  * A [BaseDefaultObservable] that matches its value to a [ReadOnlyProperty].
@@ -86,20 +86,18 @@ class ReadOnlyPropertyDefaultObservable<R : T?, T>(
 ) :
     BaseDefaultObservable<R, T>(observation) { // no default is needed, since this is for use with non-optionals
 
-        init {
-            readOnlyPropertyObservableHelper(readOnlyProperty, observation)
-        }
+    init {
+        readOnlyPropertyObservableHelper(readOnlyProperty, observation)
     }
+}
 
 /**
  * Converts a [ReadOnlyProperty] into a [ReadOnlyPropertyInitializedObservable]
  */
-fun <T> ReadOnlyProperty<Any?, T>.toInitializedObservable() =
-    ReadOnlyPropertyInitializedObservable(this)
+fun <T> ReadOnlyProperty<Any?, T>.toInitializedObservable() = ReadOnlyPropertyInitializedObservable(this)
 
 /**
  * Converts a [ReadOnlyProperty] into a [ReadOnlyPropertyDefaultObservable]
  * @param defaultValue The default value of [R] to observe if the [ReadOnlyProperty] has a value of `null`.
  */
-fun <R : T, T> ReadOnlyProperty<Any?, T?>.toDefaultObservable(defaultValue: R) =
-    ReadOnlyPropertyDefaultObservable(defaultValue, this)
+fun <R : T, T> ReadOnlyProperty<Any?, T?>.toDefaultObservable(defaultValue: R) = ReadOnlyPropertyDefaultObservable(defaultValue, this)

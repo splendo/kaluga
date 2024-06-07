@@ -1,23 +1,15 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-publishableComponent("permissions.contacts")
-
-kotlin {
-    sourceSets {
-        getByName("commonMain") {
-            dependencies {
+kaluga {
+    moduleName = "permissions.contacts"
+    dependencies {
+        common {
+            main {
                 api(project(":base-permissions", ""))
             }
-        }
-        getByName("commonTest") {
-            dependencies {
+            test {
                 api(project(":test-utils-base", ""))
             }
         }

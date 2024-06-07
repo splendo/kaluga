@@ -53,16 +53,16 @@ public abstract class com/splendo/kaluga/architecture/compose/navigation/BottomS
 
 public final class com/splendo/kaluga/architecture/compose/navigation/BottomSheetNavigatorState {
 	public static final field $stable I
-	public fun <init> (Landroidx/navigation/NavHostController;Landroidx/navigation/NavHostController;Landroidx/compose/material/ModalBottomSheetState;)V
+	public fun <init> (Landroidx/navigation/NavHostController;Landroidx/navigation/NavHostController;Landroidx/compose/material3/BottomSheetScaffoldState;)V
 	public final fun component1 ()Landroidx/navigation/NavHostController;
 	public final fun component2 ()Landroidx/navigation/NavHostController;
-	public final fun component3 ()Landroidx/compose/material/ModalBottomSheetState;
-	public final fun copy (Landroidx/navigation/NavHostController;Landroidx/navigation/NavHostController;Landroidx/compose/material/ModalBottomSheetState;)Lcom/splendo/kaluga/architecture/compose/navigation/BottomSheetNavigatorState;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/compose/navigation/BottomSheetNavigatorState;Landroidx/navigation/NavHostController;Landroidx/navigation/NavHostController;Landroidx/compose/material/ModalBottomSheetState;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/compose/navigation/BottomSheetNavigatorState;
+	public final fun component3 ()Landroidx/compose/material3/BottomSheetScaffoldState;
+	public final fun copy (Landroidx/navigation/NavHostController;Landroidx/navigation/NavHostController;Landroidx/compose/material3/BottomSheetScaffoldState;)Lcom/splendo/kaluga/architecture/compose/navigation/BottomSheetNavigatorState;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/compose/navigation/BottomSheetNavigatorState;Landroidx/navigation/NavHostController;Landroidx/navigation/NavHostController;Landroidx/compose/material3/BottomSheetScaffoldState;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/compose/navigation/BottomSheetNavigatorState;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getContentNavHostController ()Landroidx/navigation/NavHostController;
+	public final fun getScaffoldState ()Landroidx/compose/material3/BottomSheetScaffoldState;
 	public final fun getSheetContentNavHostController ()Landroidx/navigation/NavHostController;
-	public final fun getSheetState ()Landroidx/compose/material/ModalBottomSheetState;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -295,8 +295,8 @@ public abstract class com/splendo/kaluga/architecture/compose/navigation/Providi
 
 public final class com/splendo/kaluga/architecture/compose/navigation/RootModalBottomSheetNavigator : com/splendo/kaluga/architecture/compose/navigation/BottomSheetNavigator {
 	public static final field $stable I
-	public fun <init> (Lkotlin/jvm/functions/Function3;Landroidx/compose/material/ModalBottomSheetValue;Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function3;Landroidx/compose/material/ModalBottomSheetValue;Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function3;Landroidx/compose/material3/SheetValue;Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function3;Landroidx/compose/material3/SheetValue;Lcom/splendo/kaluga/architecture/compose/navigation/RouteController;Ljava/util/List;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/RootNavHostComposableNavigator : com/splendo/kaluga/architecture/compose/navigation/ComposableNavigator {
@@ -327,6 +327,9 @@ public final class com/splendo/kaluga/architecture/compose/navigation/Route$Back
 public final class com/splendo/kaluga/architecture/compose/navigation/Route$Close : com/splendo/kaluga/architecture/compose/navigation/Route {
 	public static final field $stable I
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/compose/navigation/Route$Close;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/Route$Companion {
@@ -433,6 +436,9 @@ public final class com/splendo/kaluga/architecture/compose/navigation/Route$Resu
 public final class com/splendo/kaluga/architecture/compose/navigation/Route$Result$Empty : com/splendo/kaluga/architecture/compose/navigation/Route$Result {
 	public static final field $stable I
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/compose/navigation/Route$Result$Empty;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class com/splendo/kaluga/architecture/compose/navigation/RouteController {

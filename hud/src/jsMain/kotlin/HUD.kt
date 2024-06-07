@@ -22,7 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 /**
  * Default [BaseHUD] implementation.
  */
-actual class HUD(override val hudConfig: HudConfig, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
+actual class HUD(actual override val hudConfig: HudConfig, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
 
     /**
      * Builder class for creating a [HUD]
@@ -39,13 +39,13 @@ actual class HUD(override val hudConfig: HudConfig, coroutineScope: CoroutineSco
     }
 
     private var _isVisible: Boolean = false
-    override val isVisible: Boolean get() = _isVisible
+    actual override val isVisible: Boolean get() = _isVisible
 
-    override suspend fun present(animated: Boolean): HUD = apply {
+    actual override suspend fun present(animated: Boolean): HUD = apply {
         _isVisible = true
     }
 
-    override suspend fun dismiss(animated: Boolean) {
+    actual override suspend fun dismiss(animated: Boolean) {
         _isVisible = false
     }
 }

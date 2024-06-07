@@ -19,9 +19,9 @@ package com.splendo.kaluga.permissions.location
 
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.permissions.base.AuthorizationStatusHandler
-import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
+import com.splendo.kaluga.permissions.base.DefaultAuthorizationStatusHandler
 import com.splendo.kaluga.permissions.base.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.base.PermissionContext
 import kotlinx.coroutines.CoroutineScope
@@ -41,9 +41,9 @@ import platform.Foundation.NSBundle
 import platform.darwin.NSObject
 import kotlin.time.Duration
 
-const val NSLocationWhenInUseUsageDescription = "NSLocationWhenInUseUsageDescription"
-const val NSLocationAlwaysAndWhenInUseUsageDescription = "NSLocationAlwaysAndWhenInUseUsageDescription"
-const val NSLocationAlwaysUsageDescription = "NSLocationAlwaysUsageDescription"
+private const val NS_LOCATION_WHEN_IN_USE_USAGE_DESCRIPTION = "NSLocationWhenInUseUsageDescription"
+private const val NS_LOCATION_ALWAYS_AND_WHEN_IN_USAGE_DESCRIPTION = "NSLocationAlwaysAndWhenInUseUsageDescription"
+private const val NS_LOCATION_ALWAYS_USAGE_DESCRIPTION = "NSLocationAlwaysUsageDescription"
 
 /**
  * The [BasePermissionManager] to use as a default for [LocationPermission]
@@ -79,9 +79,9 @@ actual class DefaultLocationPermissionManager(
 
     private val authorizationDelegate = Delegate(permission, permissionHandler, coroutineScope)
 
-    override fun requestPermissionDidStart() {
-        val locationDeclarations = listOf(NSLocationWhenInUseUsageDescription) + if (permission.background) {
-            listOf(NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationAlwaysUsageDescription)
+    actual override fun requestPermissionDidStart() {
+        val locationDeclarations = listOf(NS_LOCATION_WHEN_IN_USE_USAGE_DESCRIPTION) + if (permission.background) {
+            listOf(NS_LOCATION_ALWAYS_AND_WHEN_IN_USAGE_DESCRIPTION, NS_LOCATION_ALWAYS_USAGE_DESCRIPTION)
         } else {
             emptyList()
         }
@@ -100,7 +100,7 @@ actual class DefaultLocationPermissionManager(
         }
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         val permission = permission
         launch {
             val status = locationManager.updateLocationManager {
@@ -111,7 +111,7 @@ actual class DefaultLocationPermissionManager(
         }
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         launch {
             locationManager.updateLocationManager {
                 delegate = null
@@ -126,7 +126,7 @@ actual class DefaultLocationPermissionManager(
  */
 actual class LocationPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseLocationPermissionManagerBuilder {
 
-    override fun create(locationPermission: LocationPermission, settings: Settings, coroutineScope: CoroutineScope): LocationPermissionManager {
+    actual override fun create(locationPermission: LocationPermission, settings: Settings, coroutineScope: CoroutineScope): LocationPermissionManager {
         return DefaultLocationPermissionManager(context, locationPermission, settings, coroutineScope)
     }
 }

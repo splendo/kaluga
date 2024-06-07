@@ -71,21 +71,14 @@ class MockBluetoothService(
         }
     }
 
-    override fun startScanning(
-        filter: Filter,
-        cleanMode: BluetoothService.CleanMode,
-        connectionSettings: ConnectionSettings?,
-    ) {
+    override fun startScanning(filter: Filter, cleanMode: BluetoothService.CleanMode, connectionSettings: ConnectionSettings?) {
         currentFilter.value = filter
         startScanningMock.call(filter, cleanMode, connectionSettings)
     }
 
     override fun stopScanning(cleanMode: BluetoothService.CleanMode): Unit = stopScanningMock.call(cleanMode)
-    override fun pairedDevices(
-        filter: Filter,
-        removeForAllPairedFilters: Boolean,
-        connectionSettings: ConnectionSettings?,
-    ): Flow<List<Device>> = pairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
+    override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Flow<List<Device>> =
+        pairedDevicesMock.call(filter, removeForAllPairedFilters, connectionSettings)
 
     override fun scannedDevices(filter: Filter): Flow<List<Device>> = scannedDevicesMock.call(filter)
     override fun allDevices(): Flow<List<Device>> = allDevicesMock.call()

@@ -176,10 +176,10 @@ actual class HUD private constructor(
             return result ?: viewController
         }
 
-    override val hudConfig: HudConfig = containerView.hudConfig
-    override val isVisible: Boolean get() = hudViewController.presentingViewController() != null
+    actual override val hudConfig: HudConfig = containerView.hudConfig
+    actual override val isVisible: Boolean get() = hudViewController.presentingViewController() != null
 
-    override suspend fun present(animated: Boolean): HUD = suspendCoroutine { continuation ->
+    actual override suspend fun present(animated: Boolean): HUD = suspendCoroutine { continuation ->
         if (!isVisible) {
             topViewController.presentViewController(hudViewController, animated) {
                 continuation.resume(this)
@@ -189,7 +189,7 @@ actual class HUD private constructor(
         }
     }
 
-    override suspend fun dismiss(animated: Boolean) = suspendCoroutine<Unit> { continuation ->
+    actual override suspend fun dismiss(animated: Boolean) = suspendCoroutine<Unit> { continuation ->
         if (isVisible) {
             hudViewController.presentingViewController?.dismissViewControllerAnimated(animated) {
                 continuation.resume(Unit)

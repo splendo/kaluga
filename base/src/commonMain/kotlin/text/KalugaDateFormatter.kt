@@ -163,12 +163,21 @@ expect class KalugaDateFormatter : BaseDateFormatter {
          * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
          * @param locale The [KalugaLocale] for which the date should be formatted. Defaults to [KalugaLocale.defaultLocale].
          */
-        fun patternFormat(
-            pattern: String,
-            timeZone: KalugaTimeZone = KalugaTimeZone.current(),
-            locale: KalugaLocale = defaultLocale,
-        ): KalugaDateFormatter
+        fun patternFormat(pattern: String, timeZone: KalugaTimeZone = KalugaTimeZone.current(), locale: KalugaLocale = defaultLocale): KalugaDateFormatter
     }
+
+    override var pattern: String
+    override var timeZone: KalugaTimeZone
+    override var eras: List<String>
+    override var months: List<String>
+    override var shortMonths: List<String>
+    override var weekdays: List<String>
+    override var shortWeekdays: List<String>
+    override var amString: String
+    override var pmString: String
+
+    override fun format(date: KalugaDate): String
+    override fun parse(string: String): KalugaDate?
 }
 
 @Deprecated(
@@ -183,10 +192,8 @@ typealias DateFormatter = KalugaDateFormatter
  * @param pattern The pattern to apply.
  * @param timeZone The [KalugaTimeZone] for which the date should be formatted. Defaults to [KalugaTimeZone.current].
  */
-fun KalugaDateFormatter.Companion.fixedPatternFormat(
-    pattern: String,
-    timeZone: KalugaTimeZone = KalugaTimeZone.current(),
-) = patternFormat(pattern, timeZone, KalugaLocale.enUsPosix)
+fun KalugaDateFormatter.Companion.fixedPatternFormat(pattern: String, timeZone: KalugaTimeZone = KalugaTimeZone.current()) =
+    patternFormat(pattern, timeZone, KalugaLocale.enUsPosix)
 
 /**
  * Creates a [KalugaDateFormatter] that formats time according to the ISo 8601 format.

@@ -65,10 +65,7 @@ actual class DateTimePickerPresenter(
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The created [DateTimePickerPresenter]
          */
-        actual override fun create(
-            dateTimePicker: DateTimePicker,
-            coroutineScope: CoroutineScope,
-        ) = DateTimePickerPresenter(dateTimePicker, viewController)
+        actual override fun create(dateTimePicker: DateTimePicker, coroutineScope: CoroutineScope) = DateTimePickerPresenter(dateTimePicker, viewController)
     }
 
     private inner class DateTimePickerViewController(private val completion: (KalugaDate?) -> Unit) : UIViewController(null, null) {
@@ -175,11 +172,11 @@ actual class DateTimePickerPresenter(
         }
     }
 
-    override fun dismissDateTimePicker(animated: Boolean) {
+    actual override fun dismissDateTimePicker(animated: Boolean) {
         parent.dismissModalViewControllerAnimated(animated)
     }
 
-    override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit) {
+    actual override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit) {
         parent.presentViewController(DateTimePickerViewController(completion), animated, null)
     }
 }

@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 sealed class ScientificUnitSelectionAction<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
-    object Cancelled : ScientificUnitSelectionAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
+    data object Cancelled : ScientificUnitSelectionAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
     data class DidSelect(val index: Int) : ScientificUnitSelectionAction<Int>(index, NavigationBundleSpecType.IntegerType)
 }
 

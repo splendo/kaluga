@@ -18,6 +18,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.alerts
 
+import com.splendo.kaluga.logging.Logger
 import kotlinx.cinterop.ObjCAction
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSString
@@ -32,19 +33,28 @@ import platform.UIKit.UIAlertControllerStyle
 import platform.UIKit.UIAlertControllerStyleActionSheet
 import platform.UIKit.UIAlertControllerStyleAlert
 import platform.UIKit.UIControlEventEditingChanged
+import platform.UIKit.UIPopoverPresentationController
+import platform.UIKit.UIPopoverPresentationControllerDelegateProtocol
 import platform.UIKit.UITextField
+import platform.UIKit.UIView
 import platform.UIKit.UIViewController
+import platform.UIKit.popoverPresentationController
+import platform.darwin.NSObject
 import platform.objc.sel_registerName
 
 /**
  * A [BaseAlertPresenter] for presenting an [Alert].
  * @param alert The [Alert] being presented.
  * @param parent The [UIViewController] to present the [Alert]
+ * @param delegateBuilder Method that creates a [UIPopoverPresentationControllerDelegateProtocol].
+ * This allows for presentation of [Alert.Style.ACTION_LIST] on iPad.
  */
 actual class AlertPresenter(
-    private val alert: Alert,
+    alert: Alert,
     private val parent: UIViewController,
-) : BaseAlertPresenter(alert) {
+    logger: Logger,
+    private val delegateBuilder: (Alert) -> UIPopoverPresentationControllerDelegateProtocol,
+) : BaseAlertPresenter(alert, logger) {
 
     /** Ref to alert's [UITextField] of type [Alert.Style.TEXT_INPUT] */
     private var textField: UITextField? = null
@@ -68,6 +78,7 @@ actual class AlertPresenter(
             Alert.Action.Style.POSITIVE,
             Alert.Action.Style.NEUTRAL,
             -> UIAlertActionStyleDefault
+
             Alert.Action.Style.DESTRUCTIVE -> UIAlertActionStyleDestructive
             Alert.Action.Style.CANCEL,
             Alert.Action.Style.NEGATIVE,
@@ -84,28 +95,49 @@ actual class AlertPresenter(
     /**
      * A [BaseAlertPresenter.Builder] for creating an [AlertPresenter]
      * @param viewController The [UIViewController] to present any [AlertPresenter] built using this builder.
+     * @param delegateBuilder Method that creates a [UIPopoverPresentationControllerDelegateProtocol] for an [Alert].
+     * This allows for presentation of [Alert.Style.ACTION_LIST] on iPad.
      */
-    actual class Builder(private val viewController: UIViewController) : BaseAlertPresenter.Builder() {
+    actual class Builder(
+        private val viewController: UIViewController,
+        private val delegateBuilder: (Alert) -> UIPopoverPresentationControllerDelegateProtocol,
+    ) : BaseAlertPresenter.Builder() {
+
+        /**
+         * Constructor that returns a [DefaultUIPopoverPresentationControllerDelegateProtocol] when a presented [AlertPresenter] requires a [UIPopoverPresentationControllerDelegateProtocol].
+         * @param viewController The [UIViewController] to present any [AlertPresenter] built using this builder.
+         */
+        constructor(
+            viewController: UIViewController,
+        ) : this(
+            viewController,
+            { DefaultUIPopoverPresentationControllerDelegateProtocol(viewController.view) },
+        )
 
         /**
          * Creates an [AlertPresenter]
          *
          * @param alert The [Alert] to be presented with the built presenter.
+         * @param logger The [Logger] that logs the logs of the presenter.
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The created [AlertPresenter]
          */
-        actual override fun create(alert: Alert, coroutineScope: CoroutineScope) = AlertPresenter(alert, viewController)
+        actual override fun create(alert: Alert, logger: Logger, coroutineScope: CoroutineScope) = AlertPresenter(alert, viewController, logger, delegateBuilder)
     }
 
-    override fun dismissAlert(animated: Boolean) {
+    class DefaultUIPopoverPresentationControllerDelegateProtocol(private val sourceView: UIView) : NSObject(), UIPopoverPresentationControllerDelegateProtocol {
+        override fun prepareForPopoverPresentation(popoverPresentationController: UIPopoverPresentationController) {
+            popoverPresentationController.sourceView = sourceView
+            popoverPresentationController.sourceRect = sourceView.bounds
+            popoverPresentationController.permittedArrowDirections = 0UL
+        }
+    }
+
+    actual override fun dismissAlert(animated: Boolean) {
         parent.dismissModalViewControllerAnimated(animated)
     }
 
-    override fun showAlert(
-        animated: Boolean,
-        afterHandler: (Alert.Action?) -> Unit,
-        completion: () -> Unit,
-    ) {
+    actual override fun showAlert(animated: Boolean, afterHandler: (Alert.Action?) -> Unit, completion: () -> Unit) {
         UIAlertController.alertControllerWithTitle(
             alert.title,
             alert.message,
@@ -143,6 +175,7 @@ actual class AlertPresenter(
                 }
             }
         }.run {
+            popoverPresentationController?.setDelegate(delegateBuilder(alert))
             parent.presentViewController(this, animated, completion)
         }
     }

@@ -214,167 +214,266 @@ public abstract class com/splendo/kaluga/architecture/navigation/IntentFlag {
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityBroughtToFront : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityBroughtToFront;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityClearTask : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityClearTask;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityClearTop : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityClearTop;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityExcludeFromRecents : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityExcludeFromRecents;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityForwardResult : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityForwardResult;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityLaunchAdjacent : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityLaunchAdjacent;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityLaunchedFromHistory : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityLaunchedFromHistory;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityMatchExternal : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityMatchExternal;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityMultipleTask : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityMultipleTask;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityNewDocument : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityNewDocument;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityNewTask : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityNewTask;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityNoAnimation : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityNoAnimation;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityNoHistory : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityNoHistory;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityNoUserAction : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityNoUserAction;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityPreviousIsTop : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityPreviousIsTop;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityReorderToFront : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityReorderToFront;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityResetTaskIfNeeded : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityResetTaskIfNeeded;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityRetainInRecents : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityRetainInRecents;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivitySingleTop : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivitySingleTop;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ActivityTaskOnHome : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ActivityTaskOnHome;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$DebugLogResolution : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$DebugLogResolution;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ExcludeStoppedPackages : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ExcludeStoppedPackages;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$FromBackground : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$FromBackground;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$GrantPersistableUriPermission : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$GrantPersistableUriPermission;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$GrantPrefixUriPermission : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$GrantPrefixUriPermission;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$GrantReadUriPermission : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$GrantReadUriPermission;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$GrantWriteUriPermission : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$GrantWriteUriPermission;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$IncludeStoppedPackages : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$IncludeStoppedPackages;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ReceiverForeground : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ReceiverForeground;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ReceiverNoAbort : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ReceiverNoAbort;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ReceiverRegisterOnly : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ReceiverRegisterOnly;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ReceiverReplacePending : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ReceiverReplacePending;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlag$ReceiverVisibleToInstantApps : com/splendo/kaluga/architecture/navigation/IntentFlag {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/IntentFlag$ReceiverVisibleToInstantApps;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/IntentFlagKt {
@@ -484,6 +583,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([Z)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$BooleanArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$BooleanType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -491,6 +593,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue (Z)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$BooleanValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$BundleType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -505,6 +610,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([B)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ByteArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$ByteType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -512,6 +620,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (B)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ByteValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$CharArrayType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -519,6 +630,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([C)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$CharSequenceType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -526,6 +640,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (Ljava/lang/CharSequence;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharSequenceValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$CharType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -533,6 +650,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (C)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$DateArrayType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -540,6 +660,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue (Ljava/util/List;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DateArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$DateType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -547,6 +670,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (Lcom/splendo/kaluga/base/utils/KalugaDate;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DateValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$DoubleArrayType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -554,6 +680,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([D)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DoubleArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$DoubleType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -561,6 +690,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (D)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DoubleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$FloatArrayType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -568,6 +700,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([F)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$FloatArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$FloatType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -575,6 +710,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (F)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$FloatValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$IntegerArrayType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -582,6 +720,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([I)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$IntegerArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$IntegerType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -589,6 +730,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (I)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$IntegerValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$LongArrayType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -596,6 +740,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([J)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$LongArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$LongType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -603,6 +750,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public fun convertValue (J)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$LongValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType {
@@ -641,6 +791,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue ([S)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ShortArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$ShortType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -648,6 +801,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue (S)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ShortValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$StringArrayType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -655,6 +811,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue (Ljava/util/List;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$StringArrayValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$StringType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -662,6 +821,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue (Ljava/lang/String;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$StringValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$UnitType : com/splendo/kaluga/architecture/navigation/NavigationBundleSpecType$NonNullableNavigationBundleSpecType {
@@ -669,6 +831,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleSp
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public synthetic fun convertValue (Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue;
 	public fun convertValue (Lkotlin/Unit;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$UnitValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class com/splendo/kaluga/architecture/navigation/NavigationBundleValue {
@@ -953,8 +1118,11 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$UnitValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$UnitValue;
+	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()Lkotlin/Unit;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public class com/splendo/kaluga/architecture/navigation/NavigationException : java/lang/RuntimeException {
@@ -1010,6 +1178,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Act
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Activity$LaunchType$NoResult : com/splendo/kaluga/architecture/navigation/NavigationSpec$Activity$LaunchType {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Activity$LaunchType$NoResult;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Browser : com/splendo/kaluga/architecture/navigation/NavigationSpec {
@@ -1030,10 +1201,16 @@ public abstract class com/splendo/kaluga/architecture/navigation/NavigationSpec$
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Browser$Type$CustomTab : com/splendo/kaluga/architecture/navigation/NavigationSpec$Browser$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Browser$Type$CustomTab;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Browser$Type$Normal : com/splendo/kaluga/architecture/navigation/NavigationSpec$Browser$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Browser$Type$Normal;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Camera : com/splendo/kaluga/architecture/navigation/NavigationSpec {
@@ -1056,10 +1233,16 @@ public abstract class com/splendo/kaluga/architecture/navigation/NavigationSpec$
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Camera$Type$Image : com/splendo/kaluga/architecture/navigation/NavigationSpec$Camera$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Camera$Type$Image;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Camera$Type$Video : com/splendo/kaluga/architecture/navigation/NavigationSpec$Camera$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Camera$Type$Video;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Close : com/splendo/kaluga/architecture/navigation/NavigationSpec {
@@ -1179,10 +1362,16 @@ public abstract class com/splendo/kaluga/architecture/navigation/NavigationSpec$
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Email$Type$Plain : com/splendo/kaluga/architecture/navigation/NavigationSpec$Email$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Email$Type$Plain;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Email$Type$Stylized : com/splendo/kaluga/architecture/navigation/NavigationSpec$Email$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Email$Type$Stylized;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$FileSelector : com/splendo/kaluga/architecture/navigation/NavigationSpec {
@@ -1275,6 +1464,9 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Fra
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$BackStackSettings$DontAdd : com/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$BackStackSettings {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$BackStackSettings$DontAdd;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class com/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type {
@@ -1282,10 +1474,16 @@ public abstract class com/splendo/kaluga/architecture/navigation/NavigationSpec$
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type$Add : com/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type$Add;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type$Replace : com/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Fragment$Type$Replace;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Phone : com/splendo/kaluga/architecture/navigation/NavigationSpec {
@@ -1306,10 +1504,16 @@ public abstract class com/splendo/kaluga/architecture/navigation/NavigationSpec$
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Phone$Type$Call : com/splendo/kaluga/architecture/navigation/NavigationSpec$Phone$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Phone$Type$Call;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Phone$Type$Dial : com/splendo/kaluga/architecture/navigation/NavigationSpec$Phone$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Phone$Type$Dial;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$PopFragment : com/splendo/kaluga/architecture/navigation/NavigationSpec {
@@ -1382,77 +1586,122 @@ public abstract class com/splendo/kaluga/architecture/navigation/NavigationSpec$
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$AirplaneMode : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$AirplaneMode;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Apn : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Apn;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$AppDetails : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$AppDetails;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Bluetooth : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Bluetooth;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Date : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Date;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Display : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Display;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$General : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$General;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$InputMethod : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$InputMethod;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$InternalStorage : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$InternalStorage;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Locale : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Locale;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$LocationSource : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$LocationSource;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$MemoryCard : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$MemoryCard;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Security : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Security;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Wifi : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Wifi;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Wireless : com/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Settings$Type$Wireless;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun intent (Landroid/app/Activity;)Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$TextMessenger : com/splendo/kaluga/architecture/navigation/NavigationSpec {
@@ -1492,14 +1741,23 @@ public abstract class com/splendo/kaluga/architecture/navigation/NavigationSpec$
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$TextMessenger$Type$Image : com/splendo/kaluga/architecture/navigation/NavigationSpec$TextMessenger$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$TextMessenger$Type$Image;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$TextMessenger$Type$Plain : com/splendo/kaluga/architecture/navigation/NavigationSpec$TextMessenger$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$TextMessenger$Type$Plain;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$TextMessenger$Type$Video : com/splendo/kaluga/architecture/navigation/NavigationSpec$TextMessenger$Type {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$TextMessenger$Type$Video;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$ThirdPartyApp : com/splendo/kaluga/architecture/navigation/NavigationSpec {
@@ -1563,7 +1821,6 @@ public abstract class com/splendo/kaluga/architecture/observable/AbstractBaseDef
 	public fun getDefaultValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public synthetic fun getObservation ()Lcom/splendo/kaluga/architecture/observable/Observation;
 	protected fun getObservation ()Lcom/splendo/kaluga/architecture/observable/ObservationDefault;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
@@ -1583,7 +1840,6 @@ public abstract class com/splendo/kaluga/architecture/observable/AbstractBaseIni
 	public fun getCurrentOrNull ()Ljava/lang/Object;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public synthetic fun getObservation ()Lcom/splendo/kaluga/architecture/observable/Observation;
 	protected fun getObservation ()Lcom/splendo/kaluga/architecture/observable/ObservationInitialized;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
@@ -1606,7 +1862,6 @@ public abstract class com/splendo/kaluga/architecture/observable/AbstractBaseUni
 	public fun getCurrentOrNull ()Ljava/lang/Object;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Nothing;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public synthetic fun getObservation ()Lcom/splendo/kaluga/architecture/observable/Observation;
 	protected fun getObservation ()Lcom/splendo/kaluga/architecture/observable/ObservationUninitialized;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
@@ -1631,7 +1886,6 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseDefaultObse
 	public fun getDefaultValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public synthetic fun getObservation ()Lcom/splendo/kaluga/architecture/observable/Observation;
 	protected fun getObservation ()Lcom/splendo/kaluga/architecture/observable/ObservationDefault;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
@@ -1645,8 +1899,7 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseDefaultObse
 public abstract class com/splendo/kaluga/architecture/observable/BaseDefaultSubject : com/splendo/kaluga/architecture/observable/AbstractBaseDefaultSubject {
 	public fun <init> (Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;)V
 	public fun <init> (Lcom/splendo/kaluga/architecture/observable/ObservationDefault;)V
-	protected fun createLiveData ()Landroidx/lifecycle/MutableLiveData;
-	public fun liveDataObserver ()Landroidx/lifecycle/Observer;
+	protected final fun getPlatformSubjectObserver ()Lcom/splendo/kaluga/architecture/observable/PlatformSubjectObserver;
 }
 
 public abstract class com/splendo/kaluga/architecture/observable/BaseInitializedObservable : com/splendo/kaluga/architecture/observable/BaseObservable, com/splendo/kaluga/architecture/observable/Initialized, com/splendo/kaluga/architecture/observable/InitializedObservable {
@@ -1656,7 +1909,6 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseInitialized
 	public fun getCurrentOrNull ()Ljava/lang/Object;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public synthetic fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
@@ -1668,8 +1920,7 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseInitialized
 public abstract class com/splendo/kaluga/architecture/observable/BaseInitializedSubject : com/splendo/kaluga/architecture/observable/AbstractBaseInitializedSubject {
 	public fun <init> (Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;)V
 	public fun <init> (Lcom/splendo/kaluga/architecture/observable/ObservationInitialized;)V
-	protected fun createLiveData ()Landroidx/lifecycle/MutableLiveData;
-	public fun liveDataObserver ()Landroidx/lifecycle/Observer;
+	protected final fun getPlatformSubjectObserver ()Lcom/splendo/kaluga/architecture/observable/PlatformSubjectObserver;
 }
 
 public abstract class com/splendo/kaluga/architecture/observable/BaseObservable : com/splendo/kaluga/architecture/observable/BasicObservable, com/splendo/kaluga/architecture/observable/Initial {
@@ -1691,9 +1942,9 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseSimpleDispo
 public abstract class com/splendo/kaluga/architecture/observable/BaseSubject : com/splendo/kaluga/architecture/observable/AbstractBaseSubject {
 	public fun <init> (Lcom/splendo/kaluga/architecture/observable/Observation;Lkotlin/jvm/functions/Function1;)V
 	public final fun bind (Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;)V
-	protected abstract fun createLiveData ()Landroidx/lifecycle/MutableLiveData;
 	public final fun getMutableLiveData ()Landroidx/lifecycle/MutableLiveData;
-	public abstract fun liveDataObserver ()Landroidx/lifecycle/Observer;
+	protected abstract fun getPlatformSubjectObserver ()Lcom/splendo/kaluga/architecture/observable/PlatformSubjectObserver;
+	public final fun liveDataObserver ()Landroidx/lifecycle/Observer;
 }
 
 public abstract class com/splendo/kaluga/architecture/observable/BaseUninitializedObservable : com/splendo/kaluga/architecture/observable/BaseObservable, com/splendo/kaluga/architecture/observable/Uninitialized, com/splendo/kaluga/architecture/observable/UninitializedObservable {
@@ -1701,7 +1952,6 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseUninitializ
 	public fun getCurrentOrNull ()Ljava/lang/Object;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Nothing;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public synthetic fun getObservation ()Lcom/splendo/kaluga/architecture/observable/Observation;
 	protected fun getObservation ()Lcom/splendo/kaluga/architecture/observable/ObservationUninitialized;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
@@ -1713,8 +1963,7 @@ public abstract class com/splendo/kaluga/architecture/observable/BaseUninitializ
 
 public abstract class com/splendo/kaluga/architecture/observable/BaseUninitializedSubject : com/splendo/kaluga/architecture/observable/AbstractBaseUninitializedSubject {
 	public fun <init> (Lcom/splendo/kaluga/architecture/observable/ObservationUninitialized;)V
-	protected fun createLiveData ()Landroidx/lifecycle/MutableLiveData;
-	public fun liveDataObserver ()Landroidx/lifecycle/Observer;
+	protected final fun getPlatformSubjectObserver ()Lcom/splendo/kaluga/architecture/observable/PlatformSubjectObserver;
 }
 
 public abstract interface class com/splendo/kaluga/architecture/observable/BasicObservable : com/splendo/kaluga/architecture/observable/Initial, kotlin/properties/ReadOnlyProperty {
@@ -1733,22 +1982,10 @@ public abstract interface class com/splendo/kaluga/architecture/observable/Defau
 	public abstract fun getDefaultValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 }
 
-public final class com/splendo/kaluga/architecture/observable/DefaultInitialized$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/DefaultInitialized;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/DefaultObservable : com/splendo/kaluga/architecture/observable/BasicObservable, com/splendo/kaluga/architecture/observable/DefaultInitialized {
 }
 
-public final class com/splendo/kaluga/architecture/observable/DefaultObservable$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/DefaultObservable;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/DefaultSubject : com/splendo/kaluga/architecture/observable/BasicSubject, com/splendo/kaluga/architecture/observable/DefaultObservable, com/splendo/kaluga/architecture/observable/MutableDefaultInitialized {
-}
-
-public final class com/splendo/kaluga/architecture/observable/DefaultSubject$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/DefaultSubject;)Landroidx/lifecycle/LiveData;
 }
 
 public abstract interface class com/splendo/kaluga/architecture/observable/Disposable {
@@ -1814,43 +2051,19 @@ public abstract interface class com/splendo/kaluga/architecture/observable/Initi
 	public abstract fun observeInitialized (Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/architecture/observable/Disposable;
 }
 
-public final class com/splendo/kaluga/architecture/observable/Initialized$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/Initialized;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/InitializedObservable : com/splendo/kaluga/architecture/observable/BasicObservable, com/splendo/kaluga/architecture/observable/Initialized {
-}
-
-public final class com/splendo/kaluga/architecture/observable/InitializedObservable$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/InitializedObservable;)Landroidx/lifecycle/LiveData;
 }
 
 public abstract interface class com/splendo/kaluga/architecture/observable/InitializedSubject : com/splendo/kaluga/architecture/observable/BasicSubject, com/splendo/kaluga/architecture/observable/InitializedObservable, com/splendo/kaluga/architecture/observable/MutableInitialized {
 }
 
-public final class com/splendo/kaluga/architecture/observable/InitializedSubject$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/InitializedSubject;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/MutableDefaultInitialized : com/splendo/kaluga/architecture/observable/DefaultInitialized, com/splendo/kaluga/architecture/observable/WithMutableState {
-}
-
-public final class com/splendo/kaluga/architecture/observable/MutableDefaultInitialized$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/MutableDefaultInitialized;)Landroidx/lifecycle/LiveData;
 }
 
 public abstract interface class com/splendo/kaluga/architecture/observable/MutableInitialized : com/splendo/kaluga/architecture/observable/Initialized, com/splendo/kaluga/architecture/observable/WithMutableState {
 }
 
-public final class com/splendo/kaluga/architecture/observable/MutableInitialized$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/MutableInitialized;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/MutableUninitialized : com/splendo/kaluga/architecture/observable/Uninitialized, com/splendo/kaluga/architecture/observable/WithMutableState {
-}
-
-public final class com/splendo/kaluga/architecture/observable/MutableUninitialized$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/MutableUninitialized;)Landroidx/lifecycle/LiveData;
 }
 
 public final class com/splendo/kaluga/architecture/observable/ObservableKt {
@@ -1910,7 +2123,6 @@ public class com/splendo/kaluga/architecture/observable/ObservationDefault : com
 	public fun getDefaultValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
 	public synthetic fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
@@ -1926,7 +2138,6 @@ public class com/splendo/kaluga/architecture/observable/ObservationInitialized :
 	public fun getCurrent ()Ljava/lang/Object;
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Value;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
 	public synthetic fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
@@ -1945,13 +2156,17 @@ public final class com/splendo/kaluga/architecture/observable/ObservationUniniti
 	public fun <init> ()V
 	public fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Nothing;
 	public synthetic fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional;
-	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public fun getStateFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
 	public synthetic fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
 	public synthetic fun getValueDelegate ()Lkotlin/properties/ReadOnlyProperty;
 	public fun getValueDelegate ()Lkotlin/properties/ReadWriteProperty;
 	public fun setValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public abstract interface class com/splendo/kaluga/architecture/observable/PlatformSubjectObserver {
+	public abstract fun createLiveData ()Landroidx/lifecycle/MutableLiveData;
+	public abstract fun liveDataObserver ()Landroidx/lifecycle/Observer;
 }
 
 public abstract interface class com/splendo/kaluga/architecture/observable/Postable {
@@ -2070,22 +2285,10 @@ public abstract interface class com/splendo/kaluga/architecture/observable/Unini
 	public abstract fun getInitialValue ()Lcom/splendo/kaluga/architecture/observable/ObservableOptional$Nothing;
 }
 
-public final class com/splendo/kaluga/architecture/observable/Uninitialized$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/Uninitialized;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/UninitializedObservable : com/splendo/kaluga/architecture/observable/BasicObservable, com/splendo/kaluga/architecture/observable/Uninitialized {
 }
 
-public final class com/splendo/kaluga/architecture/observable/UninitializedObservable$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/UninitializedObservable;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/UninitializedSubject : com/splendo/kaluga/architecture/observable/BasicSubject, com/splendo/kaluga/architecture/observable/MutableUninitialized, com/splendo/kaluga/architecture/observable/UninitializedObservable {
-}
-
-public final class com/splendo/kaluga/architecture/observable/UninitializedSubject$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/UninitializedSubject;)Landroidx/lifecycle/LiveData;
 }
 
 public abstract interface class com/splendo/kaluga/architecture/observable/WithMutableState : com/splendo/kaluga/architecture/observable/WithState {
@@ -2093,18 +2296,10 @@ public abstract interface class com/splendo/kaluga/architecture/observable/WithM
 	public abstract fun getValueDelegate ()Lkotlin/properties/ReadWriteProperty;
 }
 
-public final class com/splendo/kaluga/architecture/observable/WithMutableState$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/WithMutableState;)Landroidx/lifecycle/LiveData;
-}
-
 public abstract interface class com/splendo/kaluga/architecture/observable/WithState {
-	public abstract fun getLiveData ()Landroidx/lifecycle/LiveData;
+	public fun getLiveData ()Landroidx/lifecycle/LiveData;
 	public abstract fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public abstract fun getValueDelegate ()Lkotlin/properties/ReadOnlyProperty;
-}
-
-public final class com/splendo/kaluga/architecture/observable/WithState$DefaultImpls {
-	public static fun getLiveData (Lcom/splendo/kaluga/architecture/observable/WithState;)Landroidx/lifecycle/LiveData;
 }
 
 public final class com/splendo/kaluga/architecture/observable/WithStateKt {

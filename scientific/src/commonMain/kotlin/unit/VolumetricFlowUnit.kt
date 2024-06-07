@@ -74,7 +74,7 @@ sealed class VolumetricFlow : AbstractScientificUnit<PhysicalQuantity.Volumetric
      */
     abstract val per: Time
     override val quantity = PhysicalQuantity.VolumetricFlow
-    override val symbol: String by lazy { "${volume.symbol} / ${per.symbol}" }
+    override val symbol: String by lazy { "${volume.symbol}/${per.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(volume.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = volume.toSIUnit(per.fromSIUnit(value))
 }

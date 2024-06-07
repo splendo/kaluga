@@ -1,11 +1,12 @@
-import org.jetbrains.kotlin.konan.file.File
-import org.jetbrains.kotlin.konan.properties.loadProperties
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     `kotlin-dsl-precompiled-script-plugins`
+    `version-catalog`
     `maven-publish`
+    alias(libs.plugins.kotlinter)
 }
 
 repositories {
@@ -15,22 +16,38 @@ repositories {
 }
 
 gradlePlugin {
-    plugins.register("kaluga-library-components") {
-        id = "kaluga-library-components"
-        implementationClass = "LibraryComponentsPlugin"
+    plugins.register("com.splendo.kaluga.plugin") {
+        id = "com.splendo.kaluga.plugin"
+        implementationClass = "com.splendo.kaluga.plugin.MultiplatformLibraryComponentsPlugin"
+    }
+    plugins.register("com.splendo.kaluga.plugin.android.compose") {
+        id = "com.splendo.kaluga.plugin.android.compose"
+        implementationClass = "com.splendo.kaluga.plugin.ComposeAndroidLibraryComponentsPlugin"
+    }
+    plugins.register("com.splendo.kaluga.plugin.android.databinding") {
+        id = "com.splendo.kaluga.plugin.android.databinding"
+        implementationClass = "com.splendo.kaluga.plugin.DatabindingAndroidLibraryComponentsPlugin"
     }
 }
 
+kotlin {
+    jvmToolchain(libs.versions.java.get().toInt())
+}
+
 dependencies {
+    implementation(libs.android.gradle)
+    implementation(libs.compose.gradle)
+    implementation(libs.dependencycheck.gradle)
+    implementation(libs.dokka.gradle)
+    implementation(libs.kotlin.gradle)
+    implementation(libs.kotlinter.gradle)
+    implementation(libs.kotlinx.atomicfu.gradle)
+    implementation(libs.kotlinx.binarycompatibilityvalidator.gradle)
+    implementation(libs.kotlinx.kover.gradle)
+}
 
-    val properties = File("${rootDir.absolutePath}/../gradle.properties").loadProperties()
-    val kotlinVersion = properties["kaluga.kotlinVersion"] as String
-    val androidGradleVersion = properties["kaluga.androidGradlePluginVersion"] as String
-    val kotlinterVersion = properties["kaluga.kotlinterGradlePluginVersion"] as String
-    logger.lifecycle("Kotlin version $kotlinVersion")
+val compileKotlin: KotlinCompile by tasks
 
-    // mostly migrated to new style plugin declarations, but some cross plugin interaction still requires this
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-    implementation("com.android.tools.build:gradle:$androidGradleVersion")
-    implementation("org.jmailen.gradle:kotlinter-gradle:$kotlinterVersion")
+compileKotlin.kotlinOptions {
+    languageVersion = "2.0"
 }

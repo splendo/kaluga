@@ -150,7 +150,9 @@ open class ScanningStateImplRepo(
                 }
             }
             is ScanningState.NoBluetooth.MissingPermissions -> if (event.hasPermission) state.permit(scanner.isHardwareEnabled()) else state.remain()
-            else -> { state.remain() }
+            else -> {
+                state.remain()
+            }
         }
     }
 

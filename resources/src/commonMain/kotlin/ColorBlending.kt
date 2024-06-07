@@ -95,8 +95,7 @@ sealed class BlendMode {
                 blue,
             )
 
-        protected fun KalugaColor.setLumination(lumination: Double): KalugaColor =
-            unbounded.setLumination(lumination).clip
+        protected fun KalugaColor.setLumination(lumination: Double): KalugaColor = unbounded.setLumination(lumination).clip
 
         protected fun KalugaColor.setSaturation(saturation: Double): KalugaColor {
             val keyRed = "red"
@@ -122,53 +121,49 @@ sealed class BlendMode {
     /**
      * A [SeparableBlendMode] where only the top layer is used
      */
-    object Normal : SeparableBlendMode() {
+    data object Normal : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double = source
     }
 
     /**
      * A [SeparableBlendMode] where the top layer is multiplied with the base layer
      */
-    object Multiply : SeparableBlendMode() {
+    data object Multiply : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double = backdrop * source
     }
 
     /**
      * A [SeparableBlendMode] where the colors are inverted, multiplied and then inverted again
      */
-    object Screen : SeparableBlendMode() {
-        override fun blendColorChannel(backdrop: Double, source: Double): Double =
-            backdrop + source - backdrop * source
+    data object Screen : SeparableBlendMode() {
+        override fun blendColorChannel(backdrop: Double, source: Double): Double = backdrop + source - backdrop * source
     }
 
     /**
      * A [SeparableBlendMode] where if the base layer is light, the top layer becomes lighter; where the base layer is dark, the top becomes darker
      */
-    object Overlay : SeparableBlendMode() {
-        override fun blendColorChannel(backdrop: Double, source: Double): Double =
-            HardLight.blendColorChannel(source, backdrop)
+    data object Overlay : SeparableBlendMode() {
+        override fun blendColorChannel(backdrop: Double, source: Double): Double = HardLight.blendColorChannel(source, backdrop)
     }
 
     /**
      * A [SeparableBlendMode] where for each channel the darkest of the base layer and top later is used
      */
-    object Darken : SeparableBlendMode() {
-        override fun blendColorChannel(backdrop: Double, source: Double): Double =
-            min(backdrop, source)
+    data object Darken : SeparableBlendMode() {
+        override fun blendColorChannel(backdrop: Double, source: Double): Double = min(backdrop, source)
     }
 
     /**
      * A [SeparableBlendMode] where for each channel the lightest of the base layer and top later is used
      */
-    object Lighten : SeparableBlendMode() {
-        override fun blendColorChannel(backdrop: Double, source: Double): Double =
-            max(backdrop, source)
+    data object Lighten : SeparableBlendMode() {
+        override fun blendColorChannel(backdrop: Double, source: Double): Double = max(backdrop, source)
     }
 
     /**
      * A [SeparableBlendMode] where if the source color is lighter than 50% gray, the color is lightened, as if [Screen] was applied. If the source color is darker than 50% gray, the image is darkened, as if [Multiply] was applied
      */
-    object HardLight : SeparableBlendMode() {
+    data object HardLight : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double {
             return if (source <= 0.5) {
                 Multiply.blendColorChannel(backdrop, 2.0 * source)
@@ -181,7 +176,7 @@ sealed class BlendMode {
     /**
      * A [SeparableBlendMode] where if the source color is lighter than 50% gray, the color is lightened, as if [ColorDodge] was applied. If the source color is darker than 50% gray, the image is darkened, as if [ColorBurn] was applied
      */
-    object SoftLight : SeparableBlendMode() {
+    data object SoftLight : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double {
             return if (source <= 0.5) {
                 backdrop - (1.0 - 2.0 * source) * backdrop * (1.0 - backdrop)
@@ -198,7 +193,7 @@ sealed class BlendMode {
     /**
      * A [SeparableBlendMode] where blending looks at the color information in each channel and brightens the base color to reflect the blend color by decreasing contrast between the two
      */
-    object ColorDodge : SeparableBlendMode() {
+    data object ColorDodge : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double = when {
             backdrop == 0.0 -> 0.0
             source == 1.0 -> 1.0
@@ -209,7 +204,7 @@ sealed class BlendMode {
     /**
      * A [SeparableBlendMode] where blending looks at the color information in each channel and darkens the base color to reflect the blend color by increasing the contrast between the two
      */
-    object ColorBurn : SeparableBlendMode() {
+    data object ColorBurn : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double = when {
             backdrop == 1.0 -> 1.0
             source == 0.0 -> 0.0
@@ -220,15 +215,14 @@ sealed class BlendMode {
     /**
      * A [SeparableBlendMode] where blending looks at the color information in each channel and subtracts either the source color from the base color or the base color from the source color, depending on which has the greater brightness value
      */
-    object Difference : SeparableBlendMode() {
-        override fun blendColorChannel(backdrop: Double, source: Double): Double =
-            abs(backdrop - source)
+    data object Difference : SeparableBlendMode() {
+        override fun blendColorChannel(backdrop: Double, source: Double): Double = abs(backdrop - source)
     }
 
     /**
      * A [SeparableBlendMode] similar to [Difference] but lower in contrast
      */
-    object Exclusion : SeparableBlendMode() {
+    data object Exclusion : SeparableBlendMode() {
         override fun blendColorChannel(backdrop: Double, source: Double): Double {
             return backdrop + source - 2.0 * backdrop * source
         }
@@ -237,7 +231,7 @@ sealed class BlendMode {
     /**
      * A [NonSeparableBlendMode] that creates a result color with the luminance and saturation of the base color and the hue of the source color
      */
-    object Hue : NonSeparableBlendMode() {
+    data object Hue : NonSeparableBlendMode() {
         override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = source
             .setSaturation(backdrop.saturation)
             .setLumination(backdrop.lumination)
@@ -246,7 +240,7 @@ sealed class BlendMode {
     /**
      * A [NonSeparableBlendMode] that creates a result color with the luminance and hue of the base color and the saturation of the source color
      */
-    object Saturation : NonSeparableBlendMode() {
+    data object Saturation : NonSeparableBlendMode() {
         override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = backdrop
             .setSaturation(source.saturation)
             .setLumination(backdrop.lumination)
@@ -255,17 +249,15 @@ sealed class BlendMode {
     /**
      * A [NonSeparableBlendMode] that creates a result color with the luminance of the base color and the hue and saturation of the source color
      */
-    object ColorBlend : NonSeparableBlendMode() {
-        override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor =
-            source.setLumination(backdrop.lumination)
+    data object ColorBlend : NonSeparableBlendMode() {
+        override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = source.setLumination(backdrop.lumination)
     }
 
     /**
      * A [NonSeparableBlendMode] that creates a result color with the hue and saturation of the base color and the luminance of the source color
      */
-    object Luminosity : NonSeparableBlendMode() {
-        override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor =
-            backdrop.setLumination(source.lumination)
+    data object Luminosity : NonSeparableBlendMode() {
+        override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = backdrop.setLumination(source.lumination)
     }
 }
 

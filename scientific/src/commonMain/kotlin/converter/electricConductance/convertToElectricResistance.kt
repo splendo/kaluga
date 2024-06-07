@@ -27,9 +27,7 @@ import com.splendo.kaluga.scientific.unit.Ohm
 import kotlin.jvm.JvmName
 
 @JvmName("abSiemensResistance")
-fun ScientificValue<PhysicalQuantity.ElectricConductance, Absiemens>.resistance() =
-    Abohm.resistance(this)
+fun ScientificValue<PhysicalQuantity.ElectricConductance, Absiemens>.resistance() = Abohm.resistance(this)
 
 @JvmName("resistance")
-fun <ConductanceUnit : ElectricConductance> ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>.resistance() =
-    Ohm.resistance(this)
+fun <ConductanceUnit : ElectricConductance> ScientificValue<PhysicalQuantity.ElectricConductance, ConductanceUnit>.resistance() = Ohm.resistance(this)

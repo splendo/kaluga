@@ -23,6 +23,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec.Email.EmailSett
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.ImagePicker.MediaType
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.Message.MessageSettings
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.ThirdParty.OpenMode
+import kotlinx.cinterop.ObjCSignatureOverride
 import platform.CoreFoundation.CFStringRef
 import platform.CoreServices.kUTTypeImage
 import platform.CoreServices.kUTTypeMovie
@@ -154,7 +155,7 @@ sealed class NavigationSpec {
             /**
              * Adds the [UIViewController] to the container without removing any other views from the container
              */
-            object Add : Type()
+            data object Add : Type()
 
             /**
              * Replaces the current content matching a tag from the container before adding the new view
@@ -182,13 +183,14 @@ sealed class NavigationSpec {
         val completion: (() -> Unit)? = null,
     ) : NavigationSpec() {
 
-        @Suppress("CONFLICTING_OVERLOADS")
         internal val delegate: UINavigationControllerDelegateProtocol = object : NSObject(), UIImagePickerControllerDelegateProtocol, UINavigationControllerDelegateProtocol {
 
+            @ObjCSignatureOverride
             override fun navigationController(navigationController: UINavigationController, willShowViewController: UIViewController, animated: Boolean) {
                 navigationDelegate.navigationController(navigationController, willShowViewController = willShowViewController, animated = animated)
             }
 
+            @ObjCSignatureOverride
             override fun navigationController(navigationController: UINavigationController, didShowViewController: UIViewController, animated: Boolean) {
                 navigationDelegate.navigationController(navigationController, didShowViewController = didShowViewController, animated = animated)
             }
@@ -308,8 +310,8 @@ sealed class NavigationSpec {
          * The type of formatting used for composing the email
          */
         sealed class Type {
-            object Plain : Type()
-            object Stylized : Type()
+            data object Plain : Type()
+            data object Stylized : Type()
         }
 
         /**
@@ -384,7 +386,7 @@ sealed class NavigationSpec {
     /**
      * Opens the Phone settings
      */
-    object Settings : NavigationSpec()
+    data object Settings : NavigationSpec()
 
     /**
      * Presents a [MFMessageComposeViewController]
@@ -433,7 +435,7 @@ sealed class NavigationSpec {
     data class Browser(val url: NSURL, val viewType: Type) : NavigationSpec() {
         sealed class Type {
             data class SafariView(val animated: Boolean, val completion: (() -> Unit)? = null) : Type()
-            object Normal : Type()
+            data object Normal : Type()
         }
     }
 

@@ -28,6 +28,7 @@ import android.widget.LinearLayout
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.base.utils.applyIf
+import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.resources.dpToPixel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,10 +42,11 @@ import kotlinx.coroutines.launch
  * @param coroutineScope The [CoroutineScope] managing changes to the alert presentation.
  */
 actual class AlertPresenter(
-    private val alert: Alert,
+    alert: Alert,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     coroutineScope: CoroutineScope,
-) : BaseAlertPresenter(alert), CoroutineScope by coroutineScope {
+    logger: Logger,
+) : BaseAlertPresenter(alert, logger), CoroutineScope by coroutineScope {
 
     /**
      * A [BaseAlertPresenter.Builder] for creating an [AlertPresenter]
@@ -58,11 +60,11 @@ actual class AlertPresenter(
          * Creates an [AlertPresenter]
          *
          * @param alert The [Alert] to be presented with the built presenter.
+         * @param logger The [Logger] that logs the logs of the presenter.
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The created [AlertPresenter]
          */
-        actual override fun create(alert: Alert, coroutineScope: CoroutineScope) =
-            AlertPresenter(alert, lifecycleManagerObserver, coroutineScope)
+        actual override fun create(alert: Alert, logger: Logger, coroutineScope: CoroutineScope) = AlertPresenter(alert, lifecycleManagerObserver, coroutineScope, logger)
     }
 
     private companion object {
@@ -80,7 +82,7 @@ actual class AlertPresenter(
             val completion: () -> Unit,
         ) : DialogPresentation()
 
-        object Hidden : DialogPresentation()
+        data object Hidden : DialogPresentation()
     }
 
     private val presentation = MutableStateFlow<DialogPresentation>(DialogPresentation.Hidden)
@@ -98,21 +100,20 @@ actual class AlertPresenter(
                     is DialogPresentation.Showing -> contextPresentation.first?.activity?.let {
                         presentDialog(it, dialogPresentation)
                     } ?: run { alertDialog = null }
-                    is DialogPresentation.Hidden -> alertDialog?.dismiss()
+
+                    is DialogPresentation.Hidden -> {
+                        alertDialog?.dismiss()
+                    }
                 }
             }
         }
     }
 
-    override fun dismissAlert(animated: Boolean) {
+    actual override fun dismissAlert(animated: Boolean) {
         presentation.value = DialogPresentation.Hidden
     }
 
-    override fun showAlert(
-        animated: Boolean,
-        afterHandler: (Alert.Action?) -> Unit,
-        completion: () -> Unit,
-    ) {
+    actual override fun showAlert(animated: Boolean, afterHandler: (Alert.Action?) -> Unit, completion: () -> Unit) {
         presentation.value = DialogPresentation.Showing(animated, afterHandler, completion)
     }
 
@@ -123,7 +124,9 @@ actual class AlertPresenter(
             .applyIf(alert.style == Alert.Style.ACTION_LIST) {
                 val titles = alert.actions.map { it.title }.toTypedArray()
                 setItems(titles) { _, which ->
-                    val action = alert.actions[which].apply { handler() }
+                    val action = alert.actions[which].apply {
+                        handler()
+                    }
                     presentation.afterHandler(action)
                 }
             }
@@ -156,7 +159,9 @@ actual class AlertPresenter(
                     alertDialog = null
                     this@AlertPresenter.presentation.value = DialogPresentation.Hidden
                 }
-                setOnCancelListener { presentation.afterHandler(null) }
+                setOnCancelListener {
+                    presentation.afterHandler(null)
+                }
                 show()
             }
         presentation.completion()
@@ -168,10 +173,7 @@ actual class AlertPresenter(
      * @param context The Android context used to create view
      * @param textInputAction The [Alert.TextInputAction] used for initializing the [EditText]
      */
-    private fun createEditTextView(
-        context: Context,
-        textInputAction: Alert.TextInputAction,
-    ): LinearLayout {
+    private fun createEditTextView(context: Context, textInputAction: Alert.TextInputAction): LinearLayout {
         val linearLayout = LinearLayout(context)
         val layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -185,21 +187,11 @@ actual class AlertPresenter(
         linearLayout.setPaddingRelative(padding, 0, padding, 0)
         editText.inputType = InputType.TYPE_CLASS_TEXT
         editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int,
-            ) {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // Do nothing
             }
 
-            override fun onTextChanged(
-                s: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int,
-            ) {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 // Do nothing
             }
 

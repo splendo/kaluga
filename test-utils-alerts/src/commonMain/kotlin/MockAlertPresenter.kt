@@ -18,6 +18,7 @@ package com.splendo.kaluga.test.alerts
 
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.BaseAlertPresenter
+import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
@@ -28,7 +29,7 @@ import kotlinx.coroutines.CoroutineScope
  * @param alert The [Alert] to display
  * @param setupMocks if `true` this automatically sets up mocks to handle displaying this [MockAlertPresenter]
  */
-class MockAlertPresenter(val alert: Alert, setupMocks: Boolean = true) : BaseAlertPresenter(alert) {
+class MockAlertPresenter(alert: Alert, logger: Logger, setupMocks: Boolean = true) : BaseAlertPresenter(alert, logger) {
 
     /**
      * Mock implementation of [BaseAlertPresenter.Builder]
@@ -49,16 +50,16 @@ class MockAlertPresenter(val alert: Alert, setupMocks: Boolean = true) : BaseAle
         init {
             if (setupMocks) {
                 val builtAlerts = builtAlerts
-                createMock.on().doExecute { (alert, _) ->
-                    MockAlertPresenter(alert, setupMocks).also {
+                createMock.on().doExecute { (alert, logger, _) ->
+                    MockAlertPresenter(alert, logger, setupMocks).also {
                         builtAlerts.add(it)
                     }
                 }
             }
         }
 
-        override fun create(alert: Alert, coroutineScope: CoroutineScope): BaseAlertPresenter = createAlertFromAlert(alert, coroutineScope)
-        private fun createAlertFromAlert(alert: Alert, coroutineScope: CoroutineScope): MockAlertPresenter = createMock.call(alert, coroutineScope)
+        override fun create(alert: Alert, logger: Logger, coroutineScope: CoroutineScope): BaseAlertPresenter = createAlertFromAlert(alert, logger, coroutineScope)
+        private fun createAlertFromAlert(alert: Alert, logger: Logger, coroutineScope: CoroutineScope): MockAlertPresenter = createMock.call(alert, logger, coroutineScope)
     }
 
     /**
@@ -84,7 +85,7 @@ class MockAlertPresenter(val alert: Alert, setupMocks: Boolean = true) : BaseAle
                 showAlert(animated, completion = completion)
             }
             dismissMock.on().doExecute { (animated) ->
-                dismissAlert(animated)
+                dismissAlertWithLog(animated)
             }
         }
     }
@@ -103,7 +104,7 @@ class MockAlertPresenter(val alert: Alert, setupMocks: Boolean = true) : BaseAle
         }.apply {
             afterHandler?.invoke(this)
         }
-        dismissAlert(false)
+        dismissAlertWithLog(false)
     }
 
     override fun showAsync(animated: Boolean, completion: () -> Unit): Unit = showAsyncMock.call(animated, completion)
@@ -115,11 +116,7 @@ class MockAlertPresenter(val alert: Alert, setupMocks: Boolean = true) : BaseAle
         afterHandler = null
     }
 
-    override fun showAlert(
-        animated: Boolean,
-        afterHandler: (Alert.Action?) -> Unit,
-        completion: () -> Unit,
-    ) {
+    override fun showAlert(animated: Boolean, afterHandler: (Alert.Action?) -> Unit, completion: () -> Unit) {
         isPresented = true
         this.afterHandler = afterHandler
         completion()

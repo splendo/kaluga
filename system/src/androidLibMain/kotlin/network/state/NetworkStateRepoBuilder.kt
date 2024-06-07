@@ -29,5 +29,5 @@ actual class NetworkStateRepoBuilder(
     private val context: Context = ApplicationHolder.applicationContext,
 ) : BaseNetworkStateRepoBuilder {
 
-    override fun create(coroutineContext: CoroutineContext): NetworkStateRepo = NetworkStateRepo(DefaultNetworkManager.Builder(context), coroutineContext)
+    actual override fun create(coroutineContext: CoroutineContext): NetworkStateRepo = NetworkStateRepo(DefaultNetworkManager.Builder(context), coroutineContext)
 }

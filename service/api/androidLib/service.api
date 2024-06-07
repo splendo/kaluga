@@ -2,8 +2,8 @@ public abstract class com/splendo/kaluga/service/DefaultServiceMonitor : com/spl
 	public fun <init> ()V
 	public fun <init> (Lcom/splendo/kaluga/logging/Logger;)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected fun getLogTag ()Ljava/lang/String;
 	protected final fun getLogger ()Lcom/splendo/kaluga/logging/Logger;
-	protected fun getTAG ()Ljava/lang/String;
 	public fun isEnabled ()Lkotlinx/coroutines/flow/Flow;
 	protected abstract fun monitoringDidStart ()V
 	protected abstract fun monitoringDidStop ()V

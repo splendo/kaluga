@@ -104,6 +104,7 @@ abstract class BaseUIThreadTest<Configuration, Context : BaseUIThreadTest.TestCo
      * Creates the TestContext based on Configuration and CoroutineScope
      */
     abstract val createTestContextWithConfiguration: suspend (configuration: Configuration, scope: CoroutineScope) -> Context
+    open val onFailedToCreateTestContextWithConfiguration: (configuration: Configuration) -> Unit = {}
 
     private companion object {
         val cancellationException = CancellationException("Scope canceled by testOnUIThread because cancelScopeAfterTest was set to true.")
@@ -127,8 +128,14 @@ abstract class BaseUIThreadTest<Configuration, Context : BaseUIThreadTest.TestCo
     fun testOnUIThread(configuration: Configuration, cancelScopeAfterTest: Boolean = false, block: suspend Context.() -> Unit) {
         try {
             val createTestContextWithConfiguration = createTestContextWithConfiguration
+            val onFailedToCreateTestContextWithConfiguration = onFailedToCreateTestContextWithConfiguration
             val test: suspend (CoroutineScope) -> Unit = {
-                val testContext = createTestContextWithConfiguration(configuration, it)
+                val testContext = try {
+                    createTestContextWithConfiguration(configuration, it)
+                } catch (e: Throwable) {
+                    onFailedToCreateTestContextWithConfiguration(configuration)
+                    throw e
+                }
                 yield()
                 try {
                     block(testContext)

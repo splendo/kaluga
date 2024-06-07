@@ -32,9 +32,8 @@ import com.splendo.kaluga.architecture.lifecycle.subscribe
  * In particular this applies to places such as a ViewModel, which can outlive a single Activity.
  *
  */
-fun AppCompatActivity.lifecycleManagerObserver(): LifecycleManagerObserver =
-    getOrPutAndRemoveOnDestroyFromCache(
-        onCreate = { it.subscribe(this@lifecycleManagerObserver) },
-        onDestroy = { it.unsubscribe() },
-        defaultValue = { LifecycleManagerObserver() },
-    )
+fun AppCompatActivity.lifecycleManagerObserver(): LifecycleManagerObserver = getOrPutAndRemoveOnDestroyFromCache(
+    onCreate = { it.subscribe(this@lifecycleManagerObserver) },
+    onDestroy = { it.unsubscribe() },
+    defaultValue = { LifecycleManagerObserver() },
+)

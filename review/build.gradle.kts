@@ -1,23 +1,18 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-publishableComponent("review")
-
-dependencies {
-    implementationDependency(Dependencies.Android.Play.Core)
-    implementationDependency(Dependencies.Android.Play.CoreKtx)
-}
-
-kotlin {
-    sourceSets {
-        getByName("commonMain") {
-            dependencies {
+kaluga {
+    moduleName = "review"
+    dependencies {
+        android {
+            main {
+                implementation(libs.android.play.review)
+                implementation(libs.android.play.review.ktx)
+            }
+        }
+        common {
+            main {
                 implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))

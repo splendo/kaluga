@@ -28,7 +28,7 @@ import kotlin.time.Duration
 /**
  * [Permission] to access the Bluetooth scanner
  */
-object BluetoothPermission : Permission() {
+data object BluetoothPermission : Permission() {
     override val name: String = "Bluetooth"
 }
 
@@ -45,15 +45,14 @@ fun PermissionsBuilder.registerBluetoothPermission(
     bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-) =
-    registerBluetoothPermission(bluetoothPermissionManagerBuilderBuilder) { baseBluetoothPermissionManagerBuilder, coroutineContext ->
-        BluetoothPermissionStateRepo(
-            baseBluetoothPermissionManagerBuilder,
-            monitoringInterval,
-            settings,
-            coroutineContext,
-        )
-    }
+) = registerBluetoothPermission(bluetoothPermissionManagerBuilderBuilder) { baseBluetoothPermissionManagerBuilder, coroutineContext ->
+    BluetoothPermissionStateRepo(
+        baseBluetoothPermissionManagerBuilder,
+        monitoringInterval,
+        settings,
+        coroutineContext,
+    )
+}
 
 /**
  * Registers a [BaseBluetoothPermissionManagerBuilder] and [PermissionStateRepo] for [BluetoothPermission] to the [PermissionsBuilder.register] and [PermissionsBuilder.registerPermissionStateRepoBuilder] respectively
@@ -85,15 +84,14 @@ fun PermissionsBuilder.registerBluetoothPermissionIfNotRegistered(
     bluetoothPermissionManagerBuilderBuilder: (PermissionContext) -> BaseBluetoothPermissionManagerBuilder = ::BluetoothPermissionManagerBuilder,
     monitoringInterval: Duration = PermissionStateRepo.defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
-) =
-    registerBluetoothPermissionIfNotRegistered(bluetoothPermissionManagerBuilderBuilder) { baseBluetoothPermissionManagerBuilder, coroutineContext ->
-        BluetoothPermissionStateRepo(
-            baseBluetoothPermissionManagerBuilder,
-            monitoringInterval,
-            settings,
-            coroutineContext,
-        )
-    }
+) = registerBluetoothPermissionIfNotRegistered(bluetoothPermissionManagerBuilderBuilder) { baseBluetoothPermissionManagerBuilder, coroutineContext ->
+    BluetoothPermissionStateRepo(
+        baseBluetoothPermissionManagerBuilder,
+        monitoringInterval,
+        settings,
+        coroutineContext,
+    )
+}
 
 /**
  * Gets the [BaseBluetoothPermissionManagerBuilder] registered

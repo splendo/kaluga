@@ -17,6 +17,9 @@ public abstract class com/splendo/kaluga/system/network/NetworkConnectionType$Kn
 
 public final class com/splendo/kaluga/system/network/NetworkConnectionType$Known$Absent : com/splendo/kaluga/system/network/NetworkConnectionType$Known {
 	public static final field INSTANCE Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Absent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class com/splendo/kaluga/system/network/NetworkConnectionType$Known$Available : com/splendo/kaluga/system/network/NetworkConnectionType$Known {
@@ -25,7 +28,10 @@ public abstract class com/splendo/kaluga/system/network/NetworkConnectionType$Kn
 
 public final class com/splendo/kaluga/system/network/NetworkConnectionType$Known$Cellular : com/splendo/kaluga/system/network/NetworkConnectionType$Known$Available {
 	public static final field INSTANCE Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Cellular;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public fun isExpensive ()Z
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/system/network/NetworkConnectionType$Known$Wifi : com/splendo/kaluga/system/network/NetworkConnectionType$Known$Available {
@@ -99,9 +105,6 @@ public abstract class com/splendo/kaluga/system/network/state/BaseNetworkStateRe
 
 public abstract interface class com/splendo/kaluga/system/network/state/BaseNetworkStateRepoBuilder {
 	public abstract fun create (Lkotlin/coroutines/CoroutineContext;)Lcom/splendo/kaluga/system/network/state/BaseNetworkStateRepo;
-}
-
-public final class com/splendo/kaluga/system/network/state/BaseNetworkStateRepoBuilder$DefaultImpls {
 	public static synthetic fun create$default (Lcom/splendo/kaluga/system/network/state/BaseNetworkStateRepoBuilder;Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Lcom/splendo/kaluga/system/network/state/BaseNetworkStateRepo;
 }
 
@@ -113,36 +116,16 @@ public abstract interface class com/splendo/kaluga/system/network/state/NetworkS
 	public abstract fun getDeinitialize ()Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/system/network/state/NetworkState$Active$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Active;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/system/network/state/NetworkState$Available : com/splendo/kaluga/system/network/state/NetworkState$Known {
 	public abstract fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Available;
 	public abstract fun getUnavailable ()Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/system/network/state/NetworkState$Available$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Available;)Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/system/network/state/NetworkState$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/system/network/state/NetworkState$Deinitialized : com/splendo/kaluga/system/network/state/NetworkState$Inactive {
 	public abstract fun getReinitialize ()Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/system/network/state/NetworkState$Deinitialized$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Deinitialized;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/system/network/state/NetworkState$Inactive : com/splendo/kaluga/base/flow/SpecialFlowValue$NotImportant, com/splendo/kaluga/system/network/state/NetworkState {
-}
-
-public final class com/splendo/kaluga/system/network/state/NetworkState$Inactive$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Inactive;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/system/network/state/NetworkState$Initialized : com/splendo/kaluga/system/network/state/NetworkState$Active {
@@ -150,48 +133,24 @@ public abstract interface class com/splendo/kaluga/system/network/state/NetworkS
 	public abstract fun unknown (Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown$Reason;)Lkotlin/jvm/functions/Function1;
 }
 
-public final class com/splendo/kaluga/system/network/state/NetworkState$Initialized$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Initialized;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/system/network/state/NetworkState$Initializing : com/splendo/kaluga/base/flow/SpecialFlowValue$NotImportant, com/splendo/kaluga/system/network/state/NetworkState$Active {
 	public abstract fun initialized (Lcom/splendo/kaluga/system/network/NetworkConnectionType;)Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/system/network/state/NetworkState$Initializing$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Initializing;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/system/network/state/NetworkState$Known : com/splendo/kaluga/system/network/state/NetworkState$Initialized {
 	public abstract fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known;
 }
 
-public final class com/splendo/kaluga/system/network/state/NetworkState$Known$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Known;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/system/network/state/NetworkState$NotInitialized : com/splendo/kaluga/system/network/state/NetworkState$Inactive {
-}
-
-public final class com/splendo/kaluga/system/network/state/NetworkState$NotInitialized$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$NotInitialized;)Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/system/network/state/NetworkState$Unavailable : com/splendo/kaluga/system/network/state/NetworkState$Known {
 	public abstract fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Known$Absent;
 }
 
-public final class com/splendo/kaluga/system/network/state/NetworkState$Unavailable$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Unavailable;)Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class com/splendo/kaluga/system/network/state/NetworkState$Unknown : com/splendo/kaluga/system/network/state/NetworkState$Initialized {
 	public abstract fun getNetworkConnectionType ()Lcom/splendo/kaluga/system/network/NetworkConnectionType$Unknown;
 	public abstract fun getUnavailable ()Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/system/network/state/NetworkState$Unknown$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/system/network/state/NetworkState$Unknown;)Lkotlin/jvm/functions/Function1;
 }
 
 public class com/splendo/kaluga/system/network/state/NetworkStateImplRepo : com/splendo/kaluga/system/network/state/BaseNetworkStateRepo {

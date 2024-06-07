@@ -65,11 +65,8 @@ actual data class KalugaLocale internal constructor(val nsLocale: NSLocale) : Ba
          * @param variant Arbitrary value used to indicate a variation of a [KalugaLocale]
          * @return The [KalugaLocale] for the given [language], [country], and [variant]
          */
-        actual fun createLocale(
-            language: String,
-            country: String,
-            variant: String,
-        ): KalugaLocale = KalugaLocale(NSLocale(listOf(language, country, variant).filter { it.isNotEmpty() }.joinToString("_")))
+        actual fun createLocale(language: String, country: String, variant: String): KalugaLocale =
+            KalugaLocale(NSLocale(listOf(language, country, variant).filter { it.isNotEmpty() }.joinToString("_")))
 
         /**
          * The default [KalugaLocale] of the user
@@ -82,27 +79,27 @@ actual data class KalugaLocale internal constructor(val nsLocale: NSLocale) : Ba
         actual val availableLocales: List<KalugaLocale> = NSLocale.availableLocaleIdentifiers.typedList<String>().map { KalugaLocale(NSLocale(it)) }
     }
 
-    override val countryCode: String
+    actual override val countryCode: String
         get() = nsLocale.countryCode ?: ""
-    override val languageCode: String
+    actual override val languageCode: String
         get() = nsLocale.languageCode
-    override val scriptCode: String
+    actual override val scriptCode: String
         get() = nsLocale.scriptCode ?: ""
-    override val variantCode: String
+    actual override val variantCode: String
         get() = nsLocale.variantCode ?: ""
-    override val unitSystem: UnitSystem
+    actual override val unitSystem: UnitSystem
         get() = (nsLocale.objectForKey("kCFLocaleMeasurementSystemKey") as? String)?.let {
             UnitSystem.withRawValue(it)
         } ?: UnitSystem.METRIC
 
-    override fun name(forLocale: KalugaLocale): String = forLocale.nsLocale.localizedStringForLocaleIdentifier(nsLocale.localeIdentifier)
-    override fun countryName(forLocale: KalugaLocale): String = forLocale.nsLocale.localizedStringForCountryCode(countryCode) ?: ""
-    override fun languageName(forLocale: KalugaLocale): String = forLocale.nsLocale.localizedStringForLanguageCode(languageCode) ?: ""
-    override fun variantName(forLocale: KalugaLocale): String = forLocale.nsLocale.localizedStringForVariantCode(variantCode) ?: ""
-    override fun scriptName(forLocale: KalugaLocale): String = forLocale.nsLocale.localizedStringForScriptCode(scriptCode) ?: ""
+    actual override fun name(forLocale: KalugaLocale): String = forLocale.nsLocale.localizedStringForLocaleIdentifier(nsLocale.localeIdentifier)
+    actual override fun countryName(forLocale: KalugaLocale): String = forLocale.nsLocale.localizedStringForCountryCode(countryCode) ?: ""
+    actual override fun languageName(forLocale: KalugaLocale): String = forLocale.nsLocale.localizedStringForLanguageCode(languageCode) ?: ""
+    actual override fun variantName(forLocale: KalugaLocale): String = forLocale.nsLocale.localizedStringForVariantCode(variantCode) ?: ""
+    actual override fun scriptName(forLocale: KalugaLocale): String = forLocale.nsLocale.localizedStringForScriptCode(scriptCode) ?: ""
 
-    override val quotationStart: String = nsLocale.quotationBeginDelimiter
-    override val quotationEnd: String = nsLocale.quotationEndDelimiter
-    override val alternateQuotationStart: String = nsLocale.alternateQuotationBeginDelimiter
-    override val alternateQuotationEnd: String = nsLocale.alternateQuotationEndDelimiter
+    actual override val quotationStart: String = nsLocale.quotationBeginDelimiter
+    actual override val quotationEnd: String = nsLocale.quotationEndDelimiter
+    actual override val alternateQuotationStart: String = nsLocale.alternateQuotationBeginDelimiter
+    actual override val alternateQuotationEnd: String = nsLocale.alternateQuotationEndDelimiter
 }

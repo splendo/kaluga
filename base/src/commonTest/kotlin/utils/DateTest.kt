@@ -21,15 +21,19 @@ import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.KalugaTimeZone
 import com.splendo.kaluga.base.utils.enUsPosix
+import com.splendo.kaluga.base.utils.minus
 import com.splendo.kaluga.base.utils.nowUtc
 import com.splendo.kaluga.base.utils.plus
 import com.splendo.kaluga.base.utils.toStartOfDay
 import com.splendo.kaluga.base.utils.utc
+import kotlin.math.roundToLong
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 class DateTest {
 
@@ -65,6 +69,9 @@ class DateTest {
         val epoch = DefaultKalugaDate.epoch(locale = KalugaLocale.enUsPosix)
 
         assertTrue(epoch < someDay)
+
+        val fiveYearsFromEpoch = DefaultKalugaDate.epoch(locale = KalugaLocale.enUsPosix, offset = (1830).days)
+        assertEquals(1830.days.inWholeSeconds, (fiveYearsFromEpoch - epoch).toDouble(DurationUnit.SECONDS).roundToLong())
     }
 
     @Test
@@ -73,6 +80,9 @@ class DateTest {
         val epoch = DefaultKalugaDate.epoch(locale = KalugaLocale.enUsPosix)
 
         assertTrue(now > epoch)
+
+        val fiveYearsAgo = DefaultKalugaDate.now(locale = KalugaLocale.enUsPosix, offset = (-1830).days)
+        assertEquals(1830.days.inWholeSeconds, (now - fiveYearsAgo).toDouble(DurationUnit.SECONDS).roundToLong())
     }
 
     @Test

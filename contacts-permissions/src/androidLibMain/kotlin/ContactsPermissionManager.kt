@@ -54,15 +54,15 @@ actual class DefaultContactsPermissionManager(
         permissionHandler,
     )
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         permissionsManager.requestPermissions()
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         permissionsManager.startMonitoring(interval)
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         permissionsManager.stopMonitoring()
     }
 }
@@ -73,7 +73,7 @@ actual class DefaultContactsPermissionManager(
  */
 actual class ContactsPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseContactsPermissionManagerBuilder {
 
-    override fun create(contactsPermission: ContactsPermission, settings: Settings, coroutineScope: CoroutineScope): ContactsPermissionManager {
+    actual override fun create(contactsPermission: ContactsPermission, settings: Settings, coroutineScope: CoroutineScope): ContactsPermissionManager {
         return DefaultContactsPermissionManager(context.context, contactsPermission, settings, coroutineScope)
     }
 }

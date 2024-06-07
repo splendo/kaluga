@@ -103,6 +103,12 @@ expect class HUD : BaseHUD {
          */
         override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope): HUD
     }
+
+    override val isVisible: Boolean
+    override val hudConfig: HudConfig
+
+    override suspend fun present(animated: Boolean): HUD
+    override suspend fun dismiss(animated: Boolean)
 }
 
 /**

@@ -76,7 +76,7 @@ sealed class MetricArea : Area(), MetricScientificUnit<PhysicalQuantity.Area>
 sealed class ImperialArea : Area(), ImperialScientificUnit<PhysicalQuantity.Area>
 
 internal class Square<S : MeasurementSystem, U : SystemScientificUnit<S, PhysicalQuantity.Length>>(private val unit: U) : SystemScientificUnit<S, PhysicalQuantity.Area> {
-    override val symbol: String = "${unit.symbol}2"
+    override val symbol: String = "${unit.symbol}²"
     override val system: S = unit.system
     override val quantity = PhysicalQuantity.Area
     override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(unit.fromSIUnit(value))
@@ -85,65 +85,65 @@ internal class Square<S : MeasurementSystem, U : SystemScientificUnit<S, Physica
 
 // Metric Volume
 @Serializable
-object SquareMeter : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Meter)
+data object SquareMeter : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Meter)
 
 @Serializable
-object SquareDecimeter : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Deci(Meter))
+data object SquareDecimeter : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Deci(Meter))
 
 @Serializable
-object SquareCentimeter : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Centi(Meter))
+data object SquareCentimeter : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Centi(Meter))
 
 @Serializable
-object SquareMillimeter : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Milli(Meter))
+data object SquareMillimeter : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Milli(Meter))
 
 @Serializable
-object SquareMicrometer : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Micro(Meter))
+data object SquareMicrometer : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Micro(Meter))
 
 @Serializable
-object SquareNanometer : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Nano(Meter))
+data object SquareNanometer : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Nano(Meter))
 
 @Serializable
-object SquareDecameter : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Deca(Meter))
+data object SquareDecameter : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Deca(Meter))
 
 @Serializable
-object SquareHectometer : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Hecto(Meter))
+data object SquareHectometer : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Hecto(Meter))
 
 @Serializable
-object Hectare : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Hecto(Meter)) {
+data object Hectare : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Hecto(Meter)) {
     override val symbol: String = "ha"
 }
 
 @Serializable
-object SquareKilometer : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Kilo(Meter))
+data object SquareKilometer : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Kilo(Meter))
 
 @Serializable
-object SquareMegameter : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Mega(Meter))
+data object SquareMegameter : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Mega(Meter))
 
 @Serializable
-object SquareGigameter : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Giga(Meter))
+data object SquareGigameter : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, PhysicalQuantity.Area> by Square(Giga(Meter))
 
 @Serializable
-object SquareMile : ImperialArea(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Area> by Square(Mile) {
-    override val symbol: String = "sq. mi"
+data object SquareMile : ImperialArea(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Area> by Square(Mile) {
+    override val symbol: String = "sq. mi."
 }
 
 @Serializable
-object SquareYard : ImperialArea(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Area> by Square(Yard) {
-    override val symbol: String = "sq. yd"
+data object SquareYard : ImperialArea(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Area> by Square(Yard) {
+    override val symbol: String = "sq. yd."
 }
 
 @Serializable
-object SquareFoot : ImperialArea(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Area> by Square(Foot) {
-    override val symbol: String = "sq. fr"
+data object SquareFoot : ImperialArea(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Area> by Square(Foot) {
+    override val symbol: String = "sq. ft."
 }
 
 @Serializable
-object SquareInch : ImperialArea(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Area> by Square(Inch) {
-    override val symbol: String = "sq. in"
+data object SquareInch : ImperialArea(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Area> by Square(Inch) {
+    override val symbol: String = "sq. in."
 }
 
 @Serializable
-object Acre : ImperialArea() {
+data object Acre : ImperialArea() {
     override val symbol: String = "acre"
     val ACRES_IN_SQUARE_MILE = 640.0
     override val quantity = PhysicalQuantity.Area

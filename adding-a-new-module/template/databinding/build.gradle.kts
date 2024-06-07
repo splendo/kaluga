@@ -1,16 +1,18 @@
 plugins {
-    id("com.android.library")
-    kotlin("android")
-    kotlin("kapt")
-    id("jacoco")
-    id("convention.publication")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin.android.databinding")
 }
 
-databindingAndroidComponent("%PACKAGE%")
-
-dependencies {
-    implementation(project(":base"))
-    implementation(project("%BASEMODULE%"))
+kaluga {
+    moduleName = "%BASEMODULE%"
+    dependencies {
+        common {
+            main {
+                implementation(project(":base"))
+                implementation(project("%BASEMODULE%"))
+            }
+            test {
+                implementation(project(":test-utils-base"))
+            }
+        }
+    }
 }

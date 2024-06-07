@@ -29,8 +29,7 @@ import com.splendo.kaluga.scientific.unit.Ohm
 import kotlin.jvm.JvmName
 
 @JvmName("maxwellDivAbcoulomb")
-infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(charge: ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>) =
-    Abohm.resistance(this, charge)
+infix operator fun ScientificValue<PhysicalQuantity.MagneticFlux, Maxwell>.div(charge: ScientificValue<PhysicalQuantity.ElectricCharge, Abcoulomb>) = Abohm.resistance(this, charge)
 
 @JvmName("fluxDivCharge")
 infix operator fun <FluxUnit : MagneticFlux, ChargeUnit : ElectricCharge> ScientificValue<PhysicalQuantity.MagneticFlux, FluxUnit>.div(

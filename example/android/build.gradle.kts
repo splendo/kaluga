@@ -1,30 +1,32 @@
+import com.splendo.kaluga.plugin.helpers.gitBranch
+
 plugins {
     id("com.android.application")
-    kotlin("android")
+    id(libs.plugins.kotlin.android.get().pluginId)
+    id(libs.plugins.compose.get().pluginId)
+    alias(libs.plugins.kotlin.serialization)
     kotlin("kapt")
-    kotlin("plugin.serialization")
-    id("org.jmailen.kotlinter")
 }
 
-group = Library.group
-version = Library.version
+group = "com.splendo.kaluga"
+version = "${libs.versions.kaluga.get()}${gitBranch.kalugaBranchPostfix}"
 
-androidApp {
+android {
     namespace = "com.splendo.kaluga.example"
-    compileSdk = LibraryImpl.Android.compileSdk
-    buildToolsVersion = LibraryImpl.Android.buildTools
+    compileSdk = libs.versions.androidCompileSdk.get().toInt()
+    buildToolsVersion = libs.versions.androidBuildTools.get()
     defaultConfig {
         applicationId = "com.splendo.kaluga.example"
-        minSdk = LibraryImpl.Android.minSdk
-        targetSdk = LibraryImpl.Android.targetSdk
+        minSdk = libs.versions.androidMinSdk.get().toInt()
+        targetSdk = libs.versions.androidCompileSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
+        targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
     }
 
     signingConfigs {
@@ -37,7 +39,7 @@ androidApp {
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = libs.versions.java.get()
     }
 
     buildTypes {
@@ -64,10 +66,6 @@ androidApp {
         dataBinding {
             enable = true
         }
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = LibraryImpl.Android.composeCompiler
     }
 }
 
@@ -75,45 +73,38 @@ kotlin {
     sourceSets.all {
         languageSettings {
             optIn("kotlin.ExperimentalStdlibApi")
-            optIn("androidx.compose.material.ExperimentalMaterialApi")
+            optIn("androidx.compose.material3.ExperimentalMaterial3Api")
             optIn("androidx.compose.ui.ExperimentalComposeUiApi")
         }
     }
 }
 
 dependencies {
-    val libraryVersion = Library.version
-    implementation("com.splendo.kaluga:architecture-compose:$libraryVersion")
-    implementation("com.splendo.kaluga:keyboard-compose:$libraryVersion")
-    implementation("com.splendo.kaluga:resources-compose:$libraryVersion")
-    implementation("com.splendo.kaluga:resources-databinding:$libraryVersion")
+    implementation("com.splendo.kaluga:architecture-compose:$version")
+    implementation("com.splendo.kaluga:keyboard-compose:$version")
+    implementation("com.splendo.kaluga:resources-compose:$version")
+    implementation("com.splendo.kaluga:resources-databinding:$version")
     implementation(project(":shared"))
 
-    implementationDependency(Dependencies.AndroidX.Compose.UI)
-    implementationDependency(Dependencies.AndroidX.Compose.UITooling)
-    implementationDependency(Dependencies.AndroidX.Compose.UIToolingPreview)
-    implementationDependency(Dependencies.AndroidX.Compose.Foundation)
-    implementationDependency(Dependencies.AndroidX.Compose.Material)
-    implementationDependency(Dependencies.AndroidX.Activity.Compose)
-    implementationDependency(Dependencies.AndroidX.Navigation.Compose)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
 
-    implementationDependency(Dependencies.AndroidX.Fragment)
-    implementationDependency(Dependencies.AndroidX.FragmentKtx)
-    implementationDependency(Dependencies.AndroidX.ConstraintLayout)
-    implementationDependency(Dependencies.AndroidX.Lifecycle.Service)
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.lifecycle.service)
 
-    implementationDependency(Dependencies.Android.PlayServices.Location)
-    implementationDependency(Dependencies.Android.Material)
-    implementationDependency(Dependencies.Accompanist.MaterialThemeAdapter)
+    implementation(libs.android.play.services.location)
+    implementation(libs.android.material)
 
-    implementationDependency(Dependencies.KotlinX.Serialization.Core)
-    implementationDependency(Dependencies.KotlinX.Serialization.Json)
+    implementation(libs.kotlinx.serialization.core)
+    implementation(libs.kotlinx.serialization.json)
 
-    implementationDependency(Dependencies.Koin.AndroidXCompose)
+    implementation(libs.koin.compose)
 }
 
-// Workaround for Kapt not setting the proper JVM target
-// See https://youtrack.jetbrains.com/issue/KT-55947/Unable-to-set-kapt-jvm-target-version
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions.jvmTarget = "11"
-}

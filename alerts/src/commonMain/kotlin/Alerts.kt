@@ -20,6 +20,10 @@ package com.splendo.kaluga.alerts
 
 import com.splendo.kaluga.alerts.Alert.Action.Style
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
+import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -131,11 +135,7 @@ data class Alert(
          * @param textObserver The callback for text change events of inout field
          * @return The modified [Alert.Builder]
          */
-        fun setTextInput(
-            text: String? = null,
-            placeholder: String?,
-            textObserver: AlertTextObserver,
-        ) = apply {
+        fun setTextInput(text: String? = null, placeholder: String?, textObserver: AlertTextObserver) = apply {
             setTextInputAction(TextInputAction(text, placeholder, textObserver))
         }
 
@@ -177,8 +177,7 @@ data class Alert(
          * @param action The action object
          * @return The modified [Alert.Builder]
          */
-        private fun setTextInputAction(action: TextInputAction) =
-            apply { this.textInputAction = action }
+        private fun setTextInputAction(action: TextInputAction) = apply { this.textInputAction = action }
 
         /**
          * Creates an [Alert] based on [title], [message], [actions] and [textInputAction] properties
@@ -293,8 +292,13 @@ interface AlertActions {
  * @see [AlertPresenter]
  *
  * @param alert The [Alert] to present (and dismiss if needed)
+ * @param logger The [Logger] to log alert actions to
  */
-abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
+abstract class BaseAlertPresenter(val alert: Alert, private val logger: Logger) : AlertActions {
+
+    companion object {
+        const val TAG = "AlertDialog"
+    }
 
     /**
      * Abstract alert builder class, used to create a [BaseAlertPresenter].
@@ -307,45 +311,52 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
          * Creates the [BaseAlertPresenter] described by this builder.
          *
          * @param alert The [Alert] to be presented by the built presenter.
+         * @param logger The [Logger] that logs the logs of the presenter.
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The [BaseAlertPresenter] described by this builder.
          */
-        abstract fun create(alert: Alert, coroutineScope: CoroutineScope): BaseAlertPresenter
+        abstract fun create(alert: Alert, logger: Logger = RestrictedLogger(RestrictedLogLevel.None), coroutineScope: CoroutineScope): BaseAlertPresenter
     }
 
     override fun showAsync(animated: Boolean, completion: () -> Unit) {
+        logger.info(TAG, "Displaying alert dialog with title: ${alert.title}")
         showAlert(animated, completion = completion)
     }
 
-    override suspend fun show(animated: Boolean): Alert.Action? =
-        suspendCancellableCoroutine { continuation ->
-            continuation.invokeOnCancellation {
-                dismissAlert(animated)
-                continuation.tryResume(null)?.let {
+    override suspend fun show(animated: Boolean): Alert.Action? = suspendCancellableCoroutine { continuation ->
+        continuation.invokeOnCancellation {
+            dismissAlert(animated)
+            continuation.tryResume(null)?.let {
+                continuation.completeResume(it)
+            }
+        }
+        logger.info(TAG, "Displaying alert dialog with title: ${alert.title}")
+        showAlert(
+            animated,
+            afterHandler = { action ->
+                // Null action is passed on cancel for both platforms
+                action?.let {
+                    logger.info(TAG, "Action ${it.title} was called on dialog with title: ${alert.title}")
+                } ?: logger.info(TAG, "Action Cancel was called on dialog with title: ${alert.title}")
+                continuation.tryResume(action)?.let {
                     continuation.completeResume(it)
                 }
-            }
-            showAlert(
-                animated,
-                afterHandler = { action ->
-                    continuation.tryResume(action)?.let {
-                        continuation.completeResume(it)
-                    }
-                },
-            )
-        }
+            },
+        )
+    }
 
     override fun dismiss(animated: Boolean) {
         dismissAlert(animated)
     }
 
+    protected fun dismissAlertWithLog(animated: Boolean = true) {
+        logger.info(TAG, "Dismissing alert dialog with title: ${alert.title}")
+        dismissAlert(animated)
+    }
+
     protected abstract fun dismissAlert(animated: Boolean = true)
 
-    protected abstract fun showAlert(
-        animated: Boolean = true,
-        afterHandler: (Alert.Action?) -> Unit = {},
-        completion: () -> Unit = {},
-    )
+    protected abstract fun showAlert(animated: Boolean = true, afterHandler: (Alert.Action?) -> Unit = {}, completion: () -> Unit = {})
 }
 
 /**
@@ -361,27 +372,34 @@ expect class AlertPresenter : BaseAlertPresenter {
          * Creates an [AlertPresenter]
          *
          * @param alert The [Alert] to be presented with the built presenter.
+         * @param logger The [Logger] that logs the logs of the presenter.
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The created [AlertPresenter]
          */
-        override fun create(alert: Alert, coroutineScope: CoroutineScope): AlertPresenter
+        override fun create(alert: Alert, logger: Logger, coroutineScope: CoroutineScope): AlertPresenter
     }
+
+    override fun showAlert(animated: Boolean, afterHandler: (Alert.Action?) -> Unit, completion: () -> Unit)
+    override fun dismissAlert(animated: Boolean)
 }
 
 /**
  * Builds a [BaseAlertPresenter] of type [Alert.Style.ALERT] using DSL syntax (thread safe)
  *
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+ * @param logger The [Logger] that logs the logs of the presenter.
  * @param initialize The block to construct an [Alert]
  * @return The built [BaseAlertPresenter]
  */
 fun BaseAlertPresenter.Builder.buildAlert(
     coroutineScope: CoroutineScope,
+    logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     initialize: Alert.Builder.() -> Unit,
 ): BaseAlertPresenter = create(
     Alert.Builder(Alert.Style.ALERT).apply {
         initialize()
     }.build(),
+    logger,
     coroutineScope,
 )
 
@@ -389,16 +407,19 @@ fun BaseAlertPresenter.Builder.buildAlert(
  * Builds a [BaseAlertPresenter] of type [Alert.Style.ACTION_LIST] using DSL syntax (thread safe)
  *
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+ * @param logger The [Logger] that logs the logs of the presenter.
  * @param initialize The block to construct an [Alert]
  * @return The built [BaseAlertPresenter]
  */
 fun BaseAlertPresenter.Builder.buildActionSheet(
     coroutineScope: CoroutineScope,
+    logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     initialize: Alert.Builder.() -> Unit,
 ): BaseAlertPresenter = create(
     Alert.Builder(Alert.Style.ACTION_LIST).apply {
         initialize()
     }.build(),
+    logger,
     coroutineScope,
 )
 
@@ -406,15 +427,18 @@ fun BaseAlertPresenter.Builder.buildActionSheet(
  * Builds a [BaseAlertPresenter] of type [Alert.Style.TEXT_INPUT] using DSL syntax (thread safe)
  *
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+ * @param logger The [Logger] that logs the logs of the presenter.
  * @param initialize The block to construct an [Alert]
  * @return The built [BaseAlertPresenter]
  */
 fun BaseAlertPresenter.Builder.buildAlertWithInput(
     coroutineScope: CoroutineScope,
+    logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     initialize: Alert.Builder.() -> Unit,
 ): BaseAlertPresenter = create(
     Alert.Builder(Alert.Style.TEXT_INPUT).apply {
         initialize()
     }.build(),
+    logger,
     coroutineScope,
 )
