@@ -21,6 +21,8 @@ package com.splendo.kaluga.base
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -30,10 +32,9 @@ import kotlin.coroutines.CoroutineContext
  * @param block the coroutine code.
  */
 actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T {
-    // this does not wait for the result unfortunately
     val result = GlobalScope.async { block(this) }
     while (!result.isCompleted) {
-        // DO NOTHING
+        GlobalScope.launch { delay(10) }
     }
     return result.getCompleted()
 }
