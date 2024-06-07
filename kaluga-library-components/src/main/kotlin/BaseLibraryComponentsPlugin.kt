@@ -66,10 +66,10 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
         pluginManager.apply(KotlinterPlugin::class)
         pluginManager.apply(DependencyCheckPlugin::class)
         pluginManager.apply(DokkaPlugin::class)
+        pluginManager.apply(KoverGradlePlugin::class)
 
         val kalugaExtension = when {
             rootProject == this -> {
-                pluginManager.apply(KoverGradlePlugin::class)
                 pluginManager.apply(BinaryCompatibilityValidatorPlugin::class)
                 extensions.create(EXTENSION_NAME, KalugaRootExtension::class, versionCatalog)
             }
