@@ -31,7 +31,7 @@ open class ComposeKalugaAndroidSubprojectExtension @Inject constructor(
 ) : BaseKalugaAndroidSubprojectExtension(versionCatalog, libraryExtension, "compose", objects) {
 
     override fun LanguageSettingsBuilder.languageSettings() {
-        optIn("androidx.compose.material.ExperimentalMaterialApi")
+        optIn("androidx.compose.material3.ExperimentalMaterial3Api")
     }
 
     override fun DependencyHandlerScope.commonDependencies() {

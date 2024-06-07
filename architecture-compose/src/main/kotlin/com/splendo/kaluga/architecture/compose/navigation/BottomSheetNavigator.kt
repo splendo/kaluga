@@ -2,9 +2,11 @@ package com.splendo.kaluga.architecture.compose.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.SheetValue.Hidden
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -77,18 +79,18 @@ sealed class BottomSheetNavigator<Action : NavigationAction<*>>(
 }
 
 /**
- * A [BottomSheetNavigator] that creates and manages a [ModalBottomSheetLayout]. This should be on top of any [ModalBottomSheetNavigator] in the View-hierarchy
+ * A [BottomSheetNavigator] that creates and manages a [BottomSheetScaffold]. This should be on top of any [ModalBottomSheetNavigator] in the View-hierarchy
  * @param Action the type of [NavigationAction] this navigator should respond to.
  * @param navigationMapper Maps [Action] to a [BottomSheetComposableNavSpec] to be navigated to.
- * @param initialSheetValue The [ModalBottomSheetValue] the [ModalBottomSheetLayout] should default to.
- * @param parentRouteController A [RouteController] managing the parent view of the [ModalBottomSheetLayout]
+ * @param initialSheetValue The [SheetValue] the [BottomSheetScaffold] should default to.
+ * @param parentRouteController A [RouteController] managing the parent view of the [BottomSheetScaffold]
  * @param contentRootResultHandlers A list of [NavHostResultHandler] to be added to the root view of the content.
  * @param contentBuilder The [BottomSheetContentBuilder] describing the navigation graph of the content.
  * @param sheetContentBuilder The [BottomSheetContentBuilder] describing the navigation graph of the sheet content.
  */
 class RootModalBottomSheetNavigator<Action : NavigationAction<*>>(
     navigationMapper: @Composable (Action) -> BottomSheetComposableNavSpec,
-    private val initialSheetValue: ModalBottomSheetValue = ModalBottomSheetValue.Hidden,
+    private val initialSheetValue: SheetValue = Hidden,
     parentRouteController: RouteController? = null,
     contentRootResultHandlers: List<NavHostResultHandler<*, *>> = emptyList(),
     contentBuilder: BottomSheetContentBuilder,
@@ -114,7 +116,12 @@ class RootModalBottomSheetNavigator<Action : NavigationAction<*>>(
             BottomSheetNavigatorState(
                 contentNavController,
                 rememberNavController(),
-                rememberModalBottomSheetState(initialValue = initialSheetValue),
+                rememberBottomSheetScaffoldState(
+                    rememberStandardBottomSheetState(
+                        initialSheetValue,
+                        skipHiddenState = false,
+                    ),
+                ),
             ),
         )
         sheetStateCoroutineScope.tryEmit(rememberCoroutineScope())
@@ -137,7 +144,7 @@ class RootModalBottomSheetNavigator<Action : NavigationAction<*>>(
 }
 
 /**
- * A [BottomSheetNavigator] that is managed by a [ModalBottomSheetLayout].
+ * A [BottomSheetNavigator] that is managed by a [BottomSheetScaffold].
  * Must have a ModalBottomSheetLayout set up higher in the View-hierarchy.
  * @param Action the type of [NavigationAction] this navigator should respond to.
  * @param bottomSheetNavigatorState The [BottomSheetNavigatorState] controlling the routes.
@@ -183,10 +190,10 @@ private fun SetupNavigatingModalBottomSheetLayout(
 ) {
     val currentBottomSheetNavigationState by bottomSheetNavigationState.collectAsState()
     currentBottomSheetNavigationState?.let { navigationState ->
-        ModalBottomSheetLayout(
+        BottomSheetScaffold(
             sheetContent = {
                 // Add a default BackButton behaviour that closes the sheet content
-                if (navigationState.sheetState.isVisible) {
+                if (navigationState.scaffoldState.bottomSheetState.isVisible) {
                     HardwareBackButtonNavigation(onBackButtonClickHandler = sheetContentRouteController::close)
                 }
 
@@ -203,7 +210,7 @@ private fun SetupNavigatingModalBottomSheetLayout(
                     }
                 }
             },
-            sheetState = navigationState.sheetState,
+            scaffoldState = navigationState.scaffoldState,
         ) {
             // Add NavHost to manage the Content navigation
             SetupNavHost(

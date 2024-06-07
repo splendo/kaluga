@@ -26,6 +26,7 @@ androidx-arch-core = "2.2.0"
 androidx-browser = "1.8.0"
 androidx-compose = "1.6.7"
 androidx-compose-ui = "1.6.7"
+androidx-compose-material = "1.2.1"
 androidx-constraintlayout = "2.1.4"
 androidx-core = "1.13.1"
 androidx-fragment = "1.7.1"
@@ -79,7 +80,6 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 
 # Accompanist
 accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanist" }
-accompanist-themeadaptermaterial = { module = "com.google.accompanist:accompanist-themeadapter-material", version.ref = "accompanist" }
 
 # Android
 android-material = { module = "com.google.android.material:material", version.ref = "android-material" }
@@ -104,7 +104,7 @@ bytebuddy-android = { module = "net.bytebuddy:byte-buddy-android", version.ref =
 
 ## Compose
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose" }
-androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "androidx-compose" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "androidx-compose-material" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose-ui" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose-ui" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "androidx-compose-ui" }

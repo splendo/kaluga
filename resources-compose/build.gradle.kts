@@ -26,6 +26,6 @@ kaluga {
 dependencies {
     implementation(project(":base"))
     api(project(":resources"))
-    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.material3)
     implementation(libs.accompanist.drawablepainter)
 }

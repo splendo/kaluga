@@ -18,7 +18,6 @@
 package com.splendo.kaluga.resources.compose
 
 import android.graphics.Typeface
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -28,36 +27,21 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ButtonElevation
-import androidx.compose.material.LocalMinimumInteractiveComponentEnforcement
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.ClipOp
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.addOutline
-import androidx.compose.ui.graphics.drawscope.clipPath
-import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.resources.DefaultColors
@@ -79,54 +63,42 @@ import com.splendo.kaluga.resources.view.KalugaLabel
  * @param modifier the [Modifier] to be applied to the button
  * @param elevation the [ButtonElevation] used to resolve the elevation for this button in different states.
  * This controls the size of the shadow below the button. Pass `null` here to disable elevation for this button.
- * See [ButtonDefaults.elevation].
+ * See [ButtonDefaults.buttonElevation].
  */
 @Composable
-fun KalugaButton.Composable(modifier: Modifier, elevation: ButtonElevation = ButtonDefaults.elevation()) {
+fun KalugaButton.Composable(modifier: Modifier, elevation: ButtonElevation = ButtonDefaults.buttonElevation()) {
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     val stateStyle = style.getStateStyle(isEnabled, pressed)
-    val elevationState by elevation.elevation(enabled = isEnabled, interactionSource = interactionSource)
 
-    // Default Button has some issues with transparency & sizes below a minimum size.
-    // Using custom implementation instead
-    ShadowBox(
-        elevation = elevationState,
-        modifier = modifier,
+    Button(
+        action,
+        Modifier.backgroundStyle(stateStyle.backgroundStyle).then(modifier),
+        isEnabled,
         shape = stateStyle.backgroundStyle.shape.shape,
+        ButtonColors(Color.Transparent, Color.Transparent, Color.Transparent, Color.Transparent),
+        elevation,
+        contentPadding = PaddingValues(style.padding.start.dp, style.padding.top.dp, style.padding.end.dp, style.padding.bottom.dp),
+        interactionSource = interactionSource,
     ) {
-        Box(
-            modifier = Modifier
-                .semantics { role = Role.Button }
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = rememberRipple(),
-                    enabled = isEnabled,
-                    onClick = action,
-                )
-                .backgroundStyle(stateStyle.backgroundStyle)
-                .padding(with(style.padding) { PaddingValues(start = start.dp, top = top.dp, end = end.dp, bottom = bottom.dp) })
-                .then(modifier),
-        ) {
-            when (this@Composable) {
-                is KalugaButton.WithoutText -> when (val style = style) {
-                    is KalugaButtonStyle.WithoutContent -> Spacer(modifier = modifier)
-                    is KalugaButtonStyle.ImageOnly -> Box(modifier = modifier) {
-                        style.Composable(isEnabled = isEnabled, isPressed = pressed)
+        when (this@Composable) {
+            is KalugaButton.WithoutText -> when (val style = style) {
+                is KalugaButtonStyle.WithoutContent -> Spacer(modifier = modifier)
+                is KalugaButtonStyle.ImageOnly -> Box(modifier = modifier) {
+                    style.Composable(isEnabled = isEnabled, isPressed = pressed)
+                }
+            }
+
+            is KalugaButton.WithText -> {
+                val createLabel: (KalugaTextStyle) -> KalugaLabel = { textStyle ->
+                    when (this@Composable) {
+                        is KalugaButton.Plain -> KalugaLabel.Plain(text, textStyle)
+                        is KalugaButton.Styled -> KalugaLabel.Styled(text, textStyle)
                     }
                 }
-
-                is KalugaButton.WithText -> {
-                    val createLabel: (KalugaTextStyle) -> KalugaLabel = { textStyle ->
-                        when (this@Composable) {
-                            is KalugaButton.Plain -> KalugaLabel.Plain(text, textStyle)
-                            is KalugaButton.Styled -> KalugaLabel.Styled(text, textStyle)
-                        }
-                    }
-                    when (val style = style) {
-                        is KalugaButtonStyle.TextOnly -> style.Composable(modifier = modifier, isEnabled = isEnabled, isPressed = pressed, createLabel)
-                        is KalugaButtonStyle.WithImageAndText -> style.Composable(modifier = modifier, isEnabled = isEnabled, isPressed = pressed, createLabel)
-                    }
+                when (val style = style) {
+                    is KalugaButtonStyle.TextOnly -> style.Composable(modifier = modifier, isEnabled = isEnabled, isPressed = pressed, createLabel)
+                    is KalugaButtonStyle.WithImageAndText -> style.Composable(modifier = modifier, isEnabled = isEnabled, isPressed = pressed, createLabel)
                 }
             }
         }
@@ -222,51 +194,5 @@ fun PreviewKalugaButton() {
         ) {}.Composable(
             modifier = Modifier.fillMaxWidth(),
         )
-    }
-}
-
-// Workaround for Elevation not working well with transparency
-@Composable
-private fun ShadowBox(elevation: Dp, modifier: Modifier = Modifier, shape: Shape = RectangleShape, wrappedTarget: @Composable () -> Unit) {
-    Layout(
-        {
-            ClippedShadow(elevation, modifier, shape)
-            CompositionLocalProvider(
-                LocalMinimumInteractiveComponentEnforcement provides false,
-                wrappedTarget,
-            )
-        },
-        modifier = modifier,
-    ) { measurables, constraints ->
-        require(measurables.size == 2)
-        val shadow = measurables[0]
-        val target = measurables[1]
-        val targetPlaceable = target.measure(constraints)
-        val width = targetPlaceable.width
-        val height = targetPlaceable.height
-        val shadowPlaceable = shadow.measure(Constraints.fixed(width, height))
-        layout(width, height) {
-            shadowPlaceable.place(0, 0)
-            targetPlaceable.place(0, 0)
-        }
-    }
-}
-
-@Composable
-private fun ClippedShadow(elevation: Dp, modifier: Modifier = Modifier, shape: Shape = RectangleShape) {
-    Layout(
-        modifier
-            .drawWithCache {
-                val outline = shape.createOutline(size, layoutDirection, this)
-                val path = Path().apply { addOutline(outline) }
-                onDrawWithContent {
-                    clipPath(path, ClipOp.Difference) {
-                        this@onDrawWithContent.drawContent()
-                    }
-                }
-            }
-            .shadow(elevation, shape, false),
-    ) { _, constraints ->
-        layout(constraints.maxWidth, constraints.maxHeight) {}
     }
 }

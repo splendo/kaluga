@@ -5,6 +5,7 @@ plugins {
     id(libs.plugins.kotlin.android.get().pluginId)
     id(libs.plugins.compose.get().pluginId)
     alias(libs.plugins.kotlin.serialization)
+    kotlin("kapt")
 }
 
 group = "com.splendo.kaluga"
@@ -68,6 +69,16 @@ android {
     }
 }
 
+kotlin {
+    sourceSets.all {
+        languageSettings {
+            optIn("kotlin.ExperimentalStdlibApi")
+            optIn("androidx.compose.material3.ExperimentalMaterial3Api")
+            optIn("androidx.compose.ui.ExperimentalComposeUiApi")
+        }
+    }
+}
+
 dependencies {
     implementation("com.splendo.kaluga:architecture-compose:$version")
     implementation("com.splendo.kaluga:keyboard-compose:$version")
@@ -79,7 +90,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
 
@@ -90,7 +101,6 @@ dependencies {
 
     implementation(libs.android.play.services.location)
     implementation(libs.android.material)
-    implementation(libs.accompanist.themeadaptermaterial)
 
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.kotlinx.serialization.json)

@@ -29,7 +29,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.OutlinedTextField
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -42,7 +43,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
-import com.google.accompanist.themeadapter.material.MdcTheme
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
@@ -70,7 +70,7 @@ class ComposeKeyboardActivity : AppCompatActivity() {
 
 @Composable
 fun KeyboardLayout() {
-    MdcTheme {
+    MaterialTheme {
         val focusHandler = LocalFocusManager.current
         val focusRequester = remember { FocusRequester() }
         val viewModel =

@@ -30,8 +30,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -44,7 +45,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.compose.composable
-import com.google.accompanist.themeadapter.material.MdcTheme
 import com.splendo.kaluga.architecture.compose.mutableState
 import com.splendo.kaluga.architecture.compose.navigation.RootModalBottomSheetNavigator
 import com.splendo.kaluga.architecture.compose.navigation.composable
@@ -80,7 +80,7 @@ class ComposeArchitectureActivity : AppCompatActivity() {
 
 @Composable
 fun ArchitectureLayout() {
-    MdcTheme {
+    MaterialTheme {
         val viewModel = koinViewModel<ArchitectureViewModel> {
             parametersOf(
                 RootModalBottomSheetNavigator<ArchitectureNavigationAction<*>>(
