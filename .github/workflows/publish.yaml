@@ -15,7 +15,7 @@ jobs:
       OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
       SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
       SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-    runs-on: macos-14
+    runs-on: tartelet
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -45,12 +45,7 @@ jobs:
         env:
           MAVEN_CENTRAL_RELEASE: ${{ github.ref_name == 'master' }}
         run: ./gradlew publishToMavenLocal --stacktrace
-      - name: "Publish SNAPSHOT"
-        if: ${{ github.ref_name != 'master' }}
-        run: ./gradlew publishAllPublicationsToSnapshotsRepository --stacktrace
-
       - name: "Publish Maven Central"
-        if: ${{ github.ref_name == 'master' }}
         env:
           MAVEN_CENTRAL_RELEASE: "true"
         run: ./gradlew publishAllPublicationsToSonatypeRepository --stacktrace --no-parallel

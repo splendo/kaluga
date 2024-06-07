@@ -53,5 +53,5 @@ val Project.GitBranch: GitBranch get() {
             logger.lifecycle("decided branch: '$branch' to postfix '$it', isRelease: $release (from: GITHUB_GIT_BRANCH env: $GITHUB_GIT_BRANCH, kaluga_branch property: $kaluga_branch , MAVEN_CENTRAL_RELEASE env: $MAVEN_CENTRAL_RELEASE , git cli: $branchFromGit)")
         }
 
-    return GitBranch(branch, kalugaBranchPostfix)
+    return GitBranch(branch, "")
 }
