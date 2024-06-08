@@ -40,6 +40,12 @@ jobs:
         with:
           path: ~/.konan/*
           key: konan
+      - name: Install Android SDK
+        id: android_sdk_install
+        if: inputs.install-android-sdk == 'true'
+        uses: android-actions/setup-android@v3
+        with:
+          log-accepted-android-sdk-licenses: false
       # We're seeing some issues with publishing to Sonatype due to split up repos. By publishing to MavenLocal first we might circumvent this
       - name: "Publish MavenLocal"
         env:
