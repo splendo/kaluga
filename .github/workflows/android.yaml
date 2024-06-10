@@ -20,7 +20,7 @@ jobs:
           java-version: 17
 
       - name: run Android unit tests
-        run: ./gradlew testDebugUnitTest
+        run: ./gradlew testDebugUnitTest koverXmlReport
 
       - name: run apiCheck
         run: ./gradlew apiCheck
