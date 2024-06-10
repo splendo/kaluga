@@ -47,6 +47,7 @@ jobs:
         uses: ./.github/workflows/setup_tools_macos/
         with:
           kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
+          arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || `arm64` }}
 
       - name: AVD cache
         uses: actions/cache@v3

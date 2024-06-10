@@ -4,6 +4,9 @@ inputs:
   kotlinVersion:
     required: true
     description: Kotlin version
+  arch:
+    required: true
+    description: CPU Architecture of machine
   gradle-cache-read-only:
     default: 'true'
     description: Updates gradle cache after actions if not read-only
@@ -42,7 +45,7 @@ runs:
       with:
         path: |
           ~/.konan/cache/*
-          ~/.konan/kotlin-native-prebuilt-macos-x86_64-${{ inputs.kotlinVersion }}/*
+          ~/.konan/kotlin-native-prebuilt-macos-${{ inputs.arch }}-${{ inputs.kotlinVersion }}/*
           ~/.konan/dependencies/*
         key: konan-${{ inputs.kotlinVersion }}
 

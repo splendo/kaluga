@@ -23,6 +23,7 @@ jobs:
       uses: ./.github/workflows/setup_tools_macos/
       with:
         kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
+        arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || `arm64` }}
 
     - name: ktLint
       run: ./gradlew lintKotlin
@@ -49,6 +50,8 @@ jobs:
         uses: ./.github/workflows/setup_tools_macos/
         with:
           kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
+          arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || `arm64` }}
+
 
       - name: run iOS tests
         run: ./gradlew :${{ matrix.module }}:iosSimulatorArm64Test
