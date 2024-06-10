@@ -18,12 +18,10 @@
 package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.base.utils.firstInstance
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.uuidFrom
-import kotlinx.coroutines.withTimeout
+import com.splendo.kaluga.test.base.awaitFirst
 import kotlin.test.Test
-import kotlin.test.assertNotNull
 import kotlin.time.Duration.Companion.milliseconds
 
 class MockDeviceTest {
@@ -37,13 +35,9 @@ class MockDeviceTest {
             }
             connectionDelay = 100.milliseconds
         }
-        withTimeout(500.milliseconds) {
-            device.connect()
-            assertNotNull(device.state.firstInstance<ConnectableDeviceState.Connected>())
-        }
-        withTimeout(500.milliseconds) {
-            device.disconnect()
-            assertNotNull(device.state.firstInstance<ConnectableDeviceState.Disconnected>())
-        }
+        device.connect()
+        device.state.awaitFirst { it is ConnectableDeviceState.Connected }
+        device.disconnect()
+        device.state.awaitFirst { it is ConnectableDeviceState.Disconnected }
     }
 }

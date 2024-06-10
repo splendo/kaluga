@@ -23,6 +23,7 @@ import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.closureOf
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.repositories
 import org.owasp.dependencycheck.gradle.extension.AnalyzerExtension
@@ -63,6 +64,8 @@ open class KalugaRootExtension @Inject constructor(
         project.extensions.configure(ApiValidationExtension::class) {
             apiExtensions(project)
         }
+
+        project.koverModules()
 
         afterEvaluate {
             // owasp dependency checker workaround
@@ -140,5 +143,13 @@ open class KalugaRootExtension @Inject constructor(
         ignoredClasses.add("$BASE_GROUP.permissions.BuildConfig")
         ignoredClasses.add("$BASE_GROUP.test.BuildConfig")
         ignoredClasses.add("$BASE_GROUP.datetime.timer.BuildConfig")
+    }
+
+    private fun Project.koverModules() {
+        dependencies {
+            subprojects.forEach {
+                add("kover", it)
+            }
+        }
     }
 }

@@ -21,6 +21,16 @@ jobs:
 
       - name: run Android unit tests
         run: ./gradlew testDebugUnitTest koverXmlReport
-
+      - name: add coverage report to PR
+        id: kover
+        uses: mi-kas/kover-report@v1
+        # this action fails if there is no report, unlike the above actions, so check if there are files
+        if: ${{ always() && hashFiles('${{ github.workspace }}kaluga/build/reports/kover/report.xml') != '' }}
+        with:
+          path: ${{ github.workspace }}kaluga/build/reports/kover/report.xml
+          token: ${{ secrets.CI_SPLENDO_PAT }}
+          title: Code coverage
+          update-comment: true
+          coverage-counter-type: LINE
       - name: run apiCheck
         run: ./gradlew apiCheck
