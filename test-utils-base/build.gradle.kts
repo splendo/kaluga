@@ -5,6 +5,10 @@ plugins {
 
 kaluga {
     moduleName = "test.base"
+
+    supportJVM = true
+    supportJS = true
+
     dependencies {
         android {
             main {

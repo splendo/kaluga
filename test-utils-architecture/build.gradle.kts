@@ -5,6 +5,10 @@ plugins {
 
 kaluga {
     moduleName = "test.architecture"
+
+    supportJVM = true
+    supportJS = true
+
     dependencies {
         common {
             main {

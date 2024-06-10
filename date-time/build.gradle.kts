@@ -4,6 +4,10 @@ plugins {
 
 kaluga {
     moduleName = "datetime.timer"
+
+    supportJVM = true
+    supportJS = true
+
     dependencies {
         common {
             main {

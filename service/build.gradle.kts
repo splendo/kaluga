@@ -4,6 +4,10 @@ plugins {
 
 kaluga {
     moduleName = "service"
+
+    supportJVM = true
+    supportJS = true
+
     dependencies {
         common {
             main {

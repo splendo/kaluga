@@ -1,7 +1,0 @@
-public final class com/splendo/kaluga/permissions/RegisterAllPermissionsKt {
-	public static final fun registerAllPermissions-8Mi8wO0 (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;)V
-	public static synthetic fun registerAllPermissions-8Mi8wO0$default (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;ILjava/lang/Object;)V
-	public static final fun registerAllPermissionsNotRegistered-dWUq8MI (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun registerAllPermissionsNotRegistered-dWUq8MI$default (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-}
-

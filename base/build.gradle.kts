@@ -5,6 +5,10 @@ plugins {
 
 kaluga {
     moduleName = "base"
+
+    supportJVM = true
+    supportJS = true
+
     appleInterop {
         main {
             create("objectObserver").apply {

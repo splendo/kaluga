@@ -5,6 +5,10 @@ plugins {
 
 kaluga {
     moduleName = "logging"
+
+    supportJVM = true
+    supportJS = true
+
     dependencies {
         android {
             main {

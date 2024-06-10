@@ -5,6 +5,10 @@ plugins {
 
 kaluga {
     moduleName = "scientific"
+
+    supportJVM = true
+    supportJS = true
+
     dependencies {
         common {
             main {

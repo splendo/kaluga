@@ -58,6 +58,9 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         SimulatorArm64("iosSimulatorArm64"),
     }
 
+    var supportJVM: Boolean = false
+    var supportJS: Boolean = false
+
     private val multiplatformDependencies = objects.newInstance(MultiplatformDependencyContainer::class)
     private val appleInterop = objects.newInstance(AppleInteropContainer::class)
     private var frameworkConfig: (Framework.() -> Unit)? = null
@@ -153,15 +156,19 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             }
         }
 
-        jvm()
-        js(KotlinJsCompilerType.IR) {
-            nodejs()
-            browser()
-            compilations.configureEach {
-                compileTaskProvider.configure {
-                    compilerOptions {
-                        sourceMap.set(true)
-                        moduleKind.set(JsModuleKind.MODULE_UMD)
+        if (supportJVM) {
+            jvm()
+        }
+        if (supportJS) {
+            js(KotlinJsCompilerType.IR) {
+                nodejs()
+                browser()
+                compilations.configureEach {
+                    compileTaskProvider.configure {
+                        compilerOptions {
+                            sourceMap.set(true)
+                            moduleKind.set(JsModuleKind.MODULE_UMD)
+                        }
                     }
                 }
             }
@@ -235,34 +242,38 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
             }
 
-            sourceSets.getByName("jvmMain").apply {
-                dependencies {
-                    implementation(kotlin("stdlib"))
-                    implementation("kotlinx-coroutines-swing".asDependency())
-                    multiplatformDependencies.jvm.mainDependencies.forEach { it.execute(this) }
+            if (supportJVM) {
+                sourceSets.getByName("jvmMain").apply {
+                    dependencies {
+                        implementation(kotlin("stdlib"))
+                        implementation("kotlinx-coroutines-swing".asDependency())
+                        multiplatformDependencies.jvm.mainDependencies.forEach { it.execute(this) }
+                    }
+                }
+
+                sourceSets.getByName("jvmTest").apply {
+                    dependencies {
+                        implementation(kotlin("test"))
+                        implementation(kotlin("test-junit"))
+                        multiplatformDependencies.jvm.testDependencies.forEach { it.execute(this) }
+                    }
                 }
             }
 
-            sourceSets.getByName("jvmTest").apply {
-                dependencies {
-                    implementation(kotlin("test"))
-                    implementation(kotlin("test-junit"))
-                    multiplatformDependencies.jvm.testDependencies.forEach { it.execute(this) }
+            if (supportJS) {
+                sourceSets.getByName("jsMain").apply {
+                    dependencies {
+                        implementation(kotlin("stdlib-js"))
+                        implementation("kotlinx-coroutines-js".asDependency())
+                        multiplatformDependencies.js.mainDependencies.forEach { it.execute(this) }
+                    }
                 }
-            }
 
-            sourceSets.getByName("jsMain").apply {
-                dependencies {
-                    implementation(kotlin("stdlib-js"))
-                    implementation("kotlinx-coroutines-js".asDependency())
-                    multiplatformDependencies.js.mainDependencies.forEach { it.execute(this) }
-                }
-            }
-
-            sourceSets.getByName("jsTest").apply {
-                dependencies {
-                    implementation(kotlin("test-js"))
-                    multiplatformDependencies.js.testDependencies.forEach { it.execute(this) }
+                sourceSets.getByName("jsTest").apply {
+                    dependencies {
+                        implementation(kotlin("test-js"))
+                        multiplatformDependencies.js.testDependencies.forEach { it.execute(this) }
+                    }
                 }
             }
 

@@ -6,6 +6,10 @@ plugins {
 
 kaluga {
     moduleName = "architecture"
+
+    supportJVM = true
+    supportJS = true
+
     dependencies {
         android {
             main {
