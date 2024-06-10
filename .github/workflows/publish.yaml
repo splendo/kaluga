@@ -18,9 +18,7 @@ jobs:
     steps:
       - name: Set secrets Path
         run: |
-          echo $GITHUB_WORKSPACE
           echo "$GITHUB_WORKSPACE/convention-plugins/keys/secret-keys.gpg" >> SIGNING_SECRET_KEY_RING_FILE
-          echo $SIGNING_SECRET_KEY_RING_FILE
       - name: checkout
         uses: actions/checkout@v3
         with:
@@ -52,9 +50,14 @@ jobs:
       # We're seeing some issues with publishing to Sonatype due to split up repos. By publishing to MavenLocal first we might circumvent this
       - name: "Publish MavenLocal"
         env:
-          MAVEN_CENTRAL_RELEASE: "true"
+            MAVEN_CENTRAL_RELEASE: ${{ github.ref_name == 'master' }}
         run: ./gradlew publishToMavenLocal --stacktrace
+      - name: "Publish SNAPSHOT"
+        if: ${{ github.ref_name != 'master' }}
+        run: ./gradlew publishAllPublicationsToSnapshotsRepository --stacktrace
+
       - name: "Publish Maven Central"
+        if: ${{ github.ref_name == 'master' }}
         env:
           MAVEN_CENTRAL_RELEASE: "true"
         run: ./gradlew publishAllPublicationsToSonatypeRepository --stacktrace --no-parallel
