@@ -4,7 +4,7 @@ on: push
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false -Dkotlin.daemon.jvm.options=-Xmx8G,-XX:MaxMetaspaceSize=512m,-Dorg.gradle.daemon=false,-Dkotlin.incremental=false"
   JAVA_OPTS: "-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
-  SIGNING_SECRET_KEY_RING_FILE: "${{ github.path }}/kaluga/convention-plugins/keys/secret-keys.gpg"
+  SIGNING_SECRET_KEY_RING_FILE: "$GITHUB_PATH/kaluga/convention-plugins/keys/secret-keys.gpg"
 
 concurrency: publish-${{ github.ref_name }}
 
@@ -17,6 +17,10 @@ jobs:
       SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
     runs-on: tartelet
     steps:
+      - name: Get Path
+        run: |
+          echo $GITHUB_PATH
+          echo $SIGNING_SECRET_KEY_RING_FILE
       - name: checkout
         uses: actions/checkout@v3
         with:
