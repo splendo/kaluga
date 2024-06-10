@@ -4,6 +4,7 @@ on: push
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false -Dkotlin.daemon.jvm.options=-Xmx8G,-XX:MaxMetaspaceSize=512m,-Dorg.gradle.daemon=false,-Dkotlin.incremental=false"
   JAVA_OPTS: "-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+  SIGNING_SECRET_KEY_RING_FILE: ${{ '${github.workspace}/convention-plugins/keys/secret-keys.gpg' }}
 
 concurrency: publish-${{ github.ref_name }}
 
@@ -14,11 +15,8 @@ jobs:
       OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
       SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
       SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-    runs-on: tartelet
+    runs-on: ${{ github.ref_name == 'master' && 'tartelet' || 'macos-14"' }}
     steps:
-      - name: Set secrets Path
-        run: |
-          echo "$GITHUB_WORKSPACE/convention-plugins/keys/secret-keys.gpg" >> SIGNING_SECRET_KEY_RING_FILE
       - name: checkout
         uses: actions/checkout@v3
         with:
