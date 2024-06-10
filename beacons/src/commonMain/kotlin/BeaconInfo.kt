@@ -45,19 +45,7 @@ data class BeaconInfo(
     val lastSeen: KalugaDate,
 )
 
-@Deprecated(
-    message = "Replaced with beaconId.asString()",
-    replaceWith = ReplaceWith(expression = "beaconID.asString()"),
-)
-fun BeaconInfo.fullID() = this.beaconID.asString()
-
 /**
  * Returns the [kotlin.time.Duration] since the beacon was last seen
  */
 val BeaconInfo.timeSinceLastSeen get() = DefaultKalugaDate.now() - lastSeen
-
-/**
- * Returns the time in milliseconds since the beacon was last seen
- */
-@Deprecated("Use timeSinceLastSeen", ReplaceWith("BeaconInfo.timeSinceLastSeen"))
-fun BeaconInfo.seenMs() = timeSinceLastSeen.inWholeMilliseconds
