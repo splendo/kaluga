@@ -19,7 +19,8 @@ jobs:
       - name: Set secrets Path
         run: |
           echo $GITHUB_WORKSPACE
-          echo "$GITHUB_WORKSPACE/kaluga/convention-plugins/keys/secret-keys.gpg" >> SIGNING_SECRET_KEY_RING_FILE
+          echo "$GITHUB_WORKSPACE/convention-plugins/keys/secret-keys.gpg" >> SIGNING_SECRET_KEY_RING_FILE
+          echo $SIGNING_SECRET_KEY_RING_FILE
       - name: checkout
         uses: actions/checkout@v3
         with:
