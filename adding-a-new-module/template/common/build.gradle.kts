@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "%PACKAGE%"
+%TARGET_CONFIG%
     dependencies {
         common {
             main {

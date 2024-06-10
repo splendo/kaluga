@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "test-utils-%PACKAGE%"
+%TARGET_CONFIG%
     dependencies {
         common {
             main {
