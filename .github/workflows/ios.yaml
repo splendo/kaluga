@@ -8,7 +8,7 @@ jobs:
   build:
     uses: ./.github/workflows/setup_macos.yaml
     with:
-      gradleTask: compileKotlinIos${{ runner.arch == 'X86' && 'X86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'SimulatorArm32' || `SimulatorArm64` }}
+      gradleTask: compileKotlinIos${{ runner.arch == 'X86' && 'X86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'SimulatorArm32' || 'SimulatorArm64' }}
 
   lint:
     needs: build
@@ -23,7 +23,7 @@ jobs:
       uses: ./.github/workflows/setup_tools_macos/
       with:
         kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
-        arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || `arm64` }}
+        arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
 
     - name: ktLint
       run: ./gradlew lintKotlin
@@ -50,8 +50,8 @@ jobs:
         uses: ./.github/workflows/setup_tools_macos/
         with:
           kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
-          arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || `arm64` }}
+          arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
 
 
       - name: run iOS tests
-        run: ./gradlew :${{ matrix.module }}:ios${{ runner.arch == 'X86' && 'X86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'SimulatorArm32' || `SimulatorArm64` }}Test
+        run: ./gradlew :${{ matrix.module }}:ios${{ runner.arch == 'X86' && 'X86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'SimulatorArm32' || 'SimulatorArm64' }}Test
