@@ -23,12 +23,14 @@ jobs:
         run: ./gradlew testDebugUnitTest koverHtmlReport
       - name: Test path
         run: |
-          ls ${{ github.workspace }}/kaluga/build
+          ls ${{ github.workspace }}/build/
+          ls ${{ github.workspace }}/build/reports
+          ls ${{ github.workspace }}/build/reports/kover
       - name: add coverage report to PR
         id: kover
         uses: mi-kas/kover-report@v1
         with:
-          path: ${{ github.workspace }}/kaluga/build/reports/kover/report.xml
+          path: ${{ github.workspace }}/build/reports/kover/report.xml
           token: ${{ secrets.CI_SPLENDO_PAT }}
           title: Code coverage
           update-comment: true
