@@ -19,7 +19,7 @@ on:
 
     outputs:
       kotlinVersion:
-        description: "kaluga.kotlinVersion property from gradle.propertoes"
+        description: "kaluga.kotlinVersion property from gradle.properties"
         value: ${{ jobs.setup.outputs.kotlinVersion }}
       projects:
         description: "Gradle projects that do not dependent on another project or have other projects dependent on them"
@@ -27,7 +27,7 @@ on:
 jobs:
   setup:
 
-    runs-on: macos-13
+    runs-on: macos-14
 
     outputs:
       projects: ${{ steps.envFile.outputs.projects }}
@@ -52,6 +52,7 @@ jobs:
           gradle-cache-read-only: 'false'
           restore-workspace-cache: 'false'
           kotlinVersion: ${{ steps.kotlinVersion.outputs.kotlinVersion }}
+          arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
           project: ${{ inputs.project }}
 
       - name: generate file with projects for build matrix
