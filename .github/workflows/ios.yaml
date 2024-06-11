@@ -8,7 +8,7 @@ jobs:
   build:
     uses: ./.github/workflows/setup_macos.yaml
     with:
-      gradleTask: compileKotlinIos${{ runner.arch == 'X86' && 'X86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'SimulatorArm32' || 'SimulatorArm64' }}
+      gradleTask: compileKotlinIosSimulatorArm64
 
   lint:
     needs: build
