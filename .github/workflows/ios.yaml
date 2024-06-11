@@ -8,11 +8,11 @@ jobs:
   build:
     uses: ./.github/workflows/setup_macos.yaml
     with:
-      gradleTask: compileKotlinIosX64
+      gradleTask: compileKotlinIosSimulatorArm64
 
   lint:
     needs: build
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
     - name: checkout
       uses: actions/checkout@v3
@@ -23,6 +23,7 @@ jobs:
       uses: ./.github/workflows/setup_tools_macos/
       with:
         kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
+        arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
 
     - name: ktLint
       run: ./gradlew lintKotlin
@@ -36,7 +37,7 @@ jobs:
 
   test:
     needs: build
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       fail-fast: false
       matrix:
@@ -49,6 +50,8 @@ jobs:
         uses: ./.github/workflows/setup_tools_macos/
         with:
           kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
+          arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
+
 
       - name: run iOS tests
-        run: ./gradlew :${{ matrix.module }}:iosX64Test
+        run: ./gradlew :${{ matrix.module }}:ios${{ runner.arch == 'X86' && 'X86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'SimulatorArm32' || 'SimulatorArm64' }}Test
