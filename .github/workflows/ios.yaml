@@ -60,4 +60,4 @@ jobs:
         if: failure()
         with:
           name: ${{ matrix.module}} iOS Test Report HTML
-          path: ${{ join(['**', matrix.module, '/build/reports/tests/ios', runner.arch == 'X86' && 'X86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'SimulatorArm32' || 'SimulatorArm64' ,'Test']) }}
+          path: ${{ format('**{0}/build/reports/tests/ios{1}Test', matrix.module, runner.arch == 'X86' && 'X86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'SimulatorArm32' || 'SimulatorArm64') }}
