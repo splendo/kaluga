@@ -25,7 +25,7 @@ jobs:
         id: kover
         uses: mi-kas/kover-report@v1
         # this action fails if there is no report, unlike the above actions, so check if there are files
-        if: ${{ always() && hashFiles(join(github.workspace,'/build/reports/kover/report.xml')) != '' }}
+        if: ${{ always() && hashFiles(join([github.workspace,'/build/reports/kover/report.xml'])) != '' }}
         with:
           path: ${{ github.workspace }}/build/reports/kover/report.xml
           token: ${{ secrets.CI_SPLENDO_PAT }}
@@ -40,7 +40,7 @@ jobs:
           path: "**/build/reports/tests/testDebugUnitTest"
       - name: Upload Coverage report
         uses: actions/upload-artifact@v3
-        if: ${{ always() && hashFiles(join(github.workspace,'/build/reports/kover/html/index.html')) != '' }}
+        if: ${{ always() && hashFiles(join([github.workspace,'/build/reports/kover/html/index.html'])) != '' }}
         with:
           name: "Android Test Report HTML"
           path: "**/build/reports/kover/html"
