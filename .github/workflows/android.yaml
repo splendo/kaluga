@@ -21,20 +21,28 @@ jobs:
 
       - name: run Android unit tests
         run: ./gradlew testDebugUnitTest koverHtmlReport koverXmlReport
-      - name: CHeck has token
-        run: |
-         echo ${{ secrets.CI_SPLENDO_PAT }}
-      - name: Test path
-        run: |
-          ls ${{ github.workspace }}/build/reports/kover
       - name: add coverage report to PR
         id: kover
         uses: mi-kas/kover-report@v1
+        # this action fails if there is no report, unlike the above actions, so check if there are files
+        if: ${{ always() && hashFiles(join(github.workspace,'/build/reports/kover/report.xml')) != '' }}
         with:
           path: ${{ github.workspace }}/build/reports/kover/report.xml
           token: ${{ secrets.CI_SPLENDO_PAT }}
           title: Code coverage
           update-comment: true
           coverage-counter-type: LINE
+      - name: Upload Android test artifact
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: "Android Test Report HTML"
+          path: "**/build/reports/tests/testDebugUnitTest"
+      - name: Upload Coverage report
+        uses: actions/upload-artifact@v3
+        if: ${{ always() && hashFiles(join(github.workspace,'/build/reports/kover/html/index.html')) != '' }}
+        with:
+          name: "Android Test Report HTML"
+          path: "**/build/reports/kover/html"
       - name: run apiCheck
         run: ./gradlew apiCheck
