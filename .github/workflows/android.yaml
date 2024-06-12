@@ -39,7 +39,7 @@ jobs:
           name: "Android Test Report HTML"
           path: "**/build/reports/tests/testDebugUnitTest"
       - name: Upload Coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ always() && hashFiles(format('{0}/build/reports/kover/html/index.html', github.workspace)) != '' }}
         with:
           name: "Android Test Report HTML"
