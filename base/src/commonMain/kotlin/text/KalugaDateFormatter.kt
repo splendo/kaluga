@@ -180,12 +180,6 @@ expect class KalugaDateFormatter : BaseDateFormatter {
     override fun parse(string: String): KalugaDate?
 }
 
-@Deprecated(
-    "Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.",
-    ReplaceWith("KalugaState"),
-)
-typealias DateFormatter = KalugaDateFormatter
-
 /**
  * Creates a fixed [KalugaDateFormatter] using a custom Date format pattern, localized by the [KalugaLocale.enUsPosix] [KalugaLocale].
  * Use this to ensure that displaying time in 12 or 24 hour format is not overridden by the user.

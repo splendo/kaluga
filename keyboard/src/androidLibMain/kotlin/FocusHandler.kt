@@ -62,6 +62,3 @@ data class ViewFocusHandler(
         }
     }
 }
-
-@Deprecated("Renamed to ViewFocusHandler", replaceWith = ReplaceWith("ViewFocusHandler"))
-typealias AndroidFocusHandler = ViewFocusHandler

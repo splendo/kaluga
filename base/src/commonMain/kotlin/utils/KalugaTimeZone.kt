@@ -144,9 +144,3 @@ expect class KalugaTimeZone : BaseTimeZone {
     override fun usesDaylightSavingsTime(date: KalugaDate): Boolean
     override fun copy(): KalugaTimeZone
 }
-
-@Deprecated(
-    "Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.",
-    ReplaceWith("KalugaTimeZone"),
-)
-typealias TimeZone = KalugaTimeZone

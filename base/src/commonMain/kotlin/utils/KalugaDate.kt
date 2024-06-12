@@ -217,12 +217,6 @@ fun DefaultKalugaDate.Companion.now(offsetInMilliseconds: Long, timeZone: Kaluga
 fun DefaultKalugaDate.Companion.epoch(offsetInMilliseconds: Long, timeZone: KalugaTimeZone = KalugaTimeZone.current(), locale: KalugaLocale = defaultLocale): KalugaDate =
     epoch(offsetInMilliseconds.milliseconds, timeZone, locale)
 
-@Deprecated(
-    "Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.",
-    ReplaceWith("KalugaDate"),
-)
-typealias Date = KalugaDate
-
 /**
  * Gets the [Duration] between two [KalugaDate]
  * @param other the [KalugaDate] to subtract

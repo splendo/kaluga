@@ -22,12 +22,6 @@ package com.splendo.kaluga.resources
  */
 expect class KalugaImage
 
-@Deprecated(
-    "Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.",
-    ReplaceWith("KalugaColor"),
-)
-typealias Image = KalugaImage
-
 /**
  * A [KalugaImage] tinted with a given [KalugaColor]
  * @property image the [KalugaImage] to tint
