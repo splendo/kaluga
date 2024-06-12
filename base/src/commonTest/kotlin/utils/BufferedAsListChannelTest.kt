@@ -53,7 +53,7 @@ class BufferedAsListChannelTest {
             try {
                 for (i in 1..100) {
                     groupingChannel.trySend(i)
-                    delay(1.milliseconds)
+                    delay(10.milliseconds)
                 }
                 groupingChannel.close()
                 didCompletedProductionExceptionally.complete(false)
@@ -70,7 +70,7 @@ class BufferedAsListChannelTest {
             try {
                 groupingChannel.receiveAsFlow().collect {
                     consumedResult.add(it)
-                    delay(10.milliseconds)
+                    delay(100.milliseconds)
                 }
                 didCompletedConsumptionExceptionally.complete(false)
             } catch (e: CancellationException) {
