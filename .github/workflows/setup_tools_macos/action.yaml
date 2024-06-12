@@ -21,7 +21,7 @@ runs:
   using: "composite"
   steps:
     - name: set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: 17
@@ -32,7 +32,7 @@ runs:
         xcode-version: '15'
 
     - name: Gradle cache
-      uses: gradle/gradle-build-action@v2
+      uses: gradle/actions/setup-gradle@v3
       with:
         cache-read-only: ${{ inputs.gradle-cache-read-only }}
         gradle-home-cache-includes: |
@@ -40,7 +40,7 @@ runs:
           notifications
 
     - name: Konan cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       id: konan-cache
       with:
         path: |
@@ -50,7 +50,7 @@ runs:
         key: konan-${{ inputs.kotlinVersion }}
 
     - name: Make cache of workspace
-      uses: actions/cache/restore@v3
+      uses: actions/cache/restore@v4
       if: ${{ inputs.restore-workspace-cache != 'false' }}
       id: restore-build
       with:

@@ -44,7 +44,7 @@ jobs:
         module: ${{ fromJSON(needs.build.outputs.projects) }}
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup tools and cache for workspace
         uses: ./.github/workflows/setup_tools_macos/
@@ -55,3 +55,9 @@ jobs:
 
       - name: run iOS tests
         run: ./gradlew :${{ matrix.module }}:ios${{ runner.arch == 'X86' && 'X86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'SimulatorArm32' || 'SimulatorArm64' }}Test
+      - name: Upload iOS test artifact
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: ${{ matrix.module}} iOS Test Report HTML
+          path: ${{ format('**{0}/build/reports/tests/ios{1}Test', matrix.module, runner.arch == 'X86' && 'X86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'SimulatorArm32' || 'SimulatorArm64') }}

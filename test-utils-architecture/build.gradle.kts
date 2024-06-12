@@ -14,6 +14,7 @@ kaluga {
             main {
                 api(project(":test-utils-base"))
                 api(project(":architecture"))
+                implementation(libs.kotlinx.atomicfu)
             }
         }
     }

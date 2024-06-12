@@ -35,7 +35,7 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -82,7 +82,7 @@ jobs:
         run: ./gradlew :${{ inputs.project }}:${{ inputs.gradleTask }}
 
       - name: Make cache of workspace
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         id: store-build
         with:
           path: |
