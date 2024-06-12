@@ -76,6 +76,7 @@ sealed class BaseKalugaSubprojectExtension(
     ).map { it.asDependency() }
 
     override fun Project.beforeEvaluated() {
+        setupSubproject()
         libraryExtension.apply {
             compileSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
             buildToolsVersion = versionCatalog.findVersion("androidBuildTools").get().displayName
@@ -113,6 +114,9 @@ sealed class BaseKalugaSubprojectExtension(
             configure()
         }
     }
+
+    protected abstract fun Project.setupSubproject()
+
     override fun Project.afterProjectEvaluated() {
         if (moduleName.isEmpty()) {
             throw RuntimeException("moduleName must be configured")

@@ -38,6 +38,8 @@ abstract class BaseKalugaAndroidSubprojectExtension(
     objects: ObjectFactory,
 ) : BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, namespacePostfix, objects) {
 
+    override fun Project.setupSubproject() {}
+
     override fun Project.configureSubproject() {
         extensions.configure(KotlinAndroidProjectExtension::class) {
             compilerOptions {

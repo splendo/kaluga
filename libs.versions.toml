@@ -1,6 +1,6 @@
 [versions]
 # kotlin version is included since it will affect building
-androidGradle = "8.5.0-rc01"
+androidGradle = "8.5.0-rc02"
 androidBuildTools = "34.0.0"
 androidCompileSdk = "34"
 androidMinSdk = "24"
