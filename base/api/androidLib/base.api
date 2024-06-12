@@ -32,10 +32,6 @@ public final class com/splendo/kaluga/base/KalugaThreadKt {
 	public static final fun isOnMainThread ()Z
 }
 
-public final class com/splendo/kaluga/base/MultiplatformMainScopeKt {
-	public static final fun MultiplatformMainScope ()Lkotlinx/coroutines/CoroutineScope;
-}
-
 public final class com/splendo/kaluga/base/RunBlockingKt {
 	public static final fun runBlocking (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
 	public static synthetic fun runBlocking$default (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/lang/Object;

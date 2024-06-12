@@ -542,8 +542,5 @@ public final class com/splendo/kaluga/architecture/compose/viewModel/KalugaViewM
 public final class com/splendo/kaluga/architecture/compose/viewModel/ViewModelComposableKt {
 	public static final fun FragmentViewModelComposable (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Landroidx/fragment/app/FragmentManager;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 	public static final fun ViewModelComposable (Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
-	public static final fun store (Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;
-	public static final fun storeAndRemember (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;I)Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;
-	public static final fun storeAndRemember (Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;I)Lcom/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel;
 }
 

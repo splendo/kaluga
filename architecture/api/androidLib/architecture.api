@@ -1136,8 +1136,6 @@ public abstract class com/splendo/kaluga/architecture/navigation/NavigationSpec 
 public final class com/splendo/kaluga/architecture/navigation/NavigationSpec$Activity : com/splendo/kaluga/architecture/navigation/NavigationSpec {
 	public fun <init> (Ljava/lang/Class;Ljava/util/Set;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Activity$LaunchType;)V
 	public synthetic fun <init> (Ljava/lang/Class;Ljava/util/Set;Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Activity$LaunchType;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (Ljava/lang/Class;Ljava/util/Set;Ljava/lang/Integer;)V
-	public synthetic fun <init> (Ljava/lang/Class;Ljava/util/Set;Ljava/lang/Integer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/Class;
 	public final fun component2 ()Ljava/util/Set;
 	public final fun component3 ()Lcom/splendo/kaluga/architecture/navigation/NavigationSpec$Activity$LaunchType;
@@ -2322,10 +2320,6 @@ public class com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel : 
 	protected final fun removeLifecycleSubscribables ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
 }
 
-public class com/splendo/kaluga/architecture/viewmodel/BaseViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
-	public fun <init> ()V
-}
-
 public abstract class com/splendo/kaluga/architecture/viewmodel/KalugaViewModelActivity : androidx/appcompat/app/AppCompatActivity {
 	public fun <init> ()V
 	public fun <init> (I)V
@@ -2381,9 +2375,5 @@ public final class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModelK
 public class com/splendo/kaluga/architecture/viewmodel/NavigatingViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
 	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;[Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
 	protected final fun getNavigator ()Lcom/splendo/kaluga/architecture/navigation/Navigator;
-}
-
-public class com/splendo/kaluga/architecture/viewmodel/ViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
-	public fun <init> ()V
 }
 

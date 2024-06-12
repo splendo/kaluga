@@ -18,9 +18,7 @@ public final class com/splendo/kaluga/bluetooth/beacons/BeaconInfo {
 }
 
 public final class com/splendo/kaluga/bluetooth/beacons/BeaconInfoKt {
-	public static final fun fullID (Lcom/splendo/kaluga/bluetooth/beacons/BeaconInfo;)Ljava/lang/String;
 	public static final fun getTimeSinceLastSeen (Lcom/splendo/kaluga/bluetooth/beacons/BeaconInfo;)J
-	public static final fun seenMs (Lcom/splendo/kaluga/bluetooth/beacons/BeaconInfo;)J
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/beacons/Beacons {
