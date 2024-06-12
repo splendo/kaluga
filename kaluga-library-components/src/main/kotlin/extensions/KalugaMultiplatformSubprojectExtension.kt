@@ -77,6 +77,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         frameworkConfig = action
     }
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     override fun Project.setupSubproject() {
         // Android Target must be setup before project is evaluated as publishing will break otherwise
         extensions.configure(KotlinMultiplatformExtension::class) {
@@ -87,7 +88,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             }
         }
     }
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+
     override fun Project.configureSubproject() {
         extensions.configure(KotlinMultiplatformExtension::class) {
             configureMultiplatform(this@configureSubproject)
