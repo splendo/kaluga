@@ -20,7 +20,10 @@ jobs:
           java-version: 17
 
       - name: run Android unit tests
-        run: ./gradlew testDebugUnitTest koverHtmlReport
+        run: ./gradlew testDebugUnitTest koverHtmlReport koverXmlReport
+      - name: CHeck has token
+        run: |
+         echo ${{ secrets.CI_SPLENDO_PAT }}
       - name: Test path
         run: |
           ls ${{ github.workspace }}/build/reports/kover
@@ -28,10 +31,8 @@ jobs:
         id: kover
         uses: mi-kas/kover-report@v1
         with:
-          path: |
-            ${{ github.workspace }}/build/reports/kover/report.xml
-          token: |
-            ${{ secrets.CI_SPLENDO_PAT }}
+          path: ${{ github.workspace }}/build/reports/kover/report.xml
+          token: ${{ secrets.CI_SPLENDO_PAT }}
           title: Code coverage
           update-comment: true
           coverage-counter-type: LINE
