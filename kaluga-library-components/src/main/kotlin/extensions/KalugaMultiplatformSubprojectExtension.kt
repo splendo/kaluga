@@ -145,7 +145,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         androidTarget("androidLib") {
             instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
             unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-            publishAllLibraryVariants()
+            publishLibraryVariants("release", "debug")
         }
 
         val iosTargets = project.iosTargets.map { iosTarget ->
