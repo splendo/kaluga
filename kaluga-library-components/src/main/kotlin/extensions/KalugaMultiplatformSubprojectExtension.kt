@@ -77,6 +77,16 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         frameworkConfig = action
     }
 
+    override fun Project.setupSubproject() {
+        // Android Target must be setup before project is evaluated as publishing will break otherwise
+        extensions.configure(KotlinMultiplatformExtension::class) {
+            androidTarget("androidLib") {
+                instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
+                unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
+                publishAllLibraryVariants()
+            }
+        }
+    }
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     override fun Project.configureSubproject() {
         extensions.configure(KotlinMultiplatformExtension::class) {
@@ -140,12 +150,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     }
                 }
             }
-        }
-
-        androidTarget("androidLib") {
-            instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-            unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-            publishLibraryVariants("release", "debug")
         }
 
         val iosTargets = project.iosTargets.map { iosTarget ->
