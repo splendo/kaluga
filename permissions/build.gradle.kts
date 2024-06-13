@@ -1,18 +1,12 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-publishableComponent("permissions")
-
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
+kaluga {
+    moduleName = "permissions"
+    dependencies {
+        common {
+            main {
                 api(project(":bluetooth-permissions"))
                 api(project(":calendar-permissions"))
                 api(project(":location-permissions"))
@@ -22,9 +16,7 @@ kotlin {
                 api(project(":microphone-permissions"))
                 api(project(":camera-permissions"))
             }
-        }
-        commonTest {
-            dependencies {
+            test {
                 implementation(project(":test-utils-base"))
             }
         }

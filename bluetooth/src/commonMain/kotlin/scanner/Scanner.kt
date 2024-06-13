@@ -551,4 +551,12 @@ abstract class BaseScanner constructor(
 /**
  * A default implementation of [BaseScanner]
  */
-expect class DefaultScanner : BaseScanner
+expect class DefaultScanner : BaseScanner {
+    override val isSupported: Boolean
+    override val bluetoothEnabledMonitor: BluetoothMonitor?
+
+    override suspend fun didStartScanning(filter: Filter)
+    override suspend fun didStopScanning()
+    override fun generateEnableSensorsActions(): List<EnableSensorAction>
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Filter, connectionSettings: ConnectionSettings?): List<Scanner.DeviceDiscovered>
+}

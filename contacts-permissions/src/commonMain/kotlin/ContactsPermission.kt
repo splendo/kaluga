@@ -35,7 +35,11 @@ typealias ContactsPermissionManager = PermissionManager<ContactsPermission>
 /**
  * The [BasePermissionManager] to use as a default for [ContactsPermission]
  */
-expect class DefaultContactsPermissionManager : BasePermissionManager<ContactsPermission>
+expect class DefaultContactsPermissionManager : BasePermissionManager<ContactsPermission> {
+    override fun requestPermissionDidStart()
+    override fun monitoringDidStart(interval: Duration)
+    override fun monitoringDidStop()
+}
 
 /**
  * A [BasePermissionsBuilder] for [ContactsPermission]
@@ -60,7 +64,9 @@ interface BaseContactsPermissionManagerBuilder : BasePermissionsBuilder<Contacts
  * A [BaseContactsPermissionManagerBuilder]
  * @param context the [PermissionContext] this permissions manager builder runs on
  */
-expect class ContactsPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseContactsPermissionManagerBuilder
+expect class ContactsPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseContactsPermissionManagerBuilder {
+    override fun create(contactsPermission: ContactsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): ContactsPermissionManager
+}
 
 /**
  * A [PermissionStateRepo] for [ContactsPermission]

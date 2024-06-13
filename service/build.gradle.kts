@@ -1,26 +1,18 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-publishableComponent("service")
+kaluga {
+    moduleName = "service"
 
-dependencies { }
+    supportJVM = true
+    supportJS = true
 
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
+    dependencies {
+        common {
+            main {
                 implementation(project(":logging"))
                 implementation(project(":base"))
-            }
-        }
-        commonTest {
-            dependencies {
             }
         }
     }

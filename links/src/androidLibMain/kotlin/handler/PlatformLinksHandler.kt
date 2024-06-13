@@ -24,9 +24,9 @@ import android.webkit.URLUtil
  * Android implementation of [LinksHandler]
  */
 actual class PlatformLinksHandler : LinksHandler {
-    override fun isValid(url: String): Boolean = URLUtil.isValidUrl(url)
+    actual override fun isValid(url: String): Boolean = URLUtil.isValidUrl(url)
 
-    override fun extractQueryAsList(url: String): List<Any> {
+    actual override fun extractQueryAsList(url: String): List<Any> {
         val params = UrlQuerySanitizer(url)
 
         if (params.parameterList == null) {

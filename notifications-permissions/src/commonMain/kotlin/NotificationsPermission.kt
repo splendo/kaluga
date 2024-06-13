@@ -40,7 +40,11 @@ typealias NotificationsPermissionManager = PermissionManager<NotificationsPermis
 /**
  * The [BasePermissionManager] to use as a default for [NotificationsPermission]
  */
-expect class DefaultNotificationsPermissionManager : BasePermissionManager<NotificationsPermission>
+expect class DefaultNotificationsPermissionManager : BasePermissionManager<NotificationsPermission> {
+    override fun requestPermissionDidStart()
+    override fun monitoringDidStart(interval: Duration)
+    override fun monitoringDidStop()
+}
 
 /**
  * A [BasePermissionsBuilder] for [NotificationsPermission]
@@ -65,7 +69,9 @@ interface BaseNotificationsPermissionManagerBuilder : BasePermissionsBuilder<Not
  * A [BaseNotificationsPermissionManagerBuilder]
  * @param context the [PermissionContext] this permissions manager builder runs on
  */
-expect class NotificationsPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseNotificationsPermissionManagerBuilder
+expect class NotificationsPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseNotificationsPermissionManagerBuilder {
+    override fun create(notificationsPermission: NotificationsPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): NotificationsPermissionManager
+}
 
 /**
  * A [PermissionStateRepo] for [NotificationsPermission]

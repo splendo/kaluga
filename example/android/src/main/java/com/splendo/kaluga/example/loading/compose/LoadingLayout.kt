@@ -27,10 +27,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import com.google.accompanist.themeadapter.material.MdcTheme
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.hud.HudViewModel
@@ -52,7 +52,7 @@ class ComposeLoadingActivity : AppCompatActivity() {
 
 @Composable
 fun LoadingLayout() {
-    MdcTheme {
+    MaterialTheme {
         val viewModel = koinViewModel<HudViewModel>()
 
         ViewModelComposable(viewModel) {

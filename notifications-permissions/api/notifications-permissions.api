@@ -1,0 +1,50 @@
+public abstract interface class com/splendo/kaluga/permissions/notifications/BaseNotificationsPermissionManagerBuilder : com/splendo/kaluga/permissions/base/BasePermissionsBuilder {
+	public abstract fun create (Lcom/splendo/kaluga/permissions/notifications/NotificationsPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
+	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/notifications/BaseNotificationsPermissionManagerBuilder;Lcom/splendo/kaluga/permissions/notifications/NotificationsPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
+}
+
+public final class com/splendo/kaluga/permissions/notifications/DefaultNotificationsPermissionManager : com/splendo/kaluga/permissions/base/BasePermissionManager {
+	public fun <init> (Landroid/content/Context;Lcom/splendo/kaluga/permissions/notifications/NotificationsPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;)V
+}
+
+public final class com/splendo/kaluga/permissions/notifications/NotificationOptions {
+	public fun <init> ()V
+}
+
+public final class com/splendo/kaluga/permissions/notifications/NotificationsPermission : com/splendo/kaluga/permissions/base/Permission {
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/permissions/notifications/NotificationOptions;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/notifications/NotificationOptions;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/splendo/kaluga/permissions/notifications/NotificationOptions;
+	public final fun copy (Lcom/splendo/kaluga/permissions/notifications/NotificationOptions;)Lcom/splendo/kaluga/permissions/notifications/NotificationsPermission;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/permissions/notifications/NotificationsPermission;Lcom/splendo/kaluga/permissions/notifications/NotificationOptions;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/notifications/NotificationsPermission;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public final fun getOptions ()Lcom/splendo/kaluga/permissions/notifications/NotificationOptions;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/permissions/notifications/NotificationsPermissionManagerBuilder : com/splendo/kaluga/permissions/notifications/BaseNotificationsPermissionManagerBuilder {
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/permissions/base/PermissionContext;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/base/PermissionContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun create (Lcom/splendo/kaluga/permissions/notifications/NotificationsPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
+}
+
+public final class com/splendo/kaluga/permissions/notifications/NotificationsPermissionStateRepo : com/splendo/kaluga/permissions/base/PermissionStateRepo {
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/notifications/NotificationsPermission;Lcom/splendo/kaluga/permissions/notifications/BaseNotificationsPermissionManagerBuilder;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/notifications/NotificationsPermission;Lcom/splendo/kaluga/permissions/notifications/BaseNotificationsPermissionManagerBuilder;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class com/splendo/kaluga/permissions/notifications/PermissionKt {
+	public static final fun registerNotificationsPermission (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/permissions/notifications/BaseNotificationsPermissionManagerBuilder;
+	public static synthetic fun registerNotificationsPermission$default (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/notifications/BaseNotificationsPermissionManagerBuilder;
+	public static final fun registerNotificationsPermission-exY8QGI (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;)Lcom/splendo/kaluga/permissions/notifications/BaseNotificationsPermissionManagerBuilder;
+	public static synthetic fun registerNotificationsPermission-exY8QGI$default (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/notifications/BaseNotificationsPermissionManagerBuilder;
+	public static final fun registerNotificationsPermissionIfNotRegistered (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;)Lcom/splendo/kaluga/permissions/notifications/BaseNotificationsPermissionManagerBuilder;
+	public static synthetic fun registerNotificationsPermissionIfNotRegistered$default (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/notifications/BaseNotificationsPermissionManagerBuilder;
+	public static final fun registerNotificationsPermissionIfNotRegistered-exY8QGI (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;)Lcom/splendo/kaluga/permissions/notifications/BaseNotificationsPermissionManagerBuilder;
+	public static synthetic fun registerNotificationsPermissionIfNotRegistered-exY8QGI$default (Lcom/splendo/kaluga/permissions/base/PermissionsBuilder;Lkotlin/jvm/functions/Function1;JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/notifications/BaseNotificationsPermissionManagerBuilder;
+}
+

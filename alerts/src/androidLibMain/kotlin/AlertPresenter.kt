@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
  * @param coroutineScope The [CoroutineScope] managing changes to the alert presentation.
  */
 actual class AlertPresenter(
-    private val alert: Alert,
+    alert: Alert,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     coroutineScope: CoroutineScope,
     logger: Logger,
@@ -109,11 +109,11 @@ actual class AlertPresenter(
         }
     }
 
-    override fun dismissAlert(animated: Boolean) {
+    actual override fun dismissAlert(animated: Boolean) {
         presentation.value = DialogPresentation.Hidden
     }
 
-    override fun showAlert(animated: Boolean, afterHandler: (Alert.Action?) -> Unit, completion: () -> Unit) {
+    actual override fun showAlert(animated: Boolean, afterHandler: (Alert.Action?) -> Unit, completion: () -> Unit) {
         presentation.value = DialogPresentation.Showing(animated, afterHandler, completion)
     }
 

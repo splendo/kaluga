@@ -84,9 +84,9 @@ actual class DefaultNetworkManager internal constructor(
         }
     }
 
-    override val network: Flow<NetworkConnectionType> get() = appleNetworkManager.network
-    override suspend fun startMonitoring() = appleNetworkManager.startMonitoring()
-    override suspend fun stopMonitoring() = appleNetworkManager.stopMonitoring()
+    actual override val network: Flow<NetworkConnectionType> get() = appleNetworkManager.network
+    actual override suspend fun startMonitoring() = appleNetworkManager.startMonitoring()
+    actual override suspend fun stopMonitoring() = appleNetworkManager.stopMonitoring()
 
     internal interface AppleNetworkManager : NetworkManager
 

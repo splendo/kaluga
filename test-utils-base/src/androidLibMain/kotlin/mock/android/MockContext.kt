@@ -112,6 +112,7 @@ class MockContext : Context() {
 
     override fun getExternalCacheDirs(): Array<File> = error("not implemented")
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun getExternalMediaDirs(): Array<File> = error("not implemented")
 
     override fun fileList(): Array<String> = error("not implemented")
@@ -131,18 +132,25 @@ class MockContext : Context() {
 
     override fun databaseList(): Array<String> = error("not implemented")
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun getWallpaper(): Drawable = error("not implemented")
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun peekWallpaper(): Drawable = error("not implemented")
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun getWallpaperDesiredMinimumWidth(): Int = error("not implemented")
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun getWallpaperDesiredMinimumHeight(): Int = error("not implemented")
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun setWallpaper(bitmap: Bitmap?) = error("not implemented")
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun setWallpaper(data: InputStream?) = error("not implemented")
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun clearWallpaper() = error("not implemented")
 
     override fun startActivity(intent: Intent?) = error("not implemented")
@@ -188,8 +196,10 @@ class MockContext : Context() {
         initialExtras: Bundle?,
     ) = error("not implemented")
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun sendStickyBroadcast(intent: Intent?) = error("not implemented")
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun sendStickyOrderedBroadcast(
         intent: Intent?,
         resultReceiver: BroadcastReceiver?,
@@ -199,10 +209,13 @@ class MockContext : Context() {
         initialExtras: Bundle?,
     ) = error("not implemented")
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun removeStickyBroadcast(intent: Intent?) = error("not implemented")
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun sendStickyBroadcastAsUser(intent: Intent?, user: UserHandle?) = error("not implemented")
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun sendStickyOrderedBroadcastAsUser(
         intent: Intent?,
         user: UserHandle?,
@@ -213,6 +226,7 @@ class MockContext : Context() {
         initialExtras: Bundle?,
     ) = error("not implemented")
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun removeStickyBroadcastAsUser(intent: Intent?, user: UserHandle?) = error("not implemented")
 
     override fun registerReceiver(receiver: BroadcastReceiver?, filter: IntentFilter?): Intent? = error("not implemented")

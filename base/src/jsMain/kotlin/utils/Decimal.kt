@@ -52,7 +52,7 @@ data class Rounding(
  * @property bd the [BigDecimal] representing the finite decimal number
  */
 actual data class FiniteDecimal(val bd: BigDecimal) : Comparable<FiniteDecimal> {
-    override fun compareTo(other: FiniteDecimal): Int = BigDecimal.compare(bd, other.bd)
+    actual override fun compareTo(other: FiniteDecimal): Int = BigDecimal.compare(bd, other.bd)
     override fun equals(other: Any?): Boolean = (other as? FiniteDecimal)?.let { BigDecimal.equal(bd, it.bd) } ?: false
     override fun hashCode(): Int {
         return bd.hashCode()

@@ -124,13 +124,6 @@ sealed class NavigationSpec {
                 fun tryAndGetContract(activity: android.app.Activity): ActivityResultLauncher<Intent>? = activityClass.safeCast(activity)?.provideResultLauncher()
             }
         }
-
-        @Deprecated("Legacy constructor", ReplaceWith("NavigationSpec.Activity(activityClass, flags, launchType)"))
-        constructor(
-            activityClass: Class<A>,
-            flags: Set<IntentFlag> = emptySet(),
-            requestCode: Int?,
-        ) : this(activityClass, flags, requestCode?.let { LaunchType.ActivityResult(it) } ?: LaunchType.NoResult)
     }
 
     /**

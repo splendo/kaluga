@@ -1,23 +1,19 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-publishableComponent("datetime.timer")
+kaluga {
+    moduleName = "datetime.timer"
 
-kotlin {
-    sourceSets {
-        getByName("commonMain") {
-            dependencies {
+    supportJVM = true
+    supportJS = true
+
+    dependencies {
+        common {
+            main {
                 implementation(project(":base", ""))
             }
-        }
-        getByName("commonTest") {
-            dependencies {
+            test {
                 implementation(project(":test-utils-base", ""))
             }
         }

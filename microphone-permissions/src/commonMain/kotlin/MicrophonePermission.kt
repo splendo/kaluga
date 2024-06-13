@@ -35,7 +35,11 @@ typealias MicrophonePermissionManager = PermissionManager<MicrophonePermission>
 /**
  * The [BasePermissionManager] to use as a default for [MicrophonePermission]
  */
-expect class DefaultMicrophonePermissionManager : BasePermissionManager<MicrophonePermission>
+expect class DefaultMicrophonePermissionManager : BasePermissionManager<MicrophonePermission> {
+    override fun requestPermissionDidStart()
+    override fun monitoringDidStart(interval: Duration)
+    override fun monitoringDidStop()
+}
 
 /**
  * A [BasePermissionsBuilder] for [MicrophonePermission]
@@ -55,7 +59,9 @@ interface BaseMicrophonePermissionManagerBuilder : BasePermissionsBuilder<Microp
  * A [BaseMicrophonePermissionManagerBuilder]
  * @param context the [PermissionContext] this permissions manager builder runs on
  */
-expect class MicrophonePermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseMicrophonePermissionManagerBuilder
+expect class MicrophonePermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseMicrophonePermissionManagerBuilder {
+    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): MicrophonePermissionManager
+}
 
 /**
  * A [PermissionStateRepo] for [MicrophonePermission]

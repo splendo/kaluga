@@ -436,4 +436,13 @@ abstract class BaseDeviceConnectionManager(
     }
 }
 
-internal expect class DefaultDeviceConnectionManager : BaseDeviceConnectionManager
+internal expect class DefaultDeviceConnectionManager : BaseDeviceConnectionManager {
+    override fun connect()
+    override fun disconnect()
+    override fun getCurrentState(): DeviceConnectionManager.State
+    override suspend fun discoverServices()
+    override suspend fun didStartPerformingAction(action: DeviceAction)
+    override suspend fun requestStartPairing()
+    override suspend fun requestMtu(mtu: MTU): Boolean
+    override suspend fun requestStartUnpairing()
+}

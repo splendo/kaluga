@@ -36,7 +36,11 @@ typealias BluetoothPermissionManager = PermissionManager<BluetoothPermission>
 /**
  * The [BasePermissionManager] to use as a default for [BluetoothPermission]
  */
-expect class DefaultBluetoothPermissionManager : BasePermissionManager<BluetoothPermission>
+expect class DefaultBluetoothPermissionManager : BasePermissionManager<BluetoothPermission> {
+    override fun requestPermissionDidStart()
+    override fun monitoringDidStart(interval: Duration)
+    override fun monitoringDidStop()
+}
 
 /**
  * A [BasePermissionsBuilder] for [BluetoothPermission]
@@ -56,7 +60,9 @@ interface BaseBluetoothPermissionManagerBuilder : BasePermissionsBuilder<Bluetoo
  * A [BaseBluetoothPermissionManagerBuilder]
  * @param context the [PermissionContext] this permissions manager builder runs on
  */
-expect class BluetoothPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseBluetoothPermissionManagerBuilder
+expect class BluetoothPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseBluetoothPermissionManagerBuilder {
+    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager
+}
 
 /**
  * A [PermissionStateRepo] for [BluetoothPermission]

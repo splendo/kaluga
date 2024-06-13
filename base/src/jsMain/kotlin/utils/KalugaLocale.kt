@@ -22,11 +22,11 @@ package com.splendo.kaluga.base.utils
  * Default implementation of [BaseLocale]
  */
 actual data class KalugaLocale internal constructor(
-    override val languageCode: String,
-    override val countryCode: String = "",
-    override val variantCode: String = "",
-    override val scriptCode: String = "",
-    override val unitSystem: UnitSystem = UnitSystem.METRIC,
+    actual override val languageCode: String,
+    actual override val countryCode: String = "",
+    actual override val variantCode: String = "",
+    actual override val scriptCode: String = "",
+    actual override val unitSystem: UnitSystem = UnitSystem.METRIC,
 ) : BaseLocale() {
 
     actual companion object {
@@ -66,14 +66,14 @@ actual data class KalugaLocale internal constructor(
         actual val availableLocales: List<KalugaLocale> = emptyList()
     }
 
-    override fun name(forLocale: KalugaLocale): String = "${languageCode}_${countryCode}_$variantCode"
-    override fun countryName(forLocale: KalugaLocale): String = countryCode
-    override fun languageName(forLocale: KalugaLocale): String = languageCode
-    override fun variantName(forLocale: KalugaLocale): String = variantCode
-    override fun scriptName(forLocale: KalugaLocale): String = scriptCode
+    actual override fun name(forLocale: KalugaLocale): String = "${languageCode}_${countryCode}_$variantCode"
+    actual override fun countryName(forLocale: KalugaLocale): String = countryCode
+    actual override fun languageName(forLocale: KalugaLocale): String = languageCode
+    actual override fun variantName(forLocale: KalugaLocale): String = variantCode
+    actual override fun scriptName(forLocale: KalugaLocale): String = scriptCode
 
-    override val quotationStart: String = "\""
-    override val quotationEnd: String = "\""
-    override val alternateQuotationStart: String = "\""
-    override val alternateQuotationEnd: String = "\""
+    actual override val quotationStart: String = "\""
+    actual override val quotationEnd: String = "\""
+    actual override val alternateQuotationStart: String = "\""
+    actual override val alternateQuotationEnd: String = "\""
 }

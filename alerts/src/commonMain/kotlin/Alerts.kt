@@ -294,7 +294,7 @@ interface AlertActions {
  * @param alert The [Alert] to present (and dismiss if needed)
  * @param logger The [Logger] to log alert actions to
  */
-abstract class BaseAlertPresenter(private val alert: Alert, private val logger: Logger) : AlertActions {
+abstract class BaseAlertPresenter(val alert: Alert, private val logger: Logger) : AlertActions {
 
     companion object {
         const val TAG = "AlertDialog"
@@ -378,6 +378,9 @@ expect class AlertPresenter : BaseAlertPresenter {
          */
         override fun create(alert: Alert, logger: Logger, coroutineScope: CoroutineScope): AlertPresenter
     }
+
+    override fun showAlert(animated: Boolean, afterHandler: (Alert.Action?) -> Unit, completion: () -> Unit)
+    override fun dismissAlert(animated: Boolean)
 }
 
 /**

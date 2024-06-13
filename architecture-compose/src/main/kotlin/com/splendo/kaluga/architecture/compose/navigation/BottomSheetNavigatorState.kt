@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.architecture.compose.navigation
 
-import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.flow.StateFlow
@@ -26,12 +26,12 @@ import kotlinx.coroutines.flow.StateFlow
  * The State of a [BottomSheetNavigator]
  * @property contentNavHostController The [NavHostController] managing the content of the bottom sheet.
  * @property sheetContentNavHostController The [NavHostController] managing the sheet content of the bottom sheet.
- * @property sheetState The [ModalBottomSheetState] of the bottom sheet.
+ * @property scaffoldState The [BottomSheetScaffoldState] of the bottom sheet.
  */
 data class BottomSheetNavigatorState(
     val contentNavHostController: NavHostController,
     val sheetContentNavHostController: NavHostController,
-    val sheetState: ModalBottomSheetState,
+    val scaffoldState: BottomSheetScaffoldState,
 )
 
 typealias BottomSheetContentBuilder = NavGraphBuilder.(bottomSheetNavigationState: StateFlow<BottomSheetNavigatorState?>) -> Unit

@@ -63,7 +63,7 @@ actual class DefaultNotificationsPermissionManager(
             permissionHandler,
         )
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissionsManager.requestPermissions()
         } else {
@@ -71,7 +71,7 @@ actual class DefaultNotificationsPermissionManager(
         }
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissionsManager.startMonitoring(interval)
         } else {
@@ -79,7 +79,7 @@ actual class DefaultNotificationsPermissionManager(
         }
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissionsManager.stopMonitoring()
         }
@@ -92,7 +92,7 @@ actual class DefaultNotificationsPermissionManager(
  */
 actual class NotificationsPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(notificationsPermission: NotificationsPermission, settings: Settings, coroutineScope: CoroutineScope): NotificationsPermissionManager {
+    actual override fun create(notificationsPermission: NotificationsPermission, settings: Settings, coroutineScope: CoroutineScope): NotificationsPermissionManager {
         return DefaultNotificationsPermissionManager(context.context, notificationsPermission, settings, coroutineScope)
     }
 }

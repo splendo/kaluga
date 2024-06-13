@@ -45,7 +45,7 @@ actual class DefaultMicrophonePermissionManager(
     private val permissionsManager = AndroidPermissionsManager(context, arrayOf(Manifest.permission.RECORD_AUDIO), coroutineScope, logTag, logger, permissionHandler)
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         if (supported) {
             permissionsManager.requestPermissions()
         } else {
@@ -53,7 +53,7 @@ actual class DefaultMicrophonePermissionManager(
         }
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         if (supported) {
             permissionsManager.startMonitoring(interval)
         } else {
@@ -61,7 +61,7 @@ actual class DefaultMicrophonePermissionManager(
         }
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         if (supported) {
             permissionsManager.stopMonitoring()
         }
@@ -74,7 +74,7 @@ actual class DefaultMicrophonePermissionManager(
  */
 actual class MicrophonePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(settings: Settings, coroutineScope: CoroutineScope): MicrophonePermissionManager {
+    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): MicrophonePermissionManager {
         return DefaultMicrophonePermissionManager(context.context, settings, coroutineScope)
     }
 }

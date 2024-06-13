@@ -1,25 +1,19 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-publishableComponent("test.koin")
+kaluga {
+    moduleName = "test.koin"
 
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
+    supportJVM = true
+    supportJS = true
+
+    dependencies {
+        common {
+            main {
                 api(project(":test-utils-base"))
                 api(project(":test-utils-architecture"))
-                apiDependency(Dependencies.Koin.Core)
-            }
-        }
-        commonTest {
-            dependencies {
+                api(libs.koin.core)
             }
         }
     }

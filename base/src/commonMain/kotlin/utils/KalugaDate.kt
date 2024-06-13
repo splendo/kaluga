@@ -171,6 +171,30 @@ expect class DefaultKalugaDate : KalugaDate {
          */
         fun epoch(offset: Duration = 0.milliseconds, timeZone: KalugaTimeZone = KalugaTimeZone.current(), locale: KalugaLocale = defaultLocale): KalugaDate
     }
+
+    override var timeZone: KalugaTimeZone
+    override var era: Int
+    override var year: Int
+    override var month: Int
+    override val daysInMonth: Int
+    override var weekOfYear: Int
+    override var weekOfMonth: Int
+    override var day: Int
+    override var dayOfYear: Int
+    override var weekDay: Int
+    override var firstWeekDay: Int
+    override var hour: Int
+    override var minute: Int
+    override var second: Int
+    override var millisecond: Int
+    override var durationSinceEpoch: Duration
+    override val date: KalugaDateHolder
+    override fun copy(): KalugaDate
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun compareTo(other: KalugaDate): Int
 }
 
 /**
@@ -192,12 +216,6 @@ fun DefaultKalugaDate.Companion.now(offsetInMilliseconds: Long, timeZone: Kaluga
  */
 fun DefaultKalugaDate.Companion.epoch(offsetInMilliseconds: Long, timeZone: KalugaTimeZone = KalugaTimeZone.current(), locale: KalugaLocale = defaultLocale): KalugaDate =
     epoch(offsetInMilliseconds.milliseconds, timeZone, locale)
-
-@Deprecated(
-    "Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.",
-    ReplaceWith("KalugaDate"),
-)
-typealias Date = KalugaDate
 
 /**
  * Gets the [Duration] between two [KalugaDate]

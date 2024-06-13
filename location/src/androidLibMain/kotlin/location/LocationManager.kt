@@ -96,15 +96,15 @@ actual class DefaultLocationManager(
         }
     }
 
-    override val locationMonitor: LocationMonitor = LocationMonitor.Builder(context, locationManager).create()
+    actual override val locationMonitor: LocationMonitor = LocationMonitor.Builder(context, locationManager).create()
     private val monitoringMutex = Mutex()
     private var monitoringLocationJob: Job? = null
 
-    override suspend fun requestEnableLocation() {
+    actual override suspend fun requestEnableLocation() {
         EnableServiceActivity.showEnableServiceActivity(context, hashCode().toString(), Intent(ACTION_LOCATION_SOURCE_SETTINGS)).await()
     }
 
-    override suspend fun startMonitoringLocation() {
+    actual override suspend fun startMonitoringLocation() {
         monitoringMutex.withLock {
             if (monitoringLocationJob != null) return // optimization to skip making a job
 
@@ -119,7 +119,7 @@ actual class DefaultLocationManager(
         }
     }
 
-    override suspend fun stopMonitoringLocation() {
+    actual override suspend fun stopMonitoringLocation() {
         monitoringMutex.withLock {
             monitoringLocationJob?.let {
                 monitoringLocationJob = null
@@ -183,7 +183,7 @@ actual class LocationStateRepoBuilder(
         },
     )
 
-    override fun create(
+    actual override fun create(
         locationPermission: LocationPermission,
         settingsBuilder: (LocationPermission, Permissions) -> Settings,
         coroutineContext: CoroutineContext,

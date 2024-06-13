@@ -1,18 +1,12 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-publishableComponent("test.keyboard")
-
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
+kaluga {
+    moduleName = "test.keyboard"
+    dependencies {
+        common {
+            main {
                 api(project(":test-utils-architecture"))
                 api(project(":keyboard"))
             }

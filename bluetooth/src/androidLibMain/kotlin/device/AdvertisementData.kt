@@ -31,23 +31,23 @@ actual class AdvertisementData(private val scanResult: ScanResult?) : BaseAdvert
 
     private val scanRecord = scanResult?.scanRecord
 
-    override val name: String?
+    actual override val name: String?
         get() = scanRecord?.deviceName
-    override val manufacturerId: Int?
+    actual override val manufacturerId: Int?
         get() = scanRecord?.manufacturerSpecificData?.let { if (it.size() > 0) it.keyAt(0) else null }
-    override val manufacturerData: ByteArray?
+    actual override val manufacturerData: ByteArray?
         get() = scanRecord?.manufacturerSpecificData?.let { manufacturerSpecificData ->
             manufacturerId?.let { key ->
                 val keyBytes = ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(key.toShort()).array()
                 byteArrayOf(*keyBytes, *manufacturerSpecificData[key])
             }
         }
-    override val serviceUUIDs: List<UUID>
+    actual override val serviceUUIDs: List<UUID>
         get() = scanRecord?.serviceUuids?.map { it.uuid } ?: emptyList()
-    override val serviceData: Map<UUID, ByteArray?>
+    actual override val serviceData: Map<UUID, ByteArray?>
         get() = scanRecord?.serviceData?.mapKeys { it.key.uuid } ?: emptyMap()
-    override val txPowerLevel: TxPower
+    actual override val txPowerLevel: TxPower
         get() = scanRecord?.txPowerLevel ?: Int.MIN_VALUE
-    override val isConnectable: Boolean
+    actual override val isConnectable: Boolean
         get() = scanResult?.isConnectable == true
 }

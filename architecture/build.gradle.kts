@@ -1,37 +1,33 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("jacoco")
-    id("com.android.library")
-    id("convention.publication")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
-    id("kotlinx-atomicfu")
+    id("com.splendo.kaluga.plugin")
+    id(libs.plugins.kotlinx.atomicfu.get().pluginId)
+    alias(libs.plugins.kotlin.serialization)
 }
 
-publishableComponent("architecture")
+kaluga {
+    moduleName = "architecture"
 
-dependencies {
-    apiDependency(Dependencies.AndroidX.Lifecycle.Runtime)
-    apiDependency(Dependencies.AndroidX.Lifecycle.ViewModel)
-    apiDependency(Dependencies.AndroidX.Lifecycle.LiveData)
-    apiDependency(Dependencies.Android.Material)
-    implementationDependency(Dependencies.AndroidX.Browser)
-    implementationDependency(Dependencies.KotlinX.AtomicFu)
-}
+    supportJVM = true
+    supportJS = true
 
-kotlin {
-    sourceSets {
-        getByName("commonMain") {
-            dependencies {
-                implementation(project(":base", ""))
-                apiDependency(Dependencies.KotlinX.Serialization.Core)
-                apiDependency(Dependencies.KotlinX.Serialization.Json)
+    dependencies {
+        android {
+            main {
+                api(libs.androidx.lifecycle.runtime)
+                api(libs.androidx.lifecycle.viewmodel)
+                api(libs.androidx.lifecycle.livedata)
+                api(libs.android.material)
+                implementation(libs.androidx.browser)
+                implementation(libs.kotlinx.atomicfu)
             }
         }
-
-        getByName("commonTest") {
-            dependencies {
+        common {
+            main {
+                implementation(project(":base", ""))
+                api(libs.kotlinx.serialization.core)
+                api(libs.kotlinx.serialization.json)
+            }
+            test {
                 api(project(":test-utils-architecture", ""))
             }
         }

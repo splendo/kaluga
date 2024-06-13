@@ -39,7 +39,7 @@ import kotlin.test.fail
 class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewModelTestTest.CustomLazyViewModelTestContext, LazyUIThreadViewModelTestTest.ViewModel>() {
 
     companion object {
-        val isDisposed = atomic(false)
+        private val isDisposed = atomic(false)
         val onClearedMock = voidParametersMock<Unit>().apply {
             on().doReturn(Unit)
         }

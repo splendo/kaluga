@@ -33,7 +33,7 @@ import kotlinx.coroutines.CompletableDeferred
  */
 actual class DefaultStringLoader(private val context: Context?) : StringLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
-    override fun loadString(identifier: String, defaultValue: String): String {
+    actual override fun loadString(identifier: String, defaultValue: String): String {
         if (context == null) {
             return defaultValue
         }
@@ -44,7 +44,7 @@ actual class DefaultStringLoader(private val context: Context?) : StringLoader {
             defaultValue
         }
     }
-    override fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String {
+    actual override fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String {
         if (context == null) {
             return defaultValue
         }
@@ -63,7 +63,7 @@ actual class DefaultStringLoader(private val context: Context?) : StringLoader {
  */
 actual class DefaultColorLoader(private val context: Context?) : KalugaColorLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
-    override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? {
+    actual override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? {
         if (context == null) {
             return defaultValue
         }
@@ -82,7 +82,7 @@ actual class DefaultColorLoader(private val context: Context?) : KalugaColorLoad
  */
 actual class DefaultImageLoader(private val context: Context?) : ImageLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
-    override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? {
+    actual override fun loadImage(identifier: String, defaultValue: KalugaImage?): KalugaImage? {
         if (context == null) {
             return defaultValue
         }
@@ -102,7 +102,7 @@ actual class DefaultImageLoader(private val context: Context?) : ImageLoader {
  */
 actual class DefaultFontLoader(private val context: Context?, private val handler: Handler?) : FontLoader {
     actual constructor() : this(if (application != null) applicationContext else null, null)
-    override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? {
+    actual override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? {
         if (context == null) {
             return defaultValue
         }

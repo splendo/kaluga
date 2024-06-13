@@ -76,3 +76,5 @@ google-services.json
 
 # generated for CI
 /non_dependent_projects.properties
+
+.kotlin/

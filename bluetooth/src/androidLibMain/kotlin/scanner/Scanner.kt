@@ -148,9 +148,9 @@ actual class DefaultScanner internal constructor(
 
     private val locationPermissionRepo get() = permissions[locationPermission]
 
-    override val isSupported: Boolean = bluetoothAdapter != null
+    actual override val isSupported: Boolean = bluetoothAdapter != null
     private val deviceConnectionManagerBuilder = DefaultDeviceConnectionManager.Builder(applicationContext)
-    override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create() }
+    actual override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create() }
     private val locationEnabledMonitor = LocationMonitor.Builder(applicationContext).create()
 
     override val permissionsFlow: Flow<List<PermissionState<*>>> get() = combine(
@@ -166,7 +166,7 @@ actual class DefaultScanner internal constructor(
         listOf(bluetoothEnabled, locationEnabled)
     }
 
-    override suspend fun didStartScanning(filter: Filter) {
+    actual override suspend fun didStartScanning(filter: Filter) {
         bluetoothScanner.startScan(
             filter.map {
                 ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build()
@@ -176,7 +176,7 @@ actual class DefaultScanner internal constructor(
         )
     }
 
-    override suspend fun didStopScanning() {
+    actual override suspend fun didStopScanning() {
         bluetoothScanner.stopScan(callback)
     }
 
@@ -193,7 +193,7 @@ actual class DefaultScanner internal constructor(
     override suspend fun isHardwareEnabled(): Boolean = super.isHardwareEnabled() && locationEnabledMonitor.isServiceEnabled
 
     @SuppressLint("MissingPermission") // Lint complains even with permissions
-    override fun generateEnableSensorsActions(): List<EnableSensorAction> {
+    actual override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         if (!isSupported) return emptyList()
         return listOfNotNull(
             if (bluetoothAdapter?.isEnabled != true) {
@@ -226,7 +226,7 @@ actual class DefaultScanner internal constructor(
     }
 
     @SuppressLint("MissingPermission") // Lint complains even with permissions
-    override suspend fun retrievePairedDeviceDiscoveredEvents(
+    actual override suspend fun retrievePairedDeviceDiscoveredEvents(
         withServices: Filter,
         connectionSettings: ConnectionSettings?,
     ): List<Scanner.DeviceDiscovered> {

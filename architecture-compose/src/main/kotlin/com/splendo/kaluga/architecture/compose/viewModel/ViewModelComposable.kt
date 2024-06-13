@@ -2,7 +2,6 @@ package com.splendo.kaluga.architecture.compose.viewModel
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -74,47 +73,6 @@ private fun <ViewModel : BaseLifecycleViewModel> ViewModelComposable(
         }
         modifier.modifier(viewModel) { content?.invoke(viewModel) }
     }
-}
-
-/**
- * Stores a view model in the local [ViewModelStore]. Use if the view model
- * was created manually and is not located in Activity/Fragment [ViewModelStore].
- */
-@Composable
-@Deprecated(
-    "Does not work for configuration changes (e.g. rotation).",
-    replaceWith = ReplaceWith("viewModel()", "androidx.lifecycle.viewmodel.compose.viewModel"),
-)
-fun <ViewModel : BaseLifecycleViewModel> store(provider: @Composable () -> ViewModel): ViewModel = provider().also { handleLocalViewModelStore(it) }
-
-/**
- * Stores and remembers a view model in the local [ViewModelStore].
- * Use if the view model was created manually and is not located in Activity/Fragment [ViewModelStore].
- * provider will only be evaluated during the composition. Recomposition will always return the value produced by provider.
- */
-@Composable
-@Deprecated(
-    "Does not work for configuration changes (e.g. rotation).",
-    replaceWith = ReplaceWith("viewModel()", "androidx.lifecycle.viewmodel.compose.viewModel"),
-)
-@Suppress("Deprecation")
-fun <ViewModel : BaseLifecycleViewModel> storeAndRemember(provider: @DisallowComposableCalls () -> ViewModel): ViewModel = store {
-    remember(provider)
-}
-
-/**
- * Stores and remembers a view model in the local [ViewModelStore].
- * Use if the view model was created manually and is not located in Activity/Fragment [ViewModelStore].
- * provider will only be evaluated during the composition. Recomposition will always return the value produced by provider.
- */
-@Composable
-@Deprecated(
-    "Does not work for configuration changes (e.g. rotation).",
-    replaceWith = ReplaceWith("viewModel()", "androidx.lifecycle.viewmodel.compose.viewModel"),
-)
-@Suppress("Deprecation")
-fun <ViewModel : BaseLifecycleViewModel> storeAndRemember(key: Any?, provider: @DisallowComposableCalls () -> ViewModel): ViewModel = store {
-    remember(key, provider)
 }
 
 @Composable

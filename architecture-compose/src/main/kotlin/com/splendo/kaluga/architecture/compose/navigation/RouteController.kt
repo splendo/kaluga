@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.architecture.compose.navigation
 
-import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -158,7 +158,7 @@ class BottomSheetContentRouteController(
 /**
  * [RouteController] for the sheet content of a [BottomSheetNavigatorState]
  * @param bottomSheetNavigatorState The flow of [BottomSheetNavigatorState] where the [BottomSheetNavigatorState.sheetContentNavHostController] is to be managed by this Route Controller
- * @param coroutineScope A flow of [CoroutineScope] for managing the [ModalBottomSheetState].
+ * @param coroutineScope A flow of [CoroutineScope] for managing the [BottomSheetScaffold].
  */
 class BottomSheetSheetContentRouteController(
     private val bottomSheetNavigatorState: StateFlow<BottomSheetNavigatorState?>,
@@ -172,10 +172,10 @@ class BottomSheetSheetContentRouteController(
     internal val sheetContentRouteController = NavHostRouteController()
 
     override fun navigate(newRoute: Route) {
-        bottomSheetNavigatorState.value?.let { (_, _, sheetState) ->
-            if (!sheetState.isVisible) {
+        bottomSheetNavigatorState.value?.let { (_, _, scaffoldState) ->
+            if (!scaffoldState.bottomSheetState.hasExpandedState) {
                 coroutineScope.value?.launch {
-                    sheetState.show()
+                    scaffoldState.bottomSheetState.expand()
                 }
             }
         }
@@ -204,11 +204,11 @@ class BottomSheetSheetContentRouteController(
     }
 
     override fun close() {
-        bottomSheetNavigatorState.value?.let { (_, sheetContentNavHostController, sheetState) ->
+        bottomSheetNavigatorState.value?.let { (_, sheetContentNavHostController, scaffoldState) ->
             // Make sure we're back at the ROOT_VIEW before hiding the sheet
             sheetContentNavHostController.popBackStack(ROOT_VIEW, false)
             coroutineScope.value?.launch {
-                sheetState.hide()
+                scaffoldState.bottomSheetState.hide()
             }
         }
     }

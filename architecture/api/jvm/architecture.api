@@ -1108,10 +1108,6 @@ public class com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel : 
 	protected final fun removeLifecycleSubscribables ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
 }
 
-public class com/splendo/kaluga/architecture/viewmodel/BaseViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
-	public fun <init> ()V
-}
-
 public class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
 	public final fun clear ()V
 	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
@@ -1121,9 +1117,5 @@ public class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
 public class com/splendo/kaluga/architecture/viewmodel/NavigatingViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
 	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;[Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
 	protected final fun getNavigator ()Lcom/splendo/kaluga/architecture/navigation/Navigator;
-}
-
-public class com/splendo/kaluga/architecture/viewmodel/ViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
-	public fun <init> ()V
 }
 

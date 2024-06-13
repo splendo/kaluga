@@ -87,11 +87,11 @@ actual class DateTimePickerPresenter(
         }
     }
 
-    override fun dismissDateTimePicker(animated: Boolean) {
+    actual override fun dismissDateTimePicker(animated: Boolean) {
         presentation.value = DialogPresentation.Hidden
     }
 
-    override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit) {
+    actual override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit) {
         presentation.value = DialogPresentation.Showing(animated, completion)
     }
 

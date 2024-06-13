@@ -15,6 +15,13 @@
 
  */
 
+import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.TaskAction
+import java.io.File
 import java.nio.file.Files
 import java.util.Calendar
 
@@ -29,11 +36,11 @@ abstract class NewModule : DefaultTask() {
 
     sealed class Templates {
         abstract val subpath: String
-        abstract val createDirs: Map<String, List<String>>
+        abstract fun createDirs(includeJVM: Boolean, includeJS: Boolean): Map<String, List<String>>
 
         object Common : Templates() {
             override val subpath: String = "common"
-            override val createDirs = mapOf(
+            override fun createDirs(includeJVM: Boolean, includeJS: Boolean) = listOfNotNull(
                 "androidLibInstrumentedTest" to listOf("kotlin/TestActivity.kt", "AndroidManifest.xml"),
                 "androidLibMain" to emptyList(),
                 "androidLibUnitTest" to emptyList(),
@@ -41,25 +48,25 @@ abstract class NewModule : DefaultTask() {
                 "commonTest" to emptyList(),
                 "iosMain" to emptyList(),
                 "iosTest" to emptyList(),
-                "jsMain" to emptyList(),
-                "jvmMain" to emptyList()
-            )
+                if (includeJS) { "jsMain" to emptyList() } else { null },
+                if (includeJVM) { "jvmMain" to emptyList() } else { null },
+            ).toMap()
         }
 
         object Test : Templates() {
             override val subpath: String = "test"
-            override val createDirs = mapOf<String, List<String>>(
+            override fun createDirs(includeJVM: Boolean, includeJS: Boolean) = listOfNotNull<Pair<String, List<String>>>(
                 "androidLibMain" to emptyList(),
                 "commonMain" to emptyList(),
                 "iosMain" to emptyList(),
-                "jsMain" to emptyList(),
-                "jvmMain" to emptyList()
-            )
+                if (includeJS) { "jsMain" to emptyList() } else { null },
+                if (includeJVM) { "jvmMain" to emptyList() } else { null },
+            ).toMap()
         }
 
         object Compose : Templates() {
             override val subpath: String = "compose"
-            override val createDirs = mapOf(
+            override fun createDirs(includeJVM: Boolean, includeJS: Boolean) = mapOf(
                 "androidTest" to listOf("kotlin/TestActivity.kt", "AndroidManifest.xml"),
                 "main" to emptyList(),
                 "test" to emptyList()
@@ -68,7 +75,7 @@ abstract class NewModule : DefaultTask() {
 
         object Databinding : Templates() {
             override val subpath: String = "databinding"
-            override val createDirs = mapOf(
+            override fun createDirs(includeJVM: Boolean, includeJS: Boolean) = mapOf(
                 "androidTest" to listOf("kotlin/TestActivity.kt", "AndroidManifest.xml"),
                 "main" to emptyList(),
                 "test" to emptyList()
@@ -76,7 +83,13 @@ abstract class NewModule : DefaultTask() {
         }
     }
 
-    data class Configuration(val baseModuleName: String, val basePackageName: String, val template: Templates) {
+    data class Configuration(
+        val baseModuleName: String,
+        val basePackageName: String,
+        val includeJVM: Boolean,
+        val includeJS: Boolean,
+        val template: Templates,
+    ) {
         val moduleName: String get() = when (template) {
             is Templates.Common -> baseModuleName
             is Templates.Test -> "test-utils-$baseModuleName"
@@ -89,6 +102,18 @@ abstract class NewModule : DefaultTask() {
             is Templates.Test -> "test.$basePackageName"
             is Templates.Compose -> "$basePackageName.compose"
             is Templates.Databinding -> "$basePackageName.databinding"
+        }
+
+        val targetConfig: String get() = buildString {
+            if (includeJS || includeJVM) {
+                appendLine()
+            }
+            if (includeJVM) {
+                appendLine("\tsupportJVM = true")
+            }
+            if (includeJS) {
+                appendLine("\tsupportJS = true")
+            }
         }
     }
 
@@ -119,7 +144,7 @@ abstract class NewModule : DefaultTask() {
             !packageName.matches(Regex(VALID_PACKAGE_NAME_REGEX)) -> throw GradleException("`$packageName` is not a valid package name!")
             else -> {
                 val basePath = "../$TEMPLATE_PATH/${template.subpath}"
-                template.createDirs.entries.forEach { (path, files) ->
+                template.createDirs(false, false).entries.forEach { (path, files) ->
                     val dir = outputDir.dir("src/${path}")
                     val kotlinDir = dir.dir("kotlin")
                     Files.createDirectories(kotlinDir.asFile.toPath())
@@ -147,28 +172,31 @@ abstract class NewModule : DefaultTask() {
             .readText()
             .replace("%PACKAGE%", configuration.packageName)
             .replace("%BASEMODULE%", configuration.baseModuleName)
+            .replace("%TARGET_CONFIG%", configuration.targetConfig)
             .replace("%YEAR%", "${Calendar.getInstance().get(Calendar.YEAR)}")
         template.writeText(content)
     }
 }
 
-tasks.register<NewModule>("createNewModule") {
+tasks.register("createNewModule", NewModule::class) {
     group = "utils"
     if (project.hasProperty("module_name")) {
         rootDir.set(file("./"))
         val moduleName = project.property("module_name").toString()
         val packageName = project.property(if (project.hasProperty("package_name")) "package_name" else "module_name").toString()
+        val includeJVM = project.hasProperty("include-jvm")
+        val includeJS = project.hasProperty("include-js")
         configurations.set(
             listOfNotNull(
-                NewModule.Configuration(moduleName, packageName, NewModule.Templates.Common),
+                NewModule.Configuration(moduleName, packageName, includeJVM, includeJS, NewModule.Templates.Common),
                 if (project.hasProperty("create-test-utils")) {
-                    NewModule.Configuration(moduleName, packageName, NewModule.Templates.Test)
+                    NewModule.Configuration(moduleName, packageName, includeJVM, includeJS, NewModule.Templates.Test)
                 } else null,
                 if (project.hasProperty("create-compose")) {
-                    NewModule.Configuration(moduleName, packageName, NewModule.Templates.Compose)
+                    NewModule.Configuration(moduleName, packageName, includeJVM = false, includeJS = false, template = NewModule.Templates.Compose)
                 } else null,
                 if (project.hasProperty("create-databinding")) {
-                    NewModule.Configuration(moduleName, packageName, NewModule.Templates.Databinding)
+                    NewModule.Configuration(moduleName, packageName, includeJVM = false, includeJS = false, template = NewModule.Templates.Databinding)
                 } else null
             )
         )
@@ -181,8 +209,10 @@ tasks.register<NewModule>("createNewTestModule") {
         rootDir.set(file("./"))
         val moduleName = project.property("module_name").toString()
         val packageName = project.property(if (project.hasProperty("package_name")) "package_name" else "module_name").toString()
+        val includeJVM = project.hasProperty("include-jvm")
+        val includeJS = project.hasProperty("include-js")
         configurations.set(
-            listOf(NewModule.Configuration(moduleName, packageName, NewModule.Templates.Test))
+            listOf(NewModule.Configuration(moduleName, packageName, includeJVM, includeJS, NewModule.Templates.Test))
         )
     }
 }
@@ -194,7 +224,7 @@ tasks.register<NewModule>("createNewComposeModule") {
         val moduleName = project.property("module_name").toString()
         val packageName = project.property(if (project.hasProperty("package_name")) "package_name" else "module_name").toString()
         configurations.set(
-            listOf(NewModule.Configuration(moduleName, packageName, NewModule.Templates.Compose))
+            listOf(NewModule.Configuration(moduleName, packageName, includeJVM = false, includeJS = false, template = NewModule.Templates.Compose))
         )
     }
 }
@@ -206,7 +236,7 @@ tasks.register<NewModule>("createNewDataBindingModule") {
         val moduleName = project.property("module_name").toString()
         val packageName = project.property(if (project.hasProperty("package_name")) "package_name" else "module_name").toString()
         configurations.set(
-            listOf(NewModule.Configuration(moduleName, packageName, NewModule.Templates.Databinding))
+            listOf(NewModule.Configuration(moduleName, packageName, includeJVM = false, includeJS = false, template = NewModule.Templates.Databinding))
         )
     }
 }

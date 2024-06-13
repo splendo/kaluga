@@ -24,5 +24,5 @@ import kotlin.coroutines.CoroutineContext
  * Default implementation of [BaseNetworkStateRepoBuilder]
  */
 actual class NetworkStateRepoBuilder : BaseNetworkStateRepoBuilder {
-    override fun create(coroutineContext: CoroutineContext): NetworkStateRepo = NetworkStateRepo(DefaultNetworkManager.Builder(), coroutineContext)
+    actual override fun create(coroutineContext: CoroutineContext): NetworkStateRepo = NetworkStateRepo(DefaultNetworkManager.Builder(), coroutineContext)
 }

@@ -158,6 +158,22 @@ expect class KalugaLocale : BaseLocale {
          */
         val availableLocales: List<KalugaLocale>
     }
+
+    override val countryCode: String
+    override val languageCode: String
+    override val scriptCode: String
+    override val variantCode: String
+    override val unitSystem: UnitSystem
+    override val quotationStart: String
+    override val quotationEnd: String
+    override val alternateQuotationStart: String
+    override val alternateQuotationEnd: String
+
+    override fun name(forLocale: KalugaLocale): String
+    override fun countryName(forLocale: KalugaLocale): String
+    override fun languageName(forLocale: KalugaLocale): String
+    override fun variantName(forLocale: KalugaLocale): String
+    override fun scriptName(forLocale: KalugaLocale): String
 }
 
 /**
@@ -173,9 +189,3 @@ val KalugaLocale.uses24HourClock: Boolean get() {
     val formattedDate = formatter.format(DefaultKalugaDate.now())
     return !formattedDate.contains(formatter.amString) && !formattedDate.contains(formatter.pmString)
 }
-
-@Deprecated(
-    "Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.",
-    ReplaceWith("KalugaLocale"),
-)
-typealias Locale = KalugaLocale

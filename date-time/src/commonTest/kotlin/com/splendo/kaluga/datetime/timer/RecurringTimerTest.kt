@@ -17,6 +17,7 @@
 package com.splendo.kaluga.datetime.timer
 
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.base.assertEmits
 import com.splendo.kaluga.test.base.captureFor
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +28,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertIs
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -44,21 +44,21 @@ class RecurringTimerTest {
             interval = 10.milliseconds,
             coroutineScope = timerScope,
         )
-        assertIs<Timer.State.NotRunning.Paused>(timer.state.first(), "timer was not paused after creation")
+        timer.state.assertEmits("timer was not paused after creation") { it is Timer.State.NotRunning.Paused }
         timer.start()
-        assertIs<Timer.State.Running>(timer.state.first(), "timer is not running after start")
+        timer.state.assertEmits("timer is not running after start") { it is Timer.State.Running }
         timer.pause()
-        assertIs<Timer.State.NotRunning.Paused>(timer.state.first(), "timer was not paused after pause")
+        timer.state.assertEmits("timer was not paused after pause") { it is Timer.State.NotRunning.Paused }
         delay(500)
-        assertIs<Timer.State.NotRunning.Paused>(timer.state.first(), "timer pause is not working")
+        timer.state.assertEmits("timer pause is not working") { it is Timer.State.NotRunning.Paused }
         timer.start()
-        assertIs<Timer.State.Running>(timer.state.first(), "timer is not running after start")
+        timer.state.assertEmits("timer is not running after start") { it is Timer.State.Running }
         delay(500)
-        assertIs<Timer.State.NotRunning.Finished>(timer.state.first(), "timer was not finished after time elapsed")
+        timer.state.assertEmits("timer was not finished after time elapsed") { it is Timer.State.NotRunning.Finished }
         timer.start()
-        assertIs<Timer.State.NotRunning.Finished>(timer.state.first(), "was able to start timer after finish")
+        timer.state.assertEmits("was able to start timer after finish") { it is Timer.State.NotRunning.Finished }
         timer.pause()
-        assertIs<Timer.State.NotRunning.Finished>(timer.state.first(), "was able to pause timer after finish")
+        timer.state.assertEmits("was able to pause timer after finish") { it is Timer.State.NotRunning.Finished }
         timerScope.cancel()
     }
 
