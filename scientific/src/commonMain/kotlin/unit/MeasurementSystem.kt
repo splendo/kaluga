@@ -55,6 +55,11 @@ sealed interface MeasurementUsage {
     interface UsedInMetricAndUKImperial : UsedInMetric, UsedInUKImperial
 
     /**
+     * A measurement that is used in both Metric and US Customary systems
+     */
+    interface UsedInMetricAndUSCustomary : UsedInMetric, UsedInUSCustomary
+
+    /**
      * A measurement that is used in Metric, UK Imperial and US Customary systems
      */
     interface UsedInMetricAndImperial : UsedInMetric, UsedInImperial
@@ -95,6 +100,12 @@ sealed class MeasurementSystem : MeasurementUsage, com.splendo.kaluga.base.utils
      */
     @Serializable
     data object MetricAndUKImperial : MeasurementSystem(), MeasurementUsage.UsedInMetricAndUKImperial
+
+    /**
+     * System shared between Metric and US Customary
+     */
+    @Serializable
+    object MetricAndUSCustomary : MeasurementSystem(), MeasurementUsage.UsedInMetricAndUSCustomary
 
     /**
      * A global system

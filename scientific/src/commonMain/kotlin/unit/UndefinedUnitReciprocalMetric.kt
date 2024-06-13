@@ -1,0 +1,95 @@
+/*
+ Copyright 2023 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.scientific.unit
+
+import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.UndefinedQuantityType
+import kotlin.jvm.JvmName
+
+/**
+ * [InverseUnit] -> [UndefinedReciprocalUnit.Metric] ([InverseUnit])
+ */
+@JvmName("metricUndefinedReciprocal")
+fun <
+    InverseQuantity : UndefinedQuantityType,
+    InverseUnit,
+    > InverseUnit.reciprocal() where
+      InverseUnit : UndefinedScientificUnit<InverseQuantity>,
+      InverseUnit : MeasurementUsage.UsedInMetric = UndefinedReciprocalUnit.Metric(this)
+
+/**
+ * [InverseUnit] -> [UndefinedReciprocalUnit.Metric] ([WrappedUndefinedExtendedUnit.Metric] ([InverseUnit]))
+ */
+@JvmName("metricDefinedReciprocal")
+fun <
+    InverseQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
+    InverseUnit,
+    > InverseUnit.reciprocal() where
+      InverseUnit : ScientificUnit<InverseQuantity>,
+      InverseUnit : MeasurementUsage.UsedInMetric = asUndefined().reciprocal()
+
+/**
+ * [ReciprocalUnit] -> [InverseUnit]
+ */
+@JvmName("metricReciprocalUndefined")
+fun <
+    InverseQuantity : UndefinedQuantityType,
+    InverseUnit,
+    ReciprocalUnit,
+    > ReciprocalUnit.reciprocal() where
+      InverseUnit : UndefinedScientificUnit<InverseQuantity>,
+      InverseUnit : MeasurementUsage.UsedInMetric,
+      ReciprocalUnit : UndefinedReciprocalUnit<InverseQuantity, InverseUnit>,
+      ReciprocalUnit : MeasurementUsage.UsedInMetric =
+    inverse
+
+/**
+ * [ReciprocalUnit] -> [WrappedUnit]
+ */
+@JvmName("metricReciprocalDefined")
+fun <
+    WrappedQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
+    WrappedUnit,
+    InverseUnit,
+    ReciprocalUnit,
+    > ReciprocalUnit.reciprocal() where
+      WrappedUnit : ScientificUnit<WrappedQuantity>,
+      WrappedUnit : MeasurementUsage.UsedInMetric,
+      InverseUnit : WrappedUndefinedExtendedUnit<WrappedQuantity, WrappedUnit>,
+      InverseUnit : MeasurementUsage.UsedInMetric,
+      ReciprocalUnit : UndefinedReciprocalUnit<UndefinedQuantityType.Extended<WrappedQuantity>, InverseUnit>,
+      ReciprocalUnit : MeasurementUsage.UsedInMetric =
+    inverse.wrapped
+
+/**
+ * [UndefinedDividedUnit] ([NumeratorUnit], [DenominatorUnit]) -> [UndefinedDividedUnit.Metric] ([DenominatorUnit], [NumeratorUnit])
+ */
+@JvmName("metricDividedUnitReciprocal")
+fun <
+    NumeratorQuantity : UndefinedQuantityType,
+    NumeratorUnit,
+    DenominatorQuantity : UndefinedQuantityType,
+    DenominatorUnit,
+    DividerUnit,
+    > DividerUnit.reciprocal() where
+      NumeratorUnit : UndefinedScientificUnit<NumeratorQuantity>,
+      NumeratorUnit : MeasurementUsage.UsedInMetric,
+      DenominatorUnit : UndefinedScientificUnit<DenominatorQuantity>,
+      DenominatorUnit : MeasurementUsage.UsedInMetric,
+      DividerUnit : UndefinedDividedUnit<NumeratorQuantity, NumeratorUnit, DenominatorQuantity, DenominatorUnit>,
+      DividerUnit : MeasurementUsage.UsedInMetric = denominator per numerator
