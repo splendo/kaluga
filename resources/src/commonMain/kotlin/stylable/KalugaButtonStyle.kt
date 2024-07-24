@@ -555,7 +555,7 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
         fun setImage(image: TintedImage, pressedTint: KalugaColor = image.tint, disabledTint: KalugaColor = image.tint) {
             defaultStyle { setImage(image) }
             pressedStyle { setImage(image.image, pressedTint) }
-            disabledStyle { setImage(image.image, pressedTint) }
+            disabledStyle { setImage(image.image, disabledTint) }
         }
 
         /**
@@ -568,7 +568,7 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
         fun setImage(image: KalugaImage, defaultTint: KalugaColor, pressedTint: KalugaColor = defaultTint, disabledTint: KalugaColor = defaultTint) {
             defaultStyle { setImage(image, defaultTint) }
             pressedStyle { setImage(image, pressedTint) }
-            disabledStyle { setImage(image, pressedTint) }
+            disabledStyle { setImage(image, disabledTint) }
         }
     }
 
