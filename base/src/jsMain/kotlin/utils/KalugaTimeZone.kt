@@ -54,4 +54,5 @@ actual class KalugaTimeZone internal constructor() : BaseTimeZone() {
     actual override fun offsetFromGMTAtDate(date: KalugaDate): Duration = 0.milliseconds
     actual override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = false
     actual override fun copy(): KalugaTimeZone = KalugaTimeZone()
+    override fun equals(other: Any?): Boolean = other is KalugaTimeZone && identifier == other.identifier
 }
