@@ -41,9 +41,9 @@ abstract class NewModule : DefaultTask() {
         object Common : Templates() {
             override val subpath: String = "common"
             override fun createDirs(includeJVM: Boolean, includeJS: Boolean) = listOfNotNull(
-                "androidLibInstrumentedTest" to listOf("kotlin/TestActivity.kt", "AndroidManifest.xml"),
-                "androidLibMain" to emptyList(),
-                "androidLibUnitTest" to emptyList(),
+                "androidInstrumentedTest" to listOf("kotlin/TestActivity.kt", "AndroidManifest.xml"),
+                "androidMain" to emptyList(),
+                "androidUnitTest" to emptyList(),
                 "commonMain" to emptyList(),
                 "commonTest" to emptyList(),
                 "iosMain" to emptyList(),
@@ -56,7 +56,7 @@ abstract class NewModule : DefaultTask() {
         object Test : Templates() {
             override val subpath: String = "test"
             override fun createDirs(includeJVM: Boolean, includeJS: Boolean) = listOfNotNull<Pair<String, List<String>>>(
-                "androidLibMain" to emptyList(),
+                "androidMain" to emptyList(),
                 "commonMain" to emptyList(),
                 "iosMain" to emptyList(),
                 if (includeJS) { "jsMain" to emptyList() } else { null },
