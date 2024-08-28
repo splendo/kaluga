@@ -72,9 +72,8 @@ actual val KalugaColor.alphaInt: Int get() = android.graphics.Color.alpha(this)
  * @param alpha The alpha color value ranging between `0.0` and `1.0`. Defaults to `1.0`
  * @return The [KalugaColor] with the corresponding red, green, blue, and alpha values
  */
-actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): KalugaColor {
-    return android.graphics.Color.argb((alpha * 255.0).toInt(), (red * 255.0).toInt(), (green * 255.0).toInt(), (blue * 255.0).toInt())
-}
+actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): KalugaColor =
+    android.graphics.Color.argb((alpha * 255.0).toInt(), (red * 255.0).toInt(), (green * 255.0).toInt(), (blue * 255.0).toInt())
 
 /**
  * Creates a [KalugaColor] using red, green, blue, and (optional) alpha, all ranging between `0` and `255`.

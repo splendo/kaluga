@@ -85,7 +85,9 @@ sealed class SurfaceTension : AbstractScientificUnit<PhysicalQuantity.SurfaceTen
  * @param per the [MetricLength] component
  */
 @Serializable
-data class MetricSurfaceTension(override val force: MetricForce, override val per: MetricLength) : SurfaceTension(), MetricScientificUnit<PhysicalQuantity.SurfaceTension> {
+data class MetricSurfaceTension(override val force: MetricForce, override val per: MetricLength) :
+    SurfaceTension(),
+    MetricScientificUnit<PhysicalQuantity.SurfaceTension> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -95,7 +97,9 @@ data class MetricSurfaceTension(override val force: MetricForce, override val pe
  * @param per the [ImperialLength] component
  */
 @Serializable
-data class ImperialSurfaceTension(override val force: ImperialForce, override val per: ImperialLength) : SurfaceTension(), ImperialScientificUnit<PhysicalQuantity.SurfaceTension> {
+data class ImperialSurfaceTension(override val force: ImperialForce, override val per: ImperialLength) :
+    SurfaceTension(),
+    ImperialScientificUnit<PhysicalQuantity.SurfaceTension> {
     override val system = MeasurementSystem.Imperial
 
     /**
@@ -115,10 +119,9 @@ data class ImperialSurfaceTension(override val force: ImperialForce, override va
  * @param per the [ImperialLength] component
  */
 @Serializable
-data class USCustomarySurfaceTension(
-    override val force: USCustomaryForce,
-    override val per: ImperialLength,
-) : SurfaceTension(), USCustomaryScientificUnit<PhysicalQuantity.SurfaceTension> {
+data class USCustomarySurfaceTension(override val force: USCustomaryForce, override val per: ImperialLength) :
+    SurfaceTension(),
+    USCustomaryScientificUnit<PhysicalQuantity.SurfaceTension> {
     override val system = MeasurementSystem.USCustomary
 }
 
@@ -128,10 +131,9 @@ data class USCustomarySurfaceTension(
  * @param per the [ImperialLength] component
  */
 @Serializable
-data class UKImperialSurfaceTension(
-    override val force: UKImperialForce,
-    override val per: ImperialLength,
-) : SurfaceTension(), UKImperialScientificUnit<PhysicalQuantity.SurfaceTension> {
+data class UKImperialSurfaceTension(override val force: UKImperialForce, override val per: ImperialLength) :
+    SurfaceTension(),
+    UKImperialScientificUnit<PhysicalQuantity.SurfaceTension> {
     override val system = MeasurementSystem.UKImperial
 }
 

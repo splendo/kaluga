@@ -85,7 +85,9 @@ sealed class MolarVolume : AbstractScientificUnit<PhysicalQuantity.MolarVolume>(
  * @param per the [AmountOfSubstance] component
  */
 @Serializable
-data class MetricMolarVolume(override val volume: MetricVolume, override val per: AmountOfSubstance) : MolarVolume(), MetricScientificUnit<PhysicalQuantity.MolarVolume> {
+data class MetricMolarVolume(override val volume: MetricVolume, override val per: AmountOfSubstance) :
+    MolarVolume(),
+    MetricScientificUnit<PhysicalQuantity.MolarVolume> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -95,7 +97,9 @@ data class MetricMolarVolume(override val volume: MetricVolume, override val per
  * @param per the [AmountOfSubstance] component
  */
 @Serializable
-data class ImperialMolarVolume(override val volume: ImperialVolume, override val per: AmountOfSubstance) : MolarVolume(), ImperialScientificUnit<PhysicalQuantity.MolarVolume> {
+data class ImperialMolarVolume(override val volume: ImperialVolume, override val per: AmountOfSubstance) :
+    MolarVolume(),
+    ImperialScientificUnit<PhysicalQuantity.MolarVolume> {
     override val system = MeasurementSystem.Imperial
 
     /**
@@ -115,10 +119,9 @@ data class ImperialMolarVolume(override val volume: ImperialVolume, override val
  * @param per the [AmountOfSubstance] component
  */
 @Serializable
-data class USCustomaryMolarVolume(
-    override val volume: USCustomaryVolume,
-    override val per: AmountOfSubstance,
-) : MolarVolume(), USCustomaryScientificUnit<PhysicalQuantity.MolarVolume> {
+data class USCustomaryMolarVolume(override val volume: USCustomaryVolume, override val per: AmountOfSubstance) :
+    MolarVolume(),
+    USCustomaryScientificUnit<PhysicalQuantity.MolarVolume> {
     override val system = MeasurementSystem.USCustomary
 }
 
@@ -128,10 +131,9 @@ data class USCustomaryMolarVolume(
  * @param per the [AmountOfSubstance] component
  */
 @Serializable
-data class UKImperialMolarVolume(
-    override val volume: UKImperialVolume,
-    override val per: AmountOfSubstance,
-) : MolarVolume(), UKImperialScientificUnit<PhysicalQuantity.MolarVolume> {
+data class UKImperialMolarVolume(override val volume: UKImperialVolume, override val per: AmountOfSubstance) :
+    MolarVolume(),
+    UKImperialScientificUnit<PhysicalQuantity.MolarVolume> {
     override val system = MeasurementSystem.UKImperial
 }
 

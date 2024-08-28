@@ -68,7 +68,8 @@ actual class ReviewManager(
         private val type: Type = Type.Live,
         private val context: Context = ApplicationHolder.applicationContext,
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-    ) : LifecycleSubscribable, ActivityLifecycleSubscribable by lifecycleManagerObserver {
+    ) : LifecycleSubscribable,
+        ActivityLifecycleSubscribable by lifecycleManagerObserver {
 
         /**
          * Creates a [ReviewManager]

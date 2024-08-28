@@ -216,12 +216,8 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         }
 
     @Suppress("CAST_NEVER_SUCCEEDS") // Should succeed just fine
-    actual override fun format(number: Number): String {
-        return (formatter.stringFromNumber(number as NSNumber) ?: "")
-    }
+    actual override fun format(number: Number): String = (formatter.stringFromNumber(number as NSNumber) ?: "")
 
     @Suppress("CAST_NEVER_SUCCEEDS") // Should succeed just fine
-    actual override fun parse(string: String): Number? {
-        return formatter.numberFromString(string) as? Number
-    }
+    actual override fun parse(string: String): Number? = formatter.numberFromString(string) as? Number
 }

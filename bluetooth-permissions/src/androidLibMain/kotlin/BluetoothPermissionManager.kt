@@ -38,12 +38,8 @@ import kotlin.time.Duration
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultBluetoothPermissionManager(
-    context: Context,
-    bluetoothAdapter: BluetoothAdapter?,
-    settings: Settings,
-    coroutineScope: CoroutineScope,
-) : BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
+actual class DefaultBluetoothPermissionManager(context: Context, bluetoothAdapter: BluetoothAdapter?, settings: Settings, coroutineScope: CoroutineScope) :
+    BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
@@ -97,10 +93,7 @@ actual class DefaultBluetoothPermissionManager(
  * @param context the [PermissionContext] this permissions manager builder runs on
  * @param bluetoothAdapter the [BluetoothAdapter] of the system
  */
-actual class BluetoothPermissionManagerBuilder(
-    private val context: PermissionContext,
-    private val bluetoothAdapter: BluetoothAdapter?,
-) : BaseBluetoothPermissionManagerBuilder {
+actual class BluetoothPermissionManagerBuilder(private val context: PermissionContext, private val bluetoothAdapter: BluetoothAdapter?) : BaseBluetoothPermissionManagerBuilder {
 
     /**
      * Constructor
@@ -108,7 +101,6 @@ actual class BluetoothPermissionManagerBuilder(
      */
     actual constructor(context: PermissionContext) : this(context, (context.context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter)
 
-    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager {
-        return DefaultBluetoothPermissionManager(context.context, bluetoothAdapter, settings, coroutineScope)
-    }
+    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager =
+        DefaultBluetoothPermissionManager(context.context, bluetoothAdapter, settings, coroutineScope)
 }

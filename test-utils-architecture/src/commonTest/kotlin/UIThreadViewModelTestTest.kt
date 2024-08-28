@@ -51,8 +51,7 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewMode
         override fun onCleared() = onClearedMock.call()
     }
 
-    class CustomLazyViewModelTestContext(coroutineScope: CoroutineScope) :
-        LazyViewModelTestContext<ViewModel>(coroutineScope, { ViewModel() }) {
+    class CustomLazyViewModelTestContext(coroutineScope: CoroutineScope) : LazyViewModelTestContext<ViewModel>(coroutineScope, { ViewModel() }) {
 
         override fun dispose() {
             super.dispose()

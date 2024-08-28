@@ -35,9 +35,8 @@ fun <
     VoidParameters.Values,
     VoidParameters,
     Result,
-    >.call(): Result {
-    return callWithValues(VoidParameters.Values)
-}
+    >.call(): Result =
+    callWithValues(VoidParameters.Values)
 
 /**
  * Calls a [SuspendMethodMock] without any parameters
@@ -50,9 +49,8 @@ suspend fun <
     VoidParameters.Values,
     VoidParameters,
     Result,
-    >.call(): Result {
-    return callWithValues(VoidParameters.Values)
-}
+    >.call(): Result =
+    callWithValues(VoidParameters.Values)
 
 /**
  * Calls a [MethodMock] with one parameter
@@ -69,9 +67,7 @@ fun <
     Result,
     >.call(
     value: Value,
-): Result {
-    return callWithValues(SingleParameters.Values(value))
-}
+): Result = callWithValues(SingleParameters.Values(value))
 
 /**
  * Calls a [SuspendMethodMock] with one parameter
@@ -88,9 +84,7 @@ suspend fun <
     Result,
     >.call(
     value: Value,
-): Result {
-    return callWithValues(SingleParameters.Values(value))
-}
+): Result = callWithValues(SingleParameters.Values(value))
 
 /**
  * Calls a [MethodMock] with two parameters
@@ -110,9 +104,7 @@ fun <
     >.call(
     first: T0,
     second: T1,
-): Result {
-    return callWithValues(PairParameters.Values(first, second))
-}
+): Result = callWithValues(PairParameters.Values(first, second))
 
 /**
  * Calls a [SuspendMethodMock] with two parameters
@@ -132,9 +124,7 @@ suspend fun <
     >.call(
     first: T0,
     second: T1,
-): Result {
-    return callWithValues(PairParameters.Values(first, second))
-}
+): Result = callWithValues(PairParameters.Values(first, second))
 
 /**
  * Calls a [MethodMock] with three parameters
@@ -157,9 +147,7 @@ fun <
     first: T0,
     second: T1,
     third: T2,
-): Result {
-    return callWithValues(TripleParameters.Values(first, second, third))
-}
+): Result = callWithValues(TripleParameters.Values(first, second, third))
 
 /**
  * Calls a [SuspendMethodMock] with three parameters
@@ -182,9 +170,7 @@ suspend fun <
     first: T0,
     second: T1,
     third: T2,
-): Result {
-    return callWithValues(TripleParameters.Values(first, second, third))
-}
+): Result = callWithValues(TripleParameters.Values(first, second, third))
 
 /**
  * Calls a [MethodMock] with four parameters
@@ -210,9 +196,7 @@ fun <
     second: T1,
     third: T2,
     fourth: T3,
-): Result {
-    return callWithValues(QuadrupleParameters.Values(first, second, third, fourth))
-}
+): Result = callWithValues(QuadrupleParameters.Values(first, second, third, fourth))
 
 /**
  * Calls a [SuspendMethodMock] with four parameters
@@ -238,9 +222,7 @@ suspend fun <
     second: T1,
     third: T2,
     fourth: T3,
-): Result {
-    return callWithValues(QuadrupleParameters.Values(first, second, third, fourth))
-}
+): Result = callWithValues(QuadrupleParameters.Values(first, second, third, fourth))
 
 /**
  * Calls a [MethodMock] with five parameters
@@ -269,9 +251,7 @@ fun <
     third: T2,
     fourth: T3,
     fifth: T4,
-): Result {
-    return callWithValues(QuintupleParameters.Values(first, second, third, fourth, fifth))
-}
+): Result = callWithValues(QuintupleParameters.Values(first, second, third, fourth, fifth))
 
 /**
  * Calls a [SuspendMethodMock] with five parameters
@@ -300,6 +280,4 @@ suspend fun <
     third: T2,
     fourth: T3,
     fifth: T4,
-): Result {
-    return callWithValues(QuintupleParameters.Values(first, second, third, fourth, fifth))
-}
+): Result = callWithValues(QuintupleParameters.Values(first, second, third, fourth, fifth))

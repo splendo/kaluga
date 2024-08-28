@@ -32,14 +32,12 @@ open class NavigationAction<B : NavigationBundleSpecRow<*>>(val bundle: Navigati
  * @property value The value passed by the action
  * @property type The [NavigationBundleSpecType] associated with [T].
  */
-open class SingleValueNavigationAction<T>(
-    val value: T,
-    val type: NavigationBundleSpecType<T>,
-) : NavigationAction<SingleValueNavigationSpec.Row<T>>(
-    SingleValueNavigationSpec(type).toBundle {
-        it.convertValue(value)
-    },
-)
+open class SingleValueNavigationAction<T>(val value: T, val type: NavigationBundleSpecType<T>) :
+    NavigationAction<SingleValueNavigationSpec.Row<T>>(
+        SingleValueNavigationSpec(type).toBundle {
+            it.convertValue(value)
+        },
+    )
 
 /**
  * Exception thrown by a [Navigator]

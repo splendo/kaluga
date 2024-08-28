@@ -47,12 +47,8 @@ private const val NS_CALENDARS_USAGE_DESCRIPTION = "NSCalendarsUsageDescription"
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultCalendarPermissionManager(
-    private val bundle: NSBundle,
-    calendarPermission: CalendarPermission,
-    settings: Settings,
-    coroutineScope: CoroutineScope,
-) : BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
+actual class DefaultCalendarPermissionManager(private val bundle: NSBundle, calendarPermission: CalendarPermission, settings: Settings, coroutineScope: CoroutineScope) :
+    BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
 
     private class Provider : CurrentAuthorizationStatusProvider {
         override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = EKEventStore
@@ -104,23 +100,20 @@ actual class DefaultCalendarPermissionManager(
  */
 actual class CalendarPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCalendarPermissionManagerBuilder {
 
-    actual override fun create(calendarPermission: CalendarPermission, settings: Settings, coroutineScope: CoroutineScope): CalendarPermissionManager {
-        return DefaultCalendarPermissionManager(context, calendarPermission, settings, coroutineScope)
-    }
+    actual override fun create(calendarPermission: CalendarPermission, settings: Settings, coroutineScope: CoroutineScope): CalendarPermissionManager =
+        DefaultCalendarPermissionManager(context, calendarPermission, settings, coroutineScope)
 }
 
-private fun EKAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
-    return when (this) {
-        EKAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
-        EKAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
-        EKAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
-        EKAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        else -> {
-            error(
-                "CalendarPermissionManager",
-                "Unknown CBManagerAuthorization status={$this}",
-            )
-            IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        }
+private fun EKAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
+    EKAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+    EKAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+    EKAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+    EKAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+    else -> {
+        error(
+            "CalendarPermissionManager",
+            "Unknown CBManagerAuthorization status={$this}",
+        )
+        IOSPermissionsHelper.AuthorizationStatus.NotDetermined
     }
 }

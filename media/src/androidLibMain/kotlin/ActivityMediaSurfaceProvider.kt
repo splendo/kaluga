@@ -43,7 +43,8 @@ class ActivityMediaSurfaceProvider<Activity : android.app.Activity>(
     private val activityClass: KClass<Activity>,
     private val activitySurfaceHolder: Activity.() -> SurfaceHolder?,
     private val observer: LifecycleManagerObserver = LifecycleManagerObserver(),
-) : MediaSurfaceProvider, ActivityLifecycleSubscribable by observer {
+) : MediaSurfaceProvider,
+    ActivityLifecycleSubscribable by observer {
 
     override val surface: Flow<MediaSurface?> = observer.managerState.flatMapLatest { manager ->
         activityClass.safeCast(manager?.activity)?.let { activity ->

@@ -98,10 +98,8 @@ actual class AlertPresenter(
      * @param delegateBuilder Method that creates a [UIPopoverPresentationControllerDelegateProtocol] for an [Alert].
      * This allows for presentation of [Alert.Style.ACTION_LIST] on iPad.
      */
-    actual class Builder(
-        private val viewController: UIViewController,
-        private val delegateBuilder: (Alert) -> UIPopoverPresentationControllerDelegateProtocol,
-    ) : BaseAlertPresenter.Builder() {
+    actual class Builder(private val viewController: UIViewController, private val delegateBuilder: (Alert) -> UIPopoverPresentationControllerDelegateProtocol) :
+        BaseAlertPresenter.Builder() {
 
         /**
          * Constructor that returns a [DefaultUIPopoverPresentationControllerDelegateProtocol] when a presented [AlertPresenter] requires a [UIPopoverPresentationControllerDelegateProtocol].
@@ -125,7 +123,9 @@ actual class AlertPresenter(
         actual override fun create(alert: Alert, logger: Logger, coroutineScope: CoroutineScope) = AlertPresenter(alert, viewController, logger, delegateBuilder)
     }
 
-    class DefaultUIPopoverPresentationControllerDelegateProtocol(private val sourceView: UIView) : NSObject(), UIPopoverPresentationControllerDelegateProtocol {
+    class DefaultUIPopoverPresentationControllerDelegateProtocol(private val sourceView: UIView) :
+        NSObject(),
+        UIPopoverPresentationControllerDelegateProtocol {
         override fun prepareForPopoverPresentation(popoverPresentationController: UIPopoverPresentationController) {
             popoverPresentationController.sourceView = sourceView
             popoverPresentationController.sourceRect = sourceView.bounds

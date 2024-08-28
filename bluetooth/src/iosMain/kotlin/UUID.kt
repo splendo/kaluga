@@ -37,6 +37,4 @@ internal actual fun unsafeUUIDFrom(uuidString: String) = CBUUID.UUIDWithString(u
  * Gets a random [UUID]
  * @return a random [UUID]
  */
-actual fun randomUUID(): UUID {
-    return CBUUID.UUIDWithNSUUID(NSUUID.UUID())
-}
+actual fun randomUUID(): UUID = CBUUID.UUIDWithNSUUID(NSUUID.UUID())

@@ -170,12 +170,10 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
 
     actual override fun copy(): KalugaDate = DefaultKalugaDate(calendar.copy() as NSCalendar, date.copy() as NSDate)
 
-    actual override fun equals(other: Any?): Boolean {
-        return if (other is DefaultKalugaDate) {
-            calendar.calendarIdentifier == other.calendar.calendarIdentifier && durationSinceEpoch == other.durationSinceEpoch && this.calendar.timeZone == other.calendar.timeZone
-        } else {
-            false
-        }
+    actual override fun equals(other: Any?): Boolean = if (other is DefaultKalugaDate) {
+        calendar.calendarIdentifier == other.calendar.calendarIdentifier && durationSinceEpoch == other.durationSinceEpoch && this.calendar.timeZone == other.calendar.timeZone
+    } else {
+        false
     }
 
     actual override fun hashCode(): Int {
@@ -228,7 +226,5 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
         }
     }
 
-    override fun toString(): String {
-        return date.toString()
-    }
+    override fun toString(): String = date.toString()
 }

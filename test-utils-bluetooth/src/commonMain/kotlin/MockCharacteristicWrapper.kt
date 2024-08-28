@@ -19,4 +19,6 @@ package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 
-interface MockCharacteristicWrapper : CharacteristicWrapper, CanUpdateMockValue
+interface MockCharacteristicWrapper :
+    CharacteristicWrapper,
+    CanUpdateMockValue

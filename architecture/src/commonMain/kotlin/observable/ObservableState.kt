@@ -73,7 +73,9 @@ interface WithMutableState<T> : WithState<T> {
  * @param T the type of value to expect.
  * @param R the type of result to expect. Must be a subclass of [T].
  */
-interface MutableDefaultInitialized<R : T?, T> : DefaultInitialized<R, T?>, WithMutableState<R>
+interface MutableDefaultInitialized<R : T?, T> :
+    DefaultInitialized<R, T?>,
+    WithMutableState<R>
 
 /**
  * An [Initialized] that has a [defaultValue]
@@ -91,13 +93,17 @@ interface DefaultInitialized<R : T?, T> : Initialized<R, T?> {
  * An [Uninitialized] that implements [WithMutableState]
  * @param T the type of value to expect.
  */
-interface MutableUninitialized<T> : Uninitialized<T>, WithMutableState<T?>
+interface MutableUninitialized<T> :
+    Uninitialized<T>,
+    WithMutableState<T?>
 
 /**
  * An [Initial] that has [Nothing] as its [initialValue]
  * @param T the type of value to expect.
  */
-interface Uninitialized<T> : Initial<T, T>, WithState<T?> {
+interface Uninitialized<T> :
+    Initial<T, T>,
+    WithState<T?> {
     override val initialValue: ObservableOptional.Nothing<T>
 }
 
@@ -106,14 +112,18 @@ interface Uninitialized<T> : Initial<T, T>, WithState<T?> {
  * @param T the type of value to expect.
  * @param R the type of result to expect. Must be a subclass of [T].
  */
-interface MutableInitialized<R : T, T> : Initialized<R, T>, WithMutableState<R>
+interface MutableInitialized<R : T, T> :
+    Initialized<R, T>,
+    WithMutableState<R>
 
 /**
  * An [Initial] that has [Value] as its [initialValue]
  * @param T the type of value to expect.
  * @param R the type of result to expect. Must be a subclass of [T]
  */
-interface Initialized<R : T, T> : Initial<R, T>, WithState<R> {
+interface Initialized<R : T, T> :
+    Initial<R, T>,
+    WithState<R> {
     override val initialValue: Value<T>
 
     /**

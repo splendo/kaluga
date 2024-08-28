@@ -29,20 +29,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class InputDetails(
-    val name: String,
-    val number: Int,
-)
+data class InputDetails(val name: String, val number: Int)
 
 sealed class ArchitectureDetailsNavigationAction<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
     data object Close : ArchitectureDetailsNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
     class FinishWithDetails(details: InputDetails) : ArchitectureDetailsNavigationAction<InputDetails>(details, NavigationBundleSpecType.SerializedType(InputDetails.serializer()))
 }
 
-class ArchitectureDetailsViewModel(
-    initialDetail: InputDetails,
-    navigator: Navigator<ArchitectureDetailsNavigationAction<*>>,
-) : NavigatingViewModel<ArchitectureDetailsNavigationAction<*>>(navigator) {
+class ArchitectureDetailsViewModel(initialDetail: InputDetails, navigator: Navigator<ArchitectureDetailsNavigationAction<*>>) :
+    NavigatingViewModel<ArchitectureDetailsNavigationAction<*>>(navigator) {
 
     private val _name = MutableStateFlow(initialDetail.name)
     val name = _name.toInitializedObservable(coroutineScope)

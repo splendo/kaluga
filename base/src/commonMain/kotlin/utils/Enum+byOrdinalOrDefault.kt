@@ -27,6 +27,5 @@ package com.splendo.kaluga.base.utils
  * @return The enum value matching the ordinal, or the default.
  *
  */
-inline fun <reified T : Enum<T>> Enum.Companion.byOrdinalOrDefault(ordinal: Int, defaultValue: T): T {
-    return if (ordinal !in enumValues<T>().indices) defaultValue else enumValues<T>()[ordinal]
-}
+inline fun <reified T : Enum<T>> Enum.Companion.byOrdinalOrDefault(ordinal: Int, defaultValue: T): T =
+    if (ordinal !in enumValues<T>().indices) defaultValue else enumValues<T>()[ordinal]

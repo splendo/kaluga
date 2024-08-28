@@ -32,12 +32,10 @@ import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
  * @param context the [Context] of the [Drawable]
  * @return the [Drawable] to display the [KalugaBackgroundStyle]
  */
-fun KalugaBackgroundStyle.createDrawable(context: Context): Drawable {
-    return GradientDrawable().apply {
-        applyShape(this@createDrawable.shape, context)
-        applyFillStyle(fillStyle, context)
-        applyStrokeStyle(strokeStyle, context)
-    }
+fun KalugaBackgroundStyle.createDrawable(context: Context): Drawable = GradientDrawable().apply {
+    applyShape(this@createDrawable.shape, context)
+    applyFillStyle(fillStyle, context)
+    applyStrokeStyle(strokeStyle, context)
 }
 
 private fun GradientDrawable.applyShape(shape: KalugaBackgroundStyle.Shape, context: Context) {

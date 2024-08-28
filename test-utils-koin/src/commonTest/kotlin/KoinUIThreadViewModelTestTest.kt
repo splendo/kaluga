@@ -35,8 +35,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-class KoinUIThreadViewModelTestTest :
-    KoinUIThreadViewModelTest<KoinUIThreadViewModelTestTest.MyKoinViewModelTestContext, KoinUIThreadViewModelTestTest.KoinViewModel>() {
+class KoinUIThreadViewModelTestTest : KoinUIThreadViewModelTest<KoinUIThreadViewModelTestTest.MyKoinViewModelTestContext, KoinUIThreadViewModelTestTest.KoinViewModel>() {
 
     companion object {
         val onClearedMock = voidParametersMock<Unit>().apply {
@@ -44,7 +43,9 @@ class KoinUIThreadViewModelTestTest :
         }
     }
 
-    class KoinViewModel : BaseLifecycleViewModel(), KoinComponent {
+    class KoinViewModel :
+        BaseLifecycleViewModel(),
+        KoinComponent {
         val s: String by inject() // test injecting into ViewModel
         override fun onCleared() = onClearedMock.call()
     }

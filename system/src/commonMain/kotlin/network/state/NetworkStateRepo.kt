@@ -70,31 +70,29 @@ abstract class BaseNetworkStateRepo(
  * @param createNetworkManager method for creating the [NetworkManager] to manage the [NetworkState]
  * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
  */
-open class NetworkStateImplRepo(
-    createNetworkManager: suspend () -> NetworkManager,
-    coroutineContext: CoroutineContext,
-) : BaseNetworkStateRepo(
-    createNotInitializedState = { NetworkStateImpl.NotInitialized },
-    createInitializingState = { state ->
-        when (state) {
-            is NetworkStateImpl.NotInitialized -> {
-                val manager = createNetworkManager()
-                (this as NetworkStateImplRepo).startMonitoringNetworkManager(manager)
-                state.startInitializing(manager)
+open class NetworkStateImplRepo(createNetworkManager: suspend () -> NetworkManager, coroutineContext: CoroutineContext) :
+    BaseNetworkStateRepo(
+        createNotInitializedState = { NetworkStateImpl.NotInitialized },
+        createInitializingState = { state ->
+            when (state) {
+                is NetworkStateImpl.NotInitialized -> {
+                    val manager = createNetworkManager()
+                    (this as NetworkStateImplRepo).startMonitoringNetworkManager(manager)
+                    state.startInitializing(manager)
+                }
+                is NetworkStateImpl.Deinitialized -> {
+                    (this as NetworkStateImplRepo).startMonitoringNetworkManager(state.networkManager)
+                    state.reinitialize
+                }
+                else -> state.remain()
             }
-            is NetworkStateImpl.Deinitialized -> {
-                (this as NetworkStateImplRepo).startMonitoringNetworkManager(state.networkManager)
-                state.reinitialize
-            }
-            else -> state.remain()
-        }
-    },
-    createDeinitializingState = { state ->
-        (this as NetworkStateImplRepo).superVisorJob.cancelChildren()
-        state.deinitialize
-    },
-    coroutineContext = coroutineContext,
-) {
+        },
+        createDeinitializingState = { state ->
+            (this as NetworkStateImplRepo).superVisorJob.cancelChildren()
+            state.deinitialize
+        },
+        coroutineContext = coroutineContext,
+    ) {
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
     private fun startMonitoringNetworkManager(manager: NetworkManager) {
         CoroutineScope(coroutineContext + superVisorJob).launch {
@@ -130,12 +128,10 @@ open class NetworkStateImplRepo(
  * @param networkManagerBuilder the [NetworkManager.Builder] for building a [NetworkManager]
  * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine
  */
-class NetworkStateRepo(
-    private val networkManagerBuilder: NetworkManager.Builder,
-    coroutineContext: CoroutineContext,
-) : NetworkStateImplRepo(
-    createNetworkManager = {
-        networkManagerBuilder.create()
-    },
-    coroutineContext,
-)
+class NetworkStateRepo(private val networkManagerBuilder: NetworkManager.Builder, coroutineContext: CoroutineContext) :
+    NetworkStateImplRepo(
+        createNetworkManager = {
+            networkManagerBuilder.create()
+        },
+        coroutineContext,
+    )

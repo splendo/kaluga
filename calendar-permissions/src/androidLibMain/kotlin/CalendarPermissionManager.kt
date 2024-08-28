@@ -34,12 +34,8 @@ import kotlin.time.Duration
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultCalendarPermissionManager(
-    context: Context,
-    calendarPermission: CalendarPermission,
-    settings: Settings,
-    coroutineScope: CoroutineScope,
-) : BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
+actual class DefaultCalendarPermissionManager(context: Context, calendarPermission: CalendarPermission, settings: Settings, coroutineScope: CoroutineScope) :
+    BasePermissionManager<CalendarPermission>(calendarPermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
@@ -70,7 +66,6 @@ actual class DefaultCalendarPermissionManager(
  */
 actual class CalendarPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCalendarPermissionManagerBuilder {
 
-    actual override fun create(calendarPermission: CalendarPermission, settings: Settings, coroutineScope: CoroutineScope): CalendarPermissionManager {
-        return DefaultCalendarPermissionManager(context.context, calendarPermission, settings, coroutineScope)
-    }
+    actual override fun create(calendarPermission: CalendarPermission, settings: Settings, coroutineScope: CoroutineScope): CalendarPermissionManager =
+        DefaultCalendarPermissionManager(context.context, calendarPermission, settings, coroutineScope)
 }

@@ -44,7 +44,9 @@ val ElectricInductanceUnits: Set<ElectricInductance> get() = setOf(
  * SI unit is [Henry]
  */
 @Serializable
-sealed class ElectricInductance : AbstractScientificUnit<PhysicalQuantity.ElectricInductance>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricInductance>
+sealed class ElectricInductance :
+    AbstractScientificUnit<PhysicalQuantity.ElectricInductance>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.ElectricInductance>
 
 @Serializable
 data object Henry : ElectricInductance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance> {
@@ -56,7 +58,9 @@ data object Henry : ElectricInductance(), MetricBaseUnit<MeasurementSystem.Metri
 }
 
 @Serializable
-sealed class HenryMultiple : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry>
+sealed class HenryMultiple :
+    ElectricInductance(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry>
 
 @Serializable
 data object Nanohenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Nano(Henry)

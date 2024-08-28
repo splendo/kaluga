@@ -41,12 +41,7 @@ class QuadrupleParameters<T0, T1, T2, T3> :
      * @param third the third parameters [ParameterMatcher]
      * @param fourth the fourth parameters [ParameterMatcher]
      */
-    data class Matchers<T0, T1, T2, T3>(
-        val first: ParameterMatcher<T0>,
-        val second: ParameterMatcher<T1>,
-        val third: ParameterMatcher<T2>,
-        val fourth: ParameterMatcher<T3>,
-    ) :
+    data class Matchers<T0, T1, T2, T3>(val first: ParameterMatcher<T0>, val second: ParameterMatcher<T1>, val third: ParameterMatcher<T2>, val fourth: ParameterMatcher<T3>) :
         ParametersSpec.Matchers {
         override fun asList() = listOf(first, second, third, fourth)
     }
@@ -63,8 +58,7 @@ class QuadrupleParameters<T0, T1, T2, T3> :
         val second: ParameterMatcherOrCaptor<T1>,
         val third: ParameterMatcherOrCaptor<T2>,
         val fourth: ParameterMatcherOrCaptor<T3>,
-    ) :
-        ParametersSpec.MatchersOrCaptor<Matchers<T0, T1, T2, T3>> {
+    ) : ParametersSpec.MatchersOrCaptor<Matchers<T0, T1, T2, T3>> {
         override fun asMatchers(): Matchers<T0, T1, T2, T3> = Matchers(
             first.asMatcher(),
             second.asMatcher(),
@@ -80,12 +74,7 @@ class QuadrupleParameters<T0, T1, T2, T3> :
      * @property third the third parameter
      * @property fourth the fourth parameter
      */
-    data class Values<T0, T1, T2, T3>(
-        val first: T0,
-        val second: T1,
-        val third: T2,
-        val fourth: T3,
-    ) : ParametersSpec.Values
+    data class Values<T0, T1, T2, T3>(val first: T0, val second: T1, val third: T2, val fourth: T3) : ParametersSpec.Values
 
     override fun Matchers<T0, T1, T2, T3>.matches(values: Values<T0, T1, T2, T3>): Boolean = first.matches(values.first) &&
         second.matches(values.second) &&

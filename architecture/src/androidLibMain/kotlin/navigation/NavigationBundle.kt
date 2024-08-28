@@ -71,63 +71,59 @@ internal fun mapValue(key: String, value: NavigationBundleValue<*>, bundle: Bund
  * @param spec The [NavigationBundleSpec] used to create the [NavigationBundle]
  * @throws [BundleConversionError] if the [Bundle] does not contain the correct keys or values associated with the [NavigationBundleSpec]
  */
-fun <Row : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationBundleSpec<Row>): NavigationBundle<Row> {
-    return NavigationBundle(
-        spec,
-        spec.rows.associate { row ->
-            mapValue(row.key ?: row.javaClass.simpleName, row.associatedType)?.let {
-                Pair(row, it)
-            } ?: throw BundleConversionError()
-        },
-    )
-}
+fun <Row : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationBundleSpec<Row>): NavigationBundle<Row> = NavigationBundle(
+    spec,
+    spec.rows.associate { row ->
+        mapValue(row.key ?: row.javaClass.simpleName, row.associatedType)?.let {
+            Pair(row, it)
+        } ?: throw BundleConversionError()
+    },
+)
 
 /**
  * Error indicating a [Bundle] could not be converted to a [NavigationBundle]
  */
 class BundleConversionError : Exception()
 
-internal fun Bundle.mapValue(key: String, specType: NavigationBundleSpecType<*>): NavigationBundleValue<*>? {
-    return when (specType) {
-        is NavigationBundleSpecType.UnitType -> specType.convertValue(Unit)
-        is NavigationBundleSpecType.BooleanType -> specType.convertValue(getBoolean(key))
-        is NavigationBundleSpecType.BooleanArrayType -> getBooleanArray(key)?.let { specType.convertValue(it) }
-        is NavigationBundleSpecType.ByteType -> specType.convertValue(getByte(key))
-        is NavigationBundleSpecType.ByteArrayType -> getByteArray(key)?.let { specType.convertValue(it) }
-        is NavigationBundleSpecType.BundleType<*> -> {
-            getBundle(key)?.let {
-                NavigationBundleValue.BundleValue(it.toNavigationBundle(specType.spec))
-            }
+internal fun Bundle.mapValue(key: String, specType: NavigationBundleSpecType<*>): NavigationBundleValue<*>? = when (specType) {
+    is NavigationBundleSpecType.UnitType -> specType.convertValue(Unit)
+    is NavigationBundleSpecType.BooleanType -> specType.convertValue(getBoolean(key))
+    is NavigationBundleSpecType.BooleanArrayType -> getBooleanArray(key)?.let { specType.convertValue(it) }
+    is NavigationBundleSpecType.ByteType -> specType.convertValue(getByte(key))
+    is NavigationBundleSpecType.ByteArrayType -> getByteArray(key)?.let { specType.convertValue(it) }
+    is NavigationBundleSpecType.BundleType<*> -> {
+        getBundle(key)?.let {
+            NavigationBundleValue.BundleValue(it.toNavigationBundle(specType.spec))
         }
-        is NavigationBundleSpecType.CharType -> specType.convertValue(getChar(key))
-        is NavigationBundleSpecType.CharArrayType -> getCharArray(key)?.let { specType.convertValue(it) }
-        is NavigationBundleSpecType.CharSequenceType -> getCharSequence(key)?.let { specType.convertValue(it) }
-        is NavigationBundleSpecType.DoubleType -> specType.convertValue(getDouble(key))
-        is NavigationBundleSpecType.DoubleArrayType -> getDoubleArray(key)?.let { specType.convertValue(it) }
-        is NavigationBundleSpecType.FloatType -> specType.convertValue(getFloat(key))
-        is NavigationBundleSpecType.FloatArrayType -> getFloatArray(key)?.let { specType.convertValue(it) }
-        is NavigationBundleSpecType.IntegerType -> specType.convertValue(getInt(key))
-        is NavigationBundleSpecType.IntegerArrayType -> getIntArray(key)?.let { specType.convertValue(it) }
-        is NavigationBundleSpecType.LongType -> specType.convertValue(getLong(key))
-        is NavigationBundleSpecType.LongArrayType -> getLongArray(key)?.let { specType.convertValue(it) }
-        is NavigationBundleSpecType.SerializedType<*> -> getString(key)?.let { specType.generateValue(it) }
-        is NavigationBundleSpecType.ShortType -> specType.convertValue(getShort(key))
-        is NavigationBundleSpecType.ShortArrayType -> getShortArray(key)?.let { specType.convertValue(it) }
-        is NavigationBundleSpecType.StringType -> getString(key)?.let { specType.convertValue(it) }
-        is NavigationBundleSpecType.StringArrayType -> getStringArrayList(key)?.let { specType.convertValue(it) }
-        is NavigationBundleSpecType.OptionalType<*> -> {
-            val optionalType = specType.type
-            if (containsKey(key)) {
-                mapValue(key, optionalType)
-            } else {
-                specType.convertValue(null)
-            }
+    }
+    is NavigationBundleSpecType.CharType -> specType.convertValue(getChar(key))
+    is NavigationBundleSpecType.CharArrayType -> getCharArray(key)?.let { specType.convertValue(it) }
+    is NavigationBundleSpecType.CharSequenceType -> getCharSequence(key)?.let { specType.convertValue(it) }
+    is NavigationBundleSpecType.DoubleType -> specType.convertValue(getDouble(key))
+    is NavigationBundleSpecType.DoubleArrayType -> getDoubleArray(key)?.let { specType.convertValue(it) }
+    is NavigationBundleSpecType.FloatType -> specType.convertValue(getFloat(key))
+    is NavigationBundleSpecType.FloatArrayType -> getFloatArray(key)?.let { specType.convertValue(it) }
+    is NavigationBundleSpecType.IntegerType -> specType.convertValue(getInt(key))
+    is NavigationBundleSpecType.IntegerArrayType -> getIntArray(key)?.let { specType.convertValue(it) }
+    is NavigationBundleSpecType.LongType -> specType.convertValue(getLong(key))
+    is NavigationBundleSpecType.LongArrayType -> getLongArray(key)?.let { specType.convertValue(it) }
+    is NavigationBundleSpecType.SerializedType<*> -> getString(key)?.let { specType.generateValue(it) }
+    is NavigationBundleSpecType.ShortType -> specType.convertValue(getShort(key))
+    is NavigationBundleSpecType.ShortArrayType -> getShortArray(key)?.let { specType.convertValue(it) }
+    is NavigationBundleSpecType.StringType -> getString(key)?.let { specType.convertValue(it) }
+    is NavigationBundleSpecType.StringArrayType -> getStringArrayList(key)?.let { specType.convertValue(it) }
+    is NavigationBundleSpecType.OptionalType<*> -> {
+        val optionalType = specType.type
+        if (containsKey(key)) {
+            mapValue(key, optionalType)
+        } else {
+            specType.convertValue(null)
         }
-        is NavigationBundleSpecType.DateType -> getLong(key).let { value ->
-            specType.convertValue(DefaultKalugaDate.epoch(value.milliseconds))
-        }
-        is NavigationBundleSpecType.DateArrayType -> getLongArray(key)?.let { array ->
-            specType.convertValue(array.map { DefaultKalugaDate.epoch(it.milliseconds) })
-        }
+    }
+    is NavigationBundleSpecType.DateType -> getLong(key).let { value ->
+        specType.convertValue(DefaultKalugaDate.epoch(value.milliseconds))
+    }
+    is NavigationBundleSpecType.DateArrayType -> getLongArray(key)?.let { array ->
+        specType.convertValue(array.map { DefaultKalugaDate.epoch(it.milliseconds) })
     }
 }

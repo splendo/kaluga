@@ -58,10 +58,9 @@ actual interface LocationMonitor : ServiceMonitor {
  * @param applicationContext the [Context] in which to monitor the location
  * @param locationManager the [LocationManager] to use for monitoring the location
  */
-class DefaultLocationMonitor(
-    private val applicationContext: Context,
-    private val locationManager: LocationManager?,
-) : DefaultServiceMonitor(), LocationMonitor {
+class DefaultLocationMonitor(private val applicationContext: Context, private val locationManager: LocationManager?) :
+    DefaultServiceMonitor(),
+    LocationMonitor {
 
     private val locationAvailabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {

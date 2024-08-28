@@ -27,12 +27,8 @@ import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.parameters.mock
 
-class MockDeviceWrapper(
-    override val name: String?,
-    override val identifier: Identifier,
-    override val bondState: DeviceWrapper.BondState,
-    setupMocks: Boolean = true,
-) : DeviceWrapper {
+class MockDeviceWrapper(override val name: String?, override val identifier: Identifier, override val bondState: DeviceWrapper.BondState, setupMocks: Boolean = true) :
+    DeviceWrapper {
 
     val gattWrappers = concurrentMutableListOf<MockBluetoothGattWrapper>()
     val connectGattMock = ::connectGatt.mock()

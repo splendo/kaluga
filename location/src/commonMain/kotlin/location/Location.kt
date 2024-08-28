@@ -151,9 +151,7 @@ data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double
         return sign * degrees.toDouble() * (minutes.toDouble() / 60.0) * (seconds / 3600.0)
     }
 
-    override fun toString(): String {
-        return "$degrees°${minutes}\'${seconds}\" ${windDirection.name}"
-    }
+    override fun toString(): String = "$degrees°${minutes}\'${seconds}\" ${windDirection.name}"
 }
 
 /**
@@ -162,12 +160,10 @@ data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double
  * @return the [Location.UnknownLocation] with [reason].
  * If the [Location] this method had a [Location.KnownLocation], this will return [Location.UnknownLocation.WithLastLocation], otherwise [Location.UnknownLocation.WithoutLastLocation]
  */
-fun Location.unknownLocationOf(reason: Location.UnknownLocation.Reason): Location.UnknownLocation {
-    return when (this) {
-        is Location.KnownLocation -> Location.UnknownLocation.WithLastLocation(this, reason)
-        is Location.UnknownLocation.WithLastLocation -> Location.UnknownLocation.WithLastLocation(this.lastKnownLocation, reason)
-        is Location.UnknownLocation.WithoutLastLocation -> Location.UnknownLocation.WithoutLastLocation(reason)
-    }
+fun Location.unknownLocationOf(reason: Location.UnknownLocation.Reason): Location.UnknownLocation = when (this) {
+    is Location.KnownLocation -> Location.UnknownLocation.WithLastLocation(this, reason)
+    is Location.UnknownLocation.WithLastLocation -> Location.UnknownLocation.WithLastLocation(this.lastKnownLocation, reason)
+    is Location.UnknownLocation.WithoutLastLocation -> Location.UnknownLocation.WithoutLastLocation(reason)
 }
 
 /**

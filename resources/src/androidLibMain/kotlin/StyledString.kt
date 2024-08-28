@@ -53,11 +53,7 @@ import kotlin.math.roundToInt
  * @property linkStyle The [LinkStyle] to apply when [StringStyleAttribute.Link] is applied.
  * When `null` the Theme default will be used
  */
-actual class StyledString(
-    val spannable: Spannable,
-    actual val defaultTextStyle: KalugaTextStyle,
-    actual val linkStyle: LinkStyle?,
-)
+actual class StyledString(val spannable: Spannable, actual val defaultTextStyle: KalugaTextStyle, actual val linkStyle: LinkStyle?)
 
 /**
  * Gets the plain string of a [StyledString]
@@ -73,12 +69,7 @@ actual val StyledString.rawString: String get() = spannable.toString()
  * When `null` the Theme default will be used
  * @param context the [Context] in which the [StyledString] will be displayed
  */
-actual class StyledStringBuilder constructor(
-    string: String,
-    private val defaultTextStyle: KalugaTextStyle,
-    private val linkStyle: LinkStyle?,
-    private val context: Context,
-) {
+actual class StyledStringBuilder constructor(string: String, private val defaultTextStyle: KalugaTextStyle, private val linkStyle: LinkStyle?, private val context: Context) {
 
     /**
      * Provider for a [StyledStringBuilder]
@@ -252,9 +243,7 @@ actual class StyledStringBuilder constructor(
      * Creates the [StyledString]
      * @return the created [StyledString]
      */
-    actual fun create(): StyledString {
-        return StyledString(builder, defaultTextStyle, linkStyle)
-    }
+    actual fun create(): StyledString = StyledString(builder, defaultTextStyle, linkStyle)
 }
 
 private class CustomURLSpan(url: String, private val linkStyle: LinkStyle?) : URLSpan(url) {

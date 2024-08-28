@@ -47,7 +47,9 @@ val VoltageUnits: Set<Voltage> get() = setOf(
  * SI unit is [Volt]
  */
 @Serializable
-sealed class Voltage : AbstractScientificUnit<PhysicalQuantity.Voltage>(), MetricAndImperialScientificUnit<PhysicalQuantity.Voltage>
+sealed class Voltage :
+    AbstractScientificUnit<PhysicalQuantity.Voltage>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.Voltage>
 
 @Serializable
 data object Volt : Voltage(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage> {
@@ -72,7 +74,9 @@ data object Abvolt : Voltage() {
 }
 
 @Serializable
-sealed class VoltMultiple : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt>
+sealed class VoltMultiple :
+    Voltage(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt>
 
 @Serializable
 data object Microvolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Micro(Volt)

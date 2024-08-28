@@ -38,13 +38,7 @@ typealias AlertTextObserver = (String) -> Unit
  * @property actions The list of action objects that the user can take in response to the alert
  * @property textInputAction The optional action object that sets the alert's input options and text change callback
  */
-data class Alert(
-    val title: String?,
-    val message: String?,
-    val actions: List<Action>,
-    val textInputAction: TextInputAction? = null,
-    val style: Style = Style.ALERT,
-) {
+data class Alert(val title: String?, val message: String?, val actions: List<Action>, val textInputAction: TextInputAction? = null, val style: Style = Style.ALERT) {
 
     /**
      * Alert style
@@ -203,11 +197,7 @@ data class Alert(
      * @property style The [Style] that is applied to the action's button
      * @property handler The block to execute when the user taps a button
      */
-    data class Action(
-        val title: String,
-        val style: Style = Style.DEFAULT,
-        val handler: AlertActionHandler = {},
-    ) {
+    data class Action(val title: String, val style: Style = Style.DEFAULT, val handler: AlertActionHandler = {}) {
         /**
          * The style of an action. This determines the look of the button when displayed in the alert.
          */
@@ -251,11 +241,7 @@ data class Alert(
      * @param placeholder The hint of the input field
      * @param textObserver The block to execute when the user edits the text in the input field
      */
-    data class TextInputAction(
-        val text: String?,
-        val placeholder: String?,
-        val textObserver: AlertTextObserver,
-    )
+    data class TextInputAction(val text: String?, val placeholder: String?, val textObserver: AlertTextObserver)
 }
 
 /**

@@ -44,7 +44,9 @@ val ElectricResistanceUnits: Set<ElectricResistance> get() = setOf(
  * SI unit is [Ohm]
  */
 @Serializable
-sealed class ElectricResistance : AbstractScientificUnit<PhysicalQuantity.ElectricResistance>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricResistance>
+sealed class ElectricResistance :
+    AbstractScientificUnit<PhysicalQuantity.ElectricResistance>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.ElectricResistance>
 
 @Serializable
 data object Ohm : ElectricResistance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance> {
@@ -56,7 +58,9 @@ data object Ohm : ElectricResistance(), MetricBaseUnit<MeasurementSystem.MetricA
 }
 
 @Serializable
-sealed class OhmMultiple : ElectricResistance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm>
+sealed class OhmMultiple :
+    ElectricResistance(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm>
 
 @Serializable
 data object Nanoohm : OhmMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm> by Nano(Ohm)

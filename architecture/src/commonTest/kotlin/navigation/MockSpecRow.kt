@@ -23,17 +23,18 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MockSerializable(val value: String)
 
-class MockSpec : NavigationBundleSpec<MockSpecRow<*>>(
-    setOf(
-        MockSpecRow.BooleanSpecRow,
-        MockSpecRow.SerializableSpecRow,
-        MockSpecRow.NestedBundleSpecRow,
-        MockSpecRow.OptionalString,
-        MockSpecRow.OptionalFloat,
-        MockSpecRow.DateSpecRow,
-        MockSpecRow.DateArraySpecRow,
-    ),
-)
+class MockSpec :
+    NavigationBundleSpec<MockSpecRow<*>>(
+        setOf(
+            MockSpecRow.BooleanSpecRow,
+            MockSpecRow.SerializableSpecRow,
+            MockSpecRow.NestedBundleSpecRow,
+            MockSpecRow.OptionalString,
+            MockSpecRow.OptionalFloat,
+            MockSpecRow.DateSpecRow,
+            MockSpecRow.DateArraySpecRow,
+        ),
+    )
 
 sealed class MockSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
     data object BooleanSpecRow : MockSpecRow<Boolean>(NavigationBundleSpecType.BooleanType)

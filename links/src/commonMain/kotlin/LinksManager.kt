@@ -61,17 +61,13 @@ interface LinksManager {
  * Default implementation of [LinksManager]
  * @param linksHandler the [LinksHandler] to handle processing the link
  */
-class DefaultLinksManager(
-    private val linksHandler: LinksHandler,
-) : LinksManager {
+class DefaultLinksManager(private val linksHandler: LinksHandler) : LinksManager {
 
     /**
      * Builder for creating a [DefaultLinksManager]
      * @param handler the [LinksHandler] to handle processing the link
      */
-    class Builder(
-        private val handler: LinksHandler,
-    ) : LinksManager.Builder {
+    class Builder(private val handler: LinksHandler) : LinksManager.Builder {
 
         constructor() : this(PlatformLinksHandler())
 
@@ -87,11 +83,9 @@ class DefaultLinksManager(
         return decodeFromList(list, serializer)
     }
 
-    override fun validateLink(url: String): String? {
-        return if (linksHandler.isValid(url)) {
-            url
-        } else {
-            null
-        }
+    override fun validateLink(url: String): String? = if (linksHandler.isValid(url)) {
+        url
+    } else {
+        null
     }
 }

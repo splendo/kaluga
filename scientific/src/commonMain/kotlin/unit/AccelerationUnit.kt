@@ -84,7 +84,9 @@ internal val Acceleration.defaultSymbol: String get() = if (speed.per == per) {
 }
 
 @Serializable
-sealed class MetricAndImperialAcceleration : Acceleration(), MetricAndImperialScientificUnit<PhysicalQuantity.Acceleration> {
+sealed class MetricAndImperialAcceleration :
+    Acceleration(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.Acceleration> {
     override val system = MeasurementSystem.MetricAndImperial
 
     val metric get() = MetricMetricAndImperialAccelerationWrapper(this)
@@ -95,7 +97,9 @@ sealed class MetricAndImperialAcceleration : Acceleration(), MetricAndImperialSc
  * An [Acceleration] for [MeasurementSystem.Metric]
  */
 @Serializable
-sealed class MetricAcceleration : Acceleration(), MetricScientificUnit<PhysicalQuantity.Acceleration> {
+sealed class MetricAcceleration :
+    Acceleration(),
+    MetricScientificUnit<PhysicalQuantity.Acceleration> {
     abstract override val speed: MetricSpeed
     override val system = MeasurementSystem.Metric
 }
@@ -106,10 +110,7 @@ sealed class MetricAcceleration : Acceleration(), MetricScientificUnit<PhysicalQ
  * @param per the [Time] component
  */
 @Serializable
-data class CombinedMetricAcceleration(
-    override val speed: MetricSpeed,
-    override val per: Time,
-) : MetricAcceleration()
+data class CombinedMetricAcceleration(override val speed: MetricSpeed, override val per: Time) : MetricAcceleration()
 
 @Serializable
 data class MetricMetricAndImperialAccelerationWrapper(val metricAndImperial: MetricAndImperialAcceleration) : MetricAcceleration() {
@@ -129,7 +130,9 @@ data object Gal : MetricAcceleration(), MetricBaseUnit<MeasurementSystem.Metric,
 }
 
 @Serializable
-sealed class GalMultiple : MetricAcceleration(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> {
+sealed class GalMultiple :
+    MetricAcceleration(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Acceleration, Gal> {
     override val speed = Centimeter per Second
     override val per: Time = Second
 }
@@ -198,7 +201,9 @@ data object GigaGal : GalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric
  * An [Acceleration] for [MeasurementSystem.Imperial]
  */
 @Serializable
-sealed class ImperialAcceleration : Acceleration(), ImperialScientificUnit<PhysicalQuantity.Acceleration> {
+sealed class ImperialAcceleration :
+    Acceleration(),
+    ImperialScientificUnit<PhysicalQuantity.Acceleration> {
     abstract override val speed: ImperialSpeed
     override val system = MeasurementSystem.Imperial
 }
@@ -209,10 +214,7 @@ sealed class ImperialAcceleration : Acceleration(), ImperialScientificUnit<Physi
  * @param per the [Time] component
  */
 @Serializable
-data class CombinedImperialAcceleration(
-    override val speed: ImperialSpeed,
-    override val per: Time,
-) : ImperialAcceleration()
+data class CombinedImperialAcceleration(override val speed: ImperialSpeed, override val per: Time) : ImperialAcceleration()
 
 @Serializable
 data class ImperialMetricAndImperialAccelerationWrapper(val metricAndImperial: MetricAndImperialAcceleration) : ImperialAcceleration() {
@@ -247,17 +249,15 @@ data object GUnit : MetricAndImperialAcceleration(), MetricBaseUnit<MeasurementS
     override val speed = Meter per Second
     override val per: Time = Second
 
-    override fun toSIUnit(value: Decimal): Decimal {
-        return super.toSIUnit(value * standardGravity)
-    }
+    override fun toSIUnit(value: Decimal): Decimal = super.toSIUnit(value * standardGravity)
 
-    override fun fromSIUnit(value: Decimal): Decimal {
-        return super.fromSIUnit(value / standardGravity)
-    }
+    override fun fromSIUnit(value: Decimal): Decimal = super.fromSIUnit(value / standardGravity)
 }
 
 @Serializable
-sealed class GUnitMultiple : MetricAndImperialAcceleration(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> {
+sealed class GUnitMultiple :
+    MetricAndImperialAcceleration(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration, GUnit> {
     override val speed = Meter per Second
     override val per: Time = Second
 }

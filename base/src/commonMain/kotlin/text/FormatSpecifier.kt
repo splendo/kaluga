@@ -605,9 +605,8 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         return sb
     }
 
-    private fun localizedMagnitude(sb: StringBuilder = StringBuilder(), value: Int, flags: Set<Flag>, width: Int, locale: KalugaLocale): StringBuilder {
-        return localizedMagnitude(sb, value.toString(10), 0, flags, width, locale)
-    }
+    private fun localizedMagnitude(sb: StringBuilder = StringBuilder(), value: Int, flags: Set<Flag>, width: Int, locale: KalugaLocale): StringBuilder =
+        localizedMagnitude(sb, value.toString(10), 0, flags, width, locale)
 
     private fun localizedMagnitude(sb: StringBuilder = StringBuilder(), value: CharSequence, offset: Int, flags: Set<Flag>, width: Int, locale: KalugaLocale): StringBuilder {
         val begin: Int = sb.length
@@ -702,13 +701,14 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
     }
 
     private fun checkBadFlags(currentChar: ParsingCharacter, vararg badFlags: Flag) {
-        for (badFlag in badFlags)
+        for (badFlag in badFlags) {
             if (flags.contains(badFlag)) {
                 throw StringFormatterException.FormatFlagsConversionMismatchException(
                     badFlag.toString(),
                     currentChar.char,
                 )
             }
+        }
     }
 
     private fun width(stringToMatch: String): Int {

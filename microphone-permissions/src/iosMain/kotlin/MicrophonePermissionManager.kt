@@ -32,11 +32,8 @@ import kotlin.time.Duration
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultMicrophonePermissionManager(
-    bundle: NSBundle,
-    settings: Settings,
-    coroutineScope: CoroutineScope,
-) : BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope) {
+actual class DefaultMicrophonePermissionManager(bundle: NSBundle, settings: Settings, coroutineScope: CoroutineScope) :
+    BasePermissionManager<MicrophonePermission>(MicrophonePermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
     private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeMicrophone(), permissionHandler, coroutineScope)
@@ -60,7 +57,6 @@ actual class DefaultMicrophonePermissionManager(
  */
 actual class MicrophonePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseMicrophonePermissionManagerBuilder {
 
-    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): MicrophonePermissionManager {
-        return DefaultMicrophonePermissionManager(context, settings, coroutineScope)
-    }
+    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): MicrophonePermissionManager =
+        DefaultMicrophonePermissionManager(context, settings, coroutineScope)
 }

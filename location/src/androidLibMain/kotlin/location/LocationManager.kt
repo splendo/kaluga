@@ -85,15 +85,13 @@ actual class DefaultLocationManager(
             },
         )
 
-        override fun create(settings: Settings, coroutineScope: CoroutineScope): BaseLocationManager {
-            return DefaultLocationManager(
-                context,
-                locationManager,
-                createLocationProvider(settings),
-                settings,
-                coroutineScope,
-            )
-        }
+        override fun create(settings: Settings, coroutineScope: CoroutineScope): BaseLocationManager = DefaultLocationManager(
+            context,
+            locationManager,
+            createLocationProvider(settings),
+            settings,
+            coroutineScope,
+        )
     }
 
     actual override val locationMonitor: LocationMonitor = LocationMonitor.Builder(context, locationManager).create()
@@ -136,10 +134,8 @@ actual class DefaultLocationManager(
  * @param permissionsBuilder a method for creating the [Permissions] object to manage the Location permissions.
  * Needs to have [com.splendo.kaluga.permissions.location.LocationPermission] registered.
  */
-actual class LocationStateRepoBuilder(
-    private val locationManagerBuilder: BaseLocationManager.Builder,
-    private val permissionsBuilder: suspend (CoroutineContext) -> Permissions,
-) : BaseLocationStateRepoBuilder {
+actual class LocationStateRepoBuilder(private val locationManagerBuilder: BaseLocationManager.Builder, private val permissionsBuilder: suspend (CoroutineContext) -> Permissions) :
+    BaseLocationStateRepoBuilder {
 
     /**
      * Constructor
@@ -187,7 +183,5 @@ actual class LocationStateRepoBuilder(
         locationPermission: LocationPermission,
         settingsBuilder: (LocationPermission, Permissions) -> Settings,
         coroutineContext: CoroutineContext,
-    ): LocationStateRepo {
-        return LocationStateRepo({ settingsBuilder(locationPermission, permissionsBuilder(it)) }, locationManagerBuilder, coroutineContext)
-    }
+    ): LocationStateRepo = LocationStateRepo({ settingsBuilder(locationPermission, permissionsBuilder(it)) }, locationManagerBuilder, coroutineContext)
 }

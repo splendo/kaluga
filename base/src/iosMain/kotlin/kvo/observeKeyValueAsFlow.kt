@@ -34,7 +34,9 @@ import platform.Foundation.valueForKeyPath
 import platform.darwin.NSObject
 
 @Suppress("UNCHECKED_CAST")
-private class KVOObserver<T>(nsObject: NSObject, keyPath: String, options: NSKeyValueObservingOptions = NSKeyValueObservingOptionNew) : NSObject(), NSObjectObserverProtocol {
+private class KVOObserver<T>(nsObject: NSObject, keyPath: String, options: NSKeyValueObservingOptions = NSKeyValueObservingOptionNew) :
+    NSObject(),
+    NSObjectObserverProtocol {
 
     private var isAdded: Boolean = false
     private val mutex = Mutex()

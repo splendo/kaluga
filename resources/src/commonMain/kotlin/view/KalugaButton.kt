@@ -46,11 +46,7 @@ sealed class KalugaButton {
      * @param isEnabled if `true` the button can be interacted with
      * @param action function to execute when the button is pressed
      */
-    data class WithoutText(
-        override val style: KalugaButtonStyle.WithoutText<*>,
-        override val isEnabled: Boolean = true,
-        override val action: () -> Unit,
-    ) : KalugaButton()
+    data class WithoutText(override val style: KalugaButtonStyle.WithoutText<*>, override val isEnabled: Boolean = true, override val action: () -> Unit) : KalugaButton()
 
     /**
      * A [KalugaButton] with a [KalugaButton.WithText] [style] that displays text
@@ -67,12 +63,7 @@ sealed class KalugaButton {
      * @param isEnabled if `true` the button can be interacted with
      * @param action function to execute when the button is pressed
      */
-    data class Plain(
-        val text: String,
-        override val style: KalugaButtonStyle.WithText<*>,
-        override val isEnabled: Boolean = true,
-        override val action: () -> Unit,
-    ) : WithText()
+    data class Plain(val text: String, override val style: KalugaButtonStyle.WithText<*>, override val isEnabled: Boolean = true, override val action: () -> Unit) : WithText()
 
     /**
      * A [KalugaButton.WithText] that displays a [StyledString]
@@ -81,10 +72,6 @@ sealed class KalugaButton {
      * @param isEnabled if `true` the button can be interacted with
      * @param action function to execute when the button is pressed
      */
-    data class Styled(
-        val text: StyledString,
-        override val style: KalugaButtonStyle.WithText<*>,
-        override val isEnabled: Boolean = true,
-        override val action: () -> Unit,
-    ) : WithText()
+    data class Styled(val text: StyledString, override val style: KalugaButtonStyle.WithText<*>, override val isEnabled: Boolean = true, override val action: () -> Unit) :
+        WithText()
 }

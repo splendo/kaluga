@@ -24,10 +24,7 @@ import androidx.compose.material3.BottomSheetScaffold
  * @param contentRouteController The [RouteController] managing the content.
  * @param sheetContentRouteController The [RouteController] managing the sheet content.
  */
-class BottomSheetRouteController(
-    internal val contentRouteController: RouteController,
-    internal val sheetContentRouteController: BottomSheetSheetContentRouteController,
-) {
+class BottomSheetRouteController(internal val contentRouteController: RouteController, internal val sheetContentRouteController: BottomSheetSheetContentRouteController) {
 
     /**
      * Navigates using a given [BottomSheetRoute]

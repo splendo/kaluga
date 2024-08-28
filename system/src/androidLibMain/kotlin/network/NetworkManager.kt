@@ -27,9 +27,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 /**
  * Default implementation of [NetworkManager]
  */
-actual class DefaultNetworkManager internal constructor(
-    private val androidNetworkManager: AndroidNetworkManager,
-) : NetworkManager {
+actual class DefaultNetworkManager internal constructor(private val androidNetworkManager: AndroidNetworkManager) : NetworkManager {
 
     actual override val network: Flow<NetworkConnectionType> get() = androidNetworkManager.network
     actual override suspend fun startMonitoring() = androidNetworkManager.startMonitoring()
@@ -52,9 +50,7 @@ actual class DefaultNetworkManager internal constructor(
 
     internal interface AndroidNetworkManager : NetworkManager
 
-    internal class AndroidConnectivityCallbackManager(
-        private val connectivityManager: ConnectivityManager,
-    ) : AndroidNetworkManager {
+    internal class AndroidConnectivityCallbackManager(private val connectivityManager: ConnectivityManager) : AndroidNetworkManager {
 
         private val networkChannel = Channel<NetworkConnectionType>(Channel.UNLIMITED)
         override val network: Flow<NetworkConnectionType> = networkChannel.receiveAsFlow()

@@ -44,17 +44,11 @@ open class Descriptor(
 
     override val uuid = wrapper.uuid
 
-    override fun createReadAction(): DeviceAction.Read.Descriptor {
-        return DeviceAction.Read.Descriptor(this)
-    }
+    override fun createReadAction(): DeviceAction.Read.Descriptor = DeviceAction.Read.Descriptor(this)
 
-    override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Descriptor {
-        return DeviceAction.Write.Descriptor(newValue, this)
-    }
+    override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Descriptor = DeviceAction.Write.Descriptor(newValue, this)
 
-    override fun getUpdatedValue(): ByteArray? {
-        return wrapper.value?.asBytes
-    }
+    override fun getUpdatedValue(): ByteArray? = wrapper.value?.asBytes
 }
 
 /**

@@ -33,7 +33,8 @@ sealed class MockLocationState {
     }
 
     data class Deinitialized(override val location: Location) :
-        Inactive(), LocationState.Deinitialized {
+        Inactive(),
+        LocationState.Deinitialized {
         override val reinitialize = suspend { Initializing(location) }
     }
 
@@ -46,9 +47,9 @@ sealed class MockLocationState {
         val revokePermission = suspend { Disabled.NotPermitted(location) }
     }
 
-    data class Initializing(
-        override val location: Location,
-    ) : Active(), LocationState.Initializing {
+    data class Initializing(override val location: Location) :
+        Active(),
+        LocationState.Initializing {
 
         override fun initialize(hasPermission: Boolean, enabled: Boolean): suspend () -> LocationState.Initialized = suspend {
             when {
@@ -59,7 +60,9 @@ sealed class MockLocationState {
         }
     }
 
-    data class Enabled(override val location: Location) : Active(), LocationState.Enabled {
+    data class Enabled(override val location: Location) :
+        Active(),
+        LocationState.Enabled {
 
         private val permittedHandler: PermittedHandler = PermittedHandler(location)
 
@@ -76,7 +79,9 @@ sealed class MockLocationState {
 
     sealed class Disabled : Active() {
 
-        class NoGPS(lastKnownLocation: Location) : Disabled(), LocationState.Disabled.NoGPS {
+        class NoGPS(lastKnownLocation: Location) :
+            Disabled(),
+            LocationState.Disabled.NoGPS {
 
             override val location: Location = lastKnownLocation.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS)
             private val permittedHandler = PermittedHandler(location)
@@ -88,7 +93,9 @@ sealed class MockLocationState {
             override val revokePermission: suspend () -> NotPermitted = permittedHandler.revokePermission
         }
 
-        class NotPermitted(lastKnownLocation: Location) : Disabled(), LocationState.Disabled.NotPermitted {
+        class NotPermitted(lastKnownLocation: Location) :
+            Disabled(),
+            LocationState.Disabled.NotPermitted {
 
             override val location: Location = lastKnownLocation.unknownLocationOf(Location.UnknownLocation.Reason.PERMISSION_DENIED)
 

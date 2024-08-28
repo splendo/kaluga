@@ -106,7 +106,8 @@ class DefaultBeacons(
     private val beaconLifetime: Duration = 10.seconds,
     private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
     coroutineContext: CoroutineContext = defaultBeaconsDispatcher,
-) : Beacons, CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("Beacons")) {
+) : Beacons,
+    CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("Beacons")) {
 
     private companion object {
         const val TAG = "Beacons"

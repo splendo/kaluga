@@ -43,7 +43,9 @@ val LuminousFluxUnits: Set<LuminousFlux> get() = setOf(
  * SI unit is [Lumen]
  */
 @Serializable
-sealed class LuminousFlux : AbstractScientificUnit<PhysicalQuantity.LuminousFlux>(), MetricAndImperialScientificUnit<PhysicalQuantity.LuminousFlux>
+sealed class LuminousFlux :
+    AbstractScientificUnit<PhysicalQuantity.LuminousFlux>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.LuminousFlux>
 
 @Serializable
 data object Lumen : LuminousFlux(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux> {
@@ -55,7 +57,9 @@ data object Lumen : LuminousFlux(), MetricBaseUnit<MeasurementSystem.MetricAndIm
 }
 
 @Serializable
-sealed class LumenMultiple : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen>
+sealed class LumenMultiple :
+    LuminousFlux(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen>
 
 @Serializable
 data object Nanolumen : LumenMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Nano(Lumen)

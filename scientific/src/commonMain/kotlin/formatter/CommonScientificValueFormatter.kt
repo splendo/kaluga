@@ -45,9 +45,7 @@ class CommonScientificValueFormatter internal constructor(
          * @param builder the [Builder] function to build the [CommonScientificValueFormatter]
          * @return the created [CommonScientificValueFormatter]
          */
-        fun with(builder: Builder.() -> Unit): CommonScientificValueFormatter {
-            return Builder().apply(builder).build()
-        }
+        fun with(builder: Builder.() -> Unit): CommonScientificValueFormatter = Builder().apply(builder).build()
 
         /**
          * A default [CommonScientificValueFormatter] that formats all units as themselves using the current user [com.splendo.kaluga.base.utils.KalugaLocale]
@@ -125,9 +123,8 @@ class CommonScientificValueFormatter internal constructor(
             customSymbols[this] = symbol
         }
 
-        fun build(): CommonScientificValueFormatter {
-            return CommonScientificValueFormatter(this.defaultValueFormatter, customUnitTargets, customQuantityTargets, customSymbols, customFormatters)
-        }
+        fun build(): CommonScientificValueFormatter =
+            CommonScientificValueFormatter(this.defaultValueFormatter, customUnitTargets, customQuantityTargets, customSymbols, customFormatters)
     }
 
     override fun format(value: ScientificValue<*, *>): String {

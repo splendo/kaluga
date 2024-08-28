@@ -43,17 +43,17 @@ actual class DateTimePickerPresenter(
     private val themeResourceId: Int,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     coroutineScope: CoroutineScope,
-) : BaseDateTimePickerPresenter(dateTimePicker), CoroutineScope by coroutineScope {
+) : BaseDateTimePickerPresenter(dateTimePicker),
+    CoroutineScope by coroutineScope {
 
     /**
      * A [BaseDateTimePickerPresenter.Builder] for creating a [DateTimePickerPresenter]
      * @param themeResourceId the resource ID of the theme to apply to the date-time picker dialog
      * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes
      */
-    actual class Builder(
-        private val themeResourceId: Int = 0,
-        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-    ) : BaseDateTimePickerPresenter.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
+    actual class Builder(private val themeResourceId: Int = 0, private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) :
+        BaseDateTimePickerPresenter.Builder(),
+        ActivityLifecycleSubscribable by lifecycleManagerObserver {
 
         /**
          * Creates a [DateTimePickerPresenter]

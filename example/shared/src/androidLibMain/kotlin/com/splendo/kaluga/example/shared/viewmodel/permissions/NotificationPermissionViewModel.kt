@@ -35,7 +35,9 @@ import org.koin.core.component.inject
 
 private val permissionsDispatcher = singleThreadDispatcher("NotificationPermissionsDispatcher")
 
-class NotificationPermissionViewModel : BaseLifecycleViewModel(), KoinComponent {
+class NotificationPermissionViewModel :
+    BaseLifecycleViewModel(),
+    KoinComponent {
 
     companion object {
         private val permission = NotificationsPermission(notificationOptions)

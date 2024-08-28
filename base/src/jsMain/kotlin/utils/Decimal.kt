@@ -41,11 +41,7 @@ private const val FLOOR = "floor"
  * @property roundingMode Describes the rounding mode. Can be either `half-even`, `ceil`, or `floor`
  * @property maximumSignificantDigits The maximum number of significant digits
  */
-data class Rounding(
-    val maximumFractionDigits: Int? = null,
-    val roundingMode: String = ROUNDING_MODE,
-    val maximumSignificantDigits: Int = DECIMAL_128_SIGNIFICANT_DIGITS,
-)
+data class Rounding(val maximumFractionDigits: Int? = null, val roundingMode: String = ROUNDING_MODE, val maximumSignificantDigits: Int = DECIMAL_128_SIGNIFICANT_DIGITS)
 
 /**
  * Platform specific representation of a finite immutable, arbitrary-precision signed decimal number
@@ -54,9 +50,7 @@ data class Rounding(
 actual data class FiniteDecimal(val bd: BigDecimal) : Comparable<FiniteDecimal> {
     actual override fun compareTo(other: FiniteDecimal): Int = BigDecimal.compare(bd, other.bd)
     override fun equals(other: Any?): Boolean = (other as? FiniteDecimal)?.let { BigDecimal.equal(bd, it.bd) } ?: false
-    override fun hashCode(): Int {
-        return bd.hashCode()
-    }
+    override fun hashCode(): Int = bd.hashCode()
 }
 
 private val ZERO = BigDecimal.BigDecimal(0)

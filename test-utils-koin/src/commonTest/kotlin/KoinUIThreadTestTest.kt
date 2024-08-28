@@ -29,11 +29,12 @@ import kotlin.test.assertNull
 
 class KoinUIThreadTestTest : KoinUIThreadTest<KoinUIThreadTestTest.MyKoinTestContext>() {
 
-    class MyKoinTestContext : KoinTestContext(
-        module {
-            single { "K" }
-        },
-    ) {
+    class MyKoinTestContext :
+        KoinTestContext(
+            module {
+                single { "K" }
+            },
+        ) {
         // test injection into context
         val k: String by inject()
     }

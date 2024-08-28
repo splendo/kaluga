@@ -134,7 +134,5 @@ class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGatt
             gattCharacteristic.writeType = value.rawValue
         }
 
-    override fun getDescriptor(uuid: java.util.UUID): DescriptorWrapper? {
-        return gattCharacteristic.getDescriptor(uuid)?.let { DefaultDescriptorWrapper(it) }
-    }
+    override fun getDescriptor(uuid: java.util.UUID): DescriptorWrapper? = gattCharacteristic.getDescriptor(uuid)?.let { DefaultDescriptorWrapper(it) }
 }

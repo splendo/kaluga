@@ -76,9 +76,7 @@ enum class SelectableBlendMode {
     COLOR_BLEND,
 }
 
-class ColorViewModel(
-    private val alertPresenterBuilder: BaseAlertPresenter.Builder,
-) : BaseLifecycleViewModel(alertPresenterBuilder) {
+class ColorViewModel(private val alertPresenterBuilder: BaseAlertPresenter.Builder) : BaseLifecycleViewModel(alertPresenterBuilder) {
 
     private val backdropColor = MutableStateFlow(DefaultColors.mediumPurple)
     private val sourceColor = MutableStateFlow(DefaultColors.darkCyan)

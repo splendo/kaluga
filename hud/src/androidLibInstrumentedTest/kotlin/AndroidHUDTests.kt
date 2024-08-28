@@ -63,9 +63,10 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
 
     lateinit var activity: TestActivity
 
-    inner class AndroidHUDTestContext(coroutineScope: CoroutineScope) : HUDTestContext(
-        coroutineScope,
-    ) {
+    inner class AndroidHUDTestContext(coroutineScope: CoroutineScope) :
+        HUDTestContext(
+            coroutineScope,
+        ) {
         override val builder get() = activity.viewModel.builder
 
         init {

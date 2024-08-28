@@ -35,18 +35,12 @@ sealed class KalugaLabel {
      * @property text the text to display on the label
      * @param style the [KalugaTextStyle] of the label
      */
-    data class Plain(
-        val text: String,
-        override val style: KalugaTextStyle,
-    ) : KalugaLabel()
+    data class Plain(val text: String, override val style: KalugaTextStyle) : KalugaLabel()
 
     /**
      * A [KalugaLabel] that displays a [StyledString]
      * @property text the [StyledString] to display on the label
      * @param style the [KalugaTextStyle] of the label
      */
-    data class Styled(
-        val text: StyledString,
-        override val style: KalugaTextStyle = text.defaultTextStyle,
-    ) : KalugaLabel()
+    data class Styled(val text: StyledString, override val style: KalugaTextStyle = text.defaultTextStyle) : KalugaLabel()
 }

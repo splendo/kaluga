@@ -43,7 +43,9 @@ val ElectricCapacitanceUnits: Set<ElectricCapacitance> get() = setOf(
  * SI unit is [Farad]
  */
 @Serializable
-sealed class ElectricCapacitance : AbstractScientificUnit<PhysicalQuantity.ElectricCapacitance>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricCapacitance>
+sealed class ElectricCapacitance :
+    AbstractScientificUnit<PhysicalQuantity.ElectricCapacitance>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.ElectricCapacitance>
 
 @Serializable
 data object Farad : ElectricCapacitance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance> {
@@ -55,7 +57,9 @@ data object Farad : ElectricCapacitance(), MetricBaseUnit<MeasurementSystem.Metr
 }
 
 @Serializable
-sealed class FaradMultiple : ElectricCapacitance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad>
+sealed class FaradMultiple :
+    ElectricCapacitance(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad>
 
 @Serializable
 data object Nanofarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Nano(Farad)

@@ -112,13 +112,9 @@ interface BluetoothGattWrapper {
 @SuppressLint("MissingPermission")
 class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGattWrapper {
 
-    override fun connect(): Boolean {
-        return gatt.connect()
-    }
+    override fun connect(): Boolean = gatt.connect()
 
-    override fun discoverServices(): Boolean {
-        return gatt.discoverServices()
-    }
+    override fun discoverServices(): Boolean = gatt.discoverServices()
 
     override fun disconnect() {
         gatt.disconnect()
@@ -128,13 +124,9 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
         gatt.close()
     }
 
-    override fun readRemoteRssi(): Boolean {
-        return gatt.readRemoteRssi()
-    }
+    override fun readRemoteRssi(): Boolean = gatt.readRemoteRssi()
 
-    override fun requestMtu(mtu: MTU): Boolean {
-        return gatt.requestMtu(mtu)
-    }
+    override fun requestMtu(mtu: MTU): Boolean = gatt.requestMtu(mtu)
 
     override fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean {
         val characteristic = getCharacteristic(wrapper) ?: return false
@@ -175,11 +167,7 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
         return gatt.setCharacteristicNotification(characteristic, enable)
     }
 
-    private fun getCharacteristic(wrapper: CharacteristicWrapper): BluetoothGattCharacteristic? {
-        return gatt.getService(wrapper.service.uuid)?.getCharacteristic(wrapper.uuid)
-    }
+    private fun getCharacteristic(wrapper: CharacteristicWrapper): BluetoothGattCharacteristic? = gatt.getService(wrapper.service.uuid)?.getCharacteristic(wrapper.uuid)
 
-    private fun getDescriptor(wrapper: DescriptorWrapper): BluetoothGattDescriptor? {
-        return getCharacteristic(wrapper.characteristic)?.getDescriptor(wrapper.uuid)
-    }
+    private fun getDescriptor(wrapper: DescriptorWrapper): BluetoothGattDescriptor? = getCharacteristic(wrapper.characteristic)?.getDescriptor(wrapper.uuid)
 }

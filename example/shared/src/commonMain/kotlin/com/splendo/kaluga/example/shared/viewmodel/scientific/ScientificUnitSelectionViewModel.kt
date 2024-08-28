@@ -38,10 +38,8 @@ sealed class ScientificUnitSelectionAction<T>(value: T, type: NavigationBundleSp
     data class DidSelect(val index: Int) : ScientificUnitSelectionAction<Int>(index, NavigationBundleSpecType.IntegerType)
 }
 
-class ScientificUnitSelectionViewModel(
-    private val quantity: PhysicalQuantity,
-    navigator: Navigator<ScientificUnitSelectionAction<*>>,
-) : NavigatingViewModel<ScientificUnitSelectionAction<*>>(navigator) {
+class ScientificUnitSelectionViewModel(private val quantity: PhysicalQuantity, navigator: Navigator<ScientificUnitSelectionAction<*>>) :
+    NavigatingViewModel<ScientificUnitSelectionAction<*>>(navigator) {
 
     private val allUnits = MutableStateFlow<List<String>>(emptyList())
     private val _filter = MutableStateFlow("")

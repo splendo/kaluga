@@ -76,10 +76,8 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
         actual fun patternFormat(pattern: String, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter =
             createDateFormatter(SimpleDateFormat(pattern, locale.locale), timeZone)
 
-        private fun createDateFormatter(simpleDateFormat: SimpleDateFormat, timeZone: KalugaTimeZone): KalugaDateFormatter {
-            return KalugaDateFormatter(simpleDateFormat).apply {
-                this.timeZone = timeZone
-            }
+        private fun createDateFormatter(simpleDateFormat: SimpleDateFormat, timeZone: KalugaTimeZone): KalugaDateFormatter = KalugaDateFormatter(simpleDateFormat).apply {
+            this.timeZone = timeZone
         }
     }
 

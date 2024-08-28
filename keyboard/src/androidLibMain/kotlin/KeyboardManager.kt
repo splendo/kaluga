@@ -28,18 +28,17 @@ import kotlinx.coroutines.CoroutineScope
  * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes.
  * @param coroutineScope The [CoroutineScope] managing the keyboard lifecycle.
  */
-class ViewKeyboardManager(
-    private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-    coroutineScope: CoroutineScope,
-) : BaseKeyboardManager<ViewFocusHandler>, CoroutineScope by coroutineScope {
+class ViewKeyboardManager(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(), coroutineScope: CoroutineScope) :
+    BaseKeyboardManager<ViewFocusHandler>,
+    CoroutineScope by coroutineScope {
 
     /**
      * A [BaseKeyboardManager.Builder] for creating a [ViewKeyboardManager]
      * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes.
      */
-    class Builder(
-        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-    ) : BaseKeyboardManager.Builder<ViewFocusHandler>, ActivityLifecycleSubscribable by lifecycleManagerObserver {
+    class Builder(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) :
+        BaseKeyboardManager.Builder<ViewFocusHandler>,
+        ActivityLifecycleSubscribable by lifecycleManagerObserver {
         override fun create(coroutineScope: CoroutineScope) = ViewKeyboardManager(lifecycleManagerObserver, coroutineScope)
     }
 

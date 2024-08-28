@@ -24,4 +24,6 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * Mock implementation of [BluetoothMonitor]
  */
-class MockBluetoothMonitor(override val isEnabled: StateFlow<Boolean>) : MockServiceMonitor(), BluetoothMonitor
+class MockBluetoothMonitor(override val isEnabled: StateFlow<Boolean>) :
+    MockServiceMonitor(),
+    BluetoothMonitor

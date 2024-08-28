@@ -120,11 +120,7 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
      * @property radius the radius in `scalable pixels` at which the gradient stops
      * @property centerPoint the [CenterPoint] from which the gradient radiates out
      */
-    class Radial private constructor(
-        colorPoints: List<ColorPoint>,
-        val radius: Float,
-        val centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f),
-    ) : GradientStyle(colorPoints) {
+    class Radial private constructor(colorPoints: List<ColorPoint>, val radius: Float, val centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)) : GradientStyle(colorPoints) {
         companion object {
 
             /**
@@ -154,10 +150,7 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
      * A [GradientStyle] that rotates around a [CenterPoint]
      * @property centerPoint the [CenterPoint] from which the gradient radiates out
      */
-    class Angular private constructor(
-        colorPoints: List<ColorPoint>,
-        val centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f),
-    ) : GradientStyle(colorPoints) {
+    class Angular private constructor(colorPoints: List<ColorPoint>, val centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)) : GradientStyle(colorPoints) {
         companion object {
 
             /**

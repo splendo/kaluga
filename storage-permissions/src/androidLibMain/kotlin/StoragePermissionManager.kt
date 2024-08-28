@@ -34,12 +34,8 @@ import kotlin.time.Duration
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultStoragePermissionManager(
-    context: Context,
-    storagePermission: StoragePermission,
-    settings: Settings,
-    coroutineScope: CoroutineScope,
-) : BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
+actual class DefaultStoragePermissionManager(context: Context, storagePermission: StoragePermission, settings: Settings, coroutineScope: CoroutineScope) :
+    BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
@@ -73,7 +69,6 @@ actual class DefaultStoragePermissionManager(
  */
 actual class StoragePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
-    actual override fun create(storagePermission: StoragePermission, settings: Settings, coroutineScope: CoroutineScope): StoragePermissionManager {
-        return DefaultStoragePermissionManager(context.context, storagePermission, settings, coroutineScope)
-    }
+    actual override fun create(storagePermission: StoragePermission, settings: Settings, coroutineScope: CoroutineScope): StoragePermissionManager =
+        DefaultStoragePermissionManager(context.context, storagePermission, settings, coroutineScope)
 }

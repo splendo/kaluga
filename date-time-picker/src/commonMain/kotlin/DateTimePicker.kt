@@ -58,10 +58,7 @@ data class DateTimePicker(
          * @property earliestDate if provided, no date can be picked that is before this [KalugaDate]
          * @property latestDate if provided, no date can be picked that is after this [KalugaDate]
          */
-        data class DateType(
-            val earliestDate: KalugaDate? = null,
-            val latestDate: KalugaDate? = null,
-        ) : Type() {
+        data class DateType(val earliestDate: KalugaDate? = null, val latestDate: KalugaDate? = null) : Type() {
 
             internal fun adjustDate(date: KalugaDate) = when {
                 earliestDate != null && earliestDate > date -> earliestDate

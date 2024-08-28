@@ -36,28 +36,24 @@ typealias PlaybackStateFlowRepo = StateRepo<PlaybackState, MutableStateFlow<Play
  * @param createInitialState method for creating the initial [PlaybackState] given an implementation of this [HotStateFlowRepo]
  * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
  */
-abstract class BasePlaybackStateRepo(
-    createInitialState: HotStateFlowRepo<PlaybackState>.() -> PlaybackState,
-    coroutineContext: CoroutineContext,
-) : HotStateFlowRepo<PlaybackState>(
-    coroutineContext = coroutineContext,
-    initialState = createInitialState,
-)
+abstract class BasePlaybackStateRepo(createInitialState: HotStateFlowRepo<PlaybackState>.() -> PlaybackState, coroutineContext: CoroutineContext) :
+    HotStateFlowRepo<PlaybackState>(
+        coroutineContext = coroutineContext,
+        initialState = createInitialState,
+    )
 
 /**
  * A [BasePlaybackStateRepo] managed using a [MediaManager]
  * @param mediaManager the [MediaManager] to manage the [PlaybackState]
  * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
  */
-open class PlaybackStateRepo(
-    mediaManager: MediaManager,
-    coroutineContext: CoroutineContext,
-) : BasePlaybackStateRepo(
-    createInitialState = {
-        PlaybackStateImpl.Uninitialized(mediaManager = mediaManager)
-    },
-    coroutineContext = coroutineContext,
-) {
+open class PlaybackStateRepo(mediaManager: MediaManager, coroutineContext: CoroutineContext) :
+    BasePlaybackStateRepo(
+        createInitialState = {
+            PlaybackStateImpl.Uninitialized(mediaManager = mediaManager)
+        },
+        coroutineContext = coroutineContext,
+    ) {
     init {
         launch {
             mediaManager.events.collect { event ->

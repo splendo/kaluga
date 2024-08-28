@@ -73,11 +73,7 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
      * @param maxDigits The maximum number of digits to show. Defaults to `309U`.
      * @param roundingMode The [RoundingMode] to be applied. Defaults to [RoundingMode.HalfEven].
      */
-    data class Integer(
-        val minDigits: UInt = 0U,
-        val maxDigits: UInt = 309U,
-        override val roundingMode: RoundingMode = RoundingMode.HalfEven,
-    ) : NumberFormatStyle(roundingMode)
+    data class Integer(val minDigits: UInt = 0U, val maxDigits: UInt = 309U, override val roundingMode: RoundingMode = RoundingMode.HalfEven) : NumberFormatStyle(roundingMode)
 
     /**
      * Formats a number to a decimal representation
@@ -185,11 +181,8 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
      * @param negativePattern The pattern to apply for negative numbers. Defaults to "-[positivePattern]".
      * @param roundingMode The [RoundingMode] to be applied. Defaults to [RoundingMode.HalfEven].
      */
-    data class Pattern(
-        val positivePattern: String,
-        val negativePattern: String = "-$positivePattern",
-        override val roundingMode: RoundingMode = RoundingMode.HalfEven,
-    ) : NumberFormatStyle(roundingMode)
+    data class Pattern(val positivePattern: String, val negativePattern: String = "-$positivePattern", override val roundingMode: RoundingMode = RoundingMode.HalfEven) :
+        NumberFormatStyle(roundingMode)
 }
 
 /**

@@ -77,10 +77,9 @@ sealed class SpecificHeatCapacity : AbstractScientificUnit<PhysicalQuantity.Spec
  * @param perWeight the [MetricWeight] component
  */
 @Serializable
-data class MetricSpecificHeatCapacity(
-    override val heatCapacity: MetricHeatCapacity,
-    override val perWeight: MetricWeight,
-) : SpecificHeatCapacity(), MetricScientificUnit<PhysicalQuantity.SpecificHeatCapacity> {
+data class MetricSpecificHeatCapacity(override val heatCapacity: MetricHeatCapacity, override val perWeight: MetricWeight) :
+    SpecificHeatCapacity(),
+    MetricScientificUnit<PhysicalQuantity.SpecificHeatCapacity> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -90,10 +89,9 @@ data class MetricSpecificHeatCapacity(
  * @param perWeight the [UKImperialWeight] component
  */
 @Serializable
-data class UKImperialSpecificHeatCapacity(
-    override val heatCapacity: UKImperialHeatCapacity,
-    override val perWeight: UKImperialWeight,
-) : SpecificHeatCapacity(), UKImperialScientificUnit<PhysicalQuantity.SpecificHeatCapacity> {
+data class UKImperialSpecificHeatCapacity(override val heatCapacity: UKImperialHeatCapacity, override val perWeight: UKImperialWeight) :
+    SpecificHeatCapacity(),
+    UKImperialScientificUnit<PhysicalQuantity.SpecificHeatCapacity> {
     override val system = MeasurementSystem.UKImperial
 }
 
@@ -103,10 +101,9 @@ data class UKImperialSpecificHeatCapacity(
  * @param perWeight the [USCustomaryWeight] component
  */
 @Serializable
-data class USCustomarySpecificHeatCapacity(
-    override val heatCapacity: USCustomaryHeatCapacity,
-    override val perWeight: USCustomaryWeight,
-) : SpecificHeatCapacity(), USCustomaryScientificUnit<PhysicalQuantity.SpecificHeatCapacity> {
+data class USCustomarySpecificHeatCapacity(override val heatCapacity: USCustomaryHeatCapacity, override val perWeight: USCustomaryWeight) :
+    SpecificHeatCapacity(),
+    USCustomaryScientificUnit<PhysicalQuantity.SpecificHeatCapacity> {
     override val system = MeasurementSystem.USCustomary
 }
 

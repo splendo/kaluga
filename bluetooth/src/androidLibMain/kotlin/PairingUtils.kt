@@ -28,27 +28,23 @@ import kotlinx.coroutines.flow.transformLatest
 /**
  * Pairs a ([Flow] of) [Device] by waiting for it to become connected and calling `[ConnectableDeviceState.Connected.pair]`
  */
-suspend fun Flow<Device?>.pair() {
-    return state().transformLatest { deviceState ->
-        when (deviceState) {
-            is ConnectableDeviceState.Connected -> {
-                emit(deviceState.pair())
-            }
-            else -> {}
+suspend fun Flow<Device?>.pair() = state().transformLatest { deviceState ->
+    when (deviceState) {
+        is ConnectableDeviceState.Connected -> {
+            emit(deviceState.pair())
         }
-    }.first()
-}
+        else -> {}
+    }
+}.first()
 
 /**
  * Pairs a ([Flow] of) [Device] by calling `[ConnectableDeviceState.unpair]` on the first [ConnectableDeviceState]
  */
-suspend fun Flow<Device?>.unpair() {
-    return state().transformLatest { deviceState ->
-        when (deviceState) {
-            is ConnectableDeviceState -> {
-                emit(deviceState.unpair())
-            }
-            else -> {}
+suspend fun Flow<Device?>.unpair() = state().transformLatest { deviceState ->
+    when (deviceState) {
+        is ConnectableDeviceState -> {
+            emit(deviceState.unpair())
         }
-    }.first()
-}
+        else -> {}
+    }
+}.first()

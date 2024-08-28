@@ -31,7 +31,9 @@ sealed class MockScanningState {
     val nothingFound = DefaultDevices(filter = emptySet())
 
     sealed class Inactive : MockScanningState()
-    data class NotInitialized(val isHardwareSupported: Boolean) : Inactive(), ScanningState.NotInitialized {
+    data class NotInitialized(val isHardwareSupported: Boolean) :
+        Inactive(),
+        ScanningState.NotInitialized {
 
         fun startInitializing() = if (!isHardwareSupported) {
             { NoHardware }
@@ -40,10 +42,9 @@ sealed class MockScanningState {
         }
     }
 
-    data class Deinitialized(
-        override val previousDevices: ScanningState.Devices,
-    ) :
-        Inactive(), ScanningState.Deinitialized {
+    data class Deinitialized(override val previousDevices: ScanningState.Devices) :
+        Inactive(),
+        ScanningState.Deinitialized {
         override val reinitialize = suspend { Initializing(previousDevices) }
     }
 
@@ -56,9 +57,9 @@ sealed class MockScanningState {
         val revokePermission = suspend { NoBluetooth.MissingPermissions(devices) }
     }
 
-    data class Initializing(
-        override val devices: ScanningState.Devices,
-    ) : Active(), ScanningState.Initializing {
+    data class Initializing(override val devices: ScanningState.Devices) :
+        Active(),
+        ScanningState.Initializing {
 
         override fun initialized(hasPermission: Boolean, enabled: Boolean): suspend () -> ScanningState.Initialized = suspend {
             when {
@@ -84,9 +85,9 @@ sealed class MockScanningState {
         protected fun devicesForPairedDevices(devices: Map<Identifier, () -> Device>, filter: Filter, removeForAllPairedFilters: Boolean) =
             this.devices.copyAndSetPaired(devices, filter, removeForAllPairedFilters)
 
-        class Idle(
-            override val devices: ScanningState.Devices,
-        ) : Enabled(), ScanningState.Enabled.Idle {
+        class Idle(override val devices: ScanningState.Devices) :
+            Enabled(),
+            ScanningState.Enabled.Idle {
 
             override val permittedHandler: PermittedHandler = PermittedHandler(devices)
 
@@ -118,9 +119,8 @@ sealed class MockScanningState {
             }
         }
 
-        class Scanning(
-            override val devices: ScanningState.Devices,
-        ) : Enabled(),
+        class Scanning(override val devices: ScanningState.Devices) :
+            Enabled(),
             ScanningState.Enabled.Scanning {
 
             override val permittedHandler: PermittedHandler = PermittedHandler(devices)
@@ -172,7 +172,9 @@ sealed class MockScanningState {
         protected abstract val previousDevices: ScanningState.Devices
         override val deinitialize: suspend () -> Deinitialized = { Deinitialized(previousDevices) }
 
-        data class Disabled(override val previousDevices: ScanningState.Devices) : NoBluetooth(), ScanningState.NoBluetooth.Disabled {
+        data class Disabled(override val previousDevices: ScanningState.Devices) :
+            NoBluetooth(),
+            ScanningState.NoBluetooth.Disabled {
 
             private val permittedHandler = PermittedHandler(previousDevices)
 
@@ -183,7 +185,9 @@ sealed class MockScanningState {
             override val revokePermission: suspend () -> MissingPermissions = permittedHandler.revokePermission
         }
 
-        data class MissingPermissions(override val previousDevices: ScanningState.Devices) : NoBluetooth(), ScanningState.NoBluetooth.MissingPermissions {
+        data class MissingPermissions(override val previousDevices: ScanningState.Devices) :
+            NoBluetooth(),
+            ScanningState.NoBluetooth.MissingPermissions {
 
             override fun permit(enabled: Boolean): suspend () -> ScanningState = {
                 if (enabled) Enabled.Idle(previousDevices) else Disabled(previousDevices)

@@ -73,11 +73,8 @@ sealed class NavigationSpec {
      * @param flags Set of [IntentFlag] to add to the navigation [Intent]
      * @param launchType The [LaunchType] to determine how the [Activity] should be launched
      */
-    data class Activity<A : android.app.Activity>(
-        val activityClass: Class<A>,
-        val flags: Set<IntentFlag> = emptySet(),
-        val launchType: LaunchType = LaunchType.NoResult,
-    ) : NavigationSpec() {
+    data class Activity<A : android.app.Activity>(val activityClass: Class<A>, val flags: Set<IntentFlag> = emptySet(), val launchType: LaunchType = LaunchType.NoResult) :
+        NavigationSpec() {
 
         /**
          * Determines how [NavigationSpec.Activity] will handle launching its intent

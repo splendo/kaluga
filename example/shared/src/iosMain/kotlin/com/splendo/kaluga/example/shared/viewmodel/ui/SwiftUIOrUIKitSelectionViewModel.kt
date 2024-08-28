@@ -34,9 +34,7 @@ sealed class UIType(val title: String) {
     data object UIKit : UIType("ios_ui_kit".localized())
 }
 
-class SwiftUIOrUIKitSelectionViewModel(
-    navigator: Navigator<SwiftUIOrUIKitNavigationAction>,
-) : NavigatingViewModel<SwiftUIOrUIKitNavigationAction>(navigator) {
+class SwiftUIOrUIKitSelectionViewModel(navigator: Navigator<SwiftUIOrUIKitNavigationAction>) : NavigatingViewModel<SwiftUIOrUIKitNavigationAction>(navigator) {
 
     val uiTypes = observableOf(
         listOf(

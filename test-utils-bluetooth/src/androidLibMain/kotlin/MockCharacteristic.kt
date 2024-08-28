@@ -44,9 +44,7 @@ class AndroidMockCharacteristicWrapper(
         get() = 0
     override var writeType = CharacteristicWrapper.WriteType.DEFAULT
 
-    override fun getDescriptor(uuid: UUID): DescriptorWrapper? {
-        return descriptors.firstOrNull { it.uuid == uuid }
-    }
+    override fun getDescriptor(uuid: UUID): DescriptorWrapper? = descriptors.firstOrNull { it.uuid == uuid }
 
     override fun updateMockValue(value: ByteArray?) = updateValue(value)
 }

@@ -35,8 +35,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
-class LocationStateTest :
-    BaseFlowTest<LocationStateTest.Configuration, LocationStateTest.Context, LocationState, LocationStateRepo>() {
+class LocationStateTest : BaseFlowTest<LocationStateTest.Configuration, LocationStateTest.Context, LocationState, LocationStateRepo>() {
 
     companion object {
         private val location1 = Location.KnownLocation(
@@ -69,8 +68,7 @@ class LocationStateTest :
         val locationEnabled: Boolean,
     )
 
-    class Context(private val configuration: Configuration, coroutineScope: CoroutineScope) :
-        TestContext {
+    class Context(private val configuration: Configuration, coroutineScope: CoroutineScope) : TestContext {
         val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder(
             initialActiveState = configuration.initialPermissionState,
         )

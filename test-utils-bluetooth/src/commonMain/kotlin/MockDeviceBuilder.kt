@@ -28,9 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.milliseconds
 
-class MockDeviceBuilder(
-    private val context: CoroutineContext,
-) {
+class MockDeviceBuilder(private val context: CoroutineContext) {
 
     /** MockDevice's identifier */
     var identifier: Identifier = randomIdentifier()

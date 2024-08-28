@@ -46,15 +46,16 @@ actual class AlertPresenter(
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     coroutineScope: CoroutineScope,
     logger: Logger,
-) : BaseAlertPresenter(alert, logger), CoroutineScope by coroutineScope {
+) : BaseAlertPresenter(alert, logger),
+    CoroutineScope by coroutineScope {
 
     /**
      * A [BaseAlertPresenter.Builder] for creating an [AlertPresenter]
      * @param lifecycleManagerObserver The [LifecycleManagerObserver] to observe lifecycle changes
      */
-    actual class Builder(
-        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-    ) : BaseAlertPresenter.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
+    actual class Builder(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) :
+        BaseAlertPresenter.Builder(),
+        ActivityLifecycleSubscribable by lifecycleManagerObserver {
 
         /**
          * Creates an [AlertPresenter]
@@ -76,11 +77,7 @@ actual class AlertPresenter(
     }
 
     private sealed class DialogPresentation {
-        data class Showing(
-            val animated: Boolean,
-            val afterHandler: (Alert.Action?) -> Unit,
-            val completion: () -> Unit,
-        ) : DialogPresentation()
+        data class Showing(val animated: Boolean, val afterHandler: (Alert.Action?) -> Unit, val completion: () -> Unit) : DialogPresentation()
 
         data object Hidden : DialogPresentation()
     }

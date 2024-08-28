@@ -120,21 +120,14 @@ open class Characteristic(
      */
     val descriptors: List<Descriptor> = wrapper.descriptors.map { Descriptor(it, emitNewAction = emitNewAction, parentLogTag = logTag, logger = logger) }
 
-    override fun createReadAction(): DeviceAction.Read.Characteristic {
-        return DeviceAction.Read.Characteristic(this)
-    }
+    override fun createReadAction(): DeviceAction.Read.Characteristic = DeviceAction.Read.Characteristic(this)
 
-    override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Characteristic {
-        return DeviceAction.Write.Characteristic(newValue, this)
-    }
+    override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Characteristic = DeviceAction.Write.Characteristic(newValue, this)
 
-    private fun createNotificationAction(enabled: Boolean): DeviceAction.Notification {
-        return if (enabled) DeviceAction.Notification.Enable(this) else DeviceAction.Notification.Disable(this)
-    }
+    private fun createNotificationAction(enabled: Boolean): DeviceAction.Notification =
+        if (enabled) DeviceAction.Notification.Enable(this) else DeviceAction.Notification.Disable(this)
 
-    override fun getUpdatedValue(): ByteArray? {
-        return wrapper.value?.asBytes
-    }
+    override fun getUpdatedValue(): ByteArray? = wrapper.value?.asBytes
 
     /**
      * Checks if the characteristic has a given [CharacteristicProperties]

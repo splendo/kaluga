@@ -32,8 +32,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
-class DeviceTest :
-    BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, DeviceState>() {
+class DeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithDescriptor, BluetoothFlowTest.DescriptorContext, DeviceState>() {
 
     override val flowFromTestContext: suspend DescriptorContext.() -> Flow<DeviceState> = { device.state }
 

@@ -85,7 +85,9 @@ sealed class SpecificVolume : AbstractScientificUnit<PhysicalQuantity.SpecificVo
  * @param per the [MetricWeight] component
  */
 @Serializable
-data class MetricSpecificVolume(override val volume: MetricVolume, override val per: MetricWeight) : SpecificVolume(), MetricScientificUnit<PhysicalQuantity.SpecificVolume> {
+data class MetricSpecificVolume(override val volume: MetricVolume, override val per: MetricWeight) :
+    SpecificVolume(),
+    MetricScientificUnit<PhysicalQuantity.SpecificVolume> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -95,10 +97,9 @@ data class MetricSpecificVolume(override val volume: MetricVolume, override val 
  * @param per the [ImperialWeight] component
  */
 @Serializable
-data class ImperialSpecificVolume(
-    override val volume: ImperialVolume,
-    override val per: ImperialWeight,
-) : SpecificVolume(), ImperialScientificUnit<PhysicalQuantity.SpecificVolume> {
+data class ImperialSpecificVolume(override val volume: ImperialVolume, override val per: ImperialWeight) :
+    SpecificVolume(),
+    ImperialScientificUnit<PhysicalQuantity.SpecificVolume> {
     override val system = MeasurementSystem.Imperial
 
     /**
@@ -118,10 +119,9 @@ data class ImperialSpecificVolume(
  * @param per the [USCustomaryWeight] component
  */
 @Serializable
-data class USCustomarySpecificVolume(
-    override val volume: USCustomaryVolume,
-    override val per: USCustomaryWeight,
-) : SpecificVolume(), USCustomaryScientificUnit<PhysicalQuantity.SpecificVolume> {
+data class USCustomarySpecificVolume(override val volume: USCustomaryVolume, override val per: USCustomaryWeight) :
+    SpecificVolume(),
+    USCustomaryScientificUnit<PhysicalQuantity.SpecificVolume> {
     override val system = MeasurementSystem.USCustomary
 }
 
@@ -131,10 +131,9 @@ data class USCustomarySpecificVolume(
  * @param per the [UKImperialWeight] component
  */
 @Serializable
-data class UKImperialSpecificVolume(
-    override val volume: UKImperialVolume,
-    override val per: UKImperialWeight,
-) : SpecificVolume(), UKImperialScientificUnit<PhysicalQuantity.SpecificVolume> {
+data class UKImperialSpecificVolume(override val volume: UKImperialVolume, override val per: UKImperialWeight) :
+    SpecificVolume(),
+    UKImperialScientificUnit<PhysicalQuantity.SpecificVolume> {
     override val system = MeasurementSystem.UKImperial
 }
 

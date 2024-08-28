@@ -23,7 +23,9 @@ import kotlin.test.Test
 
 abstract class KeyboardManagerTests<FH : FocusHandler, KTC : KeyboardTestContext<FH>> : UIThreadTest<KTC>() {
 
-    abstract class KeyboardTestContext<FH : FocusHandler> : TestContext, CoroutineScope {
+    abstract class KeyboardTestContext<FH : FocusHandler> :
+        TestContext,
+        CoroutineScope {
         abstract val builder: BaseKeyboardManager.Builder<FH>
         abstract val focusHandler: FH
 

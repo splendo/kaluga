@@ -29,7 +29,8 @@ import kotlin.system.exitProcess
 fun mainBackground(args: Array<String>) {
     debug("using background thread for iOS tests")
     val worker = Worker.start(name = "kaluga-test-background")
-    worker.execute(TransferMode.SAFE, { args }) { // TransferMode has no effect with the new memory manager in use
+    worker.execute(TransferMode.SAFE, { args }) {
+        // TransferMode has no effect with the new memory manager in use
         val result = testLauncherEntryPoint(it)
         exitProcess(result)
     }

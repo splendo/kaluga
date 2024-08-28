@@ -45,7 +45,9 @@ val ElectricCurrentUnits: Set<ElectricCurrent> get() = setOf(
  * SI unit is [Ampere]
  */
 @Serializable
-sealed class ElectricCurrent : AbstractScientificUnit<PhysicalQuantity.ElectricCurrent>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricCurrent>
+sealed class ElectricCurrent :
+    AbstractScientificUnit<PhysicalQuantity.ElectricCurrent>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.ElectricCurrent>
 
 @Serializable
 data object Ampere : ElectricCurrent(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCurrent> {
@@ -57,7 +59,9 @@ data object Ampere : ElectricCurrent(), MetricBaseUnit<MeasurementSystem.MetricA
 }
 
 @Serializable
-sealed class AmpereMultiple : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCurrent, Ampere>
+sealed class AmpereMultiple :
+    ElectricCurrent(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCurrent, Ampere>
 
 @Serializable
 data object Nanoampere : AmpereMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCurrent, Ampere> by Nano(Ampere)
