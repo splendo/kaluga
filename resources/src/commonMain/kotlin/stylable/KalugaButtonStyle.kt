@@ -485,7 +485,11 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
      * @property disabledStyle the [ButtonStateStyle.TextOnly] that the button is in when disabled. If `null` [defaultStyle] will be used.
      */
     class TextOnly internal constructor() : WithText<ButtonStateStyle.TextOnly, ButtonStateStyleDSL.TextOnly> {
-        override var font: KalugaFont = defaultBoldFont
+        private var _font: KalugaFont? = null
+        override var font: KalugaFont get() = _font ?: defaultBoldFont
+            set(value) {
+                _font = value
+            }
         override var textSize: Float = 12.0f
         override var textAlignment: KalugaTextAlignment = KalugaTextAlignment.CENTER
         override var padding: Padding = Padding.defaultButtonPadding
@@ -629,7 +633,11 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
     class WithImageAndText internal constructor() :
         WithText<ButtonStateStyle.WithImageAndText, ButtonStateStyleDSL.WithImageAndText>,
         WithImage<ButtonStateStyle.WithImageAndText, ButtonStateStyleDSL.WithImageAndText> {
-        override var font: KalugaFont = defaultBoldFont
+        private var _font: KalugaFont? = null
+        override var font: KalugaFont get() = _font ?: defaultBoldFont
+            set(value) {
+                _font = value
+            }
         override var textSize: Float = 12.0f
         override var textAlignment: KalugaTextAlignment = KalugaTextAlignment.CENTER
         override var imageSize: ImageSize = ImageSize.Intrinsic
