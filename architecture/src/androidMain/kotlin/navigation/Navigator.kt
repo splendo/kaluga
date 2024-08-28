@@ -53,9 +53,9 @@ object MissingActivityNavigationException : NavigationException("LifecycleManage
  * @param Action The type of [NavigationAction] handled by this navigator.
  * @param navigationMapper A function mapping the [Action] to [NavigationSpec]
  */
-class ActivityNavigator<Action : NavigationAction<*>>(
-    private val navigationMapper: (Action) -> NavigationSpec,
-) : Navigator<Action>, ActivityLifecycleSubscribable by DefaultActivityLifecycleSubscribable() {
+class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapper: (Action) -> NavigationSpec) :
+    Navigator<Action>,
+    ActivityLifecycleSubscribable by DefaultActivityLifecycleSubscribable() {
 
     override fun navigate(action: Action) {
         navigate(navigationMapper.invoke(action), action.bundle)
@@ -373,10 +373,8 @@ class ActivityNavigator<Action : NavigationAction<*>>(
         activity.startActivity(intentSpec.intent)
     }
 
-    private fun getActivity(): Activity {
-        return when (val manager = manager) {
-            null -> throw MissingLifecycleManagerNavigationException
-            else -> manager.activity ?: throw MissingActivityNavigationException
-        }
+    private fun getActivity(): Activity = when (val manager = manager) {
+        null -> throw MissingLifecycleManagerNavigationException
+        else -> manager.activity ?: throw MissingActivityNavigationException
     }
 }

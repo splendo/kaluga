@@ -61,9 +61,9 @@ actual class HUD private constructor(
      * Builder class for creating a [HUD]
      * @param lifecycleManagerObserver the [LifecycleManagerObserver] to observe lifecycle changes.
      */
-    actual class Builder(
-        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-    ) : BaseHUD.Builder(), ActivityLifecycleSubscribable by lifecycleManagerObserver {
+    actual class Builder(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) :
+        BaseHUD.Builder(),
+        ActivityLifecycleSubscribable by lifecycleManagerObserver {
 
         /**
          * Creates a [HUD] based on [hudConfig].
@@ -132,14 +132,12 @@ actual class HUD private constructor(
             }
         }
 
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-            return inflater.inflate(viewResId, container).apply {
-                findViewById<LinearLayout>(R.id.content_view).setBackgroundColor(backgroundColor(inflater.context))
-                findViewById<ProgressBar>(R.id.progress_bar).indeterminateTintList = ColorStateList.valueOf(foregroundColor(inflater.context))
-                findViewById<TextView>(R.id.text_view).apply {
-                    text = title
-                    visibility = if (title == null) View.GONE else View.VISIBLE
-                }
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(viewResId, container).apply {
+            findViewById<LinearLayout>(R.id.content_view).setBackgroundColor(backgroundColor(inflater.context))
+            findViewById<ProgressBar>(R.id.progress_bar).indeterminateTintList = ColorStateList.valueOf(foregroundColor(inflater.context))
+            findViewById<TextView>(R.id.text_view).apply {
+                text = title
+                visibility = if (title == null) View.GONE else View.VISIBLE
             }
         }
 
@@ -183,13 +181,11 @@ actual class HUD private constructor(
 
     actual override val isVisible get() = loadingDialog.isVisible
 
-    actual override suspend fun present(animated: Boolean): HUD {
-        return suspendCoroutine { continuation ->
-            loadingDialog.presentCompletionBlock = {
-                continuation.resume(this)
-            }
-            dialogState.value = DialogState.Visible
+    actual override suspend fun present(animated: Boolean): HUD = suspendCoroutine { continuation ->
+        loadingDialog.presentCompletionBlock = {
+            continuation.resume(this)
         }
+        dialogState.value = DialogState.Visible
     }
 
     actual override suspend fun dismiss(animated: Boolean) {

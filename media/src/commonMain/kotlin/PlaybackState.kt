@@ -74,10 +74,7 @@ sealed interface PlaybackState : KalugaState {
      * @property rate the rate at which playback should be set. Should be a positive number. Defaults to `1.0`.
      * @property loopMode the [LoopMode] to apply when playback has completed
      */
-    data class PlaybackParameters(
-        val rate: Float = 1.0f,
-        val loopMode: LoopMode = LoopMode.NotLooping,
-    )
+    data class PlaybackParameters(val rate: Float = 1.0f, val loopMode: LoopMode = LoopMode.NotLooping)
 
     /**
      * Determines the behaviour when playback of a [PlayableMedia] has completed
@@ -228,7 +225,9 @@ sealed interface PlaybackState : KalugaState {
     /**
      * A [Started] state indicating playback is currently ongoing
      */
-    interface Playing : Started, PlayingOrCompleted {
+    interface Playing :
+        Started,
+        PlayingOrCompleted {
 
         /**
          * Transitions into a [Paused] state
@@ -303,7 +302,9 @@ sealed interface PlaybackState : KalugaState {
     /**
      * A [PlaybackState] indicating playback has ended and all resources have been released
      */
-    interface Closed : PlaybackState, SpecialFlowValue.Last
+    interface Closed :
+        PlaybackState,
+        SpecialFlowValue.Last
 }
 
 internal sealed class PlaybackStateImpl {
@@ -319,7 +320,10 @@ internal sealed class PlaybackStateImpl {
         fun failWithError(error: PlaybackError) = suspend { Error(error, mediaManager) }
     }
 
-    data class Uninitialized(override val mediaManager: MediaManager) : Active(), PlaybackState.Uninitialized, HandleBeforeOldStateIsRemoved<PlaybackState> {
+    data class Uninitialized(override val mediaManager: MediaManager) :
+        Active(),
+        PlaybackState.Uninitialized,
+        HandleBeforeOldStateIsRemoved<PlaybackState> {
         override fun initialize(source: MediaSource): suspend () -> PlaybackState.InitializedOrError = {
             mediaManager.createPlayableMedia(source)?.let {
                 Initialized(it, mediaManager)
@@ -334,10 +338,10 @@ internal sealed class PlaybackStateImpl {
         }
     }
 
-    data class Initialized(
-        private val playableMedia: PlayableMedia,
-        override val mediaManager: MediaManager,
-    ) : Active(), PlaybackState.Initialized, HandleAfterOldStateIsRemoved<PlaybackState> {
+    data class Initialized(private val playableMedia: PlayableMedia, override val mediaManager: MediaManager) :
+        Active(),
+        PlaybackState.Initialized,
+        HandleAfterOldStateIsRemoved<PlaybackState> {
 
         override val source: MediaSource get() = playableMedia.source
 
@@ -360,17 +364,18 @@ internal sealed class PlaybackStateImpl {
         suspend fun seekTo(duration: Duration) = mediaManager.seekTo(duration)
     }
 
-    data class Idle(override val playableMedia: PlayableMedia, override val mediaManager: MediaManager) : Prepared(), PlaybackState.Idle {
+    data class Idle(override val playableMedia: PlayableMedia, override val mediaManager: MediaManager) :
+        Prepared(),
+        PlaybackState.Idle {
         override fun play(playbackParameters: PlaybackState.PlaybackParameters): suspend () -> PlaybackState.Playing = {
             Playing(playbackParameters, playableMedia, mediaManager)
         }
     }
 
-    class Playing(
-        override val playbackParameters: PlaybackState.PlaybackParameters,
-        override val playableMedia: PlayableMedia,
-        override val mediaManager: MediaManager,
-    ) : Prepared(), PlaybackState.Playing, HandleBeforeOldStateIsRemoved<PlaybackState> {
+    class Playing(override val playbackParameters: PlaybackState.PlaybackParameters, override val playableMedia: PlayableMedia, override val mediaManager: MediaManager) :
+        Prepared(),
+        PlaybackState.Playing,
+        HandleBeforeOldStateIsRemoved<PlaybackState> {
 
         override val completedLoop: suspend () -> PlaybackState.PlayingOrCompleted = {
             val newLoopMode = when (val loopMode = playbackParameters.loopMode) {
@@ -402,11 +407,10 @@ internal sealed class PlaybackStateImpl {
         }
     }
 
-    class Paused(
-        override val playbackParameters: PlaybackState.PlaybackParameters,
-        override val playableMedia: PlayableMedia,
-        override val mediaManager: MediaManager,
-    ) : Prepared(), PlaybackState.Paused, HandleAfterOldStateIsRemoved<PlaybackState> {
+    class Paused(override val playbackParameters: PlaybackState.PlaybackParameters, override val playableMedia: PlayableMedia, override val mediaManager: MediaManager) :
+        Prepared(),
+        PlaybackState.Paused,
+        HandleAfterOldStateIsRemoved<PlaybackState> {
 
         override val play: suspend () -> PlaybackState.Playing = { Playing(playbackParameters, playableMedia, mediaManager) }
         override fun updatePlaybackParameters(new: PlaybackState.PlaybackParameters): suspend () -> PlaybackState.Paused = {
@@ -420,10 +424,10 @@ internal sealed class PlaybackStateImpl {
         }
     }
 
-    data class Stopped(
-        private val playableMedia: PlayableMedia,
-        override val mediaManager: MediaManager,
-    ) : Active(), PlaybackState.Stopped, HandleBeforeOldStateIsRemoved<PlaybackState> {
+    data class Stopped(private val playableMedia: PlayableMedia, override val mediaManager: MediaManager) :
+        Active(),
+        PlaybackState.Stopped,
+        HandleBeforeOldStateIsRemoved<PlaybackState> {
 
         override val reinitialize: suspend () -> PlaybackState.Initialized = { Initialized(playableMedia, mediaManager) }
 
@@ -435,7 +439,9 @@ internal sealed class PlaybackStateImpl {
         }
     }
 
-    data class Completed(override val playableMedia: PlayableMedia, override val mediaManager: MediaManager) : Prepared(), PlaybackState.Completed {
+    data class Completed(override val playableMedia: PlayableMedia, override val mediaManager: MediaManager) :
+        Prepared(),
+        PlaybackState.Completed {
 
         override fun start(playbackParameters: PlaybackState.PlaybackParameters): suspend () -> PlaybackState.Playing = {
             mediaManager.seekTo(Duration.ZERO)
@@ -443,7 +449,9 @@ internal sealed class PlaybackStateImpl {
         }
     }
 
-    data class Error(override val error: PlaybackError, override val mediaManager: MediaManager) : Active(), PlaybackState.Error
+    data class Error(override val error: PlaybackError, override val mediaManager: MediaManager) :
+        Active(),
+        PlaybackState.Error
 
     data object Closed : PlaybackStateImpl(), PlaybackState.Closed
 }

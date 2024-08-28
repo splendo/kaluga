@@ -32,19 +32,15 @@ actual class KalugaTimeZone internal constructor(internal val timeZone: java.uti
          * @param identifier The identifier to create a [KalugaTimeZone] for
          * @return The [KalugaTimeZone] corresponding to the identifier, if it exists. Check [availableIdentifiers] for supported identifiers
          */
-        actual fun get(identifier: String): KalugaTimeZone? {
-            return java.util.TimeZone.getTimeZone(identifier)?.let {
-                KalugaTimeZone(it)
-            }
+        actual fun get(identifier: String): KalugaTimeZone? = java.util.TimeZone.getTimeZone(identifier)?.let {
+            KalugaTimeZone(it)
         }
 
         /**
          * Gets the current [KalugaTimeZone] configured by the user
          * @return The current [KalugaTimeZone] of the user
          */
-        actual fun current(): KalugaTimeZone {
-            return KalugaTimeZone(java.util.TimeZone.getDefault())
-        }
+        actual fun current(): KalugaTimeZone = KalugaTimeZone(java.util.TimeZone.getDefault())
 
         /**
          * List of available identifiers associated with [KalugaTimeZone]s. All elements in this list can be used for creating a [KalugaTimeZone] using [KalugaTimeZone.get]
@@ -65,9 +61,7 @@ actual class KalugaTimeZone internal constructor(internal val timeZone: java.uti
     actual override fun offsetFromGMTAtDate(date: KalugaDate): Duration = timeZone.getOffset(date.durationSinceEpoch.inWholeMilliseconds).milliseconds
     actual override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = timeZone.inDaylightTime(date.date)
     actual override fun copy(): KalugaTimeZone = KalugaTimeZone(timeZone.clone() as java.util.TimeZone)
-    override fun equals(other: Any?): Boolean {
-        return (other as? KalugaTimeZone)?.let { timeZone == other.timeZone } ?: false
-    }
+    override fun equals(other: Any?): Boolean = (other as? KalugaTimeZone)?.let { timeZone == other.timeZone } ?: false
 
     override fun hashCode(): Int = timeZone.hashCode()
 }

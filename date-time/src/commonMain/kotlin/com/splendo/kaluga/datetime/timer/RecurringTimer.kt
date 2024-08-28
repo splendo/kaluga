@@ -150,10 +150,9 @@ private class TimerStateRepo(
             val elapsed = flowOf(elapsedSoFar)
 
             /** Timer is paused. */
-            class Paused(
-                elapsedSoFar: Duration,
-                override val totalDuration: Duration,
-            ) : NotRunning(elapsedSoFar), Timer.State.NotRunning.Paused {
+            class Paused(elapsedSoFar: Duration, override val totalDuration: Duration) :
+                NotRunning(elapsedSoFar),
+                Timer.State.NotRunning.Paused {
 
                 override val timerState: Timer.State get() = this
 
@@ -170,9 +169,9 @@ private class TimerStateRepo(
             }
 
             /** Timer is finished. */
-            class Finished(
-                override val totalDuration: Duration,
-            ) : NotRunning(totalDuration), Timer.State.NotRunning.Finished {
+            class Finished(override val totalDuration: Duration) :
+                NotRunning(totalDuration),
+                Timer.State.NotRunning.Finished {
                 override val timerState: Timer.State get() = this
             }
         }
@@ -186,7 +185,10 @@ private class TimerStateRepo(
             private val delayFunction: DelayFunction,
             private val coroutineScope: CoroutineScope,
             private val finishCallback: suspend () -> Unit,
-        ) : State(), Timer.State.Running, HandleAfterNewStateIsSet<State>, HandleBeforeOldStateIsRemoved<State> {
+        ) : State(),
+            Timer.State.Running,
+            HandleAfterNewStateIsSet<State>,
+            HandleBeforeOldStateIsRemoved<State> {
             override val elapsed: Flow<Duration> = tickProvider(
                 offset = elapsedSoFar,
                 max = totalDuration,
@@ -199,9 +201,7 @@ private class TimerStateRepo(
 
             private val supervisor = SupervisorJob()
 
-            internal suspend fun pause(): NotRunning.Paused {
-                return NotRunning.Paused(elapsed.first(), totalDuration)
-            }
+            internal suspend fun pause(): NotRunning.Paused = NotRunning.Paused(elapsed.first(), totalDuration)
             internal suspend fun stop(): NotRunning.Finished = NotRunning.Finished(elapsed.first())
             internal fun finish(): NotRunning.Finished = NotRunning.Finished(totalDuration)
 

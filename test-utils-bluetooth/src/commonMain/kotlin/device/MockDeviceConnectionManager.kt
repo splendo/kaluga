@@ -83,9 +83,8 @@ class MockDeviceConnectionManager(
             }
         }
 
-        override fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
-            return createMock.call(deviceWrapper, settings, coroutineScope)
-        }
+        override fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): BaseDeviceConnectionManager =
+            createMock.call(deviceWrapper, settings, coroutineScope)
     }
 
     /**
@@ -213,9 +212,7 @@ class MockDeviceConnectionManager(
         super.handleDiscoverCompleted(services)
     }
 
-    public override fun createService(wrapper: ServiceWrapper): Service {
-        return super.createService(wrapper)
-    }
+    public override fun createService(wrapper: ServiceWrapper): Service = super.createService(wrapper)
 
     override fun handleCurrentActionCompleted(succeeded: Boolean) {
         handleCurrentActionCompletedWithAction(succeeded, currentAction)

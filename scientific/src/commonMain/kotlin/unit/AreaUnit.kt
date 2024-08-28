@@ -67,13 +67,17 @@ sealed class Area : AbstractScientificUnit<PhysicalQuantity.Area>()
  * An [Area] for [MeasurementSystem.Metric]
  */
 @Serializable
-sealed class MetricArea : Area(), MetricScientificUnit<PhysicalQuantity.Area>
+sealed class MetricArea :
+    Area(),
+    MetricScientificUnit<PhysicalQuantity.Area>
 
 /**
  * An [Area] for [MeasurementSystem.Imperial]
  */
 @Serializable
-sealed class ImperialArea : Area(), ImperialScientificUnit<PhysicalQuantity.Area>
+sealed class ImperialArea :
+    Area(),
+    ImperialScientificUnit<PhysicalQuantity.Area>
 
 internal class Square<S : MeasurementSystem, U : SystemScientificUnit<S, PhysicalQuantity.Length>>(private val unit: U) : SystemScientificUnit<S, PhysicalQuantity.Area> {
     override val symbol: String = "${unit.symbol}²"

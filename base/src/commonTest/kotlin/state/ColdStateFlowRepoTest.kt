@@ -36,14 +36,15 @@ class ColdStateFlowRepoTest : BaseTest() {
         val deinit = object : KalugaState {}
     }
 
-    class Repo : ColdStateFlowRepo<KalugaState>(
-        init = {
-            delay(100) // give some time for the `first` state to be collected
-            active
-        },
-        deinit = { deinit },
-        firstState = { first },
-    )
+    class Repo :
+        ColdStateFlowRepo<KalugaState>(
+            init = {
+                delay(100) // give some time for the `first` state to be collected
+                active
+            },
+            deinit = { deinit },
+            firstState = { first },
+        )
 
     @Test
     fun testColdStateFlowRepo() = runBlocking {

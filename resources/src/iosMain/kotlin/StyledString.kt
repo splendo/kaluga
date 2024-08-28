@@ -49,11 +49,7 @@ import platform.UIKit.size
  * @property linkStyle The [LinkStyle] to apply when [StringStyleAttribute.Link] is applied.
  * When `null` the Theme default will be used
  */
-actual data class StyledString(
-    val attributeString: NSAttributedString,
-    actual val defaultTextStyle: KalugaTextStyle,
-    actual val linkStyle: LinkStyle?,
-)
+actual data class StyledString(val attributeString: NSAttributedString, actual val defaultTextStyle: KalugaTextStyle, actual val linkStyle: LinkStyle?)
 
 /**
  * Gets the plain string of a [StyledString]
@@ -68,11 +64,7 @@ actual val StyledString.rawString: String get() = attributeString.string
  * @param linkStyle The [LinkStyle] to apply when [StringStyleAttribute.Link] is applied.
  * When `null` the Theme default will be used
  */
-actual class StyledStringBuilder constructor(
-    string: String,
-    private val defaultTextStyle: KalugaTextStyle,
-    private val linkStyle: LinkStyle?,
-) {
+actual class StyledStringBuilder constructor(string: String, private val defaultTextStyle: KalugaTextStyle, private val linkStyle: LinkStyle?) {
 
     /**
      * Provider for a [StyledStringBuilder]

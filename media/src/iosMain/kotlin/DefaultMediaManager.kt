@@ -151,29 +151,21 @@ private fun AVPlayerItemTrack?.asTrackInfo(): TrackInfo? = this?.assetTrack?.let
  * @param settings the [Settings] used to configure the Media Manager
  * @param coroutineContext the [CoroutineContext] on which the media will be managed
  */
-actual class DefaultMediaManager(
-    mediaSurfaceProvider: MediaSurfaceProvider?,
-    private val settings: Settings,
-    coroutineContext: CoroutineContext,
-) : BaseMediaManager(mediaSurfaceProvider, coroutineContext) {
+actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, private val settings: Settings, coroutineContext: CoroutineContext) :
+    BaseMediaManager(mediaSurfaceProvider, coroutineContext) {
 
     /**
      * Settings used for configuring a [DefaultMediaManager]
      * @property playInBackground if `true` playback will resume when the app moves to the background. Note that this will not loop
      * @property playAfterDeviceUnavailable if `true` playback will continue after the device on which audio was playing becomes unavailable (e.g. headphones disconnect).
      */
-    data class Settings(
-        val playInBackground: Boolean = false,
-        val playAfterDeviceUnavailable: Boolean = false,
-    )
+    data class Settings(val playInBackground: Boolean = false, val playAfterDeviceUnavailable: Boolean = false)
 
     /**
      * Builder for creating a [DefaultMediaManager]
      * @param settings the [Settings] used to configure the [DefaultMediaManager] created
      */
-    class Builder(
-        private val settings: Settings,
-    ) : BaseMediaManager.Builder {
+    class Builder(private val settings: Settings) : BaseMediaManager.Builder {
 
         constructor() : this(Settings())
 

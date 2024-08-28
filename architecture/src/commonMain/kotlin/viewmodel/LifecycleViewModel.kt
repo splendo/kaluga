@@ -105,7 +105,5 @@ open class BaseLifecycleViewModel(vararg lifecycleSubscribables: LifecycleSubscr
  * @param navigator The [Navigator] handling navigation.
  * @param lifecycleSubscribables The [LifecycleSubscribable] to be used by this viewModel.
  */
-open class NavigatingViewModel<A : NavigationAction<*>>(
-    protected val navigator: Navigator<A>,
-    vararg lifecycleSubscribables: LifecycleSubscribable,
-) : BaseLifecycleViewModel(*lifecycleSubscribables, navigator)
+open class NavigatingViewModel<A : NavigationAction<*>>(protected val navigator: Navigator<A>, vararg lifecycleSubscribables: LifecycleSubscribable) :
+    BaseLifecycleViewModel(*lifecycleSubscribables, navigator)

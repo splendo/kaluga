@@ -43,7 +43,9 @@ val CatalysticActivityUnits: Set<CatalysticActivity> get() = setOf(
  * SI unit is [Katal]
  */
 @Serializable
-sealed class CatalysticActivity : AbstractScientificUnit<PhysicalQuantity.CatalysticActivity>(), MetricAndImperialScientificUnit<PhysicalQuantity.CatalysticActivity>
+sealed class CatalysticActivity :
+    AbstractScientificUnit<PhysicalQuantity.CatalysticActivity>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.CatalysticActivity>
 
 @Serializable
 data object Katal : CatalysticActivity(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity> {
@@ -55,7 +57,9 @@ data object Katal : CatalysticActivity(), MetricBaseUnit<MeasurementSystem.Metri
 }
 
 @Serializable
-sealed class KatalMultiple : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity, Katal>
+sealed class KatalMultiple :
+    CatalysticActivity(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity, Katal>
 
 @Serializable
 data object Nanokatal : KatalMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity, Katal> by Nano(Katal)

@@ -32,7 +32,9 @@ import kotlin.coroutines.CoroutineContext
  * A Rendezvous Channel that buffers all elements sent to it in a list until the next receive
  * @param T the type of element to batch. Must be non-nullable
  */
-interface BufferedAsListChannel<T : Any> : SendChannel<T>, ReceiveChannel<List<T>>
+interface BufferedAsListChannel<T : Any> :
+    SendChannel<T>,
+    ReceiveChannel<List<T>>
 
 /**
  * Creates a [BufferedAsListChannel] that batches its elements with a given [CoroutineContext]
@@ -59,7 +61,9 @@ internal class BufferedAsListChannelInt<T : Any> private constructor(
     coroutineContext: CoroutineContext,
     dispatcher: CloseableCoroutineDispatcher,
     closeDispatcherOnCompletion: Boolean,
-) : BufferedAsListChannel<T>, SendChannel<T> by sendChannel, ReceiveChannel<List<T>> by receiveChannel {
+) : BufferedAsListChannel<T>,
+    SendChannel<T> by sendChannel,
+    ReceiveChannel<List<T>> by receiveChannel {
 
     constructor(
         coroutineContext: CoroutineContext,

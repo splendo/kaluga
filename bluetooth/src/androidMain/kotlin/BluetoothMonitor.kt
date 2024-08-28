@@ -36,21 +36,16 @@ actual interface BluetoothMonitor : ServiceMonitor {
      * @param context the [Context] in which Bluetooth should run
      * @param adapter the [BluetoothAdapter] to use to access Bluetooth
      */
-    actual class Builder(
-        private val context: Context = ApplicationHolder.applicationContext,
-        private val adapter: BluetoothAdapter,
-    ) {
+    actual class Builder(private val context: Context = ApplicationHolder.applicationContext, private val adapter: BluetoothAdapter) {
 
         /**
          * Creates the [BluetoothMonitor]
          * @return the [BluetoothMonitor] created
          */
-        actual fun create(): BluetoothMonitor {
-            return DefaultBluetoothMonitor(
-                applicationContext = context,
-                bluetoothAdapter = adapter,
-            )
-        }
+        actual fun create(): BluetoothMonitor = DefaultBluetoothMonitor(
+            applicationContext = context,
+            bluetoothAdapter = adapter,
+        )
     }
 }
 
@@ -59,10 +54,9 @@ actual interface BluetoothMonitor : ServiceMonitor {
  * @param applicationContext the [Context] in which Bluetooth should run
  * @param bluetoothAdapter the [BluetoothAdapter] to use to access Bluetooth
  */
-class DefaultBluetoothMonitor internal constructor(
-    private val applicationContext: Context,
-    private val bluetoothAdapter: BluetoothAdapter,
-) : DefaultServiceMonitor(), BluetoothMonitor {
+class DefaultBluetoothMonitor internal constructor(private val applicationContext: Context, private val bluetoothAdapter: BluetoothAdapter) :
+    DefaultServiceMonitor(),
+    BluetoothMonitor {
 
     private val availabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {

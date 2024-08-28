@@ -27,9 +27,4 @@ import com.splendo.kaluga.resources.KalugaColor
  * @property size the size of the text in points
  * @property alignment the [KalugaTextAlignment] of the text
  */
-data class KalugaTextStyle(
-    val font: KalugaFont,
-    val color: KalugaColor,
-    val size: Float,
-    val alignment: KalugaTextAlignment = KalugaTextAlignment.START,
-)
+data class KalugaTextStyle(val font: KalugaFont, val color: KalugaColor, val size: Float, val alignment: KalugaTextAlignment = KalugaTextAlignment.START)

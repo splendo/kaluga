@@ -49,7 +49,9 @@ sealed interface LocationState : KalugaState {
     /**
      * A [LocationState] indicating observation is not active
      */
-    sealed interface Inactive : LocationState, SpecialFlowValue.NotImportant
+    sealed interface Inactive :
+        LocationState,
+        SpecialFlowValue.NotImportant
 
     /**
      * An [Inactive] State indicating observation has not started yet
@@ -81,7 +83,9 @@ sealed interface LocationState : KalugaState {
     /**
      * An [Active] State indicating the state is transitioning from [Inactive] to [Initialized]
      */
-    interface Initializing : Active, SpecialFlowValue.NotImportant {
+    interface Initializing :
+        Active,
+        SpecialFlowValue.NotImportant {
 
         /**
          * Transitions into an [Initialized] State
@@ -116,7 +120,9 @@ sealed interface LocationState : KalugaState {
         /**
          * A [Disabled] State indicating the Location service is disabled
          */
-        interface NoGPS : Disabled, Permitted {
+        interface NoGPS :
+            Disabled,
+            Permitted {
 
             /**
              * Transitions into an [Enabled] State
@@ -167,14 +173,16 @@ internal sealed class LocationStateImpl {
         fun startInitializing(locationManager: LocationManager): suspend () -> Initializing = { Initializing(location, locationManager) }
     }
 
-    data class Deinitialized(
-        override val location: Location,
-        internal val locationManager: LocationManager,
-    ) : LocationStateImpl(), LocationState.Deinitialized {
+    data class Deinitialized(override val location: Location, internal val locationManager: LocationManager) :
+        LocationStateImpl(),
+        LocationState.Deinitialized {
         override val reinitialize: suspend () -> LocationState.Initializing = { Initializing(location, locationManager) }
     }
 
-    sealed class Active : LocationStateImpl(), HandleBeforeOldStateIsRemoved<LocationState>, HandleAfterNewStateIsSet<LocationState> {
+    sealed class Active :
+        LocationStateImpl(),
+        HandleBeforeOldStateIsRemoved<LocationState>,
+        HandleAfterNewStateIsSet<LocationState> {
 
         protected abstract val locationManager: LocationManager
 
@@ -222,7 +230,9 @@ internal sealed class LocationStateImpl {
         }
     }
 
-    data class Initializing(override val location: Location, override val locationManager: LocationManager) : Active(), LocationState.Initializing {
+    data class Initializing(override val location: Location, override val locationManager: LocationManager) :
+        Active(),
+        LocationState.Initializing {
 
         override fun initialize(hasPermission: Boolean, enabled: Boolean): suspend () -> LocationState.Initialized = suspend {
             when {
@@ -235,7 +245,9 @@ internal sealed class LocationStateImpl {
 
     sealed class Disabled : Active() {
 
-        class NotPermitted(lastKnownLocation: Location, override val locationManager: LocationManager) : Disabled(), LocationState.Disabled.NotPermitted {
+        class NotPermitted(lastKnownLocation: Location, override val locationManager: LocationManager) :
+            Disabled(),
+            LocationState.Disabled.NotPermitted {
 
             override val location: Location = lastKnownLocation.unknownLocationOf(Location.UnknownLocation.Reason.PERMISSION_DENIED)
 
@@ -244,7 +256,9 @@ internal sealed class LocationStateImpl {
             }
         }
 
-        class NoGPS(lastKnownLocation: Location, override val locationManager: LocationManager) : Disabled(), LocationState.Disabled.NoGPS {
+        class NoGPS(lastKnownLocation: Location, override val locationManager: LocationManager) :
+            Disabled(),
+            LocationState.Disabled.NoGPS {
 
             override val location: Location = lastKnownLocation.unknownLocationOf(Location.UnknownLocation.Reason.NO_GPS)
             private val permittedHandler = PermittedHandler(location, locationManager)
@@ -267,7 +281,9 @@ internal sealed class LocationStateImpl {
         }
     }
 
-    data class Enabled(override val location: Location, override val locationManager: LocationManager) : Active(), LocationState.Enabled {
+    data class Enabled(override val location: Location, override val locationManager: LocationManager) :
+        Active(),
+        LocationState.Enabled {
 
         private val permittedHandler = PermittedHandler(location, locationManager)
 
@@ -304,9 +320,7 @@ internal sealed class LocationStateImpl {
  * Transforms a [Flow] of [LocationState] into a flow of its associated [Location]
  * @return the [Flow] of [Location] associated with the [LocationState]
  */
-fun Flow<LocationState>.location(): Flow<Location> {
-    return this.filterOnlyImportant().map { it.location }
-}
+fun Flow<LocationState>.location(): Flow<Location> = this.filterOnlyImportant().map { it.location }
 
 /**
  * Transforms a [Flow] of [LocationState] into a flow of its associated optional [Location.KnownLocation]

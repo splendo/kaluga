@@ -21,10 +21,7 @@ import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 
-class MockServiceWrapper(
-    override val uuid: UUID = UUID(),
-    override val characteristics: List<CharacteristicWrapper> = emptyList(),
-) : ServiceWrapper {
+class MockServiceWrapper(override val uuid: UUID = UUID(), override val characteristics: List<CharacteristicWrapper> = emptyList()) : ServiceWrapper {
     constructor(builder: ServiceWrapperBuilder) : this(
         builder.uuid,
         builder.characteristics.map {

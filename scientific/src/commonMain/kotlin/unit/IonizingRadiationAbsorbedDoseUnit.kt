@@ -58,7 +58,8 @@ val IonizingRadiationAbsorbedDoseUnits: Set<IonizingRadiationAbsorbedDose> get()
  */
 @Serializable
 sealed class IonizingRadiationAbsorbedDose :
-    AbstractScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>(), MetricAndImperialScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>
+    AbstractScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>
 
 @Serializable
 data object Gray : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose> {
@@ -70,7 +71,9 @@ data object Gray : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSy
 }
 
 @Serializable
-sealed class GrayMultiple : IonizingRadiationAbsorbedDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray>
+sealed class GrayMultiple :
+    IonizingRadiationAbsorbedDose(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray>
 
 @Serializable
 data object Nanogray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Gray> by Nano(Gray)
@@ -113,7 +116,9 @@ data object Rad : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSys
 }
 
 @Serializable
-sealed class RadMultiple : IonizingRadiationAbsorbedDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad>
+sealed class RadMultiple :
+    IonizingRadiationAbsorbedDose(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad>
 
 @Serializable
 data object Nanorad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Nano(Rad)

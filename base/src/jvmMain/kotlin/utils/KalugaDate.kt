@@ -141,16 +141,12 @@ actual class DefaultKalugaDate internal constructor(internal val calendar: Calen
 
     actual override fun copy(): KalugaDate = DefaultKalugaDate(calendar.clone() as Calendar)
 
-    actual override fun equals(other: Any?): Boolean {
-        return (other as? KalugaDate)?.let {
-            timeZone == other.timeZone && durationSinceEpoch == other.durationSinceEpoch
-        } ?: false
-    }
+    actual override fun equals(other: Any?): Boolean = (other as? KalugaDate)?.let {
+        timeZone == other.timeZone && durationSinceEpoch == other.durationSinceEpoch
+    } ?: false
 
     actual override fun hashCode(): Int = calendar.hashCode()
     actual override val date: KalugaDateHolder get() = calendar.time
 
-    actual override fun compareTo(other: KalugaDate): Int {
-        return this.calendar.time.compareTo(other.date)
-    }
+    actual override fun compareTo(other: KalugaDate): Int = this.calendar.time.compareTo(other.date)
 }

@@ -34,9 +34,7 @@ sealed class UIType(val title: String) {
     data object XML : UIType("android_ui_xml".localized())
 }
 
-class ComposeOrXMLSelectionViewModel(
-    navigator: Navigator<ComposeOrXMLNavigationAction>,
-) : NavigatingViewModel<ComposeOrXMLNavigationAction>(navigator) {
+class ComposeOrXMLSelectionViewModel(navigator: Navigator<ComposeOrXMLNavigationAction>) : NavigatingViewModel<ComposeOrXMLNavigationAction>(navigator) {
 
     val uiTypes = observableOf(
         listOf(

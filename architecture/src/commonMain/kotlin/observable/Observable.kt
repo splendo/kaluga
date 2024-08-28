@@ -35,7 +35,9 @@ interface BasicObservable<R : T, T, OO : ObservableOptional<R>> :
  * A [BaseObservable] that is [Initialized].
  * @param T the type of value to expect.
  */
-interface InitializedObservable<T> : BasicObservable<T, T, Value<T>>, Initialized<T, T>
+interface InitializedObservable<T> :
+    BasicObservable<T, T, Value<T>>,
+    Initialized<T, T>
 
 /**
  * A [BasicObservable] that is [Uninitialized].
@@ -69,9 +71,8 @@ interface DefaultObservable<R : T?, T> :
  * @param OO the type of [ObservableOptional] to store the result in.
  * @param observation The [Observation] to handle observing the value.
  */
-abstract class BaseObservable<R : T, T, OO : ObservableOptional<R>>(
-    protected open val observation: Observation<R, T, OO>,
-) : BasicObservable<R, T, OO>,
+abstract class BaseObservable<R : T, T, OO : ObservableOptional<R>>(protected open val observation: Observation<R, T, OO>) :
+    BasicObservable<R, T, OO>,
     Initial<R, T> by observation {
     constructor(
         initialValue: ObservableOptional<T>,
@@ -84,9 +85,8 @@ abstract class BaseObservable<R : T, T, OO : ObservableOptional<R>>(
  * @param observation The [ObservationInitialized] to handle observing the value.
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
-abstract class BaseInitializedObservable<T>(
-    observation: ObservationInitialized<T>,
-) : BaseObservable<T, T, Value<T>>(observation),
+abstract class BaseInitializedObservable<T>(observation: ObservationInitialized<T>) :
+    BaseObservable<T, T, Value<T>>(observation),
     InitializedObservable<T>,
     Initialized<T, T> by observation {
 
@@ -103,11 +103,10 @@ abstract class BaseInitializedObservable<T>(
  * @param observation The [ObservationUninitialized] to handle observing the value.
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
-abstract class BaseUninitializedObservable<T>(
-    override val observation: ObservationUninitialized<T>,
-) : BaseObservable<T, T, ObservableOptional<T>>(
-    observation,
-),
+abstract class BaseUninitializedObservable<T>(override val observation: ObservationUninitialized<T>) :
+    BaseObservable<T, T, ObservableOptional<T>>(
+        observation,
+    ),
     UninitializedObservable<T>,
     Uninitialized<T> by observation {
 
@@ -121,9 +120,7 @@ abstract class BaseUninitializedObservable<T>(
  * @param observation The [ObservationDefault] to handle observing the value.
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE") // we want our delegate to override
-abstract class BaseDefaultObservable<R : T?, T>(
-    override val observation: ObservationDefault<R, T?>,
-) :
+abstract class BaseDefaultObservable<R : T?, T>(override val observation: ObservationDefault<R, T?>) :
     BaseObservable<R, T?, Value<R>>(observation),
     DefaultObservable<R, T?>,
     DefaultInitialized<R, T?> by observation {
@@ -146,9 +143,7 @@ abstract class BaseDefaultObservable<R : T?, T>(
  * @param T the type of value to expect.
  * @param value The fixed value of the observable
  */
-class SimpleInitializedObservable<T>(
-    value: T,
-) : BaseInitializedObservable<T>(Value(value))
+class SimpleInitializedObservable<T>(value: T) : BaseInitializedObservable<T>(Value(value))
 
 /**
  * Creates a [SimpleInitializedObservable] from a value.

@@ -27,9 +27,7 @@ import kotlinx.serialization.KSerializer
  * @return The [R] value stored in the bundle
  * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec]
  */
-fun <R> Bundle.toTypedProperty(type: NavigationBundleSpecType<R>): R {
-    return toNavigationBundle(SingleValueNavigationSpec(type)).get(type)
-}
+fun <R> Bundle.toTypedProperty(type: NavigationBundleSpecType<R>): R = toNavigationBundle(SingleValueNavigationSpec(type)).get(type)
 
 /**
  * Converts a [Bundle] to a [R] property associated with a [NavigationBundleSpecType]

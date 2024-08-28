@@ -109,15 +109,9 @@ class DefaultGattServiceWrapper(private val gattService: BluetoothGattService) :
     override val includedServices: List<ServiceWrapper>
         get() = gattService.includedServices.map { DefaultGattServiceWrapper(it) }
 
-    override fun getCharacteristic(uuid: java.util.UUID): CharacteristicWrapper? {
-        return gattService.getCharacteristic(uuid)?.let { DefaultCharacteristicWrapper(it) }
-    }
+    override fun getCharacteristic(uuid: java.util.UUID): CharacteristicWrapper? = gattService.getCharacteristic(uuid)?.let { DefaultCharacteristicWrapper(it) }
 
-    override fun addCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean {
-        return gattService.addCharacteristic(characteristic)
-    }
+    override fun addCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean = gattService.addCharacteristic(characteristic)
 
-    override fun addService(service: BluetoothGattService): Boolean {
-        return gattService.addService(service)
-    }
+    override fun addService(service: BluetoothGattService): Boolean = gattService.addService(service)
 }

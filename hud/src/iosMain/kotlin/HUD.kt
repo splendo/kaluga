@@ -82,10 +82,7 @@ actual class HUD private constructor(
         )
     }
 
-    private class ContainerView(
-        val hudConfig: HudConfig,
-        frame: CValue<CGRect>,
-    ) : UIView(frame) {
+    private class ContainerView(val hudConfig: HudConfig, frame: CValue<CGRect>) : UIView(frame) {
 
         private val titleLabel: UILabel
 

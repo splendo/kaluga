@@ -43,7 +43,9 @@ class MockMediaPlayer(
     override val controls: MutableStateFlow<MediaPlayer.Controls>,
     val volumeController: MockVolumeController,
     val mediaSurfaceController: MockMediaSurfaceController,
-) : MediaPlayer, VolumeController by volumeController, MediaSurfaceController by mediaSurfaceController {
+) : MediaPlayer,
+    VolumeController by volumeController,
+    MediaSurfaceController by mediaSurfaceController {
 
     /**
      * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [initializeFor]

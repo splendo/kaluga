@@ -64,10 +64,7 @@ sealed interface RouteController {
  * @param provider A [StateFlow] of [Provider].
  * @param parentRouteController An optional parent [RouteController] managing this controller.
  */
-sealed class ProvidingNavHostRouteController<Provider>(
-    private val provider: StateFlow<Provider?>,
-    private val parentRouteController: RouteController? = null,
-) : RouteController {
+sealed class ProvidingNavHostRouteController<Provider>(private val provider: StateFlow<Provider?>, private val parentRouteController: RouteController? = null) : RouteController {
 
     /**
      * Converts [Provider] into a [NavHostController]
@@ -136,10 +133,8 @@ sealed class ProvidingNavHostRouteController<Provider>(
  * @param provider The flow of [NavHostController] to be managed by this Route Controller
  * @param parentRouteController An optional parent [RouteController] managing this controller.
  */
-class NavHostRouteController(
-    provider: StateFlow<NavHostController?>,
-    parentRouteController: RouteController? = null,
-) : ProvidingNavHostRouteController<NavHostController>(provider, parentRouteController) {
+class NavHostRouteController(provider: StateFlow<NavHostController?>, parentRouteController: RouteController? = null) :
+    ProvidingNavHostRouteController<NavHostController>(provider, parentRouteController) {
     override fun NavHostController.provide(): NavHostController = this
 }
 
@@ -148,10 +143,8 @@ class NavHostRouteController(
  * @param provider The flow of [BottomSheetNavigatorState] where the [BottomSheetNavigatorState.contentNavHostController] is to be managed by this Route Controller
  * @param parentRouteController An optional parent [RouteController] managing this controller.
  */
-class BottomSheetContentRouteController(
-    provider: StateFlow<BottomSheetNavigatorState?>,
-    parentRouteController: RouteController? = null,
-) : ProvidingNavHostRouteController<BottomSheetNavigatorState>(provider, parentRouteController) {
+class BottomSheetContentRouteController(provider: StateFlow<BottomSheetNavigatorState?>, parentRouteController: RouteController? = null) :
+    ProvidingNavHostRouteController<BottomSheetNavigatorState>(provider, parentRouteController) {
     override fun BottomSheetNavigatorState.provide(): NavHostController = contentNavHostController
 }
 

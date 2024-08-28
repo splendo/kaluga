@@ -24,9 +24,7 @@ import com.splendo.kaluga.test.bluetooth.MockBluetoothService
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-abstract class BeaconFlowTest(
-    timeout: Duration = 3.seconds,
-) : SimpleFlowTest<Set<BeaconInfo>>() {
+abstract class BeaconFlowTest(timeout: Duration = 3.seconds) : SimpleFlowTest<Set<BeaconInfo>>() {
 
     private val bluetooth = MockBluetoothService()
     private val beacons = DefaultBeacons(bluetooth, beaconLifetime = timeout, coroutineContext = scope.coroutineContext)

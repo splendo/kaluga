@@ -69,12 +69,15 @@ enum class PermissionView(val title: String) {
 
 expect val notificationOptions: NotificationOptions
 
-class PermissionsListNavigationAction(permissionView: PermissionView) : SingleValueNavigationAction<PermissionView>(
-    permissionView,
-    NavigationBundleSpecType.SerializedType(PermissionView.serializer()),
-)
+class PermissionsListNavigationAction(permissionView: PermissionView) :
+    SingleValueNavigationAction<PermissionView>(
+        permissionView,
+        NavigationBundleSpecType.SerializedType(PermissionView.serializer()),
+    )
 
-class PermissionsListViewModel(navigator: Navigator<PermissionsListNavigationAction>) : NavigatingViewModel<PermissionsListNavigationAction>(navigator), KoinComponent {
+class PermissionsListViewModel(navigator: Navigator<PermissionsListNavigationAction>) :
+    NavigatingViewModel<PermissionsListNavigationAction>(navigator),
+    KoinComponent {
 
     val permissions = observableOf(
         listOf(

@@ -27,15 +27,13 @@ import com.splendo.kaluga.test.base.mock.parameters.mock
 /**
  * Mock implementation of [Descriptor]
  */
-class MockDescriptor(
-    descriptorWrapper: DescriptorWrapper,
-    emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
-) : Descriptor(
-    wrapper = descriptorWrapper,
-    emitNewAction = emitNewAction,
-    parentLogTag = "",
-    logger = defaultLogger,
-) {
+class MockDescriptor(descriptorWrapper: DescriptorWrapper, emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit) :
+    Descriptor(
+        wrapper = descriptorWrapper,
+        emitNewAction = emitNewAction,
+        parentLogTag = "",
+        logger = defaultLogger,
+    ) {
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [updateValue]

@@ -30,22 +30,20 @@ import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
  * @param context the [Context] used to determine the reading direction
  * @return the [Layout.Alignment] associated with this [KalugaTextAlignment]
  */
-fun KalugaTextAlignment.alignment(context: Context): Layout.Alignment {
-    return when (this) {
-        KalugaTextAlignment.LEFT -> if (context.isLayoutLeftToRight()) {
-            Layout.Alignment.ALIGN_NORMAL
-        } else {
-            Layout.Alignment.ALIGN_OPPOSITE
-        }
-        KalugaTextAlignment.RIGHT -> if (context.isLayoutLeftToRight()) {
-            Layout.Alignment.ALIGN_OPPOSITE
-        } else {
-            Layout.Alignment.ALIGN_NORMAL
-        }
-        KalugaTextAlignment.CENTER -> Layout.Alignment.ALIGN_CENTER
-        KalugaTextAlignment.END -> Layout.Alignment.ALIGN_OPPOSITE
-        KalugaTextAlignment.START -> Layout.Alignment.ALIGN_NORMAL
+fun KalugaTextAlignment.alignment(context: Context): Layout.Alignment = when (this) {
+    KalugaTextAlignment.LEFT -> if (context.isLayoutLeftToRight()) {
+        Layout.Alignment.ALIGN_NORMAL
+    } else {
+        Layout.Alignment.ALIGN_OPPOSITE
     }
+    KalugaTextAlignment.RIGHT -> if (context.isLayoutLeftToRight()) {
+        Layout.Alignment.ALIGN_OPPOSITE
+    } else {
+        Layout.Alignment.ALIGN_NORMAL
+    }
+    KalugaTextAlignment.CENTER -> Layout.Alignment.ALIGN_CENTER
+    KalugaTextAlignment.END -> Layout.Alignment.ALIGN_OPPOSITE
+    KalugaTextAlignment.START -> Layout.Alignment.ALIGN_NORMAL
 }
 
 /**

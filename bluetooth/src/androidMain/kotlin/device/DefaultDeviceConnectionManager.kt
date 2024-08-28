@@ -54,9 +54,8 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : DeviceConnectionManager.Builder {
-        override fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
-            return DefaultDeviceConnectionManager(context, deviceWrapper, settings, coroutineScope = coroutineScope)
-        }
+        override fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): BaseDeviceConnectionManager =
+            DefaultDeviceConnectionManager(context, deviceWrapper, settings, coroutineScope = coroutineScope)
     }
 
     override val coroutineContext: CoroutineContext = coroutineScope.coroutineContext
@@ -185,9 +184,7 @@ internal actual class DefaultDeviceConnectionManager(
         gatt.await().readRemoteRssi()
     }
 
-    actual override suspend fun requestMtu(mtu: MTU): Boolean {
-        return gatt.await().requestMtu(mtu)
-    }
+    actual override suspend fun requestMtu(mtu: MTU): Boolean = gatt.await().requestMtu(mtu)
 
     actual override suspend fun didStartPerformingAction(action: DeviceAction) {
         currentAction = action
@@ -220,9 +217,7 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    private suspend fun writeCharacteristic(characteristic: Characteristic, value: ByteArray): Boolean {
-        return gatt.await().writeCharacteristic(characteristic.wrapper, value)
-    }
+    private suspend fun writeCharacteristic(characteristic: Characteristic, value: ByteArray): Boolean = gatt.await().writeCharacteristic(characteristic.wrapper, value)
 
     private suspend fun writeDescriptor(descriptor: Descriptor, value: ByteArray): Boolean {
         descriptor.wrapper.updateValue(value)

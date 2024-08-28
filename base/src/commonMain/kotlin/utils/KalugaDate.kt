@@ -301,33 +301,27 @@ fun DefaultKalugaDate.Companion.tomorrow(timeZone: KalugaTimeZone = KalugaTimeZo
  * @param date The [KalugaDate] to check
  * @return `true` if this [KalugaDate] is on the same day as [date]
  */
-fun KalugaDate.isOnSameDay(date: KalugaDate): Boolean {
-    return this.era == date.era &&
-        this.year == date.year &&
-        this.month == date.month &&
-        this.day == date.day
-}
+fun KalugaDate.isOnSameDay(date: KalugaDate): Boolean = this.era == date.era &&
+    this.year == date.year &&
+    this.month == date.month &&
+    this.day == date.day
 
 /**
  * Checks whether a [KalugaDate] is on the same month as a given Date.
  * @param date The [KalugaDate] to check
  * @return `true` if this [KalugaDate] is on the same month as [date]
  */
-fun KalugaDate.isOnSameMonth(date: KalugaDate): Boolean {
-    return this.era == date.era &&
-        this.year == date.year &&
-        this.month == date.month
-}
+fun KalugaDate.isOnSameMonth(date: KalugaDate): Boolean = this.era == date.era &&
+    this.year == date.year &&
+    this.month == date.month
 
 /**
  * Checks whether a [KalugaDate] is in the same year as a given Date.
  * @param date The [KalugaDate] to check
  * @return `true` if this [KalugaDate] is in the same year as [date]
  */
-fun KalugaDate.isInSameYear(date: KalugaDate): Boolean {
-    return this.era == date.era &&
-        this.year == date.year
-}
+fun KalugaDate.isInSameYear(date: KalugaDate): Boolean = this.era == date.era &&
+    this.year == date.year
 
 /**
  * True if this [KalugaDate] is today

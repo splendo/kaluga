@@ -48,9 +48,9 @@ class ConcurrentMutableIterator<E> internal constructor(private val internal: In
 /**
  * A [MutableListIterator] that ensures all calls to is happen in a concurrent way.
  */
-class ConcurrentMutableListIterator<E> internal constructor(
-    private val internal: InternalConcurrentMutableIterator<E, MutableListIterator<E>>,
-) : MutableIterator<E> by internal, MutableListIterator<E> {
+class ConcurrentMutableListIterator<E> internal constructor(private val internal: InternalConcurrentMutableIterator<E, MutableListIterator<E>>) :
+    MutableIterator<E> by internal,
+    MutableListIterator<E> {
 
     internal constructor(internal: MutableListIterator<E>) : this(InternalConcurrentMutableIterator(internal))
 

@@ -41,10 +41,7 @@ import kotlin.coroutines.CoroutineContext
  * @param settings the [Settings] to configure this location manager
  * @param coroutineScope the [CoroutineScope] this location manager runs on
  */
-actual class DefaultLocationManager(
-    settings: Settings,
-    coroutineScope: CoroutineScope,
-) : BaseLocationManager(settings, coroutineScope) {
+actual class DefaultLocationManager(settings: Settings, coroutineScope: CoroutineScope) : BaseLocationManager(settings, coroutineScope) {
 
     /**
      * Builder for creating a [DefaultLocationManager]
@@ -57,9 +54,9 @@ actual class DefaultLocationManager(
         )
     }
 
-    private class Delegate(
-        private val onLocationsChanged: MutableSharedFlow<Location.KnownLocation>,
-    ) : NSObject(), CLLocationManagerDelegateProtocol {
+    private class Delegate(private val onLocationsChanged: MutableSharedFlow<Location.KnownLocation>) :
+        NSObject(),
+        CLLocationManagerDelegateProtocol {
         override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
             val locations = didUpdateLocations.mapNotNull { (it as? CLLocation)?.knownLocation }
             if (locations.isNotEmpty()) {
@@ -119,9 +116,7 @@ actual class DefaultLocationManager(
  * @param permissionsBuilder a method for creating the [Permissions] object to manage the Location permissions.
  * Needs to have [com.splendo.kaluga.permissions.location.LocationPermission] registered.
  */
-actual class LocationStateRepoBuilder(
-    private val permissionsBuilder: suspend (CoroutineContext) -> Permissions,
-) : BaseLocationStateRepoBuilder {
+actual class LocationStateRepoBuilder(private val permissionsBuilder: suspend (CoroutineContext) -> Permissions) : BaseLocationStateRepoBuilder {
 
     /**
      * Constructor
@@ -144,7 +139,5 @@ actual class LocationStateRepoBuilder(
         locationPermission: LocationPermission,
         settingsBuilder: (LocationPermission, Permissions) -> Settings,
         coroutineContext: CoroutineContext,
-    ): LocationStateRepo {
-        return LocationStateRepo({ settingsBuilder(locationPermission, permissionsBuilder(it)) }, DefaultLocationManager.Builder(), coroutineContext)
-    }
+    ): LocationStateRepo = LocationStateRepo({ settingsBuilder(locationPermission, permissionsBuilder(it)) }, DefaultLocationManager.Builder(), coroutineContext)
 }

@@ -25,9 +25,9 @@ typealias RouteContentBuilder = NavGraphBuilder.(StateFlow<NavHostController?>) 
  * @param Action the type of [NavigationAction] this navigator should respond to.
  * @param navigationMapper A mapper that converts an [Action] handled by this navigator into a [ComposableNavSpec]
  */
-sealed class ComposableNavigator<Action : NavigationAction<*>>(
-    private val navigationMapper: @Composable (Action) -> ComposableNavSpec,
-) : Navigator<Action>, ComposableLifecycleSubscribable {
+sealed class ComposableNavigator<Action : NavigationAction<*>>(private val navigationMapper: @Composable (Action) -> ComposableNavSpec) :
+    Navigator<Action>,
+    ComposableLifecycleSubscribable {
 
     protected abstract val routeController: RouteController?
 
@@ -197,9 +197,8 @@ class BottomSheetSheetContentNavHostComposableNavigator<Action : NavigationActio
  * @param Action the type of [NavigationAction] this navigator should respond to.
  * @param navigationMapper Maps [Action] to a [ComposableNavSpec.LaunchedNavigation] to be navigated to.
  */
-class LaunchedComposableNavigator<Action : NavigationAction<*>>(
-    navigationMapper: @Composable (Action) -> ComposableNavSpec.LaunchedNavigation,
-) : ComposableNavigator<Action>(navigationMapper) {
+class LaunchedComposableNavigator<Action : NavigationAction<*>>(navigationMapper: @Composable (Action) -> ComposableNavSpec.LaunchedNavigation) :
+    ComposableNavigator<Action>(navigationMapper) {
     override val routeController: RouteController? = null
     override val contentModifier: @Composable BaseLifecycleViewModel.(@Composable BaseLifecycleViewModel.() -> Unit) -> Unit = @Composable { content -> content() }
 }

@@ -28,10 +28,7 @@ import org.koin.dsl.KoinAppDeclaration
 
 abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext> : BaseKoinUIThreadTest<Unit, TC>() {
 
-    open class KoinTestContext(
-        appDeclaration: KoinAppDeclaration? = null,
-        koinModules: List<Module>,
-    ) : BaseKoinUIThreadTest.KoinTestContext(appDeclaration, koinModules) {
+    open class KoinTestContext(appDeclaration: KoinAppDeclaration? = null, koinModules: List<Module>) : BaseKoinUIThreadTest.KoinTestContext(appDeclaration, koinModules) {
 
         constructor(vararg koinModules: Module) : this(null, koinModules.toList())
         constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(
@@ -53,11 +50,9 @@ abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext> : BaseKoi
 
 abstract class BaseKoinUIThreadTest<C, TC : BaseKoinUIThreadTest.KoinTestContext> : BaseUIThreadTest<C, TC>() {
 
-    open class KoinTestContext(
-        appDeclaration: KoinAppDeclaration? = null,
-        koinModules: List<Module>,
-    ) :
-        TestContext, KoinComponent {
+    open class KoinTestContext(appDeclaration: KoinAppDeclaration? = null, koinModules: List<Module>) :
+        TestContext,
+        KoinComponent {
 
         constructor(vararg koinModules: Module) : this(null, koinModules.toList())
         constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(

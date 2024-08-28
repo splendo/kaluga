@@ -85,10 +85,9 @@ sealed class DynamicViscosity : AbstractScientificUnit<PhysicalQuantity.DynamicV
  * @param time the [Time] component
  */
 @Serializable
-data class MetricDynamicViscosity(
-    override val pressure: MetricPressure,
-    override val time: Time,
-) : DynamicViscosity(), MetricScientificUnit<PhysicalQuantity.DynamicViscosity> {
+data class MetricDynamicViscosity(override val pressure: MetricPressure, override val time: Time) :
+    DynamicViscosity(),
+    MetricScientificUnit<PhysicalQuantity.DynamicViscosity> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -98,10 +97,9 @@ data class MetricDynamicViscosity(
  * @param time the [Time] component
  */
 @Serializable
-data class ImperialDynamicViscosity(
-    override val pressure: ImperialPressure,
-    override val time: Time,
-) : DynamicViscosity(), ImperialScientificUnit<PhysicalQuantity.DynamicViscosity> {
+data class ImperialDynamicViscosity(override val pressure: ImperialPressure, override val time: Time) :
+    DynamicViscosity(),
+    ImperialScientificUnit<PhysicalQuantity.DynamicViscosity> {
     override val system = MeasurementSystem.Imperial
 
     /**
@@ -121,10 +119,9 @@ data class ImperialDynamicViscosity(
  * @param time the [Time] component
  */
 @Serializable
-data class UKImperialDynamicViscosity(
-    override val pressure: UKImperialPressure,
-    override val time: Time,
-) : DynamicViscosity(), UKImperialScientificUnit<PhysicalQuantity.DynamicViscosity> {
+data class UKImperialDynamicViscosity(override val pressure: UKImperialPressure, override val time: Time) :
+    DynamicViscosity(),
+    UKImperialScientificUnit<PhysicalQuantity.DynamicViscosity> {
     override val system = MeasurementSystem.UKImperial
 }
 
@@ -134,10 +131,9 @@ data class UKImperialDynamicViscosity(
  * @param time the [Time] component
  */
 @Serializable
-data class USCustomaryDynamicViscosity(
-    override val pressure: USCustomaryPressure,
-    override val time: Time,
-) : DynamicViscosity(), USCustomaryScientificUnit<PhysicalQuantity.DynamicViscosity> {
+data class USCustomaryDynamicViscosity(override val pressure: USCustomaryPressure, override val time: Time) :
+    DynamicViscosity(),
+    USCustomaryScientificUnit<PhysicalQuantity.DynamicViscosity> {
     override val system = MeasurementSystem.USCustomary
 }
 

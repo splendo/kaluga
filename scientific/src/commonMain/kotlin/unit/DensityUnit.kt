@@ -85,7 +85,9 @@ sealed class Density : AbstractScientificUnit<PhysicalQuantity.Density>() {
  * @param per the [MetricVolume] component
  */
 @Serializable
-data class MetricDensity(override val weight: MetricWeight, override val per: MetricVolume) : Density(), MetricScientificUnit<PhysicalQuantity.Density> {
+data class MetricDensity(override val weight: MetricWeight, override val per: MetricVolume) :
+    Density(),
+    MetricScientificUnit<PhysicalQuantity.Density> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -95,7 +97,9 @@ data class MetricDensity(override val weight: MetricWeight, override val per: Me
  * @param per the [ImperialVolume] component
  */
 @Serializable
-data class ImperialDensity(override val weight: ImperialWeight, override val per: ImperialVolume) : Density(), ImperialScientificUnit<PhysicalQuantity.Density> {
+data class ImperialDensity(override val weight: ImperialWeight, override val per: ImperialVolume) :
+    Density(),
+    ImperialScientificUnit<PhysicalQuantity.Density> {
     override val system = MeasurementSystem.Imperial
     val ukImperial get() = weight.ukImperial per per.ukImperial
     val usCustomary get() = weight.usCustomary per per.usCustomary
@@ -107,7 +111,9 @@ data class ImperialDensity(override val weight: ImperialWeight, override val per
  * @param per the [USCustomaryVolume] component
  */
 @Serializable
-data class USCustomaryDensity(override val weight: USCustomaryWeight, override val per: USCustomaryVolume) : Density(), USCustomaryScientificUnit<PhysicalQuantity.Density> {
+data class USCustomaryDensity(override val weight: USCustomaryWeight, override val per: USCustomaryVolume) :
+    Density(),
+    USCustomaryScientificUnit<PhysicalQuantity.Density> {
     override val system = MeasurementSystem.USCustomary
 }
 
@@ -117,7 +123,9 @@ data class USCustomaryDensity(override val weight: USCustomaryWeight, override v
  * @param per the [UKImperialVolume] component
  */
 @Serializable
-data class UKImperialDensity(override val weight: UKImperialWeight, override val per: UKImperialVolume) : Density(), UKImperialScientificUnit<PhysicalQuantity.Density> {
+data class UKImperialDensity(override val weight: UKImperialWeight, override val per: UKImperialVolume) :
+    Density(),
+    UKImperialScientificUnit<PhysicalQuantity.Density> {
     override val system = MeasurementSystem.UKImperial
 }
 

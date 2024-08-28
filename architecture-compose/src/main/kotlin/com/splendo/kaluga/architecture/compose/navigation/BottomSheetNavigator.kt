@@ -29,9 +29,9 @@ import kotlinx.coroutines.flow.StateFlow
  * @param Action the type of [NavigationAction] this navigator should respond to.
  * @param navigationMapper A mapper that converts an [Action] handled by this navigator into a [BottomSheetComposableNavSpec]
  */
-sealed class BottomSheetNavigator<Action : NavigationAction<*>>(
-    private val navigationMapper: @Composable (Action) -> BottomSheetComposableNavSpec,
-) : Navigator<Action>, ComposableLifecycleSubscribable {
+sealed class BottomSheetNavigator<Action : NavigationAction<*>>(private val navigationMapper: @Composable (Action) -> BottomSheetComposableNavSpec) :
+    Navigator<Action>,
+    ComposableLifecycleSubscribable {
 
     protected abstract val routeController: BottomSheetRouteController
 

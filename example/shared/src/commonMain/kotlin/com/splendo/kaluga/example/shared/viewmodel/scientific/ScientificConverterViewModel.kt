@@ -39,10 +39,11 @@ import kotlinx.coroutines.flow.map
 
 sealed class ScientificConverterNavigationAction<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
     data object Close : ScientificConverterNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
-    sealed class SelectUnit(quantity: PhysicalQuantity) : ScientificConverterNavigationAction<PhysicalQuantity>(
-        quantity,
-        NavigationBundleSpecType.SerializedType(PhysicalQuantity.serializer()),
-    ) {
+    sealed class SelectUnit(quantity: PhysicalQuantity) :
+        ScientificConverterNavigationAction<PhysicalQuantity>(
+            quantity,
+            NavigationBundleSpecType.SerializedType(PhysicalQuantity.serializer()),
+        ) {
         data class Left(val quantity: PhysicalQuantity) : SelectUnit(quantity)
         data class Right(val quantity: PhysicalQuantity) : SelectUnit(quantity)
     }

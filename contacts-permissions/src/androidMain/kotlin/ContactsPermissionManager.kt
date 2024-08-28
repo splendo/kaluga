@@ -34,12 +34,8 @@ import kotlin.time.Duration
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultContactsPermissionManager(
-    context: Context,
-    contactsPermission: ContactsPermission,
-    settings: Settings,
-    coroutineScope: CoroutineScope,
-) : BasePermissionManager<ContactsPermission>(contactsPermission, settings, coroutineScope) {
+actual class DefaultContactsPermissionManager(context: Context, contactsPermission: ContactsPermission, settings: Settings, coroutineScope: CoroutineScope) :
+    BasePermissionManager<ContactsPermission>(contactsPermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
@@ -73,7 +69,6 @@ actual class DefaultContactsPermissionManager(
  */
 actual class ContactsPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseContactsPermissionManagerBuilder {
 
-    actual override fun create(contactsPermission: ContactsPermission, settings: Settings, coroutineScope: CoroutineScope): ContactsPermissionManager {
-        return DefaultContactsPermissionManager(context.context, contactsPermission, settings, coroutineScope)
-    }
+    actual override fun create(contactsPermission: ContactsPermission, settings: Settings, coroutineScope: CoroutineScope): ContactsPermissionManager =
+        DefaultContactsPermissionManager(context.context, contactsPermission, settings, coroutineScope)
 }

@@ -51,7 +51,9 @@ import kotlin.time.Duration
 /**
  * Plays a [MediaSource]
  */
-interface MediaPlayer : VolumeController, MediaSurfaceController {
+interface MediaPlayer :
+    VolumeController,
+    MediaSurfaceController {
 
     /**
      * The controls available to manage playback on a [MediaPlayer]
@@ -260,10 +262,9 @@ interface MediaPlayer : VolumeController, MediaSurfaceController {
  * @param createPlaybackStateRepo method for creating a [BasePlaybackStateRepo] to manage the [PlaybackState] of this player
  * @param coroutineContext the [CoroutineContext] on which to run the media player
  */
-class DefaultMediaPlayer(
-    createPlaybackStateRepo: (CoroutineContext) -> BasePlaybackStateRepo,
-    coroutineContext: CoroutineContext,
-) : MediaPlayer, CoroutineScope by CoroutineScope(coroutineContext + Job(coroutineContext.job) + CoroutineName("MediaPlayer")) {
+class DefaultMediaPlayer(createPlaybackStateRepo: (CoroutineContext) -> BasePlaybackStateRepo, coroutineContext: CoroutineContext) :
+    MediaPlayer,
+    CoroutineScope by CoroutineScope(coroutineContext + Job(coroutineContext.job) + CoroutineName("MediaPlayer")) {
 
     /**
      * Constructor that provides a [BaseMediaManager] to manage media playback

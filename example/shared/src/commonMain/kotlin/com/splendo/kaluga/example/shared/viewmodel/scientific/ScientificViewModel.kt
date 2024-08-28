@@ -46,23 +46,23 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 sealed class ScientificNavigationAction<T>(value: T, spec: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, spec) {
-    sealed class SelectUnit(quantity: PhysicalQuantity) : ScientificNavigationAction<PhysicalQuantity>(
-        quantity,
-        NavigationBundleSpecType.SerializedType(PhysicalQuantity.serializer()),
-    ) {
+    sealed class SelectUnit(quantity: PhysicalQuantity) :
+        ScientificNavigationAction<PhysicalQuantity>(
+            quantity,
+            NavigationBundleSpecType.SerializedType(PhysicalQuantity.serializer()),
+        ) {
         data class Left(val quantity: PhysicalQuantity) : SelectUnit(quantity)
         data class Right(val quantity: PhysicalQuantity) : SelectUnit(quantity)
     }
-    data class Converter(val quantity: PhysicalQuantity, val index: Int) : ScientificNavigationAction<ScientificConverterViewModel.Arguments>(
-        ScientificConverterViewModel.Arguments(quantity, index),
-        NavigationBundleSpecType.SerializedType(ScientificConverterViewModel.Arguments.serializer()),
-    )
+    data class Converter(val quantity: PhysicalQuantity, val index: Int) :
+        ScientificNavigationAction<ScientificConverterViewModel.Arguments>(
+            ScientificConverterViewModel.Arguments(quantity, index),
+            NavigationBundleSpecType.SerializedType(ScientificConverterViewModel.Arguments.serializer()),
+        )
 }
 
-class ScientificViewModel(
-    private val alertPresenterBuilder: BaseAlertPresenter.Builder,
-    navigator: Navigator<ScientificNavigationAction<*>>,
-) : NavigatingViewModel<ScientificNavigationAction<*>>(navigator, alertPresenterBuilder) {
+class ScientificViewModel(private val alertPresenterBuilder: BaseAlertPresenter.Builder, navigator: Navigator<ScientificNavigationAction<*>>) :
+    NavigatingViewModel<ScientificNavigationAction<*>>(navigator, alertPresenterBuilder) {
 
     data class Button(val name: String, val quantity: PhysicalQuantity, val index: Int, val navigator: Navigator<in ScientificNavigationAction.Converter>) {
         val id: String get() = "${quantity.name}_$index"

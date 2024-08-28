@@ -81,8 +81,6 @@ class PermissionsActivity : AppCompatActivity() {
             return intent
         }
 
-        internal fun getRequestedPermissions(intent: Intent): Array<String> {
-            return intent.getStringArrayExtra(EXTRA_REQUESTED_PERMISSIONS) ?: emptyArray()
-        }
+        internal fun getRequestedPermissions(intent: Intent): Array<String> = intent.getStringArrayExtra(EXTRA_REQUESTED_PERMISSIONS) ?: emptyArray()
     }
 }

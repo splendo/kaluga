@@ -77,7 +77,9 @@ sealed class Action : AbstractScientificUnit<PhysicalQuantity.Action>() {
  * @param time the [Time] component
  */
 @Serializable
-data class MetricAndImperialAction(override val energy: MetricAndImperialEnergy, override val time: Time) : Action(), MetricAndImperialScientificUnit<PhysicalQuantity.Action> {
+data class MetricAndImperialAction(override val energy: MetricAndImperialEnergy, override val time: Time) :
+    Action(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.Action> {
     override val system = MeasurementSystem.MetricAndImperial
     val metric get() = energy.metric x time
     val imperial get() = energy.imperial x time
@@ -89,7 +91,9 @@ data class MetricAndImperialAction(override val energy: MetricAndImperialEnergy,
  * @param time the [Time] component
  */
 @Serializable
-data class MetricAction(override val energy: MetricEnergy, override val time: Time) : Action(), MetricScientificUnit<PhysicalQuantity.Action> {
+data class MetricAction(override val energy: MetricEnergy, override val time: Time) :
+    Action(),
+    MetricScientificUnit<PhysicalQuantity.Action> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -99,7 +103,9 @@ data class MetricAction(override val energy: MetricEnergy, override val time: Ti
  * @param time the [Time] component
  */
 @Serializable
-data class ImperialAction(override val energy: ImperialEnergy, override val time: Time) : Action(), ImperialScientificUnit<PhysicalQuantity.Action> {
+data class ImperialAction(override val energy: ImperialEnergy, override val time: Time) :
+    Action(),
+    ImperialScientificUnit<PhysicalQuantity.Action> {
     override val system = MeasurementSystem.Imperial
 }
 

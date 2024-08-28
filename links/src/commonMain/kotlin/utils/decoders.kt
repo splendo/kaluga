@@ -30,10 +30,7 @@ internal fun <T> decodeFromList(list: List<Any>, deserializer: DeserializationSt
     return decoder.decodeSerializableValue(deserializer)
 }
 
-internal class LinksDecoder(
-    private val list: ArrayDeque<Any>,
-    var elementsCount: Int = 0,
-) : AbstractDecoder() {
+internal class LinksDecoder(private val list: ArrayDeque<Any>, var elementsCount: Int = 0) : AbstractDecoder() {
     private var elementIndex = 0
 
     override val serializersModule: SerializersModule = EmptySerializersModule()

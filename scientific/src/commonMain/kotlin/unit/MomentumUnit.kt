@@ -93,7 +93,9 @@ sealed class Momentum : AbstractScientificUnit<PhysicalQuantity.Momentum>() {
  * @param speed the [MetricSpeed] component
  */
 @Serializable
-data class MetricMomentum(override val mass: MetricWeight, override val speed: MetricSpeed) : Momentum(), MetricScientificUnit<PhysicalQuantity.Momentum> {
+data class MetricMomentum(override val mass: MetricWeight, override val speed: MetricSpeed) :
+    Momentum(),
+    MetricScientificUnit<PhysicalQuantity.Momentum> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -103,7 +105,9 @@ data class MetricMomentum(override val mass: MetricWeight, override val speed: M
  * @param speed the [ImperialSpeed] component
  */
 @Serializable
-data class ImperialMomentum(override val mass: ImperialWeight, override val speed: ImperialSpeed) : Momentum(), ImperialScientificUnit<PhysicalQuantity.Momentum> {
+data class ImperialMomentum(override val mass: ImperialWeight, override val speed: ImperialSpeed) :
+    Momentum(),
+    ImperialScientificUnit<PhysicalQuantity.Momentum> {
     override val system = MeasurementSystem.Imperial
 
     /**
@@ -123,7 +127,9 @@ data class ImperialMomentum(override val mass: ImperialWeight, override val spee
  * @param speed the [ImperialSpeed] component
  */
 @Serializable
-data class UKImperialMomentum(override val mass: UKImperialWeight, override val speed: ImperialSpeed) : Momentum(), UKImperialScientificUnit<PhysicalQuantity.Momentum> {
+data class UKImperialMomentum(override val mass: UKImperialWeight, override val speed: ImperialSpeed) :
+    Momentum(),
+    UKImperialScientificUnit<PhysicalQuantity.Momentum> {
     override val system = MeasurementSystem.UKImperial
 }
 
@@ -133,7 +139,9 @@ data class UKImperialMomentum(override val mass: UKImperialWeight, override val 
  * @param speed the [ImperialSpeed] component
  */
 @Serializable
-data class USCustomaryMomentum(override val mass: USCustomaryWeight, override val speed: ImperialSpeed) : Momentum(), USCustomaryScientificUnit<PhysicalQuantity.Momentum> {
+data class USCustomaryMomentum(override val mass: USCustomaryWeight, override val speed: ImperialSpeed) :
+    Momentum(),
+    USCustomaryScientificUnit<PhysicalQuantity.Momentum> {
     override val system = MeasurementSystem.USCustomary
 }
 

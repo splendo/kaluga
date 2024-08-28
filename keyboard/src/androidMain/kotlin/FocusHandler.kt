@@ -31,10 +31,7 @@ import androidx.annotation.IdRes
  * @param id the ID of the View to focus on
  * @param handler the [Handler] on which to wait for a Window focus
  */
-data class ViewFocusHandler(
-    @IdRes private val id: Int,
-    private val handler: Handler,
-) : FocusHandler {
+data class ViewFocusHandler(@IdRes private val id: Int, private val handler: Handler) : FocusHandler {
 
     /**
      * Constructor

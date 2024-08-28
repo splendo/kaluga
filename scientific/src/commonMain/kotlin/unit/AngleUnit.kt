@@ -52,7 +52,9 @@ val AngleUnits: Set<Angle> get() = setOf(
  * SI unit is [Radian]
  */
 @Serializable
-sealed class Angle : AbstractScientificUnit<PhysicalQuantity.Angle>(), MetricAndImperialScientificUnit<PhysicalQuantity.Angle>
+sealed class Angle :
+    AbstractScientificUnit<PhysicalQuantity.Angle>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.Angle>
 
 @Serializable
 data object Radian : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle> {
@@ -64,7 +66,9 @@ data object Radian : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial
 }
 
 @Serializable
-sealed class RadianMultiple : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian>
+sealed class RadianMultiple :
+    Angle(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian>
 
 @Serializable
 data object Nanoradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Radian> by Nano(Radian)
@@ -92,7 +96,9 @@ data object Turn : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, 
 }
 
 @Serializable
-sealed class TurnMultiple : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn>
+sealed class TurnMultiple :
+    Angle(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn>
 
 @Serializable
 data object Nanoturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle, Turn> by Nano(Turn)

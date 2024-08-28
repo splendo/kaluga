@@ -39,7 +39,8 @@ actual data class KalugaThread(val thread: Thread) {
     /**
      * When `true` this thread is the main thread.
      */
-    actual val isMainThread: Boolean get() = runBlocking(Dispatchers.Main.immediate) { // safest way also for synthetic main threads
+    actual val isMainThread: Boolean get() = runBlocking(Dispatchers.Main.immediate) {
+        // safest way also for synthetic main threads
         thread == Thread.currentThread()
     }
 }

@@ -113,9 +113,7 @@ abstract class BaseLocale {
      */
     abstract val alternateQuotationEnd: String
 
-    override fun toString(): String {
-        return listOf(languageCode, countryCode, variantCode).filterNot { it.isEmpty() }.joinToString("_")
-    }
+    override fun toString(): String = listOf(languageCode, countryCode, variantCode).filterNot { it.isEmpty() }.joinToString("_")
 }
 
 /**

@@ -9,7 +9,9 @@ import kotlin.test.assertTrue
 
 class UIKitKeyboardManagerTests : KeyboardManagerTests<UIKitFocusHandler, IOSKeyboardTestContext>() {
 
-    class IOSKeyboardTestContext(coroutineScope: CoroutineScope) : KeyboardTestContext<UIKitFocusHandler>(), CoroutineScope by coroutineScope {
+    class IOSKeyboardTestContext(coroutineScope: CoroutineScope) :
+        KeyboardTestContext<UIKitFocusHandler>(),
+        CoroutineScope by coroutineScope {
         private val application = UIApplication.sharedApplication
         val textField = MockTextField()
 

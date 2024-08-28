@@ -37,13 +37,7 @@ typealias BeaconID = Eddystone.UID
  * @property rssi the current [RSSI] of the beacon
  * @property lastSeen the [KalugaDate] at which the beacon was last seen
  */
-data class BeaconInfo(
-    val identifier: Identifier,
-    val beaconID: BeaconID,
-    val txPower: TxPower,
-    val rssi: RSSI,
-    val lastSeen: KalugaDate,
-)
+data class BeaconInfo(val identifier: Identifier, val beaconID: BeaconID, val txPower: TxPower, val rssi: RSSI, val lastSeen: KalugaDate)
 
 /**
  * Returns the [kotlin.time.Duration] since the beacon was last seen

@@ -234,11 +234,8 @@ interface AndroidPermissionStateHandler {
     fun status(state: AndroidPermissionState)
 }
 
-class DefaultAndroidPermissionStateHandler(
-    private val eventChannel: SendChannel<PermissionManager.Event>,
-    private val logTag: String,
-    private val logger: Logger,
-) : AndroidPermissionStateHandler {
+class DefaultAndroidPermissionStateHandler(private val eventChannel: SendChannel<PermissionManager.Event>, private val logTag: String, private val logger: Logger) :
+    AndroidPermissionStateHandler {
 
     override fun status(state: AndroidPermissionState) {
         when (state) {

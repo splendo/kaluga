@@ -44,7 +44,9 @@ val SolidAngleUnits: Set<SolidAngle> get() = setOf(
  * SI unit is [Steradian]
  */
 @Serializable
-sealed class SolidAngle : AbstractScientificUnit<PhysicalQuantity.SolidAngle>(), MetricAndImperialScientificUnit<PhysicalQuantity.SolidAngle>
+sealed class SolidAngle :
+    AbstractScientificUnit<PhysicalQuantity.SolidAngle>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.SolidAngle>
 
 @Serializable
 data object Steradian : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle> {
@@ -56,7 +58,9 @@ data object Steradian : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAnd
 }
 
 @Serializable
-sealed class SteradianMultiple : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian>
+sealed class SteradianMultiple :
+    SolidAngle(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian>
 
 @Serializable
 data object Nanosteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle, Steradian> by Nano(Steradian)

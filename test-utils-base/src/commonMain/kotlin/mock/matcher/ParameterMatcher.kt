@@ -22,7 +22,9 @@ import kotlin.reflect.KClass
 /**
  * Class for validating whether a parameter matches given constraints
  */
-sealed class ParameterMatcher<in T> : ParameterMatcherOrCaptor<T>, Comparable<ParameterMatcher<*>> {
+sealed class ParameterMatcher<in T> :
+    ParameterMatcherOrCaptor<T>,
+    Comparable<ParameterMatcher<*>> {
     /**
      * Checks if the parameter matches
      * @param value the parameter to match
@@ -114,23 +116,15 @@ sealed class ParameterMatcher<in T> : ParameterMatcherOrCaptor<T>, Comparable<Pa
 
     private class AnyNotNullMatcher<in T : Any> : ParameterMatcher<T?>() {
         override fun matches(value: T?): Boolean = value != null
-        override fun equals(other: Any?): Boolean {
-            return (other as? AnyNotNullMatcher<*>) != null
-        }
+        override fun equals(other: Any?): Boolean = (other as? AnyNotNullMatcher<*>) != null
 
-        override fun hashCode(): Int {
-            return this::class.hashCode()
-        }
+        override fun hashCode(): Int = this::class.hashCode()
     }
 
     private class AnyMatcher<in T> : ParameterMatcher<T>() {
         override fun matches(value: T): Boolean = true
-        override fun equals(other: Any?): Boolean {
-            return (other as? AnyMatcher<*>) != null
-        }
+        override fun equals(other: Any?): Boolean = (other as? AnyMatcher<*>) != null
 
-        override fun hashCode(): Int {
-            return this::class.hashCode()
-        }
+        override fun hashCode(): Int = this::class.hashCode()
     }
 }

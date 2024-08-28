@@ -200,24 +200,19 @@ sealed class NavigationSpec {
                 animationControllerForOperation: UINavigationControllerOperation,
                 fromViewController: UIViewController,
                 toViewController: UIViewController,
-            ): UIViewControllerAnimatedTransitioningProtocol? {
-                return navigationDelegate.navigationController(navigationController, animationControllerForOperation, fromViewController, toViewController)
-            }
+            ): UIViewControllerAnimatedTransitioningProtocol? =
+                navigationDelegate.navigationController(navigationController, animationControllerForOperation, fromViewController, toViewController)
 
             override fun navigationController(
                 navigationController: UINavigationController,
                 interactionControllerForAnimationController: UIViewControllerAnimatedTransitioningProtocol,
-            ): UIViewControllerInteractiveTransitioningProtocol? {
-                return navigationDelegate.navigationController(navigationController, interactionControllerForAnimationController)
-            }
+            ): UIViewControllerInteractiveTransitioningProtocol? = navigationDelegate.navigationController(navigationController, interactionControllerForAnimationController)
 
-            override fun navigationControllerSupportedInterfaceOrientations(navigationController: UINavigationController): UIInterfaceOrientationMask {
-                return navigationDelegate.navigationControllerSupportedInterfaceOrientations(navigationController)
-            }
+            override fun navigationControllerSupportedInterfaceOrientations(navigationController: UINavigationController): UIInterfaceOrientationMask =
+                navigationDelegate.navigationControllerSupportedInterfaceOrientations(navigationController)
 
-            override fun navigationControllerPreferredInterfaceOrientationForPresentation(navigationController: UINavigationController): UIInterfaceOrientation {
-                return navigationDelegate.navigationControllerPreferredInterfaceOrientationForPresentation(navigationController)
-            }
+            override fun navigationControllerPreferredInterfaceOrientationForPresentation(navigationController: UINavigationController): UIInterfaceOrientation =
+                navigationDelegate.navigationControllerPreferredInterfaceOrientationForPresentation(navigationController)
 
             override fun imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo: Map<Any?, *>) {
                 imagePickerDelegate.imagePickerController(picker, didFinishPickingMediaWithInfo)

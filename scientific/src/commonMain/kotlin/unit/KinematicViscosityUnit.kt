@@ -69,7 +69,9 @@ sealed class KinematicViscosity : AbstractScientificUnit<PhysicalQuantity.Kinema
  * @param time the [Time] component
  */
 @Serializable
-data class MetricKinematicViscosity(override val area: MetricArea, override val time: Time) : KinematicViscosity(), MetricScientificUnit<PhysicalQuantity.KinematicViscosity> {
+data class MetricKinematicViscosity(override val area: MetricArea, override val time: Time) :
+    KinematicViscosity(),
+    MetricScientificUnit<PhysicalQuantity.KinematicViscosity> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -79,10 +81,9 @@ data class MetricKinematicViscosity(override val area: MetricArea, override val 
  * @param time the [Time] component
  */
 @Serializable
-data class ImperialKinematicViscosity(
-    override val area: ImperialArea,
-    override val time: Time,
-) : KinematicViscosity(), ImperialScientificUnit<PhysicalQuantity.KinematicViscosity> {
+data class ImperialKinematicViscosity(override val area: ImperialArea, override val time: Time) :
+    KinematicViscosity(),
+    ImperialScientificUnit<PhysicalQuantity.KinematicViscosity> {
     override val system = MeasurementSystem.Imperial
 }
 

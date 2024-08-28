@@ -77,19 +77,13 @@ sealed class ObservableOptional<T> : ReadOnlyProperty<Any?, T?> {
      * @param T the type of [Value] that corresponds to this empty result.
      */
     class Nothing<T> : ObservableOptional<T>() {
-        override fun getValue(thisRef: Any?, property: KProperty<*>): T? {
-            return null
-        }
+        override fun getValue(thisRef: Any?, property: KProperty<*>): T? = null
 
         override val valueOrNull: T? = null
         override fun toString(): String = "Nothing"
 
-        override fun equals(other: Any?): Boolean {
-            return other is Nothing<*>
-        }
+        override fun equals(other: Any?): Boolean = other is Nothing<*>
 
-        override fun hashCode(): Int {
-            return this::class.hashCode()
-        }
+        override fun hashCode(): Int = this::class.hashCode()
     }
 }

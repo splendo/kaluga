@@ -44,11 +44,7 @@ import kotlin.time.Duration.Companion.milliseconds
  * @param settings The [GoogleLocationProvider.Settings] to use to configure this location provider.
  * @param minUpdateDistanceMeters The minimum distance in meters traversed for a location update to be reported.
  */
-class GoogleLocationProvider(
-    private val context: Context,
-    private val settings: Settings,
-    private val minUpdateDistanceMeters: Float,
-) : LocationProvider {
+class GoogleLocationProvider(private val context: Context, private val settings: Settings, private val minUpdateDistanceMeters: Float) : LocationProvider {
 
     /**
      * Settings for a [GoogleLocationProvider]
@@ -56,18 +52,9 @@ class GoogleLocationProvider(
      * @param maxUpdateDelay The longest a location update may be delayed.
      * @param minUpdateInterval The fastest allowed interval of location updates.
      */
-    data class Settings(
-        val interval: Duration = 100.milliseconds,
-        val maxUpdateDelay: Duration = ZERO,
-        val minUpdateInterval: Duration = interval,
-    )
+    data class Settings(val interval: Duration = 100.milliseconds, val maxUpdateDelay: Duration = ZERO, val minUpdateInterval: Duration = interval)
 
-    internal sealed class FusedLocationProviderClientType(
-        permission: LocationPermission,
-        context: Context,
-        settings: Settings,
-        minUpdateDistanceMeters: Float,
-    ) {
+    internal sealed class FusedLocationProviderClientType(permission: LocationPermission, context: Context, settings: Settings, minUpdateDistanceMeters: Float) {
         protected val fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(context)
         protected val locationRequest =
@@ -90,12 +77,8 @@ class GoogleLocationProvider(
         abstract fun startRequestingUpdates()
         abstract fun stopRequestingUpdates()
 
-        class Foreground(
-            permission: LocationPermission,
-            context: Context,
-            settings: Settings,
-            minUpdateDistanceMeters: Float,
-        ) : FusedLocationProviderClientType(permission, context, settings, minUpdateDistanceMeters) {
+        class Foreground(permission: LocationPermission, context: Context, settings: Settings, minUpdateDistanceMeters: Float) :
+            FusedLocationProviderClientType(permission, context, settings, minUpdateDistanceMeters) {
 
             private val locationCallback = object : LocationCallback() {
 
@@ -116,12 +99,8 @@ class GoogleLocationProvider(
             }
         }
 
-        class Background(
-            permission: LocationPermission,
-            context: Context,
-            settings: Settings,
-            minUpdateDistanceMeters: Float,
-        ) : FusedLocationProviderClientType(permission, context, settings, minUpdateDistanceMeters) {
+        class Background(permission: LocationPermission, context: Context, settings: Settings, minUpdateDistanceMeters: Float) :
+            FusedLocationProviderClientType(permission, context, settings, minUpdateDistanceMeters) {
 
             private val identifier = hashCode().toString()
 
@@ -162,19 +141,17 @@ class GoogleLocationProvider(
         fusedLocationProviderClients.value = fusedLocationProviderClients.value.toMutableMap().apply { remove(permission) }
     }
 
-    private fun getLocationProviderForPermission(permission: LocationPermission): FusedLocationProviderClientType {
-        return fusedLocationProviderClients.value[permission] ?: run {
-            val fusedLocationProviderClient = if (permission.background) {
-                FusedLocationProviderClientType.Background(permission, context, settings, minUpdateDistanceMeters)
-            } else {
-                FusedLocationProviderClientType.Foreground(permission, context, settings, minUpdateDistanceMeters)
-            }
-
-            fusedLocationProviderClients.value = fusedLocationProviderClients.value.toMutableMap().apply {
-                put(permission, fusedLocationProviderClient)
-            }
-            fusedLocationProviderClient
+    private fun getLocationProviderForPermission(permission: LocationPermission): FusedLocationProviderClientType = fusedLocationProviderClients.value[permission] ?: run {
+        val fusedLocationProviderClient = if (permission.background) {
+            FusedLocationProviderClientType.Background(permission, context, settings, minUpdateDistanceMeters)
+        } else {
+            FusedLocationProviderClientType.Foreground(permission, context, settings, minUpdateDistanceMeters)
         }
+
+        fusedLocationProviderClients.value = fusedLocationProviderClients.value.toMutableMap().apply {
+            put(permission, fusedLocationProviderClient)
+        }
+        fusedLocationProviderClient
     }
 }
 

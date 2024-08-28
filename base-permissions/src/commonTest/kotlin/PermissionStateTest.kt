@@ -34,17 +34,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertIs
 
-class PermissionStateTest : BaseFlowTest<
-    MockPermissionManager.Builder<DummyPermission>,
-    PermissionStateTest.Context,
-    PermissionState<DummyPermission>,
-    PermissionStateRepo<DummyPermission>,
-    >() {
+class PermissionStateTest :
+    BaseFlowTest<
+        MockPermissionManager.Builder<DummyPermission>,
+        PermissionStateTest.Context,
+        PermissionState<DummyPermission>,
+        PermissionStateRepo<DummyPermission>,
+        >() {
 
-    class Context(
-        val builder: MockPermissionManager.Builder<DummyPermission>,
-        coroutineScope: CoroutineScope,
-    ) : TestContext {
+    class Context(val builder: MockPermissionManager.Builder<DummyPermission>, coroutineScope: CoroutineScope) : TestContext {
         val permissionStateRepo = MockPermissionStateRepo(builder = builder, coroutineContext = coroutineScope.coroutineContext)
         val permissionManager get() = builder.createdManagers.first()
     }

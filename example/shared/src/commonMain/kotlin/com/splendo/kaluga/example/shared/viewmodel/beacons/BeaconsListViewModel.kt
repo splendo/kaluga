@@ -28,7 +28,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class BeaconsListViewModel : BaseLifecycleViewModel(), KoinComponent {
+class BeaconsListViewModel :
+    BaseLifecycleViewModel(),
+    KoinComponent {
 
     private val service: Beacons by inject()
 

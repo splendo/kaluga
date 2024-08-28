@@ -74,10 +74,9 @@ sealed class Jolt : AbstractScientificUnit<PhysicalQuantity.Jolt>() {
  * @param per the [Time] component
  */
 @Serializable
-data class MetricAndImperialJolt(
-    override val acceleration: MetricAndImperialAcceleration,
-    override val per: Time,
-) : Jolt(), MetricAndImperialScientificUnit<PhysicalQuantity.Jolt> {
+data class MetricAndImperialJolt(override val acceleration: MetricAndImperialAcceleration, override val per: Time) :
+    Jolt(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.Jolt> {
     override val system = MeasurementSystem.MetricAndImperial
 
     val metric = acceleration.metric per per
@@ -90,7 +89,9 @@ data class MetricAndImperialJolt(
  * @param per the [Time] component
  */
 @Serializable
-data class MetricJolt(override val acceleration: MetricAcceleration, override val per: Time) : Jolt(), MetricScientificUnit<PhysicalQuantity.Jolt> {
+data class MetricJolt(override val acceleration: MetricAcceleration, override val per: Time) :
+    Jolt(),
+    MetricScientificUnit<PhysicalQuantity.Jolt> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -100,7 +101,9 @@ data class MetricJolt(override val acceleration: MetricAcceleration, override va
  * @param per the [Time] component
  */
 @Serializable
-data class ImperialJolt(override val acceleration: ImperialAcceleration, override val per: Time) : Jolt(), ImperialScientificUnit<PhysicalQuantity.Jolt> {
+data class ImperialJolt(override val acceleration: ImperialAcceleration, override val per: Time) :
+    Jolt(),
+    ImperialScientificUnit<PhysicalQuantity.Jolt> {
     override val system = MeasurementSystem.Imperial
 }
 

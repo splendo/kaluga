@@ -42,9 +42,7 @@ class IOSHUDTests : HUDTests<IOSHUDTests.IOSHUDTestContext>() {
 
         var mockPresentingHUD: MockPresentingHUD? = null
 
-        override fun presentedViewController(): UIViewController? {
-            return mockPresentingHUD
-        }
+        override fun presentedViewController(): UIViewController? = mockPresentingHUD
 
         override fun presentViewController(viewControllerToPresent: UIViewController, animated: Boolean, completion: (() -> Unit)?) {
             (viewControllerToPresent as? MockPresentingHUD)?.let {
@@ -65,9 +63,7 @@ class IOSHUDTests : HUDTests<IOSHUDTests.IOSHUDTestContext>() {
 
         var parent: UIViewController? = null
 
-        override fun presentingViewController(): UIViewController? {
-            return parent
-        }
+        override fun presentingViewController(): UIViewController? = parent
     }
 
     @Test

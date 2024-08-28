@@ -119,19 +119,25 @@ sealed class Energy : AbstractScientificUnit<PhysicalQuantity.Energy>()
  * An [Energy] for [MeasurementSystem.Metric]
  */
 @Serializable
-sealed class MetricEnergy : Energy(), MetricScientificUnit<PhysicalQuantity.Energy>
+sealed class MetricEnergy :
+    Energy(),
+    MetricScientificUnit<PhysicalQuantity.Energy>
 
 /**
  * An [Energy] for [MeasurementSystem.Imperial]
  */
 @Serializable
-sealed class ImperialEnergy : Energy(), ImperialScientificUnit<PhysicalQuantity.Energy>
+sealed class ImperialEnergy :
+    Energy(),
+    ImperialScientificUnit<PhysicalQuantity.Energy>
 
 /**
  * An [Energy] for [MeasurementSystem.MetricAndImperial]
  */
 @Serializable
-sealed class MetricAndImperialEnergy : Energy(), MetricAndImperialScientificUnit<PhysicalQuantity.Energy>
+sealed class MetricAndImperialEnergy :
+    Energy(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.Energy>
 
 @Serializable
 data object Joule : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy> {
@@ -143,7 +149,9 @@ data object Joule : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, Phy
 }
 
 @Serializable
-sealed class JouleMultiple : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Joule>
+sealed class JouleMultiple :
+    MetricEnergy(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Joule>
 
 @Serializable
 data object Nanojoule : JouleMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Joule> by Nano(Joule)
@@ -186,7 +194,9 @@ data object Erg : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, Physi
 }
 
 @Serializable
-sealed class ErgMultiple : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg>
+sealed class ErgMultiple :
+    MetricEnergy(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg>
 
 @Serializable
 data object Nanoerg : ErgMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Erg> by Nano(Erg)
@@ -228,7 +238,9 @@ data object WattHour : MetricAndImperialEnergy(), MetricBaseUnit<MeasurementSyst
 }
 
 @Serializable
-sealed class WattHourMultiple : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour>
+sealed class WattHourMultiple :
+    MetricAndImperialEnergy(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour>
 
 @Serializable
 data object NanowattHour : WattHourMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, WattHour> by Nano(WattHour)
@@ -270,7 +282,9 @@ data object Electronvolt : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metr
 }
 
 @Serializable
-sealed class ElectronvoltMultiple : MetricEnergy(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Electronvolt>
+sealed class ElectronvoltMultiple :
+    MetricEnergy(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Electronvolt>
 
 @Serializable
 data object Nanoelectronvolt : ElectronvoltMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy, Electronvolt> by Nano(Electronvolt)
@@ -320,10 +334,14 @@ data object Calorie : MetricAndImperialEnergy(), CalorieUnit by CalorieBase(4.18
 }
 
 @Serializable
-sealed class CalorieMultiple : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, Calorie> {
+sealed class CalorieMultiple :
+    MetricAndImperialEnergy(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, Calorie> {
 
     @Serializable
-    sealed class IT : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, Calorie.IT>
+    sealed class IT :
+        MetricAndImperialEnergy(),
+        MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy, Calorie.IT>
 }
 
 @Serializable
@@ -395,10 +413,8 @@ data object HorsepowerHour : ImperialEnergy() {
 @Serializable
 data object BritishThermalUnit : ImperialEnergy(), SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Energy> by BritishThermalUnitBase(Calorie.IT) {
 
-    internal class BritishThermalUnitBase(
-        private val calorieUnit: CalorieUnit,
-        symbolPostfix: String = "",
-    ) : SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Energy> {
+    internal class BritishThermalUnitBase(private val calorieUnit: CalorieUnit, symbolPostfix: String = "") :
+        SystemScientificUnit<MeasurementSystem.Imperial, PhysicalQuantity.Energy> {
         override val symbol: String = "Btu$symbolPostfix"
         override val system = MeasurementSystem.Imperial
         override val quantity = PhysicalQuantity.Energy

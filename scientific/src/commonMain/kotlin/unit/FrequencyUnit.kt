@@ -47,7 +47,9 @@ val FrequencyUnits: Set<Frequency> get() = setOf(
  * SI unit is [Hertz]
  */
 @Serializable
-sealed class Frequency : AbstractScientificUnit<PhysicalQuantity.Frequency>(), MetricAndImperialScientificUnit<PhysicalQuantity.Frequency>
+sealed class Frequency :
+    AbstractScientificUnit<PhysicalQuantity.Frequency>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.Frequency>
 
 @Serializable
 data object Hertz : Frequency(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency> {
@@ -59,7 +61,9 @@ data object Hertz : Frequency(), MetricBaseUnit<MeasurementSystem.MetricAndImper
 }
 
 @Serializable
-sealed class HertzMultiple : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz>
+sealed class HertzMultiple :
+    Frequency(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz>
 
 @Serializable
 data object Nanohertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Frequency, Hertz> by Nano(Hertz)

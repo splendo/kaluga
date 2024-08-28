@@ -248,11 +248,9 @@ interface DeviceConnectionManager {
  * @param settings the [ConnectionSettings] to apply for connecting
  * @param coroutineScope the [CoroutineScope] on which the device should be managed
  */
-abstract class BaseDeviceConnectionManager(
-    protected val deviceWrapper: DeviceWrapper,
-    settings: ConnectionSettings,
-    private val coroutineScope: CoroutineScope,
-) : DeviceConnectionManager, CoroutineScope by coroutineScope {
+abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWrapper, settings: ConnectionSettings, private val coroutineScope: CoroutineScope) :
+    DeviceConnectionManager,
+    CoroutineScope by coroutineScope {
 
     private val logTag = "Bluetooth Device ${deviceWrapper.identifier.stringValue}"
     private val logger = settings.logger

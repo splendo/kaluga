@@ -171,12 +171,10 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
         }
 
     actual override fun format(date: KalugaDate): String = format.stringFromDate(date.date)
-    actual override fun parse(string: String): KalugaDate? {
-        return format.dateFromString(string)?.let { date ->
-            val calendar = format.calendar.copy() as NSCalendar
-            calendar.timeZone = timeZone.timeZone
-            DefaultKalugaDate(calendar, date)
-        }
+    actual override fun parse(string: String): KalugaDate? = format.dateFromString(string)?.let { date ->
+        val calendar = format.calendar.copy() as NSCalendar
+        calendar.timeZone = timeZone.timeZone
+        DefaultKalugaDate(calendar, date)
     }
 }
 

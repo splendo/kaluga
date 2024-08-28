@@ -85,7 +85,9 @@ sealed class VolumetricFlow : AbstractScientificUnit<PhysicalQuantity.Volumetric
  * @param per the [Time] component
  */
 @Serializable
-data class MetricVolumetricFlow(override val volume: MetricVolume, override val per: Time) : VolumetricFlow(), MetricScientificUnit<PhysicalQuantity.VolumetricFlow> {
+data class MetricVolumetricFlow(override val volume: MetricVolume, override val per: Time) :
+    VolumetricFlow(),
+    MetricScientificUnit<PhysicalQuantity.VolumetricFlow> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -95,7 +97,9 @@ data class MetricVolumetricFlow(override val volume: MetricVolume, override val 
  * @param per the [Time] component
  */
 @Serializable
-data class ImperialVolumetricFlow(override val volume: ImperialVolume, override val per: Time) : VolumetricFlow(), ImperialScientificUnit<PhysicalQuantity.VolumetricFlow> {
+data class ImperialVolumetricFlow(override val volume: ImperialVolume, override val per: Time) :
+    VolumetricFlow(),
+    ImperialScientificUnit<PhysicalQuantity.VolumetricFlow> {
     override val system = MeasurementSystem.Imperial
 
     /**
@@ -115,7 +119,9 @@ data class ImperialVolumetricFlow(override val volume: ImperialVolume, override 
  * @param per the [Time] component
  */
 @Serializable
-data class UKImperialVolumetricFlow(override val volume: UKImperialVolume, override val per: Time) : VolumetricFlow(), UKImperialScientificUnit<PhysicalQuantity.VolumetricFlow> {
+data class UKImperialVolumetricFlow(override val volume: UKImperialVolume, override val per: Time) :
+    VolumetricFlow(),
+    UKImperialScientificUnit<PhysicalQuantity.VolumetricFlow> {
     override val system = MeasurementSystem.UKImperial
 }
 
@@ -125,10 +131,9 @@ data class UKImperialVolumetricFlow(override val volume: UKImperialVolume, overr
  * @param per the [Time] component
  */
 @Serializable
-data class USCustomaryVolumetricFlow(
-    override val volume: USCustomaryVolume,
-    override val per: Time,
-) : VolumetricFlow(), USCustomaryScientificUnit<PhysicalQuantity.VolumetricFlow> {
+data class USCustomaryVolumetricFlow(override val volume: USCustomaryVolume, override val per: Time) :
+    VolumetricFlow(),
+    USCustomaryScientificUnit<PhysicalQuantity.VolumetricFlow> {
     override val system = MeasurementSystem.USCustomary
 }
 

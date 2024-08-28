@@ -27,15 +27,13 @@ import com.splendo.kaluga.test.base.mock.parameters.mock
 /**
  * Mock implementation of [Characteristic]
  */
-class MockCharacteristic(
-    characteristic: CharacteristicWrapper,
-    emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
-) : Characteristic(
-    wrapper = characteristic,
-    emitNewAction = emitNewAction,
-    parentLogTag = "",
-    logger = defaultLogger,
-) {
+class MockCharacteristic(characteristic: CharacteristicWrapper, emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit) :
+    Characteristic(
+        wrapper = characteristic,
+        emitNewAction = emitNewAction,
+        parentLogTag = "",
+        logger = defaultLogger,
+    ) {
 
     /**
      * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [updateValue]

@@ -38,7 +38,9 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<ViewFocusHandler, Andro
         private const val VIEW_ID = 1
     }
 
-    inner class AndroidKeyboardTestContext(coroutineScope: CoroutineScope) : KeyboardTestContext<ViewFocusHandler>(), CoroutineScope by coroutineScope {
+    inner class AndroidKeyboardTestContext(coroutineScope: CoroutineScope) :
+        KeyboardTestContext<ViewFocusHandler>(),
+        CoroutineScope by coroutineScope {
 
         val handler = mock(Handler::class.java)
 

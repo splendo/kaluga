@@ -37,9 +37,7 @@ actual fun singleThreadDispatcher(name: String): CloseableCoroutineDispatcher = 
  */
 actual fun threadPoolDispatcher(numberOfThreads: UInt, name: String): CloseableCoroutineDispatcher = CoroutineDispatcherWrapper(Dispatchers.Default)
 
-private class CoroutineDispatcherWrapper(
-    private val base: CoroutineDispatcher,
-) : CloseableCoroutineDispatcher() {
+private class CoroutineDispatcherWrapper(private val base: CoroutineDispatcher) : CloseableCoroutineDispatcher() {
     override fun dispatch(context: CoroutineContext, block: Runnable) {
         base.dispatch(context, block)
     }
