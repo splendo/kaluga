@@ -22,12 +22,12 @@ import com.splendo.kaluga.test.base.captureFor
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -55,11 +55,11 @@ class RecurringTimerTest {
         timer.state.assertEmits("timer is not running after start") { it is Timer.State.Running }
         delay(500)
         timer.state.assertEmits("timer was not finished after time elapsed") { it is Timer.State.NotRunning.Finished }
-        timer.start()
+        assertFailsWith<IllegalStateException> { timer.start() }
         timer.state.assertEmits("was able to start timer after finish") { it is Timer.State.NotRunning.Finished }
-        timer.pause()
+        assertFailsWith<IllegalStateException> { timer.pause() }
         timer.state.assertEmits("was able to pause timer after finish") { it is Timer.State.NotRunning.Finished }
-        timerScope.cancel()
+        timer.awaitFinish()
     }
 
     @Test
@@ -75,7 +75,26 @@ class RecurringTimerTest {
             timer.start()
             timer.awaitFinish()
         }
-        timerScope.cancel()
+    }
+
+    @Test
+    fun stop(): Unit = runBlocking {
+        val timerScope = CoroutineScope(Dispatchers.Default)
+        val timer = RecurringTimer(
+            duration = 100.milliseconds,
+            interval = 10.milliseconds,
+            coroutineScope = timerScope,
+        )
+        timer.state.assertEmits("timer was not paused after creation") { it is Timer.State.NotRunning.Paused }
+        val initial = timer.elapsed().captureFor(100.milliseconds)
+        assertEquals(listOf(Duration.ZERO), initial, "timer was not started in paused state")
+
+        timer.start()
+        timer.state.assertEmits("timer is not running after start") { it is Timer.State.Running }
+        timer.stop()
+        timer.state.assertEmits("timer is not running after start") { it is Timer.State.NotRunning.Finished }
+        assertFailsWith<IllegalStateException> { timer.start() }
+        assertFailsWith<IllegalStateException> { timer.pause() }
     }
 
     @Test
@@ -114,7 +133,7 @@ class RecurringTimerTest {
         val final = timer.elapsed().captureFor(100.milliseconds)
         assertEquals(listOf(duration), final, "timer did not finish in the right state")
         assertTrue(result1.last() <= final.first(), "values are not in ascending order")
-        timerScope.cancel()
+        timer.awaitFinish()
     }
 
     // MARK - elapsedIrregularFlow test
@@ -157,6 +176,7 @@ class RecurringTimerTest {
 
     @Test
     fun elapsedIrregularFlow(): Unit = runBlocking {
+        val timerScope = CoroutineScope(Dispatchers.Default)
         val totalDuration = 500.milliseconds
 
         class Timings(emit: Int, afterEmit: Int, correction: Int) {
@@ -189,7 +209,7 @@ class RecurringTimerTest {
             interval = 100.milliseconds,
             timeSource = timeSource,
             delayFunction = delayHandler::delay,
-            coroutineScope = this,
+            coroutineScope = timerScope,
         )
 
         // capture and validate an initial state

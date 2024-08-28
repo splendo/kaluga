@@ -1,6 +1,7 @@
 public abstract interface class com/splendo/kaluga/datetime/timer/ControllableTimer : com/splendo/kaluga/datetime/timer/Timer {
 	public abstract fun pause (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun start (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun stop (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/datetime/timer/RecurringTimer : com/splendo/kaluga/datetime/timer/ControllableTimer {
@@ -11,6 +12,7 @@ public final class com/splendo/kaluga/datetime/timer/RecurringTimer : com/splend
 	public fun getState ()Lkotlinx/coroutines/flow/Flow;
 	public fun pause (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun start (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun stop (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class com/splendo/kaluga/datetime/timer/Timer {

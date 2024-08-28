@@ -23,6 +23,7 @@ import com.splendo.kaluga.base.state.KalugaState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -58,9 +59,26 @@ class RecurringTimer(
     override val state: Flow<Timer.State> = stateRepo.stateFlow.map { it.timerState }
     override val currentState: Timer.State get() = stateRepo.stateFlow.value.timerState
 
-    override suspend fun start() = stateRepo.start()
+    init {
+        coroutineScope.launch {
+            awaitFinish()
+            stateRepo.cancel()
+        }
+    }
 
-    override suspend fun pause() = stateRepo.pause()
+    override suspend fun start() = runIfNotFinished { start() }
+
+    override suspend fun pause() = runIfNotFinished { pause() }
+
+    override suspend fun stop() = runIfNotFinished { stop() }
+
+    private suspend fun runIfNotFinished(block: suspend TimerStateRepo.() -> Unit) {
+        if (stateRepo.peekState() is Timer.State.NotRunning.Finished) {
+            throw IllegalStateException("Timer has already finished")
+        } else {
+            stateRepo.block()
+        }
+    }
 }
 
 /** Timer state machine. */
@@ -94,6 +112,17 @@ private class TimerStateRepo(
             takeAndChangeState { state ->
                 when (state) {
                     is State.Running -> state::pause
+                    is State.NotRunning -> state.remain()
+                }
+            }
+        }
+    }
+
+    suspend fun stop() {
+        withContext(coroutineScope.coroutineContext) {
+            takeAndChangeState { state ->
+                when (state) {
+                    is State.Running -> state::stop
                     is State.NotRunning -> state.remain()
                 }
             }
@@ -173,6 +202,7 @@ private class TimerStateRepo(
             internal suspend fun pause(): NotRunning.Paused {
                 return NotRunning.Paused(elapsed.first(), totalDuration)
             }
+            internal suspend fun stop(): NotRunning.Finished = NotRunning.Finished(elapsed.first())
             internal fun finish(): NotRunning.Finished = NotRunning.Finished(totalDuration)
 
             override suspend fun beforeOldStateIsRemoved(oldState: State) {

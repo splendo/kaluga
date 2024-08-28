@@ -65,13 +65,25 @@ interface Timer {
     }
 }
 
-/** A [Timer] ticking a certain [duration] with the ability to [start] and [pause]. */
+/** A [Timer] ticking a certain [duration] with the ability to [start], [pause] and [stop]. */
 interface ControllableTimer : Timer {
-    /** Starts the timer. */
+    /**
+     * Starts the timer.
+     * @throws [IllegalStateException] if the timer has finished.
+     * */
     suspend fun start()
 
-    /** Stops the timer. */
+    /**
+     * Pauses the timer. Calling [start] again will make it resume.
+     * @throws [IllegalStateException] if the timer has finished.
+     * */
     suspend fun pause()
+
+    /**
+     * Stops the timer causing it to finish. Calling [start] again will throw [IllegalStateException]
+     * @throws [IllegalStateException] if the timer has finished.
+     * */
+    suspend fun stop()
 }
 
 /** [Duration] that has elapsed while [Timer.state] was [Timer.State.Running]. */
