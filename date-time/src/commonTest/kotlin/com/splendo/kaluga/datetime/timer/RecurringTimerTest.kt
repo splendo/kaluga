@@ -24,10 +24,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -81,7 +83,7 @@ class RecurringTimerTest {
     fun stop(): Unit = runBlocking {
         val timerScope = CoroutineScope(Dispatchers.Default)
         val timer = RecurringTimer(
-            duration = 100.milliseconds,
+            duration = 10000.milliseconds,
             interval = 10.milliseconds,
             coroutineScope = timerScope,
         )
@@ -90,11 +92,13 @@ class RecurringTimerTest {
         assertEquals(listOf(Duration.ZERO), initial, "timer was not started in paused state")
 
         timer.start()
+        assertTrue(timerScope.isActive)
         timer.state.assertEmits("timer is not running after start") { it is Timer.State.Running }
         timer.stop()
         timer.state.assertEmits("timer is not running after start") { it is Timer.State.NotRunning.Finished }
         assertFailsWith<IllegalStateException> { timer.start() }
         assertFailsWith<IllegalStateException> { timer.pause() }
+        assertFalse(timerScope.isActive)
     }
 
     @Test
