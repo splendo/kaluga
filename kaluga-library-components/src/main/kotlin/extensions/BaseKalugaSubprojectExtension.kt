@@ -131,7 +131,7 @@ sealed class BaseKalugaSubprojectExtension(
     protected abstract fun Project.configureSubproject()
 
     protected abstract fun LibraryExtension.configure()
-    fun Project.setupPublishing() {
+    private fun Project.setupPublishing() {
         extensions.configure(PublishingExtension::class) {
             publications {
                 configure(project)

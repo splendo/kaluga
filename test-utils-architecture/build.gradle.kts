@@ -17,5 +17,10 @@ kaluga {
                 implementation(libs.kotlinx.atomicfu)
             }
         }
+        js {
+            main {
+                api(libs.kotlinx.atomicfu)
+            }
+        }
     }
 }

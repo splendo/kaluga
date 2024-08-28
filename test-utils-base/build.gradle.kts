@@ -36,6 +36,7 @@ kaluga {
         js {
             main {
                 api(kotlin("test-js"))
+                api(libs.kotlinx.atomicfu)
             }
         }
         jvm {
