@@ -81,7 +81,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     override fun Project.setupSubproject() {
         // Android Target must be setup before project is evaluated as publishing will break otherwise
         extensions.configure(KotlinMultiplatformExtension::class) {
-            androidTarget("androidLib") {
+            androidTarget() {
                 instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
                 unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
                 publishAllLibraryVariants()
@@ -199,21 +199,21 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     }
                 }
 
-                getByName("androidLibMain").apply {
+                androidMain.configure {
                     dependencies {
                         androidMainDependencies.forEach { implementation(it) }
                         multiplatformDependencies.android.mainDependencies.forEach { it.execute(this) }
                     }
                 }
 
-                getByName("androidLibUnitTest").apply {
+                androidUnitTest.configure {
                     dependencies {
                         androidTestDependencies.forEach { implementation(it) }
                         multiplatformDependencies.android.testDependencies.forEach { it.execute(this) }
                     }
                 }
 
-                getByName("androidLibInstrumentedTest").apply {
+                androidInstrumentedTest.configure {
                     dependencies {
                         androidInstrumentedTestDependencies.forEach { implementation(it) }
                         multiplatformDependencies.android.instrumentedTestDependencies.forEach { it.execute(this) }
