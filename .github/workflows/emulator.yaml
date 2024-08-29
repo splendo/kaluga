@@ -78,7 +78,7 @@ jobs:
 
       - name: install ffmpeg
         if: inputs.video
-        uses: FedericoCarboni/setup-ffmpeg@v2
+        uses: FedericoCarboni/setup-ffmpeg@v3
 
       - name: pregenerate test package
         if: inputs.video
