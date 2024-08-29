@@ -116,18 +116,16 @@ class AVPermissionHelper(
     }
 }
 
-private fun AVAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
-    return when (this) {
-        AVAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
-        AVAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
-        AVAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
-        AVAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        else -> {
-            error(
-                "AVPermissionManager",
-                "Unknown AVManagerAuthorization status={$this}",
-            )
-            IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        }
+private fun AVAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
+    AVAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+    AVAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+    AVAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+    AVAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+    else -> {
+        error(
+            "AVPermissionManager",
+            "Unknown AVManagerAuthorization status={$this}",
+        )
+        IOSPermissionsHelper.AuthorizationStatus.NotDetermined
     }
 }

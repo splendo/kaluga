@@ -37,9 +37,7 @@ internal interface CornerRadiusSize {
     fun yToPx(shapeSize: Size, density: Density): Float
 }
 
-internal fun CornerRadiusSize.isValid(shapeSize: Size, density: Density): Boolean {
-    return xToPx(shapeSize, density) >= 0.0f && yToPx(shapeSize, density) >= 0.0f
-}
+internal fun CornerRadiusSize.isValid(shapeSize: Size, density: Density): Boolean = xToPx(shapeSize, density) >= 0.0f && yToPx(shapeSize, density) >= 0.0f
 
 @Stable
 internal fun CornerRadiusSize(x: Dp, y: Dp): CornerRadiusSize = DpCornerRadiusSize(x, y)
@@ -126,10 +124,8 @@ internal class RoundedCornerRadiusShape(
         )
     }
 
-    override fun toString(): String {
-        return "RoundedCornerRadiusShape(topStart = $topStart, topEnd = $topEnd, bottomEnd = " +
-            "$bottomEnd, bottomStart = $bottomStart)"
-    }
+    override fun toString(): String = "RoundedCornerRadiusShape(topStart = $topStart, topEnd = $topEnd, bottomEnd = " +
+        "$bottomEnd, bottomStart = $bottomStart)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

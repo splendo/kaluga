@@ -67,9 +67,8 @@ actual class DefaultScanner internal constructor(
      */
     class Builder(private val scanSettings: ScanSettings = ScanSettings.defaultScanOptions) : BaseScanner.Builder {
 
-        override fun create(settings: Settings, coroutineScope: CoroutineScope, scanningDispatcher: CoroutineDispatcher): BaseScanner {
-            return DefaultScanner(settings, scanSettings, coroutineScope, scanningDispatcher)
-        }
+        override fun create(settings: Settings, coroutineScope: CoroutineScope, scanningDispatcher: CoroutineDispatcher): BaseScanner =
+            DefaultScanner(settings, scanSettings, coroutineScope, scanningDispatcher)
     }
 
     /**
@@ -77,10 +76,7 @@ actual class DefaultScanner internal constructor(
      * @param allowDuplicateKeys if `true` a new discovery event will be sent each time advertisement data is received. Otherwise multiple discoveries will be grouped into a single discovery event
      * @param solicitedServiceUUIDsKey when not empty the scanner will also scan for peripherals soliciting any services matching the [UUID]
      */
-    class ScanSettings private constructor(
-        private val allowDuplicateKeys: Boolean,
-        private val solicitedServiceUUIDsKey: List<UUID>?,
-    ) {
+    class ScanSettings private constructor(private val allowDuplicateKeys: Boolean, private val solicitedServiceUUIDsKey: List<UUID>?) {
 
         companion object {
             internal val defaultScanOptions = Builder().build()
@@ -126,10 +122,9 @@ actual class DefaultScanner internal constructor(
         }
     }
 
-    private class PoweredOnCBCentralManagerDelegate(
-        private val scanner: DefaultScanner,
-        private val isEnabledCompleted: EmptyCompletableDeferred,
-    ) : NSObject(), CBCentralManagerDelegateProtocol {
+    private class PoweredOnCBCentralManagerDelegate(private val scanner: DefaultScanner, private val isEnabledCompleted: EmptyCompletableDeferred) :
+        NSObject(),
+        CBCentralManagerDelegateProtocol {
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
             if (central.state == CBCentralManagerStatePoweredOn) {
@@ -173,11 +168,9 @@ actual class DefaultScanner internal constructor(
     private var centralManagerDelegate: CBCentralManagerDelegateProtocol? = null
     private val centralManagerMutex = Mutex()
 
-    private suspend fun getOrCreateCentralManager(): CBCentralManager {
-        return centralManager ?: centralManagerMutex.withLock {
-            centralManager ?: createCentralManager().also {
-                centralManager = it
-            }
+    private suspend fun getOrCreateCentralManager(): CBCentralManager = centralManager ?: centralManagerMutex.withLock {
+        centralManager ?: createCentralManager().also {
+            centralManager = it
         }
     }
 

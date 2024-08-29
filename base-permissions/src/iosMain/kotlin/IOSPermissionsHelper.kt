@@ -100,11 +100,8 @@ interface AuthorizationStatusHandler {
  * @param logTag the tag wto use for logging
  * @param logger the [Logger] to use for logging
  */
-class DefaultAuthorizationStatusHandler(
-    private val eventChannel: SendChannel<PermissionManager.Event>,
-    private val logTag: String,
-    private val logger: Logger,
-) : AuthorizationStatusHandler {
+class DefaultAuthorizationStatusHandler(private val eventChannel: SendChannel<PermissionManager.Event>, private val logTag: String, private val logger: Logger) :
+    AuthorizationStatusHandler {
 
     override fun status(status: AuthorizationStatus) {
         when (status) {

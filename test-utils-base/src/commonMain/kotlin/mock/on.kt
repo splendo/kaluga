@@ -30,9 +30,8 @@ fun <
     Result,
     Answer,
     Stub,
-    >.on(): Stub {
-    return onMatcher(VoidParameters.Matchers)
-}
+    >.on(): Stub =
+    onMatcher(VoidParameters.Matchers)
 
 /**
  * Generates a stub for a [BaseMethodMock] with one parameter
@@ -59,9 +58,7 @@ fun <
     Stub,
     >.on(
     value: ParameterMatcher<Value> = ParameterMatcher.any(),
-): Stub {
-    return onMatcher(SingleParameters.Matchers(value))
-}
+): Stub = onMatcher(SingleParameters.Matchers(value))
 
 /**
  * Generates a stub for a [BaseMethodMock] with two parameters
@@ -91,9 +88,7 @@ fun <
     >.on(
     first: ParameterMatcher<T0> = ParameterMatcher.any(),
     second: ParameterMatcher<T1> = ParameterMatcher.any(),
-): Stub {
-    return onMatcher(PairParameters.Matchers(first, second))
-}
+): Stub = onMatcher(PairParameters.Matchers(first, second))
 
 /**
  * Generates a stub for a [BaseMethodMock] with three parameters
@@ -126,9 +121,7 @@ fun <
     first: ParameterMatcher<T0> = ParameterMatcher.any(),
     second: ParameterMatcher<T1> = ParameterMatcher.any(),
     third: ParameterMatcher<T2> = ParameterMatcher.any(),
-): Stub {
-    return onMatcher(TripleParameters.Matchers(first, second, third))
-}
+): Stub = onMatcher(TripleParameters.Matchers(first, second, third))
 
 /**
  * Generates a stub for a [BaseMethodMock] with four parameters
@@ -164,9 +157,7 @@ fun <
     second: ParameterMatcher<T1> = ParameterMatcher.any(),
     third: ParameterMatcher<T2> = ParameterMatcher.any(),
     fourth: ParameterMatcher<T3> = ParameterMatcher.any(),
-): Stub {
-    return onMatcher(QuadrupleParameters.Matchers(first, second, third, fourth))
-}
+): Stub = onMatcher(QuadrupleParameters.Matchers(first, second, third, fourth))
 
 /**
  * Generates a stub for a [BaseMethodMock] with five parameters
@@ -205,6 +196,4 @@ fun <
     third: ParameterMatcher<T2> = ParameterMatcher.any(),
     fourth: ParameterMatcher<T3> = ParameterMatcher.any(),
     fifth: ParameterMatcher<T4> = ParameterMatcher.any(),
-): Stub {
-    return onMatcher(QuintupleParameters.Matchers(first, second, third, fourth, fifth))
-}
+): Stub = onMatcher(QuintupleParameters.Matchers(first, second, third, fourth, fifth))

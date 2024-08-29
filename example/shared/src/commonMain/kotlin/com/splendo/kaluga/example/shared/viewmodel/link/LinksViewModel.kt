@@ -31,20 +31,14 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Repository(
-    val name: String,
-    val type: String,
-)
+data class Repository(val name: String, val type: String)
 
 sealed class BrowserNavigationActions<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
     class OpenWebView(url: String) : BrowserNavigationActions<String>(url, NavigationBundleSpecType.StringType)
 }
 
-class LinksViewModel(
-    linkManagerBuilder: LinksManager.Builder,
-    private val alertPresenterBuilder: BaseAlertPresenter.Builder,
-    navigator: Navigator<BrowserNavigationActions<*>>,
-) : NavigatingViewModel<BrowserNavigationActions<*>>(navigator, alertPresenterBuilder) {
+class LinksViewModel(linkManagerBuilder: LinksManager.Builder, private val alertPresenterBuilder: BaseAlertPresenter.Builder, navigator: Navigator<BrowserNavigationActions<*>>) :
+    NavigatingViewModel<BrowserNavigationActions<*>>(navigator, alertPresenterBuilder) {
 
     val browserButtonText = observableOf("browser_button_text".localized())
     val linksInstructions = observableOf("links_instructions".localized())

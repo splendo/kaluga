@@ -26,9 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class NetworkViewModel(
-    networkStateRepoBuilder: NetworkStateRepoBuilder,
-) : BaseLifecycleViewModel() {
+class NetworkViewModel(networkStateRepoBuilder: NetworkStateRepoBuilder) : BaseLifecycleViewModel() {
 
     private val networkRepo = networkStateRepoBuilder.create()
 

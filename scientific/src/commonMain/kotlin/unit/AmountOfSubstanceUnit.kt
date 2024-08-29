@@ -44,7 +44,9 @@ val AmountOfSubstanceUnits: Set<AmountOfSubstance> get() = setOf(
  * SI unit is [Mole]
  */
 @Serializable
-sealed class AmountOfSubstance : AbstractScientificUnit<PhysicalQuantity.AmountOfSubstance>(), MetricAndImperialScientificUnit<PhysicalQuantity.AmountOfSubstance>
+sealed class AmountOfSubstance :
+    AbstractScientificUnit<PhysicalQuantity.AmountOfSubstance>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.AmountOfSubstance>
 
 @Serializable
 data object Mole : AmountOfSubstance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance> {
@@ -56,7 +58,9 @@ data object Mole : AmountOfSubstance(), MetricBaseUnit<MeasurementSystem.MetricA
 }
 
 @Serializable
-sealed class MoleMultiple : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole>
+sealed class MoleMultiple :
+    AmountOfSubstance(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole>
 
 @Serializable
 data object Nanomole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.AmountOfSubstance, Mole> by Nano(Mole)

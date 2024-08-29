@@ -31,5 +31,10 @@ kaluga {
                 api(project(":test-utils-architecture", ""))
             }
         }
+        js {
+            main {
+                api(libs.kotlinx.atomicfu)
+            }
+        }
     }
 }

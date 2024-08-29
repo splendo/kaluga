@@ -35,7 +35,9 @@ import org.koin.core.component.inject
 
 private val locationDispatcher = singleThreadDispatcher("LocationDispatcher")
 
-class LocationViewModel(permission: LocationPermission) : BaseLifecycleViewModel(), KoinComponent {
+class LocationViewModel(permission: LocationPermission) :
+    BaseLifecycleViewModel(),
+    KoinComponent {
 
     private val logger: Logger by inject()
     private val repoBuilder: LocationStateRepoBuilder by inject()

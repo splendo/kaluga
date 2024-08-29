@@ -130,13 +130,17 @@ sealed class Pressure : AbstractScientificUnit<PhysicalQuantity.Pressure>()
  * A [Pressure] for [MeasurementSystem.Metric]
  */
 @Serializable
-sealed class MetricPressure : Pressure(), MetricScientificUnit<PhysicalQuantity.Pressure>
+sealed class MetricPressure :
+    Pressure(),
+    MetricScientificUnit<PhysicalQuantity.Pressure>
 
 /**
  * A [Pressure] for [MeasurementSystem.Imperial]
  */
 @Serializable
-sealed class ImperialPressure : Pressure(), ImperialScientificUnit<PhysicalQuantity.Pressure> {
+sealed class ImperialPressure :
+    Pressure(),
+    ImperialScientificUnit<PhysicalQuantity.Pressure> {
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Pressure
 }
@@ -145,7 +149,9 @@ sealed class ImperialPressure : Pressure(), ImperialScientificUnit<PhysicalQuant
  * A [Pressure] for [MeasurementSystem.UKImperial]
  */
 @Serializable
-sealed class UKImperialPressure : Pressure(), UKImperialScientificUnit<PhysicalQuantity.Pressure> {
+sealed class UKImperialPressure :
+    Pressure(),
+    UKImperialScientificUnit<PhysicalQuantity.Pressure> {
     override val system = MeasurementSystem.UKImperial
     override val quantity = PhysicalQuantity.Pressure
 }
@@ -154,7 +160,9 @@ sealed class UKImperialPressure : Pressure(), UKImperialScientificUnit<PhysicalQ
  * A [Pressure] for [MeasurementSystem.USCustomary]
  */
 @Serializable
-sealed class USCustomaryPressure : Pressure(), USCustomaryScientificUnit<PhysicalQuantity.Pressure> {
+sealed class USCustomaryPressure :
+    Pressure(),
+    USCustomaryScientificUnit<PhysicalQuantity.Pressure> {
     override val system = MeasurementSystem.USCustomary
     override val quantity = PhysicalQuantity.Pressure
 }
@@ -169,7 +177,9 @@ data object Pascal : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, 
 }
 
 @Serializable
-sealed class PascalMultiple : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal>
+sealed class PascalMultiple :
+    MetricPressure(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal>
 
 @Serializable
 data object Nanopascal : PascalMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Pascal> by Nano(Pascal)
@@ -212,7 +222,9 @@ data object Bar : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, Phy
 }
 
 @Serializable
-sealed class BarMultiple : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar>
+sealed class BarMultiple :
+    MetricPressure(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar>
 
 @Serializable
 data object Nanobar : BarMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Bar> by Nano(Bar)
@@ -255,7 +267,9 @@ data object Barye : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, P
 }
 
 @Serializable
-sealed class BaryeMultiple : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye>
+sealed class BaryeMultiple :
+    MetricPressure(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye>
 
 @Serializable
 data object Nanobarye : BaryeMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Barye> by Nano(Barye)
@@ -308,7 +322,9 @@ data object Torr : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, Ph
 }
 
 @Serializable
-sealed class TorrMultiple : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr>
+sealed class TorrMultiple :
+    MetricPressure(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr>
 
 @Serializable
 data object Nanotorr : TorrMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure, Torr> by Nano(Torr)

@@ -70,7 +70,9 @@ sealed class Speed : AbstractScientificUnit<PhysicalQuantity.Speed>() {
  * @param per the [Time] component
  */
 @Serializable
-data class MetricSpeed(override val distance: MetricLength, override val per: Time) : Speed(), MetricScientificUnit<PhysicalQuantity.Speed> {
+data class MetricSpeed(override val distance: MetricLength, override val per: Time) :
+    Speed(),
+    MetricScientificUnit<PhysicalQuantity.Speed> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -80,7 +82,9 @@ data class MetricSpeed(override val distance: MetricLength, override val per: Ti
  * @param per the [Time] component
  */
 @Serializable
-data class ImperialSpeed(override val distance: ImperialLength, override val per: Time) : Speed(), ImperialScientificUnit<PhysicalQuantity.Speed> {
+data class ImperialSpeed(override val distance: ImperialLength, override val per: Time) :
+    Speed(),
+    ImperialScientificUnit<PhysicalQuantity.Speed> {
     override val system = MeasurementSystem.Imperial
 }
 

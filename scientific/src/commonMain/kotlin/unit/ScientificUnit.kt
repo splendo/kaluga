@@ -28,7 +28,9 @@ import kotlinx.serialization.Serializable
  * A unit of measurement for a [PhysicalQuantity]
  * @param Quantity the type of [PhysicalQuantity] to measure
  */
-sealed interface ScientificUnit<Quantity : PhysicalQuantity> : MeasurementUsage, com.splendo.kaluga.base.utils.Serializable {
+sealed interface ScientificUnit<Quantity : PhysicalQuantity> :
+    MeasurementUsage,
+    com.splendo.kaluga.base.utils.Serializable {
 
     /**
      * The symbol representing the unit
@@ -72,17 +74,23 @@ interface SystemScientificUnit<System : MeasurementSystem, Quantity : PhysicalQu
 /**
  * A [SystemScientificUnit] for [MeasurementSystem.Metric]
  */
-interface MetricScientificUnit<Quantity : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.Metric, Quantity>, MeasurementUsage.UsedInMetric
+interface MetricScientificUnit<Quantity : PhysicalQuantity> :
+    SystemScientificUnit<MeasurementSystem.Metric, Quantity>,
+    MeasurementUsage.UsedInMetric
 
 /**
  * A [SystemScientificUnit] for [MeasurementSystem.Imperial]
  */
-interface ImperialScientificUnit<Quantity : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.Imperial, Quantity>, MeasurementUsage.UsedInImperial
+interface ImperialScientificUnit<Quantity : PhysicalQuantity> :
+    SystemScientificUnit<MeasurementSystem.Imperial, Quantity>,
+    MeasurementUsage.UsedInImperial
 
 /**
  * A [SystemScientificUnit] for [MeasurementSystem.USCustomary]
  */
-interface USCustomaryScientificUnit<Quantity : PhysicalQuantity> : SystemScientificUnit<MeasurementSystem.USCustomary, Quantity>, MeasurementUsage.UsedInUSCustomary
+interface USCustomaryScientificUnit<Quantity : PhysicalQuantity> :
+    SystemScientificUnit<MeasurementSystem.USCustomary, Quantity>,
+    MeasurementUsage.UsedInUSCustomary
 
 /**
  * A [SystemScientificUnit] for [MeasurementSystem.UKImperial]

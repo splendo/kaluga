@@ -85,7 +85,9 @@ sealed class SpecificEnergy : AbstractScientificUnit<PhysicalQuantity.SpecificEn
  * @param per the [MetricWeight] component
  */
 @Serializable
-data class MetricSpecificEnergy(override val energy: MetricEnergy, override val per: MetricWeight) : SpecificEnergy(), MetricScientificUnit<PhysicalQuantity.SpecificEnergy> {
+data class MetricSpecificEnergy(override val energy: MetricEnergy, override val per: MetricWeight) :
+    SpecificEnergy(),
+    MetricScientificUnit<PhysicalQuantity.SpecificEnergy> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -95,10 +97,9 @@ data class MetricSpecificEnergy(override val energy: MetricEnergy, override val 
  * @param per the [ImperialWeight] component
  */
 @Serializable
-data class ImperialSpecificEnergy(
-    override val energy: ImperialEnergy,
-    override val per: ImperialWeight,
-) : SpecificEnergy(), ImperialScientificUnit<PhysicalQuantity.SpecificEnergy> {
+data class ImperialSpecificEnergy(override val energy: ImperialEnergy, override val per: ImperialWeight) :
+    SpecificEnergy(),
+    ImperialScientificUnit<PhysicalQuantity.SpecificEnergy> {
     override val system = MeasurementSystem.Imperial
 
     /**
@@ -118,10 +119,9 @@ data class ImperialSpecificEnergy(
  * @param per the [UKImperialWeight] component
  */
 @Serializable
-data class UKImperialSpecificEnergy(
-    override val energy: ImperialEnergy,
-    override val per: UKImperialWeight,
-) : SpecificEnergy(), UKImperialScientificUnit<PhysicalQuantity.SpecificEnergy> {
+data class UKImperialSpecificEnergy(override val energy: ImperialEnergy, override val per: UKImperialWeight) :
+    SpecificEnergy(),
+    UKImperialScientificUnit<PhysicalQuantity.SpecificEnergy> {
     override val system = MeasurementSystem.UKImperial
 }
 
@@ -131,10 +131,9 @@ data class UKImperialSpecificEnergy(
  * @param per the [USCustomaryWeight] component
  */
 @Serializable
-data class USCustomarySpecificEnergy(
-    override val energy: ImperialEnergy,
-    override val per: USCustomaryWeight,
-) : SpecificEnergy(), USCustomaryScientificUnit<PhysicalQuantity.SpecificEnergy> {
+data class USCustomarySpecificEnergy(override val energy: ImperialEnergy, override val per: USCustomaryWeight) :
+    SpecificEnergy(),
+    USCustomaryScientificUnit<PhysicalQuantity.SpecificEnergy> {
     override val system = MeasurementSystem.USCustomary
 }
 

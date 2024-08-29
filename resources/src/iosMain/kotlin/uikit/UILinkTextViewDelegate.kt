@@ -30,7 +30,9 @@ import platform.UIKit.UITextView
 import platform.UIKit.UITextViewDelegateProtocol
 import platform.darwin.NSObject
 
-internal class UILinkTextViewDelegate : NSObject(), UITextViewDelegateProtocol {
+internal class UILinkTextViewDelegate :
+    NSObject(),
+    UITextViewDelegateProtocol {
 
     object Registry {
         val registeredDelegates = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0U)
@@ -39,14 +41,14 @@ internal class UILinkTextViewDelegate : NSObject(), UITextViewDelegateProtocol {
     override fun textView(textView: UITextView, shouldInteractWithURL: NSURL, inRange: CValue<NSRange>, interaction: UITextItemInteraction): Boolean =
         textView(textView, shouldInteractWithURL, inRange)
 
-    override fun textView(textView: UITextView, shouldInteractWithURL: NSURL, inRange: CValue<NSRange>): Boolean {
-        return textView.attributedText.urlRanges.let { urls ->
-            urls.firstOrNull { it.first.range == inRange.range && it.second == shouldInteractWithURL } != null
-        }
+    override fun textView(textView: UITextView, shouldInteractWithURL: NSURL, inRange: CValue<NSRange>): Boolean = textView.attributedText.urlRanges.let { urls ->
+        urls.firstOrNull { it.first.range == inRange.range && it.second == shouldInteractWithURL } != null
     }
 }
 
-class UILinkTextViewDelegateWrapper(private val wrapped: UITextViewDelegateProtocol) : NSObject(), UITextViewDelegateProtocol {
+class UILinkTextViewDelegateWrapper(private val wrapped: UITextViewDelegateProtocol) :
+    NSObject(),
+    UITextViewDelegateProtocol {
 
     private val linkDelegate = UILinkTextViewDelegate()
 
@@ -56,9 +58,8 @@ class UILinkTextViewDelegateWrapper(private val wrapped: UITextViewDelegateProto
         replacementText,
     )
 
-    override fun textView(textView: UITextView, shouldInteractWithURL: NSURL, inRange: CValue<NSRange>, interaction: UITextItemInteraction): Boolean {
-        return linkDelegate.textView(textView, shouldInteractWithURL, inRange, interaction) || wrapped.textView(textView, shouldInteractWithURL, inRange, interaction)
-    }
+    override fun textView(textView: UITextView, shouldInteractWithURL: NSURL, inRange: CValue<NSRange>, interaction: UITextItemInteraction): Boolean =
+        linkDelegate.textView(textView, shouldInteractWithURL, inRange, interaction) || wrapped.textView(textView, shouldInteractWithURL, inRange, interaction)
 
     override fun textView(
         textView: UITextView,
@@ -67,9 +68,8 @@ class UILinkTextViewDelegateWrapper(private val wrapped: UITextViewDelegateProto
         interaction: UITextItemInteraction,
     ): Boolean = wrapped.textView(textView, shouldInteractWithTextAttachment, inRange)
 
-    override fun textView(textView: UITextView, shouldInteractWithURL: NSURL, inRange: CValue<NSRange>): Boolean {
-        return linkDelegate.textView(textView, shouldInteractWithURL, inRange) || wrapped.textView(textView, shouldInteractWithURL, inRange)
-    }
+    override fun textView(textView: UITextView, shouldInteractWithURL: NSURL, inRange: CValue<NSRange>): Boolean =
+        linkDelegate.textView(textView, shouldInteractWithURL, inRange) || wrapped.textView(textView, shouldInteractWithURL, inRange)
 
     override fun textView(textView: UITextView, shouldInteractWithTextAttachment: platform.UIKit.NSTextAttachment, inRange: CValue<NSRange>): Boolean =
         wrapped.textView(textView, shouldInteractWithTextAttachment, inRange)

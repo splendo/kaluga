@@ -204,8 +204,7 @@ sealed class Route : ComposableNavSpec() {
      * @param SpecRow the type of [NavigationBundleSpecRow] associated with the action.
      * @param Action the type [NavigationAction] to navigate for.
      */
-    sealed class Navigate<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> :
-        Route() {
+    sealed class Navigate<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>> : Route() {
         protected abstract val routeAction: Action
 
         /**
@@ -220,9 +219,7 @@ sealed class Route : ComposableNavSpec() {
      * @param Action the type [NavigationAction] to navigate for.
      * @property routeAction The [Action] associated with the screen to navigate to
      */
-    data class NextRoute<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
-        override val routeAction: Action,
-    ) : Navigate<SpecRow, Action>()
+    data class NextRoute<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(override val routeAction: Action) : Navigate<SpecRow, Action>()
 
     /**
      * [Navigate] that navigates from a given route to the screen associated with a [NavigationAction]
@@ -231,10 +228,8 @@ sealed class Route : ComposableNavSpec() {
      * @property routeAction The [Action] associated with the screen to navigate to
      * @property from The route string to navigate from
      */
-    data class FromRoute<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
-        override val routeAction: Action,
-        val from: String,
-    ) : Navigate<SpecRow, Action>()
+    data class FromRoute<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(override val routeAction: Action, val from: String) :
+        Navigate<SpecRow, Action>()
 
     /**
      * [Navigate] that navigates back to the screen associated with a [NavigationAction]
@@ -257,9 +252,7 @@ sealed class Route : ComposableNavSpec() {
      * @param Action the type [NavigationAction] to navigate for.
      * @property routeAction The [Action] associated with the screen to navigate back from
      */
-    data class PopToIncluding<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
-        override val routeAction: Action,
-    ) : Navigate<SpecRow, Action>()
+    data class PopToIncluding<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(override val routeAction: Action) : Navigate<SpecRow, Action>()
 
     /**
      * [Navigate] that replaces the current screen to the screen associated with a [NavigationAction]
@@ -267,9 +260,7 @@ sealed class Route : ComposableNavSpec() {
      * @param Action the type [NavigationAction] to navigate for.
      * @property routeAction The [Action] associated with the screen to replace the current screen with
      */
-    data class Replace<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(
-        override val routeAction: Action,
-    ) : Navigate<SpecRow, Action>()
+    data class Replace<SpecRow : NavigationBundleSpecRow<*>, Action : NavigationAction<SpecRow>>(override val routeAction: Action) : Navigate<SpecRow, Action>()
 
     /**
      * [Route] that navigates back one step in the hierarchy

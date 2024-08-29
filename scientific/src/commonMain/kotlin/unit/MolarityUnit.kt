@@ -85,7 +85,9 @@ sealed class Molarity : AbstractScientificUnit<PhysicalQuantity.Molarity>() {
  * @param per the [MetricVolume] component
  */
 @Serializable
-data class MetricMolarity(override val amountOfSubstance: AmountOfSubstance, override val per: MetricVolume) : Molarity(), MetricScientificUnit<PhysicalQuantity.Molarity> {
+data class MetricMolarity(override val amountOfSubstance: AmountOfSubstance, override val per: MetricVolume) :
+    Molarity(),
+    MetricScientificUnit<PhysicalQuantity.Molarity> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -95,7 +97,9 @@ data class MetricMolarity(override val amountOfSubstance: AmountOfSubstance, ove
  * @param per the [ImperialVolume] component
  */
 @Serializable
-data class ImperialMolarity(override val amountOfSubstance: AmountOfSubstance, override val per: ImperialVolume) : Molarity(), ImperialScientificUnit<PhysicalQuantity.Molarity> {
+data class ImperialMolarity(override val amountOfSubstance: AmountOfSubstance, override val per: ImperialVolume) :
+    Molarity(),
+    ImperialScientificUnit<PhysicalQuantity.Molarity> {
     override val system = MeasurementSystem.Imperial
 
     /**
@@ -115,10 +119,9 @@ data class ImperialMolarity(override val amountOfSubstance: AmountOfSubstance, o
  * @param per the [USCustomaryVolume] component
  */
 @Serializable
-data class USCustomaryMolarity(
-    override val amountOfSubstance: AmountOfSubstance,
-    override val per: USCustomaryVolume,
-) : Molarity(), USCustomaryScientificUnit<PhysicalQuantity.Molarity> {
+data class USCustomaryMolarity(override val amountOfSubstance: AmountOfSubstance, override val per: USCustomaryVolume) :
+    Molarity(),
+    USCustomaryScientificUnit<PhysicalQuantity.Molarity> {
     override val system = MeasurementSystem.USCustomary
 }
 
@@ -128,10 +131,9 @@ data class USCustomaryMolarity(
  * @param per the [UKImperialVolume] component
  */
 @Serializable
-data class UKImperialMolarity(
-    override val amountOfSubstance: AmountOfSubstance,
-    override val per: UKImperialVolume,
-) : Molarity(), UKImperialScientificUnit<PhysicalQuantity.Molarity> {
+data class UKImperialMolarity(override val amountOfSubstance: AmountOfSubstance, override val per: UKImperialVolume) :
+    Molarity(),
+    UKImperialScientificUnit<PhysicalQuantity.Molarity> {
     override val system = MeasurementSystem.UKImperial
 }
 

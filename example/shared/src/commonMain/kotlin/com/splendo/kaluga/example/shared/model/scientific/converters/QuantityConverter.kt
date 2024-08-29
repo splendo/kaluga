@@ -34,12 +34,10 @@ sealed class QuantityConverter<From : PhysicalQuantity, Result : PhysicalQuantit
     ) : QuantityConverter<From, Result>() {
 
         @Suppress("UNCHECKED_CAST")
-        fun convert(value: Decimal, unit: ScientificUnit<*>): ScientificValue<*, *>? {
-            return if (fromQuantity.isInstance(unit.quantity)) {
-                converter(value, unit as ScientificUnit<From>)
-            } else {
-                null
-            }
+        fun convert(value: Decimal, unit: ScientificUnit<*>): ScientificValue<*, *>? = if (fromQuantity.isInstance(unit.quantity)) {
+            converter(value, unit as ScientificUnit<From>)
+        } else {
+            null
         }
     }
 
@@ -67,8 +65,9 @@ sealed class QuantityConverter<From : PhysicalQuantity, Result : PhysicalQuantit
         }
 
         @Suppress("UNCHECKED_CAST")
-        fun convert(left: Decimal, leftUnit: ScientificUnit<*>, right: Decimal, rightUnit: ScientificUnit<*>): ScientificValue<*, *>? {
-            return if (leftQuantity.isInstance(leftUnit.quantity) && rightQuantity::class.isInstance(
+        fun convert(left: Decimal, leftUnit: ScientificUnit<*>, right: Decimal, rightUnit: ScientificUnit<*>): ScientificValue<*, *>? =
+            if (leftQuantity.isInstance(leftUnit.quantity) &&
+                rightQuantity::class.isInstance(
                     rightUnit.quantity,
                 )
             ) {
@@ -79,7 +78,6 @@ sealed class QuantityConverter<From : PhysicalQuantity, Result : PhysicalQuantit
             } else {
                 null
             }
-        }
     }
 }
 

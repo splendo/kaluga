@@ -146,10 +146,7 @@ sealed interface ButtonStateStyle {
     /**
      * A [ButtonStateStyle.WithText] for a [KalugaButtonStyle.TextOnly]
      */
-    data class TextOnly internal constructor(
-        override val textColor: KalugaColor,
-        override val backgroundStyle: KalugaBackgroundStyle,
-    ) : WithText
+    data class TextOnly internal constructor(override val textColor: KalugaColor, override val backgroundStyle: KalugaBackgroundStyle) : WithText
 
     /**
      * A [ButtonStateStyle] for a [KalugaButtonStyle.WithImage]
@@ -162,19 +159,16 @@ sealed interface ButtonStateStyle {
     /**
      * A [ButtonStateStyle.WithoutText] and [KalugaButtonStyle.WithImage] for a [KalugaButtonStyle.ImageOnly]
      */
-    data class ImageOnly internal constructor(
-        override val image: ButtonImage,
-        override val backgroundStyle: KalugaBackgroundStyle,
-    ) : WithoutText, WithImage
+    data class ImageOnly internal constructor(override val image: ButtonImage, override val backgroundStyle: KalugaBackgroundStyle) :
+        WithoutText,
+        WithImage
 
     /**
      * A [ButtonStateStyle.WithText] and [KalugaButtonStyle.WithImage] for a [KalugaButtonStyle.WithImageAndText]
      */
-    data class WithImageAndText internal constructor(
-        override val textColor: KalugaColor,
-        override val image: ButtonImage,
-        override val backgroundStyle: KalugaBackgroundStyle,
-    ) : WithText, WithImage
+    data class WithImageAndText internal constructor(override val textColor: KalugaColor, override val image: ButtonImage, override val backgroundStyle: KalugaBackgroundStyle) :
+        WithText,
+        WithImage
 }
 
 /**
@@ -276,7 +270,9 @@ sealed interface ButtonStateStyleDSL {
     /**
      * A [ButtonStateStyleDSL.WithImage] and [ButtonStateStyleDSL.WithText] for creating a [ButtonStateStyle.WithImageAndText]
      */
-    class WithImageAndText internal constructor() : WithImage(), WithText {
+    class WithImageAndText internal constructor() :
+        WithImage(),
+        WithText {
         override var textColor: KalugaColor = DefaultColors.black
     }
 }

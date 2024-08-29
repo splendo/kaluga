@@ -24,7 +24,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.yield
 
 open class SimpleUIThreadTest : UIThreadTest<SimpleUIThreadTest.SimpleTestContext>() {
-    class SimpleTestContext(coroutineScope: CoroutineScope) : TestContext, CoroutineScope by coroutineScope
+    class SimpleTestContext(coroutineScope: CoroutineScope) :
+        TestContext,
+        CoroutineScope by coroutineScope
 
     override val createTestContext: suspend (CoroutineScope) -> SimpleTestContext = { SimpleTestContext(it) }
 }

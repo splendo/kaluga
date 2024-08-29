@@ -167,11 +167,8 @@ internal class RelativeRadialGradient internal constructor(
  * Brush implementation used to apply a sweep gradient on a given [Paint]
  */
 @Immutable
-internal class RelativeSweepGradient internal constructor(
-    private val center: GradientStyle.CenterPoint,
-    private val colors: List<Color>,
-    private val stops: List<Float>? = null,
-) : ShaderBrush() {
+internal class RelativeSweepGradient internal constructor(private val center: GradientStyle.CenterPoint, private val colors: List<Color>, private val stops: List<Float>? = null) :
+    ShaderBrush() {
 
     constructor(center: GradientStyle.CenterPoint, vararg colorStops: Pair<Float, Color>) : this(
         colors = List<Color>(colorStops.size) { i -> colorStops[i].second },
@@ -206,9 +203,7 @@ internal class RelativeSweepGradient internal constructor(
         return result
     }
 
-    override fun toString(): String {
-        return "RelativeSweepGradient(" +
-            "center=$center, " +
-            "colors=$colors, stops=$stops)"
-    }
+    override fun toString(): String = "RelativeSweepGradient(" +
+        "center=$center, " +
+        "colors=$colors, stops=$stops)"
 }

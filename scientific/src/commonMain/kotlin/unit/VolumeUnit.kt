@@ -110,13 +110,17 @@ sealed class Volume : AbstractScientificUnit<PhysicalQuantity.Volume>()
  * A [Volume] for [MeasurementSystem.Metric]
  */
 @Serializable
-sealed class MetricVolume : Volume(), MetricScientificUnit<PhysicalQuantity.Volume>
+sealed class MetricVolume :
+    Volume(),
+    MetricScientificUnit<PhysicalQuantity.Volume>
 
 /**
  * A [Volume] for [MeasurementSystem.USCustomary]
  */
 @Serializable
-sealed class USCustomaryVolume : Volume(), USCustomaryScientificUnit<PhysicalQuantity.Volume> {
+sealed class USCustomaryVolume :
+    Volume(),
+    USCustomaryScientificUnit<PhysicalQuantity.Volume> {
     override val quantity = PhysicalQuantity.Volume
     override val system = MeasurementSystem.USCustomary
 }
@@ -125,7 +129,9 @@ sealed class USCustomaryVolume : Volume(), USCustomaryScientificUnit<PhysicalQua
  * A [Volume] for [MeasurementSystem.UKImperial]
  */
 @Serializable
-sealed class UKImperialVolume : Volume(), UKImperialScientificUnit<PhysicalQuantity.Volume> {
+sealed class UKImperialVolume :
+    Volume(),
+    UKImperialScientificUnit<PhysicalQuantity.Volume> {
     override val quantity = PhysicalQuantity.Volume
     override val system = MeasurementSystem.UKImperial
 }
@@ -134,7 +140,9 @@ sealed class UKImperialVolume : Volume(), UKImperialScientificUnit<PhysicalQuant
  * A [Volume] for [MeasurementSystem.Imperial]
  */
 @Serializable
-sealed class ImperialVolume : Volume(), ImperialScientificUnit<PhysicalQuantity.Volume>
+sealed class ImperialVolume :
+    Volume(),
+    ImperialScientificUnit<PhysicalQuantity.Volume>
 
 internal class Cubic<S : MeasurementSystem, U : SystemScientificUnit<S, PhysicalQuantity.Length>>(private val unit: U) : SystemScientificUnit<S, PhysicalQuantity.Volume> {
     override val symbol: String = "${unit.symbol}³"
@@ -191,7 +199,9 @@ data object Liter : MetricVolume(), MetricBaseUnit<MeasurementSystem.Metric, Phy
 }
 
 @Serializable
-sealed class LiterMultiple : MetricVolume(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter>
+sealed class LiterMultiple :
+    MetricVolume(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter>
 
 @Serializable
 data object Deciliter : LiterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Volume, Liter> by Deci(Liter)

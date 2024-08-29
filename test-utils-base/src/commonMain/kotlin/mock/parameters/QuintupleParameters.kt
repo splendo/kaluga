@@ -31,11 +31,12 @@ import kotlin.jvm.JvmName
 /**
  * The [ParametersSpec] for a five parameters
  */
-class QuintupleParameters<T0, T1, T2, T3, T4> : ParametersSpec<
-    QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
-    QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>,
-    QuintupleParameters.Values<T0, T1, T2, T3, T4>,
-    > {
+class QuintupleParameters<T0, T1, T2, T3, T4> :
+    ParametersSpec<
+        QuintupleParameters.Matchers<T0, T1, T2, T3, T4>,
+        QuintupleParameters.MatchersOrCaptor<T0, T1, T2, T3, T4>,
+        QuintupleParameters.Values<T0, T1, T2, T3, T4>,
+        > {
 
     /**
      * The [ParametersSpec.Matchers] for five parameters

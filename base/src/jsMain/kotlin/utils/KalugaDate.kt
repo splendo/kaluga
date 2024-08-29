@@ -102,15 +102,11 @@ actual class DefaultKalugaDate internal constructor(actual override val date: Ka
 
     actual override fun copy(): KalugaDate = DefaultKalugaDate(kotlin.js.Date(date.getTime().toLong()))
 
-    actual override fun equals(other: Any?): Boolean {
-        return (other as? KalugaDate)?.let {
-            timeZone == other.timeZone && durationSinceEpoch == other.durationSinceEpoch
-        } ?: false
-    }
+    actual override fun equals(other: Any?): Boolean = (other as? KalugaDate)?.let {
+        timeZone == other.timeZone && durationSinceEpoch == other.durationSinceEpoch
+    } ?: false
 
     actual override fun compareTo(other: KalugaDate): Int = date.getTime().compareTo(other.date.getTime())
 
-    actual override fun hashCode(): Int {
-        return date.hashCode()
-    }
+    actual override fun hashCode(): Int = date.hashCode()
 }

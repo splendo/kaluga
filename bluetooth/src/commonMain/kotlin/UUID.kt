@@ -41,8 +41,7 @@ sealed class UUIDException(message: String?) : Exception(message) {
      * A [UUIDException] thrown when [uuidFrom] cannot convert a string to a [UUID]
      * @param uuidString the string that could not be converted to a [UUID]
      */
-    class InvalidFormat(uuidString: String) :
-        UUIDException("String '$uuidString' does not represent a valid UUID")
+    class InvalidFormat(uuidString: String) : UUIDException("String '$uuidString' does not represent a valid UUID")
 }
 
 /**

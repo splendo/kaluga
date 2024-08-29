@@ -46,10 +46,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
 
-class BluetoothListViewModel(
-    private val alertPresenterBuilder: AlertPresenter.Builder,
-    navigator: Navigator<DeviceDetails>,
-) : NavigatingViewModel<DeviceDetails>(navigator, alertPresenterBuilder), KoinComponent {
+class BluetoothListViewModel(private val alertPresenterBuilder: AlertPresenter.Builder, navigator: Navigator<DeviceDetails>) :
+    NavigatingViewModel<DeviceDetails>(navigator, alertPresenterBuilder),
+    KoinComponent {
 
     private val bluetooth: Bluetooth by inject()
     private val isResumed = MutableStateFlow(false)

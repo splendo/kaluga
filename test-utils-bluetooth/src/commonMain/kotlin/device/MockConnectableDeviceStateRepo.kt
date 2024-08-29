@@ -24,13 +24,11 @@ import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
 import kotlin.coroutines.CoroutineContext
 
-class MockConnectableDeviceStateRepo(
-    mockConnectableDeviceManager: MockConnectableDeviceManager,
-    coroutineContext: CoroutineContext,
-) : BaseConnectableDeviceStateRepo(
-    coroutineContext = coroutineContext,
-    initialState = { MockDeviceState.Disconnected(mockConnectableDeviceManager) },
-)
+class MockConnectableDeviceStateRepo(mockConnectableDeviceManager: MockConnectableDeviceManager, coroutineContext: CoroutineContext) :
+    BaseConnectableDeviceStateRepo(
+        coroutineContext = coroutineContext,
+        initialState = { MockDeviceState.Disconnected(mockConnectableDeviceManager) },
+    )
 
 class MockConnectableDeviceManager {
 

@@ -47,10 +47,8 @@ class MockBasePermissionsBuilder<P : Permission> : BasePermissionsBuilder<P>
  * @param monitoringInterval The interval between monitoring for permission changes
  * @param setupMocks If `true` automatically sets up all permission managers.
  */
-class MockPermissionsBuilder(
-    initialActiveState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED,
-    setupMocks: Boolean = true,
-) : PermissionsBuilder(mockPermissionContext) {
+class MockPermissionsBuilder(initialActiveState: MockPermissionState.ActiveState = MockPermissionState.ActiveState.ALLOWED, setupMocks: Boolean = true) :
+    PermissionsBuilder(mockPermissionContext) {
 
     /**
      * List of created [PermissionStateRepo] for [CameraPermission]

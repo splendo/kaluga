@@ -44,7 +44,9 @@ val ElectricConductanceUnits: Set<ElectricConductance> get() = setOf(
  * SI unit is [Siemens]
  */
 @Serializable
-sealed class ElectricConductance : AbstractScientificUnit<PhysicalQuantity.ElectricConductance>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricConductance>
+sealed class ElectricConductance :
+    AbstractScientificUnit<PhysicalQuantity.ElectricConductance>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.ElectricConductance>
 
 @Serializable
 data object Siemens : ElectricConductance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance> {
@@ -56,7 +58,9 @@ data object Siemens : ElectricConductance(), MetricBaseUnit<MeasurementSystem.Me
 }
 
 @Serializable
-sealed class SiemensMultiple : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens>
+sealed class SiemensMultiple :
+    ElectricConductance(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens>
 
 @Serializable
 data object Nanosiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Nano(Siemens)

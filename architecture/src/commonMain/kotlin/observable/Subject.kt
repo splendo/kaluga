@@ -87,11 +87,9 @@ interface DefaultSubject<R : T?, T> :
  * @param observation The [Observation] to handle observing the value.
  * @param stateFlowToBind A function to get the [StateFlow] that will automatically call [SuspendableSetter.set] when a new value is posted after [BasicSubject.post] has been called.
  */
-abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(
-    observation: Observation<R, T, OO>,
-    private val stateFlowToBind: suspend () -> StateFlow<R?>,
-) :
-    BaseObservable<R, T, OO>(observation), BasicSubject<R, T, OO> {
+abstract class AbstractBaseSubject<R : T, T, OO : ObservableOptional<R>>(observation: Observation<R, T, OO>, private val stateFlowToBind: suspend () -> StateFlow<R?>) :
+    BaseObservable<R, T, OO>(observation),
+    BasicSubject<R, T, OO> {
 
     override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         coroutineScope.launch(context) {
@@ -113,10 +111,7 @@ expect interface PlatformSubjectObserver<R>
  * @param observation The [Observation] to handle observing the value.
  * @param stateFlowToBind A function to get the [StateFlow] that will automatically call [SuspendableSetter.set] when a new value is posted after [BasicSubject.post] has been called.
  */
-expect abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>>(
-    observation: Observation<R, T, OO>,
-    stateFlowToBind: suspend () -> StateFlow<R?>,
-) :
+expect abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>>(observation: Observation<R, T, OO>, stateFlowToBind: suspend () -> StateFlow<R?>) :
     AbstractBaseSubject<R, T, OO> {
     protected abstract val platformSubjectObserver: PlatformSubjectObserver<R>
     final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext)
@@ -157,8 +152,7 @@ abstract class AbstractBaseInitializedSubject<T>(override val observation: Obser
  * @param T the type of value to expect.
  * @param observation The [ObservationInitialized] to handle value being observed
  */
-expect abstract class BaseInitializedSubject<T>(observation: ObservationInitialized<T>) :
-    AbstractBaseInitializedSubject<T> {
+expect abstract class BaseInitializedSubject<T>(observation: ObservationInitialized<T>) : AbstractBaseInitializedSubject<T> {
 
     /**
      * Constructor using an inital value.
@@ -177,12 +171,11 @@ expect abstract class BaseInitializedSubject<T>(observation: ObservationInitiali
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
-abstract class AbstractBaseUninitializedSubject<T>(
-    override val observation: ObservationUninitialized<T>,
-) : BaseSubject<T, T, ObservableOptional<T>>(
-    observation,
-    { observation.stateFlow },
-),
+abstract class AbstractBaseUninitializedSubject<T>(override val observation: ObservationUninitialized<T>) :
+    BaseSubject<T, T, ObservableOptional<T>>(
+        observation,
+        { observation.stateFlow },
+    ),
     UninitializedSubject<T>,
     MutableUninitialized<T> by observation {
     override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> = observation.observedValue
@@ -193,9 +186,7 @@ abstract class AbstractBaseUninitializedSubject<T>(
  * @param T the type of value to expect.
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
-expect abstract class BaseUninitializedSubject<T>(
-    observation: ObservationUninitialized<T>,
-) : AbstractBaseUninitializedSubject<T> {
+expect abstract class BaseUninitializedSubject<T>(observation: ObservationUninitialized<T>) : AbstractBaseUninitializedSubject<T> {
     final override val platformSubjectObserver: PlatformSubjectObserver<T>
 }
 
@@ -206,12 +197,11 @@ expect abstract class BaseUninitializedSubject<T>(
  * @param observation The [ObservationDefault] to handle value being observed
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE") // deliberate
-abstract class AbstractBaseDefaultSubject<R : T?, T>(
-    override val observation: ObservationDefault<R, T?>,
-) : BaseSubject<R, T?, Value<R>>(
-    observation,
-    { observation.stateFlow },
-),
+abstract class AbstractBaseDefaultSubject<R : T?, T>(override val observation: ObservationDefault<R, T?>) :
+    BaseSubject<R, T?, Value<R>>(
+        observation,
+        { observation.stateFlow },
+    ),
     DefaultSubject<R, T>,
     MutableDefaultInitialized<R, T?> by observation {
     constructor(
@@ -228,9 +218,7 @@ abstract class AbstractBaseDefaultSubject<R : T?, T>(
  * @param R the type of result to expect. Must be a subclass of [T]
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
-expect abstract class BaseDefaultSubject<R : T?, T>(
-    observation: ObservationDefault<R, T?>,
-) : AbstractBaseDefaultSubject<R, T> {
+expect abstract class BaseDefaultSubject<R : T?, T>(observation: ObservationDefault<R, T?>) : AbstractBaseDefaultSubject<R, T> {
 
     /**
      * Constructor
@@ -251,11 +239,10 @@ expect abstract class BaseDefaultSubject<R : T?, T>(
  * @param observation The [ObservationInitialized] to handle observation.
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
-class SimpleInitializedSubject<T>(
-    override val observation: ObservationInitialized<T>,
-) : BaseInitializedSubject<T>(
-    observation,
-) {
+class SimpleInitializedSubject<T>(override val observation: ObservationInitialized<T>) :
+    BaseInitializedSubject<T>(
+        observation,
+    ) {
 
     /**
      * Constructor
@@ -289,10 +276,7 @@ class SimpleInitializedSubject<T>(
  * @param defaultValue The default [R] to return if the current value is [ObservableOptional.Nothing] or [ObservableOptional.Value] containing `null`.
  * @param initialValue The initial value of [T].
  */
-class SimpleDefaultSubject<R : T?, T>(
-    defaultValue: R,
-    initialValue: T? = defaultValue,
-) :
+class SimpleDefaultSubject<R : T?, T>(defaultValue: R, initialValue: T? = defaultValue) :
     BaseDefaultSubject<R, T?>(
         Value(defaultValue),
         Value(initialValue),

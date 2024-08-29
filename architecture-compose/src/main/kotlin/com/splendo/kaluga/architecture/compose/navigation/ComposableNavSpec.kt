@@ -354,10 +354,7 @@ sealed class ComposableNavSpec {
      * @property tag Optional tag to add to the Dialog
      * @property createDialog Function to create the [DialogFragment] to display
      */
-    data class Dialog(
-        val tag: String? = null,
-        val createDialog: () -> DialogFragment,
-    ) : LaunchedNavigation() {
+    data class Dialog(val tag: String? = null, val createDialog: () -> DialogFragment) : LaunchedNavigation() {
 
         @Composable
         override fun createLauncher(viewModel: BaseLifecycleViewModel, onDispose: () -> Unit): () -> Unit {

@@ -28,14 +28,14 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-class KoinFlowTestTest :
-    KoinFlowTest<KoinFlowTestTest.TestContext, Int, MutableStateFlow<Int>>() {
+class KoinFlowTestTest : KoinFlowTest<KoinFlowTestTest.TestContext, Int, MutableStateFlow<Int>>() {
 
-    class TestContext : KoinUIThreadTest.KoinTestContext(
-        module {
-            single { 1 }
-        },
-    ) {
+    class TestContext :
+        KoinUIThreadTest.KoinTestContext(
+            module {
+                single { 1 }
+            },
+        ) {
         val i: Int by inject()
     }
 

@@ -39,10 +39,8 @@ sealed class InfoNavigation<T>(value: T, type: NavigationBundleSpecType<T>) : Si
     class Mail(to: List<String>, subject: String) : InfoNavigation<MailSpec>(MailSpec(to, subject), NavigationBundleSpecType.SerializedType(MailSpec.serializer()))
 }
 
-class InfoViewModel(
-    reviewManagerBuilder: ReviewManager.Builder,
-    navigator: Navigator<InfoNavigation<*>>,
-) : NavigatingViewModel<InfoNavigation<*>>(navigator, reviewManagerBuilder) {
+class InfoViewModel(reviewManagerBuilder: ReviewManager.Builder, navigator: Navigator<InfoNavigation<*>>) :
+    NavigatingViewModel<InfoNavigation<*>>(navigator, reviewManagerBuilder) {
 
     sealed class Button(val title: String) {
         data object About : Button("About")

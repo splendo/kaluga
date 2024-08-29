@@ -127,11 +127,8 @@ private fun <ViewModel : BaseLifecycleViewModel> ViewModel.linkLifecycle(activit
     return this
 }
 
-private class VmObserver<ViewModel : BaseLifecycleViewModel>(
-    private val viewModel: ViewModel,
-    activity: AppCompatActivity?,
-    fragmentManager: FragmentManager,
-) : DefaultLifecycleObserver {
+private class VmObserver<ViewModel : BaseLifecycleViewModel>(private val viewModel: ViewModel, activity: AppCompatActivity?, fragmentManager: FragmentManager) :
+    DefaultLifecycleObserver {
 
     private val manager = LifecycleSubscribableManager(viewModel, activity, fragmentManager)
     private var resumed = false

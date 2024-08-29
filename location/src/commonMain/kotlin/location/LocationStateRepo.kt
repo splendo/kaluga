@@ -76,31 +76,29 @@ abstract class BaseLocationStateRepo(
  * @param createLocationManager method for creating the [LocationManager] to manage the [LocationState]
  * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
  */
-open class LocationStateImplRepo(
-    createLocationManager: suspend () -> LocationManager,
-    coroutineContext: CoroutineContext,
-) : BaseLocationStateRepo(
-    createNotInitializedState = { LocationStateImpl.NotInitialized },
-    createInitializingState = { state ->
-        when (state) {
-            is LocationStateImpl.NotInitialized -> {
-                val locationManager = createLocationManager()
-                (this as LocationStateImplRepo).startMonitoringLocationManager(locationManager)
-                state.startInitializing(locationManager)
+open class LocationStateImplRepo(createLocationManager: suspend () -> LocationManager, coroutineContext: CoroutineContext) :
+    BaseLocationStateRepo(
+        createNotInitializedState = { LocationStateImpl.NotInitialized },
+        createInitializingState = { state ->
+            when (state) {
+                is LocationStateImpl.NotInitialized -> {
+                    val locationManager = createLocationManager()
+                    (this as LocationStateImplRepo).startMonitoringLocationManager(locationManager)
+                    state.startInitializing(locationManager)
+                }
+                is LocationStateImpl.Deinitialized -> {
+                    (this as LocationStateImplRepo).startMonitoringLocationManager(state.locationManager)
+                    state.reinitialize
+                }
+                else -> state.remain()
             }
-            is LocationStateImpl.Deinitialized -> {
-                (this as LocationStateImplRepo).startMonitoringLocationManager(state.locationManager)
-                state.reinitialize
-            }
-            else -> state.remain()
-        }
-    },
-    createDeinitializingState = { state ->
-        (this as LocationStateImplRepo).superVisorJob.cancelChildren()
-        state.deinitialized
-    },
-    coroutineContext = coroutineContext,
-) {
+        },
+        createDeinitializingState = { state ->
+            (this as LocationStateImplRepo).superVisorJob.cancelChildren()
+            state.deinitialized
+        },
+        coroutineContext = coroutineContext,
+    ) {
 
     private val superVisorJob = SupervisorJob(coroutineContext[Job])
     private suspend fun startMonitoringLocationManager(locationManager: LocationManager) {
@@ -144,19 +142,16 @@ open class LocationStateImplRepo(
  * @param builder the [BaseLocationManager.Builder] for building a [BaseLocationManager]
  * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine
  */
-class LocationStateRepo(
-    settingsBuilder: suspend (CoroutineContext) -> BaseLocationManager.Settings,
-    builder: BaseLocationManager.Builder,
-    coroutineContext: CoroutineContext,
-) : LocationStateImplRepo(
-    createLocationManager = {
-        builder.create(
-            settingsBuilder(coroutineContext + CoroutineName("LocationPermissions")),
-            CoroutineScope(coroutineContext + CoroutineName("LocationManager")),
-        )
-    },
-    coroutineContext = coroutineContext,
-)
+class LocationStateRepo(settingsBuilder: suspend (CoroutineContext) -> BaseLocationManager.Settings, builder: BaseLocationManager.Builder, coroutineContext: CoroutineContext) :
+    LocationStateImplRepo(
+        createLocationManager = {
+            builder.create(
+                settingsBuilder(coroutineContext + CoroutineName("LocationPermissions")),
+                CoroutineScope(coroutineContext + CoroutineName("LocationManager")),
+            )
+        },
+        coroutineContext = coroutineContext,
+    )
 
 /**
  * Builder for creating a [LocationStateRepo]

@@ -30,8 +30,9 @@ class TestBlockingAndCancelScopeTest {
     fun testCanceling(): Unit = testBlockingAndCancelScope {
         launch {
             // normally this would hang the test
-            while (true)
+            while (true) {
                 delay(2.seconds)
+            }
         }
     }
 

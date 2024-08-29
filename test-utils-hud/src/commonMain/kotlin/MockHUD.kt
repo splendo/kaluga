@@ -31,11 +31,7 @@ import kotlinx.coroutines.CoroutineScope
  * @param setupMocks If `true` sets up mocks to display the hud
  * @param coroutineScope The [CoroutineScope] of the [MockHUD]
  */
-class MockHUD(
-    override val hudConfig: HudConfig,
-    setupMocks: Boolean = true,
-    coroutineScope: CoroutineScope,
-) : BaseHUD(coroutineScope) {
+class MockHUD(override val hudConfig: HudConfig, setupMocks: Boolean = true, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
 
     /**
      * Mock implementation of [BaseHUD.Builder]

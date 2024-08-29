@@ -51,10 +51,8 @@ class LifecycleManager internal constructor(clearViewModel: () -> Unit) {
  */
 typealias onLifeCycleChanged = () -> List<Disposable>
 
-internal class ViewModelLifecycleManager<ViewModel : BaseLifecycleViewModel>(
-    private val viewModel: ViewModel,
-    private val onLifecycle: onLifeCycleChanged,
-) : UIViewController(null, null) {
+internal class ViewModelLifecycleManager<ViewModel : BaseLifecycleViewModel>(private val viewModel: ViewModel, private val onLifecycle: onLifeCycleChanged) :
+    UIViewController(null, null) {
 
     internal val lifecycleManager = LifecycleManager {
         viewModel.clear()

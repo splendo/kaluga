@@ -63,7 +63,9 @@ interface MediaSurfaceController {
 /**
  * Manages media playback
  */
-interface MediaManager : VolumeController, MediaSurfaceController {
+interface MediaManager :
+    VolumeController,
+    MediaSurfaceController {
 
     /**
      * Events detected by [MediaManager]

@@ -42,7 +42,9 @@ sealed interface NetworkState : KalugaState {
     /**
      * A [NetworkState] indicating observation is not active
      */
-    sealed interface Inactive : NetworkState, SpecialFlowValue.NotImportant
+    sealed interface Inactive :
+        NetworkState,
+        SpecialFlowValue.NotImportant
 
     /**
      * An [Inactive] State indicating observation has not started yet
@@ -74,7 +76,9 @@ sealed interface NetworkState : KalugaState {
     /**
      * An [Active] State indicating the state is transitioning from [Inactive] to [Initialized]
      */
-    interface Initializing : Active, SpecialFlowValue.NotImportant {
+    interface Initializing :
+        Active,
+        SpecialFlowValue.NotImportant {
 
         /**
          * Transitions into an [Initialized] State
@@ -155,17 +159,19 @@ internal sealed class NetworkStateImpl {
         }
     }
 
-    data class Deinitialized(
-        private val previousNetworkConnectionType: NetworkConnectionType,
-        val networkManager: NetworkManager,
-    ) : NetworkStateImpl(), NetworkState.Deinitialized {
+    data class Deinitialized(private val previousNetworkConnectionType: NetworkConnectionType, val networkManager: NetworkManager) :
+        NetworkStateImpl(),
+        NetworkState.Deinitialized {
         override val reinitialize: suspend () -> NetworkState.Initializing = { Initializing(previousNetworkConnectionType, networkManager) }
         override val networkConnectionType: NetworkConnectionType = previousNetworkConnectionType.unknown(
             NetworkConnectionType.Unknown.Reason.NOT_CLEAR,
         )
     }
 
-    sealed class Active : NetworkStateImpl(), HandleBeforeOldStateIsRemoved<NetworkState>, HandleAfterNewStateIsSet<NetworkState> {
+    sealed class Active :
+        NetworkStateImpl(),
+        HandleBeforeOldStateIsRemoved<NetworkState>,
+        HandleAfterNewStateIsSet<NetworkState> {
         abstract val networkManager: NetworkManager
         val deinitialize: suspend () -> Deinitialized = { Deinitialized(networkConnectionType, networkManager) }
 
@@ -184,7 +190,9 @@ internal sealed class NetworkStateImpl {
         }
     }
 
-    data class Initializing(override val networkConnectionType: NetworkConnectionType, override val networkManager: NetworkManager) : Active(), NetworkState.Initializing {
+    data class Initializing(override val networkConnectionType: NetworkConnectionType, override val networkManager: NetworkManager) :
+        Active(),
+        NetworkState.Initializing {
         override fun initialized(networkType: NetworkConnectionType): suspend () -> NetworkState.Initialized = {
             when (networkType) {
                 is NetworkConnectionType.Unknown -> Unknown(networkType, networkManager)
@@ -204,18 +212,21 @@ internal sealed class NetworkStateImpl {
         }
     }
 
-    data class Unknown(override val networkConnectionType: NetworkConnectionType.Unknown, override val networkManager: NetworkManager) : Initialized(), NetworkState.Unknown {
+    data class Unknown(override val networkConnectionType: NetworkConnectionType.Unknown, override val networkManager: NetworkManager) :
+        Initialized(),
+        NetworkState.Unknown {
         override val unavailable: suspend () -> NetworkState.Unavailable = { Unavailable(networkManager) }
     }
 
-    data class Available(
-        override val networkConnectionType: NetworkConnectionType.Known.Available,
-        override val networkManager: NetworkManager,
-    ) : Initialized(), NetworkState.Available {
+    data class Available(override val networkConnectionType: NetworkConnectionType.Known.Available, override val networkManager: NetworkManager) :
+        Initialized(),
+        NetworkState.Available {
         override val unavailable: suspend () -> NetworkState.Unavailable = { Unavailable(networkManager) }
     }
 
-    data class Unavailable(override val networkManager: NetworkManager) : Initialized(), NetworkState.Unavailable {
+    data class Unavailable(override val networkManager: NetworkManager) :
+        Initialized(),
+        NetworkState.Unavailable {
         override val networkConnectionType: NetworkConnectionType.Known.Absent = NetworkConnectionType.Known.Absent
     }
 }
@@ -224,16 +235,12 @@ internal sealed class NetworkStateImpl {
  * Transforms a [Flow] of [NetworkState] into a flow of its associated [NetworkConnectionType]
  * @return the [Flow] of [NetworkConnectionType] associated with the [NetworkState]
  */
-fun Flow<NetworkState>.network(): Flow<NetworkConnectionType> {
-    return filterOnlyImportant().map { it.networkConnectionType }.distinctUntilChanged()
-}
+fun Flow<NetworkState>.network(): Flow<NetworkConnectionType> = filterOnlyImportant().map { it.networkConnectionType }.distinctUntilChanged()
 
 /**
  * Transforms a [Flow] of [NetworkState] into a flow indicating the network is considered to be available.
  * @return the [Flow] containing `true` if the network is considered available
  */
-fun Flow<NetworkState>.online(): Flow<Boolean> {
-    return network().map {
-        it is NetworkConnectionType.Known.Available
-    }
+fun Flow<NetworkState>.online(): Flow<Boolean> = network().map {
+    it is NetworkConnectionType.Known.Available
 }

@@ -45,14 +45,12 @@ actual class KalugaTimeZone internal constructor(val timeZone: NSTimeZone) : Bas
          * @param identifier The identifier to create a [KalugaTimeZone] for
          * @return The [KalugaTimeZone] corresponding to the identifier, if it exists. Check [availableIdentifiers] for supported identifiers
          */
-        actual fun get(identifier: String): KalugaTimeZone? {
-            return if (NSTimeZone.abbreviationDictionary.typedMap<String, String>().containsKey(identifier)) {
-                NSTimeZone.timeZoneWithAbbreviation(identifier)
-            } else {
-                NSTimeZone.timeZoneWithName(identifier)
-            }?.let {
-                KalugaTimeZone(it)
-            }
+        actual fun get(identifier: String): KalugaTimeZone? = if (NSTimeZone.abbreviationDictionary.typedMap<String, String>().containsKey(identifier)) {
+            NSTimeZone.timeZoneWithAbbreviation(identifier)
+        } else {
+            NSTimeZone.timeZoneWithName(identifier)
+        }?.let {
+            KalugaTimeZone(it)
         }
 
         /**
@@ -98,9 +96,7 @@ actual class KalugaTimeZone internal constructor(val timeZone: NSTimeZone) : Bas
     actual override fun offsetFromGMTAtDate(date: KalugaDate): Duration = timeZone.secondsFromGMTForDate(date.date).seconds
     actual override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = timeZone.isDaylightSavingTimeForDate(date.date)
     actual override fun copy(): KalugaTimeZone = KalugaTimeZone(timeZone.copy() as NSTimeZone)
-    override fun equals(other: Any?): Boolean {
-        return (other as? KalugaTimeZone)?.let { timeZone == other.timeZone } ?: false
-    }
+    override fun equals(other: Any?): Boolean = (other as? KalugaTimeZone)?.let { timeZone == other.timeZone } ?: false
 
     override fun hashCode(): Int = timeZone.hashCode()
 }

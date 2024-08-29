@@ -56,9 +56,7 @@ class DenominatorScientificValueFormatter private constructor(
          * @param builder the [Builder] function to build the [DenominatorScientificValueFormatter]
          * @return the created [DenominatorScientificValueFormatter]
          */
-        fun with(builder: Builder.() -> Unit): DenominatorScientificValueFormatter {
-            return Builder().apply(builder).build()
-        }
+        fun with(builder: Builder.() -> Unit): DenominatorScientificValueFormatter = Builder().apply(builder).build()
     }
 
     internal data class ScientificValueDenominators<

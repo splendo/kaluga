@@ -208,14 +208,12 @@ fun <Value, Action : SingleValueNavigationAction<Value>> NavGraphBuilder.composa
     content(bundle.get(type))
 }
 
-private fun <SpecType : NavigationBundleSpecRow<*>> Bundle.composable(spec: NavigationBundleSpec<SpecType>): NavigationBundle<SpecType>? {
-    return try {
-        spec.toBundle { type ->
-            composableValue(getString(type.argumentKey), type.associatedType)
-        }
-    } catch (e: BundleConversionError) {
-        null
+private fun <SpecType : NavigationBundleSpecRow<*>> Bundle.composable(spec: NavigationBundleSpec<SpecType>): NavigationBundle<SpecType>? = try {
+    spec.toBundle { type ->
+        composableValue(getString(type.argumentKey), type.associatedType)
     }
+} catch (e: BundleConversionError) {
+    null
 }
 
 private fun Bundle.composableValue(value: String?, specType: NavigationBundleSpecType<*>): NavigationBundleValue<*> {

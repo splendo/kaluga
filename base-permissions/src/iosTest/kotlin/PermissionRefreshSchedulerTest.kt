@@ -32,9 +32,7 @@ class PermissionRefreshSchedulerTest : BaseTest() {
     fun testStartMonitoring() = runBlocking {
         var authorization = IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         val authorizationProvider = object : CurrentAuthorizationStatusProvider {
-            override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus {
-                return authorization
-            }
+            override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = authorization
         }
 
         val onPermissionChangedFlow = MutableStateFlow<IOSPermissionsHelper.AuthorizationStatus?>(null)

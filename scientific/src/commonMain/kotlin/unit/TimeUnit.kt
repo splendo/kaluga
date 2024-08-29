@@ -43,7 +43,9 @@ val TimeUnits: Set<Time> get() = setOf(
  * SI unit is [Second]
  */
 @Serializable
-sealed class Time : AbstractScientificUnit<PhysicalQuantity.Time>(), MetricAndImperialScientificUnit<PhysicalQuantity.Time>
+sealed class Time :
+    AbstractScientificUnit<PhysicalQuantity.Time>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.Time>
 
 @Serializable
 data object Second : Time(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time> {
@@ -55,7 +57,9 @@ data object Second : Time(), MetricBaseUnit<MeasurementSystem.MetricAndImperial,
 }
 
 @Serializable
-sealed class SecondMultiple : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second>
+sealed class SecondMultiple :
+    Time(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second>
 
 @Serializable
 data object Decisecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Time, Second> by Deci(Second)

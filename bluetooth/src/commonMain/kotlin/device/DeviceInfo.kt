@@ -66,8 +66,7 @@ val Identifier.serializable get() = SerializableIdentifier(this)
 /**
  * [KSerializer] for a [SerializableIdentifier]
  */
-open class IdentifierSerializer :
-    KSerializer<SerializableIdentifier> {
+open class IdentifierSerializer : KSerializer<SerializableIdentifier> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("IdentifierString", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: SerializableIdentifier) {
@@ -142,12 +141,8 @@ interface DeviceInfo {
 /**
  * An implementation of [DeviceInfo]
  */
-data class DeviceInfoImpl(
-    override val name: String?,
-    override val identifier: Identifier,
-    override val rssi: RSSI,
-    override val advertisementData: BaseAdvertisementData,
-) : DeviceInfo {
+data class DeviceInfoImpl(override val name: String?, override val identifier: Identifier, override val rssi: RSSI, override val advertisementData: BaseAdvertisementData) :
+    DeviceInfo {
 
     /**
      * Constructor

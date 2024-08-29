@@ -289,7 +289,8 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
         override val defaultStyle: ButtonStateStyle.ImageOnly,
         override val pressedStyle: ButtonStateStyle.ImageOnly,
         override val disabledStyle: ButtonStateStyle.ImageOnly,
-    ) : WithoutText<ButtonStateStyle.ImageOnly>, WithImage<ButtonStateStyle.ImageOnly>
+    ) : WithoutText<ButtonStateStyle.ImageOnly>,
+        WithImage<ButtonStateStyle.ImageOnly>
 
     /**
      * A [KalugaButtonStyle.WithText] and [KalugaButtonStyle.WithImage] that displays both text and a [ButtonImage]
@@ -310,7 +311,8 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
         override val defaultStyle: ButtonStateStyle.WithImageAndText,
         override val pressedStyle: ButtonStateStyle.WithImageAndText,
         override val disabledStyle: ButtonStateStyle.WithImageAndText,
-    ) : WithText<ButtonStateStyle.WithImageAndText>, WithImage<ButtonStateStyle.WithImageAndText>
+    ) : WithText<ButtonStateStyle.WithImageAndText>,
+        WithImage<ButtonStateStyle.WithImageAndText>
 
     /**
      * Gets the [StateStyle] of the button depending on the state
@@ -318,14 +320,12 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
      * @param isPressed if `true` the button is pressed
      * @return the [StateStyle] to apply to the text of the button in the current state
      */
-    fun getStateStyle(isEnabled: Boolean, isPressed: Boolean): StateStyle {
-        return if (!isEnabled) {
-            disabledStyle
-        } else if (isPressed) {
-            pressedStyle
-        } else {
-            defaultStyle
-        }
+    fun getStateStyle(isEnabled: Boolean, isPressed: Boolean): StateStyle = if (!isEnabled) {
+        disabledStyle
+    } else if (isPressed) {
+        pressedStyle
+    } else {
+        defaultStyle
     }
 }
 

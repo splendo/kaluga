@@ -86,6 +86,5 @@ actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): K
  * @param alphaInt The alpha color value ranging between `0` and `255`. Defaults to `255`
  * @return The [KalugaColor] with the corresponding red, green, blue, and alpha values
  */
-actual fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int): KalugaColor {
-    return colorFrom(redInt.toDouble() / 255.0, greenInt.toDouble() / 255.0, blueInt.toDouble() / 255.0, alphaInt.toDouble() / 255.0)
-}
+actual fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int): KalugaColor =
+    colorFrom(redInt.toDouble() / 255.0, greenInt.toDouble() / 255.0, blueInt.toDouble() / 255.0, alphaInt.toDouble() / 255.0)

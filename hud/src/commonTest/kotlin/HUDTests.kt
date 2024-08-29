@@ -59,7 +59,9 @@ abstract class HUDTests<HTC : HUDTestContext> : UIThreadTest<HTC>() {
         assertEquals(hud2.title, "Title")
     }
 
-    abstract class HUDTestContext(coroutineScope: CoroutineScope) : TestContext, CoroutineScope by coroutineScope {
+    abstract class HUDTestContext(coroutineScope: CoroutineScope) :
+        TestContext,
+        CoroutineScope by coroutineScope {
         abstract val builder: HUD.Builder
     }
 }

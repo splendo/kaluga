@@ -30,10 +30,7 @@ import kotlin.coroutines.CoroutineContext
  * @param networkManagerBuilder The [NetworkManager.Builder] for building the network manager
  * @param setupMocks If `true` sets up [createMock] to automatically create a [NetworkStateRepo]
  */
-class MockNetworkStateRepoBuilder<NMB : NetworkManager.Builder>(
-    val networkManagerBuilder: NMB,
-    setupMocks: Boolean = true,
-) : BaseNetworkStateRepoBuilder {
+class MockNetworkStateRepoBuilder<NMB : NetworkManager.Builder>(val networkManagerBuilder: NMB, setupMocks: Boolean = true) : BaseNetworkStateRepoBuilder {
 
     /**
      * List of built [NetworkStateRepo]

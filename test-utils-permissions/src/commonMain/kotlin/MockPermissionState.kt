@@ -57,16 +57,28 @@ sealed class MockPermissionState<P : Permission> {
         }
     }
 
-    class Uninitialized<P : Permission>(override val activeState: ActiveState) : MockPermissionState<P>(), PermissionState.Uninitialized<P>
-    class Deinitialized<P : Permission>(override val activeState: ActiveState) : MockPermissionState<P>(), PermissionState.Deinitialized<P>
-    class Initializing<P : Permission>(override val activeState: ActiveState) : MockPermissionState<P>(), PermissionState.Initializing<P>
-    class Allowed<P : Permission> : MockPermissionState<P>(), PermissionState.Allowed<P> {
+    class Uninitialized<P : Permission>(override val activeState: ActiveState) :
+        MockPermissionState<P>(),
+        PermissionState.Uninitialized<P>
+    class Deinitialized<P : Permission>(override val activeState: ActiveState) :
+        MockPermissionState<P>(),
+        PermissionState.Deinitialized<P>
+    class Initializing<P : Permission>(override val activeState: ActiveState) :
+        MockPermissionState<P>(),
+        PermissionState.Initializing<P>
+    class Allowed<P : Permission> :
+        MockPermissionState<P>(),
+        PermissionState.Allowed<P> {
         override val activeState: ActiveState = ActiveState.ALLOWED
     }
-    class Locked<P : Permission> : MockPermissionState<P>(), PermissionState.Denied.Locked<P> {
+    class Locked<P : Permission> :
+        MockPermissionState<P>(),
+        PermissionState.Denied.Locked<P> {
         override val activeState: ActiveState = ActiveState.LOCKED
     }
-    class Requestable<P : Permission> : MockPermissionState<P>(), PermissionState.Denied.Requestable<P> {
+    class Requestable<P : Permission> :
+        MockPermissionState<P>(),
+        PermissionState.Denied.Requestable<P> {
         override val activeState: ActiveState = ActiveState.REQUESTABLE
     }
 }

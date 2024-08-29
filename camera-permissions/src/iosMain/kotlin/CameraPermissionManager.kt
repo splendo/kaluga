@@ -32,11 +32,8 @@ import kotlin.time.Duration
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultCameraPermissionManager(
-    bundle: NSBundle,
-    settings: Settings,
-    coroutineScope: CoroutineScope,
-) : BasePermissionManager<CameraPermission>(CameraPermission, settings, coroutineScope) {
+actual class DefaultCameraPermissionManager(bundle: NSBundle, settings: Settings, coroutineScope: CoroutineScope) :
+    BasePermissionManager<CameraPermission>(CameraPermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
     private val avPermissionHelper = AVPermissionHelper(bundle, AVTypeCamera(), permissionHandler, coroutineScope)
@@ -60,7 +57,5 @@ actual class DefaultCameraPermissionManager(
  */
 actual class CameraPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
-    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): CameraPermissionManager {
-        return DefaultCameraPermissionManager(context, settings, coroutineScope)
-    }
+    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): CameraPermissionManager = DefaultCameraPermissionManager(context, settings, coroutineScope)
 }

@@ -40,8 +40,7 @@ class PairParameters<T0, T1> : ParametersSpec<PairParameters.Matchers<T0, T1>, P
      * @property first the first parameters [ParameterMatcher]
      * @property second the second parameters [ParameterMatcher]
      */
-    data class Matchers<T0, T1>(val first: ParameterMatcher<T0>, val second: ParameterMatcher<T1>) :
-        ParametersSpec.Matchers {
+    data class Matchers<T0, T1>(val first: ParameterMatcher<T0>, val second: ParameterMatcher<T1>) : ParametersSpec.Matchers {
         override fun asList() = listOf(first, second)
     }
 

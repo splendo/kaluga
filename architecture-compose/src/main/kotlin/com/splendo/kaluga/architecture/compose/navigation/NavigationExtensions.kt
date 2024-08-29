@@ -65,10 +65,7 @@ fun HardwareBackButtonNavigation(onBackButtonClickHandler: suspend () -> Unit) {
     }
 }
 
-private class ComposeOnBackPressedCallback(
-    private val coroutineScope: CoroutineScope,
-    private val onBackButtonClickHandler: suspend () -> Unit,
-) : OnBackPressedCallback(true) {
+private class ComposeOnBackPressedCallback(private val coroutineScope: CoroutineScope, private val onBackButtonClickHandler: suspend () -> Unit) : OnBackPressedCallback(true) {
 
     override fun handleOnBackPressed() {
         coroutineScope.launch {

@@ -70,13 +70,17 @@ sealed class Luminance : AbstractScientificUnit<PhysicalQuantity.Luminance>()
  * A [Luminance] for [MeasurementSystem.Metric]
  */
 @Serializable
-sealed class MetricLuminance : Luminance(), MetricScientificUnit<PhysicalQuantity.Luminance>
+sealed class MetricLuminance :
+    Luminance(),
+    MetricScientificUnit<PhysicalQuantity.Luminance>
 
 /**
  * A [Luminance] for [MeasurementSystem.Imperial]
  */
 @Serializable
-sealed class ImperialLuminance : Luminance(), ImperialScientificUnit<PhysicalQuantity.Luminance>
+sealed class ImperialLuminance :
+    Luminance(),
+    ImperialScientificUnit<PhysicalQuantity.Luminance>
 
 @Serializable
 data object Nit : MetricLuminance(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance> {
@@ -88,7 +92,9 @@ data object Nit : MetricLuminance(), MetricBaseUnit<MeasurementSystem.Metric, Ph
 }
 
 @Serializable
-sealed class NitMultiple : MetricLuminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit>
+sealed class NitMultiple :
+    MetricLuminance(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit>
 
 @Serializable
 data object Nanonit : NitMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Luminance, Nit> by Nano(Nit)

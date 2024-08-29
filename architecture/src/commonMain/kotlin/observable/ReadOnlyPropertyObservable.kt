@@ -53,8 +53,8 @@ class ReadOnlyPropertyInitializedObservable<T>(
             },
         ),
     ),
-) :
-    BaseInitializedObservable<T>(observation), InitializedObservable<T> {
+) : BaseInitializedObservable<T>(observation),
+    InitializedObservable<T> {
 
     init {
         readOnlyPropertyObservableHelper(readOnlyProperty, observation)
@@ -83,8 +83,7 @@ class ReadOnlyPropertyDefaultObservable<R : T?, T>(
             },
         ),
     ),
-) :
-    BaseDefaultObservable<R, T>(observation) { // no default is needed, since this is for use with non-optionals
+) : BaseDefaultObservable<R, T>(observation) { // no default is needed, since this is for use with non-optionals
 
     init {
         readOnlyPropertyObservableHelper(readOnlyProperty, observation)

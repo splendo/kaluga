@@ -25,9 +25,7 @@ import kotlinx.coroutines.flow.Flow
 
 abstract class BaseNetworkStateTest<T, F : Flow<T>> : BaseFlowTest<BaseNetworkStateTest.Configuration, BaseNetworkStateTest.Context, T, F>() {
 
-    data class Configuration(
-        val initialNetworkConnectionType: NetworkConnectionType,
-    )
+    data class Configuration(val initialNetworkConnectionType: NetworkConnectionType)
 
     class Context(configuration: Configuration, coroutineScope: CoroutineScope) : TestContext {
         val networkManagerBuilder = MockNetworkManager.Builder(configuration.initialNetworkConnectionType)

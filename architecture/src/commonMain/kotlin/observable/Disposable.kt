@@ -56,7 +56,9 @@ interface Disposable {
  * Plain [Disposable] to an object that should be disposed in time
  * @param onDispose Function to call when disposing the object
  */
-abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : SynchronizedObject(), Disposable {
+abstract class BaseSimpleDisposable(onDispose: DisposeHandler) :
+    SynchronizedObject(),
+    Disposable {
 
     private var disposeHandler: DisposeHandler? = onDispose
 
