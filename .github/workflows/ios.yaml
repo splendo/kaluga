@@ -15,7 +15,7 @@ jobs:
     runs-on: macos-14
     steps:
     - name: checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: recursive
 
@@ -29,7 +29,7 @@ jobs:
       run: ./gradlew lintKotlin
 
     - name: ktLint report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ktLint report
         path: build/reports/ktlint
