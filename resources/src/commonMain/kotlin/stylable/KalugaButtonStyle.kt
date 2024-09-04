@@ -197,10 +197,12 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
             )
         }
 
-        internal val hiddenTextStyle = textOnly {
-            textSize = 0.0f
-            defaultStyle {
-                textColor = DefaultColors.clear
+        internal val hiddenTextStyle by lazy {
+            textOnly {
+                textSize = 0.0f
+                defaultStyle {
+                    textColor = DefaultColors.clear
+                }
             }
         }
     }
