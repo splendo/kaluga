@@ -27,8 +27,11 @@ class ButtonTest : BaseTest() {
 
     @Test
     fun buttonStyleCanBeMocked() {
-        val button = KalugaButton.Plain("Test", KalugaButtonStyle.withImageAndText {
-            font = mockFont()
-        }) {}
+        val button = KalugaButton.Plain(
+            "Test",
+            KalugaButtonStyle.withImageAndText {
+                font = mockFont()
+            },
+        ) {}
     }
 }
