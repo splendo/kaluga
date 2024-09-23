@@ -27,16 +27,6 @@ import kotlin.jvm.JvmName
 
 typealias DisposeHandler = () -> Unit
 
-internal fun <R : T, T, OO : ObservableOptional<R>> addObserver(observation: Observation<R, T, OO>, observer: (R) -> Unit) {
-    observation.observers.add(observer)
-}
-
-internal fun <R : T, T, OO : ObservableOptional<R>> removeObserver(observation: Observation<R, T, OO>, observer: (R) -> Unit) {
-    observation.observers.remove(observer)
-}
-
-internal fun <R : T, T, OO : ObservableOptional<R>> observers(observation: Observation<R, T, OO>): List<(R) -> Unit> = observation.observers
-
 /**
  * Reference to an object that should be disposed in time
  */

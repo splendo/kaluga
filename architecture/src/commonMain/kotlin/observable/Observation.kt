@@ -108,8 +108,10 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(override val initia
 
             val result = (v as? ObservableOptional.Value<*>)?.value as R
 
-            observers(this@Observation).forEach {
-                it(result)
+            this@Observation.observers.synchronized {
+                forEach {
+                    it(result)
+                }
             }
             return v as ObservableOptional<T>
         }
@@ -139,7 +141,7 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(override val initia
         // send the value before adding
         val lastResult = currentObserved
         onNext((lastResult as? ObservableOptional.Value<*>)?.value as R)
-        addObserver(this@Observation, onNext)
+        this@Observation.observers.add(onNext)
         // adding an observer often happens concurrently with initialization,
         // if we detect a change in the current observed value we re-send it to the added observer
         val newResult = currentObserved
@@ -148,7 +150,7 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(override val initia
         }
         SimpleDisposable {
             handleOnMain {
-                removeObserver(this@Observation, onNext)
+                this@Observation.observers.remove(onNext)
             }
         }
     }
