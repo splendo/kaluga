@@ -32,6 +32,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
@@ -41,7 +42,7 @@ class RecurringTimerTest {
     fun stateTransitions(): Unit = runBlocking {
         val timerScope = CoroutineScope(Dispatchers.Default)
         val timer = RecurringTimer(
-            duration = 100.milliseconds,
+            duration = 1.seconds,
             interval = 10.milliseconds,
             coroutineScope = timerScope,
         )
@@ -54,7 +55,7 @@ class RecurringTimerTest {
         timer.state.assertEmits("timer pause is not working") { it is Timer.State.NotRunning.Paused }
         assertTrue(timer.start())
         timer.state.assertEmits("timer is not running after start") { it is Timer.State.Running }
-        delay(500)
+        delay(1.5.seconds)
         timer.state.assertEmits("timer was not finished after time elapsed") { it is Timer.State.NotRunning.Finished }
         assertFalse(timer.start())
         timer.state.assertEmits("was able to start timer after finish") { it is Timer.State.NotRunning.Finished }
