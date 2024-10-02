@@ -70,7 +70,7 @@ class RecurringTimer(
 
     override suspend fun pause() = runIfNotFinished { pause() }
 
-    override suspend fun stop() = runIfNotFinished { stop() }
+    override suspend fun stop() = stateRepo.stop()
 
     private suspend fun runIfNotFinished(block: suspend TimerStateRepo.() -> Unit) {
         if (stateRepo.peekState() is Timer.State.NotRunning.Finished) {
