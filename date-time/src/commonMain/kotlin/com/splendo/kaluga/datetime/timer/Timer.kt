@@ -80,10 +80,9 @@ interface ControllableTimer : Timer {
     suspend fun pause(): Boolean
 
     /**
-     * Stops the timer causing it to finish. Calling [start] again will return `false`
-     * @return `true` if the timer as stopped successfully, `false` otherwise.
+     * Stops the timer causing it to finish. Calling [start] again will return `false`.
      * */
-    suspend fun stop(): Boolean
+    suspend fun stop()
 }
 
 /** [Duration] that has elapsed while [Timer.state] was [Timer.State.Running]. */

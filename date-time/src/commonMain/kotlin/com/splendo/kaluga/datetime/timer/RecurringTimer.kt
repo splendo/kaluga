@@ -105,12 +105,14 @@ class RecurringTimer(
         }
     }.first()
 
-    override suspend fun stop() = stateRepo.transformLatest { state ->
-        when (state) {
-            is State.Active -> state.repo.stop()
-            is State.Finished -> emit(true)
-        }
-    }.first()
+    override suspend fun stop() {
+        stateRepo.transformLatest { state ->
+            when (state) {
+                is State.Active -> state.repo.stop()
+                is State.Finished -> emit(Unit)
+            }
+        }.first()
+    }
 }
 
 /** Timer state machine. */
