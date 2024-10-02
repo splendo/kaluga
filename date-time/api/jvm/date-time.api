@@ -40,5 +40,6 @@ public abstract interface class com/splendo/kaluga/datetime/timer/Timer$State$Ru
 public final class com/splendo/kaluga/datetime/timer/TimerKt {
 	public static final fun awaitFinish (Lcom/splendo/kaluga/datetime/timer/Timer;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun elapsed (Lcom/splendo/kaluga/datetime/timer/Timer;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun stopIfNotRunning (Lcom/splendo/kaluga/datetime/timer/ControllableTimer;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

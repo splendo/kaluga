@@ -86,6 +86,17 @@ interface ControllableTimer : Timer {
     suspend fun stop()
 }
 
+/**
+ * Stops a [ControllableTimer] if it is running.
+ * @return `true` if the timer was running when this method was called. `false` otherwise.
+ */
+suspend fun ControllableTimer.stopIfNotRunning(): Boolean = try {
+    stop()
+    true
+} catch (e: IllegalStateException) {
+    false
+}
+
 /** [Duration] that has elapsed while [Timer.state] was [Timer.State.Running]. */
 fun Timer.elapsed(): Flow<Duration> = state
     .transformWhile { stateValue ->
