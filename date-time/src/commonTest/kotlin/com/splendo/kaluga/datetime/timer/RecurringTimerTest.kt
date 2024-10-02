@@ -28,11 +28,11 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
@@ -42,24 +42,24 @@ class RecurringTimerTest {
     fun stateTransitions(): Unit = runBlocking {
         val timerScope = CoroutineScope(Dispatchers.Default)
         val timer = RecurringTimer(
-            duration = 100.milliseconds,
+            duration = 1.seconds,
             interval = 10.milliseconds,
             coroutineScope = timerScope,
         )
         timer.state.assertEmits("timer was not paused after creation") { it is Timer.State.NotRunning.Paused }
-        timer.start()
+        assertTrue(timer.start())
         timer.state.assertEmits("timer is not running after start") { it is Timer.State.Running }
-        timer.pause()
+        assertTrue(timer.pause())
         timer.state.assertEmits("timer was not paused after pause") { it is Timer.State.NotRunning.Paused }
         delay(500)
         timer.state.assertEmits("timer pause is not working") { it is Timer.State.NotRunning.Paused }
-        timer.start()
+        assertTrue(timer.start())
         timer.state.assertEmits("timer is not running after start") { it is Timer.State.Running }
-        delay(500)
+        delay(1.5.seconds)
         timer.state.assertEmits("timer was not finished after time elapsed") { it is Timer.State.NotRunning.Finished }
-        assertFailsWith<IllegalStateException> { timer.start() }
+        assertFalse(timer.start())
         timer.state.assertEmits("was able to start timer after finish") { it is Timer.State.NotRunning.Finished }
-        assertFailsWith<IllegalStateException> { timer.pause() }
+        assertFalse(timer.pause())
         timer.state.assertEmits("was able to pause timer after finish") { it is Timer.State.NotRunning.Finished }
         timer.awaitFinish()
     }
@@ -91,13 +91,12 @@ class RecurringTimerTest {
         val initial = timer.elapsed().captureFor(100.milliseconds)
         assertEquals(listOf(Duration.ZERO), initial, "timer was not started in paused state")
 
-        timer.start()
+        assertTrue(timer.start())
         assertTrue(timerScope.isActive)
         timer.state.assertEmits("timer is not running after start") { it is Timer.State.Running }
         timer.stop()
         timer.state.assertEmits("timer is not running after start") { it is Timer.State.NotRunning.Finished }
-        assertFailsWith<IllegalStateException> { timer.start() }
-        assertFailsWith<IllegalStateException> { timer.pause() }
+        assertFalse(timer.start())
         assertFalse(timerScope.isActive)
     }
 
@@ -119,15 +118,15 @@ class RecurringTimerTest {
         assertEquals(listOf(Duration.ZERO), initial, "timer was not started in paused state")
 
         // capture and validate a first chunk of data
-        timer.start()
+        assertTrue(timer.start())
         val result0 = timer.elapsed().captureFor(200.milliseconds)
-        timer.pause()
+        assertTrue(timer.pause())
         assertTrue(result0.isNotEmpty(), "values not emitted")
         assertTrue(initial.last() <= result0.first(), "values are not in ascending order")
         assertTrue(result0.isAscending(), "values are not in ascending order")
 
         // capture and validate the rest of the data
-        timer.start()
+        assertTrue(timer.start())
         val result1 = timer.elapsed().captureFor(1000.milliseconds)
         assertTrue(result1.isNotEmpty(), "values not emitted")
         assertTrue(result0.last() <= result1.first(), "values are not in ascending order")

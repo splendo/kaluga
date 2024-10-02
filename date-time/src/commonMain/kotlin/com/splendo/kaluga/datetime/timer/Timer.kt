@@ -69,19 +69,18 @@ interface Timer {
 interface ControllableTimer : Timer {
     /**
      * Starts the timer.
-     * @throws [IllegalStateException] if the timer has finished.
+     * @return `true` if the timer as started successfully, `false` otherwise.
      * */
-    suspend fun start()
+    suspend fun start(): Boolean
 
     /**
      * Pauses the timer. Calling [start] again will make it resume.
-     * @throws [IllegalStateException] if the timer has finished.
+     * @return `true` if the timer as paused successfully, `false` otherwise.
      * */
-    suspend fun pause()
+    suspend fun pause(): Boolean
 
     /**
-     * Stops the timer causing it to finish. Calling [start] again will throw [IllegalStateException]
-     * @throws [IllegalStateException] if the timer has finished.
+     * Stops the timer causing it to finish. Calling [start] again will return `false`.
      * */
     suspend fun stop()
 }
