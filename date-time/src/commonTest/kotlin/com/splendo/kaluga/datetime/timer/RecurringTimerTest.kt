@@ -94,9 +94,9 @@ class RecurringTimerTest {
         assertTrue(timerScope.isActive)
         timer.state.assertEmits("timer is not running after start") { it is Timer.State.Running }
         timer.stop()
-        // timer.state.assertEmits("timer is not running after start") { it is Timer.State.NotRunning.Finished }
-        // assertFalse(timer.start())
-        // assertFalse(timerScope.isActive)
+        timer.state.assertEmits("timer is not running after start") { it is Timer.State.NotRunning.Finished }
+        assertFalse(timer.start())
+        assertFalse(timerScope.isActive)
     }
 
     @Test
