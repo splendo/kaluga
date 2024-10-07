@@ -41,7 +41,7 @@ bytebuddy = "1.15.0"
 junit = "4.13.2"
 koin = "3.5.6"
 koin-compose = "3.5.6"
-mockito = "5.11.0"
+mockito = "5.14.1"
 napier = "2.7.1"
 nordic-support = "1.6.0"
 
