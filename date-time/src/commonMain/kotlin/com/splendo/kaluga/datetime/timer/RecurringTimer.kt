@@ -153,7 +153,8 @@ private class TimerStateRepo(
             takeAndChangeState { state ->
                 when (state) {
                     is State.Running -> state::stop
-                    is State.NotRunning -> state.remain()
+                    is State.NotRunning.Paused -> state::stop
+                    is State.NotRunning.Finished -> state.remain()
                 }
             }
         }
@@ -196,6 +197,8 @@ private class TimerStateRepo(
                         coroutineScope = coroutineScope,
                         finishCallback = finishCallback,
                     )
+
+                internal fun stop(): Finished = Finished(elapsedSoFar)
             }
 
             /** Timer is finished. */

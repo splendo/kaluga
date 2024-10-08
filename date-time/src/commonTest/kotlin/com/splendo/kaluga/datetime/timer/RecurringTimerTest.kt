@@ -95,9 +95,22 @@ class RecurringTimerTest {
         assertTrue(timerScope.isActive)
         timer.state.assertEmits("timer is not running after start") { it is Timer.State.Running }
         timer.stop()
-        timer.state.assertEmits("timer is not running after start") { it is Timer.State.NotRunning.Finished }
+        timer.state.assertEmits("timer is not stopped after stop") { it is Timer.State.NotRunning.Finished }
         assertFalse(timer.start())
         assertFalse(timerScope.isActive)
+    }
+
+    @Test
+    fun stopBeforeStart(): Unit = runBlocking {
+        val timerScope = CoroutineScope(Dispatchers.Default)
+        val timer = RecurringTimer(
+            duration = 1.seconds,
+            interval = 10.milliseconds,
+            coroutineScope = timerScope,
+        )
+        timer.state.assertEmits("timer was not paused after creation") { it is Timer.State.NotRunning.Paused }
+        timer.stop()
+        timer.state.assertEmits("timer is not stopped after stop") { it is Timer.State.NotRunning.Finished }
     }
 
     @Test
