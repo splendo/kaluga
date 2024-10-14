@@ -130,7 +130,7 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
                     developers {
                         developer {
                             id.set("splendo")
-                            name.set("Splendo BV")
+                            name.set("Splendo Consulting BV")
                         }
                     }
                     scm {
