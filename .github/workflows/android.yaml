@@ -9,18 +9,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
       - name: set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 17
 
       - name: run Android unit tests
-        run: ./gradlew testDebugUnitTest
-
+        run: ./gradlew testDebugUnitTest koverHtmlReport koverXmlReport
+      - name: add coverage report to PR
+        id: kover
+        uses: mi-kas/kover-report@v1
+        # this action fails if there is no report, unlike the above actions, so check if there are files
+        if: ${{ always() && hashFiles(format('{0}/build/reports/kover/report.xml', github.workspace)) != '' }}
+        with:
+          path: ${{ github.workspace }}/build/reports/kover/report.xml
+          token: ${{ secrets.CI_SPLENDO_PAT }}
+          title: Code coverage
+          update-comment: true
+          coverage-counter-type: LINE
+      - name: Upload Android test artifact
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: "Android Test Report HTML"
+          path: "**/build/reports/tests/testDebugUnitTest"
+      - name: Upload Coverage report
+        uses: actions/upload-artifact@v4
+        if: ${{ always() && hashFiles(format('{0}/build/reports/kover/html/index.html', github.workspace)) != '' }}
+        with:
+          name: "Android Test Report HTML"
+          path: "**/build/reports/kover/html"
       - name: run apiCheck
         run: ./gradlew apiCheck

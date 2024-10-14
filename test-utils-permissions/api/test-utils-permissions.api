@@ -1,0 +1,131 @@
+public final class com/splendo/kaluga/test/permissions/DummyPermission : com/splendo/kaluga/permissions/base/Permission {
+	public static final field INSTANCE Lcom/splendo/kaluga/test/permissions/DummyPermission;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/test/permissions/MockBasePermissionStateRepo : com/splendo/kaluga/permissions/base/BasePermissionStateRepo {
+	public fun <init> (Lcom/splendo/kaluga/permissions/base/Permission;Lkotlin/jvm/functions/Function0;ZLkotlin/coroutines/CoroutineContext;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/base/Permission;Lkotlin/jvm/functions/Function0;ZLkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun didDeinitialize (Lcom/splendo/kaluga/test/permissions/MockPermissionState;)V
+	public final fun didInitialize (Lcom/splendo/kaluga/test/permissions/MockPermissionState;)V
+	public final fun getCurrentMockState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState;
+	public final fun getDidDeinitializeMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getDidInitializeMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getPermission ()Lcom/splendo/kaluga/permissions/base/Permission;
+}
+
+public final class com/splendo/kaluga/test/permissions/MockBasePermissionsBuilder : com/splendo/kaluga/permissions/base/BasePermissionsBuilder {
+	public fun <init> ()V
+}
+
+public final class com/splendo/kaluga/test/permissions/MockPermissionContextKt {
+	public static final fun getMockPermissionContext ()Lcom/splendo/kaluga/permissions/base/PermissionContext;
+}
+
+public final class com/splendo/kaluga/test/permissions/MockPermissionManager : com/splendo/kaluga/permissions/base/BasePermissionManager {
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/base/Permission;JLcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;ZLkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/base/Permission;JLcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;ZLkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getMonitoringDidStartMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getMonitoringDidStopMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getMonitoringInterval-UwyO8pc ()J
+	public final fun getRequestPermissionDidStartMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun grantPermission ()V
+	public final fun revokePermission (Z)V
+}
+
+public final class com/splendo/kaluga/test/permissions/MockPermissionManager$Builder {
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/base/Permission;JLcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/permissions/base/Permission;JLcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun create (Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;)Lcom/splendo/kaluga/test/permissions/MockPermissionManager;
+	public final fun getCreateMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getCreatedManagers ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getInitialState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
+	public final fun getMonitoringInterval-UwyO8pc ()J
+	public final fun getPermission ()Lcom/splendo/kaluga/permissions/base/Permission;
+}
+
+public abstract class com/splendo/kaluga/test/permissions/MockPermissionState {
+	public final fun deny (Z)Lkotlin/jvm/functions/Function1;
+	public abstract fun getActiveState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
+	public final fun getAllow ()Lkotlin/jvm/functions/Function1;
+	public final fun getDeinitialize ()Lkotlin/jvm/functions/Function1;
+	public final fun getLock ()Lkotlin/jvm/functions/Function1;
+	public final fun getReinitialize ()Lkotlin/jvm/functions/Function1;
+	public final fun getRequestMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getUnlock ()Lkotlin/jvm/functions/Function1;
+	public final fun initialize (ZZ)Lkotlin/jvm/functions/Function1;
+	public final fun request ()V
+}
+
+public final class com/splendo/kaluga/test/permissions/MockPermissionState$ActiveState : java/lang/Enum {
+	public static final field ALLOWED Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
+	public static final field LOCKED Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
+	public static final field REQUESTABLE Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
+	public static fun values ()[Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
+}
+
+public final class com/splendo/kaluga/test/permissions/MockPermissionState$Allowed : com/splendo/kaluga/test/permissions/MockPermissionState, com/splendo/kaluga/permissions/base/PermissionState$Allowed {
+	public fun <init> ()V
+	public fun getActiveState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
+}
+
+public final class com/splendo/kaluga/test/permissions/MockPermissionState$Deinitialized : com/splendo/kaluga/test/permissions/MockPermissionState, com/splendo/kaluga/permissions/base/PermissionState$Deinitialized {
+	public fun <init> (Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;)V
+	public fun getActiveState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
+}
+
+public final class com/splendo/kaluga/test/permissions/MockPermissionState$Initializing : com/splendo/kaluga/test/permissions/MockPermissionState, com/splendo/kaluga/permissions/base/PermissionState$Initializing {
+	public fun <init> (Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;)V
+	public fun getActiveState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
+}
+
+public final class com/splendo/kaluga/test/permissions/MockPermissionState$Locked : com/splendo/kaluga/test/permissions/MockPermissionState, com/splendo/kaluga/permissions/base/PermissionState$Denied$Locked {
+	public fun <init> ()V
+	public fun getActiveState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
+}
+
+public final class com/splendo/kaluga/test/permissions/MockPermissionState$Requestable : com/splendo/kaluga/test/permissions/MockPermissionState, com/splendo/kaluga/permissions/base/PermissionState$Denied$Requestable {
+	public fun <init> ()V
+	public fun getActiveState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
+}
+
+public final class com/splendo/kaluga/test/permissions/MockPermissionState$Uninitialized : com/splendo/kaluga/test/permissions/MockPermissionState, com/splendo/kaluga/permissions/base/PermissionState$Uninitialized {
+	public fun <init> (Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;)V
+	public fun getActiveState ()Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;
+}
+
+public final class com/splendo/kaluga/test/permissions/MockPermissionStateRepo : com/splendo/kaluga/permissions/base/PermissionStateRepo {
+	public synthetic fun <init> (JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lcom/splendo/kaluga/test/permissions/MockPermissionManager$Builder;Lkotlin/coroutines/CoroutineContext;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (JLcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lcom/splendo/kaluga/test/permissions/MockPermissionManager$Builder;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getBuilder ()Lcom/splendo/kaluga/test/permissions/MockPermissionManager$Builder;
+	public final fun getPermissionManager ()Lcom/splendo/kaluga/test/permissions/MockPermissionManager;
+}
+
+public final class com/splendo/kaluga/test/permissions/MockPermissionsBuilder : com/splendo/kaluga/permissions/base/PermissionsBuilder {
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;Z)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/test/permissions/MockPermissionState$ActiveState;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getBluetoothStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getBuildBluetoothStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildCalendarStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildCameraStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildContactsStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildLocationStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildMicrophoneStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildNotificationsStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getBuildStorageStateRepos ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableList;
+	public final fun getCalendarStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getCameraStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getContactsStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getLocationStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getMicrophoneStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getNotificationsStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun getStorageStateRepoBuilderMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public final fun registerAllPermissionsBuilders (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+

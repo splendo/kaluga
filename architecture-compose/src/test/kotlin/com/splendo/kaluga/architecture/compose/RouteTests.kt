@@ -51,8 +51,7 @@ object MockSpec : NavigationBundleSpec<MockSpecRow<*>>(
     ),
 )
 
-sealed class MockSpecRow<V>(associatedType: NavigationBundleSpecType<V>) :
-    NavigationBundleSpecRow<V>(associatedType) {
+sealed class MockSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
     data object StringSpecRow : MockSpecRow<String>(NavigationBundleSpecType.StringType)
     data object BooleanSpecRow : MockSpecRow<Boolean>(NavigationBundleSpecType.BooleanType)
     data object FloatSpecRow : MockSpecRow<Float>(NavigationBundleSpecType.FloatType)
@@ -73,14 +72,12 @@ sealed class MockSpecRow<V>(associatedType: NavigationBundleSpecType<V>) :
 
 class NestedSpec : NavigationBundleSpec<NestedSpecRow<*>>(setOf(NestedSpecRow.StringSpecRow))
 
-sealed class NestedSpecRow<V>(associatedType: NavigationBundleSpecType<V>) :
-    NavigationBundleSpecRow<V>(associatedType) {
+sealed class NestedSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
 
     data object StringSpecRow : NestedSpecRow<String>(NavigationBundleSpecType.StringType)
 }
 
-class TestNavigationAction(bundle: NavigationBundle<MockSpecRow<*>>) :
-    NavigationAction<MockSpecRow<*>>(bundle)
+class TestNavigationAction(bundle: NavigationBundle<MockSpecRow<*>>) : NavigationAction<MockSpecRow<*>>(bundle)
 
 class RouteTests {
 

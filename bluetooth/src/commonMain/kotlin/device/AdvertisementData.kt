@@ -64,7 +64,15 @@ interface BaseAdvertisementData {
 /**
  * Platform specific implementation of [BaseAdvertisementData]
  */
-expect class AdvertisementData : BaseAdvertisementData
+expect class AdvertisementData : BaseAdvertisementData {
+    override val name: String?
+    override val manufacturerId: Int?
+    override val manufacturerData: ByteArray?
+    override val serviceUUIDs: List<UUID>
+    override val serviceData: Map<UUID, ByteArray?>
+    override val txPowerLevel: TxPower
+    override val isConnectable: Boolean
+}
 
 val BaseAdvertisementData.description: String get() = listOfNotNull(
     name?.let { "Name: $it" },
@@ -84,10 +92,7 @@ val BaseAdvertisementData.description: String get() = listOfNotNull(
     "IsConnectable: $isConnectable",
 ).joinToString("\n")
 
-internal data class PairedAdvertisementData(
-    override val name: String? = null,
-    override val serviceUUIDs: List<UUID> = emptyList(),
-) : BaseAdvertisementData {
+internal data class PairedAdvertisementData(override val name: String? = null, override val serviceUUIDs: List<UUID> = emptyList()) : BaseAdvertisementData {
     override val manufacturerId: Int? = null
     override val manufacturerData: ByteArray? = null
     override val serviceData: Map<UUID, ByteArray?> = emptyMap()

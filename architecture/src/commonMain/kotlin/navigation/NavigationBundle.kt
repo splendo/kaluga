@@ -71,9 +71,7 @@ sealed class NavigationBundleValue<T> {
             return value.contentEquals(other.value)
         }
 
-        override fun hashCode(): Int {
-            return value.contentHashCode()
-        }
+        override fun hashCode(): Int = value.contentHashCode()
     }
 
     /**
@@ -96,9 +94,7 @@ sealed class NavigationBundleValue<T> {
             return value.contentEquals(other.value)
         }
 
-        override fun hashCode(): Int {
-            return value.contentHashCode()
-        }
+        override fun hashCode(): Int = value.contentHashCode()
     }
 
     /**
@@ -127,9 +123,7 @@ sealed class NavigationBundleValue<T> {
             return value.contentEquals(other.value)
         }
 
-        override fun hashCode(): Int {
-            return value.contentHashCode()
-        }
+        override fun hashCode(): Int = value.contentHashCode()
     }
 
     /**
@@ -158,9 +152,7 @@ sealed class NavigationBundleValue<T> {
             return value.contentEquals(other.value)
         }
 
-        override fun hashCode(): Int {
-            return value.contentHashCode()
-        }
+        override fun hashCode(): Int = value.contentHashCode()
     }
 
     /**
@@ -183,9 +175,7 @@ sealed class NavigationBundleValue<T> {
             return value.contentEquals(other.value)
         }
 
-        override fun hashCode(): Int {
-            return value.contentHashCode()
-        }
+        override fun hashCode(): Int = value.contentHashCode()
     }
 
     /**
@@ -208,9 +198,7 @@ sealed class NavigationBundleValue<T> {
             return value.contentEquals(other.value)
         }
 
-        override fun hashCode(): Int {
-            return value.contentHashCode()
-        }
+        override fun hashCode(): Int = value.contentHashCode()
     }
 
     /**
@@ -233,9 +221,7 @@ sealed class NavigationBundleValue<T> {
             return value.contentEquals(other.value)
         }
 
-        override fun hashCode(): Int {
-            return value.contentHashCode()
-        }
+        override fun hashCode(): Int = value.contentHashCode()
     }
 
     /**
@@ -273,9 +259,7 @@ sealed class NavigationBundleValue<T> {
             return value.contentEquals(other.value)
         }
 
-        override fun hashCode(): Int {
-            return value.contentHashCode()
-        }
+        override fun hashCode(): Int = value.contentHashCode()
     }
 
     /**

@@ -41,10 +41,7 @@ import kotlin.coroutines.CoroutineContext
  * @param settings the [Settings] to configure this location manager
  * @param coroutineScope the [CoroutineScope] this location manager runs on
  */
-actual class DefaultLocationManager(
-    settings: Settings,
-    coroutineScope: CoroutineScope,
-) : BaseLocationManager(settings, coroutineScope) {
+actual class DefaultLocationManager(settings: Settings, coroutineScope: CoroutineScope) : BaseLocationManager(settings, coroutineScope) {
 
     /**
      * Builder for creating a [DefaultLocationManager]
@@ -57,9 +54,9 @@ actual class DefaultLocationManager(
         )
     }
 
-    private class Delegate(
-        private val onLocationsChanged: MutableSharedFlow<Location.KnownLocation>,
-    ) : NSObject(), CLLocationManagerDelegateProtocol {
+    private class Delegate(private val onLocationsChanged: MutableSharedFlow<Location.KnownLocation>) :
+        NSObject(),
+        CLLocationManagerDelegateProtocol {
         override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
             val locations = didUpdateLocations.mapNotNull { (it as? CLLocation)?.knownLocation }
             if (locations.isNotEmpty()) {
@@ -79,7 +76,7 @@ actual class DefaultLocationManager(
         }
     }
 
-    override val locationMonitor: LocationMonitor = LocationMonitor.Builder(CLLocationManager()).create()
+    actual override val locationMonitor: LocationMonitor = LocationMonitor.Builder(CLLocationManager()).create()
     private val locationManager = MainCLLocationManagerAccessor {
         desiredAccuracy = if (locationPermission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
         distanceFilter = settings.minUpdateDistanceMeters.toDouble()
@@ -91,12 +88,12 @@ actual class DefaultLocationManager(
         locationUpdateDelegate = Delegate(sharedLocations)
     }
 
-    override suspend fun requestEnableLocation() {
+    actual override suspend fun requestEnableLocation() {
         // No access to UIApplication.openSettingsURLString
         // We have to fallback to alert then?
     }
 
-    override suspend fun startMonitoringLocation() {
+    actual override suspend fun startMonitoringLocation() {
         val locationUpdateDelegate = locationUpdateDelegate
         locationManager.updateLocationManager {
             delegate = locationUpdateDelegate
@@ -104,7 +101,7 @@ actual class DefaultLocationManager(
         }
     }
 
-    override suspend fun stopMonitoringLocation() {
+    actual override suspend fun stopMonitoringLocation() {
         launch {
             locationManager.updateLocationManager {
                 stopUpdatingLocation()
@@ -119,9 +116,7 @@ actual class DefaultLocationManager(
  * @param permissionsBuilder a method for creating the [Permissions] object to manage the Location permissions.
  * Needs to have [com.splendo.kaluga.permissions.location.LocationPermission] registered.
  */
-actual class LocationStateRepoBuilder(
-    private val permissionsBuilder: suspend (CoroutineContext) -> Permissions,
-) : BaseLocationStateRepoBuilder {
+actual class LocationStateRepoBuilder(private val permissionsBuilder: suspend (CoroutineContext) -> Permissions) : BaseLocationStateRepoBuilder {
 
     /**
      * Constructor
@@ -140,11 +135,9 @@ actual class LocationStateRepoBuilder(
         },
     )
 
-    override fun create(
+    actual override fun create(
         locationPermission: LocationPermission,
         settingsBuilder: (LocationPermission, Permissions) -> Settings,
         coroutineContext: CoroutineContext,
-    ): LocationStateRepo {
-        return LocationStateRepo({ settingsBuilder(locationPermission, permissionsBuilder(it)) }, DefaultLocationManager.Builder(), coroutineContext)
-    }
+    ): LocationStateRepo = LocationStateRepo({ settingsBuilder(locationPermission, permissionsBuilder(it)) }, DefaultLocationManager.Builder(), coroutineContext)
 }

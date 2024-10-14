@@ -39,7 +39,13 @@ interface PlayableMedia {
 /**
  * Default implementation of [PlayableMedia]
  */
-expect class DefaultPlayableMedia : PlayableMedia
+expect class DefaultPlayableMedia : PlayableMedia {
+    override val source: MediaSource
+    override val duration: Duration
+    override val currentPlayTime: Duration
+    override val resolution: Flow<Resolution>
+    override val tracks: List<TrackInfo>
+}
 
 /**
  * If `true` this [PlayableMedia] has a video component
@@ -52,11 +58,7 @@ val PlayableMedia.isVideo: Boolean get() = tracks.any { it.type == TrackInfo.Typ
  * @property type the [TrackInfo.Type] of the track
  * @property language the language code of the track
  */
-data class TrackInfo(
-    val id: Int,
-    val type: Type,
-    val language: String,
-) {
+data class TrackInfo(val id: Int, val type: Type, val language: String) {
     /**
      * The type of the track
      */

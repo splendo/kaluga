@@ -4,7 +4,7 @@ on: push
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false -Dkotlin.daemon.jvm.options=-Xmx8G,-XX:MaxMetaspaceSize=512m,-Dorg.gradle.daemon=false,-Dkotlin.incremental=false"
   JAVA_OPTS: "-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
-  SIGNING_SECRET_KEY_RING_FILE: "/Users/runner/work/kaluga/kaluga/convention-plugins/keys/secret-keys.gpg"
+  SIGNING_SECRET_KEY_RING_FILE: ${{ github.workspace }}/kaluga-library-components/keys/secret-keys.gpg
 
 concurrency: publish-${{ github.ref_name }}
 
@@ -15,10 +15,10 @@ jobs:
       OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
       SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
       SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-    runs-on: macos-13
+    runs-on: ${{ github.ref_name == 'master' && 'tartelet' || 'macos-14' }}
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -29,18 +29,27 @@ jobs:
       # TODO: use setup_tools_macos
 
       - name : set up JDK 17
-        uses : actions/setup-java@v3
+        uses : actions/setup-java@v4
         with :
           distribution : 'temurin'
           java-version : 17
 
       - name: Konan cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: konan-cache
         with:
           path: ~/.konan/*
           key: konan
-
+      - name: Install Android SDK
+        id: android_sdk_install
+        uses: android-actions/setup-android@v3
+        with:
+          log-accepted-android-sdk-licenses: false
+      # We're seeing some issues with publishing to Sonatype due to split up repos. By publishing to MavenLocal first we might circumvent this
+      - name: "Publish MavenLocal"
+        env:
+            MAVEN_CENTRAL_RELEASE: ${{ github.ref_name == 'master' }}
+        run: ./gradlew publishToMavenLocal --stacktrace
       - name: "Publish SNAPSHOT"
         if: ${{ github.ref_name != 'master' }}
         run: ./gradlew publishAllPublicationsToSnapshotsRepository --stacktrace

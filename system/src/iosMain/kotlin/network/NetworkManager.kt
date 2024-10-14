@@ -66,9 +66,7 @@ import platform.posix.QOS_CLASS_UTILITY
 /**
  * Default implementation of [NetworkManager]
  */
-actual class DefaultNetworkManager internal constructor(
-    private val appleNetworkManager: AppleNetworkManager,
-) : NetworkManager {
+actual class DefaultNetworkManager internal constructor(private val appleNetworkManager: AppleNetworkManager) : NetworkManager {
 
     /**
      * Builder for creating a [DefaultNetworkManager]
@@ -84,9 +82,9 @@ actual class DefaultNetworkManager internal constructor(
         }
     }
 
-    override val network: Flow<NetworkConnectionType> get() = appleNetworkManager.network
-    override suspend fun startMonitoring() = appleNetworkManager.startMonitoring()
-    override suspend fun stopMonitoring() = appleNetworkManager.stopMonitoring()
+    actual override val network: Flow<NetworkConnectionType> get() = appleNetworkManager.network
+    actual override suspend fun startMonitoring() = appleNetworkManager.startMonitoring()
+    actual override suspend fun stopMonitoring() = appleNetworkManager.stopMonitoring()
 
     internal interface AppleNetworkManager : NetworkManager
 
@@ -154,7 +152,8 @@ actual class DefaultNetworkManager internal constructor(
         private val onNetworkStateChanged: SCNetworkReachabilityCallBack = staticCFunction {
                 _: SCNetworkReachabilityRef?,
                 flags: SCNetworkReachabilityFlags,
-                info: COpaquePointer?, ->
+                info: COpaquePointer?,
+            ->
             if (info == null) {
                 return@staticCFunction
             }

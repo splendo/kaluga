@@ -1,27 +1,17 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-publishableComponent("media")
-
-dependencies { }
-
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
+kaluga {
+    moduleName = "media"
+    dependencies {
+        common {
+            main {
                 implementation(project(":base"))
                 implementation(project(":architecture"))
                 implementation(project(":logging"))
             }
-        }
-        commonTest {
-            dependencies {
+            test {
                 implementation(project(":test-utils-media"))
             }
         }

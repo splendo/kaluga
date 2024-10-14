@@ -57,48 +57,37 @@ internal enum class RegularFormatCharacter(val char: Char) {
     PERCENT_SIGN('%'), ;
 
     companion object {
-        internal fun parse(c: Char): RegularFormatCharacter {
-            return RegularFormatCharacter.values().find { it.char == c } ?: throw throw StringFormatterException.UnknownFormatConversionException(c.toString())
-        }
+        internal fun parse(c: Char): RegularFormatCharacter =
+            RegularFormatCharacter.values().find { it.char == c } ?: throw throw StringFormatterException.UnknownFormatConversionException(c.toString())
     }
 
     // Returns true if and only if the Conversion is applicable to all objects.
-    fun isGeneral(): Boolean {
-        return when (this) {
-            BOOLEAN, BOOLEAN_UPPER, STRING, STRING_UPPER, STRING_IOS, HASHCODE, HASHCODE_UPPER -> true
-            else -> false
-        }
+    fun isGeneral(): Boolean = when (this) {
+        BOOLEAN, BOOLEAN_UPPER, STRING, STRING_UPPER, STRING_IOS, HASHCODE, HASHCODE_UPPER -> true
+        else -> false
     }
 
     // Returns true if and only if the Conversion is applicable to character.
-    fun isCharacter(): Boolean {
-        return when (this) {
-            CHARACTER, CHARACTER_UPPER -> true
-            else -> false
-        }
+    fun isCharacter(): Boolean = when (this) {
+        CHARACTER, CHARACTER_UPPER -> true
+        else -> false
     }
 
     // Returns true if and only if the Conversion is an integer type.
-    fun isInteger(): Boolean {
-        return when (this) {
-            DECIMAL_INTEGER, OCTAL_INTEGER, HEXADECIMAL_INTEGER, HEXADECIMAL_INTEGER_UPPER -> true
-            else -> false
-        }
+    fun isInteger(): Boolean = when (this) {
+        DECIMAL_INTEGER, OCTAL_INTEGER, HEXADECIMAL_INTEGER, HEXADECIMAL_INTEGER_UPPER -> true
+        else -> false
     }
 
     // Returns true if and only if the Conversion is a floating-point type.
-    fun isFloat(): Boolean {
-        return when (this) {
-            SCIENTIFIC, SCIENTIFIC_UPPER, GENERAL, GENERAL_UPPER, DECIMAL_FLOAT, HEXADECIMAL_FLOAT, HEXADECIMAL_FLOAT_UPPER -> true
-            else -> false
-        }
+    fun isFloat(): Boolean = when (this) {
+        SCIENTIFIC, SCIENTIFIC_UPPER, GENERAL, GENERAL_UPPER, DECIMAL_FLOAT, HEXADECIMAL_FLOAT, HEXADECIMAL_FLOAT_UPPER -> true
+        else -> false
     }
 
     // Returns true if and only if the Conversion does not require an argument
-    fun isText(): Boolean {
-        return when (this) {
-            LINE_SEPARATOR, PERCENT_SIGN -> true
-            else -> false
-        }
+    fun isText(): Boolean = when (this) {
+        LINE_SEPARATOR, PERCENT_SIGN -> true
+        else -> false
     }
 }

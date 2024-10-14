@@ -67,10 +67,9 @@ sealed class LuminousExposure : AbstractScientificUnit<PhysicalQuantity.Luminous
  * @param time the [Time] component
  */
 @Serializable
-data class MetricLuminousExposure(
-    override val illuminance: MetricIlluminance,
-    override val time: Time,
-) : LuminousExposure(), MetricScientificUnit<PhysicalQuantity.LuminousExposure> {
+data class MetricLuminousExposure(override val illuminance: MetricIlluminance, override val time: Time) :
+    LuminousExposure(),
+    MetricScientificUnit<PhysicalQuantity.LuminousExposure> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -80,10 +79,9 @@ data class MetricLuminousExposure(
  * @param time the [Time] component
  */
 @Serializable
-data class ImperialLuminousExposure(
-    override val illuminance: ImperialIlluminance,
-    override val time: Time,
-) : LuminousExposure(), ImperialScientificUnit<PhysicalQuantity.LuminousExposure> {
+data class ImperialLuminousExposure(override val illuminance: ImperialIlluminance, override val time: Time) :
+    LuminousExposure(),
+    ImperialScientificUnit<PhysicalQuantity.LuminousExposure> {
     override val system = MeasurementSystem.Imperial
 }
 

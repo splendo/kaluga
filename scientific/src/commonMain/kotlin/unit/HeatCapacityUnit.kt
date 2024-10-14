@@ -85,10 +85,9 @@ sealed class HeatCapacity : AbstractScientificUnit<PhysicalQuantity.HeatCapacity
  * @param per the [MetricAndUKImperialTemperature] component
  */
 @Serializable
-data class MetricAndUKImperialHeatCapacity(
-    override val energy: MetricAndImperialEnergy,
-    override val per: MetricAndUKImperialTemperature,
-) : HeatCapacity(), MetricAndUKImperialScientificUnit<PhysicalQuantity.HeatCapacity> {
+data class MetricAndUKImperialHeatCapacity(override val energy: MetricAndImperialEnergy, override val per: MetricAndUKImperialTemperature) :
+    HeatCapacity(),
+    MetricAndUKImperialScientificUnit<PhysicalQuantity.HeatCapacity> {
     override val system = MeasurementSystem.MetricAndUKImperial
 
     /**
@@ -108,10 +107,9 @@ data class MetricAndUKImperialHeatCapacity(
  * @param per the [MetricAndUKImperialTemperature] component
  */
 @Serializable
-data class MetricHeatCapacity(
-    override val energy: MetricEnergy,
-    override val per: MetricAndUKImperialTemperature,
-) : HeatCapacity(), MetricScientificUnit<PhysicalQuantity.HeatCapacity> {
+data class MetricHeatCapacity(override val energy: MetricEnergy, override val per: MetricAndUKImperialTemperature) :
+    HeatCapacity(),
+    MetricScientificUnit<PhysicalQuantity.HeatCapacity> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -121,10 +119,9 @@ data class MetricHeatCapacity(
  * @param per the [MetricAndUKImperialTemperature] component
  */
 @Serializable
-data class UKImperialHeatCapacity(
-    override val energy: ImperialEnergy,
-    override val per: MetricAndUKImperialTemperature,
-) : HeatCapacity(), UKImperialScientificUnit<PhysicalQuantity.HeatCapacity> {
+data class UKImperialHeatCapacity(override val energy: ImperialEnergy, override val per: MetricAndUKImperialTemperature) :
+    HeatCapacity(),
+    UKImperialScientificUnit<PhysicalQuantity.HeatCapacity> {
     override val system = MeasurementSystem.UKImperial
 }
 
@@ -134,10 +131,9 @@ data class UKImperialHeatCapacity(
  * @param per the [USCustomaryTemperature] component
  */
 @Serializable
-data class USCustomaryHeatCapacity(
-    override val energy: ImperialEnergy,
-    override val per: USCustomaryTemperature,
-) : HeatCapacity(), USCustomaryScientificUnit<PhysicalQuantity.HeatCapacity> {
+data class USCustomaryHeatCapacity(override val energy: ImperialEnergy, override val per: USCustomaryTemperature) :
+    HeatCapacity(),
+    USCustomaryScientificUnit<PhysicalQuantity.HeatCapacity> {
     override val system = MeasurementSystem.USCustomary
 }
 

@@ -72,13 +72,17 @@ sealed class Illuminance : AbstractScientificUnit<PhysicalQuantity.Illuminance>(
  * An [Illuminance] for [MeasurementSystem.Metric]
  */
 @Serializable
-sealed class MetricIlluminance : Illuminance(), MetricScientificUnit<PhysicalQuantity.Illuminance>
+sealed class MetricIlluminance :
+    Illuminance(),
+    MetricScientificUnit<PhysicalQuantity.Illuminance>
 
 /**
  * An [Illuminance] for [MeasurementSystem.Imperial]
  */
 @Serializable
-sealed class ImperialIlluminance : Illuminance(), ImperialScientificUnit<PhysicalQuantity.Illuminance>
+sealed class ImperialIlluminance :
+    Illuminance(),
+    ImperialScientificUnit<PhysicalQuantity.Illuminance>
 
 @Serializable
 data object Lux : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance> {
@@ -90,7 +94,9 @@ data object Lux : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, 
 }
 
 @Serializable
-sealed class LuxMultiple : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux>
+sealed class LuxMultiple :
+    MetricIlluminance(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux>
 
 @Serializable
 data object Nanolux : LuxMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Lux> by Nano(Lux)
@@ -132,7 +138,9 @@ data object Phot : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric,
 }
 
 @Serializable
-sealed class PhotMultiple : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot>
+sealed class PhotMultiple :
+    MetricIlluminance(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot>
 
 @Serializable
 data object Nanophot : PhotMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Illuminance, Phot> by Nano(Phot)

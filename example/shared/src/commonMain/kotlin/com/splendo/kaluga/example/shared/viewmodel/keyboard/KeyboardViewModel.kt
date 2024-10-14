@@ -29,9 +29,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
-class KeyboardViewModel<FH : FocusHandler>(keyboardManagerBuilder: BaseKeyboardManager.Builder<FH>) : BaseLifecycleViewModel(
-    keyboardManagerBuilder,
-) {
+class KeyboardViewModel<FH : FocusHandler>(keyboardManagerBuilder: BaseKeyboardManager.Builder<FH>) :
+    BaseLifecycleViewModel(
+        keyboardManagerBuilder,
+    ) {
 
     private val _editFieldFocusHandler = MutableStateFlow<FH?>(null)
     val editFieldFocusHandler = _editFieldFocusHandler.toUninitializedSubject(coroutineScope)

@@ -250,9 +250,7 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
     private inline fun <P : Permission> createPermissionStateRepoBuilder(
         crossinline permissionStateRepoBuilder: (P, CoroutineContext) -> BasePermissionStateRepo<P>,
     ): PermissionStateRepoBuilder<P> = object : PermissionStateRepoBuilder<P> {
-        override fun create(permission: P, coroutineContext: CoroutineContext): BasePermissionStateRepo<P> {
-            return permissionStateRepoBuilder(permission, coroutineContext)
-        }
+        override fun create(permission: P, coroutineContext: CoroutineContext): BasePermissionStateRepo<P> = permissionStateRepoBuilder(permission, coroutineContext)
     }
 }
 
@@ -265,10 +263,7 @@ private val defaultPermissionDispatcher by lazy {
  * @param builder The [PermissionsBuilder] to build the [PermissionManager] associated with each [Permission]
  * @param coroutineContext The [CoroutineContext] to run permission checks from
  */
-class Permissions(
-    private val builder: PermissionsBuilder,
-    private val coroutineContext: CoroutineContext = defaultPermissionDispatcher,
-) {
+class Permissions(private val builder: PermissionsBuilder, private val coroutineContext: CoroutineContext = defaultPermissionDispatcher) {
 
     private val permissionStateRepos = concurrentMutableMapOf<Permission, BasePermissionStateRepo<*>>()
 
@@ -284,9 +279,7 @@ class Permissions(
      * @return A [PermissionStateFlowRepo] for the given [Permission]
      * @throws PermissionsBuilderError if the provided [PermissionsBuilder] has not registered a [PermissionStateRepoBuilder] for the permission.
      */
-    operator fun <P : Permission> get(permission: P): PermissionStateFlowRepo<P> {
-        return permissionStateRepo(permission)
-    }
+    operator fun <P : Permission> get(permission: P): PermissionStateFlowRepo<P> = permissionStateRepo(permission)
 
     /**
      * Requests a [Permission]
@@ -295,11 +288,9 @@ class Permissions(
      * @return `true` if the permission was granted, `false` otherwise.
      * @throws PermissionsBuilderError if the provided [PermissionsBuilder] has not registered a [PermissionStateRepoBuilder] for the permission.
      */
-    suspend fun <P : Permission> request(permission: P): Boolean {
-        return get(permission).run {
-            withContext(coroutineContext) {
-                request()
-            }
+    suspend fun <P : Permission> request(permission: P): Boolean = get(permission).run {
+        withContext(coroutineContext) {
+            request()
         }
     }
 

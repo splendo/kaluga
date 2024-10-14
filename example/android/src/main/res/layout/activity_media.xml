@@ -118,7 +118,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/playtime_progress"
                 android:orientation="horizontal"
-                android:gravity="center_horizontal"
+                android:gravity="center_horizontal|top"
                 android:paddingBottom="20dp">
 
                 <androidx.appcompat.widget.AppCompatButton

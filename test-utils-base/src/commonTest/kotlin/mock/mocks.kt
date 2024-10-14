@@ -27,25 +27,15 @@ interface MockableTestMethods {
 
 class MockableTestMethodsImpl : MockableTestMethods {
 
-    override fun methodWithoutParamsAndReturnType() {
-        throw NotImplementedError()
-    }
+    override fun methodWithoutParamsAndReturnType(): Unit = throw NotImplementedError()
 
-    override fun methodWithoutParamsButWithReturnType(): String {
-        throw NotImplementedError()
-    }
+    override fun methodWithoutParamsButWithReturnType(): String = throw NotImplementedError()
 
-    override fun methodWithParamsAndReturnType(string: String): String {
-        throw NotImplementedError()
-    }
+    override fun methodWithParamsAndReturnType(string: String): String = throw NotImplementedError()
 
-    override fun methodWithMultipleParamsAndReturnType(first: Int, second: String, third: String?, fourth: Int?): String {
-        throw NotImplementedError()
-    }
+    override fun methodWithMultipleParamsAndReturnType(first: Int, second: String, third: String?, fourth: Int?): String = throw NotImplementedError()
 
-    override suspend fun suspendMethodWithParamsAndReturnType(string: String): String {
-        throw NotImplementedError()
-    }
+    override suspend fun suspendMethodWithParamsAndReturnType(string: String): String = throw NotImplementedError()
 }
 
 const val RESULT_A = "Result A"

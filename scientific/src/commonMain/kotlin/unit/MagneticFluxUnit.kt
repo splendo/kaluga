@@ -44,7 +44,9 @@ val MagneticFluxUnits: Set<MagneticFlux> get() = setOf(
  * SI unit is [Weber]
  */
 @Serializable
-sealed class MagneticFlux : AbstractScientificUnit<PhysicalQuantity.MagneticFlux>(), MetricAndImperialScientificUnit<PhysicalQuantity.MagneticFlux>
+sealed class MagneticFlux :
+    AbstractScientificUnit<PhysicalQuantity.MagneticFlux>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.MagneticFlux>
 
 @Serializable
 data object Weber : MagneticFlux(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux> {
@@ -56,7 +58,9 @@ data object Weber : MagneticFlux(), MetricBaseUnit<MeasurementSystem.MetricAndIm
 }
 
 @Serializable
-sealed class WeberMultiple : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber>
+sealed class WeberMultiple :
+    MagneticFlux(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber>
 
 @Serializable
 data object Nanoweber : WeberMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticFlux, Weber> by Nano(Weber)

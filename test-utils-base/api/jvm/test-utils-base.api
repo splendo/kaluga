@@ -42,7 +42,6 @@ public abstract class com/splendo/kaluga/test/base/BaseUIThreadTest : com/splend
 
 public final class com/splendo/kaluga/test/base/BaseUIThreadTest$EmptyTestContext : com/splendo/kaluga/test/base/BaseUIThreadTest$TestContext {
 	public static final field Companion Lcom/splendo/kaluga/test/base/BaseUIThreadTest$EmptyTestContext$Companion;
-	public fun dispose ()V
 }
 
 public final class com/splendo/kaluga/test/base/BaseUIThreadTest$EmptyTestContext$Companion {
@@ -50,11 +49,7 @@ public final class com/splendo/kaluga/test/base/BaseUIThreadTest$EmptyTestContex
 }
 
 public abstract interface class com/splendo/kaluga/test/base/BaseUIThreadTest$TestContext {
-	public abstract fun dispose ()V
-}
-
-public final class com/splendo/kaluga/test/base/BaseUIThreadTest$TestContext$DefaultImpls {
-	public static fun dispose (Lcom/splendo/kaluga/test/base/BaseUIThreadTest$TestContext;)V
+	public fun dispose ()V
 }
 
 public final class com/splendo/kaluga/test/base/DeliberateCancellationException : java/util/concurrent/CancellationException {
@@ -101,7 +96,6 @@ public class com/splendo/kaluga/test/base/SimpleUIThreadTest : com/splendo/kalug
 
 public final class com/splendo/kaluga/test/base/SimpleUIThreadTest$SimpleTestContext : com/splendo/kaluga/test/base/UIThreadTest$TestContext, kotlinx/coroutines/CoroutineScope {
 	public fun <init> (Lkotlinx/coroutines/CoroutineScope;)V
-	public fun dispose ()V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 }
 
@@ -115,7 +109,6 @@ public abstract class com/splendo/kaluga/test/base/UIThreadTest : com/splendo/ka
 
 public final class com/splendo/kaluga/test/base/UIThreadTest$EmptyTestContext : com/splendo/kaluga/test/base/UIThreadTest$TestContext {
 	public static final field Companion Lcom/splendo/kaluga/test/base/UIThreadTest$EmptyTestContext$Companion;
-	public fun dispose ()V
 }
 
 public final class com/splendo/kaluga/test/base/UIThreadTest$EmptyTestContext$Companion {
@@ -123,10 +116,6 @@ public final class com/splendo/kaluga/test/base/UIThreadTest$EmptyTestContext$Co
 }
 
 public abstract interface class com/splendo/kaluga/test/base/UIThreadTest$TestContext : com/splendo/kaluga/test/base/BaseUIThreadTest$TestContext {
-}
-
-public final class com/splendo/kaluga/test/base/UIThreadTest$TestContext$DefaultImpls {
-	public static fun dispose (Lcom/splendo/kaluga/test/base/UIThreadTest$TestContext;)V
 }
 
 public final class com/splendo/kaluga/test/base/YieldMultipleKt {

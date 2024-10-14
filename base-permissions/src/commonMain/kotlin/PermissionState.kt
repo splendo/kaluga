@@ -43,7 +43,9 @@ sealed interface PermissionState<P : Permission> : KalugaState {
      * A [PermissionState] indicating observation is not active
      * @param P the type of [Permission] associated with the state
      */
-    sealed interface Inactive<P : Permission> : PermissionState<P>, SpecialFlowValue.NotImportant
+    sealed interface Inactive<P : Permission> :
+        PermissionState<P>,
+        SpecialFlowValue.NotImportant
 
     /**
      * A [Inactive] State indicating observation has not started yet
@@ -79,7 +81,9 @@ sealed interface PermissionState<P : Permission> : KalugaState {
      * An [Active] State indicating the state is transitioning from [Inactive] to [Initialized]
      * @param P the type of [Permission] associated with the state
      */
-    interface Initializing<P : Permission> : Active<P>, SpecialFlowValue.NotImportant {
+    interface Initializing<P : Permission> :
+        Active<P>,
+        SpecialFlowValue.NotImportant {
 
         /**
          * Transitions into an [Initialized] state
@@ -157,21 +161,25 @@ internal sealed class PermissionStateImpl<P : Permission> {
 
     sealed class Inactive<P : Permission> : PermissionStateImpl<P>()
 
-    class Uninitialized<P : Permission> : Inactive<P>(), PermissionState.Uninitialized<P> {
+    class Uninitialized<P : Permission> :
+        Inactive<P>(),
+        PermissionState.Uninitialized<P> {
 
         fun initialize(monitoringInterval: Duration, permissionManager: PermissionManager<P>): suspend () -> Initializing<P> = {
             Initializing(monitoringInterval, permissionManager)
         }
     }
 
-    data class Deinitialized<P : Permission>(
-        val monitoringInterval: Duration,
-        val permissionManager: PermissionManager<P>,
-    ) : Inactive<P>(), PermissionState.Deinitialized<P> {
+    data class Deinitialized<P : Permission>(val monitoringInterval: Duration, val permissionManager: PermissionManager<P>) :
+        Inactive<P>(),
+        PermissionState.Deinitialized<P> {
         override val reinitialize: suspend () -> Initializing<P> = { Initializing(monitoringInterval, permissionManager) }
     }
 
-    sealed class Active<P : Permission> : PermissionStateImpl<P>(), HandleBeforeOldStateIsRemoved<PermissionState<P>>, HandleAfterNewStateIsSet<PermissionState<P>> {
+    sealed class Active<P : Permission> :
+        PermissionStateImpl<P>(),
+        HandleBeforeOldStateIsRemoved<PermissionState<P>>,
+        HandleAfterNewStateIsSet<PermissionState<P>> {
 
         abstract val monitoringInterval: Duration
         abstract val permissionManager: PermissionManager<P>
@@ -193,11 +201,10 @@ internal sealed class PermissionStateImpl<P : Permission> {
         }
     }
 
-    data class Initializing<P : Permission>(
-        override val monitoringInterval: Duration,
-        override val permissionManager: PermissionManager<P>,
-    ) : Active<P>(), PermissionState.Initializing<P> {
-        override fun initialize(allowed: Boolean, locked: Boolean): suspend() -> Initialized<P> = {
+    data class Initializing<P : Permission>(override val monitoringInterval: Duration, override val permissionManager: PermissionManager<P>) :
+        Active<P>(),
+        PermissionState.Initializing<P> {
+        override fun initialize(allowed: Boolean, locked: Boolean): suspend () -> Initialized<P> = {
             when {
                 !allowed && locked -> Denied.Locked(monitoringInterval, permissionManager)
                 !allowed -> Denied.Requestable(monitoringInterval, permissionManager)
@@ -206,10 +213,9 @@ internal sealed class PermissionStateImpl<P : Permission> {
         }
     }
 
-    data class Allowed<P : Permission>(
-        override val monitoringInterval: Duration,
-        override val permissionManager: PermissionManager<P>,
-    ) : Active<P>(), PermissionState.Allowed<P> {
+    data class Allowed<P : Permission>(override val monitoringInterval: Duration, override val permissionManager: PermissionManager<P>) :
+        Active<P>(),
+        PermissionState.Allowed<P> {
 
         override fun deny(locked: Boolean): suspend () -> PermissionState.Denied<P> = {
             if (locked) Denied.Locked(monitoringInterval, permissionManager) else Denied.Requestable(monitoringInterval, permissionManager)
@@ -222,20 +228,18 @@ internal sealed class PermissionStateImpl<P : Permission> {
             Allowed(monitoringInterval, permissionManager)
         }
 
-        data class Locked<P : Permission>(
-            override val monitoringInterval: Duration,
-            override val permissionManager: PermissionManager<P>,
-        ) : Denied<P>(), PermissionState.Denied.Locked<P> {
+        data class Locked<P : Permission>(override val monitoringInterval: Duration, override val permissionManager: PermissionManager<P>) :
+            Denied<P>(),
+            PermissionState.Denied.Locked<P> {
 
             override val unlock: suspend () -> Requestable<P> = {
                 Requestable(monitoringInterval, permissionManager)
             }
         }
 
-        data class Requestable<P : Permission>(
-            override val monitoringInterval: Duration,
-            override val permissionManager: PermissionManager<P>,
-        ) : Denied<P>(), PermissionState.Denied.Requestable<P> {
+        data class Requestable<P : Permission>(override val monitoringInterval: Duration, override val permissionManager: PermissionManager<P>) :
+            Denied<P>(),
+            PermissionState.Denied.Requestable<P> {
 
             override fun request() {
                 permissionManager.requestPermission()
@@ -253,13 +257,11 @@ internal sealed class PermissionStateImpl<P : Permission> {
  * @param P the type of [Permission] associated with the [PermissionState]
  * @return `true` if the permission was granted, `false` otherwise.
  */
-suspend fun <P : Permission> Flow<PermissionState<out P>>.request(): Boolean {
-    return this.transformLatest { state ->
-        when (state) {
-            is Allowed -> emit(true)
-            is Denied.Requestable -> state.request()
-            is Denied.Locked -> emit(false)
-            is Inactive, is Active -> {}
-        }
-    }.first()
-}
+suspend fun <P : Permission> Flow<PermissionState<out P>>.request(): Boolean = this.transformLatest { state ->
+    when (state) {
+        is Allowed -> emit(true)
+        is Denied.Requestable -> state.request()
+        is Denied.Locked -> emit(false)
+        is Inactive, is Active -> {}
+    }
+}.first()

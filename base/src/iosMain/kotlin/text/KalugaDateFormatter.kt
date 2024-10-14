@@ -119,64 +119,62 @@ actual class KalugaDateFormatter private constructor(private val format: NSDateF
         }.date
     }
 
-    override var pattern: String
+    actual override var pattern: String
         get() = format.dateFormat
         set(value) {
             format.dateFormat = value
         }
 
-    override var timeZone: KalugaTimeZone
+    actual override var timeZone: KalugaTimeZone
         get() = KalugaTimeZone(format.timeZone)
         set(value) {
             format.timeZone = value.timeZone
         }
 
-    override var eras: List<String>
+    actual override var eras: List<String>
         get() = format.eraSymbols.typedList()
         set(value) {
             format.eraSymbols = value
         }
 
-    override var months: List<String>
+    actual override var months: List<String>
         get() = format.monthSymbols.typedList()
         set(value) {
             format.monthSymbols = value
         }
-    override var shortMonths: List<String>
+    actual override var shortMonths: List<String>
         get() = format.shortMonthSymbols.typedList()
         set(value) {
             format.shortMonthSymbols = value
         }
 
-    override var weekdays: List<String>
+    actual override var weekdays: List<String>
         get() = format.weekdaySymbols.typedList()
         set(value) {
             format.weekdaySymbols = value
         }
-    override var shortWeekdays: List<String>
+    actual override var shortWeekdays: List<String>
         get() = format.shortWeekdaySymbols.typedList()
         set(value) {
             format.shortWeekdaySymbols = value
         }
 
-    override var amString: String
+    actual override var amString: String
         get() = format.AMSymbol
         set(value) {
             format.AMSymbol = value
         }
-    override var pmString: String
+    actual override var pmString: String
         get() = format.PMSymbol
         set(value) {
             format.PMSymbol = value
         }
 
-    override fun format(date: KalugaDate): String = format.stringFromDate(date.date)
-    override fun parse(string: String): KalugaDate? {
-        return format.dateFromString(string)?.let { date ->
-            val calendar = format.calendar.copy() as NSCalendar
-            calendar.timeZone = timeZone.timeZone
-            DefaultKalugaDate(calendar, date)
-        }
+    actual override fun format(date: KalugaDate): String = format.stringFromDate(date.date)
+    actual override fun parse(string: String): KalugaDate? = format.dateFromString(string)?.let { date ->
+        val calendar = format.calendar.copy() as NSCalendar
+        calendar.timeZone = timeZone.timeZone
+        DefaultKalugaDate(calendar, date)
     }
 }
 

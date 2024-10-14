@@ -39,7 +39,7 @@ struct ButtonView: View, Equatable {
                     ForEach(buttons.value, id: \.self) { button in
                         button.toButton(buttonFrame: .frame(maxWidth: .infinity))
                     }
-                }
+                }.padding(10.0)
             }.navigationTitle("feature_resources_button".localized())
         }
     }

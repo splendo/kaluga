@@ -73,11 +73,7 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
      * @param maxDigits The maximum number of digits to show. Defaults to `309U`.
      * @param roundingMode The [RoundingMode] to be applied. Defaults to [RoundingMode.HalfEven].
      */
-    data class Integer(
-        val minDigits: UInt = 0U,
-        val maxDigits: UInt = 309U,
-        override val roundingMode: RoundingMode = RoundingMode.HalfEven,
-    ) : NumberFormatStyle(roundingMode)
+    data class Integer(val minDigits: UInt = 0U, val maxDigits: UInt = 309U, override val roundingMode: RoundingMode = RoundingMode.HalfEven) : NumberFormatStyle(roundingMode)
 
     /**
      * Formats a number to a decimal representation
@@ -185,11 +181,8 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
      * @param negativePattern The pattern to apply for negative numbers. Defaults to "-[positivePattern]".
      * @param roundingMode The [RoundingMode] to be applied. Defaults to [RoundingMode.HalfEven].
      */
-    data class Pattern(
-        val positivePattern: String,
-        val negativePattern: String = "-$positivePattern",
-        override val roundingMode: RoundingMode = RoundingMode.HalfEven,
-    ) : NumberFormatStyle(roundingMode)
+    data class Pattern(val positivePattern: String, val negativePattern: String = "-$positivePattern", override val roundingMode: RoundingMode = RoundingMode.HalfEven) :
+        NumberFormatStyle(roundingMode)
 }
 
 /**
@@ -321,4 +314,29 @@ interface BaseNumberFormatter {
  * @param locale The [KalugaLocale] used for parsing. Defaults to [KalugaLocale.defaultLocale].
  * @param style The [NumberFormatStyle] to configure the format to use. Defaults to [NumberFormatStyle.Decimal].
  */
-expect class NumberFormatter constructor(locale: KalugaLocale = defaultLocale, style: NumberFormatStyle = NumberFormatStyle.Decimal()) : BaseNumberFormatter
+expect class NumberFormatter constructor(locale: KalugaLocale = defaultLocale, style: NumberFormatStyle = NumberFormatStyle.Decimal()) : BaseNumberFormatter {
+    override val locale: KalugaLocale
+    override var percentSymbol: Char
+    override var perMillSymbol: Char
+    override var minusSign: Char
+    override var exponentSymbol: String
+    override var zeroSymbol: Char
+    override var notANumberSymbol: String
+    override var infinitySymbol: String
+    override var currencySymbol: String
+    override var currencyCode: String
+    override var positivePrefix: String
+    override var positiveSuffix: String
+    override var negativePrefix: String
+    override var negativeSuffix: String
+    override var groupingSeparator: Char
+    override var usesGroupingSeparator: Boolean
+    override var decimalSeparator: Char
+    override var alwaysShowsDecimalSeparator: Boolean
+    override var currencyDecimalSeparator: Char
+    override var groupingSize: Int
+    override var multiplier: Int
+
+    override fun format(number: Number): String
+    override fun parse(string: String): Number?
+}

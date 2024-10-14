@@ -45,14 +45,12 @@ actual class KalugaTimeZone internal constructor(val timeZone: NSTimeZone) : Bas
          * @param identifier The identifier to create a [KalugaTimeZone] for
          * @return The [KalugaTimeZone] corresponding to the identifier, if it exists. Check [availableIdentifiers] for supported identifiers
          */
-        actual fun get(identifier: String): KalugaTimeZone? {
-            return if (NSTimeZone.abbreviationDictionary.typedMap<String, String>().containsKey(identifier)) {
-                NSTimeZone.timeZoneWithAbbreviation(identifier)
-            } else {
-                NSTimeZone.timeZoneWithName(identifier)
-            }?.let {
-                KalugaTimeZone(it)
-            }
+        actual fun get(identifier: String): KalugaTimeZone? = if (NSTimeZone.abbreviationDictionary.typedMap<String, String>().containsKey(identifier)) {
+            NSTimeZone.timeZoneWithAbbreviation(identifier)
+        } else {
+            NSTimeZone.timeZoneWithName(identifier)
+        }?.let {
+            KalugaTimeZone(it)
         }
 
         /**
@@ -67,15 +65,15 @@ actual class KalugaTimeZone internal constructor(val timeZone: NSTimeZone) : Bas
         actual val availableIdentifiers: List<String> = NSTimeZone.knownTimeZoneNames.typedList()
     }
 
-    override val identifier: String = timeZone.name
-    override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: KalugaLocale): String {
+    actual override val identifier: String = timeZone.name
+    actual override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: KalugaLocale): String {
         val nameStyle = when (style) {
             TimeZoneNameStyle.Short -> if (withDaylightSavings) NSTimeZoneNameStyle.NSTimeZoneNameStyleShortDaylightSaving else NSTimeZoneNameStyle.NSTimeZoneNameStyleShortStandard
             TimeZoneNameStyle.Long -> if (withDaylightSavings) NSTimeZoneNameStyle.NSTimeZoneNameStyleDaylightSaving else NSTimeZoneNameStyle.NSTimeZoneNameStyleStandard
         }
         return timeZone.localizedName(nameStyle, locale.nsLocale) ?: ""
     }
-    override val offsetFromGMT: Duration get() {
+    actual override val offsetFromGMT: Duration get() {
         val rawOffset = if (timeZone.isDaylightSavingTime()) {
             timeZone.secondsFromGMT.toDouble() - timeZone.daylightSavingTimeOffset
         } else {
@@ -85,7 +83,7 @@ actual class KalugaTimeZone internal constructor(val timeZone: NSTimeZone) : Bas
         return rawOffset.seconds
     }
 
-    override val daylightSavingsOffset: Duration get() {
+    actual override val daylightSavingsOffset: Duration get() {
         val rawOffset = if (timeZone.isDaylightSavingTime()) {
             timeZone.daylightSavingTimeOffset.toLong()
         } else {
@@ -95,10 +93,10 @@ actual class KalugaTimeZone internal constructor(val timeZone: NSTimeZone) : Bas
         }
         return rawOffset.seconds
     }
-    override fun offsetFromGMTAtDate(date: KalugaDate): Duration = timeZone.secondsFromGMTForDate(date.date).seconds
-    override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = timeZone.isDaylightSavingTimeForDate(date.date)
-    override fun copy(): KalugaTimeZone = KalugaTimeZone(timeZone.copy() as NSTimeZone)
-    override fun equals(other: Any?): Boolean {
-        return (other as? KalugaTimeZone)?.let { timeZone == other.timeZone } ?: false
-    }
+    actual override fun offsetFromGMTAtDate(date: KalugaDate): Duration = timeZone.secondsFromGMTForDate(date.date).seconds
+    actual override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = timeZone.isDaylightSavingTimeForDate(date.date)
+    actual override fun copy(): KalugaTimeZone = KalugaTimeZone(timeZone.copy() as NSTimeZone)
+    override fun equals(other: Any?): Boolean = (other as? KalugaTimeZone)?.let { timeZone == other.timeZone } ?: false
+
+    override fun hashCode(): Int = timeZone.hashCode()
 }

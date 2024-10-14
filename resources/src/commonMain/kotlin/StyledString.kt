@@ -183,14 +183,12 @@ fun String.styled(
  * to apply the [StringStyleAttribute] to the first occurrence of the substring,
  * or `null` if the substring does not occur in the String
  */
-fun String.attributeSubstring(substring: String, attribute: StringStyleAttribute): Pair<StringStyleAttribute, IntRange>? {
-    return indexOf(substring).let {
-        if (it >= 0) {
-            val range = IntRange(it, it + substring.length - 1)
-            Pair(attribute, range)
-        } else {
-            null
-        }
+fun String.attributeSubstring(substring: String, attribute: StringStyleAttribute): Pair<StringStyleAttribute, IntRange>? = indexOf(substring).let {
+    if (it >= 0) {
+        val range = IntRange(it, it + substring.length - 1)
+        Pair(attribute, range)
+    } else {
+        null
     }
 }
 

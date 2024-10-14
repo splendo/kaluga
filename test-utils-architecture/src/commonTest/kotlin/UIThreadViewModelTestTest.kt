@@ -39,7 +39,7 @@ import kotlin.test.fail
 class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewModelTestTest.CustomLazyViewModelTestContext, LazyUIThreadViewModelTestTest.ViewModel>() {
 
     companion object {
-        val isDisposed = atomic(false)
+        private val isDisposed = atomic(false)
         val onClearedMock = voidParametersMock<Unit>().apply {
             on().doReturn(Unit)
         }
@@ -51,8 +51,7 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<LazyUIThreadViewMode
         override fun onCleared() = onClearedMock.call()
     }
 
-    class CustomLazyViewModelTestContext(coroutineScope: CoroutineScope) :
-        LazyViewModelTestContext<ViewModel>(coroutineScope, { ViewModel() }) {
+    class CustomLazyViewModelTestContext(coroutineScope: CoroutineScope) : LazyViewModelTestContext<ViewModel>(coroutineScope, { ViewModel() }) {
 
         override fun dispose() {
             super.dispose()

@@ -43,7 +43,9 @@ val LuminousIntensityUnits: Set<LuminousIntensity> get() = setOf(
  * SI unit is [Candela]
  */
 @Serializable
-sealed class LuminousIntensity : AbstractScientificUnit<PhysicalQuantity.LuminousIntensity>(), MetricAndImperialScientificUnit<PhysicalQuantity.LuminousIntensity>
+sealed class LuminousIntensity :
+    AbstractScientificUnit<PhysicalQuantity.LuminousIntensity>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.LuminousIntensity>
 
 @Serializable
 data object Candela : LuminousIntensity(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity> {
@@ -55,7 +57,9 @@ data object Candela : LuminousIntensity(), MetricBaseUnit<MeasurementSystem.Metr
 }
 
 @Serializable
-sealed class CandelaMultiple : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela>
+sealed class CandelaMultiple :
+    LuminousIntensity(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela>
 
 @Serializable
 data object Nanocandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Nano(Candela)

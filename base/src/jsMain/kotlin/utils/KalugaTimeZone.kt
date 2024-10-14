@@ -47,11 +47,12 @@ actual class KalugaTimeZone internal constructor() : BaseTimeZone() {
         actual val availableIdentifiers: List<String> = emptyList()
     }
 
-    override val identifier: String = ""
-    override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: KalugaLocale): String = ""
-    override val offsetFromGMT = 0.milliseconds
-    override val daylightSavingsOffset = 0.milliseconds
-    override fun offsetFromGMTAtDate(date: KalugaDate): Duration = 0.milliseconds
-    override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = false
-    override fun copy(): KalugaTimeZone = KalugaTimeZone()
+    actual override val identifier: String = ""
+    actual override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: KalugaLocale): String = ""
+    actual override val offsetFromGMT = 0.milliseconds
+    actual override val daylightSavingsOffset = 0.milliseconds
+    actual override fun offsetFromGMTAtDate(date: KalugaDate): Duration = 0.milliseconds
+    actual override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = false
+    actual override fun copy(): KalugaTimeZone = KalugaTimeZone()
+    override fun equals(other: Any?): Boolean = other is KalugaTimeZone && identifier == other.identifier
 }

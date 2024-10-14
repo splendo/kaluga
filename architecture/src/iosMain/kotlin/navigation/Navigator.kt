@@ -75,12 +75,14 @@ object MissingViewControllerNavigationException : NavigationException("Missing P
 object MissingNavigationControllerNavigationException : NavigationException("Missing Navigation ViewController")
 object MailNotSupportedNavigationException : NavigationException("Cannot send Mail")
 object TextNotSupportedNavigationException : NavigationException("Cannot send Text")
-data class ImagePickerSourceNotAvailableNavigationException(val source: UIImagePickerControllerSourceType) : NavigationException(
-    "Source Type $source not available for ImagePicker",
-)
-data class ImagePickerMediaNotAvailableNavigationException(val types: Set<NavigationSpec.ImagePicker.MediaType>) : NavigationException(
-    "Media Types ${types.joinToString(", ")} not available for ImagePicker",
-)
+data class ImagePickerSourceNotAvailableNavigationException(val source: UIImagePickerControllerSourceType) :
+    NavigationException(
+        "Source Type $source not available for ImagePicker",
+    )
+data class ImagePickerMediaNotAvailableNavigationException(val types: Set<NavigationSpec.ImagePicker.MediaType>) :
+    NavigationException(
+        "Media Types ${types.joinToString(", ")} not available for ImagePicker",
+    )
 
 /**
  * Implementation of [Navigator] used for navigating to and from [UIViewController]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
@@ -88,12 +90,11 @@ data class ImagePickerMediaNotAvailableNavigationException(val types: Set<Naviga
  * @param parent The [UIViewController] managing the navigation
  * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
  */
-class ViewControllerNavigator<Action : NavigationAction<*>>(
-    parentVC: UIViewController,
-    private val navigationMapper: (Action) -> NavigationSpec,
-) : Navigator<Action> {
+class ViewControllerNavigator<Action : NavigationAction<*>>(parentVC: UIViewController, private val navigationMapper: (Action) -> NavigationSpec) : Navigator<Action> {
 
-    private inner class StoreKitDelegate : NSObject(), SKStoreProductViewControllerDelegateProtocol {
+    private inner class StoreKitDelegate :
+        NSObject(),
+        SKStoreProductViewControllerDelegateProtocol {
 
         override fun productViewControllerDidFinish(viewController: SKStoreProductViewController) {
             viewController.dismissViewControllerAnimated(true, null)

@@ -45,7 +45,9 @@ class SimpleUIThreadTestTest : SimpleUIThreadTest() {
 }
 
 class UIThreadTestTest : UIThreadTest<UIThreadTestTest.MyTestContext>() {
-    class MyTestContext(coroutineScope: CoroutineScope) : TestContext, CoroutineScope by coroutineScope {
+    class MyTestContext(coroutineScope: CoroutineScope) :
+        TestContext,
+        CoroutineScope by coroutineScope {
         var myContext = "myContext"
     }
 
@@ -61,8 +63,9 @@ class UIThreadTestTest : UIThreadTest<UIThreadTestTest.MyTestContext>() {
     fun testCanceling() = testOnUIThread(cancelScopeAfterTest = true) {
         launch {
             // normally this would hang the test
-            while (true)
+            while (true) {
                 delay(2.seconds)
+            }
         }
     }
 

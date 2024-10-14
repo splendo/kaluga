@@ -28,9 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.milliseconds
 
-class MockDeviceBuilder(
-    private val context: CoroutineContext,
-) {
+class MockDeviceBuilder(private val context: CoroutineContext) {
 
     /** MockDevice's identifier */
     var identifier: Identifier = randomIdentifier()
@@ -56,14 +54,13 @@ class MockDeviceBuilder(
     /** Setup mocks */
     var setupMocks = true
 
-    private val _serviceUUIDs = ArrayList<UUID>()
-    private val serviceUUIDs get() = _serviceUUIDs.toList()
+    private val serviceUUIDs = ArrayList<UUID>()
 
     /** Delay before connection and disconnection from the MockDevice */
     var connectionDelay = 500.milliseconds
 
     /** Add services advertised by the MockDevice */
-    fun services(builder: ServiceUUIDsList.() -> Unit) = builder(_serviceUUIDs)
+    fun services(builder: ServiceUUIDsList.() -> Unit) = builder(serviceUUIDs)
 
     fun build(): MockDevice = MockDevice(
         identifier = identifier,
@@ -75,7 +72,7 @@ class MockDeviceBuilder(
                     name = name,
                     manufacturerId = manufacturerId,
                     manufacturerData = manufacturerData,
-                    serviceUUIDs = serviceUUIDs,
+                    serviceUUIDs = serviceUUIDs.toList(),
                     txPowerLevel = txPower,
                     isConnectable = isConnectable,
                 ),

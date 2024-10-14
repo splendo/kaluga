@@ -27,12 +27,7 @@ import com.splendo.kaluga.logging.Logger
  * @param parentLogTag the log tag used to modify the log tag of this service
  * @param logger the [Logger] to use for logging.
  */
-class Service(
-    service: ServiceWrapper,
-    emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
-    parentLogTag: String,
-    logger: Logger,
-) {
+class Service(service: ServiceWrapper, emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit, parentLogTag: String, logger: Logger) {
 
     /**
      * The [UUID] of the service

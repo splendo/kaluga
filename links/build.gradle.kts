@@ -16,33 +16,19 @@
  */
 
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
+    alias(libs.plugins.kotlin.serialization)
 }
 
-publishableComponent("links")
-
-kotlin {
-    sourceSets {
-        sourceSets.all {
-            languageSettings {
-                optIn("kotlinx.serialization.ExperimentalSerializationApi")
-            }
-        }
-
-        commonMain {
-            dependencies {
+kaluga {
+    moduleName = "links"
+    dependencies {
+        common {
+            main {
                 implementation(project(":base", ""))
-                apiDependency(Dependencies.KotlinX.Serialization.Core)
+                api(libs.kotlinx.serialization.core)
             }
-        }
-        commonTest {
-            dependencies {
+            test {
                 implementation(project(":test-utils-base", ""))
             }
         }

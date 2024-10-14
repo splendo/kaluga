@@ -1,31 +1,24 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
-    id("kotlinx-atomicfu")
+    id("com.splendo.kaluga.plugin")
+    id(libs.plugins.kotlinx.atomicfu.get().pluginId)
 }
 
-publishableComponent("location")
-
-dependencies {
-    implementationDependency(Dependencies.Android.PlayServices.Location)
-    implementationDependency(Dependencies.KotlinX.Coroutines.PlayServices)
-    implementationDependency(Dependencies.KotlinX.AtomicFu)
-}
-
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
+kaluga {
+    moduleName = "location"
+    dependencies {
+        android {
+            main {
+                implementation(libs.android.play.services.location)
+                implementation(libs.kotlinx.coroutines.playservices)
+                implementation(libs.kotlinx.atomicfu)
+            }
+        }
+        common {
+            main {
                 implementation(project(":service"))
                 api(project(":location-permissions", ""))
             }
-        }
-        commonTest {
-            dependencies {
+            test {
                 implementation(project(":test-utils-location", ""))
             }
         }

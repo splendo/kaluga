@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.architecture.compose.navigation
 
-import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -64,10 +64,7 @@ sealed interface RouteController {
  * @param provider A [StateFlow] of [Provider].
  * @param parentRouteController An optional parent [RouteController] managing this controller.
  */
-sealed class ProvidingNavHostRouteController<Provider>(
-    private val provider: StateFlow<Provider?>,
-    private val parentRouteController: RouteController? = null,
-) : RouteController {
+sealed class ProvidingNavHostRouteController<Provider>(private val provider: StateFlow<Provider?>, private val parentRouteController: RouteController? = null) : RouteController {
 
     /**
      * Converts [Provider] into a [NavHostController]
@@ -136,10 +133,8 @@ sealed class ProvidingNavHostRouteController<Provider>(
  * @param provider The flow of [NavHostController] to be managed by this Route Controller
  * @param parentRouteController An optional parent [RouteController] managing this controller.
  */
-class NavHostRouteController(
-    provider: StateFlow<NavHostController?>,
-    parentRouteController: RouteController? = null,
-) : ProvidingNavHostRouteController<NavHostController>(provider, parentRouteController) {
+class NavHostRouteController(provider: StateFlow<NavHostController?>, parentRouteController: RouteController? = null) :
+    ProvidingNavHostRouteController<NavHostController>(provider, parentRouteController) {
     override fun NavHostController.provide(): NavHostController = this
 }
 
@@ -148,17 +143,15 @@ class NavHostRouteController(
  * @param provider The flow of [BottomSheetNavigatorState] where the [BottomSheetNavigatorState.contentNavHostController] is to be managed by this Route Controller
  * @param parentRouteController An optional parent [RouteController] managing this controller.
  */
-class BottomSheetContentRouteController(
-    provider: StateFlow<BottomSheetNavigatorState?>,
-    parentRouteController: RouteController? = null,
-) : ProvidingNavHostRouteController<BottomSheetNavigatorState>(provider, parentRouteController) {
+class BottomSheetContentRouteController(provider: StateFlow<BottomSheetNavigatorState?>, parentRouteController: RouteController? = null) :
+    ProvidingNavHostRouteController<BottomSheetNavigatorState>(provider, parentRouteController) {
     override fun BottomSheetNavigatorState.provide(): NavHostController = contentNavHostController
 }
 
 /**
  * [RouteController] for the sheet content of a [BottomSheetNavigatorState]
  * @param bottomSheetNavigatorState The flow of [BottomSheetNavigatorState] where the [BottomSheetNavigatorState.sheetContentNavHostController] is to be managed by this Route Controller
- * @param coroutineScope A flow of [CoroutineScope] for managing the [ModalBottomSheetState].
+ * @param coroutineScope A flow of [CoroutineScope] for managing the [BottomSheetScaffold].
  */
 class BottomSheetSheetContentRouteController(
     private val bottomSheetNavigatorState: StateFlow<BottomSheetNavigatorState?>,
@@ -172,10 +165,10 @@ class BottomSheetSheetContentRouteController(
     internal val sheetContentRouteController = NavHostRouteController()
 
     override fun navigate(newRoute: Route) {
-        bottomSheetNavigatorState.value?.let { (_, _, sheetState) ->
-            if (!sheetState.isVisible) {
+        bottomSheetNavigatorState.value?.let { (_, _, scaffoldState) ->
+            if (!scaffoldState.bottomSheetState.hasExpandedState) {
                 coroutineScope.value?.launch {
-                    sheetState.show()
+                    scaffoldState.bottomSheetState.expand()
                 }
             }
         }
@@ -204,11 +197,11 @@ class BottomSheetSheetContentRouteController(
     }
 
     override fun close() {
-        bottomSheetNavigatorState.value?.let { (_, sheetContentNavHostController, sheetState) ->
+        bottomSheetNavigatorState.value?.let { (_, sheetContentNavHostController, scaffoldState) ->
             // Make sure we're back at the ROOT_VIEW before hiding the sheet
             sheetContentNavHostController.popBackStack(ROOT_VIEW, false)
             coroutineScope.value?.launch {
-                sheetState.hide()
+                scaffoldState.bottomSheetState.hide()
             }
         }
     }

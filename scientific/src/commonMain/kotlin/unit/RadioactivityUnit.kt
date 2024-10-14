@@ -58,7 +58,9 @@ val RadioactivityUnits: Set<Radioactivity> get() = setOf(
  * SI unit is [Becquerel]
  */
 @Serializable
-sealed class Radioactivity : AbstractScientificUnit<PhysicalQuantity.Radioactivity>(), MetricAndImperialScientificUnit<PhysicalQuantity.Radioactivity>
+sealed class Radioactivity :
+    AbstractScientificUnit<PhysicalQuantity.Radioactivity>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.Radioactivity>
 
 @Serializable
 data object Becquerel : Radioactivity(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity> {
@@ -70,7 +72,9 @@ data object Becquerel : Radioactivity(), MetricBaseUnit<MeasurementSystem.Metric
 }
 
 @Serializable
-sealed class BecquerelMultiple : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel>
+sealed class BecquerelMultiple :
+    Radioactivity(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel>
 
 @Serializable
 data object Nanobecquerel : BecquerelMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Becquerel> by Nano(Becquerel)
@@ -123,7 +127,9 @@ data object Curie : Radioactivity(), MetricBaseUnit<MeasurementSystem.MetricAndI
 }
 
 @Serializable
-sealed class CurieMultiple : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie>
+sealed class CurieMultiple :
+    Radioactivity(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie>
 
 @Serializable
 data object Nanocurie : CurieMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity, Curie> by Nano(Curie)

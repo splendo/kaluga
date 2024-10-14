@@ -1,25 +1,26 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
-    id("kotlinx-atomicfu")
+    id("com.splendo.kaluga.plugin")
+    id(libs.plugins.kotlinx.atomicfu.get().pluginId)
 }
 
-publishableComponent("test.architecture")
+kaluga {
+    moduleName = "test.architecture"
 
-kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
+    supportJVM = true
+    supportJS = true
+
+    dependencies {
+        common {
+            main {
                 api(project(":test-utils-base"))
                 api(project(":architecture"))
+                implementation(libs.kotlinx.atomicfu)
             }
         }
-        commonTest {
-            dependencies { }
+        js {
+            main {
+                api(libs.kotlinx.atomicfu)
+            }
         }
     }
 }

@@ -23,6 +23,7 @@ import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
+import kotlinx.cinterop.ObjCSignatureOverride
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -52,15 +53,14 @@ internal actual class DefaultDeviceConnectionManager(
 ) : BaseDeviceConnectionManager(deviceWrapper, settings, coroutineScope) {
 
     class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : DeviceConnectionManager.Builder {
-        override fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): DefaultDeviceConnectionManager {
-            return DefaultDeviceConnectionManager(
+        override fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): DefaultDeviceConnectionManager =
+            DefaultDeviceConnectionManager(
                 cbCentralManager,
                 peripheral,
                 deviceWrapper,
                 settings,
                 coroutineScope,
             )
-        }
     }
 
     companion object {
@@ -71,13 +71,14 @@ internal actual class DefaultDeviceConnectionManager(
     private val discoveringServices = mutableListOf<CBUUID>()
     private val discoveringCharacteristics = mutableListOf<CBUUID>()
 
-    @Suppress("CONFLICTING_OVERLOADS")
     private val peripheralDelegate = object : NSObject(), CBPeripheralDelegateProtocol {
 
+        @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didDiscoverDescriptorsForCharacteristic: CBCharacteristic, error: NSError?) {
             didDiscoverDescriptors(didDiscoverDescriptorsForCharacteristic)
         }
 
+        @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic: CBCharacteristic, error: NSError?) {
             val action = currentAction
             if (action is DeviceAction.Notification && action.characteristic.wrapper.uuid == didUpdateNotificationStateForCharacteristic.UUID) {
@@ -87,18 +88,22 @@ internal actual class DefaultDeviceConnectionManager(
             }
         }
 
+        @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic: CBCharacteristic, error: NSError?) {
             updateCharacteristic(didUpdateValueForCharacteristic, error)
         }
 
+        @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic: CBCharacteristic, error: NSError?) {
             updateCharacteristic(didWriteValueForCharacteristic, error)
         }
 
+        @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor: CBDescriptor, error: NSError?) {
             updateDescriptor(didUpdateValueForDescriptor, error)
         }
 
+        @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForDescriptor: CBDescriptor, error: NSError?) {
             updateDescriptor(didWriteValueForDescriptor, error)
         }
@@ -122,7 +127,7 @@ internal actual class DefaultDeviceConnectionManager(
         peripheral.delegate = peripheralDelegate
     }
 
-    override fun getCurrentState(): DeviceConnectionManager.State = when (peripheral.state) {
+    actual override fun getCurrentState(): DeviceConnectionManager.State = when (peripheral.state) {
         CBPeripheralStateConnected -> DeviceConnectionManager.State.CONNECTED
         CBPeripheralStateConnecting -> DeviceConnectionManager.State.CONNECTING
         CBPeripheralStateDisconnected -> DeviceConnectionManager.State.DISCONNECTED
@@ -130,11 +135,11 @@ internal actual class DefaultDeviceConnectionManager(
         else -> DeviceConnectionManager.State.DISCONNECTED
     }
 
-    override fun connect() {
+    actual override fun connect() {
         cbCentralManager.connectPeripheral(peripheral, null)
     }
 
-    override suspend fun discoverServices() {
+    actual override suspend fun discoverServices() {
         discoveringMutex.withLock {
             discoveringServices.clear()
             discoveringCharacteristics.clear()
@@ -142,7 +147,7 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override fun disconnect() {
+    actual override fun disconnect() {
         val state = getCurrentState()
         cbCentralManager.cancelPeripheralConnection(peripheral)
         if (state != DeviceConnectionManager.State.CONNECTED) {
@@ -154,7 +159,7 @@ internal actual class DefaultDeviceConnectionManager(
         peripheral.readRSSI()
     }
 
-    override suspend fun requestMtu(mtu: MTU): Boolean {
+    actual override suspend fun requestMtu(mtu: MTU): Boolean {
         val max = peripheral.maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse)
         debug(TAG) {
             "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $max"
@@ -165,7 +170,7 @@ internal actual class DefaultDeviceConnectionManager(
         return false
     }
 
-    override suspend fun didStartPerformingAction(action: DeviceAction) {
+    actual override suspend fun didStartPerformingAction(action: DeviceAction) {
         currentAction = action
         when (action) {
             is DeviceAction.Read.Characteristic -> action.characteristic.wrapper.readValue(peripheral)
@@ -189,11 +194,11 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    override suspend fun requestStartPairing() {
+    actual override suspend fun requestStartPairing() {
         // There is no iOS API to pair peripheral
     }
 
-    override suspend fun requestStartUnpairing() {
+    actual override suspend fun requestStartUnpairing() {
         // There is no iOS API to unpair peripheral
     }
 

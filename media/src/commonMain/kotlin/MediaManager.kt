@@ -63,7 +63,9 @@ interface MediaSurfaceController {
 /**
  * Manages media playback
  */
-interface MediaManager : VolumeController, MediaSurfaceController {
+interface MediaManager :
+    VolumeController,
+    MediaSurfaceController {
 
     /**
      * Events detected by [MediaManager]
@@ -276,4 +278,17 @@ abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfacePr
 /**
  * Default implementation of [BaseMediaManager]
  */
-expect class DefaultMediaManager : BaseMediaManager
+expect class DefaultMediaManager : BaseMediaManager {
+    override val currentVolume: Flow<Float>
+
+    override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia?
+    override fun initialize(playableMedia: PlayableMedia)
+    override fun play(rate: Float)
+    override fun pause()
+    override fun stop()
+    override suspend fun updateVolume(volume: Float)
+    override fun startSeek(duration: Duration)
+    override suspend fun renderVideoOnSurface(surface: MediaSurface?)
+    override fun handleReset()
+    override fun cleanUp()
+}

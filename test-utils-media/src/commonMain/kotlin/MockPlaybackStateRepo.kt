@@ -26,13 +26,11 @@ import kotlin.coroutines.CoroutineContext
  * @param createInitialState method for creating an initial [MockPlaybackState]
  * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
  */
-class MockPlaybackStateRepo(
-    createInitialState: () -> MockPlaybackState,
-    coroutineContext: CoroutineContext,
-) : BasePlaybackStateRepo(
-    { createInitialState().playbackState },
-    coroutineContext,
-) {
+class MockPlaybackStateRepo(createInitialState: () -> MockPlaybackState, coroutineContext: CoroutineContext) :
+    BasePlaybackStateRepo(
+        { createInitialState().playbackState },
+        coroutineContext,
+    ) {
 
     /**
      * Constructor that initializes to a [MockPlaybackState.Uninitialized] State with a given [MockPlaybackState.Configuration]

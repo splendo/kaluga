@@ -47,10 +47,7 @@ import kotlin.time.DurationUnit
  * @param dateTimePicker the [DateTimePicker] to present
  * @param parent The [UIViewController] to present the [DateTimePicker]
  */
-actual class DateTimePickerPresenter(
-    dateTimePicker: DateTimePicker,
-    private val parent: UIViewController,
-) : BaseDateTimePickerPresenter(dateTimePicker) {
+actual class DateTimePickerPresenter(dateTimePicker: DateTimePicker, private val parent: UIViewController) : BaseDateTimePickerPresenter(dateTimePicker) {
 
     /**
      * A [BaseDateTimePickerPresenter.Builder] for creating a [DateTimePickerPresenter]
@@ -172,11 +169,11 @@ actual class DateTimePickerPresenter(
         }
     }
 
-    override fun dismissDateTimePicker(animated: Boolean) {
+    actual override fun dismissDateTimePicker(animated: Boolean) {
         parent.dismissModalViewControllerAnimated(animated)
     }
 
-    override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit) {
+    actual override fun showDateTimePicker(animated: Boolean, completion: (KalugaDate?) -> Unit) {
         parent.presentViewController(DateTimePickerViewController(completion), animated, null)
     }
 }

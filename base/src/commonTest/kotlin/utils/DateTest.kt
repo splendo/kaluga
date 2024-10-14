@@ -160,4 +160,19 @@ class DateTest {
         assertEquals(0, startOfDayAfterDLS.hour)
         assertEquals(29, startOfDayAfterDLS.day)
     }
+
+    @Test
+    fun testCopy() {
+        val now = DefaultKalugaDate.now(locale = KalugaLocale.enUsPosix)
+        assertEquals(now, now.copy())
+    }
+
+    @Test
+    fun testCompareTo() {
+        val offset = 1616828400000.milliseconds
+        val timestamp = DefaultKalugaDate.epoch(offset, locale = KalugaLocale.enUsPosix)
+        assertEquals(0, timestamp.compareTo(DefaultKalugaDate.epoch(offset, locale = KalugaLocale.enUsPosix)))
+        assertTrue { timestamp < DefaultKalugaDate.epoch(offset + 5.seconds, locale = KalugaLocale.enUsPosix) }
+        assertTrue { DefaultKalugaDate.epoch(offset - 5.seconds, locale = KalugaLocale.enUsPosix) < timestamp }
+    }
 }

@@ -76,6 +76,10 @@ class LabelViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider) 
             KalugaLabel.Plain("Bold Text", TextStyles.defaultBoldText),
             KalugaLabel.Plain("Italic Text", TextStyles.defaultItalicText),
             KalugaLabel.Plain("Monospace Text", TextStyles.defaultMonospaceText),
+            KalugaLabel.Plain("SemiBold Text", TextStyles.semiBoldText),
+            KalugaLabel.Plain("Serif Text", TextStyles.serifText),
+            KalugaLabel.Plain("Italic Bold Text", TextStyles.italicBoldText),
+            KalugaLabel.Plain("Light Italic Monospace Text", TextStyles.lightItalicMonospaceText),
             KalugaLabel.Plain("Red Text", TextStyles.redText),
             KalugaLabel.Plain("Opposite Aligned Text", TextStyles.oppositeText),
             KalugaLabel.Styled(

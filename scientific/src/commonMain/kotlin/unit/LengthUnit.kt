@@ -68,13 +68,17 @@ sealed class Length : AbstractScientificUnit<PhysicalQuantity.Length>()
  * A [Length] for [MeasurementSystem.Metric]
  */
 @Serializable
-sealed class MetricLength : Length(), MetricScientificUnit<PhysicalQuantity.Length>
+sealed class MetricLength :
+    Length(),
+    MetricScientificUnit<PhysicalQuantity.Length>
 
 /**
  * A [Length] for [MeasurementSystem.Imperial]
  */
 @Serializable
-sealed class ImperialLength : Length(), ImperialScientificUnit<PhysicalQuantity.Length> {
+sealed class ImperialLength :
+    Length(),
+    ImperialScientificUnit<PhysicalQuantity.Length> {
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Length
 }
@@ -90,7 +94,9 @@ data object Meter : MetricLength(), MetricBaseUnit<MeasurementSystem.Metric, Phy
 }
 
 @Serializable
-sealed class MeterMultiple : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter>
+sealed class MeterMultiple :
+    MetricLength(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter>
 
 @Serializable
 data object Nanometer : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Length, Meter> by Nano(Meter)

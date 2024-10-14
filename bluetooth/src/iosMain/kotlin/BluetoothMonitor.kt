@@ -35,9 +35,7 @@ actual interface BluetoothMonitor : ServiceMonitor {
      * Builder for creating a [BluetoothMonitor]
      * @param centralManagerBuilder a method cor creating a [CBCentralManager] to manage Bluetooth
      */
-    actual class Builder(
-        private val centralManagerBuilder: () -> CBCentralManager = { CBCentralManager() },
-    ) {
+    actual class Builder(private val centralManagerBuilder: () -> CBCentralManager = { CBCentralManager() }) {
 
         /**
          * Creates the [BluetoothMonitor]
@@ -51,13 +49,13 @@ actual interface BluetoothMonitor : ServiceMonitor {
  * A default implementation of [BluetoothMonitor]
  * @param centralManagerBuilder a method cor creating a [CBCentralManager] to manage Bluetooth
  */
-class DefaultBluetoothMonitor internal constructor(
-    private val centralManagerBuilder: () -> CBCentralManager,
-) : DefaultServiceMonitor(), BluetoothMonitor {
+class DefaultBluetoothMonitor internal constructor(private val centralManagerBuilder: () -> CBCentralManager) :
+    DefaultServiceMonitor(),
+    BluetoothMonitor {
 
-    internal class CentralManagerDelegate(
-        private val updateEnabledState: () -> Unit,
-    ) : NSObject(), CBCentralManagerDelegateProtocol {
+    internal class CentralManagerDelegate(private val updateEnabledState: () -> Unit) :
+        NSObject(),
+        CBCentralManagerDelegateProtocol {
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
             updateEnabledState()

@@ -46,7 +46,7 @@ import kotlin.test.AfterTest
 import kotlin.time.Duration.Companion.seconds
 
 typealias TestBlock<Context, T> = suspend Context.(T) -> Unit
-typealias ActionBlock = suspend() -> Unit
+typealias ActionBlock = suspend () -> Unit
 typealias ScopeActionBlock<Context> = suspend Context.() -> Unit
 
 typealias FlowTestBlockWithContext<Configuration, Context, T, F> = suspend BaseFlowTest<Configuration, Context, T, F>.(F) -> Unit
@@ -78,10 +78,7 @@ abstract class FlowTest<T, F : Flow<T>>(scope: CoroutineScope = MainScope()) : B
     }
 }
 
-abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>(
-    val scope: CoroutineScope = MainScope(),
-    val logger: Logger? = null,
-) :
+abstract class BaseFlowTest<Configration, Context : TestContext, T, F : Flow<T>>(val scope: CoroutineScope = MainScope(), val logger: Logger? = null) :
     BaseUIThreadTest<Configration, Context>(),
     CoroutineScope by scope {
 

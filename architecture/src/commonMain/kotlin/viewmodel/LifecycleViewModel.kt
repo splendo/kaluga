@@ -28,18 +28,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-@Deprecated(
-    message = "ViewModel was renamed as the name didn't match it's function.",
-    replaceWith = ReplaceWith("LifecycleViewModel"),
-)
-open class ViewModel : LifecycleViewModel()
-
-@Deprecated(
-    message = "BaseViewModel was renamed as the name didn't match it's function.",
-    replaceWith = ReplaceWith("BaseLifecycleViewModel"),
-)
-open class BaseViewModel : BaseLifecycleViewModel()
-
 /**
  * Simple ViewModel class that is to be bound to a View lifecycle
  */
@@ -117,7 +105,5 @@ open class BaseLifecycleViewModel(vararg lifecycleSubscribables: LifecycleSubscr
  * @param navigator The [Navigator] handling navigation.
  * @param lifecycleSubscribables The [LifecycleSubscribable] to be used by this viewModel.
  */
-open class NavigatingViewModel<A : NavigationAction<*>>(
-    protected val navigator: Navigator<A>,
-    vararg lifecycleSubscribables: LifecycleSubscribable,
-) : BaseLifecycleViewModel(*lifecycleSubscribables, navigator)
+open class NavigatingViewModel<A : NavigationAction<*>>(protected val navigator: Navigator<A>, vararg lifecycleSubscribables: LifecycleSubscribable) :
+    BaseLifecycleViewModel(*lifecycleSubscribables, navigator)

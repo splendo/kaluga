@@ -85,7 +85,9 @@ sealed class Yank : AbstractScientificUnit<PhysicalQuantity.Yank>() {
  * @param per the [Time] component
  */
 @Serializable
-data class MetricYank(override val force: MetricForce, override val per: Time) : Yank(), MetricScientificUnit<PhysicalQuantity.Yank> {
+data class MetricYank(override val force: MetricForce, override val per: Time) :
+    Yank(),
+    MetricScientificUnit<PhysicalQuantity.Yank> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -95,7 +97,9 @@ data class MetricYank(override val force: MetricForce, override val per: Time) :
  * @param per the [Time] component
  */
 @Serializable
-data class ImperialYank(override val force: ImperialForce, override val per: Time) : Yank(), ImperialScientificUnit<PhysicalQuantity.Yank> {
+data class ImperialYank(override val force: ImperialForce, override val per: Time) :
+    Yank(),
+    ImperialScientificUnit<PhysicalQuantity.Yank> {
     override val system = MeasurementSystem.Imperial
 
     /**
@@ -115,7 +119,9 @@ data class ImperialYank(override val force: ImperialForce, override val per: Tim
  * @param per the [Time] component
  */
 @Serializable
-data class UKImperialYank(override val force: UKImperialForce, override val per: Time) : Yank(), UKImperialScientificUnit<PhysicalQuantity.Yank> {
+data class UKImperialYank(override val force: UKImperialForce, override val per: Time) :
+    Yank(),
+    UKImperialScientificUnit<PhysicalQuantity.Yank> {
     override val system = MeasurementSystem.UKImperial
 }
 
@@ -125,7 +131,9 @@ data class UKImperialYank(override val force: UKImperialForce, override val per:
  * @param per the [Time] component
  */
 @Serializable
-data class USCustomaryYank(override val force: USCustomaryForce, override val per: Time) : Yank(), USCustomaryScientificUnit<PhysicalQuantity.Yank> {
+data class USCustomaryYank(override val force: USCustomaryForce, override val per: Time) :
+    Yank(),
+    USCustomaryScientificUnit<PhysicalQuantity.Yank> {
     override val system = MeasurementSystem.USCustomary
 }
 

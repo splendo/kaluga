@@ -248,11 +248,9 @@ interface DeviceConnectionManager {
  * @param settings the [ConnectionSettings] to apply for connecting
  * @param coroutineScope the [CoroutineScope] on which the device should be managed
  */
-abstract class BaseDeviceConnectionManager(
-    protected val deviceWrapper: DeviceWrapper,
-    settings: ConnectionSettings,
-    private val coroutineScope: CoroutineScope,
-) : DeviceConnectionManager, CoroutineScope by coroutineScope {
+abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWrapper, settings: ConnectionSettings, private val coroutineScope: CoroutineScope) :
+    DeviceConnectionManager,
+    CoroutineScope by coroutineScope {
 
     private val logTag = "Bluetooth Device ${deviceWrapper.identifier.stringValue}"
     private val logger = settings.logger
@@ -436,4 +434,13 @@ abstract class BaseDeviceConnectionManager(
     }
 }
 
-internal expect class DefaultDeviceConnectionManager : BaseDeviceConnectionManager
+internal expect class DefaultDeviceConnectionManager : BaseDeviceConnectionManager {
+    override fun connect()
+    override fun disconnect()
+    override fun getCurrentState(): DeviceConnectionManager.State
+    override suspend fun discoverServices()
+    override suspend fun didStartPerformingAction(action: DeviceAction)
+    override suspend fun requestStartPairing()
+    override suspend fun requestMtu(mtu: MTU): Boolean
+    override suspend fun requestStartUnpairing()
+}

@@ -65,13 +65,24 @@ interface Timer {
     }
 }
 
-/** A [Timer] ticking a certain [duration] with the ability to [start] and [pause]. */
+/** A [Timer] ticking a certain [duration] with the ability to [start], [pause] and [stop]. */
 interface ControllableTimer : Timer {
-    /** Starts the timer. */
-    suspend fun start()
+    /**
+     * Starts the timer.
+     * @return `true` if the timer as started successfully, `false` otherwise.
+     * */
+    suspend fun start(): Boolean
 
-    /** Stops the timer. */
-    suspend fun pause()
+    /**
+     * Pauses the timer. Calling [start] again will make it resume.
+     * @return `true` if the timer as paused successfully, `false` otherwise.
+     * */
+    suspend fun pause(): Boolean
+
+    /**
+     * Stops the timer causing it to finish. Calling [start] again will return `false`.
+     * */
+    suspend fun stop()
 }
 
 /** [Duration] that has elapsed while [Timer.state] was [Timer.State.Running]. */

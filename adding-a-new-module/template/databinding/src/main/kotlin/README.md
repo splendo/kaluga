@@ -1,1 +1,1 @@
-## Please check [Documentation](../../../../../README.md#androidLibMain-sources)
+## Please check [Documentation](../../../../../README.md#androidMain-sources)

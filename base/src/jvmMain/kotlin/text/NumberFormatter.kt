@@ -29,7 +29,7 @@ import java.util.Currency
  * @param locale The [KalugaLocale] used for parsing. Defaults to [KalugaLocale.defaultLocale].
  * @param style The [NumberFormatStyle] to configure the format to use. Defaults to [NumberFormatStyle.Decimal].
  */
-actual class NumberFormatter actual constructor(override val locale: KalugaLocale, style: NumberFormatStyle) : BaseNumberFormatter {
+actual class NumberFormatter actual constructor(actual override val locale: KalugaLocale, style: NumberFormatStyle) : BaseNumberFormatter {
 
     private val format: DecimalFormat = when (style) {
         is NumberFormatStyle.Integer -> DecimalFormat.getInstance(locale.locale).apply {
@@ -90,112 +90,112 @@ actual class NumberFormatter actual constructor(override val locale: KalugaLocal
         }
     }
 
-    override var percentSymbol: Char
+    actual override var percentSymbol: Char
         get() = symbols.percent
         set(value) {
             applySymbols { it.percent = value }
         }
-    override var perMillSymbol: Char
+    actual override var perMillSymbol: Char
         get() = symbols.perMill
         set(value) {
             applySymbols { it.perMill = value }
         }
-    override var minusSign: Char
+    actual override var minusSign: Char
         get() = symbols.minusSign
         set(value) {
             applySymbols { it.minusSign = value }
         }
-    override var exponentSymbol: String
+    actual override var exponentSymbol: String
         get() = symbols.exponentSeparator
         set(value) {
             applySymbols { it.exponentSeparator = value }
         }
-    override var zeroSymbol: Char
+    actual override var zeroSymbol: Char
         get() = symbols.zeroDigit
         set(value) {
             applySymbols { it.zeroDigit = value }
         }
-    override var notANumberSymbol: String
+    actual override var notANumberSymbol: String
         get() = symbols.naN
         set(value) {
             applySymbols { it.naN = value }
         }
-    override var infinitySymbol: String
+    actual override var infinitySymbol: String
         get() = symbols.infinity
         set(value) {
             applySymbols { it.infinity = value }
         }
 
-    override var currencySymbol: String
+    actual override var currencySymbol: String
         get() = symbols.currencySymbol
         set(value) {
             applySymbols { it.currencySymbol = value }
         }
-    override var currencyCode: String
+    actual override var currencyCode: String
         get() = symbols.currency.currencyCode
         set(value) {
             applySymbols { it.currency = Currency.getInstance(value) }
         }
 
-    override var positivePrefix: String
+    actual override var positivePrefix: String
         get() = format.positivePrefix
         set(value) {
             format.positivePrefix = value
         }
-    override var positiveSuffix: String
+    actual override var positiveSuffix: String
         get() = format.positiveSuffix
         set(value) {
             format.positiveSuffix = value
         }
-    override var negativePrefix: String
+    actual override var negativePrefix: String
         get() = format.negativePrefix
         set(value) {
             format.negativePrefix = value
         }
-    override var negativeSuffix: String
+    actual override var negativeSuffix: String
         get() = format.negativeSuffix
         set(value) {
             format.negativeSuffix = value
         }
 
-    override var groupingSeparator: Char
+    actual override var groupingSeparator: Char
         get() = symbols.groupingSeparator
         set(value) {
             applySymbols { it.groupingSeparator = value }
         }
-    override var usesGroupingSeparator: Boolean
+    actual override var usesGroupingSeparator: Boolean
         get() = format.isGroupingUsed
         set(value) {
             format.isGroupingUsed = value
         }
-    override var decimalSeparator: Char
+    actual override var decimalSeparator: Char
         get() = symbols.decimalSeparator
         set(value) {
             applySymbols { it.decimalSeparator = value }
         }
-    override var alwaysShowsDecimalSeparator: Boolean
+    actual override var alwaysShowsDecimalSeparator: Boolean
         get() = format.isDecimalSeparatorAlwaysShown
         set(value) {
             format.isDecimalSeparatorAlwaysShown = value
         }
-    override var currencyDecimalSeparator: Char
+    actual override var currencyDecimalSeparator: Char
         get() = symbols.monetaryDecimalSeparator
         set(value) {
             applySymbols { it.monetaryDecimalSeparator = value }
         }
-    override var groupingSize: Int
+    actual override var groupingSize: Int
         get() = format.groupingSize
         set(value) {
             format.groupingSize = value
         }
-    override var multiplier: Int
+    actual override var multiplier: Int
         get() = format.multiplier
         set(value) {
             format.multiplier = value
         }
 
-    override fun format(number: Number): String = format.format(number.toDouble())
-    override fun parse(string: String): Number? = try {
+    actual override fun format(number: Number): String = format.format(number.toDouble())
+    actual override fun parse(string: String): Number? = try {
         format.parse(string)
     } catch (e: ParseException) {
         null

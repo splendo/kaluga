@@ -164,12 +164,10 @@ sealed class BlendMode {
      * A [SeparableBlendMode] where if the source color is lighter than 50% gray, the color is lightened, as if [Screen] was applied. If the source color is darker than 50% gray, the image is darkened, as if [Multiply] was applied
      */
     data object HardLight : SeparableBlendMode() {
-        override fun blendColorChannel(backdrop: Double, source: Double): Double {
-            return if (source <= 0.5) {
-                Multiply.blendColorChannel(backdrop, 2.0 * source)
-            } else {
-                Screen.blendColorChannel(backdrop, 2.0 * source - 1.0)
-            }
+        override fun blendColorChannel(backdrop: Double, source: Double): Double = if (source <= 0.5) {
+            Multiply.blendColorChannel(backdrop, 2.0 * source)
+        } else {
+            Screen.blendColorChannel(backdrop, 2.0 * source - 1.0)
         }
     }
 
@@ -177,15 +175,13 @@ sealed class BlendMode {
      * A [SeparableBlendMode] where if the source color is lighter than 50% gray, the color is lightened, as if [ColorDodge] was applied. If the source color is darker than 50% gray, the image is darkened, as if [ColorBurn] was applied
      */
     data object SoftLight : SeparableBlendMode() {
-        override fun blendColorChannel(backdrop: Double, source: Double): Double {
-            return if (source <= 0.5) {
-                backdrop - (1.0 - 2.0 * source) * backdrop * (1.0 - backdrop)
+        override fun blendColorChannel(backdrop: Double, source: Double): Double = if (source <= 0.5) {
+            backdrop - (1.0 - 2.0 * source) * backdrop * (1.0 - backdrop)
+        } else {
+            backdrop + (2.0 * source - 1.0) * if (backdrop <= 0.25) {
+                ((16.0 * backdrop - 12.0) * backdrop + 4.0) * backdrop
             } else {
-                backdrop + (2.0 * source - 1.0) * if (backdrop <= 0.25) {
-                    ((16.0 * backdrop - 12.0) * backdrop + 4.0) * backdrop
-                } else {
-                    sqrt(backdrop)
-                }
+                sqrt(backdrop)
             }
         }
     }
@@ -223,9 +219,7 @@ sealed class BlendMode {
      * A [SeparableBlendMode] similar to [Difference] but lower in contrast
      */
     data object Exclusion : SeparableBlendMode() {
-        override fun blendColorChannel(backdrop: Double, source: Double): Double {
-            return backdrop + source - 2.0 * backdrop * source
-        }
+        override fun blendColorChannel(backdrop: Double, source: Double): Double = backdrop + source - 2.0 * backdrop * source
     }
 
     /**
@@ -272,7 +266,8 @@ private fun KalugaColor.blend(source: KalugaColor, mode: BlendMode): KalugaColor
             compositeAlpha: Double,
             backdropColor: Double,
             sourceColor: Double,
-            compositeColor: Double, ->
+            compositeColor: Double,
+        ->
         Double
         (1.0 - sourceAlpha / compositeAlpha) * backdropColor +
             (sourceAlpha / compositeAlpha) * ((1 - backdropAlpha) * sourceColor + backdropAlpha * compositeColor)

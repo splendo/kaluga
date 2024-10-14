@@ -32,9 +32,7 @@ sealed class SystemNavigationActions : SingleValueNavigationAction<Unit>(Unit, N
     data object Network : SystemNavigationActions()
 }
 
-class SystemViewModel(
-    navigator: Navigator<SystemNavigationActions>,
-) : NavigatingViewModel<SystemNavigationActions>(navigator) {
+class SystemViewModel(navigator: Navigator<SystemNavigationActions>) : NavigatingViewModel<SystemNavigationActions>(navigator) {
 
     val systemFeatures =
         observableOf(

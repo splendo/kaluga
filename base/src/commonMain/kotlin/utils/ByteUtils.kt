@@ -32,10 +32,8 @@ fun bytesOf(vararg bytes: Int) = bytes.map(Int::toByte).toByteArray()
  * @param separator The separator to use between elements
  * @return The String representing the [ByteArray]s hexadecimal value
  */
-fun ByteArray.toHexString(separator: CharSequence = ""): String {
-    return asUByteArray().joinToString(separator) {
-        it.toString(ByteUtils.HEX_RADIX).padStart(ByteUtils.BYTE_STRING_LENGTH, '0')
-    }
+fun ByteArray.toHexString(separator: CharSequence = ""): String = asUByteArray().joinToString(separator) {
+    it.toString(ByteUtils.HEX_RADIX).padStart(ByteUtils.BYTE_STRING_LENGTH, '0')
 }
 
 /**

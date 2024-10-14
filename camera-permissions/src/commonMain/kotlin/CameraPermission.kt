@@ -35,7 +35,11 @@ typealias CameraPermissionManager = PermissionManager<CameraPermission>
 /**
  * The [BasePermissionManager] to use as a default for [CameraPermission]
  */
-expect class DefaultCameraPermissionManager : BasePermissionManager<CameraPermission>
+expect class DefaultCameraPermissionManager : BasePermissionManager<CameraPermission> {
+    override fun requestPermissionDidStart()
+    override fun monitoringDidStart(interval: Duration)
+    override fun monitoringDidStop()
+}
 
 /**
  * A [BasePermissionsBuilder] for [CameraPermission]
@@ -55,7 +59,9 @@ interface BaseCameraPermissionManagerBuilder : BasePermissionsBuilder<CameraPerm
  * A [BaseCameraPermissionManagerBuilder]
  * @param context the [PermissionContext] this permissions manager builder runs on
  */
-expect class CameraPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseCameraPermissionManagerBuilder
+expect class CameraPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseCameraPermissionManagerBuilder {
+    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): CameraPermissionManager
+}
 
 /**
  * A [PermissionStateRepo] for [CameraPermission]

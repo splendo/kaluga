@@ -1,8 +1,18 @@
-import java.io.File
-import java.io.FileInputStream
-import java.util.Properties
+import com.splendo.kaluga.example.plugin.EmbeddingMode
 
 plugins {
-    kotlin("multiplatform").apply(false)
-    id("kaluga-library-components")
+    id("com.splendo.kaluga.example.plugin")
+    id("com.splendo.kaluga.plugin")
+}
+
+kaluga {
+    when (val embeddingMode = embedding.embeddingMode) {
+        is EmbeddingMode.MavenLocal -> {
+            includeMavenLocal = true
+        }
+        is EmbeddingMode.MavenRepo -> {
+            additionalMavenRepos.add(embeddingMode.repoUrl)
+        }
+        else -> {}
+    }
 }

@@ -15,7 +15,7 @@ public final class com/splendo/kaluga/resources/compose/GradientStyleKt {
 }
 
 public final class com/splendo/kaluga/resources/compose/KalugaButtonKt {
-	public static final fun Composable (Lcom/splendo/kaluga/resources/view/KalugaButton;Landroidx/compose/ui/Modifier;Landroidx/compose/material/ButtonElevation;Landroidx/compose/foundation/layout/PaddingValues;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Composable (Lcom/splendo/kaluga/resources/view/KalugaButton;Landroidx/compose/ui/Modifier;Landroidx/compose/material3/ButtonElevation;Landroidx/compose/runtime/Composer;II)V
 	public static final fun PreviewKalugaButton (Landroidx/compose/runtime/Composer;I)V
 }
 

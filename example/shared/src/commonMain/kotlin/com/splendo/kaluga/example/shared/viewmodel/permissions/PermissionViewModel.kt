@@ -36,7 +36,9 @@ import org.koin.core.component.inject
 
 private val permissionsDispatcher = singleThreadDispatcher("PermissionsDispatcher")
 
-class PermissionViewModel(private val permission: Permission) : BaseLifecycleViewModel(), KoinComponent {
+class PermissionViewModel(private val permission: Permission) :
+    BaseLifecycleViewModel(),
+    KoinComponent {
 
     val title = permission.name
     private val permissionsBuilder: PermissionsBuilder by inject()

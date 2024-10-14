@@ -83,12 +83,7 @@ interface Scanner {
      * @property advertisementData the [BaseAdvertisementData] of the device discovered
      * @property deviceCreator method for creating a device if it had not yet been discovered.
      */
-    data class DeviceDiscovered(
-        val identifier: Identifier,
-        val rssi: Int,
-        val advertisementData: BaseAdvertisementData,
-        val deviceCreator: (CoroutineContext) -> Device,
-    )
+    data class DeviceDiscovered(val identifier: Identifier, val rssi: Int, val advertisementData: BaseAdvertisementData, val deviceCreator: (CoroutineContext) -> Device)
 
     /**
      * Events detected by a [Scanner]
@@ -121,11 +116,7 @@ interface Scanner {
          * @property filter the set of [UUID] applied to filter for the paired devices
          * @property devices the list of [DeviceDiscovered] paired to the system
          */
-        data class PairedDevicesRetrieved(
-            val devices: List<DeviceDiscovered>,
-            val filter: Filter,
-            val removeForAllPairedFilters: Boolean,
-        ) : Event() {
+        data class PairedDevicesRetrieved(val devices: List<DeviceDiscovered>, val filter: Filter, val removeForAllPairedFilters: Boolean) : Event() {
 
             /**
              * The list of [Identifier] discovered
@@ -243,7 +234,8 @@ abstract class BaseScanner constructor(
     settings: Settings,
     private val coroutineScope: CoroutineScope,
     private val scanningDispatcher: CoroutineDispatcher = com.splendo.kaluga.bluetooth.scanner.scanningDispatcher,
-) : Scanner, CoroutineScope by coroutineScope {
+) : Scanner,
+    CoroutineScope by coroutineScope {
 
     companion object {
         private const val LOG_TAG = "Bluetooth Scanner"
@@ -551,4 +543,12 @@ abstract class BaseScanner constructor(
 /**
  * A default implementation of [BaseScanner]
  */
-expect class DefaultScanner : BaseScanner
+expect class DefaultScanner : BaseScanner {
+    override val isSupported: Boolean
+    override val bluetoothEnabledMonitor: BluetoothMonitor?
+
+    override suspend fun didStartScanning(filter: Filter)
+    override suspend fun didStopScanning()
+    override fun generateEnableSensorsActions(): List<EnableSensorAction>
+    override suspend fun retrievePairedDeviceDiscoveredEvents(withServices: Filter, connectionSettings: ConnectionSettings?): List<Scanner.DeviceDiscovered>
+}

@@ -47,12 +47,15 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.coroutines.coroutineContext
 
-class DeviceDetails(value: Identifier) : SingleValueNavigationAction<SerializableIdentifier>(
-    value.serializable,
-    NavigationBundleSpecType.SerializedType(SerializableIdentifier.serializer()),
-)
+class DeviceDetails(value: Identifier) :
+    SingleValueNavigationAction<SerializableIdentifier>(
+        value.serializable,
+        NavigationBundleSpecType.SerializedType(SerializableIdentifier.serializer()),
+    )
 
-class BluetoothDeviceDetailViewModel(private val identifier: Identifier) : BaseLifecycleViewModel(), KoinComponent {
+class BluetoothDeviceDetailViewModel(private val identifier: Identifier) :
+    BaseLifecycleViewModel(),
+    KoinComponent {
 
     companion object {
         private const val RSSI_FREQUENCY = 1000L

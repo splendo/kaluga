@@ -47,12 +47,8 @@ private const val NS_CONTACTS_USAGE_DESCRIPTION = "NSContactsUsageDescription"
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultContactsPermissionManager(
-    private val bundle: NSBundle,
-    contactsPermission: ContactsPermission,
-    settings: Settings,
-    coroutineScope: CoroutineScope,
-) : BasePermissionManager<ContactsPermission>(contactsPermission, settings, coroutineScope) {
+actual class DefaultContactsPermissionManager(private val bundle: NSBundle, contactsPermission: ContactsPermission, settings: Settings, coroutineScope: CoroutineScope) :
+    BasePermissionManager<ContactsPermission>(contactsPermission, settings, coroutineScope) {
 
     private class Provider : CurrentAuthorizationStatusProvider {
         override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = CNContactStore.authorizationStatusForEntityType(CNEntityType.CNEntityTypeContacts)
@@ -65,7 +61,7 @@ actual class DefaultContactsPermissionManager(
     private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
     private var timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NS_CONTACTS_USAGE_DESCRIPTION).isEmpty()) {
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<Boolean>()
@@ -88,11 +84,11 @@ actual class DefaultContactsPermissionManager(
         }
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         timerHelper.startMonitoring(interval)
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         timerHelper.stopMonitoring()
     }
 }
@@ -103,23 +99,20 @@ actual class DefaultContactsPermissionManager(
  */
 actual class ContactsPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseContactsPermissionManagerBuilder {
 
-    override fun create(contactsPermission: ContactsPermission, settings: Settings, coroutineScope: CoroutineScope): ContactsPermissionManager {
-        return DefaultContactsPermissionManager(context, contactsPermission, settings, coroutineScope)
-    }
+    actual override fun create(contactsPermission: ContactsPermission, settings: Settings, coroutineScope: CoroutineScope): ContactsPermissionManager =
+        DefaultContactsPermissionManager(context, contactsPermission, settings, coroutineScope)
 }
 
-private fun CNAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
-    return when (this) {
-        CNAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
-        CNAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
-        CNAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
-        CNAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        else -> {
-            error(
-                "ContactsPermissionManager",
-                "Unknown ContactManagerAuthorization status={$this}",
-            )
-            IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        }
+private fun CNAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
+    CNAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+    CNAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+    CNAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+    CNAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+    else -> {
+        error(
+            "ContactsPermissionManager",
+            "Unknown ContactManagerAuthorization status={$this}",
+        )
+        IOSPermissionsHelper.AuthorizationStatus.NotDetermined
     }
 }

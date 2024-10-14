@@ -55,11 +55,8 @@ private const val NS_BLUETOOTH_PERIPHERAL_USAGE_DESCRIPTION = "NSBluetoothPeriph
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultBluetoothPermissionManager(
-    private val bundle: NSBundle,
-    settings: Settings,
-    coroutineScope: CoroutineScope,
-) : BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
+actual class DefaultBluetoothPermissionManager(private val bundle: NSBundle, settings: Settings, coroutineScope: CoroutineScope) :
+    BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
 
     companion object {
         private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus {
@@ -91,7 +88,7 @@ actual class DefaultBluetoothPermissionManager(
         timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
     }
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(
                 bundle,
                 NS_BLUETOOTH_ALWAYS_USAGE_DESCRIPTION,
@@ -105,13 +102,13 @@ actual class DefaultBluetoothPermissionManager(
         }
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         val permissionHandler = permissionHandler
         permissionHandler.status(checkAuthorization())
         timerHelper.startMonitoring(interval)
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         timerHelper.stopMonitoring()
     }
 }
@@ -120,43 +117,36 @@ actual class DefaultBluetoothPermissionManager(
  * A [BaseBluetoothPermissionManagerBuilder]
  * @param context the [PermissionContext] this permissions manager builder runs on
  */
-actual class BluetoothPermissionManagerBuilder actual constructor(
-    private val context: PermissionContext,
-) : BaseBluetoothPermissionManagerBuilder {
+actual class BluetoothPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseBluetoothPermissionManagerBuilder {
 
-    override fun create(settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager {
-        return DefaultBluetoothPermissionManager(context, settings, coroutineScope)
+    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager =
+        DefaultBluetoothPermissionManager(context, settings, coroutineScope)
+}
+
+private fun CBPeripheralManagerAuthorizationStatus.toPeripheralAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
+    CBPeripheralManagerAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+    CBPeripheralManagerAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+    CBPeripheralManagerAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+    CBPeripheralManagerAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+    else -> {
+        error(
+            "BluetoothPermissionManager",
+            "Unknown CBPeripheralManagerAuthorizationStatus status={$this}",
+        )
+        IOSPermissionsHelper.AuthorizationStatus.NotDetermined
     }
 }
 
-private fun CBPeripheralManagerAuthorizationStatus.toPeripheralAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
-    return when (this) {
-        CBPeripheralManagerAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
-        CBPeripheralManagerAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
-        CBPeripheralManagerAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
-        CBPeripheralManagerAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        else -> {
-            error(
-                "BluetoothPermissionManager",
-                "Unknown CBPeripheralManagerAuthorizationStatus status={$this}",
-            )
-            IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        }
-    }
-}
-
-private fun CBManagerAuthorization.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
-    return when (this) {
-        CBManagerAuthorizationAllowedAlways -> IOSPermissionsHelper.AuthorizationStatus.Authorized
-        CBManagerAuthorizationDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
-        CBManagerAuthorizationRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
-        CBManagerAuthorizationNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        else -> {
-            error(
-                "BluetoothPermissionManager",
-                "Unknown CBManagerAuthorization status={$this}",
-            )
-            IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        }
+private fun CBManagerAuthorization.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
+    CBManagerAuthorizationAllowedAlways -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+    CBManagerAuthorizationDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+    CBManagerAuthorizationRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+    CBManagerAuthorizationNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+    else -> {
+        error(
+            "BluetoothPermissionManager",
+            "Unknown CBManagerAuthorization status={$this}",
+        )
+        IOSPermissionsHelper.AuthorizationStatus.NotDetermined
     }
 }

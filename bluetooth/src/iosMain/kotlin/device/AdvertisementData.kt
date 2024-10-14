@@ -38,9 +38,9 @@ import platform.Foundation.NSNumber
  */
 actual class AdvertisementData(private val advertisementData: Map<String, Any>) : BaseAdvertisementData {
 
-    override val name: String?
+    actual override val name: String?
         get() = advertisementData[CBAdvertisementDataLocalNameKey] as? String
-    override val manufacturerId: Int?
+    actual override val manufacturerId: Int?
         get() = manufacturerData?.let { manufacturerDataArray ->
             if (manufacturerDataArray.size >= 2) {
                 (manufacturerDataArray[0].toUInt() + (manufacturerDataArray[1].toUInt() shl 8)).toInt()
@@ -48,13 +48,13 @@ actual class AdvertisementData(private val advertisementData: Map<String, Any>) 
                 null
             }
         }
-    override val manufacturerData: ByteArray? get() = (advertisementData[CBAdvertisementDataManufacturerDataKey] as? NSData)?.toByteArray()
-    override val serviceUUIDs: List<UUID> get() = (advertisementData[CBAdvertisementDataServiceUUIDsKey] as? List<*>)?.typedList() ?: emptyList()
-    override val serviceData: Map<UUID, ByteArray?> get() = (advertisementData[CBAdvertisementDataServiceDataKey] as? Map<*, *>)
+    actual override val manufacturerData: ByteArray? get() = (advertisementData[CBAdvertisementDataManufacturerDataKey] as? NSData)?.toByteArray()
+    actual override val serviceUUIDs: List<UUID> get() = (advertisementData[CBAdvertisementDataServiceUUIDsKey] as? List<*>)?.typedList() ?: emptyList()
+    actual override val serviceData: Map<UUID, ByteArray?> get() = (advertisementData[CBAdvertisementDataServiceDataKey] as? Map<*, *>)
         ?.typedMap<CBUUID, NSData>()
         ?.mapNotNull { Pair(it.key, it.value.toByteArray()) }
         ?.toMap() ?: emptyMap()
-    override val txPowerLevel: TxPower get() = (advertisementData[CBAdvertisementDataTxPowerLevelKey] as? NSNumber)?.intValue ?: Int.MIN_VALUE
+    actual override val txPowerLevel: TxPower get() = (advertisementData[CBAdvertisementDataTxPowerLevelKey] as? NSNumber)?.intValue ?: Int.MIN_VALUE
 
-    override val isConnectable: Boolean get() = ((advertisementData[CBAdvertisementDataIsConnectable] as? NSNumber)?.boolValue ?: false)
+    actual override val isConnectable: Boolean get() = ((advertisementData[CBAdvertisementDataIsConnectable] as? NSNumber)?.boolValue ?: false)
 }

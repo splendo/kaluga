@@ -21,10 +21,6 @@ public final class com/splendo/kaluga/base/KalugaThreadKt {
 	public static final fun isOnMainThread ()Z
 }
 
-public final class com/splendo/kaluga/base/MultiplatformMainScopeKt {
-	public static final fun MultiplatformMainScope ()Lkotlinx/coroutines/CoroutineScope;
-}
-
 public final class com/splendo/kaluga/base/RunBlockingKt {
 	public static final fun runBlocking (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
 	public static synthetic fun runBlocking$default (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ljava/lang/Object;
@@ -273,11 +269,7 @@ public abstract class com/splendo/kaluga/base/state/HotStateRepo : com/splendo/k
 }
 
 public abstract interface class com/splendo/kaluga/base/state/KalugaState {
-	public abstract fun remain ()Lkotlin/jvm/functions/Function1;
-}
-
-public final class com/splendo/kaluga/base/state/KalugaState$DefaultImpls {
-	public static fun remain (Lcom/splendo/kaluga/base/state/KalugaState;)Lkotlin/jvm/functions/Function1;
+	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
 public abstract interface class com/splendo/kaluga/base/state/StateFlowRepo {
@@ -1158,8 +1150,6 @@ public final class com/splendo/kaluga/base/utils/KalugaDateKt {
 
 public final class com/splendo/kaluga/base/utils/KalugaLocale : com/splendo/kaluga/base/utils/BaseLocale {
 	public static final field Companion Lcom/splendo/kaluga/base/utils/KalugaLocale$Companion;
-	public final fun copy (Ljava/util/Locale;)Lcom/splendo/kaluga/base/utils/KalugaLocale;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/utils/KalugaLocale;Ljava/util/Locale;ILjava/lang/Object;)Lcom/splendo/kaluga/base/utils/KalugaLocale;
 	public fun countryName (Lcom/splendo/kaluga/base/utils/KalugaLocale;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getAlternateQuotationEnd ()Ljava/lang/String;
@@ -1201,6 +1191,7 @@ public final class com/splendo/kaluga/base/utils/KalugaTimeZone : com/splendo/ka
 	public fun getDaylightSavingsOffset-UwyO8pc ()J
 	public fun getIdentifier ()Ljava/lang/String;
 	public fun getOffsetFromGMT-UwyO8pc ()J
+	public fun hashCode ()I
 	public fun offsetFromGMTAtDate-5sfh64U (Lcom/splendo/kaluga/base/utils/KalugaDate;)J
 	public fun usesDaylightSavingsTime (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
 }

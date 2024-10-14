@@ -30,8 +30,7 @@ import kotlin.time.Duration
  * @param background If `true` scanning for location in the background is permitted
  * @param precise If `true` precise location scanning is permitted
  */
-data class LocationPermission(val background: Boolean = false, val precise: Boolean = false) :
-    Permission() {
+data class LocationPermission(val background: Boolean = false, val precise: Boolean = false) : Permission() {
     override val name: String = listOfNotNull(
         if (background) "Background" else null,
         "Location",
