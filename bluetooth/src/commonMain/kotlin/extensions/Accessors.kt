@@ -7,19 +7,11 @@ import com.splendo.kaluga.bluetooth.characteristics
 import com.splendo.kaluga.bluetooth.descriptors
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.services
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 /**
  * Provides access to device data flow by service, characteristic and descriptor string uuids.
