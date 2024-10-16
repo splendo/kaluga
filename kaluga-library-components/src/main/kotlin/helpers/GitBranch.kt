@@ -20,7 +20,13 @@ package com.splendo.kaluga.plugin.helpers
 import org.gradle.api.Project
 import java.util.Locale
 
-data class GitBranch(val branch: String, val kalugaBranchPostfix: String)
+data class GitBranch(private val branch: String, private val kalugaBranchPostfix: String) {
+    fun toVersion(baseVersion: String): String =
+        if (baseVersion.endsWith("-SNAPSHOT"))
+            baseVersion
+        else
+            baseVersion + kalugaBranchPostfix
+}
 
 val Project.gitBranch: GitBranch get() {
     val githubGitBranch = System.getenv("GITHUB_REF_NAME") // could also be a tag name
@@ -55,7 +61,7 @@ val Project.gitBranch: GitBranch get() {
         logger.lifecycle(
             "decided branch: '$branch' to postfix '$it', " +
                 "isRelease: $release (" +
-                "from: GITHUB_GIT_BRANCH env: $githubGitBranch, " +
+                "from: GITHUB_REF_NAME env: $githubGitBranch, " +
                 "kaluga_branch property: $kalugaBranch , " +
                 "MAVEN_CENTRAL_RELEASE env: $mavenCentralRelease , " +
                 "git cli: $branchFromGit" +
