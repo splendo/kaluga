@@ -22,34 +22,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 /**
- * Provides access to device data flow by service and characteristic string uuids and automatically subscribes to updates.
- * @param serviceUUID string service uuid representation
- * @param characteristicUUID string characteristic uuid representation
- * @param coroutineScope the [CoroutineScope] on which to subscribe to any updates to the characteristic
- * @throws UUIDException.InvalidFormat
- */
-fun Flow<Device?>.notifyingDataFlow(serviceUUID: String, characteristicUUID: String, coroutineScope: CoroutineScope): SharedFlow<ByteArray> {
-    val dataFlow = dataFlow(serviceUUID, characteristicUUID)
-    var job: Job? = null
-    val shared = MutableSharedFlow<ByteArray>()
-    coroutineScope.launch {
-        shared.subscriptionCount.map { it > 0 }.distinctUntilChanged().collect { isCollecting ->
-            job?.cancel()
-            val characteristic = characteristic(serviceUUID, characteristicUUID)
-            if (isCollecting) {
-                characteristic.enableNotification()
-                job = coroutineScope.launch {
-                    shared.emitAll(dataFlow)
-                }
-            } else {
-                characteristic.disableNotification()
-            }
-        }
-    }
-    return shared.asSharedFlow()
-}
-
-/**
  * Provides access to device data flow by service, characteristic and descriptor string uuids.
  * @param serviceUUID string service uuid representation
  * @param characteristicUUID string characteristic uuid representation
