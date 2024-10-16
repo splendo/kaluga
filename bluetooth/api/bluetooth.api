@@ -805,7 +805,6 @@ public final class com/splendo/kaluga/bluetooth/extensions/AccessorsKt {
 	public static final fun dataFlow (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun descriptor (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun descriptorsFlow (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
-	public static final fun notifyingDataFlow (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;Ljava/lang/String;Lkotlinx/coroutines/CoroutineScope;)Lkotlinx/coroutines/flow/SharedFlow;
 }
 
 public final class com/splendo/kaluga/bluetooth/extensions/AttributeKt {
