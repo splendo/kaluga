@@ -9,7 +9,8 @@ plugins {
 }
 
 group = "com.splendo.kaluga"
-version = "${libs.versions.kaluga.get()}${gitBranch.kalugaBranchPostfix}"
+val kalugaVersion = libs.versions.kaluga.get()
+version = gitBranch.toVersion(kalugaVersion)
 
 android {
     namespace = "com.splendo.kaluga.example"

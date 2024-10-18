@@ -1,3 +1,5 @@
+import com.splendo.kaluga.plugin.helpers.gitBranch
+
 plugins {
     id("com.splendo.kaluga.plugin")
     id("rs.houtbecke.gradle.recorder.plugin")
@@ -10,8 +12,13 @@ apply(from = "gradle/copyReports.gradle.kts")
 
 catalog {
     versionCatalog {
-        library("catalog", "com.splendo.kaluga:catalog:"+libs.versions.kaluga.get())
+        val catalogVersion = libs.versions.kaluga.get()
+        val publishVersion = gitBranch.toVersion(catalogVersion)
+
+        library("catalog", "com.splendo.kaluga:catalog:$publishVersion")
         from(files("gradle/libs.versions.toml"))
+        // override the version in the catalog to match the published version
+        version("kaluga", publishVersion)
     }
 }
 
