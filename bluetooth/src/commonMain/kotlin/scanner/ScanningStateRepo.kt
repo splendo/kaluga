@@ -73,35 +73,32 @@ abstract class BaseScanningStateRepo(
  * @param contextForIdentifier method for creating [CoroutineContext] given an [Identifier]
  * @param coroutineContext the [CoroutineContext] the [CoroutineContext] used to create a coroutine scope for this state machine.
  */
-open class ScanningStateImplRepo(
-    createScanner: suspend () -> Scanner,
-    private val contextForIdentifier: (Identifier) -> CoroutineContext,
-    coroutineContext: CoroutineContext,
-) : BaseScanningStateRepo(
-    createNotInitializedState = { ScanningStateImpl.NotInitialized },
-    createInitializingState = { state ->
-        when (state) {
-            is ScanningStateImpl.NotInitialized -> {
-                val scanner = createScanner()
-                (this as ScanningStateImplRepo).startMonitoringScanner(scanner)
-                state.startInitializing(scanner)
+open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private val contextForIdentifier: (Identifier) -> CoroutineContext, coroutineContext: CoroutineContext) :
+    BaseScanningStateRepo(
+        createNotInitializedState = { ScanningStateImpl.NotInitialized },
+        createInitializingState = { state ->
+            when (state) {
+                is ScanningStateImpl.NotInitialized -> {
+                    val scanner = createScanner()
+                    (this as ScanningStateImplRepo).startMonitoringScanner(scanner)
+                    state.startInitializing(scanner)
+                }
+                is ScanningStateImpl.Deinitialized -> {
+                    (this as ScanningStateImplRepo).startMonitoringScanner(state.scanner)
+                    state.reinitialize
+                }
+                else -> state.remain()
             }
-            is ScanningStateImpl.Deinitialized -> {
-                (this as ScanningStateImplRepo).startMonitoringScanner(state.scanner)
-                state.reinitialize
-            }
-            else -> state.remain()
-        }
-    },
-    createDeinitializingState = { state ->
-        val repo = this as ScanningStateImplRepo
-        repo.supervisorJob.cancelChildren()
-        repo.dispatcher?.close()
-        repo.dispatcher = null
-        state.deinitialize
-    },
-    coroutineContext = coroutineContext,
-) {
+        },
+        createDeinitializingState = { state ->
+            val repo = this as ScanningStateImplRepo
+            repo.supervisorJob.cancelChildren()
+            repo.dispatcher?.close()
+            repo.dispatcher = null
+            state.deinitialize
+        },
+        coroutineContext = coroutineContext,
+    ) {
 
     private val supervisorJob = SupervisorJob(coroutineContext[Job])
     private var dispatcher: CloseableCoroutineDispatcher? = null

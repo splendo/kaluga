@@ -23,13 +23,20 @@ import com.splendo.kaluga.base.state.KalugaState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration
@@ -54,13 +61,58 @@ class RecurringTimer(
     delayFunction: DelayFunction = { delayDuration -> delay(delayDuration) },
     coroutineScope: CoroutineScope = MainScope(),
 ) : ControllableTimer {
-    private val stateRepo = TimerStateRepo(duration, interval, timeSource, delayFunction, coroutineScope)
-    override val state: Flow<Timer.State> = stateRepo.stateFlow.map { it.timerState }
-    override val currentState: Timer.State get() = stateRepo.stateFlow.value.timerState
 
-    override suspend fun start() = stateRepo.start()
+    private sealed class State {
+        data class Active(val repo: TimerStateRepo) : State()
+        data class Finished(val state: Timer.State.NotRunning.Finished) : State()
+    }
 
-    override suspend fun pause() = stateRepo.pause()
+    private val stateRepo: StateFlow<State>
+
+    init {
+        val repo = TimerStateRepo(duration, interval, timeSource, delayFunction, coroutineScope)
+        val stateRepo = MutableStateFlow<State>(State.Active(repo))
+        this.stateRepo = stateRepo.asStateFlow()
+        coroutineScope.launch {
+            val finishedState = repo.stateFlow.filterIsInstance<Timer.State.NotRunning.Finished>().first()
+            stateRepo.compareAndSet(State.Active(repo), State.Finished(finishedState))
+            repo.cancel()
+        }
+    }
+
+    override val state: Flow<Timer.State> = stateRepo.flatMapLatest { state ->
+        when (state) {
+            is State.Active -> state.repo.stateFlow.map { it.timerState }
+            is State.Finished -> flowOf(state.state)
+        }
+    }
+    override val currentState: Timer.State get() = when (val state = stateRepo.value) {
+        is State.Active -> state.repo.stateFlow.value.timerState
+        is State.Finished -> state.state
+    }
+
+    override suspend fun start(): Boolean = stateRepo.transformLatest { state ->
+        when (state) {
+            is State.Active -> emit(state.repo.start())
+            is State.Finished -> emit(false)
+        }
+    }.first()
+
+    override suspend fun pause() = stateRepo.transformLatest { state ->
+        when (state) {
+            is State.Active -> emit(state.repo.pause())
+            is State.Finished -> emit(false)
+        }
+    }.first()
+
+    override suspend fun stop() {
+        stateRepo.transformLatest { state ->
+            when (state) {
+                is State.Active -> state.repo.stop()
+                is State.Finished -> emit(Unit)
+            }
+        }.first()
+    }
 }
 
 /** Timer state machine. */
@@ -76,25 +128,33 @@ private class TimerStateRepo(
         State.NotRunning.Paused(elapsedSoFar = Duration.ZERO, totalDuration = totalDuration)
     },
 ) {
-    suspend fun start() {
-        withContext(coroutineScope.coroutineContext) {
-            takeAndChangeState { state ->
-                when (state) {
-                    is State.NotRunning.Paused -> suspend {
-                        state.start(interval, timeSource, delayFunction, coroutineScope, ::finish)
-                    }
-                    is State.NotRunning.Finished, is State.Running -> state.remain()
+    suspend fun start(): Boolean = withContext(coroutineScope.coroutineContext) {
+        takeAndChangeState { state ->
+            when (state) {
+                is State.NotRunning.Paused -> suspend {
+                    state.start(interval, timeSource, delayFunction, coroutineScope, ::finish)
                 }
+                is State.NotRunning.Finished, is State.Running -> state.remain()
             }
         }
-    }
+    } is State.Running
 
-    suspend fun pause() {
+    suspend fun pause() = withContext(coroutineScope.coroutineContext) {
+        takeAndChangeState { state ->
+            when (state) {
+                is State.Running -> state::pause
+                is State.NotRunning -> state.remain()
+            }
+        }
+    } is State.NotRunning.Paused
+
+    suspend fun stop() {
         withContext(coroutineScope.coroutineContext) {
             takeAndChangeState { state ->
                 when (state) {
-                    is State.Running -> state::pause
-                    is State.NotRunning -> state.remain()
+                    is State.Running -> state::stop
+                    is State.NotRunning.Paused -> state::stop
+                    is State.NotRunning.Finished -> state.remain()
                 }
             }
         }
@@ -121,10 +181,9 @@ private class TimerStateRepo(
             val elapsed = flowOf(elapsedSoFar)
 
             /** Timer is paused. */
-            class Paused(
-                elapsedSoFar: Duration,
-                override val totalDuration: Duration,
-            ) : NotRunning(elapsedSoFar), Timer.State.NotRunning.Paused {
+            class Paused(elapsedSoFar: Duration, override val totalDuration: Duration) :
+                NotRunning(elapsedSoFar),
+                Timer.State.NotRunning.Paused {
 
                 override val timerState: Timer.State get() = this
 
@@ -138,12 +197,14 @@ private class TimerStateRepo(
                         coroutineScope = coroutineScope,
                         finishCallback = finishCallback,
                     )
+
+                internal fun stop(): Finished = Finished(elapsedSoFar)
             }
 
             /** Timer is finished. */
-            class Finished(
-                override val totalDuration: Duration,
-            ) : NotRunning(totalDuration), Timer.State.NotRunning.Finished {
+            class Finished(override val totalDuration: Duration) :
+                NotRunning(totalDuration),
+                Timer.State.NotRunning.Finished {
                 override val timerState: Timer.State get() = this
             }
         }
@@ -157,7 +218,10 @@ private class TimerStateRepo(
             private val delayFunction: DelayFunction,
             private val coroutineScope: CoroutineScope,
             private val finishCallback: suspend () -> Unit,
-        ) : State(), Timer.State.Running, HandleAfterNewStateIsSet<State>, HandleBeforeOldStateIsRemoved<State> {
+        ) : State(),
+            Timer.State.Running,
+            HandleAfterNewStateIsSet<State>,
+            HandleBeforeOldStateIsRemoved<State> {
             override val elapsed: Flow<Duration> = tickProvider(
                 offset = elapsedSoFar,
                 max = totalDuration,
@@ -170,9 +234,8 @@ private class TimerStateRepo(
 
             private val supervisor = SupervisorJob()
 
-            internal suspend fun pause(): NotRunning.Paused {
-                return NotRunning.Paused(elapsed.first(), totalDuration)
-            }
+            internal suspend fun pause(): NotRunning.Paused = NotRunning.Paused(elapsed.first(), totalDuration)
+            internal suspend fun stop(): NotRunning.Finished = NotRunning.Finished(elapsed.first())
             internal fun finish(): NotRunning.Finished = NotRunning.Finished(totalDuration)
 
             override suspend fun beforeOldStateIsRemoved(oldState: State) {

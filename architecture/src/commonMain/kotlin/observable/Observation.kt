@@ -39,9 +39,7 @@ import kotlin.reflect.KProperty
  * @param OO the type of [ObservableOptional] to store the result in.
  * @param initialValue The initial value this observation should contain.
  */
-open class Observation<R : T, T, OO : ObservableOptional<R>>(
-    override val initialValue: ObservableOptional<T>,
-) : Initial<R, T> {
+open class Observation<R : T, T, OO : ObservableOptional<R>>(override val initialValue: ObservableOptional<T>) : Initial<R, T> {
 
     // this is not used by iOS
     internal val observers by lazy { concurrentMutableListOf<(R) -> Unit>() }
@@ -110,8 +108,10 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
 
             val result = (v as? ObservableOptional.Value<*>)?.value as R
 
-            observers(this@Observation).forEach {
-                it(result)
+            this@Observation.observers.synchronized {
+                forEach {
+                    it(result)
+                }
             }
             return v as ObservableOptional<T>
         }
@@ -141,7 +141,7 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
         // send the value before adding
         val lastResult = currentObserved
         onNext((lastResult as? ObservableOptional.Value<*>)?.value as R)
-        addObserver(this@Observation, onNext)
+        this@Observation.observers.add(onNext)
         // adding an observer often happens concurrently with initialization,
         // if we detect a change in the current observed value we re-send it to the added observer
         val newResult = currentObserved
@@ -150,7 +150,7 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
         }
         SimpleDisposable {
             handleOnMain {
-                removeObserver(this@Observation, onNext)
+                this@Observation.observers.remove(onNext)
             }
         }
     }
@@ -206,9 +206,8 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(
  * @param T the type of value to expect.
  * @param initialValue The initial [ObservableOptional.Value] this observation should contain.
  */
-open class ObservationInitialized<T>(
-    override val initialValue: ObservableOptional.Value<T>,
-) : Observation<T, T, ObservableOptional.Value<T>>(initialValue),
+open class ObservationInitialized<T>(override val initialValue: ObservableOptional.Value<T>) :
+    Observation<T, T, ObservableOptional.Value<T>>(initialValue),
     ReadWriteProperty<Any?, T>,
     MutableInitialized<T, T> {
 
@@ -274,10 +273,8 @@ class ObservationUninitialized<T> :
  * @param defaultValue The default [ObservableOptional.Value] to return if the current value is [ObservableOptional.Nothing] or [ObservableOptional.Value] containing `null`.
  * @param initialValue The initial [ObservableOptional.Value] this observation should contain.
  */
-open class ObservationDefault<R : T?, T>(
-    override val defaultValue: ObservableOptional.Value<R>,
-    override val initialValue: ObservableOptional.Value<T?>,
-) : Observation<R, T?, ObservableOptional.Value<R>>(initialValue),
+open class ObservationDefault<R : T?, T>(override val defaultValue: ObservableOptional.Value<R>, override val initialValue: ObservableOptional.Value<T?>) :
+    Observation<R, T?, ObservableOptional.Value<R>>(initialValue),
     ReadWriteProperty<Any?, R>,
     MutableDefaultInitialized<R, T?> {
 

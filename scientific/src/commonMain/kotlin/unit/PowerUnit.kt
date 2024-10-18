@@ -83,19 +83,25 @@ sealed class Power : AbstractScientificUnit<PhysicalQuantity.Power>()
  * A [Power] for [MeasurementSystem.MetricAndImperial]
  */
 @Serializable
-sealed class MetricAndImperialPower : Power(), MetricAndImperialScientificUnit<PhysicalQuantity.Power>
+sealed class MetricAndImperialPower :
+    Power(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.Power>
 
 /**
  * A [Power] for [MeasurementSystem.Metric]
  */
 @Serializable
-sealed class MetricPower : Power(), MetricScientificUnit<PhysicalQuantity.Power>
+sealed class MetricPower :
+    Power(),
+    MetricScientificUnit<PhysicalQuantity.Power>
 
 /**
  * A [Power] for [MeasurementSystem.Imperial]
  */
 @Serializable
-sealed class ImperialPower : Power(), ImperialScientificUnit<PhysicalQuantity.Power>
+sealed class ImperialPower :
+    Power(),
+    ImperialScientificUnit<PhysicalQuantity.Power>
 
 @Serializable
 data object Watt : MetricAndImperialPower(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power> {
@@ -107,7 +113,9 @@ data object Watt : MetricAndImperialPower(), MetricBaseUnit<MeasurementSystem.Me
 }
 
 @Serializable
-sealed class WattMultiple : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt>
+sealed class WattMultiple :
+    MetricAndImperialPower(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt>
 
 @Serializable
 data object Nanowatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Power, Watt> by Nano(Watt)

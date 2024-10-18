@@ -46,12 +46,8 @@ private const val NS_PHOTO_LIBRARY_USAGE_DESCRIPTION = "NSPhotoLibraryUsageDescr
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultStoragePermissionManager(
-    private val bundle: NSBundle,
-    storagePermission: StoragePermission,
-    settings: Settings,
-    coroutineScope: CoroutineScope,
-) : BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
+actual class DefaultStoragePermissionManager(private val bundle: NSBundle, storagePermission: StoragePermission, settings: Settings, coroutineScope: CoroutineScope) :
+    BasePermissionManager<StoragePermission>(storagePermission, settings, coroutineScope) {
 
     private class Provider : CurrentAuthorizationStatusProvider {
         override suspend fun provide(): IOSPermissionsHelper.AuthorizationStatus = PHPhotoLibrary.authorizationStatus().toAuthorizationStatus()
@@ -62,7 +58,7 @@ actual class DefaultStoragePermissionManager(
     private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
     private var timerHelper = PermissionRefreshScheduler(provider, permissionHandler, coroutineScope)
 
-    override fun requestPermissionDidStart() {
+    actual override fun requestPermissionDidStart() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NS_PHOTO_LIBRARY_USAGE_DESCRIPTION).isEmpty()) {
             permissionHandler.requestAuthorizationStatus(timerHelper, CoroutineScope(coroutineContext)) {
                 val deferred = CompletableDeferred<PHAuthorizationStatus>()
@@ -78,11 +74,11 @@ actual class DefaultStoragePermissionManager(
         }
     }
 
-    override fun monitoringDidStart(interval: Duration) {
+    actual override fun monitoringDidStart(interval: Duration) {
         timerHelper.startMonitoring(interval)
     }
 
-    override fun monitoringDidStop() {
+    actual override fun monitoringDidStop() {
         timerHelper.stopMonitoring()
     }
 }
@@ -93,23 +89,20 @@ actual class DefaultStoragePermissionManager(
  */
 actual class StoragePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storagePermission: StoragePermission, settings: Settings, coroutineScope: CoroutineScope): StoragePermissionManager {
-        return DefaultStoragePermissionManager(context, storagePermission, settings, coroutineScope)
-    }
+    actual override fun create(storagePermission: StoragePermission, settings: Settings, coroutineScope: CoroutineScope): StoragePermissionManager =
+        DefaultStoragePermissionManager(context, storagePermission, settings, coroutineScope)
 }
 
-private fun PHAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
-    return when (this) {
-        PHAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
-        PHAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
-        PHAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
-        PHAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        else -> {
-            error(
-                "StoragePermissionManager",
-                "Unknown StorageManagerAuthorization status={$this}",
-            )
-            IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        }
+private fun PHAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
+    PHAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+    PHAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+    PHAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+    PHAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+    else -> {
+        error(
+            "StoragePermissionManager",
+            "Unknown StorageManagerAuthorization status={$this}",
+        )
+        IOSPermissionsHelper.AuthorizationStatus.NotDetermined
     }
 }

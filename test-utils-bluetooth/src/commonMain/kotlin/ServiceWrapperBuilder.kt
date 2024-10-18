@@ -42,15 +42,9 @@ fun DescriptorList.descriptor(uuid: UUID) = add(
 @MockBuilderDsl
 class ServiceWrapperBuilder {
 
-    data class Descriptor(
-        val uuid: UUID = randomUUID(),
-    )
+    data class Descriptor(val uuid: UUID = randomUUID())
 
-    data class Characteristic(
-        val uuid: UUID = randomUUID(),
-        val descriptors: List<Descriptor> = listOf(Descriptor()),
-        val properties: Int = 0,
-    ) {
+    data class Characteristic(val uuid: UUID = randomUUID(), val descriptors: List<Descriptor> = listOf(Descriptor()), val properties: Int = 0) {
 
         @MockBuilderDsl
         class Builder {

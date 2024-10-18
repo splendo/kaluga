@@ -17,6 +17,4 @@
 
 package com.splendo.kaluga.example.shared
 
-fun helloCommon(): String {
-    return "Hello from the shared module common source"
-}
+fun helloCommon(): String = "Hello from the shared module common source"

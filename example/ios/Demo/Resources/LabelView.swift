@@ -33,9 +33,9 @@ struct LabelView: View {
             ScrollView {
                 VStack(spacing: 10.0) {
                     ForEach(labels.value, id: \.self) { label in
-                        label.toText().frame(maxWidth: .infinity)
+                        label.toText().frame(maxWidth: .infinity, alignment: .leading)
                     }
-                }
+                }.padding(8)
             }.navigationTitle("feature_resources_button".localized())
         }
     }

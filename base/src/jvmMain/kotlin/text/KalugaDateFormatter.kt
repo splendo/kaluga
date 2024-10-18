@@ -76,43 +76,41 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
         actual fun patternFormat(pattern: String, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDateFormatter =
             createDateFormatter(SimpleDateFormat(pattern, locale.locale), timeZone)
 
-        private fun createDateFormatter(simpleDateFormat: SimpleDateFormat, timeZone: KalugaTimeZone): KalugaDateFormatter {
-            return KalugaDateFormatter(simpleDateFormat).apply {
-                this.timeZone = timeZone
-            }
+        private fun createDateFormatter(simpleDateFormat: SimpleDateFormat, timeZone: KalugaTimeZone): KalugaDateFormatter = KalugaDateFormatter(simpleDateFormat).apply {
+            this.timeZone = timeZone
         }
     }
 
     private val symbols: DateFormatSymbols get() = format.dateFormatSymbols
 
-    override var pattern: String
+    actual override var pattern: String
         get() = format.toPattern()
         set(value) = format.applyPattern(value)
 
-    override var timeZone: KalugaTimeZone
+    actual override var timeZone: KalugaTimeZone
         get() = KalugaTimeZone(format.timeZone)
         set(value) {
             format.timeZone = value.timeZone
         }
 
-    override var eras: List<String>
+    actual override var eras: List<String>
         get() = symbols.eras.toList()
         set(value) {
             updateSymbols { it.eras = value.toTypedArray() }
         }
 
-    override var months: List<String>
+    actual override var months: List<String>
         get() = symbols.months.toList()
         set(value) {
             updateSymbols { it.months = value.toTypedArray() }
         }
-    override var shortMonths: List<String>
+    actual override var shortMonths: List<String>
         get() = symbols.shortMonths.toList()
         set(value) {
             updateSymbols { it.shortMonths = value.toTypedArray() }
         }
 
-    override var weekdays: List<String>
+    actual override var weekdays: List<String>
         get() {
             val weekdaysWithEmptyFirst = symbols.weekdays.toList()
             return if (weekdaysWithEmptyFirst.size > 1) {
@@ -129,7 +127,7 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
                 it.weekdays = weekdaysWithEmptyFirst.toTypedArray()
             }
         }
-    override var shortWeekdays: List<String>
+    actual override var shortWeekdays: List<String>
         get() {
             val weekdaysWithEmptyFirst = symbols.shortWeekdays.toList()
             return if (weekdaysWithEmptyFirst.size > 1) {
@@ -147,19 +145,19 @@ actual class KalugaDateFormatter private constructor(private val format: SimpleD
             }
         }
 
-    override var amString: String
+    actual override var amString: String
         get() = symbols.amPmStrings.toList()[0]
         set(value) {
             updateSymbols { it.amPmStrings = it.amPmStrings.toMutableList().apply { this[0] = value }.toTypedArray() }
         }
-    override var pmString: String
+    actual override var pmString: String
         get() = symbols.amPmStrings.toList()[1]
         set(value) {
             updateSymbols { it.amPmStrings = it.amPmStrings.toMutableList().apply { this[1] = value }.toTypedArray() }
         }
 
-    override fun format(date: KalugaDate): String = format.format(date.date)
-    override fun parse(string: String): KalugaDate? {
+    actual override fun format(date: KalugaDate): String = format.format(date.date)
+    actual override fun parse(string: String): KalugaDate? {
         val currentTimeZone = timeZone
         return try {
             format.parse(string)?.let { date ->

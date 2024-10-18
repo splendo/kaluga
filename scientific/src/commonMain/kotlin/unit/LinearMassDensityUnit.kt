@@ -85,10 +85,9 @@ sealed class LinearMassDensity : AbstractScientificUnit<PhysicalQuantity.LinearM
  * @param per the [MetricLength] component
  */
 @Serializable
-data class MetricLinearMassDensity(
-    override val weight: MetricWeight,
-    override val per: MetricLength,
-) : LinearMassDensity(), MetricScientificUnit<PhysicalQuantity.LinearMassDensity> {
+data class MetricLinearMassDensity(override val weight: MetricWeight, override val per: MetricLength) :
+    LinearMassDensity(),
+    MetricScientificUnit<PhysicalQuantity.LinearMassDensity> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -98,10 +97,9 @@ data class MetricLinearMassDensity(
  * @param per the [ImperialLength] component
  */
 @Serializable
-data class ImperialLinearMassDensity(
-    override val weight: ImperialWeight,
-    override val per: ImperialLength,
-) : LinearMassDensity(), ImperialScientificUnit<PhysicalQuantity.LinearMassDensity> {
+data class ImperialLinearMassDensity(override val weight: ImperialWeight, override val per: ImperialLength) :
+    LinearMassDensity(),
+    ImperialScientificUnit<PhysicalQuantity.LinearMassDensity> {
     override val system = MeasurementSystem.Imperial
 
     /**
@@ -121,10 +119,9 @@ data class ImperialLinearMassDensity(
  * @param per the [ImperialLength] component
  */
 @Serializable
-data class USCustomaryLinearMassDensity(
-    override val weight: USCustomaryWeight,
-    override val per: ImperialLength,
-) : LinearMassDensity(), USCustomaryScientificUnit<PhysicalQuantity.LinearMassDensity> {
+data class USCustomaryLinearMassDensity(override val weight: USCustomaryWeight, override val per: ImperialLength) :
+    LinearMassDensity(),
+    USCustomaryScientificUnit<PhysicalQuantity.LinearMassDensity> {
     override val system = MeasurementSystem.USCustomary
 }
 
@@ -134,10 +131,9 @@ data class USCustomaryLinearMassDensity(
  * @param per the [ImperialLength] component
  */
 @Serializable
-data class UKImperialLinearMassDensity(
-    override val weight: UKImperialWeight,
-    override val per: ImperialLength,
-) : LinearMassDensity(), UKImperialScientificUnit<PhysicalQuantity.LinearMassDensity> {
+data class UKImperialLinearMassDensity(override val weight: UKImperialWeight, override val per: ImperialLength) :
+    LinearMassDensity(),
+    UKImperialScientificUnit<PhysicalQuantity.LinearMassDensity> {
     override val system = MeasurementSystem.UKImperial
 }
 

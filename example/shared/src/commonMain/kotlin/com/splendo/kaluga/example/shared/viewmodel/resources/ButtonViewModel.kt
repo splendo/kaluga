@@ -29,10 +29,8 @@ import com.splendo.kaluga.resources.styled
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.launch
 
-class ButtonViewModel(
-    styledStringBuilderProvider: StyledStringBuilder.Provider,
-    private val alertPresenterBuilder: BaseAlertPresenter.Builder,
-) : BaseLifecycleViewModel(alertPresenterBuilder) {
+class ButtonViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider, private val alertPresenterBuilder: BaseAlertPresenter.Builder) :
+    BaseLifecycleViewModel(alertPresenterBuilder) {
 
     val buttons = observableOf(
         listOf(

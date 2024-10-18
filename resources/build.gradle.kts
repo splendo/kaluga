@@ -1,28 +1,20 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
+    alias(libs.plugins.kotlin.serialization)
 }
 
-publishableComponent("resources")
-
-kotlin {
-    sourceSets {
-        getByName("commonMain") {
-            dependencies {
+kaluga {
+    moduleName = "resources"
+    dependencies {
+        common {
+            main {
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
-                apiDependency(Dependencies.KotlinX.Serialization.Core)
+                api(libs.kotlinx.serialization.core)
             }
-        }
-
-        getByName("commonTest") {
-            dependencies {
+            test {
                 implementation(project(":test-utils-base", ""))
+                implementation(project(":test-utils-resources", ""))
             }
         }
     }

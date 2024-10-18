@@ -20,7 +20,7 @@ package com.splendo.kaluga.base
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -29,7 +29,4 @@ import kotlin.coroutines.CoroutineContext
  * @param context the context of the coroutine. The default value is an event loop on the current thread.
  * @param block the coroutine code.
  */
-actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T): dynamic {
-    // this does not wait for the result unfortunately
-    return GlobalScope.launch { block(this) }
-}
+actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T = GlobalScope.async { block(this) }.asDynamic()

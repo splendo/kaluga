@@ -2,7 +2,7 @@
 This **project** includes all common dependencies and settings for kaluga module.
 
 # Steps for adding a new module
-1. Run gradle task: `./gradlew createNewModule -P module_name=<your-module> -P package_name=<your-package> -P create-test-utils -P create-compose -P create-databinding` from the root directory.
+1. Run gradle task: `./gradlew createNewModule -P module_name=<your-module> -P package_name=<your-package> -P create-test-utils -P create-compose -P create-databinding -P include-jvm -P include-js` from the root directory.
    * `package_name` can be omitted if the module and package names are the same. Package name will be prefixed with `com.splendo.kaluga`.
    * Only pass `create-test-utils` if you want to also create a `test-utils-<your-module>` with package `com.splendo.kaluga.test.<your-package>`.
       * Use `./gradlew createNewTestModule -P module_name=<your-module> -P package_name=<your-package>` to create a `test-utils-<your-module>` for an existing module.
@@ -10,16 +10,18 @@ This **project** includes all common dependencies and settings for kaluga module
       * Use `./gradlew createNewComposeModule -P module_name=<your-module> -P package_name=<your-package>` to create a `<your-module>-compose` for an existing module.
    * Only pass `create-databinding` if you want to also create a `<your-module>-databinding` with package `com.splendo.kaluga.<your-package>.databinding`.
       * Use `./gradlew createNewDataBindingModule -P module_name=<your-module> -P package_name=<your-package>` to create a `<your-module>-databinding` for an existing module.
+   * Only pass `include-jvm` if your module should target (non-Android) JVM
+   * Only pass `include-js` if your module should target Javascript
 1. Include your module to kaluga project edit `kaluga/settings.gradle.kts` by adding: `include(":<your-module>")`.
 1. Add Unit tests
     * [Common Unit Tests](#commonTests)
     * [iOS Unit Tests](#iosTests)
-    * [Android Unit Tests](#androidLibTests)
-1. [Add Android Instrumented Unit Tests](#instrumentedUnitTests)
+    * [Android Unit Tests](#androidTests)
+1. [Add Android Instrumented Unit Tests](#androidInstrumentedTests)
 1. Add your source code
     * <a name="commonMain-sources"></a>**commonMain** - non-platform-specific implementation and `expect` declaration.
     * <a name="iosMain-sources"></a>**iosMain** - iOS specific implementation.
-    * <a name="androidLibMain-sources"></a>**androidLibMain** - Android specific implementation.
+    * <a name="androidMain-sources"></a>**androidMain** - Android specific implementation.
     * <a name="jvmMain-sources"></a>**jvmMain** - jvm specific implementation.
     * <a name="jsMain-sources"></a>**jvmMain** - js specific implementation.
 1. Don't forget to update copyright if files were imported from another project. To do that use **Code > Update Copyright...**.
@@ -57,7 +59,7 @@ Use [test filtering](https://docs.gradle.org/current/userguide/java_testing.html
 
 ----
 
-### <a name="androidLibTests"></a> Add Android Unit Tests
+### <a name="androidTests"></a> Add Android Unit Tests
 
 Unit tests which can run without a device.
 
@@ -86,7 +88,7 @@ To run all android unit tests:
 
 ----
 
-### <a name="instrumentedUnitTests"></a> Add Android Instrumented Unit Tests
+### <a name="androidInstrumentedTests"></a> Add Android Instrumented Unit Tests
 
 Add unit tests which should run on a device or emulator
 

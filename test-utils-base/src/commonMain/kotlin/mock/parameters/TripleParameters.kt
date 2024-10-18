@@ -36,11 +36,7 @@ class TripleParameters<T0, T1, T2> : ParametersSpec<TripleParameters.Matchers<T0
      * @param second the second parameters [ParameterMatcher]
      * @param third the third parameters [ParameterMatcher]
      */
-    data class Matchers<T0, T1, T2>(
-        val first: ParameterMatcher<T0>,
-        val second: ParameterMatcher<T1>,
-        val third: ParameterMatcher<T2>,
-    ) : ParametersSpec.Matchers {
+    data class Matchers<T0, T1, T2>(val first: ParameterMatcher<T0>, val second: ParameterMatcher<T1>, val third: ParameterMatcher<T2>) : ParametersSpec.Matchers {
         override fun asList() = listOf(first, second, third)
     }
 
@@ -50,11 +46,8 @@ class TripleParameters<T0, T1, T2> : ParametersSpec<TripleParameters.Matchers<T0
      * @param second the second parameters [ParameterMatcherOrCaptor]
      * @param third the third parameters [ParameterMatcherOrCaptor]
      */
-    data class MatchersOrCaptor<T0, T1, T2>(
-        val first: ParameterMatcherOrCaptor<T0>,
-        val second: ParameterMatcherOrCaptor<T1>,
-        val third: ParameterMatcherOrCaptor<T2>,
-    ) : ParametersSpec.MatchersOrCaptor<Matchers<T0, T1, T2>> {
+    data class MatchersOrCaptor<T0, T1, T2>(val first: ParameterMatcherOrCaptor<T0>, val second: ParameterMatcherOrCaptor<T1>, val third: ParameterMatcherOrCaptor<T2>) :
+        ParametersSpec.MatchersOrCaptor<Matchers<T0, T1, T2>> {
         override fun asMatchers(): Matchers<T0, T1, T2> = Matchers(first.asMatcher(), second.asMatcher(), third.asMatcher())
     }
 

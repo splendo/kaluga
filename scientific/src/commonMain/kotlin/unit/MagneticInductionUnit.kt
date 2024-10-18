@@ -47,7 +47,9 @@ val MagneticInductionUnits: Set<MagneticInduction> get() = setOf(
  * SI unit is [Tesla]
  */
 @Serializable
-sealed class MagneticInduction : AbstractScientificUnit<PhysicalQuantity.MagneticInduction>(), MetricAndImperialScientificUnit<PhysicalQuantity.MagneticInduction>
+sealed class MagneticInduction :
+    AbstractScientificUnit<PhysicalQuantity.MagneticInduction>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.MagneticInduction>
 
 @Serializable
 data object Tesla : MagneticInduction(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction> {
@@ -59,7 +61,9 @@ data object Tesla : MagneticInduction(), MetricBaseUnit<MeasurementSystem.Metric
 }
 
 @Serializable
-sealed class TeslaMultiple : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla>
+sealed class TeslaMultiple :
+    MagneticInduction(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla>
 
 @Serializable
 data object Nanotesla : TeslaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.MagneticInduction, Tesla> by Nano(Tesla)

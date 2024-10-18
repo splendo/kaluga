@@ -33,12 +33,6 @@ import kotlin.jvm.JvmName
  */
 expect class KalugaColor
 
-@Deprecated(
-    "Due to name clashes with platform classes and API changes this class has been renamed and changed to an interface. It will be removed in a future release.",
-    ReplaceWith("KalugaColor"),
-)
-typealias Color = KalugaColor
-
 /**
  * A wrapper for [KalugaColor] that allows it to be serialized
  * @property color the [KalugaColor] to wrap
@@ -117,28 +111,26 @@ expect fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int = 2
  * @param hexString The [String] to parse as a [Color]
  * @return The [Color] associated with [hexString] or `null` if improperly formatted.
  */
-fun colorFrom(hexString: String): KalugaColor? {
-    return if (hexString.startsWith('#')) {
-        val hexColor = hexString.substring(1).toLong(16)
-        when (hexString.length) {
-            9 -> {
-                val alpha = hexColor ushr 24
-                val red = (hexColor shr 16) and 0xFF
-                val green = (hexColor shr 8) and 0xFF
-                val blue = hexColor and 0xFF
-                colorFrom(red.toInt(), green.toInt(), blue.toInt(), alpha.toInt())
-            }
-            7 -> {
-                val red = hexColor ushr 16
-                val green = (hexColor shr 8) and 0xFF
-                val blue = hexColor and 0xFF
-                colorFrom(red.toInt(), green.toInt(), blue.toInt())
-            }
-            else -> null
+fun colorFrom(hexString: String): KalugaColor? = if (hexString.startsWith('#')) {
+    val hexColor = hexString.substring(1).toLong(16)
+    when (hexString.length) {
+        9 -> {
+            val alpha = hexColor ushr 24
+            val red = (hexColor shr 16) and 0xFF
+            val green = (hexColor shr 8) and 0xFF
+            val blue = hexColor and 0xFF
+            colorFrom(red.toInt(), green.toInt(), blue.toInt(), alpha.toInt())
         }
-    } else {
-        null
+        7 -> {
+            val red = hexColor ushr 16
+            val green = (hexColor shr 8) and 0xFF
+            val blue = hexColor and 0xFF
+            colorFrom(red.toInt(), green.toInt(), blue.toInt())
+        }
+        else -> null
     }
+} else {
+    null
 }
 
 /**
@@ -163,8 +155,7 @@ private fun Int.toHex(minSize: Int): String {
 /**
  * A [KSerializer] for [SerializableColor]
  */
-open class ColorSerializer :
-    KSerializer<SerializableColor> {
+open class ColorSerializer : KSerializer<SerializableColor> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ColorString", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: SerializableColor) {

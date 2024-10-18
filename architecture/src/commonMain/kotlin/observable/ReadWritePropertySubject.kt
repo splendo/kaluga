@@ -25,10 +25,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.CoroutineContext
 import kotlin.properties.ReadWriteProperty
 
-private class ReadWritePropertyObservableHelper<R : T, T>(
-    readWriteProperty: ReadWriteProperty<Any?, T>,
-    private val observation: Observation<R, T, Value<R>>,
-) : SuspendableSetter<T> {
+private class ReadWritePropertyObservableHelper<R : T, T>(readWriteProperty: ReadWriteProperty<Any?, T>, private val observation: Observation<R, T, Value<R>>) :
+    SuspendableSetter<T> {
 
     private var readWriteValue by readWriteProperty
 
@@ -74,10 +72,9 @@ class ReadWritePropertyInitializedSubject<T>(
     coroutineScope: CoroutineScope?,
     context: CoroutineContext? = coroutineScope?.coroutineContext,
     observation: ObservationInitialized<T> = ObservationInitialized(initialValue),
-) :
-    BaseInitializedSubject<T>(
-        observation,
-    ),
+) : BaseInitializedSubject<T>(
+    observation,
+),
     SuspendableSetter<T> by ReadWritePropertyObservableHelper(readWriteProperty, observation) {
     init {
         coroutineScope?.let { bind(it, context ?: coroutineScope.coroutineContext) }
@@ -109,10 +106,9 @@ class ReadWritePropertyDefaultSubject<R : T?, T>(
     coroutineScope: CoroutineScope?,
     context: CoroutineContext? = coroutineScope?.coroutineContext,
     observation: ObservationDefault<R, T?> = ObservationDefault(defaultValue, initialValue),
-) :
-    BaseDefaultSubject<R, T>(
-        observation,
-    ),
+) : BaseDefaultSubject<R, T>(
+    observation,
+),
     SuspendableSetter<T?> by ReadWritePropertyObservableHelper(readWriteProperty, observation) {
     init {
         coroutineScope?.let {

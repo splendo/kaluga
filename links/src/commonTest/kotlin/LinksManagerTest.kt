@@ -30,11 +30,7 @@ import kotlin.test.assertEquals
 class LinksManagerTest {
 
     @Serializable
-    data class Person(
-        val name: String,
-        val surname: String,
-        val spokenLanguages: List<Languages> = emptyList(),
-    ) {
+    data class Person(val name: String, val surname: String, val spokenLanguages: List<Languages> = emptyList()) {
         companion object {
             val dummyUrl = "http://url.com?name=Corrado&surname=Quattrocchi&spokenLanguageSize=3&spokenLanguages=ITALIAN&spokenLanguages=ENGLISH&spokenLanguages=DUTCH"
             val dummyPerson = Person(

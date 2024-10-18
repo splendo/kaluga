@@ -93,13 +93,17 @@ sealed class Weight : AbstractScientificUnit<PhysicalQuantity.Weight>()
  * A [Weight] for [MeasurementSystem.Metric]
  */
 @Serializable
-sealed class MetricWeight : Weight(), MetricScientificUnit<PhysicalQuantity.Weight>
+sealed class MetricWeight :
+    Weight(),
+    MetricScientificUnit<PhysicalQuantity.Weight>
 
 /**
  * A [Weight] for [MeasurementSystem.Imperial]
  */
 @Serializable
-sealed class ImperialWeight : Weight(), ImperialScientificUnit<PhysicalQuantity.Weight> {
+sealed class ImperialWeight :
+    Weight(),
+    ImperialScientificUnit<PhysicalQuantity.Weight> {
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Weight
 }
@@ -108,7 +112,9 @@ sealed class ImperialWeight : Weight(), ImperialScientificUnit<PhysicalQuantity.
  * A [Weight] for [MeasurementSystem.USCustomary]
  */
 @Serializable
-sealed class USCustomaryWeight : Weight(), USCustomaryScientificUnit<PhysicalQuantity.Weight> {
+sealed class USCustomaryWeight :
+    Weight(),
+    USCustomaryScientificUnit<PhysicalQuantity.Weight> {
     override val system = MeasurementSystem.USCustomary
     override val quantity = PhysicalQuantity.Weight
 }
@@ -117,7 +123,9 @@ sealed class USCustomaryWeight : Weight(), USCustomaryScientificUnit<PhysicalQua
  * A [Weight] for [MeasurementSystem.UKImperial]
  */
 @Serializable
-sealed class UKImperialWeight : Weight(), UKImperialScientificUnit<PhysicalQuantity.Weight> {
+sealed class UKImperialWeight :
+    Weight(),
+    UKImperialScientificUnit<PhysicalQuantity.Weight> {
     override val system = MeasurementSystem.UKImperial
     override val quantity = PhysicalQuantity.Weight
 }
@@ -135,7 +143,9 @@ data object Gram : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, Phys
 }
 
 @Serializable
-sealed class GramMultiple : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram>
+sealed class GramMultiple :
+    MetricWeight(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram>
 
 @Serializable
 data object Nanogram : GramMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Gram> by Nano(Gram)
@@ -182,7 +192,9 @@ data object Dalton : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, Ph
 }
 
 @Serializable
-sealed class DaltonMultiple : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton>
+sealed class DaltonMultiple :
+    MetricWeight(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton>
 
 @Serializable
 data object Nanodalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight, Dalton> by Nano(Dalton)

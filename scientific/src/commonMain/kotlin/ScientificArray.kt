@@ -192,10 +192,8 @@ interface LongScientificArray<Quantity : PhysicalQuantity, Unit : ScientificUnit
  * @param unit the [Unit] component
  */
 @Serializable
-data class DefaultScientificArray<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(
-    override val values: DoubleArray,
-    override val unit: Unit,
-) : DoubleScientificArray<Quantity, Unit> {
+data class DefaultScientificArray<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(override val values: DoubleArray, override val unit: Unit) :
+    DoubleScientificArray<Quantity, Unit> {
     constructor(value: List<Decimal>, unit: Unit) : this(value.toDoubleArray(), unit)
 
     override fun equals(other: Any?): Boolean {

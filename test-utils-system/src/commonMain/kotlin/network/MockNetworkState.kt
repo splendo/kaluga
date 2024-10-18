@@ -31,7 +31,9 @@ sealed class MockNetworkState {
         )
     }
 
-    data class Deinitialized(private val previousNetworkConnectionType: NetworkConnectionType) : MockNetworkState(), NetworkState.Deinitialized {
+    data class Deinitialized(private val previousNetworkConnectionType: NetworkConnectionType) :
+        MockNetworkState(),
+        NetworkState.Deinitialized {
         override val networkConnectionType: NetworkConnectionType = previousNetworkConnectionType.unknown(
             NetworkConnectionType.Unknown.Reason.NOT_CLEAR,
         )
@@ -42,7 +44,9 @@ sealed class MockNetworkState {
         val deinitialize: suspend () -> Deinitialized = suspend { Deinitialized(networkConnectionType) }
     }
 
-    data class Initializing(override val networkConnectionType: NetworkConnectionType) : Active(), NetworkState.Initializing {
+    data class Initializing(override val networkConnectionType: NetworkConnectionType) :
+        Active(),
+        NetworkState.Initializing {
         override fun initialized(networkType: NetworkConnectionType): suspend () -> NetworkState.Initialized = {
             when (networkType) {
                 is NetworkConnectionType.Unknown -> Unknown(networkType)
@@ -61,13 +65,15 @@ sealed class MockNetworkState {
         }
     }
 
-    data class Unknown(override val networkConnectionType: NetworkConnectionType.Unknown) : Initialized(), NetworkState.Unknown {
+    data class Unknown(override val networkConnectionType: NetworkConnectionType.Unknown) :
+        Initialized(),
+        NetworkState.Unknown {
         override val unavailable: suspend () -> NetworkState.Unavailable = { Unavailable }
     }
 
-    data class Available(
-        override val networkConnectionType: NetworkConnectionType.Known.Available,
-    ) : Initialized(), NetworkState.Available {
+    data class Available(override val networkConnectionType: NetworkConnectionType.Known.Available) :
+        Initialized(),
+        NetworkState.Available {
         override val unavailable: suspend () -> NetworkState.Unavailable = { Unavailable }
     }
 

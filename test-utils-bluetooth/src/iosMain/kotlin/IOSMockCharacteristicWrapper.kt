@@ -26,11 +26,8 @@ import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSData
 
-class IOSMockCharacteristicWrapper(
-    override val uuid: CBUUID = CBUUID(),
-    override val properties: Int = 0,
-    descriptorUUIDs: List<CBUUID> = emptyList(),
-) : MockCharacteristicWrapper {
+class IOSMockCharacteristicWrapper(override val uuid: CBUUID = CBUUID(), override val properties: Int = 0, descriptorUUIDs: List<CBUUID> = emptyList()) :
+    MockCharacteristicWrapper {
 
     val isReadCompleted = EmptyCompletableDeferred()
     val isWriteCompleted = CompletableDeferred<NSData>()

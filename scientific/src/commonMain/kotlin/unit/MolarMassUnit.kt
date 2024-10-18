@@ -85,7 +85,9 @@ sealed class MolarMass : AbstractScientificUnit<PhysicalQuantity.MolarMass>() {
  * @param per the [AmountOfSubstance] component
  */
 @Serializable
-data class MetricMolarMass(override val weight: MetricWeight, override val per: AmountOfSubstance) : MolarMass(), MetricScientificUnit<PhysicalQuantity.MolarMass> {
+data class MetricMolarMass(override val weight: MetricWeight, override val per: AmountOfSubstance) :
+    MolarMass(),
+    MetricScientificUnit<PhysicalQuantity.MolarMass> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -95,7 +97,9 @@ data class MetricMolarMass(override val weight: MetricWeight, override val per: 
  * @param per the [AmountOfSubstance] component
  */
 @Serializable
-data class ImperialMolarMass(override val weight: ImperialWeight, override val per: AmountOfSubstance) : MolarMass(), ImperialScientificUnit<PhysicalQuantity.MolarMass> {
+data class ImperialMolarMass(override val weight: ImperialWeight, override val per: AmountOfSubstance) :
+    MolarMass(),
+    ImperialScientificUnit<PhysicalQuantity.MolarMass> {
     override val system = MeasurementSystem.Imperial
 
     /**
@@ -115,7 +119,9 @@ data class ImperialMolarMass(override val weight: ImperialWeight, override val p
  * @param per the [AmountOfSubstance] component
  */
 @Serializable
-data class USCustomaryMolarMass(override val weight: USCustomaryWeight, override val per: AmountOfSubstance) : MolarMass(), USCustomaryScientificUnit<PhysicalQuantity.MolarMass> {
+data class USCustomaryMolarMass(override val weight: USCustomaryWeight, override val per: AmountOfSubstance) :
+    MolarMass(),
+    USCustomaryScientificUnit<PhysicalQuantity.MolarMass> {
     override val system = MeasurementSystem.USCustomary
 }
 
@@ -125,7 +131,9 @@ data class USCustomaryMolarMass(override val weight: USCustomaryWeight, override
  * @param per the [AmountOfSubstance] component
  */
 @Serializable
-data class UKImperialMolarMass(override val weight: UKImperialWeight, override val per: AmountOfSubstance) : MolarMass(), UKImperialScientificUnit<PhysicalQuantity.MolarMass> {
+data class UKImperialMolarMass(override val weight: UKImperialWeight, override val per: AmountOfSubstance) :
+    MolarMass(),
+    UKImperialScientificUnit<PhysicalQuantity.MolarMass> {
     override val system = MeasurementSystem.UKImperial
 }
 

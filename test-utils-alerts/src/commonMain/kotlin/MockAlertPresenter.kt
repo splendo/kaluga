@@ -29,7 +29,7 @@ import kotlinx.coroutines.CoroutineScope
  * @param alert The [Alert] to display
  * @param setupMocks if `true` this automatically sets up mocks to handle displaying this [MockAlertPresenter]
  */
-class MockAlertPresenter(val alert: Alert, logger: Logger, setupMocks: Boolean = true) : BaseAlertPresenter(alert, logger) {
+class MockAlertPresenter(alert: Alert, logger: Logger, setupMocks: Boolean = true) : BaseAlertPresenter(alert, logger) {
 
     /**
      * Mock implementation of [BaseAlertPresenter.Builder]

@@ -35,10 +35,9 @@ val AngularAccelerationUnits: Set<AngularAcceleration> get() = AngularVelocityUn
  * @property per the [Time] component
  */
 @Serializable
-data class AngularAcceleration(
-    val angularVelocity: AngularVelocity,
-    val per: Time,
-) : AbstractScientificUnit<PhysicalQuantity.AngularAcceleration>(), MetricAndImperialScientificUnit<PhysicalQuantity.AngularAcceleration> {
+data class AngularAcceleration(val angularVelocity: AngularVelocity, val per: Time) :
+    AbstractScientificUnit<PhysicalQuantity.AngularAcceleration>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.AngularAcceleration> {
     override val quantity = PhysicalQuantity.AngularAcceleration
     override val system = MeasurementSystem.MetricAndImperial
     override val symbol: String by lazy {

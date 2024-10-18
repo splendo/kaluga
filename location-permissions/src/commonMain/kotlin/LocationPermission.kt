@@ -35,7 +35,11 @@ typealias LocationPermissionManager = PermissionManager<LocationPermission>
 /**
  * The [BasePermissionManager] to use as a default for [LocationPermission]
  */
-expect class DefaultLocationPermissionManager : BasePermissionManager<LocationPermission>
+expect class DefaultLocationPermissionManager : BasePermissionManager<LocationPermission> {
+    override fun requestPermissionDidStart()
+    override fun monitoringDidStart(interval: Duration)
+    override fun monitoringDidStop()
+}
 
 /**
  * A [BasePermissionsBuilder] for [LocationPermission]
@@ -60,7 +64,9 @@ interface BaseLocationPermissionManagerBuilder : BasePermissionsBuilder<Location
  * A [BaseLocationPermissionManagerBuilder]
  * @param context the [PermissionContext] this permissions manager builder runs on
  */
-expect class LocationPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseLocationPermissionManagerBuilder
+expect class LocationPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseLocationPermissionManagerBuilder {
+    override fun create(locationPermission: LocationPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): LocationPermissionManager
+}
 
 /**
  * A [PermissionStateRepo] for [LocationPermission]

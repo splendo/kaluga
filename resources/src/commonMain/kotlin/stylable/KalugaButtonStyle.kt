@@ -197,10 +197,12 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
             )
         }
 
-        internal val hiddenTextStyle = textOnly {
-            textSize = 0.0f
-            defaultStyle {
-                textColor = DefaultColors.clear
+        internal val hiddenTextStyle by lazy {
+            textOnly {
+                textSize = 0.0f
+                defaultStyle {
+                    textColor = DefaultColors.clear
+                }
             }
         }
     }
@@ -289,7 +291,8 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
         override val defaultStyle: ButtonStateStyle.ImageOnly,
         override val pressedStyle: ButtonStateStyle.ImageOnly,
         override val disabledStyle: ButtonStateStyle.ImageOnly,
-    ) : WithoutText<ButtonStateStyle.ImageOnly>, WithImage<ButtonStateStyle.ImageOnly>
+    ) : WithoutText<ButtonStateStyle.ImageOnly>,
+        WithImage<ButtonStateStyle.ImageOnly>
 
     /**
      * A [KalugaButtonStyle.WithText] and [KalugaButtonStyle.WithImage] that displays both text and a [ButtonImage]
@@ -310,7 +313,8 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
         override val defaultStyle: ButtonStateStyle.WithImageAndText,
         override val pressedStyle: ButtonStateStyle.WithImageAndText,
         override val disabledStyle: ButtonStateStyle.WithImageAndText,
-    ) : WithText<ButtonStateStyle.WithImageAndText>, WithImage<ButtonStateStyle.WithImageAndText>
+    ) : WithText<ButtonStateStyle.WithImageAndText>,
+        WithImage<ButtonStateStyle.WithImageAndText>
 
     /**
      * Gets the [StateStyle] of the button depending on the state
@@ -318,14 +322,12 @@ sealed interface KalugaButtonStyle<StateStyle : ButtonStateStyle> {
      * @param isPressed if `true` the button is pressed
      * @return the [StateStyle] to apply to the text of the button in the current state
      */
-    fun getStateStyle(isEnabled: Boolean, isPressed: Boolean): StateStyle {
-        return if (!isEnabled) {
-            disabledStyle
-        } else if (isPressed) {
-            pressedStyle
-        } else {
-            defaultStyle
-        }
+    fun getStateStyle(isEnabled: Boolean, isPressed: Boolean): StateStyle = if (!isEnabled) {
+        disabledStyle
+    } else if (isPressed) {
+        pressedStyle
+    } else {
+        defaultStyle
     }
 }
 
@@ -485,7 +487,11 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
      * @property disabledStyle the [ButtonStateStyle.TextOnly] that the button is in when disabled. If `null` [defaultStyle] will be used.
      */
     class TextOnly internal constructor() : WithText<ButtonStateStyle.TextOnly, ButtonStateStyleDSL.TextOnly> {
-        override var font: KalugaFont = defaultBoldFont
+        private var _font: KalugaFont? = null
+        override var font: KalugaFont get() = _font ?: defaultBoldFont
+            set(value) {
+                _font = value
+            }
         override var textSize: Float = 12.0f
         override var textAlignment: KalugaTextAlignment = KalugaTextAlignment.CENTER
         override var padding: Padding = Padding.defaultButtonPadding
@@ -555,7 +561,7 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
         fun setImage(image: TintedImage, pressedTint: KalugaColor = image.tint, disabledTint: KalugaColor = image.tint) {
             defaultStyle { setImage(image) }
             pressedStyle { setImage(image.image, pressedTint) }
-            disabledStyle { setImage(image.image, pressedTint) }
+            disabledStyle { setImage(image.image, disabledTint) }
         }
 
         /**
@@ -568,7 +574,7 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
         fun setImage(image: KalugaImage, defaultTint: KalugaColor, pressedTint: KalugaColor = defaultTint, disabledTint: KalugaColor = defaultTint) {
             defaultStyle { setImage(image, defaultTint) }
             pressedStyle { setImage(image, pressedTint) }
-            disabledStyle { setImage(image, pressedTint) }
+            disabledStyle { setImage(image, disabledTint) }
         }
     }
 
@@ -629,7 +635,11 @@ sealed interface KalugaButtonStyleDSL<StateStyle : ButtonStateStyle, StateStyleD
     class WithImageAndText internal constructor() :
         WithText<ButtonStateStyle.WithImageAndText, ButtonStateStyleDSL.WithImageAndText>,
         WithImage<ButtonStateStyle.WithImageAndText, ButtonStateStyleDSL.WithImageAndText> {
-        override var font: KalugaFont = defaultBoldFont
+        private var _font: KalugaFont? = null
+        override var font: KalugaFont get() = _font ?: defaultBoldFont
+            set(value) {
+                _font = value
+            }
         override var textSize: Float = 12.0f
         override var textAlignment: KalugaTextAlignment = KalugaTextAlignment.CENTER
         override var imageSize: ImageSize = ImageSize.Intrinsic

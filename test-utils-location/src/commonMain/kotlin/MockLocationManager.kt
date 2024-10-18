@@ -59,14 +59,11 @@ class MockLocationManager(
  * Mock implementation of [BaseLocationManager]
  * @param initialLocationEnabled Sets the initial state of location
  */
-class MockBaseLocationManager(
-    initialLocationEnabled: Boolean,
-    settings: Settings,
-    coroutineScope: CoroutineScope,
-) : BaseLocationManager(
-    settings,
-    coroutineScope,
-) {
+class MockBaseLocationManager(initialLocationEnabled: Boolean, settings: Settings, coroutineScope: CoroutineScope) :
+    BaseLocationManager(
+        settings,
+        coroutineScope,
+    ) {
 
     /**
      * Mock implementation of [BaseLocationManager.Builder]

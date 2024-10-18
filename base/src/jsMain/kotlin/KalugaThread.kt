@@ -41,11 +41,7 @@ actual class KalugaThread {
      */
     actual val isMainThread: Boolean = true
 
-    override fun equals(other: Any?): Boolean {
-        return other is KalugaThread
-    }
+    override fun equals(other: Any?): Boolean = other is KalugaThread
 
-    override fun hashCode(): Int {
-        return this::class.js.hashCode()
-    }
+    override fun hashCode(): Int = this::class.js.hashCode()
 }

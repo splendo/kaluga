@@ -71,7 +71,9 @@ import kotlinx.serialization.Serializable
  * Source:  "SI Brochure: The International System of Units, 9th Edition".
  */
 @Serializable
-sealed class Dimensionless : AbstractScientificUnit<PhysicalQuantity.Dimensionless>(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless>
+sealed class Dimensionless :
+    AbstractScientificUnit<PhysicalQuantity.Dimensionless>(),
+    MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless>
 
 /**
  * Set of all [Dimensionless]

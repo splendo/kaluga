@@ -29,12 +29,7 @@ import kotlin.math.min
  * @property alpha the alpha channel in a range between `0.0` and `1.0`
  */
 @Serializable
-data class HSLColor(
-    val hue: Double,
-    val saturation: Double,
-    val lightness: Double,
-    val alpha: Double = 1.0,
-)
+data class HSLColor(val hue: Double, val saturation: Double, val lightness: Double, val alpha: Double = 1.0)
 
 /**
  * Gets the [HSLColor] equivalent to this [KalugaColor]

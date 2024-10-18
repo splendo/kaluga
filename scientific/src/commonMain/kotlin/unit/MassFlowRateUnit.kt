@@ -85,7 +85,9 @@ sealed class MassFlowRate : AbstractScientificUnit<PhysicalQuantity.MassFlowRate
  * @param per the [Time] component
  */
 @Serializable
-data class MetricMassFlowRate(override val weight: MetricWeight, override val per: Time) : MassFlowRate(), MetricScientificUnit<PhysicalQuantity.MassFlowRate> {
+data class MetricMassFlowRate(override val weight: MetricWeight, override val per: Time) :
+    MassFlowRate(),
+    MetricScientificUnit<PhysicalQuantity.MassFlowRate> {
     override val system = MeasurementSystem.Metric
 }
 
@@ -95,7 +97,9 @@ data class MetricMassFlowRate(override val weight: MetricWeight, override val pe
  * @param per the [Time] component
  */
 @Serializable
-data class ImperialMassFlowRate(override val weight: ImperialWeight, override val per: Time) : MassFlowRate(), ImperialScientificUnit<PhysicalQuantity.MassFlowRate> {
+data class ImperialMassFlowRate(override val weight: ImperialWeight, override val per: Time) :
+    MassFlowRate(),
+    ImperialScientificUnit<PhysicalQuantity.MassFlowRate> {
     override val system = MeasurementSystem.Imperial
 
     /**
@@ -115,7 +119,9 @@ data class ImperialMassFlowRate(override val weight: ImperialWeight, override va
  * @param per the [Time] component
  */
 @Serializable
-data class USCustomaryMassFlowRate(override val weight: USCustomaryWeight, override val per: Time) : MassFlowRate(), USCustomaryScientificUnit<PhysicalQuantity.MassFlowRate> {
+data class USCustomaryMassFlowRate(override val weight: USCustomaryWeight, override val per: Time) :
+    MassFlowRate(),
+    USCustomaryScientificUnit<PhysicalQuantity.MassFlowRate> {
     override val system = MeasurementSystem.USCustomary
 }
 
@@ -125,7 +131,9 @@ data class USCustomaryMassFlowRate(override val weight: USCustomaryWeight, overr
  * @param per the [Time] component
  */
 @Serializable
-data class UKImperialMassFlowRate(override val weight: UKImperialWeight, override val per: Time) : MassFlowRate(), UKImperialScientificUnit<PhysicalQuantity.MassFlowRate> {
+data class UKImperialMassFlowRate(override val weight: UKImperialWeight, override val per: Time) :
+    MassFlowRate(),
+    UKImperialScientificUnit<PhysicalQuantity.MassFlowRate> {
     override val system = MeasurementSystem.UKImperial
 }
 

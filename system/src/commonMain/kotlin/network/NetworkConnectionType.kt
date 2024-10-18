@@ -60,10 +60,7 @@ sealed class NetworkConnectionType {
          * @property lastKnown the last [Known] network state available before the network became [Unknown]
          * @param reason the [Reason] the network type is unknown.
          */
-        data class WithLastNetwork(
-            val lastKnown: Known,
-            override val reason: Reason,
-        ) : Unknown(reason)
+        data class WithLastNetwork(val lastKnown: Known, override val reason: Reason) : Unknown(reason)
     }
 
     /**

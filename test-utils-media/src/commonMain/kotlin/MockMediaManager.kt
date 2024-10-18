@@ -40,9 +40,7 @@ import kotlin.time.Duration
  * Mock implementation of [VolumeController]
  * @param setupMocks If `true` this will automatically set up some mocking
  */
-class MockVolumeController(
-    setupMocks: Boolean = true,
-) : VolumeController {
+class MockVolumeController(setupMocks: Boolean = true) : VolumeController {
 
     override val currentVolume = MutableStateFlow(1.0f)
 
@@ -85,7 +83,9 @@ class MockMediaManager(
     val volumeController: MockVolumeController,
     val mediaSurfaceController: MockMediaSurfaceController,
     setupMocks: Boolean = true,
-) : MediaManager, VolumeController by volumeController, MediaSurfaceController by mediaSurfaceController {
+) : MediaManager,
+    VolumeController by volumeController,
+    MediaSurfaceController by mediaSurfaceController {
 
     /**
      * A [com.splendo.kaluga.test.base.mock.SuspendMethodMock] for [createPlayableMedia]
@@ -162,7 +162,9 @@ class MockBaseMediaManager(
     val mediaSurfaceController: MockMediaSurfaceController = MockMediaSurfaceController(),
     coroutineContext: CoroutineContext,
     setupMocks: Boolean = true,
-) : BaseMediaManager(mediaSurfaceProvider, coroutineContext), VolumeController by volumeController, MediaSurfaceController by mediaSurfaceController {
+) : BaseMediaManager(mediaSurfaceProvider, coroutineContext),
+    VolumeController by volumeController,
+    MediaSurfaceController by mediaSurfaceController {
 
     /**
      * Mock implementation of [BaseMediaManager.Builder] that builds a [MockBaseMediaManager]

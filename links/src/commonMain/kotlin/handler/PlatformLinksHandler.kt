@@ -20,4 +20,7 @@ package com.splendo.kaluga.links.handler
 /**
  * Platform specific implementation of [LinksHandler]
  */
-expect class PlatformLinksHandler constructor() : LinksHandler
+expect class PlatformLinksHandler constructor() : LinksHandler {
+    override fun isValid(url: String): Boolean
+    override fun extractQueryAsList(url: String): List<Any>
+}

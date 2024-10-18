@@ -58,7 +58,8 @@ val IonizingRadiationEquivalentDoseUnits: Set<IonizingRadiationEquivalentDose> g
  */
 @Serializable
 sealed class IonizingRadiationEquivalentDose :
-    AbstractScientificUnit<PhysicalQuantity.IonizingRadiationEquivalentDose>(), MetricAndImperialScientificUnit<PhysicalQuantity.IonizingRadiationEquivalentDose>
+    AbstractScientificUnit<PhysicalQuantity.IonizingRadiationEquivalentDose>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.IonizingRadiationEquivalentDose>
 
 @Serializable
 data object Sievert : IonizingRadiationEquivalentDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose> {
@@ -70,7 +71,9 @@ data object Sievert : IonizingRadiationEquivalentDose(), MetricBaseUnit<Measurem
 }
 
 @Serializable
-sealed class SievertMultiple : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose, Sievert>
+sealed class SievertMultiple :
+    IonizingRadiationEquivalentDose(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose, Sievert>
 
 @Serializable
 data object Nanosievert : SievertMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose, Sievert> by Nano(Sievert)

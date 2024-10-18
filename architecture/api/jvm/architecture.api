@@ -301,8 +301,6 @@ public abstract class com/splendo/kaluga/architecture/navigation/NavigationBundl
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$BooleanArrayValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()[Z
-	public final fun copy ([Z)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$BooleanArrayValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$BooleanArrayValue;[ZILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$BooleanArrayValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()[Z
@@ -312,8 +310,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$BooleanValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()Z
-	public final fun copy (Z)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$BooleanValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$BooleanValue;ZILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$BooleanValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()Ljava/lang/Boolean;
 	public synthetic fun getValue ()Ljava/lang/Object;
@@ -323,8 +319,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$BundleValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;
-	public final fun copy (Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$BundleValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$BundleValue;Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$BundleValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()Lcom/splendo/kaluga/architecture/navigation/NavigationBundle;
 	public synthetic fun getValue ()Ljava/lang/Object;
@@ -334,8 +328,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$ByteArrayValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()[B
-	public final fun copy ([B)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ByteArrayValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ByteArrayValue;[BILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ByteArrayValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()[B
@@ -345,8 +337,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$ByteValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()B
-	public final fun copy (B)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ByteValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ByteValue;BILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ByteValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()Ljava/lang/Byte;
 	public synthetic fun getValue ()Ljava/lang/Object;
@@ -356,8 +346,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharArrayValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()[C
-	public final fun copy ([C)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharArrayValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharArrayValue;[CILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharArrayValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()[C
@@ -367,8 +355,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharSequenceValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()Ljava/lang/CharSequence;
-	public final fun copy (Ljava/lang/CharSequence;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharSequenceValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharSequenceValue;Ljava/lang/CharSequence;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharSequenceValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()Ljava/lang/CharSequence;
 	public synthetic fun getValue ()Ljava/lang/Object;
@@ -378,8 +364,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()C
-	public final fun copy (C)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharValue;CILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$CharValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()Ljava/lang/Character;
 	public synthetic fun getValue ()Ljava/lang/Object;
@@ -389,8 +373,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$DateArrayValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$ListNavigationBundleValue {
 	public final fun component1 ()Ljava/util/List;
-	public final fun copy (Ljava/util/List;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DateArrayValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DateArrayValue;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DateArrayValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()Ljava/util/List;
@@ -400,8 +382,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$DateValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()Lcom/splendo/kaluga/base/utils/KalugaDate;
-	public final fun copy (Lcom/splendo/kaluga/base/utils/KalugaDate;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DateValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DateValue;Lcom/splendo/kaluga/base/utils/KalugaDate;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DateValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()Lcom/splendo/kaluga/base/utils/KalugaDate;
 	public synthetic fun getValue ()Ljava/lang/Object;
@@ -411,8 +391,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$DoubleArrayValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()[D
-	public final fun copy ([D)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DoubleArrayValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DoubleArrayValue;[DILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DoubleArrayValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()[D
@@ -422,8 +400,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$DoubleValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()D
-	public final fun copy (D)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DoubleValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DoubleValue;DILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$DoubleValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()Ljava/lang/Double;
 	public synthetic fun getValue ()Ljava/lang/Object;
@@ -433,8 +409,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$FloatArrayValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()[F
-	public final fun copy ([F)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$FloatArrayValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$FloatArrayValue;[FILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$FloatArrayValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()[F
@@ -444,8 +418,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$FloatValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()F
-	public final fun copy (F)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$FloatValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$FloatValue;FILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$FloatValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()Ljava/lang/Float;
 	public synthetic fun getValue ()Ljava/lang/Object;
@@ -455,8 +427,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$IntegerArrayValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()[I
-	public final fun copy ([I)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$IntegerArrayValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$IntegerArrayValue;[IILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$IntegerArrayValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()[I
@@ -466,8 +436,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$IntegerValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()I
-	public final fun copy (I)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$IntegerValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$IntegerValue;IILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$IntegerValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()Ljava/lang/Integer;
 	public synthetic fun getValue ()Ljava/lang/Object;
@@ -480,8 +448,6 @@ public abstract class com/splendo/kaluga/architecture/navigation/NavigationBundl
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$LongArrayValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()[J
-	public final fun copy ([J)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$LongArrayValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$LongArrayValue;[JILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$LongArrayValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()[J
@@ -491,8 +457,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$LongValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()J
-	public final fun copy (J)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$LongValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$LongValue;JILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$LongValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()Ljava/lang/Long;
 	public synthetic fun getValue ()Ljava/lang/Object;
@@ -505,8 +469,6 @@ public abstract class com/splendo/kaluga/architecture/navigation/NavigationBundl
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$OptionalValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue {
 	public final fun component1 ()Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
-	public final fun copy (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$OptionalValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$OptionalValue;Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$OptionalValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getOptionalValue ()Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue;
 	public fun getValue ()Ljava/lang/Object;
@@ -518,8 +480,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 	public static final field Companion Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$SerializedValue$Companion;
 	public final fun component1 ()Lkotlinx/serialization/KSerializer;
 	public final fun component2 ()Ljava/lang/Object;
-	public final fun copy (Lkotlinx/serialization/KSerializer;Ljava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$SerializedValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$SerializedValue;Lkotlinx/serialization/KSerializer;Ljava/lang/Object;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$SerializedValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getSerializer ()Lkotlinx/serialization/KSerializer;
 	public fun getValue ()Ljava/lang/Object;
@@ -533,8 +493,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$ShortArrayValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()[S
-	public final fun copy ([S)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ShortArrayValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ShortArrayValue;[SILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ShortArrayValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()[S
@@ -544,8 +502,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$ShortValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()S
-	public final fun copy (S)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ShortValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ShortValue;SILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$ShortValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()Ljava/lang/Short;
@@ -555,8 +511,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$StringArrayValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$ListNavigationBundleValue {
 	public final fun component1 ()Ljava/util/List;
-	public final fun copy (Ljava/util/List;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$StringArrayValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$StringArrayValue;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$StringArrayValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()Ljava/util/List;
@@ -566,8 +520,6 @@ public final class com/splendo/kaluga/architecture/navigation/NavigationBundleVa
 
 public final class com/splendo/kaluga/architecture/navigation/NavigationBundleValue$StringValue : com/splendo/kaluga/architecture/navigation/NavigationBundleValue$NonNullableNavigationBundleValue {
 	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$StringValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$StringValue;Ljava/lang/String;ILjava/lang/Object;)Lcom/splendo/kaluga/architecture/navigation/NavigationBundleValue$StringValue;
 	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun getValue ()Ljava/lang/Object;
 	public fun getValue ()Ljava/lang/String;
@@ -1108,10 +1060,6 @@ public class com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel : 
 	protected final fun removeLifecycleSubscribables ([Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
 }
 
-public class com/splendo/kaluga/architecture/viewmodel/BaseViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
-	public fun <init> ()V
-}
-
 public class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
 	public final fun clear ()V
 	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
@@ -1121,9 +1069,5 @@ public class com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
 public class com/splendo/kaluga/architecture/viewmodel/NavigatingViewModel : com/splendo/kaluga/architecture/viewmodel/BaseLifecycleViewModel {
 	public fun <init> (Lcom/splendo/kaluga/architecture/navigation/Navigator;[Lcom/splendo/kaluga/architecture/lifecycle/LifecycleSubscribable;)V
 	protected final fun getNavigator ()Lcom/splendo/kaluga/architecture/navigation/Navigator;
-}
-
-public class com/splendo/kaluga/architecture/viewmodel/ViewModel : com/splendo/kaluga/architecture/viewmodel/LifecycleViewModel {
-	public fun <init> ()V
 }
 

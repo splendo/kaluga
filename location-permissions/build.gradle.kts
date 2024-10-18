@@ -1,27 +1,20 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-publishableComponent("permissions.location")
-
-dependencies {
-    implementationDependency(Dependencies.Android.PlayServices.Location)
-}
-
-kotlin {
-    sourceSets {
-        getByName("commonMain") {
-            dependencies {
-                api(project(":base-permissions", ""))
+kaluga {
+    moduleName = "permissions.location"
+    dependencies {
+        android {
+            main {
+                implementation(libs.android.play.services.location)
             }
         }
-        getByName("commonTest") {
-            dependencies {
+        common {
+            main {
+                api(project(":base-permissions", ""))
+            }
+            test {
                 api(project(":test-utils-base", ""))
             }
         }

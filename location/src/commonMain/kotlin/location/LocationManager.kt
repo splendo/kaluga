@@ -132,10 +132,9 @@ interface LocationManager {
  * @param settings the [Settings] to configure this location manager
  * @param coroutineScope the [CoroutineScope] this location manager runs on
  */
-abstract class BaseLocationManager(
-    private val settings: Settings,
-    private val coroutineScope: CoroutineScope,
-) : LocationManager, CoroutineScope by coroutineScope {
+abstract class BaseLocationManager(private val settings: Settings, private val coroutineScope: CoroutineScope) :
+    LocationManager,
+    CoroutineScope by coroutineScope {
 
     companion object {
         private const val LOG_TAG = "Location Manager"
@@ -286,4 +285,10 @@ abstract class BaseLocationManager(
 /**
  * A default implementation of [BaseLocationManager]
  */
-expect class DefaultLocationManager : BaseLocationManager
+expect class DefaultLocationManager : BaseLocationManager {
+    override val locationMonitor: LocationMonitor
+
+    override suspend fun requestEnableLocation()
+    override suspend fun startMonitoringLocation()
+    override suspend fun stopMonitoringLocation()
+}

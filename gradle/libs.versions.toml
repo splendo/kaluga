@@ -1,0 +1,220 @@
+[versions]
+kaluga = "1.5.0"
+
+androidGradle = "8.7.1"
+androidBuildTools = "34.0.0"
+androidCompileSdk = "35"
+androidMinSdk = "24"
+kotlin = "2.0.21"
+kotlinter = "4.4.1"
+kotlinx-kover = "0.8.3"
+dependencycheck = "10.0.3"
+dokka = "1.9.20"
+binarycompatilityvalidator = "0.16.3"
+java = "17"
+
+kotlinx-atomicfu = "0.25.0"
+kotlinx-coroutines = "1.9.0"
+kotlinx-serialization = "1.7.3"
+accompanist = "0.36.0"
+android-material = "1.12.0"
+android-play-review = "2.0.1"
+android-play-services-location = "21.3.0"
+androidx-activity = "1.9.2"
+androidx-appcompat = "1.7.0"
+androidx-arch-core = "2.2.0"
+androidx-browser = "1.8.0"
+androidx-compose = "1.7.3"
+androidx-compose-constraintlayout = "1.0.1"
+androidx-compose-ui = "1.7.3"
+androidx-compose-material = "1.3.0"
+androidx-constraintlayout = "2.1.4"
+androidx-core = "1.13.1"
+androidx-fragment = "1.8.4"
+androidx-lifecycle = "2.8.6"
+androidx-navigation = "2.8.2"
+androidx-test = "1.6.1"
+androidx-test-runner = "1.6.2"
+androidx-test-espresso = "3.6.1"
+androidx-test-junit = "1.2.1"
+androidx-test-uiautomator = "2.3.0"
+bytebuddy = "1.15.4"
+junit = "4.13.2"
+koin = "3.5.6"
+koin-compose = "3.5.6"
+mockito = "5.14.1"
+napier = "2.7.1"
+nordic-support = "1.6.0"
+
+
+[libraries]
+
+# Kaluga itself
+kaluga-base = { module = "com.splendo.kaluga:base", version.ref = "kaluga" }
+kaluga-base-permissions = { module = "com.splendo.kaluga:base-permissions", version.ref = "kaluga" }
+kaluga-beacons = { module = "com.splendo.kaluga:beacons", version.ref = "kaluga" }
+kaluga-bluetooth = { module = "com.splendo.kaluga:bluetooth", version.ref = "kaluga" }
+kaluga-bluetooth-permissions = { module = "com.splendo.kaluga:bluetooth-permissions", version.ref = "kaluga" }
+kaluga-calendar-permissions = { module = "com.splendo.kaluga:calendar-permissions", version.ref = "kaluga" }
+kaluga-camera-permissions = { module = "com.splendo.kaluga:camera-permissions", version.ref = "kaluga" }
+kaluga-contacts-permissions = { module = "com.splendo.kaluga:contacts-permissions", version.ref = "kaluga" }
+kaluga-datetime = { module = "com.splendo.kaluga:date-time", version.ref = "kaluga" }
+kaluga-datetimepicker = { module = "com.splendo.kaluga:date-time-picker", version.ref = "kaluga" }
+kaluga-alerts = { module = "com.splendo.kaluga:alerts", version.ref = "kaluga" }
+kaluga-architecture = { module = "com.splendo.kaluga:architecture", version.ref = "kaluga" }
+kaluga-hud = { module = "com.splendo.kaluga:hud", version.ref = "kaluga" }
+kaluga-keyboard = { module = "com.splendo.kaluga:keyboard", version.ref = "kaluga" }
+kaluga-links = { module = "com.splendo.kaluga:links", version.ref = "kaluga" }
+kaluga-logging = { module = "com.splendo.kaluga:logging", version.ref = "kaluga" }
+kaluga-location = { module = "com.splendo.kaluga:location", version.ref = "kaluga" }
+kaluga-location-permissions = { module = "com.splendo.kaluga:location-permissions", version.ref = "kaluga" }
+kaluga-media = { module = "com.splendo.kaluga:media", version.ref = "kaluga" }
+kaluga-microphone-permissions = { module = "com.splendo.kaluga:microphone-permissions", version.ref = "kaluga" }
+kaluga-notifications-permissions = { module = "com.splendo.kaluga:notifications-permissions", version.ref = "kaluga" }
+kaluga-resources = { module = "com.splendo.kaluga:resources", version.ref = "kaluga" }
+kaluga-review = { module = "com.splendo.kaluga:review", version.ref = "kaluga" }
+kaluga-scientific = { module = "com.splendo.kaluga:scientific", version.ref = "kaluga" }
+kaluga-service = { module = "com.splendo.kaluga:service", version.ref = "kaluga" }
+kaluga-storage-permissions = { module = "com.splendo.kaluga:storage-permissions", version.ref = "kaluga" }
+kaluga-system = { module = "com.splendo.kaluga:system", version.ref = "kaluga" }
+kaluga-compose-architecture = { module = "com.splendo.kaluga:architecture-compose", version.ref = "kaluga" }
+kaluga-compose-keyboard = { module = "com.splendo.kaluga:keyboard-compose", version.ref = "kaluga" }
+kaluga-compose-resources = { module = "com.splendo.kaluga:resources-compose", version.ref = "kaluga" }
+kaluga-testutils-architecture = { module = "com.splendo.kaluga:test-utils-architecture", version.ref = "kaluga" }
+kaluga-testutils-alerts = { module = "com.splendo.kaluga:test-utils-alerts", version.ref = "kaluga" }
+kaluga-testutils-base = { module = "com.splendo.kaluga:test-utils-base", version.ref = "kaluga" }
+kaluga-testutils-bluetooth = { module = "com.splendo.kaluga:test-utils-bluetooth", version.ref = "kaluga" }
+kaluga-testutils-datetimepicker = { module = "com.splendo.kaluga:test-utils-date-time-picker", version.ref = "kaluga" }
+kaluga-testutils-resources = { module = "com.splendo.kaluga:test-utils-resources", version.ref = "kaluga" }
+kaluga-testutils-hud = { module = "com.splendo.kaluga:test-utils-hud", version.ref = "kaluga" }
+kaluga-testutils-keyboard = { module = "com.splendo.kaluga:test-utils-keyboard", version.ref = "kaluga" }
+kaluga-testutils-koin = { module = "com.splendo.kaluga:test-utils-koin", version.ref = "kaluga" }
+kaluga-testutils-location = { module = "com.splendo.kaluga:test-utils-location", version.ref = "kaluga" }
+kaluga-testutils-media = { module = "com.splendo.kaluga:test-utils-media", version.ref = "kaluga" }
+kaluga-testutils-permissions = { module = "com.splendo.kaluga:test-utils-permissions", version.ref = "kaluga" }
+kaluga-testutils-service = { module = "com.splendo.kaluga:test-utils-service", version.ref = "kaluga" }
+kaluga-testutils-system = { module = "com.splendo.kaluga:test-utils-system", version.ref = "kaluga" }
+
+# Gradle DSL
+android-gradle = { module = "com.android.tools.build:gradle", version.ref = "androidGradle"}
+compose-gradle = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin"}
+kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinter-gradle = { module = "org.jmailen.gradle:kotlinter-gradle", version.ref = "kotlinter" }
+dependencycheck-gradle = { module = "org.owasp:dependency-check-gradle", version.ref = "dependencycheck" }
+kotlinx-atomicfu-gradle = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "kotlinx-atomicfu" }
+kotlinx-binarycompatibilityvalidator-gradle = { module = "org.jetbrains.kotlinx.binary-compatibility-validator:org.jetbrains.kotlinx.binary-compatibility-validator.gradle.plugin", version.ref = "binarycompatilityvalidator" }
+kotlinx-kover-gradle = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kotlinx-kover" }
+dokka-gradle = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+
+# Kotlin
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+
+# KotlinX
+kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "kotlinx-atomicfu" }
+
+## Coroutines
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-js = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-playservices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-debug = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-debug", version.ref = "kotlinx-coroutines" }
+
+## Serialization
+kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+
+# Accompanist
+accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanist" }
+
+# Android
+android-material = { module = "com.google.android.material:material", version.ref = "android-material" }
+android-play-review = { module = "com.google.android.play:review", version.ref = "android-play-review" }
+android-play-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "android-play-review" }
+android-play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "android-play-services-location" }
+
+# AndroidX
+
+## Activity
+androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity" }
+
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-arch-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidx-arch-core" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "androidx-browser" }
+
+# ByteBuddy
+bytebuddy-agent = { module = "net.bytebuddy:byte-buddy-agent", version.ref = "bytebuddy" }
+bytebuddy-android = { module = "net.bytebuddy:byte-buddy-android", version.ref = "bytebuddy" }
+
+## Compose
+androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "androidx-compose-material" }
+androidx-compose-constraintlayout = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "androidx-compose-constraintlayout" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose-ui" }
+androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose-ui" }
+androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "androidx-compose-ui" }
+androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-compose" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
+
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
+androidx-core = { module = "androidx.core:core", version.ref = "androidx-core" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
+
+## Fragment
+androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "androidx-fragment" }
+androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment" }
+
+## Lifecycle
+androidx-lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+
+## Test
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test" }
+androidx-test-core-ktx = { module = "androidx.test:core-ktx", version.ref = "androidx-test" }
+androidx-test-espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-test-espresso" }
+androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-junit" }
+androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
+androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test-runner" }
+androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "androidx-test-uiautomator" }
+androidx-test-compose-junit = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-compose" }
+
+junit = { module = "junit:junit", version.ref = "junit" }
+
+# Koin
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin-compose" }
+
+napier = { module = "io.github.aakira:napier", version.ref = "napier" }
+nordic-support-scanner = { module = "no.nordicsemi.android.support.v18:scanner", version.ref = "nordic-support" }
+
+# Mockito
+mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockito" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+
+[plugins]
+android-library = { id = "com.android.library", version.ref = "androidGradle" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
+dependencycheck = { id = "org.owasp.dependencycheck", version.ref = "dependencycheck" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+
+kotlinx-binarycompatibilityvalidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binarycompatilityvalidator" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlin" }
+kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinx-kover"}
+compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+[bundles]

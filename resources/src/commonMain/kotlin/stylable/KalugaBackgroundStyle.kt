@@ -25,11 +25,7 @@ import com.splendo.kaluga.resources.KalugaColor
  * @property strokeStyle the [StrokeStyle] to apply to the border of the view
  * @property shape the [Shape] to apply to the view
  */
-data class KalugaBackgroundStyle(
-    val fillStyle: FillStyle,
-    val strokeStyle: StrokeStyle = StrokeStyle.None,
-    val shape: Shape = Shape.Rectangle(),
-) {
+data class KalugaBackgroundStyle(val fillStyle: FillStyle, val strokeStyle: StrokeStyle = StrokeStyle.None, val shape: Shape = Shape.Rectangle()) {
 
     /**
      * The style with which the background of a view will be filled
@@ -60,11 +56,7 @@ data class KalugaBackgroundStyle(
          * @property cornerRadiusY the radius in `scalable pixels` applied to the y-dimension of the corner
          * @property roundedCorners the set of [Corner] that are rounded according to [cornerRadiusX] and [cornerRadiusY]
          */
-        data class Rectangle(
-            val cornerRadiusX: Float,
-            val cornerRadiusY: Float,
-            val roundedCorners: Set<Corner> = Corner.values().toSet(),
-        ) : Shape() {
+        data class Rectangle(val cornerRadiusX: Float, val cornerRadiusY: Float, val roundedCorners: Set<Corner> = Corner.values().toSet()) : Shape() {
 
             /**
              * The corners of a [Rectangle] that can be rounded

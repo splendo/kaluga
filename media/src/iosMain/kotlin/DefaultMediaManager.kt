@@ -115,11 +115,11 @@ import kotlin.time.DurationUnit
  * @param source the [MediaSource] on which the media is found
  * @param avPlayerItem the [AVPlayerItem] associated with the media
  */
-actual class DefaultPlayableMedia(override val source: MediaSource, internal val avPlayerItem: AVPlayerItem) : PlayableMedia {
-    override val duration: Duration get() = CMTimeGetSeconds(avPlayerItem.duration).seconds
-    override val currentPlayTime: Duration get() = CMTimeGetSeconds(avPlayerItem.currentTime()).seconds
-    override val tracks: List<TrackInfo> get() = avPlayerItem.tracks.mapNotNull { (it as? AVPlayerItemTrack).asTrackInfo() }
-    override val resolution: Flow<Resolution> = avPlayerItem.observeKeyValueAsFlow<Any>(
+actual class DefaultPlayableMedia(actual override val source: MediaSource, internal val avPlayerItem: AVPlayerItem) : PlayableMedia {
+    actual override val duration: Duration get() = CMTimeGetSeconds(avPlayerItem.duration).seconds
+    actual override val currentPlayTime: Duration get() = CMTimeGetSeconds(avPlayerItem.currentTime()).seconds
+    actual override val tracks: List<TrackInfo> get() = avPlayerItem.tracks.mapNotNull { (it as? AVPlayerItemTrack).asTrackInfo() }
+    actual override val resolution: Flow<Resolution> = avPlayerItem.observeKeyValueAsFlow<Any>(
         "presentationSize",
         NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew,
     ).map { _ ->
@@ -151,29 +151,21 @@ private fun AVPlayerItemTrack?.asTrackInfo(): TrackInfo? = this?.assetTrack?.let
  * @param settings the [Settings] used to configure the Media Manager
  * @param coroutineContext the [CoroutineContext] on which the media will be managed
  */
-actual class DefaultMediaManager(
-    mediaSurfaceProvider: MediaSurfaceProvider?,
-    private val settings: Settings,
-    coroutineContext: CoroutineContext,
-) : BaseMediaManager(mediaSurfaceProvider, coroutineContext) {
+actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, private val settings: Settings, coroutineContext: CoroutineContext) :
+    BaseMediaManager(mediaSurfaceProvider, coroutineContext) {
 
     /**
      * Settings used for configuring a [DefaultMediaManager]
      * @property playInBackground if `true` playback will resume when the app moves to the background. Note that this will not loop
      * @property playAfterDeviceUnavailable if `true` playback will continue after the device on which audio was playing becomes unavailable (e.g. headphones disconnect).
      */
-    data class Settings(
-        val playInBackground: Boolean = false,
-        val playAfterDeviceUnavailable: Boolean = false,
-    )
+    data class Settings(val playInBackground: Boolean = false, val playAfterDeviceUnavailable: Boolean = false)
 
     /**
      * Builder for creating a [DefaultMediaManager]
      * @param settings the [Settings] used to configure the [DefaultMediaManager] created
      */
-    class Builder(
-        private val settings: Settings,
-    ) : BaseMediaManager.Builder {
+    class Builder(private val settings: Settings) : BaseMediaManager.Builder {
 
         constructor() : this(Settings())
 
@@ -190,8 +182,8 @@ actual class DefaultMediaManager(
         new?.bind?.invoke(avPlayer)
     }
 
-    override val currentVolume: Flow<Float> = avPlayer.observeKeyValueAsFlow<Float>("volume", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew)
-    override suspend fun updateVolume(volume: Float) {
+    actual override val currentVolume: Flow<Float> = avPlayer.observeKeyValueAsFlow<Float>("volume", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew)
+    actual override suspend fun updateVolume(volume: Float) {
         avPlayer.volume = volume
     }
 
@@ -218,12 +210,12 @@ actual class DefaultMediaManager(
         }
     }
 
-    override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia = DefaultPlayableMedia(
+    actual override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia? = DefaultPlayableMedia(
         source,
         source.avPlayerItem,
     )
 
-    override fun initialize(playableMedia: PlayableMedia) {
+    actual override fun initialize(playableMedia: PlayableMedia) {
         removeObservers()
         observers.value = createObservers()
         val avPlayerItem = playableMedia.source.avPlayerItem
@@ -298,11 +290,11 @@ actual class DefaultMediaManager(
         is MediaSource.URL -> AVPlayerItem(AVURLAsset.URLAssetWithURL(url, options.associate { it.entry }))
     }
 
-    override suspend fun renderVideoOnSurface(surface: MediaSurface?) {
+    actual override suspend fun renderVideoOnSurface(surface: MediaSurface?) {
         this.surface = surface
     }
 
-    override fun play(rate: Float) {
+    actual override fun play(rate: Float) {
         avPlayer.defaultRate = rate
         avPlayer.rate = rate
         handleIfPlayingInBackgroundEnabled { error ->
@@ -310,8 +302,8 @@ actual class DefaultMediaManager(
         }
     }
 
-    override fun pause() = avPlayer.pause()
-    override fun stop() {
+    actual override fun pause() = avPlayer.pause()
+    actual override fun stop() {
         avPlayer.seekToTime(kCMTimeZero.readValue(), kCMTimeZero.readValue(), kCMTimeZero.readValue()) {}
         avPlayer.replaceCurrentItemWithPlayerItem(null)
         handleIfPlayingInBackgroundEnabled { error ->
@@ -319,13 +311,13 @@ actual class DefaultMediaManager(
         }
     }
 
-    override fun cleanUp() {
+    actual override fun cleanUp() {
         surface = null
         handleReset()
         cancel()
     }
 
-    override fun startSeek(duration: Duration) = avPlayer.seekToTime(
+    actual override fun startSeek(duration: Duration) = avPlayer.seekToTime(
         CMTimeMakeWithSeconds(duration.toDouble(DurationUnit.SECONDS), 1000),
         kCMTimeZero.readValue(),
         kCMTimeZero.readValue(),
@@ -333,7 +325,7 @@ actual class DefaultMediaManager(
         handleSeekCompleted(it)
     }
 
-    override fun handleReset() {
+    actual override fun handleReset() {
         removeObservers()
         avPlayer.replaceCurrentItemWithPlayerItem(null)
         handleIfPlayingInBackgroundEnabled { error ->

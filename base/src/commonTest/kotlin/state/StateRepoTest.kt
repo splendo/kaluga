@@ -88,9 +88,7 @@ sealed class TrafficLightState :
 
 class TrafficLight : HotStateRepo<TrafficLightState>() {
 
-    override suspend fun initialValue(): TrafficLightState {
-        return TrafficLightState.GreenLight()
-    }
+    override suspend fun initialValue(): TrafficLightState = TrafficLightState.GreenLight()
 }
 
 class StateRepoTest : FlowTest<TrafficLightState, TrafficLight>() {

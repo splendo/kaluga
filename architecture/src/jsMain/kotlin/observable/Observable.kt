@@ -55,10 +55,8 @@ actual interface PlatformSubjectObserver<R>
  * @param observation The [Observation] to handle observing the value.
  * @param stateFlowToBind A function to get the [StateFlow] that will automatically call [SuspendableSetter.set] when a new value is posted after [BasicSubject.post] has been called.
  */
-actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual constructor(
-    observation: Observation<R, T, OO>,
-    stateFlowToBind: suspend () -> StateFlow<R?>,
-) : AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
+actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual constructor(observation: Observation<R, T, OO>, stateFlowToBind: suspend () -> StateFlow<R?>) :
+    AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
 
     actual final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         super.bind(coroutineScope, context)
@@ -72,9 +70,7 @@ actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual c
  * @param T the type of value to expect.
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
-actual abstract class BaseUninitializedSubject<T> actual constructor(
-    observation: ObservationUninitialized<T>,
-) : AbstractBaseUninitializedSubject<T>(observation) {
+actual abstract class BaseUninitializedSubject<T> actual constructor(observation: ObservationUninitialized<T>) : AbstractBaseUninitializedSubject<T>(observation) {
     actual final override val platformSubjectObserver: PlatformSubjectObserver<T> = object : PlatformSubjectObserver<T> {}
 }
 
@@ -102,9 +98,7 @@ actual abstract class BaseInitializedSubject<T> actual constructor(observation: 
  * @param R the type of result to expect. Must be a subclass of [T]
  * @param observation The [ObservationUninitialized] to handle value being observed
  */
-actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
-    observation: ObservationDefault<R, T?>,
-) : AbstractBaseDefaultSubject<R, T>(observation) {
+actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(observation: ObservationDefault<R, T?>) : AbstractBaseDefaultSubject<R, T>(observation) {
 
     /**
      * Constructor

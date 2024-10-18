@@ -45,7 +45,9 @@ val ElectricChargeUnits: Set<ElectricCharge> get() = setOf(
  * SI unit is [Coulomb]
  */
 @Serializable
-sealed class ElectricCharge : AbstractScientificUnit<PhysicalQuantity.ElectricCharge>(), MetricAndImperialScientificUnit<PhysicalQuantity.ElectricCharge>
+sealed class ElectricCharge :
+    AbstractScientificUnit<PhysicalQuantity.ElectricCharge>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.ElectricCharge>
 
 @Serializable
 data object Coulomb : ElectricCharge(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge> {
@@ -57,7 +59,9 @@ data object Coulomb : ElectricCharge(), MetricBaseUnit<MeasurementSystem.MetricA
 }
 
 @Serializable
-sealed class CoulombMultiple : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb>
+sealed class CoulombMultiple :
+    ElectricCharge(),
+    MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb>
 
 @Serializable
 data object Nanocoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCharge, Coulomb> by Nano(Coulomb)

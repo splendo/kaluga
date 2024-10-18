@@ -7,49 +7,15 @@
  ***********************************************/
 
 pluginManagement {
-
     repositories {
-        gradlePluginPortal()
         google()
+        gradlePluginPortal()
+        mavenCentral()
     }
 
-    resolutionStrategy {
-        eachPlugin {
-
-            val kalugaAndroidGradlePluginVersion = settings.extra["kaluga.androidGradlePluginVersion"]
-            val kalugaKotlinVersion = settings.extra["kaluga.kotlinVersion"]
-            val kalugaKotlinterGradlePluginVersion = settings.extra["kaluga.kotlinterGradlePluginVersion"]
-            val kalugaGoogleServicesGradlePluginVersion = settings.extra["kaluga.googleServicesGradlePluginVersion"]
-            val kalugaAtomicFuGradlePluginVersion = settings.extra["kaluga.atomicFuGradlePluginVersion"]
-            val kalugaBinaryCompatibilityValidatorVersion = settings.extra["kaluga.binaryCompatibilityValidatorVersion"]
-            val kalugaDokkaVersion = settings.extra["kaluga.dokkaVersion"]
-
-            when (requested.id.id) {
-                "org.jetbrains.kotlin.multiplatform",
-                "org.jetbrains.kotlin.plugin.serialization",
-                "org.jetbrains.kotlin.android",
-                "org.jetbrains.kotlin.kapt"
-                -> useVersion("$kalugaKotlinVersion")
-                "org.jetbrains.dokka"
-                -> useVersion("$kalugaDokkaVersion")
-                "com.android.library",
-                "com.android.application"
-                -> useVersion("$kalugaAndroidGradlePluginVersion")
-                "org.jmailen.kotlinter"
-                -> useVersion("$kalugaKotlinterGradlePluginVersion")
-                "com.google.gms:google-services"
-                -> useVersion("com.google.gms:google-services:$kalugaGoogleServicesGradlePluginVersion")
-                "org.jetbrains.kotlinx.binary-compatibility-validator"
-                -> useVersion("$kalugaBinaryCompatibilityValidatorVersion")
-                "org.jetbrains.kotlinx.atomicfu" -> useVersion("$kalugaAtomicFuGradlePluginVersion")
-            }
-        }
-    }
+    includeBuild("kaluga-library-components")
+    includeBuild("gradle-test-recorder/plugin-build/")
 }
-
-includeBuild("kaluga-library-components")
-includeBuild("convention-plugins")
-includeBuild("gradle-test-recorder/plugin-build/")
 
 rootProject.name = "Kaluga"
 
@@ -87,7 +53,7 @@ include(":review")
 include(":scientific")
 include(":service")
 include(":system")
-// Test Utils
+// // Test Utils
 include(":test-utils")
 include(":test-utils-base")
 include(":test-utils-alerts")

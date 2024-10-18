@@ -47,24 +47,32 @@ sealed interface MeasurementUsage {
     /**
      * A measurement that is used in both UK Imperial and US Customary systems
      */
-    interface UsedInImperial : UsedInUKImperial, UsedInUSCustomary
+    interface UsedInImperial :
+        UsedInUKImperial,
+        UsedInUSCustomary
 
     /**
      * A measurement that is used in both Metric and UK Imperial systems
      */
-    interface UsedInMetricAndUKImperial : UsedInMetric, UsedInUKImperial
+    interface UsedInMetricAndUKImperial :
+        UsedInMetric,
+        UsedInUKImperial
 
     /**
      * A measurement that is used in Metric, UK Imperial and US Customary systems
      */
-    interface UsedInMetricAndImperial : UsedInMetric, UsedInImperial
+    interface UsedInMetricAndImperial :
+        UsedInMetric,
+        UsedInImperial
 }
 
 /**
  * The system of measurement
  */
 @Serializable
-sealed class MeasurementSystem : MeasurementUsage, com.splendo.kaluga.base.utils.Serializable {
+sealed class MeasurementSystem :
+    MeasurementUsage,
+    com.splendo.kaluga.base.utils.Serializable {
 
     /**
      * The metric system

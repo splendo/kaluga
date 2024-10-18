@@ -70,7 +70,9 @@ sealed class MetricAndUKImperialTemperature(override val symbol: String) :
  * A [Temperature] for [MeasurementSystem.USCustomary]
  */
 @Serializable
-sealed class USCustomaryTemperature(override val symbol: String) : Temperature(), USCustomaryScientificUnit<PhysicalQuantity.Temperature> {
+sealed class USCustomaryTemperature(override val symbol: String) :
+    Temperature(),
+    USCustomaryScientificUnit<PhysicalQuantity.Temperature> {
     override val system = MeasurementSystem.USCustomary
 }
 

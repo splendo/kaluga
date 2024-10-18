@@ -24,4 +24,6 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * Mock implementation of [LocationMonitor]
  */
-class MockLocationMonitor(override val isEnabled: StateFlow<Boolean>) : MockServiceMonitor(), LocationMonitor
+class MockLocationMonitor(override val isEnabled: StateFlow<Boolean>) :
+    MockServiceMonitor(),
+    LocationMonitor

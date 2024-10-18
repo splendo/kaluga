@@ -1,32 +1,29 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-dependencies {
-    implementationDependency(Dependencies.AndroidX.Fragment)
-    testImplementationDependency(Dependencies.AndroidX.FragmentKtx)
-    androidTestImplementationDependency(Dependencies.AndroidX.Activity.Ktx)
-}
-
-publishableComponent("alerts")
-
-kotlin {
-    sourceSets {
-        getByName("commonMain") {
-            dependencies {
+kaluga {
+    moduleName = "alerts"
+    dependencies {
+        android {
+            main {
+                implementation(libs.androidx.fragment)
+            }
+            test {
+                implementation(libs.androidx.fragment.ktx)
+            }
+            instrumented {
+                implementation(libs.androidx.activity.ktx)
+            }
+        }
+        common {
+            main {
                 implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
                 implementation(project(":resources", ""))
             }
-        }
-        getByName("commonTest") {
-            dependencies {
+            test {
                 implementation(project(":test-utils-alerts", ""))
             }
         }

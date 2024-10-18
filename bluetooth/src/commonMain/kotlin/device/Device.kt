@@ -143,7 +143,8 @@ class DeviceImpl(
     private val createDeviceStateFlow: (DeviceConnectionManager, CoroutineContext) -> ConnectableDeviceStateFlowRepo = { connectionManager, context ->
         ConnectableDeviceStateImplRepo(connectionSettings.reconnectionSettings, connectionManager, context)
     },
-) : Device, CoroutineScope by coroutineScope {
+) : Device,
+    CoroutineScope by coroutineScope {
 
     companion object {
         const val TAG = "DeviceImp"
@@ -338,13 +339,11 @@ class DeviceImpl(
  * @param initialState gets the initial [ConnectableDeviceState] when observation starts
  * @param coroutineContext the [CoroutineContext] of this repo
  */
-abstract class BaseConnectableDeviceStateRepo(
-    initialState: () -> ConnectableDeviceState,
-    coroutineContext: CoroutineContext,
-) : HotStateFlowRepo<ConnectableDeviceState>(
-    coroutineContext = coroutineContext,
-    initialState = { initialState() },
-)
+abstract class BaseConnectableDeviceStateRepo(initialState: () -> ConnectableDeviceState, coroutineContext: CoroutineContext) :
+    HotStateFlowRepo<ConnectableDeviceState>(
+        coroutineContext = coroutineContext,
+        initialState = { initialState() },
+    )
 
 /**
  * A [BaseConnectableDeviceStateRepo] managed by a [DeviceConnectionManager]

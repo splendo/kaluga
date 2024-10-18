@@ -102,13 +102,17 @@ sealed class Force : AbstractScientificUnit<PhysicalQuantity.Force>()
  * A [Force] for [MeasurementSystem.Metric]
  */
 @Serializable
-sealed class MetricForce : Force(), MetricScientificUnit<PhysicalQuantity.Force>
+sealed class MetricForce :
+    Force(),
+    MetricScientificUnit<PhysicalQuantity.Force>
 
 /**
  * A [Force] for [MeasurementSystem.Imperial]
  */
 @Serializable
-sealed class ImperialForce : Force(), ImperialScientificUnit<PhysicalQuantity.Force> {
+sealed class ImperialForce :
+    Force(),
+    ImperialScientificUnit<PhysicalQuantity.Force> {
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Force
 }
@@ -117,7 +121,9 @@ sealed class ImperialForce : Force(), ImperialScientificUnit<PhysicalQuantity.Fo
  * A [Force] for [MeasurementSystem.USCustomary]
  */
 @Serializable
-sealed class USCustomaryForce : Force(), USCustomaryScientificUnit<PhysicalQuantity.Force> {
+sealed class USCustomaryForce :
+    Force(),
+    USCustomaryScientificUnit<PhysicalQuantity.Force> {
     override val system = MeasurementSystem.USCustomary
     override val quantity = PhysicalQuantity.Force
 }
@@ -126,7 +132,9 @@ sealed class USCustomaryForce : Force(), USCustomaryScientificUnit<PhysicalQuant
  * A [Force] for [MeasurementSystem.UKImperial]
  */
 @Serializable
-sealed class UKImperialForce : Force(), UKImperialScientificUnit<PhysicalQuantity.Force> {
+sealed class UKImperialForce :
+    Force(),
+    UKImperialScientificUnit<PhysicalQuantity.Force> {
     override val system = MeasurementSystem.UKImperial
     override val quantity = PhysicalQuantity.Force
 }
@@ -141,7 +149,9 @@ data object Newton : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, Phy
 }
 
 @Serializable
-sealed class NewtonMultiple : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton>
+sealed class NewtonMultiple :
+    MetricForce(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton>
 
 @Serializable
 data object Nanonewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Newton> by Nano(Newton)
@@ -183,7 +193,9 @@ data object Dyne : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, Physi
 }
 
 @Serializable
-sealed class DyneMultiple : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne>
+sealed class DyneMultiple :
+    MetricForce(),
+    MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne>
 
 @Serializable
 data object Nanodyne : DyneMultiple(), MetricMultipleUnit<MeasurementSystem.Metric, PhysicalQuantity.Force, Dyne> by Nano(Dyne)

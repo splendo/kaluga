@@ -1,30 +1,24 @@
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
-    id("convention.publication")
-    id("com.android.library")
-    id("org.jetbrains.dokka")
-    id("org.jmailen.kotlinter")
+    id("com.splendo.kaluga.plugin")
 }
 
-publishableComponent("hud")
-
-dependencies {
-    implementationDependency(Dependencies.AndroidX.Fragment)
-    debugImplementationDependency(Dependencies.AndroidX.FragmentKtx)
-}
-
-kotlin {
-    sourceSets {
-        getByName("commonMain") {
-            dependencies {
+kaluga {
+    moduleName = "hud"
+    dependencies {
+        android {
+            main {
+                implementation(libs.androidx.fragment)
+            }
+            test {
+                implementation(libs.androidx.fragment.ktx)
+            }
+        }
+        common {
+            main {
                 implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
             }
-        }
-
-        getByName("commonTest") {
-            dependencies {
+            test {
                 api(project(":test-utils-hud", ""))
             }
         }

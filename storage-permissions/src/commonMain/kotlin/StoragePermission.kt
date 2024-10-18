@@ -35,7 +35,11 @@ typealias StoragePermissionManager = PermissionManager<StoragePermission>
 /**
  * The [BasePermissionManager] to use as a default for [StoragePermission]
  */
-expect class DefaultStoragePermissionManager : BasePermissionManager<StoragePermission>
+expect class DefaultStoragePermissionManager : BasePermissionManager<StoragePermission> {
+    override fun requestPermissionDidStart()
+    override fun monitoringDidStart(interval: Duration)
+    override fun monitoringDidStop()
+}
 
 /**
  * Alias for [StoragePermissionManager]
@@ -64,7 +68,9 @@ interface BaseStoragePermissionManagerBuilder : BasePermissionsBuilder<StoragePe
  * A [BaseStoragePermissionManagerBuilder]
  * @param context the [PermissionContext] this permissions manager builder runs on
  */
-expect class StoragePermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseStoragePermissionManagerBuilder
+expect class StoragePermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseStoragePermissionManagerBuilder {
+    override fun create(storagePermission: StoragePermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): StoragePermissionManager
+}
 
 /**
  * Alias for [StoragePermissionManagerBuilder]
