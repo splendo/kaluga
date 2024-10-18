@@ -101,7 +101,7 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
         project.extensions.configure(SigningExtension::class) {
             setRequired(
                 {
-                    project.gradle.taskGraph.hasTask("publishAllPublicationsToSonatypeRepository") && project.signingSecretKeyRingFile != null
+                    project.gradle.taskGraph.hasTask("publish") && project.signingSecretKeyRingFile != null
                 },
             )
         }
