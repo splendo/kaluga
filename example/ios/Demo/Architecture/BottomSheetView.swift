@@ -46,8 +46,8 @@ struct BottomSheetView: View, Equatable {
                     Text(viewModel.text)
                     viewModel.button.toButton(buttonFrame: .frame(maxWidth: .infinity))
                 }.padding(10.0)
-                    .navigation(state: nextRoute, type: .push) {
-                        BottomSheetSubPageView().environmentObject(BottomSheetSubPageView.RouteStack(previousRoute: nextRoute, parentRoute: previousRoute))
+                    .navigation(state: nextRoute, type: .push) { [unowned previousRoute] route in
+                        BottomSheetSubPageView().environmentObject(BottomSheetSubPageView.RouteStack(previousRoute: route, parentRoute: previousRoute))
                     }
                     .navigationViewStyle(.stack)
                     .navigationBarItems(

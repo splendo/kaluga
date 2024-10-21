@@ -74,9 +74,9 @@ struct BluetoothListView: View {
                 id: device.identifierString,
                 type: .sheet,
                 didSelect: { },
-                content: {
-                    if let route = deviceRoute.object {
-                        switch route {
+                content: { route in
+                    if let object = route.object {
+                        switch object {
                         case .details(let uuid): BluetoothDeviceDetailsView(identifier: uuid).equatable()
                         }
                     }

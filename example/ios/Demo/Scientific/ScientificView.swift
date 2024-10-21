@@ -78,12 +78,12 @@ struct ScientificView: View {
                             id: converter.id,
                             type: .push,
                             didSelect: converter.button.action
-                        ) {
-                            if let route = converterRoute.object {
-                                switch route {
+                        ) { route in
+                            if let object = route.object {
+                                switch object {
                                 case let .converter(arguments): ScientificConverterView(arguments: arguments)
                                         .equatable()
-                                        .environmentObject(converterRoute as RoutingState)
+                                        .environmentObject(route as RoutingState)
                                 }
                             }
                         }
@@ -91,7 +91,7 @@ struct ScientificView: View {
                 }
             }
             .padding(.horizontal, 10.0)
-            .navigation(state: route, type: .sheet) {
+            .navigation(state: route, type: .sheet) { route in
                 if let routeObject = route.object {
                     switch routeObject {
                     case let .leftUnit(quantity):

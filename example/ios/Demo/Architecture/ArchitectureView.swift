@@ -62,18 +62,18 @@ struct ArchitectureView: View {
                 }
             }
             .padding(10.0)
-            .navigation(state: contentRoutingState, type: .push) {
-                switch contentRoutingState.object {
+            .navigation(state: contentRoutingState, type: .push) { route in
+                switch route.object {
                 case let .details(input): ArchitectureDetailsView(inputDetails: input) { result in
                     viewModel.nameInput.post(newValue: result.name as NSString)
                     viewModel.numberInput.post(newValue: NSString.init(format: "%d", result.number))
                 }.equatable()
-                        .environmentObject(contentRoutingState as RoutingState)
+                        .environmentObject(route as RoutingState)
                 default: EmptyView()
                 }
             }
-            .navigation(state: bottomSheetRoutingState, type: .partialSheet(style: PSIphoneStyle.defaultStyle())) {
-                BottomSheetView().equatable().environmentObject(bottomSheetRoutingState)
+            .navigation(state: bottomSheetRoutingState, type: .partialSheet(style: PSIphoneStyle.defaultStyle())) { route in
+                BottomSheetView().equatable().environmentObject(route)
             }
             .navigationTitle("feature_architecture".localized())
         }
