@@ -47,8 +47,8 @@ struct ResourcesListView: View {
                     }
                 }
             }
-            .navigation(state: navigationState, type: .push) {
-                switch navigationState.object {
+            .navigation(state: navigationState, type: .push) { state in
+                switch state.object {
                 case .buttons: ButtonView().equatable() // For lifecycle subviews it is recommended to use equatable
                 case .labels: LabelView()
                 case .images: ImagesView()
