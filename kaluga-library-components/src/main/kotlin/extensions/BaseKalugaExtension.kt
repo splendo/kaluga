@@ -148,7 +148,7 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
 
                 project.logger.info("🪧signingPassword not null? ${signingPassword != null} is empty? ${signingPassword?.isEmpty()}")
 
-                // Q: Is it weird/insecure to have this here? to put this here?
+                // Q: Is it weird/insecure to have this here?
                 // A: No. The files were in the repo before. This is just the same key, still passphrase protected.
                 // When rolling the GPG key (expires 2025-05-03) we could consider putting this whole key in an env however.
                 useInMemoryPgpKeys(
