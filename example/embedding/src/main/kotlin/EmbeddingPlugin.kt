@@ -14,7 +14,7 @@ import java.util.Properties
 abstract class BaseEmbeddingPlugin {
     fun apply(container: ExtensionContainer, rootDir: File, logger: Logger) {
         val props = Properties()
-        val file = File(rootDir, "/local.properties")
+        val file = File(rootDir, "/../local.properties")
         if (file.exists()) {
             props.load(FileInputStream(file))
         }
