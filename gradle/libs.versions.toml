@@ -1,5 +1,5 @@
 [versions]
-kaluga = "1.5.0"
+kaluga = "1.5.1"
 
 androidGradle = "8.7.1"
 androidBuildTools = "34.0.0"
@@ -213,7 +213,7 @@ dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
 kotlinx-binarycompatibilityvalidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binarycompatilityvalidator" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlin" }
+kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlinx-atomicfu" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinx-kover"}
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
