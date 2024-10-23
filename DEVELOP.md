@@ -92,14 +92,14 @@ Before doing any publishing, make sure that changes are working with the one ava
 Just adding the following code inside the `local.properties` file you can test both Android and iOS example app in `kaluga/example/`.
 ```
 kaluga.exampleEmbeddingMethod=repo
-kaluga.exampleMavenRepo=https://s01.oss.sonatype.org/service/local/repositories/comsplendo-REPO_NUMBER/
-kaluga.libraryVersion=LIBRARY_VERSION
+kaluga.exampleMavenRepo=https://s01.oss.sonatype.org/service/local/repositories/comsplendo-REPO_NUMBER/content/
 ```
 Where 
 `REPO_NUMBER` is the id of the staging repository created to do the release (normally done automatically by GitHub Actions upon a `master` commit, the number can be found on the https://s01.oss.sonatype.org console under "staging repositories")
-`LIBRARY_VERSION` is the version of the library that we are publish
 
-Don't forget to remove these when you are done.
+Make sure you are on the `master` branch (which is where the HEAD commit of the release should be anyway) or the version number will include a `-SNAPSHOT` postfix.
+
+Don't forget to remove this when you are done to go back to composite builds.
 
 #### Publishing locally
 

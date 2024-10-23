@@ -26,7 +26,6 @@ data class GitBranch(private val branch: String, private val kalugaBranchPostfix
         val gitBranch by lazy<GitBranch> {
             val githubGitBranch = System.getenv("GITHUB_REF_NAME") // could also be a tag name
             val mavenCentralRelease = System.getenv("MAVEN_CENTRAL_RELEASE")
-            val release = mavenCentralRelease?.lowercase(Locale.ENGLISH)?.trim() == "true"
             val branchFromGit = run {
                 try {
                     val process = ProcessBuilder().command("git rev-parse --abbrev-ref HEAD".split(" ")).start()
@@ -45,6 +44,8 @@ data class GitBranch(private val branch: String, private val kalugaBranchPostfix
                     println("Unable to determine current branch: Project is checked out with detached head!")
                 }
             }
+
+            val release = mavenCentralRelease?.lowercase(Locale.ENGLISH)?.trim() == "true" || branch == "master" || branch == "main"
 
             val kalugaBranchPostfix = (
                 when (branch) {

@@ -85,21 +85,21 @@ struct ScientificConverterView: View, Equatable {
                 }
             }
             .padding(10.0)
-            .navigation(state: nextRoute, type: .sheet) {
-                if let routeObject = nextRoute.object {
+            .navigation(state: nextRoute, type: .sheet) { route in
+                if let routeObject = route.object {
                     switch routeObject {
                     case let .leftUnit(quantity):
                         ScientificUnitSelectionView(quantity: quantity) { index in
                             viewModel.didSelectLeftUnit(unitIndex: index)
                         }
                         .equatable()
-                        .environmentObject(nextRoute as RoutingState)
+                        .environmentObject(route as RoutingState)
                     case let .rightUnit(quantity):
                         ScientificUnitSelectionView(quantity: quantity) { index in
                             viewModel.didSelectRightUnit(unitIndex: index)
                         }
                         .equatable()
-                        .environmentObject(nextRoute as RoutingState)
+                        .environmentObject(route as RoutingState)
                     }
                 }
             }
