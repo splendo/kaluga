@@ -323,8 +323,8 @@ public final class com/splendo/kaluga/test/bluetooth/device/MockConnectableDevic
 }
 
 public final class com/splendo/kaluga/test/bluetooth/device/MockDevice : com/splendo/kaluga/bluetooth/device/Device {
-	public synthetic fun <init> (Ljava/lang/String;Lkotlinx/coroutines/flow/MutableStateFlow;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;ZJLcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (Ljava/lang/String;Lkotlinx/coroutines/flow/MutableStateFlow;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;ZJLcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;Lkotlinx/coroutines/flow/MutableStateFlow;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;ZJLcom/splendo/kaluga/logging/SensitiveAwareLogger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;Lkotlinx/coroutines/flow/MutableStateFlow;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lkotlin/coroutines/CoroutineContext;ZJLcom/splendo/kaluga/logging/SensitiveAwareLogger;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun addAction (Lcom/splendo/kaluga/bluetooth/device/DeviceAction;)V
 	public fun advertisementDataDidUpdate (Lcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;)V
 	public final fun completeAction ()V

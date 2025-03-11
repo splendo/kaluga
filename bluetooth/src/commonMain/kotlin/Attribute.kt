@@ -20,7 +20,7 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.extensions.printableString
-import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.SensitiveAwareLogger
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.channels.BufferOverflow
@@ -32,24 +32,17 @@ import kotlinx.coroutines.flow.MutableSharedFlow
  * A bluetooth attribute conforming to the Attribute Protocol in Bluetooth Low Energy
  * @param ReadAction the [DeviceAction.Read] associated with the attribute
  * @param WriteAction the [DeviceAction.Write] associated with the attribute
+ * @param uuid the [UUID] of the attribute
  * @param initialValue the initial [ByteArray] value of the attribute
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
- * @param parentLogTag the log tag used to modify the log tag of this attribute
- * @param logger the [Logger] to use for logging.
+ * @param logger the [SensitiveAwareLogger] to use for logging.
  */
 abstract class Attribute<ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write>(
+    val uuid: UUID,
     initialValue: ByteArray? = null,
     private val emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
-    private val parentLogTag: String,
-    private val logger: Logger,
+    private val logger: SensitiveAwareLogger,
 ) : Flow<ByteArray?> {
-
-    protected val logTag: String get() = "$parentLogTag-${uuid.uuidString}"
-
-    /**
-     * The [UUID] of the attribute
-     */
-    abstract val uuid: UUID
 
     override suspend fun collect(collector: FlowCollector<ByteArray?>) = sharedFlow.collect(collector)
 
@@ -86,14 +79,14 @@ abstract class Attribute<ReadAction : DeviceAction.Read, WriteAction : DeviceAct
      */
     open fun updateValue() {
         val nextValue = getUpdatedValue()
-        logger.debug(logTag) { "Updated value to ${nextValue?.printableString}" }
+        logger.debug { "Updated value to ${nextValue?.printableString.sensitive}" }
         sharedFlow.tryEmit(nextValue)
     }
 
     internal abstract fun getUpdatedValue(): ByteArray?
 
     protected fun addAction(action: DeviceAction) {
-        logger.info(logTag) { "Add action $action" }
+        logger.info { "Add action $action" }
         emitNewAction(DeviceConnectionManager.Event.AddAction(action))
     }
 }

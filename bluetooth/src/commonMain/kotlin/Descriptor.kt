@@ -19,31 +19,26 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.SensitiveAwareLogger
 
 /**
  * An [Attribute] of a Bluetooth Descriptor
  * @property wrapper the [DescriptorWrapper] to access the platform descriptor
  * @param initialValue the initial [ByteArray] value of the descriptor
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
- * @param parentLogTag the log tag used to modify the log tag of this descriptor
- * @param logger the [Logger] to use for logging.
+ * @param logger the [SensitiveAwareLogger] to use for logging.
  */
 open class Descriptor(
     val wrapper: DescriptorWrapper,
     initialValue: ByteArray? = null,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
-    parentLogTag: String,
-    logger: Logger,
+    logger: SensitiveAwareLogger,
 ) : Attribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(
+    wrapper.uuid,
     initialValue,
     emitNewAction,
-    "$parentLogTag Descriptor",
-    logger,
+    logger.withTag("${logger.tag} Descriptor-${wrapper.uuid.uuidString}"),
 ) {
-
-    override val uuid = wrapper.uuid
-
     override fun createReadAction(): DeviceAction.Read.Descriptor = DeviceAction.Read.Descriptor(this)
 
     override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Descriptor = DeviceAction.Write.Descriptor(newValue, this)

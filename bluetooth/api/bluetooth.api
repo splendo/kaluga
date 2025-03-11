@@ -1,10 +1,9 @@
 public abstract class com/splendo/kaluga/bluetooth/Attribute : kotlinx/coroutines/flow/Flow {
-	public fun <init> ([BLkotlin/jvm/functions/Function1;Ljava/lang/String;Lcom/splendo/kaluga/logging/Logger;)V
-	public synthetic fun <init> ([BLkotlin/jvm/functions/Function1;Ljava/lang/String;Lcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/util/UUID;[BLkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/SensitiveAwareLogger;)V
+	public synthetic fun <init> (Ljava/util/UUID;[BLkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/SensitiveAwareLogger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	protected final fun addAction (Lcom/splendo/kaluga/bluetooth/device/DeviceAction;)V
 	public fun collect (Lkotlinx/coroutines/flow/FlowCollector;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	protected final fun getLogTag ()Ljava/lang/String;
-	public abstract fun getUuid ()Ljava/util/UUID;
+	public final fun getUuid ()Ljava/util/UUID;
 	public final fun readValue ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Read;
 	public fun updateValue ()V
 	public final fun writeValue ([B)Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Write;
@@ -91,14 +90,13 @@ public final class com/splendo/kaluga/bluetooth/BluetoothService$CleanMode : jav
 }
 
 public class com/splendo/kaluga/bluetooth/Characteristic : com/splendo/kaluga/bluetooth/Attribute {
-	public fun <init> (Lcom/splendo/kaluga/bluetooth/CharacteristicWrapper;[BLkotlin/jvm/functions/Function1;Ljava/lang/String;Lcom/splendo/kaluga/logging/Logger;)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/CharacteristicWrapper;[BLkotlin/jvm/functions/Function1;Ljava/lang/String;Lcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/CharacteristicWrapper;[BLkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/SensitiveAwareLogger;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/CharacteristicWrapper;[BLkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/SensitiveAwareLogger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun createReadAction$bluetooth_release ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Read;
 	public synthetic fun createWriteAction$bluetooth_release ([B)Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Write;
 	public final fun disableNotification (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun enableNotification (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getDescriptors ()Ljava/util/List;
-	public fun getUuid ()Ljava/util/UUID;
 	public final fun getWrapper ()Lcom/splendo/kaluga/bluetooth/CharacteristicWrapper;
 	public final fun hasProperty (Lcom/splendo/kaluga/bluetooth/CharacteristicProperties;)Z
 	public final fun isNotifying ()Z
@@ -238,11 +236,10 @@ public final class com/splendo/kaluga/bluetooth/DefaultGattServiceWrapper : com/
 }
 
 public class com/splendo/kaluga/bluetooth/Descriptor : com/splendo/kaluga/bluetooth/Attribute {
-	public fun <init> (Lcom/splendo/kaluga/bluetooth/DescriptorWrapper;[BLkotlin/jvm/functions/Function1;Ljava/lang/String;Lcom/splendo/kaluga/logging/Logger;)V
-	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/DescriptorWrapper;[BLkotlin/jvm/functions/Function1;Ljava/lang/String;Lcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/DescriptorWrapper;[BLkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/SensitiveAwareLogger;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/DescriptorWrapper;[BLkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/SensitiveAwareLogger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun createReadAction$bluetooth_release ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Read;
 	public synthetic fun createWriteAction$bluetooth_release ([B)Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Write;
-	public fun getUuid ()Ljava/util/UUID;
 	public final fun getWrapper ()Lcom/splendo/kaluga/bluetooth/DescriptorWrapper;
 }
 
@@ -260,7 +257,7 @@ public final class com/splendo/kaluga/bluetooth/PairingUtilsKt {
 }
 
 public final class com/splendo/kaluga/bluetooth/Service {
-	public fun <init> (Lcom/splendo/kaluga/bluetooth/ServiceWrapper;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lcom/splendo/kaluga/logging/Logger;)V
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/ServiceWrapper;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/SensitiveAwareLogger;)V
 	public final fun getCharacteristics ()Ljava/util/List;
 	public final fun getUuid ()Ljava/util/UUID;
 }
@@ -339,6 +336,7 @@ public abstract class com/splendo/kaluga/bluetooth/device/BaseDeviceConnectionMa
 	protected final fun getCurrentAction ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction;
 	protected final fun getDeviceWrapper ()Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;
 	public fun getEvents ()Lkotlinx/coroutines/flow/Flow;
+	protected final fun getLogger ()Lcom/splendo/kaluga/logging/SensitiveAwareLogger;
 	protected final fun getNotifyingCharacteristics ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableMap;
 	public synthetic fun getRssi ()Lkotlinx/coroutines/flow/Flow;
 	public fun getRssi ()Lkotlinx/coroutines/flow/SharedFlow;

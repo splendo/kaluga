@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.SensitiveAwareLogger
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -29,20 +29,18 @@ import kotlinx.coroutines.flow.first
  * @property wrapper the [CharacteristicWrapper] to access the platform characteristic
  * @param initialValue the initial [ByteArray] value of the characteristic
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
- * @param parentLogTag the log tag used to modify the log tag of this characteristic
- * @param logger the [Logger] to use for logging.
+ * @param logger the [SensitiveAwareLogger] to use for logging.
  */
 open class Characteristic(
     val wrapper: CharacteristicWrapper,
     initialValue: ByteArray? = null,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
-    parentLogTag: String,
-    logger: Logger,
+    logger: SensitiveAwareLogger,
 ) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(
+    wrapper.uuid,
     initialValue,
     emitNewAction,
-    "$parentLogTag Characteristic",
-    logger,
+    logger.withTag("${logger.tag} Characteristic-${wrapper.uuid.uuidString}"),
 ) {
 
     private val isBusy = MutableStateFlow(false)
@@ -113,12 +111,10 @@ open class Characteristic(
         return action
     }
 
-    override val uuid = wrapper.uuid
-
     /**
      * The list of [Descriptor] associated with the characteristic
      */
-    val descriptors: List<Descriptor> = wrapper.descriptors.map { Descriptor(it, emitNewAction = emitNewAction, parentLogTag = logTag, logger = logger) }
+    val descriptors: List<Descriptor> = wrapper.descriptors.map { Descriptor(it, emitNewAction = emitNewAction, logger = logger) }
 
     override fun createReadAction(): DeviceAction.Read.Characteristic = DeviceAction.Read.Characteristic(this)
 

@@ -27,9 +27,9 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.randomIdentifier
-import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
+import com.splendo.kaluga.logging.SensitiveAwareLogger
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.bluetooth.createServiceWrapper
 import kotlinx.coroutines.delay
@@ -48,7 +48,7 @@ class MockDevice(
     private val coroutineContext: CoroutineContext,
     setupMocks: Boolean = true,
     private val connectionDelay: Duration = 1.seconds,
-    private val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
+    private val logger: SensitiveAwareLogger = SensitiveAwareLogger.of(tag = "MockDevice", logger = RestrictedLogger(RestrictedLogLevel.None), logSensitiveData = false),
 ) : Device {
 
     val mockConnectableDeviceManager = MockConnectableDeviceManager()
@@ -101,8 +101,7 @@ class MockDevice(
         Service(
             service = createServiceWrapper { uuid = it },
             emitNewAction = {},
-            parentLogTag = "MockDeviceService",
-            logger = logger,
+            logger = logger.withTag("MockDeviceService"),
         )
     }
 
