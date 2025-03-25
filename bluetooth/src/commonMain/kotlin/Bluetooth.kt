@@ -475,13 +475,9 @@ suspend fun Flow<Device?>.updateRssi() {
  * @param mtu the [MTU] size to request
  */
 suspend fun Flow<Device?>.requestMtu(mtu: MTU) {
-    val state = state()
-    // start requesting mtu
-    state.filterIsInstance<ConnectableDeviceState.Connected.MtuRequester>().first().startRequestingMtu(mtu)
-    // await state change
-    state.first { it !is ConnectableDeviceState.Connected.MtuRequester }
-    // await mtu request to finish
-    state.filterIsInstance<ConnectableDeviceState.Connected.MtuRequester>().first()
+    state()
+        .filterIsInstance<ConnectableDeviceState.Connected.MtuRequester>().first()
+        .startRequestingMtu(mtu)
 }
 
 /**

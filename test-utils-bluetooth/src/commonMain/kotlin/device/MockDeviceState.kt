@@ -80,7 +80,7 @@ sealed class MockDeviceState : KalugaState {
             override val discoverServices: suspend () -> ConnectableDeviceState.Connected.Discovering = { Discovering(reconnectionSettings, mtu, mockConnectableDeviceManager) }
 
             override fun startRequestingMtu(mtu: MTU) {
-                mockConnectableDeviceManager.startRequestingMtu()
+                mockConnectableDeviceManager.startRequestingMtu(mtu)
             }
             override fun requestingMtu(mtu: MTU): suspend () -> ConnectableDeviceState.Connected.RequestingMtu = {
                 RequestingMtu(reconnectionSettings, mtu, mockConnectableDeviceManager) { newMtu ->
@@ -131,7 +131,7 @@ sealed class MockDeviceState : KalugaState {
                 HandlingAction(reconnectionSettings, mtu, services, action, emptyList(), mockConnectableDeviceManager)
             }
             override fun startRequestingMtu(mtu: MTU) {
-                mockConnectableDeviceManager.startRequestingMtu()
+                mockConnectableDeviceManager.startRequestingMtu(mtu)
             }
             override fun requestingMtu(mtu: MTU): suspend () -> ConnectableDeviceState.Connected.RequestingMtu = {
                 RequestingMtu(reconnectionSettings, mtu, mockConnectableDeviceManager) { newMtu ->

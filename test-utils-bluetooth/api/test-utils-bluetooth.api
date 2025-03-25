@@ -316,7 +316,7 @@ public final class com/splendo/kaluga/test/bluetooth/device/MockConnectableDevic
 	public final fun startConnecting (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;)V
 	public final fun startDisconnected ()V
 	public final fun startDiscovering ()V
-	public final fun startRequestingMtu ()V
+	public final fun startRequestingMtu (I)V
 	public final fun unpair (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
