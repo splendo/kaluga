@@ -56,6 +56,9 @@ class MockConnectableDeviceManager {
     val mockDiscoverServices = this::discoverServices.mock()
     suspend fun discoverServices(): Unit = mockDiscoverServices.call()
 
+    val mockStartRequestingMtu = this::startRequestingMtu.mock()
+    fun startRequestingMtu(): Unit = mockStartRequestingMtu.call()
+
     val mockStartDiscovering = this::startDiscovering.mock()
     fun startDiscovering(): Unit = mockStartDiscovering.call()
 

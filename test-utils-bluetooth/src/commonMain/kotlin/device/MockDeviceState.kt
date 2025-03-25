@@ -50,6 +50,24 @@ sealed class MockDeviceState : KalugaState {
 
         suspend fun pair() = mockConnectableDeviceManager.pair()
 
+        data class RequestingMtu(
+            override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
+            override val mtu: MTU?,
+            override val mockConnectableDeviceManager: MockConnectableDeviceManager,
+            private val nextState: (MTU) -> suspend () -> ConnectableDeviceState.Connected.MtuRequester,
+        ) : Connected(),
+            ConnectableDeviceState.Connected.RequestingMtu {
+            override fun didUpdateMtu(mtu: MTU) = nextState(mtu)
+
+            override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
+                copy(reconnectionSettings = reconnectionSettings)
+            }
+
+            override val reconnect: suspend () -> ConnectableDeviceState.Connecting = { Connecting(reconnectionSettings, mockConnectableDeviceManager) }
+
+            override val asDeviceState: ConnectableDeviceState = this
+        }
+
         data class NoServices(
             override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
             override val mtu: MTU?,
@@ -60,9 +78,16 @@ sealed class MockDeviceState : KalugaState {
             override fun startDiscovering() = mockConnectableDeviceManager.startDiscovering()
 
             override val discoverServices: suspend () -> ConnectableDeviceState.Connected.Discovering = { Discovering(reconnectionSettings, mtu, mockConnectableDeviceManager) }
-            override fun didUpdateMtu(mtu: MTU) = suspend {
-                copy(mtu = mtu)
+
+            override fun startRequestingMtu(mtu: MTU) {
+                mockConnectableDeviceManager.startRequestingMtu()
             }
+            override fun requestingMtu(mtu: MTU): suspend () -> ConnectableDeviceState.Connected.RequestingMtu = {
+                RequestingMtu(reconnectionSettings, mtu, mockConnectableDeviceManager) { newMtu ->
+                    suspend { NoServices(reconnectionSettings, newMtu, mockConnectableDeviceManager) }
+                }
+            }
+
             override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
                 copy(reconnectionSettings = reconnectionSettings)
             }
@@ -81,9 +106,6 @@ sealed class MockDeviceState : KalugaState {
             HandleAfterOldStateIsRemoved<MockDeviceState> {
             override fun didDiscoverServices(services: List<Service>): suspend () -> ConnectableDeviceState.Connected.Idle = {
                 Idle(reconnectionSettings, mtu, services, mockConnectableDeviceManager)
-            }
-            override fun didUpdateMtu(mtu: MTU) = suspend {
-                copy(mtu = mtu)
             }
             override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
                 copy(reconnectionSettings = reconnectionSettings)
@@ -108,8 +130,13 @@ sealed class MockDeviceState : KalugaState {
             override fun handleAction(action: DeviceAction): suspend () -> ConnectableDeviceState.Connected.HandlingAction = {
                 HandlingAction(reconnectionSettings, mtu, services, action, emptyList(), mockConnectableDeviceManager)
             }
-            override fun didUpdateMtu(mtu: MTU) = suspend {
-                copy(mtu = mtu)
+            override fun startRequestingMtu(mtu: MTU) {
+                mockConnectableDeviceManager.startRequestingMtu()
+            }
+            override fun requestingMtu(mtu: MTU): suspend () -> ConnectableDeviceState.Connected.RequestingMtu = {
+                RequestingMtu(reconnectionSettings, mtu, mockConnectableDeviceManager) { newMtu ->
+                    suspend { Idle(reconnectionSettings, newMtu, services, mockConnectableDeviceManager) }
+                }
             }
             override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
                 copy(reconnectionSettings = reconnectionSettings)
@@ -139,9 +166,6 @@ sealed class MockDeviceState : KalugaState {
                 } ?: Idle(reconnectionSettings, mtu, services, mockConnectableDeviceManager)
             }
 
-            override fun didUpdateMtu(mtu: MTU) = suspend {
-                copy(mtu = mtu)
-            }
             override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
                 copy(reconnectionSettings = reconnectionSettings)
             }

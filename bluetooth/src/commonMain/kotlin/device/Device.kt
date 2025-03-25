@@ -205,6 +205,7 @@ class DeviceImpl(
                     is DeviceConnectionManager.Event.Disconnecting,
                     is DeviceConnectionManager.Event.Disconnected,
                     is DeviceConnectionManager.Event.MtuUpdated,
+                    is DeviceConnectionManager.Event.StartRequestingMtu,
                     -> deviceStateRepo.value
                 }
                 repo?.takeAndChangeState { state ->
@@ -256,6 +257,7 @@ class DeviceImpl(
         is DeviceConnectionManager.Event.AddAction -> stateTransition(state)
         is DeviceConnectionManager.Event.CompletedAction -> stateTransition(state)
         is DeviceConnectionManager.Event.MtuUpdated -> stateTransition(state)
+        is DeviceConnectionManager.Event.StartRequestingMtu -> stateTransition(state)
     }
 
     private fun DeviceConnectionManager.Event.Connecting.stateTransition(state: ConnectableDeviceState) =
@@ -313,6 +315,7 @@ class DeviceImpl(
         is ConnectableDeviceState.Connecting,
         is ConnectableDeviceState.Disconnected,
         is ConnectableDeviceState.Disconnecting,
+        is ConnectableDeviceState.Connected.RequestingMtu,
         -> {
             state.remain() // TODO consider an optional buffer
         }
@@ -327,8 +330,14 @@ class DeviceImpl(
             state.remain()
         }
 
-    private fun DeviceConnectionManager.Event.MtuUpdated.stateTransition(state: ConnectableDeviceState) = if (state is ConnectableDeviceState.Connected) {
+    private fun DeviceConnectionManager.Event.MtuUpdated.stateTransition(state: ConnectableDeviceState) = if (state is ConnectableDeviceState.Connected.RequestingMtu) {
         state.didUpdateMtu(newMtu)
+    } else {
+        state.remain()
+    }
+
+    private fun DeviceConnectionManager.Event.StartRequestingMtu.stateTransition(state: ConnectableDeviceState) = if (state is ConnectableDeviceState.Connected.MtuRequester) {
+        state.requestingMtu(mtu)
     } else {
         state.remain()
     }

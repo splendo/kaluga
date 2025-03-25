@@ -88,64 +88,69 @@ interface DeviceConnectionManager {
     /**
      * Events detected by a [DeviceConnectionManager]
      */
-    sealed class Event {
+    sealed interface Event {
 
         /**
          * [Event] indicating the device started connecting
          * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use when reconnecting if the device disconnects unexpectedly
          */
-        data class Connecting(val reconnectionSettings: ConnectionSettings.ReconnectionSettings) : Event()
+        data class Connecting(val reconnectionSettings: ConnectionSettings.ReconnectionSettings) : Event
 
         /**
          * [Event] indicating the device cancelled connecting
          */
-        data object CancelledConnecting : Event()
+        data object CancelledConnecting : Event
 
         /**
          * [Event] indicating the device did connect
          */
-        data object Connected : Event()
+        data object Connected : Event
 
         /**
          * [Event] indicating the device started disconnecting
          */
-        data object Disconnecting : Event()
+        data object Disconnecting : Event
 
         /**
          * [Event] indicating the device did disconnect
          * @property onDisconnect the action to execute once the event has been handled
          */
-        data class Disconnected(val onDisconnect: suspend () -> Unit) : Event()
+        data class Disconnected(val onDisconnect: suspend () -> Unit) : Event
 
         /**
          * [Event] indicating the device started discovering services
          */
-        data object Discovering : Event()
+        data object Discovering : Event
 
         /**
          * [Event] indicating the device has discovered a list of [Service]
          * @property services the list of [Service] discovered
          */
-        data class DiscoveredServices(val services: List<Service>) : Event()
+        data class DiscoveredServices(val services: List<Service>) : Event
 
         /**
          * [Event] indicating a [DeviceAction] should be scheduled
          * @property action the [DeviceAction] to schedule
          */
-        data class AddAction(val action: DeviceAction) : Event()
+        data class AddAction(val action: DeviceAction) : Event
 
         /**
          * [Event] indicating the device completed executing a [DeviceAction]
          * @property action the [DeviceAction] that was executed
          * @property succeeded if `true`, [action] completed successfully
          */
-        data class CompletedAction(val action: DeviceAction?, val succeeded: Boolean) : Event()
+        data class CompletedAction(val action: DeviceAction?, val succeeded: Boolean) : Event
 
         /**
          * [Event] indicating the device has updated its [MTU] size
          * @property newMtu the new [MTU] size
          */
-        data class MtuUpdated(val newMtu: MTU) : Event()
+        data class MtuUpdated(val newMtu: MTU) : Event
+
+        /**
+         * [Event] indicating the [MTU] request shall be scheduled
+         */
+        data class StartRequestingMtu(val mtu: MTU) : Event
     }
 
     /**
@@ -182,6 +187,12 @@ interface DeviceConnectionManager {
      * Starts reading the latest RSSI value of the device
      */
     suspend fun readRssi()
+
+    /**
+     * Requests an update to the [MTU] size of the device
+     * @param mtu the size of the [MTU] to request
+     */
+    fun startRequestingMtu(mtu: MTU)
 
     /**
      * Requests an update to the [MTU] size of the device
@@ -281,6 +292,11 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     protected fun handleNewMtu(mtu: MTU) {
         logger.debug { "Updated Mtu $mtu" }
         emitEvent(DeviceConnectionManager.Event.MtuUpdated(mtu))
+    }
+
+    final override fun startRequestingMtu(mtu: MTU) {
+        logger.info { "Start Requesting mtu $mtu" }
+        emitEvent(DeviceConnectionManager.Event.StartRequestingMtu(mtu))
     }
 
     final override fun startConnecting(reconnectionSettings: ConnectionSettings.ReconnectionSettings?) {
