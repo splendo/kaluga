@@ -130,9 +130,7 @@ sealed interface ConnectableDeviceState :
         /**
          * A [Connected] State where no [Service] has been discovered yet
          */
-        interface NoServices :
-            Connected,
-            MtuRequester {
+        interface NoServices : Connected {
 
             /**
              * Attempts to start discovering the list of [Service] of the [Device]
@@ -148,7 +146,9 @@ sealed interface ConnectableDeviceState :
         /**
          * A [Connected] State representing requesting of the [MTU]
          */
-        interface RequestingMtu : Connected {
+        interface RequestingMtu :
+            Connected,
+            DiscoveredServices {
             /**
              * Updates the [MTU] size of the device
              * @param mtu the new [MTU] value
@@ -350,6 +350,7 @@ internal sealed class ConnectableDeviceStateImpl {
         data class RequestingMtu(
             override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
             override val mtu: MTU?,
+            override val services: List<Service>,
             private val mtuToRequest: MTU,
             override val deviceConnectionManager: DeviceConnectionManager,
             private val nextState: (MTU) -> suspend () -> ConnectableDeviceState.Connected.MtuRequester,
@@ -381,14 +382,6 @@ internal sealed class ConnectableDeviceStateImpl {
 
             override val discoverServices = suspend {
                 Discovering(reconnectionSettings, mtu, deviceConnectionManager)
-            }
-
-            override fun startRequestingMtu(mtu: MTU) = deviceConnectionManager.startRequestingMtu(mtu)
-
-            override fun requestingMtu(mtu: MTU) = suspend {
-                RequestingMtu(reconnectionSettings, this.mtu, mtu, deviceConnectionManager) { newMtu ->
-                    suspend { NoServices(reconnectionSettings, newMtu, deviceConnectionManager) }
-                }
             }
 
             override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
@@ -428,7 +421,7 @@ internal sealed class ConnectableDeviceStateImpl {
             override fun startRequestingMtu(mtu: MTU) = deviceConnectionManager.startRequestingMtu(mtu)
 
             override fun requestingMtu(mtu: MTU) = suspend {
-                RequestingMtu(reconnectionSettings, this.mtu, mtu, deviceConnectionManager) { newMtu ->
+                RequestingMtu(reconnectionSettings, this.mtu, services, mtu, deviceConnectionManager) { newMtu ->
                     suspend { Idle(reconnectionSettings, newMtu, services, deviceConnectionManager) }
                 }
             }

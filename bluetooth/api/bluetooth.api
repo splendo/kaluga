@@ -421,12 +421,12 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableD
 	public abstract fun startRequestingMtu (I)V
 }
 
-public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$NoServices : com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected, com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$MtuRequester {
+public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$NoServices : com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected {
 	public abstract fun getDiscoverServices ()Lkotlin/jvm/functions/Function1;
 	public abstract fun startDiscovering ()V
 }
 
-public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$RequestingMtu : com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected {
+public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$RequestingMtu : com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected, com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$DiscoveredServices {
 	public abstract fun didUpdateMtu (I)Lkotlin/jvm/functions/Function1;
 }
 

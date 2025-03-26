@@ -355,8 +355,7 @@ fun Flow<Device?>.services(): Flow<List<Service>> = state().transformLatest { de
                         deviceState.startDiscovering()
                         emptyList()
                     }
-                    is ConnectableDeviceState.Connected.Idle -> deviceState.services
-                    is ConnectableDeviceState.Connected.HandlingAction -> deviceState.services
+                    is ConnectableDeviceState.Connected.DiscoveredServices -> deviceState.services
                     else -> emptyList()
                 }
             }

@@ -53,6 +53,7 @@ sealed class MockDeviceState : KalugaState {
         data class RequestingMtu(
             override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
             override val mtu: MTU?,
+            override val services: List<Service>,
             override val mockConnectableDeviceManager: MockConnectableDeviceManager,
             private val nextState: (MTU) -> suspend () -> ConnectableDeviceState.Connected.MtuRequester,
         ) : Connected(),
@@ -78,15 +79,6 @@ sealed class MockDeviceState : KalugaState {
             override fun startDiscovering() = mockConnectableDeviceManager.startDiscovering()
 
             override val discoverServices: suspend () -> ConnectableDeviceState.Connected.Discovering = { Discovering(reconnectionSettings, mtu, mockConnectableDeviceManager) }
-
-            override fun startRequestingMtu(mtu: MTU) {
-                mockConnectableDeviceManager.startRequestingMtu(mtu)
-            }
-            override fun requestingMtu(mtu: MTU): suspend () -> ConnectableDeviceState.Connected.RequestingMtu = {
-                RequestingMtu(reconnectionSettings, mtu, mockConnectableDeviceManager) { newMtu ->
-                    suspend { NoServices(reconnectionSettings, newMtu, mockConnectableDeviceManager) }
-                }
-            }
 
             override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
                 copy(reconnectionSettings = reconnectionSettings)
@@ -134,7 +126,7 @@ sealed class MockDeviceState : KalugaState {
                 mockConnectableDeviceManager.startRequestingMtu(mtu)
             }
             override fun requestingMtu(mtu: MTU): suspend () -> ConnectableDeviceState.Connected.RequestingMtu = {
-                RequestingMtu(reconnectionSettings, mtu, mockConnectableDeviceManager) { newMtu ->
+                RequestingMtu(reconnectionSettings, mtu, services, mockConnectableDeviceManager) { newMtu ->
                     suspend { Idle(reconnectionSettings, newMtu, services, mockConnectableDeviceManager) }
                 }
             }

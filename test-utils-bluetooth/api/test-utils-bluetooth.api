@@ -511,20 +511,19 @@ public final class com/splendo/kaluga/test/bluetooth/device/MockDeviceState$Conn
 	public fun getReconnect ()Lkotlin/jvm/functions/Function1;
 	public fun getReconnectionSettings ()Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;
 	public fun hashCode ()I
-	public fun requestingMtu (I)Lkotlin/jvm/functions/Function1;
 	public fun startDiscovering ()V
-	public fun startRequestingMtu (I)V
 	public fun toString ()Ljava/lang/String;
 	public fun updateReconnectionSettings (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;)Lkotlin/jvm/functions/Function1;
 }
 
 public final class com/splendo/kaluga/test/bluetooth/device/MockDeviceState$Connected$RequestingMtu : com/splendo/kaluga/test/bluetooth/device/MockDeviceState$Connected, com/splendo/kaluga/bluetooth/device/ConnectableDeviceState$Connected$RequestingMtu {
-	public fun <init> (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Ljava/lang/Integer;Lcom/splendo/kaluga/test/bluetooth/device/MockConnectableDeviceManager;Lkotlin/jvm/functions/Function1;)V
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Ljava/lang/Integer;Ljava/util/List;Lcom/splendo/kaluga/test/bluetooth/device/MockConnectableDeviceManager;Lkotlin/jvm/functions/Function1;)V
 	public final fun component1 ()Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;
 	public final fun component2 ()Ljava/lang/Integer;
-	public final fun component3 ()Lcom/splendo/kaluga/test/bluetooth/device/MockConnectableDeviceManager;
-	public final fun copy (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Ljava/lang/Integer;Lcom/splendo/kaluga/test/bluetooth/device/MockConnectableDeviceManager;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/bluetooth/device/MockDeviceState$Connected$RequestingMtu;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/bluetooth/device/MockDeviceState$Connected$RequestingMtu;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Ljava/lang/Integer;Lcom/splendo/kaluga/test/bluetooth/device/MockConnectableDeviceManager;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/test/bluetooth/device/MockDeviceState$Connected$RequestingMtu;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Lcom/splendo/kaluga/test/bluetooth/device/MockConnectableDeviceManager;
+	public final fun copy (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Ljava/lang/Integer;Ljava/util/List;Lcom/splendo/kaluga/test/bluetooth/device/MockConnectableDeviceManager;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/test/bluetooth/device/MockDeviceState$Connected$RequestingMtu;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/test/bluetooth/device/MockDeviceState$Connected$RequestingMtu;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Ljava/lang/Integer;Ljava/util/List;Lcom/splendo/kaluga/test/bluetooth/device/MockConnectableDeviceManager;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/test/bluetooth/device/MockDeviceState$Connected$RequestingMtu;
 	public fun didUpdateMtu (I)Lkotlin/jvm/functions/Function1;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getAsDeviceState ()Lcom/splendo/kaluga/bluetooth/device/ConnectableDeviceState;
@@ -532,6 +531,7 @@ public final class com/splendo/kaluga/test/bluetooth/device/MockDeviceState$Conn
 	public fun getMtu ()Ljava/lang/Integer;
 	public fun getReconnect ()Lkotlin/jvm/functions/Function1;
 	public fun getReconnectionSettings ()Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;
+	public fun getServices ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 	public fun updateReconnectionSettings (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;)Lkotlin/jvm/functions/Function1;
