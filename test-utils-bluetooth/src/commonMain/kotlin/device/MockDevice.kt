@@ -59,9 +59,7 @@ class MockDevice(
     init {
         if (setupMocks) {
             mockConnectableDeviceManager.mockStartRequestingMtu.on().doExecute { (mtu) ->
-                println("5")
                 connectableDeviceStateRepo.launchTakeAndChangeState(coroutineContext) { state ->
-                    println("6 $state")
                     when (state) {
                         is ConnectableDeviceState.Connected.MtuRequester -> state.requestingMtu(mtu)
                         else -> state.remain()

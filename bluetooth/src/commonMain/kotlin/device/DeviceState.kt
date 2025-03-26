@@ -215,7 +215,7 @@ sealed interface ConnectableDeviceState :
         /**
          * A [DiscoveredServices] State where a [DeviceAction] is being executed
          */
-        interface HandlingAction : DiscoveredServices { // TODO , MtuRequester enqueue action
+        interface HandlingAction : DiscoveredServices { // TODO implement MtuRequester and enqueue action
 
             /**
              * The [DeviceAction] currently being executed
