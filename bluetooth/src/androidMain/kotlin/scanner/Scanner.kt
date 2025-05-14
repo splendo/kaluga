@@ -49,6 +49,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
 import no.nordicsemi.android.support.v18.scanner.ScanCallback
 import no.nordicsemi.android.support.v18.scanner.ScanFilter
@@ -102,7 +103,7 @@ actual class DefaultScanner internal constructor(
             .setNumOfMatches(ScanSettings.MATCH_NUM_FEW_ADVERTISEMENT)
             .build()
 
-        private val locationPermission = LocationPermission(background = false, precise = true)
+        // private val locationPermission = LocationPermission(background = false, precise = true)
     }
 
     private val callback = object : ScanCallback() {
@@ -145,25 +146,18 @@ actual class DefaultScanner internal constructor(
         }
     }
 
-    private val locationPermissionRepo get() = permissions[locationPermission]
+    // private val locationPermissionRepo get() = permissions[locationPermission]
 
     actual override val isSupported: Boolean = bluetoothAdapter != null
     private val deviceConnectionManagerBuilder = DefaultDeviceConnectionManager.Builder(applicationContext)
     actual override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create() }
-    private val locationEnabledMonitor = LocationMonitor.Builder(applicationContext).create()
+//    private val locationEnabledMonitor = LocationMonitor.Builder(applicationContext).create()
 
-    override val permissionsFlow: Flow<List<PermissionState<*>>> get() = combine(
-        bluetoothPermissionRepo.filterOnlyImportant(),
-        locationPermissionRepo.filterOnlyImportant(),
-    ) { bluetoothPermission, locationPermission ->
-        listOf(bluetoothPermission, locationPermission)
-    }
-    override val enabledFlow: Flow<List<Boolean>> get() = combine(
-        bluetoothEnabledMonitor?.isEnabled ?: flowOf(false),
-        locationEnabledMonitor.isEnabled,
-    ) { bluetoothEnabled, locationEnabled ->
-        listOf(bluetoothEnabled, locationEnabled)
-    }
+    override val permissionsFlow: Flow<List<PermissionState<*>>> get() =
+        bluetoothPermissionRepo.filterOnlyImportant().map { listOf(it) }
+
+    override val enabledFlow: Flow<List<Boolean>> get() =
+        (bluetoothEnabledMonitor?.isEnabled?.map { listOf(it) } ?: flowOf(listOf(false)))
 
     actual override suspend fun didStartScanning(filter: Filter) {
         bluetoothScanner.startScan(
@@ -180,16 +174,16 @@ actual class DefaultScanner internal constructor(
     }
 
     override suspend fun startMonitoringHardwareEnabled() {
-        locationEnabledMonitor.startMonitoring()
+//        locationEnabledMonitor.startMonitoring()
         super.startMonitoringHardwareEnabled()
     }
 
     override suspend fun stopMonitoringHardwareEnabled() {
-        locationEnabledMonitor.stopMonitoring()
+//        locationEnabledMonitor.stopMonitoring()
         super.stopMonitoringHardwareEnabled()
     }
 
-    override suspend fun isHardwareEnabled(): Boolean = super.isHardwareEnabled() && locationEnabledMonitor.isServiceEnabled
+    override suspend fun isHardwareEnabled(): Boolean = super.isHardwareEnabled() //&& locationEnabledMonitor.isServiceEnabled
 
     @SuppressLint("MissingPermission") // Lint complains even with permissions
     actual override fun generateEnableSensorsActions(): List<EnableSensorAction> {
@@ -212,15 +206,15 @@ actual class DefaultScanner internal constructor(
             } else {
                 null
             },
-            if (!locationEnabledMonitor.isServiceEnabled) {
-                EnableServiceActivity.showEnableServiceActivity(
-                    applicationContext,
-                    hashCode().toString(),
-                    Intent(ACTION_LOCATION_SOURCE_SETTINGS),
-                )::await
-            } else {
-                null
-            },
+//            if (!locationEnabledMonitor.isServiceEnabled) {
+//                EnableServiceActivity.showEnableServiceActivity(
+//                    applicationContext,
+//                    hashCode().toString(),
+//                    Intent(ACTION_LOCATION_SOURCE_SETTINGS),
+//                )::await
+//            } else {
+//                null
+//            },
         )
     }
 

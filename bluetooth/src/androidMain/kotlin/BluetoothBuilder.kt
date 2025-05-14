@@ -24,7 +24,7 @@ actual class BluetoothBuilder(
         Permissions(
             PermissionsBuilder(PermissionContext(applicationContext)).apply {
                 registerBluetoothPermissionIfNotRegistered()
-                registerLocationPermissionIfNotRegistered()
+                //registerLocationPermissionIfNotRegistered()
             },
             coroutineContext = context,
         )
