@@ -14,7 +14,7 @@ binarycompatilityvalidator = "0.17.0"
 java = "17"
 
 kotlinx-atomicfu = "0.27.0"
-kotlinx-coroutines = "1.10.1"
+kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.8.1"
 accompanist = "0.37.2"
 android-material = "1.12.0"
