@@ -41,7 +41,7 @@ androidx-test-uiautomator = "2.3.0"
 bytebuddy = "1.17.4"
 junit = "4.13.2"
 koin = "4.0.3"
-mockito = "5.16.1"
+mockito = "5.17.0"
 napier = "2.7.1"
 nordic-support = "1.6.0"
 
