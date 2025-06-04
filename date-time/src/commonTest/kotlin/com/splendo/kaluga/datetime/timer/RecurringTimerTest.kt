@@ -153,6 +153,7 @@ class RecurringTimerTest {
     }
 
     // MARK - elapsedIrregularFlow test
+
     /** Provides mock time ticks. */
     private class PredefinedTimeSource(val ticks: List<Duration>) : TimeSource {
         override fun markNow(): TimeMark = object : TimeMark {

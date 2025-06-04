@@ -37,6 +37,7 @@ enum class Flag(val char: Char) {
     ALTERNATE('#'),
 
     // numerics
+
     /**
      * Number results of [Formattable] will always include a sign, even when positive.
      */
@@ -63,6 +64,7 @@ enum class Flag(val char: Char) {
     PARENTHESES('('),
 
     // indexing
+
     /**
      * Causes the arguments of the previous [Formattable] to be used.
      */
