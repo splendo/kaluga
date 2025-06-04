@@ -23,6 +23,7 @@ import kotlin.time.Duration.Companion.milliseconds
 actual typealias KalugaDateHolder = kotlin.js.Date
 
 // TODO Implement with proper date solution for Java Script
+
 /**
  * Default implementation of [KalugaDate]
  */
