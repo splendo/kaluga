@@ -226,14 +226,14 @@ public abstract class com/splendo/kaluga/architecture/compose/navigation/Composa
 public final class com/splendo/kaluga/architecture/compose/navigation/ComposableSingletons$ComposableNavigatorKt {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/compose/navigation/ComposableSingletons$ComposableNavigatorKt;
 	public fun <init> ()V
-	public final fun getLambda-1$architecture_compose_release ()Lkotlin/jvm/functions/Function4;
+	public final fun getLambda$-716553183$architecture_compose_release ()Lkotlin/jvm/functions/Function4;
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/ComposableSingletons$SetupNavHostKt {
 	public static final field INSTANCE Lcom/splendo/kaluga/architecture/compose/navigation/ComposableSingletons$SetupNavHostKt;
 	public fun <init> ()V
-	public final fun getLambda-1$architecture_compose_release ()Lkotlin/jvm/functions/Function2;
-	public final fun getLambda-2$architecture_compose_release ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$-1846958997$architecture_compose_release ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$14453182$architecture_compose_release ()Lkotlin/jvm/functions/Function2;
 }
 
 public final class com/splendo/kaluga/architecture/compose/navigation/LaunchedComposableNavigator : com/splendo/kaluga/architecture/compose/navigation/ComposableNavigator {
