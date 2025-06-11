@@ -68,12 +68,12 @@ data object Nanovolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAnd
 
 @Serializable
 data object Abvolt : Voltage() {
-    private const val ABVOLT_IN_VOLT = 100000000.0
+    private val ABVOLT_IN_VOLT = 100000000.toDecimal()
     override val symbol = "abV"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Voltage
-    override fun fromSIUnit(value: Decimal): Decimal = value * ABVOLT_IN_VOLT.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / ABVOLT_IN_VOLT.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * ABVOLT_IN_VOLT
+    override fun toSIUnit(value: Decimal): Decimal = value / ABVOLT_IN_VOLT
 }
 
 @Serializable

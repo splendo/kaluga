@@ -82,12 +82,12 @@ data object Decisteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementS
 
 @Serializable
 data object Spat : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle> {
-    private const val STERADIAN_IN_SPAT = 4.0 * PI
+    private val STERADIAN_IN_SPAT = (4.0 * PI).toDecimal()
     override val symbol = "sp"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.SolidAngle
-    override fun fromSIUnit(value: Decimal): Decimal = value / STERADIAN_IN_SPAT.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value * STERADIAN_IN_SPAT.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value / STERADIAN_IN_SPAT
+    override fun toSIUnit(value: Decimal): Decimal = value * STERADIAN_IN_SPAT
 }
 
 @Serializable

@@ -29,6 +29,8 @@ import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.SystemScientificUnit
 import com.splendo.kaluga.scientific.unit.convert
 
+private val DEFAULT_ROUNDING_THRESHOLD = 0.0000001.toDecimal()
+
 /**
  * Splits a [ScientificValue] of [ValueUnit] into a [LeftValue] and [RightValue] so that left and right together are equal to the original value.
  * Splitting happens by rounding the [ValueUnit] down to [scale] and returning it and the remainder converted to [RightUnit].
@@ -59,7 +61,7 @@ fun <
     > ScientificValue<Quantity, ValueUnit>.split(
     rightUnit: RightUnit,
     scale: UInt = 0U,
-    roundingThreshold: Decimal = 0.0000001.toDecimal(),
+    roundingThreshold: Decimal = DEFAULT_ROUNDING_THRESHOLD,
     leftFactory: (Decimal, ValueUnit) -> LeftValue,
     rightFactory: (Decimal, RightUnit) -> RightValue,
 ): Pair<LeftValue, RightValue> = split(unit, rightUnit, scale, roundingThreshold, leftFactory, rightFactory)
@@ -88,7 +90,7 @@ fun <
     > ScientificValue<Quantity, ValueUnit>.split(
     rightUnit: RightUnit,
     scale: UInt = 0U,
-    roundingThreshold: Decimal = 0.0000001.toDecimal(),
+    roundingThreshold: Decimal = DEFAULT_ROUNDING_THRESHOLD,
 ) where
         ValueUnit : AbstractScientificUnit<Quantity>,
         ValueUnit : SystemScientificUnit<System, Quantity>,
@@ -130,7 +132,7 @@ fun <
     leftUnit: LeftUnit,
     rightUnit: RightUnit,
     scale: UInt = 0U,
-    roundingThreshold: Decimal = 0.0000001.toDecimal(),
+    roundingThreshold: Decimal = DEFAULT_ROUNDING_THRESHOLD,
     leftFactory: (Decimal, LeftUnit) -> LeftValue,
     rightFactory: (Decimal, RightUnit) -> RightValue,
 ): Pair<LeftValue, RightValue> {
@@ -139,7 +141,7 @@ fun <
     val remainderInLeft = if (leftValueRoundedValue < valueInLeft.decimalValue) {
         valueInLeft.decimalValue - leftValueRoundedValue
     } else {
-        0.0.toDecimal()
+        Decimal.ZERO
     }
     val rightValue = leftUnit.convert(remainderInLeft, rightUnit)
     return leftFactory(leftValueRoundedValue, leftUnit) to rightFactory(rightValue, rightUnit)
@@ -173,7 +175,7 @@ fun <
     leftUnit: LeftUnit,
     rightUnit: RightUnit,
     scale: UInt = 0U,
-    roundingThreshold: Decimal = 0.0000001.toDecimal(),
+    roundingThreshold: Decimal = DEFAULT_ROUNDING_THRESHOLD,
 ) where
         LeftUnit : AbstractScientificUnit<Quantity>,
         LeftUnit : SystemScientificUnit<System, Quantity>,
@@ -212,7 +214,7 @@ fun <
     one: UnitOne,
     two: UnitTwo,
     scale: UInt = 0U,
-    roundingThreshold: Decimal = 0.0000001.toDecimal(),
+    roundingThreshold: Decimal = DEFAULT_ROUNDING_THRESHOLD,
     action: (DefaultScientificValue<Quantity, UnitOne>, DefaultScientificValue<Quantity, UnitTwo>) -> Result,
 ): Result where
                 UnitOne : AbstractScientificUnit<Quantity>,
@@ -258,7 +260,7 @@ fun <
     two: UnitTwo,
     three: UnitThree,
     scale: UInt = 0U,
-    roundingThreshold: Decimal = 0.0000001.toDecimal(),
+    roundingThreshold: Decimal = DEFAULT_ROUNDING_THRESHOLD,
     action: (DefaultScientificValue<Quantity, UnitOne>, DefaultScientificValue<Quantity, UnitTwo>, DefaultScientificValue<Quantity, UnitThree>) -> Result,
 ): Result where
                 UnitOne : AbstractScientificUnit<Quantity>,
@@ -311,7 +313,7 @@ fun <
     three: UnitThree,
     four: UnitFour,
     scale: UInt = 0U,
-    roundingThreshold: Decimal = 0.0000001.toDecimal(),
+    roundingThreshold: Decimal = DEFAULT_ROUNDING_THRESHOLD,
     action: (
         DefaultScientificValue<Quantity, UnitOne>,
         DefaultScientificValue<Quantity, UnitTwo>,
@@ -376,7 +378,7 @@ fun <
     four: UnitFour,
     five: UnitFive,
     scale: UInt = 0U,
-    roundingThreshold: Decimal = 0.0000001.toDecimal(),
+    roundingThreshold: Decimal = DEFAULT_ROUNDING_THRESHOLD,
     action: (
         DefaultScientificValue<Quantity, UnitOne>,
         DefaultScientificValue<Quantity, UnitTwo>,

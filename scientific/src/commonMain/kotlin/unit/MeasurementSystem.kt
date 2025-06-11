@@ -144,13 +144,16 @@ interface MetricBaseUnit<System, Quantity : PhysicalQuantity> : SystemScientific
 sealed interface MetricMultipleUnit<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>> :
     SystemScientificUnit<System, Quantity> where System : MeasurementSystem, System : MeasurementUsage.UsedInMetric
 
+private val ONE_BILLION = 1000000000.toDecimal()
+private val ONE_MILLION = 1000000.toDecimal()
+
 class Giga<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>>(private val unit: Unit) :
     MetricMultipleUnit<System, Quantity, Unit> where System : MeasurementSystem, System : MeasurementUsage.UsedInMetric {
     override val symbol: String = "G${unit.symbol}"
     override val system: System = unit.system
     override val quantity: Quantity = unit.quantity
-    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) / 1000000000.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * 1000000000.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) / ONE_BILLION
+    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * ONE_BILLION
 }
 
 class Mega<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>>(private val unit: Unit) :
@@ -158,8 +161,8 @@ class Mega<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Qu
     override val symbol: String = "M${unit.symbol}"
     override val system: System = unit.system
     override val quantity: Quantity = unit.quantity
-    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) / 1000000.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * 1000000.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) / ONE_MILLION
+    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * ONE_MILLION
 }
 
 class Kilo<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>>(private val unit: Unit) :
@@ -167,8 +170,8 @@ class Kilo<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Qu
     override val symbol: String = "k${unit.symbol}"
     override val system: System = unit.system
     override val quantity: Quantity = unit.quantity
-    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) / 1000.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * 1000.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) / Decimal.THOUSAND
+    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * Decimal.THOUSAND
 }
 
 class Hecto<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>>(private val unit: Unit) :
@@ -176,8 +179,8 @@ class Hecto<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Q
     override val symbol: String = "h${unit.symbol}"
     override val system: System = unit.system
     override val quantity: Quantity = unit.quantity
-    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) / 100.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * 100.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) / Decimal.HUNDRED
+    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * Decimal.HUNDRED
 }
 
 class Deca<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>>(private val unit: Unit) :
@@ -185,8 +188,8 @@ class Deca<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Qu
     override val symbol: String = "da${unit.symbol}"
     override val system: System = unit.system
     override val quantity: Quantity = unit.quantity
-    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) / 10.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * 10.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) / Decimal.TEN
+    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * Decimal.TEN
 }
 
 class Deci<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>>(private val unit: Unit) :
@@ -194,8 +197,8 @@ class Deci<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Qu
     override val symbol: String = "d${unit.symbol}"
     override val system: System = unit.system
     override val quantity: Quantity = unit.quantity
-    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) * 10.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) / 10.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) * Decimal.TEN
+    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) / Decimal.TEN
 }
 
 class Centi<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>>(private val unit: Unit) :
@@ -203,8 +206,8 @@ class Centi<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Q
     override val symbol: String = "c${unit.symbol}"
     override val system: System = unit.system
     override val quantity: Quantity = unit.quantity
-    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) * 100.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) / 100.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) * Decimal.HUNDRED
+    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) / Decimal.HUNDRED
 }
 
 class Milli<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>>(private val unit: Unit) :
@@ -212,8 +215,8 @@ class Milli<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Q
     override val symbol: String = "m${unit.symbol}"
     override val system: System = unit.system
     override val quantity: Quantity = unit.quantity
-    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) * 1000.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) / 1000.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) * Decimal.THOUSAND
+    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) / Decimal.THOUSAND
 }
 
 class Micro<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>>(private val unit: Unit) :
@@ -221,8 +224,8 @@ class Micro<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Q
     override val symbol: String = "μ${unit.symbol}"
     override val system: System = unit.system
     override val quantity: Quantity = unit.quantity
-    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) * 1000000.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) / 1000000.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) * ONE_MILLION
+    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) / ONE_MILLION
 }
 
 class Nano<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Quantity>>(private val unit: Unit) :
@@ -230,6 +233,6 @@ class Nano<System, Quantity : PhysicalQuantity, Unit : MetricBaseUnit<System, Qu
     override val symbol: String = "n${unit.symbol}"
     override val system: System = unit.system
     override val quantity: Quantity = unit.quantity
-    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) * 1000000000.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) / 1000000000.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) * ONE_BILLION
+    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) / ONE_BILLION
 }

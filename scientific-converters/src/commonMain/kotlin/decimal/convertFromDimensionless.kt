@@ -18,7 +18,6 @@
 package com.splendo.kaluga.scientific.converter.decimal
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.div
@@ -28,7 +27,7 @@ import com.splendo.kaluga.scientific.unit.Dimensionless
 import com.splendo.kaluga.scientific.unit.One
 
 infix operator fun <DimensionlessUnit : Dimensionless> Decimal.div(modifier: ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>) =
-    this.invoke(One).div(modifier).value.toDecimal()
+    this.invoke(One).div(modifier).decimalValue
 
 infix operator fun <DimensionlessUnit : Dimensionless> Decimal.times(modifier: ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>) =
-    this.invoke(One).times(modifier).value.toDecimal()
+    this.invoke(One).times(modifier).decimalValue

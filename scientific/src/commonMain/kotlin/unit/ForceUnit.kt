@@ -188,11 +188,12 @@ data object Giganewton : NewtonMultiple(), MetricMultipleUnit<MeasurementSystem.
 
 @Serializable
 data object Dyne : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Force> {
+    private val DYNES_IN_NEWTON = 100000.toDecimal()
     override val symbol: String = "dyn"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Force
-    override fun fromSIUnit(value: Decimal): Decimal = value * 100000.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / 100000.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * DYNES_IN_NEWTON
+    override fun toSIUnit(value: Decimal): Decimal = value / DYNES_IN_NEWTON
 }
 
 @Serializable
@@ -297,10 +298,10 @@ data object GrainForce : ImperialForce() {
 
 @Serializable
 data object Kip : USCustomaryForce() {
-    private const val POUNDS_FORCE_IN_KIP = 1000.0
+    private val POUNDS_FORCE_IN_KIP = Decimal.THOUSAND
     override val symbol: String = "kip"
-    override fun fromSIUnit(value: Decimal): Decimal = PoundForce.fromSIUnit(value) / POUNDS_FORCE_IN_KIP.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = PoundForce.toSIUnit(value * POUNDS_FORCE_IN_KIP.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = PoundForce.fromSIUnit(value) / POUNDS_FORCE_IN_KIP
+    override fun toSIUnit(value: Decimal): Decimal = PoundForce.toSIUnit(value * POUNDS_FORCE_IN_KIP)
 }
 
 @Serializable

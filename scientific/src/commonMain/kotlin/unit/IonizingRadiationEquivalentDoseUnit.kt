@@ -110,12 +110,12 @@ data object Gigasievert : SievertMultiple(), MetricMultipleUnit<MeasurementSyste
 
 @Serializable
 data object RoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose> {
-    const val SIEVERT_IN_REM = 0.01
+    private val SIEVERT_IN_REM = 0.01.toDecimal()
     override val symbol = "rem"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.IonizingRadiationEquivalentDose
-    override fun fromSIUnit(value: Decimal): Decimal = value / SIEVERT_IN_REM.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value * SIEVERT_IN_REM.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value / SIEVERT_IN_REM
+    override fun toSIUnit(value: Decimal): Decimal = value * SIEVERT_IN_REM
 }
 
 @Serializable

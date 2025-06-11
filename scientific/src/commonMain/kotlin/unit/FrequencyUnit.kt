@@ -100,11 +100,12 @@ data object Gigahertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.Me
 
 @Serializable
 data object BeatsPerMinute : Frequency() {
+    private val SECONDS_PER_MINUTE = 60.toDecimal()
     override val symbol: String = "bpm"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Frequency
-    override fun fromSIUnit(value: Decimal): Decimal = value * 60.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / 60.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * SECONDS_PER_MINUTE
+    override fun toSIUnit(value: Decimal): Decimal = value / SECONDS_PER_MINUTE
 }
 
 internal fun SerializersModuleBuilder.setupForFrequency() {

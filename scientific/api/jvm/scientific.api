@@ -1266,7 +1266,6 @@ public final class com/splendo/kaluga/scientific/unit/Acre : com/splendo/kaluga/
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/Acre;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public final fun getACRES_IN_SQUARE_MILE ()D
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$Area;
 	public synthetic fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
@@ -5000,7 +4999,6 @@ public final class com/splendo/kaluga/scientific/unit/EnergyUnitKt {
 }
 
 public final class com/splendo/kaluga/scientific/unit/Erg : com/splendo/kaluga/scientific/unit/MetricNamedEnergyUnit, com/splendo/kaluga/scientific/unit/MetricBaseUnit {
-	public static final field ERG_IN_JOULE I
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/Erg;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
@@ -14193,7 +14191,6 @@ public final class com/splendo/kaluga/scientific/unit/PascalMultiple$Companion {
 
 public final class com/splendo/kaluga/scientific/unit/Percent : com/splendo/kaluga/scientific/unit/Dimensionless {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/Percent;
-	public static final field PARTS_PER_HUNDRED D
 	public fun equals (Ljava/lang/Object;)Z
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$Dimensionless;
@@ -14209,7 +14206,6 @@ public final class com/splendo/kaluga/scientific/unit/Percent : com/splendo/kalu
 
 public final class com/splendo/kaluga/scientific/unit/Permill : com/splendo/kaluga/scientific/unit/Dimensionless {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/Permill;
-	public static final field PARTS_PER_THOUSAND D
 	public fun equals (Ljava/lang/Object;)Z
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$Dimensionless;
@@ -14346,7 +14342,6 @@ public final class com/splendo/kaluga/scientific/unit/PressureUnitKt {
 }
 
 public final class com/splendo/kaluga/scientific/unit/Rad : com/splendo/kaluga/scientific/unit/IonizingRadiationAbsorbedDose, com/splendo/kaluga/scientific/unit/MetricBaseUnit {
-	public static final field GRAY_IN_RAD D
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/Rad;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
@@ -14424,7 +14419,6 @@ public final class com/splendo/kaluga/scientific/unit/Rankine : com/splendo/kalu
 
 public final class com/splendo/kaluga/scientific/unit/RoentgenEquivalentMan : com/splendo/kaluga/scientific/unit/IonizingRadiationEquivalentDose, com/splendo/kaluga/scientific/unit/MetricBaseUnit {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/RoentgenEquivalentMan;
-	public static final field SIEVERT_IN_REM D
 	public fun equals (Ljava/lang/Object;)Z
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$IonizingRadiationEquivalentDose;

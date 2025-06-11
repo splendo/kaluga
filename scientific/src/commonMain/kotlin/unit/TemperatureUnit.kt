@@ -79,15 +79,15 @@ sealed class USCustomaryTemperature(override val symbol: String) :
 
 @Serializable
 data object Celsius : MetricAndUKImperialTemperature("°C") {
-    override fun toSIUnit(value: Decimal): Decimal = value + Kelvin.KELVIN_FREEZING.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value - Kelvin.KELVIN_FREEZING.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = value + Kelvin.KELVIN_FREEZING
+    override fun fromSIUnit(value: Decimal): Decimal = value - Kelvin.KELVIN_FREEZING
     override fun deltaToSIUnitDelta(delta: Decimal): Decimal = Kelvin.toSIUnit(delta)
     override fun deltaFromSIUnitDelta(delta: Decimal): Decimal = Kelvin.fromSIUnit(delta)
 }
 
 @Serializable
 data object Kelvin : MetricAndUKImperialTemperature("K") {
-    internal const val KELVIN_FREEZING = 273.15
+    internal val KELVIN_FREEZING = 273.15.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun deltaToSIUnitDelta(delta: Decimal): Decimal = toSIUnit(delta)
@@ -96,18 +96,18 @@ data object Kelvin : MetricAndUKImperialTemperature("K") {
 
 @Serializable
 data object Fahrenheit : USCustomaryTemperature("°F") {
-    override fun toSIUnit(value: Decimal): Decimal = Rankine.toSIUnit(value + Rankine.RANKINE_FREEZING.toDecimal())
-    override fun fromSIUnit(value: Decimal): Decimal = Rankine.fromSIUnit(value) - Rankine.RANKINE_FREEZING.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = Rankine.toSIUnit(value + Rankine.RANKINE_FREEZING)
+    override fun fromSIUnit(value: Decimal): Decimal = Rankine.fromSIUnit(value) - Rankine.RANKINE_FREEZING
     override fun deltaToSIUnitDelta(delta: Decimal): Decimal = Rankine.toSIUnit(delta)
     override fun deltaFromSIUnitDelta(delta: Decimal): Decimal = Rankine.fromSIUnit(delta)
 }
 
 @Serializable
 data object Rankine : USCustomaryTemperature("°R") {
-    internal const val RANKINE_FREEZING = 459.67
-    private const val FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE = 5.0 / 9.0
-    override fun toSIUnit(value: Decimal): Decimal = value * FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value / FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE.toDecimal()
+    internal val RANKINE_FREEZING = 459.67.toDecimal()
+    private val FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE = (5.0 / 9.0).toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = value * FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE
+    override fun fromSIUnit(value: Decimal): Decimal = value / FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE
     override fun deltaToSIUnitDelta(delta: Decimal): Decimal = toSIUnit(delta)
     override fun deltaFromSIUnitDelta(delta: Decimal): Decimal = fromSIUnit(delta)
 }

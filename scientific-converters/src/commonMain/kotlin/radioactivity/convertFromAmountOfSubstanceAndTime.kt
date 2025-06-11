@@ -41,6 +41,8 @@ fun <
     halfLife: ScientificValue<PhysicalQuantity.Time, TimeUnit>,
 ) = radioactivity(substance, halfLife, ::DefaultScientificValue)
 
+private val LN_2 = ln(2.0).toDecimal()
+
 @JvmName("radioactivityFromSubstanceAndHalfLife")
 fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
@@ -53,7 +55,7 @@ fun <
     factory: (Decimal, RadioactivityUnit) -> Value,
 ) = byDividing(
     DefaultScientificValue(
-        substance.decimalValue * AvogadroConstant * ln(2.0).toDecimal(),
+        substance.decimalValue * AvogadroConstant * LN_2,
         substance.unit,
     ),
     halfLife,

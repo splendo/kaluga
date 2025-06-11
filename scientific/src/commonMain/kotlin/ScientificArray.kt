@@ -607,7 +607,7 @@ fun <
         }
         newValues.add(valueToAdd.decimalValue)
     }
-    return arrayFactory(newValues, targetUnit ?: valueFactory(1.toDecimal(), unit).transform().unit)
+    return arrayFactory(newValues, targetUnit ?: valueFactory(Decimal.ONE, unit).transform().unit)
 }
 
 /**
@@ -693,7 +693,7 @@ fun <
         }
         newValues.add(valueToAdd.decimalValue)
     }
-    return arrayFactory(newValues, targetUnit ?: leftValueFactory(1.toDecimal(), unit).transform(rightValueFactory(1.toDecimal(), right.unit)).unit)
+    return arrayFactory(newValues, targetUnit ?: leftValueFactory(Decimal.ONE, unit).transform(rightValueFactory(Decimal.ONE, right.unit)).unit)
 }
 
 /**

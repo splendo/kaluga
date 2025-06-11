@@ -110,12 +110,12 @@ data object Gigagray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.Metr
 
 @Serializable
 data object Rad : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose> {
-    const val GRAY_IN_RAD = 0.01
+    private val GRAY_IN_RAD = 0.01.toDecimal()
     override val symbol = "rad"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.IonizingRadiationAbsorbedDose
-    override fun fromSIUnit(value: Decimal): Decimal = value / GRAY_IN_RAD.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value * GRAY_IN_RAD.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value / GRAY_IN_RAD
+    override fun toSIUnit(value: Decimal): Decimal = value * GRAY_IN_RAD
 }
 
 @Serializable
