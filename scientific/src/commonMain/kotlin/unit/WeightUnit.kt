@@ -138,7 +138,7 @@ sealed class UKImperialWeight :
 @Serializable
 data object Gram : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight> {
     override val symbol: String = "g"
-    private val GRAMS_IN_KILOGRAM = 1000.0.toDecimal()
+    private val GRAMS_IN_KILOGRAM = Decimal.THOUSAND
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Weight
     override fun toSIUnit(value: Decimal): Decimal = value / GRAMS_IN_KILOGRAM
