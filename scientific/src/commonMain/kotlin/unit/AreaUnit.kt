@@ -152,11 +152,11 @@ data object SquareInch : ImperialArea(), SystemScientificUnit<MeasurementSystem.
 @Serializable
 data object Acre : ImperialArea() {
     override val symbol: String = "acre"
-    val ACRES_IN_SQUARE_MILE = 640.0
+    private val ACRES_IN_SQUARE_MILE = 640.toDecimal()
     override val quantity = PhysicalQuantity.Area
     override val system = MeasurementSystem.Imperial
-    override fun toSIUnit(value: Decimal): Decimal = SquareMile.toSIUnit(value / ACRES_IN_SQUARE_MILE.toDecimal())
-    override fun fromSIUnit(value: Decimal): Decimal = SquareMile.fromSIUnit(value) * ACRES_IN_SQUARE_MILE.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = SquareMile.toSIUnit(value / ACRES_IN_SQUARE_MILE)
+    override fun fromSIUnit(value: Decimal): Decimal = SquareMile.fromSIUnit(value) * ACRES_IN_SQUARE_MILE
 }
 
 internal fun SerializersModuleBuilder.setupForArea() {

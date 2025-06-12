@@ -111,22 +111,22 @@ data object Gigabecquerel : BecquerelMultiple(), MetricMultipleUnit<MeasurementS
 
 @Serializable
 data object Rutherford : Radioactivity() {
-    private const val RUTHERFORD_IN_BECQUEREL = 0.000001
+    private val RUTHERFORD_IN_BECQUEREL = 0.000001.toDecimal()
     override val symbol = "Rd"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Radioactivity
-    override fun fromSIUnit(value: Decimal): Decimal = value * RUTHERFORD_IN_BECQUEREL.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / RUTHERFORD_IN_BECQUEREL.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * RUTHERFORD_IN_BECQUEREL
+    override fun toSIUnit(value: Decimal): Decimal = value / RUTHERFORD_IN_BECQUEREL
 }
 
 @Serializable
 data object Curie : Radioactivity(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Radioactivity> {
-    private const val BECQUEREL_IN_CURIE = 3.7e10
+    private val BECQUEREL_IN_CURIE = 3.7e10.toDecimal()
     override val symbol = "Ci"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Radioactivity
-    override fun fromSIUnit(value: Decimal): Decimal = value / BECQUEREL_IN_CURIE.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value * BECQUEREL_IN_CURIE.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value / BECQUEREL_IN_CURIE
+    override fun toSIUnit(value: Decimal): Decimal = value * BECQUEREL_IN_CURIE
 }
 
 @Serializable

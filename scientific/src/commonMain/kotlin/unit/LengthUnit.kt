@@ -133,45 +133,45 @@ data object Gigameter : MeterMultiple(), MetricMultipleUnit<MeasurementSystem.Me
 
 @Serializable
 data object NauticalMile : MetricLength() {
-    private const val METER_IN_NAUTICAL_MILE = 1852
+    private val METER_IN_NAUTICAL_MILE = 1852.toDecimal()
     override val symbol: String = "nmi"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Length
-    override fun toSIUnit(value: Decimal): Decimal = value * METER_IN_NAUTICAL_MILE.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value / METER_IN_NAUTICAL_MILE.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = value * METER_IN_NAUTICAL_MILE
+    override fun fromSIUnit(value: Decimal): Decimal = value / METER_IN_NAUTICAL_MILE
 }
 
 // Imperial Length
 @Serializable
 data object Inch : ImperialLength() {
-    private const val INCHES_IN_FOOT = 12
+    private val INCHES_IN_FOOT = 12.toDecimal()
     override val symbol: String = "in"
-    override fun toSIUnit(value: Decimal): Decimal = Foot.toSIUnit(value / INCHES_IN_FOOT.toDecimal())
-    override fun fromSIUnit(value: Decimal): Decimal = Foot.fromSIUnit(value) * INCHES_IN_FOOT.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = Foot.toSIUnit(value / INCHES_IN_FOOT)
+    override fun fromSIUnit(value: Decimal): Decimal = Foot.fromSIUnit(value) * INCHES_IN_FOOT
 }
 
 @Serializable
 data object Foot : ImperialLength() {
-    private const val METER_IN_FEET = 0.3048
+    private val METER_IN_FEET = 0.3048.toDecimal()
     override val symbol: String = "ft"
-    override fun toSIUnit(value: Decimal): Decimal = value * METER_IN_FEET.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value / METER_IN_FEET.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = value * METER_IN_FEET
+    override fun fromSIUnit(value: Decimal): Decimal = value / METER_IN_FEET
 }
 
 @Serializable
 data object Yard : ImperialLength() {
-    private const val FOOT_IN_YARD = 3
+    private val FOOT_IN_YARD = 3.toDecimal()
     override val symbol: String = "yd"
-    override fun toSIUnit(value: Decimal): Decimal = Foot.toSIUnit(value * FOOT_IN_YARD.toDecimal())
-    override fun fromSIUnit(value: Decimal): Decimal = Foot.fromSIUnit(value) / FOOT_IN_YARD.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = Foot.toSIUnit(value * FOOT_IN_YARD)
+    override fun fromSIUnit(value: Decimal): Decimal = Foot.fromSIUnit(value) / FOOT_IN_YARD
 }
 
 @Serializable
 data object Mile : ImperialLength() {
-    private const val YARDS_IN_MILE = 1760
+    private val YARDS_IN_MILE = 1760.toDecimal()
     override val symbol: String = "mi"
-    override fun toSIUnit(value: Decimal): Decimal = Yard.toSIUnit(value * YARDS_IN_MILE.toDecimal())
-    override fun fromSIUnit(value: Decimal): Decimal = Yard.fromSIUnit(value) / YARDS_IN_MILE.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = Yard.toSIUnit(value * YARDS_IN_MILE)
+    override fun fromSIUnit(value: Decimal): Decimal = Yard.fromSIUnit(value) / YARDS_IN_MILE
 }
 
 internal fun SerializersModuleBuilder.setupForLength() {

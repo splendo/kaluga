@@ -98,7 +98,7 @@ class DenominatorScientificValueFormatter private constructor(
 
         private fun ScientificValue<Quantity, *>.equalsToZeroForFormat(formatter: ScientificValueFormatter): Boolean {
             // Format 0.0
-            val zeroFormatted = formatter.format(FormatterScientificValue(0.0.toDecimal(), unit))
+            val zeroFormatted = formatter.format(FormatterScientificValue(Decimal.ZERO, unit))
             // Format the value in the given unit
             val formatted = formatter.format(this)
             // If they are the same, the value is 0

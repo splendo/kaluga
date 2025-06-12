@@ -216,22 +216,22 @@ data object Gigawatt : WattMultiple(), MetricMultipleUnit<MeasurementSystem.Metr
 
 @Serializable
 data object MetricHorsepower : MetricPower() {
-    private const val KILOGRAM_FORCE_METER_SECOND_TO_WATT = 75.0
+    private val KILOGRAM_FORCE_METER_SECOND_TO_WATT = 75.toDecimal()
     override val symbol: String = "PS"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Power
-    override fun fromSIUnit(value: Decimal): Decimal = KilogramForce.fromSIUnit(value) / KILOGRAM_FORCE_METER_SECOND_TO_WATT.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = KilogramForce.toSIUnit(value * KILOGRAM_FORCE_METER_SECOND_TO_WATT.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = KilogramForce.fromSIUnit(value) / KILOGRAM_FORCE_METER_SECOND_TO_WATT
+    override fun toSIUnit(value: Decimal): Decimal = KilogramForce.toSIUnit(value * KILOGRAM_FORCE_METER_SECOND_TO_WATT)
 }
 
 @Serializable
 data object Horsepower : ImperialPower() {
-    private const val FOOTPOUND_PER_MINUTE = 33000
+    private val FOOTPOUND_PER_MINUTE = 33000.toDecimal()
     override val symbol: String = "hp"
     override val system = MeasurementSystem.Imperial
     override val quantity = PhysicalQuantity.Power
-    override fun fromSIUnit(value: Decimal): Decimal = FootPoundForce.fromSIUnit(Minute.toSIUnit(value)) / FOOTPOUND_PER_MINUTE.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = Minute.fromSIUnit(FootPoundForce.toSIUnit(value * FOOTPOUND_PER_MINUTE.toDecimal()))
+    override fun fromSIUnit(value: Decimal): Decimal = FootPoundForce.fromSIUnit(Minute.toSIUnit(value)) / FOOTPOUND_PER_MINUTE
+    override fun toSIUnit(value: Decimal): Decimal = Minute.fromSIUnit(FootPoundForce.toSIUnit(value * FOOTPOUND_PER_MINUTE))
 }
 
 /**

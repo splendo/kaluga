@@ -234,12 +234,12 @@ data object Gigajoule : JouleMultiple(), MetricMultipleUnit<MeasurementSystem.Me
 
 @Serializable
 data object Erg : MetricNamedEnergyUnit(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Energy> {
-    const val ERG_IN_JOULE = 10000000
+    private val ERG_IN_JOULE = 10000000.toDecimal()
     override val symbol: String = "erg"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Energy
-    override fun fromSIUnit(value: Decimal): Decimal = value * ERG_IN_JOULE.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / ERG_IN_JOULE.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * ERG_IN_JOULE
+    override fun toSIUnit(value: Decimal): Decimal = value / ERG_IN_JOULE
 }
 
 @Serializable

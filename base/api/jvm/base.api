@@ -905,8 +905,17 @@ public final class com/splendo/kaluga/base/utils/ContainsAnyKt {
 }
 
 public abstract class com/splendo/kaluga/base/utils/Decimal : java/lang/Comparable {
+	public static final field Companion Lcom/splendo/kaluga/base/utils/Decimal$Companion;
 	public fun compareTo (Lcom/splendo/kaluga/base/utils/Decimal;)I
 	public synthetic fun compareTo (Ljava/lang/Object;)I
+}
+
+public final class com/splendo/kaluga/base/utils/Decimal$Companion {
+	public final fun getHUNDRED ()Lcom/splendo/kaluga/base/utils/Decimal;
+	public final fun getONE ()Lcom/splendo/kaluga/base/utils/Decimal;
+	public final fun getTEN ()Lcom/splendo/kaluga/base/utils/Decimal;
+	public final fun getTHOUSAND ()Lcom/splendo/kaluga/base/utils/Decimal;
+	public final fun getZERO ()Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
 public final class com/splendo/kaluga/base/utils/Decimal$Finite : com/splendo/kaluga/base/utils/Decimal {

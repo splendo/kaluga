@@ -507,7 +507,7 @@ fun <
     > Unit.byInverting(
     inverse: ScientificValue<InverseQuantity, InverseUnit>,
     factory: (Decimal, Unit) -> Value,
-) = fromSIUnit(1.0.toDecimal() / inverse.unit.toSIUnit(inverse.decimalValue))(this, factory)
+) = fromSIUnit(Decimal.ONE / inverse.unit.toSIUnit(inverse.decimalValue))(this, factory)
 
 /**
  * Returns the value of a [ScientificValue] with [PhysicalQuantity.Dimensionless] as a fraction. I.e.

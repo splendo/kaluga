@@ -138,11 +138,11 @@ sealed class UKImperialWeight :
 @Serializable
 data object Gram : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Weight> {
     override val symbol: String = "g"
-    private const val GRAMS_IN_KILOGRAM = 1000.0
+    private val GRAMS_IN_KILOGRAM = Decimal.THOUSAND
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Weight
-    override fun toSIUnit(value: Decimal): Decimal = value / GRAMS_IN_KILOGRAM.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * GRAMS_IN_KILOGRAM.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = value / GRAMS_IN_KILOGRAM
+    override fun fromSIUnit(value: Decimal): Decimal = value * GRAMS_IN_KILOGRAM
 }
 
 @Serializable
@@ -232,42 +232,42 @@ data object Gigadalton : DaltonMultiple(), MetricMultipleUnit<MeasurementSystem.
 // Imperial Weight
 @Serializable
 data object Grain : ImperialWeight() {
-    private const val GRAIN_IN_POUND = 7000
+    private val GRAIN_IN_POUND = 7000.toDecimal()
     override val symbol: String = "gr"
-    override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value / GRAIN_IN_POUND.toDecimal())
-    override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) * GRAIN_IN_POUND.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value / GRAIN_IN_POUND)
+    override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) * GRAIN_IN_POUND
 }
 
 @Serializable
 data object Dram : ImperialWeight() {
-    private const val DRAMS_IN_POUND = 256
+    private val DRAMS_IN_POUND = 256.toDecimal()
     override val symbol: String = "dr"
-    override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value / DRAMS_IN_POUND.toDecimal())
-    override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) * DRAMS_IN_POUND.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value / DRAMS_IN_POUND)
+    override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) * DRAMS_IN_POUND
 }
 
 @Serializable
 data object Ounce : ImperialWeight() {
-    private const val OUNCES_IN_POUND = 16
+    private val OUNCES_IN_POUND = 16.toDecimal()
     override val symbol: String = "oz"
-    override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value / OUNCES_IN_POUND.toDecimal())
-    override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) * OUNCES_IN_POUND.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value / OUNCES_IN_POUND)
+    override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) * OUNCES_IN_POUND
 }
 
 @Serializable
 data object Pound : ImperialWeight() {
-    private const val KILOGRAM_IN_POUND = 0.45359237
+    private val KILOGRAM_IN_POUND = 0.45359237.toDecimal()
     override val symbol: String = "lb"
-    override fun toSIUnit(value: Decimal): Decimal = value * KILOGRAM_IN_POUND.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value / KILOGRAM_IN_POUND.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = value * KILOGRAM_IN_POUND
+    override fun fromSIUnit(value: Decimal): Decimal = value / KILOGRAM_IN_POUND
 }
 
 @Serializable
 data object Stone : ImperialWeight() {
-    private const val STONES_IN_POUND = 14
+    private val STONES_IN_POUND = 14.toDecimal()
     override val symbol: String = "st"
-    override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value * STONES_IN_POUND.toDecimal())
-    override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / STONES_IN_POUND.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value * STONES_IN_POUND)
+    override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / STONES_IN_POUND
 }
 
 @Serializable
@@ -280,10 +280,10 @@ data object Slug : ImperialWeight() {
 // also long ton
 @Serializable
 data object ImperialTon : UKImperialWeight() {
-    private const val POUND_IN_LONG_TONES = 2240
+    private val POUND_IN_LONG_TONES = 2240.toDecimal()
     override val symbol: String = "ton"
-    override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value * POUND_IN_LONG_TONES.toDecimal())
-    override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / POUND_IN_LONG_TONES.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value * POUND_IN_LONG_TONES)
+    override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / POUND_IN_LONG_TONES
 }
 
 /**
@@ -306,10 +306,10 @@ val <WeightUnit : ImperialWeight> WeightUnit.ukImperial get() = UKImperialImperi
 // also short ton
 @Serializable
 data object UsTon : USCustomaryWeight() {
-    private const val POUND_IN_SHORT_TONES = 2000
+    private val POUND_IN_SHORT_TONES = 2000.toDecimal()
     override val symbol: String = "ton"
-    override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value * POUND_IN_SHORT_TONES.toDecimal())
-    override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / POUND_IN_SHORT_TONES.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value * POUND_IN_SHORT_TONES)
+    override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / POUND_IN_SHORT_TONES
 }
 
 /**

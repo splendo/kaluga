@@ -100,12 +100,12 @@ data object Gigatesla : TeslaMultiple(), MetricMultipleUnit<MeasurementSystem.Me
 
 @Serializable
 data object Gauss : MagneticInduction() {
-    private const val GAUSS_IN_TESLA = 10000.0
+    private val GAUSS_IN_TESLA = 10000.toDecimal()
     override val symbol = "G"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.MagneticInduction
-    override fun fromSIUnit(value: Decimal): Decimal = value * GAUSS_IN_TESLA.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / GAUSS_IN_TESLA.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * GAUSS_IN_TESLA
+    override fun toSIUnit(value: Decimal): Decimal = value / GAUSS_IN_TESLA
 }
 
 internal fun SerializersModuleBuilder.setupForMagneticInduction() {

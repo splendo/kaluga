@@ -20,7 +20,6 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
-import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
@@ -101,22 +100,20 @@ val One.constant get() = UNIT_VALUE.invoke(One)
 
 @Serializable
 data object Percent : Dimensionless() {
-    const val PARTS_PER_HUNDRED = 100.0
     override val symbol: String = "%"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Dimensionless
-    override fun fromSIUnit(value: Decimal): Decimal = value * PARTS_PER_HUNDRED.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / PARTS_PER_HUNDRED.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * Decimal.HUNDRED
+    override fun toSIUnit(value: Decimal): Decimal = value / Decimal.HUNDRED
 }
 
 @Serializable
 data object Permill : Dimensionless() {
-    const val PARTS_PER_THOUSAND = 1000.0
     override val symbol: String = "‰"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Dimensionless
-    override fun fromSIUnit(value: Decimal): Decimal = value * PARTS_PER_THOUSAND.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / PARTS_PER_THOUSAND.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * Decimal.THOUSAND
+    override fun toSIUnit(value: Decimal): Decimal = value / Decimal.THOUSAND
 }
 
 internal fun SerializersModuleBuilder.setupForDimensionlessUnit() {

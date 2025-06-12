@@ -140,12 +140,12 @@ data object Stilb : MetricLuminance() {
 
 @Serializable
 data object Apostilb : MetricLuminance() {
-    private const val APOSTILB_IN_NIT = PI
+    private val APOSTILB_IN_NIT = PI.toDecimal()
     override val symbol: String = "asb"
     override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
-    override fun fromSIUnit(value: Decimal): Decimal = value * APOSTILB_IN_NIT.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / APOSTILB_IN_NIT.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * APOSTILB_IN_NIT
+    override fun toSIUnit(value: Decimal): Decimal = value / APOSTILB_IN_NIT
 }
 
 @Serializable
@@ -159,22 +159,22 @@ data object Lambert : MetricLuminance() {
 
 @Serializable
 data object Skot : MetricLuminance() {
-    private const val SKOT_IN_APOSTILB = 1000.0
+    private val SKOT_IN_APOSTILB = Decimal.THOUSAND
     override val symbol: String = "sk"
     override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
-    override fun fromSIUnit(value: Decimal): Decimal = Apostilb.fromSIUnit(value) * SKOT_IN_APOSTILB.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = Apostilb.toSIUnit(value / SKOT_IN_APOSTILB.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = Apostilb.fromSIUnit(value) * SKOT_IN_APOSTILB
+    override fun toSIUnit(value: Decimal): Decimal = Apostilb.toSIUnit(value / SKOT_IN_APOSTILB)
 }
 
 @Serializable
 data object Bril : MetricLuminance() {
-    private const val BRIL_IN_APOSTILB = 10000000.0
+    private val BRIL_IN_APOSTILB = 10000000.toDecimal()
     override val symbol: String = "Bril"
     override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
-    override fun fromSIUnit(value: Decimal): Decimal = Apostilb.fromSIUnit(value) * BRIL_IN_APOSTILB.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = Apostilb.toSIUnit(value / BRIL_IN_APOSTILB.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = Apostilb.fromSIUnit(value) * BRIL_IN_APOSTILB
+    override fun toSIUnit(value: Decimal): Decimal = Apostilb.toSIUnit(value / BRIL_IN_APOSTILB)
 }
 
 @Serializable

@@ -81,22 +81,22 @@ data object Nanosecond : SecondMultiple(), MetricMultipleUnit<MeasurementSystem.
 
 @Serializable
 data object Minute : Time() {
-    private const val SECOND_PER_MINUTE = 60.0
+    private val SECOND_PER_MINUTE = 60.toDecimal()
     override val symbol: String = "min"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Time
-    override fun fromSIUnit(value: Decimal): Decimal = value / SECOND_PER_MINUTE.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value * SECOND_PER_MINUTE.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value / SECOND_PER_MINUTE
+    override fun toSIUnit(value: Decimal): Decimal = value * SECOND_PER_MINUTE
 }
 
 @Serializable
 data object Hour : Time() {
-    private const val SECOND_PER_HOUR = 3600.0
+    private val SECOND_PER_HOUR = 3600.toDecimal()
     override val symbol: String = "h"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Time
-    override fun fromSIUnit(value: Decimal): Decimal = value / SECOND_PER_HOUR.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value * SECOND_PER_HOUR.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value / SECOND_PER_HOUR
+    override fun toSIUnit(value: Decimal): Decimal = value * SECOND_PER_HOUR
 }
 
 internal fun SerializersModuleBuilder.setupForTime() {
