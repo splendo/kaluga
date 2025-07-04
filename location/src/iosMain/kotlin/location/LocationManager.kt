@@ -78,6 +78,7 @@ actual class DefaultLocationManager(settings: Settings, coroutineScope: Coroutin
 
     actual override val locationMonitor: LocationMonitor = LocationMonitor.Builder(CLLocationManager()).create()
     private val locationManager = MainCLLocationManagerAccessor {
+        allowsBackgroundLocationUpdates = locationPermission.background
         desiredAccuracy = if (locationPermission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
         distanceFilter = settings.minUpdateDistanceMeters.toDouble()
     }

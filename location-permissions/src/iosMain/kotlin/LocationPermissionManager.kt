@@ -71,6 +71,7 @@ actual class DefaultLocationPermissionManager(private val bundle: NSBundle, loca
 
     private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
     private val locationManager = MainCLLocationManagerAccessor {
+        allowsBackgroundLocationUpdates = permission.background
         desiredAccuracy = if (permission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
     }
 
