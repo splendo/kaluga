@@ -17,31 +17,48 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.luminance.times
 import com.splendo.kaluga.scientific.converter.luminousExposure.div
 import com.splendo.kaluga.scientific.converter.luminousFlux.div
 import com.splendo.kaluga.scientific.converter.solidAngle.times
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.FootCandle
+import com.splendo.kaluga.scientific.unit.FootLambert
+import com.splendo.kaluga.scientific.unit.Lambert
+import com.splendo.kaluga.scientific.unit.Lumen
+import com.splendo.kaluga.scientific.unit.Luminance
+import com.splendo.kaluga.scientific.unit.LuminousExposure
+import com.splendo.kaluga.scientific.unit.Lux
+import com.splendo.kaluga.scientific.unit.Nit
+import com.splendo.kaluga.scientific.unit.Phot
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.SquareCentimeter
+import com.splendo.kaluga.scientific.unit.SquareFoot
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.Steradian
+import com.splendo.kaluga.scientific.unit.Stilb
+import com.splendo.kaluga.scientific.unit.x
 import kotlin.math.PI
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class IlluminanceUnitTest {
 
     @Test
     fun illuminanceFromLuminanceAndSolidAngleTest() {
-        assertEquals(4(Lux), 2(Nit) * 2(Steradian))
-        assertEquals(4(Lux), 2(Steradian) * 2(Nit))
-        assertEquals(4(Phot), 2(Stilb) * 2(Steradian))
-        assertEquals(4(Phot), 2(Steradian) * 2(Stilb))
-        assertEquals((4 / PI)(Phot), 2(Lambert) * 2(Steradian))
-        assertEquals((4 / PI)(Phot), 2(Steradian) * 2(Lambert))
-        assertEquals((4 / PI)(FootCandle), 2(FootLambert) * 2(Steradian))
-        assertEquals((4 / PI)(FootCandle), 2(Steradian) * 2(FootLambert))
-        assertEquals(4(Lux), 2(Nit).convert(FootLambert as Luminance) * 2(Steradian))
-        assertEquals(4(Lux), 2(Steradian) * 2(Nit).convert(FootLambert as Luminance))
+        assertEqualScientificValue(4(Lux), 2(Nit) * 2(Steradian))
+        assertEqualScientificValue(4(Lux), 2(Steradian) * 2(Nit))
+        assertEqualScientificValue(4(Phot), 2(Stilb) * 2(Steradian))
+        assertEqualScientificValue(4(Phot), 2(Steradian) * 2(Stilb))
+        assertEqualScientificValue((4.toDecimal() / PI.toDecimal())(Phot), 2(Lambert) * 2(Steradian))
+        assertEqualScientificValue((4.toDecimal() / PI.toDecimal())(Phot), 2(Steradian) * 2(Lambert))
+        assertEqualScientificValue((4.toDecimal() / PI.toDecimal())(FootCandle), 2(FootLambert) * 2(Steradian))
+        assertEqualScientificValue((4.toDecimal() / PI.toDecimal())(FootCandle), 2(Steradian) * 2(FootLambert))
+        assertEqualScientificValue(4(Lux), 2(Nit).convert(FootLambert as Luminance) * 2(Steradian))
+        assertEqualScientificValue(4(Lux), 2(Steradian) * 2(Nit).convert(FootLambert as Luminance))
     }
 
     @Test
@@ -53,9 +70,9 @@ class IlluminanceUnitTest {
 
     @Test
     fun illuminanceFromLuminousFluxAndAreaTest() {
-        assertEquals(1(Phot), 2(Lumen) / 2(SquareCentimeter))
-        assertEquals(1(Lux), 2(Lumen) / 2(SquareMeter))
-        assertEquals(1(FootCandle), 2(Lumen) / 2(SquareFoot))
-        assertEquals(1(Lux), 2(Lumen) / 2(SquareMeter).convert(SquareFoot as Area))
+        assertEqualScientificValue(1(Phot), 2(Lumen) / 2(SquareCentimeter))
+        assertEqualScientificValue(1(Lux), 2(Lumen) / 2(SquareMeter))
+        assertEqualScientificValue(1(FootCandle), 2(Lumen) / 2(SquareFoot))
+        assertEqualScientificValue(1(Lux), 2(Lumen) / 2(SquareMeter).convert(SquareFoot as Area))
     }
 }

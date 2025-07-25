@@ -21,23 +21,28 @@ import com.splendo.kaluga.scientific.converter.area.times
 import com.splendo.kaluga.scientific.converter.luminance.times
 import com.splendo.kaluga.scientific.converter.luminousFlux.div
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Candela
+import com.splendo.kaluga.scientific.unit.FootLambert
+import com.splendo.kaluga.scientific.unit.Lumen
+import com.splendo.kaluga.scientific.unit.Nit
+import com.splendo.kaluga.scientific.unit.SquareFoot
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.Steradian
 import kotlin.math.PI
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class LuminusIntensityUnitTest {
 
     @Test
     fun luminousIntensityFromLuminanceAndArea() {
-        assertEquals(4(Candela), 2(Nit) * 2(SquareMeter))
-        assertEquals(4(Candela), 2(SquareMeter) * 2(Nit))
-        assertEquals((4 / PI)(Candela), 2(FootLambert) * 2(SquareFoot))
-        assertEquals((4 / PI)(Candela), 2(SquareFoot) * 2(FootLambert))
+        assertEqualScientificValue(4(Candela), 2(Nit) * 2(SquareMeter))
+        assertEqualScientificValue(4(Candela), 2(SquareMeter) * 2(Nit))
+        assertEqualScientificValue((4 / PI)(Candela), 2(FootLambert) * 2(SquareFoot))
+        assertEqualScientificValue((4 / PI)(Candela), 2(SquareFoot) * 2(FootLambert))
     }
 
     @Test
     fun luminousIntensityFromLuminousFluxAndSolidAngleTest() {
-        assertEquals(1(Candela), 2(Lumen) / 2(Steradian))
+        assertEqualScientificValue(1(Candela), 2(Lumen) / 2(Steradian))
     }
 }

@@ -20,18 +20,24 @@ package com.splendo.kaluga.scientific.converter
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.volumetricFlow.div
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.CubicFoot
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.ImperialGallon
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.SquareFoot
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.UsLiquidGallon
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class VolumetricFluxUnitTest {
 
     @Test
     fun volumetricFluxFromVolumetricFlowAndAreaTest() {
-        assertEquals(1(CubicMeter per Second per SquareMeter), 2(CubicMeter per Second) / 2(SquareMeter))
-        assertEquals(1(CubicFoot per Second per SquareFoot), 2(CubicFoot per Second) / 2(SquareFoot))
-        assertEquals(1(ImperialGallon per Second per SquareFoot), 2(ImperialGallon per Second) / 2(SquareFoot))
-        assertEquals(1(UsLiquidGallon per Second per SquareFoot), 2(UsLiquidGallon per Second) / 2(SquareFoot))
-        assertEquals(1(CubicMeter per Second per SquareMeter), 2(CubicMeter per Second) / 2(SquareMeter).convert(SquareFoot))
+        assertEqualScientificValue(1(CubicMeter per Second per SquareMeter), 2(CubicMeter per Second) / 2(SquareMeter))
+        assertEqualScientificValue(1(CubicFoot per Second per SquareFoot), 2(CubicFoot per Second) / 2(SquareFoot))
+        assertEqualScientificValue(1(ImperialGallon per Second per SquareFoot), 2(ImperialGallon per Second) / 2(SquareFoot))
+        assertEqualScientificValue(1(UsLiquidGallon per Second per SquareFoot), 2(UsLiquidGallon per Second) / 2(SquareFoot))
+        assertEqualScientificValue(1(CubicMeter per Second per SquareMeter), 2(CubicMeter per Second) / 2(SquareMeter).convert(SquareFoot))
     }
 }

@@ -24,21 +24,57 @@ import com.splendo.kaluga.scientific.converter.force.times
 import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.converter.weight.times
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Centimeter
+import com.splendo.kaluga.scientific.unit.Decidyne
+import com.splendo.kaluga.scientific.unit.DynamicViscosity
+import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.Foot
+import com.splendo.kaluga.scientific.unit.Force
+import com.splendo.kaluga.scientific.unit.Grain
+import com.splendo.kaluga.scientific.unit.GrainForce
+import com.splendo.kaluga.scientific.unit.Gram
+import com.splendo.kaluga.scientific.unit.GramForce
+import com.splendo.kaluga.scientific.unit.ImperialStandardGravityAcceleration
+import com.splendo.kaluga.scientific.unit.ImperialTon
+import com.splendo.kaluga.scientific.unit.ImperialTonForce
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Kip
+import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.MetricStandardGravityAcceleration
+import com.splendo.kaluga.scientific.unit.Milligram
+import com.splendo.kaluga.scientific.unit.MilligramForce
+import com.splendo.kaluga.scientific.unit.Newton
+import com.splendo.kaluga.scientific.unit.Ounce
+import com.splendo.kaluga.scientific.unit.OunceForce
+import com.splendo.kaluga.scientific.unit.Pascal
+import com.splendo.kaluga.scientific.unit.Pound
+import com.splendo.kaluga.scientific.unit.PoundForce
+import com.splendo.kaluga.scientific.unit.PoundSquareFoot
+import com.splendo.kaluga.scientific.unit.Poundal
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.SquareFoot
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.Tonne
+import com.splendo.kaluga.scientific.unit.TonneForce
+import com.splendo.kaluga.scientific.unit.UsTon
+import com.splendo.kaluga.scientific.unit.UsTonForce
+import com.splendo.kaluga.scientific.unit.per
+import com.splendo.kaluga.scientific.unit.ukImperial
+import com.splendo.kaluga.scientific.unit.usCustomary
+import com.splendo.kaluga.scientific.unit.x
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class MomentumUnitTest {
 
     @Test
     fun momentumFromDynamicViscosityAndAreaTest() {
-        assertEquals(4(Kilogram x (Meter per Second)), 2(Pascal x Second) * 2(SquareMeter))
-        assertEquals(4(Kilogram x (Meter per Second)), 2(SquareMeter) * 2(Pascal x Second))
-        assertEquals(
+        assertEqualScientificValue(4(Kilogram x (Meter per Second)), 2(Pascal x Second) * 2(SquareMeter))
+        assertEqualScientificValue(4(Kilogram x (Meter per Second)), 2(SquareMeter) * 2(Pascal x Second))
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)),
             2(PoundSquareFoot x Second) * 2(SquareFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)),
             2(SquareFoot) * 2(PoundSquareFoot x Second),
         )
@@ -78,76 +114,76 @@ class MomentumUnitTest {
 
     @Test
     fun momentumFromForceAndTimeTest() {
-        assertEquals(4(Gram x (Centimeter per Second)), 2(Dyne) * 2(Second))
-        assertEquals(4(Gram x (Centimeter per Second)), 2(Second) * 2(Dyne))
-        assertEquals(4(Gram x (Centimeter per Second)), 20(Decidyne) * 2(Second))
-        assertEquals(4(Gram x (Centimeter per Second)), 2(Second) * 20(Decidyne))
-        assertEquals(4(Kilogram x (Meter per Second)), 2(Newton) * 2(Second))
-        assertEquals(4(Kilogram x (Meter per Second)), 2(Second) * 2(Newton))
-        assertEquals(
+        assertEqualScientificValue(4(Gram x (Centimeter per Second)), 2(Dyne) * 2(Second))
+        assertEqualScientificValue(4(Gram x (Centimeter per Second)), 2(Second) * 2(Dyne))
+        assertEqualScientificValue(4(Gram x (Centimeter per Second)), 20(Decidyne) * 2(Second))
+        assertEqualScientificValue(4(Gram x (Centimeter per Second)), 2(Second) * 20(Decidyne))
+        assertEqualScientificValue(4(Kilogram x (Meter per Second)), 2(Newton) * 2(Second))
+        assertEqualScientificValue(4(Kilogram x (Meter per Second)), 2(Second) * 2(Newton))
+        assertEqualScientificValue(
             (4 * MetricStandardGravityAcceleration.value)(Tonne x (Meter per Second)),
             2(TonneForce) * 2(Second),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * MetricStandardGravityAcceleration.value)(Tonne x (Meter per Second)),
             2(Second) * 2(TonneForce),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * MetricStandardGravityAcceleration.value)(Gram x (Meter per Second)),
             2(GramForce) * 2(Second),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * MetricStandardGravityAcceleration.value)(Gram x (Meter per Second)),
             2(Second) * 2(GramForce),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * MetricStandardGravityAcceleration.value)(Milligram x (Meter per Second)),
             2(MilligramForce) * 2(Second),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * MetricStandardGravityAcceleration.value)(Milligram x (Meter per Second)),
             2(Second) * 2(MilligramForce),
         )
 
-        assertEquals(
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)),
             2(PoundForce) * 2(Second),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(Pound x (Foot per Second)),
             2(Second) * 2(PoundForce),
         )
-        assertEquals(4(Pound x (Foot per Second)), 2(Poundal) * 2(Second))
-        assertEquals(4(Pound x (Foot per Second)), 2(Second) * 2(Poundal))
-        assertEquals(
+        assertEqualScientificValue(4(Pound x (Foot per Second)), 2(Poundal) * 2(Second))
+        assertEqualScientificValue(4(Pound x (Foot per Second)), 2(Second) * 2(Poundal))
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(Ounce x (Foot per Second)),
             2(OunceForce) * 2(Second),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(Ounce x (Foot per Second)),
             2(Second) * 2(OunceForce),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(Grain x (Foot per Second)),
             2(GrainForce) * 2(Second),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(Grain x (Foot per Second)),
             2(Second) * 2(GrainForce),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial x (Foot per Second)),
             2(PoundForce.ukImperial) * 2(Second),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(Pound.ukImperial x (Foot per Second)),
             2(Second) * 2(PoundForce.ukImperial),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary x (Foot per Second)),
             2(PoundForce.usCustomary) * 2(Second),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(Pound.usCustomary x (Foot per Second)),
             2(Second) * 2(PoundForce.usCustomary),
         )
@@ -161,27 +197,27 @@ class MomentumUnitTest {
             2(Second) * 2(Kip),
             8,
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(UsTon x (Foot per Second)),
             2(UsTonForce) * 2(Second),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(UsTon x (Foot per Second)),
             2(Second) * 2(UsTonForce),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(ImperialTon x (Foot per Second)),
             2(ImperialTonForce) * 2(Second),
         )
-        assertEquals(
+        assertEqualScientificValue(
             (4 * ImperialStandardGravityAcceleration.value)(ImperialTon x (Foot per Second)),
             2(Second) * 2(ImperialTonForce),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(Kilogram x (Meter per Second)),
             2(Newton).convert(PoundForce as Force) * 2(Second),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(Kilogram x (Meter per Second)),
             2(Second) * 2(Newton).convert(PoundForce as Force),
         )
@@ -189,11 +225,11 @@ class MomentumUnitTest {
 
     @Test
     fun momentumFromMassAndSpeedTest() {
-        assertEquals(4(Kilogram x (Meter per Second)), 2(Kilogram) * 2(Meter per Second))
-        assertEquals(4(Pound x (Foot per Second)), 2(Pound) * 2(Foot per Second))
-        assertEquals(4(ImperialTon x (Foot per Second)), 2(ImperialTon) * 2(Foot per Second))
-        assertEquals(4(UsTon x (Foot per Second)), 2(UsTon) * 2(Foot per Second))
-        assertEquals(
+        assertEqualScientificValue(4(Kilogram x (Meter per Second)), 2(Kilogram) * 2(Meter per Second))
+        assertEqualScientificValue(4(Pound x (Foot per Second)), 2(Pound) * 2(Foot per Second))
+        assertEqualScientificValue(4(ImperialTon x (Foot per Second)), 2(ImperialTon) * 2(Foot per Second))
+        assertEqualScientificValue(4(UsTon x (Foot per Second)), 2(UsTon) * 2(Foot per Second))
+        assertEqualScientificValue(
             4(Kilogram x (Meter per Second)),
             2(Kilogram) * 2(Meter per Second).convert(Foot per Second),
         )

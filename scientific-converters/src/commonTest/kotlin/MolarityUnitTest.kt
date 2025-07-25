@@ -25,48 +25,58 @@ import com.splendo.kaluga.scientific.converter.molality.div
 import com.splendo.kaluga.scientific.converter.molality.times
 import com.splendo.kaluga.scientific.converter.molarVolume.molarity
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.CubicFoot
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.Decimole
+import com.splendo.kaluga.scientific.unit.Density
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.MolarVolume
+import com.splendo.kaluga.scientific.unit.Pound
+import com.splendo.kaluga.scientific.unit.SpecificVolume
+import com.splendo.kaluga.scientific.unit.Volume
+import com.splendo.kaluga.scientific.unit.per
+import com.splendo.kaluga.scientific.unit.ukImperial
+import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class MolarityUnitTest {
 
     @Test
     fun molarityFromAmountOfSubstanceAndVolumeTest() {
-        assertEquals(1(Decimole per CubicMeter), 2(Decimole) / 2(CubicMeter))
-        assertEquals(1(Decimole per CubicFoot), 2(Decimole) / 2(CubicFoot))
-        assertEquals(1(Decimole per CubicFoot.ukImperial), 2(Decimole) / 2(CubicFoot.ukImperial))
-        assertEquals(1(Decimole per CubicFoot.usCustomary), 2(Decimole) / 2(CubicFoot.usCustomary))
-        assertEquals(1(Decimole per CubicMeter), 2(Decimole) / 2(CubicMeter).convert(CubicFoot as Volume))
+        assertEqualScientificValue(1(Decimole per CubicMeter), 2(Decimole) / 2(CubicMeter))
+        assertEqualScientificValue(1(Decimole per CubicFoot), 2(Decimole) / 2(CubicFoot))
+        assertEqualScientificValue(1(Decimole per CubicFoot.ukImperial), 2(Decimole) / 2(CubicFoot.ukImperial))
+        assertEqualScientificValue(1(Decimole per CubicFoot.usCustomary), 2(Decimole) / 2(CubicFoot.usCustomary))
+        assertEqualScientificValue(1(Decimole per CubicMeter), 2(Decimole) / 2(CubicMeter).convert(CubicFoot as Volume))
     }
 
     @Test
     fun molarityFromDensityAndMolalityTest() {
-        assertEquals(4(Decimole per CubicMeter), 2(Decimole per Kilogram) * 2(Kilogram per CubicMeter))
-        assertEquals(4(Decimole per CubicMeter), 2(Kilogram per CubicMeter) * 2(Decimole per Kilogram))
-        assertEquals(4(Decimole per CubicFoot), 2(Decimole per Pound) * 2(Pound per CubicFoot))
-        assertEquals(4(Decimole per CubicFoot), 2(Pound per CubicFoot) * 2(Decimole per Pound))
-        assertEquals(
+        assertEqualScientificValue(4(Decimole per CubicMeter), 2(Decimole per Kilogram) * 2(Kilogram per CubicMeter))
+        assertEqualScientificValue(4(Decimole per CubicMeter), 2(Kilogram per CubicMeter) * 2(Decimole per Kilogram))
+        assertEqualScientificValue(4(Decimole per CubicFoot), 2(Decimole per Pound) * 2(Pound per CubicFoot))
+        assertEqualScientificValue(4(Decimole per CubicFoot), 2(Pound per CubicFoot) * 2(Decimole per Pound))
+        assertEqualScientificValue(
             4(Decimole per CubicFoot.ukImperial),
             2(Decimole per Pound) * 2(Pound.ukImperial per CubicFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(Decimole per CubicFoot.ukImperial),
             2(Pound.ukImperial per CubicFoot) * 2(Decimole per Pound),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(Decimole per CubicFoot.usCustomary),
             2(Decimole per Pound) * 2(Pound.usCustomary per CubicFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(Decimole per CubicFoot.usCustomary),
             2(Pound.usCustomary per CubicFoot) * 2(Decimole per Pound),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(Decimole per CubicMeter),
             2(Decimole per Kilogram) * 2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(Decimole per CubicMeter),
             2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density) * 2(Decimole per Kilogram),
         )
@@ -74,17 +84,17 @@ class MolarityUnitTest {
 
     @Test
     fun molarityFromDensityAndMolarMassTest() {
-        assertEquals(1(Decimole per CubicMeter), 2(Kilogram per CubicMeter) / 2(Kilogram per Decimole))
-        assertEquals(1(Decimole per CubicFoot), 2(Pound per CubicFoot) / 2(Pound per Decimole))
-        assertEquals(
+        assertEqualScientificValue(1(Decimole per CubicMeter), 2(Kilogram per CubicMeter) / 2(Kilogram per Decimole))
+        assertEqualScientificValue(1(Decimole per CubicFoot), 2(Pound per CubicFoot) / 2(Pound per Decimole))
+        assertEqualScientificValue(
             1(Decimole per CubicFoot.ukImperial),
             2(Pound.ukImperial per CubicFoot) / 2(Pound per Decimole),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1(Decimole per CubicFoot.usCustomary),
             2(Pound.usCustomary per CubicFoot) / 2(Pound per Decimole),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1(Decimole per CubicMeter),
             2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density) / 2(Kilogram per Decimole),
         )
@@ -92,17 +102,17 @@ class MolarityUnitTest {
 
     @Test
     fun molarityFromMolalityAndSpecificVolumeTest() {
-        assertEquals(1(Decimole per CubicMeter), 2(Decimole per Kilogram) / 2(CubicMeter per Kilogram))
-        assertEquals(1(Decimole per CubicFoot), 2(Decimole per Pound) / 2(CubicFoot per Pound))
-        assertEquals(
+        assertEqualScientificValue(1(Decimole per CubicMeter), 2(Decimole per Kilogram) / 2(CubicMeter per Kilogram))
+        assertEqualScientificValue(1(Decimole per CubicFoot), 2(Decimole per Pound) / 2(CubicFoot per Pound))
+        assertEqualScientificValue(
             1(Decimole per CubicFoot.ukImperial),
             2(Decimole per Pound) / 2(CubicFoot per Pound.ukImperial),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1(Decimole per CubicFoot.usCustomary),
             2(Decimole per Pound) / 2(CubicFoot per Pound.usCustomary),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1(Decimole per CubicMeter),
             2(Decimole per Kilogram) / 2(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume),
         )
@@ -110,17 +120,17 @@ class MolarityUnitTest {
 
     @Test
     fun molarityFromInvertedMolarVolumeTest() {
-        assertEquals(0.5(Decimole per CubicMeter), 2(CubicMeter per Decimole).molarity())
-        assertEquals(0.5(Decimole per CubicFoot), 2(CubicFoot per Decimole).molarity())
-        assertEquals(
+        assertEqualScientificValue(0.5(Decimole per CubicMeter), 2(CubicMeter per Decimole).molarity())
+        assertEqualScientificValue(0.5(Decimole per CubicFoot), 2(CubicFoot per Decimole).molarity())
+        assertEqualScientificValue(
             0.5(Decimole per CubicFoot.ukImperial),
             2(CubicFoot.ukImperial per Decimole).molarity(),
         )
-        assertEquals(
+        assertEqualScientificValue(
             0.5(Decimole per CubicFoot.usCustomary),
             2(CubicFoot.usCustomary per Decimole).molarity(),
         )
-        assertEquals(
+        assertEqualScientificValue(
             0.5(Decimole per CubicMeter),
             2(CubicMeter per Decimole).convert((CubicFoot per Decimole) as MolarVolume).molarity(),
         )

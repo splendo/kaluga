@@ -23,57 +23,70 @@ import com.splendo.kaluga.scientific.converter.power.div
 import com.splendo.kaluga.scientific.converter.volumetricFlow.times
 import com.splendo.kaluga.scientific.converter.weight.div
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.CubicFoot
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.FootPoundForce
+import com.splendo.kaluga.scientific.unit.Horsepower
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.Kilocalorie
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Minute
+import com.splendo.kaluga.scientific.unit.Pound
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.Watt
+import com.splendo.kaluga.scientific.unit.Weight
+import com.splendo.kaluga.scientific.unit.per
+import com.splendo.kaluga.scientific.unit.ukImperial
+import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class MassFlowRateUnitTest {
 
     @Test
     fun massFlowRateFromDensityAndVolumetricFlow() {
-        assertEquals(4(Kilogram per Minute), 2(Kilogram per CubicMeter) * 2(CubicMeter per Minute))
-        assertEquals(4(Kilogram per Minute), 2(CubicMeter per Minute) * 2(Kilogram per CubicMeter))
-        assertEquals(4(Pound per Minute), 2(Pound per CubicFoot) * 2(CubicFoot per Minute))
-        assertEquals(4(Pound per Minute), 2(CubicFoot per Minute) * 2(Pound per CubicFoot))
-        assertEquals(4(Pound.ukImperial per Minute), 2(Pound.ukImperial per CubicFoot) * 2(CubicFoot per Minute))
-        assertEquals(4(Pound.ukImperial per Minute), 2(CubicFoot per Minute) * 2(Pound.ukImperial per CubicFoot))
-        assertEquals(4(Pound.usCustomary per Minute), 2(Pound.usCustomary per CubicFoot) * 2(CubicFoot per Minute))
-        assertEquals(4(Pound.usCustomary per Minute), 2(CubicFoot per Minute) * 2(Pound.usCustomary per CubicFoot))
-        assertEquals(4(Pound per Minute), 2(Pound per CubicFoot) * 2(CubicFoot.ukImperial per Minute))
-        assertEquals(4(Pound per Minute), 2(CubicFoot.ukImperial per Minute) * 2(Pound per CubicFoot))
-        assertEquals(4(Pound.ukImperial per Minute), 2(Pound.ukImperial per CubicFoot) * 2(CubicFoot.ukImperial per Minute))
-        assertEquals(4(Pound.ukImperial per Minute), 2(CubicFoot.ukImperial per Minute) * 2(Pound.ukImperial per CubicFoot))
-        assertEquals(4(Pound per Minute), 2(Pound per CubicFoot) * 2(CubicFoot.usCustomary per Minute))
-        assertEquals(4(Pound per Minute), 2(CubicFoot.usCustomary per Minute) * 2(Pound per CubicFoot))
-        assertEquals(4(Pound.usCustomary per Minute), 2(Pound.usCustomary per CubicFoot) * 2(CubicFoot.usCustomary per Minute))
-        assertEquals(4(Pound.usCustomary per Minute), 2(CubicFoot.usCustomary per Minute) * 2(Pound.usCustomary per CubicFoot))
-        assertEquals(4(Kilogram per Second), 2(Kilogram per CubicMeter) * 2(CubicMeter per Second).convert(CubicFoot per Minute))
-        assertEquals(4(Kilogram per Second), 2(CubicMeter per Second).convert(CubicFoot per Second) * 2(Kilogram per CubicMeter))
+        assertEqualScientificValue(4(Kilogram per Minute), 2(Kilogram per CubicMeter) * 2(CubicMeter per Minute))
+        assertEqualScientificValue(4(Kilogram per Minute), 2(CubicMeter per Minute) * 2(Kilogram per CubicMeter))
+        assertEqualScientificValue(4(Pound per Minute), 2(Pound per CubicFoot) * 2(CubicFoot per Minute))
+        assertEqualScientificValue(4(Pound per Minute), 2(CubicFoot per Minute) * 2(Pound per CubicFoot))
+        assertEqualScientificValue(4(Pound.ukImperial per Minute), 2(Pound.ukImperial per CubicFoot) * 2(CubicFoot per Minute))
+        assertEqualScientificValue(4(Pound.ukImperial per Minute), 2(CubicFoot per Minute) * 2(Pound.ukImperial per CubicFoot))
+        assertEqualScientificValue(4(Pound.usCustomary per Minute), 2(Pound.usCustomary per CubicFoot) * 2(CubicFoot per Minute))
+        assertEqualScientificValue(4(Pound.usCustomary per Minute), 2(CubicFoot per Minute) * 2(Pound.usCustomary per CubicFoot))
+        assertEqualScientificValue(4(Pound per Minute), 2(Pound per CubicFoot) * 2(CubicFoot.ukImperial per Minute))
+        assertEqualScientificValue(4(Pound per Minute), 2(CubicFoot.ukImperial per Minute) * 2(Pound per CubicFoot))
+        assertEqualScientificValue(4(Pound.ukImperial per Minute), 2(Pound.ukImperial per CubicFoot) * 2(CubicFoot.ukImperial per Minute))
+        assertEqualScientificValue(4(Pound.ukImperial per Minute), 2(CubicFoot.ukImperial per Minute) * 2(Pound.ukImperial per CubicFoot))
+        assertEqualScientificValue(4(Pound per Minute), 2(Pound per CubicFoot) * 2(CubicFoot.usCustomary per Minute))
+        assertEqualScientificValue(4(Pound per Minute), 2(CubicFoot.usCustomary per Minute) * 2(Pound per CubicFoot))
+        assertEqualScientificValue(4(Pound.usCustomary per Minute), 2(Pound.usCustomary per CubicFoot) * 2(CubicFoot.usCustomary per Minute))
+        assertEqualScientificValue(4(Pound.usCustomary per Minute), 2(CubicFoot.usCustomary per Minute) * 2(Pound.usCustomary per CubicFoot))
+        assertEqualScientificValue(4(Kilogram per Second), 2(Kilogram per CubicMeter) * 2(CubicMeter per Second).convert(CubicFoot per Minute))
+        assertEqualScientificValue(4(Kilogram per Second), 2(CubicMeter per Second).convert(CubicFoot per Second) * 2(Kilogram per CubicMeter))
     }
 
     @Test
     fun massFlowRateFromPowerAndSpecificEnergy() {
-        assertEquals(1(Kilogram per Minute), 2(Kilocalorie per Minute) / 2(Kilocalorie per Kilogram))
-        assertEquals(1(Pound per Minute), 2(Kilocalorie per Minute) / 2(Kilocalorie per Pound))
-        assertEquals(1(Pound.ukImperial per Minute), 2(Kilocalorie per Minute) / 2(Kilocalorie per Pound.ukImperial))
-        assertEquals(1(Pound.usCustomary per Minute), 2(Kilocalorie per Minute) / 2(Kilocalorie per Pound.usCustomary))
-        assertEquals(1(Kilogram per Minute), 2(Joule per Minute) / 2(Joule per Kilogram))
-        assertEquals(1(Pound per Minute), 2(FootPoundForce per Minute) / 2(FootPoundForce per Pound))
-        assertEquals(1(Pound.ukImperial per Minute), 2(FootPoundForce per Minute) / 2(FootPoundForce per Pound.ukImperial))
-        assertEquals(1(Pound.usCustomary per Minute), 2(FootPoundForce per Minute) / 2(FootPoundForce per Pound.usCustomary))
-        assertEquals(1(Kilogram per Second), 2(Watt) / 2(Joule per Kilogram))
-        assertEquals(550(Pound per Second), 2(Horsepower) / 2(FootPoundForce per Pound))
-        assertEquals(550(Pound.ukImperial per Second), 2(Horsepower) / 2(FootPoundForce per Pound.ukImperial))
-        assertEquals(550(Pound.usCustomary per Second), 2(Horsepower) / 2(FootPoundForce per Pound.usCustomary))
+        assertEqualScientificValue(1(Kilogram per Minute), 2(Kilocalorie per Minute) / 2(Kilocalorie per Kilogram))
+        assertEqualScientificValue(1(Pound per Minute), 2(Kilocalorie per Minute) / 2(Kilocalorie per Pound))
+        assertEqualScientificValue(1(Pound.ukImperial per Minute), 2(Kilocalorie per Minute) / 2(Kilocalorie per Pound.ukImperial))
+        assertEqualScientificValue(1(Pound.usCustomary per Minute), 2(Kilocalorie per Minute) / 2(Kilocalorie per Pound.usCustomary))
+        assertEqualScientificValue(1(Kilogram per Minute), 2(Joule per Minute) / 2(Joule per Kilogram))
+        assertEqualScientificValue(1(Pound per Minute), 2(FootPoundForce per Minute) / 2(FootPoundForce per Pound))
+        assertEqualScientificValue(1(Pound.ukImperial per Minute), 2(FootPoundForce per Minute) / 2(FootPoundForce per Pound.ukImperial))
+        assertEqualScientificValue(1(Pound.usCustomary per Minute), 2(FootPoundForce per Minute) / 2(FootPoundForce per Pound.usCustomary))
+        assertEqualScientificValue(1(Kilogram per Second), 2(Watt) / 2(Joule per Kilogram))
+        assertEqualScientificValue(550(Pound per Second), 2(Horsepower) / 2(FootPoundForce per Pound))
+        assertEqualScientificValue(550(Pound.ukImperial per Second), 2(Horsepower) / 2(FootPoundForce per Pound.ukImperial))
+        assertEqualScientificValue(550(Pound.usCustomary per Second), 2(Horsepower) / 2(FootPoundForce per Pound.usCustomary))
         assertEqualScientificValue(1(Kilogram per Second), 2(Watt) / 2(Joule per Kilogram).convert(FootPoundForce per Pound), 8)
     }
 
     @Test
     fun massFlowRateFromWeightAndAreaTest() {
-        assertEquals(1(Kilogram per Second), 2(Kilogram) / 2(Second))
-        assertEquals(1(Pound per Second), 2(Pound) / 2(Second))
-        assertEquals(1(Pound.ukImperial per Second), 2(Pound.ukImperial) / 2(Second))
-        assertEquals(1(Pound.usCustomary per Second), 2(Pound.usCustomary) / 2(Second))
+        assertEqualScientificValue(1(Kilogram per Second), 2(Kilogram) / 2(Second))
+        assertEqualScientificValue(1(Pound per Second), 2(Pound) / 2(Second))
+        assertEqualScientificValue(1(Pound.ukImperial per Second), 2(Pound.ukImperial) / 2(Second))
+        assertEqualScientificValue(1(Pound.usCustomary per Second), 2(Pound.usCustomary) / 2(Second))
         assertEqualScientificValue(1(Kilogram per Second), 2(Kilogram).convert(Pound as Weight) / 2(Second), 8)
     }
 }

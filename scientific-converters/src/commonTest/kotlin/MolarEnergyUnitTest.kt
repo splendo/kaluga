@@ -23,32 +23,42 @@ import com.splendo.kaluga.scientific.converter.molarMass.times
 import com.splendo.kaluga.scientific.converter.specificEnergy.div
 import com.splendo.kaluga.scientific.converter.specificEnergy.times
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Calorie
+import com.splendo.kaluga.scientific.unit.Decimole
+import com.splendo.kaluga.scientific.unit.HorsepowerHour
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Pound
+import com.splendo.kaluga.scientific.unit.SpecificEnergy
+import com.splendo.kaluga.scientific.unit.WattHour
+import com.splendo.kaluga.scientific.unit.imperial
+import com.splendo.kaluga.scientific.unit.per
+import com.splendo.kaluga.scientific.unit.ukImperial
+import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class MolarEnergyUnitTest {
 
     @Test
     fun molarEnergyFromEnergyAndAmountOfSubstanceTest() {
-        assertEquals(1(Joule per Decimole), 2(Joule) / 2(Decimole))
-        assertEquals(1(Calorie per Decimole), 2(Calorie) / 2(Decimole))
-        assertEquals(1(HorsepowerHour per Decimole), 2(HorsepowerHour) / 2(Decimole))
+        assertEqualScientificValue(1(Joule per Decimole), 2(Joule) / 2(Decimole))
+        assertEqualScientificValue(1(Calorie per Decimole), 2(Calorie) / 2(Decimole))
+        assertEqualScientificValue(1(HorsepowerHour per Decimole), 2(HorsepowerHour) / 2(Decimole))
     }
 
     @Test
     fun molarEnergyFromSpecificEnergyAndMolalityTest() {
-        assertEquals(1(Joule per Decimole), 2(Joule per Kilogram) / 2(Decimole per Kilogram))
-        assertEquals(1(WattHour.imperial per Decimole), 2(WattHour per Pound) / 2(Decimole per Pound))
-        assertEquals(
+        assertEqualScientificValue(1(Joule per Decimole), 2(Joule per Kilogram) / 2(Decimole per Kilogram))
+        assertEqualScientificValue(1(WattHour.imperial per Decimole), 2(WattHour per Pound) / 2(Decimole per Pound))
+        assertEqualScientificValue(
             1(WattHour.imperial per Decimole),
             2(WattHour per Pound.ukImperial) / 2(Decimole per Pound),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1(WattHour.imperial per Decimole),
             2(WattHour per Pound.usCustomary) / 2(Decimole per Pound),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1(Joule per Decimole),
             2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy) / 2(Decimole per Kilogram),
         )
@@ -56,31 +66,31 @@ class MolarEnergyUnitTest {
 
     @Test
     fun molarEnergyFromSpecificEnergyAndMolarMassTest() {
-        assertEquals(4(Joule per Decimole), 2(Joule per Kilogram) * 2(Kilogram per Decimole))
-        assertEquals(4(Joule per Decimole), 2(Kilogram per Decimole) * 2(Joule per Kilogram))
-        assertEquals(4(WattHour.imperial per Decimole), 2(WattHour per Pound) * 2(Pound per Decimole))
-        assertEquals(4(WattHour.imperial per Decimole), 2(Pound per Decimole) * 2(WattHour per Pound))
-        assertEquals(
+        assertEqualScientificValue(4(Joule per Decimole), 2(Joule per Kilogram) * 2(Kilogram per Decimole))
+        assertEqualScientificValue(4(Joule per Decimole), 2(Kilogram per Decimole) * 2(Joule per Kilogram))
+        assertEqualScientificValue(4(WattHour.imperial per Decimole), 2(WattHour per Pound) * 2(Pound per Decimole))
+        assertEqualScientificValue(4(WattHour.imperial per Decimole), 2(Pound per Decimole) * 2(WattHour per Pound))
+        assertEqualScientificValue(
             4(WattHour.imperial per Decimole),
             2(WattHour per Pound.ukImperial) * 2(Pound per Decimole),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(WattHour.imperial per Decimole),
             2(Pound per Decimole) * 2(WattHour per Pound.ukImperial),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(WattHour.imperial per Decimole),
             2(WattHour per Pound.usCustomary) * 2(Pound per Decimole),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(WattHour.imperial per Decimole),
             2(Pound per Decimole) * 2(WattHour per Pound.usCustomary),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(Joule per Decimole),
             2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy) * 2(Kilogram per Decimole),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(Joule per Decimole),
             2(Kilogram per Decimole) * 2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy),
         )

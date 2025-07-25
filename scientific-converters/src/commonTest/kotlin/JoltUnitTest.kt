@@ -21,35 +21,46 @@ import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.acceleration.div
 import com.splendo.kaluga.scientific.converter.yank.div
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Acceleration
+import com.splendo.kaluga.scientific.unit.Foot
+import com.splendo.kaluga.scientific.unit.GUnit
+import com.splendo.kaluga.scientific.unit.ImperialStandardGravityAcceleration
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.Newton
+import com.splendo.kaluga.scientific.unit.Pound
+import com.splendo.kaluga.scientific.unit.PoundForce
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.per
+import com.splendo.kaluga.scientific.unit.ukImperial
+import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class JoltUnitTest {
 
     @Test
     fun joltFromAccelerationDivTimeTest() {
-        assertEquals(
+        assertEqualScientificValue(
             1.0(Meter per Second per Second per Second),
             (2(Meter per Second per Second) / 2(Second)),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1.0(Foot per Second per Second per Second),
             (2(Foot per Second per Second) / 2(Second)),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1.0(GUnit per Second),
             (2(GUnit) / 2(Second)),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1.0(GUnit.metric per Second),
             (2(GUnit.metric) / 2(Second)),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1.0(GUnit.imperial per Second),
             (2(GUnit.imperial) / 2(Second)),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1.0(Meter per Second per Second per Second),
             (2((Meter per Second per Second) as Acceleration) / 2(Second)),
         )
@@ -57,35 +68,35 @@ class JoltUnitTest {
 
     @Test
     fun joltFromYankAndMassTest() {
-        assertEquals(
+        assertEqualScientificValue(
             1.0(Meter per Second per Second per Second),
             2(Newton per Second) / 2(Kilogram),
         )
-        assertEquals(
+        assertEqualScientificValue(
             ImperialStandardGravityAcceleration / 1(Second),
             2(PoundForce per Second) / 2(Pound),
         )
-        assertEquals(
+        assertEqualScientificValue(
             ImperialStandardGravityAcceleration / 1(Second),
             2(PoundForce per Second) / 2(Pound.ukImperial),
         )
-        assertEquals(
+        assertEqualScientificValue(
             ImperialStandardGravityAcceleration / 1(Second),
             2(PoundForce per Second) / 2(Pound.usCustomary),
         )
-        assertEquals(
+        assertEqualScientificValue(
             ImperialStandardGravityAcceleration / 1(Second),
             2(PoundForce.ukImperial per Second) / 2(Pound),
         )
-        assertEquals(
+        assertEqualScientificValue(
             ImperialStandardGravityAcceleration / 1(Second),
             2(PoundForce.ukImperial per Second) / 2(Pound.ukImperial),
         )
-        assertEquals(
+        assertEqualScientificValue(
             ImperialStandardGravityAcceleration / 1(Second),
             2(PoundForce.usCustomary per Second) / 2(Pound),
         )
-        assertEquals(
+        assertEqualScientificValue(
             ImperialStandardGravityAcceleration / 1(Second),
             2(PoundForce.usCustomary per Second) / 2(Pound.usCustomary),
         )

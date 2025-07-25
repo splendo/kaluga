@@ -31,55 +31,124 @@ import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.converter.volume.div
 import com.splendo.kaluga.scientific.converter.weight.div
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Acre
+import com.splendo.kaluga.scientific.unit.AcreFoot
+import com.splendo.kaluga.scientific.unit.AcreInch
+import com.splendo.kaluga.scientific.unit.Centimeter
+import com.splendo.kaluga.scientific.unit.CubicCentimeter
+import com.splendo.kaluga.scientific.unit.CubicDecameter
+import com.splendo.kaluga.scientific.unit.CubicDecimeter
+import com.splendo.kaluga.scientific.unit.CubicFoot
+import com.splendo.kaluga.scientific.unit.CubicGigameter
+import com.splendo.kaluga.scientific.unit.CubicHectometer
+import com.splendo.kaluga.scientific.unit.CubicInch
+import com.splendo.kaluga.scientific.unit.CubicKilometer
+import com.splendo.kaluga.scientific.unit.CubicMegameter
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.CubicMicrometer
+import com.splendo.kaluga.scientific.unit.CubicMile
+import com.splendo.kaluga.scientific.unit.CubicMillimeter
+import com.splendo.kaluga.scientific.unit.CubicNanometer
+import com.splendo.kaluga.scientific.unit.CubicYard
+import com.splendo.kaluga.scientific.unit.Decameter
+import com.splendo.kaluga.scientific.unit.Decidyne
+import com.splendo.kaluga.scientific.unit.Decierg
+import com.splendo.kaluga.scientific.unit.Decimeter
+import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.Foot
+import com.splendo.kaluga.scientific.unit.FootPoundForce
+import com.splendo.kaluga.scientific.unit.FootPoundal
+import com.splendo.kaluga.scientific.unit.Gigameter
+import com.splendo.kaluga.scientific.unit.GrainForce
+import com.splendo.kaluga.scientific.unit.Hectometer
+import com.splendo.kaluga.scientific.unit.ImperialTonForce
+import com.splendo.kaluga.scientific.unit.Inch
+import com.splendo.kaluga.scientific.unit.InchOunceForce
+import com.splendo.kaluga.scientific.unit.InchPoundForce
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Kilometer
+import com.splendo.kaluga.scientific.unit.Megameter
+import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.Micrometer
+import com.splendo.kaluga.scientific.unit.Mile
+import com.splendo.kaluga.scientific.unit.Millimeter
+import com.splendo.kaluga.scientific.unit.Nanometer
+import com.splendo.kaluga.scientific.unit.Newton
+import com.splendo.kaluga.scientific.unit.OunceForce
+import com.splendo.kaluga.scientific.unit.Pound
+import com.splendo.kaluga.scientific.unit.PoundForce
+import com.splendo.kaluga.scientific.unit.Poundal
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.SquareCentimeter
+import com.splendo.kaluga.scientific.unit.SquareDecameter
+import com.splendo.kaluga.scientific.unit.SquareDecimeter
+import com.splendo.kaluga.scientific.unit.SquareFoot
+import com.splendo.kaluga.scientific.unit.SquareGigameter
+import com.splendo.kaluga.scientific.unit.SquareHectometer
+import com.splendo.kaluga.scientific.unit.SquareInch
+import com.splendo.kaluga.scientific.unit.SquareKilometer
+import com.splendo.kaluga.scientific.unit.SquareMegameter
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.SquareMicrometer
+import com.splendo.kaluga.scientific.unit.SquareMile
+import com.splendo.kaluga.scientific.unit.SquareMillimeter
+import com.splendo.kaluga.scientific.unit.SquareNanometer
+import com.splendo.kaluga.scientific.unit.SquareYard
+import com.splendo.kaluga.scientific.unit.UsTonForce
+import com.splendo.kaluga.scientific.unit.WattHour
+import com.splendo.kaluga.scientific.unit.Yard
+import com.splendo.kaluga.scientific.unit.per
+import com.splendo.kaluga.scientific.unit.ukImperial
+import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class LengthUnitTest {
 
     @Test
     fun widthFromAreaAndLengthTest() {
-        assertEquals(1(Meter), 2(SquareMeter) / 2(Meter))
-        assertEquals(1(Nanometer), 2(SquareNanometer) / 2(Nanometer))
-        assertEquals(1(Micrometer), 2(SquareMicrometer) / 2(Micrometer))
-        assertEquals(1(Millimeter), 2(SquareMillimeter) / 2(Millimeter))
-        assertEquals(1(Centimeter), 2(SquareCentimeter) / 2(Centimeter))
-        assertEquals(1(Decimeter), 2(SquareDecimeter) / 2(Decimeter))
-        assertEquals(1(Decameter), 2(SquareDecameter) / 2(Decameter))
-        assertEquals(1(Hectometer), 2(SquareHectometer) / 2(Hectometer))
-        assertEquals(1(Kilometer), 2(SquareKilometer) / 2(Kilometer))
-        assertEquals(1(Megameter), 2(SquareMegameter) / 2(Megameter))
-        assertEquals(1(Gigameter), 2(SquareGigameter) / 2(Gigameter))
-        assertEquals(
+        assertEqualScientificValue(1(Meter), 2(SquareMeter) / 2(Meter))
+        assertEqualScientificValue(1(Nanometer), 2(SquareNanometer) / 2(Nanometer))
+        assertEqualScientificValue(1(Micrometer), 2(SquareMicrometer) / 2(Micrometer))
+        assertEqualScientificValue(1(Millimeter), 2(SquareMillimeter) / 2(Millimeter))
+        assertEqualScientificValue(1(Centimeter), 2(SquareCentimeter) / 2(Centimeter))
+        assertEqualScientificValue(1(Decimeter), 2(SquareDecimeter) / 2(Decimeter))
+        assertEqualScientificValue(1(Decameter), 2(SquareDecameter) / 2(Decameter))
+        assertEqualScientificValue(1(Hectometer), 2(SquareHectometer) / 2(Hectometer))
+        assertEqualScientificValue(1(Kilometer), 2(SquareKilometer) / 2(Kilometer))
+        assertEqualScientificValue(1(Megameter), 2(SquareMegameter) / 2(Megameter))
+        assertEqualScientificValue(1(Gigameter), 2(SquareGigameter) / 2(Gigameter))
+        assertEqualScientificValue(
             1(Meter),
             2(SquareMeter).convert(SquareCentimeter) / 2(Meter).convert(Hectometer),
         )
 
-        assertEquals(1(Inch), 2(SquareInch) / 2(Inch))
-        assertEquals(1(Foot), 2(SquareFoot) / 2(Foot))
-        assertEquals(1(Yard), 2(SquareYard) / 2(Yard))
-        assertEquals(1(Mile), 2(SquareMile) / 2(Mile))
-        assertEquals(1(Foot), 2(SquareFoot).convert(SquareInch) / 2(Foot).convert(Yard))
-        assertEquals(1(Meter), 2(SquareMeter).convert(SquareCentimeter) / 2(Meter).convert(Yard))
+        assertEqualScientificValue(1(Inch), 2(SquareInch) / 2(Inch))
+        assertEqualScientificValue(1(Foot), 2(SquareFoot) / 2(Foot))
+        assertEqualScientificValue(1(Yard), 2(SquareYard) / 2(Yard))
+        assertEqualScientificValue(1(Mile), 2(SquareMile) / 2(Mile))
+        assertEqualScientificValue(1(Foot), 2(SquareFoot).convert(SquareInch) / 2(Foot).convert(Yard))
+        assertEqualScientificValue(1(Meter), 2(SquareMeter).convert(SquareCentimeter) / 2(Meter).convert(Yard))
     }
 
     @Test
     fun lengthFromAreaDensityAndDensityTest() {
-        assertEquals(1(Meter), 2(Kilogram per SquareMeter) / 2(Kilogram per CubicMeter))
-        assertEquals(1(Foot), 2(Pound per SquareFoot) / 2(Pound per CubicFoot))
-        assertEquals(1(Foot), 2(Pound.ukImperial per SquareFoot) / 2(Pound per CubicFoot))
-        assertEquals(1(Foot), 2(Pound.usCustomary per SquareFoot) / 2(Pound per CubicFoot))
-        assertEquals(1(Foot), 2(Pound per SquareFoot) / 2(Pound.ukImperial per CubicFoot))
-        assertEquals(
+        assertEqualScientificValue(1(Meter), 2(Kilogram per SquareMeter) / 2(Kilogram per CubicMeter))
+        assertEqualScientificValue(1(Foot), 2(Pound per SquareFoot) / 2(Pound per CubicFoot))
+        assertEqualScientificValue(1(Foot), 2(Pound.ukImperial per SquareFoot) / 2(Pound per CubicFoot))
+        assertEqualScientificValue(1(Foot), 2(Pound.usCustomary per SquareFoot) / 2(Pound per CubicFoot))
+        assertEqualScientificValue(1(Foot), 2(Pound per SquareFoot) / 2(Pound.ukImperial per CubicFoot))
+        assertEqualScientificValue(
             1(Foot),
             2(Pound.ukImperial per SquareFoot) / 2(Pound.ukImperial per CubicFoot),
         )
-        assertEquals(1(Foot), 2(Pound per SquareFoot) / 2(Pound.usCustomary per CubicFoot))
-        assertEquals(
+        assertEqualScientificValue(1(Foot), 2(Pound per SquareFoot) / 2(Pound.usCustomary per CubicFoot))
+        assertEqualScientificValue(
             1(Foot),
             2(Pound.usCustomary per SquareFoot) / 2(Pound.usCustomary per CubicFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1(Meter),
             2(Kilogram per SquareMeter) / 2(Kilogram per CubicMeter).convert(Pound per CubicFoot),
         )
@@ -87,17 +156,17 @@ class LengthUnitTest {
 
     @Test
     fun lengthFromAreaDensityAndSpecificVolumeTest() {
-        assertEquals(4(Meter), 2(CubicMeter per Kilogram) * 2(Kilogram per SquareMeter))
-        assertEquals(4(Foot), 2(CubicFoot per Pound) * 2(Pound per SquareFoot))
-        assertEquals(4(Foot), 2(CubicFoot per Pound) * 2(Pound.ukImperial per SquareFoot))
-        assertEquals(4(Foot), 2(CubicFoot per Pound) * 2(Pound.usCustomary per SquareFoot))
-        assertEquals(4(Foot), 2(CubicFoot per Pound.ukImperial) * 2(Pound per SquareFoot))
-        assertEquals(
+        assertEqualScientificValue(4(Meter), 2(CubicMeter per Kilogram) * 2(Kilogram per SquareMeter))
+        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound) * 2(Pound per SquareFoot))
+        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound) * 2(Pound.ukImperial per SquareFoot))
+        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound) * 2(Pound.usCustomary per SquareFoot))
+        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound.ukImperial) * 2(Pound per SquareFoot))
+        assertEqualScientificValue(
             4(Foot),
             2(CubicFoot per Pound.ukImperial) * 2(Pound.ukImperial per SquareFoot),
         )
-        assertEquals(4(Foot), 2(CubicFoot per Pound.usCustomary) * 2(Pound per SquareFoot))
-        assertEquals(
+        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound.usCustomary) * 2(Pound per SquareFoot))
+        assertEqualScientificValue(
             4(Foot),
             2(CubicFoot per Pound.usCustomary) * 2(Pound.usCustomary per SquareFoot),
         )
@@ -107,17 +176,17 @@ class LengthUnitTest {
             5,
         )
 
-        assertEquals(4(Meter), 2(Kilogram per SquareMeter) * 2(CubicMeter per Kilogram))
-        assertEquals(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound))
-        assertEquals(4(Foot), 2(Pound.ukImperial per SquareFoot) * 2(CubicFoot per Pound))
-        assertEquals(4(Foot), 2(Pound.usCustomary per SquareFoot) * 2(CubicFoot per Pound))
-        assertEquals(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound.ukImperial))
-        assertEquals(
+        assertEqualScientificValue(4(Meter), 2(Kilogram per SquareMeter) * 2(CubicMeter per Kilogram))
+        assertEqualScientificValue(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound))
+        assertEqualScientificValue(4(Foot), 2(Pound.ukImperial per SquareFoot) * 2(CubicFoot per Pound))
+        assertEqualScientificValue(4(Foot), 2(Pound.usCustomary per SquareFoot) * 2(CubicFoot per Pound))
+        assertEqualScientificValue(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound.ukImperial))
+        assertEqualScientificValue(
             4(Foot),
             2(Pound.ukImperial per SquareFoot) * 2(CubicFoot per Pound.ukImperial),
         )
-        assertEquals(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound.usCustomary))
-        assertEquals(
+        assertEqualScientificValue(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound.usCustomary))
+        assertEqualScientificValue(
             4(Foot),
             2(Pound.usCustomary per SquareFoot) * 2(CubicFoot per Pound.usCustomary),
         )
@@ -130,18 +199,18 @@ class LengthUnitTest {
 
     @Test
     fun lengthFromEnergyAndForceTest() {
-        assertEquals(1(Meter), 2(Joule) / 2(Newton))
-        assertEquals(1(Centimeter), 2(Erg) / 2(Dyne))
-        assertEquals(1(Centimeter), 20(Decierg) / 2(Dyne))
-        assertEquals(1(Centimeter), 2(Erg) / 20(Decidyne))
-        assertEquals(1(Centimeter), 20(Decierg) / 20(Decidyne))
-        assertEquals(1(Foot), 2(FootPoundal) / 2(Poundal))
-        assertEquals(1(Foot), 2(FootPoundForce) / 2(PoundForce))
-        assertEquals(1(Inch), 2(InchPoundForce) / 2(PoundForce))
-        assertEquals(1(Inch), 2(InchOunceForce) / 2(OunceForce))
-        assertEquals(1(Foot), 2(FootPoundForce) / 2(PoundForce).convert(GrainForce))
-        assertEquals(1(Foot), 2(FootPoundForce) / 2(PoundForce).convert(ImperialTonForce))
-        assertEquals(1(Foot), 2(FootPoundForce) / 2(PoundForce).convert(UsTonForce))
+        assertEqualScientificValue(1(Meter), 2(Joule) / 2(Newton))
+        assertEqualScientificValue(1(Centimeter), 2(Erg) / 2(Dyne))
+        assertEqualScientificValue(1(Centimeter), 20(Decierg) / 2(Dyne))
+        assertEqualScientificValue(1(Centimeter), 2(Erg) / 20(Decidyne))
+        assertEqualScientificValue(1(Centimeter), 20(Decierg) / 20(Decidyne))
+        assertEqualScientificValue(1(Foot), 2(FootPoundal) / 2(Poundal))
+        assertEqualScientificValue(1(Foot), 2(FootPoundForce) / 2(PoundForce))
+        assertEqualScientificValue(1(Inch), 2(InchPoundForce) / 2(PoundForce))
+        assertEqualScientificValue(1(Inch), 2(InchOunceForce) / 2(OunceForce))
+        assertEqualScientificValue(1(Foot), 2(FootPoundForce) / 2(PoundForce).convert(GrainForce))
+        assertEqualScientificValue(1(Foot), 2(FootPoundForce) / 2(PoundForce).convert(ImperialTonForce))
+        assertEqualScientificValue(1(Foot), 2(FootPoundForce) / 2(PoundForce).convert(UsTonForce))
         assertEqualScientificValue(1(Foot), 2(FootPoundForce).convert(WattHour) / 2(PoundForce), 5)
         assertEqualScientificValue(
             1(Foot),
@@ -177,15 +246,15 @@ class LengthUnitTest {
 
     @Test
     fun lengthFromLinearMassDensityAndDensityTest() {
-        assertEquals(1(Meter), 2(Kilogram per Meter) / 2(Kilogram per SquareMeter))
-        assertEquals(1(Foot), 2(Pound per Foot) / 2(Pound per SquareFoot))
-        assertEquals(1(Foot), 2(Pound per Foot) / 2(Pound.ukImperial per SquareFoot))
-        assertEquals(1(Foot), 2(Pound per Foot) / 2(Pound.usCustomary per SquareFoot))
-        assertEquals(1(Foot), 2(Pound.ukImperial per Foot) / 2(Pound per SquareFoot))
-        assertEquals(1(Foot), 2(Pound.ukImperial per Foot) / 2(Pound.ukImperial per SquareFoot))
-        assertEquals(1(Foot), 2(Pound.usCustomary per Foot) / 2(Pound per SquareFoot))
-        assertEquals(1(Foot), 2(Pound.usCustomary per Foot) / 2(Pound.usCustomary per SquareFoot))
-        assertEquals(
+        assertEqualScientificValue(1(Meter), 2(Kilogram per Meter) / 2(Kilogram per SquareMeter))
+        assertEqualScientificValue(1(Foot), 2(Pound per Foot) / 2(Pound per SquareFoot))
+        assertEqualScientificValue(1(Foot), 2(Pound per Foot) / 2(Pound.ukImperial per SquareFoot))
+        assertEqualScientificValue(1(Foot), 2(Pound per Foot) / 2(Pound.usCustomary per SquareFoot))
+        assertEqualScientificValue(1(Foot), 2(Pound.ukImperial per Foot) / 2(Pound per SquareFoot))
+        assertEqualScientificValue(1(Foot), 2(Pound.ukImperial per Foot) / 2(Pound.ukImperial per SquareFoot))
+        assertEqualScientificValue(1(Foot), 2(Pound.usCustomary per Foot) / 2(Pound per SquareFoot))
+        assertEqualScientificValue(1(Foot), 2(Pound.usCustomary per Foot) / 2(Pound.usCustomary per SquareFoot))
+        assertEqualScientificValue(
             1(Meter),
             2(Kilogram per Meter) / 2(Kilogram per SquareMeter).convert(Pound per SquareFoot),
         )
@@ -201,33 +270,33 @@ class LengthUnitTest {
 
     @Test
     fun heightFromVolumeLengthAndWidthTest() {
-        assertEquals(2(Meter), 8(CubicMeter) / 4(SquareMeter))
-        assertEquals(2(Nanometer), 8(CubicNanometer) / 4(SquareNanometer))
-        assertEquals(2(Micrometer), 8(CubicMicrometer) / 4(SquareMicrometer))
-        assertEquals(2(Millimeter), 8(CubicMillimeter) / 4(SquareMillimeter))
-        assertEquals(2(Centimeter), 8(CubicCentimeter) / 4(SquareCentimeter))
-        assertEquals(2(Decimeter), 8(CubicDecimeter) / 4(SquareDecimeter))
-        assertEquals(2(Decameter), 8(CubicDecameter) / 4(SquareDecameter))
-        assertEquals(2(Hectometer), 8(CubicHectometer) / 4(SquareHectometer))
-        assertEquals(2(Kilometer), 8(CubicKilometer) / 4(SquareKilometer))
-        assertEquals(2(Megameter), 8(CubicMegameter) / 4(SquareMegameter))
-        assertEquals(2(Gigameter), 8(CubicGigameter) / 4(SquareGigameter))
-        assertEquals(
+        assertEqualScientificValue(2(Meter), 8(CubicMeter) / 4(SquareMeter))
+        assertEqualScientificValue(2(Nanometer), 8(CubicNanometer) / 4(SquareNanometer))
+        assertEqualScientificValue(2(Micrometer), 8(CubicMicrometer) / 4(SquareMicrometer))
+        assertEqualScientificValue(2(Millimeter), 8(CubicMillimeter) / 4(SquareMillimeter))
+        assertEqualScientificValue(2(Centimeter), 8(CubicCentimeter) / 4(SquareCentimeter))
+        assertEqualScientificValue(2(Decimeter), 8(CubicDecimeter) / 4(SquareDecimeter))
+        assertEqualScientificValue(2(Decameter), 8(CubicDecameter) / 4(SquareDecameter))
+        assertEqualScientificValue(2(Hectometer), 8(CubicHectometer) / 4(SquareHectometer))
+        assertEqualScientificValue(2(Kilometer), 8(CubicKilometer) / 4(SquareKilometer))
+        assertEqualScientificValue(2(Megameter), 8(CubicMegameter) / 4(SquareMegameter))
+        assertEqualScientificValue(2(Gigameter), 8(CubicGigameter) / 4(SquareGigameter))
+        assertEqualScientificValue(
             2(Meter),
             8(CubicMeter).convert(CubicDecameter) / 4(SquareMeter).convert(SquareDecimeter),
         )
-        assertEquals(2(Meter), Meter.height(8(CubicMeter), 2(Meter), 2(Meter)))
+        assertEqualScientificValue(2(Meter), Meter.height(8(CubicMeter), 2(Meter), 2(Meter)))
 
-        assertEquals(2(Inch), 8(CubicInch) / 4(SquareInch))
-        assertEquals(2(Foot), 8(CubicFoot) / 4(SquareFoot))
-        assertEquals(2(Yard), 8(CubicYard) / 4(SquareYard))
-        assertEquals(2(Mile), 8(CubicMile) / 4(SquareMile))
-        assertEquals(2(Inch), 8(AcreInch) / 4(Acre))
-        assertEquals(2(Foot), 8(AcreFoot) / 4(Acre))
-        assertEquals(2(Foot), 8(CubicFoot).convert(CubicInch) / 4(SquareFoot).convert(SquareYard))
-        assertEquals(2(Foot), 8(CubicFoot.ukImperial) / 4(SquareFoot))
-        assertEquals(2(Foot), 8(CubicFoot.usCustomary) / 4(SquareFoot))
-        assertEquals(
+        assertEqualScientificValue(2(Inch), 8(CubicInch) / 4(SquareInch))
+        assertEqualScientificValue(2(Foot), 8(CubicFoot) / 4(SquareFoot))
+        assertEqualScientificValue(2(Yard), 8(CubicYard) / 4(SquareYard))
+        assertEqualScientificValue(2(Mile), 8(CubicMile) / 4(SquareMile))
+        assertEqualScientificValue(2(Inch), 8(AcreInch) / 4(Acre))
+        assertEqualScientificValue(2(Foot), 8(AcreFoot) / 4(Acre))
+        assertEqualScientificValue(2(Foot), 8(CubicFoot).convert(CubicInch) / 4(SquareFoot).convert(SquareYard))
+        assertEqualScientificValue(2(Foot), 8(CubicFoot.ukImperial) / 4(SquareFoot))
+        assertEqualScientificValue(2(Foot), 8(CubicFoot.usCustomary) / 4(SquareFoot))
+        assertEqualScientificValue(
             2(Meter),
             8(CubicMeter).convert(CubicDecameter) / 4(SquareMeter).convert(SquareInch),
         )

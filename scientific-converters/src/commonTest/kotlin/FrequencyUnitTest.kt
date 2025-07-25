@@ -23,29 +23,35 @@ import com.splendo.kaluga.scientific.converter.electricConductance.div
 import com.splendo.kaluga.scientific.converter.electricResistance.div
 import com.splendo.kaluga.scientific.converter.time.frequency
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.BeatsPerMinute
+import com.splendo.kaluga.scientific.unit.Farad
+import com.splendo.kaluga.scientific.unit.Henry
+import com.splendo.kaluga.scientific.unit.Hertz
+import com.splendo.kaluga.scientific.unit.Minute
+import com.splendo.kaluga.scientific.unit.Ohm
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.Siemens
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class FrequencyUnitTest {
 
     @Test
     fun frequencyFromConductanceAndCapacityTest() {
-        assertEquals(1(Hertz), 2(Siemens) / 2(Farad))
+        assertEqualScientificValue(1(Hertz), 2(Siemens) / 2(Farad))
     }
 
     @Test
     fun frequencyFromResistanceAndInductanceTest() {
-        assertEquals(1(Hertz), 2(Ohm) / 2(Henry))
+        assertEqualScientificValue(1(Hertz), 2(Ohm) / 2(Henry))
     }
 
     @Test
     fun frequencyFromInvertedTimeTest() {
-        assertEquals(1(Hertz), 2 / 2(Second))
-        assertEquals(1(Hertz), 2.toDecimal() / 2(Second))
-        assertEquals(1(BeatsPerMinute), 2 / 2(Minute))
-        assertEquals(1(BeatsPerMinute), 2.toDecimal() / 2(Minute))
-        assertEquals(0.5(Hertz), 2(Second).frequency())
-        assertEquals(0.5(BeatsPerMinute), 2(Minute).frequency())
+        assertEqualScientificValue(1(Hertz), 2 / 2(Second))
+        assertEqualScientificValue(1(Hertz), 2.toDecimal() / 2(Second))
+        assertEqualScientificValue(1(BeatsPerMinute), 2 / 2(Minute))
+        assertEqualScientificValue(1(BeatsPerMinute), 2.toDecimal() / 2(Minute))
+        assertEqualScientificValue(0.5(Hertz), 2(Second).frequency())
+        assertEqualScientificValue(0.5(BeatsPerMinute), 2(Minute).frequency())
     }
 }

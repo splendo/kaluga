@@ -21,27 +21,39 @@ import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.illuminance.div
 import com.splendo.kaluga.scientific.converter.luminousIntensity.div
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.Candela
+import com.splendo.kaluga.scientific.unit.Deciphot
+import com.splendo.kaluga.scientific.unit.FootCandle
+import com.splendo.kaluga.scientific.unit.FootLambert
+import com.splendo.kaluga.scientific.unit.Illuminance
+import com.splendo.kaluga.scientific.unit.Lux
+import com.splendo.kaluga.scientific.unit.Nit
+import com.splendo.kaluga.scientific.unit.Phot
+import com.splendo.kaluga.scientific.unit.SquareCentimeter
+import com.splendo.kaluga.scientific.unit.SquareFoot
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.Steradian
+import com.splendo.kaluga.scientific.unit.Stilb
 import kotlin.math.PI
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class LuminanceUnitTest {
 
     @Test
     fun luminanceFromIlluminanceAndSolidAngleTest() {
-        assertEquals(1(Stilb), 2(Phot) / 2(Steradian))
-        assertEquals(1(Stilb), 20(Deciphot) / 2(Steradian))
-        assertEquals(1(Nit), 2(Lux) / 2(Steradian))
+        assertEqualScientificValue(1(Stilb), 2(Phot) / 2(Steradian))
+        assertEqualScientificValue(1(Stilb), 20(Deciphot) / 2(Steradian))
+        assertEqualScientificValue(1(Nit), 2(Lux) / 2(Steradian))
         assertEqualScientificValue(PI(FootLambert), 2(FootCandle) / 2(Steradian), 8)
-        assertEquals(1(Nit), 2(Lux).convert(FootCandle as Illuminance) / 2(Steradian))
+        assertEqualScientificValue(1(Nit), 2(Lux).convert(FootCandle as Illuminance) / 2(Steradian))
     }
 
     @Test
     fun luminanceFromLuminousIntensityAndAreaTest() {
-        assertEquals(1(Stilb), 2(Candela) / 2(SquareCentimeter))
-        assertEquals(1(Nit), 2(Candela) / 2(SquareMeter))
+        assertEqualScientificValue(1(Stilb), 2(Candela) / 2(SquareCentimeter))
+        assertEqualScientificValue(1(Nit), 2(Candela) / 2(SquareMeter))
         assertEqualScientificValue(PI(FootLambert), (2(Candela) / 2(SquareFoot)), 8)
-        assertEquals(1(Nit), 2(Candela) / 2(SquareMeter).convert(SquareFoot as Area))
+        assertEqualScientificValue(1(Nit), 2(Candela) / 2(SquareMeter).convert(SquareFoot as Area))
     }
 }

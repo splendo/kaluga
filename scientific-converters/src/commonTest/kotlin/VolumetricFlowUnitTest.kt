@@ -24,19 +24,49 @@ import com.splendo.kaluga.scientific.converter.power.div
 import com.splendo.kaluga.scientific.converter.volume.div
 import com.splendo.kaluga.scientific.converter.volumetricFlux.times
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Barye
+import com.splendo.kaluga.scientific.unit.CubicCentimeter
+import com.splendo.kaluga.scientific.unit.CubicFoot
+import com.splendo.kaluga.scientific.unit.CubicInch
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.Decibarye
+import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.FootPoundForce
+import com.splendo.kaluga.scientific.unit.Horsepower
+import com.splendo.kaluga.scientific.unit.ImperialGallon
+import com.splendo.kaluga.scientific.unit.ImperialTonSquareInch
+import com.splendo.kaluga.scientific.unit.InchOunceForce
+import com.splendo.kaluga.scientific.unit.InchPoundForce
+import com.splendo.kaluga.scientific.unit.KiloPoundSquareInch
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.KipSquareInch
+import com.splendo.kaluga.scientific.unit.Minute
+import com.splendo.kaluga.scientific.unit.OunceSquareInch
+import com.splendo.kaluga.scientific.unit.Pascal
+import com.splendo.kaluga.scientific.unit.Pound
+import com.splendo.kaluga.scientific.unit.PoundSquareFoot
+import com.splendo.kaluga.scientific.unit.PoundSquareInch
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.SquareFoot
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.USTonSquareInch
+import com.splendo.kaluga.scientific.unit.UsLiquidGallon
+import com.splendo.kaluga.scientific.unit.Volume
+import com.splendo.kaluga.scientific.unit.Watt
+import com.splendo.kaluga.scientific.unit.per
+import com.splendo.kaluga.scientific.unit.ukImperial
+import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class VolumetricFlowUnitTest {
 
     @Test
     fun volumetricFlowFromVolumeAndTimeTest() {
-        assertEquals(1(CubicMeter per Second), 2(CubicMeter) / 2(Second))
-        assertEquals(1(CubicFoot per Second), 2(CubicFoot) / 2(Second))
-        assertEquals(1(ImperialGallon per Second), 2(ImperialGallon) / 2(Second))
-        assertEquals(1(UsLiquidGallon per Second), 2(UsLiquidGallon) / 2(Second))
-        assertEquals(
+        assertEqualScientificValue(1(CubicMeter per Second), 2(CubicMeter) / 2(Second))
+        assertEqualScientificValue(1(CubicFoot per Second), 2(CubicFoot) / 2(Second))
+        assertEqualScientificValue(1(ImperialGallon per Second), 2(ImperialGallon) / 2(Second))
+        assertEqualScientificValue(1(UsLiquidGallon per Second), 2(UsLiquidGallon) / 2(Second))
+        assertEqualScientificValue(
             1(CubicMeter per Second),
             2(CubicMeter).convert(CubicFoot as Volume) / 2(Second),
         )
@@ -44,43 +74,43 @@ class VolumetricFlowUnitTest {
 
     @Test
     fun volumetricFlowFromVolumetricFluxAndAreaTest() {
-        assertEquals(
+        assertEqualScientificValue(
             4(CubicMeter per Second),
             2((CubicMeter per Second) per SquareMeter) * 2(SquareMeter),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(CubicMeter per Second),
             2(SquareMeter) * 2((CubicMeter per Second) per SquareMeter),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(CubicFoot per Second),
             2((CubicFoot per Second) per SquareFoot) * 2(SquareFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(CubicFoot per Second),
             2(SquareFoot) * 2((CubicFoot per Second) per SquareFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(ImperialGallon per Second),
             2((ImperialGallon per Second) per SquareFoot) * 2(SquareFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(ImperialGallon per Second),
             2(SquareFoot) * 2((ImperialGallon per Second) per SquareFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(UsLiquidGallon per Second),
             2((UsLiquidGallon per Second) per SquareFoot) * 2(SquareFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(UsLiquidGallon per Second),
             2(SquareFoot) * 2((UsLiquidGallon per Second) per SquareFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(CubicMeter per Second),
             2((CubicMeter per Second) per SquareMeter) * 2(SquareMeter).convert(SquareFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(CubicMeter per Second),
             2(SquareMeter).convert(SquareFoot) * 2((CubicMeter per Second) per SquareMeter),
         )
@@ -88,33 +118,33 @@ class VolumetricFlowUnitTest {
 
     @Test
     fun densityFromMassFlowRateAndDensityFlowTest() {
-        assertEquals(1(CubicMeter per Minute), 2(Kilogram per Minute) / 2(Kilogram per CubicMeter))
-        assertEquals(1(CubicFoot per Minute), 2(Pound per Minute) / 2(Pound per CubicFoot))
-        assertEquals(
+        assertEqualScientificValue(1(CubicMeter per Minute), 2(Kilogram per Minute) / 2(Kilogram per CubicMeter))
+        assertEqualScientificValue(1(CubicFoot per Minute), 2(Pound per Minute) / 2(Pound per CubicFoot))
+        assertEqualScientificValue(
             1(CubicFoot.ukImperial per Minute),
             2(Pound per Minute) / 2(Pound.ukImperial per CubicFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1(CubicFoot.usCustomary per Minute),
             2(Pound per Minute) / 2(Pound.usCustomary per CubicFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1(CubicFoot per Minute),
             2(Pound.ukImperial per Minute) / 2(Pound per CubicFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1(CubicFoot.ukImperial per Minute),
             2(Pound.ukImperial per Minute) / 2(Pound.ukImperial per CubicFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1(CubicFoot per Minute),
             2(Pound.usCustomary per Minute) / 2(Pound per CubicFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1(CubicFoot.usCustomary per Minute),
             2(Pound.usCustomary per Minute) / 2(Pound.usCustomary per CubicFoot),
         )
-        assertEquals(
+        assertEqualScientificValue(
             1(CubicMeter per Second),
             2(Kilogram per Second) / 2(Kilogram per CubicMeter).convert(Pound per CubicFoot),
         )
