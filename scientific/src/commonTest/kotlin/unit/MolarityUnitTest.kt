@@ -23,6 +23,6 @@ class MolarityUnitTest {
 
     @Test
     fun molarityConversionTest() {
-        assertScientificConversion(1, (Mole per CubicMeter), 1.63871e-4, Decimole per CubicInch, 9)
+        assertScientificConversion("1", (Mole per CubicMeter), "1.63871e-4", Decimole per CubicInch, 9)
     }
 }

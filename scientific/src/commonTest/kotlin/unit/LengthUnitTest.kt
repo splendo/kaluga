@@ -23,23 +23,23 @@ class LengthUnitTest {
 
     @Test
     fun meterConversionTest() {
-        assertScientificConversion(1.0, Meter, 1e+9, Nanometer)
-        assertScientificConversion(1.0, Meter, 1e+6, Micrometer)
-        assertScientificConversion(1.0, Meter, 1_000.0, Millimeter)
-        assertScientificConversion(1.0, Meter, 100.0, Centimeter)
-        assertScientificConversion(1.0, Meter, 10.0, Decimeter)
-        assertScientificConversion(1.0, Meter, 0.1, Decameter)
-        assertScientificConversion(1.0, Meter, 0.01, Hectometer)
-        assertScientificConversion(1.0, Meter, 0.001, Kilometer)
-        assertScientificConversion(1.0, Meter, 1e-6, Megameter)
-        assertScientificConversion(1.0, Meter, 1e-9, Gigameter)
+        assertScientificConversion("1.0", Meter, "1e+9", Nanometer)
+        assertScientificConversion("1.0", Meter, "1e+6", Micrometer)
+        assertScientificConversion("1.0", Meter, "1000.0", Millimeter)
+        assertScientificConversion("1.0", Meter, "100.0", Centimeter)
+        assertScientificConversion("1.0", Meter, "10.0", Decimeter)
+        assertScientificConversion("1.0", Meter, "0.1", Decameter)
+        assertScientificConversion("1.0", Meter, "0.01", Hectometer)
+        assertScientificConversion("1.0", Meter, "0.001", Kilometer)
+        assertScientificConversion("1.0", Meter, "1e-6", Megameter)
+        assertScientificConversion("1.0", Meter, "1e-9", Gigameter)
     }
 
     @Test
     fun feetConversionTest() {
-        assertScientificConversion(1.0, Foot, 0.3048, Meter)
-        assertScientificConversion(1.0, Foot, 12.0, Inch)
-        assertScientificConversion(1.0, Foot, 0.33333333, Yard, 8)
-        assertScientificConversion(1.0, Foot, 0.00018939, Mile, 8)
+        assertScientificConversion("1.0", Foot, "0.3048", Meter)
+        assertScientificConversion("1.0", Foot, "12.0", Inch)
+        assertScientificConversion("1.0", Foot, "0.33333333", Yard, 8)
+        assertScientificConversion("1.0", Foot, "0.00018939", Mile, 8)
     }
 }

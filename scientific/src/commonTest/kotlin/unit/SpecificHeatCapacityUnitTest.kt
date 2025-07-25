@@ -23,6 +23,6 @@ class SpecificHeatCapacityUnitTest {
 
     @Test
     fun specificHeatCapacityConversionTest() {
-        assertScientificConversion(1.0, (Joule per Kelvin per Kilogram), 0.00023885, BritishThermalUnit per Fahrenheit per Pound, 8)
+        assertScientificConversion("1.0", (Joule per Kelvin per Kilogram), "0.00023885", BritishThermalUnit per Fahrenheit per Pound, 8)
     }
 }

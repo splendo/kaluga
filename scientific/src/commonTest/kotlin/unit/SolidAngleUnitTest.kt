@@ -23,13 +23,13 @@ class SolidAngleUnitTest {
 
     @Test
     fun solidAngleConversionTest() {
-        assertScientificConversion(1, Steradian, 1e+9, Nanosteradian)
-        assertScientificConversion(1, Steradian, 1e+6, Microsteradian)
-        assertScientificConversion(1, Steradian, 1000.0, Millisteradian)
-        assertScientificConversion(1, Steradian, 100.0, Centisteradian)
-        assertScientificConversion(1, Steradian, 10.0, Decisteradian)
+        assertScientificConversion("1", Steradian, "1e+9", Nanosteradian)
+        assertScientificConversion("1", Steradian, "1e+6", Microsteradian)
+        assertScientificConversion("1", Steradian, "1000.0", Millisteradian)
+        assertScientificConversion("1", Steradian, "100.0", Centisteradian)
+        assertScientificConversion("1", Steradian, "10.0", Decisteradian)
 
-        assertScientificConversion(1, Steradian, 0.0796, Spat, 4)
-        assertScientificConversion(1, Steradian, 3282.8063500117, SquareDegree, 10)
+        assertScientificConversion("1", Steradian, "0.0796", Spat, 4)
+        assertScientificConversion("1", Steradian, "3282.8063500117", SquareDegree, 10)
     }
 }

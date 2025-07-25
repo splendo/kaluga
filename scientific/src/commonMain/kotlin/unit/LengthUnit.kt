@@ -152,7 +152,7 @@ data object Inch : ImperialLength() {
 
 @Serializable
 data object Foot : ImperialLength() {
-    private val METER_IN_FEET = 0.3048.toDecimal()
+    private val METER_IN_FEET = "0.3048".toDecimal()
     override val symbol: String = "ft"
     override fun toSIUnit(value: Decimal): Decimal = value * METER_IN_FEET
     override fun fromSIUnit(value: Decimal): Decimal = value / METER_IN_FEET

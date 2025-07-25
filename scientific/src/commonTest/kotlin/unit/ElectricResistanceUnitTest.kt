@@ -23,16 +23,16 @@ class ElectricResistanceUnitTest {
 
     @Test
     fun electricResistanceUnitTestConversionTest() {
-        assertScientificConversion(1, Ohm, 1e+9, Nanoohm)
-        assertScientificConversion(1, Ohm, 1e+6, Microohm)
-        assertScientificConversion(1, Ohm, 1000.0, Milliohm)
-        assertScientificConversion(1, Ohm, 100.0, Centiohm)
-        assertScientificConversion(1, Ohm, 10.0, Deciohm)
-        assertScientificConversion(1, Ohm, 0.1, Decaohm)
-        assertScientificConversion(1, Ohm, 0.01, HectoOhm)
-        assertScientificConversion(1, Ohm, 0.001, Kiloohm)
-        assertScientificConversion(1, Ohm, 1e-6, Megaohm)
-        assertScientificConversion(1, Ohm, 1e-9, Gigaohm)
-        assertScientificConversion(1, Ohm, 1000000000.0, Abohm)
+        assertScientificConversion("1", Ohm, "1e+9", Nanoohm)
+        assertScientificConversion("1", Ohm, "1e+6", Microohm)
+        assertScientificConversion("1", Ohm, "1000.0", Milliohm)
+        assertScientificConversion("1", Ohm, "100.0", Centiohm)
+        assertScientificConversion("1", Ohm, "10.0", Deciohm)
+        assertScientificConversion("1", Ohm, "0.1", Decaohm)
+        assertScientificConversion("1", Ohm, "0.01", HectoOhm)
+        assertScientificConversion("1", Ohm, "0.001", Kiloohm)
+        assertScientificConversion("1", Ohm, "1e-6", Megaohm)
+        assertScientificConversion("1", Ohm, "1e-9", Gigaohm)
+        assertScientificConversion("1", Ohm, "1000000000.0", Abohm)
     }
 }

@@ -23,6 +23,6 @@ class VolumetricFluxUnitTest {
 
     @Test
     fun volumetricFluxConversionTest() {
-        assertScientificConversion(1.0, (CubicMeter per Second per SquareMeter), 196.85, CubicFoot per Minute per SquareFoot, 2)
+        assertScientificConversion("1.0", (CubicMeter per Second per SquareMeter), "196.85", CubicFoot per Minute per SquareFoot, 2)
     }
 }

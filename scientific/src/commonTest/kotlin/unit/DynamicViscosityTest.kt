@@ -24,9 +24,9 @@ class DynamicViscosityTest {
     @Test
     fun dynamicViscosityConversionTest() {
         assertScientificConversion(
-            1.0,
+            "1",
             (Pascal x Second),
-            0.1450377,
+            "0.1450377",
             PoundSquareInch x Millisecond,
             7,
         )

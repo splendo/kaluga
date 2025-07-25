@@ -24,9 +24,9 @@ class JoltUnitTest {
     @Test
     fun joltTest() {
         assertScientificConversion(
-            1,
+            "1",
             (Meter per Second per Second per Second),
-            11.8110236,
+            "11.8110236",
             Foot per Minute per Millisecond per Minute,
             7,
         )

@@ -23,12 +23,12 @@ class TimeUnitTest {
 
     @Test
     fun secondConversionTest() {
-        assertScientificConversion(1.0, Second, 1e+9, Nanosecond)
-        assertScientificConversion(1.0, Second, 1e+6, Microsecond)
-        assertScientificConversion(1.0, Second, 1_000.0, Millisecond)
-        assertScientificConversion(1.0, Second, 100.0, Centisecond)
-        assertScientificConversion(1.0, Second, 10.0, Decisecond)
-        assertScientificConversion(1.0, Second, 0.017, Minute, 3)
-        assertScientificConversion(1.0, Second, 0.00028, Hour, 5)
+        assertScientificConversion("1.0", Second, "1e+9", Nanosecond)
+        assertScientificConversion("1.0", Second, "1e+6", Microsecond)
+        assertScientificConversion("1.0", Second, "1000.0", Millisecond)
+        assertScientificConversion("1.0", Second, "100.0", Centisecond)
+        assertScientificConversion("1.0", Second, "10.0", Decisecond)
+        assertScientificConversion("1.0", Second, "0.017", Minute, 3)
+        assertScientificConversion("1.0", Second, "0.00028", Hour, 5)
     }
 }

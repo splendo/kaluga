@@ -23,6 +23,6 @@ class MolarEnergyUnitTest {
 
     @Test
     fun metricMolarEnergyConversionTest() {
-        assertScientificConversion(1.0, (Joule per Mole), 1.0e+6, Erg per Decimole)
+        assertScientificConversion("1.0", (Joule per Mole), "1.0e+6", Erg per Decimole)
     }
 }

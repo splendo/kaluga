@@ -23,6 +23,6 @@ class LuminousEnergyUnitTest {
 
     @Test
     fun luminousEnergyConversionTest() {
-        assertScientificConversion(1.0, Lumen x Second, 0.027778, Centilumen x Hour, 6)
+        assertScientificConversion("1.0", Lumen x Second, "0.027778", Centilumen x Hour, 6)
     }
 }

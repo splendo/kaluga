@@ -24,9 +24,9 @@ class HeatCapacityUnitTest {
     @Test
     fun heatCapacityConversionTest() {
         assertScientificConversion(
-            1,
+            "1",
             (Joule per Kelvin),
-            0.409757,
+            "0.409757",
             FootPoundForce per Fahrenheit,
             6,
         )

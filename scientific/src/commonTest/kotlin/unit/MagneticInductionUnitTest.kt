@@ -23,16 +23,16 @@ class MagneticInductionUnitTest {
 
     @Test
     fun magneticInductionConversionTest() {
-        assertScientificConversion(1, Tesla, 1e+9, Nanotesla)
-        assertScientificConversion(1, Tesla, 1e+6, Microtesla)
-        assertScientificConversion(1, Tesla, 1000.0, Millitesla)
-        assertScientificConversion(1, Tesla, 100.0, Centitesla)
-        assertScientificConversion(1, Tesla, 10.0, Decitesla)
-        assertScientificConversion(1, Tesla, 0.1, Decatesla)
-        assertScientificConversion(1, Tesla, 0.01, Hectotesla)
-        assertScientificConversion(1, Tesla, 0.001, Kilotesla)
-        assertScientificConversion(1, Tesla, 1e-6, Megatesla)
-        assertScientificConversion(1, Tesla, 1e-9, Gigatesla)
-        assertScientificConversion(1, Tesla, 10000.0, Gauss)
+        assertScientificConversion("1", Tesla, "1e+9", Nanotesla)
+        assertScientificConversion("1", Tesla, "1e+6", Microtesla)
+        assertScientificConversion("1", Tesla, "1000.0", Millitesla)
+        assertScientificConversion("1", Tesla, "100.0", Centitesla)
+        assertScientificConversion("1", Tesla, "10.0", Decitesla)
+        assertScientificConversion("1", Tesla, "0.1", Decatesla)
+        assertScientificConversion("1", Tesla, "0.01", Hectotesla)
+        assertScientificConversion("1", Tesla, "0.001", Kilotesla)
+        assertScientificConversion("1", Tesla, "1e-6", Megatesla)
+        assertScientificConversion("1", Tesla, "1e-9", Gigatesla)
+        assertScientificConversion("1", Tesla, "10000.0", Gauss)
     }
 }

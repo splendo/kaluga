@@ -24,17 +24,17 @@ class TemperatureUnitTest {
 
     @Test
     fun temperatureConversionTest() {
-        assertScientificConversion(1.0, Celsius, 274.15, Kelvin, 2)
-        assertScientificConversion(1.0, Celsius, 33.8, Fahrenheit, 2)
-        assertScientificConversion(1.0, Celsius, 493.47, Rankine, 2)
-        assertScientificConversion(1.0, Kelvin, -457.87, Fahrenheit, 2)
-        assertScientificConversion(1.0, Kelvin, 1.8, Rankine, 2)
+        assertScientificConversion("1.0", Celsius, "274.15", Kelvin, 2)
+        assertScientificConversion("1.0", Celsius, "33.8", Fahrenheit, 2)
+        assertScientificConversion("1.0", Celsius, "493.47", Rankine, 2)
+        assertScientificConversion("1.0", Kelvin, "-457.87", Fahrenheit, 2)
+        assertScientificConversion("1.0", Kelvin, "1.8", Rankine, 2)
 
-        assertScientificConversion(1.0, Kelvin, -272.15, Celsius, 2)
-        assertScientificConversion(1.0, Fahrenheit, -17.22, Celsius, 2)
-        assertScientificConversion(1.0, Rankine, -272.59, Celsius, 2)
-        assertScientificConversion(1.0, Fahrenheit, 255.93, Kelvin, 2)
-        assertScientificConversion(1.0, Rankine, 0.56, Kelvin, 2)
+        assertScientificConversion("1.0", Kelvin, "-272.15", Celsius, 2)
+        assertScientificConversion("1.0", Fahrenheit, "-17.22", Celsius, 2)
+        assertScientificConversion("1.0", Rankine, "-272.59", Celsius, 2)
+        assertScientificConversion("1.0", Fahrenheit, "255.93", Kelvin, 2)
+        assertScientificConversion("1.0", Rankine, "0.56", Kelvin, 2)
     }
 
     @Test

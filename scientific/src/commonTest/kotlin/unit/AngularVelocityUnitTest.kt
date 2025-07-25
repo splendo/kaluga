@@ -23,6 +23,6 @@ class AngularVelocityUnitTest {
 
     @Test
     fun angularVelocityTest() {
-        assertScientificConversion(1, (Radian per Second), 0.1, Centiradian per Millisecond)
+        assertScientificConversion("1", (Radian per Second), "0.1", Centiradian per Millisecond)
     }
 }

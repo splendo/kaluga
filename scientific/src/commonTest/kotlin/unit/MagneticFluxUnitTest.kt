@@ -23,16 +23,16 @@ class MagneticFluxUnitTest {
 
     @Test
     fun luminusIntensityConversionTest() {
-        assertScientificConversion(1, Weber, 1e+9, Nanoweber)
-        assertScientificConversion(1, Weber, 1e+6, Microweber)
-        assertScientificConversion(1, Weber, 1000.0, Milliweber)
-        assertScientificConversion(1, Weber, 100.0, Centiweber)
-        assertScientificConversion(1, Weber, 10.0, Deciweber)
-        assertScientificConversion(1, Weber, 0.1, Decaweber)
-        assertScientificConversion(1, Weber, 0.01, Hectoweber)
-        assertScientificConversion(1, Weber, 0.001, Kiloweber)
-        assertScientificConversion(1, Weber, 1e-6, Megaweber)
-        assertScientificConversion(1, Weber, 1e-9, Gigaweber)
-        assertScientificConversion(1, Weber, 100000000.0, Maxwell)
+        assertScientificConversion("1", Weber, "1e+9", Nanoweber)
+        assertScientificConversion("1", Weber, "1e+6", Microweber)
+        assertScientificConversion("1", Weber, "1000.0", Milliweber)
+        assertScientificConversion("1", Weber, "100.0", Centiweber)
+        assertScientificConversion("1", Weber, "10.0", Deciweber)
+        assertScientificConversion("1", Weber, "0.1", Decaweber)
+        assertScientificConversion("1", Weber, "0.01", Hectoweber)
+        assertScientificConversion("1", Weber, "0.001", Kiloweber)
+        assertScientificConversion("1", Weber, "1e-6", Megaweber)
+        assertScientificConversion("1", Weber, "1e-9", Gigaweber)
+        assertScientificConversion("1", Weber, "100000000.0", Maxwell)
     }
 }

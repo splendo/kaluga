@@ -194,13 +194,19 @@ actual fun FiniteDecimal.pow(n: Int, scale: Int, roundingMode: RoundingMode): Fi
     )
 }
 
-actual fun Number.toFiniteDecimal() = toString().toFiniteDecimal()
+actual fun Number.toFiniteDecimal(): FiniteDecimal? = toDouble().let { doubleValue ->
+    when {
+        doubleValue.isNaN() -> null
+        doubleValue.isInfinite() -> null
+        else -> FiniteDecimal(NSDecimalNumber(doubleValue))
+    }
+}
 actual fun String.toFiniteDecimal(): FiniteDecimal? = when (val decimal = NSDecimalNumber(this)) {
     NSDecimalNumber.notANumber -> null
     else -> FiniteDecimal(decimal)
 }
 
-actual fun FiniteDecimal.toDouble() = nsDecimal.toString().toDouble()
+actual fun FiniteDecimal.toDouble() = nsDecimal.doubleValue
 actual fun FiniteDecimal.toInt() = nsDecimal.intValue
 actual fun FiniteDecimal.toLong() = nsDecimal.longValue
 

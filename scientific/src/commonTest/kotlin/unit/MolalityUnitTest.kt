@@ -23,6 +23,6 @@ class MolalityUnitTest {
 
     @Test
     fun molalityConversionTest() {
-        assertScientificConversion(1, (Mole per Kilogram), 0.283495, Decimole per Ounce, 6)
+        assertScientificConversion("1", (Mole per Kilogram), "0.283495", Decimole per Ounce, 6)
     }
 }

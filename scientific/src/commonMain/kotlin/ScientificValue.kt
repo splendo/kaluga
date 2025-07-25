@@ -25,7 +25,13 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
 import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.ScientificUnit
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 /**
  * A Value in a given [ScientificUnit]
@@ -62,15 +68,27 @@ interface ScientificValue<Quantity : PhysicalQuantity, Unit : ScientificUnit<Qua
  * @param unit the [Unit] component
  */
 @Serializable
-data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(override val value: Double, override val unit: Unit) :
+data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(@Serializable(with = DecimalAsDoubleSerializer::class) override val decimalValue: Decimal, override val unit: Unit) :
     ScientificValue<Quantity, Unit> {
 
     /**
      * Constructor
-     * @param value the [Decimal] component
+     * @param value the [Double] component
      * @param unit the [Unit] component
      */
-    constructor(value: Decimal, unit: Unit) : this(value.toDouble(), unit)
+    constructor(value: Double, unit: Unit) : this(value.toDecimal(), unit)
+
+    override val value: Double by lazy { decimalValue.toDouble() }
+}
+
+class DecimalAsDoubleSerializer : KSerializer<Decimal> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("decimal", PrimitiveKind.DOUBLE)
+
+    override fun serialize(encoder: Encoder, value: Decimal) {
+        encoder.encodeDouble(value.toDouble())
+    }
+
+    override fun deserialize(decoder: Decoder): Decimal = decoder.decodeDouble().toDecimal()
 }
 
 // Calculation

@@ -24,9 +24,9 @@ class MomentumUnitTest {
     @Test
     fun metricMomentumConversionTest() {
         assertScientificConversion(
-            1.0,
+            "1.0",
             (Kilogram x (Meter per Second)),
-            3600,
+            "3600",
             Gram x (Kilometer per Hour),
         )
     }

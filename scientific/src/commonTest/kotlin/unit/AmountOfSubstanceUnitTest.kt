@@ -23,15 +23,15 @@ class AmountOfSubstanceUnitTest {
 
     @Test
     fun amountOfSubstanceConversionTest() {
-        assertScientificConversion(1, Mole, 1e+9, Nanomole)
-        assertScientificConversion(1, Mole, 1000000.0, Micromole)
-        assertScientificConversion(1, Mole, 1000.0, Millimole)
-        assertScientificConversion(1, Mole, 100.0, Centimole)
-        assertScientificConversion(1, Mole, 10.0, Decimole)
-        assertScientificConversion(1, Mole, 0.1, Decamole)
-        assertScientificConversion(1, Mole, 0.01, Hectomole)
-        assertScientificConversion(1, Mole, 0.001, Kilomole)
-        assertScientificConversion(1, Mole, 1e-6, Megamole)
-        assertScientificConversion(1, Mole, 1e-9, Gigamole)
+        assertScientificConversion("1", Mole, "1e+9", Nanomole)
+        assertScientificConversion("1", Mole, "1000000.0", Micromole)
+        assertScientificConversion("1", Mole, "1000.0", Millimole)
+        assertScientificConversion("1", Mole, "100.0", Centimole)
+        assertScientificConversion("1", Mole, "10.0", Decimole)
+        assertScientificConversion("1", Mole, "0.1", Decamole)
+        assertScientificConversion("1", Mole, "0.01", Hectomole)
+        assertScientificConversion("1", Mole, "0.001", Kilomole)
+        assertScientificConversion("1", Mole, "1e-6", Megamole)
+        assertScientificConversion("1", Mole, "1e-9", Gigamole)
     }
 }

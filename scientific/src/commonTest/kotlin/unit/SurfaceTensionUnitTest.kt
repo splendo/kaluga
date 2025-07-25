@@ -23,7 +23,7 @@ class SurfaceTensionUnitTest {
 
     @Test
     fun surfaceTensionConversionTest() {
-        assertScientificConversion(1.0, (Newton per Centimeter), 6.85, PoundForce per Foot, 2)
-        assertScientificConversion(1.0, (ImperialTonForce per Foot), 1.12, UsTonForce per Foot, 2)
+        assertScientificConversion("1.0", (Newton per Centimeter), "6.85", PoundForce per Foot, 2)
+        assertScientificConversion("1.0", (ImperialTonForce per Foot), "1.12", UsTonForce per Foot, 2)
     }
 }
