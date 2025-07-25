@@ -246,7 +246,7 @@ infix fun ImperialSpeed.per(time: Time): ImperialAcceleration = CombinedImperial
 @Serializable
 data object GUnit : MetricAndImperialAcceleration(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration> {
 
-    private val standardGravity = 9.80665.toDecimal()
+    private val standardGravity = "9.80665".toDecimal()
 
     override val symbol: String = "g-unit"
     override val speed = Meter per Second

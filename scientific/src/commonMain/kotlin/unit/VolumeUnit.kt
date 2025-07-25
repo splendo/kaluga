@@ -408,7 +408,7 @@ data object ImperialQuart : UKImperialVolume() {
 @Serializable
 data object ImperialGallon : UKImperialVolume() {
     override val symbol: String = "gal"
-    private val LITER_PER_GALLON = 4.54609.toDecimal()
+    private val LITER_PER_GALLON = "4.54609".toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = Liter.toSIUnit(value * LITER_PER_GALLON)
     override fun fromSIUnit(value: Decimal): Decimal = Liter.fromSIUnit(value) / LITER_PER_GALLON
 }

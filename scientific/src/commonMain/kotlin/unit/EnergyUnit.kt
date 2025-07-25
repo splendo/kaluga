@@ -326,8 +326,8 @@ data object Electronvolt : MetricNamedEnergyUnit(), MetricBaseUnit<MeasurementSy
     override val symbol: String = "eV"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Energy
-    override fun fromSIUnit(value: Decimal): Decimal = value.div(elementaryCharge.decimalValue, 29)
-    override fun toSIUnit(value: Decimal): Decimal = value.times(elementaryCharge.decimalValue, 29)
+    override fun fromSIUnit(value: Decimal): Decimal = value.div(elementaryCharge.decimalValue)
+    override fun toSIUnit(value: Decimal): Decimal = value.times(elementaryCharge.decimalValue)
 }
 
 @Serializable
@@ -368,7 +368,7 @@ data object Gigaelectronvolt : ElectronvoltMultiple(), MetricMultipleUnit<Measur
 interface CalorieUnit : MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Energy>
 
 @Serializable
-data object Calorie : MetricAndImperialNamedEnergyUnit(), CalorieUnit by CalorieBase(4.184.toDecimal()) {
+data object Calorie : MetricAndImperialNamedEnergyUnit(), CalorieUnit by CalorieBase("4.184".toDecimal()) {
 
     internal class CalorieBase(val jouleInCalorie: Decimal, symbolPostfix: String = "") : CalorieUnit {
         override val symbol: String = "cal$symbolPostfix"
@@ -379,7 +379,7 @@ data object Calorie : MetricAndImperialNamedEnergyUnit(), CalorieUnit by Calorie
     }
 
     @Serializable
-    data object IT : MetricAndImperialNamedEnergyUnit(), CalorieUnit by CalorieBase(4.1868.toDecimal(), "-IT")
+    data object IT : MetricAndImperialNamedEnergyUnit(), CalorieUnit by CalorieBase("4.1868".toDecimal(), "-IT")
 }
 
 @Serializable

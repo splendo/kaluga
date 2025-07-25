@@ -17,35 +17,55 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.round
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlin.test.assertEquals
 
 fun <Quantity : PhysicalQuantity> assertScientificConversion(
-    left: Number,
+    left: String,
     leftUnit: ScientificUnit<Quantity>,
-    expectedRight: Number,
+    expectedRight: String,
+    rightUnit: ScientificUnit<Quantity>,
+    bidirectional: Boolean = true,
+) = assertScientificConversion(left.toDecimal(), leftUnit, expectedRight.toDecimal(), rightUnit, bidirectional)
+
+fun <Quantity : PhysicalQuantity> assertScientificConversion(
+    left: Decimal,
+    leftUnit: ScientificUnit<Quantity>,
+    expectedRight: Decimal,
     rightUnit: ScientificUnit<Quantity>,
     bidirectional: Boolean = true,
 ) {
-    assertEquals(expectedRight.toDouble(), leftUnit.convert(left, rightUnit))
+    assertEquals(expectedRight.round(20), leftUnit.convert(left, rightUnit).round(20))
     if (bidirectional) {
-        assertEquals(left.toDouble(), rightUnit.convert(expectedRight, leftUnit))
+        assertEquals(left.round(20), rightUnit.convert(expectedRight, leftUnit).round(20))
     }
 }
 
 fun <Quantity : PhysicalQuantity> assertScientificConversion(
-    left: Number,
+    left: String,
     leftUnit: ScientificUnit<Quantity>,
-    expectedRight: Number,
+    expectedRight: String,
+    rightUnit: ScientificUnit<Quantity>,
+    round: Int,
+    bidirectional: Boolean = true,
+) = assertScientificConversion(left.toDecimal(), leftUnit, expectedRight.toDecimal(), rightUnit, round, bidirectional)
+
+fun <Quantity : PhysicalQuantity> assertScientificConversion(
+    left: Decimal,
+    leftUnit: ScientificUnit<Quantity>,
+    expectedRight: Decimal,
     rightUnit: ScientificUnit<Quantity>,
     round: Int,
     bidirectional: Boolean = true,
 ) {
-    assertEquals(expectedRight.toDouble(), leftUnit.convert(left, rightUnit, round))
+    assertEquals(expectedRight.round(round), leftUnit.convert(left, rightUnit, round))
     if (bidirectional) {
         assertEquals(
-            left.toDouble(),
-            rightUnit.convert(leftUnit.convert(left, rightUnit), leftUnit, round),
+            left.round(round),
+            rightUnit.convert(leftUnit.convert(left, rightUnit), leftUnit, round)
         )
     }
 }

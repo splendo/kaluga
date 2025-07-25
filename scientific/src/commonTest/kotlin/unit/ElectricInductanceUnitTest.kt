@@ -23,16 +23,16 @@ class ElectricInductanceUnitTest {
 
     @Test
     fun electricInductanceConversionTest() {
-        assertScientificConversion(1, Henry, 1e+9, Nanohenry)
-        assertScientificConversion(1, Henry, 1e+6, Microhenry)
-        assertScientificConversion(1, Henry, 1000.0, Millihenry)
-        assertScientificConversion(1, Henry, 100.0, Centihenry)
-        assertScientificConversion(1, Henry, 10.0, Decihenry)
-        assertScientificConversion(1, Henry, 0.1, Decahenry)
-        assertScientificConversion(1, Henry, 0.01, Hectohenry)
-        assertScientificConversion(1, Henry, 0.001, Kilohenry)
-        assertScientificConversion(1, Henry, 1e-6, Megahenry)
-        assertScientificConversion(1, Henry, 1e-9, Gigahenry)
-        assertScientificConversion(1, Henry, 1000000000.0, Abhenry)
+        assertScientificConversion("1", Henry, "1e+9", Nanohenry)
+        assertScientificConversion("1", Henry, "1e+6", Microhenry)
+        assertScientificConversion("1", Henry, "1000.0", Millihenry)
+        assertScientificConversion("1", Henry, "100.0", Centihenry)
+        assertScientificConversion("1", Henry, "10.0", Decihenry)
+        assertScientificConversion("1", Henry, "0.1", Decahenry)
+        assertScientificConversion("1", Henry, "0.01", Hectohenry)
+        assertScientificConversion("1", Henry, "0.001", Kilohenry)
+        assertScientificConversion("1", Henry, "1e-6", Megahenry)
+        assertScientificConversion("1", Henry, "1e-9", Gigahenry)
+        assertScientificConversion("1", Henry, "1000000000.0", Abhenry)
     }
 }

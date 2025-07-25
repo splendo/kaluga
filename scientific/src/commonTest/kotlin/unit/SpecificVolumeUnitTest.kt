@@ -23,7 +23,7 @@ class SpecificVolumeUnitTest {
 
     @Test
     fun specificVolumeConversionTest() {
-        assertScientificConversion(1.0, (CubicMeter per Kilogram), 16.02, CubicFoot per Pound, 2)
-        assertScientificConversion(1.0, (ImperialTonForce per Foot), 1.12, UsTonForce per Foot, 2)
+        assertScientificConversion("1.0", (CubicMeter per Kilogram), "16.02", CubicFoot per Pound, 2)
+        assertScientificConversion("1.0", (ImperialTonForce per Foot), "1.12", UsTonForce per Foot, 2)
     }
 }

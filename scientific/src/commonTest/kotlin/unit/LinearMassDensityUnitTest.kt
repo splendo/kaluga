@@ -23,18 +23,18 @@ class LinearMassDensityUnitTest {
 
     @Test
     fun linearMassDensityConversionTest() {
-        assertScientificConversion(1, (Kilogram per Meter), 0.671969, (Pound per Foot), 6)
+        assertScientificConversion("1", (Kilogram per Meter), "0.671969", (Pound per Foot), 6)
         assertScientificConversion(
-            1,
+            "1",
             (Kilogram per Meter),
-            0.671969,
+            "0.671969",
             (Pound.ukImperial per Foot),
             6,
         )
         assertScientificConversion(
-            1,
+            "1",
             (Kilogram per Meter),
-            0.671969,
+            "0.671969",
             (Pound.usCustomary per Foot),
             6,
         )

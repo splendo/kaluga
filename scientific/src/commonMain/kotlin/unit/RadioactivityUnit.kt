@@ -111,7 +111,7 @@ data object Gigabecquerel : BecquerelMultiple(), MetricMultipleUnit<MeasurementS
 
 @Serializable
 data object Rutherford : Radioactivity() {
-    private val RUTHERFORD_IN_BECQUEREL = 0.000001.toDecimal()
+    private val RUTHERFORD_IN_BECQUEREL = "0.000001".toDecimal()
     override val symbol = "Rd"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Radioactivity

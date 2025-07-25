@@ -23,6 +23,6 @@ class LuminousExposureUnitTest {
 
     @Test
     fun luminousExposureConversionTest() {
-        assertScientificConversion(1, (Lux x Second), 0.001548, FootCandle x Minute, 6)
+        assertScientificConversion("1", (Lux x Second), "0.001548", FootCandle x Minute, 6)
     }
 }

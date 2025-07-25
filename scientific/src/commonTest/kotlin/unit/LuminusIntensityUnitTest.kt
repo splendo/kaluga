@@ -23,15 +23,15 @@ class LuminusIntensityUnitTest {
 
     @Test
     fun luminusIntensityConversionTest() {
-        assertScientificConversion(1, Candela, 1e+9, Nanocandela)
-        assertScientificConversion(1, Candela, 1e+6, Microcandela)
-        assertScientificConversion(1, Candela, 1000.0, Millicandela)
-        assertScientificConversion(1, Candela, 100.0, Centicandela)
-        assertScientificConversion(1, Candela, 10.0, Decicandela)
-        assertScientificConversion(1, Candela, 0.1, Decacandela)
-        assertScientificConversion(1, Candela, 0.01, Hectocandela)
-        assertScientificConversion(1, Candela, 0.001, Kilocandela)
-        assertScientificConversion(1, Candela, 1e-6, Megacandela)
-        assertScientificConversion(1, Candela, 1e-9, Gigacandela)
+        assertScientificConversion("1", Candela, "1e+9", Nanocandela)
+        assertScientificConversion("1", Candela, "1e+6", Microcandela)
+        assertScientificConversion("1", Candela, "1000.0", Millicandela)
+        assertScientificConversion("1", Candela, "100.0", Centicandela)
+        assertScientificConversion("1", Candela, "10.0", Decicandela)
+        assertScientificConversion("1", Candela, "0.1", Decacandela)
+        assertScientificConversion("1", Candela, "0.01", Hectocandela)
+        assertScientificConversion("1", Candela, "0.001", Kilocandela)
+        assertScientificConversion("1", Candela, "1e-6", Megacandela)
+        assertScientificConversion("1", Candela, "1e-9", Gigacandela)
     }
 }

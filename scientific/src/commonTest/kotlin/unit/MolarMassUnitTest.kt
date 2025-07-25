@@ -23,6 +23,6 @@ class MolarMassUnitTest {
 
     @Test
     fun metricMolarMassConversionTest() {
-        assertScientificConversion(1.0, (Kilogram per Mole), 0.0001, Tonne per Decimole)
+        assertScientificConversion("1.0", (Kilogram per Mole), "0.0001", Tonne per Decimole)
     }
 }

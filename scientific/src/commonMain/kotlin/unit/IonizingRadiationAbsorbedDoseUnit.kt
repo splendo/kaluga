@@ -110,7 +110,7 @@ data object Gigagray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.Metr
 
 @Serializable
 data object Rad : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose> {
-    private val GRAY_IN_RAD = 0.01.toDecimal()
+    private val GRAY_IN_RAD = "0.01".toDecimal()
     override val symbol = "rad"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.IonizingRadiationAbsorbedDose

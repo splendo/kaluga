@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.scientificSerializationModule
@@ -80,7 +83,7 @@ class UndefinedScientificUnitTest {
         assertEquals(Hour.asUndefined(), hourReciprocal.inverse)
         assertSerialization(hourReciprocal)
 
-        assertEquals(1.0 / 60.0, hourReciprocal.convert(1, Minute.reciprocal()).toDouble())
+        assertEquals((1.0.toDecimal() / 3600.0.toDecimal()) * 60.toDecimal(), hourReciprocal.convert(1.toDecimal(), Minute.reciprocal()))
     }
 
     @Test

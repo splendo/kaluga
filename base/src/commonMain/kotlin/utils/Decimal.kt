@@ -46,7 +46,7 @@ sealed class Decimal : Comparable<Decimal> {
      * @param finiteDecimal the [FiniteDecimal] describing the finite number
      */
     data class Finite(internal val finiteDecimal: FiniteDecimal) : Decimal() {
-        override fun equals(other: Any?): Boolean = other is Finite && finiteDecimal == other.finiteDecimal
+        override fun equals(other: Any?): Boolean = other is Finite && finiteDecimal.compareTo(other.finiteDecimal) == 0
 
         override fun hashCode(): Int = finiteDecimal.hashCode()
 

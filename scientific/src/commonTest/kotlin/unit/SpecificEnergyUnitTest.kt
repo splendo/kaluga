@@ -23,20 +23,22 @@ class SpecificEnergyUnitTest {
 
     @Test
     fun specificEnergyConversionTest() {
-        assertScientificConversion(1.0, (Joule per Gram), 0.27778, WattHour per Kilogram, 5)
-        assertScientificConversion(1.0, (WattHour per Pound), 2240, WattHour per ImperialTon)
-        assertScientificConversion(1.0, (WattHour per Pound), 2000, WattHour per UsTon)
+        assertScientificConversion("1.0", (Joule per Gram), "0.27778", WattHour per Kilogram, 5)
+        assertScientificConversion("1.0", (WattHour per Pound), "2240", WattHour per ImperialTon)
+        assertScientificConversion("1.0", (WattHour per Pound), "2000", WattHour per UsTon)
         assertScientificConversion(
-            1.0,
+            "1.0",
             (BritishThermalUnit per Pound),
-            2240,
+            "2240",
             BritishThermalUnit per ImperialTon,
+            10,
         )
         assertScientificConversion(
-            1.0,
+            "1.0",
             (BritishThermalUnit per Pound),
-            2000,
+            "2000",
             BritishThermalUnit per UsTon,
+            10,
         )
     }
 }

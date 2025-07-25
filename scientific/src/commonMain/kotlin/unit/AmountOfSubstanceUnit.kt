@@ -98,7 +98,7 @@ data object Gigamole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.Metr
 /**
  * The proportionality factor that relates the number of constituent particles (usually molecules, atoms or ions) in a sample with the amount of substance in that sample
  */
-val AvogadroConstant = 6.02214076e23.toDecimal()
+val AvogadroConstant = "6.02214076e23".toDecimal()
 
 internal fun SerializersModuleBuilder.setupForAmountOfSubstance() {
     polymorphic(AmountOfSubstance::class) {

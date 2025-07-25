@@ -23,6 +23,6 @@ class SpeedUnitTest {
 
     @Test
     fun metricToImperialSpeedConversionTest() {
-        assertScientificConversion(1.0, (Meter per Minute), 196.85, Foot per Hour, 2)
+        assertScientificConversion("1.0", (Meter per Minute), "196.85", Foot per Hour, 2)
     }
 }

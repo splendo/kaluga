@@ -23,6 +23,6 @@ class AreaDensityUnitTest {
 
     @Test
     fun areaDensityConversionTest() {
-        assertScientificConversion(1, (Kilogram per SquareMeter), 0.204816, Pound per SquareFoot, 6)
+        assertScientificConversion("1", (Kilogram per SquareMeter), "0.204816", Pound per SquareFoot, 6)
     }
 }

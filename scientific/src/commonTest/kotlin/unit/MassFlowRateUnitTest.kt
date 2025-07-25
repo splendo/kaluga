@@ -23,6 +23,6 @@ class MassFlowRateUnitTest {
 
     @Test
     fun massFlowRateConversionTest() {
-        assertScientificConversion(1.0, (Kilogram per Second), 132.28, Pound per Minute, 2)
+        assertScientificConversion("1.0", (Kilogram per Second), "132.28", Pound per Minute, 2)
     }
 }
