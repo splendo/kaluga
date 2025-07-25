@@ -19,19 +19,23 @@ package com.splendo.kaluga.scientific.converter
 
 import com.splendo.kaluga.scientific.converter.temperature.div
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Fahrenheit
+import com.splendo.kaluga.scientific.unit.Horsepower
+import com.splendo.kaluga.scientific.unit.Kelvin
+import com.splendo.kaluga.scientific.unit.Rankine
+import com.splendo.kaluga.scientific.unit.Watt
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class ThermalResistanceUnitTest {
 
     @Test
     fun thermalResistanceFromTemperatureAndPowerTest() {
-        assertEquals(1(Kelvin per Watt), 2(Kelvin) / 2(Watt))
-        assertEquals(1(Fahrenheit per Watt), 2(Fahrenheit) / 2(Watt))
-        assertEquals(1(Rankine per Watt), 2(Rankine) / 2(Watt))
-        assertEquals(1(Kelvin per Horsepower), 2(Kelvin) / 2(Horsepower))
-        assertEquals(1(Fahrenheit per Horsepower), 2(Fahrenheit) / 2(Horsepower))
-        assertEquals(1(Rankine per Horsepower), 2(Rankine) / 2(Horsepower))
+        assertEqualScientificValue(1(Kelvin per Watt), 2(Kelvin) / 2(Watt))
+        assertEqualScientificValue(1(Fahrenheit per Watt), 2(Fahrenheit) / 2(Watt))
+        assertEqualScientificValue(1(Rankine per Watt), 2(Rankine) / 2(Watt))
+        assertEqualScientificValue(1(Kelvin per Horsepower), 2(Kelvin) / 2(Horsepower))
+        assertEqualScientificValue(1(Fahrenheit per Horsepower), 2(Fahrenheit) / 2(Horsepower))
+        assertEqualScientificValue(1(Rankine per Horsepower), 2(Rankine) / 2(Horsepower))
     }
 }

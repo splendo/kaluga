@@ -36,14 +36,13 @@ import com.splendo.kaluga.scientific.unit.Mole
 import com.splendo.kaluga.scientific.unit.WattHour
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class AmountOfSubstanceUnitTest {
 
     @Test
     fun amountOfSubstanceFromCatalysisAndTimeTest() {
-        assertEquals(24(Mole), 2(Decikatal) * 2(Minute))
-        assertEquals(24(Mole), 2(Minute) * 2(Decikatal))
+        assertEqualScientificValue(24(Mole), 2(Decikatal) * 2(Minute))
+        assertEqualScientificValue(24(Mole), 2(Minute) * 2(Decikatal))
     }
 
     @Test

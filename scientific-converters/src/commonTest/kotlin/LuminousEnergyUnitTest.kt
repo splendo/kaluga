@@ -23,25 +23,30 @@ import com.splendo.kaluga.scientific.converter.luminousExposure.times
 import com.splendo.kaluga.scientific.converter.luminousFlux.times
 import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.FootCandle
+import com.splendo.kaluga.scientific.unit.Lumen
+import com.splendo.kaluga.scientific.unit.Lux
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.SquareFoot
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.x
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class LuminousEnergyUnitTest {
 
     @Test
     fun luminousEnergyFromLuminousExposureAndAreaTest() {
-        assertEquals(4(Lumen x Second), 2(Lux x Second) * 2(SquareMeter))
-        assertEquals(4(Lumen x Second), 2(SquareMeter) * 2(Lux x Second))
-        assertEquals(4(Lumen x Second), 2(FootCandle x Second) * 2(SquareFoot))
-        assertEquals(4(Lumen x Second), 2(SquareFoot) * 2(FootCandle x Second))
-        assertEquals(4(Lumen x Second), 2(Lux x Second) * 2(SquareMeter).convert(SquareFoot))
-        assertEquals(4(Lumen x Second), 2(SquareMeter).convert(SquareFoot) * 2(Lux x Second))
+        assertEqualScientificValue(4(Lumen x Second), 2(Lux x Second) * 2(SquareMeter))
+        assertEqualScientificValue(4(Lumen x Second), 2(SquareMeter) * 2(Lux x Second))
+        assertEqualScientificValue(4(Lumen x Second), 2(FootCandle x Second) * 2(SquareFoot))
+        assertEqualScientificValue(4(Lumen x Second), 2(SquareFoot) * 2(FootCandle x Second))
+        assertEqualScientificValue(4(Lumen x Second), 2(Lux x Second) * 2(SquareMeter).convert(SquareFoot))
+        assertEqualScientificValue(4(Lumen x Second), 2(SquareMeter).convert(SquareFoot) * 2(Lux x Second))
     }
 
     @Test
     fun luminousEnergyFromLuminousFluxAndTimeTest() {
-        assertEquals(4(Lumen x Second), 2(Lumen) * 2(Second))
-        assertEquals(4(Lumen x Second), 2(Second) * 2(Lumen))
+        assertEqualScientificValue(4(Lumen x Second), 2(Lumen) * 2(Second))
+        assertEqualScientificValue(4(Lumen x Second), 2(Second) * 2(Lumen))
     }
 }

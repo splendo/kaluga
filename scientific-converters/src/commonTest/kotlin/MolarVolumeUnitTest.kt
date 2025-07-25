@@ -25,19 +25,29 @@ import com.splendo.kaluga.scientific.converter.specificVolume.div
 import com.splendo.kaluga.scientific.converter.specificVolume.times
 import com.splendo.kaluga.scientific.converter.volume.div
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.AcreFoot
+import com.splendo.kaluga.scientific.unit.CubicFoot
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.Decimole
+import com.splendo.kaluga.scientific.unit.Density
+import com.splendo.kaluga.scientific.unit.ImperialPint
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Molarity
+import com.splendo.kaluga.scientific.unit.Pound
+import com.splendo.kaluga.scientific.unit.SpecificVolume
+import com.splendo.kaluga.scientific.unit.Volume
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class MolarVolumeUnitTest {
 
     @Test
     fun molarVolumeFromInvertedMolarityTest() {
-        assertEquals(0.5(CubicMeter per Decimole), 2(Decimole per CubicMeter).molarVolume())
-        assertEquals(0.5(CubicFoot per Decimole), 2(Decimole per CubicFoot).molarVolume())
-        assertEquals(0.5(ImperialPint per Decimole), 2(Decimole per ImperialPint).molarVolume())
-        assertEquals(0.5(AcreFoot per Decimole), 2(Decimole per AcreFoot).molarVolume())
-        assertEquals(
+        assertEqualScientificValue(0.5(CubicMeter per Decimole), 2(Decimole per CubicMeter).molarVolume())
+        assertEqualScientificValue(0.5(CubicFoot per Decimole), 2(Decimole per CubicFoot).molarVolume())
+        assertEqualScientificValue(0.5(ImperialPint per Decimole), 2(Decimole per ImperialPint).molarVolume())
+        assertEqualScientificValue(0.5(AcreFoot per Decimole), 2(Decimole per AcreFoot).molarVolume())
+        assertEqualScientificValue(
             0.5(CubicMeter per Decimole),
             2(Decimole per CubicMeter).convert((Decimole per CubicFoot) as Molarity).molarVolume(),
         )
@@ -45,11 +55,11 @@ class MolarVolumeUnitTest {
 
     @Test
     fun molarVolumeFromMolarMassAndDensityTest() {
-        assertEquals(1(CubicMeter per Decimole), 2(Kilogram per Decimole) / 2(Kilogram per CubicMeter))
-        assertEquals(1(CubicFoot per Decimole), 2(Pound per Decimole) / 2(Pound per CubicFoot))
-        assertEquals(1(ImperialPint per Decimole), 2(Pound per Decimole) / 2(Pound per ImperialPint))
-        assertEquals(1(AcreFoot per Decimole), 2(Pound per Decimole) / 2(Pound per AcreFoot))
-        assertEquals(
+        assertEqualScientificValue(1(CubicMeter per Decimole), 2(Kilogram per Decimole) / 2(Kilogram per CubicMeter))
+        assertEqualScientificValue(1(CubicFoot per Decimole), 2(Pound per Decimole) / 2(Pound per CubicFoot))
+        assertEqualScientificValue(1(ImperialPint per Decimole), 2(Pound per Decimole) / 2(Pound per ImperialPint))
+        assertEqualScientificValue(1(AcreFoot per Decimole), 2(Pound per Decimole) / 2(Pound per AcreFoot))
+        assertEqualScientificValue(
             1(CubicMeter per Decimole),
             2(Kilogram per Decimole) / 2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density),
         )
@@ -57,9 +67,9 @@ class MolarVolumeUnitTest {
 
     @Test
     fun molarVolumeFromSpecificVolumeAndMolalityTest() {
-        assertEquals(1(CubicMeter per Decimole), 2(CubicMeter per Kilogram) / 2(Decimole per Kilogram))
-        assertEquals(1(CubicFoot per Decimole), 2(CubicFoot per Pound) / 2(Decimole per Pound))
-        assertEquals(1(ImperialPint per Decimole), 2(ImperialPint per Pound) / 2(Decimole per Pound))
+        assertEqualScientificValue(1(CubicMeter per Decimole), 2(CubicMeter per Kilogram) / 2(Decimole per Kilogram))
+        assertEqualScientificValue(1(CubicFoot per Decimole), 2(CubicFoot per Pound) / 2(Decimole per Pound))
+        assertEqualScientificValue(1(ImperialPint per Decimole), 2(ImperialPint per Pound) / 2(Decimole per Pound))
         assertEqualScientificValue(1(AcreFoot per Decimole), 2(AcreFoot per Pound) / 2(Decimole per Pound), 8)
         assertEqualScientificValue(
             1(CubicMeter per Decimole),
@@ -70,14 +80,14 @@ class MolarVolumeUnitTest {
 
     @Test
     fun molarVolumeFromSpecificVolumeAndMolarMassTest() {
-        assertEquals(4(CubicMeter per Decimole), 2(Kilogram per Decimole) * 2(CubicMeter per Kilogram))
-        assertEquals(4(CubicMeter per Decimole), 2(CubicMeter per Kilogram) * 2(Kilogram per Decimole))
-        assertEquals(4(CubicFoot per Decimole), 2(Pound per Decimole) * 2(CubicFoot per Pound))
-        assertEquals(4(CubicFoot per Decimole), 2(CubicFoot per Pound) * 2(Pound per Decimole))
-        assertEquals(4(ImperialPint per Decimole), 2(Pound per Decimole) * 2(ImperialPint per Pound))
-        assertEquals(4(ImperialPint per Decimole), 2(ImperialPint per Pound) * 2(Pound per Decimole))
-        assertEquals(4(AcreFoot per Decimole), 2(Pound per Decimole) * 2(AcreFoot per Pound))
-        assertEquals(4(AcreFoot per Decimole), 2(AcreFoot per Pound) * 2(Pound per Decimole))
+        assertEqualScientificValue(4(CubicMeter per Decimole), 2(Kilogram per Decimole) * 2(CubicMeter per Kilogram))
+        assertEqualScientificValue(4(CubicMeter per Decimole), 2(CubicMeter per Kilogram) * 2(Kilogram per Decimole))
+        assertEqualScientificValue(4(CubicFoot per Decimole), 2(Pound per Decimole) * 2(CubicFoot per Pound))
+        assertEqualScientificValue(4(CubicFoot per Decimole), 2(CubicFoot per Pound) * 2(Pound per Decimole))
+        assertEqualScientificValue(4(ImperialPint per Decimole), 2(Pound per Decimole) * 2(ImperialPint per Pound))
+        assertEqualScientificValue(4(ImperialPint per Decimole), 2(ImperialPint per Pound) * 2(Pound per Decimole))
+        assertEqualScientificValue(4(AcreFoot per Decimole), 2(Pound per Decimole) * 2(AcreFoot per Pound))
+        assertEqualScientificValue(4(AcreFoot per Decimole), 2(AcreFoot per Pound) * 2(Pound per Decimole))
         assertEqualScientificValue(
             4(CubicMeter per Decimole),
             2(Kilogram per Decimole) * 2(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume),
@@ -92,10 +102,10 @@ class MolarVolumeUnitTest {
 
     @Test
     fun molarVolumeFromVolumeAndAmountOfSubstanceTest() {
-        assertEquals(1(CubicMeter per Decimole), 2(CubicMeter) / 2(Decimole))
-        assertEquals(1(CubicFoot per Decimole), 2(CubicFoot) / 2(Decimole))
-        assertEquals(1(ImperialPint per Decimole), 2(ImperialPint) / 2(Decimole))
-        assertEquals(1(AcreFoot per Decimole), 2(AcreFoot) / 2(Decimole))
-        assertEquals(1(CubicMeter per Decimole), 2(CubicMeter).convert(CubicFoot as Volume) / 2(Decimole))
+        assertEqualScientificValue(1(CubicMeter per Decimole), 2(CubicMeter) / 2(Decimole))
+        assertEqualScientificValue(1(CubicFoot per Decimole), 2(CubicFoot) / 2(Decimole))
+        assertEqualScientificValue(1(ImperialPint per Decimole), 2(ImperialPint) / 2(Decimole))
+        assertEqualScientificValue(1(AcreFoot per Decimole), 2(AcreFoot) / 2(Decimole))
+        assertEqualScientificValue(1(CubicMeter per Decimole), 2(CubicMeter).convert(CubicFoot as Volume) / 2(Decimole))
     }
 }

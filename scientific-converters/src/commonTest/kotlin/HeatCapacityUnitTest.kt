@@ -22,55 +22,65 @@ import com.splendo.kaluga.scientific.converter.energy.div
 import com.splendo.kaluga.scientific.converter.specificHeatCapacity.times
 import com.splendo.kaluga.scientific.converter.weight.times
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Calorie
+import com.splendo.kaluga.scientific.unit.Celsius
+import com.splendo.kaluga.scientific.unit.Fahrenheit
+import com.splendo.kaluga.scientific.unit.HorsepowerHour
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.Kelvin
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Pound
+import com.splendo.kaluga.scientific.unit.Rankine
+import com.splendo.kaluga.scientific.unit.per
+import com.splendo.kaluga.scientific.unit.ukImperial
+import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class HeatCapacityUnitTest {
 
     @Test
     fun heatCapacityFromEnergyAndTemperature() {
-        assertEquals(1(Joule per Celsius), 2(Joule) / 2(Celsius))
-        assertEquals(1(Calorie per Kelvin), 2(Calorie) / 2(Kelvin))
-        assertEquals(1(HorsepowerHour per Celsius), 2(HorsepowerHour) / 2(Celsius))
-        assertEquals(1(Calorie per Fahrenheit), 2(Calorie) / 2(Fahrenheit))
-        assertEquals(1(HorsepowerHour per Fahrenheit), 2(HorsepowerHour) / 2(Fahrenheit))
-        assertEquals(1(Joule per Kelvin), 2(Joule) / 2(Kelvin).convert(Rankine))
+        assertEqualScientificValue(1(Joule per Celsius), 2(Joule) / 2(Celsius))
+        assertEqualScientificValue(1(Calorie per Kelvin), 2(Calorie) / 2(Kelvin))
+        assertEqualScientificValue(1(HorsepowerHour per Celsius), 2(HorsepowerHour) / 2(Celsius))
+        assertEqualScientificValue(1(Calorie per Fahrenheit), 2(Calorie) / 2(Fahrenheit))
+        assertEqualScientificValue(1(HorsepowerHour per Fahrenheit), 2(HorsepowerHour) / 2(Fahrenheit))
+        assertEqualScientificValue(1(Joule per Kelvin), 2(Joule) / 2(Kelvin).convert(Rankine))
     }
 
     @Test
     fun heatCapacityFromWeightAndSpecificHeatCapacityTest() {
-        assertEquals(4(Joule per Celsius), 2((Joule per Kilogram) per Celsius) * 2(Kilogram))
-        assertEquals(4(Joule per Celsius), 2(Kilogram) * 2((Joule per Kilogram) per Celsius))
-        assertEquals(
+        assertEqualScientificValue(4(Joule per Celsius), 2((Joule per Kilogram) per Celsius) * 2(Kilogram))
+        assertEqualScientificValue(4(Joule per Celsius), 2(Kilogram) * 2((Joule per Kilogram) per Celsius))
+        assertEqualScientificValue(
             4(HorsepowerHour per Celsius),
             2((HorsepowerHour per Pound) per Celsius) * 2(Pound),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(HorsepowerHour per Celsius),
             2(Pound) * 2((HorsepowerHour per Pound) per Celsius),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(HorsepowerHour per Celsius),
             2((HorsepowerHour per Pound) per Celsius) * 2(Pound.ukImperial),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(HorsepowerHour per Celsius),
             2(Pound.ukImperial) * 2((HorsepowerHour per Pound) per Celsius),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(HorsepowerHour per Fahrenheit),
             2((HorsepowerHour per Pound) per Fahrenheit) * 2(Pound),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(HorsepowerHour per Fahrenheit),
             2(Pound) * 2((HorsepowerHour per Pound) per Fahrenheit),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(HorsepowerHour per Fahrenheit),
             2((HorsepowerHour per Pound) per Fahrenheit) * 2(Pound.usCustomary),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(HorsepowerHour per Fahrenheit),
             2(Pound.usCustomary) * 2((HorsepowerHour per Pound) per Fahrenheit),
         )

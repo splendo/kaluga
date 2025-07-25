@@ -23,18 +23,25 @@ import com.splendo.kaluga.scientific.converter.luminousEnergy.div
 import com.splendo.kaluga.scientific.converter.luminousIntensity.times
 import com.splendo.kaluga.scientific.converter.solidAngle.times
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Candela
+import com.splendo.kaluga.scientific.unit.FootCandle
+import com.splendo.kaluga.scientific.unit.Lumen
+import com.splendo.kaluga.scientific.unit.Lux
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.SquareFoot
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.Steradian
+import com.splendo.kaluga.scientific.unit.x
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class LuminusFluxUnitTest {
 
     @Test
     fun luminousFluxFromIlluminanceAndAreaTest() {
-        assertEquals(4(Lumen), 2(Lux) * 2(SquareMeter))
-        assertEquals(4(Lumen), 2(SquareMeter) * 2(Lux))
-        assertEquals(4(Lumen), 2(FootCandle) * 2(SquareFoot))
-        assertEquals(4(Lumen), 2(SquareFoot) * 2(FootCandle))
+        assertEqualScientificValue(4(Lumen), 2(Lux) * 2(SquareMeter))
+        assertEqualScientificValue(4(Lumen), 2(SquareMeter) * 2(Lux))
+        assertEqualScientificValue(4(Lumen), 2(FootCandle) * 2(SquareFoot))
+        assertEqualScientificValue(4(Lumen), 2(SquareFoot) * 2(FootCandle))
     }
 
     @Test
@@ -44,7 +51,7 @@ class LuminusFluxUnitTest {
 
     @Test
     fun luminousFluxFromIntensityAndSolidAngleTest() {
-        assertEquals(4(Lumen), 2(Candela) * 2(Steradian))
-        assertEquals(4(Lumen), 2(Steradian) * 2(Candela))
+        assertEqualScientificValue(4(Lumen), 2(Candela) * 2(Steradian))
+        assertEqualScientificValue(4(Lumen), 2(Steradian) * 2(Candela))
     }
 }
