@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.convert
@@ -42,7 +43,6 @@ import com.splendo.kaluga.scientific.unit.SquareMeter
 import com.splendo.kaluga.scientific.unit.Steradian
 import com.splendo.kaluga.scientific.unit.Stilb
 import com.splendo.kaluga.scientific.unit.x
-import kotlin.math.PI
 import kotlin.test.Test
 
 class IlluminanceUnitTest {
@@ -53,18 +53,18 @@ class IlluminanceUnitTest {
         assertEqualScientificValue(4(Lux), 2(Steradian) * 2(Nit))
         assertEqualScientificValue(4(Phot), 2(Stilb) * 2(Steradian))
         assertEqualScientificValue(4(Phot), 2(Steradian) * 2(Stilb))
-        assertEqualScientificValue((4.toDecimal() / PI.toDecimal())(Phot), 2(Lambert) * 2(Steradian))
-        assertEqualScientificValue((4.toDecimal() / PI.toDecimal())(Phot), 2(Steradian) * 2(Lambert))
-        assertEqualScientificValue((4.toDecimal() / PI.toDecimal())(FootCandle), 2(FootLambert) * 2(Steradian))
-        assertEqualScientificValue((4.toDecimal() / PI.toDecimal())(FootCandle), 2(Steradian) * 2(FootLambert))
-        assertEqualScientificValue(4(Lux), 2(Nit).convert(FootLambert as Luminance) * 2(Steradian))
-        assertEqualScientificValue(4(Lux), 2(Steradian) * 2(Nit).convert(FootLambert as Luminance))
+        assertEqualScientificValue((4.toDecimal() / Decimal.PI)(Phot), 2(Lambert) * 2(Steradian), round = 32)
+        assertEqualScientificValue((4.toDecimal() / Decimal.PI)(Phot), 2(Steradian) * 2(Lambert), round = 32)
+        assertEqualScientificValue((4.toDecimal() / Decimal.PI)(FootCandle), 2(FootLambert) * 2(Steradian), round = 31)
+        assertEqualScientificValue((4.toDecimal() / Decimal.PI)(FootCandle), 2(Steradian) * 2(FootLambert), round = 31)
+        assertEqualScientificValue(4(Lux), 2(Nit).convert(FootLambert as Luminance) * 2(Steradian), round = 32)
+        assertEqualScientificValue(4(Lux), 2(Steradian) * 2(Nit).convert(FootLambert as Luminance), round = 32)
     }
 
     @Test
     fun illuminanceFromLuminousExposureAndTimeTest() {
         assertEqualScientificValue(1(Lux), 2(Lux x Second) / 2(Second))
-        assertEqualScientificValue(1(FootCandle), 2(FootCandle x Second) / 2(Second))
+        assertEqualScientificValue(1(FootCandle), 2(FootCandle x Second) / 2(Second), round = 32)
         assertEqualScientificValue(1(Lux), 2((Lux x Second) as LuminousExposure) / 2(Second))
     }
 
@@ -72,7 +72,7 @@ class IlluminanceUnitTest {
     fun illuminanceFromLuminousFluxAndAreaTest() {
         assertEqualScientificValue(1(Phot), 2(Lumen) / 2(SquareCentimeter))
         assertEqualScientificValue(1(Lux), 2(Lumen) / 2(SquareMeter))
-        assertEqualScientificValue(1(FootCandle), 2(Lumen) / 2(SquareFoot))
-        assertEqualScientificValue(1(Lux), 2(Lumen) / 2(SquareMeter).convert(SquareFoot as Area))
+        assertEqualScientificValue(1(FootCandle), 2(Lumen) / 2(SquareFoot), round = 32)
+        assertEqualScientificValue(1(Lux), 2(Lumen) / 2(SquareMeter).convert(SquareFoot as Area), round = 32)
     }
 }

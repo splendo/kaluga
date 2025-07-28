@@ -61,6 +61,7 @@ class MolarEnergyUnitTest {
         assertEqualScientificValue(
             1(Joule per Decimole),
             2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy) / 2(Decimole per Kilogram),
+            round = 32,
         )
     }
 
@@ -68,31 +69,37 @@ class MolarEnergyUnitTest {
     fun molarEnergyFromSpecificEnergyAndMolarMassTest() {
         assertEqualScientificValue(4(Joule per Decimole), 2(Joule per Kilogram) * 2(Kilogram per Decimole))
         assertEqualScientificValue(4(Joule per Decimole), 2(Kilogram per Decimole) * 2(Joule per Kilogram))
-        assertEqualScientificValue(4(WattHour.imperial per Decimole), 2(WattHour per Pound) * 2(Pound per Decimole))
-        assertEqualScientificValue(4(WattHour.imperial per Decimole), 2(Pound per Decimole) * 2(WattHour per Pound))
+        assertEqualScientificValue(4(WattHour.imperial per Decimole), 2(WattHour per Pound) * 2(Pound per Decimole), round = 30)
+        assertEqualScientificValue(4(WattHour.imperial per Decimole), 2(Pound per Decimole) * 2(WattHour per Pound), round = 30)
         assertEqualScientificValue(
             4(WattHour.imperial per Decimole),
             2(WattHour per Pound.ukImperial) * 2(Pound per Decimole),
+            round = 30,
         )
         assertEqualScientificValue(
             4(WattHour.imperial per Decimole),
             2(Pound per Decimole) * 2(WattHour per Pound.ukImperial),
+            round = 30,
         )
         assertEqualScientificValue(
             4(WattHour.imperial per Decimole),
             2(WattHour per Pound.usCustomary) * 2(Pound per Decimole),
+            round = 30,
         )
         assertEqualScientificValue(
             4(WattHour.imperial per Decimole),
             2(Pound per Decimole) * 2(WattHour per Pound.usCustomary),
+            round = 30,
         )
         assertEqualScientificValue(
             4(Joule per Decimole),
             2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy) * 2(Kilogram per Decimole),
+            round = 32,
         )
         assertEqualScientificValue(
             4(Joule per Decimole),
             2(Kilogram per Decimole) * 2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy),
+            round = 32,
         )
     }
 }

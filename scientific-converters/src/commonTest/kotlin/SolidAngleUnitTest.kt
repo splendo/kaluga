@@ -17,11 +17,17 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.converter.illuminance.div
 import com.splendo.kaluga.scientific.converter.luminousFlux.div
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
-import kotlin.math.PI
+import com.splendo.kaluga.scientific.unit.Candela
+import com.splendo.kaluga.scientific.unit.FootCandle
+import com.splendo.kaluga.scientific.unit.FootLambert
+import com.splendo.kaluga.scientific.unit.Lumen
+import com.splendo.kaluga.scientific.unit.Lux
+import com.splendo.kaluga.scientific.unit.Nit
+import com.splendo.kaluga.scientific.unit.Steradian
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -30,7 +36,7 @@ class SolidAngleUnitTest {
     @Test
     fun solidAngleFromIlluminanceAndLuminanceTest() {
         assertEqualScientificValue(1(Steradian), 2(Lux) / 2(Nit))
-        assertEqualScientificValue(PI(Steradian), 2(FootCandle) / 2(FootLambert))
+        assertEqualScientificValue(Decimal.PI(Steradian), 2(FootCandle) / 2(FootLambert), round = 32)
     }
 
     @Test

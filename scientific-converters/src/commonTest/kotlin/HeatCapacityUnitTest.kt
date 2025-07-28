@@ -43,9 +43,9 @@ class HeatCapacityUnitTest {
         assertEqualScientificValue(1(Joule per Celsius), 2(Joule) / 2(Celsius))
         assertEqualScientificValue(1(Calorie per Kelvin), 2(Calorie) / 2(Kelvin))
         assertEqualScientificValue(1(HorsepowerHour per Celsius), 2(HorsepowerHour) / 2(Celsius))
-        assertEqualScientificValue(1(Calorie per Fahrenheit), 2(Calorie) / 2(Fahrenheit))
-        assertEqualScientificValue(1(HorsepowerHour per Fahrenheit), 2(HorsepowerHour) / 2(Fahrenheit))
-        assertEqualScientificValue(1(Joule per Kelvin), 2(Joule) / 2(Kelvin).convert(Rankine))
+        assertEqualScientificValue(1(Calorie per Fahrenheit), 2(Calorie) / 2(Fahrenheit), round = 22)
+        assertEqualScientificValue(1(HorsepowerHour per Fahrenheit), 2(HorsepowerHour) / 2(Fahrenheit), round = 32)
+        assertEqualScientificValue(1(Joule per Kelvin), 2(Joule) / 2(Kelvin).convert(Rankine), round = 32)
     }
 
     @Test
@@ -55,44 +55,52 @@ class HeatCapacityUnitTest {
         assertEqualScientificValue(
             4(HorsepowerHour per Celsius),
             2((HorsepowerHour per Pound) per Celsius) * 2(Pound),
+            round = 30,
         )
         assertEqualScientificValue(
             4(HorsepowerHour per Celsius),
             2(Pound) * 2((HorsepowerHour per Pound) per Celsius),
+            round = 30,
         )
         assertEqualScientificValue(
             4(HorsepowerHour per Celsius),
             2((HorsepowerHour per Pound) per Celsius) * 2(Pound.ukImperial),
+            round = 30,
         )
         assertEqualScientificValue(
             4(HorsepowerHour per Celsius),
             2(Pound.ukImperial) * 2((HorsepowerHour per Pound) per Celsius),
+            round = 30,
         )
         assertEqualScientificValue(
             4(HorsepowerHour per Fahrenheit),
             2((HorsepowerHour per Pound) per Fahrenheit) * 2(Pound),
+            round = 30,
         )
         assertEqualScientificValue(
             4(HorsepowerHour per Fahrenheit),
             2(Pound) * 2((HorsepowerHour per Pound) per Fahrenheit),
+            round = 30,
         )
         assertEqualScientificValue(
             4(HorsepowerHour per Fahrenheit),
             2((HorsepowerHour per Pound) per Fahrenheit) * 2(Pound.usCustomary),
+            round = 30,
         )
         assertEqualScientificValue(
             4(HorsepowerHour per Fahrenheit),
             2(Pound.usCustomary) * 2((HorsepowerHour per Pound) per Fahrenheit),
+            round = 30,
         )
         assertEqualScientificValue(
             4(Joule per Kelvin),
             2((Joule per Kilogram) per Celsius) * 2(Kilogram).convert(Pound),
-            8,
+            round = 30,
         )
         assertEqualScientificValue(
             4(Joule per Kelvin),
             2(Kilogram).convert(Pound) * 2((Joule per Kilogram) per Celsius),
-            8,
+            round = 30,
         )
     }
 }

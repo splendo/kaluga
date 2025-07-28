@@ -39,7 +39,7 @@ class ActionUnitTest {
         assertEqualScientificValue(4(WattHour x Second), 2(Second) * 2(WattHour))
         assertEqualScientificValue(4(BritishThermalUnit x Second), 2(BritishThermalUnit) * 2(Second))
         assertEqualScientificValue(4(BritishThermalUnit x Second), 2(Second) * 2(BritishThermalUnit))
-        assertEqualScientificValue(4(Joule x Second), 2(Joule).convert(WattHour as Energy) * 2(Second))
-        assertEqualScientificValue(4(Joule x Second), 2(Second) * 2(Joule).convert(WattHour as Energy))
+        assertEqualScientificValue(4(Joule x Second), 2(Joule).convert(WattHour as Energy) * 2(Second), round = 32)
+        assertEqualScientificValue(4(Joule x Second), 2(Second) * 2(Joule).convert(WattHour as Energy), round = 32)
     }
 }

@@ -75,35 +75,42 @@ class JoltUnitTest {
         assertEqualScientificValue(
             ImperialStandardGravityAcceleration / 1(Second),
             2(PoundForce per Second) / 2(Pound),
+            round = 32,
         )
         assertEqualScientificValue(
             ImperialStandardGravityAcceleration / 1(Second),
             2(PoundForce per Second) / 2(Pound.ukImperial),
+            round = 32,
         )
         assertEqualScientificValue(
             ImperialStandardGravityAcceleration / 1(Second),
             2(PoundForce per Second) / 2(Pound.usCustomary),
+            round = 32,
         )
         assertEqualScientificValue(
             ImperialStandardGravityAcceleration / 1(Second),
             2(PoundForce.ukImperial per Second) / 2(Pound),
+            round = 32,
         )
         assertEqualScientificValue(
             ImperialStandardGravityAcceleration / 1(Second),
             2(PoundForce.ukImperial per Second) / 2(Pound.ukImperial),
+            round = 32,
         )
         assertEqualScientificValue(
             ImperialStandardGravityAcceleration / 1(Second),
             2(PoundForce.usCustomary per Second) / 2(Pound),
+            round = 32,
         )
         assertEqualScientificValue(
             ImperialStandardGravityAcceleration / 1(Second),
             2(PoundForce.usCustomary per Second) / 2(Pound.usCustomary),
+            round = 32,
         )
         assertEqualScientificValue(
             1.0(Meter per Second per Second per Second),
             2(Newton per Second) / 2(Kilogram).convert(Pound),
-            9,
+            round = 30,
         )
     }
 }

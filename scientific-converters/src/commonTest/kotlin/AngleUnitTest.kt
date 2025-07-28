@@ -29,7 +29,7 @@ class AngleUnitTest {
 
     @Test
     fun angleFromAngularVelocityAndTimeTest() {
-        assertEqualScientificValue(4(Deciradian), 2(Deciradian per Minute) * 2(Minute))
-        assertEqualScientificValue(4(Deciradian), 2(Minute) * 2(Deciradian per Minute))
+        assertEqualScientificValue(4(Deciradian), 2(Deciradian per Minute) * 2(Minute), round = 32)
+        assertEqualScientificValue(4(Deciradian), 2(Minute) * 2(Deciradian per Minute), round = 32)
     }
 }

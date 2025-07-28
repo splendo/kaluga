@@ -103,6 +103,6 @@ class AccelerationUnitTest {
     fun accelerationFromSpeedAndTime() {
         assertEqualScientificValue(1(Meter per Second per Second), 2(Meter per Second) / 2(Second))
         assertEqualScientificValue(1(Foot per Second per Second), 2(Foot per Second) / 2(Second))
-        assertEqualScientificValue(1(Meter per Second per Second), 2(Meter per Second).convert((Foot per Second) as Speed) / 2(Second))
+        assertEqualScientificValue(1(Meter per Second per Second), 2(Meter per Second).convert((Foot per Second) as Speed) / 2(Second), round = 32)
     }
 }

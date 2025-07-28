@@ -26,7 +26,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
-import kotlin.math.PI
 
 /**
  * Set of all [Angle]
@@ -90,7 +89,7 @@ data object Deciradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.
 
 @Serializable
 data object Turn : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle> {
-    private val RADIAN_IN_TURN = (2.0 * PI).toDecimal()
+    private val RADIAN_IN_TURN = Decimal.PI * 2.toDecimal()
     override val symbol = "tr"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Angle

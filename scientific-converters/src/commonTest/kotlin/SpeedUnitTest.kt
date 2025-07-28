@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.acceleration.times
 import com.splendo.kaluga.scientific.converter.length.div
@@ -65,10 +67,12 @@ class SpeedUnitTest {
             2(Meter per Second per Second).convert((Foot per Second per Second) as Acceleration) * 2(
                 Second,
             ),
+            round = 32,
         )
         assertEqualScientificValue(
             4(Meter per Second),
             2(Second) * 2(Meter per Second per Second).convert((Foot per Second per Second) as Acceleration),
+            round = 32,
         )
     }
 
@@ -76,7 +80,7 @@ class SpeedUnitTest {
     fun speedFromDistanceAndTimeTest() {
         assertEqualScientificValue(1(Meter per Second), 2(Meter) / 2(Second))
         assertEqualScientificValue(1(Foot per Second), 2(Foot) / 2(Second))
-        assertEqualScientificValue(1(Meter per Second), 2(Meter).convert(Foot as Length) / 2(Second))
+        assertEqualScientificValue(1(Meter per Second), 2(Meter).convert(Foot as Length) / 2(Second), round = 32)
     }
 
     @Test
@@ -98,7 +102,7 @@ class SpeedUnitTest {
         assertEqualScientificValue(
             1(Meter per Second),
             2(Kilogram x (Meter per Second)) / 2(Kilogram).convert(Pound),
-            8,
+            round = 30,
         )
     }
 
@@ -109,46 +113,54 @@ class SpeedUnitTest {
         assertEqualScientificValue(1(Meter per Second), 2(Watt) / 2(Newton))
         assertEqualScientificValue(1(Meter per Second), 2(Watt.metric) / 2(Newton))
         assertEqualScientificValue(1(Foot per Second), 2(FootPoundForce per Second) / 2(PoundForce))
-        assertEqualScientificValue(1(Foot per Minute), 2(FootPoundForce per Minute) / 2(PoundForce))
-        assertEqualScientificValue(1(Inch per Second), 2(InchPoundForce per Second) / 2(PoundForce))
-        assertEqualScientificValue(1(Inch per Minute), 2(InchPoundForce per Minute) / 2(PoundForce))
+        assertEqualScientificValue(1(Foot per Minute), 2(FootPoundForce per Minute) / 2(PoundForce), round = 32)
+        assertEqualScientificValue(1(Inch per Second), 2(InchPoundForce per Second) / 2(PoundForce), round = 32)
+        assertEqualScientificValue(1(Inch per Minute), 2(InchPoundForce per Minute) / 2(PoundForce), round = 32)
         assertEqualScientificValue(
             1(Foot per Second),
             2(FootPoundForce per Second).convert(BritishThermalUnit per Second) / 2(PoundForce),
+            round = 32,
         )
         assertEqualScientificValue(
             1(Foot per Minute),
             2(FootPoundForce per Minute).convert(BritishThermalUnit per Minute) / 2(PoundForce),
+            round = 32,
         )
         assertEqualScientificValue(
             1(Foot per Hour),
-            (1.0 / 30.0)(FootPoundForce per Minute).convert(BritishThermalUnit per Hour) / 2(PoundForce),
-            8,
+            (1.0.toDecimal() / 30.0.toDecimal())(FootPoundForce per Minute).convert(BritishThermalUnit per Hour) / 2(PoundForce),
+            round = 32,
         )
         assertEqualScientificValue(
             1(Foot per Second),
             2(FootPoundForce per Second).convert(Watt) / 2(PoundForce),
+            round = 32,
         )
         assertEqualScientificValue(
             1(Foot per Second),
             2(FootPoundForce per Second).convert(Watt.imperial) / 2(PoundForce),
+            round = 32,
         )
         assertEqualScientificValue(
             1(Foot per Second),
             2(FootPoundForce per Second).convert(Watt) / 2(PoundForce.ukImperial),
+            round = 32,
         )
         assertEqualScientificValue(
             1(Foot per Second),
             2(FootPoundForce per Second).convert(Watt.imperial) / 2(PoundForce.ukImperial),
+            round = 32,
         )
         assertEqualScientificValue(
             1(Foot per Second),
             2(FootPoundForce per Second).convert(Watt) / 2(PoundForce.usCustomary),
+            round = 32,
         )
         assertEqualScientificValue(
             1(Foot per Second),
             2(FootPoundForce per Second).convert(Watt.imperial) / 2(PoundForce.usCustomary),
+            round = 32,
         )
-        assertEqualScientificValue(1(Meter per Second), 2(Watt.metric) / 2(Newton).convert(PoundForce))
+        assertEqualScientificValue(1(Meter per Second), 2(Watt.metric) / 2(Newton).convert(PoundForce), round = 30)
     }
 }

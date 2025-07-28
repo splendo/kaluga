@@ -50,12 +50,13 @@ class MolarMassUnitTest {
     @Test
     fun molarMassFromDensityAndMolarityTest() {
         assertEqualScientificValue(1(Kilogram per Decimole), 2(Kilogram per CubicMeter) / 2(Decimole per CubicMeter))
-        assertEqualScientificValue(1(Pound per Decimole), 2(Pound per CubicFoot) / 2(Decimole per CubicFoot))
-        assertEqualScientificValue(1(ImperialTon per Decimole), 2(ImperialTon per CubicFoot) / 2(Decimole per CubicFoot))
-        assertEqualScientificValue(1(UsTon per Decimole), 2(UsTon per CubicFoot) / 2(Decimole per CubicFoot))
+        assertEqualScientificValue(1(Pound per Decimole), 2(Pound per CubicFoot) / 2(Decimole per CubicFoot), round = 32)
+        assertEqualScientificValue(1(ImperialTon per Decimole), 2(ImperialTon per CubicFoot) / 2(Decimole per CubicFoot), round = 32)
+        assertEqualScientificValue(1(UsTon per Decimole), 2(UsTon per CubicFoot) / 2(Decimole per CubicFoot), round = 32)
         assertEqualScientificValue(
             1(Kilogram per Decimole),
             2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density) / 2(Decimole per CubicMeter),
+            round = 30,
         )
     }
 
@@ -63,28 +64,30 @@ class MolarMassUnitTest {
     fun molarMassFromDensityAndMolarVolumeTest() {
         assertEqualScientificValue(4(Kilogram per Decimole), 2(CubicMeter per Decimole) * 2(Kilogram per CubicMeter))
         assertEqualScientificValue(4(Kilogram per Decimole), 2(Kilogram per CubicMeter) * 2(CubicMeter per Decimole))
-        assertEqualScientificValue(4(Pound per Decimole), 2(CubicFoot per Decimole) * 2(Pound per CubicFoot))
-        assertEqualScientificValue(4(Pound per Decimole), 2(Pound per CubicFoot) * 2(CubicFoot per Decimole))
-        assertEqualScientificValue(4(ImperialTon per Decimole), 2(CubicFoot per Decimole) * 2(ImperialTon per CubicFoot))
-        assertEqualScientificValue(4(ImperialTon per Decimole), 2(ImperialTon per CubicFoot) * 2(CubicFoot per Decimole))
-        assertEqualScientificValue(4(UsTon per Decimole), 2(CubicFoot per Decimole) * 2(UsTon per CubicFoot))
-        assertEqualScientificValue(4(UsTon per Decimole), 2(UsTon per CubicFoot) * 2(CubicFoot per Decimole))
+        assertEqualScientificValue(4(Pound per Decimole), 2(CubicFoot per Decimole) * 2(Pound per CubicFoot), round = 32)
+        assertEqualScientificValue(4(Pound per Decimole), 2(Pound per CubicFoot) * 2(CubicFoot per Decimole), round = 32)
+        assertEqualScientificValue(4(ImperialTon per Decimole), 2(CubicFoot per Decimole) * 2(ImperialTon per CubicFoot), round = 32)
+        assertEqualScientificValue(4(ImperialTon per Decimole), 2(ImperialTon per CubicFoot) * 2(CubicFoot per Decimole), round = 32)
+        assertEqualScientificValue(4(UsTon per Decimole), 2(CubicFoot per Decimole) * 2(UsTon per CubicFoot), round = 32)
+        assertEqualScientificValue(4(UsTon per Decimole), 2(UsTon per CubicFoot) * 2(CubicFoot per Decimole), round = 32)
         assertEqualScientificValue(
             4(Kilogram per Decimole),
             2(CubicMeter per Decimole) * 2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density),
+            round = 30,
         )
         assertEqualScientificValue(
             4(Kilogram per Decimole),
             2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density) * 2(CubicMeter per Decimole),
+            round = 30,
         )
     }
 
     @Test
     fun molarMassFromInvertedMolalityTest() {
         assertEqualScientificValue(0.5(Kilogram per Decimole), 2(Decimole per Kilogram).molarMass())
-        assertEqualScientificValue(0.5(Pound per Decimole), 2(Decimole per Pound).molarMass())
-        assertEqualScientificValue(0.5(ImperialTon per Decimole), 2(Decimole per ImperialTon).molarMass())
-        assertEqualScientificValue(0.5(UsTon per Decimole), 2(Decimole per UsTon).molarMass())
+        assertEqualScientificValue(0.5(Pound per Decimole), 2(Decimole per Pound).molarMass(), round = 30)
+        assertEqualScientificValue(0.5(ImperialTon per Decimole), 2(Decimole per ImperialTon).molarMass(), round = 29)
+        assertEqualScientificValue(0.5(UsTon per Decimole), 2(Decimole per UsTon).molarMass(), round = 30)
         assertEqualScientificValue(
             0.5(Kilogram per Decimole),
             2(Decimole per Kilogram).convert((Decimole per Pound) as Molality).molarMass(),
@@ -94,30 +97,34 @@ class MolarMassUnitTest {
     @Test
     fun molarMassFromMolarEnergyAndSpecificEnergyTest() {
         assertEqualScientificValue(1(Kilogram per Decimole), 2(Joule per Decimole) / 2(Joule per Kilogram))
-        assertEqualScientificValue(1(Pound per Decimole), 2(WattHour per Decimole) / 2(WattHour per Pound))
+        assertEqualScientificValue(1(Pound per Decimole), 2(WattHour per Decimole) / 2(WattHour per Pound), round = 30)
         assertEqualScientificValue(
             1(Pound.ukImperial per Decimole),
             2(WattHour per Decimole) / 2(WattHour per Pound.ukImperial),
+            round = 30,
         )
         assertEqualScientificValue(
             1(Pound.usCustomary per Decimole),
             2(WattHour per Decimole) / 2(WattHour per Pound.usCustomary),
+            round = 30,
         )
         assertEqualScientificValue(
             1(Kilogram per Decimole),
             2(Joule per Decimole) / 2(Joule per Kilogram).convert((WattHour per Pound) as SpecificEnergy),
+            round = 32,
         )
     }
 
     @Test
     fun molarMassFromMolarVolumeAndSpecificVolumeTest() {
         assertEqualScientificValue(1(Kilogram per Decimole), 2(CubicMeter per Decimole) / 2(CubicMeter per Kilogram))
-        assertEqualScientificValue(1(Pound per Decimole), 2(CubicFoot per Decimole) / 2(CubicFoot per Pound))
-        assertEqualScientificValue(1(ImperialTon per Decimole), 2(CubicFoot per Decimole) / 2(CubicFoot per ImperialTon))
-        assertEqualScientificValue(1(UsTon per Decimole), 2(CubicFoot per Decimole) / 2(CubicFoot per UsTon))
+        assertEqualScientificValue(1(Pound per Decimole), 2(CubicFoot per Decimole) / 2(CubicFoot per Pound), round = 30)
+        assertEqualScientificValue(1(ImperialTon per Decimole), 2(CubicFoot per Decimole) / 2(CubicFoot per ImperialTon), round = 30)
+        assertEqualScientificValue(1(UsTon per Decimole), 2(CubicFoot per Decimole) / 2(CubicFoot per UsTon), round = 30)
         assertEqualScientificValue(
             1(Kilogram per Decimole),
             2(CubicMeter per Decimole) / 2(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume),
+            round = 32,
         )
     }
 
@@ -126,7 +133,7 @@ class MolarMassUnitTest {
         assertEqualScientificValue(1(Kilogram per Decimole), 2(Kilogram) / 2(Decimole))
         assertEqualScientificValue(1(Pound per Decimole), 2(Pound) / 2(Decimole))
         assertEqualScientificValue(1(ImperialTon per Decimole), 2(ImperialTon) / 2(Decimole))
-        assertEqualScientificValue(1(UsTon per Decimole), 2(UsTon) / 2(Decimole), 8)
-        assertEqualScientificValue(1(Kilogram per Decimole), 2(Kilogram).convert(Pound as Weight) / 2(Decimole), 8)
+        assertEqualScientificValue(1(UsTon per Decimole), 2(UsTon) / 2(Decimole))
+        assertEqualScientificValue(1(Kilogram per Decimole), 2(Kilogram).convert(Pound as Weight) / 2(Decimole), round = 30)
     }
 }

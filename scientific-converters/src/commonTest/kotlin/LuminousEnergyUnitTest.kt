@@ -38,10 +38,10 @@ class LuminousEnergyUnitTest {
     fun luminousEnergyFromLuminousExposureAndAreaTest() {
         assertEqualScientificValue(4(Lumen x Second), 2(Lux x Second) * 2(SquareMeter))
         assertEqualScientificValue(4(Lumen x Second), 2(SquareMeter) * 2(Lux x Second))
-        assertEqualScientificValue(4(Lumen x Second), 2(FootCandle x Second) * 2(SquareFoot))
-        assertEqualScientificValue(4(Lumen x Second), 2(SquareFoot) * 2(FootCandle x Second))
-        assertEqualScientificValue(4(Lumen x Second), 2(Lux x Second) * 2(SquareMeter).convert(SquareFoot))
-        assertEqualScientificValue(4(Lumen x Second), 2(SquareMeter).convert(SquareFoot) * 2(Lux x Second))
+        assertEqualScientificValue(4(Lumen x Second), 2(FootCandle x Second) * 2(SquareFoot), round = 32)
+        assertEqualScientificValue(4(Lumen x Second), 2(SquareFoot) * 2(FootCandle x Second), round = 32)
+        assertEqualScientificValue(4(Lumen x Second), 2(Lux x Second) * 2(SquareMeter).convert(SquareFoot), round = 32)
+        assertEqualScientificValue(4(Lumen x Second), 2(SquareMeter).convert(SquareFoot) * 2(Lux x Second), round = 32)
     }
 
     @Test
