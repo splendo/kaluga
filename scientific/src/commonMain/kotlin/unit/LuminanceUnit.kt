@@ -26,7 +26,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
-import kotlin.math.PI
 
 /**
  * Set of all [MetricLuminance]
@@ -140,7 +139,7 @@ data object Stilb : MetricLuminance() {
 
 @Serializable
 data object Apostilb : MetricLuminance() {
-    private val APOSTILB_IN_NIT = PI.toDecimal()
+    private val APOSTILB_IN_NIT = Decimal.PI
     override val symbol: String = "asb"
     override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric

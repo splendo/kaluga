@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.times
@@ -113,9 +115,9 @@ class VolumeUnitTest {
     @Test
     fun volumeFromAmountOfSubstanceDivMolarityTest() {
         assertEqualScientificValue(1(CubicMeter), 2(Decimole) / 2(Decimole per CubicMeter))
-        assertEqualScientificValue(1(CubicFoot), 2(Decimole) / 2(Decimole per CubicFoot))
-        assertEqualScientificValue(1(ImperialGallon), 2(Decimole) / 2(Decimole per ImperialGallon))
-        assertEqualScientificValue(1(UsLiquidGallon), 2(Decimole) / 2(Decimole per UsLiquidGallon))
+        assertEqualScientificValue(1(CubicFoot), 2(Decimole) / 2(Decimole per CubicFoot), round = 32)
+        assertEqualScientificValue(1(ImperialGallon), 2(Decimole) / 2(Decimole per ImperialGallon), round = 32)
+        assertEqualScientificValue(1(UsLiquidGallon), 2(Decimole) / 2(Decimole per UsLiquidGallon), round = 32)
         assertEqualScientificValue(
             1(CubicMeter),
             2(Decimole) / 2(Decimole per CubicMeter).convert((Decimole per CubicFoot) as Molarity),
@@ -149,8 +151,8 @@ class VolumeUnitTest {
         assertEqualScientificValue(4(CubicMeter), 200(Centimeter) * 2(SquareMeter))
         assertEqualScientificValue(4(CubicMeter), 2(SquareMeter) * 200(Centimeter))
 
-        assertEqualScientificValue(4(CubicInch), 2(Inch) * 2(SquareInch))
-        assertEqualScientificValue(4(CubicInch), 2(SquareInch) * 2(Inch))
+        assertEqualScientificValue(4(CubicInch), 2(Inch) * 2(SquareInch), round = 32)
+        assertEqualScientificValue(4(CubicInch), 2(SquareInch) * 2(Inch), round = 32)
         assertEqualScientificValue(4(CubicFoot), 2(Foot) * 2(SquareFoot))
         assertEqualScientificValue(4(CubicFoot), 2(SquareFoot) * 2(Foot))
         assertEqualScientificValue(4(CubicYard), 2(Yard) * 2(SquareYard))
@@ -158,15 +160,15 @@ class VolumeUnitTest {
         assertEqualScientificValue(4(CubicMile), 2(Mile) * 2(SquareMile))
         assertEqualScientificValue(4(CubicMile), 2(SquareMile) * 2(Mile))
 
-        assertEqualScientificValue(4(AcreInch), 2(Inch) * 2(Acre))
-        assertEqualScientificValue(4(AcreInch), 2(Acre) * 2(Inch))
-        assertEqualScientificValue(4(AcreFoot), 2(Foot) * 2(Acre))
-        assertEqualScientificValue(4(AcreFoot), 2(Acre) * 2(Foot))
-        assertEqualScientificValue(4(CubicFoot), 24(Inch) * 2(SquareFoot))
-        assertEqualScientificValue(4(CubicFoot), 2(SquareFoot) * 24(Inch))
+        assertEqualScientificValue(4(AcreInch), 2(Inch) * 2(Acre), round = 32)
+        assertEqualScientificValue(4(AcreInch), 2(Acre) * 2(Inch), round = 32)
+        assertEqualScientificValue(4(AcreFoot), 2(Foot) * 2(Acre), round = 32)
+        assertEqualScientificValue(4(AcreFoot), 2(Acre) * 2(Foot), round = 32)
+        assertEqualScientificValue(4(CubicFoot), 24(Inch) * 2(SquareFoot), round = 32)
+        assertEqualScientificValue(4(CubicFoot), 2(SquareFoot) * 24(Inch), round = 32)
 
-        assertEqualScientificValue(4(CubicMeter), 2(Meter).convert(Foot) * 2(SquareMeter))
-        assertEqualScientificValue(4(CubicMeter), 2(SquareMeter) * 2(Meter).convert(Foot))
+        assertEqualScientificValue(4(CubicMeter), 2(Meter).convert(Foot) * 2(SquareMeter), round = 32)
+        assertEqualScientificValue(4(CubicMeter), 2(SquareMeter) * 2(Meter).convert(Foot), round = 32)
     }
 
     @Test
@@ -179,30 +181,30 @@ class VolumeUnitTest {
 
         assertEqualScientificValue(
             1(CubicFoot),
-            (2 * ImperialStandardGravityAcceleration.value)(FootPoundal) / 2(PoundSquareFoot),
-            8,
+            (2.toDecimal() * ImperialStandardGravityAcceleration.decimalValue)(FootPoundal) / 2(PoundSquareFoot),
+            round = 32,
         )
-        assertEqualScientificValue(1(CubicInch), 2(InchPoundForce) / 2(PoundSquareInch))
-        assertEqualScientificValue(1(CubicInch), 32(InchOunceForce) / 2(PoundSquareInch))
-        assertEqualScientificValue(1(CubicFoot), 2(FootPoundForce) / 2(PoundSquareFoot))
+        assertEqualScientificValue(1(CubicInch), 2(InchPoundForce) / 2(PoundSquareInch), round = 32)
+        assertEqualScientificValue(1(CubicInch), 32(InchOunceForce) / 2(PoundSquareInch), round = 32)
+        assertEqualScientificValue(1(CubicFoot), 2(FootPoundForce) / 2(PoundSquareFoot), round = 32)
         assertEqualScientificValue(
             1(CubicFoot),
             2(FootPoundForce).convert(WattHour) / 2(PoundSquareFoot),
-            8,
+            round = 32,
         )
-        assertEqualScientificValue(1(CubicFoot.ukImperial), 2(FootPoundForce) / 2(PoundSquareFoot.ukImperial))
+        assertEqualScientificValue(1(CubicFoot.ukImperial), 2(FootPoundForce) / 2(PoundSquareFoot.ukImperial), round = 32)
         assertEqualScientificValue(
             1(CubicFoot.ukImperial),
             2(FootPoundForce).convert(WattHour) / 2(PoundSquareFoot.ukImperial),
-            8,
+            round = 32,
         )
-        assertEqualScientificValue(1(CubicFoot.usCustomary), 2(FootPoundForce) / 2(PoundSquareFoot.usCustomary))
+        assertEqualScientificValue(1(CubicFoot.usCustomary), 2(FootPoundForce) / 2(PoundSquareFoot.usCustomary), round = 32)
         assertEqualScientificValue(
             1(CubicFoot.usCustomary),
             2(FootPoundForce).convert(WattHour) / 2(PoundSquareFoot.usCustomary),
-            8,
+            round = 32,
         )
-        assertEqualScientificValue(1(CubicMeter), 2(Joule) / 2(Pascal).convert(PoundSquareFoot), 8)
+        assertEqualScientificValue(1(CubicMeter), 2(Joule) / 2(Pascal).convert(PoundSquareFoot), round = 30)
     }
 
     @Test
@@ -218,10 +220,12 @@ class VolumeUnitTest {
         assertEqualScientificValue(
             4(CubicMeter),
             2(Decimole) * 2(CubicMeter per Decimole).convert((CubicFoot per Decimole) as MolarVolume),
+            round = 32,
         )
         assertEqualScientificValue(
             4(CubicMeter),
             2(CubicMeter per Decimole).convert((CubicFoot per Decimole) as MolarVolume) * 2(Decimole),
+            round = 32,
         )
     }
 
@@ -229,75 +233,80 @@ class VolumeUnitTest {
     fun volumeFromSpecificVolumeAndWeightTest() {
         assertEqualScientificValue(4(CubicMeter), 2(Kilogram) * 2(CubicMeter per Kilogram))
         assertEqualScientificValue(4(CubicMeter), 2(CubicMeter per Kilogram) * 2(Kilogram))
-        assertEqualScientificValue(4(CubicFoot), 2(Pound) * 2(CubicFoot per Pound))
-        assertEqualScientificValue(4(CubicFoot), 2(CubicFoot per Pound) * 2(Pound))
-        assertEqualScientificValue(4(CubicFoot), 2(Pound.ukImperial) * 2(CubicFoot per Pound))
-        assertEqualScientificValue(4(CubicFoot), 2(CubicFoot per Pound) * 2(Pound.ukImperial))
-        assertEqualScientificValue(4(CubicFoot), 2(Pound.usCustomary) * 2(CubicFoot per Pound))
-        assertEqualScientificValue(4(CubicFoot), 2(CubicFoot per Pound) * 2(Pound.usCustomary))
-        assertEqualScientificValue(4(ImperialGallon), 2(Pound) * 2(ImperialGallon per Pound))
-        assertEqualScientificValue(4(ImperialGallon), 2(ImperialGallon per Pound) * 2(Pound))
+        assertEqualScientificValue(4(CubicFoot), 2(Pound) * 2(CubicFoot per Pound), round = 30)
+        assertEqualScientificValue(4(CubicFoot), 2(CubicFoot per Pound) * 2(Pound), round = 30)
+        assertEqualScientificValue(4(CubicFoot), 2(Pound.ukImperial) * 2(CubicFoot per Pound), round = 30)
+        assertEqualScientificValue(4(CubicFoot), 2(CubicFoot per Pound) * 2(Pound.ukImperial), round = 30)
+        assertEqualScientificValue(4(CubicFoot), 2(Pound.usCustomary) * 2(CubicFoot per Pound), round = 30)
+        assertEqualScientificValue(4(CubicFoot), 2(CubicFoot per Pound) * 2(Pound.usCustomary), round = 30)
+        assertEqualScientificValue(4(ImperialGallon), 2(Pound) * 2(ImperialGallon per Pound), round = 30)
+        assertEqualScientificValue(4(ImperialGallon), 2(ImperialGallon per Pound) * 2(Pound), round = 30)
         assertEqualScientificValue(
             4(ImperialGallon),
             2(ImperialTon) * 2(ImperialGallon per ImperialTon),
+            round = 30,
         )
         assertEqualScientificValue(
             4(ImperialGallon),
             2(ImperialGallon per ImperialTon) * 2(ImperialTon),
+            round = 30,
         )
-        assertEqualScientificValue(4(UsLiquidGallon), 2(Pound) * 2(UsLiquidGallon per Pound))
-        assertEqualScientificValue(4(UsLiquidGallon), 2(UsLiquidGallon per Pound) * 2(Pound))
-        assertEqualScientificValue(4(UsLiquidGallon), 2(UsTon) * 2(UsLiquidGallon per UsTon))
-        assertEqualScientificValue(4(UsLiquidGallon), 2(UsLiquidGallon per UsTon) * 2(UsTon))
+        assertEqualScientificValue(4(UsLiquidGallon), 2(Pound) * 2(UsLiquidGallon per Pound), round = 30)
+        assertEqualScientificValue(4(UsLiquidGallon), 2(UsLiquidGallon per Pound) * 2(Pound), round = 30)
+        assertEqualScientificValue(4(UsLiquidGallon), 2(UsTon) * 2(UsLiquidGallon per UsTon), round = 30)
+        assertEqualScientificValue(4(UsLiquidGallon), 2(UsLiquidGallon per UsTon) * 2(UsTon), round = 30)
         assertEqualScientificValue(
             4(CubicMeter),
             2(Kilogram).convert(Pound) * 2(CubicMeter per Kilogram),
-            8,
+            round = 30,
         )
         assertEqualScientificValue(
             4(CubicMeter),
             2(CubicMeter per Kilogram) * 2(Kilogram).convert(Pound),
-            8,
+            round = 30,
         )
     }
 
     @Test
     fun volumeFromVolumetricFlowAndTimeTest() {
-        assertEqualScientificValue(4(CubicMeter), 2(CubicMeter per Hour) * 2(Hour))
-        assertEqualScientificValue(4(CubicMeter), 2(Hour) * 2(CubicMeter per Hour))
-        assertEqualScientificValue(4(CubicFoot), 2(CubicFoot per Hour) * 2(Hour))
-        assertEqualScientificValue(4(CubicFoot), 2(Hour) * 2(CubicFoot per Hour))
-        assertEqualScientificValue(4(ImperialGallon), 2(ImperialGallon per Hour) * 2(Hour))
-        assertEqualScientificValue(4(ImperialGallon), 2(Hour) * 2(ImperialGallon per Hour))
-        assertEqualScientificValue(4(UsLiquidGallon), 2(UsLiquidGallon per Hour) * 2(Hour))
-        assertEqualScientificValue(4(UsLiquidGallon), 2(Hour) * 2(UsLiquidGallon per Hour))
+        assertEqualScientificValue(4(CubicMeter), 2(CubicMeter per Hour) * 2(Hour), round = 32)
+        assertEqualScientificValue(4(CubicMeter), 2(Hour) * 2(CubicMeter per Hour), round = 32)
+        assertEqualScientificValue(4(CubicFoot), 2(CubicFoot per Hour) * 2(Hour), round = 32)
+        assertEqualScientificValue(4(CubicFoot), 2(Hour) * 2(CubicFoot per Hour), round = 32)
+        assertEqualScientificValue(4(ImperialGallon), 2(ImperialGallon per Hour) * 2(Hour), round = 32)
+        assertEqualScientificValue(4(ImperialGallon), 2(Hour) * 2(ImperialGallon per Hour), round = 32)
+        assertEqualScientificValue(4(UsLiquidGallon), 2(UsLiquidGallon per Hour) * 2(Hour), round = 32)
+        assertEqualScientificValue(4(UsLiquidGallon), 2(Hour) * 2(UsLiquidGallon per Hour), round = 32)
         assertEqualScientificValue(
             4(CubicMeter),
             2((CubicMeter per Hour) as VolumetricFlow) * 2(Hour),
+            round = 32,
         )
         assertEqualScientificValue(
             4(CubicMeter),
             2(Hour) * 2((CubicMeter per Hour) as VolumetricFlow),
+            round = 32,
         )
     }
 
     @Test
     fun volumeFromWeightAndDensityTest() {
         assertEqualScientificValue(1(CubicMeter), 2(Kilogram) / 2(Kilogram per CubicMeter))
-        assertEqualScientificValue(1(CubicFoot), 2(Pound) / 2(Pound per CubicFoot))
-        assertEqualScientificValue(1(CubicFoot), 2(Pound.ukImperial) / 2(Pound per CubicFoot))
-        assertEqualScientificValue(1(CubicFoot), 2(Pound.usCustomary) / 2(Pound per CubicFoot))
-        assertEqualScientificValue(1(ImperialGallon), 2(Pound) / 2(Pound per ImperialGallon))
+        assertEqualScientificValue(1(CubicFoot), 2(Pound) / 2(Pound per CubicFoot), round = 32)
+        assertEqualScientificValue(1(CubicFoot), 2(Pound.ukImperial) / 2(Pound per CubicFoot), round = 32)
+        assertEqualScientificValue(1(CubicFoot), 2(Pound.usCustomary) / 2(Pound per CubicFoot), round = 32)
+        assertEqualScientificValue(1(ImperialGallon), 2(Pound) / 2(Pound per ImperialGallon), round = 32)
         assertEqualScientificValue(
             1(ImperialGallon),
             2(ImperialTon) / 2(ImperialTon per ImperialGallon),
+            round = 32,
         )
-        assertEqualScientificValue(1(UsLiquidGallon), 2(Pound) / 2(Pound per UsLiquidGallon))
-        assertEqualScientificValue(1(UsLiquidGallon), 2(UsTon) / 2(UsTon per UsLiquidGallon))
+        assertEqualScientificValue(1(UsLiquidGallon), 2(Pound) / 2(Pound per UsLiquidGallon), round = 32)
+        assertEqualScientificValue(1(UsLiquidGallon), 2(UsTon) / 2(UsTon per UsLiquidGallon), round = 32)
         assertEqualScientificValue(
             1(CubicMeter),
             2(Kilogram).convert(Pound) / 2(Kilogram per CubicMeter),
-            8,
+            round = 30,
         )
     }
 }

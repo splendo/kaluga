@@ -39,8 +39,8 @@ class LuminousExposureUnitTest {
     fun luminousExposureFromIlluminanceAndTimeTest() {
         assertEqualScientificValue(4(Lux x Second), 2(Lux) * 2(Second))
         assertEqualScientificValue(4(Lux x Second), 2(Second) * 2(Lux))
-        assertEqualScientificValue(4(FootCandle x Second), 2(FootCandle) * 2(Second))
-        assertEqualScientificValue(4(FootCandle x Second), 2(Second) * 2(FootCandle))
+        assertEqualScientificValue(4(FootCandle x Second), 2(FootCandle) * 2(Second), round = 32)
+        assertEqualScientificValue(4(FootCandle x Second), 2(Second) * 2(FootCandle), round = 32)
         assertEqualScientificValue(4(Lux x Second), 2(Lux as Illuminance) * 2(Second))
         assertEqualScientificValue(4(Lux x Second), 2(Second) * 2(Lux as Illuminance))
     }
@@ -48,7 +48,7 @@ class LuminousExposureUnitTest {
     @Test
     fun luminousExposureFromLuminousEnergyAndAreaTest() {
         assertEqualScientificValue(1(Lux x Second), 2(Lumen x Second) / 2(SquareMeter))
-        assertEqualScientificValue(1(FootCandle x Second), 2(Lumen x Second) / 2(SquareFoot))
-        assertEqualScientificValue(1(Lux x Second), 2(Lumen x Second) / 2(SquareMeter).convert(SquareFoot as Area))
+        assertEqualScientificValue(1(FootCandle x Second), 2(Lumen x Second) / 2(SquareFoot), round = 32)
+        assertEqualScientificValue(1(Lux x Second), 2(Lumen x Second) / 2(SquareMeter).convert(SquareFoot as Area), round = 32)
     }
 }

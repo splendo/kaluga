@@ -49,9 +49,9 @@ class FrequencyUnitTest {
     fun frequencyFromInvertedTimeTest() {
         assertEqualScientificValue(1(Hertz), 2 / 2(Second))
         assertEqualScientificValue(1(Hertz), 2.toDecimal() / 2(Second))
-        assertEqualScientificValue(1(BeatsPerMinute), 2 / 2(Minute))
-        assertEqualScientificValue(1(BeatsPerMinute), 2.toDecimal() / 2(Minute))
+        assertEqualScientificValue(1(BeatsPerMinute), 2 / 2(Minute), round = 32)
+        assertEqualScientificValue(1(BeatsPerMinute), 2.toDecimal() / 2(Minute), round = 32)
         assertEqualScientificValue(0.5(Hertz), 2(Second).frequency())
-        assertEqualScientificValue(0.5(BeatsPerMinute), 2(Minute).frequency())
+        assertEqualScientificValue(0.5(BeatsPerMinute), 2(Minute).frequency(), round = 32)
     }
 }

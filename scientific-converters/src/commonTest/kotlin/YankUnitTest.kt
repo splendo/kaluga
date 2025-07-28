@@ -45,7 +45,7 @@ class YankUnitTest {
         assertEqualScientificValue(1(PoundForce per Second), 2(PoundForce) / 2(Second))
         assertEqualScientificValue(1(ImperialTonForce per Second), 2(ImperialTonForce) / 2(Second))
         assertEqualScientificValue(1(UsTonForce per Second), 2(UsTonForce) / 2(Second))
-        assertEqualScientificValue(1(Newton per Second), 2(Newton).convert(PoundForce as Force) / 2(Second))
+        assertEqualScientificValue(1(Newton per Second), 2(Newton).convert(PoundForce as Force) / 2(Second), round = 30)
     }
 
     @Test
@@ -57,22 +57,22 @@ class YankUnitTest {
         assertEqualScientificValue(
             4(PoundForce per Second),
             2(Pound) * (ImperialStandardGravityAcceleration / 0.5(Second)),
-            8,
+            round = 32,
         )
         assertEqualScientificValue(
             4(PoundForce.ukImperial per Second),
             2(Pound.ukImperial) * (ImperialStandardGravityAcceleration / 0.5(Second)),
-            8,
+            round = 32,
         )
         assertEqualScientificValue(
             4(PoundForce.usCustomary per Second),
             2(Pound.usCustomary) * (ImperialStandardGravityAcceleration / 0.5(Second)),
-            8,
+            round = 32,
         )
         assertEqualScientificValue(
             4(Newton per Second),
             2(Kilogram).convert(Pound) * 2((Meter per Second per Second) per Second),
-            8,
+            round = 28,
         )
     }
 }

@@ -65,7 +65,7 @@ fun <Quantity : PhysicalQuantity> assertScientificConversion(
     if (bidirectional) {
         assertEquals(
             left.round(round),
-            rightUnit.convert(leftUnit.convert(left, rightUnit), leftUnit, round)
+            rightUnit.convert(leftUnit.convert(left, rightUnit), leftUnit, round),
         )
     }
 }

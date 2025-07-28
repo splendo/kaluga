@@ -124,76 +124,83 @@ class LengthUnitTest {
             2(SquareMeter).convert(SquareCentimeter) / 2(Meter).convert(Hectometer),
         )
 
-        assertEqualScientificValue(1(Inch), 2(SquareInch) / 2(Inch))
+        assertEqualScientificValue(1(Inch), 2(SquareInch) / 2(Inch), round = 32)
         assertEqualScientificValue(1(Foot), 2(SquareFoot) / 2(Foot))
         assertEqualScientificValue(1(Yard), 2(SquareYard) / 2(Yard))
         assertEqualScientificValue(1(Mile), 2(SquareMile) / 2(Mile))
         assertEqualScientificValue(1(Foot), 2(SquareFoot).convert(SquareInch) / 2(Foot).convert(Yard))
-        assertEqualScientificValue(1(Meter), 2(SquareMeter).convert(SquareCentimeter) / 2(Meter).convert(Yard))
+        assertEqualScientificValue(1(Meter), 2(SquareMeter).convert(SquareCentimeter) / 2(Meter).convert(Yard), round = 32)
     }
 
     @Test
     fun lengthFromAreaDensityAndDensityTest() {
         assertEqualScientificValue(1(Meter), 2(Kilogram per SquareMeter) / 2(Kilogram per CubicMeter))
-        assertEqualScientificValue(1(Foot), 2(Pound per SquareFoot) / 2(Pound per CubicFoot))
-        assertEqualScientificValue(1(Foot), 2(Pound.ukImperial per SquareFoot) / 2(Pound per CubicFoot))
-        assertEqualScientificValue(1(Foot), 2(Pound.usCustomary per SquareFoot) / 2(Pound per CubicFoot))
-        assertEqualScientificValue(1(Foot), 2(Pound per SquareFoot) / 2(Pound.ukImperial per CubicFoot))
+        assertEqualScientificValue(1(Foot), 2(Pound per SquareFoot) / 2(Pound per CubicFoot), round = 32)
+        assertEqualScientificValue(1(Foot), 2(Pound.ukImperial per SquareFoot) / 2(Pound per CubicFoot), round = 32)
+        assertEqualScientificValue(1(Foot), 2(Pound.usCustomary per SquareFoot) / 2(Pound per CubicFoot), round = 32)
+        assertEqualScientificValue(1(Foot), 2(Pound per SquareFoot) / 2(Pound.ukImperial per CubicFoot), round = 32)
         assertEqualScientificValue(
             1(Foot),
             2(Pound.ukImperial per SquareFoot) / 2(Pound.ukImperial per CubicFoot),
+            round = 32,
         )
-        assertEqualScientificValue(1(Foot), 2(Pound per SquareFoot) / 2(Pound.usCustomary per CubicFoot))
+        assertEqualScientificValue(1(Foot), 2(Pound per SquareFoot) / 2(Pound.usCustomary per CubicFoot), round = 32)
         assertEqualScientificValue(
             1(Foot),
             2(Pound.usCustomary per SquareFoot) / 2(Pound.usCustomary per CubicFoot),
+            round = 32,
         )
         assertEqualScientificValue(
             1(Meter),
             2(Kilogram per SquareMeter) / 2(Kilogram per CubicMeter).convert(Pound per CubicFoot),
+            round = 30,
         )
     }
 
     @Test
     fun lengthFromAreaDensityAndSpecificVolumeTest() {
         assertEqualScientificValue(4(Meter), 2(CubicMeter per Kilogram) * 2(Kilogram per SquareMeter))
-        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound) * 2(Pound per SquareFoot))
-        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound) * 2(Pound.ukImperial per SquareFoot))
-        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound) * 2(Pound.usCustomary per SquareFoot))
-        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound.ukImperial) * 2(Pound per SquareFoot))
+        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound) * 2(Pound per SquareFoot), round = 30)
+        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound) * 2(Pound.ukImperial per SquareFoot), round = 30)
+        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound) * 2(Pound.usCustomary per SquareFoot), round = 30)
+        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound.ukImperial) * 2(Pound per SquareFoot), round = 30)
         assertEqualScientificValue(
             4(Foot),
             2(CubicFoot per Pound.ukImperial) * 2(Pound.ukImperial per SquareFoot),
+            round = 30,
         )
-        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound.usCustomary) * 2(Pound per SquareFoot))
+        assertEqualScientificValue(4(Foot), 2(CubicFoot per Pound.usCustomary) * 2(Pound per SquareFoot), round = 30)
         assertEqualScientificValue(
             4(Foot),
             2(CubicFoot per Pound.usCustomary) * 2(Pound.usCustomary per SquareFoot),
+            round = 30,
         )
         assertEqualScientificValue(
             4(Meter),
             2(CubicMeter per Kilogram) * 2(Kilogram per SquareMeter).convert(Pound per SquareFoot),
-            5,
+            round = 30,
         )
 
         assertEqualScientificValue(4(Meter), 2(Kilogram per SquareMeter) * 2(CubicMeter per Kilogram))
-        assertEqualScientificValue(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound))
-        assertEqualScientificValue(4(Foot), 2(Pound.ukImperial per SquareFoot) * 2(CubicFoot per Pound))
-        assertEqualScientificValue(4(Foot), 2(Pound.usCustomary per SquareFoot) * 2(CubicFoot per Pound))
-        assertEqualScientificValue(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound.ukImperial))
+        assertEqualScientificValue(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound), round = 30)
+        assertEqualScientificValue(4(Foot), 2(Pound.ukImperial per SquareFoot) * 2(CubicFoot per Pound), round = 30)
+        assertEqualScientificValue(4(Foot), 2(Pound.usCustomary per SquareFoot) * 2(CubicFoot per Pound), round = 30)
+        assertEqualScientificValue(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound.ukImperial), round = 30)
         assertEqualScientificValue(
             4(Foot),
             2(Pound.ukImperial per SquareFoot) * 2(CubicFoot per Pound.ukImperial),
+            round = 30,
         )
-        assertEqualScientificValue(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound.usCustomary))
+        assertEqualScientificValue(4(Foot), 2(Pound per SquareFoot) * 2(CubicFoot per Pound.usCustomary), round = 30)
         assertEqualScientificValue(
             4(Foot),
             2(Pound.usCustomary per SquareFoot) * 2(CubicFoot per Pound.usCustomary),
+            round = 30,
         )
         assertEqualScientificValue(
             4(Meter),
             2(Kilogram per SquareMeter).convert(Pound per SquareFoot) * 2(CubicMeter per Kilogram),
-            5,
+            round = 30,
         )
     }
 
@@ -206,41 +213,42 @@ class LengthUnitTest {
         assertEqualScientificValue(1(Centimeter), 20(Decierg) / 20(Decidyne))
         assertEqualScientificValue(1(Foot), 2(FootPoundal) / 2(Poundal))
         assertEqualScientificValue(1(Foot), 2(FootPoundForce) / 2(PoundForce))
-        assertEqualScientificValue(1(Inch), 2(InchPoundForce) / 2(PoundForce))
-        assertEqualScientificValue(1(Inch), 2(InchOunceForce) / 2(OunceForce))
-        assertEqualScientificValue(1(Foot), 2(FootPoundForce) / 2(PoundForce).convert(GrainForce))
-        assertEqualScientificValue(1(Foot), 2(FootPoundForce) / 2(PoundForce).convert(ImperialTonForce))
-        assertEqualScientificValue(1(Foot), 2(FootPoundForce) / 2(PoundForce).convert(UsTonForce))
-        assertEqualScientificValue(1(Foot), 2(FootPoundForce).convert(WattHour) / 2(PoundForce), 5)
+        assertEqualScientificValue(1(Inch), 2(InchPoundForce) / 2(PoundForce), round = 32)
+        assertEqualScientificValue(1(Inch), 2(InchOunceForce) / 2(OunceForce), round = 32)
+        assertEqualScientificValue(1(Foot), 2(FootPoundForce) / 2(PoundForce).convert(GrainForce), round = 32)
+        assertEqualScientificValue(1(Foot), 2(FootPoundForce) / 2(PoundForce).convert(ImperialTonForce), round = 32)
+        assertEqualScientificValue(1(Foot), 2(FootPoundForce) / 2(PoundForce).convert(UsTonForce), round = 32)
+        assertEqualScientificValue(1(Foot), 2(FootPoundForce).convert(WattHour) / 2(PoundForce), round = 32)
         assertEqualScientificValue(
             1(Foot),
             2(FootPoundForce).convert(WattHour) / 2(PoundForce).convert(ImperialTonForce),
-            5,
+            round = 32,
         )
         assertEqualScientificValue(
             1(Foot),
             2(FootPoundForce).convert(WattHour) / 2(PoundForce).convert(UsTonForce),
-            5,
+            round = 32,
         )
     }
 
     @Test
     fun lengthFromForceAndSurfaceTensionTest() {
         assertEqualScientificValue(1(Meter), 2(Newton) / 2(Newton per Meter))
-        assertEqualScientificValue(1(Foot), 2(PoundForce) / 2(PoundForce per Foot))
-        assertEqualScientificValue(1(Foot), 2(PoundForce.ukImperial) / 2(PoundForce per Foot))
-        assertEqualScientificValue(1(Foot), 2(PoundForce.usCustomary) / 2(PoundForce per Foot))
-        assertEqualScientificValue(1(Foot), 2(PoundForce) / 2(PoundForce.ukImperial per Foot))
+        assertEqualScientificValue(1(Foot), 2(PoundForce) / 2(PoundForce per Foot), round = 32)
+        assertEqualScientificValue(1(Foot), 2(PoundForce.ukImperial) / 2(PoundForce per Foot), round = 32)
+        assertEqualScientificValue(1(Foot), 2(PoundForce.usCustomary) / 2(PoundForce per Foot), round = 32)
+        assertEqualScientificValue(1(Foot), 2(PoundForce) / 2(PoundForce.ukImperial per Foot), round = 32)
         assertEqualScientificValue(
             1(Foot),
             2(PoundForce.ukImperial) / 2(PoundForce.ukImperial per Foot),
+            round = 32,
         )
-        assertEqualScientificValue(1(Foot), 2(PoundForce) / 2(PoundForce.usCustomary per Foot))
-        assertEqualScientificValue(1(Foot), 2(PoundForce.usCustomary) / 2(PoundForce per Foot))
+        assertEqualScientificValue(1(Foot), 2(PoundForce) / 2(PoundForce.usCustomary per Foot), round = 32)
+        assertEqualScientificValue(1(Foot), 2(PoundForce.usCustomary) / 2(PoundForce per Foot), round = 32)
         assertEqualScientificValue(
             1(Meter),
             2(Newton) / 2(Newton per Meter).convert(PoundForce per Foot),
-            5,
+            round = 30,
         )
     }
 
@@ -257,6 +265,7 @@ class LengthUnitTest {
         assertEqualScientificValue(
             1(Meter),
             2(Kilogram per Meter) / 2(Kilogram per SquareMeter).convert(Pound per SquareFoot),
+            round = 30,
         )
     }
 
@@ -287,34 +296,36 @@ class LengthUnitTest {
         )
         assertEqualScientificValue(2(Meter), Meter.height(8(CubicMeter), 2(Meter), 2(Meter)))
 
-        assertEqualScientificValue(2(Inch), 8(CubicInch) / 4(SquareInch))
+        assertEqualScientificValue(2(Inch), 8(CubicInch) / 4(SquareInch), round = 32)
         assertEqualScientificValue(2(Foot), 8(CubicFoot) / 4(SquareFoot))
         assertEqualScientificValue(2(Yard), 8(CubicYard) / 4(SquareYard))
         assertEqualScientificValue(2(Mile), 8(CubicMile) / 4(SquareMile))
-        assertEqualScientificValue(2(Inch), 8(AcreInch) / 4(Acre))
-        assertEqualScientificValue(2(Foot), 8(AcreFoot) / 4(Acre))
-        assertEqualScientificValue(2(Foot), 8(CubicFoot).convert(CubicInch) / 4(SquareFoot).convert(SquareYard))
-        assertEqualScientificValue(2(Foot), 8(CubicFoot.ukImperial) / 4(SquareFoot))
-        assertEqualScientificValue(2(Foot), 8(CubicFoot.usCustomary) / 4(SquareFoot))
+        assertEqualScientificValue(2(Inch), 8(AcreInch) / 4(Acre), round = 32)
+        assertEqualScientificValue(2(Foot), 8(AcreFoot) / 4(Acre), round = 32)
+        assertEqualScientificValue(2(Foot), 8(CubicFoot).convert(CubicInch) / 4(SquareFoot).convert(SquareYard), round = 32)
+        assertEqualScientificValue(2(Foot), 8(CubicFoot.ukImperial) / 4(SquareFoot), round = 32)
+        assertEqualScientificValue(2(Foot), 8(CubicFoot.usCustomary) / 4(SquareFoot), round = 32)
         assertEqualScientificValue(
             2(Meter),
             8(CubicMeter).convert(CubicDecameter) / 4(SquareMeter).convert(SquareInch),
+            round = 32,
         )
     }
 
     @Test
     fun lengthFromWeightAndLinearMassDensityTest() {
         assertEqualScientificValue(1(Meter), 2(Kilogram) / 2(Kilogram per Meter))
-        assertEqualScientificValue(1(Foot), 2(Pound) / 2(Pound per Foot))
-        assertEqualScientificValue(1(Foot), 2(Pound.ukImperial) / 2(Pound per Foot))
-        assertEqualScientificValue(1(Foot), 2(Pound.usCustomary) / 2(Pound per Foot))
-        assertEqualScientificValue(1(Foot), 2(Pound) / 2(Pound.ukImperial per Foot))
-        assertEqualScientificValue(1(Foot), 2(Pound.ukImperial) / 2(Pound.ukImperial per Foot))
-        assertEqualScientificValue(1(Foot), 2(Pound) / 2(Pound.usCustomary per Foot))
-        assertEqualScientificValue(1(Foot), 2(Pound.usCustomary) / 2(Pound.usCustomary per Foot))
+        assertEqualScientificValue(1(Foot), 2(Pound) / 2(Pound per Foot), round = 32)
+        assertEqualScientificValue(1(Foot), 2(Pound.ukImperial) / 2(Pound per Foot), round = 32)
+        assertEqualScientificValue(1(Foot), 2(Pound.usCustomary) / 2(Pound per Foot), round = 32)
+        assertEqualScientificValue(1(Foot), 2(Pound) / 2(Pound.ukImperial per Foot), round = 32)
+        assertEqualScientificValue(1(Foot), 2(Pound.ukImperial) / 2(Pound.ukImperial per Foot), round = 32)
+        assertEqualScientificValue(1(Foot), 2(Pound) / 2(Pound.usCustomary per Foot), round = 32)
+        assertEqualScientificValue(1(Foot), 2(Pound.usCustomary) / 2(Pound.usCustomary per Foot), round = 32)
         assertEqualScientificValue(
             1(Meter),
             2(Kilogram) / 2(Kilogram per Meter).convert(Pound per Foot),
+            round = 30,
         )
     }
 }

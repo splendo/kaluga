@@ -392,6 +392,10 @@ private val ONE_SQUARE_INCH = SquareInch.fromSIUnit(Decimal.ONE)
 private val ONE_SQUARE_FOOT = SquareFoot.fromSIUnit(Decimal.ONE)
 private val ONE_MILLIMETER_IN_INCHES = 1(Millimeter).convertValue(Inch)
 
+fun test() {
+    val pascalInPSI = 1(Pascal).convertValue(PoundSquareInch)
+}
+
 @Serializable
 data object PoundSquareInch : ImperialPressure() {
     override val symbol: String = "psi"

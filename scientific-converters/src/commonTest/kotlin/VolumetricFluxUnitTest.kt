@@ -35,9 +35,9 @@ class VolumetricFluxUnitTest {
     @Test
     fun volumetricFluxFromVolumetricFlowAndAreaTest() {
         assertEqualScientificValue(1(CubicMeter per Second per SquareMeter), 2(CubicMeter per Second) / 2(SquareMeter))
-        assertEqualScientificValue(1(CubicFoot per Second per SquareFoot), 2(CubicFoot per Second) / 2(SquareFoot))
-        assertEqualScientificValue(1(ImperialGallon per Second per SquareFoot), 2(ImperialGallon per Second) / 2(SquareFoot))
-        assertEqualScientificValue(1(UsLiquidGallon per Second per SquareFoot), 2(UsLiquidGallon per Second) / 2(SquareFoot))
-        assertEqualScientificValue(1(CubicMeter per Second per SquareMeter), 2(CubicMeter per Second) / 2(SquareMeter).convert(SquareFoot))
+        assertEqualScientificValue(1(CubicFoot per Second per SquareFoot), 2(CubicFoot per Second) / 2(SquareFoot), round = 32)
+        assertEqualScientificValue(1(ImperialGallon per Second per SquareFoot), 2(ImperialGallon per Second) / 2(SquareFoot), round = 32)
+        assertEqualScientificValue(1(UsLiquidGallon per Second per SquareFoot), 2(UsLiquidGallon per Second) / 2(SquareFoot), round = 32)
+        assertEqualScientificValue(1(CubicMeter per Second per SquareMeter), 2(CubicMeter per Second) / 2(SquareMeter).convert(SquareFoot), round = 32)
     }
 }

@@ -54,21 +54,21 @@ class SurfaceTensionUnitTest {
         assertEqualScientificValue(1(Dyne per Centimeter), 2(Erg) / 2(SquareCentimeter))
         assertEqualScientificValue(1(Dyne per Centimeter), 20(Decierg) / 2(SquareCentimeter))
         assertEqualScientificValue(1(Newton per Meter), 2(Joule) / 2(SquareMeter))
-        assertEqualScientificValue(1(Newton per Meter), 2(Joule).convert(WattHour) / 2(SquareMeter))
-        assertEqualScientificValue(1(Poundal per Foot), 2(FootPoundal) / 2(SquareFoot))
-        assertEqualScientificValue(1(PoundForce per Inch), 2(InchPoundForce) / 2(SquareInch))
+        assertEqualScientificValue(1(Newton per Meter), 2(Joule).convert(WattHour) / 2(SquareMeter), round = 32)
+        assertEqualScientificValue(1(Poundal per Foot), 2(FootPoundal) / 2(SquareFoot), round = 32)
+        assertEqualScientificValue(1(PoundForce per Inch), 2(InchPoundForce) / 2(SquareInch), round = 32)
         assertEqualScientificValue(1(OunceForce per Inch), 2(InchOunceForce) / 2(SquareInch))
-        assertEqualScientificValue(1(PoundForce per Foot), 2(FootPoundForce) / 2(SquareFoot))
-        assertEqualScientificValue(1(PoundForce per Foot), 2(FootPoundForce).convert(WattHour) / 2(SquareFoot), 8)
-        assertEqualScientificValue(1(Newton per Meter), 2(Joule) / 2(SquareMeter).convert(SquareFoot))
+        assertEqualScientificValue(1(PoundForce per Foot), 2(FootPoundForce) / 2(SquareFoot), round = 32)
+        assertEqualScientificValue(1(PoundForce per Foot), 2(FootPoundForce).convert(WattHour) / 2(SquareFoot), round = 32)
+        assertEqualScientificValue(1(Newton per Meter), 2(Joule) / 2(SquareMeter).convert(SquareFoot), round = 32)
     }
 
     @Test
     fun surfaceTensionFromForceAndLengthTest() {
         assertEqualScientificValue(1(Newton per Meter), 2(Newton) / 2(Meter))
-        assertEqualScientificValue(1(PoundForce per Foot), 2(PoundForce) / 2(Foot))
-        assertEqualScientificValue(1(ImperialTonForce per Foot), 2(ImperialTonForce) / 2(Foot))
-        assertEqualScientificValue(1(UsTonForce per Foot), 2(UsTonForce) / 2(Foot))
-        assertEqualScientificValue(1(Newton per Meter), 2(Newton) / 2(Meter).convert(Foot))
+        assertEqualScientificValue(1(PoundForce per Foot), 2(PoundForce) / 2(Foot), round = 32)
+        assertEqualScientificValue(1(ImperialTonForce per Foot), 2(ImperialTonForce) / 2(Foot), round = 32)
+        assertEqualScientificValue(1(UsTonForce per Foot), 2(UsTonForce) / 2(Foot), round = 32)
+        assertEqualScientificValue(1(Newton per Meter), 2(Newton) / 2(Meter).convert(Foot), round = 32)
     }
 }

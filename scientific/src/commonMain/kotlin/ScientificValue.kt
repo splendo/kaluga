@@ -68,8 +68,10 @@ interface ScientificValue<Quantity : PhysicalQuantity, Unit : ScientificUnit<Qua
  * @param unit the [Unit] component
  */
 @Serializable
-data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(@Serializable(with = DecimalAsDoubleSerializer::class) override val decimalValue: Decimal, override val unit: Unit) :
-    ScientificValue<Quantity, Unit> {
+data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(
+    @Serializable(with = DecimalAsDoubleSerializer::class) override val decimalValue: Decimal,
+    override val unit: Unit,
+) : ScientificValue<Quantity, Unit> {
 
     /**
      * Constructor

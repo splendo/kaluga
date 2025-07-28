@@ -26,7 +26,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
-import kotlin.math.PI
 
 /**
  * Set of all [SolidAngle]
@@ -82,7 +81,7 @@ data object Decisteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementS
 
 @Serializable
 data object Spat : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle> {
-    private val STERADIAN_IN_SPAT = (4.0 * PI).toDecimal()
+    private val STERADIAN_IN_SPAT = Decimal.PI * 4.toDecimal()
     override val symbol = "sp"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.SolidAngle

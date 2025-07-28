@@ -44,95 +44,110 @@ class MolarityUnitTest {
     @Test
     fun molarityFromAmountOfSubstanceAndVolumeTest() {
         assertEqualScientificValue(1(Decimole per CubicMeter), 2(Decimole) / 2(CubicMeter))
-        assertEqualScientificValue(1(Decimole per CubicFoot), 2(Decimole) / 2(CubicFoot))
-        assertEqualScientificValue(1(Decimole per CubicFoot.ukImperial), 2(Decimole) / 2(CubicFoot.ukImperial))
-        assertEqualScientificValue(1(Decimole per CubicFoot.usCustomary), 2(Decimole) / 2(CubicFoot.usCustomary))
-        assertEqualScientificValue(1(Decimole per CubicMeter), 2(Decimole) / 2(CubicMeter).convert(CubicFoot as Volume))
+        assertEqualScientificValue(1(Decimole per CubicFoot), 2(Decimole) / 2(CubicFoot), round = 27)
+        assertEqualScientificValue(1(Decimole per CubicFoot.ukImperial), 2(Decimole) / 2(CubicFoot.ukImperial), round = 27)
+        assertEqualScientificValue(1(Decimole per CubicFoot.usCustomary), 2(Decimole) / 2(CubicFoot.usCustomary), round = 27)
+        assertEqualScientificValue(1(Decimole per CubicMeter), 2(Decimole) / 2(CubicMeter).convert(CubicFoot as Volume), round = 32)
     }
 
     @Test
     fun molarityFromDensityAndMolalityTest() {
         assertEqualScientificValue(4(Decimole per CubicMeter), 2(Decimole per Kilogram) * 2(Kilogram per CubicMeter))
         assertEqualScientificValue(4(Decimole per CubicMeter), 2(Kilogram per CubicMeter) * 2(Decimole per Kilogram))
-        assertEqualScientificValue(4(Decimole per CubicFoot), 2(Decimole per Pound) * 2(Pound per CubicFoot))
-        assertEqualScientificValue(4(Decimole per CubicFoot), 2(Pound per CubicFoot) * 2(Decimole per Pound))
+        assertEqualScientificValue(4(Decimole per CubicFoot), 2(Decimole per Pound) * 2(Pound per CubicFoot), round = 30)
+        assertEqualScientificValue(4(Decimole per CubicFoot), 2(Pound per CubicFoot) * 2(Decimole per Pound), round = 30)
         assertEqualScientificValue(
             4(Decimole per CubicFoot.ukImperial),
             2(Decimole per Pound) * 2(Pound.ukImperial per CubicFoot),
+            round = 30,
         )
         assertEqualScientificValue(
             4(Decimole per CubicFoot.ukImperial),
             2(Pound.ukImperial per CubicFoot) * 2(Decimole per Pound),
+            round = 30,
         )
         assertEqualScientificValue(
             4(Decimole per CubicFoot.usCustomary),
             2(Decimole per Pound) * 2(Pound.usCustomary per CubicFoot),
+            round = 30,
         )
         assertEqualScientificValue(
             4(Decimole per CubicFoot.usCustomary),
             2(Pound.usCustomary per CubicFoot) * 2(Decimole per Pound),
+            round = 30,
         )
         assertEqualScientificValue(
             4(Decimole per CubicMeter),
             2(Decimole per Kilogram) * 2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density),
+            round = 30,
         )
         assertEqualScientificValue(
             4(Decimole per CubicMeter),
             2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density) * 2(Decimole per Kilogram),
+            round = 30,
         )
     }
 
     @Test
     fun molarityFromDensityAndMolarMassTest() {
         assertEqualScientificValue(1(Decimole per CubicMeter), 2(Kilogram per CubicMeter) / 2(Kilogram per Decimole))
-        assertEqualScientificValue(1(Decimole per CubicFoot), 2(Pound per CubicFoot) / 2(Pound per Decimole))
+        assertEqualScientificValue(1(Decimole per CubicFoot), 2(Pound per CubicFoot) / 2(Pound per Decimole), round = 32)
         assertEqualScientificValue(
             1(Decimole per CubicFoot.ukImperial),
             2(Pound.ukImperial per CubicFoot) / 2(Pound per Decimole),
+            round = 32,
         )
         assertEqualScientificValue(
             1(Decimole per CubicFoot.usCustomary),
             2(Pound.usCustomary per CubicFoot) / 2(Pound per Decimole),
+            round = 32,
         )
         assertEqualScientificValue(
             1(Decimole per CubicMeter),
             2(Kilogram per CubicMeter).convert((Pound per CubicFoot) as Density) / 2(Kilogram per Decimole),
+            round = 30,
         )
     }
 
     @Test
     fun molarityFromMolalityAndSpecificVolumeTest() {
         assertEqualScientificValue(1(Decimole per CubicMeter), 2(Decimole per Kilogram) / 2(CubicMeter per Kilogram))
-        assertEqualScientificValue(1(Decimole per CubicFoot), 2(Decimole per Pound) / 2(CubicFoot per Pound))
+        assertEqualScientificValue(1(Decimole per CubicFoot), 2(Decimole per Pound) / 2(CubicFoot per Pound), round = 30)
         assertEqualScientificValue(
             1(Decimole per CubicFoot.ukImperial),
             2(Decimole per Pound) / 2(CubicFoot per Pound.ukImperial),
+            round = 30,
         )
         assertEqualScientificValue(
             1(Decimole per CubicFoot.usCustomary),
             2(Decimole per Pound) / 2(CubicFoot per Pound.usCustomary),
+            round = 30,
         )
         assertEqualScientificValue(
             1(Decimole per CubicMeter),
             2(Decimole per Kilogram) / 2(CubicMeter per Kilogram).convert((CubicFoot per Pound) as SpecificVolume),
+            round = 32,
         )
     }
 
     @Test
     fun molarityFromInvertedMolarVolumeTest() {
         assertEqualScientificValue(0.5(Decimole per CubicMeter), 2(CubicMeter per Decimole).molarity())
-        assertEqualScientificValue(0.5(Decimole per CubicFoot), 2(CubicFoot per Decimole).molarity())
+        assertEqualScientificValue(0.5(Decimole per CubicFoot), 2(CubicFoot per Decimole).molarity(), round = 27)
         assertEqualScientificValue(
             0.5(Decimole per CubicFoot.ukImperial),
             2(CubicFoot.ukImperial per Decimole).molarity(),
+            round = 27,
         )
         assertEqualScientificValue(
             0.5(Decimole per CubicFoot.usCustomary),
             2(CubicFoot.usCustomary per Decimole).molarity(),
+            round = 27,
         )
         assertEqualScientificValue(
             0.5(Decimole per CubicMeter),
             2(CubicMeter per Decimole).convert((CubicFoot per Decimole) as MolarVolume).molarity(),
+            round = 32,
         )
     }
 }

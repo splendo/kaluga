@@ -23,7 +23,22 @@ import com.splendo.kaluga.scientific.converter.power.times
 import com.splendo.kaluga.scientific.converter.specificEnergy.div
 import com.splendo.kaluga.scientific.converter.thermalResistance.times
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.BritishThermalUnit
+import com.splendo.kaluga.scientific.unit.Celsius
+import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.Fahrenheit
+import com.splendo.kaluga.scientific.unit.ImperialTon
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.Kelvin
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Pound
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.UsTon
+import com.splendo.kaluga.scientific.unit.Watt
+import com.splendo.kaluga.scientific.unit.WattHour
+import com.splendo.kaluga.scientific.unit.imperial
+import com.splendo.kaluga.scientific.unit.metric
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
 
 class TemperatureUnitTest {
@@ -33,7 +48,7 @@ class TemperatureUnitTest {
         assertEqualScientificValue(1(Celsius), 2(WattHour) / 2(WattHour per Celsius))
         assertEqualScientificValue(1(Celsius), 2(WattHour) / 2(WattHour.metric per Celsius))
         assertEqualScientificValue(1(Celsius), 2(WattHour) / 2(WattHour.imperial per Celsius))
-        assertEqualScientificValue(1(Fahrenheit), 2(WattHour) / 2(WattHour per Fahrenheit))
+        assertEqualScientificValue(1(Fahrenheit), 2(WattHour) / 2(WattHour per Fahrenheit), round = 32)
         assertEqualScientificValue(1(Celsius), 2(WattHour.imperial) / 2(WattHour per Celsius))
         assertEqualScientificValue(
             1(Celsius),
@@ -46,6 +61,7 @@ class TemperatureUnitTest {
         assertEqualScientificValue(
             1(Kelvin),
             2(Joule).convert(BritishThermalUnit) / 2(Joule per Kelvin),
+            round = 32,
         )
     }
 
@@ -74,6 +90,7 @@ class TemperatureUnitTest {
         assertEqualScientificValue(
             1(Kelvin),
             2(Joule per Kilogram).convert(WattHour per Pound) / 2(Joule per Celsius per Kilogram),
+            round = 32,
         )
     }
 
@@ -90,28 +107,34 @@ class TemperatureUnitTest {
         assertEqualScientificValue(
             4(Celsius),
             2(Celsius per (BritishThermalUnit per Second)) * 2(BritishThermalUnit per Second),
+            round = 32,
         )
         assertEqualScientificValue(
             4(Celsius),
             2(BritishThermalUnit per Second) * 2(Celsius per (BritishThermalUnit per Second)),
+            round = 32,
         )
         assertEqualScientificValue(4(Fahrenheit), 2(Fahrenheit per Watt) * 2(Watt))
         assertEqualScientificValue(4(Fahrenheit), 2(Watt) * 2(Fahrenheit per Watt))
         assertEqualScientificValue(
             4(Fahrenheit),
             2(Fahrenheit per (BritishThermalUnit per Second)) * 2(BritishThermalUnit per Second),
+            round = 32,
         )
         assertEqualScientificValue(
             4(Fahrenheit),
             2(BritishThermalUnit per Second) * 2(Fahrenheit per (BritishThermalUnit per Second)),
+            round = 32,
         )
         assertEqualScientificValue(
             4(Kelvin),
             2(Celsius per Watt).convert(Fahrenheit per Watt) * 2(Watt.metric),
+            round = 32,
         )
         assertEqualScientificValue(
             4(Kelvin),
             2(Watt.metric) * 2(Celsius per Watt).convert(Fahrenheit per Watt),
+            round = 32,
         )
     }
 }

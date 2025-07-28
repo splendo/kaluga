@@ -59,25 +59,25 @@ class SpecificHeatCapacityUnitTest {
     fun specificHeatCapacityFromHeatCapacityAndWeightTest() {
         assertEqualScientificValue(1(Joule per Celsius per Kilogram), 2(Joule per Celsius) / 2(Kilogram))
         assertEqualScientificValue(1(WattHour per Celsius per Kilogram), 2(WattHour per Celsius) / 2(Kilogram))
-        assertEqualScientificValue(1(WattHour per Celsius per Pound), 2(WattHour per Celsius) / 2(Pound))
-        assertEqualScientificValue(1(WattHour per Celsius per Pound), 2(WattHour per Celsius) / 2(Pound.ukImperial))
-        assertEqualScientificValue(1(WattHour per Fahrenheit per Pound), 2(WattHour per Fahrenheit) / 2(Pound))
-        assertEqualScientificValue(1(WattHour per Fahrenheit per Pound), 2(WattHour per Fahrenheit) / 2(Pound.usCustomary))
-        assertEqualScientificValue(1(HorsepowerHour per Celsius per Pound), 2(HorsepowerHour per Celsius) / 2(Pound))
-        assertEqualScientificValue(1(HorsepowerHour per Celsius per Pound), 2(HorsepowerHour per Celsius) / 2(Pound.ukImperial))
-        assertEqualScientificValue(1(HorsepowerHour per Fahrenheit per Pound), 2(HorsepowerHour per Fahrenheit) / 2(Pound))
-        assertEqualScientificValue(1(HorsepowerHour per Fahrenheit per Pound), 2(HorsepowerHour per Fahrenheit) / 2(Pound.usCustomary))
-        assertEqualScientificValue(1(Joule per Kelvin per Kilogram), 2(Joule per Celsius) / 2(Kilogram).convert(Pound), 9)
+        assertEqualScientificValue(1(WattHour per Celsius per Pound), 2(WattHour per Celsius) / 2(Pound), round = 31)
+        assertEqualScientificValue(1(WattHour per Celsius per Pound), 2(WattHour per Celsius) / 2(Pound.ukImperial), round = 31)
+        assertEqualScientificValue(1(WattHour per Fahrenheit per Pound), 2(WattHour per Fahrenheit) / 2(Pound), round = 32)
+        assertEqualScientificValue(1(WattHour per Fahrenheit per Pound), 2(WattHour per Fahrenheit) / 2(Pound.usCustomary), round = 32)
+        assertEqualScientificValue(1(HorsepowerHour per Celsius per Pound), 2(HorsepowerHour per Celsius) / 2(Pound), round = 32)
+        assertEqualScientificValue(1(HorsepowerHour per Celsius per Pound), 2(HorsepowerHour per Celsius) / 2(Pound.ukImperial), round = 32)
+        assertEqualScientificValue(1(HorsepowerHour per Fahrenheit per Pound), 2(HorsepowerHour per Fahrenheit) / 2(Pound), round = 32)
+        assertEqualScientificValue(1(HorsepowerHour per Fahrenheit per Pound), 2(HorsepowerHour per Fahrenheit) / 2(Pound.usCustomary), round = 32)
+        assertEqualScientificValue(1(Joule per Kelvin per Kilogram), 2(Joule per Celsius) / 2(Kilogram).convert(Pound), round = 30)
     }
 
     @Test
     fun specificHeatCapacityFromSpecificEnergyAndTemperatureTest() {
         assertEqualScientificValue(1(Joule per Celsius per Kilogram), 2(Joule per Kilogram) / 2(Celsius))
         assertEqualScientificValue(1(WattHour per Celsius per Kilogram), 2(WattHour per Kilogram) / 2(Celsius))
-        assertEqualScientificValue(1(WattHour per Celsius per Pound), 2(WattHour per Pound) / 2(Celsius))
-        assertEqualScientificValue(1(WattHour per Fahrenheit per Pound), 2(WattHour per Pound) / 2(Fahrenheit))
-        assertEqualScientificValue(1(WattHour per Celsius per ImperialTon), 2(WattHour per ImperialTon) / 2(Celsius))
-        assertEqualScientificValue(1(WattHour per Fahrenheit per UsTon), 2(WattHour per UsTon) / 2(Fahrenheit))
-        assertEqualScientificValue(1(Joule per Kelvin per Kilogram), 2(Joule per Kilogram) / Fahrenheit.deltaValue(2(Kelvin)))
+        assertEqualScientificValue(1(WattHour per Celsius per Pound), 2(WattHour per Pound) / 2(Celsius), round = 30)
+        assertEqualScientificValue(1(WattHour per Fahrenheit per Pound), 2(WattHour per Pound) / 2(Fahrenheit), round = 30)
+        assertEqualScientificValue(1(WattHour per Celsius per ImperialTon), 2(WattHour per ImperialTon) / 2(Celsius), round = 30)
+        assertEqualScientificValue(1(WattHour per Fahrenheit per UsTon), 2(WattHour per UsTon) / 2(Fahrenheit), round = 30)
+        assertEqualScientificValue(1(Joule per Kelvin per Kilogram), 2(Joule per Kilogram) / Fahrenheit.deltaValue(2(Kelvin)), round = 32)
     }
 }
