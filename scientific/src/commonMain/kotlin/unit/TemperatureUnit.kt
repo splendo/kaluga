@@ -105,7 +105,7 @@ data object Fahrenheit : USCustomaryTemperature("°F") {
 @Serializable
 data object Rankine : USCustomaryTemperature("°R") {
     internal val RANKINE_FREEZING = "459.67".toDecimal()
-    private val FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE = (5.0 / 9.0).toDecimal()
+    private val FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE = 5.toDecimal() / 9.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE
     override fun fromSIUnit(value: Decimal): Decimal = value / FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE
     override fun deltaToSIUnitDelta(delta: Decimal): Decimal = toSIUnit(delta)

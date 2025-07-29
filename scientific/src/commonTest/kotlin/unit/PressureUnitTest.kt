@@ -17,6 +17,10 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.pow
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class PressureUnitTest {
@@ -36,12 +40,12 @@ class PressureUnitTest {
 
         assertScientificConversion("1", Pascal, "1e-5", Bar)
         assertScientificConversion("1", Pascal, "10.0", Barye)
-        assertScientificConversion("1", Pascal, "0.00750062", Torr, 8)
-        assertScientificConversion("1", Pascal, "9.86923e-6", Atmosphere, 11)
-        assertScientificConversion("1", Pascal, "0.00750062", MillimeterOfMercury, 8)
-        assertScientificConversion("1", Pascal, "0.10197162", MillimeterOfWater, 8)
+        assertScientificConversion(Decimal.ONE, Pascal, 760.toDecimal() / 101325.toDecimal(), Torr, round = 32)
+        assertScientificConversion(Decimal.ONE, Pascal, Decimal.ONE / 101325.toDecimal(), Atmosphere, round = 32)
+        assertScientificConversion(Decimal.ONE, Pascal, Decimal.ONE / "133.322387415".toDecimal(), MillimeterOfMercury, round = 27)
+        assertScientificConversion(Decimal.ONE, Pascal, Decimal.ONE / "9.80665".toDecimal(), MillimeterOfWater, round = 32)
         assertScientificConversion("1", MillimeterOfWater, "0.1", CentimeterOfWater)
 
-        assertScientificConversion("1", Pascal, "0.0001450377", PoundSquareInch, 10)
+        assertScientificConversion(Decimal.ONE, Pascal, Newton.convert(Decimal.ONE, PoundForce) / Meter.convert(Decimal.ONE, Inch).pow(2), PoundSquareInch, round = 30)
     }
 }

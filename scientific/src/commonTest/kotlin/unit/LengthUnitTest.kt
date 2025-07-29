@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class LengthUnitTest {
@@ -38,8 +41,8 @@ class LengthUnitTest {
     @Test
     fun feetConversionTest() {
         assertScientificConversion("1.0", Foot, "0.3048", Meter)
-        assertScientificConversion("1.0", Foot, "12.0", Inch)
-        assertScientificConversion("1.0", Foot, "0.33333333", Yard, 8)
-        assertScientificConversion("1.0", Foot, "0.00018939", Mile, 8)
+        assertScientificConversion("1.0", Foot, "12", Inch)
+        assertScientificConversion(Decimal.ONE, Foot, Decimal.ONE / 3.toDecimal(), Yard, round = 32)
+        assertScientificConversion(Decimal.ONE, Foot, Decimal.ONE / (5280.toDecimal()), Mile, round = 32)
     }
 }

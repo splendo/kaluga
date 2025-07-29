@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.times
 import kotlin.test.Test
 
 class ForceUnitTest {
@@ -35,9 +38,9 @@ class ForceUnitTest {
         assertScientificConversion("1", Newton, "1e-9", Giganewton)
 
         assertScientificConversion("1", Newton, "100000.0", Dyne)
-        assertScientificConversion("1", Newton, "0.101972", KilogramForce, 6)
-        assertScientificConversion("1", Newton, "7.23301", Poundal, 5)
-        assertScientificConversion("1", Newton, "0.224809", PoundForce, 6)
+        assertScientificConversion(Decimal.ONE, Newton, Decimal.ONE / MetricStandardGravityAcceleration.decimalValue, KilogramForce, round = 32)
+        assertScientificConversion(Decimal.ONE, Newton, Kilogram.convert(Decimal.ONE, Pound) * Meter.convert(Decimal.ONE, Foot), Poundal, round = 30)
+        assertScientificConversion(Decimal.ONE, Newton, Kilogram.convert(Decimal.ONE, Pound) / MetricStandardGravityAcceleration.decimalValue, PoundForce, round = 30)
 
         assertScientificConversion("1", Dyne, "1e+9", Nanodyne)
         assertScientificConversion("1", Dyne, "1e+6", Microdyne)
@@ -57,7 +60,7 @@ class ForceUnitTest {
         assertScientificConversion("1", PoundForce, "16", OunceForce)
         assertScientificConversion("1", PoundForce, "7000", GrainForce)
         assertScientificConversion("1", PoundForce, "0.001", Kip)
-        assertScientificConversion("1", PoundForce, "0.00044643", ImperialTonForce, 8)
+        assertScientificConversion(Decimal.ONE, PoundForce, Pound.convert(Decimal.ONE, ImperialTon), ImperialTonForce, round = 32)
         assertScientificConversion("1", PoundForce, "1.0", PoundForce.ukImperial)
         assertScientificConversion("1", PoundForce, "0.0005", UsTonForce)
         assertScientificConversion("1", PoundForce, "1.0", PoundForce.usCustomary)

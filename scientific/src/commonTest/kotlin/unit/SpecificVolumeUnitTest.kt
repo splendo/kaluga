@@ -17,13 +17,22 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.pow
 import kotlin.test.Test
 
 class SpecificVolumeUnitTest {
 
     @Test
     fun specificVolumeConversionTest() {
-        assertScientificConversion("1.0", (CubicMeter per Kilogram), "16.02", CubicFoot per Pound, 2)
-        assertScientificConversion("1.0", (ImperialTonForce per Foot), "1.12", UsTonForce per Foot, 2)
+        assertScientificConversion(
+            Decimal.ONE,
+            (CubicMeter per Kilogram),
+            Meter.convert(Decimal.ONE, Foot).pow(3) / Kilogram.convert(Decimal.ONE, Pound),
+            CubicFoot per Pound,
+            round = 29,
+        )
+        assertScientificConversion(Decimal.ONE, (ImperialTonForce per Foot), ImperialTonForce.convert(Decimal.ONE, UsTonForce), UsTonForce per Foot, round = 32)
     }
 }

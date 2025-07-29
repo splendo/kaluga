@@ -17,6 +17,10 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class WeightUnitTest {
@@ -36,21 +40,21 @@ class WeightUnitTest {
         assertScientificConversion("1.0", Kilogram, "1e-6", Gigagram)
 
         assertScientificConversion("1.0", Kilogram, "6.02214076e+26", Dalton)
-        assertScientificConversion("1.0", Kilogram, "2.20462262", Pound, 8)
+        assertScientificConversion(Decimal.ONE, Kilogram, Decimal.ONE / "0.45359237".toDecimal(), Pound, round = 30)
     }
 
     @Test
     fun daltonConversionTest() {
-        assertScientificConversion("1.0", Dalton, "1e+9", Nanodalton)
-        assertScientificConversion("1.0", Dalton, "1e+6", Microdalton)
-        assertScientificConversion("1.0", Dalton, "1000.0", Millidalton)
-        assertScientificConversion("1.0", Dalton, "100.0", Centidalton)
-        assertScientificConversion("1.0", Dalton, "10.0", Decidalton)
-        assertScientificConversion("1.0", Dalton, "0.1", Decadalton)
-        assertScientificConversion("1.0", Dalton, "0.01", HectoDalton)
-        assertScientificConversion("1.0", Dalton, "0.001", Kilodalton)
-        assertScientificConversion("1.0", Dalton, "1e-6", Megadalton)
-        assertScientificConversion("1.0", Dalton, "1e-9", Gigadalton)
+        assertScientificConversion("1.0", Dalton, "1e+9", Nanodalton, round = 20)
+        assertScientificConversion("1.0", Dalton, "1e+6", Microdalton, round = 23)
+        assertScientificConversion("1.0", Dalton, "1000.0", Millidalton, round = 26)
+        assertScientificConversion("1.0", Dalton, "100.0", Centidalton, round = 27)
+        assertScientificConversion("1.0", Dalton, "10.0", Decidalton, round = 28)
+        assertScientificConversion("1.0", Dalton, "0.1", Decadalton, round = 29)
+        assertScientificConversion("1.0", Dalton, "0.01", HectoDalton, round = 29)
+        assertScientificConversion("1.0", Dalton, "0.001", Kilodalton, round = 29)
+        assertScientificConversion("1.0", Dalton, "1e-6", Megadalton, round = 29)
+        assertScientificConversion("1.0", Dalton, "1e-9", Gigadalton, round = 29)
     }
 
     @Test
@@ -58,11 +62,11 @@ class WeightUnitTest {
         assertScientificConversion("1.0", Pound, "7000.0", Grain)
         assertScientificConversion("1.0", Pound, "256.0", Dram)
         assertScientificConversion("1.0", Pound, "16.0", Ounce)
-        assertScientificConversion("1.0", Pound, "0.07142857", Stone, 8)
-        assertScientificConversion("1.0", Pound, "0.03108095", Slug, 8)
+        assertScientificConversion(Decimal.ONE, Pound, Decimal.ONE / 14.toDecimal(), Stone, round = 32)
+        assertScientificConversion(Decimal.ONE, Pound, Decimal.ONE / (Meter.convert(Decimal.ONE, Foot) * MetricStandardGravityAcceleration.decimalValue), Slug, round = 32)
 
         // uk ton
-        assertScientificConversion("1.0", Pound, "0.00044643", ImperialTon, 8)
+        assertScientificConversion(Decimal.ONE, Pound, Decimal.ONE / 2240.toDecimal(), ImperialTon, round = 32)
         assertScientificConversion("1.0", Pound, "1.0", Pound.ukImperial)
         // us ton
         assertScientificConversion("1.0", Pound, "0.0005", UsTon)

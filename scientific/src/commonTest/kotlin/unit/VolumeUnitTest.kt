@@ -17,6 +17,11 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.pow
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class VolumeUnitTest {
@@ -36,13 +41,13 @@ class VolumeUnitTest {
 
         assertScientificConversion("1.0", CubicMeter, "1000.0", Liter)
 
-        assertScientificConversion("1.0", CubicMeter, "35.31", CubicFoot, 2)
+        assertScientificConversion(Decimal.ONE, CubicMeter, Meter.convert(Decimal.ONE, Foot).pow(3), CubicFoot, round = 32)
 
-        assertScientificConversion("1.0", CubicMeter, "0.000811", AcreFoot, 6)
-        assertScientificConversion("1.0", CubicMeter, "264.172", UsLiquidGallon, 3)
+        assertScientificConversion(Decimal.ONE, CubicMeter, SquareMeter.convert(Decimal.ONE, Acre) * Meter.convert(Decimal.ONE, Foot), AcreFoot, round = 32)
+        assertScientificConversion(Decimal.ONE, CubicMeter, Meter.convert(Decimal.ONE, Inch).pow(3) / 231.toDecimal(), UsLiquidGallon, round = 32)
 
         assertScientificConversion("1.0", CubicMeter, "4000.0", MetricCup)
-        assertScientificConversion("1.0", CubicMeter, "219.969", ImperialGallon, 3)
+        assertScientificConversion(Decimal.ONE, CubicMeter, Decimal.THOUSAND / "4.54609".toDecimal(), ImperialGallon, round = 32)
     }
 
     @Test
@@ -61,9 +66,9 @@ class VolumeUnitTest {
 
     @Test
     fun cubicFeetConversionTest() {
-        assertScientificConversion("1.0", CubicFoot, "1728.0", CubicInch)
-        assertScientificConversion("1.0", CubicFoot, "0.037037", CubicYard, 6)
-        assertScientificConversion("1.0", CubicFoot, "6.794e-12", CubicMile, 15)
+        assertScientificConversion(Decimal.ONE, CubicFoot, Foot.convert(Decimal.ONE, Inch).pow(3), CubicInch)
+        assertScientificConversion(Decimal.ONE, CubicFoot, Foot.convert(Decimal.ONE, Yard).pow(3), CubicYard, round = 32)
+        assertScientificConversion(Decimal.ONE, CubicFoot, Foot.convert(Decimal.ONE, Mile).pow(3), CubicMile, round = 32)
     }
 
     @Test
@@ -76,7 +81,9 @@ class VolumeUnitTest {
         assertScientificConversion("1.0", UsLiquidGallon, "128.0", UsFluidOunce)
         assertScientificConversion("1.0", UsLiquidGallon, "1024.0", UsFluidDram)
 
-        assertScientificConversion("1.0", UsCustomaryCup, "0.985784", UsLegalCup, 6)
+        val cubicInch = 231.toDecimal() / 16.toDecimal()
+        val milliliters = Inch.convert(Decimal.ONE, Centimeter).pow(3)
+        assertScientificConversion(Decimal.ONE, UsCustomaryCup, (cubicInch * milliliters) / 240.0.toDecimal(), UsLegalCup, round = 32)
 
         assertScientificConversion("1.0", CubicFoot, "1.0", CubicFoot.usCustomary)
     }

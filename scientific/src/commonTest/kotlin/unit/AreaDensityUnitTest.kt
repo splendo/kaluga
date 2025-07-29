@@ -17,12 +17,21 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.pow
 import kotlin.test.Test
 
 class AreaDensityUnitTest {
 
     @Test
     fun areaDensityConversionTest() {
-        assertScientificConversion("1", (Kilogram per SquareMeter), "0.204816", Pound per SquareFoot, 6)
+        assertScientificConversion(
+            Decimal.ONE,
+            (Kilogram per SquareMeter),
+            Kilogram.convert(Decimal.ONE, Pound) / Meter.convert(Decimal.ONE, Foot).pow(2),
+            Pound per SquareFoot,
+            round = 30,
+        )
     }
 }

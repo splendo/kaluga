@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
@@ -35,17 +38,29 @@ class EnergyUnitTest {
         assertScientificConversion("1.0", Joule, "1e-6", Megajoule)
         assertScientificConversion("1.0", Joule, "1e-9", Gigajoule)
 
-        assertScientificConversion("1.0", Joule, "0.00027777777777777778", WattHour, 17)
+        assertScientificConversion(Decimal.ONE, Joule, Decimal.ONE / 3600.toDecimal(), WattHour, round = 32)
         assertScientificConversion("1.0", Joule, "1.0e+7", Erg)
-        assertScientificConversion("1.0", Joule, "6.24150907446076260778E18", Electronvolt, 2)
-        assertScientificConversion("1.0", Joule, "0.23900573613766730402", Calorie, 17)
-        assertScientificConversion("1.0", Joule, "0.23884589662749593962", Calorie.IT, 17)
-        assertScientificConversion("1.0", Joule, "23.73036040423193694447", FootPoundal)
-        assertScientificConversion("1.0", Joule, "0.73756214927726536388", FootPoundForce)
-        assertScientificConversion("1.0", Joule, "8.85074579132718436654", InchPoundForce)
-        assertScientificConversion("1.0", Joule, "3.7250613599862E-7", HorsepowerHour, 13)
-        assertScientificConversion("1.0", Joule, "0.00094781712031331712", BritishThermalUnit, 17)
-        assertScientificConversion("1.0", Joule, "0.00094845141475329736", BritishThermalUnit.Thermal, 17)
+        assertScientificConversion(Decimal.ONE, Joule, Decimal.ONE / elementaryCharge.decimalValue, Electronvolt, round = 32)
+        assertScientificConversion(Decimal.ONE, Joule, Decimal.ONE / "4.184".toDecimal(), Calorie, round = 32)
+        assertScientificConversion(Decimal.ONE, Joule, Decimal.ONE / "4.1868".toDecimal(), Calorie.IT, round = 32)
+        assertScientificConversion(Decimal.ONE, Joule, Meter.convert(Decimal.ONE, Foot) * Newton.convert(Decimal.ONE, Poundal), FootPoundal, round = 30)
+        assertScientificConversion(Decimal.ONE, Joule, Meter.convert(Decimal.ONE, Foot) * Newton.convert(Decimal.ONE, PoundForce), FootPoundForce, round = 30)
+        assertScientificConversion(Decimal.ONE, Joule, Meter.convert(Decimal.ONE, Inch) * Newton.convert(Decimal.ONE, PoundForce), InchPoundForce, round = 30)
+        assertScientificConversion(Decimal.ONE, Joule, Watt.convert(Decimal.ONE, Horsepower) / 3600.toDecimal(), HorsepowerHour, round = 31)
+        assertScientificConversion(
+            Decimal.ONE,
+            Joule,
+            Joule.convert(Decimal.ONE, Kilocalorie.IT) * Kelvin.convert(Decimal.ONE, Rankine) * Kilogram.convert(Decimal.ONE, Pound),
+            BritishThermalUnit,
+            round = 32,
+        )
+        assertScientificConversion(
+            Decimal.ONE,
+            Joule,
+            Joule.convert(Decimal.ONE, Kilocalorie) * Kelvin.convert(Decimal.ONE, Rankine) * Kilogram.convert(Decimal.ONE, Pound),
+            BritishThermalUnit.Thermal,
+            round = 32,
+        )
     }
 
     @Test
@@ -91,7 +106,6 @@ class EnergyUnitTest {
             Electronvolt,
             "1e-9",
             Gigaelectronvolt,
-            10,
             bidirectional = false,
         )
         assertScientificConversion(
@@ -99,7 +113,6 @@ class EnergyUnitTest {
             Gigaelectronvolt,
             "1e9",
             Electronvolt,
-            10,
             bidirectional = false,
         )
     }
@@ -133,9 +146,9 @@ class EnergyUnitTest {
 
     @Test
     fun imperialEnergyConversionTest() {
-        assertScientificConversion("1.0".toDecimal(), FootPoundal, "0.03108095017156725283".toDecimal(), FootPoundForce, 17)
-        assertScientificConversion("1.0", InchPoundForce, "16.0", InchOunceForce)
+        assertScientificConversion(Decimal.ONE, FootPoundal, Poundal.convert(Decimal.ONE, PoundForce), FootPoundForce, round = 32)
+        assertScientificConversion("1.0", InchPoundForce, "16.0", InchOunceForce, round = 32)
         assertScientificConversion("1.0", HorsepowerHour, "1.0", HorsepowerHour)
-        assertScientificConversion("1.0", BritishThermalUnit, "1.00066921606118546845", BritishThermalUnit.Thermal)
+        assertScientificConversion(Decimal.ONE, BritishThermalUnit, Calorie.IT.convert(Decimal.ONE, Calorie), BritishThermalUnit.Thermal, round = 32)
     }
 }

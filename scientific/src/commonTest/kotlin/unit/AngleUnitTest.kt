@@ -17,6 +17,10 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class AngleUnitTest {
@@ -29,14 +33,15 @@ class AngleUnitTest {
         assertScientificConversion("1", Radian, "100.0", Centiradian)
         assertScientificConversion("1", Radian, "10.0", Deciradian)
 
-        assertScientificConversion("1", Radian, "0.159155", Turn, 6)
-        assertScientificConversion("1", Radian, "159154.9431", Microturn, 4)
-        assertScientificConversion("1", Radian, "159.1549", Milliturn, 4)
-        assertScientificConversion("1", Radian, "15.9155", Centiturn, 4)
-        assertScientificConversion("1", Radian, "1.5915", Deciturn, 4)
-        assertScientificConversion("1", Radian, "57.2958", Degree, 4)
-        assertScientificConversion("1", Radian, "63.662", Gradian, 3)
-        assertScientificConversion("1", Radian, "3437.75", ArcMinute, 2)
-        assertScientificConversion("1", Radian, "206265.0", ArcSecond, 0)
+        val expectedTurn = Decimal.ONE / (Decimal.PI * 2.toDecimal())
+        assertScientificConversion(Decimal.ONE, Radian, expectedTurn, Turn, round = 32)
+        assertScientificConversion(Decimal.ONE, Radian, Decimal.THOUSAND * Decimal.THOUSAND * expectedTurn, Microturn, round = 32)
+        assertScientificConversion(Decimal.ONE, Radian, Decimal.THOUSAND * expectedTurn, Milliturn, round = 32)
+        assertScientificConversion(Decimal.ONE, Radian, Decimal.HUNDRED * expectedTurn, Centiturn, round = 32)
+        assertScientificConversion(Decimal.ONE, Radian, Decimal.TEN * expectedTurn, Deciturn, round = 32)
+        assertScientificConversion(Decimal.ONE, Radian, expectedTurn * 360.toDecimal(), Degree, round = 32)
+        assertScientificConversion(Decimal.ONE, Radian, expectedTurn * 400.toDecimal(), Gradian, round = 32)
+        assertScientificConversion(Decimal.ONE, Radian, expectedTurn * 21600.toDecimal(), ArcMinute, round = 32)
+        assertScientificConversion(Decimal.ONE, Radian, expectedTurn * 1296000.toDecimal(), ArcSecond, round = 32)
     }
 }

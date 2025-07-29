@@ -17,12 +17,15 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class ActionUnitTest {
 
     @Test
     fun actionConversionTest() {
-        assertScientificConversion("1.0", Joule x Second, "7.716E-8", WattHour x Hour, 11)
+        assertScientificConversion(Decimal.ONE, Joule x Second, Decimal.ONE / 12960000.toDecimal(), WattHour x Hour, round = 32)
     }
 }

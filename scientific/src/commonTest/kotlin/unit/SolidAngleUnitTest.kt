@@ -17,6 +17,11 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.pow
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class SolidAngleUnitTest {
@@ -29,7 +34,7 @@ class SolidAngleUnitTest {
         assertScientificConversion("1", Steradian, "100.0", Centisteradian)
         assertScientificConversion("1", Steradian, "10.0", Decisteradian)
 
-        assertScientificConversion("1", Steradian, "0.0796", Spat, 4)
-        assertScientificConversion("1", Steradian, "3282.8063500117", SquareDegree, 10)
+        assertScientificConversion(Decimal.ONE, Steradian, Decimal.ONE / (Decimal.PI * 4.toDecimal()), Spat, round = 32)
+        assertScientificConversion(Decimal.ONE, Steradian, Radian.convert(Decimal.ONE, Degree).pow(2), SquareDegree, round = 29)
     }
 }

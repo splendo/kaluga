@@ -28,28 +28,7 @@ fun <Quantity : PhysicalQuantity> assertScientificConversion(
     leftUnit: ScientificUnit<Quantity>,
     expectedRight: String,
     rightUnit: ScientificUnit<Quantity>,
-    bidirectional: Boolean = true,
-) = assertScientificConversion(left.toDecimal(), leftUnit, expectedRight.toDecimal(), rightUnit, bidirectional)
-
-fun <Quantity : PhysicalQuantity> assertScientificConversion(
-    left: Decimal,
-    leftUnit: ScientificUnit<Quantity>,
-    expectedRight: Decimal,
-    rightUnit: ScientificUnit<Quantity>,
-    bidirectional: Boolean = true,
-) {
-    assertEquals(expectedRight.round(20), leftUnit.convert(left, rightUnit).round(20))
-    if (bidirectional) {
-        assertEquals(left.round(20), rightUnit.convert(expectedRight, leftUnit).round(20))
-    }
-}
-
-fun <Quantity : PhysicalQuantity> assertScientificConversion(
-    left: String,
-    leftUnit: ScientificUnit<Quantity>,
-    expectedRight: String,
-    rightUnit: ScientificUnit<Quantity>,
-    round: Int,
+    round: Int? = null,
     bidirectional: Boolean = true,
 ) = assertScientificConversion(left.toDecimal(), leftUnit, expectedRight.toDecimal(), rightUnit, round, bidirectional)
 
@@ -58,14 +37,17 @@ fun <Quantity : PhysicalQuantity> assertScientificConversion(
     leftUnit: ScientificUnit<Quantity>,
     expectedRight: Decimal,
     rightUnit: ScientificUnit<Quantity>,
-    round: Int,
+    round: Int? = null,
     bidirectional: Boolean = true,
 ) {
-    assertEquals(expectedRight.round(round), leftUnit.convert(left, rightUnit, round))
+    val roundedExpectedRight = round?.let { expectedRight.round(it) } ?: expectedRight
+    val actualRight = leftUnit.convert(left, rightUnit)
+    val roundedActualRight = round?.let { actualRight.round(it) } ?: actualRight
+    assertEquals(roundedExpectedRight, roundedActualRight)
     if (bidirectional) {
-        assertEquals(
-            left.round(round),
-            rightUnit.convert(leftUnit.convert(left, rightUnit), leftUnit, round),
-        )
+        val roundedLeft = round?.let { left.round(it) } ?: left
+        val actualLeftReverse = rightUnit.convert(actualRight, leftUnit)
+        val roundedActualLeftReverse = round?.let { actualLeftReverse.round(it) } ?: actualLeftReverse
+        assertEquals(roundedLeft, roundedActualLeftReverse)
     }
 }

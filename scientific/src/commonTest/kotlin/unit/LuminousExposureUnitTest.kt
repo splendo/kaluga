@@ -17,12 +17,15 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class LuminousExposureUnitTest {
 
     @Test
     fun luminousExposureConversionTest() {
-        assertScientificConversion("1", (Lux x Second), "0.001548", FootCandle x Minute, 6)
+        assertScientificConversion(Decimal.ONE, (Lux x Second), Lux.convert(Decimal.ONE, FootCandle) / 60.toDecimal(), FootCandle x Minute, round = 32)
     }
 }

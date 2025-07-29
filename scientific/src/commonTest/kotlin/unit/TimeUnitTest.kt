@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class TimeUnitTest {
@@ -28,7 +31,7 @@ class TimeUnitTest {
         assertScientificConversion("1.0", Second, "1000.0", Millisecond)
         assertScientificConversion("1.0", Second, "100.0", Centisecond)
         assertScientificConversion("1.0", Second, "10.0", Decisecond)
-        assertScientificConversion("1.0", Second, "0.017", Minute, 3)
-        assertScientificConversion("1.0", Second, "0.00028", Hour, 5)
+        assertScientificConversion(Decimal.ONE, Second, Decimal.ONE / 60.toDecimal(), Minute, round = 32)
+        assertScientificConversion(Decimal.ONE, Second, Decimal.ONE / 3600.toDecimal(), Hour, round = 32)
     }
 }
