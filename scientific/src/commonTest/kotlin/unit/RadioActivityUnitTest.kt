@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class RadioActivityUnitTest {
@@ -33,7 +36,7 @@ class RadioActivityUnitTest {
         assertScientificConversion("1", Becquerel, "0.001", Kilobecquerel)
         assertScientificConversion("1", Becquerel, "1e-6", Megabecquerel)
         assertScientificConversion("1", Becquerel, "1e-9", Gigabecquerel)
-        assertScientificConversion("1", Becquerel, "2.7027027027027E-11", Curie, 24)
+        assertScientificConversion(Decimal.ONE, Becquerel, Decimal.ONE / 3.7e10.toDecimal(), Curie, round = 32)
 
         assertScientificConversion("1", Curie, "1e+9", Nanocurie)
         assertScientificConversion("1", Curie, "1e+6", Microcurie)

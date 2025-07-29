@@ -17,6 +17,10 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.pow
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class KinematicViscosityTest {
@@ -33,18 +37,18 @@ class KinematicViscosityTest {
         assertScientificConversion("1", (SquareMeter per Second), "1e-6", (SquareKilometer per Second))
         assertScientificConversion("1", (SquareMeter per Second), "0.0001", (Hectare per Second))
 
-        assertScientificConversion("1", (SquareMeter per Second), "1550.0", (SquareInch per Second), 0)
-        assertScientificConversion("1", (SquareMeter per Second), "10.7639", (SquareFoot per Second), 4)
-        assertScientificConversion("1", (SquareMeter per Second), "1.19599", (SquareYard per Second), 5)
-        assertScientificConversion("1", (SquareMeter per Second), "3.86102e-7", (SquareMile per Second), 12)
-        assertScientificConversion("1", (SquareMeter per Second), "0.000247105", (Acre per Second), 9)
+        assertScientificConversion(Decimal.ONE, (SquareMeter per Second), Meter.convert(Decimal.ONE, Inch).pow(2), (SquareInch per Second), round = 32)
+        assertScientificConversion(Decimal.ONE, (SquareMeter per Second), Meter.convert(Decimal.ONE, Foot).pow(2), (SquareFoot per Second), round = 32)
+        assertScientificConversion(Decimal.ONE, (SquareMeter per Second), Meter.convert(Decimal.ONE, Yard).pow(2), (SquareYard per Second), round = 32)
+        assertScientificConversion(Decimal.ONE, (SquareMeter per Second), Meter.convert(Decimal.ONE, Mile).pow(2), (SquareMile per Second), round = 32)
+        assertScientificConversion(Decimal.ONE, (SquareMeter per Second), Meter.convert(Decimal.ONE, Mile).pow(2) * 640.toDecimal(), (Acre per Second), round = 32)
 
         assertScientificConversion("1", (SquareMeter per Second), "1e-9", (SquareMeter per Nanosecond))
         assertScientificConversion("1", (SquareMeter per Second), "1e-6", (SquareMeter per Microsecond))
         assertScientificConversion("1", (SquareMeter per Second), "0.001", (SquareMeter per Millisecond))
         assertScientificConversion("1", (SquareMeter per Second), "0.01", (SquareMeter per Centisecond))
         assertScientificConversion("1", (SquareMeter per Second), "0.1", (SquareMeter per Decisecond))
-        assertScientificConversion("1", (SquareMeter per Second), "60", (SquareMeter per Minute), 3)
-        assertScientificConversion("1", (SquareMeter per Second), "3600.0", (SquareMeter per Hour), 5)
+        assertScientificConversion("1", (SquareMeter per Second), "60", (SquareMeter per Minute))
+        assertScientificConversion("1", (SquareMeter per Second), "3600.0", (SquareMeter per Hour))
     }
 }

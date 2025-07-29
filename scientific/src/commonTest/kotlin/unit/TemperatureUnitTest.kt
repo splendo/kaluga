@@ -17,6 +17,12 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.minus
+import com.splendo.kaluga.base.utils.plus
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -24,17 +30,20 @@ class TemperatureUnitTest {
 
     @Test
     fun temperatureConversionTest() {
-        assertScientificConversion("1.0", Celsius, "274.15", Kelvin, 2)
-        assertScientificConversion("1.0", Celsius, "33.8", Fahrenheit, 2)
-        assertScientificConversion("1.0", Celsius, "493.47", Rankine, 2)
-        assertScientificConversion("1.0", Kelvin, "-457.87", Fahrenheit, 2)
-        assertScientificConversion("1.0", Kelvin, "1.8", Rankine, 2)
+        assertScientificConversion("1.0", Celsius, "274.15", Kelvin)
+        assertScientificConversion("1.0", Celsius, "33.8", Fahrenheit, round = 32)
+        assertScientificConversion("1.0", Celsius, "493.47", Rankine, round = 32)
+        assertScientificConversion("1.0", Kelvin, "-457.87", Fahrenheit, round = 32)
+        assertScientificConversion("1.0", Kelvin, "1.8", Rankine, round = 32)
 
-        assertScientificConversion("1.0", Kelvin, "-272.15", Celsius, 2)
-        assertScientificConversion("1.0", Fahrenheit, "-17.22", Celsius, 2)
-        assertScientificConversion("1.0", Rankine, "-272.59", Celsius, 2)
-        assertScientificConversion("1.0", Fahrenheit, "255.93", Kelvin, 2)
-        assertScientificConversion("1.0", Rankine, "0.56", Kelvin, 2)
+        val kelvinInCelsius = "273.15".toDecimal()
+        val rankineInKelvin = 5.toDecimal() / 9.toDecimal()
+        val oneFahrenheitInCelcius = (-31).toDecimal() * rankineInKelvin
+        assertScientificConversion(Decimal.ONE, Kelvin, Decimal.ONE - kelvinInCelsius, Celsius)
+        assertScientificConversion(Decimal.ONE, Fahrenheit, oneFahrenheitInCelcius, Celsius, round = 30)
+        assertScientificConversion(Decimal.ONE, Rankine, "-490.67".toDecimal() * rankineInKelvin, Celsius, round = 30)
+        assertScientificConversion(Decimal.ONE, Fahrenheit, oneFahrenheitInCelcius + kelvinInCelsius, Kelvin, round = 30)
+        assertScientificConversion(Decimal.ONE, Rankine, rankineInKelvin, Kelvin)
     }
 
     @Test

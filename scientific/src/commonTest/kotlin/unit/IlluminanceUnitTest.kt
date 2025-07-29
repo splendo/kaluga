@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.pow
 import kotlin.test.Test
 
 class IlluminanceUnitTest {
@@ -35,7 +38,7 @@ class IlluminanceUnitTest {
         assertScientificConversion("1", Lux, "1e-9", Gigalux)
 
         assertScientificConversion("1", Lux, "0.0001", Phot)
-        assertScientificConversion("1", Lux, "0.092903", FootCandle, 6)
+        assertScientificConversion(Decimal.ONE, Lux, Decimal.ONE / Meter.convert(Decimal.ONE, Foot).pow(2), FootCandle, round = 32)
 
         assertScientificConversion("1", Phot, "1e+9", Nanophot)
         assertScientificConversion("1", Phot, "1e+6", Microphot)

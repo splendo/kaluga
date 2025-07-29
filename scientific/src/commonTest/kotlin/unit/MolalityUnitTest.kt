@@ -17,12 +17,14 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
 import kotlin.test.Test
 
 class MolalityUnitTest {
 
     @Test
     fun molalityConversionTest() {
-        assertScientificConversion("1", (Mole per Kilogram), "0.283495", Decimole per Ounce, 6)
+        assertScientificConversion(Decimal.ONE, (Mole per Kilogram), Decimal.TEN / Kilogram.convert(Decimal.ONE, Ounce), Decimole per Ounce, round = 31)
     }
 }

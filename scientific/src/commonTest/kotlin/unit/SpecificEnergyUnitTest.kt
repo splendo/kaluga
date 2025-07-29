@@ -17,28 +17,30 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.times
 import kotlin.test.Test
 
 class SpecificEnergyUnitTest {
 
     @Test
     fun specificEnergyConversionTest() {
-        assertScientificConversion("1.0", (Joule per Gram), "0.27778", WattHour per Kilogram, 5)
-        assertScientificConversion("1.0", (WattHour per Pound), "2240", WattHour per ImperialTon)
-        assertScientificConversion("1.0", (WattHour per Pound), "2000", WattHour per UsTon)
+        assertScientificConversion(Decimal.ONE, (Joule per Gram), Joule.convert(Decimal.ONE, WattHour) * Decimal.THOUSAND, WattHour per Kilogram, round = 32)
+        assertScientificConversion("1.0", (WattHour per Pound), "2240", WattHour per ImperialTon, round = 27)
+        assertScientificConversion("1.0", (WattHour per Pound), "2000", WattHour per UsTon, round = 27)
         assertScientificConversion(
             "1.0",
             (BritishThermalUnit per Pound),
             "2240",
             BritishThermalUnit per ImperialTon,
-            10,
+            round = 27,
         )
         assertScientificConversion(
             "1.0",
             (BritishThermalUnit per Pound),
             "2000",
             BritishThermalUnit per UsTon,
-            10,
+            round = 27,
         )
     }
 }

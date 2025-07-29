@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
@@ -25,11 +27,11 @@ class AccelerationUnitTest {
     @Test
     fun accelerationConversionTest() {
         assertScientificConversion(
-            "1",
+            Decimal.ONE,
             (Meter per Second per Second),
-            "11.811024",
+            "3.6".toDecimal() / "0.3048".toDecimal(),
             Foot per Millisecond per Hour,
-            6,
+            round = 32,
         )
 
         assertScientificConversion("100", Gal, "1", Meter per Second per Second)

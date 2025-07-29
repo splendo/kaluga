@@ -17,12 +17,15 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class MassFlowRateUnitTest {
 
     @Test
     fun massFlowRateConversionTest() {
-        assertScientificConversion("1.0", (Kilogram per Second), "132.28", Pound per Minute, 2)
+        assertScientificConversion(Decimal.ONE, (Kilogram per Second), Kilogram.convert(Decimal.ONE, Pound) * 60.toDecimal(), Pound per Minute, round = 30)
     }
 }
