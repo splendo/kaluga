@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.enUsPosix
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.plus
@@ -263,7 +264,7 @@ class DenominatorScientificValueFormatterTest {
             defaultUnitFormatter = NumberFormatter(locale = KalugaLocale.enUsPosix, style = NumberFormatStyle.Decimal(minIntegerDigits = 1U))
         }
 
-        assertEquals("1.5 m 20 mm", formatter.format(1.52(Meter)))
+        assertEquals("1.5 m 20 mm", formatter.format("1.52".toDecimal()(Meter)))
     }
 
     @Test

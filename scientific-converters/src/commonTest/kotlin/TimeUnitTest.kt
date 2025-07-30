@@ -100,7 +100,7 @@ class TimeUnitTest {
 
     @Test
     fun timeFromAmountOfSubstanceAndCatalysticActivityTest() {
-        assertEqualScientificValue(1(Second), 20(Decimole) / 0.2(Decakatal))
+        assertEqualScientificValue(1(Second), 20(Decimole) / "0.2".toDecimal()(Decakatal))
     }
 
     @Test
@@ -115,7 +115,7 @@ class TimeUnitTest {
 
     @Test
     fun timeFromChargeAndCurrentTest() {
-        assertEqualScientificValue(1(Second), 20(Decicoulomb) / 0.2(Decaampere))
+        assertEqualScientificValue(1(Second), 20(Decicoulomb) / "0.2".toDecimal()(Decaampere))
     }
 
     @Test
@@ -125,13 +125,13 @@ class TimeUnitTest {
 
     @Test
     fun timeFromElectricCapacitanceAndResistanceTest() {
-        assertEqualScientificValue(4(Second), 20(Decifarad) * 0.2(Decaohm))
-        assertEqualScientificValue(4(Second), 0.2(Decaohm) * 20(Decifarad))
+        assertEqualScientificValue(4(Second), 20(Decifarad) * "0.2".toDecimal()(Decaohm))
+        assertEqualScientificValue(4(Second), "0.2".toDecimal()(Decaohm) * 20(Decifarad))
     }
 
     @Test
     fun timeFromElectricInductanceAndResistanceTest() {
-        assertEqualScientificValue(1(Second), 20(Decihenry) / 0.2(Decaohm))
+        assertEqualScientificValue(1(Second), 20(Decihenry) / "0.2".toDecimal()(Decaohm))
     }
 
     @Test
@@ -139,8 +139,8 @@ class TimeUnitTest {
         assertEqualScientificValue(1(Second), 2(Joule) / 2(Watt))
         assertEqualScientificValue(1(Hour), 2(WattHour) / 2(Watt))
         assertEqualScientificValue(1(Hour), 20(DeciwattHour) / 2(Watt))
-        assertEqualScientificValue(1(Hour), 2(WattHour) / 0.2(Decawatt))
-        assertEqualScientificValue(1(Hour), 20(DeciwattHour) / 0.2(Decawatt))
+        assertEqualScientificValue(1(Hour), 2(WattHour) / "0.2".toDecimal()(Decawatt))
+        assertEqualScientificValue(1(Hour), 20(DeciwattHour) / "0.2".toDecimal()(Decawatt))
         assertEqualScientificValue(1(Hour), 2(HorsepowerHour) / 2(Horsepower))
         assertEqualScientificValue(1(Minute), 2(FootPoundForce) / 2(FootPoundForce per Minute), round = 32)
         assertEqualScientificValue(1(Minute), 2(InchPoundForce) / 2(InchPoundForce per Minute), round = 32)
@@ -151,7 +151,7 @@ class TimeUnitTest {
 
     @Test
     fun timeFromForceAndYankTest() {
-        assertEqualScientificValue(1(Hour), 20(Decinewton) / 0.2(Decanewton per Hour), round = 29)
+        assertEqualScientificValue(1(Hour), 20(Decinewton) / "0.2".toDecimal()(Decanewton per Hour), round = 29)
     }
 
     @Test
@@ -172,17 +172,17 @@ class TimeUnitTest {
 
     @Test
     fun timeFromLuminousEnergyAndFluxTest() {
-        assertEqualScientificValue(1(Hour), 20(Decilumen x Hour) / 0.2(Decalumen))
+        assertEqualScientificValue(1(Hour), 20(Decilumen x Hour) / "0.2".toDecimal()(Decalumen))
     }
 
     @Test
     fun timeFromLuminousExposureAndIlluminanceTest() {
-        assertEqualScientificValue(1(Hour), 20(Deciphot x Hour) / 0.2(Decaphot))
+        assertEqualScientificValue(1(Hour), 20(Deciphot x Hour) / "0.2".toDecimal()(Decaphot))
     }
 
     @Test
     fun timeFromMagneticFluxAndVoltageTest() {
-        assertEqualScientificValue(1(Second), 20(Deciweber) / 0.2(Decavolt))
+        assertEqualScientificValue(1(Second), 20(Deciweber) / "0.2".toDecimal()(Decavolt))
     }
 
     @Test

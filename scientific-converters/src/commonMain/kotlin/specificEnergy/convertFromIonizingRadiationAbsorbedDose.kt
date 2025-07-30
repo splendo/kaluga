@@ -46,7 +46,7 @@ fun <
     > SpecificEnergyUnit.specificEnergy(
     absorbedDose: ScientificValue<PhysicalQuantity.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>,
     factory: (Decimal, SpecificEnergyUnit) -> Value,
-) = DefaultScientificValue(absorbedDose.convert(Gray).value, Joule per Kilogram).convert(
+) = DefaultScientificValue(absorbedDose.convert(Gray).decimalValue, Joule per Kilogram).convert(
     this,
     factory,
 )
