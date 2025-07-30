@@ -83,7 +83,18 @@ actual fun FiniteDecimal.pow(n: Int, scale: Int, roundingMode: RoundingMode): Fi
     ),
 ).setScale(scale, roundingMode.java)
 
-actual fun Number.toFiniteDecimal() = toString().toFiniteDecimal()
+actual fun Number.toFiniteDecimal(): FiniteDecimal? = when (this) {
+    is Int -> BigDecimal(this)
+    is Long -> BigDecimal(this)
+    is Short -> BigDecimal(toInt())
+    else -> toDouble().let {
+        when {
+            it.isNaN() || it.isInfinite() -> null
+            else -> BigDecimal(it)
+        }
+    }
+}
+
 actual fun String.toFiniteDecimal() = try {
     BigDecimal(this)
 } catch (e: NumberFormatException) {

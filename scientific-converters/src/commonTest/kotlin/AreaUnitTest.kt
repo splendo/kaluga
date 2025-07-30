@@ -184,7 +184,7 @@ class AreaUnitTest {
         assertEqualScientificValue(1(SquareCentimeter), 20(Decidyne) / 20(Decibarye))
         assertEqualScientificValue(1(SquareInch), 2(PoundForce) / 2(PoundSquareInch), round = 32)
         assertEqualScientificValue(1(SquareFoot), 2(PoundForce) / 2(PoundSquareFoot), round = 32)
-        assertEqualScientificValue(1(SquareInch), 2(PoundForce) / 0.002(KiloPoundSquareInch), round = 32)
+        assertEqualScientificValue(1(SquareInch), 2(PoundForce) / "0.002".toDecimal()(KiloPoundSquareInch), round = 32)
         assertEqualScientificValue(1(SquareInch), 2(OunceForce) / 2(OunceSquareInch), round = 32)
         assertEqualScientificValue(1(SquareInch), 2(Kip) / 2(KipSquareInch), round = 32)
         assertEqualScientificValue(1(SquareFoot), 2(Kip) / 2(KipSquareFoot), round = 32)
@@ -239,7 +239,7 @@ class AreaUnitTest {
         assertEqualScientificValue(4(SquareKilometer), 2(Kilometer) * 2(Kilometer))
         assertEqualScientificValue(4(SquareMegameter), 2(Megameter) * 2(Megameter))
         assertEqualScientificValue(4(SquareGigameter), 2(Gigameter) * 2(Gigameter))
-        assertEqualScientificValue(4(SquareMeter), 20(Decimeter) * 0.2(Decameter))
+        assertEqualScientificValue(4(SquareMeter), 20(Decimeter) * "0.2".toDecimal()(Decameter))
 
         assertEqualScientificValue(4(SquareInch), 2(Inch) * 2(Inch), round = 32)
         assertEqualScientificValue(4(SquareFoot), 2(Foot) * 2(Foot))
