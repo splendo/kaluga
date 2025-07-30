@@ -27,11 +27,14 @@ import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.descriptors.element
+import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.encodeStructure
 
 /**
  * A Value in a given [ScientificUnit]
@@ -67,11 +70,9 @@ interface ScientificValue<Quantity : PhysicalQuantity, Unit : ScientificUnit<Qua
  * @param value the [Decimal] component
  * @param unit the [Unit] component
  */
-@Serializable
-data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(
-    @Serializable(with = DecimalAsDoubleSerializer::class) override val decimalValue: Decimal,
-    override val unit: Unit,
-) : ScientificValue<Quantity, Unit> {
+@Serializable(with = DefaultScientificValueSerializer::class)
+data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(override val decimalValue: Decimal, override val unit: Unit) :
+    ScientificValue<Quantity, Unit> {
 
     /**
      * Constructor
@@ -83,14 +84,44 @@ data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractSc
     override val value: Double by lazy { decimalValue.toDouble() }
 }
 
-class DecimalAsDoubleSerializer : KSerializer<Decimal> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("decimal", PrimitiveKind.DOUBLE)
-
-    override fun serialize(encoder: Encoder, value: Decimal) {
-        encoder.encodeDouble(value.toDouble())
+/**
+ * The [DefaultScientificValue] used to be a data class of "value" and "unit", instead of "decimalValue" and "unit".
+ * This custom serializer is backwards compatible with the old serializer.
+ */
+private class DefaultScientificValueSerializer<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(
+    quantitySerializer: KSerializer<Quantity>,
+    private val unitSerializer: KSerializer<Unit>,
+) : KSerializer<DefaultScientificValue<Quantity, Unit>> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("DefaultScientificValue") {
+        element<Double>("value")
+        element("unit", unitSerializer.descriptor)
+        element<String>("decimalValue", isOptional = true)
     }
 
-    override fun deserialize(decoder: Decoder): Decimal = decoder.decodeDouble().toDecimal()
+    override fun serialize(encoder: Encoder, value: DefaultScientificValue<Quantity, Unit>) {
+        encoder.encodeStructure(descriptor) {
+            encodeDoubleElement(descriptor, 0, value.value)
+            encodeSerializableElement(descriptor, 1, unitSerializer, value.unit)
+            encodeStringElement(descriptor, 2, value.decimalValue.toString())
+        }
+    }
+
+    override fun deserialize(decoder: Decoder): DefaultScientificValue<Quantity, Unit> = decoder.decodeStructure(descriptor) {
+        var value = 0.0
+        var decimalValue: Decimal? = null
+        var unit: Unit? = null
+        while (true) {
+            when (val index = decodeElementIndex(descriptor)) {
+                0 -> value = decodeDoubleElement(descriptor, 0)
+                1 -> unit = decodeSerializableElement(descriptor, 2, unitSerializer)
+                2 -> decimalValue = decodeStringElement(descriptor, 1).toDecimal()
+                CompositeDecoder.DECODE_DONE -> break
+                else -> error("Unexpected index: $index")
+            }
+        }
+        requireNotNull(unit)
+        decimalValue?.let { DefaultScientificValue(it, unit) } ?: DefaultScientificValue(value, unit)
+    }
 }
 
 // Calculation

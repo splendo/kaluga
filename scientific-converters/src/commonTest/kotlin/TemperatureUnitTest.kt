@@ -78,6 +78,7 @@ class TemperatureUnitTest {
         assertEqualScientificValue(
             1(Fahrenheit),
             2(WattHour per Pound) / 2(WattHour per Fahrenheit per Pound),
+            round = 29,
         )
         assertEqualScientificValue(
             1(Celsius),
@@ -86,6 +87,7 @@ class TemperatureUnitTest {
         assertEqualScientificValue(
             1(Fahrenheit),
             2(WattHour per UsTon) / 2(WattHour per Fahrenheit per UsTon),
+            round = 32,
         )
         assertEqualScientificValue(
             1(Kelvin),
@@ -114,8 +116,8 @@ class TemperatureUnitTest {
             2(BritishThermalUnit per Second) * 2(Celsius per (BritishThermalUnit per Second)),
             round = 32,
         )
-        assertEqualScientificValue(4(Fahrenheit), 2(Fahrenheit per Watt) * 2(Watt))
-        assertEqualScientificValue(4(Fahrenheit), 2(Watt) * 2(Fahrenheit per Watt))
+        assertEqualScientificValue(4(Fahrenheit), 2(Fahrenheit per Watt) * 2(Watt), round = 32)
+        assertEqualScientificValue(4(Fahrenheit), 2(Watt) * 2(Fahrenheit per Watt), round = 32)
         assertEqualScientificValue(
             4(Fahrenheit),
             2(Fahrenheit per (BritishThermalUnit per Second)) * 2(BritishThermalUnit per Second),

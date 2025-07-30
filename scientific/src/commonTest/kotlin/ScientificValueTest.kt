@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.Centimeter
 import com.splendo.kaluga.scientific.unit.Decameter
 import com.splendo.kaluga.scientific.unit.Decimeter
@@ -38,6 +39,13 @@ class ScientificValueTest {
 
     @Serializable
     data class ValueContainer(val value: DefaultScientificValue<*, *>)
+
+    @Serializable
+    data class LegacyDefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(override val value: Double, override val unit: Unit) :
+        ScientificValue<Quantity, Unit>
+
+    @Serializable
+    data class LegacyValueContainer(val value: LegacyDefaultScientificValue<*, *>)
 
     @Test
     fun testCalculations() {
@@ -62,11 +70,28 @@ class ScientificValueTest {
 
     @Test
     fun testSerialization() {
+        val json = Json { ignoreUnknownKeys = true }
         val value = 10(Meter)
         val container = ValueContainer(value)
-        val json = Json.encodeToString(ValueContainer.serializer(), container)
-        val decoded = Json.decodeFromString(ValueContainer.serializer(), json)
+        val encoded = json.encodeToString(ValueContainer.serializer(), container)
+        val decoded = json.decodeFromString(ValueContainer.serializer(), encoded)
         assertEquals(container, decoded)
+
+        // Test backwards compatible serialization
+        val legacyValue = LegacyDefaultScientificValue(10.0, Meter)
+        val legacyContainer = LegacyValueContainer(legacyValue)
+        val legacyJson = json.encodeToString(LegacyValueContainer.serializer(), legacyContainer)
+        val legacyDecoded = json.decodeFromString(ValueContainer.serializer(), legacyJson)
+        assertEquals(container, legacyDecoded)
+
+        // Test forwards compatible serialization
+        val decodedAsLegacy = json.decodeFromString(LegacyValueContainer.serializer(), encoded)
+        assertEquals(legacyContainer, decodedAsLegacy)
+
+        val serializer = DefaultScientificValue.serializer(PhysicalQuantity.Length.serializer(), Meter.serializer())
+        val valueJson = json.encodeToString(serializer, value)
+        val decodedValue = json.decodeFromString(serializer, valueJson)
+        assertEquals(value, decodedValue)
     }
 
     @Test
