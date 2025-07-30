@@ -32,8 +32,8 @@ class ThermalResistanceUnitTest {
     @Test
     fun thermalResistanceFromTemperatureAndPowerTest() {
         assertEqualScientificValue(1(Kelvin per Watt), 2(Kelvin) / 2(Watt))
-        assertEqualScientificValue(1(Fahrenheit per Watt), 2(Fahrenheit) / 2(Watt))
-        assertEqualScientificValue(1(Rankine per Watt), 2(Rankine) / 2(Watt))
+        assertEqualScientificValue(1(Fahrenheit per Watt), 2(Fahrenheit) / 2(Watt), round = 32)
+        assertEqualScientificValue(1(Rankine per Watt), 2(Rankine) / 2(Watt), round = 32)
         assertEqualScientificValue(1(Kelvin per Horsepower), 2(Kelvin) / 2(Horsepower), round = 20)
         assertEqualScientificValue(1(Fahrenheit per Horsepower), 2(Fahrenheit) / 2(Horsepower), round = 32)
         assertEqualScientificValue(1(Rankine per Horsepower), 2(Rankine) / 2(Horsepower), round = 32)

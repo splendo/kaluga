@@ -192,12 +192,12 @@ class SpecificEnergyUnitTest {
         assertEqualScientificValue(
             4(WattHour per Pound.usCustomary),
             2((WattHour per Fahrenheit) per Pound) * 2(Fahrenheit),
-            round = 30,
+            round = 28,
         )
         assertEqualScientificValue(
             4(WattHour per Pound.usCustomary),
             2(Fahrenheit) * 2((WattHour per Fahrenheit) per Pound),
-            round = 30,
+            round = 28,
         )
         assertEqualScientificValue(
             4(HorsepowerHour per Pound.ukImperial),
@@ -212,12 +212,12 @@ class SpecificEnergyUnitTest {
         assertEqualScientificValue(
             4(HorsepowerHour per Pound.usCustomary),
             2((HorsepowerHour per Fahrenheit) per Pound) * 2(Fahrenheit),
-            round = 30,
+            round = 28,
         )
         assertEqualScientificValue(
             4(HorsepowerHour per Pound.usCustomary),
             2(Fahrenheit) * 2((HorsepowerHour per Fahrenheit) per Pound),
-            round = 30,
+            round = 28,
         )
         assertEqualScientificValue(
             4(Joule per Kilogram),

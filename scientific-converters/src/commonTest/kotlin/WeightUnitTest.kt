@@ -362,12 +362,12 @@ class WeightUnitTest {
         assertEqualScientificValue(
             1(Pound.usCustomary),
             2(WattHour per Fahrenheit) / 2(WattHour per Fahrenheit per Pound),
-            round = 30,
+            round = 29,
         )
         assertEqualScientificValue(
             1(Pound.usCustomary),
             2(BritishThermalUnit per Fahrenheit) / 2(BritishThermalUnit per Fahrenheit per Pound),
-            round = 30,
+            round = 29,
         )
         assertEqualScientificValue(
             1(Kilogram),

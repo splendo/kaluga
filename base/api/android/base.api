@@ -922,6 +922,7 @@ public abstract class com/splendo/kaluga/base/utils/Decimal : java/lang/Comparab
 public final class com/splendo/kaluga/base/utils/Decimal$Companion {
 	public final fun getHUNDRED ()Lcom/splendo/kaluga/base/utils/Decimal;
 	public final fun getONE ()Lcom/splendo/kaluga/base/utils/Decimal;
+	public final fun getPI ()Lcom/splendo/kaluga/base/utils/Decimal;
 	public final fun getTEN ()Lcom/splendo/kaluga/base/utils/Decimal;
 	public final fun getTHOUSAND ()Lcom/splendo/kaluga/base/utils/Decimal;
 	public final fun getZERO ()Lcom/splendo/kaluga/base/utils/Decimal;
@@ -976,6 +977,7 @@ public final class com/splendo/kaluga/base/utils/DecimalAndroid {
 	public static synthetic fun pow$default (Ljava/math/BigDecimal;IILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Ljava/math/BigDecimal;
 	public static final fun round (Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/utils/RoundingMode;)Ljava/math/BigDecimal;
 	public static synthetic fun round$default (Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Ljava/math/BigDecimal;
+	public static final fun stringValue (Ljava/math/BigDecimal;)Ljava/lang/String;
 	public static final fun times (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun times (Ljava/math/BigDecimal;Ljava/math/BigDecimal;I)Ljava/math/BigDecimal;
 	public static final fun times (Ljava/math/BigDecimal;Ljava/math/BigDecimal;ILcom/splendo/kaluga/base/utils/RoundingMode;)Ljava/math/BigDecimal;
@@ -985,7 +987,6 @@ public final class com/splendo/kaluga/base/utils/DecimalAndroid {
 	public static final fun toFiniteDecimal (Ljava/lang/String;)Ljava/math/BigDecimal;
 	public static final fun toInt (Ljava/math/BigDecimal;)I
 	public static final fun toLong (Ljava/math/BigDecimal;)J
-	public static final fun toString (Ljava/math/BigDecimal;)Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/base/utils/DecimalKt {
