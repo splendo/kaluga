@@ -4,6 +4,16 @@ plugins {
 
 kaluga {
     moduleName = "alerts"
+    appleInterop {
+        main {
+            create("kalugaAlert").apply {
+                definitionFile.set(project.file("src/iosMain/cinterop/kalugaAlert.def"))
+                compilerOpts("-I/${project.file("src/iosMain/swift").absolutePath}")
+                includeDirs.allHeaders(project.file("src/iosMain/swift"))
+                extraOpts("-libraryPath", project.file("src/iosMain/swift"))
+            }
+        }
+    }
     dependencies {
         android {
             main {

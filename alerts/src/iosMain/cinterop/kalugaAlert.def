@@ -1,0 +1,6 @@
+language = Objective-C
+headers = KalugaAlert.h
+package = com.splendo.kaluga.alerts
+headerFilter = KalugaAlert.h
+staticLibraries = libKalugaAlert.a
+linkerOpts = -framework Foundation -framework UIKit

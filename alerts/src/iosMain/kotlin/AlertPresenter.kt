@@ -53,7 +53,7 @@ actual class AlertPresenter(
     alert: Alert,
     private val parent: UIViewController,
     logger: Logger,
-    private val delegateBuilder: (Alert) -> UIPopoverPresentationControllerDelegateProtocol,
+    private val delegateBuilder: (Alert) -> KalugaUIPopoverPresentationControllerDelegateProtocol,
 ) : BaseAlertPresenter(alert, logger) {
 
     /** Ref to alert's [UITextField] of type [Alert.Style.TEXT_INPUT] */
@@ -98,11 +98,11 @@ actual class AlertPresenter(
      * @param delegateBuilder Method that creates a [UIPopoverPresentationControllerDelegateProtocol] for an [Alert].
      * This allows for presentation of [Alert.Style.ACTION_LIST] on iPad.
      */
-    actual class Builder(private val viewController: UIViewController, private val delegateBuilder: (Alert) -> UIPopoverPresentationControllerDelegateProtocol) :
+    actual class Builder(private val viewController: UIViewController, private val delegateBuilder: (Alert) -> KalugaUIPopoverPresentationControllerDelegateProtocol) :
         BaseAlertPresenter.Builder() {
 
         /**
-         * Constructor that returns a [DefaultUIPopoverPresentationControllerDelegateProtocol] when a presented [AlertPresenter] requires a [UIPopoverPresentationControllerDelegateProtocol].
+         * Constructor that returns a [DefaultUIPopoverPresentationControllerDelegateProtocol] when a presented [AlertPresenter] requires a [KalugaUIPopoverPresentationControllerDelegate].
          * @param viewController The [UIViewController] to present any [AlertPresenter] built using this builder.
          */
         constructor(
@@ -125,7 +125,7 @@ actual class AlertPresenter(
 
     class DefaultUIPopoverPresentationControllerDelegateProtocol(private val sourceView: UIView) :
         NSObject(),
-        UIPopoverPresentationControllerDelegateProtocol {
+        KalugaUIPopoverPresentationControllerDelegateProtocol {
         override fun prepareForPopoverPresentation(popoverPresentationController: UIPopoverPresentationController) {
             popoverPresentationController.sourceView = sourceView
             popoverPresentationController.sourceRect = sourceView.bounds
@@ -175,7 +175,9 @@ actual class AlertPresenter(
                 }
             }
         }.run {
-            popoverPresentationController?.setDelegate(delegateBuilder(alert))
+            popoverPresentationController?.let {
+                KalugaUIPopoverPresentationControllerWrapper.createByLinkingWithController(it, delegateBuilder(alert))
+            }
             parent.presentViewController(this, animated, completion)
         }
     }
