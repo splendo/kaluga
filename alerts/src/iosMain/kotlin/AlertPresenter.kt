@@ -58,6 +58,7 @@ actual class AlertPresenter(
 
     /** Ref to alert's [UITextField] of type [Alert.Style.TEXT_INPUT] */
     private var textField: UITextField? = null
+    private var currentDelegateWrapper: KalugaUIPopoverPresentationControllerWrapper? = null
 
     /** Callback called from [UITextField] for action of type [UIControlEventEditingChanged]
      * for alerts of type [Alert.Style.TEXT_INPUT]
@@ -134,6 +135,7 @@ actual class AlertPresenter(
     }
 
     actual override fun dismissAlert(animated: Boolean) {
+        currentDelegateWrapper = null
         parent.dismissModalViewControllerAnimated(animated)
     }
 
@@ -151,6 +153,7 @@ actual class AlertPresenter(
                     ) {
                         action.handler()
                         afterHandler(action)
+                        currentDelegateWrapper = null
                     },
                 )
             }
@@ -165,6 +168,7 @@ actual class AlertPresenter(
                         UIAlertActionStyleCancel,
                     ) {
                         afterHandler(null)
+                        currentDelegateWrapper = null
                     },
                 )
             } else if (alert.style == Alert.Style.TEXT_INPUT) {
@@ -175,7 +179,7 @@ actual class AlertPresenter(
                 }
             }
         }.run {
-            popoverPresentationController?.let {
+            currentDelegateWrapper = popoverPresentationController?.let {
                 KalugaUIPopoverPresentationControllerWrapper.createByLinkingWithController(it, delegateBuilder(alert))
             }
             parent.presentViewController(this, animated, completion)

@@ -18,14 +18,25 @@
 package com.splendo.kaluga.plugin.container
 
 import org.gradle.api.Action
+import org.gradle.api.DefaultTask
 import org.gradle.api.NamedDomainObjectContainer
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.TaskAction
+import org.gradle.process.ExecOperations
 import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultCInteropSettings
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
 open class AppleInteropContainer @Inject constructor(
     objects: ObjectFactory,
 ) {
+    var buildSwiftLib: Boolean = false
+
     internal val main = mutableListOf<Action<NamedDomainObjectContainer<DefaultCInteropSettings>>>()
     internal val test = mutableListOf<Action<NamedDomainObjectContainer<DefaultCInteropSettings>>>()
 
@@ -35,5 +46,61 @@ open class AppleInteropContainer @Inject constructor(
 
     fun test(action: Action<NamedDomainObjectContainer<DefaultCInteropSettings>>) {
         test.add(action)
+    }
+}
+
+abstract class BuildSwiftLibTask @Inject constructor(
+    private val execOps: ExecOperations,
+    objects: ObjectFactory
+) : DefaultTask() {
+
+    @get:InputDirectory
+    abstract val srcDir: DirectoryProperty
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @get:Input
+    abstract val sdkName: Property<String>
+
+    @get:Input
+    abstract val deploymentTarget: Property<String>
+
+    @TaskAction
+    fun build() {
+        val sdk = sdkName.get()
+        val outDir = outputDir.asFile.get()
+        outDir.mkdirs()
+
+        val libFile = outDir.resolve("libswiftinterop.a")
+
+        val sdkPath = execAndCapture(listOf("xcrun", "--sdk", sdk, "--show-sdk-path")).trim()
+        val targetTriple = when (sdk) {
+            "iphoneos" -> "arm64-apple-ios${deploymentTarget.get()}"
+            "iphonesimulator" -> "arm64-apple-ios${deploymentTarget.get()}-simulator"
+            else -> error("Unsupported sdk $sdk")
+        }
+
+        execOps.exec {
+            commandLine(
+                "xcrun", "swiftc",
+                "-emit-library",
+                "-static",
+                "-o", libFile.absolutePath,
+                "-sdk", sdkPath,
+                "-target", targetTriple,
+                "-Xlinker", "-no_implicit_dylibs",
+            )
+            args(srcDir.asFileTree.matching { include("**/*.swift") }.files.map { it.absolutePath })
+        }.assertNormalExitValue()
+    }
+
+    private fun execAndCapture(command: List<String>): String {
+        val output = ByteArrayOutputStream()
+        execOps.exec {
+            commandLine = command
+            standardOutput = output
+        }.assertNormalExitValue()
+        return output.toString()
     }
 }
