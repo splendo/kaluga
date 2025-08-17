@@ -29,14 +29,15 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
 import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultCInteropSettings
+import java.io.BufferedWriter
 import java.io.ByteArrayOutputStream
+import java.io.FileOutputStream
+import java.io.OutputStreamWriter
 import javax.inject.Inject
 
 open class AppleInteropContainer @Inject constructor(
     objects: ObjectFactory,
 ) {
-    var buildSwiftLib: Boolean = false
-
     internal val main = mutableListOf<Action<NamedDomainObjectContainer<DefaultCInteropSettings>>>()
     internal val test = mutableListOf<Action<NamedDomainObjectContainer<DefaultCInteropSettings>>>()
 
@@ -58,7 +59,10 @@ abstract class BuildSwiftLibTask @Inject constructor(
     abstract val srcDir: DirectoryProperty
 
     @get:OutputDirectory
-    abstract val outputDir: DirectoryProperty
+    abstract val libraryOutputDir: DirectoryProperty
+
+    @get:OutputDirectory
+    abstract val headerOutputDir: DirectoryProperty
 
     @get:Input
     abstract val sdkName: Property<String>
@@ -69,10 +73,15 @@ abstract class BuildSwiftLibTask @Inject constructor(
     @TaskAction
     fun build() {
         val sdk = sdkName.get()
-        val outDir = outputDir.asFile.get()
-        outDir.mkdirs()
+        val libraryOutputDir = libraryOutputDir.asFile.get()
+        libraryOutputDir.mkdirs()
 
-        val libFile = outDir.resolve("libswiftinterop.a")
+        val libFile = libraryOutputDir.resolve("libswiftinterop.a")
+
+        val headerOutputDir = headerOutputDir.asFile.get()
+        headerOutputDir.mkdirs()
+        val headerFileTemp = headerOutputDir.resolve("SwiftInterop-Temp.h")
+        val headerFile = headerOutputDir.resolve("SwiftInterop.h")
 
         val sdkPath = execAndCapture(listOf("xcrun", "--sdk", sdk, "--show-sdk-path")).trim()
         val targetTriple = when (sdk) {
@@ -80,6 +89,8 @@ abstract class BuildSwiftLibTask @Inject constructor(
             "iphonesimulator" -> "arm64-apple-ios${deploymentTarget.get()}-simulator"
             else -> error("Unsupported sdk $sdk")
         }
+
+        val swiftFiles = srcDir.asFileTree.matching { include("**/*.swift") }.files.toList()
 
         execOps.exec {
             commandLine(
@@ -89,10 +100,44 @@ abstract class BuildSwiftLibTask @Inject constructor(
                 "-o", libFile.absolutePath,
                 "-sdk", sdkPath,
                 "-target", targetTriple,
+                "-emit-objc-header",
+                "-emit-objc-header-path", headerFileTemp.absolutePath,
                 "-Xlinker", "-no_implicit_dylibs",
             )
-            args(srcDir.asFileTree.matching { include("**/*.swift") }.files.map { it.absolutePath })
+            args(swiftFiles.map { it.absolutePath })
         }.assertNormalExitValue()
+
+        // SwiftC generated Header file does not import dependencies.
+        val frameworkRegex = Regex("""import\s+(\w+)""")
+        val frameworksToImport = swiftFiles.fold(setOf("Foundation")) { acc, file ->
+            println("File ${file.absolutePath}")
+            val result = acc.toMutableSet()
+            file.forEachLine { line ->
+                println("Line $line")
+                frameworkRegex.find(line)?.let { match ->
+                    println("MATCH!!")
+                    result += match.groupValues[1]
+                }
+            }
+            result
+        }
+
+        val writer = BufferedWriter(OutputStreamWriter(FileOutputStream(headerFile)))
+        try {
+            headerFileTemp.forEachLine { line ->
+                if (line == "#include <Foundation/Foundation.h>") {
+                    frameworksToImport.forEach { framework ->
+                        writer.appendLine("#include <$framework/$framework.h>")
+                    }
+                } else {
+                    writer.appendLine(line)
+                }
+            }
+        } finally {
+            writer.close()
+        }
+
+        headerFileTemp.delete()
     }
 
     private fun execAndCapture(command: List<String>): String {

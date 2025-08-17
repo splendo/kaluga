@@ -4,9 +4,6 @@ plugins {
 
 kaluga {
     moduleName = "alerts"
-    appleInterop {
-        buildSwiftLib = true
-    }
     dependencies {
         android {
             main {

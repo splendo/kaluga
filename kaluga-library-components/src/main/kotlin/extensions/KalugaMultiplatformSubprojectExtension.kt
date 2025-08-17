@@ -303,10 +303,11 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     "ios_x64" -> "iphonesimulator"
                     else -> return@configure
                 }
-                val buildSwiftLibTask = if (appleInterop.buildSwiftLib) {
+                val buildSwiftLibTask = if (swiftSourceDir.exists() && swiftSourceDir.listFiles().isNotEmpty()) {
                     tasks.register<BuildSwiftLibTask>("buildSwiftLib_${name}") {
                         srcDir.set(swiftSourceDir)
-                        outputDir.set(layout.buildDirectory.dir("swift/${name}"))
+                        libraryOutputDir.set(layout.buildDirectory.dir("swift/${name}"))
+                        headerOutputDir.set(layout.buildDirectory.dir("objc/${name}"))
                         sdkName.set(sdk)
                         deploymentTarget.set(target)
                     }
@@ -324,18 +325,19 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                                 val writer = BufferedWriter(FileWriter(defFile))
                                 try {
                                     writer.write("language = Objective-C\n")
-                                    val headers = swiftSourceDir.listFiles { it.extension == "h" }
-                                    writer.write("headers = ${headers.joinToString(separator = " ") { it.name }}\n")
+                                    writer.write("headers = SwiftInterop.h\n")
                                     writer.write("package = com.splendo.kaluga.$moduleName\n")
-                                    writer.write("headerFilter = ${headers.joinToString(separator = " ") { it.name }}\n")
-                                    writer.write("staticLibraries = libswiftinterop.a libswiftCompatibility56.a libswiftCompatibilityPacks.a")
+                                    writer.write("headerFilter = SwiftInterop.h\n")
+                                    writer.write("staticLibraries = libswiftinterop.a libswiftCompatibility56.a libswiftCompatibilityPacks.a\n")
+                                    writer.write("linkerOpts = -framework UIKit" )
                                 } finally {
                                     writer.close()
                                 }
                                 definitionFile.set(defFile)
-                                compilerOpts("-I/${swiftSourceDir.absolutePath}")
-                                includeDirs.allHeaders(swiftSourceDir)
-                                val staticLibPath = buildSwiftLibTask.get().outputDir.get().asFile.absolutePath
+                                val headerSourceDir = buildSwiftLibTask.get().headerOutputDir.get().asFile
+                                compilerOpts("-I/${headerSourceDir.absolutePath}")
+                                includeDirs.allHeaders(headerSourceDir)
+                                val staticLibPath = buildSwiftLibTask.get().libraryOutputDir.get().asFile.absolutePath
                                 extraOpts("-libraryPath", staticLibPath)
                                 val devDir = System.getenv("DEVELOPER_DIR") ?: developerDirProvider.get()
                                 extraOpts("-libraryPath", "$devDir/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/$sdk")
