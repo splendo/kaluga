@@ -53,24 +53,24 @@ data class GitBranch(private val branch: String, private val kalugaBranchPostfix
                     else -> "-$branch"
                 } + if (!release) "-SNAPSHOT" else ""
                 ).also {
-                    println(
-                        "decided branch: '$branch' to postfix '$it', " +
-                            "isRelease: $release (" +
-                            "from: GITHUB_REF_NAME env: $githubGitBranch, " +
-                            "MAVEN_CENTRAL_RELEASE env: $mavenCentralRelease , " +
-                            "git cli: $branchFromGit" +
-                            ")",
-                    )
-                }
+                println(
+                    "decided branch: '$branch' to postfix '$it', " +
+                        "isRelease: $release (" +
+                        "from: GITHUB_REF_NAME env: $githubGitBranch, " +
+                        "MAVEN_CENTRAL_RELEASE env: $mavenCentralRelease , " +
+                        "git cli: $branchFromGit" +
+                        ")",
+                )
+            }
             GitBranch(branch, kalugaBranchPostfix)
         }
     }
 
-    fun toVersion(baseVersion: String): String =
-        if (baseVersion.endsWith("-SNAPSHOT"))
-            baseVersion
-        else
-            baseVersion + kalugaBranchPostfix
+    fun toVersion(baseVersion: String): String = if (baseVersion.endsWith("-SNAPSHOT")) {
+        baseVersion
+    } else {
+        baseVersion + kalugaBranchPostfix
+    }
 }
 
 val Project.gitBranch: GitBranch get() = GitBranch.gitBranch

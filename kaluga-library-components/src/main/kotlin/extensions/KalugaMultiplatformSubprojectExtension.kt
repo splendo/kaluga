@@ -21,6 +21,7 @@ import com.android.build.gradle.LibraryExtension
 import com.splendo.kaluga.plugin.container.AppleInteropContainer
 import com.splendo.kaluga.plugin.container.BuildSwiftLibTask
 import com.splendo.kaluga.plugin.container.MultiplatformDependencyContainer
+import com.splendo.kaluga.plugin.container.sdkName
 import com.splendo.kaluga.plugin.helpers.jvmTarget
 import org.gradle.api.Action
 import org.gradle.api.Project
@@ -47,11 +48,8 @@ import java.io.FileWriter
 import java.util.Locale.getDefault
 import javax.inject.Inject
 
-open class KalugaMultiplatformSubprojectExtension @Inject constructor(
-    versionCatalog: VersionCatalog,
-    libraryExtension: LibraryExtension,
-    objects: ObjectFactory,
-) : BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, null, objects) {
+open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCatalog: VersionCatalog, libraryExtension: LibraryExtension, objects: ObjectFactory) :
+    BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, null, objects) {
 
     companion object {
         private val testDependentProjectsEnvName = "TEST_DEPENDENT_PROJECTS"
@@ -296,27 +294,23 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             project.configure(iosTargets) {
                 val swiftSourceDir = project.file("src/iosMain/swift")
                 val cinteropSwiftInteropTaskName = "cinteropSwiftInterop${name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }}"
-                val target = "15.0"
-                val sdk = when (konanTarget.name) {
-                    "ios_arm64" -> "iphoneos"
-                    "ios_simulator_arm64" -> "iphonesimulator"
-                    "ios_x64" -> "iphonesimulator"
-                    else -> return@configure
-                }
+                val deploymentTarget = "15.0"
                 val buildSwiftLibTask = if (swiftSourceDir.exists() && swiftSourceDir.listFiles().isNotEmpty()) {
-                    tasks.register<BuildSwiftLibTask>("buildSwiftLib_${name}") {
+                    tasks.register<BuildSwiftLibTask>("buildSwiftLib_$name") {
                         srcDir.set(swiftSourceDir)
-                        libraryOutputDir.set(layout.buildDirectory.dir("swift/${name}"))
-                        headerOutputDir.set(layout.buildDirectory.dir("objc/${name}"))
-                        sdkName.set(sdk)
-                        deploymentTarget.set(target)
+                        libraryOutputDir.set(layout.buildDirectory.dir("swift/$name"))
+                        headerOutputDir.set(layout.buildDirectory.dir("objc/$name"))
+                        target.set(konanTarget)
+                        this.deploymentTarget.set(deploymentTarget)
                     }
-                } else null
+                } else {
+                    null
+                }
                 compilations.getByName("main").let { main ->
                     main.cinterops.let { mainInterops ->
                         buildSwiftLibTask?.let { buildSwiftLibTask ->
                             mainInterops.create("swiftInterop") {
-                                val defFile = File(layout.buildDirectory.asFile.get(), "cinterop/${name}/swiftinterop.def")
+                                val defFile = File(layout.buildDirectory.asFile.get(), "cinterop/$name/swiftinterop.def")
                                 if (defFile.exists()) {
                                     defFile.delete()
                                 }
@@ -324,12 +318,15 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                                 defFile.createNewFile()
                                 val writer = BufferedWriter(FileWriter(defFile))
                                 try {
-                                    writer.write("language = Objective-C\n")
-                                    writer.write("headers = SwiftInterop.h\n")
-                                    writer.write("package = com.splendo.kaluga.$moduleName\n")
-                                    writer.write("headerFilter = SwiftInterop.h\n")
-                                    writer.write("staticLibraries = libswiftinterop.a libswiftCompatibility56.a libswiftCompatibilityPacks.a\n")
-                                    writer.write("linkerOpts = -framework UIKit" )
+                                    writer.write(
+                                        """
+                                            |language = Objective-C
+                                            |headers = SwiftInterop.h
+                                            |package = com.splendo.kaluga.$moduleName
+                                            |headerFilter = SwiftInterop.h
+                                            |staticLibraries = libswiftinterop.a libswiftCompatibility56.a libswiftCompatibilityPacks.a
+                                        """.trimMargin(),
+                                    )
                                 } finally {
                                     writer.close()
                                 }
@@ -339,8 +336,8 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                                 includeDirs.allHeaders(headerSourceDir)
                                 val staticLibPath = buildSwiftLibTask.get().libraryOutputDir.get().asFile.absolutePath
                                 extraOpts("-libraryPath", staticLibPath)
-                                val devDir = System.getenv("DEVELOPER_DIR") ?: developerDirProvider.get()
-                                extraOpts("-libraryPath", "$devDir/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/$sdk")
+                                val devDir = project.providers.environmentVariable("DEVELOPER_DIR").getOrElse(developerDirProvider.get())
+                                extraOpts("-libraryPath", "$devDir/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/${buildSwiftLibTask.get().target.get().sdkName}")
 
                                 tasks.named(cinteropSwiftInteropTaskName).configure {
                                     dependsOn(buildSwiftLibTask)

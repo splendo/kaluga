@@ -101,7 +101,9 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
         project.extensions.configure(SigningExtension::class) {
             setRequired(
                 {
-                    project.logger.info("🪧signing has `:publishAllPublicationsToSonatypeRepository` task: "+project.gradle.taskGraph.hasTask(":publishAllPublicationsToSonatypeRepository"))
+                    project.logger.info(
+                        "🪧signing has `:publishAllPublicationsToSonatypeRepository` task: " + project.gradle.taskGraph.hasTask(":publishAllPublicationsToSonatypeRepository"),
+                    )
                     project.gradle.taskGraph.hasTask(":publishAllPublicationsToSonatypeRepository")
                 },
             )
@@ -152,9 +154,11 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
                 // A: No. The files were in the repo before. This is just the same key, still passphrase protected.
                 // When rolling the GPG key (expires 2025-05-03) we could consider putting this whole key in an env however.
                 useInMemoryPgpKeys(
-                    /* defaultKeyId = */ "CA7AF280",
+                    /* defaultKeyId = */
+                    "CA7AF280",
                     // generated with `gpg --export-secret-keys --armor 728662F2CA7AF280` after `gpg --import secret-keys.gpg`
-                    /* defaultSecretKey = */ """-----BEGIN PGP PRIVATE KEY BLOCK-----
+                    /* defaultSecretKey = */
+                    """-----BEGIN PGP PRIVATE KEY BLOCK-----
 
                     lQdGBGCP7/oBEACdtKnyaXbwbYHw/BTi5nm1Pr9PBKOV/noW+TZTPisDfLuDVGBB
                     oJ4QtP9j/GG9kPKcZ/HpIXyFN3QTnsv8+VuGQMpEB9gQ6SwY6EbDp5jMN2qwr9q1
@@ -262,7 +266,8 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
                     =mf0w
                     -----END PGP PRIVATE KEY BLOCK-----
                     """.trimIndent(),
-                    /* defaultPassword = */ signingPassword
+                    /* defaultPassword = */
+                    signingPassword,
                 )
                 sign(publications)
                 project.logger.info("🪧signatory not null: ${signatory != null}")

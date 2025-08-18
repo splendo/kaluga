@@ -22,9 +22,7 @@ import org.gradle.api.model.ObjectFactory
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import javax.inject.Inject
 
-open class MultiplatformDependencyContainer @Inject constructor(
-    objects: ObjectFactory,
-) {
+open class MultiplatformDependencyContainer @Inject constructor(objects: ObjectFactory) {
 
     sealed class TargetDependencyContainer {
         internal val mainDependencies = mutableListOf<Action<KotlinDependencyHandler>>()

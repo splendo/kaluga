@@ -29,15 +29,14 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
 import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultCInteropSettings
+import org.jetbrains.kotlin.konan.target.KonanTarget
 import java.io.BufferedWriter
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.io.OutputStreamWriter
 import javax.inject.Inject
 
-open class AppleInteropContainer @Inject constructor(
-    objects: ObjectFactory,
-) {
+open class AppleInteropContainer @Inject constructor(objects: ObjectFactory) {
     internal val main = mutableListOf<Action<NamedDomainObjectContainer<DefaultCInteropSettings>>>()
     internal val test = mutableListOf<Action<NamedDomainObjectContainer<DefaultCInteropSettings>>>()
 
@@ -50,10 +49,7 @@ open class AppleInteropContainer @Inject constructor(
     }
 }
 
-abstract class BuildSwiftLibTask @Inject constructor(
-    private val execOps: ExecOperations,
-    objects: ObjectFactory
-) : DefaultTask() {
+abstract class BuildSwiftLibTask @Inject constructor(private val execOps: ExecOperations, objects: ObjectFactory) : DefaultTask() {
 
     @get:InputDirectory
     abstract val srcDir: DirectoryProperty
@@ -65,14 +61,14 @@ abstract class BuildSwiftLibTask @Inject constructor(
     abstract val headerOutputDir: DirectoryProperty
 
     @get:Input
-    abstract val sdkName: Property<String>
+    abstract val target: Property<KonanTarget>
 
     @get:Input
     abstract val deploymentTarget: Property<String>
 
     @TaskAction
     fun build() {
-        val sdk = sdkName.get()
+        val sdk = target.get().sdkName
         val libraryOutputDir = libraryOutputDir.asFile.get()
         libraryOutputDir.mkdirs()
 
@@ -84,10 +80,11 @@ abstract class BuildSwiftLibTask @Inject constructor(
         val headerFile = headerOutputDir.resolve("SwiftInterop.h")
 
         val sdkPath = execAndCapture(listOf("xcrun", "--sdk", sdk, "--show-sdk-path")).trim()
-        val targetTriple = when (sdk) {
-            "iphoneos" -> "arm64-apple-ios${deploymentTarget.get()}"
-            "iphonesimulator" -> "arm64-apple-ios${deploymentTarget.get()}-simulator"
-            else -> error("Unsupported sdk $sdk")
+        val targetTriple = when (target.get()) {
+            KonanTarget.IOS_ARM64 -> "arm64-apple-ios${deploymentTarget.get()}"
+            KonanTarget.IOS_X64 -> "x86_64-apple-ios${deploymentTarget.get()}"
+            KonanTarget.IOS_SIMULATOR_ARM64 -> "arm64-apple-ios${deploymentTarget.get()}-simulator"
+            else -> error("Unsupported target ${target.get()}")
         }
 
         val swiftFiles = srcDir.asFileTree.matching { include("**/*.swift") }.files.toList()
@@ -110,12 +107,9 @@ abstract class BuildSwiftLibTask @Inject constructor(
         // SwiftC generated Header file does not import dependencies.
         val frameworkRegex = Regex("""import\s+(\w+)""")
         val frameworksToImport = swiftFiles.fold(setOf("Foundation")) { acc, file ->
-            println("File ${file.absolutePath}")
             val result = acc.toMutableSet()
             file.forEachLine { line ->
-                println("Line $line")
                 frameworkRegex.find(line)?.let { match ->
-                    println("MATCH!!")
                     result += match.groupValues[1]
                 }
             }
@@ -148,4 +142,11 @@ abstract class BuildSwiftLibTask @Inject constructor(
         }.assertNormalExitValue()
         return output.toString()
     }
+}
+
+val KonanTarget.sdkName: String get() = when (this) {
+    KonanTarget.IOS_ARM64 -> "iphoneos"
+    KonanTarget.IOS_X64 -> "iphonesimulator"
+    KonanTarget.IOS_SIMULATOR_ARM64 -> "iphonesimulator"
+    else -> error("Unsupported target $this")
 }
