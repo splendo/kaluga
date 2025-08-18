@@ -34,7 +34,6 @@ import platform.UIKit.UIAlertControllerStyleActionSheet
 import platform.UIKit.UIAlertControllerStyleAlert
 import platform.UIKit.UIControlEventEditingChanged
 import platform.UIKit.UIPopoverPresentationController
-import platform.UIKit.UIPopoverPresentationControllerDelegateProtocol
 import platform.UIKit.UITextField
 import platform.UIKit.UIView
 import platform.UIKit.UIViewController
@@ -46,7 +45,7 @@ import platform.objc.sel_registerName
  * A [BaseAlertPresenter] for presenting an [Alert].
  * @param alert The [Alert] being presented.
  * @param parent The [UIViewController] to present the [Alert]
- * @param delegateBuilder Method that creates a [UIPopoverPresentationControllerDelegateProtocol].
+ * @param delegateBuilder Method that creates a [KalugaUIPopoverPresentationControllerDelegateProtocol].
  * This allows for presentation of [Alert.Style.ACTION_LIST] on iPad.
  */
 actual class AlertPresenter(
@@ -58,7 +57,6 @@ actual class AlertPresenter(
 
     /** Ref to alert's [UITextField] of type [Alert.Style.TEXT_INPUT] */
     private var textField: UITextField? = null
-    private var currentDelegateWrapper: KalugaUIPopoverPresentationControllerWrapper? = null
 
     /** Callback called from [UITextField] for action of type [UIControlEventEditingChanged]
      * for alerts of type [Alert.Style.TEXT_INPUT]
@@ -135,7 +133,6 @@ actual class AlertPresenter(
     }
 
     actual override fun dismissAlert(animated: Boolean) {
-        currentDelegateWrapper = null
         parent.dismissModalViewControllerAnimated(animated)
     }
 
@@ -153,7 +150,6 @@ actual class AlertPresenter(
                     ) {
                         action.handler()
                         afterHandler(action)
-                        currentDelegateWrapper = null
                     },
                 )
             }
@@ -168,7 +164,6 @@ actual class AlertPresenter(
                         UIAlertActionStyleCancel,
                     ) {
                         afterHandler(null)
-                        currentDelegateWrapper = null
                     },
                 )
             } else if (alert.style == Alert.Style.TEXT_INPUT) {
@@ -179,10 +174,13 @@ actual class AlertPresenter(
                 }
             }
         }.run {
-            currentDelegateWrapper = popoverPresentationController?.let {
+            val delegateWrapper = popoverPresentationController?.let {
                 KalugaUIPopoverPresentationControllerWrapper.createByLinkingWithController(it, delegateBuilder(alert))
             }
-            parent.presentViewController(this, animated, completion)
+            parent.presentViewController(this, animated) {
+                delegateWrapper?.unlink()
+                completion()
+            }
         }
     }
 

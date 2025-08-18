@@ -1,9 +1,20 @@
-//
-//  SwiftClass.swift
-//  KotlinCallbackFreeze
-//
-//  Created by Gijs van Veen on 15/08/2025.
-//
+/*
+
+Copyright 2025 Splendo Consulting B.V. The Netherlands
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+*/
 
 import Foundation
 import UIKit
@@ -23,8 +34,8 @@ public protocol KalugaUIImagePickerControllerDelegate {
     
     @objc func interactionController(
         navigationController: UINavigationController,
-        AnimationController: UIViewControllerAnimatedTransitioning
-    ) -> UIViewControllerInteractiveTransitioning
+        transitioning: UIViewControllerAnimatedTransitioning
+    ) -> UIViewControllerInteractiveTransitioning?
     
     @objc func supportedInterfaceOrientations(navigationController: UINavigationController) -> UIInterfaceOrientationMask
     
@@ -39,16 +50,20 @@ public protocol KalugaUIImagePickerControllerDelegate {
 public class KalugaUIImagePickerControllerWrapper : NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
     @objc public static func createByLinking(controller: UIImagePickerController, to delegate: KalugaUIImagePickerControllerDelegate) -> KalugaUIImagePickerControllerWrapper {
-        let wrapper = KalugaUIImagePickerControllerWrapper(delegate: delegate)
+        let wrapper = KalugaUIImagePickerControllerWrapper(delegate: delegate) {
+            controller.delegate = nil
+        }
         controller.delegate = wrapper
         return wrapper
     }
     
-    @objc public init(delegate: KalugaUIImagePickerControllerDelegate) {
+    @objc public init(delegate: KalugaUIImagePickerControllerDelegate, unlinkAction: @escaping () -> Void) {
         self.delegate = delegate
+        self.unlinkAction = unlinkAction
     }
     
     let delegate: KalugaUIImagePickerControllerDelegate
+    var unlinkAction: (() -> Void)?
     
     public func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         delegate.willShow(navigationController: navigationController, viewController: viewController, animated: animated)
@@ -66,8 +81,8 @@ public class KalugaUIImagePickerControllerWrapper : NSObject, UINavigationContro
         return delegate.preferredInterfaceOrientationForPresentation(navigationController: navigationController)
     }
 
-    public func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: any UIViewControllerAnimatedTransitioning) -> (any UIViewControllerInteractiveTransitioning)? {
-        return delegate.interactionController(navigationController: navigationController, AnimationController: animationController)
+    public func navigationController(_ navigationController: UINavigationController, transitioning transitioning: any UIViewControllerAnimatedTransitioning) -> (any UIViewControllerInteractiveTransitioning)? {
+        return delegate.interactionController(navigationController: navigationController, transitioning: transitioning)
     }
 
     public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> (any UIViewControllerAnimatedTransitioning)? {
@@ -81,6 +96,11 @@ public class KalugaUIImagePickerControllerWrapper : NSObject, UINavigationContro
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         delegate.didCancel(picker: picker)
     }
+    
+    @objc public func unlink() {
+        if let unlinkAction = unlinkAction {
+            unlinkAction()
+        }
+        unlinkAction = nil
+    }
 }
-
-
