@@ -13,12 +13,11 @@ apply(from = "gradle/copyReports.gradle.kts")
 catalog {
     versionCatalog {
         val catalogVersion = libs.versions.kaluga.get()
-        val publishVersion = gitBranch.toVersion(catalogVersion)
 
         library("catalog", "com.splendo.kaluga:catalog:$catalogVersion")
         from(files("gradle/libs.versions.toml"))
         // override the version in the catalog to match the published version
-        version("kaluga", publishVersion)
+        version("kaluga", project.kalugaVersion)
     }
 }
 
@@ -28,6 +27,19 @@ publishing {
             from(components["versionCatalog"])
             artifactId = "catalog"
         }
+    }
+}
+
+afterEvaluate {
+    // Gradle just does not do this for version catalogs and it break without these
+
+    tasks.named("publishMavenPublicationToMavenCentralRepository") {
+        dependsOn(tasks.named("signMavenPublication"))
+        dependsOn(tasks.named("signCatalogPublication"))
+    }
+    tasks.named("publishCatalogPublicationToMavenCentralRepository") {
+        dependsOn(tasks.named("signCatalogPublication"))
+        dependsOn(tasks.named("signMavenPublication"))
     }
 }
 
