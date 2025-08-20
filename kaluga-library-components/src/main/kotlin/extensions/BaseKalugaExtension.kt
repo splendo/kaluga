@@ -80,7 +80,7 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
 
         project.extensions.configure(MavenPublishBaseExtension::class) {
 
-            coordinates(version = project.kalugaVersion)
+            coordinates(version = versionCatalog.findVersion("kaluga").get().displayName)
 
             when {
                 project.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> configure(
