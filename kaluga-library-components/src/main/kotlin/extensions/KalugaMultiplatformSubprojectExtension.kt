@@ -23,6 +23,7 @@ import com.splendo.kaluga.plugin.container.BuildSwiftLibTask
 import com.splendo.kaluga.plugin.container.MultiplatformDependencyContainer
 import com.splendo.kaluga.plugin.container.sdkName
 import com.splendo.kaluga.plugin.helpers.jvmTarget
+import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
@@ -426,6 +427,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
     }
 
     private val Project.iosTargets: Set<IOSTarget> get() {
+        if (!Os.isFamily(Os.FAMILY_MAC)) return emptySet()
         val sdkName = System.getenv("SDK_NAME") ?: "unknown"
         val isRealIOSDevice = sdkName.startsWith("iphoneos").also {
             logger.info("Run on real ios device: $it from sdk: $sdkName")
