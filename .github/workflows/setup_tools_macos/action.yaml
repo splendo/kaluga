@@ -31,6 +31,7 @@ runs:
       with:
         xcode-version: '16.0'
     - name: Xcode path
+      shell: bash
       run: |
         xcode-select -p
     - name: Gradle cache
