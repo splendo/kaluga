@@ -31,12 +31,8 @@ import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 
-abstract class BaseKalugaAndroidSubprojectExtension(
-    versionCatalog: VersionCatalog,
-    libraryExtension: LibraryExtension,
-    namespacePostfix: String,
-    objects: ObjectFactory,
-) : BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, namespacePostfix, objects) {
+abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatalog, libraryExtension: LibraryExtension, namespacePostfix: String, objects: ObjectFactory) :
+    BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, namespacePostfix, objects) {
 
     override fun Project.setupSubproject() {}
 

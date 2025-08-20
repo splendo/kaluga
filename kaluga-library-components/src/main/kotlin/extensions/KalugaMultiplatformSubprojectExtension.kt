@@ -19,8 +19,11 @@ package com.splendo.kaluga.plugin.extensions
 
 import com.android.build.gradle.LibraryExtension
 import com.splendo.kaluga.plugin.container.AppleInteropContainer
+import com.splendo.kaluga.plugin.container.BuildSwiftLibTask
 import com.splendo.kaluga.plugin.container.MultiplatformDependencyContainer
+import com.splendo.kaluga.plugin.container.sdkName
 import com.splendo.kaluga.plugin.helpers.jvmTarget
+import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
@@ -40,13 +43,14 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jmailen.gradle.kotlinter.tasks.LintTask
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.util.Locale.getDefault
 import javax.inject.Inject
 
-open class KalugaMultiplatformSubprojectExtension @Inject constructor(
-    versionCatalog: VersionCatalog,
-    libraryExtension: LibraryExtension,
-    objects: ObjectFactory,
-) : BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, null, objects) {
+open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCatalog: VersionCatalog, libraryExtension: LibraryExtension, objects: ObjectFactory) :
+    BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, null, objects) {
 
     companion object {
         private val testDependentProjectsEnvName = "TEST_DEPENDENT_PROJECTS"
@@ -284,12 +288,75 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
             }
 
-            project.configure(iosTargets) {
-                compilations.getByName("main").cinterops.let { mainInterops ->
-                    appleInterop.main.forEach { it.execute(mainInterops) }
+            val developerDirProvider = providers.exec {
+                if (iosTargets.isNotEmpty()) {
+                    commandLine("xcode-select", "-p")
                 }
-                compilations.getByName("test").cinterops.let { mainInterops ->
-                    appleInterop.test.forEach { it.execute(mainInterops) }
+            }.standardOutput.asText.map { it.trim() }
+
+            project.configure(iosTargets) {
+                val swiftSourceDir = project.file("src/iosMain/swift")
+                val cinteropSwiftInteropTaskName = "cinteropSwiftInterop${name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }}"
+                val deploymentTarget = "15.0"
+                val buildSwiftLibTask = if (swiftSourceDir.exists() && swiftSourceDir.listFiles().isNotEmpty()) {
+                    tasks.register<BuildSwiftLibTask>("buildSwiftLib_$name") {
+                        srcDir.set(swiftSourceDir)
+                        libraryOutputDir.set(layout.buildDirectory.dir("swift/$name"))
+                        headerOutputDir.set(layout.buildDirectory.dir("objc/$name"))
+                        target.set(konanTarget)
+                        this.deploymentTarget.set(deploymentTarget)
+                    }
+                } else {
+                    null
+                }
+                compilations.getByName("main").let { main ->
+                    main.cinterops.let { mainInterops ->
+                        buildSwiftLibTask?.let { buildSwiftLibTask ->
+                            mainInterops.create("swiftInterop") {
+                                val defFile = File(layout.buildDirectory.asFile.get(), "cinterop/$name/swiftinterop.def")
+                                if (defFile.exists()) {
+                                    defFile.delete()
+                                }
+                                defFile.parentFile.mkdirs()
+                                defFile.createNewFile()
+                                val writer = BufferedWriter(FileWriter(defFile))
+                                try {
+                                    writer.write(
+                                        """
+                                            |language = Objective-C
+                                            |headers = SwiftInterop.h
+                                            |package = com.splendo.kaluga.$moduleName
+                                            |headerFilter = SwiftInterop.h
+                                            |staticLibraries = libswiftinterop.a libswiftCompatibility56.a libswiftCompatibilityPacks.a
+                                        """.trimMargin(),
+                                    )
+                                } finally {
+                                    writer.close()
+                                }
+                                definitionFile.set(defFile)
+                                val headerSourceDir = buildSwiftLibTask.get().headerOutputDir.get().asFile
+                                compilerOpts("-I/${headerSourceDir.absolutePath}")
+                                includeDirs.allHeaders(headerSourceDir)
+                                val staticLibPath = buildSwiftLibTask.get().libraryOutputDir.get().asFile.absolutePath
+                                extraOpts("-libraryPath", staticLibPath)
+                                val devDir = project.providers.environmentVariable("DEVELOPER_DIR").getOrElse(developerDirProvider.get())
+                                extraOpts("-libraryPath", "$devDir/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/${buildSwiftLibTask.get().target.get().sdkName}")
+
+                                tasks.named(cinteropSwiftInteropTaskName).configure {
+                                    dependsOn(buildSwiftLibTask)
+                                }
+                            }
+                        }
+
+                        appleInterop.main.forEach { settings ->
+                            settings.execute(mainInterops)
+                        }
+                    }
+                }
+                compilations.getByName("test").let { test ->
+                    test.cinterops.let { mainInterops ->
+                        appleInterop.test.forEach { it.execute(mainInterops) }
+                    }
                 }
                 binaries {
                     frameworkConfig?.let { iosExport ->
@@ -350,6 +417,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     }
 
     private val Project.iosTargets: Set<IOSTarget> get() {
+        if (!Os.isFamily(Os.FAMILY_MAC)) return emptySet()
         val sdkName = System.getenv("SDK_NAME") ?: "unknown"
         val isRealIOSDevice = sdkName.startsWith("iphoneos").also {
             logger.info("Run on real ios device: $it from sdk: $sdkName")

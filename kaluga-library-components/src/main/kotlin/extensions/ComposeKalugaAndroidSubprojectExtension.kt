@@ -24,11 +24,8 @@ import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 import javax.inject.Inject
 
-open class ComposeKalugaAndroidSubprojectExtension @Inject constructor(
-    versionCatalog: VersionCatalog,
-    libraryExtension: LibraryExtension,
-    objects: ObjectFactory,
-) : BaseKalugaAndroidSubprojectExtension(versionCatalog, libraryExtension, "compose", objects) {
+open class ComposeKalugaAndroidSubprojectExtension @Inject constructor(versionCatalog: VersionCatalog, libraryExtension: LibraryExtension, objects: ObjectFactory) :
+    BaseKalugaAndroidSubprojectExtension(versionCatalog, libraryExtension, "compose", objects) {
 
     override fun LanguageSettingsBuilder.languageSettings() {
         optIn("androidx.compose.material3.ExperimentalMaterial3Api")

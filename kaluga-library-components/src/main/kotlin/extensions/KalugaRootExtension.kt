@@ -33,10 +33,7 @@ import javax.inject.Inject
 /**
  * A [BaseSplendoHealthExtension] used for a [Project] that is the root of other projects
  */
-open class KalugaRootExtension @Inject constructor(
-    healthVersionCatalog: VersionCatalog,
-    objects: ObjectFactory,
-) : BaseKalugaExtension(healthVersionCatalog, objects) {
+open class KalugaRootExtension @Inject constructor(healthVersionCatalog: VersionCatalog, objects: ObjectFactory) : BaseKalugaExtension(healthVersionCatalog, objects) {
 
     /**
      * When `true` all projects will include Maven Local as a repository
@@ -100,18 +97,22 @@ open class KalugaRootExtension @Inject constructor(
             subprojects.forEach { thisProject ->
 
                 val dependsOnOtherProject = subprojects.any { otherProject ->
-                    thisProject != otherProject && (
-                        thisProject.name.startsWith(
-                            otherProject.name,
-                        ) || thisProject.name.endsWith(otherProject.name)
-                        )
+                    thisProject != otherProject &&
+                        (
+                            thisProject.name.startsWith(
+                                otherProject.name,
+                            ) ||
+                                thisProject.name.endsWith(otherProject.name)
+                            )
                 }
                 val otherProjectsDependOn = subprojects.any { otherProject ->
-                    thisProject != otherProject && (
-                        otherProject.name.startsWith(
-                            thisProject.name,
-                        ) || otherProject.name.endsWith(thisProject.name)
-                        )
+                    thisProject != otherProject &&
+                        (
+                            otherProject.name.startsWith(
+                                thisProject.name,
+                            ) ||
+                                otherProject.name.endsWith(thisProject.name)
+                            )
                 }
 
                 if (!blacklist.contains(thisProject.name) && (!dependsOnOtherProject || otherProjectsDependOn)) {
