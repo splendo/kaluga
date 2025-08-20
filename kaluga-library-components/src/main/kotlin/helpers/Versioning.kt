@@ -19,7 +19,9 @@ package com.splendo.kaluga.plugin.helpers
 
 import com.palantir.gradle.gitversion.VersionDetails
 import org.gradle.api.Project
+import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.internal.extensions.core.extra
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.provideDelegate
 
@@ -62,8 +64,11 @@ val Project.kalugaVersion: String
         val details = versionDetails()
         val buildNumberProvider = providers.environmentVariable("GITHUB_RUN_NUMBER")
 
+        val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+        val version = libs.findVersion("kaluga").get().displayName
+
         return calculateVersion(
-            version = project.version.toString(),
+            version = version,
             releaseType = releaseType,
             branchName = details.branchName,
             gitHash = details.gitHash,
