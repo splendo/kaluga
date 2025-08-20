@@ -288,7 +288,9 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
             }
 
             val developerDirProvider = providers.exec {
-                commandLine("xcode-select", "-p")
+                if (iosTargets.isNotEmpty()) {
+                    commandLine("xcode-select", "-p")
+                }
             }.standardOutput.asText.map { it.trim() }
 
             project.configure(iosTargets) {
