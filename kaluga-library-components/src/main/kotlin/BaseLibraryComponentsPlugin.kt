@@ -30,11 +30,9 @@ import org.gradle.api.UnknownDomainObjectException
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.plugins.PluginManager
-import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
-import org.gradle.plugins.signing.SigningPlugin
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jmailen.gradle.kotlinter.KotlinterPlugin
 import org.owasp.dependencycheck.gradle.DependencyCheckPlugin
@@ -57,16 +55,15 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
         } catch (e: InvalidUserDataException) {
             project.logger.error(
                 "Missing Version Catalog named \"libs\". " +
-                    "Make sure the version catalog provided by this plugin is linked to your project as \"libs\"",
+                    "Make sure the version catalog provided by this plugin is linked to your project as \"libs\""
             )
             throw e
         }
-        pluginManager.apply(MavenPublishPlugin::class)
-        pluginManager.apply(SigningPlugin::class)
         pluginManager.apply(KotlinterPlugin::class)
         pluginManager.apply(DependencyCheckPlugin::class)
         pluginManager.apply(DokkaPlugin::class)
         pluginManager.apply(KoverGradlePlugin::class)
+        pluginManager.apply(com.palantir.gradle.gitversion.GitVersionPlugin::class)
 
         val kalugaExtension = when {
             rootProject == this -> {
@@ -76,9 +73,13 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
             else -> {
                 pluginManager.apply(LibraryPlugin::class)
                 pluginManager.addSubprojectExtensionPlugins()
-                extensions.create(EXTENSION_NAME, subExtensionClass, versionCatalog, project.extensions.findByType(LibraryExtension::class)!!)
+                val libraryExtension = extensions.findByType(LibraryExtension::class)!!
+                // The versioning is now handled in afterEvaluate
+                extensions.create(EXTENSION_NAME, subExtensionClass, versionCatalog, libraryExtension)
             }
         }
+
+        pluginManager.apply(com.vanniktech.maven.publish.MavenPublishPlugin::class)
 
         kalugaExtension.beforeProjectEvaluated(this)
         afterEvaluate {

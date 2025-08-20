@@ -327,7 +327,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     }
 
     override fun LibraryExtension.configure() {
-        @Suppress("UnstableApiUsage")
         testOptions {
             unitTests.isReturnDefaultValues = true
             targetSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
@@ -354,7 +353,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             (this as MavenPublication).let {
                 artifactId = project.name
                 groupId = BASE_GROUP
-                version = project.kalugaVersion
             }
         }
     }

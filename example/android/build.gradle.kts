@@ -1,5 +1,3 @@
-import com.splendo.kaluga.plugin.helpers.gitBranch
-
 plugins {
     id("com.android.application")
     id(libs.plugins.kotlin.android.get().pluginId)
@@ -9,8 +7,7 @@ plugins {
 }
 
 group = "com.splendo.kaluga"
-val kalugaVersion = libs.versions.kaluga.get()
-version = gitBranch.toVersion(kalugaVersion)
+version = libs.versions.kaluga.get()
 
 android {
     namespace = "com.splendo.kaluga.example"
@@ -108,4 +105,3 @@ dependencies {
 
     implementation(libs.koin.compose)
 }
-

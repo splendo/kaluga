@@ -11,6 +11,8 @@ kotlinx-kover = "0.9.1"
 dependencycheck = "12.1.1"
 dokka = "2.0.0"
 binarycompatilityvalidator = "0.17.0"
+vanniktechMavenPublish = "0.34.0"
+palantir-git-version = "4.0.0"
 java = "17"
 
 kotlinx-atomicfu = "0.27.0"
@@ -96,8 +98,8 @@ kaluga-testutils-service = { module = "com.splendo.kaluga:test-utils-service", v
 kaluga-testutils-system = { module = "com.splendo.kaluga:test-utils-system", version.ref = "kaluga" }
 
 # Gradle DSL
-android-gradle = { module = "com.android.tools.build:gradle", version.ref = "androidGradle"}
-compose-gradle = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin"}
+android-gradle = { module = "com.android.tools.build:gradle", version.ref = "androidGradle" }
+compose-gradle = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinter-gradle = { module = "org.jmailen.gradle:kotlinter-gradle", version.ref = "kotlinter" }
 dependencycheck-gradle = { module = "org.owasp:dependency-check-gradle", version.ref = "dependencycheck" }
@@ -105,6 +107,8 @@ kotlinx-atomicfu-gradle = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plug
 kotlinx-binarycompatibilityvalidator-gradle = { module = "org.jetbrains.kotlinx.binary-compatibility-validator:org.jetbrains.kotlinx.binary-compatibility-validator.gradle.plugin", version.ref = "binarycompatilityvalidator" }
 kotlinx-kover-gradle = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kotlinx-kover" }
 dokka-gradle = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+vanniktech-maven-publish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "vanniktechMavenPublish" }
+palantir-git-version = { module = "com.palantir.git-version:com.palantir.git-version.gradle.plugin", version.ref = "palantir-git-version" }
 
 # Kotlin
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
