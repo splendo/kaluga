@@ -70,18 +70,4 @@ abstract class BaseKalugaAndroidSubprojectExtension(
     protected abstract fun LanguageSettingsBuilder.languageSettings()
     protected abstract fun DependencyHandlerScope.commonDependencies()
 
-    override fun PublicationContainer.configure(project: Project) {
-        create("release", MavenPublication::class) {
-            from(project.components.getByName("release"))
-
-            artifactId = project.name
-            groupId = BASE_GROUP
-        }
-        create("debug", MavenPublication::class) {
-            from(project.components.getByName("debug"))
-
-            artifactId = project.name
-            groupId = BASE_GROUP
-        }
-    }
 }

@@ -123,7 +123,5 @@ sealed class BaseKalugaSubprojectExtension(
 
     protected abstract fun LibraryExtension.configure()
 
-    protected abstract fun PublicationContainer.configure(project: Project)
-
     protected fun String.asDependency() = versionCatalog.findLibrary(this).get()
 }

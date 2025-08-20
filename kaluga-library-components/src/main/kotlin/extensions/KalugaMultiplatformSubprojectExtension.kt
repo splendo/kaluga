@@ -348,14 +348,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             )
         }
     }
-    override fun PublicationContainer.configure(project: Project) {
-        getByName("kotlinMultiplatform") {
-            (this as MavenPublication).let {
-                artifactId = project.name
-                groupId = BASE_GROUP
-            }
-        }
-    }
 
     private val Project.iosTargets: Set<IOSTarget> get() {
         val sdkName = System.getenv("SDK_NAME") ?: "unknown"
