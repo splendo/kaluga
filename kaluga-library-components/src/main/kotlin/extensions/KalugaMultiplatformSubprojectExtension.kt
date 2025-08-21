@@ -28,8 +28,6 @@ import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.publish.PublicationContainer
-import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.newInstance
@@ -327,7 +325,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
                                             |headers = SwiftInterop.h
                                             |package = com.splendo.kaluga.$moduleName
                                             |headerFilter = SwiftInterop.h
-                                            |staticLibraries = libswiftinterop.a libswiftCompatibility56.a libswiftCompatibilityPacks.a
+                                            |staticLibraries = libswiftinterop.a
                                         """.trimMargin(),
                                     )
                                 } finally {

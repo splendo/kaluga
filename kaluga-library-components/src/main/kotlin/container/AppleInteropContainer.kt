@@ -99,7 +99,6 @@ abstract class BuildSwiftLibTask @Inject constructor(private val execOps: ExecOp
                 "-target", targetTriple,
                 "-emit-objc-header",
                 "-emit-objc-header-path", headerFileTemp.absolutePath,
-                "-Xlinker", "-no_implicit_dylibs",
             )
             args(swiftFiles.map { it.absolutePath })
         }.assertNormalExitValue()
