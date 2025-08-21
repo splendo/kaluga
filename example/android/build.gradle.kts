@@ -78,10 +78,10 @@ kotlin {
 }
 
 dependencies {
-    implementation("com.splendo.kaluga:architecture-compose:$version")
-    implementation("com.splendo.kaluga:keyboard-compose:$version")
-    implementation("com.splendo.kaluga:resources-compose:$version")
-    implementation("com.splendo.kaluga:resources-databinding:$version")
+    implementation("com.splendo.kaluga:architecture-compose:${project.rootProject.version}")
+    implementation("com.splendo.kaluga:keyboard-compose:${project.rootProject.version}")
+    implementation("com.splendo.kaluga:resources-compose:${project.rootProject.version}")
+    implementation("com.splendo.kaluga:resources-databinding:${project.rootProject.version}")
     implementation(project(":shared"))
 
     implementation(libs.androidx.compose.ui)
