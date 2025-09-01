@@ -1,5 +1,5 @@
 /*
- Copyright 2024 Splendo Consulting B.V. The Netherlands
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -62,6 +62,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
 
     var supportJVM: Boolean = false
     var supportJS: Boolean = false
+    var iosDeploymentTarget: String = "15.0"
 
     private val multiplatformDependencies = objects.newInstance(MultiplatformDependencyContainer::class)
     private val appleInterop = objects.newInstance(AppleInteropContainer::class)
@@ -109,9 +110,9 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
         afterEvaluate {
             iosTargets.forEach { target ->
                 val targetName = target.sourceSetName
-                if (tasks.names.contains("linkDebugTest${targetName.replaceFirstChar { it.titlecase() } }")) {
+                if (tasks.names.contains("linkDebugTest${targetName.replaceFirstChar { it.titlecase() }}")) {
                     // creating copy task for the target
-                    val copyTask = tasks.register("copy${targetName.replaceFirstChar { it.titlecase() } }TestResources", Copy::class) {
+                    val copyTask = tasks.register("copy${targetName.replaceFirstChar { it.titlecase() }}TestResources", Copy::class) {
                         from("src/iosTest/resources/.")
                         into("${layout.buildDirectory.get().asFile}/bin/$targetName/debugTest")
                     }
@@ -239,6 +240,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
                 }
 
                 iosMain.configure {
+                    iosDeploymentTarget = "15.0"  
                     dependencies {
                         multiplatformDependencies.ios.mainDependencies.forEach { it.execute(this) }
                     }
@@ -295,14 +297,15 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
             project.configure(iosTargets) {
                 val swiftSourceDir = project.file("src/iosMain/swift")
                 val cinteropSwiftInteropTaskName = "cinteropSwiftInterop${name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }}"
-                val deploymentTarget = "15.0"
+                logger.info("cinteropSwiftInteropTask: ${project.name}:$cinteropSwiftInteropTaskName with target: $name ($konanTarget)")
                 val buildSwiftLibTask = if (swiftSourceDir.exists() && swiftSourceDir.listFiles().isNotEmpty()) {
                     tasks.register<BuildSwiftLibTask>("buildSwiftLib_$name") {
+                        logger.info("buildSwiftLib_$name registered for $konanTarget with deployment $iosDeploymentTarget")
                         srcDir.set(swiftSourceDir)
                         libraryOutputDir.set(layout.buildDirectory.dir("swift/$name"))
                         headerOutputDir.set(layout.buildDirectory.dir("objc/$name"))
                         target.set(konanTarget)
-                        this.deploymentTarget.set(deploymentTarget)
+                        deploymentTarget.set(iosDeploymentTarget)
                     }
                 } else {
                     null
@@ -311,13 +314,23 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
                     main.cinterops.let { mainInterops ->
                         buildSwiftLibTask?.let { buildSwiftLibTask ->
                             mainInterops.create("swiftInterop") {
-                                val defFile = File(layout.buildDirectory.asFile.get(), "cinterop/$name/swiftinterop.def")
+
+                                val defFile = File(layout.buildDirectory.asFile.get(), "cinterop/$name/$targetName/swiftinterop.def")
+
                                 if (defFile.exists()) {
                                     defFile.delete()
                                 }
                                 defFile.parentFile.mkdirs()
                                 defFile.createNewFile()
                                 val writer = BufferedWriter(FileWriter(defFile))
+                                val staticLibPath = buildSwiftLibTask.get().libraryOutputDir.get().asFile.absolutePath
+                                val devDir = project.providers.environmentVariable("DEVELOPER_DIR").getOrElse(developerDirProvider.get())
+                                val swiftLibPath = "$devDir/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/${buildSwiftLibTask.get().target.get().sdkName}"
+                                val linkerOpts = "-L$swiftLibPath -rpath /usr/lib/swift"
+                                val headerSourceDir = buildSwiftLibTask.get().headerOutputDir.get().asFile
+
+                                logger.info("Creating .def file: $defFile with libraryPaths: $staticLibPath linkerOpts: $linkerOpts, compiling with headers from $headerSourceDir")
+
                                 try {
                                     writer.write(
                                         """
@@ -326,20 +339,16 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
                                             |package = com.splendo.kaluga.$moduleName
                                             |headerFilter = SwiftInterop.h
                                             |staticLibraries = libswiftinterop.a
+                                            |libraryPaths = $staticLibPath/
+                                            |linkerOpts = $linkerOpts
                                         """.trimMargin(),
                                     )
                                 } finally {
                                     writer.close()
                                 }
                                 definitionFile.set(defFile)
-                                val headerSourceDir = buildSwiftLibTask.get().headerOutputDir.get().asFile
                                 compilerOpts("-I/${headerSourceDir.absolutePath}")
                                 includeDirs.allHeaders(headerSourceDir)
-                                val staticLibPath = buildSwiftLibTask.get().libraryOutputDir.get().asFile.absolutePath
-                                extraOpts("-libraryPath", staticLibPath)
-                                val devDir = project.providers.environmentVariable("DEVELOPER_DIR").getOrElse(developerDirProvider.get())
-                                extraOpts("-libraryPath", "$devDir/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/${buildSwiftLibTask.get().target.get().sdkName}")
-
                                 tasks.named(cinteropSwiftInteropTaskName).configure {
                                     dependsOn(buildSwiftLibTask)
                                 }

@@ -1,5 +1,5 @@
 /*
- Copyright 2024 Splendo Consulting B.V. The Netherlands
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -82,10 +82,11 @@ abstract class BuildSwiftLibTask @Inject constructor(private val execOps: ExecOp
         val sdkPath = execAndCapture(listOf("xcrun", "--sdk", sdk, "--show-sdk-path")).trim()
         val targetTriple = when (target.get()) {
             KonanTarget.IOS_ARM64 -> "arm64-apple-ios${deploymentTarget.get()}"
-            KonanTarget.IOS_X64 -> "x86_64-apple-ios${deploymentTarget.get()}"
+            KonanTarget.IOS_X64 -> "x86_64-apple-ios${deploymentTarget.get()}-simulator"
             KonanTarget.IOS_SIMULATOR_ARM64 -> "arm64-apple-ios${deploymentTarget.get()}-simulator"
             else -> error("Unsupported target ${target.get()}")
         }
+        logger.info("Building Swift library $libFile with headers $headerFile and target triple: $targetTriple and sdk: $sdk")
 
         val swiftFiles = srcDir.asFileTree.matching { include("**/*.swift") }.files.toList()
 
