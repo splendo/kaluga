@@ -81,7 +81,7 @@ public class KalugaUIImagePickerControllerWrapper : NSObject, UINavigationContro
         return delegate.preferredInterfaceOrientationForPresentation(navigationController: navigationController)
     }
 
-    public func navigationController(_ navigationController: UINavigationController, transitioning transitioning: any UIViewControllerAnimatedTransitioning) -> (any UIViewControllerInteractiveTransitioning)? {
+    public func navigationController(_ navigationController: UINavigationController, transitioning: any UIViewControllerAnimatedTransitioning) -> (any UIViewControllerInteractiveTransitioning)? {
         return delegate.interactionController(navigationController: navigationController, transitioning: transitioning)
     }
 
