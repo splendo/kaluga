@@ -159,14 +159,6 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
             }
         }
 
-        project.logger.lifecycle("Publishing Kaluga version: ${project.kalugaVersion}")
-
-        listOf("mavenCentralUsername", "mavenCentralPassword", "signingInMemoryKey", "signingInMemoryKeyId", "signingInMemoryKeyPassword").forEach { property ->
-            val value = project.providers.gradleProperty(property).getOrElse("missing")
-            if (value == "missing") println("⚠️'$property' is not set for project ${project.name}. Publishing to Maven Central will fail.")
-            else println("✅ '$property' is present: chars: ${value.length}, lines: ${value.lines().size}")
-
-        }
         project.afterProjectEvaluated()
     }
 
