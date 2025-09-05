@@ -119,7 +119,8 @@ actual class DefaultBluetoothPermissionManager(private val bundle: NSBundle, set
  */
 actual class BluetoothPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseBluetoothPermissionManagerBuilder {
 
-    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager =
+    /* useForLocation is ignored on iOS */
+    actual override fun create(settings: Settings, useForLocation: Boolean, coroutineScope: CoroutineScope): BluetoothPermissionManager =
         DefaultBluetoothPermissionManager(context, settings, coroutineScope)
 }
 

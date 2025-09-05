@@ -53,7 +53,7 @@ interface BaseBluetoothPermissionManagerBuilder : BasePermissionsBuilder<Bluetoo
      * @param coroutineScope The [CoroutineScope] the manager runs on
      * @return a [BluetoothPermissionManager]
      */
-    fun create(settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): BluetoothPermissionManager
+    fun create(settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), useForLocation: Boolean, coroutineScope: CoroutineScope): BluetoothPermissionManager
 }
 
 /**
@@ -61,7 +61,7 @@ interface BaseBluetoothPermissionManagerBuilder : BasePermissionsBuilder<Bluetoo
  * @param context the [PermissionContext] this permissions manager builder runs on
  */
 expect class BluetoothPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseBluetoothPermissionManagerBuilder {
-    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager
+    override fun create(settings: BasePermissionManager.Settings, useForLocation: Boolean, coroutineScope: CoroutineScope): BluetoothPermissionManager
 }
 
 /**
@@ -75,5 +75,6 @@ class BluetoothPermissionStateRepo(
     builder: BaseBluetoothPermissionManagerBuilder,
     monitoringInterval: Duration = defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
+    useForLocation: Boolean,
     coroutineContext: CoroutineContext,
-) : PermissionStateRepo<BluetoothPermission>(monitoringInterval, { builder.create(settings, it) }, coroutineContext)
+) : PermissionStateRepo<BluetoothPermission>(monitoringInterval, { scope -> builder.create(settings, useForLocation, scope) }, coroutineContext)
