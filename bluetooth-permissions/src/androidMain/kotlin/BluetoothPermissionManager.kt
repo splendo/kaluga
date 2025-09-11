@@ -28,6 +28,7 @@ import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
@@ -40,11 +41,11 @@ import kotlin.time.Duration
  */
 actual class DefaultBluetoothPermissionManager(
     context: Context,
+    bluetoothPermission: BluetoothPermission,
     bluetoothAdapter: BluetoothAdapter?,
     settings: Settings,
-    val useLocationPermission: Boolean,
     coroutineScope: CoroutineScope,
-) : BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
+) : BasePermissionManager<BluetoothPermission>(bluetoothPermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
@@ -57,7 +58,7 @@ actual class DefaultBluetoothPermissionManager(
                 add(Manifest.permission.BLUETOOTH)
                 add(Manifest.permission.BLUETOOTH_ADMIN)
             }
-            if (useLocationPermission || android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
+            if (bluetoothPermission.useForLocation || android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
                 add(Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }.toTypedArray(),
@@ -105,11 +106,12 @@ actual class BluetoothPermissionManagerBuilder(private val context: PermissionCo
      */
     actual constructor(context: PermissionContext) : this(context, (context.context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter)
 
-    actual override fun create(settings: Settings, useForLocation: Boolean, coroutineScope: CoroutineScope): BluetoothPermissionManager = DefaultBluetoothPermissionManager(
-        context = context.context,
-        bluetoothAdapter = bluetoothAdapter,
-        settings = settings,
-        useLocationPermission = useForLocation,
-        coroutineScope = coroutineScope,
-    )
+    actual override fun create(bluetoothPermission: BluetoothPermission, settings: Settings, coroutineScope: CoroutineScope): PermissionManager<BluetoothPermission> =
+        DefaultBluetoothPermissionManager(
+            context = context.context,
+            bluetoothPermission = bluetoothPermission,
+            bluetoothAdapter = bluetoothAdapter,
+            settings = settings,
+            coroutineScope = coroutineScope,
+        )
 }

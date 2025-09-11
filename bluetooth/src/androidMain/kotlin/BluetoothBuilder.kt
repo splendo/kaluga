@@ -24,7 +24,7 @@ actual class BluetoothBuilder(
     private val permissionsBuilder: suspend (CoroutineContext) -> Permissions = { context ->
         Permissions(
             PermissionsBuilder(PermissionContext(applicationContext)).apply {
-                registerBluetoothPermissionIfNotRegistered(useForLocation = useLocationPermission)
+                registerBluetoothPermissionIfNotRegistered()
                 if (useLocationPermission) {
                     registerLocationPermissionIfNotRegistered()
                 }

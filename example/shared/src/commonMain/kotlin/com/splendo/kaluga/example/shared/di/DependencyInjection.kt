@@ -61,7 +61,7 @@ private fun sharedModule(locationStateRepoBuilderBuilder: LocationStateRepoBuild
         bluetoothBuilderBuilder {
             val builder = get<PermissionsBuilder>()
             val settings = BasePermissionManager.Settings(logger = get())
-            builder.registerBluetoothPermissionIfNotRegistered(useForLocation = useBluetoothForLocation, settings = settings)
+            builder.registerBluetoothPermissionIfNotRegistered(settings = settings)
             builder.registerLocationPermissionIfNotRegistered(settings = settings)
             Permissions(builder, it)
         }.create(

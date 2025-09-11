@@ -284,6 +284,8 @@ abstract class BaseScanner constructor(
     private val autoRequestPermission: Boolean = settings.autoRequestPermission
     private val autoEnableSensors: Boolean = settings.autoEnableSensors
     internal val useLocation: Boolean = settings.useLocation
+
+    internal val bluetoothPermission = BluetoothPermission(useForLocation = settings.useLocation)
     private val defaultConnectionSettings = settings.defaultConnectionSettings
 
     protected val eventChannel = Channel<Scanner.Event>(UNLIMITED)
@@ -293,7 +295,7 @@ abstract class BaseScanner constructor(
     private val isScanningDevicesDiscovered = MutableStateFlow<BufferedAsListChannel<Scanner.DeviceDiscovered>?>(null)
     override val discoveryEvents: Flow<List<Scanner.DeviceDiscovered>> = isScanningDevicesDiscovered.flatMapLatest { it?.receiveAsFlow() ?: emptyFlow() }
 
-    protected val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
+    protected val bluetoothPermissionRepo get() = permissions[bluetoothPermission]
     protected abstract val bluetoothEnabledMonitor: BluetoothMonitor?
 
     protected open val permissionsFlow: Flow<List<PermissionState<*>>> get() = bluetoothPermissionRepo.filterOnlyImportant().map { listOf(it) }
