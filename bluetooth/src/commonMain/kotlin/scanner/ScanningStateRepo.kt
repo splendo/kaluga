@@ -16,12 +16,10 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.state.ColdStateFlowRepo
 import com.splendo.kaluga.base.state.StateRepo
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.device.Identifier
-import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
