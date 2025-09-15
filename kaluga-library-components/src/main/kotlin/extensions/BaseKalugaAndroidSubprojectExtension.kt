@@ -31,12 +31,8 @@ import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 
-abstract class BaseKalugaAndroidSubprojectExtension(
-    versionCatalog: VersionCatalog,
-    libraryExtension: LibraryExtension,
-    namespacePostfix: String,
-    objects: ObjectFactory,
-) : BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, namespacePostfix, objects) {
+abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatalog, libraryExtension: LibraryExtension, namespacePostfix: String, objects: ObjectFactory) :
+    BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, namespacePostfix, objects) {
 
     override fun Project.setupSubproject() {}
 
@@ -70,20 +66,4 @@ abstract class BaseKalugaAndroidSubprojectExtension(
     protected abstract fun LanguageSettingsBuilder.languageSettings()
     protected abstract fun DependencyHandlerScope.commonDependencies()
 
-    override fun PublicationContainer.configure(project: Project) {
-        create("release", MavenPublication::class) {
-            from(project.components.getByName("release"))
-
-            artifactId = project.name
-            groupId = BASE_GROUP
-            version = project.kalugaVersion
-        }
-        create("debug", MavenPublication::class) {
-            from(project.components.getByName("debug"))
-
-            artifactId = project.name
-            groupId = BASE_GROUP
-            version = project.kalugaVersion
-        }
-    }
 }

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.plugin.extensions
 
+import com.splendo.kaluga.plugin.helpers.kalugaVersion
 import kotlinx.validation.ApiValidationExtension
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
@@ -31,12 +32,9 @@ import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 import javax.inject.Inject
 
 /**
- * A [BaseSplendoHealthExtension] used for a [Project] that is the root of other projects
+ * A [BaseKalugaExtension] used for a [Project] that is the root of other projects
  */
-open class KalugaRootExtension @Inject constructor(
-    healthVersionCatalog: VersionCatalog,
-    objects: ObjectFactory,
-) : BaseKalugaExtension(healthVersionCatalog, objects) {
+open class KalugaRootExtension @Inject constructor(healthVersionCatalog: VersionCatalog, objects: ObjectFactory) : BaseKalugaExtension(healthVersionCatalog, objects) {
 
     /**
      * When `true` all projects will include Maven Local as a repository
@@ -66,6 +64,15 @@ open class KalugaRootExtension @Inject constructor(
         }
 
         project.koverModules()
+
+        project.logger.lifecycle("Kaluga version for publishing: ${project.kalugaVersion}")
+        listOf("mavenCentralUsername", "mavenCentralPassword", "signingInMemoryKey", "signingInMemoryKeyId", "signingInMemoryKeyPassword").forEach { property ->
+            val value = project.providers.gradleProperty(property).getOrElse("missing")
+            if (value == "missing")
+                project.logger.debug("publishing: $property is not set. Publishing to Maven Central will fail.")
+            else
+                project.logger.info("publishing: $property is present: chars: ${value.length}, lines: ${value.lines().size}")
+        }
 
         afterEvaluate {
             // owasp dependency checker workaround
@@ -100,18 +107,22 @@ open class KalugaRootExtension @Inject constructor(
             subprojects.forEach { thisProject ->
 
                 val dependsOnOtherProject = subprojects.any { otherProject ->
-                    thisProject != otherProject && (
-                        thisProject.name.startsWith(
-                            otherProject.name,
-                        ) || thisProject.name.endsWith(otherProject.name)
-                        )
+                    thisProject != otherProject &&
+                        (
+                            thisProject.name.startsWith(
+                                otherProject.name,
+                            ) ||
+                                thisProject.name.endsWith(otherProject.name)
+                            )
                 }
                 val otherProjectsDependOn = subprojects.any { otherProject ->
-                    thisProject != otherProject && (
-                        otherProject.name.startsWith(
-                            thisProject.name,
-                        ) || otherProject.name.endsWith(thisProject.name)
-                        )
+                    thisProject != otherProject &&
+                        (
+                            otherProject.name.startsWith(
+                                thisProject.name,
+                            ) ||
+                                otherProject.name.endsWith(thisProject.name)
+                            )
                 }
 
                 if (!blacklist.contains(thisProject.name) && (!dependsOnOtherProject || otherProjectsDependOn)) {

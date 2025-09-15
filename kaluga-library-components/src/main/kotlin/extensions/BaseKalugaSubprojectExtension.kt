@@ -1,5 +1,5 @@
 /*
- Copyright 2024 Splendo Consulting B.V. The Netherlands
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,10 +23,6 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.publish.PublicationContainer
-import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
-import org.gradle.kotlin.dsl.configure
-import org.gradle.plugins.signing.Sign
 
 sealed class BaseKalugaSubprojectExtension(
     versionCatalog: VersionCatalog,
@@ -34,8 +30,6 @@ sealed class BaseKalugaSubprojectExtension(
     private val namespacePostfix: String?,
     objects: ObjectFactory,
 ) : BaseKalugaExtension(versionCatalog, objects) {
-
-    var isPublished: Boolean = true
 
     var moduleName: String
         get() = libraryExtension.namespace.orEmpty()
@@ -111,11 +105,6 @@ sealed class BaseKalugaSubprojectExtension(
                 targetCompatibility = javaVersion
             }
 
-            publishing {
-                singleVariant("release")
-                singleVariant("debug")
-            }
-
             configure()
         }
     }
@@ -128,27 +117,11 @@ sealed class BaseKalugaSubprojectExtension(
         }
 
         configureSubproject()
-        if (isPublished) {
-            setupPublishing()
-        }
     }
 
     protected abstract fun Project.configureSubproject()
 
     protected abstract fun LibraryExtension.configure()
-    private fun Project.setupPublishing() {
-        extensions.configure(PublishingExtension::class) {
-            publications {
-                configure(project)
-            }
-        }
-
-        tasks.withType(AbstractPublishToMaven::class.java).configureEach {
-            dependsOn(tasks.withType(Sign::class.java))
-        }
-    }
-
-    protected abstract fun PublicationContainer.configure(project: Project)
 
     protected fun String.asDependency() = versionCatalog.findLibrary(this).get()
 }

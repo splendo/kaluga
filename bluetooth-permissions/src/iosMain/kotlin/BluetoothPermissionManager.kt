@@ -55,8 +55,8 @@ private const val NS_BLUETOOTH_PERIPHERAL_USAGE_DESCRIPTION = "NSBluetoothPeriph
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultBluetoothPermissionManager(private val bundle: NSBundle, settings: Settings, coroutineScope: CoroutineScope) :
-    BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
+actual class DefaultBluetoothPermissionManager(bluetoothPermission: BluetoothPermission, private val bundle: NSBundle, settings: Settings, coroutineScope: CoroutineScope) :
+    BasePermissionManager<BluetoothPermission>(bluetoothPermission, settings, coroutineScope) {
 
     companion object {
         private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus {
@@ -119,8 +119,8 @@ actual class DefaultBluetoothPermissionManager(private val bundle: NSBundle, set
  */
 actual class BluetoothPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseBluetoothPermissionManagerBuilder {
 
-    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager =
-        DefaultBluetoothPermissionManager(context, settings, coroutineScope)
+    actual override fun create(bluetoothPermission: BluetoothPermission, settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager =
+        DefaultBluetoothPermissionManager(bluetoothPermission, context, settings, coroutineScope)
 }
 
 private fun CBPeripheralManagerAuthorizationStatus.toPeripheralAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {

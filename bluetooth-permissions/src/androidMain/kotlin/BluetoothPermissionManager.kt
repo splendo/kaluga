@@ -28,6 +28,7 @@ import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
 import com.splendo.kaluga.permissions.base.DefaultAndroidPermissionStateHandler
 import com.splendo.kaluga.permissions.base.PermissionContext
+import com.splendo.kaluga.permissions.base.PermissionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
@@ -38,25 +39,29 @@ import kotlin.time.Duration
  * @param settings the [Settings] to apply to this manager.
  * @param coroutineScope the [CoroutineScope] of this manager.
  */
-actual class DefaultBluetoothPermissionManager(context: Context, bluetoothAdapter: BluetoothAdapter?, settings: Settings, coroutineScope: CoroutineScope) :
-    BasePermissionManager<BluetoothPermission>(BluetoothPermission, settings, coroutineScope) {
+actual class DefaultBluetoothPermissionManager(
+    context: Context,
+    bluetoothPermission: BluetoothPermission,
+    bluetoothAdapter: BluetoothAdapter?,
+    settings: Settings,
+    coroutineScope: CoroutineScope,
+) : BasePermissionManager<BluetoothPermission>(bluetoothPermission, settings, coroutineScope) {
 
     private val permissionHandler = DefaultAndroidPermissionStateHandler(eventChannel, logTag, logger)
     private val permissionsManager = AndroidPermissionsManager(
         context,
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            arrayOf(
-                Manifest.permission.BLUETOOTH_SCAN,
-                Manifest.permission.BLUETOOTH_CONNECT,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-            )
-        } else {
-            arrayOf(
-                Manifest.permission.BLUETOOTH,
-                Manifest.permission.BLUETOOTH_ADMIN,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-            )
-        },
+        buildList {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                add(Manifest.permission.BLUETOOTH_SCAN)
+                add(Manifest.permission.BLUETOOTH_CONNECT)
+            } else {
+                add(Manifest.permission.BLUETOOTH)
+                add(Manifest.permission.BLUETOOTH_ADMIN)
+            }
+            if (bluetoothPermission.useForLocation || android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
+                add(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }.toTypedArray(),
         coroutineScope,
         logTag,
         logger,
@@ -101,6 +106,12 @@ actual class BluetoothPermissionManagerBuilder(private val context: PermissionCo
      */
     actual constructor(context: PermissionContext) : this(context, (context.context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)?.adapter)
 
-    actual override fun create(settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager =
-        DefaultBluetoothPermissionManager(context.context, bluetoothAdapter, settings, coroutineScope)
+    actual override fun create(bluetoothPermission: BluetoothPermission, settings: Settings, coroutineScope: CoroutineScope): PermissionManager<BluetoothPermission> =
+        DefaultBluetoothPermissionManager(
+            context = context.context,
+            bluetoothPermission = bluetoothPermission,
+            bluetoothAdapter = bluetoothAdapter,
+            settings = settings,
+            coroutineScope = coroutineScope,
+        )
 }

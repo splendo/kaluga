@@ -16,14 +16,14 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.state.ColdStateFlowRepo
 import com.splendo.kaluga.base.state.StateRepo
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.device.Identifier
-import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
@@ -93,20 +93,14 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
         createDeinitializingState = { state ->
             val repo = this as ScanningStateImplRepo
             repo.supervisorJob.cancelChildren()
-            repo.dispatcher?.close()
-            repo.dispatcher = null
             state.deinitialize
         },
         coroutineContext = coroutineContext,
     ) {
 
     private val supervisorJob = SupervisorJob(coroutineContext[Job])
-    private var dispatcher: CloseableCoroutineDispatcher? = null
     private fun startMonitoringScanner(scanner: Scanner) {
-        val dispatcher = singleThreadDispatcher("ScanningStateRepo").also {
-            this.dispatcher = it
-        }
-        CoroutineScope(coroutineContext + supervisorJob + dispatcher).launch {
+        CoroutineScope(coroutineContext + supervisorJob + Dispatchers.IO.limitedParallelism(1)).launch {
             scanner.events.collect { event ->
                 when (event) {
                     is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
@@ -119,7 +113,7 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
                 }
             }
         }
-        CoroutineScope(coroutineContext + supervisorJob + dispatcher).launch {
+        CoroutineScope(coroutineContext + supervisorJob + Dispatchers.IO.limitedParallelism(1)).launch {
             scanner.connectionEvents.collect { connectionEvent ->
                 when (connectionEvent) {
                     is Scanner.ConnectionEvent.DeviceConnected -> handleDeviceConnectionChanged(connectionEvent.identifier, true)
@@ -127,7 +121,7 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
                 }
             }
         }
-        CoroutineScope(coroutineContext + supervisorJob + dispatcher).launch {
+        CoroutineScope(coroutineContext + supervisorJob + Dispatchers.IO.limitedParallelism(1)).launch {
             scanner.discoveryEvents.collect { discoveredDevices ->
                 handleDeviceDiscovered(discoveredDevices)
             }

@@ -53,7 +53,11 @@ interface BaseBluetoothPermissionManagerBuilder : BasePermissionsBuilder<Bluetoo
      * @param coroutineScope The [CoroutineScope] the manager runs on
      * @return a [BluetoothPermissionManager]
      */
-    fun create(settings: BasePermissionManager.Settings = BasePermissionManager.Settings(), coroutineScope: CoroutineScope): BluetoothPermissionManager
+    fun create(
+        bluetoothPermission: BluetoothPermission = BluetoothPermission(),
+        settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
+        coroutineScope: CoroutineScope,
+    ): BluetoothPermissionManager
 }
 
 /**
@@ -61,7 +65,7 @@ interface BaseBluetoothPermissionManagerBuilder : BasePermissionsBuilder<Bluetoo
  * @param context the [PermissionContext] this permissions manager builder runs on
  */
 expect class BluetoothPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseBluetoothPermissionManagerBuilder {
-    override fun create(settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager
+    override fun create(bluetoothPermission: BluetoothPermission, settings: BasePermissionManager.Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager
 }
 
 /**
@@ -72,8 +76,9 @@ expect class BluetoothPermissionManagerBuilder(context: PermissionContext = defa
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class BluetoothPermissionStateRepo(
+    bluetoothPermission: BluetoothPermission,
     builder: BaseBluetoothPermissionManagerBuilder,
     monitoringInterval: Duration = defaultMonitoringInterval,
     settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
     coroutineContext: CoroutineContext,
-) : PermissionStateRepo<BluetoothPermission>(monitoringInterval, { builder.create(settings, it) }, coroutineContext)
+) : PermissionStateRepo<BluetoothPermission>(monitoringInterval, { scope -> builder.create(bluetoothPermission, settings, scope) }, coroutineContext)

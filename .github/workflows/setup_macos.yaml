@@ -22,7 +22,6 @@ on:
         value: ${{ jobs.setup.outputs.projects }}
 jobs:
   setup:
-
     runs-on: macos-15
 
     outputs:

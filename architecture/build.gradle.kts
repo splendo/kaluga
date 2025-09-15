@@ -9,7 +9,6 @@ kaluga {
 
     supportJVM = true
     supportJS = true
-
     dependencies {
         android {
             main {

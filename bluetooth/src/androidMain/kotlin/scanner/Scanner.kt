@@ -49,6 +49,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
 import no.nordicsemi.android.support.v18.scanner.ScanCallback
 import no.nordicsemi.android.support.v18.scanner.ScanFilter
@@ -150,20 +151,31 @@ actual class DefaultScanner internal constructor(
     actual override val isSupported: Boolean = bluetoothAdapter != null
     private val deviceConnectionManagerBuilder = DefaultDeviceConnectionManager.Builder(applicationContext)
     actual override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create() }
-    private val locationEnabledMonitor = LocationMonitor.Builder(applicationContext).create()
+    private val locationEnabledMonitor by lazy { LocationMonitor.Builder(applicationContext).create() }
 
-    override val permissionsFlow: Flow<List<PermissionState<*>>> get() = combine(
-        bluetoothPermissionRepo.filterOnlyImportant(),
-        locationPermissionRepo.filterOnlyImportant(),
-    ) { bluetoothPermission, locationPermission ->
-        listOf(bluetoothPermission, locationPermission)
-    }
-    override val enabledFlow: Flow<List<Boolean>> get() = combine(
-        bluetoothEnabledMonitor?.isEnabled ?: flowOf(false),
-        locationEnabledMonitor.isEnabled,
-    ) { bluetoothEnabled, locationEnabled ->
-        listOf(bluetoothEnabled, locationEnabled)
-    }
+    override val permissionsFlow: Flow<List<PermissionState<*>>> get() =
+        if (!useLocation) {
+            bluetoothPermissionRepo.filterOnlyImportant().map { listOf(it) }
+        } else {
+            combine(
+                bluetoothPermissionRepo.filterOnlyImportant(),
+                locationPermissionRepo.filterOnlyImportant(),
+            ) { bluetoothPermission, locationPermission ->
+                listOf(bluetoothPermission, locationPermission)
+            }
+        }
+
+    override val enabledFlow: Flow<List<Boolean>> get() =
+        if (!useLocation) {
+            (bluetoothEnabledMonitor?.isEnabled?.map { listOf(it) } ?: flowOf(listOf(false)))
+        } else {
+            combine(
+                bluetoothEnabledMonitor?.isEnabled ?: flowOf(false),
+                locationEnabledMonitor.isEnabled,
+            ) { bluetoothEnabled, locationEnabled ->
+                listOf(bluetoothEnabled, locationEnabled)
+            }
+        }
 
     actual override suspend fun didStartScanning(filter: Filter) {
         bluetoothScanner.startScan(
@@ -180,48 +192,53 @@ actual class DefaultScanner internal constructor(
     }
 
     override suspend fun startMonitoringHardwareEnabled() {
-        locationEnabledMonitor.startMonitoring()
+        if (useLocation) {
+            locationEnabledMonitor.startMonitoring()
+        }
         super.startMonitoringHardwareEnabled()
     }
 
     override suspend fun stopMonitoringHardwareEnabled() {
-        locationEnabledMonitor.stopMonitoring()
+        if (useLocation) {
+            locationEnabledMonitor.stopMonitoring()
+        }
         super.stopMonitoringHardwareEnabled()
     }
 
-    override suspend fun isHardwareEnabled(): Boolean = super.isHardwareEnabled() && locationEnabledMonitor.isServiceEnabled
+    override suspend fun isHardwareEnabled(): Boolean = super.isHardwareEnabled() && (!useLocation || locationEnabledMonitor.isServiceEnabled)
 
     @SuppressLint("MissingPermission") // Lint complains even with permissions
     actual override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         if (!isSupported) return emptyList()
-        return listOfNotNull(
+        return buildList {
             if (bluetoothAdapter?.isEnabled != true) {
-                suspend {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                        EnableServiceActivity.showEnableServiceActivity(
-                            applicationContext,
-                            hashCode().toString(),
-                            Intent(ACTION_BLUETOOTH_SETTINGS),
-                        ).await()
-                    } else {
-                        @Suppress("DEPRECATION")
-                        bluetoothAdapter?.enable()
-                    }
-                    bluetoothEnabledMonitor!!.isEnabled.first { it }
-                }
-            } else {
-                null
-            },
-            if (!locationEnabledMonitor.isServiceEnabled) {
-                EnableServiceActivity.showEnableServiceActivity(
-                    applicationContext,
-                    hashCode().toString(),
-                    Intent(ACTION_LOCATION_SOURCE_SETTINGS),
-                )::await
-            } else {
-                null
-            },
-        )
+                add(
+                    suspend {
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                            EnableServiceActivity.showEnableServiceActivity(
+                                applicationContext,
+                                hashCode().toString(),
+                                Intent(ACTION_BLUETOOTH_SETTINGS),
+                            ).await()
+                        } else {
+                            @Suppress("DEPRECATION")
+                            bluetoothAdapter?.enable()
+                        }
+                        bluetoothEnabledMonitor!!.isEnabled.first { it }
+                    },
+                )
+            }
+
+            if (useLocation && !locationEnabledMonitor.isServiceEnabled) {
+                add(
+                    EnableServiceActivity.showEnableServiceActivity(
+                        applicationContext,
+                        hashCode().toString(),
+                        Intent(ACTION_LOCATION_SOURCE_SETTINGS),
+                    )::await,
+                )
+            }
+        }
     }
 
     @SuppressLint("MissingPermission") // Lint complains even with permissions

@@ -29,7 +29,7 @@ runs:
     - name: use Xcode 16
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '16.0'
+        xcode-version: '16.4'
 
     - name: Gradle cache
       uses: gradle/actions/setup-gradle@v3

@@ -24,11 +24,8 @@ import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 import javax.inject.Inject
 
-open class DatabindingKalugaAndroidSubprojectExtension @Inject constructor(
-    versionCatalog: VersionCatalog,
-    libraryExtension: LibraryExtension,
-    objects: ObjectFactory,
-) : BaseKalugaAndroidSubprojectExtension(versionCatalog, libraryExtension, "databinding", objects) {
+open class DatabindingKalugaAndroidSubprojectExtension @Inject constructor(versionCatalog: VersionCatalog, libraryExtension: LibraryExtension, objects: ObjectFactory) :
+    BaseKalugaAndroidSubprojectExtension(versionCatalog, libraryExtension, "databinding", objects) {
 
     override fun LanguageSettingsBuilder.languageSettings() {}
 

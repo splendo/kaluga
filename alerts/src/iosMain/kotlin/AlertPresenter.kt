@@ -34,7 +34,6 @@ import platform.UIKit.UIAlertControllerStyleActionSheet
 import platform.UIKit.UIAlertControllerStyleAlert
 import platform.UIKit.UIControlEventEditingChanged
 import platform.UIKit.UIPopoverPresentationController
-import platform.UIKit.UIPopoverPresentationControllerDelegateProtocol
 import platform.UIKit.UITextField
 import platform.UIKit.UIView
 import platform.UIKit.UIViewController
@@ -46,14 +45,14 @@ import platform.objc.sel_registerName
  * A [BaseAlertPresenter] for presenting an [Alert].
  * @param alert The [Alert] being presented.
  * @param parent The [UIViewController] to present the [Alert]
- * @param delegateBuilder Method that creates a [UIPopoverPresentationControllerDelegateProtocol].
+ * @param delegateBuilder Method that creates a [KalugaUIPopoverPresentationControllerDelegateProtocol].
  * This allows for presentation of [Alert.Style.ACTION_LIST] on iPad.
  */
 actual class AlertPresenter(
     alert: Alert,
     private val parent: UIViewController,
     logger: Logger,
-    private val delegateBuilder: (Alert) -> UIPopoverPresentationControllerDelegateProtocol,
+    private val delegateBuilder: (Alert) -> KalugaUIPopoverPresentationControllerDelegateProtocol,
 ) : BaseAlertPresenter(alert, logger) {
 
     /** Ref to alert's [UITextField] of type [Alert.Style.TEXT_INPUT] */
@@ -98,11 +97,11 @@ actual class AlertPresenter(
      * @param delegateBuilder Method that creates a [UIPopoverPresentationControllerDelegateProtocol] for an [Alert].
      * This allows for presentation of [Alert.Style.ACTION_LIST] on iPad.
      */
-    actual class Builder(private val viewController: UIViewController, private val delegateBuilder: (Alert) -> UIPopoverPresentationControllerDelegateProtocol) :
+    actual class Builder(private val viewController: UIViewController, private val delegateBuilder: (Alert) -> KalugaUIPopoverPresentationControllerDelegateProtocol) :
         BaseAlertPresenter.Builder() {
 
         /**
-         * Constructor that returns a [DefaultUIPopoverPresentationControllerDelegateProtocol] when a presented [AlertPresenter] requires a [UIPopoverPresentationControllerDelegateProtocol].
+         * Constructor that returns a [DefaultUIPopoverPresentationControllerDelegateProtocol] when a presented [AlertPresenter] requires a [KalugaUIPopoverPresentationControllerDelegate].
          * @param viewController The [UIViewController] to present any [AlertPresenter] built using this builder.
          */
         constructor(
@@ -125,7 +124,7 @@ actual class AlertPresenter(
 
     class DefaultUIPopoverPresentationControllerDelegateProtocol(private val sourceView: UIView) :
         NSObject(),
-        UIPopoverPresentationControllerDelegateProtocol {
+        KalugaUIPopoverPresentationControllerDelegateProtocol {
         override fun prepareForPopoverPresentation(popoverPresentationController: UIPopoverPresentationController) {
             popoverPresentationController.sourceView = sourceView
             popoverPresentationController.sourceRect = sourceView.bounds
@@ -175,8 +174,13 @@ actual class AlertPresenter(
                 }
             }
         }.run {
-            popoverPresentationController?.setDelegate(delegateBuilder(alert))
-            parent.presentViewController(this, animated, completion)
+            val delegateWrapper = popoverPresentationController?.let {
+                KalugaUIPopoverPresentationControllerWrapper.createByLinkingWithController(it, delegateBuilder(alert))
+            }
+            parent.presentViewController(this, animated) {
+                delegateWrapper?.unlink()
+                completion()
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- Copyright 2024 Splendo Consulting B.V. The Netherlands
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,14 +19,15 @@ package com.splendo.kaluga.plugin.extensions
 
 import com.android.build.gradle.LibraryExtension
 import com.splendo.kaluga.plugin.container.AppleInteropContainer
+import com.splendo.kaluga.plugin.container.BuildSwiftLibTask
 import com.splendo.kaluga.plugin.container.MultiplatformDependencyContainer
+import com.splendo.kaluga.plugin.container.sdkName
 import com.splendo.kaluga.plugin.helpers.jvmTarget
+import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.publish.PublicationContainer
-import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.newInstance
@@ -40,13 +41,14 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jmailen.gradle.kotlinter.tasks.LintTask
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.util.Locale.getDefault
 import javax.inject.Inject
 
-open class KalugaMultiplatformSubprojectExtension @Inject constructor(
-    versionCatalog: VersionCatalog,
-    libraryExtension: LibraryExtension,
-    objects: ObjectFactory,
-) : BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, null, objects) {
+open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCatalog: VersionCatalog, libraryExtension: LibraryExtension, objects: ObjectFactory) :
+    BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, null, objects) {
 
     companion object {
         private val testDependentProjectsEnvName = "TEST_DEPENDENT_PROJECTS"
@@ -60,6 +62,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
 
     var supportJVM: Boolean = false
     var supportJS: Boolean = false
+    var iosDeploymentTarget: String = "15.0"
 
     private val multiplatformDependencies = objects.newInstance(MultiplatformDependencyContainer::class)
     private val appleInterop = objects.newInstance(AppleInteropContainer::class)
@@ -107,9 +110,9 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         afterEvaluate {
             iosTargets.forEach { target ->
                 val targetName = target.sourceSetName
-                if (tasks.names.contains("linkDebugTest${targetName.replaceFirstChar { it.titlecase() } }")) {
+                if (tasks.names.contains("linkDebugTest${targetName.replaceFirstChar { it.titlecase() }}")) {
                     // creating copy task for the target
-                    val copyTask = tasks.register("copy${targetName.replaceFirstChar { it.titlecase() } }TestResources", Copy::class) {
+                    val copyTask = tasks.register("copy${targetName.replaceFirstChar { it.titlecase() }}TestResources", Copy::class) {
                         from("src/iosTest/resources/.")
                         into("${layout.buildDirectory.get().asFile}/bin/$targetName/debugTest")
                     }
@@ -237,6 +240,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
 
                 iosMain.configure {
+                    iosDeploymentTarget = "15.0"  
                     dependencies {
                         multiplatformDependencies.ios.mainDependencies.forEach { it.execute(this) }
                     }
@@ -284,12 +288,82 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
             }
 
-            project.configure(iosTargets) {
-                compilations.getByName("main").cinterops.let { mainInterops ->
-                    appleInterop.main.forEach { it.execute(mainInterops) }
+            val developerDirProvider = providers.exec {
+                if (iosTargets.isNotEmpty()) {
+                    commandLine("xcode-select", "-p")
                 }
-                compilations.getByName("test").cinterops.let { mainInterops ->
-                    appleInterop.test.forEach { it.execute(mainInterops) }
+            }.standardOutput.asText.map { it.trim() }
+
+            project.configure(iosTargets) {
+                val swiftSourceDir = project.file("src/iosMain/swift")
+                val cinteropSwiftInteropTaskName = "cinteropSwiftInterop${name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }}"
+                logger.info("cinteropSwiftInteropTask: ${project.name}:$cinteropSwiftInteropTaskName with target: $name ($konanTarget)")
+                val buildSwiftLibTask = if (swiftSourceDir.exists() && swiftSourceDir.listFiles().isNotEmpty()) {
+                    tasks.register<BuildSwiftLibTask>("buildSwiftLib_$name") {
+                        logger.info("buildSwiftLib_$name registered for $konanTarget with deployment $iosDeploymentTarget")
+                        srcDir.set(swiftSourceDir)
+                        libraryOutputDir.set(layout.buildDirectory.dir("swift/$name"))
+                        headerOutputDir.set(layout.buildDirectory.dir("objc/$name"))
+                        target.set(konanTarget)
+                        deploymentTarget.set(iosDeploymentTarget)
+                    }
+                } else {
+                    null
+                }
+                compilations.getByName("main").let { main ->
+                    main.cinterops.let { mainInterops ->
+                        buildSwiftLibTask?.let { buildSwiftLibTask ->
+                            mainInterops.create("swiftInterop") {
+
+                                val defFile = File(layout.buildDirectory.asFile.get(), "cinterop/$name/$targetName/swiftinterop.def")
+
+                                if (defFile.exists()) {
+                                    defFile.delete()
+                                }
+                                defFile.parentFile.mkdirs()
+                                defFile.createNewFile()
+                                val writer = BufferedWriter(FileWriter(defFile))
+                                val staticLibPath = buildSwiftLibTask.get().libraryOutputDir.get().asFile.absolutePath
+                                val devDir = project.providers.environmentVariable("DEVELOPER_DIR").getOrElse(developerDirProvider.get())
+                                val swiftLibPath = "$devDir/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/${buildSwiftLibTask.get().target.get().sdkName}"
+                                val linkerOpts = "-L$swiftLibPath -rpath /usr/lib/swift"
+                                val headerSourceDir = buildSwiftLibTask.get().headerOutputDir.get().asFile
+
+                                logger.info("Creating .def file: $defFile with libraryPaths: $staticLibPath linkerOpts: $linkerOpts, compiling with headers from $headerSourceDir")
+
+                                try {
+                                    writer.write(
+                                        """
+                                            |language = Objective-C
+                                            |headers = SwiftInterop.h
+                                            |package = com.splendo.kaluga.$moduleName
+                                            |headerFilter = SwiftInterop.h
+                                            |staticLibraries = libswiftinterop.a
+                                            |libraryPaths = $staticLibPath/
+                                            |linkerOpts = $linkerOpts
+                                        """.trimMargin(),
+                                    )
+                                } finally {
+                                    writer.close()
+                                }
+                                definitionFile.set(defFile)
+                                compilerOpts("-I/${headerSourceDir.absolutePath}")
+                                includeDirs.allHeaders(headerSourceDir)
+                                tasks.named(cinteropSwiftInteropTaskName).configure {
+                                    dependsOn(buildSwiftLibTask)
+                                }
+                            }
+                        }
+
+                        appleInterop.main.forEach { settings ->
+                            settings.execute(mainInterops)
+                        }
+                    }
+                }
+                compilations.getByName("test").let { test ->
+                    test.cinterops.let { mainInterops ->
+                        appleInterop.test.forEach { it.execute(mainInterops) }
+                    }
                 }
                 binaries {
                     frameworkConfig?.let { iosExport ->
@@ -327,7 +401,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     }
 
     override fun LibraryExtension.configure() {
-        @Suppress("UnstableApiUsage")
         testOptions {
             unitTests.isReturnDefaultValues = true
             targetSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
@@ -349,17 +422,9 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             )
         }
     }
-    override fun PublicationContainer.configure(project: Project) {
-        getByName("kotlinMultiplatform") {
-            (this as MavenPublication).let {
-                artifactId = project.name
-                groupId = BASE_GROUP
-                version = project.kalugaVersion
-            }
-        }
-    }
 
     private val Project.iosTargets: Set<IOSTarget> get() {
+        if (!Os.isFamily(Os.FAMILY_MAC)) return emptySet()
         val sdkName = System.getenv("SDK_NAME") ?: "unknown"
         val isRealIOSDevice = sdkName.startsWith("iphoneos").also {
             logger.info("Run on real ios device: $it from sdk: $sdkName")

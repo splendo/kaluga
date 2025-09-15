@@ -27,15 +27,14 @@ import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
-import com.splendo.kaluga.bluetooth.scanner.DefaultScanner.ScanSettings
-import kotlinx.cinterop.ObjCSignatureOverride
+import com.splendo.kaluga.bluetooth.KalugaBluetoothScanningDelegateProtocol
+import com.splendo.kaluga.bluetooth.KalugaBluetoothWrapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import platform.CoreBluetooth.CBCentralManager
-import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
 import platform.CoreBluetooth.CBCentralManagerScanOptionAllowDuplicatesKey
 import platform.CoreBluetooth.CBCentralManagerScanOptionSolicitedServiceUUIDsKey
@@ -124,35 +123,33 @@ actual class DefaultScanner internal constructor(
 
     private class PoweredOnCBCentralManagerDelegate(private val scanner: DefaultScanner, private val isEnabledCompleted: EmptyCompletableDeferred) :
         NSObject(),
-        CBCentralManagerDelegateProtocol {
+        KalugaBluetoothScanningDelegateProtocol {
 
-        override fun centralManagerDidUpdateState(central: CBCentralManager) {
-            if (central.state == CBCentralManagerStatePoweredOn) {
+        override fun didUpdateState(centralManager: CBCentralManager) {
+            if (centralManager.state == CBCentralManagerStatePoweredOn) {
                 isEnabledCompleted.complete()
             }
         }
 
-        override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
+        override fun didDiscoverPeripheral(peripheral: CBPeripheral, forCentralManager: CBCentralManager, advertisementData: Map<Any?, *>, rssi: NSNumber) {
             scanner.discoverPeripheral(
-                central,
-                didDiscoverPeripheral,
+                forCentralManager,
+                peripheral,
                 advertisementData.typedMap(),
-                RSSI.intValue,
+                rssi.intValue,
             )
         }
 
-        override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
-            scanner.handleDeviceConnected(didConnectPeripheral.identifier)
+        override fun didConnectPeripheral(peripheral: CBPeripheral, forCentralManager: CBCentralManager) {
+            scanner.handleDeviceConnected(peripheral.identifier)
         }
 
-        @ObjCSignatureOverride
-        override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
-            scanner.handleDeviceDisconnected(didDisconnectPeripheral.identifier)
+        override fun didDisconnectPeripheral(peripheral: CBPeripheral, withError: NSError?, forCentralManager: CBCentralManager) {
+            scanner.handleDeviceDisconnected(peripheral.identifier)
         }
 
-        @ObjCSignatureOverride
-        override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
-            scanner.handleDeviceDisconnected(didFailToConnectPeripheral.identifier)
+        override fun didFailToConnectPeripheral(peripheral: CBPeripheral, withError: NSError?, forCentralManager: CBCentralManager) {
+            scanner.handleDeviceDisconnected(peripheral.identifier)
         }
     }
 
@@ -165,7 +162,7 @@ actual class DefaultScanner internal constructor(
     actual override val bluetoothEnabledMonitor: BluetoothMonitor? = _bluetoothEnabledMonitor
 
     private var centralManager: CBCentralManager? = null
-    private var centralManagerDelegate: CBCentralManagerDelegateProtocol? = null
+    private var bluetoothWrapper: KalugaBluetoothWrapper? = null
     private val centralManagerMutex = Mutex()
 
     private suspend fun getOrCreateCentralManager(): CBCentralManager = centralManager ?: centralManagerMutex.withLock {
@@ -177,8 +174,8 @@ actual class DefaultScanner internal constructor(
     private suspend fun createCentralManager(): CBCentralManager {
         val awaitPoweredOn = EmptyCompletableDeferred()
         val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
-        centralManagerDelegate = delegate
-        val manager = CBCentralManager(delegate, scanQueue)
+        val manager = CBCentralManager(null, scanQueue)
+        bluetoothWrapper = KalugaBluetoothWrapper.createByLinkingWithCentralManager(manager, delegate)
         awaitPoweredOn.await()
         return manager
     }
