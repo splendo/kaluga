@@ -80,11 +80,7 @@ Currently this tool only supports JVM based targets, so iOS/js only API changes 
 
 The version is retrieved from `libs.versions.toml`'s `kaluga` property. 
 
-In case the version does not already end with `-SNAPSHOT`, it is post-fixed with the current git branch (unless that branch is `master`, `main` or `develop`) and `-SNAPSHOT` (unless the `MAVEN_CENTRAL_RELEASE` environment variable is set to `true`). The exact implementation of this can be found in [kaluga-library-components/src/main/kotlin/GitBranch.kt](kaluga-library-components/src/main/kotlin/GitBranch.kt).
-
-For example if the base version is `1.1` and `feature/123_fix_bug` is the current branch the resulting version will be `1.1-feature-123_fix_bug-SNAPSHOT`.
-
-To simulate release from a branch such as `develop` or `main` you can set the `GITHUB_REF_NAME` environment variable to these values.
+The [./github/workflows/publish.yaml] file shows how different version can be published using environment variables.
 
 #### Local Testing
 

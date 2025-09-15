@@ -35,7 +35,6 @@ import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.description
 import com.splendo.kaluga.bluetooth.device.stringValue
-import com.splendo.kaluga.bluetooth.scanner.BaseScanner.Settings
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
@@ -254,6 +253,7 @@ abstract class BaseScanner constructor(
         val permissions: Permissions,
         val autoRequestPermission: Boolean = true,
         val autoEnableSensors: Boolean = true,
+        val useLocation: Boolean = false,
         val discoverBondedDevices: Boolean = true,
         val defaultConnectionSettings: ConnectionSettings = ConnectionSettings(),
         val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
@@ -283,6 +283,9 @@ abstract class BaseScanner constructor(
     internal val permissions: Permissions = settings.permissions
     private val autoRequestPermission: Boolean = settings.autoRequestPermission
     private val autoEnableSensors: Boolean = settings.autoEnableSensors
+    internal val useLocation: Boolean = settings.useLocation
+
+    internal val bluetoothPermission = BluetoothPermission(useForLocation = settings.useLocation)
     private val defaultConnectionSettings = settings.defaultConnectionSettings
 
     protected val eventChannel = Channel<Scanner.Event>(UNLIMITED)
@@ -292,7 +295,7 @@ abstract class BaseScanner constructor(
     private val isScanningDevicesDiscovered = MutableStateFlow<BufferedAsListChannel<Scanner.DeviceDiscovered>?>(null)
     override val discoveryEvents: Flow<List<Scanner.DeviceDiscovered>> = isScanningDevicesDiscovered.flatMapLatest { it?.receiveAsFlow() ?: emptyFlow() }
 
-    protected val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
+    protected val bluetoothPermissionRepo get() = permissions[bluetoothPermission]
     protected abstract val bluetoothEnabledMonitor: BluetoothMonitor?
 
     protected open val permissionsFlow: Flow<List<PermissionState<*>>> get() = bluetoothPermissionRepo.filterOnlyImportant().map { listOf(it) }

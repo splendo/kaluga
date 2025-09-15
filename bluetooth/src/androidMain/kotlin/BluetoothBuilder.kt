@@ -20,11 +20,14 @@ import kotlin.coroutines.CoroutineContext
  */
 actual class BluetoothBuilder(
     private val applicationContext: Context = ApplicationHolder.applicationContext,
+    val useLocationPermission: Boolean = false,
     private val permissionsBuilder: suspend (CoroutineContext) -> Permissions = { context ->
         Permissions(
             PermissionsBuilder(PermissionContext(applicationContext)).apply {
                 registerBluetoothPermissionIfNotRegistered()
-                //registerLocationPermissionIfNotRegistered()
+                if (useLocationPermission) {
+                    registerLocationPermissionIfNotRegistered()
+                }
             },
             coroutineContext = context,
         )

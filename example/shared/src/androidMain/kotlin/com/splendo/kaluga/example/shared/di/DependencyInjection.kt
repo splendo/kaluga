@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -245,7 +245,7 @@ fun initKoin(customModules: List<Module> = emptyList()) = initKoin(
             permissionsBuilder = it,
         )
     },
-    { BluetoothBuilder(permissionsBuilder = it) },
+    { BluetoothBuilder(useLocationPermission = useBluetoothForLocation, permissionsBuilder = it) },
     customModules,
 )
 

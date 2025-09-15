@@ -9,7 +9,7 @@ This example project has the following parts:
 
 ## Running
 To access the shared code, simply open this folder in Android Studio. From there you can build the Android module and shared code.
-At times the latest Beta or Canary release is needed (see [DEVELOP](/DEVELOP.md))
+At times the latest Beta or Canary release is needed (see [DEVELOP](../DEVELOP.md))
 
 The iOS example can be built using XCode using the [Demo XCode Project](/ios/Demo.xcodeproj).
 The iOS projects uses [Kaluga SwiftUI](https://github.com/splendo/kaluga-swiftui) for bridging the project to SwiftUI. This requires installing by running `sh install.sh` from the `ios` folder.
@@ -27,7 +27,7 @@ You can also set the `kaluga.exampleMavenRepo` property to specify which maven r
 kaluga.exampleMavenRepo=https://s01.oss.sonatype.org/content/repositories/snapshots/
 ```
 
-### Links
+## Links
 In order to make kaluga-links example work correctly, you must sign the app with a signing certificate belonging to our team or using the `debug.keystore` file we provide.
 
 #### Why?
@@ -73,3 +73,7 @@ While `apple-app-site-association` will be
 ```
 `appId` = `teamId`.`bundleId`
 [More info about iOS Universal Links](https://developer.apple.com/ios/universal-links/).
+
+## Bluetooth
+
+For Android you can choose whether the location permission is automatically requested on Android 12 or higher for using Bluetooth by changing the `useBluetoothForLocation` constant, in [example/shared/src/commonMain/kotlin/com/splendo/kaluga/example/shared/di/DependencyInjection.kt]. By default it is off.
