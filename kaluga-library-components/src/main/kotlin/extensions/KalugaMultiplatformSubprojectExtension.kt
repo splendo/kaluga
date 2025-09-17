@@ -30,6 +30,7 @@ import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
@@ -51,8 +52,8 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
     BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, null, objects) {
 
     companion object {
-        private val testDependentProjectsEnvName = "TEST_DEPENDENT_PROJECTS"
-        private val onCiEnvName = "CI"
+        private const val testDependentProjectsEnvName = "TEST_DEPENDENT_PROJECTS"
+        private const val onCiEnvName = "CI"
     }
     private enum class IOSTarget(val sourceSetName: String) {
         X64("iosX64"),
@@ -87,7 +88,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
             androidTarget {
                 instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
                 unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-                publishAllLibraryVariants()
             }
         }
     }
@@ -184,41 +184,55 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
 
         applyDefaultHierarchyTemplate()
 
+        dependencies {
+            implementation("kotlinx-coroutines-core".asDependency())
+
+            testImplementation(kotlin("test"))
+            testImplementation(kotlin("test-common"))
+            testImplementation(kotlin("test-annotations-common"))
+        }
+
         project.afterEvaluate {
             with(sourceSets) {
                 commonMain.configure {
                     dependencies {
-                        implementation("kotlinx-coroutines-core".asDependency())
-                        multiplatformDependencies.common.mainDependencies.forEach { it.execute(this) }
+                        multiplatformDependencies.common.mainDependencies.forEach {
+                            it.execute(this)
+                        }
                     }
                 }
 
                 commonTest.configure {
                     dependencies {
-                        implementation(kotlin("test"))
-                        implementation(kotlin("test-common"))
-                        implementation(kotlin("test-annotations-common"))
-                        multiplatformDependencies.common.testDependencies.forEach { it.execute(this) }
+                        multiplatformDependencies.common.testDependencies.forEach {
+                            it.execute(this)
+                        }
                     }
                 }
 
                 androidMain.configure {
                     dependencies {
                         androidMainDependencies.forEach { implementation(it) }
-                        multiplatformDependencies.android.mainDependencies.forEach { it.execute(this) }
+                        multiplatformDependencies.android.mainDependencies.forEach {
+                            it.execute(this)
+                        }
                     }
                 }
 
                 androidUnitTest.configure {
                     dependencies {
-                        androidTestDependencies.forEach { implementation(it) }
+                        androidTestDependencies.forEach {
+                            implementation(it)
+                        }
                         multiplatformDependencies.android.testDependencies.forEach { it.execute(this) }
                     }
                 }
 
                 androidInstrumentedTest.configure {
                     dependencies {
-                        androidInstrumentedTestDependencies.forEach { implementation(it) }
+                        androidInstrumentedTestDependencies.forEach {
+                            implementation(it)
+                        }
                         multiplatformDependencies.android.instrumentedTestDependencies.forEach { it.execute(this) }
                     }
                 }
@@ -226,7 +240,9 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
                 if (multiplatformDependencies.apple.mainDependencies.isNotEmpty()) {
                     appleMain.configure {
                         dependencies {
-                            multiplatformDependencies.apple.mainDependencies.forEach { it.execute(this) }
+                            multiplatformDependencies.apple.mainDependencies.forEach {
+                                it.execute(this)
+                            }
                         }
                     }
                 }
@@ -234,7 +250,9 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
                 if (multiplatformDependencies.apple.testDependencies.isNotEmpty()) {
                     appleTest.configure {
                         dependencies {
-                            multiplatformDependencies.apple.testDependencies.forEach { it.execute(this) }
+                            multiplatformDependencies.apple.testDependencies.forEach {
+                                it.execute(this)
+                            }
                         }
                     }
                 }
@@ -242,13 +260,17 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
                 iosMain.configure {
                     iosDeploymentTarget = "15.0"  
                     dependencies {
-                        multiplatformDependencies.ios.mainDependencies.forEach { it.execute(this) }
+                        multiplatformDependencies.ios.mainDependencies.forEach {
+                            it.execute(this)
+                        }
                     }
                 }
 
                 iosTest.configure {
                     dependencies {
-                        multiplatformDependencies.ios.testDependencies.forEach { it.execute(this) }
+                        multiplatformDependencies.ios.testDependencies.forEach {
+                            it.execute(this)
+                        }
                     }
                 }
 
@@ -439,6 +461,8 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
         val isAppleSilicon = (System.getProperty("os.arch") == "aarch64").also {
             logger.info("Run on apple silicon: $it")
         }
+
+        println("‼️ideaActive: $ideaActive isRealIOSDevice: $isRealIOSDevice isAppleSilicon: $isAppleSilicon")
 
         return when {
             !ideaActive -> IOSTarget.values().toSet()

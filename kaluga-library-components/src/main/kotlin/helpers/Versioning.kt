@@ -23,7 +23,6 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.internal.extensions.core.extra
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.invoke
-import org.gradle.kotlin.dsl.provideDelegate
 
 internal fun calculateVersion(
     version: String,
@@ -60,7 +59,7 @@ val Project.kalugaVersion: String
         val releaseTypeProvider = providers.gradleProperty("releaseType")
         val releaseType = releaseTypeProvider.getOrElse("alpha")
 
-        val versionDetails: groovy.lang.Closure<VersionDetails> by project.extra
+        val versionDetails = project.extra.get("versionDetails") as groovy.lang.Closure<VersionDetails>
         val details = versionDetails()
         val buildNumberProvider = providers.environmentVariable("GITHUB_RUN_NUMBER")
 

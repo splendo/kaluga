@@ -22,7 +22,6 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.publish.PublicationContainer
 
 sealed class BaseKalugaSubprojectExtension(
     versionCatalog: VersionCatalog,
@@ -106,6 +105,7 @@ sealed class BaseKalugaSubprojectExtension(
             }
 
             configure()
+            configureSubproject()
         }
     }
 
@@ -115,8 +115,8 @@ sealed class BaseKalugaSubprojectExtension(
         if (moduleName.isEmpty()) {
             throw RuntimeException("moduleName must be configured")
         }
-
-        configureSubproject()
+        // TODO: finish migration of this
+        //configureSubproject()
     }
 
     protected abstract fun Project.configureSubproject()
