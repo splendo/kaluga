@@ -164,35 +164,36 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
             }
         }
 
-        if (supportJVM) {
-            jvm()
-        }
-        if (supportJS) {
-            js(KotlinJsCompilerType.IR) {
-                nodejs()
-                browser()
-                compilations.configureEach {
-                    compileTaskProvider.configure {
-                        compilerOptions {
-                            sourceMap.set(true)
-                            moduleKind.set(JsModuleKind.MODULE_UMD)
+        project.afterEvaluate {
+
+            if (supportJVM) {
+                jvm()
+            }
+            if (supportJS) {
+                js(KotlinJsCompilerType.IR) {
+                    nodejs()
+                    browser()
+                    compilations.configureEach {
+                        compileTaskProvider.configure {
+                            compilerOptions {
+                                sourceMap.set(true)
+                                moduleKind.set(JsModuleKind.MODULE_UMD)
+                            }
                         }
                     }
                 }
             }
-        }
 
-        applyDefaultHierarchyTemplate()
+            applyDefaultHierarchyTemplate()
 
-        dependencies {
-            implementation("kotlinx-coroutines-core".asDependency())
+            dependencies {
+                implementation("kotlinx-coroutines-core".asDependency())
 
-            testImplementation(kotlin("test"))
-            testImplementation(kotlin("test-common"))
-            testImplementation(kotlin("test-annotations-common"))
-        }
+                testImplementation(kotlin("test"))
+                testImplementation(kotlin("test-common"))
+                testImplementation(kotlin("test-annotations-common"))
+            }
 
-        project.afterEvaluate {
             with(sourceSets) {
                 commonMain.configure {
                     dependencies {
