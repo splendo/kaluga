@@ -5,9 +5,15 @@ on:
       release_type:
         description: |
           Select the type of version to publish:
+
           - `release`: A final, stable release (e.g., 1.2.3).
+
           - `-alpha`: A general pre-release (e.g., 1.2.3-alpha.GITHUB_RUN_NUMBER).
-          - `-branch-alpha`: A pre-release for a feature branch (e.g., 1.2.3-my-feature-alpha.GITHUB_RUN_NUMBER). Note: This takes the words of the last part of the branch and separates them with hyphens (e.g. `feature/#789_test_feature` becomes `1.2.3-test-feature-alpha`.GITHUB_RUN_NUMBER)
+
+          - `-branch-alpha`: A pre-release for a feature branch (e.g., 1.2.3-my-feature-alpha.GITHUB_RUN_NUMBER).
+            Note: This takes the words of the last part of the branch and separates them with hyphens.
+            For example: `feature/#789_test_feature` becomes `1.2.3-test-feature-alpha`.GITHUB_RUN_NUMBER.
+
           - `-commit-alpha`: A pre-release based on the git short commit hash (e.g., 1.2.3-a1b2c3d-alpha.GITHUB_RUN_NUMBER).
         required: true
         type: choice
