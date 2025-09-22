@@ -17,50 +17,61 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class PowerUnitTest {
 
     @Test
     fun powerConversionTest() {
-        assertScientificConversion(1, Watt, 1e+9, Nanowatt)
-        assertScientificConversion(1, Watt, 1e+6, Microwatt)
-        assertScientificConversion(1, Watt, 1000.0, Milliwatt)
-        assertScientificConversion(1, Watt, 100.0, Centiwatt)
-        assertScientificConversion(1, Watt, 10.0, Deciwatt)
-        assertScientificConversion(1, Watt, 0.1, Decawatt)
-        assertScientificConversion(1, Watt, 0.01, Hectowatt)
-        assertScientificConversion(1, Watt, 0.001, Kilowatt)
-        assertScientificConversion(1, Watt, 1e-6, Megawatt)
-        assertScientificConversion(1, Watt, 1e-9, Gigawatt)
-        assertScientificConversion(1, Watt, 10000000.0, Erg per Second)
-        assertScientificConversion(1, Watt, 0.239006, Calorie per Second, 6)
-        assertScientificConversion(1, Watt, 14.340344, Calorie per Minute, 6)
-        assertScientificConversion(1, Watt, 0.238846, Calorie.IT per Second, 6)
-        assertScientificConversion(1, Watt, 14.330754, Calorie.IT per Minute, 6)
-        assertScientificConversion(1, Watt, 239.005736, Millicalorie per Second, 6)
-        assertScientificConversion(1, Watt, 14340.344168, Millicalorie per Minute, 6)
-        assertScientificConversion(1, Watt, 238.845897, Millicalorie.IT per Second, 6)
-        assertScientificConversion(1, Watt, 14330.753798, Millicalorie.IT per Minute, 6)
-        assertScientificConversion(1, Watt, 0.000239006, Kilocalorie per Second, 9)
-        assertScientificConversion(1, Watt, 0.014340344, Kilocalorie per Minute, 9)
-        assertScientificConversion(1, Watt, 0.000238846, Kilocalorie.IT per Second, 9)
-        assertScientificConversion(1, Watt, 0.014330754, Kilocalorie.IT per Minute, 9)
-        assertScientificConversion(1, Watt, 0.000000239006, Megacalorie per Second, 12)
-        assertScientificConversion(1, Watt, 0.000014340344, Megacalorie per Minute, 12)
-        assertScientificConversion(1, Watt, 0.000000238846, Megacalorie.IT per Second, 12)
-        assertScientificConversion(1, Watt, 0.000014330754, Megacalorie.IT per Minute, 12)
+        assertScientificConversion("1", Watt, "1e+9", Nanowatt)
+        assertScientificConversion("1", Watt, "1e+6", Microwatt)
+        assertScientificConversion("1", Watt, "1000.0", Milliwatt)
+        assertScientificConversion("1", Watt, "100.0", Centiwatt)
+        assertScientificConversion("1", Watt, "10.0", Deciwatt)
+        assertScientificConversion("1", Watt, "0.1", Decawatt)
+        assertScientificConversion("1", Watt, "0.01", Hectowatt)
+        assertScientificConversion("1", Watt, "0.001", Kilowatt)
+        assertScientificConversion("1", Watt, "1e-6", Megawatt)
+        assertScientificConversion("1", Watt, "1e-9", Gigawatt)
+        assertScientificConversion("1", Watt, "10000000.0", Erg per Second)
+        val wattInCaloriePerSecond = Joule.convert(Decimal.ONE, Calorie)
+        val wattInCaloriePerMinute = wattInCaloriePerSecond * 60.toDecimal()
+        val wattInCalorieITPerSecond = Joule.convert(Decimal.ONE, Calorie.IT)
+        val wattInCalorieITPerMinute = wattInCalorieITPerSecond * 60.toDecimal()
 
-        assertScientificConversion(1, Watt, 0.00135962, MetricHorsepower, 8)
+        assertScientificConversion(Decimal.ONE, Watt, wattInCaloriePerSecond, Calorie per Second, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, wattInCaloriePerMinute, Calorie per Minute, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, wattInCalorieITPerSecond, Calorie.IT per Second, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, wattInCalorieITPerMinute, Calorie.IT per Minute, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, Decimal.THOUSAND * wattInCaloriePerSecond, Millicalorie per Second, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, Decimal.THOUSAND * wattInCaloriePerMinute, Millicalorie per Minute, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, Decimal.THOUSAND * wattInCalorieITPerSecond, Millicalorie.IT per Second, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, Decimal.THOUSAND * wattInCalorieITPerMinute, Millicalorie.IT per Minute, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, wattInCaloriePerSecond / Decimal.THOUSAND, Kilocalorie per Second, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, wattInCaloriePerMinute / Decimal.THOUSAND, Kilocalorie per Minute, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, wattInCalorieITPerSecond / Decimal.THOUSAND, Kilocalorie.IT per Second, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, wattInCalorieITPerMinute / Decimal.THOUSAND, Kilocalorie.IT per Minute, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, wattInCaloriePerSecond / 1000000.toDecimal(), Megacalorie per Second, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, wattInCaloriePerMinute / 1000000.toDecimal(), Megacalorie per Minute, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, wattInCalorieITPerSecond / 1000000.toDecimal(), Megacalorie.IT per Second, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, wattInCalorieITPerMinute / 1000000.toDecimal(), Megacalorie.IT per Minute, round = 32)
 
-        assertScientificConversion(1, Watt, 0.74, FootPoundForce per Second, 2)
-        assertScientificConversion(1, Watt, 44.25, FootPoundForce per Minute, 2)
-        assertScientificConversion(1, Watt, 0.0013, Horsepower, 4)
-        assertScientificConversion(1, Watt, 0.00095, BritishThermalUnit per Second, 5)
-        assertScientificConversion(1, Watt, 0.06, BritishThermalUnit per Minute, 2)
-        assertScientificConversion(1, Watt, 3.41, BritishThermalUnit per Hour, 2)
+        assertScientificConversion(Decimal.ONE, Watt, Decimal.ONE / (75.toDecimal() * MetricStandardGravityAcceleration.decimalValue), MetricHorsepower, round = 32)
 
-        assertScientificConversion(1.0, Watt, 10.0, Deciwatt.metric)
-        assertScientificConversion(1.0, Watt, 10.0, Deciwatt.imperial)
+        val jouleInFootPoundForce = Joule.convert(Decimal.ONE, FootPoundForce)
+        assertScientificConversion(Decimal.ONE, Watt, jouleInFootPoundForce, FootPoundForce per Second, round = 30)
+        assertScientificConversion(Decimal.ONE, Watt, jouleInFootPoundForce * 60.toDecimal(), FootPoundForce per Minute, round = 30)
+        assertScientificConversion(Decimal.ONE, Watt, jouleInFootPoundForce / 550.toDecimal(), Horsepower, round = 31)
+        val jouleInBTU = Joule.convert(Decimal.ONE, BritishThermalUnit)
+        assertScientificConversion(Decimal.ONE, Watt, jouleInBTU, BritishThermalUnit per Second, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, jouleInBTU * 60.toDecimal(), BritishThermalUnit per Minute, round = 32)
+        assertScientificConversion(Decimal.ONE, Watt, jouleInBTU * 3600.toDecimal(), BritishThermalUnit per Hour, round = 32)
+
+        assertScientificConversion("1.0", Watt, "10.0", Deciwatt.metric)
+        assertScientificConversion("1.0", Watt, "10.0", Deciwatt.imperial)
     }
 }

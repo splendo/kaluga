@@ -23,15 +23,15 @@ class ElectricCapacitanceUnitTest {
 
     @Test
     fun electricCapacitanceConversionTest() {
-        assertScientificConversion(1, Farad, 1000000000.0, Nanofarad)
-        assertScientificConversion(1, Farad, 1000000.0, Microfarad)
-        assertScientificConversion(1, Farad, 1000.0, Millifarad)
-        assertScientificConversion(1, Farad, 100.0, Centifarad)
-        assertScientificConversion(1, Farad, 10.0, Decifarad)
-        assertScientificConversion(1, Farad, 0.1, Decafarad)
-        assertScientificConversion(1, Farad, 0.01, Hectofarad)
-        assertScientificConversion(1, Farad, 0.001, Kilofarad)
-        assertScientificConversion(1, Farad, 0.000001, Megafarad)
-        assertScientificConversion(1, Farad, 1e-9, Gigafarad)
+        assertScientificConversion("1", Farad, "1000000000.0", Nanofarad)
+        assertScientificConversion("1", Farad, "1000000.0", Microfarad)
+        assertScientificConversion("1", Farad, "1000.0", Millifarad)
+        assertScientificConversion("1", Farad, "100.0", Centifarad)
+        assertScientificConversion("1", Farad, "10.0", Decifarad)
+        assertScientificConversion("1", Farad, "0.1", Decafarad)
+        assertScientificConversion("1", Farad, "0.01", Hectofarad)
+        assertScientificConversion("1", Farad, "0.001", Kilofarad)
+        assertScientificConversion("1", Farad, "0.000001", Megafarad)
+        assertScientificConversion("1", Farad, "1e-9", Gigafarad)
     }
 }

@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class JoltUnitTest {
@@ -24,11 +27,11 @@ class JoltUnitTest {
     @Test
     fun joltTest() {
         assertScientificConversion(
-            1,
+            Decimal.ONE,
             (Meter per Second per Second per Second),
-            11.8110236,
+            Meter.convert(Decimal.ONE, Foot) * "3.6".toDecimal(),
             Foot per Minute per Millisecond per Minute,
-            7,
+            round = 32,
         )
     }
 }

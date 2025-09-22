@@ -17,14 +17,28 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
 import kotlin.test.Test
 
 class ThermalResistanceUnitTest {
 
     @Test
     fun thermalResistanceConversionTest() {
-        assertScientificConversion(1.0, (Celsius per Megawatt), 0.00074, Kelvin per MetricHorsepower, 5)
-        assertScientificConversion(1.0, (Kelvin per MetricHorsepower), 0.000055, Fahrenheit per (FootPoundForce per Minute), 6)
-        assertScientificConversion(1.0, (Celsius per Watt), 31.65, Rankine per (BritishThermalUnit per Minute), 2)
+        assertScientificConversion(Decimal.ONE, (Celsius per Megawatt), Decimal.ONE / Megawatt.convert(Decimal.ONE, MetricHorsepower), Kelvin per MetricHorsepower, round = 32)
+        assertScientificConversion(
+            Decimal.ONE,
+            (Kelvin per MetricHorsepower),
+            Kelvin.convert(Decimal.ONE, Rankine) / (MetricHorsepower.convert(Decimal.ONE, FootPoundForce per Minute)),
+            Fahrenheit per (FootPoundForce per Minute),
+            round = 32,
+        )
+        assertScientificConversion(
+            Decimal.ONE,
+            (Celsius per Watt),
+            Kelvin.convert(Decimal.ONE, Rankine) / (Watt.convert(Decimal.ONE, BritishThermalUnit per Minute)),
+            Rankine per (BritishThermalUnit per Minute),
+            round = 31,
+        )
     }
 }

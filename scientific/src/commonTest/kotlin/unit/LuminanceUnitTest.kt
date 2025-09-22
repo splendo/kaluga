@@ -17,27 +17,32 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.pow
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class LuminanceUnitTest {
 
     @Test
     fun luminanceConversionTest() {
-        assertScientificConversion(1, Nit, 1e+9, Nanonit)
-        assertScientificConversion(1, Nit, 1e+6, Micronit)
-        assertScientificConversion(1, Nit, 1000.0, Millinit)
-        assertScientificConversion(1, Nit, 100.0, Centinit)
-        assertScientificConversion(1, Nit, 10.0, Decinit)
-        assertScientificConversion(1, Nit, 0.1, Decanit)
-        assertScientificConversion(1, Nit, 0.01, Hectonit)
-        assertScientificConversion(1, Nit, 0.001, Kilonit)
-        assertScientificConversion(1, Nit, 1e-6, Meganit)
-        assertScientificConversion(1, Nit, 1e-9, Giganit)
+        assertScientificConversion("1", Nit, "1e+9", Nanonit)
+        assertScientificConversion("1", Nit, "1e+6", Micronit)
+        assertScientificConversion("1", Nit, "1000.0", Millinit)
+        assertScientificConversion("1", Nit, "100.0", Centinit)
+        assertScientificConversion("1", Nit, "10.0", Decinit)
+        assertScientificConversion("1", Nit, "0.1", Decanit)
+        assertScientificConversion("1", Nit, "0.01", Hectonit)
+        assertScientificConversion("1", Nit, "0.001", Kilonit)
+        assertScientificConversion("1", Nit, "1e-6", Meganit)
+        assertScientificConversion("1", Nit, "1e-9", Giganit)
 
-        assertScientificConversion(1, Nit, 3.14159265359, Apostilb, 11)
-        assertScientificConversion(1, Nit, 0.0003141593, Lambert, 10)
-        assertScientificConversion(1, Nit, 3141.5927, Skot, 4)
-        assertScientificConversion(1, Nit, 31415926.536, Bril, 3)
-        assertScientificConversion(1, Nit, 0.2918635, FootLambert, 7)
+        assertScientificConversion(Decimal.ONE, Nit, Decimal.PI, Apostilb, round = 32)
+        assertScientificConversion(Decimal.ONE, Nit, Decimal.PI / 10000.toDecimal(), Lambert, round = 32)
+        assertScientificConversion(Decimal.ONE, Nit, Decimal.THOUSAND * Decimal.PI, Skot, round = 29)
+        assertScientificConversion(Decimal.ONE, Nit, 10000000.toDecimal() * Decimal.PI, Bril, round = 32)
+        assertScientificConversion(Decimal.ONE, Nit, Decimal.PI / Meter.convert(Decimal.ONE, Foot).pow(2), FootLambert, round = 32)
     }
 }

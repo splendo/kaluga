@@ -23,6 +23,6 @@ class MolarVolumeUnitTest {
 
     @Test
     fun molarVolumeConversionTest() {
-        assertScientificConversion(1.0, (CubicMeter per Mole), 100.0, Liter per Decimole)
+        assertScientificConversion("1.0", (CubicMeter per Mole), "100.0", Liter per Decimole)
     }
 }

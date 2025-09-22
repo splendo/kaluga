@@ -256,7 +256,7 @@ data object Ounce : ImperialWeight() {
 
 @Serializable
 data object Pound : ImperialWeight() {
-    private val KILOGRAM_IN_POUND = 0.45359237.toDecimal()
+    private val KILOGRAM_IN_POUND = "0.45359237".toDecimal()
     override val symbol: String = "lb"
     override fun toSIUnit(value: Decimal): Decimal = value * KILOGRAM_IN_POUND
     override fun fromSIUnit(value: Decimal): Decimal = value / KILOGRAM_IN_POUND

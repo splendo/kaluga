@@ -17,12 +17,16 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.pow
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class VolumetricFlowUnitTest {
 
     @Test
     fun volumetricFlowConversionTest() {
-        assertScientificConversion(1.0, CubicMeter per Second, 2118.88, CubicFoot per Minute, 2)
+        assertScientificConversion(Decimal.ONE, CubicMeter per Second, Meter.convert(Decimal.ONE, Foot).pow(3) * 60.toDecimal(), CubicFoot per Minute, round = 31)
     }
 }

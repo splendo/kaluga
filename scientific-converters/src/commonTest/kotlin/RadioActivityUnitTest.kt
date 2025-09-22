@@ -21,14 +21,16 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.converter.decimal.decaysPer
 import com.splendo.kaluga.scientific.converter.radioactivity.radioactivity
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Becquerel
+import com.splendo.kaluga.scientific.unit.Mole
+import com.splendo.kaluga.scientific.unit.Second
 import kotlin.test.Test
 
 class RadioActivityUnitTest {
 
     @Test
     fun radioActivityFromAmountOfSubstanceDivTimeTest() {
-        assertEqualScientificValue(2087.1149(Becquerel), Becquerel.radioactivity(2e-10(Mole), 4e10(Second)), 4)
+        assertEqualScientificValue("2087.114944364563107250214".toDecimal()(Becquerel), Becquerel.radioactivity(2e-10(Mole), 4e10(Second)), round = 11)
     }
 
     @Test

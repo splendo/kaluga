@@ -88,7 +88,7 @@ class DimensionlessUnitTest {
     fun percentDecimalRepresentationTest() {
         val percent = 1(Percent)
         val result = percent.decimalFraction
-        val expected = 0.01.toDecimal()
+        val expected = "0.01".toDecimal()
         assertEquals(expected, result)
     }
 }

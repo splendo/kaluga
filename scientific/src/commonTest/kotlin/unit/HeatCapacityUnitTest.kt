@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
 import kotlin.test.Test
 
 class HeatCapacityUnitTest {
@@ -24,11 +26,11 @@ class HeatCapacityUnitTest {
     @Test
     fun heatCapacityConversionTest() {
         assertScientificConversion(
-            1,
+            Decimal.ONE,
             (Joule per Kelvin),
-            0.409757,
+            Joule.convert(Decimal.ONE, FootPoundForce) / Kelvin.convert(Decimal.ONE, Rankine),
             FootPoundForce per Fahrenheit,
-            6,
+            round = 30,
         )
     }
 }

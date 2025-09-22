@@ -46,11 +46,11 @@ sealed class Decimal : Comparable<Decimal> {
      * @param finiteDecimal the [FiniteDecimal] describing the finite number
      */
     data class Finite(internal val finiteDecimal: FiniteDecimal) : Decimal() {
-        override fun equals(other: Any?): Boolean = other is Finite && finiteDecimal == other.finiteDecimal
+        override fun equals(other: Any?): Boolean = other is Finite && finiteDecimal.compareTo(other.finiteDecimal) == 0
 
         override fun hashCode(): Int = finiteDecimal.hashCode()
 
-        override fun toString(): String = finiteDecimal.toString()
+        override fun toString(): String = finiteDecimal.stringValue()
     }
 
     override fun compareTo(other: Decimal): Int = if (this is Finite && other is Finite) {
@@ -65,6 +65,8 @@ sealed class Decimal : Comparable<Decimal> {
         val TEN = 10.toDecimal()
         val HUNDRED = 100.toDecimal()
         val THOUSAND = 1000.toDecimal()
+
+        val PI = "3.1415926535897932384626433832795028841".toDecimal()
     }
 }
 
@@ -429,7 +431,7 @@ fun Decimal.toLong(): Long = when (this) {
 }
 
 internal expect fun FiniteDecimal.toDouble(): Double
-internal expect fun FiniteDecimal.toString(): String
+internal expect fun FiniteDecimal.stringValue(): String
 internal expect fun FiniteDecimal.toInt(): Int
 internal expect fun FiniteDecimal.toLong(): Long
 

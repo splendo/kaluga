@@ -17,12 +17,15 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.pow
 import kotlin.test.Test
 
 class MolarityUnitTest {
 
     @Test
     fun molarityConversionTest() {
-        assertScientificConversion(1, (Mole per CubicMeter), 1.63871e-4, Decimole per CubicInch, 9)
+        assertScientificConversion(Decimal.ONE, (Mole per CubicMeter), Decimal.TEN / Meter.convert(Decimal.ONE, Inch).pow(3), Decimole per CubicInch, round = 32)
     }
 }
