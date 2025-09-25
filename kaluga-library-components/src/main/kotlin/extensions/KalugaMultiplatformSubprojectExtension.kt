@@ -186,8 +186,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
 
             project.setupPublishingAfterEvaluation()
 
-            project.setupPublishingAfterEvaluation()
-
             dependencies {
                 implementation("kotlinx-coroutines-core".asDependency())
 
