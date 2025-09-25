@@ -91,6 +91,7 @@ open class KalugaRootExtension @Inject constructor(healthVersionCatalog: Version
                 scanConfigurations = listOf(configuration.name)
             }
         }
+        project.setupPublishingAfterEvaluation()
     }
 
     private fun Project.generateNonDependentProjectsFileTask() {

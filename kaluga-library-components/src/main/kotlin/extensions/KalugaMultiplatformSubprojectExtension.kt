@@ -107,20 +107,18 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
             reports.set(mapOf("plain" to rootProject.layout.buildDirectory.get().asFile.resolve("reports/ktlint/${project.path}-${this.name}.txt")))
         }
 
-        afterEvaluate {
-            iosTargets.forEach { target ->
-                val targetName = target.sourceSetName
-                if (tasks.names.contains("linkDebugTest${targetName.replaceFirstChar { it.titlecase() }}")) {
-                    // creating copy task for the target
-                    val copyTask = tasks.register("copy${targetName.replaceFirstChar { it.titlecase() }}TestResources", Copy::class) {
-                        from("src/iosTest/resources/.")
-                        into("${layout.buildDirectory.get().asFile}/bin/$targetName/debugTest")
-                    }
+        iosTargets.forEach { target ->
+            val targetName = target.sourceSetName
+            if (tasks.names.contains("linkDebugTest${targetName.replaceFirstChar { it.titlecase() }}")) {
+                // creating copy task for the target
+                val copyTask = tasks.register("copy${targetName.replaceFirstChar { it.titlecase() }}TestResources", Copy::class) {
+                    from("src/iosTest/resources/.")
+                    into("${layout.buildDirectory.get().asFile}/bin/$targetName/debugTest")
+                }
 
-                    // apply copy task to the target
-                    tasks.named("linkDebugTest${targetName.replaceFirstChar { it.titlecase() }}") {
-                        dependsOn(copyTask)
-                    }
+                // apply copy task to the target
+                tasks.named("linkDebugTest${targetName.replaceFirstChar { it.titlecase() }}") {
+                    dependsOn(copyTask)
                 }
             }
         }
@@ -185,6 +183,8 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
             }
 
             applyDefaultHierarchyTemplate()
+
+            project.setupPublishingAfterEvaluation()
 
             dependencies {
                 implementation("kotlinx-coroutines-core".asDependency())

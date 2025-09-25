@@ -79,9 +79,9 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
             }
         }
 
-        pluginManager.apply(com.vanniktech.maven.publish.MavenPublishPlugin::class)
-
+        pluginManager.apply(com.vanniktech.maven.publish.MavenPublishBasePlugin::class)
         kalugaExtension.beforeProjectEvaluated(this)
+
         afterEvaluate {
             kalugaExtension.afterProjectEvaluated(this)
         }

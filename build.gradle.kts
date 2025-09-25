@@ -30,19 +30,6 @@ publishing {
     }
 }
 
-afterEvaluate {
-    // Gradle just does not do this for version catalogs and it break without these
-
-    tasks.named("publishMavenPublicationToMavenCentralRepository") {
-        dependsOn(tasks.named("signMavenPublication"))
-        dependsOn(tasks.named("signCatalogPublication"))
-    }
-    tasks.named("publishCatalogPublicationToMavenCentralRepository") {
-        dependsOn(tasks.named("signCatalogPublication"))
-        dependsOn(tasks.named("signMavenPublication"))
-    }
-}
-
 dependencies {
     subprojects.forEach { project ->
         kover(project)

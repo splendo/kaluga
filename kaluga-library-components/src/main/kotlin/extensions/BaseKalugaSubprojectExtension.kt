@@ -115,8 +115,6 @@ sealed class BaseKalugaSubprojectExtension(
         if (moduleName.isEmpty()) {
             throw RuntimeException("moduleName must be configured")
         }
-        // TODO: finish migration of this
-        //configureSubproject()
     }
 
     protected abstract fun Project.configureSubproject()

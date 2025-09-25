@@ -66,4 +66,7 @@ abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatal
     protected abstract fun LanguageSettingsBuilder.languageSettings()
     protected abstract fun DependencyHandlerScope.commonDependencies()
 
+    override fun Project.afterProjectEvaluated() {
+        setupPublishingAfterEvaluation()
+    }
 }
