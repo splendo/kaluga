@@ -105,8 +105,8 @@ sealed class BaseKalugaSubprojectExtension(
             }
 
             configure()
-            configureSubproject()
         }
+        configureSubproject()
     }
 
     protected abstract fun Project.setupSubproject()
