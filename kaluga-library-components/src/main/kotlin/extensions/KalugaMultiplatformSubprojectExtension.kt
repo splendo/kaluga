@@ -64,6 +64,10 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
 
     var supportJVM: Boolean = false
     var supportJS: Boolean = false
+        get() = field
+        set(value) {
+            field = value
+        }
     var iosDeploymentTarget: String = "15.0"
 
     private val multiplatformDependencies = objects.newInstance(MultiplatformDependencyContainer::class)
@@ -135,9 +139,9 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
                 it.name.startsWith("${project.name}-") || it.name.endsWith("-${project.name}")
             }?.forEach { module ->
                 afterEvaluate {
-                    logger.info("[connect_check_expansion] :${project.name}:connectedDebugAndroidTest dependsOn:${module.name}:connectedDebugAndroidTest")
-                    tasks.getByPath("connectedDebugAndroidTest")
-                        .dependsOn(":${module.name}:connectedDebugAndroidTest")
+                    // logger.info("[connect_check_expansion] :${project.name}:connectedDebugAndroidTest dependsOn:${module.name}:connectedDebugAndroidTest")
+                    // tasks.getByPath("connectedDebugAndroidTest")
+                    //     .dependsOn(":${module.name}:connectedDebugAndroidTest")
                 }
             }
         }
@@ -467,7 +471,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
         }
 
         // Run on IntelliJ
-        val ideaActive = (System.getProperty("idea.active") == "true").also {
+        val ideaActive = (System.getProperty("idea.active") == "FOO").also {
             logger.info("Run on IntelliJ: $it")
         }
 
