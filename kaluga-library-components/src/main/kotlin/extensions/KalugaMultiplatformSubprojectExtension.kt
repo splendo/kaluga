@@ -17,7 +17,8 @@
 
 package com.splendo.kaluga.plugin.extensions
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import com.splendo.kaluga.plugin.container.AppleInteropContainer
 import com.splendo.kaluga.plugin.container.BuildSwiftLibTask
 import com.splendo.kaluga.plugin.container.MultiplatformDependencyContainer
@@ -25,6 +26,7 @@ import com.splendo.kaluga.plugin.container.sdkName
 import com.splendo.kaluga.plugin.helpers.jvmTarget
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Action
+import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
@@ -39,7 +41,6 @@ import org.jetbrains.kotlin.gradle.dsl.JsModuleKind
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jmailen.gradle.kotlinter.tasks.LintTask
 import java.io.BufferedWriter
@@ -48,8 +49,8 @@ import java.io.FileWriter
 import java.util.Locale.getDefault
 import javax.inject.Inject
 
-open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCatalog: VersionCatalog, libraryExtension: LibraryExtension, objects: ObjectFactory) :
-    BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, null, objects) {
+open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multiplatformExtension: KotlinMultiplatformExtension, versionCatalog: VersionCatalog, objects: ObjectFactory) :
+    BaseKalugaSubprojectExtension(versionCatalog, null, objects) {
 
     companion object {
         private const val testDependentProjectsEnvName = "TEST_DEPENDENT_PROJECTS"
@@ -81,15 +82,21 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
         frameworkConfig = action
     }
 
+    override var moduleName: String
+        get()  {
+            val ext = multiplatformExtension.extensions.findByType(KotlinMultiplatformAndroidLibraryExtension::class.java)!!
+            return ext.namespace.orEmpty()
+                .removePrefix("$BASE_GROUP.")
+                .removeSuffix(namespacePostfix?.let { ".$it" } ?: "")
+        }
+
+        set(value) {
+            val ext = multiplatformExtension.extensions.findByType(KotlinMultiplatformAndroidLibraryExtension::class.java)!!
+            ext.namespace = listOfNotNull(BASE_GROUP, value, namespacePostfix).joinToString(".")
+        }
+
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     override fun Project.setupSubproject() {
-        // Android Target must be setup before project is evaluated as publishing will break otherwise
-        extensions.configure(KotlinMultiplatformExtension::class) {
-            androidTarget {
-                instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-                unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-            }
-        }
     }
 
     override fun Project.configureSubproject() {
@@ -183,8 +190,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
             }
 
             applyDefaultHierarchyTemplate()
-
-            project.setupPublishingAfterEvaluation()
 
             dependencies {
                 implementation("kotlinx-coroutines-core".asDependency())
@@ -420,13 +425,21 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
                     enableLanguageFeature("InlineClasses")
                 }
             }
+            project.setupPublishingAfterEvaluation()
         }
     }
 
-    override fun LibraryExtension.configure() {
-        testOptions {
-            unitTests.isReturnDefaultValues = true
-            targetSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
+    fun KotlinMultiplatformAndroidLibraryExtension.configure() {
+
+        withHostTest {
+            isReturnDefaultValues = true
+            targetSdk {
+                release(versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt())
+            }
+        }
+        withDeviceTest {
+            animationsDisabled = true
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
 
         packaging {
@@ -471,5 +484,24 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(versionCat
             isAppleSilicon -> setOf(IOSTarget.SimulatorArm64)
             else -> setOf(IOSTarget.X64)
         }
+    }
+
+    override fun Project.beforeEvaluated() {
+        setupSubproject()
+
+        multiplatformExtension.extensions.getByType(KotlinMultiplatformAndroidLibraryTarget::class.java).apply {
+            compileSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
+            buildToolsVersion = versionCatalog.findVersion("androidBuildTools").get().displayName
+            minSdk = versionCatalog.findVersion("androidMinSdk").get().displayName.toInt()
+
+            configure()
+            compilations.configureEach {
+                    val javaVersion = JavaVersion.toVersion(versionCatalog.findVersion("java").get().displayName)
+                    // sourceCompatibility = javaVersion
+                    // targetCompatibility = javaVersion
+                }
+            }
+
+        configureSubproject()
     }
 }

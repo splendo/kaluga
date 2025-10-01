@@ -8,7 +8,7 @@ androidMinSdk = "24"
 kotlin = "2.2.20"
 kotlinter = "5.2.0"
 kotlinx-kover = "0.9.2"
-dependencycheck = "12.1.3"
+dependencycheck = "12.1.6"
 dokka = "2.0.0"
 binarycompatilityvalidator = "0.18.1"
 vanniktechMavenPublish = "0.34.0"
@@ -99,6 +99,8 @@ kaluga-testutils-system = { module = "com.splendo.kaluga:test-utils-system", ver
 
 # Gradle DSL
 android-gradle = { module = "com.android.tools.build:gradle", version.ref = "androidGradle" }
+#                                                                                   yes, actually this
+android-multiplatform-gradle = { module = "com.android.kotlin.multiplatform.library:com.android.kotlin.multiplatform.library.gradle.plugin", version.ref = "androidGradle" }
 compose-gradle = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinter-gradle = { module = "org.jmailen.gradle:kotlinter-gradle", version.ref = "kotlinter" }

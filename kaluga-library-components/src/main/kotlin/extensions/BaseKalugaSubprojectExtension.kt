@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.plugin.extensions
 
-import com.android.build.gradle.LibraryExtension
+// import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
@@ -25,18 +25,17 @@ import org.gradle.api.model.ObjectFactory
 
 sealed class BaseKalugaSubprojectExtension(
     versionCatalog: VersionCatalog,
-    private val libraryExtension: LibraryExtension,
-    private val namespacePostfix: String?,
+    protected val namespacePostfix: String?,
     objects: ObjectFactory,
 ) : BaseKalugaExtension(versionCatalog, objects) {
 
-    var moduleName: String
-        get() = libraryExtension.namespace.orEmpty()
-            .removePrefix("$BASE_GROUP.")
-            .removeSuffix(namespacePostfix?.let { ".$it" } ?: "")
-        set(value) {
-            libraryExtension.namespace = listOfNotNull(BASE_GROUP, value, namespacePostfix).joinToString(".")
-        }
+    abstract var moduleName: String
+        // get() = libraryExtension.namespace.orEmpty()
+        //     .removePrefix("$BASE_GROUP.")
+        //     .removeSuffix(namespacePostfix?.let { ".$it" } ?: "")
+        // set(value) {
+        //     libraryExtension.namespace = listOfNotNull(BASE_GROUP, value, namespacePostfix).joinToString(".")
+        // }
 
     protected val androidMainDependencies = listOf(
         "androidx-activity-ktx",
@@ -68,47 +67,6 @@ sealed class BaseKalugaSubprojectExtension(
         "mockito-android",
     ).map { it.asDependency() }
 
-    override fun Project.beforeEvaluated() {
-        setupSubproject()
-        libraryExtension.apply {
-            compileSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
-            buildToolsVersion = versionCatalog.findVersion("androidBuildTools").get().displayName
-
-            defaultConfig {
-                minSdk = versionCatalog.findVersion("androidMinSdk").get().displayName.toInt()
-
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-            }
-
-            signingConfigs {
-                create("stableDebug") {
-                    storeFile = project.rootProject.file("keystore/stableDebug.keystore")
-                    storePassword = "stableDebug"
-                    keyAlias = "stableDebug"
-                    keyPassword = "stableDebug"
-                }
-            }
-
-            buildTypes {
-                release {
-                    isMinifyEnabled = false
-                }
-                debug {
-                    signingConfig = signingConfigs.getByName("stableDebug")
-                }
-            }
-
-            compileOptions {
-                val javaVersion = JavaVersion.toVersion(versionCatalog.findVersion("java").get().displayName)
-                sourceCompatibility = javaVersion
-                targetCompatibility = javaVersion
-            }
-
-            configure()
-        }
-        configureSubproject()
-    }
-
     protected abstract fun Project.setupSubproject()
 
     override fun Project.afterProjectEvaluated() {
@@ -118,8 +76,6 @@ sealed class BaseKalugaSubprojectExtension(
     }
 
     protected abstract fun Project.configureSubproject()
-
-    protected abstract fun LibraryExtension.configure()
 
     protected fun String.asDependency() = versionCatalog.findLibrary(this).get()
 }

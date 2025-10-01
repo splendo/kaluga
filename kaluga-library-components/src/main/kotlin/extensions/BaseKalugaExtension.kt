@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.plugin.extensions
 
-import com.android.build.gradle.LibraryPlugin
+import com.android.build.api.dsl.Publishing
 import com.splendo.kaluga.plugin.helpers.kalugaVersion
 import com.splendo.kaluga.plugin.helpers.jvmTarget
 import com.vanniktech.maven.publish.AndroidMultiVariantLibrary
@@ -30,12 +30,15 @@ import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.plugins.catalog.VersionCatalogPlugin
 import org.gradle.api.provider.Property
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.api.tasks.testing.logging.TestLoggingContainer
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.dokka.gradle.DokkaExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
@@ -86,14 +89,14 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
             coordinates(version = project.kalugaVersion)
 
             // this specific android config must go early
-            if (!project.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") && project.plugins.hasPlugin(LibraryPlugin::class.java)) {
+            if (project.plugins.hasPlugin(com.android.build.gradle.LibraryPlugin::class.java)) {
                     configure(
                         platform = AndroidMultiVariantLibrary(
                             sourcesJar = true,
                             publishJavadocJar = false,
                         )
                     )
-                }
+            }
 
             // Provide artifacts information requited by Maven Central
             pom {
@@ -128,31 +131,32 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
                 // scientific docs take an enormous amount of RAM so we skip them
 
                 when {
-                    project.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
-                        configure(
-                            KotlinMultiplatform(
 
-                                javadocJar = if (project.name.startsWith("scientific"))
-                                    JavadocJar.Empty()
-                                else
-                                    JavadocJar.Dokka("dokkaGeneratePublicationHtml"),
-                                androidVariantsToPublish = listOf("debug", "release"),
-                                sourcesJar = true,
-                            )
+                    project.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> configure(
+                        KotlinMultiplatform(
+                            // scientific docs take an enormous amount of RAM so we skip them
+                            javadocJar = if (project.name.startsWith("scientific"))
+                                JavadocJar.Empty()
+                            else
+                                JavadocJar.Dokka("dokkaGeneratePublicationHtml"),
+                            androidVariantsToPublish = listOf("debug", "release"),
+                            sourcesJar = true,
                         )
-                    }
+                    )
 
-                project.plugins.hasPlugin(LibraryPlugin::class.java) -> {
+
+                project.plugins.hasPlugin(VersionCatalogPlugin::class.java) -> configure(platform = com.vanniktech.maven.publish.VersionCatalog())
+
+                project.plugins.hasPlugin(com.android.build.gradle.LibraryPlugin::class.java) -> {
                     // noop, android went in before evaluate
-                }
 
-                project.plugins.hasPlugin(VersionCatalogPlugin::class.java) -> configure(platform = com.vanniktech.maven.publish.VersionCatalog()) // TODO: This is not correct, it should be a platform
+                }
                 else -> {
                     project.logger.info("No plugin type detected that can be published for ${project.name}, skipping configuration. Plugins: ${project.plugins.joinToString { it.javaClass.name }}")
                 }
             }
             publishToMavenCentral()
-            signAllPublications()
+            //signAllPublications()
         }
     }
 

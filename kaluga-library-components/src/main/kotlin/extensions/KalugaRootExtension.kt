@@ -160,7 +160,7 @@ open class KalugaRootExtension @Inject constructor(healthVersionCatalog: Version
     private fun Project.koverModules() {
         dependencies {
             subprojects.forEach {
-                add("kover", it)
+                //add("kover", it)
             }
         }
     }

@@ -17,11 +17,12 @@
 
 package com.splendo.kaluga.plugin
 
-import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.LibraryPlugin
 import com.splendo.kaluga.plugin.extensions.BaseKalugaSubprojectExtension
+import com.splendo.kaluga.plugin.extensions.ComposeKalugaAndroidSubprojectExtension
+import com.splendo.kaluga.plugin.extensions.DatabindingKalugaAndroidSubprojectExtension
+import com.splendo.kaluga.plugin.extensions.KalugaMultiplatformSubprojectExtension
 import com.splendo.kaluga.plugin.extensions.KalugaRootExtension
-import kotlinx.kover.gradle.plugin.KoverGradlePlugin
+// import kotlinx.kover.gradle.plugin.KoverGradlePlugin
 import kotlinx.validation.BinaryCompatibilityValidatorPlugin
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Plugin
@@ -29,11 +30,13 @@ import org.gradle.api.Project
 import org.gradle.api.UnknownDomainObjectException
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.PluginManager
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.dokka.gradle.DokkaPlugin
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jmailen.gradle.kotlinter.KotlinterPlugin
 import org.owasp.dependencycheck.gradle.DependencyCheckPlugin
 import kotlin.reflect.KClass
@@ -62,20 +65,32 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
         pluginManager.apply(KotlinterPlugin::class)
         pluginManager.apply(DependencyCheckPlugin::class)
         pluginManager.apply(DokkaPlugin::class)
-        pluginManager.apply(KoverGradlePlugin::class)
+        //pluginManager.apply(KoverGradlePlugin::class)
         pluginManager.apply(com.palantir.gradle.gitversion.GitVersionPlugin::class)
 
         val kalugaExtension = when {
             rootProject == this -> {
                 pluginManager.apply(BinaryCompatibilityValidatorPlugin::class)
-                extensions.create(EXTENSION_NAME, KalugaRootExtension::class, versionCatalog)
+                extensions.create<KalugaRootExtension>(EXTENSION_NAME,  versionCatalog)
+            }
+            subExtensionClass == ComposeKalugaAndroidSubprojectExtension::class -> {
+                pluginManager.addSubprojectExtensionPlugins(extensions)
+                val libraryExtension = extensions.findByType(com.android.build.gradle.LibraryExtension::class)!!
+                extensions.create<ComposeKalugaAndroidSubprojectExtension>(EXTENSION_NAME,  versionCatalog, libraryExtension, project.objects)
+            }
+            subExtensionClass == DatabindingKalugaAndroidSubprojectExtension::class -> {
+                pluginManager.addSubprojectExtensionPlugins(extensions)
+                val libraryExtension = extensions.findByType(com.android.build.gradle.LibraryExtension::class)!!
+                extensions.create<DatabindingKalugaAndroidSubprojectExtension>(EXTENSION_NAME,versionCatalog, libraryExtension, project.objects)
+            }
+
+            subExtensionClass == KalugaMultiplatformSubprojectExtension::class -> {
+                pluginManager.addSubprojectExtensionPlugins(extensions)
+                val multiplatformExtension = extensions.findByType(KotlinMultiplatformExtension::class)!!
+                extensions.create<KalugaMultiplatformSubprojectExtension>(EXTENSION_NAME, multiplatformExtension, versionCatalog, project.objects)
             }
             else -> {
-                pluginManager.apply(LibraryPlugin::class)
-                pluginManager.addSubprojectExtensionPlugins()
-                val libraryExtension = extensions.findByType(LibraryExtension::class)!!
-                // The versioning is now handled in afterEvaluate
-                extensions.create(EXTENSION_NAME, subExtensionClass, versionCatalog, libraryExtension)
+                error("Unknown project project applied plugin: ${project.name} subExtensionClass: ${subExtensionClass.simpleName}")
             }
         }
 
@@ -87,5 +102,5 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
         }
     }
 
-    protected abstract fun PluginManager.addSubprojectExtensionPlugins()
+    protected abstract fun PluginManager.addSubprojectExtensionPlugins(extensions: ExtensionContainer)
 }

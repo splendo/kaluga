@@ -37,6 +37,7 @@ kotlin {
 
 dependencies {
     implementation(libs.android.gradle)
+    implementation(libs.android.multiplatform.gradle)
     implementation(libs.vanniktech.maven.publish)
     implementation(libs.compose.gradle)
     implementation(libs.dependencycheck.gradle)
@@ -45,7 +46,7 @@ dependencies {
     implementation(libs.kotlinter.gradle)
     implementation(libs.kotlinx.atomicfu.gradle)
     implementation(libs.kotlinx.binarycompatibilityvalidator.gradle)
-    implementation(libs.kotlinx.kover.gradle)
+    // implementation(libs.kotlinx.kover.gradle)
     implementation(libs.palantir.git.version)
 
     testImplementation(libs.junit)
