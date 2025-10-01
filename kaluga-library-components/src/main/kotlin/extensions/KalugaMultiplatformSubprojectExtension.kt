@@ -446,6 +446,11 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
 
+        // TODO: base on a flag in kaluga configuration
+        androidResources {
+            enable = true
+        }
+
         packaging {
             resources.excludes.addAll(
                 listOf(
