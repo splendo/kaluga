@@ -156,7 +156,7 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
                 }
             }
             publishToMavenCentral()
-            //signAllPublications()
+            signAllPublications()
         }
     }
 
