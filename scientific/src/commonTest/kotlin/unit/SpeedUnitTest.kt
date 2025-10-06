@@ -17,12 +17,15 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class SpeedUnitTest {
 
     @Test
     fun metricToImperialSpeedConversionTest() {
-        assertScientificConversion(1.0, (Meter per Minute), 196.85, Foot per Hour, 2)
+        assertScientificConversion(Decimal.ONE, (Meter per Minute), Meter.convert(Decimal.ONE, Foot) * 60.toDecimal(), Foot per Hour, round = 32)
     }
 }

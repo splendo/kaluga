@@ -17,26 +17,30 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.pow
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class AreaUnitTest {
 
     @Test
     fun areaConversionTest() {
-        assertScientificConversion(1, SquareMeter, 1e+18, SquareNanometer)
-        assertScientificConversion(1, SquareMeter, 1e+12, SquareMicrometer)
-        assertScientificConversion(1, SquareMeter, 1000000.0, SquareMillimeter)
-        assertScientificConversion(1, SquareMeter, 10000.0, SquareCentimeter)
-        assertScientificConversion(1, SquareMeter, 100.0, SquareDecimeter)
-        assertScientificConversion(1, SquareMeter, 0.01, SquareDecameter)
-        assertScientificConversion(1, SquareMeter, 0.0001, SquareHectometer)
-        assertScientificConversion(1, SquareMeter, 1e-6, SquareKilometer)
-        assertScientificConversion(1, SquareMeter, 0.0001, Hectare)
+        assertScientificConversion("1", SquareMeter, "1e+18", SquareNanometer)
+        assertScientificConversion("1", SquareMeter, "1e+12", SquareMicrometer)
+        assertScientificConversion("1", SquareMeter, "1000000.0", SquareMillimeter)
+        assertScientificConversion("1", SquareMeter, "10000.0", SquareCentimeter)
+        assertScientificConversion("1", SquareMeter, "100.0", SquareDecimeter)
+        assertScientificConversion("1", SquareMeter, "0.01", SquareDecameter)
+        assertScientificConversion("1", SquareMeter, "0.0001", SquareHectometer)
+        assertScientificConversion("1", SquareMeter, "1e-6", SquareKilometer)
+        assertScientificConversion("1", SquareMeter, "0.0001", Hectare)
 
-        assertScientificConversion(1, SquareMeter, 1550.0, SquareInch, 0)
-        assertScientificConversion(1, SquareMeter, 10.7639, SquareFoot, 4)
-        assertScientificConversion(1, SquareMeter, 1.19599, SquareYard, 5)
-        assertScientificConversion(1, SquareMeter, 3.86102e-7, SquareMile, 12)
-        assertScientificConversion(1, SquareMeter, 0.000247105, Acre, 9)
+        assertScientificConversion(Decimal.ONE, SquareMeter, Meter.convert(Decimal.ONE, Inch).pow(2), SquareInch, round = 32)
+        assertScientificConversion(Decimal.ONE, SquareMeter, Meter.convert(Decimal.ONE, Foot).pow(2), SquareFoot, round = 32)
+        assertScientificConversion(Decimal.ONE, SquareMeter, Meter.convert(Decimal.ONE, Yard).pow(2), SquareYard, round = 32)
+        assertScientificConversion(Decimal.ONE, SquareMeter, Meter.convert(Decimal.ONE, Mile).pow(2), SquareMile, round = 32)
+        assertScientificConversion(Decimal.ONE, SquareMeter, Meter.convert(Decimal.ONE, Mile).pow(2) * 640.toDecimal(), Acre, round = 32)
     }
 }

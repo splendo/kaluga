@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class AccelerationUnitTest {
@@ -24,35 +27,35 @@ class AccelerationUnitTest {
     @Test
     fun accelerationConversionTest() {
         assertScientificConversion(
-            1,
+            Decimal.ONE,
             (Meter per Second per Second),
-            11.811024,
+            "3.6".toDecimal() / "0.3048".toDecimal(),
             Foot per Millisecond per Hour,
-            6,
+            round = 32,
         )
 
-        assertScientificConversion(100, Gal, 1, Meter per Second per Second)
-        assertScientificConversion(1.0, Gal, 1e+9, NanoGal)
-        assertScientificConversion(1.0, Gal, 1e+6, MicroGal)
-        assertScientificConversion(1.0, Gal, 1_000.0, MilliGal)
-        assertScientificConversion(1.0, Gal, 100.0, CentiGal)
-        assertScientificConversion(1.0, Gal, 10.0, DeciGal)
-        assertScientificConversion(1.0, Gal, 0.1, DecaGal)
-        assertScientificConversion(1.0, Gal, 0.01, HectoGal)
-        assertScientificConversion(1.0, Gal, 0.001, KiloGal)
-        assertScientificConversion(1.0, Gal, 1e-6, MegaGal)
-        assertScientificConversion(1.0, Gal, 1e-9, GigaGal)
+        assertScientificConversion("100", Gal, "1", Meter per Second per Second)
+        assertScientificConversion("1.0", Gal, "1e+9", NanoGal)
+        assertScientificConversion("1.0", Gal, "1e+6", MicroGal)
+        assertScientificConversion("1.0", Gal, "1000.0", MilliGal)
+        assertScientificConversion("1.0", Gal, "100.0", CentiGal)
+        assertScientificConversion("1.0", Gal, "10.0", DeciGal)
+        assertScientificConversion("1.0", Gal, "0.1", DecaGal)
+        assertScientificConversion("1.0", Gal, "0.01", HectoGal)
+        assertScientificConversion("1.0", Gal, "0.001", KiloGal)
+        assertScientificConversion("1.0", Gal, "1e-6", MegaGal)
+        assertScientificConversion("1.0", Gal, "1e-9", GigaGal)
 
-        assertScientificConversion(MetricStandardGravityAcceleration.value, Meter per Second per Second, 1.0, GUnit)
-        assertScientificConversion(1.0, GUnit, 1e+9, Nanog)
-        assertScientificConversion(1.0, GUnit, 1e+6, Microg)
-        assertScientificConversion(1.0, GUnit, 1_000.0, Millig)
-        assertScientificConversion(1.0, GUnit, 100.0, Centig)
-        assertScientificConversion(1.0, GUnit, 10.0, Decig)
-        assertScientificConversion(1.0, GUnit, 0.1, Decag)
-        assertScientificConversion(1.0, GUnit, 0.01, Hectog)
-        assertScientificConversion(1.0, GUnit, 0.001, Kilog)
-        assertScientificConversion(1.0, GUnit, 1e-6, Megag)
-        assertScientificConversion(1.0, GUnit, 1e-9, Gigag)
+        assertScientificConversion(MetricStandardGravityAcceleration.decimalValue, Meter per Second per Second, 1.toDecimal(), GUnit)
+        assertScientificConversion("1.0", GUnit, "1e+9", Nanog)
+        assertScientificConversion("1.0", GUnit, "1e+6", Microg)
+        assertScientificConversion("1.0", GUnit, "1000.0", Millig)
+        assertScientificConversion("1.0", GUnit, "100.0", Centig)
+        assertScientificConversion("1.0", GUnit, "10.0", Decig)
+        assertScientificConversion("1.0", GUnit, "0.1", Decag)
+        assertScientificConversion("1.0", GUnit, "0.01", Hectog)
+        assertScientificConversion("1.0", GUnit, "0.001", Kilog)
+        assertScientificConversion("1.0", GUnit, "1e-6", Megag)
+        assertScientificConversion("1.0", GUnit, "1e-9", Gigag)
     }
 }

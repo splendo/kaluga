@@ -17,13 +17,21 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
 import kotlin.test.Test
 
 class SurfaceTensionUnitTest {
 
     @Test
     fun surfaceTensionConversionTest() {
-        assertScientificConversion(1.0, (Newton per Centimeter), 6.85, PoundForce per Foot, 2)
-        assertScientificConversion(1.0, (ImperialTonForce per Foot), 1.12, UsTonForce per Foot, 2)
+        assertScientificConversion(
+            Decimal.ONE,
+            (Newton per Centimeter),
+            Newton.convert(Decimal.ONE, PoundForce) / Centimeter.convert(Decimal.ONE, Foot),
+            PoundForce per Foot,
+            round = 30,
+        )
+        assertScientificConversion(Decimal.ONE, (ImperialTonForce per Foot), ImperialTonForce.convert(Decimal.ONE, UsTonForce), UsTonForce per Foot, round = 32)
     }
 }

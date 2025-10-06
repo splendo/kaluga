@@ -216,7 +216,7 @@ data object Gigapascal : PascalMultiple(), MetricMultipleUnit<MeasurementSystem.
 
 @Serializable
 data object Bar : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, PhysicalQuantity.Pressure> {
-    private val BAR_PER_PASCAL = 0.00001.toDecimal()
+    private val BAR_PER_PASCAL = "0.00001".toDecimal()
     override val symbol: String = "bar"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Pressure
@@ -361,7 +361,7 @@ data object Gigatorr : TorrMultiple(), MetricMultipleUnit<MeasurementSystem.Metr
 
 @Serializable
 data object MillimeterOfMercury : MetricPressure() {
-    private val PASCAL_PER_MMHG = 133.322387415.toDecimal()
+    private val PASCAL_PER_MMHG = "133.322387415".toDecimal()
     override val symbol: String = "mmHg"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Pressure
@@ -380,7 +380,7 @@ data object CentimeterOfWater : MetricPressure() {
 
 @Serializable
 data object MillimeterOfWater : MetricPressure() {
-    private val PASCAL_PER_MMH2O = 9.80665.toDecimal()
+    private val PASCAL_PER_MMH2O = "9.80665".toDecimal()
     override val symbol: String = "mmH2O"
     override val system = MeasurementSystem.Metric
     override val quantity = PhysicalQuantity.Pressure

@@ -148,28 +148,18 @@ public final class com/splendo/kaluga/scientific/DefaultScientificValue : com/sp
 	public static final field Companion Lcom/splendo/kaluga/scientific/DefaultScientificValue$Companion;
 	public fun <init> (DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)V
 	public fun <init> (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)V
-	public final fun component1 ()D
+	public final fun component1 ()Lcom/splendo/kaluga/base/utils/Decimal;
 	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;
-	public final fun copy (DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/DefaultScientificValue;DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public final fun copy (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/DefaultScientificValue;Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public fun equals (Ljava/lang/Object;)Z
+	public fun getDecimalValue ()Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getUnit ()Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;
 	public synthetic fun getUnit ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
 	public fun getValue ()Ljava/lang/Double;
 	public synthetic fun getValue ()Ljava/lang/Number;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-}
-
-public synthetic class com/splendo/kaluga/scientific/DefaultScientificValue$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
-	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/DefaultScientificValue;)V
-	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public final fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/DefaultScientificValue$Companion {

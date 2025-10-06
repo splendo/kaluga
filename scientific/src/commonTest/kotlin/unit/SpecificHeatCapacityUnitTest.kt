@@ -17,12 +17,21 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.times
 import kotlin.test.Test
 
 class SpecificHeatCapacityUnitTest {
 
     @Test
     fun specificHeatCapacityConversionTest() {
-        assertScientificConversion(1.0, (Joule per Kelvin per Kilogram), 0.00023885, BritishThermalUnit per Fahrenheit per Pound, 8)
+        assertScientificConversion(
+            Decimal.ONE,
+            (Joule per Kelvin per Kilogram),
+            Joule.convert(Decimal.ONE, BritishThermalUnit) / (Kelvin.convert(Decimal.ONE, Rankine) * Kilogram.convert(Decimal.ONE, Pound)),
+            BritishThermalUnit per Fahrenheit per Pound,
+            round = 32,
+        )
     }
 }

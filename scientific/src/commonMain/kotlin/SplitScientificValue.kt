@@ -29,7 +29,7 @@ import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.SystemScientificUnit
 import com.splendo.kaluga.scientific.unit.convert
 
-private val DEFAULT_ROUNDING_THRESHOLD = 0.0000001.toDecimal()
+private val DEFAULT_ROUNDING_THRESHOLD = "0.0000001".toDecimal()
 
 /**
  * Splits a [ScientificValue] of [ValueUnit] into a [LeftValue] and [RightValue] so that left and right together are equal to the original value.

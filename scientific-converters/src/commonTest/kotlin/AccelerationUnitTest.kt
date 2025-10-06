@@ -44,33 +44,32 @@ import com.splendo.kaluga.scientific.unit.per
 import com.splendo.kaluga.scientific.unit.ukImperial
 import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class AccelerationUnitTest {
 
     @Test
     fun accelerationFromForceAndMassTest() {
-        assertEquals(1(Meter per Second per Second), 2(Newton) / 2(Kilogram))
-        assertEquals(1(Centimeter per Second per Second), 2(Dyne) / 2(Gram))
-        assertEquals(1(Centimeter per Second per Second), 20(Decidyne) / 2(Gram))
-        assertEquals(ImperialStandardGravityAcceleration, (2(PoundForce) / 2(Pound)))
-        assertEquals(1(Foot per Second per Second), (2(Poundal) / 2(Pound)))
-        assertEquals(1(Foot per Second per Second), (2(Poundal) / 2(Pound.ukImperial)))
-        assertEquals(1(Foot per Second per Second), (2(Poundal) / 2(Pound.usCustomary)))
-        assertEquals(1(Foot per Second per Second), (2(Poundal.ukImperial) / 2(Pound)))
-        assertEquals(1(Foot per Second per Second), (2(Poundal.ukImperial) / 2(Pound.ukImperial)))
-        assertEquals(1(Foot per Second per Second), (2(Poundal.usCustomary) / 2(Pound)))
-        assertEquals(1(Foot per Second per Second), (2(Poundal.usCustomary) / 2(Pound.usCustomary)))
-        assertEquals(MetricStandardGravityAcceleration, 2(PoundForce) / 2(Pound).convert(Kilogram))
+        assertEqualScientificValue(1(Meter per Second per Second), 2(Newton) / 2(Kilogram))
+        assertEqualScientificValue(1(Centimeter per Second per Second), 2(Dyne) / 2(Gram))
+        assertEqualScientificValue(1(Centimeter per Second per Second), 20(Decidyne) / 2(Gram))
+        assertEqualScientificValue(ImperialStandardGravityAcceleration, (2(PoundForce) / 2(Pound)))
+        assertEqualScientificValue(1(Foot per Second per Second), (2(Poundal) / 2(Pound)))
+        assertEqualScientificValue(1(Foot per Second per Second), (2(Poundal) / 2(Pound.ukImperial)))
+        assertEqualScientificValue(1(Foot per Second per Second), (2(Poundal) / 2(Pound.usCustomary)))
+        assertEqualScientificValue(1(Foot per Second per Second), (2(Poundal.ukImperial) / 2(Pound)))
+        assertEqualScientificValue(1(Foot per Second per Second), (2(Poundal.ukImperial) / 2(Pound.ukImperial)))
+        assertEqualScientificValue(1(Foot per Second per Second), (2(Poundal.usCustomary) / 2(Pound)))
+        assertEqualScientificValue(1(Foot per Second per Second), (2(Poundal.usCustomary) / 2(Pound.usCustomary)))
+        assertEqualScientificValue(MetricStandardGravityAcceleration, 2(PoundForce) / 2(Pound).convert(Kilogram))
     }
 
     @Test
     fun accelerationFromJoltAndTimeTest() {
-        assertEquals(
+        assertEqualScientificValue(
             4(Meter per Second per Second),
             2(Meter per Second per Second per Second) * 2(Second),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(Meter per Second per Second),
             2(Second) * 2(Meter per Second per Second per Second),
         )
@@ -82,11 +81,11 @@ class AccelerationUnitTest {
             4(GUnit),
             2(Second) * 2(GUnit per Second),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(Foot per Second per Second),
             2(Foot per Second per Second per Second) * 2(Second),
         )
-        assertEquals(
+        assertEqualScientificValue(
             4(Foot per Second per Second),
             2(Second) * 2(Foot per Second per Second per Second),
         )
@@ -102,8 +101,8 @@ class AccelerationUnitTest {
 
     @Test
     fun accelerationFromSpeedAndTime() {
-        assertEquals(1(Meter per Second per Second), 2(Meter per Second) / 2(Second))
-        assertEquals(1(Foot per Second per Second), 2(Foot per Second) / 2(Second))
-        assertEquals(1(Meter per Second per Second), 2(Meter per Second).convert((Foot per Second) as Speed) / 2(Second))
+        assertEqualScientificValue(1(Meter per Second per Second), 2(Meter per Second) / 2(Second))
+        assertEqualScientificValue(1(Foot per Second per Second), 2(Foot per Second) / 2(Second))
+        assertEqualScientificValue(1(Meter per Second per Second), 2(Meter per Second).convert((Foot per Second) as Speed) / 2(Second), round = 32)
     }
 }

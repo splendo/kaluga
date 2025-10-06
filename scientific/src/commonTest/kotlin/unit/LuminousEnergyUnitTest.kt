@@ -17,12 +17,15 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
 
 class LuminousEnergyUnitTest {
 
     @Test
     fun luminousEnergyConversionTest() {
-        assertScientificConversion(1.0, Lumen x Second, 0.027778, Centilumen x Hour, 6)
+        assertScientificConversion(Decimal.ONE, Lumen x Second, Decimal.ONE / 36.toDecimal(), Centilumen x Hour, round = 32)
     }
 }

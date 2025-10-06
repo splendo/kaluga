@@ -134,7 +134,6 @@ import com.splendo.kaluga.scientific.unit.ukImperial
 import com.splendo.kaluga.scientific.unit.usCustomary
 import com.splendo.kaluga.scientific.unit.x
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class EnergyUnitTest {
 
@@ -160,24 +159,24 @@ class EnergyUnitTest {
 
     @Test
     fun energyFromChargeAndVoltageTest() {
-        assertEquals(4(Erg), 2(Abcoulomb) * 2(Abvolt))
-        assertEquals(4(Erg), 2(Abvolt) * 2(Abcoulomb))
-        assertEquals(4(Joule), 2(Coulomb) * 2(Volt))
-        assertEquals(4(Joule), 2(Volt) * 2(Coulomb))
+        assertEqualScientificValue(4(Erg), 2(Abcoulomb) * 2(Abvolt))
+        assertEqualScientificValue(4(Erg), 2(Abvolt) * 2(Abcoulomb))
+        assertEqualScientificValue(4(Joule), 2(Coulomb) * 2(Volt))
+        assertEqualScientificValue(4(Joule), 2(Volt) * 2(Coulomb))
     }
 
     @Test
     fun energyFromForceAndDistanceTest() {
-        assertEquals(4(Joule), 2(Newton) * 2(Meter))
-        assertEquals(4(Joule), 2(Meter) * 2(Newton))
-        assertEquals(4(FootPoundForce), 2(PoundForce) * 2(Foot))
-        assertEquals(4(FootPoundForce), 2(Foot) * 2(PoundForce))
-        assertEquals(4(FootPoundForce), 2(PoundForce.ukImperial) * 2(Foot))
-        assertEquals(4(FootPoundForce), 2(Foot) * 2(PoundForce.ukImperial))
-        assertEquals(4(FootPoundForce), 2(PoundForce.usCustomary) * 2(Foot))
-        assertEquals(4(FootPoundForce), 2(Foot) * 2(PoundForce.usCustomary))
-        assertEquals(4(Joule), 2(Newton) * 2(Meter).convert(Foot))
-        assertEquals(4(Joule), 2(Meter).convert(Foot) * 2(Newton))
+        assertEqualScientificValue(4(Joule), 2(Newton) * 2(Meter))
+        assertEqualScientificValue(4(Joule), 2(Meter) * 2(Newton))
+        assertEqualScientificValue(4(FootPoundForce), 2(PoundForce) * 2(Foot))
+        assertEqualScientificValue(4(FootPoundForce), 2(Foot) * 2(PoundForce))
+        assertEqualScientificValue(4(FootPoundForce), 2(PoundForce.ukImperial) * 2(Foot))
+        assertEqualScientificValue(4(FootPoundForce), 2(Foot) * 2(PoundForce.ukImperial))
+        assertEqualScientificValue(4(FootPoundForce), 2(PoundForce.usCustomary) * 2(Foot))
+        assertEqualScientificValue(4(FootPoundForce), 2(Foot) * 2(PoundForce.usCustomary))
+        assertEqualScientificValue(4(Joule), 2(Newton) * 2(Meter).convert(Foot), round = 32)
+        assertEqualScientificValue(4(Joule), 2(Meter).convert(Foot) * 2(Newton), round = 32)
     }
 
     @Test
@@ -189,20 +188,24 @@ class EnergyUnitTest {
         assertEqualScientificValue(
             4(ImperialMetricAndImperialEnergyWrapper(Calorie)),
             2(Calorie per Fahrenheit) * 2(Fahrenheit),
+            round = 32,
         )
         assertEqualScientificValue(
             4(ImperialMetricAndImperialEnergyWrapper(Calorie)),
             2(Fahrenheit) * 2(Calorie per Fahrenheit),
+            round = 32,
         )
         assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForce per Celsius) * 2(Celsius))
         assertEqualScientificValue(4(FootPoundForce), 2(Celsius) * 2(FootPoundForce per Celsius))
         assertEqualScientificValue(
             4(FootPoundForce),
             2(FootPoundForce per Fahrenheit) * 2(Fahrenheit),
+            round = 32,
         )
         assertEqualScientificValue(
             4(FootPoundForce),
             2(Fahrenheit) * 2(FootPoundForce per Fahrenheit),
+            round = 32,
         )
         assertEqualScientificValue(4(Joule), 2((Joule per Celsius) as HeatCapacity) * 2(Celsius))
         assertEqualScientificValue(4(Joule), 2(Celsius) * 2((Joule per Celsius) as HeatCapacity))
@@ -219,12 +222,12 @@ class EnergyUnitTest {
         assertEqualScientificValue(
             4(Joule).convert(FootPoundForce),
             2(Gray) * 2(Kilogram).convert(Pound),
-            8,
+            round = 30,
         )
         assertEqualScientificValue(
             4(Joule).convert(FootPoundForce),
             2(Kilogram).convert(Pound) * 2(Gray),
-            8,
+            round = 30,
         )
     }
 
@@ -239,23 +242,23 @@ class EnergyUnitTest {
         assertEqualScientificValue(
             4(Joule).convert(FootPoundForce),
             2(Sievert) * 2(Kilogram).convert(Pound),
-            8,
+            round = 30,
         )
         assertEqualScientificValue(
             4(Joule).convert(FootPoundForce),
             2(Kilogram).convert(Pound) * 2(Sievert),
-            8,
+            round = 30,
         )
     }
 
     @Test
     fun energyFromFluxAndCurrentTest() {
-        assertEquals(4(Erg), 2(Maxwell) * 2(Abampere))
-        assertEquals(4(Erg), 2(Abampere) * 2(Maxwell))
-        assertEquals(4(Erg), 2(Maxwell) * 2(Biot))
-        assertEquals(4(Erg), 2(Biot) * 2(Maxwell))
-        assertEquals(4(Joule), 2(Weber) * 2(Ampere))
-        assertEquals(4(Joule), 2(Ampere) * 2(Weber))
+        assertEqualScientificValue(4(Erg), 2(Maxwell) * 2(Abampere))
+        assertEqualScientificValue(4(Erg), 2(Abampere) * 2(Maxwell))
+        assertEqualScientificValue(4(Erg), 2(Maxwell) * 2(Biot))
+        assertEqualScientificValue(4(Erg), 2(Biot) * 2(Maxwell))
+        assertEqualScientificValue(4(Joule), 2(Weber) * 2(Ampere))
+        assertEqualScientificValue(4(Joule), 2(Ampere) * 2(Weber))
     }
 
     @Test
@@ -272,8 +275,8 @@ class EnergyUnitTest {
 
     @Test
     fun energyFromPowerAndTimeTest() {
-        assertEquals(4(Joule), 2(Watt) * 2(Second))
-        assertEquals(4(Joule), 2(Second) * 2(Watt))
+        assertEqualScientificValue(4(Joule), 2(Watt) * 2(Second))
+        assertEqualScientificValue(4(Joule), 2(Second) * 2(Watt))
 
         assertEqualScientificValue(4(WattHour), 2(Watt) * 2(Hour))
         assertEqualScientificValue(4(WattHour), 2(Hour) * 2(Watt))
@@ -298,22 +301,22 @@ class EnergyUnitTest {
         assertEqualScientificValue(4(GigawattHour), 2(Gigawatt) * 2(Hour))
         assertEqualScientificValue(4(GigawattHour), 2(Hour) * 2(Gigawatt))
 
-        assertEqualScientificValue(4(Calorie), 2(Calorie per Hour) * 2(Hour))
-        assertEqualScientificValue(4(Calorie), 2(Hour) * 2(Calorie per Hour))
-        assertEqualScientificValue(4(Calorie.IT), 2(Calorie.IT per Hour) * 2(Hour))
-        assertEqualScientificValue(4(Calorie.IT), 2(Hour) * 2(Calorie.IT per Hour))
-        assertEqualScientificValue(4(Millicalorie), 2(Millicalorie per Hour) * 2(Hour))
-        assertEqualScientificValue(4(Millicalorie), 2(Hour) * 2(Millicalorie per Hour))
-        assertEqualScientificValue(4(Millicalorie.IT), 2(Millicalorie.IT per Hour) * 2(Hour))
-        assertEqualScientificValue(4(Millicalorie.IT), 2(Hour) * 2(Millicalorie.IT per Hour))
-        assertEqualScientificValue(4(Kilocalorie), 2(Kilocalorie per Hour) * 2(Hour))
-        assertEqualScientificValue(4(Kilocalorie), 2(Hour) * 2(Kilocalorie per Hour))
-        assertEqualScientificValue(4(Kilocalorie.IT), 2(Kilocalorie.IT per Hour) * 2(Hour))
-        assertEqualScientificValue(4(Kilocalorie.IT), 2(Hour) * 2(Kilocalorie.IT per Hour))
-        assertEqualScientificValue(4(Megacalorie), 2(Megacalorie per Hour) * 2(Hour))
-        assertEqualScientificValue(4(Megacalorie), 2(Hour) * 2(Megacalorie per Hour))
-        assertEqualScientificValue(4(Megacalorie.IT), 2(Megacalorie.IT per Hour) * 2(Hour))
-        assertEqualScientificValue(4(Megacalorie.IT), 2(Hour) * 2(Megacalorie.IT per Hour))
+        assertEqualScientificValue(4(Calorie), 2(Calorie per Hour) * 2(Hour), round = 32)
+        assertEqualScientificValue(4(Calorie), 2(Hour) * 2(Calorie per Hour), round = 32)
+        assertEqualScientificValue(4(Calorie.IT), 2(Calorie.IT per Hour) * 2(Hour), round = 32)
+        assertEqualScientificValue(4(Calorie.IT), 2(Hour) * 2(Calorie.IT per Hour), round = 32)
+        assertEqualScientificValue(4(Millicalorie), 2(Millicalorie per Hour) * 2(Hour), round = 32)
+        assertEqualScientificValue(4(Millicalorie), 2(Hour) * 2(Millicalorie per Hour), round = 32)
+        assertEqualScientificValue(4(Millicalorie.IT), 2(Millicalorie.IT per Hour) * 2(Hour), round = 32)
+        assertEqualScientificValue(4(Millicalorie.IT), 2(Hour) * 2(Millicalorie.IT per Hour), round = 32)
+        assertEqualScientificValue(4(Kilocalorie), 2(Kilocalorie per Hour) * 2(Hour), round = 32)
+        assertEqualScientificValue(4(Kilocalorie), 2(Hour) * 2(Kilocalorie per Hour), round = 32)
+        assertEqualScientificValue(4(Kilocalorie.IT), 2(Kilocalorie.IT per Hour) * 2(Hour), round = 32)
+        assertEqualScientificValue(4(Kilocalorie.IT), 2(Hour) * 2(Kilocalorie.IT per Hour), round = 32)
+        assertEqualScientificValue(4(Megacalorie), 2(Megacalorie per Hour) * 2(Hour), round = 32)
+        assertEqualScientificValue(4(Megacalorie), 2(Hour) * 2(Megacalorie per Hour), round = 32)
+        assertEqualScientificValue(4(Megacalorie.IT), 2(Megacalorie.IT per Hour) * 2(Hour), round = 32)
+        assertEqualScientificValue(4(Megacalorie.IT), 2(Hour) * 2(Megacalorie.IT per Hour), round = 32)
 
         assertEqualScientificValue(4(WattHour).convert(Joule), 2(Watt.metric) * 2(Hour))
         assertEqualScientificValue(4(WattHour).convert(Joule), 2(Hour) * 2(Watt.metric))
@@ -327,82 +330,86 @@ class EnergyUnitTest {
         assertEqualScientificValue(4(HorsepowerHour), 2(Hour) * 2(Horsepower))
         assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForce per Second) * 2(Second))
         assertEqualScientificValue(4(FootPoundForce), 2(Second) * 2(FootPoundForce per Second))
-        assertEqualScientificValue(4(InchPoundForce), 2(InchPoundForce per Second) * 2(Second))
-        assertEqualScientificValue(4(InchPoundForce), 2(Second) * 2(InchPoundForce per Second))
-        assertEqualScientificValue(4(InchPoundForce), 2(InchPoundForce per Minute) * 2(Minute))
-        assertEqualScientificValue(4(InchPoundForce), 2(Minute) * 2(InchPoundForce per Minute))
+        assertEqualScientificValue(4(InchPoundForce), 2(InchPoundForce per Second) * 2(Second), round = 32)
+        assertEqualScientificValue(4(InchPoundForce), 2(Second) * 2(InchPoundForce per Second), round = 32)
+        assertEqualScientificValue(4(InchPoundForce), 2(InchPoundForce per Minute) * 2(Minute), round = 32)
+        assertEqualScientificValue(4(InchPoundForce), 2(Minute) * 2(InchPoundForce per Minute), round = 32)
         assertEqualScientificValue(
             4(BritishThermalUnit),
             2(BritishThermalUnit per Second) * 2(Second),
+            round = 32,
         )
         assertEqualScientificValue(
             4(BritishThermalUnit),
             2(Second) * 2(BritishThermalUnit per Second),
+            round = 32,
         )
         assertEqualScientificValue(
             4(BritishThermalUnit),
             2(BritishThermalUnit per Minute) * 2(Minute),
+            round = 32,
         )
         assertEqualScientificValue(
             4(BritishThermalUnit),
             2(Minute) * 2(BritishThermalUnit per Minute),
+            round = 32,
         )
-        assertEqualScientificValue(4(BritishThermalUnit), 2(BritishThermalUnit per Hour) * 2(Hour))
-        assertEqualScientificValue(4(BritishThermalUnit), 2(Hour) * 2(BritishThermalUnit per Hour))
+        assertEqualScientificValue(4(BritishThermalUnit), 2(BritishThermalUnit per Hour) * 2(Hour), round = 32)
+        assertEqualScientificValue(4(BritishThermalUnit), 2(Hour) * 2(BritishThermalUnit per Hour), round = 32)
     }
 
     @Test
     fun energyFromPressureAndVolumeTest() {
-        assertEquals(4(Erg), 2(Barye) * 2(CubicCentimeter))
-        assertEquals(4(Erg), 2(CubicCentimeter) * 2(Barye))
-        assertEquals(4(Erg), 20(Decibarye) * 2(CubicCentimeter))
-        assertEquals(4(Erg), 2(CubicCentimeter) * 20(Decibarye))
-        assertEquals(4(Joule), 2(Pascal) * 2(CubicMeter))
-        assertEquals(4(Joule), 2(CubicMeter) * 2(Pascal))
-        assertEquals(4(InchPoundForce), 2(PoundSquareInch) * 2(CubicInch))
-        assertEquals(4(InchPoundForce), 2(CubicInch) * 2(PoundSquareInch))
-        assertEquals(4(FootPoundForce), 2(PoundSquareFoot) * 2(CubicFoot))
-        assertEquals(4(FootPoundForce), 2(CubicFoot) * 2(PoundSquareFoot))
-        assertEquals(4(InchOunceForce), 2(OunceSquareInch) * 2(CubicInch))
-        assertEquals(4(InchOunceForce), 2(CubicInch) * 2(OunceSquareInch))
-        assertEquals(4000(InchPoundForce), 2(KiloPoundSquareInch) * 2(CubicInch))
-        assertEquals(4000(InchPoundForce), 2(CubicInch) * 2(KiloPoundSquareInch))
-        assertEquals(4000(InchPoundForce), 2(KipSquareInch) * 2(CubicInch))
-        assertEquals(4000(InchPoundForce), 2(CubicInch) * 2(KipSquareInch))
+        assertEqualScientificValue(4(Erg), 2(Barye) * 2(CubicCentimeter))
+        assertEqualScientificValue(4(Erg), 2(CubicCentimeter) * 2(Barye))
+        assertEqualScientificValue(4(Erg), 20(Decibarye) * 2(CubicCentimeter))
+        assertEqualScientificValue(4(Erg), 2(CubicCentimeter) * 20(Decibarye))
+        assertEqualScientificValue(4(Joule), 2(Pascal) * 2(CubicMeter))
+        assertEqualScientificValue(4(Joule), 2(CubicMeter) * 2(Pascal))
+        assertEqualScientificValue(4(InchPoundForce), 2(PoundSquareInch) * 2(CubicInch), round = 32)
+        assertEqualScientificValue(4(InchPoundForce), 2(CubicInch) * 2(PoundSquareInch), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(PoundSquareFoot) * 2(CubicFoot), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(CubicFoot) * 2(PoundSquareFoot), round = 32)
+        assertEqualScientificValue(4(InchOunceForce), 2(OunceSquareInch) * 2(CubicInch), round = 32)
+        assertEqualScientificValue(4(InchOunceForce), 2(CubicInch) * 2(OunceSquareInch), round = 32)
+        assertEqualScientificValue(4000(InchPoundForce), 2(KiloPoundSquareInch) * 2(CubicInch), round = 31)
+        assertEqualScientificValue(4000(InchPoundForce), 2(CubicInch) * 2(KiloPoundSquareInch), round = 31)
+        assertEqualScientificValue(4000(InchPoundForce), 2(KipSquareInch) * 2(CubicInch), round = 31)
+        assertEqualScientificValue(4000(InchPoundForce), 2(CubicInch) * 2(KipSquareInch), round = 31)
         assertEqualScientificValue(
             4(InchPoundForce),
             2(PoundSquareInch).convert(USTonSquareInch) * 2(CubicInch),
-            5,
+            round = 32,
         )
         assertEqualScientificValue(
             4(InchPoundForce),
             2(CubicInch) * 2(PoundSquareInch).convert(USTonSquareInch),
-            5,
+            round = 32,
         )
         assertEqualScientificValue(
             4(InchPoundForce),
             2(PoundSquareInch).convert(ImperialTonSquareInch) * 2(CubicInch),
-            5,
+            round = 32,
         )
         assertEqualScientificValue(
             4(InchPoundForce),
             2(CubicInch) * 2(PoundSquareInch).convert(ImperialTonSquareInch),
-            5,
+            round = 32,
         )
-        assertEquals(4(FootPoundForce), 2(PoundSquareFoot) * 2(CubicFoot.ukImperial))
-        assertEquals(4(FootPoundForce), 2(CubicFoot.ukImperial) * 2(PoundSquareFoot))
-        assertEquals(4(FootPoundForce), 2(PoundSquareFoot) * 2(CubicFoot.usCustomary))
-        assertEquals(4(FootPoundForce), 2(CubicFoot.usCustomary) * 2(PoundSquareFoot))
-        assertEquals(4(FootPoundForce), 2(PoundSquareFoot.ukImperial) * 2(CubicFoot))
-        assertEquals(4(FootPoundForce), 2(CubicFoot) * 2(PoundSquareFoot.ukImperial))
-        assertEquals(4(FootPoundForce), 2(PoundSquareFoot.ukImperial) * 2(CubicFoot.ukImperial))
-        assertEquals(4(FootPoundForce), 2(CubicFoot.ukImperial) * 2(PoundSquareFoot.ukImperial))
-        assertEquals(4(FootPoundForce), 2(PoundSquareFoot.usCustomary) * 2(CubicFoot))
-        assertEquals(4(FootPoundForce), 2(CubicFoot) * 2(PoundSquareFoot.usCustomary))
-        assertEquals(4(FootPoundForce), 2(PoundSquareFoot.usCustomary) * 2(CubicFoot.usCustomary))
-        assertEquals(4(FootPoundForce), 2(CubicFoot.usCustomary) * 2(PoundSquareFoot.usCustomary))
-        assertEqualScientificValue(4(Joule), 2(Pascal) * 2(CubicMeter).convert(CubicFoot), 5)
-        assertEqualScientificValue(4(Joule), 2(CubicMeter).convert(CubicFoot) * 2(Pascal), 5)
+        assertEqualScientificValue(4(FootPoundForce), 2(PoundSquareFoot) * 2(CubicFoot.ukImperial), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(CubicFoot.ukImperial) * 2(PoundSquareFoot), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(PoundSquareFoot) * 2(CubicFoot.usCustomary), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(CubicFoot.usCustomary) * 2(PoundSquareFoot), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(PoundSquareFoot.ukImperial) * 2(CubicFoot), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(CubicFoot) * 2(PoundSquareFoot.ukImperial), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(PoundSquareFoot.ukImperial) * 2(CubicFoot.ukImperial), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(CubicFoot.ukImperial) * 2(PoundSquareFoot.ukImperial), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(PoundSquareFoot.usCustomary) * 2(CubicFoot), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(CubicFoot) * 2(PoundSquareFoot.usCustomary), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(PoundSquareFoot.usCustomary) * 2(CubicFoot.usCustomary), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(CubicFoot.usCustomary) * 2(PoundSquareFoot.usCustomary), round = 32)
+        assertEqualScientificValue(4(Joule), 2(Pascal) * 2(CubicMeter).convert(CubicFoot), round = 32)
+        assertEqualScientificValue(4(Joule), 2(CubicMeter).convert(CubicFoot) * 2(Pascal), round = 32)
     }
 
     @Test
@@ -411,81 +418,93 @@ class EnergyUnitTest {
         assertEqualScientificValue(4(Joule), 2(Kilogram) * 2(Joule per Kilogram))
         assertEqualScientificValue(4(WattHour.metric), 2(WattHour per Kilogram) * 2(Kilogram))
         assertEqualScientificValue(4(WattHour.metric), 2(Kilogram) * 2(WattHour per Kilogram))
-        assertEqualScientificValue(4(WattHour.imperial), 2(WattHour per Pound) * 2(Pound))
-        assertEqualScientificValue(4(WattHour.imperial), 2(Pound) * 2(WattHour per Pound))
+        assertEqualScientificValue(4(WattHour.imperial), 2(WattHour per Pound) * 2(Pound), round = 30)
+        assertEqualScientificValue(4(WattHour.imperial), 2(Pound) * 2(WattHour per Pound), round = 30)
         assertEqualScientificValue(
             4(WattHour.imperial),
             2(WattHour per Pound) * 2(Pound.ukImperial),
+            round = 30,
         )
         assertEqualScientificValue(
             4(WattHour.imperial),
             2(Pound.ukImperial) * 2(WattHour per Pound),
+            round = 30,
         )
         assertEqualScientificValue(
             4(WattHour.imperial),
             2(WattHour per Pound) * 2(Pound.usCustomary),
+            round = 30,
         )
         assertEqualScientificValue(
             4(WattHour.imperial),
             2(Pound.usCustomary) * 2(WattHour per Pound),
+            round = 30,
         )
         assertEqualScientificValue(
             4(WattHour.imperial),
             2(WattHour per Pound.ukImperial) * 2(Pound),
+            round = 30,
         )
         assertEqualScientificValue(
             4(WattHour.imperial),
             2(Pound) * 2(WattHour per Pound.ukImperial),
+            round = 30,
         )
         assertEqualScientificValue(
             4(WattHour.imperial),
             2(WattHour per Pound.ukImperial) * 2(Pound.ukImperial),
+            round = 30,
         )
         assertEqualScientificValue(
             4(WattHour.imperial),
             2(Pound.ukImperial) * 2(WattHour per Pound.ukImperial),
+            round = 30,
         )
         assertEqualScientificValue(
             4(WattHour.imperial),
             2(WattHour per Pound.usCustomary) * 2(Pound),
+            round = 30,
         )
         assertEqualScientificValue(
             4(WattHour.imperial),
             2(Pound) * 2(WattHour per Pound.usCustomary),
+            round = 30,
         )
         assertEqualScientificValue(
             4(WattHour.imperial),
             2(WattHour per Pound.usCustomary) * 2(Pound.usCustomary),
+            round = 30,
         )
         assertEqualScientificValue(
             4(WattHour.imperial),
             2(Pound.usCustomary) * 2(WattHour per Pound.usCustomary),
+            round = 30,
         )
-        assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForce per Pound) * 2(Pound))
-        assertEqualScientificValue(4(FootPoundForce), 2(Pound) * 2(FootPoundForce per Pound))
-        assertEqualScientificValue(4(Joule), 2(Joule per Kilogram) * 2(Kilogram).convert(Pound), 5)
-        assertEqualScientificValue(4(Joule), 2(Kilogram).convert(Pound) * 2(Joule per Kilogram), 5)
+        assertEqualScientificValue(4(FootPoundForce), 2(FootPoundForce per Pound) * 2(Pound), round = 30)
+        assertEqualScientificValue(4(FootPoundForce), 2(Pound) * 2(FootPoundForce per Pound), round = 30)
+        assertEqualScientificValue(4(Joule), 2(Joule per Kilogram) * 2(Kilogram).convert(Pound), round = 30)
+        assertEqualScientificValue(4(Joule), 2(Kilogram).convert(Pound) * 2(Joule per Kilogram), round = 30)
     }
 
     @Test
     fun energyFromSurfaceTensionAndAreaTest() {
-        assertEquals(4(Erg), 2(Dyne per Centimeter) * 2(SquareCentimeter))
-        assertEquals(4(Erg), 2(SquareCentimeter) * 2(Dyne per Centimeter))
-        assertEquals(4(Joule), 2(Newton per Meter) * 2(SquareMeter))
-        assertEquals(4(Joule), 2(SquareMeter) * 2(Newton per Meter))
-        assertEquals(4(FootPoundForce), 2(PoundForce per Foot) * 2(SquareFoot))
-        assertEquals(4(FootPoundForce), 2(SquareFoot) * 2(PoundForce per Foot))
-        assertEquals(4(FootPoundForce), 2(PoundForce.ukImperial per Foot) * 2(SquareFoot))
-        assertEquals(4(FootPoundForce), 2(SquareFoot) * 2(PoundForce.ukImperial per Foot))
-        assertEquals(4(FootPoundForce), 2(PoundForce.usCustomary per Foot) * 2(SquareFoot))
-        assertEquals(4(FootPoundForce), 2(SquareFoot) * 2(PoundForce.usCustomary per Foot))
-        assertEquals(4(InchPoundForce), 2(PoundForce per Inch) * 2(SquareInch))
-        assertEquals(4(InchPoundForce), 2(SquareInch) * 2(PoundForce per Inch))
-        assertEquals(4(InchPoundForce), 2(PoundForce.ukImperial per Inch) * 2(SquareInch))
-        assertEquals(4(InchPoundForce), 2(SquareInch) * 2(PoundForce.ukImperial per Inch))
-        assertEquals(4(InchPoundForce), 2(PoundForce.usCustomary per Inch) * 2(SquareInch))
-        assertEquals(4(InchPoundForce), 2(SquareInch) * 2(PoundForce.usCustomary per Inch))
-        assertEquals(4(Joule), 2(Newton per Meter) * 2(SquareMeter).convert(SquareFoot))
-        assertEquals(4(Joule), 2(SquareMeter).convert(SquareFoot) * 2(Newton per Meter))
+        assertEqualScientificValue(4(Erg), 2(Dyne per Centimeter) * 2(SquareCentimeter))
+        assertEqualScientificValue(4(Erg), 2(SquareCentimeter) * 2(Dyne per Centimeter))
+        assertEqualScientificValue(4(Joule), 2(Newton per Meter) * 2(SquareMeter))
+        assertEqualScientificValue(4(Joule), 2(SquareMeter) * 2(Newton per Meter))
+        assertEqualScientificValue(4(FootPoundForce), 2(PoundForce per Foot) * 2(SquareFoot), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(SquareFoot) * 2(PoundForce per Foot), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(PoundForce.ukImperial per Foot) * 2(SquareFoot), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(SquareFoot) * 2(PoundForce.ukImperial per Foot), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(PoundForce.usCustomary per Foot) * 2(SquareFoot), round = 32)
+        assertEqualScientificValue(4(FootPoundForce), 2(SquareFoot) * 2(PoundForce.usCustomary per Foot), round = 32)
+        assertEqualScientificValue(4(InchPoundForce), 2(PoundForce per Inch) * 2(SquareInch), round = 32)
+        assertEqualScientificValue(4(InchPoundForce), 2(SquareInch) * 2(PoundForce per Inch), round = 32)
+        assertEqualScientificValue(4(InchPoundForce), 2(PoundForce.ukImperial per Inch) * 2(SquareInch), round = 32)
+        assertEqualScientificValue(4(InchPoundForce), 2(SquareInch) * 2(PoundForce.ukImperial per Inch), round = 32)
+        assertEqualScientificValue(4(InchPoundForce), 2(PoundForce.usCustomary per Inch) * 2(SquareInch), round = 32)
+        assertEqualScientificValue(4(InchPoundForce), 2(SquareInch) * 2(PoundForce.usCustomary per Inch), round = 32)
+        assertEqualScientificValue(4(Joule), 2(Newton per Meter) * 2(SquareMeter).convert(SquareFoot), round = 32)
+        assertEqualScientificValue(4(Joule), 2(SquareMeter).convert(SquareFoot) * 2(Newton per Meter), round = 32)
     }
 }

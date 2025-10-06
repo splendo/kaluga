@@ -23,15 +23,15 @@ class LuminusFluxUnitTest {
 
     @Test
     fun luminusFluxConversionTest() {
-        assertScientificConversion(1, Lumen, 1e+9, Nanolumen)
-        assertScientificConversion(1, Lumen, 1e+6, Microlumen)
-        assertScientificConversion(1, Lumen, 1000.0, Millilumen)
-        assertScientificConversion(1, Lumen, 100.0, Centilumen)
-        assertScientificConversion(1, Lumen, 10.0, Decilumen)
-        assertScientificConversion(1, Lumen, 0.1, Decalumen)
-        assertScientificConversion(1, Lumen, 0.01, Hectolumen)
-        assertScientificConversion(1, Lumen, 0.001, Kilolumen)
-        assertScientificConversion(1, Lumen, 1e-6, Megalumen)
-        assertScientificConversion(1, Lumen, 1e-9, Gigalumen)
+        assertScientificConversion("1", Lumen, "1e+9", Nanolumen)
+        assertScientificConversion("1", Lumen, "1e+6", Microlumen)
+        assertScientificConversion("1", Lumen, "1000.0", Millilumen)
+        assertScientificConversion("1", Lumen, "100.0", Centilumen)
+        assertScientificConversion("1", Lumen, "10.0", Decilumen)
+        assertScientificConversion("1", Lumen, "0.1", Decalumen)
+        assertScientificConversion("1", Lumen, "0.01", Hectolumen)
+        assertScientificConversion("1", Lumen, "0.001", Kilolumen)
+        assertScientificConversion("1", Lumen, "1e-6", Megalumen)
+        assertScientificConversion("1", Lumen, "1e-9", Gigalumen)
     }
 }

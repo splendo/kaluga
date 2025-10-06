@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter
 
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.converter.area.div
 import com.splendo.kaluga.scientific.converter.dynamicViscosity.div
@@ -24,7 +26,27 @@ import com.splendo.kaluga.scientific.converter.length.times
 import com.splendo.kaluga.scientific.converter.specificEnergy.times
 import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.CubicFoot
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.Foot
+import com.splendo.kaluga.scientific.unit.FootPoundForce
+import com.splendo.kaluga.scientific.unit.ImperialStandardGravityAcceleration
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Length
+import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.Pascal
+import com.splendo.kaluga.scientific.unit.Pound
+import com.splendo.kaluga.scientific.unit.PoundSquareFoot
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.SpecificEnergy
+import com.splendo.kaluga.scientific.unit.SquareFoot
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.per
+import com.splendo.kaluga.scientific.unit.ukImperial
+import com.splendo.kaluga.scientific.unit.usCustomary
+import com.splendo.kaluga.scientific.unit.x
 import kotlin.test.Test
 
 class KinematicViscosityTest {
@@ -44,26 +66,66 @@ class KinematicViscosityTest {
     @Test
     fun kinematicViscosityFromDynamicViscosityAndDensity() {
         assertEqualScientificValue(1(SquareMeter per Second), (2(Pascal x Second)) / 2(Kilogram per CubicMeter))
-        assertEqualScientificValue(ImperialStandardGravityAcceleration.value(SquareFoot per Second), (2(PoundSquareFoot x Second)) / 2(Pound per CubicFoot))
-        assertEqualScientificValue(ImperialStandardGravityAcceleration.value(SquareFoot per Second), (2(PoundSquareFoot x Second)) / 2(Pound.ukImperial per CubicFoot))
-        assertEqualScientificValue(ImperialStandardGravityAcceleration.value(SquareFoot per Second), (2(PoundSquareFoot x Second)) / 2(Pound.usCustomary per CubicFoot))
-        assertEqualScientificValue(ImperialStandardGravityAcceleration.value(SquareFoot per Second), (2(PoundSquareFoot.ukImperial x Second)) / 2(Pound per CubicFoot))
-        assertEqualScientificValue(ImperialStandardGravityAcceleration.value(SquareFoot per Second), (2(PoundSquareFoot.ukImperial x Second)) / 2(Pound.ukImperial per CubicFoot))
-        assertEqualScientificValue(ImperialStandardGravityAcceleration.value(SquareFoot per Second), (2(PoundSquareFoot.usCustomary x Second)) / 2(Pound per CubicFoot))
-        assertEqualScientificValue(ImperialStandardGravityAcceleration.value(SquareFoot per Second), (2(PoundSquareFoot.usCustomary x Second)) / 2(Pound.usCustomary per CubicFoot))
-        assertEqualScientificValue(1(SquareMeter per Second), (2(Pascal x Second)) / 2(Kilogram per CubicMeter).convert(Pound per CubicFoot))
+        assertEqualScientificValue(ImperialStandardGravityAcceleration.decimalValue(SquareFoot per Second), (2(PoundSquareFoot x Second)) / 2(Pound per CubicFoot), round = 28)
+        assertEqualScientificValue(
+            ImperialStandardGravityAcceleration.decimalValue(SquareFoot per Second),
+            (2(PoundSquareFoot x Second)) / 2(Pound.ukImperial per CubicFoot),
+            round = 28,
+        )
+        assertEqualScientificValue(
+            ImperialStandardGravityAcceleration.decimalValue(SquareFoot per Second),
+            (2(PoundSquareFoot x Second)) / 2(Pound.usCustomary per CubicFoot),
+            round = 28,
+        )
+        assertEqualScientificValue(
+            ImperialStandardGravityAcceleration.decimalValue(SquareFoot per Second),
+            (2(PoundSquareFoot.ukImperial x Second)) / 2(Pound per CubicFoot),
+            round = 28,
+        )
+        assertEqualScientificValue(
+            ImperialStandardGravityAcceleration.decimalValue(SquareFoot per Second),
+            (2(PoundSquareFoot.ukImperial x Second)) / 2(Pound.ukImperial per CubicFoot),
+            round = 28,
+        )
+        assertEqualScientificValue(
+            ImperialStandardGravityAcceleration.decimalValue(SquareFoot per Second),
+            (2(PoundSquareFoot.usCustomary x Second)) / 2(Pound per CubicFoot),
+            round = 28,
+        )
+        assertEqualScientificValue(
+            ImperialStandardGravityAcceleration.decimalValue(SquareFoot per Second),
+            (2(PoundSquareFoot.usCustomary x Second)) / 2(Pound.usCustomary per CubicFoot),
+            round = 28,
+        )
+        assertEqualScientificValue(1(SquareMeter per Second), (2(Pascal x Second)) / 2(Kilogram per CubicMeter).convert(Pound per CubicFoot), round = 30)
     }
 
     @Test
     fun kinematicViscosityFromSpecificEnergyAndTime() {
         assertEqualScientificValue(4(SquareMeter per Second), (2(Joule per Kilogram)) * 2(Second))
         assertEqualScientificValue(4(SquareMeter per Second), (2(Second) * 2(Joule per Kilogram)))
-        assertEqualScientificValue((4 * ImperialStandardGravityAcceleration.value)(SquareFoot per Second), (2(FootPoundForce per Pound)) * 2(Second))
-        assertEqualScientificValue((4 * ImperialStandardGravityAcceleration.value)(SquareFoot per Second), (2(Second) * 2(FootPoundForce per Pound)))
-        assertEqualScientificValue((4 * ImperialStandardGravityAcceleration.value)(SquareFoot per Second), (2(FootPoundForce per Pound.ukImperial)) * 2(Second))
-        assertEqualScientificValue((4 * ImperialStandardGravityAcceleration.value)(SquareFoot per Second), (2(Second) * 2(FootPoundForce per Pound.ukImperial)))
-        assertEqualScientificValue((4 * ImperialStandardGravityAcceleration.value)(SquareFoot per Second), (2(FootPoundForce per Pound.usCustomary)) * 2(Second))
-        assertEqualScientificValue((4 * ImperialStandardGravityAcceleration.value)(SquareFoot per Second), (2(Second) * 2(FootPoundForce per Pound.usCustomary)))
+        assertEqualScientificValue((4.toDecimal() * ImperialStandardGravityAcceleration.decimalValue)(SquareFoot per Second), (2(FootPoundForce per Pound)) * 2(Second), round = 28)
+        assertEqualScientificValue((4.toDecimal() * ImperialStandardGravityAcceleration.decimalValue)(SquareFoot per Second), (2(Second) * 2(FootPoundForce per Pound)), round = 28)
+        assertEqualScientificValue(
+            (4.toDecimal() * ImperialStandardGravityAcceleration.decimalValue)(SquareFoot per Second),
+            (2(FootPoundForce per Pound.ukImperial)) * 2(Second),
+            round = 28,
+        )
+        assertEqualScientificValue(
+            (4.toDecimal() * ImperialStandardGravityAcceleration.decimalValue)(SquareFoot per Second),
+            (2(Second) * 2(FootPoundForce per Pound.ukImperial)),
+            round = 28,
+        )
+        assertEqualScientificValue(
+            (4.toDecimal() * ImperialStandardGravityAcceleration.decimalValue)(SquareFoot per Second),
+            (2(FootPoundForce per Pound.usCustomary)) * 2(Second),
+            round = 28,
+        )
+        assertEqualScientificValue(
+            (4.toDecimal() * ImperialStandardGravityAcceleration.decimalValue)(SquareFoot per Second),
+            (2(Second) * 2(FootPoundForce per Pound.usCustomary)),
+            round = 28,
+        )
         assertEqualScientificValue(4(SquareMeter per Second), (2((Joule per Kilogram) as SpecificEnergy)) * 2(Second))
         assertEqualScientificValue(4(SquareMeter per Second), (2(Second) * 2((Joule per Kilogram) as SpecificEnergy)))
     }

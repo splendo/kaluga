@@ -18,6 +18,7 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
@@ -104,7 +105,7 @@ data object Gigacoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSyste
 /**
  * The [ElectricCharge] carried by a single proton
  */
-val elementaryCharge = 1.602176634e-19(Coulomb)
+val elementaryCharge = "1.602176634e-19".toDecimal()(Coulomb)
 
 internal fun SerializersModuleBuilder.setupForElectricCharge() {
     polymorphic(ElectricCharge::class) {

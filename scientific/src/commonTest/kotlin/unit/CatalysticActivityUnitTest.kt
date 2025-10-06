@@ -23,15 +23,15 @@ class CatalysticActivityUnitTest {
 
     @Test
     fun catalysticActivityUnitTestConversionTest() {
-        assertScientificConversion(1, Katal, 1e+9, Nanokatal)
-        assertScientificConversion(1, Katal, 1e+6, Microkatal)
-        assertScientificConversion(1, Katal, 1000.0, Millikatal)
-        assertScientificConversion(1, Katal, 100.0, Centikatal)
-        assertScientificConversion(1, Katal, 10.0, Decikatal)
-        assertScientificConversion(1, Katal, 0.1, Decakatal)
-        assertScientificConversion(1, Katal, 0.01, Hectokatal)
-        assertScientificConversion(1, Katal, 0.001, Kilokatal)
-        assertScientificConversion(1, Katal, 0.000001, Megakatal)
-        assertScientificConversion(1, Katal, 0.000000001, Gigakatal)
+        assertScientificConversion("1", Katal, "1e+9", Nanokatal)
+        assertScientificConversion("1", Katal, "1e+6", Microkatal)
+        assertScientificConversion("1", Katal, "1000.0", Millikatal)
+        assertScientificConversion("1", Katal, "100.0", Centikatal)
+        assertScientificConversion("1", Katal, "10.0", Decikatal)
+        assertScientificConversion("1", Katal, "0.1", Decakatal)
+        assertScientificConversion("1", Katal, "0.01", Hectokatal)
+        assertScientificConversion("1", Katal, "0.001", Kilokatal)
+        assertScientificConversion("1", Katal, "0.000001", Megakatal)
+        assertScientificConversion("1", Katal, "0.000000001", Gigakatal)
     }
 }

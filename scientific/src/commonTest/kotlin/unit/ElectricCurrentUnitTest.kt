@@ -23,18 +23,18 @@ class ElectricCurrentUnitTest {
 
     @Test
     fun electricCurrentConversionTest() {
-        assertScientificConversion(1, Ampere, 1e+9, Nanoampere)
-        assertScientificConversion(1, Ampere, 1e+6, Microampere)
-        assertScientificConversion(1, Ampere, 1000.0, Milliampere)
-        assertScientificConversion(1, Ampere, 100.0, Centiampere)
-        assertScientificConversion(1, Ampere, 10.0, Deciampere)
-        assertScientificConversion(1, Ampere, 0.1, Decaampere)
-        assertScientificConversion(1, Ampere, 0.01, Hectoampere)
-        assertScientificConversion(1, Ampere, 0.001, Kiloampere)
-        assertScientificConversion(1, Ampere, 1e-6, Megaampere)
-        assertScientificConversion(1, Ampere, 1e-9, Gigaampere)
+        assertScientificConversion("1", Ampere, "1e+9", Nanoampere)
+        assertScientificConversion("1", Ampere, "1e+6", Microampere)
+        assertScientificConversion("1", Ampere, "1000.0", Milliampere)
+        assertScientificConversion("1", Ampere, "100.0", Centiampere)
+        assertScientificConversion("1", Ampere, "10.0", Deciampere)
+        assertScientificConversion("1", Ampere, "0.1", Decaampere)
+        assertScientificConversion("1", Ampere, "0.01", Hectoampere)
+        assertScientificConversion("1", Ampere, "0.001", Kiloampere)
+        assertScientificConversion("1", Ampere, "1e-6", Megaampere)
+        assertScientificConversion("1", Ampere, "1e-9", Gigaampere)
 
-        assertScientificConversion(1, Ampere, 0.1, Biot)
-        assertScientificConversion(1, Ampere, 0.1, Abampere)
+        assertScientificConversion("1", Ampere, "0.1", Biot)
+        assertScientificConversion("1", Ampere, "0.1", Abampere)
     }
 }

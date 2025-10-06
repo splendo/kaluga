@@ -17,26 +17,29 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
 import kotlin.test.Test
 
 class LinearMassDensityUnitTest {
 
     @Test
     fun linearMassDensityConversionTest() {
-        assertScientificConversion(1, (Kilogram per Meter), 0.671969, (Pound per Foot), 6)
+        val expected = Kilogram.convert(Decimal.ONE, Pound) / Meter.convert(Decimal.ONE, Foot)
+        assertScientificConversion(Decimal.ONE, (Kilogram per Meter), expected, (Pound per Foot), round = 30)
         assertScientificConversion(
-            1,
+            Decimal.ONE,
             (Kilogram per Meter),
-            0.671969,
+            expected,
             (Pound.ukImperial per Foot),
-            6,
+            round = 30,
         )
         assertScientificConversion(
-            1,
+            Decimal.ONE,
             (Kilogram per Meter),
-            0.671969,
+            expected,
             (Pound.usCustomary per Foot),
-            6,
+            round = 30,
         )
     }
 }

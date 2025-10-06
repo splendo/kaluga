@@ -23,6 +23,6 @@ class YankUnitTest {
 
     @Test
     fun yankConversionTest() {
-        assertScientificConversion(1.0, (Newton per Second), 3.6e8, Dyne per Hour)
+        assertScientificConversion("1.0", (Newton per Second), "3.6e8", Dyne per Hour)
     }
 }

@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.times
 import kotlin.test.Test
 
 class DynamicViscosityTest {
@@ -24,11 +26,11 @@ class DynamicViscosityTest {
     @Test
     fun dynamicViscosityConversionTest() {
         assertScientificConversion(
-            1.0,
+            Decimal.ONE,
             (Pascal x Second),
-            0.1450377,
+            Pascal.convert(Decimal.ONE, PoundSquareInch) * Decimal.THOUSAND,
             PoundSquareInch x Millisecond,
-            7,
+            round = 30,
         )
     }
 }

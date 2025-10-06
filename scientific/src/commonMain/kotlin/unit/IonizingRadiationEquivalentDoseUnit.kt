@@ -110,7 +110,7 @@ data object Gigasievert : SievertMultiple(), MetricMultipleUnit<MeasurementSyste
 
 @Serializable
 data object RoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose> {
-    private val SIEVERT_IN_REM = 0.01.toDecimal()
+    private val SIEVERT_IN_REM = "0.01".toDecimal()
     override val symbol = "rem"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.IonizingRadiationEquivalentDose

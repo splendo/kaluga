@@ -46,7 +46,7 @@ class DimensionlessUnitTest {
         val decimalValue = 120.0.toDecimal()
         val percent = 1(Percent)
         val result = decimalValue * percent
-        val expected = 1.2.toDecimal()
+        val expected = "1.2".toDecimal()
         assertEquals(expected, result)
     }
 
@@ -57,7 +57,7 @@ class DimensionlessUnitTest {
         val decimalValue = 120.0.toDecimal()
         val percent = 1(Percent)
         val result = percent * decimalValue
-        val expected = 1.2(One)
+        val expected = "1.2".toDecimal()(One)
         assertEquals(expected, result)
     }
 
@@ -79,7 +79,7 @@ class DimensionlessUnitTest {
         val decimalValue = 120.0.toDecimal()
         val percent = 12(Percent)
         val result = percent / decimalValue
-        val expected = 0.001(One)
+        val expected = "0.001".toDecimal()(One)
         assertEquals(expected, result)
     }
 
@@ -90,7 +90,7 @@ class DimensionlessUnitTest {
         val scientificValue = 120(Kilogram)
         val percent = 1(Percent)
         val result = scientificValue * percent
-        val expected = 1.2(Kilogram)
+        val expected = "1.2".toDecimal()(Kilogram)
         assertEquals(expected, result)
     }
 
@@ -101,7 +101,7 @@ class DimensionlessUnitTest {
         val scientificValue = 120(Kilogram)
         val percent = 1(Percent)
         val result = percent * scientificValue
-        val expected = 1.2(Kilogram)
+        val expected = "1.2".toDecimal()(Kilogram)
         assertEquals(expected, result)
     }
 
@@ -143,7 +143,7 @@ class DimensionlessUnitTest {
     fun permillFromDecimalRepresentationTest() {
         val percent = 1(Percent)
         val result = percent.decimalFraction
-        val expected = 0.01.toDecimal()
+        val expected = "0.01".toDecimal()
         assertEquals(expected, result)
     }
 
@@ -152,7 +152,7 @@ class DimensionlessUnitTest {
         val decimalValue = 120.0.toDecimal()
         val permill = 1(Permill)
         val result = decimalValue * permill
-        val expected = 0.12.toDecimal()
+        val expected = "0.12".toDecimal()
         assertEquals(expected, result)
     }
 
@@ -170,7 +170,7 @@ class DimensionlessUnitTest {
         val scientificValue = 120(Kilogram)
         val permill = 1(Permill)
         val result = scientificValue * permill
-        val expected = 0.12(Kilogram)
+        val expected = "0.12".toDecimal()(Kilogram)
         assertEquals(expected, result)
     }
 

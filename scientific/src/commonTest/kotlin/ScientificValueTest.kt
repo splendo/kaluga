@@ -18,6 +18,8 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.Centimeter
 import com.splendo.kaluga.scientific.unit.Decameter
 import com.splendo.kaluga.scientific.unit.Decimeter
@@ -37,6 +39,13 @@ class ScientificValueTest {
 
     @Serializable
     data class ValueContainer(val value: DefaultScientificValue<*, *>)
+
+    @Serializable
+    data class LegacyDefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(override val value: Double, override val unit: Unit) :
+        ScientificValue<Quantity, Unit>
+
+    @Serializable
+    data class LegacyValueContainer(val value: LegacyDefaultScientificValue<*, *>)
 
     @Test
     fun testCalculations() {
@@ -61,11 +70,28 @@ class ScientificValueTest {
 
     @Test
     fun testSerialization() {
+        val json = Json { ignoreUnknownKeys = true }
         val value = 10(Meter)
         val container = ValueContainer(value)
-        val json = Json.encodeToString(ValueContainer.serializer(), container)
-        val decoded = Json.decodeFromString(ValueContainer.serializer(), json)
+        val encoded = json.encodeToString(ValueContainer.serializer(), container)
+        val decoded = json.decodeFromString(ValueContainer.serializer(), encoded)
         assertEquals(container, decoded)
+
+        // Test backwards compatible serialization
+        val legacyValue = LegacyDefaultScientificValue(10.0, Meter)
+        val legacyContainer = LegacyValueContainer(legacyValue)
+        val legacyJson = json.encodeToString(LegacyValueContainer.serializer(), legacyContainer)
+        val legacyDecoded = json.decodeFromString(ValueContainer.serializer(), legacyJson)
+        assertEquals(container, legacyDecoded)
+
+        // Test forwards compatible serialization
+        val decodedAsLegacy = json.decodeFromString(LegacyValueContainer.serializer(), encoded)
+        assertEquals(legacyContainer, decodedAsLegacy)
+
+        val serializer = DefaultScientificValue.serializer(PhysicalQuantity.Length.serializer(), Meter.serializer())
+        val valueJson = json.encodeToString(serializer, value)
+        val decodedValue = json.decodeFromString(serializer, valueJson)
+        assertEquals(value, decodedValue)
     }
 
     @Test
@@ -78,39 +104,39 @@ class ScientificValueTest {
         assertEquals(15(Inch), fullInch)
         assertEquals(0(Foot), zeroFoot)
 
-        val (roundedFoot, roundedInch) = 11.999999999999(Inch).split(Foot, Inch)
+        val (roundedFoot, roundedInch) = "11.999999999999".toDecimal()(Inch).split(Foot, Inch)
         assertEquals(1(Foot), roundedFoot)
         assertEquals(0(Inch), roundedInch)
 
-        val (meter, centimeter) = 2.34(Meter).split(Centimeter, 1U)
-        assertEquals(2.3(Meter), meter)
+        val (meter, centimeter) = "2.34".toDecimal()(Meter).split(Centimeter, 1U)
+        assertEquals("2.3".toDecimal()(Meter), meter)
         assertEquals(4(Centimeter), centimeter)
 
-        val (roundedMeter, meterFraction) = 2.34(Meter).split(Meter)
+        val (roundedMeter, meterFraction) = "2.34".toDecimal()(Meter).split(Meter)
         assertEquals(2(Meter), roundedMeter)
-        assertEquals(0.34(Meter), meterFraction)
+        assertEquals("0.34".toDecimal()(Meter), meterFraction)
     }
 
     @Test
     fun testToComponents() {
-        val length = 12345.678(Meter)
+        val length = "12345.678".toDecimal()(Meter)
 
         length.toComponents(Meter, Centimeter) { meter, centimeter ->
             assertEquals(12345(Meter), meter)
-            assertEquals(67.8(Centimeter), centimeter)
+            assertEquals("67.8".toDecimal()(Centimeter), centimeter)
         }
 
         length.toComponents(Kilometer, Meter, Centimeter) { kilometer, meter, centimeter ->
             assertEquals(12(Kilometer), kilometer)
             assertEquals(345(Meter), meter)
-            assertEquals(67.8(Centimeter), centimeter)
+            assertEquals("67.8".toDecimal()(Centimeter), centimeter)
         }
 
         length.toComponents(Kilometer, Decameter, Meter, Centimeter) { kilometer, decameter, meter, centimeter ->
             assertEquals(12(Kilometer), kilometer)
             assertEquals(34(Decameter), decameter)
             assertEquals(5(Meter), meter)
-            assertEquals(67.8(Centimeter), centimeter)
+            assertEquals("67.8".toDecimal()(Centimeter), centimeter)
         }
 
         length.toComponents(Kilometer, Hectometer, Decameter, Meter, Centimeter) { kilometer, hectometer, decameter, meter, centimeter ->
@@ -118,34 +144,34 @@ class ScientificValueTest {
             assertEquals(3(Hectometer), hectometer)
             assertEquals(4(Decameter), decameter)
             assertEquals(5(Meter), meter)
-            assertEquals(67.8(Centimeter), centimeter)
+            assertEquals("67.8".toDecimal()(Centimeter), centimeter)
         }
 
         length.toComponents(Kilometer, Centimeter, 3U) { kilometer, centimeter ->
-            assertEquals(12.345(Kilometer), kilometer)
-            assertEquals(67.8(Centimeter), centimeter)
+            assertEquals("12.345".toDecimal()(Kilometer), kilometer)
+            assertEquals("67.8".toDecimal()(Centimeter), centimeter)
         }
 
         length.toComponents(Meter, Kilometer) { meter, kilometer ->
             assertEquals(12345.0(Meter), meter)
-            assertEquals(0.000678(Kilometer), kilometer)
+            assertEquals("0.000678".toDecimal()(Kilometer), kilometer)
         }
 
         length.toComponents(Kilometer, Kilometer) { kilometer, fractionKilometer ->
             assertEquals(12(Kilometer), kilometer)
-            assertEquals(0.345678(Kilometer), fractionKilometer)
+            assertEquals("0.345678".toDecimal()(Kilometer), fractionKilometer)
         }
 
         length.toComponents(Kilometer, Kilometer, Kilometer) { kilometer, zeroKilometer, fractionKilometer ->
             assertEquals(12(Kilometer), kilometer)
             assertEquals(0(Kilometer), zeroKilometer)
-            assertEquals(0.345678(Kilometer), fractionKilometer)
+            assertEquals("0.345678".toDecimal()(Kilometer), fractionKilometer)
         }
 
         length.toComponents(Kilometer, Meter, Kilometer) { kilometer, meter, fractionKilometer ->
             assertEquals(12(Kilometer), kilometer)
             assertEquals(345(Meter), meter)
-            assertEquals(0.000678(Kilometer), fractionKilometer)
+            assertEquals("0.000678".toDecimal()(Kilometer), fractionKilometer)
         }
     }
 }
