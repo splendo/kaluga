@@ -457,7 +457,7 @@ abstract class BaseScanner constructor(
             rssi,
             advertisementData,
             connectionManagerBuilder,
-            defaultConnectionSettings,
+            currentConnectionSettings,
         )(coroutineContext)
     }
 
