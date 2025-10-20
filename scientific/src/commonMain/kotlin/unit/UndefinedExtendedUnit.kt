@@ -216,8 +216,8 @@ sealed class WrappedUndefinedExtendedUnit<
 
     override val numeratorUnits: List<ScientificUnit<*>> by lazy { listOf(wrapped) }
 
-    override fun fromSIUnit(value: Decimal): Decimal = wrapped.toSIUnit(value)
-    override fun toSIUnit(value: Decimal): Decimal = wrapped.fromSIUnit(value)
+    override fun fromSIUnit(value: Decimal): Decimal = wrapped.fromSIUnit(value)
+    override fun toSIUnit(value: Decimal): Decimal = wrapped.toSIUnit(value)
     override fun deltaFromSIUnitDelta(delta: Decimal): Decimal = wrapped.deltaFromSIUnitDelta(delta)
     override fun deltaToSIUnitDelta(delta: Decimal): Decimal = wrapped.deltaToSIUnitDelta(delta)
 

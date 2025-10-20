@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.round
 import com.splendo.kaluga.base.utils.toDecimal
@@ -50,24 +51,42 @@ class UndefinedScientificUnitTest {
 
     val undefinedUnitB = CustomUndefinedExtendedUnit.MetricAndImperial(
         PhysicalQuantity.Weight,
-        siFactor = 1.0,
+        siFactor = 2.0,
         siOffset = 0.0,
         symbol = "B",
     )
 
     val undefinedUnitC = CustomUndefinedExtendedUnit.MetricAndImperial(
         PhysicalQuantity.AmountOfSubstance,
-        siFactor = 1.0,
-        siOffset = 0.0,
+        siFactor = 3.0,
+        siOffset = 2.0,
         symbol = "C",
     )
 
     val undefinedUnitD = CustomUndefinedExtendedUnit.MetricAndImperial(
         PhysicalQuantity.ElectricCharge,
-        siFactor = 1.0,
-        siOffset = 0.0,
+        siFactor = 4.0,
+        siOffset = 2.0,
         symbol = "D",
     )
+
+    @Test
+    fun testToFromSIUnit() {
+        assertEquals(Decimal.ONE, undefinedUnitA.toSIUnit(Decimal.ONE))
+        assertEquals(Decimal.ONE, undefinedUnitA.fromSIUnit(Decimal.ONE))
+
+        assertEquals(0.5.toDecimal(), undefinedUnitB.toSIUnit(Decimal.ONE))
+        assertEquals(2.toDecimal(), undefinedUnitB.fromSIUnit(Decimal.ONE))
+
+        assertEquals((-1).toDecimal() / 3.toDecimal(), undefinedUnitC.toSIUnit(Decimal.ONE))
+        assertEquals(5.toDecimal(), undefinedUnitC.fromSIUnit(Decimal.ONE))
+
+        assertEquals((-0.25).toDecimal(), undefinedUnitD.toSIUnit(Decimal.ONE))
+        assertEquals(6.toDecimal(), undefinedUnitD.fromSIUnit(Decimal.ONE))
+
+        assertEquals(Hour.toSIUnit(Decimal.ONE), Hour.asUndefined().toSIUnit(Decimal.ONE))
+        assertEquals(Hour.fromSIUnit(Decimal.ONE), Hour.asUndefined().fromSIUnit(Decimal.ONE))
+    }
 
     @Test
     fun testAReciprocal() {
