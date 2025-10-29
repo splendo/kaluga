@@ -21,5 +21,5 @@ import com.splendo.kaluga.bluetooth.Descriptor
 import platform.CoreBluetooth.CBDescriptor
 
 actual class LocalDescriptor internal constructor(val descriptor: CBDescriptor, actual override val characteristic: LocalCharacteristic) : Descriptor {
-    override val uuid = descriptor.UUID
+    actual override val uuid = descriptor.UUID
 }

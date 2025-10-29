@@ -50,7 +50,7 @@ actual class LocalCharacteristic internal constructor(
 ) : Characteristic,
     FlowCollector<ByteArray> {
 
-    override val uuid: UUID = characteristic.UUID
+    actual override val uuid: UUID = characteristic.UUID
 
     internal class DSL(val uuid: UUID, private val server: BluetoothServer, val logger: Logger) : LocalCharacteristicDSL {
 
@@ -136,7 +136,7 @@ actual class LocalCharacteristic internal constructor(
         WRITE_ENCRYPTION_REQUIRED(CBAttributePermissionsWriteEncryptionRequired),
     }
 
-    override val properties: Set<CharacteristicProperty> = CharacteristicProperty.fromInt(characteristic.properties.toInt())
+    actual override val properties: Set<CharacteristicProperty> = CharacteristicProperty.fromInt(characteristic.properties.toInt())
     actual val permissions: Set<Permission> = Permission.entries.filter {
         it.cbAttributePermission and characteristic.permissions != 0UL
     }.toSet()
@@ -163,7 +163,7 @@ actual class LocalCharacteristic internal constructor(
             false
         }
 
-    override suspend fun emit(value: ByteArray) {
+    actual override suspend fun emit(value: ByteArray) {
         notifyAll(value)
     }
 

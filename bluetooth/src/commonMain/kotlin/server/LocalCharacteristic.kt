@@ -49,11 +49,14 @@ expect class LocalCharacteristic :
         WRITE_ENCRYPTION_REQUIRED,
     }
 
-    expect override val service: LocalService
-    expect val permissions: Set<Permission>
-    expect val subscribedDevices: StateFlow<List<ConnectedDevice>>
-    expect override val descriptors: List<LocalDescriptor>
+    override val uuid: UUID
+    override val service: LocalService
+    override val properties: Set<CharacteristicProperty>
+    val permissions: Set<Permission>
+    val subscribedDevices: StateFlow<List<ConnectedDevice>>
+    override val descriptors: List<LocalDescriptor>
 
-    expect suspend fun notify(device: ConnectedDevice, value: ByteArray): Boolean
-    expect suspend fun notifyAll(value: ByteArray): Boolean
+    suspend fun notify(device: ConnectedDevice, value: ByteArray): Boolean
+    suspend fun notifyAll(value: ByteArray): Boolean
+    override suspend fun emit(value: ByteArray)
 }

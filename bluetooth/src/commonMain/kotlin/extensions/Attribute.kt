@@ -1,6 +1,7 @@
 package com.splendo.kaluga.bluetooth.extensions
 
 import com.splendo.kaluga.bluetooth.Attribute
+import com.splendo.kaluga.bluetooth.RemoteAttribute
 import com.splendo.kaluga.bluetooth.UUIDException
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.get
@@ -17,4 +18,5 @@ import kotlin.jvm.JvmName
 operator fun <AttributeType, ReadAction, WriteAction> Flow<List<AttributeType>>.get(
     uuidString: String,
 ): Flow<AttributeType?>
-where AttributeType : Attribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write = this[uuidFrom(uuidString)]
+where AttributeType : RemoteAttribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write =
+    this[uuidFrom(uuidString)]

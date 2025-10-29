@@ -54,5 +54,5 @@ actual class LocalDescriptor internal constructor(val descriptor: BluetoothGattD
         }
     }
 
-    override val uuid: UUID = descriptor.uuid
+    actual override val uuid: UUID = descriptor.uuid
 }

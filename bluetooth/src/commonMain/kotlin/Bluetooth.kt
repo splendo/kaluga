@@ -373,7 +373,7 @@ fun Flow<ConnectableDevice?>.state(): Flow<DeviceState> = this.flatMapLatest { d
  * This will automatically discover services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
  * @return the [Flow] of the list of [Service] associated with the [ConnectableDevice] in the given [Flow]
  */
-fun Flow<ConnectableDevice?>.services(): Flow<List<Service>> = state().transformLatest { deviceState ->
+fun Flow<ConnectableDevice?>.services(): Flow<List<RemoteService>> = state().transformLatest { deviceState ->
     emit(
         when (deviceState) {
             is ConnectableDeviceState.Connected -> {

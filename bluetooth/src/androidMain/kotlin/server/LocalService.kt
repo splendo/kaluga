@@ -23,7 +23,7 @@ import com.splendo.kaluga.bluetooth.UUID
 
 actual class LocalService internal constructor(
     val service: BluetoothGattService,
-    override val type: Service.Type,
+    actual override val type: Service.Type,
     private val server: BluetoothServer,
     buildIncludedServices: LocalService.() -> List<LocalService>,
     buildCharacteristics: LocalService.() -> List<LocalCharacteristic>,
@@ -83,7 +83,7 @@ actual class LocalService internal constructor(
         )
     }
 
-    override val uuid: UUID = service.uuid
+    actual override val uuid: UUID = service.uuid
     actual override val characteristics: List<LocalCharacteristic> = buildCharacteristics().also { characteristics ->
         characteristics.forEach { service.addCharacteristic(it.characteristic) }
     }

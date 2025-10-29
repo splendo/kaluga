@@ -1,11 +1,11 @@
 package com.splendo.kaluga.bluetooth.extensions
 
 import com.splendo.kaluga.bluetooth.Characteristic
-import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.UUIDException
 import com.splendo.kaluga.bluetooth.characteristics
 import com.splendo.kaluga.bluetooth.descriptors
-import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
+import com.splendo.kaluga.bluetooth.RemoteDescriptor
 import com.splendo.kaluga.bluetooth.services
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.map
  * @param characteristicUUID string characteristic uuid representation
  * @throws UUIDException.InvalidFormat
  */
-fun Flow<Device?>.dataFlow(serviceUUID: String, characteristicUUID: String) = characteristicsFlow(serviceUUID, characteristicUUID).flatMapLatest { characteristic ->
+fun Flow<ConnectableDevice?>.dataFlow(serviceUUID: String, characteristicUUID: String) = characteristicsFlow(serviceUUID, characteristicUUID).flatMapLatest { characteristic ->
     characteristic.map { it ?: byteArrayOf() }
 }
 
@@ -29,7 +29,7 @@ fun Flow<Device?>.dataFlow(serviceUUID: String, characteristicUUID: String) = ch
  * @param characteristicUUID string characteristic uuid representation
  * @throws UUIDException.InvalidFormat
  */
-fun Flow<Device?>.dataFlow(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) =
+fun Flow<ConnectableDevice?>.dataFlow(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) =
     descriptorsFlow(serviceUUID, characteristicUUID, descriptorUUID).flatMapLatest { descriptor ->
         descriptor.map { it ?: byteArrayOf() }
     }
@@ -40,7 +40,7 @@ fun Flow<Device?>.dataFlow(serviceUUID: String, characteristicUUID: String, desc
  * @param characteristicUUID string characteristic uuid representation
  * @throws UUIDException.InvalidFormat
  */
-fun Flow<Device?>.characteristicsFlow(serviceUUID: String, characteristicUUID: String) = services()[serviceUUID]
+fun Flow<ConnectableDevice?>.characteristicsFlow(serviceUUID: String, characteristicUUID: String) = services()[serviceUUID]
     .characteristics()[characteristicUUID]
     .filterNotNull()
 
@@ -51,7 +51,7 @@ fun Flow<Device?>.characteristicsFlow(serviceUUID: String, characteristicUUID: S
  * @param characteristicUUID string characteristic uuid representation
  * @throws UUIDException.InvalidFormat
  */
-suspend fun Flow<Device?>.characteristic(serviceUUID: String, characteristicUUID: String) = services()[serviceUUID]
+suspend fun Flow<ConnectableDevice?>.characteristic(serviceUUID: String, characteristicUUID: String) = services()[serviceUUID]
     .characteristics()[characteristicUUID]
     .filterNotNull()
     .first()
@@ -60,23 +60,23 @@ suspend fun Flow<Device?>.characteristic(serviceUUID: String, characteristicUUID
  * Provides access to descriptors's flow by service, characteristic and descriptor string uuids.
  * @param serviceUUID string service uuid representation
  * @param characteristicUUID string characteristic uuid representation
- * @param des
+ * @param descriptorUUID string descriptor uuid representation
  * @throws UUIDException.InvalidFormat
  */
-fun Flow<Device?>.descriptorsFlow(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) = services()[serviceUUID]
+fun Flow<ConnectableDevice?>.descriptorsFlow(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) = services()[serviceUUID]
     .characteristics()[characteristicUUID]
     .descriptors()[descriptorUUID]
     .filterNotNull()
 
 /**
- * Provides access to [Descriptor] by service, characteristic and descriptor string uuids.
+ * Provides access to [RemoteDescriptor] by service, characteristic and descriptor string uuids.
  * The method will suspend if descriptor is not available.
  * @param serviceUUID string service uuid representation
  * @param characteristicUUID string characteristic uuid representation
  * @param descriptorUUID string descriptor uuid representation
  * @throws UUIDException.InvalidFormat
  */
-suspend fun Flow<Device?>.descriptor(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) = services()[serviceUUID]
+suspend fun Flow<ConnectableDevice?>.descriptor(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) = services()[serviceUUID]
     .characteristics()[characteristicUUID]
     .descriptors()[descriptorUUID]
     .filterNotNull()

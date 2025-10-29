@@ -24,7 +24,7 @@ import platform.CoreBluetooth.CBMutableService
 
 actual class LocalService(
     val service: CBMutableService,
-    override val type: Service.Type,
+    actual override val type: Service.Type,
     private val server: BluetoothServer,
     buildIncludedServices: LocalService.() -> List<LocalService>,
     buildCharacteristics: LocalService.() -> List<LocalCharacteristic>,
@@ -81,7 +81,7 @@ actual class LocalService(
         )
     }
 
-    override val uuid: UUID = service.UUID
+    actual override val uuid: UUID = service.UUID
     actual override val characteristics: List<LocalCharacteristic> = buildCharacteristics().also { characteristics ->
         service.setCharacteristics(characteristics.map { it.characteristic })
     }

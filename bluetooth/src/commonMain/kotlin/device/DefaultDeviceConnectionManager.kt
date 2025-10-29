@@ -124,10 +124,10 @@ interface DeviceConnectionManager {
         data object Discovering : Event()
 
         /**
-         * [Event] indicating the device has discovered a list of [Service]
-         * @property services the list of [Service] discovered
+         * [Event] indicating the device has discovered a list of [RemoteService]
+         * @property services the list of [RemoteService] discovered
          */
-        data class DiscoveredServices(val services: List<Service>) : Event()
+        data class DiscoveredServices(val services: List<RemoteService>) : Event()
 
         /**
          * [Event] indicating a [DeviceAction] should be scheduled
@@ -356,7 +356,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     @JvmName("handleDiscoverWrappersCompleted")
     internal fun handleDiscoverCompleted(serviceWrappers: List<ServiceWrapper>) = handleDiscoverCompleted(serviceWrappers.map { createService(it) })
 
-    protected open fun handleDiscoverCompleted(services: List<Service>) {
+    protected open fun handleDiscoverCompleted(services: List<RemoteService>) {
         logger.info { "Discovered services: ${services.map { it.uuid.uuidString }}" }
         emitEvent(DeviceConnectionManager.Event.DiscoveredServices(services))
     }

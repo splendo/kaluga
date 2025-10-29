@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.UUID
 
 interface LocalDescriptorDSL {
     fun readable(encrypted: Boolean = false, onRead: suspend LocalDescriptor.(ConnectedDevice, Int) -> GattResponse.ReadResponse)
@@ -27,5 +28,6 @@ interface LocalDescriptorDSL {
 
 expect class LocalDescriptor : Descriptor {
 
-    expect override val characteristic: LocalCharacteristic
+    override val uuid: UUID
+    override val characteristic: LocalCharacteristic
 }

@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
+import com.splendo.kaluga.bluetooth.RemoteDescriptor
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.ContextualLogger
 import com.splendo.kaluga.logging.defaultLogger
@@ -26,11 +26,12 @@ import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
 
 /**
- * Mock implementation of [Descriptor]
+ * Mock implementation of [RemoteDescriptor]
  */
 class MockDescriptor(descriptorWrapper: DescriptorWrapper, emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit) :
-    Descriptor(
+    RemoteDescriptor(
         wrapper = descriptorWrapper,
+        characteristic = TODO(),
         emitNewAction = emitNewAction,
         logger = ContextualLogger(defaultLogger, "MockDescriptor"),
     ) {

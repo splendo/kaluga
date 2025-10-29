@@ -137,8 +137,8 @@ actual class LocalCharacteristic internal constructor(
         }
     }
 
-    override val uuid: UUID = characteristic.uuid
-    override val properties: Set<CharacteristicProperty> = CharacteristicProperty.fromInt(characteristic.properties)
+    actual override val uuid: UUID = characteristic.uuid
+    actual override val properties: Set<CharacteristicProperty> = CharacteristicProperty.fromInt(characteristic.properties)
 
     private val _subscribedDevices = MutableStateFlow(emptyList<ConnectedDevice>())
     actual val subscribedDevices = _subscribedDevices.asStateFlow()
@@ -166,7 +166,7 @@ actual class LocalCharacteristic internal constructor(
         return result
     }
 
-    override suspend fun emit(value: ByteArray) {
+    actual override suspend fun emit(value: ByteArray) {
         notifyAll(value)
     }
 

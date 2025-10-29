@@ -32,6 +32,9 @@ sealed interface LocalServiceDSL {
 
 expect class LocalService : Service {
 
-    expect override val characteristics: List<LocalCharacteristic>
-    expect override val includedServices: List<LocalService>
+    override val uuid: UUID
+    override val type: Service.Type
+
+    override val characteristics: List<LocalCharacteristic>
+    override val includedServices: List<LocalService>
 }

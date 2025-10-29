@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.bluetooth
 
+import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
 import com.splendo.kaluga.bluetooth.ServiceWrapper
@@ -26,7 +27,7 @@ class AndroidMockCharacteristicWrapper(
     override val uuid: UUID = UUID.randomUUID(),
     descriptorUUIDs: List<UUID> = emptyList(),
     override val service: ServiceWrapper,
-    override val properties: Int = 0,
+    override val properties: Set<CharacteristicProperty> = emptySet(),
 ) : MockCharacteristicWrapper {
 
     override var value: ByteArray? = null
