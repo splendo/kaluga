@@ -36,6 +36,8 @@ actual interface CharacteristicWrapper {
      */
     actual val uuid: CBUUID
 
+    actual val service: ServiceWrapper
+
     /**
      * The list of [DescriptorWrapper] of associated with the characteristic
      */
@@ -47,9 +49,9 @@ actual interface CharacteristicWrapper {
     actual val value: NSData?
 
     /**
-     * The integer representing all [CharacteristicProperties] of the characteristic
+     * The set of all [CharacteristicProperty] of the characteristic
      */
-    actual val properties: Int
+    actual val properties: Set<CharacteristicProperty>
 
     /**
      * Request a [CBPeripheral] to read the characteristic
@@ -82,11 +84,12 @@ class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic)
     override val uuid: CBUUID get() {
         return characteristic.UUID
     }
+    override val service: ServiceWrapper = DefaultServiceWrapper(characteristic.service!!)
     override val descriptors: List<DescriptorWrapper> = characteristic.descriptors?.typedList<CBDescriptor>()?.map { DefaultDescriptorWrapper(it) } ?: emptyList()
     override val value: NSData? get() {
         return characteristic.value
     }
-    override val properties get() = characteristic.properties.toInt()
+    override val properties get() = CharacteristicProperty.fromInt(characteristic.properties.toInt())
 
     override fun readValue(peripheral: CBPeripheral) {
         peripheral.readValueForCharacteristic(characteristic)

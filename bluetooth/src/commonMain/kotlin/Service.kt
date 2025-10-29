@@ -20,25 +20,41 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.ContextualLogger
 
+interface Service : Attribute {
+    enum class Type {
+        PRIMARY,
+        SECONDARY;
+    }
+
+    val type: Type
+    val includedServices: List<Service>
+    val characteristics: List<Characteristic>
+}
+
 /**
  * A Bluetooth Service
  * @param service the [ServiceWrapper] to access the platform service
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
  * @param logger the [ContextualLogger] to use for logging.
  */
-class Service(service: ServiceWrapper, emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit, logger: ContextualLogger) {
+class RemoteService(
+    service: ServiceWrapper,
+    override val includedServices: List<RemoteService>,
+    emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit, logger: ContextualLogger) : Service {
 
     /**
      * The [UUID] of the service
      */
-    val uuid = service.uuid
+    override val uuid = service.uuid
+    override val type = service.type
 
     /**
      * The list of [Characteristic] associated with the service
      */
-    val characteristics = service.characteristics.map {
-        Characteristic(
+    override val characteristics: List<RemoteCharacteristic> = service.characteristics.map {
+        RemoteCharacteristic(
             it,
+            service = this,
             emitNewAction = emitNewAction,
             logger = logger.withAppendedContext("Service" to uuid.uuidString, "Characteristic" to it.uuid.uuidString),
         )
@@ -49,6 +65,9 @@ class Service(service: ServiceWrapper, emitNewAction: (DeviceConnectionManager.E
  * Accessor to the platform level Bluetooth service
  */
 expect interface ServiceWrapper {
+    val type: Service.Type
+
+    val includedServices: List<ServiceWrapper>
 
     /**
      * The list of [CharacteristicWrapper] associated with the service

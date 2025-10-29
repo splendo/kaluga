@@ -28,6 +28,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 
+interface Attribute {
+    /**
+     * The [UUID] of the attribute
+     */
+    val uuid: UUID
+}
+
 /**
  * A bluetooth attribute conforming to the Attribute Protocol in Bluetooth Low Energy
  * @param ReadAction the [DeviceAction.Read] associated with the attribute
@@ -36,16 +43,13 @@ import kotlinx.coroutines.flow.MutableSharedFlow
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
  * @param logger the [ContextualLogger] to use for logging.
  */
-abstract class Attribute<ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write>(
+abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write>(
     initialValue: ByteArray? = null,
     private val emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     private val logger: ContextualLogger,
-) : Flow<ByteArray?> {
+) : Flow<ByteArray?>, Attribute {
 
-    /**
-     * The [UUID] of the attribute
-     */
-    abstract val uuid: UUID
+
 
     override suspend fun collect(collector: FlowCollector<ByteArray?>) = sharedFlow.collect(collector)
 

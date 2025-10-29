@@ -63,7 +63,7 @@ actual interface CharacteristicWrapper {
     /**
      * The [ServiceWrapper] of the Service of the [BluetoothGattCharacteristic]
      */
-    val service: ServiceWrapper
+    actual val service: ServiceWrapper
 
     /**
      * The list of [DescriptorWrapper] of associated with the characteristic
@@ -76,9 +76,9 @@ actual interface CharacteristicWrapper {
     val permissions: Int
 
     /**
-     * The integer representing all [CharacteristicProperties] of the characteristic
+     * The set of all [CharacteristicProperty] of the characteristic
      */
-    actual val properties: Int
+    actual val properties: Set<CharacteristicProperty>
 
     /**
      * The [WriteType] of the characteristic
@@ -120,9 +120,9 @@ class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGatt
         get() {
             return gattCharacteristic.permissions
         }
-    override val properties: Int
+    override val properties: Set<CharacteristicProperty>
         get() {
-            return gattCharacteristic.properties
+            return CharacteristicProperty.fromInt(gattCharacteristic.properties)
         }
     override var writeType: CharacteristicWrapper.WriteType
         get() = when (gattCharacteristic.writeType) {

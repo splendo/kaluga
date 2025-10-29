@@ -46,18 +46,18 @@ sealed class DeviceAction {
      */
     sealed class Read : DeviceAction() {
         /**
-         * A [DeviceAction.Read] on a [com.splendo.kaluga.bluetooth.Characteristic]
-         * @property characteristic the [com.splendo.kaluga.bluetooth.Characteristic] to read the value of
+         * A [DeviceAction.Read] on a [com.splendo.kaluga.bluetooth.RemoteCharacteristic]
+         * @property characteristic the [com.splendo.kaluga.bluetooth.RemoteCharacteristic] to read the value of
          */
-        class Characteristic(val characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Read() {
+        class Characteristic(val characteristic: com.splendo.kaluga.bluetooth.RemoteCharacteristic) : Read() {
             override fun toString(): String = "DeviceAction.Read.Characteristic(${characteristic.uuid})"
         }
 
         /**
-         * A [DeviceAction.Read] on a [com.splendo.kaluga.bluetooth.Descriptor]
-         * @property descriptor the [com.splendo.kaluga.bluetooth.Descriptor] to read the value of
+         * A [DeviceAction.Read] on a [com.splendo.kaluga.bluetooth.RemoteDescriptor]
+         * @property descriptor the [com.splendo.kaluga.bluetooth.RemoteDescriptor] to read the value of
          */
-        class Descriptor(val descriptor: com.splendo.kaluga.bluetooth.Descriptor) : Read() {
+        class Descriptor(val descriptor: com.splendo.kaluga.bluetooth.RemoteDescriptor) : Read() {
             override fun toString(): String = "DeviceAction.Read.Descriptor(${descriptor.uuid})"
         }
     }
@@ -69,43 +69,43 @@ sealed class DeviceAction {
     sealed class Write(val newValue: ByteArray) : DeviceAction() {
 
         /**
-         * A [DeviceAction.Write] on a [com.splendo.kaluga.bluetooth.Characteristic]
+         * A [DeviceAction.Write] on a [com.splendo.kaluga.bluetooth.RemoteCharacteristic]
          * @param newValue the [ByteArray] to write
-         * @property characteristic the [com.splendo.kaluga.bluetooth.Characteristic] to read the value of
+         * @property characteristic the [com.splendo.kaluga.bluetooth.RemoteCharacteristic] to read the value of
          */
-        class Characteristic(newValue: ByteArray, val characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Write(newValue) {
+        class Characteristic(newValue: ByteArray, val characteristic: com.splendo.kaluga.bluetooth.RemoteCharacteristic) : Write(newValue) {
             override fun toString(): String = "DeviceAction.Write.Characteristic(${characteristic.uuid})"
         }
 
         /**
-         * A [DeviceAction.Write] on a [com.splendo.kaluga.bluetooth.Descriptor]
+         * A [DeviceAction.Write] on a [com.splendo.kaluga.bluetooth.RemoteDescriptor]
          * @param newValue the [ByteArray] to write
-         * @property descriptor the [com.splendo.kaluga.bluetooth.Descriptor] to read the value of
+         * @property descriptor the [com.splendo.kaluga.bluetooth.RemoteDescriptor] to read the value of
          */
-        class Descriptor(newValue: ByteArray, val descriptor: com.splendo.kaluga.bluetooth.Descriptor) : Write(newValue) {
+        class Descriptor(newValue: ByteArray, val descriptor: com.splendo.kaluga.bluetooth.RemoteDescriptor) : Write(newValue) {
             override fun toString(): String = "DeviceAction.Write.Descriptor(${descriptor.uuid})"
         }
     }
 
     /**
-     * A [DeviceAction] that updates that notifying status of a [com.splendo.kaluga.bluetooth.Characteristic]
-     * @property characteristic the [com.splendo.kaluga.bluetooth.Characteristic] to notify
+     * A [DeviceAction] that updates that notifying status of a [com.splendo.kaluga.bluetooth.RemoteCharacteristic]
+     * @property characteristic the [com.splendo.kaluga.bluetooth.RemoteCharacteristic] to notify
      */
-    sealed class Notification(val characteristic: com.splendo.kaluga.bluetooth.Characteristic) : DeviceAction() {
+    sealed class Notification(val characteristic: com.splendo.kaluga.bluetooth.RemoteCharacteristic) : DeviceAction() {
 
         /**
          * A [Notification] that starts notifying
-         * @param characteristic the [com.splendo.kaluga.bluetooth.Characteristic] to notify
+         * @param characteristic the [com.splendo.kaluga.bluetooth.RemoteCharacteristic] to notify
          */
-        class Enable(characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Notification(characteristic) {
+        class Enable(characteristic: com.splendo.kaluga.bluetooth.RemoteCharacteristic) : Notification(characteristic) {
             override fun toString(): String = "DeviceAction.Notification.Enable(${characteristic.uuid})"
         }
 
         /**
          * A [Notification] that stops notifying
-         * @param characteristic the [com.splendo.kaluga.bluetooth.Characteristic] to no longer notify
+         * @param characteristic the [com.splendo.kaluga.bluetooth.RemoteCharacteristic] to no longer notify
          */
-        class Disable(characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Notification(characteristic) {
+        class Disable(characteristic: com.splendo.kaluga.bluetooth.RemoteCharacteristic) : Notification(characteristic) {
             override fun toString(): String = "DeviceAction.Notification.Disable(${characteristic.uuid})"
         }
     }

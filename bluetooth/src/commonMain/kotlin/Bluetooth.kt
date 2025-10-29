@@ -22,9 +22,9 @@ import com.splendo.kaluga.base.text.lowerCased
 import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceInfo
 import com.splendo.kaluga.bluetooth.device.DeviceState
@@ -35,6 +35,11 @@ import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
+import com.splendo.kaluga.bluetooth.server.BluetoothServer
+import com.splendo.kaluga.bluetooth.server.BluetoothServerDSL
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
@@ -62,8 +67,12 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 import kotlin.time.Duration.Companion.seconds
 
-private val defaultBluetoothDispatcher by lazy {
-    singleThreadDispatcher("Bluetooth")
+private val defaultBluetoothClientDispatcher by lazy {
+    singleThreadDispatcher("BluetoothClient")
+}
+
+private val defaultBluetoothServerDispatcher by lazy {
+    singleThreadDispatcher("BluetoothServer")
 }
 
 /**
@@ -82,76 +91,76 @@ typealias RSSI = Int
 typealias MTU = Int
 
 /**
- * A service for managing Bluetooth [Device]
+ * A service for managing Bluetooth [ConnectableDevice]
  */
 interface BluetoothService {
 
     /**
-     * Specifies the behaviour of cleaning up the list of [Device] discovered by a [BluetoothService]
+     * Specifies the behaviour of cleaning up the list of [ConnectableDevice] discovered by a [BluetoothService]
      */
     enum class CleanMode {
 
         /**
-         * Retains all [Device] previously scanned, regardless of [Filter]
+         * Retains all [ConnectableDevice] previously scanned, regardless of [Filter]
          */
         RETAIN_ALL,
 
         /**
-         * Removes all [Device] previously scanned, regardless of [Filter]
+         * Removes all [ConnectableDevice] previously scanned, regardless of [Filter]
          */
         REMOVE_ALL,
 
         /**
-         * Removes only the [Device] previously scanned with the [Filter] used for scanning
+         * Removes only the [ConnectableDevice] previously scanned with the [Filter] used for scanning
          */
         ONLY_PROVIDED_FILTER,
     }
 
     /**
-     * Starts scanning for [Device].
+     * Starts scanning for [ConnectableDevice].
      * To receive the devices, use [scannedDevices] or [allDevices]
-     * @param filter if not empty, only [Device] that have at least one [Service] matching one of the [UUID] will be scanned.
-     * @param cleanMode the [CleanMode] to apply to previously scanned [Device]. [CleanMode.ONLY_PROVIDED_FILTER] will apply to [filter]
-     * @param connectionSettings the [ConnectionSettings] to apply to scanned [Device]. If `null` the default will be used
-     * Note that if a [Device] was previously scanned (and not cleaned by [cleanMode]) the old [ConnectionSettings] will still apply.
+     * @param filter if not empty, only [ConnectableDevice] that have at least one [Service] matching one of the [UUID] will be scanned.
+     * @param cleanMode the [CleanMode] to apply to previously scanned [ConnectableDevice]. [CleanMode.ONLY_PROVIDED_FILTER] will apply to [filter]
+     * @param connectionSettings the [ConnectionSettings] to apply to scanned [ConnectableDevice]. If `null` the default will be used
+     * Note that if a [ConnectableDevice] was previously scanned (and not cleaned by [cleanMode]) the old [ConnectionSettings] will still apply.
      */
     fun startScanning(filter: Filter = emptySet(), cleanMode: CleanMode = CleanMode.REMOVE_ALL, connectionSettings: ConnectionSettings? = null)
 
     /**
-     * Stops scanning for [Device]
-     * @param cleanMode the [CleanMode] to apply to previously scanned [Device]. [CleanMode.ONLY_PROVIDED_FILTER] will apply to the [Filter] last passed to [startScanning]
+     * Stops scanning for [ConnectableDevice]
+     * @param cleanMode the [CleanMode] to apply to previously scanned [ConnectableDevice]. [CleanMode.ONLY_PROVIDED_FILTER] will apply to the [Filter] last passed to [startScanning]
      */
     fun stopScanning(cleanMode: CleanMode = CleanMode.REMOVE_ALL)
 
     /**
-     * Gets a [Flow] of the list of [Device] that have been paired to the system
-     * @param filter filters the list to only return the [Device] that at least one [Service] matching one of the provided [UUID]
+     * Gets a [Flow] of the list of [ConnectableDevice] that have been paired to the system
+     * @param filter filters the list to only return the [ConnectableDevice] that at least one [Service] matching one of the provided [UUID]
      * @param removeForAllPairedFilters if `true` the list of paired devices for all filters will be emptied
      * @param connectionSettings the [ConnectionSettings] to apply to the paired devices found. If `null` the default will be used
      */
-    fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings? = null): Flow<List<Device>>
+    fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings? = null): Flow<List<ConnectableDevice>>
 
     /**
-     * Gets a [Flow] containing a list of all [Device] scanned by the service.
+     * Gets a [Flow] containing a list of all [ConnectableDevice] scanned by the service.
      * Requires that [startScanning] has been called, otherwise no devices will be found
      */
-    fun allDevices(): Flow<List<Device>>
+    fun allDevices(): Flow<List<ConnectableDevice>>
 
     /**
-     * Gets a [Flow] containing a list of all [Device] scanned by the service for a given [Filter].
+     * Gets a [Flow] containing a list of all [ConnectableDevice] scanned by the service for a given [Filter].
      * Requires that [startScanning] has been called with [filter], otherwise no devices will be found
      * @param filter the [Filter] to get the devices for
      */
-    fun scannedDevices(filter: Filter = emptySet()): Flow<List<Device>>
+    fun scannedDevices(filter: Filter = emptySet()): Flow<List<ConnectableDevice>>
 
     /**
-     * Gets a [Flow] containing a list of all [Device] scanned by the service for the last [Filter] passed to [startScanning].
+     * Gets a [Flow] containing a list of all [ConnectableDevice] scanned by the service for the last [Filter] passed to [startScanning].
      * Requires that [startScanning] has been called with [filter], otherwise no devices will be found
      */
-    fun devices(): Flow<List<Device>>
+    fun devices(): Flow<List<ConnectableDevice>>
 
     /**
-     * Gets a [Flow] that indicates whether the service is actively scanning for [Device]
+     * Gets a [Flow] that indicates whether the service is actively scanning for [ConnectableDevice]
      */
     suspend fun isScanning(): Flow<Boolean>
 
@@ -206,10 +215,10 @@ class Bluetooth constructor(coroutineContext: CoroutineContext, scanningStateRep
         }
     }
 
-    override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Flow<List<Device>> =
+    override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Flow<List<ConnectableDevice>> =
         pairedDevices(filter, removeForAllPairedFilters, connectionSettings, timer)
 
-    internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings? = null, timer: Flow<Unit>): Flow<List<Device>> {
+    internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings? = null, timer: Flow<Unit>): Flow<List<ConnectableDevice>> {
         var shouldStartRetrievingPairing = true
         return combineTransform(
             timer.onEach { shouldStartRetrievingPairing = true },
@@ -272,12 +281,12 @@ class Bluetooth constructor(coroutineContext: CoroutineContext, scanningStateRep
         }
     }.distinctUntilChanged()
 
-    override fun allDevices(): Flow<List<Device>> = devicesForScanMode().map { it.allDevices.values.toList() }.distinctUntilChanged()
-    override fun scannedDevices(filter: Filter): Flow<List<Device>> = devicesForScanMode().map {
+    override fun allDevices(): Flow<List<ConnectableDevice>> = devicesForScanMode().map { it.allDevices.values.toList() }.distinctUntilChanged()
+    override fun scannedDevices(filter: Filter): Flow<List<ConnectableDevice>> = devicesForScanMode().map {
         it.devicesForDiscoveryMode(ScanningState.DeviceDiscoveryMode.Scanning(filter))
     }.distinctUntilChanged()
 
-    override fun devices(): Flow<List<Device>> = devicesForScanMode().map {
+    override fun devices(): Flow<List<ConnectableDevice>> = devicesForScanMode().map {
         it.devicesForCurrentScanFilter()
     }
 
@@ -311,42 +320,55 @@ interface BaseBluetoothBuilder {
      * @param coroutineContext the [CoroutineContext] in which Bluetooth runs
      * @return the created [Bluetooth]
      */
+    fun createClient(
+        scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings = { BaseScanner.Settings(it) },
+        coroutineContext: CoroutineContext = defaultBluetoothClientDispatcher,
+    ): Bluetooth
+
+    suspend fun createServer(
+        coroutineContext: CoroutineContext = defaultBluetoothServerDispatcher,
+        logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
+        specs: BluetoothServerDSL.() -> Unit,
+    ): BluetoothServer
+
+    @Deprecated("User createClient instead", replaceWith = ReplaceWith("createClient(scannerSettingsBuilder, coroutineContext)" ))
     fun create(
         scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings = { BaseScanner.Settings(it) },
-        coroutineContext: CoroutineContext = defaultBluetoothDispatcher,
-    ): Bluetooth
+        coroutineContext: CoroutineContext = defaultBluetoothClientDispatcher,
+    ) = createClient(scannerSettingsBuilder, coroutineContext)
 }
 
 /**
  * A default implementation of [BaseBluetoothBuilder]
  */
 expect class BluetoothBuilder : BaseBluetoothBuilder {
-    override fun create(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): Bluetooth
+    override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): Bluetooth
+    override suspend fun createServer(coroutineContext: CoroutineContext, logger: Logger, specs: BluetoothServerDSL.() -> Unit): BluetoothServer
 }
 
 /**
- * Gets a ([Flow] of) [Device] with a given [Identifier] from a [Flow] of a list of [Device].
- * @param identifier the [Identifier] of the [Device] to get.
- * @return the [Flow] of [Device] matching the [identifier]
+ * Gets a ([Flow] of) [ConnectableDevice] with a given [Identifier] from a [Flow] of a list of [ConnectableDevice].
+ * @param identifier the [Identifier] of the [ConnectableDevice] to get.
+ * @return the [Flow] of [ConnectableDevice] matching the [identifier]
  */
-operator fun Flow<List<Device>>.get(identifier: Identifier): Flow<Device?> = this.map { devices ->
+operator fun Flow<List<ConnectableDevice>>.get(identifier: Identifier): Flow<ConnectableDevice?> = this.map { devices ->
     devices.firstOrNull { it.identifier.stringValue.lowerCased(KalugaLocale.enUsPosix) == identifier.stringValue.lowerCased(KalugaLocale.enUsPosix) }
 }.distinctUntilChanged()
 
 /**
- * Gets a ([Flow] of) [DeviceState] from a [Flow] or [Device]
- * @return the [Flow] of [DeviceState] associated with the [Device] in the given [Flow]
+ * Gets a ([Flow] of) [DeviceState] from a [Flow] or [ConnectableDevice]
+ * @return the [Flow] of [DeviceState] associated with the [ConnectableDevice] in the given [Flow]
  */
-fun Flow<Device?>.state(): Flow<DeviceState> = this.flatMapLatest { device ->
+fun Flow<ConnectableDevice?>.state(): Flow<DeviceState> = this.flatMapLatest { device ->
     device?.state ?: emptyFlow()
 }
 
 /**
- * Gets a ([Flow] of) the list of [Service] associated with the [Device] in a [Flow]
+ * Gets a ([Flow] of) the list of [Service] associated with the [ConnectableDevice] in a [Flow]
  * This will automatically discover services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
- * @return the [Flow] of the list of [Service] associated with the [Device] in the given [Flow]
+ * @return the [Flow] of the list of [Service] associated with the [ConnectableDevice] in the given [Flow]
  */
-fun Flow<Device?>.services(): Flow<List<Service>> = state().transformLatest { deviceState ->
+fun Flow<ConnectableDevice?>.services(): Flow<List<Service>> = state().transformLatest { deviceState ->
     emit(
         when (deviceState) {
             is ConnectableDeviceState.Connected -> {
@@ -366,12 +388,12 @@ fun Flow<Device?>.services(): Flow<List<Service>> = state().transformLatest { de
 }.distinctUntilChanged()
 
 /**
- * Attempts to connect to the [Device] from a [Flow] of [Device]
+ * Attempts to connect to the [ConnectableDevice] from a [Flow] of [ConnectableDevice]
  * When this method completes, the devices should be in a [ConnectableDeviceState.Connected] state
- * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use if the [Device] disconnects after connecting. If `null` the default will be used.
+ * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use if the [ConnectableDevice] disconnects after connecting. If `null` the default will be used.
  * @return `true` if connection was successful
  */
-suspend fun Flow<Device?>.connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null): Boolean = transformLatest { device ->
+suspend fun Flow<ConnectableDevice?>.connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null): Boolean = transformLatest { device ->
     device?.let {
         try {
             emit(it.connect(reconnectionSettings))
@@ -385,10 +407,10 @@ suspend fun Flow<Device?>.connect(reconnectionSettings: ConnectionSettings.Recon
 }.first()
 
 /**
- * Attempts to disconnect to the [Device] from a [Flow] of [Device]
+ * Attempts to disconnect to the [ConnectableDevice] from a [Flow] of [ConnectableDevice]
  * When this method completes, the devices should be in a [ConnectableDeviceState.Disconnected] state
  */
-suspend fun Flow<Device?>.disconnect() {
+suspend fun Flow<ConnectableDevice?>.disconnect() {
     transformLatest { device ->
         device?.let {
             it.disconnect()
@@ -398,30 +420,30 @@ suspend fun Flow<Device?>.disconnect() {
 }
 
 /**
- * Gets the ([Flow] of) [DeviceInfo] from a [Flow] of [Device]
- * @return the [Flow] of [DeviceInfo] associated with the [Device] in the given [Flow]
+ * Gets the ([Flow] of) [DeviceInfo] from a [Flow] of [ConnectableDevice]
+ * @return the [Flow] of [DeviceInfo] associated with the [ConnectableDevice] in the given [Flow]
  */
-fun Flow<Device?>.info(): Flow<DeviceInfo> = flatMapLatest { device ->
+fun Flow<ConnectableDevice?>.info(): Flow<DeviceInfo> = flatMapLatest { device ->
     device?.info ?: emptyFlow()
 }
 
 /**
- * Gets the ([Flow] of) [BaseAdvertisementData] from a [Flow] of [Device]
- * @return the [Flow] of [BaseAdvertisementData] associated with the [Device] in the given [Flow]
+ * Gets the ([Flow] of) [BaseAdvertisementData] from a [Flow] of [ConnectableDevice]
+ * @return the [Flow] of [BaseAdvertisementData] associated with the [ConnectableDevice] in the given [Flow]
  */
-fun Flow<Device?>.advertisement(): Flow<BaseAdvertisementData> = info().map { it.advertisementData }.distinctUntilChanged()
+fun Flow<ConnectableDevice?>.advertisement(): Flow<BaseAdvertisementData> = info().map { it.advertisementData }.distinctUntilChanged()
 
 /**
- * Gets the ([Flow] of) the [RSSI] value from a [Flow] of [Device]
- * @return the [Flow] of the RSSI value associated with the [Device] in the given [Flow]
+ * Gets the ([Flow] of) the [RSSI] value from a [Flow] of [ConnectableDevice]
+ * @return the [Flow] of the RSSI value associated with the [ConnectableDevice] in the given [Flow]
  */
-fun Flow<Device?>.rssi(): Flow<RSSI> = info().map { it.rssi }.distinctUntilChanged()
+fun Flow<ConnectableDevice?>.rssi(): Flow<RSSI> = info().map { it.rssi }.distinctUntilChanged()
 
 /**
- * Gets the ([Flow] of) the [MTU] from a [Flow] of [Device]
- * @return the [Flow] of [MTU] associated with the [Device] in the given [Flow]
+ * Gets the ([Flow] of) the [MTU] from a [Flow] of [ConnectableDevice]
+ * @return the [Flow] of [MTU] associated with the [ConnectableDevice] in the given [Flow]
  */
-fun Flow<Device?>.mtu() = state().map { state ->
+fun Flow<ConnectableDevice?>.mtu() = state().map { state ->
     if (state is ConnectableDeviceState.Connected.MtuHolder) {
         state.mtu
     } else {
@@ -430,13 +452,13 @@ fun Flow<Device?>.mtu() = state().map { state ->
 }.distinctUntilChanged()
 
 /**
- * Gets the ([Flow] of) the distance in meters between the scanner and a [Flow] of [Device].
+ * Gets the ([Flow] of) the distance in meters between the scanner and a [Flow] of [ConnectableDevice].
  * To get a more stable result, this method will average the distance over the last [averageOver] results.
  * @param environmentalFactor the constant to account for environmental interference. Should usually range between 2.0 and 4.0
  * @param averageOver averages the calculated distance over this amount of scan results. Always uses the last results.
- * @return the [Flow] of distance in meters between the scanner and the [Device] in the given [Flow]
+ * @return the [Flow] of distance in meters between the scanner and the [ConnectableDevice] in the given [Flow]
  */
-fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int = 5): Flow<Double> {
+fun Flow<ConnectableDevice?>.distance(environmentalFactor: Double = 2.0, averageOver: Int = 5): Flow<Double> {
     val lastNResults = mutableListOf<Double>()
     return this.info().map { deviceInfo ->
         while (lastNResults.size >= averageOver) {
@@ -452,10 +474,10 @@ fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int =
 }
 
 /**
- * Attempts to request an update to the RSSI of the [Device] from a [Flow] of [Device]
+ * Attempts to request an update to the RSSI of the [ConnectableDevice] from a [Flow] of [ConnectableDevice]
  * When this method completes, the devices should have had [ConnectableDeviceState.Connected.readRssi] called
  */
-suspend fun Flow<Device?>.updateRssi() {
+suspend fun Flow<ConnectableDevice?>.updateRssi() {
     state().transformLatest { deviceState ->
         when (deviceState) {
             is ConnectableDeviceState.Connected -> {
@@ -468,40 +490,40 @@ suspend fun Flow<Device?>.updateRssi() {
 }
 
 /**
- * Attempts to request a [MTU] size for the [Device] from a [Flow] of [Device]
+ * Attempts to request a [MTU] size for the [ConnectableDevice] from a [Flow] of [ConnectableDevice]
  * @param mtu the [MTU] size to request
  */
-suspend fun Flow<Device?>.requestMtu(mtu: MTU) = state()
+suspend fun Flow<ConnectableDevice?>.requestMtu(mtu: MTU) = state()
     .filterIsInstance<ConnectableDeviceState.Connected.MtuHolder>()
     .first().requestMtu(mtu)
 
 /**
- * Gets a ([Flow] of) [Service] of a given [UUID] from a [Flow] of a list of [Service]
- * @param uuid the [UUID] of the [Service] to get
- * @return the [Flow] of the [Service] with [uuid] in the list of [Service] in the given [Flow]
+ * Gets a ([Flow] of) [RemoteService] of a given [UUID] from a [Flow] of a list of [RemoteService]
+ * @param uuid the [UUID] of the [RemoteService] to get
+ * @return the [Flow] of the [RemoteService] with [uuid] in the list of [RemoteService] in the given [Flow]
  */
 @JvmName("getService")
-operator fun Flow<List<Service>>.get(uuid: UUID): Flow<Service?> = this.map { services ->
+operator fun Flow<List<RemoteService>>.get(uuid: UUID): Flow<RemoteService?> = this.map { services ->
     services.firstOrNull {
         it.uuid.uuidString == uuid.uuidString
     }
 }.distinctUntilChanged()
 
 /**
- * Gets a ([Flow] of) the list [Characteristic] associated with the [Service] in a [Flow]
- * @return the [Flow] of the list of [Characteristic] associated with the [Service] in the given [Flow]
+ * Gets a ([Flow] of) the list [RemoteCharacteristic] associated with the [RemoteService] in a [Flow]
+ * @return the [Flow] of the list of [RemoteCharacteristic] associated with the [RemoteService] in the given [Flow]
  */
-fun Flow<Service?>.characteristics(): Flow<List<Characteristic>> = this.mapLatest { service -> service?.characteristics ?: emptyList() }.distinctUntilChanged()
+fun Flow<RemoteService?>.characteristics(): Flow<List<RemoteCharacteristic>> = this.mapLatest { service -> service?.characteristics ?: emptyList() }.distinctUntilChanged()
 
 /**
- * Gets a ([Flow] of) the list [Descriptor] associated with the [Characteristic] in a [Flow]
- * @return the [Flow] of the list of [Descriptor] associated with the [Characteristic] in the given [Flow]
+ * Gets a ([Flow] of) the list [RemoteDescriptor] associated with the [RemoteCharacteristic] in a [Flow]
+ * @return the [Flow] of the list of [RemoteDescriptor] associated with the [RemoteCharacteristic] in the given [Flow]
  */
-fun Flow<Characteristic?>.descriptors(): Flow<List<Descriptor>> = this.mapLatest { characteristic -> characteristic?.descriptors ?: emptyList() }.distinctUntilChanged()
+fun Flow<RemoteCharacteristic?>.descriptors(): Flow<List<RemoteDescriptor>> = this.mapLatest { characteristic -> characteristic?.descriptors ?: emptyList() }.distinctUntilChanged()
 
 /**
  * Gets a ([Flow] of) [AttributeType] of a given [UUID] from a [Flow] of a list of [AttributeType]
- * @param AttributeType the type of [Attribute] to get
+ * @param AttributeType the type of [RemoteAttribute] to get
  * @param ReadAction the [DeviceAction.Read] associated with [AttributeType]
  * @param WriteAction the [DeviceAction.Write] associated with [AttributeType]
  * @param uuid the [UUID] of the [AttributeType] to get
@@ -511,7 +533,7 @@ fun Flow<Characteristic?>.descriptors(): Flow<List<Descriptor>> = this.mapLatest
 operator fun <AttributeType, ReadAction, WriteAction> Flow<List<AttributeType>>.get(
     uuid: UUID,
 ): Flow<AttributeType?>
-    where AttributeType : Attribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write = this.map { attribute ->
+    where AttributeType : RemoteAttribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write = this.map { attribute ->
     attribute.firstOrNull {
         it.uuid.uuidString == uuid.uuidString
     }
@@ -519,12 +541,12 @@ operator fun <AttributeType, ReadAction, WriteAction> Flow<List<AttributeType>>.
 
 /**
  * Gets a ([Flow] of) the [ByteArray] value from a [Flow] of an [AttributeType]
- * @param AttributeType the type of [Attribute] to get the value from
+ * @param AttributeType the type of [RemoteAttribute] to get the value from
  * @param ReadAction the [DeviceAction.Read] associated with [AttributeType]
  * @param WriteAction the [DeviceAction.Write] associated with [AttributeType]
  * @return the [Flow] of the [ByteArray] value of the [AttributeType] in the given [Flow]
  */
-fun <AttributeType : Attribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write> Flow<AttributeType?>.value(): Flow<ByteArray?> {
+fun <AttributeType : RemoteAttribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write> Flow<AttributeType?>.value(): Flow<ByteArray?> {
     return this.flatMapLatest { attribute ->
         attribute ?: flowOf(null)
     } // TODO: we probably want to read duplicate values so this is for now disabled: .distinctUntilChanged()

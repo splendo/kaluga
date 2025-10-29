@@ -28,14 +28,14 @@ import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Scanning
 
 /**
  * A set of [UUID] to apply to a scan result
- * If not empty, only [Device] that are advertising at least one [Service] matching one of the [UUID] will be scanned.
+ * If not empty, only [ConnectableDevice] that are advertising at least one [Service] matching one of the [UUID] will be scanned.
  */
 typealias Filter = Set<UUID>
 
@@ -45,36 +45,36 @@ typealias Filter = Set<UUID>
 sealed interface ScanningState : KalugaState {
 
     /**
-     * A mode in which [Device] can be discovered
+     * A mode in which [ConnectableDevice] can be discovered
      */
     sealed class DeviceDiscoveryMode {
 
         /**
-         * The [Filter] used for discovering [Device]
+         * The [Filter] used for discovering [ConnectableDevice]
          */
         abstract val filter: Filter
 
         /**
-         * A [DeviceDiscoveryMode] that discovers paired [Device]
-         * @param filter the [Filter] used for discovering paired [Device]
+         * A [DeviceDiscoveryMode] that discovers paired [ConnectableDevice]
+         * @param filter the [Filter] used for discovering paired [ConnectableDevice]
          */
         data class Paired(override val filter: Filter) : DeviceDiscoveryMode()
 
         /**
-         * A [DeviceDiscoveryMode] that discovers [Device] by scanning for them
-         * @param filter the [Filter] used for scanning for [Device]
+         * A [DeviceDiscoveryMode] that discovers [ConnectableDevice] by scanning for them
+         * @param filter the [Filter] used for scanning for [ConnectableDevice]
          */
         data class Scanning(override val filter: Filter) : DeviceDiscoveryMode()
     }
 
     /**
-     * The [Device] found during scanning
+     * The [ConnectableDevice] found during scanning
      */
     interface Devices {
         /**
-         * The map of [Device] found for given [Identifier]
+         * The map of [ConnectableDevice] found for given [Identifier]
          */
-        val allDevices: Map<Identifier, Device>
+        val allDevices: Map<Identifier, ConnectableDevice>
 
         /**
          * A map of all [Identifier] found for scanning per [DeviceDiscoveryMode]
@@ -92,42 +92,42 @@ sealed interface ScanningState : KalugaState {
         val identifiersForCurrentScanFilter: Set<Identifier> get() = identifiersFoundForDeviceDiscoveryMode[currentScanFilter] ?: emptySet()
 
         /**
-         * Creates a new [Devices] instance that adds an [Identifier] to the [currentScanFilter] and creates the corresponding [Device] if not yet discovered
-         * @param identifier the [Identifier] of the [Device] to add
-         * @param createDevice method for creating a [Device] for the [identifier]
-         * @return the new instance of [Devices] where [allDevices] contains a [Device] for [identifier] and [identifiersForCurrentScanFilter] contains [identifier]
+         * Creates a new [Devices] instance that adds an [Identifier] to the [currentScanFilter] and creates the corresponding [ConnectableDevice] if not yet discovered
+         * @param identifier the [Identifier] of the [ConnectableDevice] to add
+         * @param createDevice method for creating a [ConnectableDevice] for the [identifier]
+         * @return the new instance of [Devices] where [allDevices] contains a [ConnectableDevice] for [identifier] and [identifiersForCurrentScanFilter] contains [identifier]
          */
-        fun copyAndAddScanned(identifier: Identifier, createDevice: () -> Device): Devices
+        fun copyAndAddScanned(identifier: Identifier, createDevice: () -> ConnectableDevice): Devices
 
         /**
-         * Creates a new [Devices] instance that sets the paired [Device] for a given [Filter]
-         * @param devices map of all the [Identifier] paired and a method for creating the corresponding [Device]
+         * Creates a new [Devices] instance that sets the paired [ConnectableDevice] for a given [Filter]
+         * @param devices map of all the [Identifier] paired and a method for creating the corresponding [ConnectableDevice]
          * @param filter a [Filter] applied for acquiring the scanned devices
          * @param removeForAllPairedFilters if `true` the list of paired devices for all filters will be emptied
-         * @return the new instance of [Devices] where [allDevices] contains a [Device] for all [Identifier] in [devices] and [identifiersFoundForDeviceDiscoveryMode] will contains all [Identifier] in [devices] for a [DeviceDiscoveryMode.Paired] with [filter]
+         * @return the new instance of [Devices] where [allDevices] contains a [ConnectableDevice] for all [Identifier] in [devices] and [identifiersFoundForDeviceDiscoveryMode] will contains all [Identifier] in [devices] for a [DeviceDiscoveryMode.Paired] with [filter]
          */
-        fun copyAndSetPaired(devices: Map<Identifier, () -> Device>, filter: Filter, removeForAllPairedFilters: Boolean): Devices
+        fun copyAndSetPaired(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean): Devices
 
         /**
          * Creates a new [Devices] instance that sets the [currentScanFilter] for a [DeviceDiscoveryMode.Scanning] with a given [Filter]
          * @param filter the [Filter] to set as the [DeviceDiscoveryMode.Scanning.filter] for the new [currentScanFilter]
-         * @param cleanMode the [BluetoothService.CleanMode] to apply for cleaning the previously found [Device]
+         * @param cleanMode the [BluetoothService.CleanMode] to apply for cleaning the previously found [ConnectableDevice]
          * @return the new instance of [Devices] where [currentScanFilter] if filtered with [filter] and cleanup has occurred according to [cleanMode]
          */
         fun updateScanFilter(filter: Filter, cleanMode: BluetoothService.CleanMode): Devices
 
         /**
-         * The list of [Device] found for a given [DeviceDiscoveryMode]
+         * The list of [ConnectableDevice] found for a given [DeviceDiscoveryMode]
          * @param filter the [DeviceDiscoveryMode] to get devices for
-         * @return the list of [Device] found for the [filter]
+         * @return the list of [ConnectableDevice] found for the [filter]
          */
         fun devicesForDiscoveryMode(filter: DeviceDiscoveryMode) = identifiersFoundForDeviceDiscoveryMode[filter]?.let { identifiers ->
             allDevices.entries.mapNotNull { if (identifiers.contains(it.key)) it.value else null }
         } ?: emptyList()
 
         /**
-         * The list of [Device] found for the [currentScanFilter]
-         * @return the list of [Device] found for [currentScanFilter]
+         * The list of [ConnectableDevice] found for the [currentScanFilter]
+         * @return the list of [ConnectableDevice] found for [currentScanFilter]
          */
         fun devicesForCurrentScanFilter() = devicesForDiscoveryMode(currentScanFilter)
     }
@@ -212,21 +212,21 @@ sealed interface ScanningState : KalugaState {
     sealed interface Enabled : Permitted {
 
         /**
-         * Starts to retrieve the list of paired [Device]
+         * Starts to retrieve the list of paired [ConnectableDevice]
          * @param filter the [Filter] to apply to the paired devices
          * @param removeForAllPairedFilters if `true` the list of paired devices for all filters will be emptied
-         * @param connectionSettings the [ConnectionSettings] to apply to [Device] found as paired devices. Note this will only be used if the devices was not previously discovered without cleaning up.
+         * @param connectionSettings the [ConnectionSettings] to apply to [ConnectableDevice] found as paired devices. Note this will only be used if the devices was not previously discovered without cleaning up.
          */
         suspend fun retrievePairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?)
 
         /**
          * Transitions into an [Enabled] state where a set of devices is paired
-         * @param devices the map of [Identifier] and the method for creating a [Device] of all devices paired
+         * @param devices the map of [Identifier] and the method for creating a [ConnectableDevice] of all devices paired
          * @param filter the [Filter] applied to finding the paired devices
          * @param removeForAllPairedFilters if `true` the list of paired devices for all filters will be emptied
-         * @return a method for transitioning into [Enabled] with the new list of paired [Device]
+         * @return a method for transitioning into [Enabled] with the new list of paired [ConnectableDevice]
          */
-        fun pairedDevices(devices: Map<Identifier, () -> Device>, filter: Filter, removeForAllPairedFilters: Boolean): suspend () -> Enabled
+        fun pairedDevices(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean): suspend () -> Enabled
 
         /**
          * Transitions into a [NoBluetooth.Disabled] State
@@ -241,8 +241,8 @@ sealed interface ScanningState : KalugaState {
             /**
              * Transitions into a [Scanning] State for a given filter
              * @param filter the [Filter] to apply for scanning
-             * @param cleanMode the [BluetoothService.CleanMode] to apply to previously scanned [Device].
-             * @param connectionSettings the [ConnectionSettings] to apply to any [Device] scanned that was not previously discovered. If `null` the default will be used
+             * @param cleanMode the [BluetoothService.CleanMode] to apply to previously scanned [ConnectableDevice].
+             * @param connectionSettings the [ConnectionSettings] to apply to any [ConnectableDevice] scanned that was not previously discovered. If `null` the default will be used
              * @return the method for transitioning into a [Scanning] state
              */
             fun startScanning(
@@ -254,7 +254,7 @@ sealed interface ScanningState : KalugaState {
             /**
              * Transitions into an [Idle] State with a new [Filter]
              * @param filter the new [Filter] to apply
-             * @param cleanMode the [BluetoothService.CleanMode] to apply to previously scanned [Device].
+             * @param cleanMode the [BluetoothService.CleanMode] to apply to previously scanned [ConnectableDevice].
              * @return the method for transitioning into a new [Idle] state
              */
             fun refresh(filter: Filter = devices.currentScanFilter.filter, cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.REMOVE_ALL): suspend () -> Idle
@@ -266,24 +266,24 @@ sealed interface ScanningState : KalugaState {
         interface Scanning : Enabled {
 
             /**
-             * A class to add or update a [Device] using [discoverDevices]
-             * @param identifier the [Identifier] of the [Device] discovered
-             * @param rssi the [RSSI] value of the [Device] discovered
-             * @param advertisementData the [BaseAdvertisementData] of the [Device] discovered
-             * @param deviceCreator Method for creating a [Device] if it had not been scanned previously.
+             * A class to add or update a [ConnectableDevice] using [discoverDevices]
+             * @param identifier the [Identifier] of the [ConnectableDevice] discovered
+             * @param rssi the [RSSI] value of the [ConnectableDevice] discovered
+             * @param advertisementData the [BaseAdvertisementData] of the [ConnectableDevice] discovered
+             * @param deviceCreator Method for creating a [ConnectableDevice] if it had not been scanned previously.
              */
-            data class DiscoveredDevice(val identifier: Identifier, val rssi: RSSI, val advertisementData: BaseAdvertisementData, val deviceCreator: () -> Device)
+            data class DiscoveredDevice(val identifier: Identifier, val rssi: RSSI, val advertisementData: BaseAdvertisementData, val deviceCreator: () -> ConnectableDevice)
 
             /**
-             * Transitions into a [Scanning] state where a list of [Device] is added or updated
+             * Transitions into a [Scanning] state where a list of [ConnectableDevice] is added or updated
              * @param devices the list of [DiscoveredDevice] to be scanned
-             * @return method for transitioning into a [Scanning] state where the list of [Device] is discovered
+             * @return method for transitioning into a [Scanning] state where the list of [ConnectableDevice] is discovered
              */
             suspend fun discoverDevices(devices: List<DiscoveredDevice>): suspend () -> Scanning
 
             /**
              * Transitions into an [Idle] State
-             * @param cleanMode the [BluetoothService.CleanMode] to apply to previously scanned [Device].
+             * @param cleanMode the [BluetoothService.CleanMode] to apply to previously scanned [ConnectableDevice].
              */
             fun stopScanning(cleanMode: BluetoothService.CleanMode = BluetoothService.CleanMode.REMOVE_ALL): suspend () -> Idle
         }
@@ -330,21 +330,21 @@ sealed interface ScanningState : KalugaState {
 }
 
 /**
- * Transitions into a [Scanning] state where a [Device] is added or updated
- * @param identifier the [Identifier] of the [Device] discovered
- * @param rssi the [RSSI] value of the [Device] discovered
- * @param advertisementData the [BaseAdvertisementData] of the [Device] discovered
- * @param deviceCreator Method for creating a [Device] if it had not been scanned previously.
- * @return method for transitioning into a [Scanning] state where the [Device] is discovered
+ * Transitions into a [Scanning] state where a [ConnectableDevice] is added or updated
+ * @param identifier the [Identifier] of the [ConnectableDevice] discovered
+ * @param rssi the [RSSI] value of the [ConnectableDevice] discovered
+ * @param advertisementData the [BaseAdvertisementData] of the [ConnectableDevice] discovered
+ * @param deviceCreator Method for creating a [ConnectableDevice] if it had not been scanned previously.
+ * @return method for transitioning into a [Scanning] state where the [ConnectableDevice] is discovered
  */
-suspend fun Scanning.discoverDevice(identifier: Identifier, rssi: RSSI, advertisementData: BaseAdvertisementData, deviceCreator: () -> Device) =
+suspend fun Scanning.discoverDevice(identifier: Identifier, rssi: RSSI, advertisementData: BaseAdvertisementData, deviceCreator: () -> ConnectableDevice) =
     discoverDevices(listOf(Scanning.DiscoveredDevice(identifier, rssi, advertisementData, deviceCreator)))
 
 /**
  * Default implementation of [ScanningState.Devices]
  */
 data class DefaultDevices(
-    override val allDevices: Map<Identifier, Device>,
+    override val allDevices: Map<Identifier, ConnectableDevice>,
     override val identifiersFoundForDeviceDiscoveryMode: Map<ScanningState.DeviceDiscoveryMode, Set<Identifier>>,
     override val currentScanFilter: ScanningState.DeviceDiscoveryMode.Scanning,
 ) : ScanningState.Devices {
@@ -355,9 +355,9 @@ data class DefaultDevices(
      */
     constructor(filter: Filter) : this(emptyMap(), emptyMap(), ScanningState.DeviceDiscoveryMode.Scanning(filter))
 
-    override fun copyAndAddScanned(identifier: Identifier, createDevice: () -> Device): ScanningState.Devices = copyAndAdd(identifier, currentScanFilter, createDevice)
+    override fun copyAndAddScanned(identifier: Identifier, createDevice: () -> ConnectableDevice): ScanningState.Devices = copyAndAdd(identifier, currentScanFilter, createDevice)
 
-    override fun copyAndSetPaired(devices: Map<Identifier, () -> Device>, filter: Filter, removeForAllPairedFilters: Boolean): ScanningState.Devices {
+    override fun copyAndSetPaired(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean): ScanningState.Devices {
         val filtersToRemove = if (removeForAllPairedFilters) {
             identifiersFoundForDeviceDiscoveryMode.keys.filterIsInstance<ScanningState.DeviceDiscoveryMode.Paired>()
         } else {
@@ -376,7 +376,7 @@ data class DefaultDevices(
         return DefaultDevices(newDevices, newIdentifiersForDiscoveryMode, currentScanFilter)
     }
 
-    private fun copyAndAdd(identifier: Identifier, filter: ScanningState.DeviceDiscoveryMode, createDevice: () -> Device): DefaultDevices {
+    private fun copyAndAdd(identifier: Identifier, filter: ScanningState.DeviceDiscoveryMode, createDevice: () -> ConnectableDevice): DefaultDevices {
         val device = allDevices.getOrElse(identifier, createDevice)
         val newDevices = allDevices + listOf(identifier to device)
         val identifiersForCurrentFilter = identifiersFoundForDeviceDiscoveryMode.getOrElse(filter) { emptySet() } + identifier
@@ -513,7 +513,7 @@ internal sealed class ScanningStateImpl {
             permittedHandler.beforeOldStateIsRemoved(oldState)
         }
 
-        protected fun devicesForPairedDevices(devices: Map<Identifier, () -> Device>, filter: Filter, removeForAllPairedFilters: Boolean) = this.devices.copyAndSetPaired(
+        protected fun devicesForPairedDevices(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean) = this.devices.copyAndSetPaired(
             devices,
             filter,
             removeForAllPairedFilters,
@@ -528,7 +528,7 @@ internal sealed class ScanningStateImpl {
 
             override val permittedHandler: PermittedHandler = PermittedHandler(devices, scanner)
 
-            override fun pairedDevices(devices: Map<Identifier, () -> Device>, filter: Filter, removeForAllPairedFilters: Boolean): suspend () -> ScanningState.Enabled = suspend {
+            override fun pairedDevices(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean): suspend () -> ScanningState.Enabled = suspend {
                 val newDevices = devicesForPairedDevices(devices, filter, removeForAllPairedFilters)
                 Idle(
                     newDevices,
@@ -564,7 +564,7 @@ internal sealed class ScanningStateImpl {
 
             override val permittedHandler: PermittedHandler = PermittedHandler(devices, scanner)
 
-            override fun pairedDevices(devices: Map<Identifier, () -> Device>, filter: Filter, removeForAllPairedFilters: Boolean): suspend () -> ScanningState.Enabled = suspend {
+            override fun pairedDevices(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean): suspend () -> ScanningState.Enabled = suspend {
                 Scanning(
                     devicesForPairedDevices(devices, filter, removeForAllPairedFilters),
                     scanner,

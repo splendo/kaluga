@@ -21,6 +21,14 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.ContextualLogger
 
+interface Descriptor : Attribute {
+
+    companion object {
+        val CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR: UUID = uuidFrom("2902")
+    }
+    val characteristic: Characteristic
+}
+
 /**
  * An [Attribute] of a Bluetooth Descriptor
  * @property wrapper the [DescriptorWrapper] to access the platform descriptor
@@ -28,16 +36,17 @@ import com.splendo.kaluga.logging.ContextualLogger
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
  * @param logger the [ContextualLogger] to use for logging.
  */
-open class Descriptor(
+open class RemoteDescriptor(
     val wrapper: DescriptorWrapper,
+    override val characteristic: RemoteCharacteristic,
     initialValue: ByteArray? = null,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     logger: ContextualLogger,
-) : Attribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(
+) : RemoteAttribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(
     initialValue,
     emitNewAction,
     logger,
-) {
+), Descriptor {
 
     override val uuid = wrapper.uuid
 

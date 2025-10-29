@@ -18,10 +18,11 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
-import com.splendo.kaluga.bluetooth.Characteristic
-import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.RSSI
+import com.splendo.kaluga.bluetooth.RemoteCharacteristic
+import com.splendo.kaluga.bluetooth.RemoteDescriptor
+import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
@@ -52,7 +53,7 @@ interface DeviceConnectionManager {
 
         /**
          * Creates a [DeviceConnectionManager]
-         * @param deviceWrapper the [DeviceWrapper] wrapping the [Device]
+         * @param deviceWrapper the [DeviceWrapper] wrapping the [ConnectableDevice]
          * @param settings the [ConnectionSettings] to apply for connecting
          * @param coroutineScope the [CoroutineScope] on which the device should be managed
          * @return the created [DeviceConnectionManager]
@@ -252,7 +253,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     private val defaultReconnectionSettings = settings.reconnectionSettings
 
     protected var currentAction: DeviceAction? = null
-    protected val notifyingCharacteristics = concurrentMutableMapOf<String, Characteristic>()
+    protected val notifyingCharacteristics = concurrentMutableMapOf<String, RemoteCharacteristic>()
 
     private val eventChannel = Channel<DeviceConnectionManager.Event>(UNLIMITED)
     override val events: Flow<DeviceConnectionManager.Event> = eventChannel.receiveAsFlow()
@@ -320,7 +321,12 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
     protected abstract suspend fun requestStartUnpairing()
 
-    protected open fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitEvent, dataLogger)
+    protected open fun createService(wrapper: ServiceWrapper): RemoteService = RemoteService(
+        wrapper,
+        wrapper.includedServices.map { createService(it) },
+        ::emitEvent,
+        dataLogger
+    )
 
     final override fun handleDisconnect(onDisconnect: (suspend () -> Unit)?) {
         val currentAction = this.currentAction
@@ -368,7 +374,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
         emitEvent(DeviceConnectionManager.Event.CompletedAction(currentAction, succeeded))
     }
 
-    protected open fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)? = null) {
+    protected open fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((RemoteCharacteristic) -> Unit)? = null) {
         notifyingCharacteristics[uuid.uuidString]?.let {
             onUpdate?.invoke(it)
             it.updateValue()
@@ -398,7 +404,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
         }
     }
 
-    protected open fun handleUpdatedDescriptor(uuid: UUID, succeeded: Boolean, onUpdate: ((Descriptor) -> Unit)? = null) {
+    protected open fun handleUpdatedDescriptor(uuid: UUID, succeeded: Boolean, onUpdate: ((RemoteDescriptor) -> Unit)? = null) {
         val descriptorToUpdate = when (val action = currentAction) {
             is DeviceAction.Read.Descriptor -> {
                 if (action.descriptor.uuid.uuidString == uuid.uuidString) {

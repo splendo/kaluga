@@ -24,6 +24,12 @@ import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 
+interface Characteristic : Attribute {
+    val service: Service
+    val properties: Set<CharacteristicProperty>
+    val descriptors: List<Descriptor>
+}
+
 /**
  * An [Attribute] of a Bluetooth Characteristic
  * @property wrapper the [CharacteristicWrapper] to access the platform characteristic
@@ -31,16 +37,17 @@ import kotlinx.coroutines.flow.first
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
  * @param logger the [ContextualLogger] to use for logging.
  */
-open class Characteristic(
+open class RemoteCharacteristic(
     val wrapper: CharacteristicWrapper,
+    override val service: RemoteService,
     initialValue: ByteArray? = null,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     logger: ContextualLogger,
-) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(
+) : RemoteAttribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(
     initialValue,
     emitNewAction,
     logger,
-) {
+), Characteristic {
 
     private val isBusy = MutableStateFlow(false)
     private val _isNotifying = atomic(false)
@@ -111,13 +118,15 @@ open class Characteristic(
     }
 
     override val uuid = wrapper.uuid
+    override val properties = wrapper.properties
 
     /**
      * The list of [Descriptor] associated with the characteristic
      */
-    val descriptors: List<Descriptor> = wrapper.descriptors.map {
-        Descriptor(
+    override val descriptors: List<RemoteDescriptor> = wrapper.descriptors.map {
+        RemoteDescriptor(
             wrapper = it,
+            characteristic = this,
             emitNewAction = emitNewAction,
             logger = logger.withAppendedContext("Descriptor" to it.uuid.uuidString),
         )
@@ -133,12 +142,11 @@ open class Characteristic(
     override fun getUpdatedValue(): ByteArray? = wrapper.value?.asBytes
 
     /**
-     * Checks if the characteristic has a given [CharacteristicProperties]
+     * Checks if the characteristic has a given [CharacteristicProperty]
      */
-    fun hasProperty(property: CharacteristicProperties) = hasProperties(listOf(property))
+    fun hasProperty(property: CharacteristicProperty) = hasProperties(setOf(property))
 
-    private fun hasProperties(properties: List<CharacteristicProperties>) = wrapper
-        .containsAnyOf(*properties.map(CharacteristicProperties::rawValue).toIntArray())
+    private fun hasProperties(properties: Set<CharacteristicProperty>) = wrapper.properties.containsAll(properties)
 }
 
 /**
@@ -149,6 +157,8 @@ expect interface CharacteristicWrapper {
      * The [UUID] of the characteristic
      */
     val uuid: UUID
+
+    val service: ServiceWrapper
 
     /**
      * The list of [DescriptorWrapper] of associated with the characteristic
@@ -161,72 +171,77 @@ expect interface CharacteristicWrapper {
     val value: Value?
 
     /**
-     * The integer representing all [CharacteristicProperties] of the characteristic
+     * The integer representing all [CharacteristicProperty] of the characteristic
      */
-    val properties: Int
+    val properties: Set<CharacteristicProperty>
 }
 
-/**
- * Checks whether [CharacteristicWrapper.properties] contains any properties in [property]
- * @param property the list of properties to check
- * @return `true` if [CharacteristicWrapper.properties] contains at least one of [property]
- */
-fun CharacteristicWrapper.containsAnyOf(vararg property: Int) = if (property.isNotEmpty()) {
-    properties and property.reduce { acc, i -> acc.or(i) } != 0
-} else {
-    false
-}
 
 /**
  * The properties associated with a Bluetooth Characteristic
  * @param rawValue the raw value associated with the property
  */
-sealed class CharacteristicProperties(val rawValue: Int) {
+sealed class CharacteristicProperty(val rawValue: Int) {
+
+    companion object {
+        fun fromInt(properties: Int): Set<CharacteristicProperty> = setOf(
+            Broadcast,
+            Read,
+            Write,
+            WriteWithoutResponse,
+            SignedWrite,
+            Notify,
+            Indicate,
+            ExtendedProperties
+        ).filter {
+            (properties and it.rawValue) != 0
+        }.toSet()
+    }
 
     /**
      * Characteristic is broadcastable
      */
-    data object Broadcast : CharacteristicProperties(0x01)
+    data object Broadcast : CharacteristicProperty(0x01)
 
     /**
      * Characteristic is readable
      */
-    data object Read : CharacteristicProperties(0x02)
+    data object Read : CharacteristicProperty(0x02)
+
+    sealed class Writable(rawValue: Int) : CharacteristicProperty(rawValue)
 
     /**
      * Characteristic can be written without response
      */
-    data object WriteWithoutResponse : CharacteristicProperties(0x04)
-
-    /**
-     * Characteristic can be written
-     */
-    data object Write : CharacteristicProperties(0x08)
-
-    /**
-     * Characteristic supports notification
-     */
-    data object Notify : CharacteristicProperties(0x10)
-
-    /**
-     * Characteristic supports indication
-     */
-    data object Indicate : CharacteristicProperties(0x20)
+    data object WriteWithoutResponse : Writable(0x04)
 
     /**
      * Characteristic supports write with signature
      */
-    data object SignedWrite : CharacteristicProperties(0x40)
+    data object SignedWrite : Writable(0x40)
+
+    /**
+     * Characteristic can be written
+     */
+    data object Write : Writable(0x08)
+
+    sealed class Notifiable(rawValue: Int) : CharacteristicProperty(rawValue)
+
+    /**
+     * Characteristic supports notification
+     */
+    data object Notify : Notifiable(0x10)
+
+    /**
+     * Characteristic supports indication
+     */
+    data object Indicate : Notifiable(0x20)
 
     /**
      * Characteristic has extended properties
      */
-    data object ExtendedProperties : CharacteristicProperties(0x80)
+    data object ExtendedProperties : CharacteristicProperty(0x80)
 
-    /**
-     * Gets a [CharacteristicProperties] by combining two [CharacteristicProperties]
-     * @param other the [CharacteristicProperties] to combine with
-     * @return the combined [CharacteristicProperties]
-     */
-    infix fun or(other: CharacteristicProperties) = rawValue or other.rawValue
 }
+
+internal val Set<CharacteristicProperty>.rawValue: Int get() = fold(0) { acc, characteristicProperty -> acc or characteristicProperty.rawValue }

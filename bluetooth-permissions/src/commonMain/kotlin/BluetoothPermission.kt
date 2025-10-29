@@ -54,7 +54,7 @@ interface BaseBluetoothPermissionManagerBuilder : BasePermissionsBuilder<Bluetoo
      * @return a [BluetoothPermissionManager]
      */
     fun create(
-        bluetoothPermission: BluetoothPermission = BluetoothPermission(),
+        bluetoothPermission: BluetoothPermission = BluetoothPermission.Client(),
         settings: BasePermissionManager.Settings = BasePermissionManager.Settings(),
         coroutineScope: CoroutineScope,
     ): BluetoothPermissionManager

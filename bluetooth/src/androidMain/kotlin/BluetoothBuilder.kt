@@ -1,14 +1,20 @@
 package com.splendo.kaluga.bluetooth
 
+import android.bluetooth.BluetoothManager
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.DefaultScanner
+import com.splendo.kaluga.bluetooth.server.BluetoothServer
+import com.splendo.kaluga.bluetooth.server.BluetoothServerDSL
+import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
+import kotlinx.coroutines.flow.first
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -20,14 +26,11 @@ import kotlin.coroutines.CoroutineContext
  */
 actual class BluetoothBuilder(
     private val applicationContext: Context = ApplicationHolder.applicationContext,
-    val useLocationPermission: Boolean = false,
     private val permissionsBuilder: suspend (CoroutineContext) -> Permissions = { context ->
         Permissions(
             PermissionsBuilder(PermissionContext(applicationContext)).apply {
                 registerBluetoothPermissionIfNotRegistered()
-                if (useLocationPermission) {
-                    registerLocationPermissionIfNotRegistered()
-                }
+                registerLocationPermissionIfNotRegistered()
             },
             coroutineContext = context,
         )
@@ -35,11 +38,26 @@ actual class BluetoothBuilder(
     private val scannerBuilder: BaseScanner.Builder = DefaultScanner.Builder(applicationContext = applicationContext),
 ) : BaseBluetoothBuilder {
 
-    actual override fun create(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): Bluetooth = Bluetooth(
+    actual override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): Bluetooth = Bluetooth(
         { scannerContext ->
             scannerSettingsBuilder(permissionsBuilder(scannerContext))
         },
         scannerBuilder,
         coroutineContext,
     )
+
+    actual override suspend fun createServer(coroutineContext: CoroutineContext, logger: Logger, specs: BluetoothServerDSL.() -> Unit): BluetoothServer {
+        val bluetoothManager = (applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)
+        requireNotNull(bluetoothManager) { "BluetoothManager not found" }
+        require(permissionsBuilder(coroutineContext).request(BluetoothPermission.Server)) { "Server could not be started. Missing permission" }
+        val enabledManager = DefaultBluetoothMonitor(applicationContext, bluetoothManager.adapter)
+        try {
+            enabledManager.startMonitoring()
+            enabledManager.isEnabled.first { it }
+        } finally {
+            enabledManager.stopMonitoring()
+        }
+
+        return BluetoothServer.DSL(bluetoothManager, applicationContext, logger, coroutineContext).apply(specs).build()
+    }
 }

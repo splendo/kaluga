@@ -32,6 +32,10 @@ actual interface ServiceWrapper {
      */
     actual val uuid: CBUUID
 
+    actual val type: Service.Type
+
+    actual val includedServices: List<ServiceWrapper>
+
     /**
      * The list of [CharacteristicWrapper] associated with the service
      */
@@ -45,5 +49,7 @@ actual interface ServiceWrapper {
 class DefaultServiceWrapper(service: CBService) : ServiceWrapper {
 
     override val uuid: CBUUID = service.UUID
-    override val characteristics: List<CharacteristicWrapper> = service.characteristics?.typedList<CBCharacteristic>()?.map { DefaultCharacteristicWrapper(it) } ?: emptyList()
+    override val type: Service.Type = if (service.isPrimary) { Service.Type.PRIMARY } else { Service.Type.SECONDARY }
+    override val includedServices: List<ServiceWrapper> = service.includedServices.orEmpty().typedList<CBService>().map { DefaultServiceWrapper(it) }
+    override val characteristics: List<CharacteristicWrapper> = service.characteristics.orEmpty().typedList<CBCharacteristic>().map { DefaultCharacteristicWrapper(it) }
 }

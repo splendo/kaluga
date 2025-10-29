@@ -46,15 +46,17 @@ import kotlin.coroutines.CoroutineContext
  */
 typealias ConnectableDeviceStateFlowRepo = StateRepo<ConnectableDeviceState, MutableStateFlow<ConnectableDeviceState>>
 
-/**
- * A Bluetooth device that can be connected to
- */
 interface Device {
-
     /**
      * The [Identifier] of the device
      */
     val identifier: Identifier
+}
+
+/**
+ * A Bluetooth device that can be connected to
+ */
+interface ConnectableDevice : Device {
 
     /**
      * A [StateFlow] of the latest [DeviceInfo] of the device
@@ -127,7 +129,7 @@ interface Device {
 }
 
 /**
- * Implementation of [Device]
+ * Implementation of [ConnectableDevice]
  * @param identifier The [Identifier] of the device
  * @param initialDeviceInfo the initial [DeviceInfoImpl] known about the device
  * @param connectionSettings the [ConnectionSettings] to apply to the [DeviceConnectionManager] associated with this device
@@ -135,7 +137,7 @@ interface Device {
  * @param coroutineScope the [CoroutineScope] this device is running on]
  * @param createDeviceStateFlow creates a [ConnectableDeviceStateFlowRepo] to manage the device connection state
  */
-class DeviceImpl(
+class ConnectableDeviceImpl(
     override val identifier: Identifier,
     initialDeviceInfo: DeviceInfoImpl,
     private val connectionSettings: ConnectionSettings,
@@ -144,7 +146,7 @@ class DeviceImpl(
     private val createDeviceStateFlow: (DeviceConnectionManager, CoroutineContext) -> ConnectableDeviceStateFlowRepo = { connectionManager, context ->
         ConnectableDeviceStateImplRepo(connectionSettings.reconnectionSettings, connectionManager, context)
     },
-) : Device,
+) : ConnectableDevice,
     CoroutineScope by coroutineScope {
 
     companion object {

@@ -26,30 +26,14 @@ import android.bluetooth.BluetoothGattService
 actual interface ServiceWrapper {
 
     /**
-     * Service Type
-     */
-    enum class Type {
-
-        /**
-         * Primary service
-         */
-        PRIMARY,
-
-        /**
-         * Secondary service (included by primary services)
-         */
-        SECONDARY,
-    }
-
-    /**
      * The [UUID] of the service
      */
     actual val uuid: java.util.UUID
 
     /**
-     * The [Type] of this service (primary/secondary)
+     * The [Service.Type] of this service (primary/secondary)
      */
-    val type: Type
+    actual val type: Service.Type
 
     /**
      * Returns the instance ID for this service.
@@ -65,7 +49,7 @@ actual interface ServiceWrapper {
     /**
      * The list of [ServiceWrapper] included in this service
      */
-    val includedServices: List<ServiceWrapper>
+    actual val includedServices: List<ServiceWrapper>
 
     /**
      * Gets the [CharacteristicWrapper] for the characteristic with a given [java.util.UUID] if it belongs to the service
@@ -97,10 +81,10 @@ class DefaultGattServiceWrapper(private val gattService: BluetoothGattService) :
 
     override val uuid: java.util.UUID
         get() = gattService.uuid
-    override val type: ServiceWrapper.Type
+    override val type: Service.Type
         get() = when (gattService.type) {
-            BluetoothGattService.SERVICE_TYPE_PRIMARY -> ServiceWrapper.Type.PRIMARY
-            else -> ServiceWrapper.Type.SECONDARY
+            BluetoothGattService.SERVICE_TYPE_PRIMARY -> Service.Type.PRIMARY
+            else -> Service.Type.SECONDARY
         }
     override val instanceId: Int
         get() = gattService.instanceId

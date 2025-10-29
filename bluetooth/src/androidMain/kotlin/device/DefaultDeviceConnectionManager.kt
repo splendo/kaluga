@@ -33,18 +33,17 @@ import android.bluetooth.BluetoothGatt.GATT_SUCCESS
 import android.bluetooth.BluetoothGatt.GATT_WRITE_NOT_PERMITTED
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
-import android.bluetooth.BluetoothGattCharacteristic.PROPERTY_INDICATE
-import android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.base.utils.getCompletedOrNull
-import com.splendo.kaluga.bluetooth.Characteristic
+import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Descriptor
-import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.containsAnyOf
+import com.splendo.kaluga.bluetooth.RemoteCharacteristic
+import com.splendo.kaluga.bluetooth.RemoteDescriptor
 import com.splendo.kaluga.bluetooth.extensions.printableString
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.Logger
@@ -61,10 +60,6 @@ internal actual class DefaultDeviceConnectionManager(
     private val connectionSettings: ConnectionSettings = ConnectionSettings(),
     coroutineScope: CoroutineScope,
 ) : BaseDeviceConnectionManager(deviceWrapper, connectionSettings, coroutineScope) {
-
-    private companion object {
-        val CLIENT_CONFIGURATION: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
-    }
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : DeviceConnectionManager.Builder {
         override fun create(deviceWrapper: DeviceWrapper, settings: ConnectionSettings, coroutineScope: CoroutineScope): BaseDeviceConnectionManager =
@@ -151,7 +146,7 @@ internal actual class DefaultDeviceConnectionManager(
             log { "onDescriptorWrite descriptor ${descriptor.uuid} status ${status.gattStatusAsString}" }
             val succeeded = status == GATT_SUCCESS
             // Notification enable/disable done by client configuration descriptor write
-            if (descriptor.uuid == CLIENT_CONFIGURATION && currentAction is DeviceAction.Notification) {
+            if (descriptor.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR && currentAction is DeviceAction.Notification) {
                 handleCurrentActionCompleted(succeeded)
             }
             handleUpdatedDescriptor(descriptor.uuid, succeeded)
@@ -251,14 +246,14 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    private fun BluetoothGattWrapper.writeCharacteristic(characteristic: Characteristic, value: ByteArray): Boolean = writeCharacteristic(characteristic.wrapper, value)
+    private fun BluetoothGattWrapper.writeCharacteristic(characteristic: RemoteCharacteristic, value: ByteArray): Boolean = writeCharacteristic(characteristic.wrapper, value)
 
-    private fun BluetoothGattWrapper.writeDescriptor(descriptor: Descriptor, value: ByteArray): Boolean {
+    private fun BluetoothGattWrapper.writeDescriptor(descriptor: RemoteDescriptor, value: ByteArray): Boolean {
         descriptor.wrapper.updateValue(value)
         return writeDescriptor(descriptor.wrapper, value)
     }
 
-    private fun BluetoothGattWrapper.setNotification(characteristic: Characteristic, enable: Boolean): Boolean {
+    private fun BluetoothGattWrapper.setNotification(characteristic: RemoteCharacteristic, enable: Boolean): Boolean {
         val uuid = characteristic.uuid.uuidString
         if (enable) {
             notifyingCharacteristics[uuid] = characteristic
@@ -270,17 +265,17 @@ internal actual class DefaultDeviceConnectionManager(
         }
 
         val writeValue = when {
-            enable && characteristic.wrapper.containsAnyOf(PROPERTY_NOTIFY) ->
+            enable && characteristic.wrapper.properties.contains(CharacteristicProperty.Notify) ->
                 BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-            enable && characteristic.wrapper.containsAnyOf(PROPERTY_INDICATE) ->
+            enable && characteristic.wrapper.properties.contains(CharacteristicProperty.Indicate) ->
                 BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
-            !enable && characteristic.wrapper.containsAnyOf(PROPERTY_INDICATE, PROPERTY_NOTIFY) ->
+            !enable && characteristic.wrapper.properties.containsAny(setOf(CharacteristicProperty.Indicate, CharacteristicProperty.Notify)) ->
                 BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
             else -> null
         }
 
         return if (writeValue != null) {
-            characteristic.descriptors.firstOrNull { it.uuid == CLIENT_CONFIGURATION }?.let { descriptor ->
+            characteristic.descriptors.firstOrNull { it.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR }?.let { descriptor ->
                 descriptor.wrapper.updateValue(writeValue)
                 writeDescriptor(descriptor.wrapper, writeValue)
             } == true
