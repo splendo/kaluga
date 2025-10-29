@@ -20,17 +20,15 @@ package com.splendo.kaluga.bluetooth.server
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.UUID
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow
 
 interface LocalCharacteristicDSL {
-    fun readable(
-        encrypted: Boolean = false,
-        onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse
-    )
+    fun readable(encrypted: Boolean = false, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse)
     fun writable(
         properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
         encrypted: Boolean = false,
-        onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse
+        onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse,
     )
     fun notifiable(
         properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
@@ -40,13 +38,15 @@ interface LocalCharacteristicDSL {
     )
     fun descriptor(uuid: UUID, descriptor: LocalDescriptorDSL.() -> Unit)
 }
-expect class LocalCharacteristic : Characteristic {
+expect class LocalCharacteristic :
+    Characteristic,
+    FlowCollector<ByteArray> {
 
     enum class Permission {
         READABLE,
         WRITABLE,
         READ_ENCRYPTION_REQUIRED,
-        WRITE_ENCRYPTION_REQUIRED;
+        WRITE_ENCRYPTION_REQUIRED,
     }
 
     expect override val service: LocalService
@@ -55,6 +55,5 @@ expect class LocalCharacteristic : Characteristic {
     expect override val descriptors: List<LocalDescriptor>
 
     expect suspend fun notify(device: ConnectedDevice, value: ByteArray): Boolean
+    expect suspend fun notifyAll(value: ByteArray): Boolean
 }
-
-suspend fun LocalCharacteristic.notifyAll(value: ByteArray) = subscribedDevices.value.forEach { notify(it, value) }

@@ -47,9 +47,8 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
     initialValue: ByteArray? = null,
     private val emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     private val logger: ContextualLogger,
-) : Flow<ByteArray?>, Attribute {
-
-
+) : Flow<ByteArray?>,
+    Attribute {
 
     override suspend fun collect(collector: FlowCollector<ByteArray?>) = sharedFlow.collect(collector)
 

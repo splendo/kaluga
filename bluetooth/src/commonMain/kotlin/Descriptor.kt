@@ -46,7 +46,8 @@ open class RemoteDescriptor(
     initialValue,
     emitNewAction,
     logger,
-), Descriptor {
+),
+    Descriptor {
 
     override val uuid = wrapper.uuid
 

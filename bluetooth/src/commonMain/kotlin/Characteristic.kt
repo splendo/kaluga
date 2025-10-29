@@ -47,7 +47,8 @@ open class RemoteCharacteristic(
     initialValue,
     emitNewAction,
     logger,
-), Characteristic {
+),
+    Characteristic {
 
     private val isBusy = MutableStateFlow(false)
     private val _isNotifying = atomic(false)
@@ -176,7 +177,6 @@ expect interface CharacteristicWrapper {
     val properties: Set<CharacteristicProperty>
 }
 
-
 /**
  * The properties associated with a Bluetooth Characteristic
  * @param rawValue the raw value associated with the property
@@ -192,7 +192,7 @@ sealed class CharacteristicProperty(val rawValue: Int) {
             SignedWrite,
             Notify,
             Indicate,
-            ExtendedProperties
+            ExtendedProperties,
         ).filter {
             (properties and it.rawValue) != 0
         }.toSet()
@@ -241,7 +241,6 @@ sealed class CharacteristicProperty(val rawValue: Int) {
      * Characteristic has extended properties
      */
     data object ExtendedProperties : CharacteristicProperty(0x80)
-
 }
 
 internal val Set<CharacteristicProperty>.rawValue: Int get() = fold(0) { acc, characteristicProperty -> acc or characteristicProperty.rawValue }

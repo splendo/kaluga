@@ -23,7 +23,9 @@ sealed interface GattResponse {
     sealed interface Success : GattResponse {
         override val statusCode: Int get() = 0
     }
-    data class ReadSuccess(val value: ByteArray) : ReadResponse, Success {
+    data class ReadSuccess(val value: ByteArray) :
+        ReadResponse,
+        Success {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) {
@@ -35,14 +37,14 @@ sealed interface GattResponse {
             return value.contentEquals(other.value)
         }
 
-        override fun hashCode(): Int {
-            return value.contentHashCode()
-        }
+        override fun hashCode(): Int = value.contentHashCode()
     }
 
     sealed interface WriteResponse : GattResponse
     data object WriteSuccess : WriteResponse, Success
-    sealed interface Error : ReadResponse, WriteResponse
+    sealed interface Error :
+        ReadResponse,
+        WriteResponse
     data object InvalidHandle : Error {
         override val statusCode: Int get() = 1
     }

@@ -18,10 +18,12 @@ package com.splendo.kaluga.bluetooth.server
 
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
+import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.UUID
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -30,14 +32,15 @@ actual class LocalCharacteristic internal constructor(
     val characteristic: BluetoothGattCharacteristic,
     actual override val service: LocalService,
     internal val server: BluetoothServer,
-    buildDescriptors: LocalCharacteristic.() -> List<LocalDescriptor>
-) : Characteristic {
+    buildDescriptors: LocalCharacteristic.() -> List<LocalDescriptor>,
+) : Characteristic,
+    FlowCollector<ByteArray> {
 
     actual enum class Permission(val androidPermission: Int) {
         READABLE(BluetoothGattCharacteristic.PERMISSION_READ),
         WRITABLE(BluetoothGattCharacteristic.PERMISSION_WRITE),
         READ_ENCRYPTION_REQUIRED(BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED),
-        WRITE_ENCRYPTION_REQUIRED(BluetoothGattCharacteristic.PERMISSION_WRITE_ENCRYPTED);
+        WRITE_ENCRYPTION_REQUIRED(BluetoothGattCharacteristic.PERMISSION_WRITE_ENCRYPTED),
     }
 
     internal class DSL(val uuid: UUID, private val server: BluetoothServer) : LocalCharacteristicDSL {
@@ -49,10 +52,7 @@ actual class LocalCharacteristic internal constructor(
         private var writeAction: (suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse)? = null
         private val descriptorBuilders = mutableListOf<LocalDescriptor.DSL>()
 
-        override fun readable(
-            encrypted: Boolean,
-            onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse
-        ) {
+        override fun readable(encrypted: Boolean, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse) {
             require(readAction == null) { "Read already set" }
             properties = properties or BluetoothGattCharacteristic.PROPERTY_READ
             permissions = permissions or if (encrypted) BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED else BluetoothGattCharacteristic.PERMISSION_READ
@@ -62,12 +62,18 @@ actual class LocalCharacteristic internal constructor(
         override fun writable(
             properties: Set<CharacteristicProperty.Writable>,
             encrypted: Boolean,
-            onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse
+            onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse,
         ) {
             require(writeAction == null) { "Write already set" }
+            this.properties = this.properties or properties.fold(0) { acc, property ->
+                acc or when (property) {
+                    CharacteristicProperty.Write -> BluetoothGattCharacteristic.PROPERTY_WRITE
+                    CharacteristicProperty.WriteWithoutResponse -> BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE
+                    CharacteristicProperty.SignedWrite -> BluetoothGattCharacteristic.PROPERTY_SIGNED_WRITE
+                }
+            }
             permissions = permissions or if (encrypted) BluetoothGattCharacteristic.PERMISSION_WRITE_ENCRYPTED else BluetoothGattCharacteristic.PERMISSION_WRITE
             writeAction = onWrite
-
         }
 
         override fun notifiable(
@@ -76,7 +82,11 @@ actual class LocalCharacteristic internal constructor(
             onSubscribe: suspend LocalCharacteristic.(ConnectedDevice) -> Unit,
             onUnsubscribe: suspend LocalCharacteristic.(ConnectedDevice) -> Unit,
         ) {
-            require(descriptorBuilders.none { it.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR }) { "Client characteristic configuration descriptor already declared" }
+            require(
+                descriptorBuilders.none {
+                    it.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR
+                },
+            ) { "Client characteristic configuration descriptor already declared" }
             this.properties = this.properties or properties.fold(0) { acc, property ->
                 acc or when (property) {
                     CharacteristicProperty.Notify -> BluetoothGattCharacteristic.PROPERTY_NOTIFY
@@ -89,7 +99,7 @@ actual class LocalCharacteristic internal constructor(
                         offset != 0 -> GattResponse.InvalidOffset
                         value.contentEquals(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE) ||
                             value.contentEquals(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE) -> {
-                                characteristic.subscribe(device)
+                            characteristic.subscribe(device)
                             characteristic.onSubscribe(device)
                             GattResponse.WriteSuccess
                         }
@@ -112,10 +122,17 @@ actual class LocalCharacteristic internal constructor(
         fun build(forService: LocalService): LocalCharacteristic = LocalCharacteristic(
             BluetoothGattCharacteristic(uuid, properties, permissions),
             forService,
-            server
+            server,
         ) {
             descriptorBuilders.map {
                 it.build(this)
+            }
+        }.apply {
+            readAction?.let { onRead ->
+                server.callback.registerReadAction(this, onRead)
+            }
+            writeAction?.let { onRead ->
+                server.callback.registerWriteAction(this, onRead)
             }
         }
     }
@@ -134,7 +151,25 @@ actual class LocalCharacteristic internal constructor(
         it.androidPermission and characteristic.permissions != 0
     }.toSet()
 
-    actual suspend fun notify(device: ConnectedDevice, value: ByteArray): Boolean = server.notify(this, device, value)
+    actual suspend fun notify(device: ConnectedDevice, value: ByteArray): Boolean =
+        if (properties.containsAny(setOf(CharacteristicProperty.Notify, CharacteristicProperty.Indicate))) {
+            server.notify(this, device, value)
+        } else {
+            false
+        }
+
+    actual suspend fun notifyAll(value: ByteArray): Boolean {
+        var result = true
+        for (device in subscribedDevices.value) {
+            result = result or notify(device, value)
+        }
+        return result
+    }
+
+    override suspend fun emit(value: ByteArray) {
+        notifyAll(value)
+    }
+
     internal fun subscribe(device: ConnectedDevice) {
         _subscribedDevices.update { it + device }
     }

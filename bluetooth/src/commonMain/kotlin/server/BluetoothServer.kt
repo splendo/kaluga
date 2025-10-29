@@ -21,7 +21,6 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Device
 import kotlinx.coroutines.flow.StateFlow
 
-
 interface BluetoothServerDSL {
     fun advertise(data: AdvertisementDataBuilder.() -> Unit)
     fun service(uuid: UUID, service: LocalServiceDSL.Primary.() -> Unit)

@@ -2,9 +2,15 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.DefaultScanner
+import com.splendo.kaluga.bluetooth.server.BluetoothServer
+import com.splendo.kaluga.bluetooth.server.BluetoothServerDSL
+import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
+import kotlinx.coroutines.flow.first
+import platform.CoreBluetooth.CBCentralManager
 import platform.Foundation.NSBundle
 import kotlin.coroutines.CoroutineContext
 
@@ -35,4 +41,17 @@ actual class BluetoothBuilder(
         scannerBuilder,
         coroutineContext,
     )
+
+    actual override suspend fun createServer(coroutineContext: CoroutineContext, logger: Logger, specs: BluetoothServerDSL.() -> Unit): BluetoothServer {
+        require(permissionsBuilder(coroutineContext).request(BluetoothPermission.Server)) { "Server could not be started. Missing permission" }
+        val enabledManager = DefaultBluetoothMonitor { CBCentralManager() }
+        try {
+            enabledManager.startMonitoring()
+            enabledManager.isEnabled.first { it }
+        } finally {
+            enabledManager.stopMonitoring()
+        }
+
+        return BluetoothServer.DSL(logger, coroutineContext).apply(specs).build()
+    }
 }

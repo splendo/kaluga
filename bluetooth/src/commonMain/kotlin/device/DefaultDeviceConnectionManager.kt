@@ -325,7 +325,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
         wrapper,
         wrapper.includedServices.map { createService(it) },
         ::emitEvent,
-        dataLogger
+        dataLogger,
     )
 
     final override fun handleDisconnect(onDisconnect: (suspend () -> Unit)?) {

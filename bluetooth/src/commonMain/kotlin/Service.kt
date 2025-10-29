@@ -23,7 +23,7 @@ import com.splendo.kaluga.logging.ContextualLogger
 interface Service : Attribute {
     enum class Type {
         PRIMARY,
-        SECONDARY;
+        SECONDARY,
     }
 
     val type: Type
@@ -40,7 +40,9 @@ interface Service : Attribute {
 class RemoteService(
     service: ServiceWrapper,
     override val includedServices: List<RemoteService>,
-    emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit, logger: ContextualLogger) : Service {
+    emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
+    logger: ContextualLogger,
+) : Service {
 
     /**
      * The [UUID] of the service

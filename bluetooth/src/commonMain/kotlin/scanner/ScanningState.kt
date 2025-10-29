@@ -513,11 +513,12 @@ internal sealed class ScanningStateImpl {
             permittedHandler.beforeOldStateIsRemoved(oldState)
         }
 
-        protected fun devicesForPairedDevices(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean) = this.devices.copyAndSetPaired(
-            devices,
-            filter,
-            removeForAllPairedFilters,
-        )
+        protected fun devicesForPairedDevices(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean) =
+            this.devices.copyAndSetPaired(
+                devices,
+                filter,
+                removeForAllPairedFilters,
+            )
 
         suspend fun retrievePairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?) =
             scanner.retrievePairedDevices(filter, removeForAllPairedFilters, connectionSettings)
@@ -528,13 +529,14 @@ internal sealed class ScanningStateImpl {
 
             override val permittedHandler: PermittedHandler = PermittedHandler(devices, scanner)
 
-            override fun pairedDevices(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean): suspend () -> ScanningState.Enabled = suspend {
-                val newDevices = devicesForPairedDevices(devices, filter, removeForAllPairedFilters)
-                Idle(
-                    newDevices,
-                    scanner,
-                )
-            }
+            override fun pairedDevices(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean): suspend () -> ScanningState.Enabled =
+                suspend {
+                    val newDevices = devicesForPairedDevices(devices, filter, removeForAllPairedFilters)
+                    Idle(
+                        newDevices,
+                        scanner,
+                    )
+                }
 
             override fun startScanning(
                 filter: Filter,
@@ -564,13 +566,14 @@ internal sealed class ScanningStateImpl {
 
             override val permittedHandler: PermittedHandler = PermittedHandler(devices, scanner)
 
-            override fun pairedDevices(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean): suspend () -> ScanningState.Enabled = suspend {
-                Scanning(
-                    devicesForPairedDevices(devices, filter, removeForAllPairedFilters),
-                    scanner,
-                    connectionSettings,
-                )
-            }
+            override fun pairedDevices(devices: Map<Identifier, () -> ConnectableDevice>, filter: Filter, removeForAllPairedFilters: Boolean): suspend () -> ScanningState.Enabled =
+                suspend {
+                    Scanning(
+                        devicesForPairedDevices(devices, filter, removeForAllPairedFilters),
+                        scanner,
+                        connectionSettings,
+                    )
+                }
 
             override suspend fun discoverDevices(devices: List<ScanningState.Enabled.Scanning.DiscoveredDevice>): suspend () -> ScanningState.Enabled.Scanning {
                 devices.mapNotNull { device ->

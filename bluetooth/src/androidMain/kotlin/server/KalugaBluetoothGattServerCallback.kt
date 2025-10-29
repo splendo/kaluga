@@ -35,31 +35,31 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
 
-internal class AndroidBluetoothServerCallback(
+internal class KalugaBluetoothGattServerCallback(
     private val logger: Logger,
     handlingContext: CoroutineContext,
     private val onNotificationSent: (BluetoothDevice, Boolean) -> Unit,
     private val onServiceAdded: (BluetoothGattService, Boolean) -> Unit,
-    private val sendResponse: (BluetoothDevice, Int, Int, Int, ByteArray?) -> Boolean
+    private val sendResponse: (BluetoothDevice, Int, Int, Int, ByteArray?) -> Boolean,
 ) : BluetoothGattServerCallback() {
 
-    companion object {
-        const val TAG = "AndroidBluetoothServerCallback"
+    companion object Companion {
+        const val TAG = "KalugaBluetoothGattServerCallback"
         private const val MTU_HEADER_SIZE = 3
         const val DEFAULT_MTU_SIZE = 23
     }
 
     private sealed class AttributeAddressIdentifier {
 
-        companion object {
+        companion object Companion {
             fun from(characteristic: BluetoothGattCharacteristic) = Characteristic(characteristic.service.uuid, characteristic.uuid)
-            fun from(characteristic: com.splendo.kaluga.bluetooth.Characteristic) = Characteristic(characteristic.service.uuid, characteristic.uuid)
+            fun from(characteristic: LocalCharacteristic) = Characteristic(characteristic.service.uuid, characteristic.uuid)
             fun from(descriptor: BluetoothGattDescriptor) = Descriptor(descriptor.characteristic.service.uuid, descriptor.characteristic.uuid, descriptor.uuid)
-            fun from(descriptor: com.splendo.kaluga.bluetooth.Descriptor) = Descriptor(descriptor.characteristic.service.uuid, descriptor.characteristic.uuid, descriptor.uuid)
+            fun from(descriptor: LocalDescriptor) = Descriptor(descriptor.characteristic.service.uuid, descriptor.characteristic.uuid, descriptor.uuid)
         }
 
-        data class Characteristic(override val service: UUID, val characteristic: UUID) : AttributeAddressIdentifier()
-        data class Descriptor(override val service: UUID, val characteristic: UUID, val descriptor: UUID) : AttributeAddressIdentifier()
+        data class Characteristic(override val service: UUID, val characteristic: UUID) : KalugaBluetoothGattServerCallback.AttributeAddressIdentifier()
+        data class Descriptor(override val service: UUID, val characteristic: UUID, val descriptor: UUID) : KalugaBluetoothGattServerCallback.AttributeAddressIdentifier()
 
         abstract val service: UUID
     }
@@ -117,7 +117,7 @@ internal class AndroidBluetoothServerCallback(
         preparedWrite: Boolean,
         responseNeeded: Boolean,
         offset: Int,
-        value: ByteArray
+        value: ByteArray,
     ) {
         handleWriteAction(device, AttributeAddressIdentifier.from(characteristic), requestId, offset, value, preparedWrite, responseNeeded)
     }
@@ -133,7 +133,7 @@ internal class AndroidBluetoothServerCallback(
         preparedWrite: Boolean,
         responseNeeded: Boolean,
         offset: Int,
-        value: ByteArray
+        value: ByteArray,
     ) {
         handleWriteAction(device, AttributeAddressIdentifier.from(descriptor), requestId, offset, value, preparedWrite, responseNeeded)
     }
@@ -183,7 +183,7 @@ internal class AndroidBluetoothServerCallback(
         }
     }
 
-    private fun handleReadAction(device: BluetoothDevice, identifier: AttributeAddressIdentifier, requestId: Int, offset: Int) {
+    private fun handleReadAction(device: BluetoothDevice, identifier: KalugaBluetoothGattServerCallback.AttributeAddressIdentifier, requestId: Int, offset: Int) {
         handlingScope.launch {
             logger.info(TAG) { "Device ${device.address} attempting to read $identifier at $offset" }
             val (response, data) = readActions[identifier]?.let { readAction ->
@@ -204,7 +204,7 @@ internal class AndroidBluetoothServerCallback(
 
     private fun handleWriteAction(
         device: BluetoothDevice,
-        identifier: AttributeAddressIdentifier,
+        identifier: KalugaBluetoothGattServerCallback.AttributeAddressIdentifier,
         requestId: Int,
         offset: Int,
         value: ByteArray,

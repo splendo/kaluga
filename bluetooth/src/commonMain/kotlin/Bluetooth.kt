@@ -218,7 +218,12 @@ class Bluetooth constructor(coroutineContext: CoroutineContext, scanningStateRep
     override fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean, connectionSettings: ConnectionSettings?): Flow<List<ConnectableDevice>> =
         pairedDevices(filter, removeForAllPairedFilters, connectionSettings, timer)
 
-    internal fun pairedDevices(filter: Filter, removeForAllPairedFilters: Boolean = true, connectionSettings: ConnectionSettings? = null, timer: Flow<Unit>): Flow<List<ConnectableDevice>> {
+    internal fun pairedDevices(
+        filter: Filter,
+        removeForAllPairedFilters: Boolean = true,
+        connectionSettings: ConnectionSettings? = null,
+        timer: Flow<Unit>,
+    ): Flow<List<ConnectableDevice>> {
         var shouldStartRetrievingPairing = true
         return combineTransform(
             timer.onEach { shouldStartRetrievingPairing = true },
@@ -331,7 +336,7 @@ interface BaseBluetoothBuilder {
         specs: BluetoothServerDSL.() -> Unit,
     ): BluetoothServer
 
-    @Deprecated("User createClient instead", replaceWith = ReplaceWith("createClient(scannerSettingsBuilder, coroutineContext)" ))
+    @Deprecated("User createClient instead", replaceWith = ReplaceWith("createClient(scannerSettingsBuilder, coroutineContext)"))
     fun create(
         scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings = { BaseScanner.Settings(it) },
         coroutineContext: CoroutineContext = defaultBluetoothClientDispatcher,
@@ -533,11 +538,12 @@ fun Flow<RemoteCharacteristic?>.descriptors(): Flow<List<RemoteDescriptor>> = th
 operator fun <AttributeType, ReadAction, WriteAction> Flow<List<AttributeType>>.get(
     uuid: UUID,
 ): Flow<AttributeType?>
-    where AttributeType : RemoteAttribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write = this.map { attribute ->
-    attribute.firstOrNull {
-        it.uuid.uuidString == uuid.uuidString
-    }
-}.distinctUntilChanged()
+    where AttributeType : RemoteAttribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write =
+    this.map { attribute ->
+        attribute.firstOrNull {
+            it.uuid.uuidString == uuid.uuidString
+        }
+    }.distinctUntilChanged()
 
 /**
  * Gets a ([Flow] of) the [ByteArray] value from a [Flow] of an [AttributeType]

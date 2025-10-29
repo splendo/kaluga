@@ -46,23 +46,16 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 @SuppressLint("MissingPermission")
-actual class BluetoothServer internal constructor(
-    private val manager: BluetoothManager,
-    context: Context,
-    private val logger: Logger,
-    coroutineContext: CoroutineContext
-) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("BluetoothServer")), AutoCloseable {
+actual class BluetoothServer internal constructor(private val manager: BluetoothManager, context: Context, private val logger: Logger, coroutineContext: CoroutineContext) :
+    CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("BluetoothServer")),
+    AutoCloseable {
 
     companion object {
         const val TAG = "BluetoothServer"
     }
 
-    internal class DSL(
-        private val manager: BluetoothManager,
-        private val context: Context,
-        private val logger: Logger,
-        private val coroutineContext: CoroutineContext
-    ) : BluetoothServerDSL {
+    internal class DSL(private val manager: BluetoothManager, private val context: Context, private val logger: Logger, private val coroutineContext: CoroutineContext) :
+        BluetoothServerDSL {
 
         private var advertisementBuilder: (AdvertisementDataBuilder.() -> Unit)? = null
         private val serviceBuilders = mutableMapOf<UUID, LocalServiceDSL.Primary.() -> Unit>()
@@ -77,7 +70,8 @@ actual class BluetoothServer internal constructor(
             serviceBuilders[uuid] = service
         }
 
-        suspend fun build(): BluetoothServer = BluetoothServer(manager, context, logger, coroutineContext).apply { logger
+        suspend fun build(): BluetoothServer = BluetoothServer(manager, context, logger, coroutineContext).apply {
+            logger
             advertisementBuilder?.let {
                 advertise(it)
             }
@@ -97,7 +91,7 @@ actual class BluetoothServer internal constructor(
                 device.device,
                 characteristic.characteristic,
                 characteristic.properties.contains(CharacteristicProperty.Indicate),
-                value
+                value,
             ) == BluetoothStatusCodes.SUCCESS
         } else {
             characteristic.characteristic.setValue(value)
@@ -109,10 +103,7 @@ actual class BluetoothServer internal constructor(
         }
     }
 
-    private class AdvertisingSettings(
-        val localName: String?,
-        val data: AdvertiseData
-    ) : AdvertiseCallback() {
+    private class AdvertisingSettings(val localName: String?, val data: AdvertiseData) : AdvertiseCallback() {
 
         class Builder : AdvertisementDataBuilder {
 
@@ -125,19 +116,18 @@ actual class BluetoothServer internal constructor(
 
             fun build(): AdvertisingSettings = AdvertisingSettings(
                 localName,
-                AdvertiseData.Builder().
-                setIncludeDeviceName(localName != null)
+                AdvertiseData.Builder()
+                    .setIncludeDeviceName(localName != null)
                     .apply {
                         serviceUUIDs.forEach {
                             addServiceUuid(ParcelUuid(it))
                         }
                     }
-                    .build()
+                    .build(),
             )
         }
 
         val hasStarted = CompletableDeferred<Boolean>()
-
 
         override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
             hasStarted.complete(true)
@@ -148,7 +138,7 @@ actual class BluetoothServer internal constructor(
         }
     }
 
-    internal val callback = AndroidBluetoothServerCallback(
+    internal val callback = KalugaBluetoothGattServerCallback(
         logger,
         coroutineContext,
         onNotificationSent = { device, success ->
@@ -157,7 +147,7 @@ actual class BluetoothServer internal constructor(
         onServiceAdded = { service, success ->
             servicesBeingAdded[service]?.complete(success)
         },
-        sendResponse = ::sendResponse
+        sendResponse = ::sendResponse,
     )
 
     private val server = manager.openGattServer(context, callback)
@@ -214,19 +204,22 @@ actual class BluetoothServer internal constructor(
         } catch (e: ClosedSendChannelException) {
             null
         }
-
     }
+
     actual fun remove(service: LocalService) {
         callback.removeService(service.service)
         _services.remove(service)
+        server.removeService(service.service)
     }
 
     actual fun removeAllServices() {
         callback.removeAllServices()
         _services.clear()
+        server.clearServices()
     }
 
-    private fun sendResponse(device: BluetoothDevice, requestId: Int, status: Int, offset: Int, data: ByteArray?): Boolean = server.sendResponse(device, requestId, status, offset, data)
+    private fun sendResponse(device: BluetoothDevice, requestId: Int, status: Int, offset: Int, data: ByteArray?): Boolean =
+        server.sendResponse(device, requestId, status, offset, data)
 
     internal suspend fun notify(characteristic: LocalCharacteristic, device: ConnectedDevice, value: ByteArray): Boolean {
         val action = NotifyingAction(characteristic, device, value)
@@ -302,7 +295,11 @@ actual class BluetoothServer internal constructor(
             for (notifyingAction in notificationChannel) {
                 currentNotifyingAction = notifyingAction
                 try {
-                    logger.info(TAG) { "Notify ${notifyingAction.device.identifier} that Characteristic ${notifyingAction.characteristic.uuid} updated to ${notifyingAction.value.toHexString(":")}" }
+                    logger.info(TAG) {
+                        "Notify ${notifyingAction.device.identifier} that Characteristic ${notifyingAction.characteristic.uuid} updated to ${notifyingAction.value.toHexString(
+                            ":",
+                        )}"
+                    }
                     if (notifyingAction.execute()) {
                         notifyingAction.completed.await().also { didNotify ->
                             if (didNotify) {

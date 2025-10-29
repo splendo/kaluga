@@ -17,15 +17,10 @@
 
 package com.splendo.kaluga.bluetooth.server
 
-import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.Identifier
+import platform.CoreBluetooth.CBCentral
 
-interface LocalDescriptorDSL {
-    fun readable(encrypted: Boolean = false, onRead: suspend LocalDescriptor.(ConnectedDevice, Int) -> GattResponse.ReadResponse)
-
-    fun writable(encrypted: Boolean = false, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse)
-}
-
-expect class LocalDescriptor : Descriptor {
-
-    expect override val characteristic: LocalCharacteristic
+actual class ConnectedDevice(val cbCentral: CBCentral) : Device {
+    override val identifier: Identifier = cbCentral.identifier
 }
