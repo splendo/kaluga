@@ -22,5 +22,5 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 
 actual class ConnectedDevice(val device: BluetoothDevice) : Device {
-    override val identifier: Identifier = device.address
+    actual override val identifier: Identifier = device.address
 }

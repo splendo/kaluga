@@ -37,9 +37,7 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.bluetooth.server.BluetoothServer
 import com.splendo.kaluga.bluetooth.server.BluetoothServerDSL
-import com.splendo.kaluga.logging.Logger
-import com.splendo.kaluga.logging.RestrictedLogLevel
-import com.splendo.kaluga.logging.RestrictedLogger
+import com.splendo.kaluga.bluetooth.server.ServerSettings
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
@@ -331,8 +329,8 @@ interface BaseBluetoothBuilder {
     ): Bluetooth
 
     suspend fun createServer(
+        settingsBuilder: (Permissions) -> ServerSettings = { ServerSettings(permissions = it) },
         coroutineContext: CoroutineContext = defaultBluetoothServerDispatcher,
-        logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
         specs: BluetoothServerDSL.() -> Unit,
     ): BluetoothServer
 
@@ -348,7 +346,7 @@ interface BaseBluetoothBuilder {
  */
 expect class BluetoothBuilder : BaseBluetoothBuilder {
     override fun createClient(scannerSettingsBuilder: (Permissions) -> BaseScanner.Settings, coroutineContext: CoroutineContext): Bluetooth
-    override suspend fun createServer(coroutineContext: CoroutineContext, logger: Logger, specs: BluetoothServerDSL.() -> Unit): BluetoothServer
+    override suspend fun createServer(settingsBuilder: (Permissions) -> ServerSettings, coroutineContext: CoroutineContext, specs: BluetoothServerDSL.() -> Unit): BluetoothServer
 }
 
 /**

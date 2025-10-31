@@ -19,6 +19,11 @@ package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.RestrictedLogLevel
+import com.splendo.kaluga.logging.RestrictedLogger
+import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.flow.StateFlow
 
 interface BluetoothServerDSL {
@@ -26,10 +31,27 @@ interface BluetoothServerDSL {
     fun service(uuid: UUID, service: LocalServiceDSL.Primary.() -> Unit)
 }
 
+enum class ServerState {
+    UNAVAILABLE,
+    AWAITING_PERMISSIONS,
+    AWAITING_BLUETOOTH_ENABLED,
+    AVAILABLE,
+    CLOSED;
+}
+
+data class ServerSettings(
+    val permissions: Permissions,
+    val autoRequestPermission: Boolean = true,
+    val autoEnableBluetooth: Boolean = true,
+    val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
+)
+
 expect class BluetoothServer : AutoCloseable {
 
+    val state: StateFlow<ServerState>
+
     val isAdvertising: StateFlow<Boolean>
-    val services: List<LocalService>
+    val services: StateFlow<List<LocalService>>
 
     suspend fun advertise(data: AdvertisementDataBuilder.() -> Unit): Boolean
     fun stopAdvertising()
@@ -37,6 +59,7 @@ expect class BluetoothServer : AutoCloseable {
     suspend fun add(uuid: UUID, service: LocalServiceDSL.Primary.() -> Unit): LocalService?
     fun remove(service: LocalService)
     fun removeAllServices()
+    override fun close()
 }
 
 interface AdvertisementDataBuilder {
@@ -44,4 +67,6 @@ interface AdvertisementDataBuilder {
     fun serviceUUIDs(vararg uuid: UUID)
 }
 
-expect class ConnectedDevice : Device
+expect class ConnectedDevice : Device {
+    override val identifier: Identifier
+}

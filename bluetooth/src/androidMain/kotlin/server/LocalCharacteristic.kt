@@ -32,6 +32,8 @@ actual class LocalCharacteristic internal constructor(
     val characteristic: BluetoothGattCharacteristic,
     actual override val service: LocalService,
     internal val server: BluetoothServer,
+    private val onSubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
+    private val onUnsubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
     buildDescriptors: LocalCharacteristic.() -> List<LocalDescriptor>,
 ) : Characteristic,
     FlowCollector<ByteArray> {
@@ -50,6 +52,7 @@ actual class LocalCharacteristic internal constructor(
 
         private var readAction: (suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse)? = null
         private var writeAction: (suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse)? = null
+        private var subscriptionActions: Pair<LocalCharacteristic.(ConnectedDevice) -> Unit, LocalCharacteristic.(ConnectedDevice) -> Unit>? = null
         private val descriptorBuilders = mutableListOf<LocalDescriptor.DSL>()
 
         override fun readable(encrypted: Boolean, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse) {
@@ -79,13 +82,13 @@ actual class LocalCharacteristic internal constructor(
         override fun notifiable(
             properties: Set<CharacteristicProperty.Notifiable>,
             encrypted: Boolean,
-            onSubscribe: suspend LocalCharacteristic.(ConnectedDevice) -> Unit,
-            onUnsubscribe: suspend LocalCharacteristic.(ConnectedDevice) -> Unit,
+            onSubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
+            onUnsubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
         ) {
             require(
                 descriptorBuilders.none {
                     it.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR
-                },
+                } && subscriptionActions == null,
             ) { "Client characteristic configuration descriptor already declared" }
             this.properties = this.properties or properties.fold(0) { acc, property ->
                 acc or when (property) {
@@ -93,6 +96,7 @@ actual class LocalCharacteristic internal constructor(
                     CharacteristicProperty.Indicate -> BluetoothGattCharacteristic.PROPERTY_INDICATE
                 }
             }
+            subscriptionActions = onSubscribe to onUnsubscribe
             descriptor(Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR) {
                 writable(encrypted) { device, value, offset ->
                     when {
@@ -100,12 +104,10 @@ actual class LocalCharacteristic internal constructor(
                         value.contentEquals(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE) ||
                             value.contentEquals(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE) -> {
                             characteristic.subscribe(device)
-                            characteristic.onSubscribe(device)
                             GattResponse.WriteSuccess
                         }
                         value.contentEquals(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE) -> {
                             characteristic.unsubscribe(device)
-                            characteristic.onUnsubscribe(device)
                             GattResponse.WriteSuccess
                         }
                         else -> GattResponse.InvalidHandle
@@ -123,6 +125,8 @@ actual class LocalCharacteristic internal constructor(
             BluetoothGattCharacteristic(uuid, properties, permissions),
             forService,
             server,
+            subscriptionActions?.first ?: {},
+            subscriptionActions?.second ?: {},
         ) {
             descriptorBuilders.map {
                 it.build(this)
@@ -172,8 +176,10 @@ actual class LocalCharacteristic internal constructor(
 
     internal fun subscribe(device: ConnectedDevice) {
         _subscribedDevices.update { it + device }
+        onSubscribe(device)
     }
     internal fun unsubscribe(device: ConnectedDevice) {
         _subscribedDevices.update { it - device }
+        onUnsubscribe(device)
     }
 }

@@ -47,6 +47,8 @@ actual class LocalCharacteristic internal constructor(
     val characteristic: CBMutableCharacteristic,
     actual override val service: LocalService,
     private val server: BluetoothServer,
+    private val onSubscribe: suspend LocalCharacteristic.(ConnectedDevice) -> Unit,
+    private val onUnsubscribe: suspend LocalCharacteristic.(ConnectedDevice) -> Unit,
 ) : Characteristic,
     FlowCollector<ByteArray> {
 
@@ -110,6 +112,8 @@ actual class LocalCharacteristic internal constructor(
             CBMutableCharacteristic(uuid, properties, null, permissions),
             forService,
             server,
+            subscriptionActions?.first ?: {},
+            subscriptionActions?.second ?: {}
         ).apply {
             readAction?.let { onRead ->
                 server.delegate.registerReadAction(this, onRead)
@@ -117,13 +121,11 @@ actual class LocalCharacteristic internal constructor(
             writeAction?.let { onRead ->
                 server.delegate.registerWriteAction(this, onRead)
             }
-            subscriptionActions?.let { (onSubscribe, onUnsubscribe) ->
+            if (subscriptionActions != null) {
                 server.delegate.registerSubscriptionActions(this, {
                     subscribe(it)
-                    onSubscribe(it)
                 }, {
                     unsubscribe(it)
-                    onUnsubscribe(it)
                 })
             }
         }
@@ -167,10 +169,12 @@ actual class LocalCharacteristic internal constructor(
         notifyAll(value)
     }
 
-    internal fun subscribe(device: ConnectedDevice) {
+    internal suspend fun subscribe(device: ConnectedDevice) {
         _subscribedDevices.update { it + device }
+        onSubscribe(device)
     }
-    internal fun unsubscribe(device: ConnectedDevice) {
+    internal suspend fun unsubscribe(device: ConnectedDevice) {
         _subscribedDevices.update { it - device }
+        onUnsubscribe(device)
     }
 }

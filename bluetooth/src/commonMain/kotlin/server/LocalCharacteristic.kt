@@ -33,8 +33,8 @@ interface LocalCharacteristicDSL {
     fun notifiable(
         properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
         encrypted: Boolean = false,
-        onSubscribe: suspend LocalCharacteristic.(ConnectedDevice) -> Unit,
-        onUnsubscribe: suspend LocalCharacteristic.(ConnectedDevice) -> Unit,
+        onSubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
+        onUnsubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
     )
     fun descriptor(uuid: UUID, descriptor: LocalDescriptorDSL.() -> Unit)
 }
