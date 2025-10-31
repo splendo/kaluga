@@ -61,11 +61,7 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 @SuppressLint("MissingPermission")
-actual class BluetoothServer internal constructor(
-    private val context: Context,
-    private val settings: ServerSettings,
-    coroutineContext: CoroutineContext
-) :
+actual class BluetoothServer internal constructor(private val context: Context, private val settings: ServerSettings, coroutineContext: CoroutineContext) :
     CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("BluetoothServer")),
     AutoCloseable {
 
@@ -73,8 +69,7 @@ actual class BluetoothServer internal constructor(
         const val TAG = "BluetoothServer"
     }
 
-    internal class DSL(private val context: Context, private val settings: ServerSettings, private val coroutineContext: CoroutineContext) :
-        BluetoothServerDSL {
+    internal class DSL(private val context: Context, private val settings: ServerSettings, private val coroutineContext: CoroutineContext) : BluetoothServerDSL {
 
         private var advertisementBuilder: (AdvertisementDataBuilder.() -> Unit)? = null
         private val serviceBuilders = mutableMapOf<UUID, LocalServiceDSL.Primary.() -> Unit>()
@@ -89,7 +84,7 @@ actual class BluetoothServer internal constructor(
             serviceBuilders[uuid] = service
         }
 
-        suspend fun build(): BluetoothServer = BluetoothServer( context, settings, coroutineContext).apply {
+        suspend fun build(): BluetoothServer = BluetoothServer(context, settings, coroutineContext).apply {
             try {
                 advertisementBuilder?.let {
                     advertise(it)
@@ -97,17 +92,14 @@ actual class BluetoothServer internal constructor(
                 for ((uuid, builder) in serviceBuilders) {
                     add(uuid, builder)
                 }
-            } catch (e : CancellationException) {
+            } catch (e: CancellationException) {
                 close()
                 throw e
             }
         }
     }
 
-    private inner class AddingServiceAction(
-        val service: LocalService,
-        val hasCompleted: CompletableDeferred<LocalService?>,
-    ) {
+    private inner class AddingServiceAction(val service: LocalService, val hasCompleted: CompletableDeferred<LocalService?>) {
 
         fun complete(success: Boolean) {
             hasCompleted.complete(service.takeIf { success })
@@ -136,11 +128,8 @@ actual class BluetoothServer internal constructor(
         }
     }
 
-    private class AdvertisingSettings(
-        val localName: String?,
-        val data: AdvertiseData,
-        val hasStarted: CompletableDeferred<Boolean> = CompletableDeferred(),
-    ) : AdvertiseCallback() {
+    private class AdvertisingSettings(val localName: String?, val data: AdvertiseData, val hasStarted: CompletableDeferred<Boolean> = CompletableDeferred()) :
+        AdvertiseCallback() {
 
         class Builder : AdvertisementDataBuilder {
 
@@ -181,7 +170,7 @@ actual class BluetoothServer internal constructor(
         },
         onServiceAdded = { service, success ->
             currentAddingServiceAction?.let { action ->
-                if (action.service.service.uuid == service.uuid) {
+                if (action.service.service == service) {
                     action.complete(success)
                 }
             }
@@ -319,7 +308,6 @@ actual class BluetoothServer internal constructor(
                 } finally {
                     enabledManager.stopMonitoring()
                 }
-
             } else {
                 logger.info(TAG) { "Missing Permissions" }
                 _state.value = ServerState.AWAITING_PERMISSIONS
@@ -359,7 +347,7 @@ actual class BluetoothServer internal constructor(
             // Restore removed Services
             while (servicesToRestore.isNotEmpty()) {
                 val (toAdd, response) = servicesToRestore.first()
-                logger.info(TAG) { "Restoring Service ${toAdd.service.uuid}" }
+                logger.info(TAG) { "Restoring Service ${toAdd.uuid}" }
                 addServiceChannel.send({ toAdd } to response)
                 isRestoringService = true
                 response.await()
@@ -406,12 +394,12 @@ actual class BluetoothServer internal constructor(
     }
 
     private fun stopAdvertisementForRestoration() = currentAdvertiseCallback?.let { advertisementSettings ->
-            if (advertisementSettings.hasStarted.isCompleted) {
-                AdvertisingSettings(advertisementSettings.localName, advertisementSettings.data)
-            } else {
-                advertisementSettings
-            }
-        }.also {
+        if (advertisementSettings.hasStarted.isCompleted) {
+            AdvertisingSettings(advertisementSettings.localName, advertisementSettings.data)
+        } else {
+            advertisementSettings
+        }
+    }.also {
         stopAdvertising(false)
     }
 

@@ -43,7 +43,11 @@ actual class BluetoothBuilder(
         coroutineContext,
     )
 
-    actual override suspend fun createServer(settingsBuilder: (Permissions) -> ServerSettings, coroutineContext: CoroutineContext, specs: BluetoothServerDSL.() -> Unit): BluetoothServer {
+    actual override suspend fun createServer(
+        settingsBuilder: (Permissions) -> ServerSettings,
+        coroutineContext: CoroutineContext,
+        specs: BluetoothServerDSL.() -> Unit,
+    ): BluetoothServer {
         val settings = settingsBuilder(permissionsBuilder(coroutineContext))
 
         return BluetoothServer.DSL(applicationContext, settings, coroutineContext).apply(specs).build()

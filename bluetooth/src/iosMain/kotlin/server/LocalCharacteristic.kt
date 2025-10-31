@@ -47,8 +47,8 @@ actual class LocalCharacteristic internal constructor(
     val characteristic: CBMutableCharacteristic,
     actual override val service: LocalService,
     private val server: BluetoothServer,
-    private val onSubscribe: suspend LocalCharacteristic.(ConnectedDevice) -> Unit,
-    private val onUnsubscribe: suspend LocalCharacteristic.(ConnectedDevice) -> Unit,
+    private val onSubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
+    private val onUnsubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
 ) : Characteristic,
     FlowCollector<ByteArray> {
 
@@ -62,7 +62,7 @@ actual class LocalCharacteristic internal constructor(
         private var readAction: (suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse)? = null
         private var writeAction: (suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse)? = null
 
-        private var subscriptionActions: Pair<suspend LocalCharacteristic.(ConnectedDevice) -> Unit, suspend LocalCharacteristic.(ConnectedDevice) -> Unit>? = null
+        private var subscriptionActions: Pair<LocalCharacteristic.(ConnectedDevice) -> Unit, LocalCharacteristic.(ConnectedDevice) -> Unit>? = null
 
         override fun readable(encrypted: Boolean, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse) {
             require(readAction == null) { "Read already set" }
@@ -91,8 +91,8 @@ actual class LocalCharacteristic internal constructor(
         override fun notifiable(
             properties: Set<CharacteristicProperty.Notifiable>,
             encrypted: Boolean,
-            onSubscribe: suspend LocalCharacteristic.(ConnectedDevice) -> Unit,
-            onUnsubscribe: suspend LocalCharacteristic.(ConnectedDevice) -> Unit,
+            onSubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
+            onUnsubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
         ) {
             require(subscriptionActions == null) { "Notifying already set" }
             this.properties = this.properties or properties.fold(0UL) { acc, property ->
@@ -113,7 +113,7 @@ actual class LocalCharacteristic internal constructor(
             forService,
             server,
             subscriptionActions?.first ?: {},
-            subscriptionActions?.second ?: {}
+            subscriptionActions?.second ?: {},
         ).apply {
             readAction?.let { onRead ->
                 server.delegate.registerReadAction(this, onRead)
@@ -169,11 +169,11 @@ actual class LocalCharacteristic internal constructor(
         notifyAll(value)
     }
 
-    internal suspend fun subscribe(device: ConnectedDevice) {
+    internal fun subscribe(device: ConnectedDevice) {
         _subscribedDevices.update { it + device }
         onSubscribe(device)
     }
-    internal suspend fun unsubscribe(device: ConnectedDevice) {
+    internal fun unsubscribe(device: ConnectedDevice) {
         _subscribedDevices.update { it - device }
         onUnsubscribe(device)
     }

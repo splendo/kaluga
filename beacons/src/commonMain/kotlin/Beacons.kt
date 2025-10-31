@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.minus
 import com.splendo.kaluga.base.utils.plus
 import com.splendo.kaluga.bluetooth.BluetoothService
-import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
@@ -172,7 +172,7 @@ class DefaultBeacons(
         cache.values.map(BeaconJob::first).toSet()
     }
 
-    private suspend fun createBeaconWith(device: Device): BeaconInfo? {
+    private suspend fun createBeaconWith(device: ConnectableDevice): BeaconInfo? {
         val serviceData = device.info.map { it.advertisementData.serviceData }.firstOrNull() ?: return null
         val data = serviceData[Eddystone.SERVICE_UUID] ?: return null
         val frame = Eddystone.unpack(data) ?: return null

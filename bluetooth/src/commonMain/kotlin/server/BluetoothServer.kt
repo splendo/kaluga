@@ -36,7 +36,7 @@ enum class ServerState {
     AWAITING_PERMISSIONS,
     AWAITING_BLUETOOTH_ENABLED,
     AVAILABLE,
-    CLOSED;
+    CLOSED,
 }
 
 data class ServerSettings(

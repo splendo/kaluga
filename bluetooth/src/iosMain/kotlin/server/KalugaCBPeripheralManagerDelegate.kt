@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
-import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.info
@@ -33,6 +32,7 @@ import platform.CoreBluetooth.CBCentral
 import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBPeripheralManager
 import platform.CoreBluetooth.CBPeripheralManagerDelegateProtocol
+import platform.CoreBluetooth.CBPeripheralManagerStatePoweredOn
 import platform.CoreBluetooth.CBService
 import platform.Foundation.NSError
 import platform.darwin.NSObject
@@ -41,9 +41,10 @@ import kotlin.coroutines.CoroutineContext
 class KalugaCBPeripheralManagerDelegate(
     private val logger: Logger,
     handlingContext: CoroutineContext,
+    private val onEnabledChanged: (Boolean) -> Unit,
     private val onServiceAdded: (CBService, Boolean) -> Unit,
     private val didStartAdvertising: (Boolean) -> Unit,
-    private val onAvailable: () -> Unit,
+    private val onAvailable: (CBPeripheralManager) -> Unit,
 ) : NSObject(),
     CBPeripheralManagerDelegateProtocol {
 
@@ -51,22 +52,15 @@ class KalugaCBPeripheralManagerDelegate(
         const val TAG = "KalugaCBPeripheralManagerDelegate"
     }
 
-    private data class AttributeAddressIdentifier(val service: UUID, val characteristic: UUID) {
-        companion object {
-            fun from(characteristic: CBCharacteristic) = AttributeAddressIdentifier(characteristic.service!!.UUID, characteristic.UUID)
-            fun from(characteristic: LocalCharacteristic) = AttributeAddressIdentifier(characteristic.service.uuid, characteristic.uuid)
-        }
-    }
-
-    private val readActions = mutableMapOf<AttributeAddressIdentifier, suspend (ConnectedDevice, Int) -> GattResponse.ReadResponse>()
-    private val writeActions = mutableMapOf<AttributeAddressIdentifier, suspend (ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse>()
-    private val subscribeActions = mutableMapOf<AttributeAddressIdentifier, suspend (ConnectedDevice) -> Unit>()
-    private val unsubscribeActions = mutableMapOf<AttributeAddressIdentifier, suspend (ConnectedDevice) -> Unit>()
+    private val readActions = mutableMapOf<CBCharacteristic, suspend (ConnectedDevice, Int) -> GattResponse.ReadResponse>()
+    private val writeActions = mutableMapOf<CBCharacteristic, suspend (ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse>()
+    private val subscribeActions = mutableMapOf<CBCharacteristic, (ConnectedDevice) -> Unit>()
+    private val unsubscribeActions = mutableMapOf<CBCharacteristic, (ConnectedDevice) -> Unit>()
 
     private val handlingScope = CoroutineScope(handlingContext + CoroutineName("CBPeripheralManagerDelegate"))
 
     fun registerReadAction(characteristic: LocalCharacteristic, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse) {
-        val identifier = AttributeAddressIdentifier.from(characteristic)
+        val identifier = characteristic.characteristic
         if (readActions.contains(identifier)) {
             logger.warn(TAG) { "Read action for $identifier was already set. Ignoring" }
         } else {
@@ -75,7 +69,7 @@ class KalugaCBPeripheralManagerDelegate(
     }
 
     fun registerWriteAction(characteristic: LocalCharacteristic, onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse) {
-        val identifier = AttributeAddressIdentifier.from(characteristic)
+        val identifier = characteristic.characteristic
         if (writeActions.contains(identifier)) {
             logger.warn(TAG) { "Write action for $identifier was already set. Ignoring" }
         } else {
@@ -85,10 +79,10 @@ class KalugaCBPeripheralManagerDelegate(
 
     fun registerSubscriptionActions(
         characteristic: LocalCharacteristic,
-        onSubscribe: suspend LocalCharacteristic.(ConnectedDevice) -> Unit,
-        onUnsubscribe: suspend LocalCharacteristic.(ConnectedDevice) -> Unit,
+        onSubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
+        onUnsubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
     ) {
-        val identifier = AttributeAddressIdentifier.from(characteristic)
+        val identifier = characteristic.characteristic
         when {
             subscribeActions.contains(identifier) -> logger.warn(TAG) { "Subscribe action for $identifier was already set. Ignoring" }
             unsubscribeActions.contains(identifier) -> logger.warn(TAG) { "Unsubscribe action for $identifier was already set. Ignoring" }
@@ -100,6 +94,7 @@ class KalugaCBPeripheralManagerDelegate(
     }
 
     fun removeService(service: CBService) {
+        service.includedServices.orEmpty().typedList<CBService>().forEach(::removeService)
         readActions -= readActions.keys.filter { it.service == service.UUID }
         writeActions -= writeActions.keys.filter { it.service == service.UUID }
         subscribeActions -= subscribeActions.keys.filter { it.service == service.UUID }
@@ -112,7 +107,7 @@ class KalugaCBPeripheralManagerDelegate(
     }
 
     override fun peripheralManagerDidUpdateState(peripheral: CBPeripheralManager) {
-        // TODO: Deal with Bluetooth being disabled. On iOS this will clear up the entire Service List
+        onEnabledChanged(peripheral.state == CBPeripheralManagerStatePoweredOn)
     }
 
     override fun peripheralManager(peripheral: CBPeripheralManager, didAddService: CBService, error: NSError?) {
@@ -121,7 +116,7 @@ class KalugaCBPeripheralManagerDelegate(
 
     @ObjCSignatureOverride
     override fun peripheralManager(peripheral: CBPeripheralManager, central: CBCentral, didSubscribeToCharacteristic: CBCharacteristic) {
-        subscribeActions[AttributeAddressIdentifier.from(didSubscribeToCharacteristic)]?.let { onSubscribe ->
+        subscribeActions[didSubscribeToCharacteristic]?.let { onSubscribe ->
             handlingScope.launch {
                 onSubscribe(ConnectedDevice(central))
             }
@@ -130,7 +125,7 @@ class KalugaCBPeripheralManagerDelegate(
 
     @ObjCSignatureOverride
     override fun peripheralManager(peripheral: CBPeripheralManager, central: CBCentral, didUnsubscribeFromCharacteristic: CBCharacteristic) {
-        unsubscribeActions[AttributeAddressIdentifier.from(didUnsubscribeFromCharacteristic)]?.let { onUnsubscribe ->
+        unsubscribeActions[didUnsubscribeFromCharacteristic]?.let { onUnsubscribe ->
             handlingScope.launch {
                 onUnsubscribe(ConnectedDevice(central))
             }
@@ -139,13 +134,16 @@ class KalugaCBPeripheralManagerDelegate(
 
     override fun peripheralManager(peripheral: CBPeripheralManager, didReceiveReadRequest: CBATTRequest) {
         handlingScope.launch {
-            val identifier = AttributeAddressIdentifier.from(didReceiveReadRequest.characteristic)
+            val identifier = didReceiveReadRequest.characteristic
             logger.info(TAG) { "Device ${didReceiveReadRequest.central.identifier} attempting to read $identifier at ${didReceiveReadRequest.offset}" }
             val response = readActions[identifier]?.invoke(ConnectedDevice(didReceiveReadRequest.central), didReceiveReadRequest.offset.toInt()) ?: GattResponse.InvalidHandle
             if (response is GattResponse.ReadSuccess) {
                 didReceiveReadRequest.setValue(response.value.toNSData())
             }
-            peripheral.respondToRequest(didReceiveReadRequest, response.statusCode.toLong())
+
+            if (peripheral.state == CBPeripheralManagerStatePoweredOn) {
+                peripheral.respondToRequest(didReceiveReadRequest, response.statusCode.toLong())
+            }
         }
     }
 
@@ -153,13 +151,15 @@ class KalugaCBPeripheralManagerDelegate(
         handlingScope.launch {
             val requests = didReceiveWriteRequests.typedList<CBATTRequest>()
             val responses = requests.map { writeRequest ->
-                val identifier = AttributeAddressIdentifier.from(writeRequest.characteristic)
+                val identifier = writeRequest.characteristic
                 val value = writeRequest.value?.asBytes ?: byteArrayOf()
                 logger.info(TAG) { "Device ${writeRequest.central.identifier} wrote $value for $identifier at offset ${writeRequest.offset}" }
                 writeActions[identifier]?.invoke(ConnectedDevice(writeRequest.central), value, writeRequest.offset.toInt()) ?: GattResponse.InvalidHandle
             }
             val response = responses.firstOrNull { it is GattResponse.Error } ?: GattResponse.WriteSuccess
-            peripheral.respondToRequest(requests.first(), response.statusCode.toLong())
+            if (peripheral.state == CBPeripheralManagerStatePoweredOn) {
+                peripheral.respondToRequest(requests.first(), response.statusCode.toLong())
+            }
         }
     }
 
@@ -168,6 +168,6 @@ class KalugaCBPeripheralManagerDelegate(
     }
 
     override fun peripheralManagerIsReadyToUpdateSubscribers(peripheral: CBPeripheralManager) {
-        onAvailable()
+        onAvailable(peripheral)
     }
 }

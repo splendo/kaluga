@@ -88,7 +88,8 @@ actual class LocalCharacteristic internal constructor(
             require(
                 descriptorBuilders.none {
                     it.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR
-                } && subscriptionActions == null,
+                } &&
+                    subscriptionActions == null,
             ) { "Client characteristic configuration descriptor already declared" }
             this.properties = this.properties or properties.fold(0) { acc, property ->
                 acc or when (property) {

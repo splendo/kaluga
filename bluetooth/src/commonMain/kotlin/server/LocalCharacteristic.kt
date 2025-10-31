@@ -38,6 +38,7 @@ interface LocalCharacteristicDSL {
     )
     fun descriptor(uuid: UUID, descriptor: LocalDescriptorDSL.() -> Unit)
 }
+
 expect class LocalCharacteristic :
     Characteristic,
     FlowCollector<ByteArray> {
