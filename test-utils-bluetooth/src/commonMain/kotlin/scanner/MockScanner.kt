@@ -21,8 +21,8 @@ import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
@@ -201,7 +201,12 @@ class MockBaseScanner(
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = generateEnableSensorsActionsMock.call()
 
-    public override fun handleDeviceDiscovered(deviceWrapper: DeviceWrapper, rssi: RSSI, advertisementData: BaseAdvertisementData, deviceCreator: (CoroutineContext) -> Device) {
+    public override fun handleDeviceDiscovered(
+        deviceWrapper: DeviceWrapper,
+        rssi: RSSI,
+        advertisementData: BaseAdvertisementData,
+        deviceCreator: (CoroutineContext) -> ConnectableDevice,
+    ) {
         super.handleDeviceDiscovered(deviceWrapper, rssi, advertisementData, deviceCreator)
     }
 

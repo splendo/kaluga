@@ -19,10 +19,10 @@ package com.splendo.kaluga.test.bluetooth.device
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.utils.toHexString
-import com.splendo.kaluga.bluetooth.Characteristic
-import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.RSSI
-import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.RemoteCharacteristic
+import com.splendo.kaluga.bluetooth.RemoteDescriptor
+import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.asBytes
@@ -198,22 +198,22 @@ class MockDeviceConnectionManager(
         }
     }
 
-    public override fun handleDiscoverCompleted(services: List<Service>) {
+    public override fun handleDiscoverCompleted(services: List<RemoteService>) {
         super.handleDiscoverCompleted(services)
     }
 
-    public override fun createService(wrapper: ServiceWrapper): Service = super.createService(wrapper)
+    public override fun createService(wrapper: ServiceWrapper): RemoteService = super.createService(wrapper)
 
     override fun handleCurrentActionCompleted(succeeded: Boolean) {
         handleCurrentActionCompletedWithAction(succeeded, currentAction)
         return super.handleCurrentActionCompleted(succeeded)
     }
 
-    public override fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)?) {
+    public override fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((RemoteCharacteristic) -> Unit)?) {
         super.handleUpdatedCharacteristic(uuid, succeeded, onUpdate)
     }
 
-    public override fun handleUpdatedDescriptor(uuid: UUID, succeeded: Boolean, onUpdate: ((Descriptor) -> Unit)?) {
+    public override fun handleUpdatedDescriptor(uuid: UUID, succeeded: Boolean, onUpdate: ((RemoteDescriptor) -> Unit)?) {
         super.handleUpdatedDescriptor(uuid, succeeded, onUpdate)
     }
 

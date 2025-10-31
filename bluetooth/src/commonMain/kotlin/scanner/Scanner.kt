@@ -285,7 +285,7 @@ abstract class BaseScanner constructor(
     private val autoEnableSensors: Boolean = settings.autoEnableSensors
     internal val useLocation: Boolean = settings.useLocation
 
-    internal val bluetoothPermission = BluetoothPermission.Client(useForLocation = settings.useLocation)
+    internal val bluetoothPermission = BluetoothPermission(BluetoothPermission.Type.Client(useForLocation = settings.useLocation))
     private val defaultConnectionSettings = settings.defaultConnectionSettings
 
     protected val eventChannel = Channel<Scanner.Event>(UNLIMITED)

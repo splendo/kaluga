@@ -20,11 +20,11 @@ package com.splendo.kaluga.test.bluetooth
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.TxPower
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.device.ConnectableDeviceImpl
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceStateImplRepo
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -79,7 +79,7 @@ fun createMockDevice(
         ConnectableDeviceStateImplRepo(connectionSettings.reconnectionSettings, manager, coroutineContext)
     },
     coroutineScope: CoroutineScope,
-) = DeviceImpl(
+) = ConnectableDeviceImpl(
     identifier = identifier,
     initialDeviceInfo = MockDeviceInfoBuilder().apply(builder).build(),
     connectionSettings = connectionSettings,

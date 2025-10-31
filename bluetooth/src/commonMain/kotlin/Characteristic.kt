@@ -243,4 +243,4 @@ sealed class CharacteristicProperty(val rawValue: Int) {
     data object ExtendedProperties : CharacteristicProperty(0x80)
 }
 
-internal val Set<CharacteristicProperty>.rawValue: Int get() = fold(0) { acc, characteristicProperty -> acc or characteristicProperty.rawValue }
+val Set<CharacteristicProperty>.rawValue: Int get() = fold(0) { acc, characteristicProperty -> acc or characteristicProperty.rawValue }

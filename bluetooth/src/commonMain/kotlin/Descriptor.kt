@@ -63,6 +63,8 @@ open class RemoteDescriptor(
  */
 expect interface DescriptorWrapper {
 
+    val characteristic: CharacteristicWrapper
+
     /**
      * The [UUID] of the descriptor
      */

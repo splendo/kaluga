@@ -28,13 +28,22 @@ import kotlin.time.Duration
 /**
  * [Permission] to access the Bluetooth scanner
  */
-sealed class BluetoothPermission : Permission() {
-    data class Client(val useForLocation: Boolean = false) : BluetoothPermission() {
-        override val name: String = "BluetoothClient" + if (useForLocation) "ForLocation" else ""
+data class BluetoothPermission(val type: Type) : Permission() {
+
+    sealed class Type {
+
+        data class Client(val useForLocation: Boolean = false) : Type() {
+            override val name: String = "BluetoothClient" + if (useForLocation) "ForLocation" else ""
+        }
+
+        data object Server : Type() {
+            override val name: String = "BluetoothServer"
+        }
+
+        abstract val name: String
     }
-    data object Server : BluetoothPermission() {
-        override val name: String = "BluetoothServer"
-    }
+
+    override val name: String = type.name
 }
 
 /**

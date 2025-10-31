@@ -61,14 +61,14 @@ class BluetoothCharacteristicTest : BluetoothFlowTest<BluetoothFlowTest.Configur
 
         test {
             assertEquals(characteristic, it)
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.Broadcast))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.Read))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.WriteWithoutResponse))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.Write))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.Notify))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.Indicate))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.SignedWrite))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.ExtendedProperties))
+            assertFalse(characteristic.hasProperty(CharacteristicProperty.Broadcast))
+            assertFalse(characteristic.hasProperty(CharacteristicProperty.Read))
+            assertFalse(characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse))
+            assertFalse(characteristic.hasProperty(CharacteristicProperty.Write))
+            assertFalse(characteristic.hasProperty(CharacteristicProperty.Notify))
+            assertFalse(characteristic.hasProperty(CharacteristicProperty.Indicate))
+            assertFalse(characteristic.hasProperty(CharacteristicProperty.SignedWrite))
+            assertFalse(characteristic.hasProperty(CharacteristicProperty.ExtendedProperties))
         }
     }
 
@@ -78,7 +78,7 @@ class BluetoothCharacteristicTest : BluetoothFlowTest<BluetoothFlowTest.Configur
             serviceWrapperBuilder = {
                 characteristics {
                     characteristic {
-                        properties = CharacteristicProperties.Read or CharacteristicProperties.WriteWithoutResponse
+                        properties = setOf(CharacteristicProperty.Read, CharacteristicProperty.WriteWithoutResponse).rawValue
                     }
                 }
             },
@@ -99,14 +99,14 @@ class BluetoothCharacteristicTest : BluetoothFlowTest<BluetoothFlowTest.Configur
 
         test {
             assertEquals(characteristic, it)
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.Broadcast))
-            assertTrue(characteristic.hasProperty(CharacteristicProperties.Read))
-            assertTrue(characteristic.hasProperty(CharacteristicProperties.WriteWithoutResponse))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.Write))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.Notify))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.Indicate))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.SignedWrite))
-            assertFalse(characteristic.hasProperty(CharacteristicProperties.ExtendedProperties))
+            assertFalse(characteristic.hasProperty(CharacteristicProperty.Broadcast))
+            assertTrue(characteristic.hasProperty(CharacteristicProperty.Read))
+            assertTrue(characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse))
+            assertFalse(characteristic.hasProperty(CharacteristicProperty.Write))
+            assertFalse(characteristic.hasProperty(CharacteristicProperty.Notify))
+            assertFalse(characteristic.hasProperty(CharacteristicProperty.Indicate))
+            assertFalse(characteristic.hasProperty(CharacteristicProperty.SignedWrite))
+            assertFalse(characteristic.hasProperty(CharacteristicProperty.ExtendedProperties))
         }
     }
 }

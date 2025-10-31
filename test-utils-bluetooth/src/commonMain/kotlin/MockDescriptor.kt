@@ -31,7 +31,7 @@ import com.splendo.kaluga.test.base.mock.parameters.mock
 class MockDescriptor(descriptorWrapper: DescriptorWrapper, emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit) :
     RemoteDescriptor(
         wrapper = descriptorWrapper,
-        characteristic = TODO(),
+        characteristic = MockCharacteristic(descriptorWrapper.characteristic) {},
         emitNewAction = emitNewAction,
         logger = ContextualLogger(defaultLogger, "MockDescriptor"),
     ) {

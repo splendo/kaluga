@@ -48,7 +48,7 @@ actual interface DescriptorWrapper {
     /**
      * The [CharacteristicWrapper] of the Descriptor of the [BluetoothGattDescriptor]
      */
-    val characteristic: CharacteristicWrapper
+    actual val characteristic: CharacteristicWrapper
 }
 
 /**

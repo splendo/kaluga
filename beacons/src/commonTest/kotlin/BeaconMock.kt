@@ -20,9 +20,9 @@ package com.splendo.kaluga.bluetooth.beacons
 import com.splendo.kaluga.base.utils.bytesOf
 import com.splendo.kaluga.base.utils.decodeHex
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.device.ConnectableDevice
+import com.splendo.kaluga.bluetooth.device.ConnectableDeviceImpl
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.test.bluetooth.createDeviceWrapper
@@ -43,7 +43,7 @@ object BeaconMock {
         coroutineScope = coroutineScope,
     )
 
-    fun mockBeaconDevice(id: String, coroutineScope: CoroutineScope): Device {
+    fun mockBeaconDevice(id: String, coroutineScope: CoroutineScope): ConnectableDevice {
         val beaconId = BeaconID(
             namespace = id.substring(0..19),
             instance = id.substring(20),
@@ -57,7 +57,7 @@ object BeaconMock {
         )
     }
 
-    private fun makeDevice(deviceWrapper: DeviceWrapper, serviceData: ServiceData = emptyMap(), coroutineScope: CoroutineScope) = DeviceImpl(
+    private fun makeDevice(deviceWrapper: DeviceWrapper, serviceData: ServiceData = emptyMap(), coroutineScope: CoroutineScope) = ConnectableDeviceImpl(
         deviceWrapper.identifier,
         makeDeviceInfo(deviceWrapper.name.orEmpty(), serviceData),
         settings,

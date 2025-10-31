@@ -285,7 +285,7 @@ actual class BluetoothServer internal constructor(private val context: Context, 
     private fun manageState(manager: BluetoothManager) = launch {
         val servicesToRestore = mutableListOf<Pair<LocalService, CompletableDeferred<LocalService?>>>()
         val advertisementToRestore = MutableStateFlow<AdvertisingSettings?>(null)
-        settings.permissions[BluetoothPermission.Server].filterOnlyImportant().map { listOf(it) }.collectLatest { permissions ->
+        settings.permissions[BluetoothPermission(BluetoothPermission.Type.Server)].filterOnlyImportant().map { listOf(it) }.collectLatest { permissions ->
             if (permissions.all { it is PermissionState.Allowed }) {
                 logger.info(TAG) { "Has Permissions" }
                 val initialLocalName = defaultLocalName.getCompletedOrNull() ?: manager.adapter.name
@@ -312,7 +312,7 @@ actual class BluetoothServer internal constructor(private val context: Context, 
                 logger.info(TAG) { "Missing Permissions" }
                 _state.value = ServerState.AWAITING_PERMISSIONS
                 if (settings.autoRequestPermission) {
-                    permissions.filterIsInstance<PermissionState.Denied.Requestable<BluetoothPermission.Server>>().forEach { state ->
+                    permissions.filterIsInstance<PermissionState.Denied.Requestable<BluetoothPermission>>().forEach { state ->
                         logger.info(TAG) { "Request Permission" }
                         state.request()
                     }

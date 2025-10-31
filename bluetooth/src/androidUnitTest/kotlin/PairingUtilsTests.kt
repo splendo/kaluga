@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bluetooth.device.ConnectableDeviceImpl
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.DeviceImpl
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.test.base.BaseTest
@@ -60,7 +60,7 @@ class PairingUtilsTests : BaseTest() {
             }
         }
 
-        fun device(coroutineScope: CoroutineScope) = DeviceImpl(
+        fun device(coroutineScope: CoroutineScope) = ConnectableDeviceImpl(
             NAME,
             DeviceInfoImpl(
                 createDeviceWrapper(NAME),
