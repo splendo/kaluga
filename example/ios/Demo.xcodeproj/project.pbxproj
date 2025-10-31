@@ -135,7 +135,7 @@
 		095989173871C8CDA70C49E1 /* LazyView.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = LazyView.generated.swift; sourceTree = "<group>"; };
 		12F49DA13243DC3767266475 /* Color+Color.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "Color+Color.generated.swift"; sourceTree = "<group>"; };
 		167E723C40578BBD9EAA6559 /* ContainerView.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = ContainerView.generated.swift; sourceTree = "<group>"; };
-		18DDAE2784FBCEE56F96980D /* KalugaBackgroundStyleShape+SwiftUI.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; lastKnownFileType = sourcecode.swift; name = "KalugaBackgroundStyleShape+SwiftUI.generated.swift"; path = "KalugaBackgroundStyleShape+SwiftUI.generated.swift"; sourceTree = "<group>"; };
+		18DDAE2784FBCEE56F96980D /* KalugaBackgroundStyleShape+SwiftUI.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "KalugaBackgroundStyleShape+SwiftUI.generated.swift"; sourceTree = "<group>"; };
 		1DA3213EF5694917A0138255 /* PlatformValueMapper.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = PlatformValueMapper.generated.swift; sourceTree = "<group>"; };
 		2017B1C42400175C00F9072A /* PermissionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionListViewController.swift; sourceTree = "<group>"; };
 		201EA2182937C32000C562EC /* SwiftUIOrUIKitSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIOrUIKitSelectionViewController.swift; sourceTree = "<group>"; };
@@ -223,7 +223,7 @@
 		944D74BABB71F3B76E746EC8 /* TintedImage+Image.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "TintedImage+Image.generated.swift"; sourceTree = "<group>"; };
 		9730959B8EF5B66133F731D2 /* ShapeView.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = ShapeView.generated.swift; sourceTree = "<group>"; };
 		978348A6235DF586005B140B /* PermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionViewController.swift; sourceTree = "<group>"; };
-		9A7BFB9454252C52D7AB5985 /* View+ModifyIf.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; lastKnownFileType = sourcecode.swift; name = "View+ModifyIf.generated.swift"; path = "View+ModifyIf.generated.swift"; sourceTree = "<group>"; };
+		9A7BFB9454252C52D7AB5985 /* View+ModifyIf.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "View+ModifyIf.generated.swift"; sourceTree = "<group>"; };
 		A1AD210B87A46DBD057A7D28 /* Navigation.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Navigation.generated.swift; sourceTree = "<group>"; };
 		A8678F48E60D40E6AB06177C /* LifecycleViewModel.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = LifecycleViewModel.generated.swift; sourceTree = "<group>"; };
 		BC5100D42D2C3B2200095938 /* sound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = sound.mp3; sourceTree = "<group>"; };
@@ -969,6 +969,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 2732HQPVJP;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2732HQPVJP;
 				FRAMEWORK_SEARCH_PATHS = (
 					$BUILT_PRODUCTS_DIR,
 					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
@@ -987,6 +988,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Kaluga example";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Kaluga example";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1121,6 +1123,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 2732HQPVJP;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2732HQPVJP;
 				FRAMEWORK_SEARCH_PATHS = (
 					$BUILT_PRODUCTS_DIR,
 					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
@@ -1139,6 +1142,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Kaluga example";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Kaluga example";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
