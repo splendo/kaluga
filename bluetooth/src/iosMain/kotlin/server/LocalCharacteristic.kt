@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.server
 
-import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
@@ -43,14 +42,51 @@ import platform.CoreBluetooth.CBCharacteristicPropertyWriteWithoutResponse
 import platform.CoreBluetooth.CBDescriptor
 import platform.CoreBluetooth.CBMutableCharacteristic
 
-actual class LocalCharacteristic internal constructor(
-    val characteristic: CBMutableCharacteristic,
-    actual override val service: LocalService,
-    private val server: BluetoothServer,
-    private val onSubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
-    private val onUnsubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
-) : Characteristic,
-    FlowCollector<ByteArray> {
+actual sealed class LocalCharacteristic(val characteristic: CBMutableCharacteristic, actual override val service: LocalService) : Characteristic {
+
+    actual class Static internal constructor(characteristic: CBMutableCharacteristic, service: LocalService) : LocalCharacteristic(characteristic, service) {
+
+        actual override val descriptors: List<LocalDescriptor> = characteristic.descriptors.orEmpty().typedList<CBDescriptor>().map { LocalDescriptor(it, this) }
+    }
+
+    actual class Notifiable internal constructor(
+        characteristic: CBMutableCharacteristic,
+        service: LocalService,
+        private val server: BluetoothServer,
+        private val onSubscribe: Notifiable.(ConnectedDevice) -> Unit,
+        private val onUnsubscribe: Notifiable.(ConnectedDevice) -> Unit,
+    ) : LocalCharacteristic(characteristic, service),
+        FlowCollector<ByteArray> {
+        private val _subscribedDevices = MutableStateFlow(emptyList<ConnectedDevice>())
+        actual val subscribedDevices = _subscribedDevices.asStateFlow()
+
+        actual override val descriptors: List<LocalDescriptor> = characteristic.descriptors.orEmpty().typedList<CBDescriptor>().map { LocalDescriptor(it, this) }
+
+        actual suspend fun notify(device: ConnectedDevice, value: ByteArray): Boolean = server.notify(
+            this,
+            value,
+            listOf(device),
+        )
+
+        actual suspend fun notifyAll(value: ByteArray): Boolean = server.notify(
+            this,
+            value,
+            null,
+        )
+
+        actual override suspend fun emit(value: ByteArray) {
+            notifyAll(value)
+        }
+
+        internal fun subscribe(device: ConnectedDevice) {
+            _subscribedDevices.update { it + device }
+            onSubscribe(device)
+        }
+        internal fun unsubscribe(device: ConnectedDevice) {
+            _subscribedDevices.update { it - device }
+            onUnsubscribe(device)
+        }
+    }
 
     actual override val uuid: UUID = characteristic.UUID
 
@@ -62,7 +98,7 @@ actual class LocalCharacteristic internal constructor(
         private var readAction: (suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse)? = null
         private var writeAction: (suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse)? = null
 
-        private var subscriptionActions: Pair<LocalCharacteristic.(ConnectedDevice) -> Unit, LocalCharacteristic.(ConnectedDevice) -> Unit>? = null
+        private var subscriptionActions: Pair<Notifiable.(ConnectedDevice) -> Unit, Notifiable.(ConnectedDevice) -> Unit>? = null
 
         override fun readable(encrypted: Boolean, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse) {
             require(readAction == null) { "Read already set" }
@@ -91,8 +127,8 @@ actual class LocalCharacteristic internal constructor(
         override fun notifiable(
             properties: Set<CharacteristicProperty.Notifiable>,
             encrypted: Boolean,
-            onSubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
-            onUnsubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
+            onSubscribe: Notifiable.(ConnectedDevice) -> Unit,
+            onUnsubscribe: Notifiable.(ConnectedDevice) -> Unit,
         ) {
             require(subscriptionActions == null) { "Notifying already set" }
             this.properties = this.properties or properties.fold(0UL) { acc, property ->
@@ -108,26 +144,32 @@ actual class LocalCharacteristic internal constructor(
             logger.warn("LocalCharacteristicDSL") { "iOS does not support custom descriptors. Ignoring: $uuid" }
         }
 
-        fun build(forService: LocalService) = LocalCharacteristic(
-            CBMutableCharacteristic(uuid, properties, null, permissions),
-            forService,
-            server,
-            subscriptionActions?.first ?: {},
-            subscriptionActions?.second ?: {},
-        ).apply {
+        fun build(forService: LocalService): LocalCharacteristic {
+            val cbCharacteristic = CBMutableCharacteristic(uuid, properties, null, permissions)
+            val characteristic = subscriptionActions?.let { (onSubscribe, onUnsubscribe) ->
+                Notifiable(
+                    cbCharacteristic,
+                    forService,
+                    server,
+                    onSubscribe,
+                    onUnsubscribe,
+                ).apply {
+                    server.delegate.registerSubscriptionActions(this, {
+                        subscribe(it)
+                    }, {
+                        unsubscribe(it)
+                    })
+                }
+            } ?: Static(cbCharacteristic, forService)
+
             readAction?.let { onRead ->
-                server.delegate.registerReadAction(this, onRead)
+                server.delegate.registerReadAction(characteristic, onRead)
             }
             writeAction?.let { onRead ->
-                server.delegate.registerWriteAction(this, onRead)
+                server.delegate.registerWriteAction(characteristic, onRead)
             }
-            if (subscriptionActions != null) {
-                server.delegate.registerSubscriptionActions(this, {
-                    subscribe(it)
-                }, {
-                    unsubscribe(it)
-                })
-            }
+
+            return characteristic
         }
     }
 
@@ -143,38 +185,5 @@ actual class LocalCharacteristic internal constructor(
         it.cbAttributePermission and characteristic.permissions != 0UL
     }.toSet()
 
-    private val _subscribedDevices = MutableStateFlow(emptyList<ConnectedDevice>())
-    actual val subscribedDevices = _subscribedDevices.asStateFlow()
-
-    actual override val descriptors: List<LocalDescriptor> = characteristic.descriptors.orEmpty().typedList<CBDescriptor>().map { LocalDescriptor(it, this) }
-
-    actual suspend fun notify(device: ConnectedDevice, value: ByteArray): Boolean = notifyIfAllowed(
-        value,
-        listOf(device),
-    )
-
-    actual suspend fun notifyAll(value: ByteArray): Boolean = notifyIfAllowed(
-        value,
-        null,
-    )
-
-    private suspend fun notifyIfAllowed(value: ByteArray, devices: List<ConnectedDevice>?): Boolean =
-        if (properties.containsAny(setOf(CharacteristicProperty.Notify, CharacteristicProperty.Indicate))) {
-            server.notify(this, value, devices)
-        } else {
-            false
-        }
-
-    actual override suspend fun emit(value: ByteArray) {
-        notifyAll(value)
-    }
-
-    internal fun subscribe(device: ConnectedDevice) {
-        _subscribedDevices.update { it + device }
-        onSubscribe(device)
-    }
-    internal fun unsubscribe(device: ConnectedDevice) {
-        _subscribedDevices.update { it - device }
-        onUnsubscribe(device)
-    }
+    actual abstract override val descriptors: List<LocalDescriptor>
 }

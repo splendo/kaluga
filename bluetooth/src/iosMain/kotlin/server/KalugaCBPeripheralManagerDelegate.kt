@@ -38,6 +38,7 @@ import platform.Foundation.NSError
 import platform.darwin.NSObject
 import kotlin.coroutines.CoroutineContext
 
+private const val TAG = "KalugaCBPeripheralManagerDelegate"
 class KalugaCBPeripheralManagerDelegate(
     private val logger: Logger,
     handlingContext: CoroutineContext,
@@ -47,10 +48,6 @@ class KalugaCBPeripheralManagerDelegate(
     private val onAvailable: (CBPeripheralManager) -> Unit,
 ) : NSObject(),
     CBPeripheralManagerDelegateProtocol {
-
-    companion object {
-        const val TAG = "KalugaCBPeripheralManagerDelegate"
-    }
 
     private val readActions = mutableMapOf<CBCharacteristic, suspend (ConnectedDevice, Int) -> GattResponse.ReadResponse>()
     private val writeActions = mutableMapOf<CBCharacteristic, suspend (ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse>()

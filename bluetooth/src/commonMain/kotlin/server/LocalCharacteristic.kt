@@ -17,11 +17,20 @@
 
 package com.splendo.kaluga.bluetooth.server
 
+import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.UUID
+import kotlinx.atomicfu.atomic
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.launch
 
 interface LocalCharacteristicDSL {
     fun readable(encrypted: Boolean = false, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse)
@@ -30,18 +39,77 @@ interface LocalCharacteristicDSL {
         encrypted: Boolean = false,
         onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse,
     )
+
     fun notifiable(
         properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
         encrypted: Boolean = false,
-        onSubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
-        onUnsubscribe: LocalCharacteristic.(ConnectedDevice) -> Unit,
+        onSubscribe: LocalCharacteristic.Notifiable.(ConnectedDevice) -> Unit,
+        onUnsubscribe: LocalCharacteristic.Notifiable.(ConnectedDevice) -> Unit,
     )
+
     fun descriptor(uuid: UUID, descriptor: LocalDescriptorDSL.() -> Unit)
+
+    fun Flow<ByteArray>.attachIn(
+        scope: CoroutineScope,
+        started: SharingStarted,
+        replay: Int = 0,
+        properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+        encrypted: Boolean = false,
+    ) {
+        val sharedFlow = shareIn(scope, started, replay)
+        sharedFlow.attachIn(scope, properties, encrypted)
+    }
+
+    fun SharedFlow<ByteArray>.attachIn(
+        scope: CoroutineScope,
+        properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+        encrypted: Boolean = false,
+    ) {
+        val observingJobs = concurrentMutableMapOf<ConnectedDevice, Job>()
+        notifiable(
+            properties,
+            encrypted,
+            onSubscribe = { device ->
+                observingJobs[device] = scope.launch {
+                    collect { value ->
+                        notify(device, value)
+                    }
+                }
+            },
+            onUnsubscribe = { device ->
+                observingJobs.remove(device)?.cancel()
+            },
+        )
+    }
+
+    fun StateFlow<ByteArray>.attachIn(
+        scope: CoroutineScope,
+        properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+        encrypted: Boolean = false,
+    ) {
+        val hasStarted = atomic(false)
+        notifiable(
+            properties,
+            encrypted,
+            onSubscribe = { device ->
+                // We only know the Characteristic on first subscription, so this is the point at which to collect the state flow
+                if (hasStarted.compareAndSet(expect = false, update = true)) {
+                    scope.launch {
+                        collect(this@notifiable)
+                    }
+                } else {
+                    // If scope already launched, then the subscription will have missed the initial value. So report it immediately
+                    scope.launch {
+                        notify(device, value)
+                    }
+                }
+            },
+            onUnsubscribe = {},
+        )
+    }
 }
 
-expect class LocalCharacteristic :
-    Characteristic,
-    FlowCollector<ByteArray> {
+expect sealed class LocalCharacteristic : Characteristic {
 
     enum class Permission {
         READABLE,
@@ -50,14 +118,24 @@ expect class LocalCharacteristic :
         WRITE_ENCRYPTION_REQUIRED,
     }
 
+    class Static : LocalCharacteristic {
+        override val descriptors: List<LocalDescriptor>
+    }
+
+    class Notifiable :
+        LocalCharacteristic,
+        FlowCollector<ByteArray> {
+
+        val subscribedDevices: StateFlow<List<ConnectedDevice>>
+        override val descriptors: List<LocalDescriptor>
+        suspend fun notify(device: ConnectedDevice, value: ByteArray): Boolean
+        suspend fun notifyAll(value: ByteArray): Boolean
+        override suspend fun emit(value: ByteArray)
+    }
+
     override val uuid: UUID
     override val service: LocalService
     override val properties: Set<CharacteristicProperty>
     val permissions: Set<Permission>
-    val subscribedDevices: StateFlow<List<ConnectedDevice>>
-    override val descriptors: List<LocalDescriptor>
-
-    suspend fun notify(device: ConnectedDevice, value: ByteArray): Boolean
-    suspend fun notifyAll(value: ByteArray): Boolean
-    override suspend fun emit(value: ByteArray)
+    abstract override val descriptors: List<LocalDescriptor>
 }
