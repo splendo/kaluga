@@ -18,7 +18,6 @@
 package com.splendo.kaluga.plugin.extensions
 
 // import com.android.build.gradle.LibraryExtension
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
@@ -30,6 +29,7 @@ sealed class BaseKalugaSubprojectExtension(
 ) : BaseKalugaExtension(versionCatalog, objects) {
 
     abstract var moduleName: String
+        // TODO: fix
         // get() = libraryExtension.namespace.orEmpty()
         //     .removePrefix("$BASE_GROUP.")
         //     .removeSuffix(namespacePostfix?.let { ".$it" } ?: "")
@@ -51,7 +51,7 @@ sealed class BaseKalugaSubprojectExtension(
         "mockito-core",
     ).map { it.asDependency() }
 
-    protected val androidInstrumentedTestDependencies = listOf(
+    protected val androidDeviceTestDependencies = listOf(
         "androidx-test-core",
         "androidx-test-core-ktx",
         "androidx-test-espresso",

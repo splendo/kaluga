@@ -40,10 +40,12 @@ open class MultiplatformDependencyContainer @Inject constructor(objects: ObjectF
     open class Common : TargetDependencyContainer()
     open class Android : TargetDependencyContainer() {
 
-        internal val instrumentedTestDependencies = mutableListOf<Action<KotlinDependencyHandler>>()
+        internal val deviceTestDependencies = mutableListOf<Action<KotlinDependencyHandler>>()
 
-        fun instrumented(action: Action<KotlinDependencyHandler>) {
-            instrumentedTestDependencies.add(action)
+        @Deprecated("use device instead", ReplaceWith("device(action)"))
+        fun instrumented(action: Action<KotlinDependencyHandler>) = device(action)
+        fun device(action: Action<KotlinDependencyHandler>) {
+            deviceTestDependencies.add(action)
         }
     }
 

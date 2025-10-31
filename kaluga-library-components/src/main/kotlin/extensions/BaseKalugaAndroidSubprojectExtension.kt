@@ -23,11 +23,8 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.publish.PublicationContainer
-import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
@@ -66,7 +63,7 @@ abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatal
             androidTestDependencies.forEach {
                 add("testImplementation", it)
             }
-            androidInstrumentedTestDependencies.forEach {
+            androidDeviceTestDependencies.forEach {
                 add("androidTestImplementation", it)
             }
         }

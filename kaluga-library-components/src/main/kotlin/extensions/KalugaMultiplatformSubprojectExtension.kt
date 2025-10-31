@@ -221,15 +221,19 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
                 }
 
                 androidMain.configure {
+
                     dependencies {
-                        androidMainDependencies.forEach { implementation(it) }
+                        androidMainDependencies.forEach {
+                            implementation(it)
+                        }
+
                         multiplatformDependencies.android.mainDependencies.forEach {
                             it.execute(this)
                         }
                     }
                 }
 
-                androidUnitTest.configure {
+                getByName("androidHostTest") {
                     dependencies {
                         androidTestDependencies.forEach {
                             implementation(it)
@@ -238,12 +242,13 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
                     }
                 }
 
-                androidInstrumentedTest.configure {
+                getByName("androidDeviceTest") {
+                    dependsOn(getByName("commonTest"))
                     dependencies {
-                        androidInstrumentedTestDependencies.forEach {
+                        androidDeviceTestDependencies.forEach {
                             implementation(it)
                         }
-                        multiplatformDependencies.android.instrumentedTestDependencies.forEach { it.execute(this) }
+                        multiplatformDependencies.android.deviceTestDependencies.forEach { it.execute(this) }
                     }
                 }
 
@@ -434,6 +439,9 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
     }
 
     fun KotlinMultiplatformAndroidLibraryExtension.configure() {
+        compileSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
+        buildToolsVersion = versionCatalog.findVersion("androidBuildTools").get().displayName
+        minSdk = versionCatalog.findVersion("androidMinSdk").get().displayName.toInt()
 
         withHostTest {
             isReturnDefaultValues = true
@@ -476,7 +484,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
         }
 
         // Run on IntelliJ
-        val ideaActive = (System.getProperty("idea.active") == "FOO").also {
+        val ideaActive = (System.getProperty("idea.active") == "true").also {
             logger.info("Run on IntelliJ: $it")
         }
 
@@ -484,8 +492,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
         val isAppleSilicon = (System.getProperty("os.arch") == "aarch64").also {
             logger.info("Run on apple silicon: $it")
         }
-
-        println("‼️ideaActive: $ideaActive isRealIOSDevice: $isRealIOSDevice isAppleSilicon: $isAppleSilicon")
 
         return when {
             !ideaActive -> IOSTarget.values().toSet()
@@ -499,17 +505,8 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
         setupSubproject()
 
         multiplatformExtension.extensions.getByType(KotlinMultiplatformAndroidLibraryTarget::class.java).apply {
-            compileSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
-            buildToolsVersion = versionCatalog.findVersion("androidBuildTools").get().displayName
-            minSdk = versionCatalog.findVersion("androidMinSdk").get().displayName.toInt()
-
             configure()
-            compilations.configureEach {
-                    val javaVersion = JavaVersion.toVersion(versionCatalog.findVersion("java").get().displayName)
-                    // sourceCompatibility = javaVersion
-                    // targetCompatibility = javaVersion
-                }
-            }
+        }
 
         configureSubproject()
     }
