@@ -21,7 +21,6 @@ import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.UUID
-import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -87,13 +86,14 @@ interface LocalCharacteristicDSL {
         properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
         encrypted: Boolean = false,
     ) {
-        val hasStarted = atomic(false)
+        var hasStarted = false
         notifiable(
             properties,
             encrypted,
             onSubscribe = { device ->
                 // We only know the Characteristic on first subscription, so this is the point at which to collect the state flow
-                if (hasStarted.compareAndSet(expect = false, update = true)) {
+                if (!hasStarted) {
+                    hasStarted = true
                     scope.launch {
                         collect(this@notifiable)
                     }

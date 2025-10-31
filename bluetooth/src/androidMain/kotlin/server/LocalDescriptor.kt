@@ -23,7 +23,7 @@ import com.splendo.kaluga.bluetooth.UUID
 
 actual class LocalDescriptor internal constructor(val descriptor: BluetoothGattDescriptor, actual override val characteristic: LocalCharacteristic) : Descriptor {
 
-    internal class DSL(val uuid: UUID) : LocalDescriptorDSL {
+    internal class DSL(val uuid: UUID, val server: BluetoothServer) : LocalDescriptorDSL {
 
         private var permissions = 0
         private var readAction: (suspend LocalDescriptor.(ConnectedDevice, Int) -> GattResponse.ReadResponse)? = null
@@ -46,10 +46,10 @@ actual class LocalDescriptor internal constructor(val descriptor: BluetoothGattD
             forCharacteristic,
         ).apply {
             readAction?.let { onRead ->
-                forCharacteristic.server.callback.registerReadAction(this, onRead)
+                server.callback.registerReadAction(this, onRead)
             }
             writeAction?.let { onRead ->
-                forCharacteristic.server.callback.registerWriteAction(this, onRead)
+                server.callback.registerWriteAction(this, onRead)
             }
         }
     }

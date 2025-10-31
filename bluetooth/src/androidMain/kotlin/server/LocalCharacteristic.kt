@@ -156,7 +156,7 @@ actual sealed class LocalCharacteristic(val characteristic: BluetoothGattCharact
 
         override fun descriptor(uuid: UUID, descriptor: LocalDescriptorDSL.() -> Unit) {
             require(descriptorBuilders.none { it.uuid == uuid }) { "Descriptor $uuid already declared" }
-            descriptorBuilders.add(LocalDescriptor.DSL(uuid).apply(descriptor))
+            descriptorBuilders.add(LocalDescriptor.DSL(uuid, server).apply(descriptor))
         }
 
         fun build(forService: LocalService): LocalCharacteristic {

@@ -94,7 +94,7 @@ actual class BluetoothServer internal constructor(private val settings: ServerSe
     }
 
     private class NotifyingAction(
-        val characteristic: LocalCharacteristic,
+        val characteristic: LocalCharacteristic.Notifiable,
         val devices: List<ConnectedDevice>?,
         val value: ByteArray,
         val completed: CompletableDeferred<Boolean> = CompletableDeferred(),
@@ -224,7 +224,7 @@ actual class BluetoothServer internal constructor(private val settings: ServerSe
         manager.value?.removeAllServices()
     }
 
-    suspend fun notify(characteristic: LocalCharacteristic, value: ByteArray, devices: List<ConnectedDevice>?): Boolean {
+    suspend fun notify(characteristic: LocalCharacteristic.Notifiable, value: ByteArray, devices: List<ConnectedDevice>?): Boolean {
         val action = NotifyingAction(characteristic, devices, value)
         notificationChannel.send(action)
         return action.completed.await()
@@ -332,8 +332,11 @@ actual class BluetoothServer internal constructor(private val settings: ServerSe
         currentNotifyingAction = null
         _services.value.forEach { service ->
             service.characteristics.forEach { characteristic ->
-                characteristic.subscribedDevices.value.forEach { device ->
-                    characteristic.unsubscribe(device)
+                when (characteristic) {
+                    is LocalCharacteristic.Notifiable -> characteristic.subscribedDevices.value.forEach { device ->
+                        characteristic.unsubscribe(device)
+                    }
+                    is LocalCharacteristic.Static -> {}
                 }
             }
         }
