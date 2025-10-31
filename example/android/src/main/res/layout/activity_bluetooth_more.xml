@@ -13,7 +13,8 @@
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:paddingStart="12dp"
-        android:paddingEnd="12dp">
+        android:paddingEnd="12dp"
+        android:fitsSystemWindows="true">
 
         <TextView
             android:id="@+id/name"
