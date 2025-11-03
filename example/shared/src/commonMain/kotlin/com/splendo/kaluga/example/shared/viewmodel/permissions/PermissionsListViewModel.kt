@@ -57,7 +57,7 @@ enum class PermissionView(val title: String) {
     ;
 
     val permission: Permission get() = when (this) {
-        Bluetooth -> BluetoothPermission(useForLocation = useBluetoothForLocation)
+        Bluetooth -> BluetoothPermission(BluetoothPermission.Type.Client(useForLocation = useBluetoothForLocation))
         Calendar -> CalendarPermission(allowWrite = true)
         Camera -> CameraPermission
         Contacts -> ContactsPermission(allowWrite = true)

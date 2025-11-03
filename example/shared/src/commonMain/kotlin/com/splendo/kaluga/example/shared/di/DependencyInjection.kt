@@ -64,9 +64,7 @@ private fun sharedModule(locationStateRepoBuilderBuilder: LocationStateRepoBuild
             builder.registerBluetoothPermissionIfNotRegistered(settings = settings)
             builder.registerLocationPermissionIfNotRegistered(settings = settings)
             Permissions(builder, it)
-        }.create(
-            scannerSettingsBuilder = { BaseScanner.Settings(permissions = it, useLocation = useBluetoothForLocation, logger = get()) },
-        )
+        }
     }
     single { DefaultBeacons(get<Bluetooth>(), beaconLifetime = 1.minutes, logger = get()) }
 }

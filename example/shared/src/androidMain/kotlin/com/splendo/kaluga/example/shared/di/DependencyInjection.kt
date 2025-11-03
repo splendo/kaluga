@@ -37,9 +37,9 @@ import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPa
 import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListViewModel
-import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDeviceDetailViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
-import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetails
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.server.BluetoothServerViewModel
 import com.splendo.kaluga.example.shared.viewmodel.compose.ComposeOrXMLNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.compose.ComposeOrXMLSelectionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.datetime.TimerViewModel
@@ -190,12 +190,12 @@ internal val androidModule = module {
         NetworkViewModel(NetworkStateRepoBuilder())
     }
 
-    viewModel { (navigator: Navigator<DeviceDetails>) ->
-        BluetoothListViewModel(AlertPresenter.Builder(), navigator)
+    viewModel { (navigator: Navigator<BluetoothListNavigationAction>) ->
+        BluetoothListViewModel( navigator)
     }
 
-    viewModel { (identifier: com.splendo.kaluga.bluetooth.device.Identifier) ->
-        BluetoothDeviceDetailViewModel(identifier)
+    viewModel {
+        BluetoothServerViewModel()
     }
 
     viewModel {
@@ -245,7 +245,7 @@ fun initKoin(customModules: List<Module> = emptyList()) = initKoin(
             permissionsBuilder = it,
         )
     },
-    { BluetoothBuilder(useLocationPermission = useBluetoothForLocation, permissionsBuilder = it) },
+    { BluetoothBuilder(permissionsBuilder = it) },
     customModules,
 )
 

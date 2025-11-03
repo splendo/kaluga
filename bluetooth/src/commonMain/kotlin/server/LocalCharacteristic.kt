@@ -25,8 +25,11 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Notifiable
 import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Static
 import com.splendo.kaluga.bluetooth.uuidFrom
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,11 +54,27 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
 
     interface DSL {
         fun readable(encrypted: Boolean = false, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse)
+        fun readableAlwaysSuccess(encrypted: Boolean = false, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> ByteArray) {
+            readable(encrypted) { device, offset ->
+                GattResponse.ReadSuccess(onRead(this, device, offset))
+            }
+        }
         fun writable(
             properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
             encrypted: Boolean = false,
             onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse,
         )
+
+        fun writableAlwaysSuccess(
+            properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
+            encrypted: Boolean = false,
+            onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> Unit,
+        ) {
+            writable(properties, encrypted) { device, value, offset ->
+                onWrite(device, value, offset)
+                GattResponse.WriteSuccess
+            }
+        }
 
         fun notifiable(
             properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
@@ -69,21 +88,31 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             descriptor(uuidFrom(uuidString), descriptor)
         }
 
-        fun Flow<ByteArray>.attachIn(
+        fun <T> Flow<T>.collectAsNotification(
             scope: CoroutineScope,
             started: SharingStarted,
             replay: Int = 0,
             properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
             encrypted: Boolean = false,
+            toByteArray: T.() -> ByteArray,
         ) {
             val sharedFlow = shareIn(scope, started, replay)
-            sharedFlow.attachIn(scope, properties, encrypted)
+            sharedFlow.collectAsNotification(scope, properties, encrypted, toByteArray)
         }
 
-        fun SharedFlow<ByteArray>.attachIn(
+        fun Flow<ByteArray>.collectAsNotification(
+            scope: CoroutineScope,
+            started: SharingStarted,
+            replay: Int = 0,
+            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+            encrypted: Boolean = false,
+        ) = collectAsNotification(scope, started, replay, properties, encrypted, { this })
+
+        fun <T> SharedFlow<T>.collectAsNotification(
             scope: CoroutineScope,
             properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
             encrypted: Boolean = false,
+            toByteArray: T.() -> ByteArray,
         ) {
             val observingJobs = concurrentMutableMapOf<ConnectedDevice, Job>()
             notifiable(
@@ -91,7 +120,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
                 encrypted,
                 onSubscribe = { device ->
                     observingJobs[device] = scope.launch {
-                        collect { value ->
+                        map { it.toByteArray() }.collect { value ->
                             notify(device, value)
                         }
                     }
@@ -102,32 +131,74 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             )
         }
 
-        fun StateFlow<ByteArray>.attachIn(
+        fun SharedFlow<ByteArray>.collectAsNotification(
             scope: CoroutineScope,
             properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
             encrypted: Boolean = false,
+        ) = collectAsNotification(scope, properties, encrypted, { this })
+
+        fun <T> StateFlow<T>.collectAsNotification(
+            scope: CoroutineScope,
+            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+            encrypted: Boolean = false,
+            toByteArray: T.() -> ByteArray,
         ) {
-            var hasStarted = false
+            val hasStarted = CompletableDeferred<Unit>()
             notifiable(
                 properties,
                 encrypted,
                 onSubscribe = { device ->
                     // We only know the Characteristic on first subscription, so this is the point at which to collect the state flow
-                    if (!hasStarted) {
-                        hasStarted = true
+                    if (hasStarted.complete(Unit)) {
                         scope.launch {
-                            collect(this@notifiable)
+                            map { it.toByteArray() }.collect(this@notifiable)
                         }
                     } else {
                         // If scope already launched, then the subscription will have missed the initial value. So report it immediately
                         scope.launch {
-                            notify(device, value)
+                            notify(device, value.toByteArray())
                         }
                     }
                 },
                 onUnsubscribe = {},
             )
         }
+
+        fun StateFlow<ByteArray>.collectAsNotification(
+            scope: CoroutineScope,
+            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+            encrypted: Boolean = false,
+        ) = collectAsNotification(scope, properties, encrypted, { this })
+
+        fun <T> ReceiveChannel<T>.consumeAsNotification(
+            scope: CoroutineScope,
+            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+            encrypted: Boolean = false,
+            toByteArray: T.() -> ByteArray,
+        ) {
+            val hasStarted = CompletableDeferred<Unit>()
+            notifiable(
+                properties,
+                encrypted,
+                onSubscribe = { device ->
+                    // We only know the Characteristic on first subscription, so this is the point at which to collect the state flow
+                    if (hasStarted.complete(Unit)) {
+                        scope.launch {
+                            consumeEach { value ->
+                                notify(device, value.toByteArray())
+                            }
+                        }
+                    }
+                },
+                onUnsubscribe = {},
+            )
+        }
+
+        fun ReceiveChannel<ByteArray>.consumeAsNotification(
+            scope: CoroutineScope,
+            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+            encrypted: Boolean = false,
+        ) = consumeAsNotification(scope, properties, encrypted, { this })
     }
 
     enum class Permission {

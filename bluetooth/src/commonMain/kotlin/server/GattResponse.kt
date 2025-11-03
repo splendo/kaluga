@@ -67,5 +67,7 @@ sealed interface GattResponse {
         override val statusCode: Int get() = 17
     }
 
+    data class Custom(override val statusCode: Int) : Error
+
     val statusCode: Int
 }
