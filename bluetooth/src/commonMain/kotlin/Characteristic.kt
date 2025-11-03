@@ -181,7 +181,9 @@ expect interface CharacteristicWrapper {
  * The properties associated with a Bluetooth Characteristic
  * @param rawValue the raw value associated with the property
  */
-sealed class CharacteristicProperty(val rawValue: Int) {
+sealed class CharacteristicProperty(val rawValue: Int, val encryptedValue: Int) {
+
+    constructor(rawValue: Int) : this(rawValue, rawValue)
 
     companion object {
         fun fromInt(properties: Int): Set<CharacteristicProperty> = setOf(
@@ -194,7 +196,7 @@ sealed class CharacteristicProperty(val rawValue: Int) {
             Indicate,
             ExtendedProperties,
         ).filter {
-            (properties and it.rawValue) != 0
+            (properties and it.rawValue) != 0 || (properties and it.encryptedValue) != 0
         }.toSet()
     }
 
@@ -225,17 +227,17 @@ sealed class CharacteristicProperty(val rawValue: Int) {
      */
     data object Write : Writable(0x08)
 
-    sealed class Notifiable(rawValue: Int) : CharacteristicProperty(rawValue)
+    sealed class Notifiable(rawValue: Int, encryptedValue: Int) : CharacteristicProperty(rawValue, encryptedValue)
 
     /**
      * Characteristic supports notification
      */
-    data object Notify : Notifiable(0x10)
+    data object Notify : Notifiable(0x10, 256)
 
     /**
      * Characteristic supports indication
      */
-    data object Indicate : Notifiable(0x20)
+    data object Indicate : Notifiable(0x20, 512)
 
     /**
      * Characteristic has extended properties
@@ -243,4 +245,10 @@ sealed class CharacteristicProperty(val rawValue: Int) {
     data object ExtendedProperties : CharacteristicProperty(0x80)
 }
 
-val Set<CharacteristicProperty>.rawValue: Int get() = fold(0) { acc, characteristicProperty -> acc or characteristicProperty.rawValue }
+fun Set<CharacteristicProperty>.rawValue(encrypted: Boolean): Int = fold(0) { acc, characteristicProperty ->
+    if (encrypted) {
+        acc or characteristicProperty.encryptedValue
+    } else {
+        acc or characteristicProperty.rawValue
+    }
+}

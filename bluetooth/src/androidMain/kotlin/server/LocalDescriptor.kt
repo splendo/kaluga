@@ -18,41 +18,26 @@
 package com.splendo.kaluga.bluetooth.server
 
 import android.bluetooth.BluetoothGattDescriptor
-import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.UUID
 
-actual class LocalDescriptor internal constructor(val descriptor: BluetoothGattDescriptor, actual override val characteristic: LocalCharacteristic) : Descriptor {
+actual class LocalDescriptorWrapper(val descriptor: BluetoothGattDescriptor) {
 
-    internal class DSL(val uuid: UUID, val server: BluetoothServer) : LocalDescriptorDSL {
+    internal actual constructor(uuid: UUID, permissions: Set<LocalDescriptor.Permissions>) : this(
+        BluetoothGattDescriptor(
+            uuid,
+            permissions.fold(0) { acc, permission ->
+                acc or
+                    permission.rawValue
+            },
+        ),
+    )
 
-        private var permissions = 0
-        private var readAction: (suspend LocalDescriptor.(ConnectedDevice, Int) -> GattResponse.ReadResponse)? = null
-        private var writeAction: (suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse)? = null
+    actual val uuid: UUID = descriptor.uuid
+}
 
-        override fun readable(encrypted: Boolean, onRead: suspend LocalDescriptor.(ConnectedDevice, Int) -> GattResponse.ReadResponse) {
-            require(readAction == null) { "Read already set" }
-            permissions = permissions or if (encrypted) BluetoothGattDescriptor.PERMISSION_READ_ENCRYPTED else BluetoothGattDescriptor.PERMISSION_READ
-            readAction = onRead
-        }
-
-        override fun writable(encrypted: Boolean, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse) {
-            require(writeAction == null) { "Write already set" }
-            permissions = permissions or if (encrypted) BluetoothGattDescriptor.PERMISSION_WRITE_ENCRYPTED else BluetoothGattDescriptor.PERMISSION_WRITE
-            writeAction = onWrite
-        }
-
-        fun build(forCharacteristic: LocalCharacteristic): LocalDescriptor = LocalDescriptor(
-            BluetoothGattDescriptor(uuid, permissions),
-            forCharacteristic,
-        ).apply {
-            readAction?.let { onRead ->
-                server.callback.registerReadAction(this, onRead)
-            }
-            writeAction?.let { onRead ->
-                server.callback.registerWriteAction(this, onRead)
-            }
-        }
-    }
-
-    actual override val uuid: UUID = descriptor.uuid
+private val LocalDescriptor.Permissions.rawValue: Int get() = when (this) {
+    LocalDescriptor.Permissions.READ -> BluetoothGattDescriptor.PERMISSION_READ
+    LocalDescriptor.Permissions.READ_ENCRYPTED -> BluetoothGattDescriptor.PERMISSION_READ_ENCRYPTED
+    LocalDescriptor.Permissions.WRITE -> BluetoothGattDescriptor.PERMISSION_WRITE
+    LocalDescriptor.Permissions.WRITE_ENCRYPTED -> BluetoothGattDescriptor.PERMISSION_WRITE_ENCRYPTED
 }

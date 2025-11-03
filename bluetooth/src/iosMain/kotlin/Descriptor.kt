@@ -47,6 +47,8 @@ actual interface DescriptorWrapper {
      */
     actual val value: NSData?
 
+    actual val characteristic: CharacteristicWrapper
+
     /**
      * Request a [CBPeripheral] to read the descriptor
      * @param peripheral the [CBPeripheral] to perform the read operation
@@ -65,7 +67,7 @@ actual interface DescriptorWrapper {
  * Default implementation of [DescriptorWrapper]
  * @param descriptor the [CBDescriptor] to wrap
  */
-class DefaultDescriptorWrapper(private val descriptor: CBDescriptor) : DescriptorWrapper {
+class DefaultDescriptorWrapper(private val descriptor: CBDescriptor, override val characteristic: CharacteristicWrapper) : DescriptorWrapper {
 
     override val uuid: CBUUID get() {
         return descriptor.UUID

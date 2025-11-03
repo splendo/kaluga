@@ -49,7 +49,7 @@ class ServiceWrapperBuilderTest {
         assertEquals(expected = 1, wrapper.characteristics.size)
         val characteristic = wrapper.characteristics.first()
         assertEquals(characteristicUUID, characteristic.uuid)
-        assertEquals(expected = 0x42, characteristic.properties.rawValue)
+        assertEquals(expected = 0x42, characteristic.properties.rawValue(false))
         val descriptor = characteristic.descriptors.first()
         assertEquals(descriptorUUID, descriptor.uuid)
     }

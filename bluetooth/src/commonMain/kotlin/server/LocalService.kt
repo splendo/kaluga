@@ -19,22 +19,136 @@ package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.uuidFrom
 
-sealed interface LocalServiceDSL {
+class LocalService internal constructor(
+    val wrapper: LocalServiceWrapper,
+    override val type: Service.Type,
+    buildIncludedServices: LocalService.() -> List<LocalService>,
+    buildCharacteristics: LocalService.() -> List<LocalCharacteristic>,
+) : Service {
 
-    interface Primary : LocalServiceDSL {
-        fun includedService(uuid: UUID, service: Secondary.() -> Unit)
+    sealed interface DSL {
+
+        interface Primary : DSL {
+            fun includedService(uuid: UUID, service: Secondary.() -> Unit)
+            fun includedService(uuidString: String, service: Secondary.() -> Unit) {
+                includedService(uuidFrom(uuidString), service)
+            }
+        }
+
+        interface Secondary : DSL
+        fun characteristic(uuid: UUID, characteristic: LocalCharacteristic.DSL.() -> Unit)
+        fun characteristic(uuidString: String, characteristic: LocalCharacteristic.DSL.() -> Unit) {
+            characteristic(uuidFrom(uuidString), characteristic)
+        }
     }
 
-    interface Secondary : LocalServiceDSL
-    fun characteristic(uuid: UUID, characteristic: LocalCharacteristicDSL.() -> Unit)
+    override val uuid: UUID = wrapper.uuid
+    override val characteristics: List<LocalCharacteristic> = buildCharacteristics().also { characteristics ->
+        characteristics.forEach { wrapper.addCharacteristic(it.wrapper) }
+    }
+
+    override val includedServices: List<LocalService> = buildIncludedServices().also { includedServices ->
+        includedServices.forEach { wrapper.addIncludedService(it.wrapper) }
+    }
 }
 
-expect class LocalService : Service {
+internal sealed class LocalServiceDSL(val uuid: UUID) {
 
-    override val uuid: UUID
-    override val type: Service.Type
+    abstract val type: Service.Type
+    internal val characteristicsBuilders = mutableListOf<LocalCharacteristicDSL>()
+    abstract val includedServicesBuilders: List<Secondary>
 
-    override val characteristics: List<LocalCharacteristic>
-    override val includedServices: List<LocalService>
+    class Primary(
+        uuid: UUID,
+        private val notify: Notify,
+        private val registerCharacteristicReadAction: LocalCharacteristicRegisterReadAction,
+        private val registerCharacteristicWriteAction: LocalCharacteristicRegisterWriteAction,
+        private val registerSubscriptionActions: NotifiableRegisterSubscription,
+        private val buildDescriptor: BuildDescriptor,
+    ) : LocalServiceDSL(uuid),
+        LocalService.DSL.Primary {
+        override val type: Service.Type = Service.Type.PRIMARY
+        override val includedServicesBuilders = mutableListOf<Secondary>()
+
+        override fun includedService(uuid: UUID, service: LocalService.DSL.Secondary.() -> Unit) {
+            includedServicesBuilders.add(
+                Secondary(
+                    uuid,
+                    notify,
+                    registerCharacteristicReadAction,
+                    registerCharacteristicWriteAction,
+                    registerSubscriptionActions,
+                    buildDescriptor,
+                ).apply(service),
+            )
+        }
+
+        override fun characteristic(uuid: UUID, characteristic: LocalCharacteristic.DSL.() -> Unit) {
+            characteristicsBuilders.add(
+                LocalCharacteristicDSL(
+                    uuid,
+                    notify,
+                    registerCharacteristicReadAction,
+                    registerCharacteristicWriteAction,
+                    registerSubscriptionActions,
+                    buildDescriptor,
+                ).apply(characteristic),
+            )
+        }
+    }
+    class Secondary(
+        uuid: UUID,
+        private val notify: Notify,
+        private val registerCharacteristicReadAction: LocalCharacteristicRegisterReadAction,
+        private val registerCharacteristicWriteAction: LocalCharacteristicRegisterWriteAction,
+        private val registerSubscriptionActions: NotifiableRegisterSubscription,
+        private val buildDescriptor: BuildDescriptor,
+    ) : LocalServiceDSL(uuid),
+        LocalService.DSL.Secondary {
+        override val type: Service.Type = Service.Type.SECONDARY
+        override val includedServicesBuilders: List<Secondary> = emptyList()
+
+        override fun characteristic(uuid: UUID, characteristic: LocalCharacteristic.DSL.() -> Unit) {
+            characteristicsBuilders.add(
+                LocalCharacteristicDSL(
+                    uuid,
+                    notify,
+                    registerCharacteristicReadAction,
+                    registerCharacteristicWriteAction,
+                    registerSubscriptionActions,
+                    buildDescriptor,
+                ).apply(characteristic),
+            )
+        }
+    }
+
+    fun build(): LocalService = LocalService(
+        LocalServiceWrapper(
+            uuid,
+            type,
+        ),
+        type,
+        buildIncludedServices = {
+            includedServicesBuilders.map {
+                it.build()
+            }
+        },
+        buildCharacteristics = {
+            characteristicsBuilders.map {
+                it.build(this)
+            }
+        },
+    )
+}
+
+expect class LocalServiceWrapper {
+
+    constructor(uuid: UUID, type: Service.Type)
+
+    val uuid: UUID
+
+    fun addIncludedService(service: LocalServiceWrapper)
+    fun addCharacteristic(characteristic: LocalCharacteristicWrapper)
 }

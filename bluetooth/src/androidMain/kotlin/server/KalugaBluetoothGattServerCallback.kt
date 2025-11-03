@@ -30,23 +30,24 @@ import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
 
-internal class KalugaBluetoothGattServerCallback(
-    private val logger: Logger,
-    handlingContext: CoroutineContext,
-    private val onNotificationSent: (BluetoothDevice, Boolean) -> Unit,
-    private val onServiceAdded: (BluetoothGattService, Boolean) -> Unit,
-    private val sendResponse: suspend (BluetoothDevice, Int, Int, Int, ByteArray?) -> Boolean,
-) : BluetoothGattServerCallback() {
+internal typealias SendResponse = (device: BluetoothDevice, requestId: Int, status: Int, offset: Int, data: ByteArray?) -> Unit
+
+internal class KalugaBluetoothGattServerCallback(private val logger: Logger, handlingContext: CoroutineContext) : BluetoothGattServerCallback() {
 
     companion object Companion {
         const val TAG = "KalugaBluetoothGattServerCallback"
         private const val MTU_HEADER_SIZE = 3
         const val DEFAULT_MTU_SIZE = 23
     }
+
+    data class ServiceAdded(val service: BluetoothGattService, val success: Boolean)
+    data class NotificationSent(val device: BluetoothDevice, val success: Boolean)
 
     sealed class AttributeIdentifier {
         data class Characteristic(val characteristic: BluetoothGattCharacteristic) : AttributeIdentifier() {
@@ -59,6 +60,14 @@ internal class KalugaBluetoothGattServerCallback(
         abstract val service: BluetoothGattService
     }
 
+    private val _serviceAdded = MutableSharedFlow<ServiceAdded>()
+    val serviceAdded = _serviceAdded.asSharedFlow()
+
+    private val _notificationSent = MutableSharedFlow<NotificationSent>()
+    val notificationSent = _notificationSent.asSharedFlow()
+
+    private var sendResponse: SendResponse? = null
+
     private val mtu = mutableMapOf<String, Int>()
     private val pendingWrites = concurrentMutableMapOf<String, Map<AttributeIdentifier, ByteArray>>()
 
@@ -68,27 +77,31 @@ internal class KalugaBluetoothGattServerCallback(
     private val handlingScope = CoroutineScope(handlingContext + CoroutineName("BluetoothServerCallback"))
 
     fun registerReadAction(characteristic: LocalCharacteristic, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse) {
-        registerReadAction(AttributeIdentifier.Characteristic(characteristic.characteristic)) { device, offset ->
+        registerReadAction(AttributeIdentifier.Characteristic(characteristic.wrapper.characteristic)) { device, offset ->
             characteristic.onRead(device, offset)
         }
     }
 
     fun registerReadAction(descriptor: LocalDescriptor, onRead: suspend LocalDescriptor.(ConnectedDevice, Int) -> GattResponse.ReadResponse) {
-        registerReadAction(AttributeIdentifier.Descriptor(descriptor.descriptor)) { device, offset ->
+        registerReadAction(AttributeIdentifier.Descriptor(descriptor.wrapper.descriptor)) { device, offset ->
             descriptor.onRead(device, offset)
         }
     }
 
     fun registerWriteAction(characteristic: LocalCharacteristic, onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse) {
-        registerWriteAction(AttributeIdentifier.Characteristic(characteristic.characteristic)) { device, value, offset ->
+        registerWriteAction(AttributeIdentifier.Characteristic(characteristic.wrapper.characteristic)) { device, value, offset ->
             characteristic.onWrite(device, value, offset)
         }
     }
 
     fun registerWriteAction(descriptor: LocalDescriptor, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse) {
-        registerWriteAction(AttributeIdentifier.Descriptor(descriptor.descriptor)) { device, value, offset ->
+        registerWriteAction(AttributeIdentifier.Descriptor(descriptor.wrapper.descriptor)) { device, value, offset ->
             descriptor.onWrite(device, value, offset)
         }
+    }
+
+    fun registerSendResponse(sendResponse: SendResponse) {
+        this.sendResponse = sendResponse
     }
 
     fun removeService(service: BluetoothGattService) {
@@ -100,6 +113,7 @@ internal class KalugaBluetoothGattServerCallback(
     }
 
     fun reset() {
+        sendResponse = null
         mtu.clear()
         pendingWrites.clear()
     }
@@ -152,7 +166,7 @@ internal class KalugaBluetoothGattServerCallback(
                 GattResponse.WriteSuccess
             }
             pendingWrites.remove(device.address)
-            sendResponse(device, requestId, response.statusCode, 0, null)
+            sendResponse?.invoke(device, requestId, response.statusCode, 0, null)
         }
     }
 
@@ -163,12 +177,12 @@ internal class KalugaBluetoothGattServerCallback(
 
     override fun onNotificationSent(device: BluetoothDevice, status: Int) {
         logger.info(TAG) { "Sent notification to Device ${device.address}. Status $status" }
-        onNotificationSent(device, status == BluetoothGatt.GATT_SUCCESS)
+        _notificationSent.tryEmit(NotificationSent(device, status == BluetoothGatt.GATT_SUCCESS))
     }
 
     override fun onServiceAdded(status: Int, service: BluetoothGattService) {
         logger.info(TAG) { "Added service ${service.uuid} with status $status" }
-        onServiceAdded(service, status == BluetoothGatt.GATT_SUCCESS)
+        _serviceAdded.tryEmit(ServiceAdded(service, status == BluetoothGatt.GATT_SUCCESS))
     }
 
     override fun onConnectionStateChange(device: BluetoothDevice, status: Int, newState: Int) {
@@ -200,7 +214,7 @@ internal class KalugaBluetoothGattServerCallback(
                 }
             } ?: (GattResponse.InvalidHandle to null)
 
-            sendResponse(device, requestId, response.statusCode, offset, data)
+            sendResponse?.invoke(device, requestId, response.statusCode, offset, data)
         }
     }
 
@@ -230,7 +244,7 @@ internal class KalugaBluetoothGattServerCallback(
             }
 
             if (responseNeeded) {
-                sendResponse(device, requestId, response.statusCode, offset, null)
+                sendResponse?.invoke(device, requestId, response.statusCode, offset, null)
             }
         }
     }

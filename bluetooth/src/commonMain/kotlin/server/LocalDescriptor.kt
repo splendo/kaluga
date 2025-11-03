@@ -20,14 +20,56 @@ package com.splendo.kaluga.bluetooth.server
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.UUID
 
-interface LocalDescriptorDSL {
-    fun readable(encrypted: Boolean = false, onRead: suspend LocalDescriptor.(ConnectedDevice, Int) -> GattResponse.ReadResponse)
+class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characteristic: LocalCharacteristic) : Descriptor {
 
-    fun writable(encrypted: Boolean = false, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse)
+    interface DSL {
+        fun readable(encrypted: Boolean = false, onRead: suspend LocalDescriptor.(ConnectedDevice, Int) -> GattResponse.ReadResponse)
+
+        fun writable(encrypted: Boolean = false, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse)
+    }
+
+    enum class Permissions {
+        READ,
+        READ_ENCRYPTED,
+        WRITE,
+        WRITE_ENCRYPTED,
+    }
+
+    override val uuid: UUID = wrapper.uuid
 }
 
-expect class LocalDescriptor : Descriptor {
+internal class LocalDescriptorDSL(val uuid: UUID, val registerReadAction: LocalDescriptorRegisterReadAction, val registerWriteAction: LocalDescriptorRegisterWriteAction) :
+    LocalDescriptor.DSL {
 
-    override val uuid: UUID
-    override val characteristic: LocalCharacteristic
+    private val permissions = mutableSetOf<LocalDescriptor.Permissions>()
+    private var readAction: (suspend LocalDescriptor.(ConnectedDevice, Int) -> GattResponse.ReadResponse)? = null
+    private var writeAction: (suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse)? = null
+
+    override fun readable(encrypted: Boolean, onRead: suspend LocalDescriptor.(ConnectedDevice, Int) -> GattResponse.ReadResponse) {
+        require(readAction == null) { "Read already set" }
+        permissions.add(if (encrypted) LocalDescriptor.Permissions.READ_ENCRYPTED else LocalDescriptor.Permissions.READ)
+        readAction = onRead
+    }
+
+    override fun writable(encrypted: Boolean, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse) {
+        require(writeAction == null) { "Write already set" }
+        permissions.add(if (encrypted) LocalDescriptor.Permissions.WRITE_ENCRYPTED else LocalDescriptor.Permissions.WRITE)
+        writeAction = onWrite
+    }
+
+    fun build(forCharacteristic: LocalCharacteristic): LocalDescriptor = LocalDescriptor(
+        LocalDescriptorWrapper(uuid, permissions),
+        forCharacteristic,
+    ).apply {
+        readAction?.let { onRead ->
+            registerReadAction(this, onRead)
+        }
+        writeAction?.let { onWrite ->
+            registerWriteAction(this, onWrite)
+        }
+    }
+}
+
+expect class LocalDescriptorWrapper internal constructor(uuid: UUID, permissions: Set<LocalDescriptor.Permissions>) {
+    val uuid: UUID
 }

@@ -21,74 +21,27 @@ import android.bluetooth.BluetoothGattService
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 
-actual class LocalService internal constructor(
-    val service: BluetoothGattService,
-    actual override val type: Service.Type,
-    private val server: BluetoothServer,
-    buildIncludedServices: LocalService.() -> List<LocalService>,
-    buildCharacteristics: LocalService.() -> List<LocalCharacteristic>,
-) : Service {
-
-    internal sealed class DSL(val uuid: UUID, val server: BluetoothServer) {
-
-        abstract val type: Service.Type
-        internal val characteristicsBuilders = mutableListOf<LocalCharacteristic.DSL>()
-        abstract val includedServicesBuilders: List<DSL>
-
-        class Primary(uuid: UUID, server: BluetoothServer) :
-            DSL(uuid, server),
-            LocalServiceDSL.Primary {
-            override val type: Service.Type = Service.Type.PRIMARY
-            override val includedServicesBuilders = mutableListOf<Secondary>()
-
-            override fun includedService(uuid: UUID, service: LocalServiceDSL.Secondary.() -> Unit) {
-                includedServicesBuilders.add(Secondary(uuid, server).apply(service))
-            }
-
-            override fun characteristic(uuid: UUID, characteristic: LocalCharacteristicDSL.() -> Unit) {
-                characteristicsBuilders.add(LocalCharacteristic.DSL(uuid, server).apply(characteristic))
-            }
-        }
-        class Secondary(uuid: UUID, server: BluetoothServer) :
-            DSL(uuid, server),
-            LocalServiceDSL.Secondary {
-            override val type: Service.Type = Service.Type.SECONDARY
-            override val includedServicesBuilders: List<DSL> = emptyList()
-
-            override fun characteristic(uuid: UUID, characteristic: LocalCharacteristicDSL.() -> Unit) {
-                characteristicsBuilders.add(LocalCharacteristic.DSL(uuid, server).apply(characteristic))
-            }
-        }
-
-        fun build(): LocalService = LocalService(
-            BluetoothGattService(
-                uuid,
-                when (type) {
-                    Service.Type.PRIMARY -> BluetoothGattService.SERVICE_TYPE_PRIMARY
-                    Service.Type.SECONDARY -> BluetoothGattService.SERVICE_TYPE_SECONDARY
-                },
-            ),
-            type,
-            server,
-            buildIncludedServices = {
-                includedServicesBuilders.map {
-                    it.build()
-                }
+actual class LocalServiceWrapper(val service: BluetoothGattService) {
+    actual constructor(
+        uuid: UUID,
+        type: Service.Type,
+    ) : this(
+        BluetoothGattService(
+            uuid,
+            when (type) {
+                Service.Type.PRIMARY -> BluetoothGattService.SERVICE_TYPE_PRIMARY
+                Service.Type.SECONDARY -> BluetoothGattService.SERVICE_TYPE_SECONDARY
             },
-            buildCharacteristics = {
-                characteristicsBuilders.map {
-                    it.build(this)
-                }
-            },
-        )
+        ),
+    )
+
+    actual val uuid: UUID = service.uuid
+
+    actual fun addIncludedService(service: LocalServiceWrapper) {
+        this.service.addService(service.service)
     }
 
-    actual override val uuid: UUID = service.uuid
-    actual override val characteristics: List<LocalCharacteristic> = buildCharacteristics().also { characteristics ->
-        characteristics.forEach { service.addCharacteristic(it.characteristic) }
-    }
-
-    actual override val includedServices: List<LocalService> = buildIncludedServices().also { includedServices ->
-        includedServices.forEach { service.addService(it.service) }
+    actual fun addCharacteristic(characteristic: LocalCharacteristicWrapper) {
+        service.addCharacteristic(characteristic.characteristic)
     }
 }

@@ -85,7 +85,8 @@ class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic)
         return characteristic.UUID
     }
     override val service: ServiceWrapper = DefaultServiceWrapper(characteristic.service!!)
-    override val descriptors: List<DescriptorWrapper> = characteristic.descriptors?.typedList<CBDescriptor>()?.map { DefaultDescriptorWrapper(it) } ?: emptyList()
+    override val descriptors: List<DescriptorWrapper> =
+        characteristic.descriptors?.typedList<CBDescriptor>()?.map { DefaultDescriptorWrapper(it, DefaultCharacteristicWrapper(characteristic)) } ?: emptyList()
     override val value: NSData? get() {
         return characteristic.value
     }

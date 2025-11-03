@@ -20,96 +20,115 @@ package com.splendo.kaluga.bluetooth.server
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
+import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Notifiable
+import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Static
+import com.splendo.kaluga.bluetooth.uuidFrom
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-interface LocalCharacteristicDSL {
-    fun readable(encrypted: Boolean = false, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse)
-    fun writable(
-        properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
-        encrypted: Boolean = false,
-        onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse,
-    )
+internal typealias Notify = suspend (characteristic: Notifiable, device: ConnectedDevice, value: ByteArray) -> Boolean
+internal typealias BuildDescriptor = (
+    uuid: UUID,
+) -> LocalDescriptorDSL?
 
-    fun notifiable(
-        properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-        encrypted: Boolean = false,
-        onSubscribe: LocalCharacteristic.Notifiable.(ConnectedDevice) -> Unit,
-        onUnsubscribe: LocalCharacteristic.Notifiable.(ConnectedDevice) -> Unit,
-    )
+sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, override val service: LocalService) : Characteristic {
 
-    fun descriptor(uuid: UUID, descriptor: LocalDescriptorDSL.() -> Unit)
-
-    fun Flow<ByteArray>.attachIn(
-        scope: CoroutineScope,
-        started: SharingStarted,
-        replay: Int = 0,
-        properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-        encrypted: Boolean = false,
-    ) {
-        val sharedFlow = shareIn(scope, started, replay)
-        sharedFlow.attachIn(scope, properties, encrypted)
-    }
-
-    fun SharedFlow<ByteArray>.attachIn(
-        scope: CoroutineScope,
-        properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-        encrypted: Boolean = false,
-    ) {
-        val observingJobs = concurrentMutableMapOf<ConnectedDevice, Job>()
-        notifiable(
-            properties,
-            encrypted,
-            onSubscribe = { device ->
-                observingJobs[device] = scope.launch {
-                    collect { value ->
-                        notify(device, value)
-                    }
-                }
-            },
-            onUnsubscribe = { device ->
-                observingJobs.remove(device)?.cancel()
-            },
+    interface DSL {
+        fun readable(encrypted: Boolean = false, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse)
+        fun writable(
+            properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
+            encrypted: Boolean = false,
+            onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse,
         )
-    }
 
-    fun StateFlow<ByteArray>.attachIn(
-        scope: CoroutineScope,
-        properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-        encrypted: Boolean = false,
-    ) {
-        var hasStarted = false
-        notifiable(
-            properties,
-            encrypted,
-            onSubscribe = { device ->
-                // We only know the Characteristic on first subscription, so this is the point at which to collect the state flow
-                if (!hasStarted) {
-                    hasStarted = true
-                    scope.launch {
-                        collect(this@notifiable)
-                    }
-                } else {
-                    // If scope already launched, then the subscription will have missed the initial value. So report it immediately
-                    scope.launch {
-                        notify(device, value)
-                    }
-                }
-            },
-            onUnsubscribe = {},
+        fun notifiable(
+            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+            encrypted: Boolean = false,
+            onSubscribe: Notifiable.(ConnectedDevice) -> Unit,
+            onUnsubscribe: Notifiable.(ConnectedDevice) -> Unit,
         )
-    }
-}
 
-expect sealed class LocalCharacteristic : Characteristic {
+        fun descriptor(uuid: UUID, descriptor: LocalDescriptor.DSL.() -> Unit)
+        fun descriptor(uuidString: String, descriptor: LocalDescriptor.DSL.() -> Unit) {
+            descriptor(uuidFrom(uuidString), descriptor)
+        }
+
+        fun Flow<ByteArray>.attachIn(
+            scope: CoroutineScope,
+            started: SharingStarted,
+            replay: Int = 0,
+            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+            encrypted: Boolean = false,
+        ) {
+            val sharedFlow = shareIn(scope, started, replay)
+            sharedFlow.attachIn(scope, properties, encrypted)
+        }
+
+        fun SharedFlow<ByteArray>.attachIn(
+            scope: CoroutineScope,
+            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+            encrypted: Boolean = false,
+        ) {
+            val observingJobs = concurrentMutableMapOf<ConnectedDevice, Job>()
+            notifiable(
+                properties,
+                encrypted,
+                onSubscribe = { device ->
+                    observingJobs[device] = scope.launch {
+                        collect { value ->
+                            notify(device, value)
+                        }
+                    }
+                },
+                onUnsubscribe = { device ->
+                    observingJobs.remove(device)?.cancel()
+                },
+            )
+        }
+
+        fun StateFlow<ByteArray>.attachIn(
+            scope: CoroutineScope,
+            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+            encrypted: Boolean = false,
+        ) {
+            var hasStarted = false
+            notifiable(
+                properties,
+                encrypted,
+                onSubscribe = { device ->
+                    // We only know the Characteristic on first subscription, so this is the point at which to collect the state flow
+                    if (!hasStarted) {
+                        hasStarted = true
+                        scope.launch {
+                            collect(this@notifiable)
+                        }
+                    } else {
+                        // If scope already launched, then the subscription will have missed the initial value. So report it immediately
+                        scope.launch {
+                            notify(device, value)
+                        }
+                    }
+                },
+                onUnsubscribe = {},
+            )
+        }
+    }
 
     enum class Permission {
         READABLE,
@@ -118,24 +137,167 @@ expect sealed class LocalCharacteristic : Characteristic {
         WRITE_ENCRYPTION_REQUIRED,
     }
 
-    class Static : LocalCharacteristic {
-        override val descriptors: List<LocalDescriptor>
+    class Static internal constructor(wrapper: LocalCharacteristicWrapper, service: LocalService, buildDescriptors: Static.() -> List<LocalDescriptor>) :
+        LocalCharacteristic(wrapper, service) {
+        override val descriptors: List<LocalDescriptor> = buildDescriptors().also { descriptors ->
+            descriptors.forEach { wrapper.addDescriptor(it.wrapper) }
+        }
     }
 
-    class Notifiable :
-        LocalCharacteristic,
+    class Notifiable internal constructor(
+        wrapper: LocalCharacteristicWrapper,
+        service: LocalService,
+        private val notify: Notify,
+        private val onSubscribe: Notifiable.(ConnectedDevice) -> Unit,
+        private val onUnsubscribe: Notifiable.(ConnectedDevice) -> Unit,
+        buildDescriptors: Notifiable.() -> List<LocalDescriptor>,
+    ) : LocalCharacteristic(wrapper, service),
         FlowCollector<ByteArray> {
 
-        val subscribedDevices: StateFlow<List<ConnectedDevice>>
-        override val descriptors: List<LocalDescriptor>
-        suspend fun notify(device: ConnectedDevice, value: ByteArray): Boolean
-        suspend fun notifyAll(value: ByteArray): Boolean
-        override suspend fun emit(value: ByteArray)
+        private val _subscribedDevices = MutableStateFlow(emptyList<ConnectedDevice>())
+        val subscribedDevices = _subscribedDevices.asStateFlow()
+        override val descriptors: List<LocalDescriptor> = buildDescriptors().also { descriptors ->
+            descriptors.forEach { wrapper.addDescriptor(it.wrapper) }
+        }
+        suspend fun notify(device: ConnectedDevice, value: ByteArray): Boolean = subscribedDevices.map { devices ->
+            devices.find { it == device }
+        }.distinctUntilChanged().transformLatest { device ->
+            emit(device?.let { notify(this@Notifiable, device, value) } ?: false)
+        }.first()
+
+        suspend fun notifyAll(value: ByteArray): Boolean {
+            var result = true
+            for (device in subscribedDevices.value) {
+                result = result or notify(device, value)
+            }
+            return result
+        }
+
+        override suspend fun emit(value: ByteArray) {
+            notifyAll(value)
+        }
+
+        internal fun subscribe(device: ConnectedDevice) {
+            _subscribedDevices.update { it + device }
+            onSubscribe(device)
+        }
+        internal fun unsubscribe(device: ConnectedDevice) {
+            _subscribedDevices.update { it - device }
+            onUnsubscribe(device)
+        }
+
+        internal fun unsubscribeAll() {
+            subscribedDevices.value.forEach(::unsubscribe)
+        }
     }
 
-    override val uuid: UUID
-    override val service: LocalService
-    override val properties: Set<CharacteristicProperty>
-    val permissions: Set<Permission>
+    override val uuid: UUID = wrapper.uuid
+    override val properties: Set<CharacteristicProperty> = wrapper.properties
+
     abstract override val descriptors: List<LocalDescriptor>
+    val permissions: Set<Permission> = wrapper.permissions
+}
+
+internal class LocalCharacteristicDSL(
+    val uuid: UUID,
+    private val notify: Notify,
+    private val registerCharacteristicReadAction: LocalCharacteristicRegisterReadAction,
+    private val registerCharacteristicWriteAction: LocalCharacteristicRegisterWriteAction,
+    private val registerSubscriptionActions: NotifiableRegisterSubscription,
+    private val buildDescriptor: BuildDescriptor,
+) : LocalCharacteristic.DSL {
+
+    val properties = mutableSetOf<CharacteristicProperty>()
+    var encryptedNotification = false
+    val permissions = mutableSetOf<LocalCharacteristic.Permission>()
+
+    private var readAction: (suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse)? = null
+    private var writeAction: (suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse)? = null
+    private var subscriptionActions: Pair<Notifiable.(ConnectedDevice) -> Unit, Notifiable.(ConnectedDevice) -> Unit>? = null
+    protected val descriptorBuilders = mutableListOf<LocalDescriptorDSL>()
+
+    override fun readable(encrypted: Boolean, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse) {
+        require(readAction == null) { "Read already set" }
+        properties.add(CharacteristicProperty.Read)
+        permissions.add(if (encrypted) LocalCharacteristic.Permission.READ_ENCRYPTION_REQUIRED else LocalCharacteristic.Permission.READABLE)
+        readAction = onRead
+    }
+
+    override fun writable(
+        properties: Set<CharacteristicProperty.Writable>,
+        encrypted: Boolean,
+        onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse,
+    ) {
+        require(writeAction == null) { "Write already set" }
+        require(properties.isNotEmpty()) { "properties cannot be empty" }
+        this.properties.addAll(properties)
+        permissions.add(if (encrypted) LocalCharacteristic.Permission.WRITE_ENCRYPTION_REQUIRED else LocalCharacteristic.Permission.WRITABLE)
+        writeAction = onWrite
+    }
+
+    override fun notifiable(
+        properties: Set<CharacteristicProperty.Notifiable>,
+        encrypted: Boolean,
+        onSubscribe: Notifiable.(ConnectedDevice) -> Unit,
+        onUnsubscribe: Notifiable.(ConnectedDevice) -> Unit,
+    ) {
+        require(subscriptionActions == null) { "Notifiable already set" }
+        this.properties.addAll(properties)
+        encryptedNotification = encrypted
+        subscriptionActions = onSubscribe to onUnsubscribe
+    }
+
+    override fun descriptor(uuid: UUID, descriptor: LocalDescriptor.DSL.() -> Unit) {
+        require(descriptorBuilders.none { it.uuid == uuid }) { "Descriptor $uuid already declared" }
+        buildDescriptor(uuid)?.let {
+            descriptorBuilders.add(it.apply(descriptor))
+        }
+    }
+
+    fun build(forService: LocalService): LocalCharacteristic {
+        val characteristic = subscriptionActions?.let { (onSubscribe, onUnsubscribe) ->
+
+            Notifiable(
+                LocalCharacteristicWrapper(uuid, properties, encryptedNotification, permissions),
+                forService,
+                notify,
+                onSubscribe,
+                onUnsubscribe,
+            ) {
+                registerSubscriptionActions(encryptedNotification)
+                descriptorBuilders.mapNotNull { descriptorBuilder ->
+                    descriptorBuilder.build(this).takeIf { it.uuid != Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR }
+                }
+            }
+        } ?: Static(
+            LocalCharacteristicWrapper(uuid, properties, false, permissions),
+            forService,
+        ) {
+            descriptorBuilders.map { it.build(this) }
+        }
+
+        readAction?.let { onRead ->
+            registerCharacteristicReadAction(characteristic, onRead)
+        }
+        writeAction?.let { onWrite ->
+            registerCharacteristicWriteAction(characteristic, onWrite)
+        }
+
+        return characteristic
+    }
+}
+
+expect class LocalCharacteristicWrapper {
+    val uuid: UUID
+    val properties: Set<CharacteristicProperty>
+    val permissions: Set<LocalCharacteristic.Permission>
+
+    constructor(
+        uuid: UUID,
+        properties: Set<CharacteristicProperty>,
+        encryptedNotification: Boolean,
+        permissions: Set<LocalCharacteristic.Permission>,
+    )
+
+    fun addDescriptor(descriptor: LocalDescriptorWrapper)
 }

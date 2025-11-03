@@ -19,74 +19,20 @@ package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.logging.Logger
 import platform.CoreBluetooth.CBMutableService
 
-actual class LocalService(
-    val service: CBMutableService,
-    actual override val type: Service.Type,
-    private val server: BluetoothServer,
-    buildIncludedServices: LocalService.() -> List<LocalService>,
-    buildCharacteristics: LocalService.() -> List<LocalCharacteristic>,
-) : Service {
-    internal sealed class DSL(val uuid: UUID, val server: BluetoothServer, val logger: Logger) {
+actual class LocalServiceWrapper(val service: CBMutableService) {
+    actual constructor(uuid: UUID, type: Service.Type) : this(
+        CBMutableService(uuid, type == Service.Type.PRIMARY),
+    )
 
-        abstract val type: Service.Type
-        internal val characteristicsBuilders = mutableListOf<LocalCharacteristic.DSL>()
-        abstract val includedServicesBuilders: List<DSL>
+    actual val uuid: UUID = service.UUID
 
-        class Primary(uuid: UUID, server: BluetoothServer, logger: Logger) :
-            DSL(uuid, server, logger),
-            LocalServiceDSL.Primary {
-            override val type: Service.Type = Service.Type.PRIMARY
-            override val includedServicesBuilders = mutableListOf<Secondary>()
-
-            override fun includedService(uuid: UUID, service: LocalServiceDSL.Secondary.() -> Unit) {
-                includedServicesBuilders.add(Secondary(uuid, server, logger).apply(service))
-            }
-
-            override fun characteristic(uuid: UUID, characteristic: LocalCharacteristicDSL.() -> Unit) {
-                characteristicsBuilders.add(LocalCharacteristic.DSL(uuid, server, logger).apply(characteristic))
-            }
-        }
-
-        class Secondary(uuid: UUID, server: BluetoothServer, logger: Logger) :
-            DSL(uuid, server, logger),
-            LocalServiceDSL.Secondary {
-            override val type: Service.Type = Service.Type.SECONDARY
-            override val includedServicesBuilders: List<DSL> = emptyList()
-
-            override fun characteristic(uuid: UUID, characteristic: LocalCharacteristicDSL.() -> Unit) {
-                characteristicsBuilders.add(LocalCharacteristic.DSL(uuid, server, logger).apply(characteristic))
-            }
-        }
-
-        fun build(): LocalService = LocalService(
-            CBMutableService(
-                uuid,
-                type == Service.Type.PRIMARY,
-            ),
-            type,
-            server,
-            buildIncludedServices = {
-                includedServicesBuilders.map {
-                    it.build()
-                }
-            },
-            buildCharacteristics = {
-                characteristicsBuilders.map {
-                    it.build(this)
-                }
-            },
-        )
+    actual fun addIncludedService(service: LocalServiceWrapper) {
+        this.service.setIncludedServices(this.service.includedServices.orEmpty() + service.service)
     }
 
-    actual override val uuid: UUID = service.UUID
-    actual override val characteristics: List<LocalCharacteristic> = buildCharacteristics().also { characteristics ->
-        service.setCharacteristics(characteristics.map { it.characteristic })
-    }
-
-    actual override val includedServices: List<LocalService> = buildIncludedServices().also { includedServices ->
-        service.setIncludedServices(includedServices.map { it.service })
+    actual fun addCharacteristic(characteristic: LocalCharacteristicWrapper) {
+        this.service.setCharacteristics(this.service.characteristics.orEmpty() + characteristic.characteristic)
     }
 }

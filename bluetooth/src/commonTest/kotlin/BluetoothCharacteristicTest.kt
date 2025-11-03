@@ -78,7 +78,7 @@ class BluetoothCharacteristicTest : BluetoothFlowTest<BluetoothFlowTest.Configur
             serviceWrapperBuilder = {
                 characteristics {
                     characteristic {
-                        properties = setOf(CharacteristicProperty.Read, CharacteristicProperty.WriteWithoutResponse).rawValue
+                        properties = setOf(CharacteristicProperty.Read, CharacteristicProperty.WriteWithoutResponse).rawValue(false)
                     }
                 }
             },
