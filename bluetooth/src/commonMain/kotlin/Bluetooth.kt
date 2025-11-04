@@ -62,7 +62,6 @@ import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
-import kotlin.jvm.JvmName
 import kotlin.time.Duration.Companion.seconds
 
 private val defaultBluetoothClientDispatcher by lazy {
@@ -501,47 +500,17 @@ suspend fun Flow<ConnectableDevice?>.requestMtu(mtu: MTU) = state()
     .first().requestMtu(mtu)
 
 /**
- * Gets a ([Flow] of) [RemoteService] of a given [UUID] from a [Flow] of a list of [RemoteService]
- * @param uuid the [UUID] of the [RemoteService] to get
- * @return the [Flow] of the [RemoteService] with [uuid] in the list of [RemoteService] in the given [Flow]
- */
-@JvmName("getService")
-operator fun Flow<List<RemoteService>>.get(uuid: UUID): Flow<RemoteService?> = this.map { services ->
-    services.firstOrNull {
-        it.uuid.uuidString == uuid.uuidString
-    }
-}.distinctUntilChanged()
-
-/**
  * Gets a ([Flow] of) the list [RemoteCharacteristic] associated with the [RemoteService] in a [Flow]
  * @return the [Flow] of the list of [RemoteCharacteristic] associated with the [RemoteService] in the given [Flow]
  */
 fun Flow<RemoteService?>.characteristics(): Flow<List<RemoteCharacteristic>> = this.mapLatest { service -> service?.characteristics ?: emptyList() }.distinctUntilChanged()
+fun Flow<RemoteService?>.includedServices(): Flow<List<RemoteService>> = this.mapLatest { service -> service?.includedServices ?: emptyList() }.distinctUntilChanged()
 
 /**
  * Gets a ([Flow] of) the list [RemoteDescriptor] associated with the [RemoteCharacteristic] in a [Flow]
  * @return the [Flow] of the list of [RemoteDescriptor] associated with the [RemoteCharacteristic] in the given [Flow]
  */
 fun Flow<RemoteCharacteristic?>.descriptors(): Flow<List<RemoteDescriptor>> = this.mapLatest { characteristic -> characteristic?.descriptors ?: emptyList() }.distinctUntilChanged()
-
-/**
- * Gets a ([Flow] of) [AttributeType] of a given [UUID] from a [Flow] of a list of [AttributeType]
- * @param AttributeType the type of [RemoteAttribute] to get
- * @param ReadAction the [DeviceAction.Read] associated with [AttributeType]
- * @param WriteAction the [DeviceAction.Write] associated with [AttributeType]
- * @param uuid the [UUID] of the [AttributeType] to get
- * @return the [Flow] of the [AttributeType] with [uuid] in the list of [AttributeType] in the given [Flow]
- */
-@JvmName("getAttribute")
-operator fun <AttributeType, ReadAction, WriteAction> Flow<List<AttributeType>>.get(
-    uuid: UUID,
-): Flow<AttributeType?>
-    where AttributeType : RemoteAttribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write =
-    this.map { attribute ->
-        attribute.firstOrNull {
-            it.uuid.uuidString == uuid.uuidString
-        }
-    }.distinctUntilChanged()
 
 /**
  * Gets a ([Flow] of) the [ByteArray] value from a [Flow] of an [AttributeType]

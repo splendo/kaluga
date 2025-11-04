@@ -27,6 +27,8 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
 interface Attribute {
     /**
@@ -34,6 +36,11 @@ interface Attribute {
      */
     val uuid: UUID
 }
+
+operator fun <T : Attribute> List<T>.get(uuid: UUID) = find { it.uuid.uuidString == uuid.uuidString }
+operator fun <T : Attribute> Flow<List<T>>.get(uuid: UUID): Flow<T?> = this.map { attributes ->
+    attributes[uuid]
+}.distinctUntilChanged()
 
 /**
  * A bluetooth attribute conforming to the Attribute Protocol in Bluetooth Low Energy

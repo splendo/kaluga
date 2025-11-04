@@ -29,6 +29,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.ParcelUuid
 import android.provider.Settings.ACTION_BLUETOOTH_SETTINGS
+import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
@@ -50,6 +51,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.transformLatest
+import kotlin.experimental.or
 
 @SuppressLint("MissingPermission")
 internal sealed class AndroidServerState {
@@ -254,15 +256,29 @@ internal sealed class AndroidServerState {
                         callback::registerReadAction,
                         callback::registerWriteAction,
                     ).apply {
+                        val deviceStatus = concurrentMutableMapOf<ConnectedDevice, ByteArray>()
+                        readable(encrypted) { device, offset ->
+                            when {
+                                offset != 0 -> GattResponse.InvalidOffset
+                                else -> GattResponse.ReadSuccess(deviceStatus.synchronized { getOrPut(device) { BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE } })
+                            }
+                        }
                         writable(encrypted) { device, value, offset ->
                             when {
                                 offset != 0 -> GattResponse.InvalidOffset
-                                value.contentEquals(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE) ||
-                                    value.contentEquals(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE) -> {
+                                (value.contentEquals(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE) && properties.contains(CharacteristicProperty.Indicate)) ||
+                                    (value.contentEquals(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE) && properties.contains(CharacteristicProperty.Notify)) -> {
+                                    deviceStatus.synchronized {
+                                        val current = getOrDefault(device, BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE)
+                                        val lsb = current[0] or value[0]
+                                        val msb = current[1] or value[1]
+                                        put(device, byteArrayOf(lsb, msb))
+                                    }
                                     subscribe(device)
                                     GattResponse.WriteSuccess
                                 }
                                 value.contentEquals(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE) -> {
+                                    deviceStatus[device] = value
                                     unsubscribe(device)
                                     GattResponse.WriteSuccess
                                 }

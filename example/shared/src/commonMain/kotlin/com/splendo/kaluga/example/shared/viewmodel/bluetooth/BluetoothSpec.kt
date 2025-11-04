@@ -39,4 +39,19 @@ object BluetoothSpec {
         val STATUS_CHARACTERISTIC = uuidFrom("94cc7369-2b5f-4b2e-9a12-ae7ad4fd90c8")
         val INFO_CHARACTERISTIC = uuidFrom("e85a71f7-3d54-4a43-ba9b-89ff9e3428e0")
     }
+
+    enum class SensorLocation(val value: Byte) {
+        OTHER(0),
+        CHEST(1),
+        WRIST(2),
+        FINGER(3),
+        HAND(4),
+        EAR_LOBE(5),
+        FOOT(6),
+        ;
+
+        companion object {
+            fun from(byte: Byte) = entries.find { it.value == byte }
+        }
+    }
 }

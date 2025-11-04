@@ -17,8 +17,16 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth.server
 
+import com.splendo.kaluga.alerts.Alert
+import com.splendo.kaluga.alerts.AlertPresenter
+import com.splendo.kaluga.alerts.BaseAlertPresenter
+import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import com.splendo.kaluga.base.text.NumberFormatStyle
+import com.splendo.kaluga.base.text.NumberFormatter
+import com.splendo.kaluga.base.utils.ByteArrayBuilder
+import com.splendo.kaluga.base.utils.buildByteArray
 import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.server.GattResponse
@@ -34,7 +42,9 @@ import com.splendo.kaluga.scientific.unit.BeatsPerMinute
 import com.splendo.kaluga.scientific.unit.Kilojoule
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.example.shared.stylable.TextStyles
+import com.splendo.kaluga.scientific.formatter.CommonScientificValueFormatter
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -42,57 +52,44 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import kotlin.time.Duration.Companion.seconds
 
-class BluetoothServerViewModel : BaseLifecycleViewModel(), KoinComponent {
+class BluetoothServerViewModel(
+    private val alertPresenter: BaseAlertPresenter.Builder,
+) : BaseLifecycleViewModel(), KoinComponent {
 
     companion object {
         fun generateHeartRateMeasurement(
             heartRate: Int,
             energyExpended: Int,
             sensorContactDetected: Boolean
-        ): ByteArray {
+        ): ByteArray = buildByteArray {
             require(heartRate in 0..65535) { "Heart rate must be 0..65535" }
 
-            val flags = buildFlags(heartRate, sensorContactDetected)
-            val buffer = mutableListOf<Byte>()
-            buffer.add(flags)
-            if (heartRate <= 0xFF) {
-                buffer.add(heartRate.toByte())
+            add(heartRate > UByte.MAX_VALUE.toInt())
+            add(sensorContactDetected)
+            add(true)
+            add(true) // Energy Expended
+            add(false) // RR Intervals
+
+            if (heartRate <= UByte.MAX_VALUE.toInt()) {
+                add(heartRate.toUByte())
             } else {
-                buffer.add((heartRate and 0xFF).toByte())
-                buffer.add(((heartRate shr 8) and 0xFF).toByte())
+                add(heartRate.toUShort())
             }
 
-            buffer.add((energyExpended and 0xFF).toByte())
-            buffer.add(((energyExpended shr 8) and 0xFF).toByte())
-
-            return buffer.toByteArray()
+            add(energyExpended.toUShort())
         }
 
-        private fun buildFlags(
-            heartRate: Int,
-            sensorContactDetected: Boolean
-        ): Byte {
-            var flags = 0
-
-            if (heartRate > 0xFF) {
-                flags = flags or 0x01
+        val formatter = CommonScientificValueFormatter.with(builder = {
+            defaultValueFormatter = NumberFormatter(style = NumberFormatStyle.Integer(minDigits = 1U)).apply {
+                notANumberSymbol = "--"
             }
-
-            flags = flags or (0x02)
-            if (sensorContactDetected) {
-                flags = flags or 0x04
-            }
-
-            flags = flags or 0x08
-
-            return flags.toByte()
-        }
+        })
     }
-
 
     val bluetoothServer = coroutineScope.async {
         get<BluetoothBuilder>().createServer(
@@ -109,14 +106,15 @@ class BluetoothServerViewModel : BaseLifecycleViewModel(), KoinComponent {
                     combine(
                         heartRate,
                         energyExpended,
-                        isConnected,
-                    ) { heartRate, energyExpended, isConnected ->
-                        generateHeartRateMeasurement(heartRate.value.toInt(), energyExpended.value.toInt(), isConnected)
-                    }.sample(1.seconds).attachIn(this@async, SharingStarted.Lazily, 1)
+                        position,
+                    ) { heartRate, energyExpended, position ->
+                        generateHeartRateMeasurement(heartRate.value.toInt(), energyExpended.value.toInt(), position != null)
+                    }.sample(1.seconds).collectAsNotification(this@async, SharingStarted.Lazily, 1)
                 }
                 characteristic(BluetoothSpec.HeartRateService.SENSOR_LOCATION_CHARACTERISTIC) {
                     readableAlwaysSuccess { _, _ ->
-                        byteArrayOf(0x00)
+                        val position = position.value ?: BluetoothSpec.SensorLocation.OTHER
+                        byteArrayOf(position.value)
                     }
                 }
                 characteristic(BluetoothSpec.HeartRateService.HEART_RATE_CONTROL_POINT_CHARACTERISTIC) {
@@ -135,7 +133,7 @@ class BluetoothServerViewModel : BaseLifecycleViewModel(), KoinComponent {
 
     private val heartRate = MutableStateFlow(60(BeatsPerMinute))
     private val energyExpended = MutableStateFlow(0(Kilojoule))
-    private val isConnected = MutableStateFlow(false)
+    private val position = MutableStateFlow<BluetoothSpec.SensorLocation?>(null)
 
     val status = flow {
         bluetoothServer.await().status.collect { status ->
@@ -162,9 +160,35 @@ class BluetoothServerViewModel : BaseLifecycleViewModel(), KoinComponent {
     }
 
     val heartRateLabel = heartRate.map { value ->
-        KalugaLabel.Plain("${value.value.toInt()} BPM", TextStyles.defaultText)
+        KalugaLabel.Plain(formatter.format(value), TextStyles.redText)
+    }.toInitializedObservable(KalugaLabel.Plain("", TextStyles.redText), coroutineScope)
+
+    val energyExpendedLabel = energyExpended.map { value ->
+        KalugaLabel.Plain(formatter.format(value), TextStyles.defaultText)
     }.toInitializedObservable(KalugaLabel.Plain("", TextStyles.defaultText), coroutineScope)
 
+    val positionPicker = position.map { position ->
+        KalugaButton.Plain( position?.let { "$it" } ?: "Select Position", ButtonStyles.default) {
+            coroutineScope.launch {
+                val sensorActions = BluetoothSpec.SensorLocation.entries.associateBy { Alert.Action(it.name) }
+                val detachAction = Alert.Action("Detach", Alert.Action.Style.DESTRUCTIVE).takeIf { position != null }
+                val action = alertPresenter.buildActionSheet(this) {
+                    setTitle("Select Position")
+                    addActions(listOfNotNull(*sensorActions.keys.toTypedArray(), detachAction))
+                }.show()
+                this@BluetoothServerViewModel.position.update { sensorActions[action] }
+            }
+        }
+    }.toInitializedObservable(KalugaButton.Plain("Select Position", ButtonStyles.default) {}, coroutineScope)
+
+    init {
+        coroutineScope.launch {
+            while (true) {
+                energyExpended.update { it + 5(Kilojoule) }
+                delay(5.seconds)
+            }
+        }
+    }
 
     override fun onCleared() {
         bluetoothServer.getCompletedOrNull()?.close()

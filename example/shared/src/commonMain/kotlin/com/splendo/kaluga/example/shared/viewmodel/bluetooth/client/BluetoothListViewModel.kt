@@ -17,5 +17,7 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth.client
 
+
+
 class BluetoothListViewModel {
 }

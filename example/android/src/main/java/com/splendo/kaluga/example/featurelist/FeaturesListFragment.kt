@@ -29,7 +29,6 @@ import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
 import com.splendo.kaluga.example.alerts.AlertsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureActivity
 import com.splendo.kaluga.example.beacons.BeaconsActivity
-import com.splendo.kaluga.example.bluetooth.BluetoothActivity
 import com.splendo.kaluga.example.databinding.FragmentFeaturesListBinding
 import com.splendo.kaluga.example.databinding.ViewListButtonBinding
 import com.splendo.kaluga.example.datetime.TimerActivity
@@ -66,7 +65,7 @@ class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>() {
                     FeatureListNavigationAction.Links -> NavigationSpec.Activity<LinksActivity>()
                     FeatureListNavigationAction.Media -> NavigationSpec.Activity<MediaListActivity>()
                     FeatureListNavigationAction.System -> NavigationSpec.Activity<SystemActivity>()
-                    FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity<BluetoothActivity>()
+                    FeatureListNavigationAction.Bluetooth -> throw IllegalStateException("Not supported")
                     FeatureListNavigationAction.Beacons -> NavigationSpec.Activity<BeaconsActivity>()
                     FeatureListNavigationAction.Resources -> NavigationSpec.Activity<ResourcesActivity>()
                     FeatureListNavigationAction.Scientific -> NavigationSpec.Activity<ScientificActivity>()

@@ -195,7 +195,7 @@ internal val androidModule = module {
     }
 
     viewModel {
-        BluetoothServerViewModel()
+        BluetoothServerViewModel(AlertPresenter.Builder())
     }
 
     viewModel {
