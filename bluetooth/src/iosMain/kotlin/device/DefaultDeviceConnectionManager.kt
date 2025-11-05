@@ -23,7 +23,8 @@ import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
 import com.splendo.kaluga.bluetooth.KalugaBluetoothPeripheralDelegateProtocol
 import com.splendo.kaluga.bluetooth.KalugaBluetoothPeripheralWrapper
-import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.bluetooth.asBytes
+import com.splendo.kaluga.bluetooth.dataValue
 import com.splendo.kaluga.logging.debug
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
@@ -83,25 +84,31 @@ internal actual class DefaultDeviceConnectionManager(
             val action = currentAction
             if (action is DeviceAction.Notification && action.characteristic.wrapper.uuid == characteristic.UUID) {
                 launch {
-                    handleCurrentActionCompleted(succeeded = error == null)
+                    action.handleNotificationStateChanged(error == null)
                 }
             }
         }
 
         override fun didUpdateValueForCharacteristic(characteristic: CBCharacteristic, peripheral: CBPeripheral, error: NSError?) {
-            updateCharacteristic(characteristic, error)
+            handleCharacteristicReadOrNotified(
+                characteristic.UUID,
+                characteristic.value?.asBytes?.takeIf { error == null }?.let { DeviceAction.Read.Result.Success(it) } ?: DeviceAction.Read.Result.Failure,
+            )
         }
 
         override fun didWriteValueForCharacteristic(characteristic: CBCharacteristic, peripheral: CBPeripheral, error: NSError?) {
-            updateCharacteristic(characteristic, error)
+            handleCharacteristicWritten(characteristic.UUID, error == null)
         }
 
         override fun didUpdateValueForDescriptor(descriptor: CBDescriptor, peripheral: CBPeripheral, error: NSError?) {
-            updateDescriptor(descriptor, error)
+            handleDescriptorRead(
+                descriptor.UUID,
+                descriptor.dataValue?.asBytes?.takeIf { error == null }?.let { DeviceAction.Read.Result.Success(it) } ?: DeviceAction.Read.Result.Failure,
+            )
         }
 
         override fun didWriteValueForDescriptor(descriptor: CBDescriptor, peripheral: CBPeripheral, error: NSError?) {
-            updateDescriptor(descriptor, error)
+            handleDescriptorWritten(descriptor.UUID, error == null)
         }
 
         override fun didDiscoverCharacteristicsFor(service: CBService, peripheral: CBPeripheral, error: NSError?) {
@@ -171,20 +178,16 @@ internal actual class DefaultDeviceConnectionManager(
                     !action.characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse)
                 action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral, withResponse)
                 if (!withResponse) {
-                    handleCurrentActionCompleted(succeeded = true)
+                    handleCharacteristicWritten(action.characteristic.uuid, succeeded = true)
                 }
             }
             is DeviceAction.Write.Descriptor -> {
                 action.descriptor.wrapper.writeValue(action.newValue.toNSData(), peripheral)
             }
             is DeviceAction.Notification.Enable -> {
-                val uuid = action.characteristic.uuid.uuidString
-                notifyingCharacteristics[uuid] = action.characteristic
                 action.characteristic.wrapper.setNotificationValue(true, peripheral)
             }
             is DeviceAction.Notification.Disable -> {
-                val uuid = action.characteristic.uuid.uuidString
-                notifyingCharacteristics.remove(uuid)
                 action.characteristic.wrapper.setNotificationValue(false, peripheral)
             }
             is DeviceAction.RequestMtu -> {
@@ -202,14 +205,6 @@ internal actual class DefaultDeviceConnectionManager(
 
     actual override suspend fun requestStartUnpairing() {
         // There is no iOS API to unpair peripheral
-    }
-
-    private fun updateCharacteristic(characteristic: CBCharacteristic, error: NSError?) {
-        handleUpdatedCharacteristic(characteristic.UUID, succeeded = error == null)
-    }
-
-    private fun updateDescriptor(descriptor: CBDescriptor, error: NSError?) {
-        handleUpdatedDescriptor(descriptor.UUID, succeeded = error == null)
     }
 
     private fun didDiscoverServices() {

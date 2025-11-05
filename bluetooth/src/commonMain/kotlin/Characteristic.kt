@@ -17,10 +17,13 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.ContextualLogger
 import kotlinx.atomicfu.atomic
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 
@@ -32,26 +35,33 @@ interface Characteristic : Attribute {
 
 /**
  * An [Attribute] of a Bluetooth Characteristic
- * @property wrapper the [CharacteristicWrapper] to access the platform characteristic
- * @param initialValue the initial [ByteArray] value of the characteristic
+ * @property wrapper the [RemoteCharacteristicWrapper] to access the platform characteristic
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
  * @param logger the [ContextualLogger] to use for logging.
  */
 open class RemoteCharacteristic(
-    val wrapper: CharacteristicWrapper,
+    val wrapper: RemoteCharacteristicWrapper,
     override val service: RemoteService,
-    initialValue: ByteArray? = null,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     logger: ContextualLogger,
 ) : RemoteAttribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(
-    initialValue,
     emitNewAction,
     logger,
 ),
     Characteristic {
 
+    class Subscription(
+        internal val onUpdate: (ByteArray) -> Unit,
+        private val onUnsubscribe: suspend Subscription.() -> DeviceAction.Notification?,
+        val hasSubscribedSuccessfully: Deferred<Boolean>,
+    ) {
+        suspend fun unsubscribe(): Deferred<Boolean> = onUnsubscribe()?.completedSuccessfully ?: CompletableDeferred(true)
+    }
+
     private val isBusy = MutableStateFlow(false)
     private val _isNotifying = atomic(false)
+    private val subscriptions = concurrentMutableListOf<Subscription>()
+    private var lastKnownValue: ByteArray? = null
 
     /**
      * If `true` this characteristic has been set to automatically provide updates to its value
@@ -73,7 +83,18 @@ open class RemoteCharacteristic(
      * @see [disableNotification]
      * @see [isNotifying]
      */
-    suspend fun enableNotification(): DeviceAction? {
+    suspend fun subscribe(onUpdate: (ByteArray) -> Unit): Subscription = Subscription(
+        onUpdate,
+        { unsubscribe(this) },
+        enableNotification()?.completedSuccessfully ?: CompletableDeferred(true),
+    ).also { subscription ->
+        lastKnownValue?.let {
+            subscription.onUpdate(it)
+        }
+        subscriptions.add(subscription)
+    }
+
+    private suspend fun enableNotification(): DeviceAction.Notification? {
         do {
             isBusy.first { !it }
             if (isNotifying) return null
@@ -90,6 +111,19 @@ open class RemoteCharacteristic(
         return action
     }
 
+    internal fun notify(value: ByteArray) {
+        println("Notify")
+        lastKnownValue = value
+        subscriptions.forEach { it.onUpdate(value) }
+    }
+
+    private suspend fun unsubscribe(subscription: Subscription): DeviceAction.Notification? = if (subscriptions.remove(subscription) && subscriptions.isEmpty()) {
+        lastKnownValue = null
+        disableNotification()
+    } else {
+        null
+    }
+
     /**
      * Disables notification or indication for this [Characteristic]
      *
@@ -101,7 +135,7 @@ open class RemoteCharacteristic(
      * @see [enableNotification]
      * @see [isNotifying]
      */
-    suspend fun disableNotification(): DeviceAction? {
+    private suspend fun disableNotification(): DeviceAction.Notification? {
         do {
             isBusy.first { !it }
             if (!isNotifying) return null
@@ -140,8 +174,6 @@ open class RemoteCharacteristic(
     private fun createNotificationAction(enabled: Boolean): DeviceAction.Notification =
         if (enabled) DeviceAction.Notification.Enable(this) else DeviceAction.Notification.Disable(this)
 
-    override fun getUpdatedValue(): ByteArray? = wrapper.value?.asBytes
-
     /**
      * Checks if the characteristic has a given [CharacteristicProperty]
      */
@@ -153,23 +185,18 @@ open class RemoteCharacteristic(
 /**
  * Accessor to the platform level Bluetooth characteristic
  */
-expect interface CharacteristicWrapper {
+expect interface RemoteCharacteristicWrapper {
     /**
      * The [UUID] of the characteristic
      */
     val uuid: UUID
 
-    val service: ServiceWrapper
+    val service: RemoteServiceWrapper
 
     /**
-     * The list of [DescriptorWrapper] of associated with the characteristic
+     * The list of [RemoteDescriptorWrapper] of associated with the characteristic
      */
-    val descriptors: List<DescriptorWrapper>
-
-    /**
-     * The current [Value] of the characteristic
-     */
-    val value: Value?
+    val descriptors: List<RemoteDescriptorWrapper>
 
     /**
      * The integer representing all [CharacteristicProperty] of the characteristic

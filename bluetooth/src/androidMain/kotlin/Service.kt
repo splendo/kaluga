@@ -23,7 +23,7 @@ import android.bluetooth.BluetoothGattService
 /**
  * Accessor to a [BluetoothGattService]
  */
-actual interface ServiceWrapper {
+actual interface RemoteServiceWrapper {
 
     /**
      * The [UUID] of the service
@@ -42,21 +42,21 @@ actual interface ServiceWrapper {
     val instanceId: Int
 
     /**
-     * The list of [CharacteristicWrapper] associated with the service
+     * The list of [RemoteCharacteristicWrapper] associated with the service
      */
-    actual val characteristics: List<CharacteristicWrapper>
+    actual val characteristics: List<RemoteCharacteristicWrapper>
 
     /**
-     * The list of [ServiceWrapper] included in this service
+     * The list of [RemoteServiceWrapper] included in this service
      */
-    actual val includedServices: List<ServiceWrapper>
+    actual val includedServices: List<RemoteServiceWrapper>
 
     /**
-     * Gets the [CharacteristicWrapper] for the characteristic with a given [java.util.UUID] if it belongs to the service
+     * Gets the [RemoteCharacteristicWrapper] for the characteristic with a given [java.util.UUID] if it belongs to the service
      * @param uuid the [java.util.UUID] of the characteristic to get
-     * @return the [CharacteristicWrapper] belonging to [uuid] if it exists, or `null` otherwise
+     * @return the [RemoteCharacteristicWrapper] belonging to [uuid] if it exists, or `null` otherwise
      */
-    fun getCharacteristic(uuid: java.util.UUID): CharacteristicWrapper?
+    fun getCharacteristic(uuid: java.util.UUID): RemoteCharacteristicWrapper?
 
     /**
      * Adds a [BluetoothGattCharacteristic] to the service
@@ -74,10 +74,10 @@ actual interface ServiceWrapper {
 }
 
 /**
- * Default implementation of [ServiceWrapper]
+ * Default implementation of [RemoteServiceWrapper]
  * @param gattService the [BluetoothGattService] to wrap
  */
-class DefaultGattServiceWrapper(private val gattService: BluetoothGattService) : ServiceWrapper {
+class DefaultGattServiceWrapper(private val gattService: BluetoothGattService) : RemoteServiceWrapper {
 
     override val uuid: java.util.UUID
         get() = gattService.uuid
@@ -88,12 +88,12 @@ class DefaultGattServiceWrapper(private val gattService: BluetoothGattService) :
         }
     override val instanceId: Int
         get() = gattService.instanceId
-    override val characteristics: List<CharacteristicWrapper>
-        get() = gattService.characteristics.map { DefaultCharacteristicWrapper(it) }
-    override val includedServices: List<ServiceWrapper>
+    override val characteristics: List<RemoteCharacteristicWrapper>
+        get() = gattService.characteristics.map { DefaultRemoteCharacteristicWrapper(it) }
+    override val includedServices: List<RemoteServiceWrapper>
         get() = gattService.includedServices.map { DefaultGattServiceWrapper(it) }
 
-    override fun getCharacteristic(uuid: java.util.UUID): CharacteristicWrapper? = gattService.getCharacteristic(uuid)?.let { DefaultCharacteristicWrapper(it) }
+    override fun getCharacteristic(uuid: java.util.UUID): RemoteCharacteristicWrapper? = gattService.getCharacteristic(uuid)?.let { DefaultRemoteCharacteristicWrapper(it) }
 
     override fun addCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean = gattService.addCharacteristic(characteristic)
 

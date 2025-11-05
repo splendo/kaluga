@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.bluetooth.DescriptorWrapper
+import com.splendo.kaluga.bluetooth.RemoteDescriptorWrapper
 
 interface MockDescriptorWrapper :
-    DescriptorWrapper,
-    CanUpdateMockValue
+    RemoteDescriptorWrapper,
+    ContainsMockValue

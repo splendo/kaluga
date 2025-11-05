@@ -32,22 +32,44 @@ import kotlinx.coroutines.Deferred
  */
 sealed class DeviceAction {
 
-    private val _completedSuccessfully = CompletableDeferred<Boolean>()
-    internal fun complete(succeeded: Boolean) {
-        _completedSuccessfully.complete(succeeded)
-    }
-
-    /**
-     * A Deferred that will be completed with
-     * `true` if [DeviceAction] was completed successfully, or
-     * `false` if [DeviceAction] failed
-     * */
-    val completedSuccessfully: Deferred<Boolean> by ::_completedSuccessfully
+    abstract fun fail()
 
     /**
      * A [DeviceAction] that attempts to read an [com.splendo.kaluga.bluetooth.Attribute]
      */
     sealed class Read : DeviceAction() {
+
+        sealed class Result {
+            data class Success(val value: ByteArray) : Result() {
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) return true
+                    if (other == null || this::class != other::class) return false
+
+                    other as Success
+
+                    if (!value.contentEquals(other.value)) return false
+
+                    return true
+                }
+
+                override fun hashCode(): Int = value.contentHashCode()
+            }
+
+            object Failure : Result()
+        }
+
+        private val _completedSuccessfully = CompletableDeferred<Result>()
+        internal fun complete(succeeded: Result) {
+            _completedSuccessfully.complete(succeeded)
+        }
+
+        /**
+         * A Deferred that will be completed with
+         * `true` if [DeviceAction] was completed successfully, or
+         * `false` if [DeviceAction] failed
+         * */
+        val completedSuccessfully: Deferred<Result> by ::_completedSuccessfully
+
         /**
          * A [DeviceAction.Read] on a [RemoteCharacteristic]
          * @property characteristic the [RemoteCharacteristic] to read the value of
@@ -63,6 +85,10 @@ sealed class DeviceAction {
         class Descriptor(val descriptor: RemoteDescriptor) : Read() {
             override fun toString(): String = "DeviceAction.Read.Descriptor(${descriptor.uuid})"
         }
+
+        override fun fail() {
+            _completedSuccessfully.cancel()
+        }
     }
 
     /**
@@ -70,6 +96,18 @@ sealed class DeviceAction {
      * @property newValue the [ByteArray] to write
      */
     sealed class Write(val newValue: ByteArray) : DeviceAction() {
+
+        private val _completedSuccessfully = CompletableDeferred<Boolean>()
+        internal fun complete(succeeded: Boolean) {
+            _completedSuccessfully.complete(succeeded)
+        }
+
+        /**
+         * A Deferred that will be completed with
+         * `true` if [DeviceAction] was completed successfully, or
+         * `false` if [DeviceAction] failed
+         * */
+        val completedSuccessfully: Deferred<Boolean> by ::_completedSuccessfully
 
         /**
          * A [DeviceAction.Write] on a [RemoteCharacteristic]
@@ -88,6 +126,10 @@ sealed class DeviceAction {
         class Descriptor(newValue: ByteArray, val descriptor: RemoteDescriptor) : Write(newValue) {
             override fun toString(): String = "DeviceAction.Write.Descriptor(${descriptor.uuid})"
         }
+
+        override fun fail() {
+            _completedSuccessfully.cancel()
+        }
     }
 
     /**
@@ -95,6 +137,18 @@ sealed class DeviceAction {
      * @property characteristic the [RemoteCharacteristic] to notify
      */
     sealed class Notification(val characteristic: RemoteCharacteristic) : DeviceAction() {
+
+        private val _completedSuccessfully = CompletableDeferred<Boolean>()
+        internal fun complete(succeeded: Boolean) {
+            _completedSuccessfully.complete(succeeded)
+        }
+
+        /**
+         * A Deferred that will be completed with
+         * `true` if [DeviceAction] was completed successfully, or
+         * `false` if [DeviceAction] failed
+         * */
+        val completedSuccessfully: Deferred<Boolean> by ::_completedSuccessfully
 
         /**
          * A [Notification] that starts notifying
@@ -111,12 +165,33 @@ sealed class DeviceAction {
         class Disable(characteristic: RemoteCharacteristic) : Notification(characteristic) {
             override fun toString(): String = "DeviceAction.Notification.Disable(${characteristic.uuid})"
         }
+
+        override fun fail() {
+            _completedSuccessfully.cancel()
+        }
     }
 
     /** Requests MTU. */
     data class RequestMtu(val mtu: MTU) : DeviceAction() {
+
+        private val _completedSuccessfully = CompletableDeferred<Boolean>()
+        internal fun complete(succeeded: Boolean) {
+            _completedSuccessfully.complete(succeeded)
+        }
+
+        /**
+         * A Deferred that will be completed with
+         * `true` if [DeviceAction] was completed successfully, or
+         * `false` if [DeviceAction] failed
+         * */
+        val completedSuccessfully: Deferred<Boolean> by ::_completedSuccessfully
+
         var mtuResponse: MTU? = null
             internal set
+
+        override fun fail() {
+            _completedSuccessfully.cancel()
+        }
     }
 }
 
@@ -418,11 +493,11 @@ internal sealed class ConnectableDeviceStateImpl {
             override val actionCompleted: suspend () -> ConnectableDeviceState.Connected.DiscoveredServices = suspend {
                 var newMtu = mtu
                 when (action) {
-                    is DeviceAction.Read.Characteristic -> action.characteristic.updateValue()
-                    is DeviceAction.Read.Descriptor -> action.descriptor.updateValue()
-                    is DeviceAction.Write.Characteristic -> action.characteristic.updateValue()
-                    is DeviceAction.Write.Descriptor -> action.descriptor.updateValue()
-                    is DeviceAction.Notification.Enable -> action.characteristic.updateValue()
+                    is DeviceAction.Read.Characteristic -> { }
+                    is DeviceAction.Read.Descriptor -> { }
+                    is DeviceAction.Write.Characteristic -> { }
+                    is DeviceAction.Write.Descriptor -> { }
+                    is DeviceAction.Notification.Enable -> { }
                     is DeviceAction.Notification.Disable -> { }
                     is DeviceAction.RequestMtu -> {
                         newMtu = action.mtuResponse

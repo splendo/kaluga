@@ -31,19 +31,16 @@ interface Descriptor : Attribute {
 
 /**
  * An [Attribute] of a Bluetooth Descriptor
- * @property wrapper the [DescriptorWrapper] to access the platform descriptor
- * @param initialValue the initial [ByteArray] value of the descriptor
+ * @property wrapper the [RemoteDescriptorWrapper] to access the platform descriptor
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
  * @param logger the [ContextualLogger] to use for logging.
  */
 open class RemoteDescriptor(
-    val wrapper: DescriptorWrapper,
+    val wrapper: RemoteDescriptorWrapper,
     override val characteristic: RemoteCharacteristic,
-    initialValue: ByteArray? = null,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     logger: ContextualLogger,
 ) : RemoteAttribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(
-    initialValue,
     emitNewAction,
     logger,
 ),
@@ -54,24 +51,17 @@ open class RemoteDescriptor(
     override fun createReadAction(): DeviceAction.Read.Descriptor = DeviceAction.Read.Descriptor(this)
 
     override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Descriptor = DeviceAction.Write.Descriptor(newValue, this)
-
-    override fun getUpdatedValue(): ByteArray? = wrapper.value?.asBytes
 }
 
 /**
  * Accessor to the platform level Bluetooth Descriptor
  */
-expect interface DescriptorWrapper {
+expect interface RemoteDescriptorWrapper {
 
-    val characteristic: CharacteristicWrapper
+    val characteristic: RemoteCharacteristicWrapper
 
     /**
      * The [UUID] of the descriptor
      */
     val uuid: UUID
-
-    /**
-     * The current [Value] of the descriptor
-     */
-    val value: Value?
 }

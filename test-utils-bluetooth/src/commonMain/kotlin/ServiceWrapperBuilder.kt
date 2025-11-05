@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.bluetooth.ServiceWrapper
+import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.randomUUID
 
@@ -67,4 +67,4 @@ class ServiceWrapperBuilder {
     fun characteristics(builder: CharacteristicList.() -> Unit) = builder(_characteristics)
 }
 
-expect fun ServiceWrapperBuilder.build(): ServiceWrapper
+expect fun ServiceWrapperBuilder.build(): RemoteServiceWrapper

@@ -10,29 +10,27 @@ import com.splendo.kaluga.bluetooth.services
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 
-/**
- * Provides access to device data flow by service, characteristic and descriptor string uuids.
- * @param serviceUUID string service uuid representation
- * @param characteristicUUID string characteristic uuid representation
- * @throws UUIDException.InvalidFormat
- */
-fun Flow<ConnectableDevice?>.dataFlow(serviceUUID: String, characteristicUUID: String) = characteristicsFlow(serviceUUID, characteristicUUID).flatMapLatest { characteristic ->
-    characteristic.map { it ?: byteArrayOf() }
-}
-
-/**
- * Provides access to device data flow by service, characteristic and descriptor string uuids.
- * @param serviceUUID string service uuid representation
- * @param characteristicUUID string characteristic uuid representation
- * @throws UUIDException.InvalidFormat
- */
-fun Flow<ConnectableDevice?>.dataFlow(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) =
-    descriptorsFlow(serviceUUID, characteristicUUID, descriptorUUID).flatMapLatest { descriptor ->
-        descriptor.map { it ?: byteArrayOf() }
-    }
+// /**
+//  * Provides access to device data flow by service, characteristic and descriptor string uuids.
+//  * @param serviceUUID string service uuid representation
+//  * @param characteristicUUID string characteristic uuid representation
+//  * @throws UUIDException.InvalidFormat
+//  */
+// fun Flow<ConnectableDevice?>.dataFlow(serviceUUID: String, characteristicUUID: String) = characteristicsFlow(serviceUUID, characteristicUUID).flatMapLatest { characteristic ->
+//     characteristic.map { it ?: byteArrayOf() }
+// }
+//
+// /**
+//  * Provides access to device data flow by service, characteristic and descriptor string uuids.
+//  * @param serviceUUID string service uuid representation
+//  * @param characteristicUUID string characteristic uuid representation
+//  * @throws UUIDException.InvalidFormat
+//  */
+// fun Flow<ConnectableDevice?>.dataFlow(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) =
+//     descriptorsFlow(serviceUUID, characteristicUUID, descriptorUUID).flatMapLatest { descriptor ->
+//         descriptor.map { it ?: byteArrayOf() }
+//     }
 
 /**
  * Provides access to characteristic's flow by service and characteristic string uuids.

@@ -35,19 +35,14 @@ import platform.Foundation.dataUsingEncoding
 /**
  * Accessor to a [CBDescriptor]
  */
-actual interface DescriptorWrapper {
+actual interface RemoteDescriptorWrapper {
 
     /**
      * The [UUID] of the descriptor
      */
     actual val uuid: CBUUID
 
-    /**
-     * The current [Value] of the descriptor
-     */
-    actual val value: NSData?
-
-    actual val characteristic: CharacteristicWrapper
+    actual val characteristic: RemoteCharacteristicWrapper
 
     /**
      * Request a [CBPeripheral] to read the descriptor
@@ -64,39 +59,13 @@ actual interface DescriptorWrapper {
 }
 
 /**
- * Default implementation of [DescriptorWrapper]
+ * Default implementation of [RemoteDescriptorWrapper]
  * @param descriptor the [CBDescriptor] to wrap
  */
-class DefaultDescriptorWrapper(private val descriptor: CBDescriptor, override val characteristic: CharacteristicWrapper) : DescriptorWrapper {
+class DefaultDescriptorWrapper(private val descriptor: CBDescriptor, override val characteristic: RemoteCharacteristicWrapper) : RemoteDescriptorWrapper {
 
     override val uuid: CBUUID get() {
         return descriptor.UUID
-    }
-    override val value: NSData? get() {
-        return when (descriptor.UUID.uuidString) {
-            CBUUIDCharacteristicFormatString -> {
-                descriptor.value as? NSData
-            }
-            CBUUIDCharacteristicUserDescriptionString -> {
-                (descriptor.value as? NSString)?.dataUsingEncoding(NSUTF8StringEncoding)
-            }
-            CBUUIDCharacteristicExtendedPropertiesString -> {
-                (descriptor.value as? NSNumber)?.let {
-                    byteArrayOf(it.shortValue.toByte()).toNSData()
-                }
-            }
-            CBUUIDClientCharacteristicConfigurationString -> {
-                (descriptor.value as? NSNumber)?.let {
-                    byteArrayOf(it.shortValue.toByte()).toNSData()
-                }
-            }
-            CBUUIDServerCharacteristicConfigurationString -> {
-                (descriptor.value as? NSNumber)?.let {
-                    byteArrayOf(it.shortValue.toByte()).toNSData()
-                }
-            }
-            else -> descriptor.value as? NSData
-        }
     }
 
     override fun readValue(peripheral: CBPeripheral) {
@@ -105,5 +74,32 @@ class DefaultDescriptorWrapper(private val descriptor: CBDescriptor, override va
 
     override fun writeValue(value: NSData, peripheral: CBPeripheral) {
         peripheral.writeValue(value, descriptor)
+    }
+}
+
+internal val CBDescriptor.dataValue: NSData? get() {
+    return when (UUID.uuidString) {
+        CBUUIDCharacteristicFormatString -> {
+            value as? NSData
+        }
+        CBUUIDCharacteristicUserDescriptionString -> {
+            (value as? NSString)?.dataUsingEncoding(NSUTF8StringEncoding)
+        }
+        CBUUIDCharacteristicExtendedPropertiesString -> {
+            (value as? NSNumber)?.let {
+                byteArrayOf(it.shortValue.toByte()).toNSData()
+            }
+        }
+        CBUUIDClientCharacteristicConfigurationString -> {
+            (value as? NSNumber)?.let {
+                byteArrayOf(it.shortValue.toByte()).toNSData()
+            }
+        }
+        CBUUIDServerCharacteristicConfigurationString -> {
+            (value as? NSNumber)?.let {
+                byteArrayOf(it.shortValue.toByte()).toNSData()
+            }
+        }
+        else -> value as? NSData
     }
 }

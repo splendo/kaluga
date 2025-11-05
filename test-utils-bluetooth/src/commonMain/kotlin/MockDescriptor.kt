@@ -17,28 +17,19 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.bluetooth.DescriptorWrapper
 import com.splendo.kaluga.bluetooth.RemoteDescriptor
+import com.splendo.kaluga.bluetooth.RemoteDescriptorWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.ContextualLogger
 import com.splendo.kaluga.logging.defaultLogger
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.parameters.mock
 
 /**
  * Mock implementation of [RemoteDescriptor]
  */
-class MockDescriptor(descriptorWrapper: DescriptorWrapper, emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit) :
+class MockDescriptor(descriptorWrapper: RemoteDescriptorWrapper, emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit) :
     RemoteDescriptor(
         wrapper = descriptorWrapper,
         characteristic = MockCharacteristic(descriptorWrapper.characteristic) {},
         emitNewAction = emitNewAction,
         logger = ContextualLogger(defaultLogger, "MockDescriptor"),
-    ) {
-
-    /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [updateValue]
-     */
-    val updateMock = ::updateValue.mock()
-    override fun updateValue(): Unit = updateMock.call()
-}
+    )

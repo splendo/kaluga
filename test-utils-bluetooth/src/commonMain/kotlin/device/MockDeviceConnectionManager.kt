@@ -20,12 +20,9 @@ package com.splendo.kaluga.test.bluetooth.device
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.RSSI
-import com.splendo.kaluga.bluetooth.RemoteCharacteristic
-import com.splendo.kaluga.bluetooth.RemoteDescriptor
 import com.splendo.kaluga.bluetooth.RemoteService
-import com.splendo.kaluga.bluetooth.ServiceWrapper
+import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
@@ -132,9 +129,9 @@ class MockDeviceConnectionManager(
     val performActionMock = ::performAction.mock()
 
     /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [handleCurrentActionCompleted]
+     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [handleActionCompleted]
      */
-    val handleCurrentActionCompletedMock = ::handleCurrentActionCompletedWithAction.mock()
+    val handleCurrentActionCompletedMock = ::handleActionCompleted.mock()
 
     init {
         if (setupMocks) {
@@ -168,54 +165,50 @@ class MockDeviceConnectionManager(
 
     suspend fun handleCurrentAction() {
         currentAction?.let { action ->
+            debug("Handle $action")
             when (action) {
-                is DeviceAction.Read.Characteristic -> handleUpdatedCharacteristic(
-                    action.characteristic.uuid,
-                    willActionSucceed,
-                ) {
-                    debug("Mock Read: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
+                is DeviceAction.Read.Characteristic -> {
+                    val value = (action.characteristic.wrapper as MockCharacteristicWrapper).value
+                    debug("Mock Read: ${action.characteristic.uuid} value ${value?.toHexString()}")
+                    handleCharacteristicReadOrNotified(
+                        action.characteristic.uuid,
+                        if (willActionSucceed && value != null) DeviceAction.Read.Result.Success(value) else DeviceAction.Read.Result.Failure,
+                    )
                 }
-                is DeviceAction.Read.Descriptor -> handleUpdatedDescriptor(
-                    action.descriptor.uuid,
-                    willActionSucceed,
-                )
+                is DeviceAction.Read.Descriptor -> {
+                    val value = (action.descriptor.wrapper as MockDescriptorWrapper).value
+                    debug("Mock Read: ${action.descriptor.uuid} value ${value?.toHexString()}")
+                    handleDescriptorRead(
+                        action.descriptor.uuid,
+                        if (willActionSucceed && value != null) DeviceAction.Read.Result.Success(value) else DeviceAction.Read.Result.Failure,
+                    )
+                }
                 is DeviceAction.Write.Characteristic -> {
-                    (action.characteristic.wrapper as MockCharacteristicWrapper).updateMockValue(
+                    (action.characteristic.wrapper as MockCharacteristicWrapper).updateValue(
                         action.newValue,
                     )
-                    handleUpdatedCharacteristic(action.characteristic.uuid, willActionSucceed) {
-                        debug("Mock Write: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
-                    }
+                    handleCharacteristicWritten(action.characteristic.uuid, willActionSucceed)
+                    debug("Mock Write: ${action.characteristic.uuid} value ${action.newValue.toHexString()}")
                 }
                 is DeviceAction.Write.Descriptor -> {
-                    (action.descriptor.wrapper as MockDescriptorWrapper).updateMockValue(action.newValue)
-                    handleUpdatedDescriptor(action.descriptor.uuid, willActionSucceed)
+                    (action.descriptor.wrapper as MockDescriptorWrapper).updateValue(
+                        action.newValue,
+                    )
+                    handleDescriptorWritten(action.descriptor.uuid, willActionSucceed)
+                    debug("Mock Write: ${action.descriptor.uuid} value ${action.newValue.toHexString()}")
                 }
-                is DeviceAction.Notification -> handleCurrentActionCompleted(willActionSucceed)
+                is DeviceAction.Notification -> action.handleNotificationStateChanged(willActionSucceed)
 
                 is DeviceAction.RequestMtu -> handleNewMtu(action.mtu, willActionSucceed)
             }
         }
     }
 
-    public override fun handleDiscoverCompleted(services: List<RemoteService>) {
-        super.handleDiscoverCompleted(services)
-    }
+    fun create(wrapper: RemoteServiceWrapper): RemoteService = createService(wrapper)
 
-    public override fun createService(wrapper: ServiceWrapper): RemoteService = super.createService(wrapper)
+    fun discover(services: List<RemoteService>) = handleDiscoverCompleted(services)
 
-    override fun handleCurrentActionCompleted(succeeded: Boolean) {
-        handleCurrentActionCompletedWithAction(succeeded, currentAction)
-        return super.handleCurrentActionCompleted(succeeded)
-    }
+    fun notify(characteristic: UUID, value: ByteArray) = handleCharacteristicReadOrNotified(characteristic, DeviceAction.Read.Result.Success(value))
 
-    public override fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((RemoteCharacteristic) -> Unit)?) {
-        super.handleUpdatedCharacteristic(uuid, succeeded, onUpdate)
-    }
-
-    public override fun handleUpdatedDescriptor(uuid: UUID, succeeded: Boolean, onUpdate: ((RemoteDescriptor) -> Unit)?) {
-        super.handleUpdatedDescriptor(uuid, succeeded, onUpdate)
-    }
-
-    private fun handleCurrentActionCompletedWithAction(succeeded: Boolean, deviceAction: DeviceAction?): Unit = handleCurrentActionCompletedMock.call(succeeded, deviceAction)
+    override fun handleActionCompleted(succeeded: Boolean, deviceAction: DeviceAction): Unit = handleCurrentActionCompletedMock.call(succeeded, deviceAction)
 }

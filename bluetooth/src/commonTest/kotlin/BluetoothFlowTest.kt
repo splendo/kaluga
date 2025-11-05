@@ -223,7 +223,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
 
         suspend fun discoverService(service: RemoteService, device: ConnectableDevice, connectionManager: MockDeviceConnectionManager) {
             device.state.filter { it is ConnectableDeviceState.Connected.Discovering }.first()
-            connectionManager.handleDiscoverCompleted(listOf(service))
+            connectionManager.discover(listOf(service))
         }
 
         val pairedDevicesTimer = MutableSharedFlow<Unit>(1)
@@ -253,7 +253,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
     sealed class BaseServiceContext<C>(configuration: C, coroutineScope: CoroutineScope) :
         BaseDeviceContext<C>(configuration, coroutineScope) where C : Configuration.Device, C : Configuration.Service {
         val serviceUuid = serviceWrapper.uuid
-        val service by lazy { connectionManager.createService(serviceWrapper) }
+        val service by lazy { connectionManager.create(serviceWrapper) }
         suspend fun discoverService() = discoverService(service, device, connectionManager)
     }
     class ServiceContext(configuration: Configuration.DeviceWithService, coroutineScope: CoroutineScope) :

@@ -17,29 +17,20 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.RemoteCharacteristic
+import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.ContextualLogger
 import com.splendo.kaluga.logging.defaultLogger
-import com.splendo.kaluga.test.base.mock.call
-import com.splendo.kaluga.test.base.mock.parameters.mock
 
 /**
  * Mock implementation of [RemoteCharacteristic]
  */
-class MockCharacteristic(characteristic: CharacteristicWrapper, emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit) :
+class MockCharacteristic(characteristic: RemoteCharacteristicWrapper, emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit) :
     RemoteCharacteristic(
         wrapper = characteristic,
         service = RemoteService(characteristic.service, emptyList(), {}, ContextualLogger(defaultLogger, "MockService")),
         emitNewAction = emitNewAction,
         logger = ContextualLogger(defaultLogger, "MockCharacteristic"),
-    ) {
-
-    /**
-     * [com.splendo.kaluga.test.base.mock.BaseMethodMock] for [updateValue]
-     */
-    val updateMock = ::updateValue.mock()
-    override fun updateValue(): Unit = updateMock.call()
-}
+    )

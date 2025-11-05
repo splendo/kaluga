@@ -17,16 +17,11 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.bluetooth.CharacteristicWrapper
+import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
 import java.util.UUID
 
-class AndroidMockDescriptorWrapper(override val uuid: UUID = UUID.randomUUID(), override val characteristic: CharacteristicWrapper) : MockDescriptorWrapper {
-    override fun updateMockValue(value: ByteArray?) = updateValue(value)
+class AndroidMockDescriptorWrapper(override val uuid: UUID = UUID.randomUUID(), override val characteristic: RemoteCharacteristicWrapper) : MockDescriptorWrapper {
 
     override var value: ByteArray? = null
     override val permissions: Int = 0
-
-    override fun updateValue(value: ByteArray?) {
-        this.value = value
-    }
 }

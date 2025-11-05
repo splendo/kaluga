@@ -25,7 +25,6 @@ import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceInfo
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -43,12 +42,14 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
@@ -513,14 +514,24 @@ fun Flow<RemoteService?>.includedServices(): Flow<List<RemoteService>> = this.ma
 fun Flow<RemoteCharacteristic?>.descriptors(): Flow<List<RemoteDescriptor>> = this.mapLatest { characteristic -> characteristic?.descriptors ?: emptyList() }.distinctUntilChanged()
 
 /**
- * Gets a ([Flow] of) the [ByteArray] value from a [Flow] of an [AttributeType]
- * @param AttributeType the type of [RemoteAttribute] to get the value from
- * @param ReadAction the [DeviceAction.Read] associated with [AttributeType]
- * @param WriteAction the [DeviceAction.Write] associated with [AttributeType]
- * @return the [Flow] of the [ByteArray] value of the [AttributeType] in the given [Flow]
+ * Gets a ([Flow] of) the [ByteArray] value from a [Flow] of an [RemoteCharacteristic]
+ * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
+ * @return the [Flow] of the [ByteArray] value of the [RemoteCharacteristic] in the given [Flow]
  */
-fun <AttributeType : RemoteAttribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write> Flow<AttributeType?>.value(): Flow<ByteArray?> {
-    return this.flatMapLatest { attribute ->
-        attribute ?: flowOf(null)
-    } // TODO: we probably want to read duplicate values so this is for now disabled: .distinctUntilChanged()
+fun Flow<RemoteCharacteristic?>.value(): Flow<ByteArray?> = this.distinctUntilChanged().flatMapLatest { characteristic ->
+    characteristic?.let { characteristic ->
+        flow {
+            val valueChannel = Channel<ByteArray>(Channel.UNLIMITED)
+            val subscription = characteristic.subscribe {
+                valueChannel.trySend(it)
+            }
+            try {
+                emitAll(valueChannel)
+            } finally {
+                withContext(NonCancellable) {
+                    subscription.unsubscribe()
+                }
+            }
+        }
+    } ?: flowOf(null)
 }

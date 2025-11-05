@@ -24,6 +24,7 @@ import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.yieldMultiple
+import com.splendo.kaluga.test.bluetooth.MockCharacteristicWrapper
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -212,6 +213,7 @@ class DeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithD
         }
 
         mainAction {
+            (characteristic.wrapper as MockCharacteristicWrapper).updateValue(byteArrayOf(0x01))
             connectionManager.handleCurrentAction()
             yieldMultiple(2)
             val captor = AnyOrNullCaptor<DeviceAction>()

@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Device
@@ -35,6 +36,7 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -240,7 +242,9 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
     private val _services = MutableStateFlow<List<LocalService>>(emptyList())
     val services: StateFlow<List<LocalService>> = _services.asStateFlow()
 
-    private val advertiseChannel = Channel<(ServerState.Available) -> AdvertisingSettings>(capacity = Channel.UNLIMITED)
+    private val advertiseChannel = Channel<(ServerState.Available?) -> AdvertisingSettings>(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST) { undelivered ->
+        undelivered(null).hasStarted.complete(false)
+    }
     private var currentAdvertiseSettings: AdvertisingSettings? = null
 
     private val serviceActionChannel = Channel<ServiceAction>(capacity = Channel.UNLIMITED)
@@ -254,7 +258,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         val hasStarted = CompletableDeferred<Boolean>()
         val advertisingSettingsBuilder = AdvertisingSettings.Builder().apply(data)
         try {
-            advertiseChannel.send({ active -> advertisingSettingsBuilder.build(hasStarted, active::stopAdvertising) })
+            advertiseChannel.send { active -> advertisingSettingsBuilder.build(hasStarted) { active?.stopAdvertising() } }
             hasStarted.await()
         } catch (_: ClosedSendChannelException) {
             false
@@ -334,14 +338,11 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
     }
 
     private fun manageState(initialState: ServerState.AwaitingPermissions) = launch {
-        val servicesToRestore = mutableListOf<Pair<LocalService, CompletableDeferred<LocalService?>>>()
-        val advertisementToRestore = MutableStateFlow<AdvertisingSettings?>(null)
         var state: ServerState.Active = initialState
         _status.value = state.status
         try {
             while (true) {
-                val currentState = state
-                val newState = when (currentState) {
+                val newState = when (val currentState = state) {
                     is ServerState.AwaitingPermissions -> {
                         logger.info(TAG) { "Missing Permissions" }
                         currentState.awaitPermitted(settings.autoRequestPermission).also {
@@ -371,7 +372,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
 
                     is ServerState.Available -> {
                         val availableJob = launch {
-                            onAvailable(currentState, advertisementToRestore, servicesToRestore)
+                            onAvailable(currentState)
                         }
                         val isDisabled = async { currentState.awaitDisabled() }
                         val isRevoked = async { currentState.awaitRevoked() }
@@ -400,56 +401,39 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         }
     }
 
-    private suspend fun onAvailable(
-        available: ServerState.Available,
-        advertisementToRestore: MutableStateFlow<AdvertisingSettings?>,
-        servicesToRestore: MutableList<Pair<LocalService, CompletableDeferred<LocalService?>>>,
-    ) {
+    private suspend fun onAvailable(available: ServerState.Available) {
+        val cancelledService = CompletableDeferred<ServiceAction.Add?>()
         val jobs = listOf(
             monitorAdvertising(available),
-            monitorAddServices(available, servicesToRestore),
+            monitorAddServices(available, cancelledService),
             monitorNotifyingActions(available),
         )
-        var isRestoringService = false
         try {
-            // Restore Advertisement
-            advertisementToRestore.value?.takeIf { advertiseChannel.isEmpty }?.let { advertisementSettings ->
-                logger.info(TAG) { "Restoring Advertisement" }
-                advertiseChannel.send(
-                    { active ->
-                        advertisementSettings
-                    },
-                )
-                advertisementSettings.hasStarted.await()
-            }
-            advertisementToRestore.value = null
-            // Restore removed Services
-            while (servicesToRestore.isNotEmpty()) {
-                val (toAdd, response) = servicesToRestore.first()
-                logger.info(TAG) { "Restoring Service ${toAdd.uuid}" }
-                serviceActionChannel.send(ServiceAction.Add({ _: ServerState.Available -> toAdd }, response))
-                isRestoringService = true
-                response.await()
-                servicesToRestore.removeAt(0)
-                isRestoringService = false
-            }
             // Keep active so cleanup occurs correctly
             jobs.joinAll()
         } finally {
             logger.info(TAG) { "Closing Server" }
             jobs.forEach { it.cancel() }
             disconnectAllConnectedDevices()
-            // Prevent duplicate restoration
-            if (isRestoringService) {
-                servicesToRestore.removeAt(0)
-            }
-            servicesToRestore.addAll(removeServicesAndSaveForRestoration())
-            advertisementToRestore.value = stopAdvertisementForRestoration()
+            removeServicesAndSaveForRestoration(cancelledService.getCompletedOrNull())
+            stopAdvertisementForRestoration()
         }
     }
 
-    private fun removeServicesAndSaveForRestoration(): List<Pair<LocalService, CompletableDeferred<LocalService?>>> = buildList {
-        addAll(_services.value.map { it to CompletableDeferred() })
+    private fun removeServicesAndSaveForRestoration(currentlyBeingAdded: ServiceAction.Add?) {
+        val activeActions = mutableListOf<ServiceAction>()
+        currentlyBeingAdded?.let {
+            activeActions.add(it)
+        }
+        while (!serviceActionChannel.isEmpty) {
+            serviceActionChannel.tryReceive().getOrNull()?.let {
+                activeActions.add(it)
+            }
+        }
+        _services.value.forEach { service ->
+            serviceActionChannel.trySend(ServiceAction.Add({ service }, CompletableDeferred()))
+        }
+        activeActions.forEach { serviceActionChannel.trySend(it) }
         _services.value = emptyList()
     }
 
@@ -466,13 +450,16 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         }
     }
 
-    private fun stopAdvertisementForRestoration() = currentAdvertiseSettings?.let { advertisementSettings ->
-        if (advertisementSettings.hasStarted.isCompleted) {
-            advertisementSettings.copy(hasStarted = CompletableDeferred(), onStop = {})
-        } else {
-            advertisementSettings.copy(onStop = {})
+    private fun stopAdvertisementForRestoration() {
+        currentAdvertiseSettings?.takeIf { advertiseChannel.isEmpty }?.let { advertisementSettings ->
+            advertiseChannel.trySend {
+                if (advertisementSettings.hasStarted.isCompleted) {
+                    advertisementSettings.copy(hasStarted = CompletableDeferred(), onStop = {})
+                } else {
+                    advertisementSettings.copy(onStop = {})
+                }
+            }
         }
-    }.also {
         stopAdvertising(false)
     }
 
@@ -493,7 +480,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         }
     }
 
-    private fun monitorAddServices(available: ServerState.Available, servicesToRestore: MutableList<Pair<LocalService, CompletableDeferred<LocalService?>>>) = launch {
+    private fun monitorAddServices(available: ServerState.Available, cancelledService: CompletableDeferred<ServiceAction.Add?>) = launch {
         for (serviceAction in serviceActionChannel) {
             when (serviceAction) {
                 is ServiceAction.Add -> {
@@ -502,7 +489,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
                     val didAdd = try {
                         available.addService(service)
                     } catch (e: CancellationException) {
-                        servicesToRestore.add(service to serviceAction.isAdded)
+                        cancelledService.complete(ServiceAction.Add({ service }, serviceAction.isAdded))
                         throw e
                     }
 
@@ -521,7 +508,6 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
                 is ServiceAction.Remove -> {
                     withContext(NonCancellable) {
                         available.removeService(serviceAction.service)
-                        servicesToRestore.removeAll { (service, _) -> service == serviceAction.service }
                         _services.update { it - serviceAction.service }
                         disconnectAllConnectedDevices(serviceAction.service)
                         serviceAction.isRemoved.complete()
@@ -531,7 +517,6 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
                 is ServiceAction.RemoveAll -> {
                     withContext(NonCancellable) {
                         available.removeAllServices()
-                        servicesToRestore.clear()
                         _services.value = emptyList()
                         disconnectAllConnectedDevices()
                         serviceAction.isRemoved.complete()

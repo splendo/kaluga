@@ -102,7 +102,7 @@ internal actual class DefaultDeviceConnectionManager(
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
             log { "onCharacteristicWrite characteristic ${characteristic.uuid} status ${status.gattStatusAsString}" }
-            handleUpdatedCharacteristic(characteristic.uuid, succeeded = status == GATT_SUCCESS)
+            handleCharacteristicWritten(characteristic.uuid, succeeded = status == GATT_SUCCESS)
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
@@ -146,10 +146,11 @@ internal actual class DefaultDeviceConnectionManager(
             log { "onDescriptorWrite descriptor ${descriptor.uuid} status ${status.gattStatusAsString}" }
             val succeeded = status == GATT_SUCCESS
             // Notification enable/disable done by client configuration descriptor write
-            if (descriptor.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR && currentAction is DeviceAction.Notification) {
-                handleCurrentActionCompleted(succeeded)
+            val action = currentAction
+            if (descriptor.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR && action is DeviceAction.Notification) {
+                action.handleNotificationStateChanged(succeeded)
             }
-            handleUpdatedDescriptor(descriptor.uuid, succeeded)
+            handleDescriptorWritten(descriptor.uuid, succeeded)
         }
 
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
@@ -216,19 +217,19 @@ internal actual class DefaultDeviceConnectionManager(
     actual override suspend fun didStartPerformingAction(action: DeviceAction) {
         currentAction = action
         val readyGatt = gatt.await()
-        val succeeded = when (action) {
-            is DeviceAction.Read.Characteristic -> readyGatt.readCharacteristic(action.characteristic.wrapper)
-            is DeviceAction.Read.Descriptor -> readyGatt.readDescriptor(action.descriptor.wrapper)
-            is DeviceAction.Write.Characteristic -> readyGatt.writeCharacteristic(action.characteristic, action.newValue)
-            is DeviceAction.Write.Descriptor -> readyGatt.writeDescriptor(action.descriptor, action.newValue)
-            is DeviceAction.Notification.Enable -> readyGatt.setNotification(action.characteristic, true)
-            is DeviceAction.Notification.Disable -> readyGatt.setNotification(action.characteristic, false)
-            is DeviceAction.RequestMtu -> readyGatt.requestMtu(action.mtu)
+        val (succeeded, completion) = when (action) {
+            is DeviceAction.Read.Characteristic -> readyGatt.readCharacteristic(action.characteristic.wrapper) to { action.complete(DeviceAction.Read.Result.Failure) }
+            is DeviceAction.Read.Descriptor -> readyGatt.readDescriptor(action.descriptor.wrapper) to { action.complete(DeviceAction.Read.Result.Failure) }
+            is DeviceAction.Write.Characteristic -> readyGatt.writeCharacteristic(action.characteristic, action.newValue) to { action.complete(false) }
+            is DeviceAction.Write.Descriptor -> readyGatt.writeDescriptor(action.descriptor, action.newValue) to { action.complete(false) }
+            is DeviceAction.Notification.Enable -> readyGatt.setNotification(action.characteristic, true) to { action.complete(false) }
+            is DeviceAction.Notification.Disable -> readyGatt.setNotification(action.characteristic, false) to { action.complete(false) }
+            is DeviceAction.RequestMtu -> readyGatt.requestMtu(action.mtu) to { action.complete(false) }
         }
 
         // Action Failed
         if (!succeeded) {
-            handleCurrentActionCompleted(succeeded = false)
+            action.handleActionCompleted(succeeded = false, completion)
         }
     }
 
@@ -248,18 +249,9 @@ internal actual class DefaultDeviceConnectionManager(
 
     private fun BluetoothGattWrapper.writeCharacteristic(characteristic: RemoteCharacteristic, value: ByteArray): Boolean = writeCharacteristic(characteristic.wrapper, value)
 
-    private fun BluetoothGattWrapper.writeDescriptor(descriptor: RemoteDescriptor, value: ByteArray): Boolean {
-        descriptor.wrapper.updateValue(value)
-        return writeDescriptor(descriptor.wrapper, value)
-    }
+    private fun BluetoothGattWrapper.writeDescriptor(descriptor: RemoteDescriptor, value: ByteArray): Boolean = writeDescriptor(descriptor.wrapper, value)
 
     private fun BluetoothGattWrapper.setNotification(characteristic: RemoteCharacteristic, enable: Boolean): Boolean {
-        val uuid = characteristic.uuid.uuidString
-        if (enable) {
-            notifyingCharacteristics[uuid] = characteristic
-        } else {
-            notifyingCharacteristics.remove(uuid)
-        }
         if (!setCharacteristicNotification(characteristic.wrapper, enable)) {
             return false
         }
@@ -276,7 +268,6 @@ internal actual class DefaultDeviceConnectionManager(
 
         return if (writeValue != null) {
             characteristic.descriptors.firstOrNull { it.uuid == Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR }?.let { descriptor ->
-                descriptor.wrapper.updateValue(writeValue)
                 writeDescriptor(descriptor.wrapper, writeValue)
             } == true
         } else {
@@ -290,16 +281,11 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     private fun updateCharacteristic(characteristic: BluetoothGattCharacteristic, value: ByteArray, status: Int) {
-        handleUpdatedCharacteristic(characteristic.uuid, succeeded = status == GATT_SUCCESS) {
-            it.wrapper.updateValue(value)
-        }
+        handleCharacteristicReadOrNotified(characteristic.uuid, result = if (status == GATT_SUCCESS) DeviceAction.Read.Result.Success(value) else DeviceAction.Read.Result.Failure)
     }
 
     private fun updateDescriptor(descriptor: BluetoothGattDescriptor, value: ByteArray, status: Int) {
-        val succeeded = status == GATT_SUCCESS
-        handleUpdatedDescriptor(descriptor.uuid, succeeded) {
-            it.wrapper.updateValue(value)
-        }
+        handleDescriptorRead(descriptor.uuid, result = if (status == GATT_SUCCESS) DeviceAction.Read.Result.Success(value) else DeviceAction.Read.Result.Failure)
     }
 }
 

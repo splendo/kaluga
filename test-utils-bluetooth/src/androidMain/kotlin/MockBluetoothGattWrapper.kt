@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.bluetooth.CharacteristicWrapper
-import com.splendo.kaluga.bluetooth.DescriptorWrapper
+import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
+import com.splendo.kaluga.bluetooth.RemoteDescriptorWrapper
 import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
@@ -64,13 +64,13 @@ class MockBluetoothGattWrapper(setupMocks: Boolean = true) : BluetoothGattWrappe
 
     override fun requestMtu(mtu: Int): Boolean = requestMtuMock.call(mtu)
 
-    override fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean = readCharacteristicMock.call(wrapper)
+    override fun readCharacteristic(wrapper: RemoteCharacteristicWrapper): Boolean = readCharacteristicMock.call(wrapper)
 
-    override fun readDescriptor(wrapper: DescriptorWrapper): Boolean = readDescriptorMock.call(wrapper)
+    override fun readDescriptor(wrapper: RemoteDescriptorWrapper): Boolean = readDescriptorMock.call(wrapper)
 
-    override fun writeCharacteristic(wrapper: CharacteristicWrapper, value: ByteArray): Boolean = writeCharacteristicMock.call(wrapper, value)
+    override fun writeCharacteristic(wrapper: RemoteCharacteristicWrapper, value: ByteArray): Boolean = writeCharacteristicMock.call(wrapper, value)
 
-    override fun writeDescriptor(wrapper: DescriptorWrapper, value: ByteArray): Boolean = writeDescriptorMock.call(wrapper, value)
+    override fun writeDescriptor(wrapper: RemoteDescriptorWrapper, value: ByteArray): Boolean = writeDescriptorMock.call(wrapper, value)
 
-    override fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean = setCharacteristicNotificationMock.call(wrapper, enable)
+    override fun setCharacteristicNotification(wrapper: RemoteCharacteristicWrapper, enable: Boolean): Boolean = setCharacteristicNotificationMock.call(wrapper, enable)
 }

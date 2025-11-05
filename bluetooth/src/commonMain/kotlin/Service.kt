@@ -33,12 +33,12 @@ interface Service : Attribute {
 
 /**
  * A Bluetooth Service
- * @param service the [ServiceWrapper] to access the platform service
+ * @param service the [RemoteServiceWrapper] to access the platform service
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
  * @param logger the [ContextualLogger] to use for logging.
  */
 class RemoteService(
-    service: ServiceWrapper,
+    service: RemoteServiceWrapper,
     override val includedServices: List<RemoteService>,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     logger: ContextualLogger,
@@ -66,15 +66,15 @@ class RemoteService(
 /**
  * Accessor to the platform level Bluetooth service
  */
-expect interface ServiceWrapper {
+expect interface RemoteServiceWrapper {
     val type: Service.Type
 
-    val includedServices: List<ServiceWrapper>
+    val includedServices: List<RemoteServiceWrapper>
 
     /**
-     * The list of [CharacteristicWrapper] associated with the service
+     * The list of [RemoteCharacteristicWrapper] associated with the service
      */
-    val characteristics: List<CharacteristicWrapper>
+    val characteristics: List<RemoteCharacteristicWrapper>
 
     /**
      * The [UUID] of the service

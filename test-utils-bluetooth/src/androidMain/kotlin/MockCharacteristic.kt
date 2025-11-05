@@ -18,24 +18,21 @@
 package com.splendo.kaluga.test.bluetooth
 
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
-import com.splendo.kaluga.bluetooth.CharacteristicWrapper
-import com.splendo.kaluga.bluetooth.DescriptorWrapper
-import com.splendo.kaluga.bluetooth.ServiceWrapper
+import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
+import com.splendo.kaluga.bluetooth.RemoteDescriptorWrapper
+import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
 import java.util.UUID
 
 class AndroidMockCharacteristicWrapper(
     override val uuid: UUID = UUID.randomUUID(),
     descriptorUUIDs: List<UUID> = emptyList(),
-    override val service: ServiceWrapper,
+    override val service: RemoteServiceWrapper,
     override val properties: Set<CharacteristicProperty> = emptySet(),
 ) : MockCharacteristicWrapper {
 
     override var value: ByteArray? = null
-    override fun updateValue(value: ByteArray?) {
-        this.value = value
-    }
 
-    override val descriptors: List<DescriptorWrapper> = descriptorUUIDs.map {
+    override val descriptors: List<RemoteDescriptorWrapper> = descriptorUUIDs.map {
         AndroidMockDescriptorWrapper(
             it,
             this,
@@ -43,9 +40,7 @@ class AndroidMockCharacteristicWrapper(
     }
     override val permissions: Int
         get() = 0
-    override var writeType = CharacteristicWrapper.WriteType.DEFAULT
+    override var writeType = RemoteCharacteristicWrapper.WriteType.DEFAULT
 
-    override fun getDescriptor(uuid: UUID): DescriptorWrapper? = descriptors.firstOrNull { it.uuid == uuid }
-
-    override fun updateMockValue(value: ByteArray?) = updateValue(value)
+    override fun getDescriptor(uuid: UUID): RemoteDescriptorWrapper? = descriptors.firstOrNull { it.uuid == uuid }
 }

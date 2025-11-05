@@ -25,7 +25,7 @@ import platform.CoreBluetooth.CBUUID
 /**
  * Accessor to a [CBService]
  */
-actual interface ServiceWrapper {
+actual interface RemoteServiceWrapper {
 
     /**
      * The [UUID] of the service
@@ -34,19 +34,19 @@ actual interface ServiceWrapper {
 
     actual val type: Service.Type
 
-    actual val includedServices: List<ServiceWrapper>
+    actual val includedServices: List<RemoteServiceWrapper>
 
     /**
-     * The list of [CharacteristicWrapper] associated with the service
+     * The list of [RemoteCharacteristicWrapper] associated with the service
      */
-    actual val characteristics: List<CharacteristicWrapper>
+    actual val characteristics: List<RemoteCharacteristicWrapper>
 }
 
 /**
- * Default implementation of [ServiceWrapper]
+ * Default implementation of [RemoteServiceWrapper]
  * @param service the [CBService] to wrap
  */
-class DefaultServiceWrapper(service: CBService) : ServiceWrapper {
+class DefaultServiceWrapper(service: CBService) : RemoteServiceWrapper {
 
     override val uuid: CBUUID = service.UUID
     override val type: Service.Type = if (service.isPrimary) {
@@ -54,6 +54,6 @@ class DefaultServiceWrapper(service: CBService) : ServiceWrapper {
     } else {
         Service.Type.SECONDARY
     }
-    override val includedServices: List<ServiceWrapper> = service.includedServices.orEmpty().typedList<CBService>().map { DefaultServiceWrapper(it) }
-    override val characteristics: List<CharacteristicWrapper> = service.characteristics.orEmpty().typedList<CBCharacteristic>().map { DefaultCharacteristicWrapper(it) }
+    override val includedServices: List<RemoteServiceWrapper> = service.includedServices.orEmpty().typedList<CBService>().map { DefaultServiceWrapper(it) }
+    override val characteristics: List<RemoteCharacteristicWrapper> = service.characteristics.orEmpty().typedList<CBCharacteristic>().map { DefaultCharacteristicWrapper(it) }
 }

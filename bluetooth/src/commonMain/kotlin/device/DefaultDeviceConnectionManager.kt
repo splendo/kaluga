@@ -21,10 +21,9 @@ import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.RemoteCharacteristic
-import com.splendo.kaluga.bluetooth.RemoteDescriptor
 import com.splendo.kaluga.bluetooth.RemoteService
+import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.ContextualLogger
@@ -138,9 +137,9 @@ interface DeviceConnectionManager {
         /**
          * [Event] indicating the device completed executing a [DeviceAction]
          * @property action the [DeviceAction] that was executed
-         * @property succeeded if `true`, [action] completed successfully
+         * @property complete action to execute to complete the action. Returns 'true' if success.
          */
-        data class CompletedAction(val action: DeviceAction?, val succeeded: Boolean) : Event()
+        data class CompletedAction(val action: DeviceAction?, val succeeded: Boolean, val complete: () -> Unit) : Event()
     }
 
     /**
@@ -276,7 +275,9 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
         val action = currentAction
         if (action is DeviceAction.RequestMtu) {
             action.mtuResponse = mtu
-            handleCurrentActionCompleted(succeeded)
+            action.handleActionCompleted(succeeded) {
+                action.complete(succeeded)
+            }
         }
     }
 
@@ -321,7 +322,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
     protected abstract suspend fun requestStartUnpairing()
 
-    protected open fun createService(wrapper: ServiceWrapper): RemoteService = RemoteService(
+    protected fun createService(wrapper: RemoteServiceWrapper): RemoteService = RemoteService(
         wrapper,
         wrapper.includedServices.map { createService(it) },
         ::emitEvent,
@@ -330,7 +331,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
 
     final override fun handleDisconnect(onDisconnect: (suspend () -> Unit)?) {
         val currentAction = this.currentAction
-        currentAction?.completedSuccessfully?.cancel()
+        currentAction?.fail()
         val notifyingCharacteristics = this.notifyingCharacteristics
         val clean = suspend {
             this.currentAction = null
@@ -354,81 +355,82 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     }
 
     @JvmName("handleDiscoverWrappersCompleted")
-    internal fun handleDiscoverCompleted(serviceWrappers: List<ServiceWrapper>) = handleDiscoverCompleted(serviceWrappers.map { createService(it) })
+    internal fun handleDiscoverCompleted(serviceWrappers: List<RemoteServiceWrapper>) = handleDiscoverCompleted(serviceWrappers.map { createService(it) })
 
-    protected open fun handleDiscoverCompleted(services: List<RemoteService>) {
+    protected fun handleDiscoverCompleted(services: List<RemoteService>) {
         logger.info { "Discovered services: ${services.map { it.uuid.uuidString }}" }
         emitEvent(DeviceConnectionManager.Event.DiscoveredServices(services))
     }
 
-    protected open fun handleCurrentActionCompleted(succeeded: Boolean) {
-        val currentAction = this.currentAction
-        this.currentAction = null
-        if (currentAction != null) {
-            if (succeeded) {
-                logger.info { "Completed $currentAction successfully" }
-            } else {
-                logger.error { "Failed to complete $currentAction" }
-            }
+    protected fun DeviceAction.handleActionCompleted(succeeded: Boolean, complete: () -> Unit) {
+        handleActionCompleted(succeeded, this)
+        currentAction = null
+        if (succeeded) {
+            logger.info { "Completed $this successfully" }
+        } else {
+            logger.error { "Failed to complete $this" }
         }
-        emitEvent(DeviceConnectionManager.Event.CompletedAction(currentAction, succeeded))
+        emitEvent(DeviceConnectionManager.Event.CompletedAction(this, succeeded, complete))
     }
 
-    protected open fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((RemoteCharacteristic) -> Unit)? = null) {
-        notifyingCharacteristics[uuid.uuidString]?.let {
-            onUpdate?.invoke(it)
-            it.updateValue()
-        }
-        val characteristicToUpdate = when (val action = currentAction) {
-            is DeviceAction.Read.Characteristic -> {
-                if (action.characteristic.uuid.uuidString == uuid.uuidString) {
-                    action.characteristic
-                } else {
-                    null
-                }
-            }
-            is DeviceAction.Write.Characteristic -> {
-                if (action.characteristic.uuid.uuidString == uuid.uuidString) {
-                    action.characteristic
-                } else {
-                    null
-                }
-            }
-            else -> null
-        }
+    protected open fun handleActionCompleted(succeeded: Boolean, deviceAction: DeviceAction) {}
 
-        characteristicToUpdate?.let {
-            onUpdate?.invoke(it)
-            it.updateValue()
-            handleCurrentActionCompleted(succeeded)
+    protected fun DeviceAction.Notification.handleNotificationStateChanged(succeeded: Boolean) {
+        val uuid = characteristic.uuid.uuidString
+        when (this) {
+            is DeviceAction.Notification.Enable -> notifyingCharacteristics[uuid] = characteristic
+            is DeviceAction.Notification.Disable -> notifyingCharacteristics.remove(uuid)
+        }
+        handleActionCompleted(succeeded) {
+            complete(succeeded)
         }
     }
 
-    protected open fun handleUpdatedDescriptor(uuid: UUID, succeeded: Boolean, onUpdate: ((RemoteDescriptor) -> Unit)? = null) {
-        val descriptorToUpdate = when (val action = currentAction) {
-            is DeviceAction.Read.Descriptor -> {
-                if (action.descriptor.uuid.uuidString == uuid.uuidString) {
-                    action.descriptor
-                } else {
-                    null
-                }
+    protected fun handleCharacteristicReadOrNotified(uuid: UUID, result: DeviceAction.Read.Result) {
+        val success = when (result) {
+            is DeviceAction.Read.Result.Success -> {
+                notifyingCharacteristics[uuid.uuidString]?.notify(result.value)
+                true
             }
-            is DeviceAction.Write.Descriptor -> {
-                if (action.descriptor.uuid.uuidString == uuid.uuidString) {
-                    action.descriptor
-                } else {
-                    null
-                }
-            }
-            else -> {
-                null
+            is DeviceAction.Read.Result.Failure -> {
+                false
             }
         }
 
-        descriptorToUpdate?.let {
-            onUpdate?.invoke(it)
-            it.updateValue()
-            handleCurrentActionCompleted(succeeded)
+        val action = currentAction
+        if (action is DeviceAction.Read.Characteristic && action.characteristic.uuid.uuidString == uuid.uuidString) {
+            action.handleActionCompleted(success) {
+                action.complete(result)
+            }
+        }
+    }
+
+    protected fun handleCharacteristicWritten(uuid: UUID, succeeded: Boolean) {
+        val action = currentAction
+        if (action is DeviceAction.Write.Characteristic && action.characteristic.uuid.uuidString == uuid.uuidString) {
+            action.handleActionCompleted(succeeded) {
+                action.complete(succeeded)
+            }
+        }
+    }
+
+    protected fun handleDescriptorRead(uuid: UUID, result: DeviceAction.Read.Result) {
+        val success = result is DeviceAction.Read.Result.Success
+
+        val action = currentAction
+        if (action is DeviceAction.Read.Descriptor && action.descriptor.uuid.uuidString == uuid.uuidString) {
+            action.handleActionCompleted(success) {
+                action.complete(result)
+            }
+        }
+    }
+
+    protected fun handleDescriptorWritten(uuid: UUID, succeeded: Boolean) {
+        val action = currentAction
+        if (action is DeviceAction.Write.Descriptor && action.descriptor.uuid.uuidString == uuid.uuidString) {
+            action.handleActionCompleted(succeeded) {
+                action.complete(succeeded)
+            }
         }
     }
 

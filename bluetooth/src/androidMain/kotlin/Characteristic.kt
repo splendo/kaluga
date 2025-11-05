@@ -22,7 +22,7 @@ import android.bluetooth.BluetoothGattCharacteristic
 /**
  * Accessor to a [BluetoothGattCharacteristic]
  */
-actual interface CharacteristicWrapper {
+actual interface RemoteCharacteristicWrapper {
 
     /**
      * The write type of a characteristic
@@ -50,25 +50,14 @@ actual interface CharacteristicWrapper {
     actual val uuid: java.util.UUID
 
     /**
-     * The current [Value] of the characteristic
+     * The [RemoteServiceWrapper] of the Service of the [BluetoothGattCharacteristic]
      */
-    actual val value: ByteArray?
+    actual val service: RemoteServiceWrapper
 
     /**
-     * Accessor for updating [CharacteristicWrapper.value]
-     * @param value the [ByteArray] to update [CharacteristicWrapper.value] with
+     * The list of [RemoteDescriptorWrapper] of associated with the characteristic
      */
-    fun updateValue(value: ByteArray?)
-
-    /**
-     * The [ServiceWrapper] of the Service of the [BluetoothGattCharacteristic]
-     */
-    actual val service: ServiceWrapper
-
-    /**
-     * The list of [DescriptorWrapper] of associated with the characteristic
-     */
-    actual val descriptors: List<DescriptorWrapper>
+    actual val descriptors: List<RemoteDescriptorWrapper>
 
     /**
      * The integer representing all permissions for the characteristic
@@ -86,35 +75,29 @@ actual interface CharacteristicWrapper {
     var writeType: WriteType
 
     /**
-     * Gets the [DescriptorWrapper] for the descriptor with a given [java.util.UUID] if it belongs to the characteristic
+     * Gets the [RemoteDescriptorWrapper] for the descriptor with a given [java.util.UUID] if it belongs to the characteristic
      * @param uuid the [java.util.UUID] of the descriptor to get
-     * @return the [DescriptorWrapper] belonging to [uuid] if it exists, or `null` otherwise
+     * @return the [RemoteDescriptorWrapper] belonging to [uuid] if it exists, or `null` otherwise
      */
-    fun getDescriptor(uuid: java.util.UUID): DescriptorWrapper?
+    fun getDescriptor(uuid: java.util.UUID): RemoteDescriptorWrapper?
 }
 
 /**
- * Default implementation of [CharacteristicWrapper]
+ * Default implementation of [RemoteCharacteristicWrapper]
  * @param gattCharacteristic the [BluetoothGattCharacteristic] to wrap
  */
-class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGattCharacteristic) : CharacteristicWrapper {
+class DefaultRemoteCharacteristicWrapper(private val gattCharacteristic: BluetoothGattCharacteristic) : RemoteCharacteristicWrapper {
 
     override val uuid: java.util.UUID
         get() {
             return gattCharacteristic.uuid
         }
-    override var value: ByteArray? = null
-        private set
 
-    override fun updateValue(value: ByteArray?) {
-        this.value = value
-    }
-
-    override val service: ServiceWrapper
+    override val service: RemoteServiceWrapper
         get() = DefaultGattServiceWrapper(gattCharacteristic.service)
-    override val descriptors: List<DescriptorWrapper>
+    override val descriptors: List<RemoteDescriptorWrapper>
         get() {
-            return gattCharacteristic.descriptors.map { DefaultDescriptorWrapper(it) }
+            return gattCharacteristic.descriptors.map { DefaultRemoteDescriptorWrapper(it) }
         }
     override val permissions: Int
         get() {
@@ -124,15 +107,15 @@ class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGatt
         get() {
             return CharacteristicProperty.fromInt(gattCharacteristic.properties)
         }
-    override var writeType: CharacteristicWrapper.WriteType
+    override var writeType: RemoteCharacteristicWrapper.WriteType
         get() = when (gattCharacteristic.writeType) {
-            BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE -> CharacteristicWrapper.WriteType.NO_RESPONSE
-            BluetoothGattCharacteristic.WRITE_TYPE_SIGNED -> CharacteristicWrapper.WriteType.SIGNED
-            else -> CharacteristicWrapper.WriteType.DEFAULT
+            BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE -> RemoteCharacteristicWrapper.WriteType.NO_RESPONSE
+            BluetoothGattCharacteristic.WRITE_TYPE_SIGNED -> RemoteCharacteristicWrapper.WriteType.SIGNED
+            else -> RemoteCharacteristicWrapper.WriteType.DEFAULT
         }
         set(value) {
             gattCharacteristic.writeType = value.rawValue
         }
 
-    override fun getDescriptor(uuid: java.util.UUID): DescriptorWrapper? = gattCharacteristic.getDescriptor(uuid)?.let { DefaultDescriptorWrapper(it) }
+    override fun getDescriptor(uuid: java.util.UUID): RemoteDescriptorWrapper? = gattCharacteristic.getDescriptor(uuid)?.let { DefaultRemoteDescriptorWrapper(it) }
 }

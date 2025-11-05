@@ -21,14 +21,15 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
-import com.splendo.kaluga.bluetooth.CharacteristicWrapper
-import com.splendo.kaluga.bluetooth.DefaultCharacteristicWrapper
+import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
+import com.splendo.kaluga.bluetooth.DefaultRemoteCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.bluetooth.ServiceWrapper
+import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
 import java.util.UUID
 
-class MockServiceWrapper(override val uuid: UUID = UUID.randomUUID(), initialCharacteristics: List<ServiceWrapperBuilder.Characteristic> = emptyList()) : ServiceWrapper {
+class MockRemoteServiceWrapper(override val uuid: UUID = UUID.randomUUID(), initialCharacteristics: List<ServiceWrapperBuilder.Characteristic> = emptyList()) :
+    RemoteServiceWrapper {
 
     constructor(builder: ServiceWrapperBuilder) : this(
         builder.uuid,
@@ -37,7 +38,7 @@ class MockServiceWrapper(override val uuid: UUID = UUID.randomUUID(), initialCha
 
     override val type: Service.Type = Service.Type.PRIMARY
     override val instanceId: Int = 0
-    private val mutableCharacteristics = concurrentMutableListOf<CharacteristicWrapper>(
+    private val mutableCharacteristics = concurrentMutableListOf<RemoteCharacteristicWrapper>(
         *initialCharacteristics.map {
             AndroidMockCharacteristicWrapper(
                 uuid = it.uuid,
@@ -47,16 +48,16 @@ class MockServiceWrapper(override val uuid: UUID = UUID.randomUUID(), initialCha
             )
         }.toTypedArray(),
     )
-    override val characteristics: List<CharacteristicWrapper>
+    override val characteristics: List<RemoteCharacteristicWrapper>
         get() = mutableCharacteristics
-    private val mutableIncludedServices = concurrentMutableListOf<ServiceWrapper>()
-    override val includedServices: List<ServiceWrapper>
+    private val mutableIncludedServices = concurrentMutableListOf<RemoteServiceWrapper>()
+    override val includedServices: List<RemoteServiceWrapper>
         get() = mutableIncludedServices
 
-    override fun getCharacteristic(uuid: UUID): CharacteristicWrapper? = characteristics.firstOrNull { it.uuid == uuid }
+    override fun getCharacteristic(uuid: UUID): RemoteCharacteristicWrapper? = characteristics.firstOrNull { it.uuid == uuid }
 
     override fun addCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean {
-        mutableCharacteristics.add(DefaultCharacteristicWrapper(characteristic))
+        mutableCharacteristics.add(DefaultRemoteCharacteristicWrapper(characteristic))
         return true
     }
 

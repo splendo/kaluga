@@ -19,14 +19,9 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.bluetooth.extensions.printableString
 import com.splendo.kaluga.logging.ContextualLogger
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
@@ -46,21 +41,13 @@ operator fun <T : Attribute> Flow<List<T>>.get(uuid: UUID): Flow<T?> = this.map 
  * A bluetooth attribute conforming to the Attribute Protocol in Bluetooth Low Energy
  * @param ReadAction the [DeviceAction.Read] associated with the attribute
  * @param WriteAction the [DeviceAction.Write] associated with the attribute
- * @param initialValue the initial [ByteArray] value of the attribute
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
  * @param logger the [ContextualLogger] to use for logging.
  */
 abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write>(
-    initialValue: ByteArray? = null,
     private val emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
     private val logger: ContextualLogger,
-) : Flow<ByteArray?>,
-    Attribute {
-
-    override suspend fun collect(collector: FlowCollector<ByteArray?>) = sharedFlow.collect(collector)
-
-    // TODO make configurable
-    private val sharedFlow = MutableSharedFlow<ByteArray?>(0, 256, BufferOverflow.DROP_OLDEST).also { it.tryEmit(initialValue) }
+) : Attribute {
 
     /**
      * Creates and emits a [ReadAction]
@@ -86,17 +73,6 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
     }
 
     internal abstract fun createWriteAction(newValue: ByteArray): WriteAction
-
-    /**
-     * Notifies the attribute that a new value may be available
-     */
-    open fun updateValue() {
-        val nextValue = getUpdatedValue()
-        logger.debug { "Updated value to ${nextValue?.printableString}" }
-        sharedFlow.tryEmit(nextValue)
-    }
-
-    internal abstract fun getUpdatedValue(): ByteArray?
 
     protected fun addAction(action: DeviceAction) {
         logger.info { "Add action $action" }

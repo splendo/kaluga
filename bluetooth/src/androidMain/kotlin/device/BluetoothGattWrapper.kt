@@ -22,8 +22,8 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothStatusCodes
-import com.splendo.kaluga.bluetooth.CharacteristicWrapper
-import com.splendo.kaluga.bluetooth.DescriptorWrapper
+import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
+import com.splendo.kaluga.bluetooth.RemoteDescriptorWrapper
 import com.splendo.kaluga.bluetooth.MTU
 
 /**
@@ -67,42 +67,42 @@ interface BluetoothGattWrapper {
     fun requestMtu(mtu: MTU): Boolean
 
     /**
-     * Reads the value of the [CharacteristicWrapper] from the device
-     * @param wrapper the [CharacteristicWrapper] to read from
+     * Reads the value of the [RemoteCharacteristicWrapper] from the device
+     * @param wrapper the [RemoteCharacteristicWrapper] to read from
      * @return `true` if the read operation was initiated successfully
      */
-    fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean
+    fun readCharacteristic(wrapper: RemoteCharacteristicWrapper): Boolean
 
     /**
      * Reads the value of the [DeviceWrapper] from the device
      * @param wrapper the [DeviceWrapper] to read from
      * @return `true` if the read operation was initiated successfully
      */
-    fun readDescriptor(wrapper: DescriptorWrapper): Boolean
+    fun readDescriptor(wrapper: RemoteDescriptorWrapper): Boolean
 
     /**
-     * Writes a value to the [CharacteristicWrapper] from the device
-     * @param wrapper the [CharacteristicWrapper] to write to
+     * Writes a value to the [RemoteCharacteristicWrapper] from the device
+     * @param wrapper the [RemoteCharacteristicWrapper] to write to
      * @param value the [ByteArray] to write
      * @return `true` if the write operation was initiated successfully
      */
-    fun writeCharacteristic(wrapper: CharacteristicWrapper, value: ByteArray): Boolean
+    fun writeCharacteristic(wrapper: RemoteCharacteristicWrapper, value: ByteArray): Boolean
 
     /**
-     * Writes a value to the [DescriptorWrapper] from the device
-     * @param wrapper the [DescriptorWrapper] to write to
+     * Writes a value to the [RemoteDescriptorWrapper] from the device
+     * @param wrapper the [RemoteDescriptorWrapper] to write to
      * @param value the [ByteArray] to write
      * @return `true` if the write operation was initiated successfully
      */
-    fun writeDescriptor(wrapper: DescriptorWrapper, value: ByteArray): Boolean
+    fun writeDescriptor(wrapper: RemoteDescriptorWrapper, value: ByteArray): Boolean
 
     /**
-     * Enable or disable notifications for a given [CharacteristicWrapper]
-     * @param wrapper the [CharacteristicWrapper] to enable/disable notifications for
+     * Enable or disable notifications for a given [RemoteCharacteristicWrapper]
+     * @param wrapper the [RemoteCharacteristicWrapper] to enable/disable notifications for
      * @param enable if `true` notifications should be enabled
      * @return `true` if the requested notification status was set successfully
      */
-    fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean
+    fun setCharacteristicNotification(wrapper: RemoteCharacteristicWrapper, enable: Boolean): Boolean
 }
 
 /**
@@ -128,17 +128,17 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
 
     override fun requestMtu(mtu: MTU): Boolean = gatt.requestMtu(mtu)
 
-    override fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean {
+    override fun readCharacteristic(wrapper: RemoteCharacteristicWrapper): Boolean {
         val characteristic = getCharacteristic(wrapper) ?: return false
         return gatt.readCharacteristic(characteristic)
     }
 
-    override fun readDescriptor(wrapper: DescriptorWrapper): Boolean {
+    override fun readDescriptor(wrapper: RemoteDescriptorWrapper): Boolean {
         val descriptor = getDescriptor(wrapper) ?: return false
         return gatt.readDescriptor(descriptor)
     }
 
-    override fun writeCharacteristic(wrapper: CharacteristicWrapper, value: ByteArray): Boolean {
+    override fun writeCharacteristic(wrapper: RemoteCharacteristicWrapper, value: ByteArray): Boolean {
         val characteristic = getCharacteristic(wrapper) ?: return false
         return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             gatt.writeCharacteristic(characteristic, value, characteristic.writeType) == BluetoothStatusCodes.SUCCESS
@@ -150,7 +150,7 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
         }
     }
 
-    override fun writeDescriptor(wrapper: DescriptorWrapper, value: ByteArray): Boolean {
+    override fun writeDescriptor(wrapper: RemoteDescriptorWrapper, value: ByteArray): Boolean {
         val descriptor = getDescriptor(wrapper) ?: return false
         return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             gatt.writeDescriptor(descriptor, value) == BluetoothStatusCodes.SUCCESS
@@ -162,12 +162,12 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
         }
     }
 
-    override fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean {
+    override fun setCharacteristicNotification(wrapper: RemoteCharacteristicWrapper, enable: Boolean): Boolean {
         val characteristic = getCharacteristic(wrapper) ?: return false
         return gatt.setCharacteristicNotification(characteristic, enable)
     }
 
-    private fun getCharacteristic(wrapper: CharacteristicWrapper): BluetoothGattCharacteristic? = gatt.getService(wrapper.service.uuid)?.getCharacteristic(wrapper.uuid)
+    private fun getCharacteristic(wrapper: RemoteCharacteristicWrapper): BluetoothGattCharacteristic? = gatt.getService(wrapper.service.uuid)?.getCharacteristic(wrapper.uuid)
 
-    private fun getDescriptor(wrapper: DescriptorWrapper): BluetoothGattDescriptor? = getCharacteristic(wrapper.characteristic)?.getDescriptor(wrapper.uuid)
+    private fun getDescriptor(wrapper: RemoteDescriptorWrapper): BluetoothGattDescriptor? = getCharacteristic(wrapper.characteristic)?.getDescriptor(wrapper.uuid)
 }

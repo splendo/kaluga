@@ -22,7 +22,7 @@ import android.bluetooth.BluetoothGattDescriptor
 /**
  * Accessor to a [BluetoothGattDescriptor]
  */
-actual interface DescriptorWrapper {
+actual interface RemoteDescriptorWrapper {
 
     /**
      * The [UUID] of the descriptor
@@ -30,42 +30,26 @@ actual interface DescriptorWrapper {
     actual val uuid: java.util.UUID
 
     /**
-     * The current [Value] of the descriptor
-     */
-    actual val value: ByteArray?
-
-    /**
-     * Accessor for updating [DescriptorWrapper.value]
-     * @param value the [ByteArray] to update [DescriptorWrapper.value] with
-     */
-    fun updateValue(value: ByteArray?)
-
-    /**
      * The integer representing all permissions for the descriptor
      */
     val permissions: Int
 
     /**
-     * The [CharacteristicWrapper] of the Descriptor of the [BluetoothGattDescriptor]
+     * The [RemoteCharacteristicWrapper] of the Descriptor of the [BluetoothGattDescriptor]
      */
-    actual val characteristic: CharacteristicWrapper
+    actual val characteristic: RemoteCharacteristicWrapper
 }
 
 /**
- * Default implementation of [DescriptorWrapper]
+ * Default implementation of [RemoteDescriptorWrapper]
  * @param gattDescriptor the [BluetoothGattDescriptor] to wrap
  */
-class DefaultDescriptorWrapper(private val gattDescriptor: BluetoothGattDescriptor) : DescriptorWrapper {
+class DefaultRemoteDescriptorWrapper(private val gattDescriptor: BluetoothGattDescriptor) : RemoteDescriptorWrapper {
 
     override val uuid: java.util.UUID
         get() = gattDescriptor.uuid
-    override var value: ByteArray? = null
-        private set
-    override fun updateValue(value: ByteArray?) {
-        this.value = value
-    }
     override val permissions: Int
         get() = gattDescriptor.permissions
-    override val characteristic: CharacteristicWrapper
-        get() = DefaultCharacteristicWrapper(gattDescriptor.characteristic)
+    override val characteristic: RemoteCharacteristicWrapper
+        get() = DefaultRemoteCharacteristicWrapper(gattDescriptor.characteristic)
 }
