@@ -23,6 +23,7 @@ import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
@@ -39,6 +40,9 @@ import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.client.BluetoothDeviceListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.client.BluetoothDeviceViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.client.DeviceDetails
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.server.BluetoothServerViewModel
 import com.splendo.kaluga.example.shared.viewmodel.compose.ComposeOrXMLNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.compose.ComposeOrXMLSelectionViewModel
@@ -191,11 +195,18 @@ internal val androidModule = module {
     }
 
     viewModel { (navigator: Navigator<BluetoothListNavigationAction>) ->
-        BluetoothListViewModel( navigator)
+        BluetoothListViewModel(navigator)
     }
-
     viewModel {
         BluetoothServerViewModel(AlertPresenter.Builder())
+    }
+
+    viewModel { (navigator: Navigator<DeviceDetails>) ->
+        BluetoothDeviceListViewModel(AlertPresenter.Builder(), navigator)
+    }
+
+    viewModel { (identifier: Identifier) ->
+        BluetoothDeviceViewModel(identifier)
     }
 
     viewModel {

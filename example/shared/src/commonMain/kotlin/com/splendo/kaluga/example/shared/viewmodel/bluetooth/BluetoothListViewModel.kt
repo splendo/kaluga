@@ -22,7 +22,7 @@ enum class Bluetooth(private val titleKey: String) {
 
 class BluetoothListViewModel(navigator: Navigator<BluetoothListNavigationAction>) : NavigatingViewModel<BluetoothListNavigationAction>(navigator) {
 
-    val resources = observableOf(Bluetooth.entries)
+    val bluetooth = observableOf(Bluetooth.entries)
 
     fun onBluetoothSelected(resource: Bluetooth) {
         navigator.navigate(

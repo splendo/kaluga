@@ -18,14 +18,12 @@
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth.server
 
 import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
-import com.splendo.kaluga.base.utils.ByteArrayBuilder
 import com.splendo.kaluga.base.utils.buildByteArray
 import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
@@ -57,16 +55,12 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import kotlin.time.Duration.Companion.seconds
 
-class BluetoothServerViewModel(
-    private val alertPresenter: BaseAlertPresenter.Builder,
-) : BaseLifecycleViewModel(), KoinComponent {
+class BluetoothServerViewModel(private val alertPresenter: BaseAlertPresenter.Builder) :
+    BaseLifecycleViewModel(),
+    KoinComponent {
 
     companion object {
-        fun generateHeartRateMeasurement(
-            heartRate: Int,
-            energyExpended: Int,
-            sensorContactDetected: Boolean
-        ): ByteArray = buildByteArray {
+        fun generateHeartRateMeasurement(heartRate: Int, energyExpended: Int, sensorContactDetected: Boolean): ByteArray = buildByteArray {
             require(heartRate in 0..65535) { "Heart rate must be 0..65535" }
 
             add(heartRate > UByte.MAX_VALUE.toInt())
@@ -93,9 +87,9 @@ class BluetoothServerViewModel(
 
     val bluetoothServer = coroutineScope.async {
         get<BluetoothBuilder>().createServer(
-            settingsBuilder =  { permissions ->
+            settingsBuilder = { permissions ->
                 ServerSettings(permissions, autoRequestPermission = true, autoEnableBluetooth = true)
-            }
+            },
         ) {
             advertise {
                 localName = "Kaluga Bluetooth Server"
@@ -145,7 +139,7 @@ class BluetoothServerViewModel(
         heartRate.update {
             maxOf(
                 400(BeatsPerMinute),
-            it + 10(BeatsPerMinute),
+                it + 10(BeatsPerMinute),
             )
         }
     }
@@ -168,7 +162,7 @@ class BluetoothServerViewModel(
     }.toInitializedObservable(KalugaLabel.Plain("", TextStyles.defaultText), coroutineScope)
 
     val positionPicker = position.map { position ->
-        KalugaButton.Plain( position?.let { "$it" } ?: "Select Position", ButtonStyles.default) {
+        KalugaButton.Plain(position?.let { "$it" } ?: "Select Position", ButtonStyles.default) {
             coroutineScope.launch {
                 val sensorActions = BluetoothSpec.SensorLocation.entries.associateBy { Alert.Action(it.name) }
                 val detachAction = Alert.Action("Detach", Alert.Action.Style.DESTRUCTIVE).takeIf { position != null }
@@ -194,6 +188,4 @@ class BluetoothServerViewModel(
         bluetoothServer.getCompletedOrNull()?.close()
         super.onCleared()
     }
-
-
 }

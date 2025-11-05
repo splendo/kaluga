@@ -25,7 +25,6 @@ import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.base.utils.ByteOrder
-import com.splendo.kaluga.base.utils.ByteUtils
 import com.splendo.kaluga.base.utils.decodeUShort
 import com.splendo.kaluga.base.utils.isBitSet
 import com.splendo.kaluga.bluetooth.Bluetooth
@@ -37,6 +36,7 @@ import com.splendo.kaluga.bluetooth.device.SerializableIdentifier
 import com.splendo.kaluga.bluetooth.device.bind
 import com.splendo.kaluga.bluetooth.device.serializable
 import com.splendo.kaluga.bluetooth.device.stringValue
+import com.splendo.kaluga.bluetooth.disconnect
 import com.splendo.kaluga.bluetooth.distance
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.info
@@ -53,8 +53,9 @@ import com.splendo.kaluga.scientific.formatter.CommonScientificValueFormatter
 import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.BeatsPerMinute
 import com.splendo.kaluga.scientific.unit.Kilojoule
-import com.splendo.kaluga.scientific.unit.Units
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -70,7 +71,7 @@ class DeviceDetails(value: Identifier) :
         NavigationBundleSpecType.SerializedType(SerializableIdentifier.serializer()),
     )
 
-class BluetoothDeviceViewModel(private val identifier: Identifier) :
+class BluetoothDeviceViewModel(identifier: Identifier) :
     BaseLifecycleViewModel(),
     KoinComponent {
 
@@ -92,9 +93,11 @@ class BluetoothDeviceViewModel(private val identifier: Identifier) :
         val heartRate = heartRateState.map { KalugaLabel.Plain(formatter.format(it), TextStyles.redText) }
             .toInitializedObservable(KalugaLabel.Plain(formatter.format(heartRateState.value), TextStyles.redText), coroutineScope)
 
-
         private val energyExpendedState = MutableStateFlow(Double.NaN(Kilojoule))
         val isEnergyExpendedVisible = energyExpendedState.map { value -> value.value.isFinite() }.toInitializedObservable(false, coroutineScope)
+        val energyExpended = energyExpendedState.map {
+            KalugaLabel.Plain(formatter.format(it), TextStyles.defaultText)
+        }.toInitializedObservable(KalugaLabel.Plain("", TextStyles.defaultText), coroutineScope)
 
         private val isPositionVisibleState = MutableStateFlow(false)
         val isPositionVisible = isPositionVisibleState.toInitializedObservable(false, coroutineScope)
@@ -104,8 +107,8 @@ class BluetoothDeviceViewModel(private val identifier: Identifier) :
 
         val resetEnergyExpandedButton =
             KalugaButton.Plain("Reset Energy Expended", ButtonStyles.default) {
-            requestReset.tryEmit(Unit)
-        }
+                requestReset.tryEmit(Unit)
+            }
 
         val refreshPositionButton = KalugaButton.Plain("Refresh", ButtonStyles.default) {
             requestPositionUpdate.tryEmit(Unit)
@@ -172,6 +175,13 @@ class BluetoothDeviceViewModel(private val identifier: Identifier) :
                 device.updateRssi()
                 delay(RSSI_FREQUENCY)
             }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        CoroutineScope(Dispatchers.IO).launch {
+            device.disconnect()
         }
     }
 }

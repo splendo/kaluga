@@ -19,6 +19,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.example
 
 import android.os.Bundle
+import androidx.core.view.WindowCompat
 import com.google.android.material.tabs.TabLayout
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
