@@ -20,12 +20,11 @@ package com.splendo.kaluga.test.bluetooth
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
-import com.splendo.kaluga.bluetooth.CharacteristicProperty
-import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
-import com.splendo.kaluga.bluetooth.DefaultRemoteCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
-import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.DefaultRemoteCharacteristicWrapper
+import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
+import com.splendo.kaluga.bluetooth.Service
 import java.util.UUID
 
 class MockRemoteServiceWrapper(override val uuid: UUID = UUID.randomUUID(), initialCharacteristics: List<ServiceWrapperBuilder.Characteristic> = emptyList()) :
@@ -43,7 +42,7 @@ class MockRemoteServiceWrapper(override val uuid: UUID = UUID.randomUUID(), init
             AndroidMockCharacteristicWrapper(
                 uuid = it.uuid,
                 descriptorUUIDs = it.descriptorUUIDs,
-                properties = CharacteristicProperty.fromInt(it.properties),
+                properties = it.properties,
                 service = this,
             )
         }.toTypedArray(),

@@ -18,18 +18,20 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
+import com.splendo.kaluga.bluetooth.server.GattResponse
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
-import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.yieldMultiple
 import com.splendo.kaluga.test.bluetooth.MockCharacteristicWrapper
 import com.splendo.kaluga.test.bluetooth.device.MockAdvertisementData
+import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager.ActionCompleted
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
@@ -192,7 +194,7 @@ class DeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithD
         }
 
         test {
-            val captor = AnyOrNullCaptor<DeviceAction>()
+            val captor = AnyOrNullCaptor<DeviceAction<*>>()
             connectionManager.performActionMock.verify(captor)
             assertIs<DeviceAction.Read.Characteristic>(captor.lastCaptured)
             assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
@@ -216,13 +218,18 @@ class DeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithD
             (characteristic.wrapper as MockCharacteristicWrapper).updateValue(byteArrayOf(0x01))
             connectionManager.handleCurrentAction()
             yieldMultiple(2)
-            val captor = AnyOrNullCaptor<DeviceAction>()
-            connectionManager.handleCurrentActionCompletedMock.verify(eq(true), captor)
-            assertIs<DeviceAction.Read.Characteristic>(captor.lastCaptured)
+            val captor = AnyOrNullCaptor<ActionCompleted<*>>()
+            connectionManager.handleCurrentActionCompletedMock.verify(captor)
+            val lastCaptured = captor.lastCaptured!!
+            val response = lastCaptured.response
+            assertIs<GattResponse.ReadSuccess>(response)
+            assertIs<GattResponse.ReadSuccess>(response)
+            assertContentEquals(byteArrayOf(0x01), response.value)
+            assertIs<DeviceAction.Read.Characteristic>(lastCaptured.action)
         }
 
         test {
-            val captor = AnyOrNullCaptor<DeviceAction>()
+            val captor = AnyOrNullCaptor<DeviceAction<*>>()
             connectionManager.performActionMock.verify(captor, 2)
             assertIs<DeviceAction.Write.Descriptor>(captor.lastCaptured)
             assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
@@ -233,9 +240,10 @@ class DeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithD
         mainAction {
             connectionManager.handleCurrentAction()
             yieldMultiple(2)
-            val captor = AnyOrNullCaptor<DeviceAction>()
-            connectionManager.handleCurrentActionCompletedMock.verify(eq(true), captor, 2)
-            assertIs<DeviceAction.Write.Descriptor>(captor.lastCaptured)
+            val captor = AnyOrNullCaptor<ActionCompleted<*>>()
+            connectionManager.handleCurrentActionCompletedMock.verify(captor, 2)
+            assertIs<GattResponse.WriteSuccess>(captor.lastCaptured?.response)
+            assertIs<DeviceAction.Write.Descriptor>(captor.lastCaptured?.action)
         }
 
         test {

@@ -18,8 +18,10 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
+import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.bluetooth.server.GattResponse
 import com.splendo.kaluga.logging.ContextualLogger
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CompletableDeferred
@@ -53,9 +55,9 @@ open class RemoteCharacteristic(
     class Subscription(
         internal val onUpdate: (ByteArray) -> Unit,
         private val onUnsubscribe: suspend Subscription.() -> DeviceAction.Notification?,
-        val hasSubscribedSuccessfully: Deferred<Boolean>,
+        val hasSubscribedSuccessfully: Deferred<GattResponse.WriteResponse>,
     ) {
-        suspend fun unsubscribe(): Deferred<Boolean> = onUnsubscribe()?.completedSuccessfully ?: CompletableDeferred(true)
+        suspend fun unsubscribe(): Deferred<GattResponse.WriteResponse> = onUnsubscribe()?.completedSuccessfully ?: CompletableDeferred(GattResponse.WriteSuccess)
     }
 
     private val isBusy = MutableStateFlow(false)
@@ -86,7 +88,7 @@ open class RemoteCharacteristic(
     suspend fun subscribe(onUpdate: (ByteArray) -> Unit): Subscription = Subscription(
         onUpdate,
         { unsubscribe(this) },
-        enableNotification()?.completedSuccessfully ?: CompletableDeferred(true),
+        enableNotification()?.completedSuccessfully ?: CompletableDeferred(GattResponse.WriteSuccess),
     ).also { subscription ->
         lastKnownValue?.let {
             subscription.onUpdate(it)
@@ -94,25 +96,29 @@ open class RemoteCharacteristic(
         subscriptions.add(subscription)
     }
 
-    private suspend fun enableNotification(): DeviceAction.Notification? {
+    suspend fun enableNotification(): DeviceAction.Notification? {
         do {
             isBusy.first { !it }
             if (isNotifying) return null
         } while (!isBusy.compareAndSet(expect = false, update = true))
 
         val action = createNotificationAction(enabled = true)
-        addAction(action)
-        action.completedSuccessfully.invokeOnCompletion {
-            if (it == null && action.completedSuccessfully.getCompleted()) {
-                isNotifying = true
+        if (hasAnyProperty(setOf(CharacteristicProperty.Notify, CharacteristicProperty.Indicate))) {
+            addAction(action)
+            action.completedSuccessfully.invokeOnCompletion {
+                if (it == null && action.completedSuccessfully.getCompleted() is GattResponse.WriteSuccess) {
+                    isNotifying = true
+                }
+                isBusy.compareAndSet(expect = true, update = false)
             }
+        } else {
+            action.complete(GattResponse.WriteNotPermitted)
             isBusy.compareAndSet(expect = true, update = false)
         }
         return action
     }
 
     internal fun notify(value: ByteArray) {
-        println("Notify")
         lastKnownValue = value
         subscriptions.forEach { it.onUpdate(value) }
     }
@@ -135,18 +141,23 @@ open class RemoteCharacteristic(
      * @see [enableNotification]
      * @see [isNotifying]
      */
-    private suspend fun disableNotification(): DeviceAction.Notification? {
+    suspend fun disableNotification(): DeviceAction.Notification? {
         do {
             isBusy.first { !it }
             if (!isNotifying) return null
         } while (!isBusy.compareAndSet(expect = false, update = true))
 
         val action = createNotificationAction(enabled = false)
-        addAction(action)
-        action.completedSuccessfully.invokeOnCompletion {
-            if (it == null && action.completedSuccessfully.getCompleted()) {
-                isNotifying = false
+        if (hasAnyProperty(setOf(CharacteristicProperty.Notify, CharacteristicProperty.Indicate))) {
+            addAction(action)
+            action.completedSuccessfully.invokeOnCompletion {
+                if (it == null && action.completedSuccessfully.getCompleted() is GattResponse.WriteSuccess) {
+                    isNotifying = false
+                }
+                isBusy.compareAndSet(expect = true, update = false)
             }
+        } else {
+            action.complete(GattResponse.WriteNotPermitted)
             isBusy.compareAndSet(expect = true, update = false)
         }
         return action
@@ -167,9 +178,17 @@ open class RemoteCharacteristic(
         )
     }
 
-    override fun createReadAction(): DeviceAction.Read.Characteristic = DeviceAction.Read.Characteristic(this)
+    override fun createReadAction(): DeviceAction.Read.Characteristic = DeviceAction.Read.Characteristic(this).apply {
+        if (!hasAnyProperty(setOf(CharacteristicProperty.Write, CharacteristicProperty.WriteWithoutResponse, CharacteristicProperty.SignedWrite))) {
+            complete(GattResponse.ReadNotPermitted)
+        }
+    }
 
-    override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Characteristic = DeviceAction.Write.Characteristic(newValue, this)
+    override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Characteristic = DeviceAction.Write.Characteristic(newValue, this).apply {
+        if (!hasProperty(CharacteristicProperty.Read)) {
+            complete(GattResponse.ReadNotPermitted)
+        }
+    }
 
     private fun createNotificationAction(enabled: Boolean): DeviceAction.Notification =
         if (enabled) DeviceAction.Notification.Enable(this) else DeviceAction.Notification.Disable(this)
@@ -180,6 +199,7 @@ open class RemoteCharacteristic(
     fun hasProperty(property: CharacteristicProperty) = hasProperties(setOf(property))
 
     private fun hasProperties(properties: Set<CharacteristicProperty>) = wrapper.properties.containsAll(properties)
+    private fun hasAnyProperty(properties: Set<CharacteristicProperty>) = wrapper.properties.containsAny(properties)
 }
 
 /**

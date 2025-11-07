@@ -17,10 +17,9 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
-import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
+import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 
 class MockServiceWrapper(
@@ -34,7 +33,7 @@ class MockServiceWrapper(
         characteristics = builder.characteristics.map {
             IOSMockCharacteristicWrapper(
                 uuid = it.uuid,
-                properties = CharacteristicProperty.fromInt(it.properties),
+                properties = it.properties,
                 descriptorUUIDs = it.descriptorUUIDs,
             )
         },

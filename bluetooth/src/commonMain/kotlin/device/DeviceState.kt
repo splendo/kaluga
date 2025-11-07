@@ -24,51 +24,35 @@ import com.splendo.kaluga.bluetooth.RemoteCharacteristic
 import com.splendo.kaluga.bluetooth.RemoteDescriptor
 import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.server.GattResponse
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 
 /**
  * An action a [Device] can execute on one of its [com.splendo.kaluga.bluetooth.Attribute]
  */
-sealed class DeviceAction {
+sealed class DeviceAction<Response : GattResponse> {
 
-    abstract fun fail()
+    private val _completed = CompletableDeferred<Response>()
+    internal fun complete(succeeded: Response) {
+        _completed.complete(succeeded)
+    }
+
+    internal fun fail() {
+        _completed.cancel()
+    }
+
+    /**
+     * A Deferred that will be completed with
+     * `true` if [DeviceAction] was completed successfully, or
+     * `false` if [DeviceAction] failed
+     * */
+    val completedSuccessfully: Deferred<Response> by ::_completed
 
     /**
      * A [DeviceAction] that attempts to read an [com.splendo.kaluga.bluetooth.Attribute]
      */
-    sealed class Read : DeviceAction() {
-
-        sealed class Result {
-            data class Success(val value: ByteArray) : Result() {
-                override fun equals(other: Any?): Boolean {
-                    if (this === other) return true
-                    if (other == null || this::class != other::class) return false
-
-                    other as Success
-
-                    if (!value.contentEquals(other.value)) return false
-
-                    return true
-                }
-
-                override fun hashCode(): Int = value.contentHashCode()
-            }
-
-            object Failure : Result()
-        }
-
-        private val _completedSuccessfully = CompletableDeferred<Result>()
-        internal fun complete(succeeded: Result) {
-            _completedSuccessfully.complete(succeeded)
-        }
-
-        /**
-         * A Deferred that will be completed with
-         * `true` if [DeviceAction] was completed successfully, or
-         * `false` if [DeviceAction] failed
-         * */
-        val completedSuccessfully: Deferred<Result> by ::_completedSuccessfully
+    sealed class Read : DeviceAction<GattResponse.ReadResponse>() {
 
         /**
          * A [DeviceAction.Read] on a [RemoteCharacteristic]
@@ -85,29 +69,13 @@ sealed class DeviceAction {
         class Descriptor(val descriptor: RemoteDescriptor) : Read() {
             override fun toString(): String = "DeviceAction.Read.Descriptor(${descriptor.uuid})"
         }
-
-        override fun fail() {
-            _completedSuccessfully.cancel()
-        }
     }
 
     /**
      * A [DeviceAction] that attempts to write a value to an [com.splendo.kaluga.bluetooth.Attribute]
      * @property newValue the [ByteArray] to write
      */
-    sealed class Write(val newValue: ByteArray) : DeviceAction() {
-
-        private val _completedSuccessfully = CompletableDeferred<Boolean>()
-        internal fun complete(succeeded: Boolean) {
-            _completedSuccessfully.complete(succeeded)
-        }
-
-        /**
-         * A Deferred that will be completed with
-         * `true` if [DeviceAction] was completed successfully, or
-         * `false` if [DeviceAction] failed
-         * */
-        val completedSuccessfully: Deferred<Boolean> by ::_completedSuccessfully
+    sealed class Write(val newValue: ByteArray) : DeviceAction<GattResponse.WriteResponse>() {
 
         /**
          * A [DeviceAction.Write] on a [RemoteCharacteristic]
@@ -126,29 +94,13 @@ sealed class DeviceAction {
         class Descriptor(newValue: ByteArray, val descriptor: RemoteDescriptor) : Write(newValue) {
             override fun toString(): String = "DeviceAction.Write.Descriptor(${descriptor.uuid})"
         }
-
-        override fun fail() {
-            _completedSuccessfully.cancel()
-        }
     }
 
     /**
      * A [DeviceAction] that updates that notifying status of a [RemoteCharacteristic]
      * @property characteristic the [RemoteCharacteristic] to notify
      */
-    sealed class Notification(val characteristic: RemoteCharacteristic) : DeviceAction() {
-
-        private val _completedSuccessfully = CompletableDeferred<Boolean>()
-        internal fun complete(succeeded: Boolean) {
-            _completedSuccessfully.complete(succeeded)
-        }
-
-        /**
-         * A Deferred that will be completed with
-         * `true` if [DeviceAction] was completed successfully, or
-         * `false` if [DeviceAction] failed
-         * */
-        val completedSuccessfully: Deferred<Boolean> by ::_completedSuccessfully
+    sealed class Notification(val characteristic: RemoteCharacteristic) : DeviceAction<GattResponse.WriteResponse>() {
 
         /**
          * A [Notification] that starts notifying
@@ -165,34 +117,10 @@ sealed class DeviceAction {
         class Disable(characteristic: RemoteCharacteristic) : Notification(characteristic) {
             override fun toString(): String = "DeviceAction.Notification.Disable(${characteristic.uuid})"
         }
-
-        override fun fail() {
-            _completedSuccessfully.cancel()
-        }
     }
 
     /** Requests MTU. */
-    data class RequestMtu(val mtu: MTU) : DeviceAction() {
-
-        private val _completedSuccessfully = CompletableDeferred<Boolean>()
-        internal fun complete(succeeded: Boolean) {
-            _completedSuccessfully.complete(succeeded)
-        }
-
-        /**
-         * A Deferred that will be completed with
-         * `true` if [DeviceAction] was completed successfully, or
-         * `false` if [DeviceAction] failed
-         * */
-        val completedSuccessfully: Deferred<Boolean> by ::_completedSuccessfully
-
-        var mtuResponse: MTU? = null
-            internal set
-
-        override fun fail() {
-            _completedSuccessfully.cancel()
-        }
-    }
+    data class RequestMtu(val mtu: MTU) : DeviceAction<GattResponse.MTUResponse>()
 }
 
 /**
@@ -285,7 +213,7 @@ sealed interface ConnectableDeviceState :
              * @param action the [DeviceAction] to execute
              * @return a transition into a [HandlingAction] state
              */
-            fun handleAction(action: DeviceAction): suspend () -> HandlingAction
+            fun handleAction(action: DeviceAction<*>): suspend () -> HandlingAction
         }
 
         /**
@@ -298,24 +226,24 @@ sealed interface ConnectableDeviceState :
             /**
              * The [DeviceAction] currently being executed
              */
-            val action: DeviceAction
+            val action: DeviceAction<*>
 
             /**
              * The list of [DeviceAction] to be executed when [action] has been handled
              */
-            val nextActions: List<DeviceAction>
+            val nextActions: List<DeviceAction<*>>
 
             /**
              * Adds an additional [DeviceAction] to the [nextActions]
              * @param newAction the [DeviceAction] to add to the queue
              * @return a transition into [HandlingAction] with [newAction] added to [nextActions]
              */
-            fun addAction(newAction: DeviceAction): suspend () -> HandlingAction
+            fun addAction(newAction: DeviceAction<*>): suspend () -> HandlingAction
 
             /**
              * Transitions into [DiscoveredServices] when [action] has completed
              */
-            val actionCompleted: suspend () -> DiscoveredServices
+            fun actionCompleted(response: GattResponse): suspend () -> DiscoveredServices
         }
 
         /**
@@ -464,7 +392,7 @@ internal sealed class ConnectableDeviceStateImpl {
             override val deviceConnectionManager: DeviceConnectionManager,
         ) : Connected(),
             ConnectableDeviceState.Connected.Idle {
-            override fun handleAction(action: DeviceAction) = suspend { HandlingAction(action, emptyList(), reconnectionSettings, mtu, services, deviceConnectionManager) }
+            override fun handleAction(action: DeviceAction<*>) = suspend { HandlingAction(action, emptyList(), reconnectionSettings, mtu, services, deviceConnectionManager) }
             override fun updateReconnectionSettings(reconnectionSettings: ConnectionSettings.ReconnectionSettings) = suspend {
                 copy(reconnectionSettings = reconnectionSettings)
             }
@@ -472,8 +400,8 @@ internal sealed class ConnectableDeviceStateImpl {
         }
 
         data class HandlingAction constructor(
-            override val action: DeviceAction,
-            override val nextActions: List<DeviceAction>,
+            override val action: DeviceAction<*>,
+            override val nextActions: List<DeviceAction<*>>,
             override val reconnectionSettings: ConnectionSettings.ReconnectionSettings,
             override val mtu: MTU?,
             override val services: List<RemoteService>,
@@ -482,7 +410,7 @@ internal sealed class ConnectableDeviceStateImpl {
             ConnectableDeviceState.Connected.HandlingAction,
             HandleAfterOldStateIsRemoved<ConnectableDeviceState> {
 
-            override fun addAction(newAction: DeviceAction) = suspend {
+            override fun addAction(newAction: DeviceAction<*>) = suspend {
                 HandlingAction(action, listOf(*nextActions.toTypedArray(), newAction), reconnectionSettings, mtu, services, deviceConnectionManager)
             }
 
@@ -490,18 +418,11 @@ internal sealed class ConnectableDeviceStateImpl {
                 copy(reconnectionSettings = reconnectionSettings)
             }
 
-            override val actionCompleted: suspend () -> ConnectableDeviceState.Connected.DiscoveredServices = suspend {
-                var newMtu = mtu
-                when (action) {
-                    is DeviceAction.Read.Characteristic -> { }
-                    is DeviceAction.Read.Descriptor -> { }
-                    is DeviceAction.Write.Characteristic -> { }
-                    is DeviceAction.Write.Descriptor -> { }
-                    is DeviceAction.Notification.Enable -> { }
-                    is DeviceAction.Notification.Disable -> { }
-                    is DeviceAction.RequestMtu -> {
-                        newMtu = action.mtuResponse
-                    }
+            override fun actionCompleted(response: GattResponse): suspend () -> ConnectableDeviceState.Connected.DiscoveredServices = suspend {
+                val newMtu = if (action is DeviceAction.RequestMtu && response is GattResponse.MTUSuccess) {
+                    response.mtu
+                } else {
+                    mtu
                 }
                 if (nextActions.isEmpty()) {
                     Idle(reconnectionSettings, newMtu, services, deviceConnectionManager)

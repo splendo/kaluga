@@ -20,11 +20,12 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.server.GattResponse
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
-import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.mock.verifyWithin
 import com.splendo.kaluga.test.base.yieldMultiple
+import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager.ActionCompleted
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -60,7 +61,7 @@ class BluetoothCharacteristicNotificationTest :
         enableNotifications(subscription)
         subscription.await().hasSubscribedSuccessfully.await()
         mainAction {
-            assertTrue(characteristic.subscribe {}.hasSubscribedSuccessfully.getCompleted())
+            assertIs<GattResponse.WriteSuccess>(characteristic.subscribe {}.hasSubscribedSuccessfully.getCompleted())
             assertTrue(characteristic.isNotifying)
         }
     }
@@ -77,7 +78,7 @@ class BluetoothCharacteristicNotificationTest :
         }
 
         test {
-            val captor = AnyOrNullCaptor<DeviceAction>()
+            val captor = AnyOrNullCaptor<DeviceAction<*>>()
             connectionManager.performActionMock.verifyWithin(value = captor, times = 2)
             assertIs<DeviceAction.Notification.Disable>(captor.lastCaptured)
             assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
@@ -85,9 +86,10 @@ class BluetoothCharacteristicNotificationTest :
         }
         mainAction {
             connectionManager.handleCurrentAction()
-            val captor = AnyOrNullCaptor<DeviceAction>()
-            connectionManager.handleCurrentActionCompletedMock.verify(ParameterMatcher.eq(true), captor, 2)
-            assertIs<DeviceAction.Notification.Disable>(captor.lastCaptured)
+            val captor = AnyOrNullCaptor<ActionCompleted<*>>()
+            connectionManager.handleCurrentActionCompletedMock.verify(captor, 2)
+            assertIs<GattResponse.WriteSuccess>(captor.lastCaptured?.response)
+            assertIs<DeviceAction.Notification.Disable>(captor.lastCaptured?.action)
         }
         test {
             assertIs<ConnectableDeviceState.Connected.Idle>(it)
@@ -110,7 +112,7 @@ class BluetoothCharacteristicNotificationTest :
             yieldMultiple(2)
         }
         test {
-            val captor = AnyOrNullCaptor<DeviceAction>()
+            val captor = AnyOrNullCaptor<DeviceAction<*>>()
             connectionManager.performActionMock.verify(captor)
             assertIs<DeviceAction.Notification.Enable>(captor.lastCaptured)
             assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
@@ -164,7 +166,7 @@ class BluetoothCharacteristicNotificationTest :
             yieldMultiple(2)
         }
         test {
-            val captor = AnyOrNullCaptor<DeviceAction>()
+            val captor = AnyOrNullCaptor<DeviceAction<*>>()
             connectionManager.performActionMock.verify(captor)
             assertIs<DeviceAction.Notification.Enable>(captor.lastCaptured)
             assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)

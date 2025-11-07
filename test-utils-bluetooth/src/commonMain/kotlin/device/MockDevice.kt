@@ -27,6 +27,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.randomIdentifier
+import com.splendo.kaluga.bluetooth.server.GattResponse
 import com.splendo.kaluga.logging.ContextualLogger
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
@@ -163,7 +164,7 @@ class MockDevice(
         connectableDeviceStateRepo.launchTakeAndChangeState(coroutineContext, ConnectableDeviceState.Connected.Discovering::class) { it.didDiscoverServices(services) }
     }
 
-    fun addAction(action: DeviceAction) {
+    fun addAction(action: DeviceAction<*>) {
         connectableDeviceStateRepo.launchTakeAndChangeState(coroutineContext) { state ->
             when (state) {
                 is ConnectableDeviceState.Connected.Idle -> state.handleAction(action)
@@ -173,9 +174,9 @@ class MockDevice(
         }
     }
 
-    fun completeAction() {
+    fun completeAction(response: GattResponse) {
         connectableDeviceStateRepo.launchTakeAndChangeState(coroutineContext, ConnectableDeviceState.Connected.HandlingAction::class) {
-            it.actionCompleted
+            it.actionCompleted(response)
         }
     }
 

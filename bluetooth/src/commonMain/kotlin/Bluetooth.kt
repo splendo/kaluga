@@ -518,7 +518,7 @@ fun Flow<RemoteCharacteristic?>.descriptors(): Flow<List<RemoteDescriptor>> = th
  * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
  * @return the [Flow] of the [ByteArray] value of the [RemoteCharacteristic] in the given [Flow]
  */
-fun Flow<RemoteCharacteristic?>.value(): Flow<ByteArray?> = this.distinctUntilChanged().flatMapLatest { characteristic ->
+fun Flow<RemoteCharacteristic?>.value(): Flow<ByteArray> = this.distinctUntilChanged().flatMapLatest { characteristic ->
     characteristic?.let { characteristic ->
         flow {
             val valueChannel = Channel<ByteArray>(Channel.UNLIMITED)
@@ -533,5 +533,5 @@ fun Flow<RemoteCharacteristic?>.value(): Flow<ByteArray?> = this.distinctUntilCh
                 }
             }
         }
-    } ?: flowOf(null)
+    } ?: emptyFlow()
 }

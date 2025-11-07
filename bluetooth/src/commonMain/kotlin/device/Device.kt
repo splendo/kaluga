@@ -204,7 +204,7 @@ class ConnectableDeviceImpl(
                     is DeviceConnectionManager.Event.Discovering,
                     is DeviceConnectionManager.Event.DiscoveredServices,
                     is DeviceConnectionManager.Event.AddAction,
-                    is DeviceConnectionManager.Event.CompletedAction,
+                    is DeviceConnectionManager.Event.CompletedAction<*>,
                     is DeviceConnectionManager.Event.Disconnecting,
                     is DeviceConnectionManager.Event.Disconnected,
                     -> deviceStateRepo.value
@@ -256,7 +256,7 @@ class ConnectableDeviceImpl(
         is DeviceConnectionManager.Event.Discovering -> stateTransition(state)
         is DeviceConnectionManager.Event.DiscoveredServices -> stateTransition(state)
         is DeviceConnectionManager.Event.AddAction -> stateTransition(state)
-        is DeviceConnectionManager.Event.CompletedAction -> stateTransition(state)
+        is DeviceConnectionManager.Event.CompletedAction<*> -> stateTransition(state)
     }
 
     private fun DeviceConnectionManager.Event.Connecting.stateTransition(state: ConnectableDeviceState) =
@@ -319,11 +319,11 @@ class ConnectableDeviceImpl(
         }
     }
 
-    private fun DeviceConnectionManager.Event.CompletedAction.stateTransition(state: ConnectableDeviceState) =
+    private fun DeviceConnectionManager.Event.CompletedAction<*>.stateTransition(state: ConnectableDeviceState) =
         if (state is ConnectableDeviceState.Connected.HandlingAction && state.action === action) {
-            val succeeded = complete()
-            debug(TAG) { "Action $action has been succeeded: $succeeded" }
-            state.actionCompleted
+            debug(TAG) { "Action $action has received response: $response" }
+            complete()
+            state.actionCompleted(response)
         } else {
             state.remain()
         }

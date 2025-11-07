@@ -32,9 +32,13 @@ interface Attribute {
     val uuid: UUID
 }
 
-operator fun <T : Attribute> List<T>.get(uuid: UUID) = find { it.uuid.uuidString == uuid.uuidString }
-operator fun <T : Attribute> Flow<List<T>>.get(uuid: UUID): Flow<T?> = this.map { attributes ->
+operator fun <T : Attribute> List<T>.get(uuid: UUID) = first { it.uuid.uuidString == uuid.uuidString }
+fun <T : Attribute> List<T>.getOrNull(uuid: UUID) = find { it.uuid.uuidString == uuid.uuidString }
+operator fun <T : Attribute> Flow<List<T>>.get(uuid: UUID): Flow<T> = this.map { attributes ->
     attributes[uuid]
+}.distinctUntilChanged()
+fun <T : Attribute> Flow<List<T>>.getOrNull(uuid: UUID): Flow<T?> = this.map { attributes ->
+    attributes.getOrNull(uuid)
 }.distinctUntilChanged()
 
 /**
@@ -55,7 +59,9 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
      */
     fun readValue(): ReadAction {
         val action = createReadAction()
-        addAction(action)
+        if (!action.completedSuccessfully.isCompleted) {
+            addAction(action)
+        }
         return action
     }
 
@@ -68,13 +74,15 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
      */
     fun writeValue(newValue: ByteArray): WriteAction {
         val action = createWriteAction(newValue)
-        addAction(action)
+        if (!action.completedSuccessfully.isCompleted) {
+            addAction(action)
+        }
         return action
     }
 
     internal abstract fun createWriteAction(newValue: ByteArray): WriteAction
 
-    protected fun addAction(action: DeviceAction) {
+    protected fun addAction(action: DeviceAction<*>) {
         logger.info { "Add action $action" }
         emitNewAction(DeviceConnectionManager.Event.AddAction(action))
     }

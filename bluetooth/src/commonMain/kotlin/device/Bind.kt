@@ -24,8 +24,9 @@ import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.characteristics
 import com.splendo.kaluga.bluetooth.descriptors
-import com.splendo.kaluga.bluetooth.get
+import com.splendo.kaluga.bluetooth.getOrNull
 import com.splendo.kaluga.bluetooth.includedServices
+import com.splendo.kaluga.bluetooth.server.GattResponse
 import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.bluetooth.value
@@ -205,8 +206,9 @@ private abstract class RemoteAttributeBindingImpl<T, ReadAction : DeviceAction.R
                 val result = attribute.readValue()
                     .completedSuccessfully.await()
                 when (result) {
-                    is DeviceAction.Read.Result.Success -> callingScope.update { it.onRead(result.value.asValue(), trigger) }
-                    is DeviceAction.Read.Result.Failure -> {}
+                    is GattResponse.ReadSuccess -> callingScope.update { it.onRead(result.value.asValue(), trigger) }
+                    is GattResponse.Error -> {}
+                    is GattResponse.DeviceUnavailable -> {}
                 }
             }
         }
@@ -219,8 +221,9 @@ private abstract class RemoteAttributeBindingImpl<T, ReadAction : DeviceAction.R
                 val result = attribute.readValue()
                     .completedSuccessfully.await()
                 when (result) {
-                    is DeviceAction.Read.Result.Success -> callingScope.update { it.onRead(result.value.asValue(), trigger) }
-                    is DeviceAction.Read.Result.Failure -> {}
+                    is GattResponse.ReadSuccess -> callingScope.update { it.onRead(result.value.asValue(), trigger) }
+                    is GattResponse.Error -> {}
+                    is GattResponse.DeviceUnavailable -> {}
                 }
             }
         }
@@ -229,9 +232,11 @@ private abstract class RemoteAttributeBindingImpl<T, ReadAction : DeviceAction.R
     override fun <R> Channel<R>.consumeAsWriteAndMutate(asByte: R.() -> ByteArray, onWrite: suspend T.(R) -> T) {
         scope.launch {
             consumeEach { value ->
-                val didComplete = attribute.filterNotNull().first().writeValue(value.asByte()).completedSuccessfully.await()
-                if (didComplete) {
-                    callingScope.update { it.onWrite(value) }
+                val result = attribute.filterNotNull().first().writeValue(value.asByte()).completedSuccessfully.await()
+                when (result) {
+                    is GattResponse.WriteSuccess -> callingScope.update { it.onWrite(value) }
+                    is GattResponse.Error -> {}
+                    is GattResponse.DeviceUnavailable -> {}
                 }
             }
         }
@@ -240,9 +245,11 @@ private abstract class RemoteAttributeBindingImpl<T, ReadAction : DeviceAction.R
     override fun <R> Flow<R>.collectAsWriteAndMutate(asByte: R.() -> ByteArray, onWrite: suspend T.(R) -> T) {
         scope.launch {
             collect { value ->
-                val didComplete = attribute.filterNotNull().first().writeValue(value.asByte()).completedSuccessfully.await()
-                if (didComplete) {
-                    callingScope.update { it.onWrite(value) }
+                val result = attribute.filterNotNull().first().writeValue(value.asByte()).completedSuccessfully.await()
+                when (result) {
+                    is GattResponse.WriteSuccess -> callingScope.update { it.onWrite(value) }
+                    is GattResponse.Error -> {}
+                    is GattResponse.DeviceUnavailable -> {}
                 }
             }
         }
@@ -258,16 +265,16 @@ private class RemoteServiceBindingImpl<T>(private val callingScope: MutableState
     }
 
     override fun <R> R.bindService(uuid: UUID, update: T.(R) -> T, binding: RemoteServiceBinding<R>.() -> Unit) {
-        val serviceUpdates = bind(service.includedServices()[uuid], scope, binding)
+        val serviceUpdates = bind(service.includedServices().getOrNull(uuid), scope, binding)
         scope.launch { serviceUpdates.collect { update -> callingScope.update { scope -> scope.update(update) } } }
     }
 
     override fun characteristic(uuid: UUID, binding: RemoteCharacteristicBinding<T>.() -> Unit) {
-        RemoteCharacteristicBindingImpl(callingScope, service.characteristics()[uuid], scope).binding()
+        RemoteCharacteristicBindingImpl(callingScope, service.characteristics().getOrNull(uuid), scope).binding()
     }
 
     override fun <R> R.bindCharacteristic(uuid: UUID, update: T.(R) -> T, binding: RemoteCharacteristicBinding<R>.() -> Unit) {
-        val characteristicUpdates = bind(service.characteristics()[uuid], scope, binding)
+        val characteristicUpdates = bind(service.characteristics().getOrNull(uuid), scope, binding)
         scope.launch { characteristicUpdates.collect { update -> callingScope.update { scope -> scope.update(update) } } }
     }
 
@@ -285,11 +292,11 @@ private class RemoteCharacteristicBindingImpl<T>(
 ),
     RemoteCharacteristicBinding<T> {
     override fun descriptor(uuid: UUID, binding: RemoteDescriptorBinding<T>.() -> Unit) {
-        RemoteDescriptorBindingImpl(callingScope, characteristic.descriptors()[uuid], scope).binding()
+        RemoteDescriptorBindingImpl(callingScope, characteristic.descriptors().getOrNull(uuid), scope).binding()
     }
 
     override fun <R> R.bindDescriptor(uuid: UUID, update: T.(R) -> T, binding: RemoteDescriptorBinding<R>.() -> Unit) {
-        val descriptorUpdates = bind(characteristic.descriptors()[uuid], scope, binding)
+        val descriptorUpdates = bind(characteristic.descriptors().getOrNull(uuid), scope, binding)
         scope.launch {
             descriptorUpdates.collect { update -> callingScope.update { scope -> scope.update(update) } }
         }
@@ -298,9 +305,7 @@ private class RemoteCharacteristicBindingImpl<T>(
     override fun <R> observeAndMutate(asValue: ByteArray.() -> R, onNotification: suspend T.(R) -> T) {
         scope.launch {
             characteristic.value().collect { value ->
-                if (value != null) {
-                    callingScope.update { it.onNotification(value.asValue()) }
-                }
+                callingScope.update { it.onNotification(value.asValue()) }
             }
         }
     }
@@ -309,11 +314,11 @@ private class RemoteCharacteristicBindingImpl<T>(
 private class ConnectedDeviceBindingImpl<T>(private val callingScope: MutableStateFlow<T>, private val device: Flow<ConnectableDevice?>, private val scope: CoroutineScope) :
     ConnectedDeviceBinding<T> {
     override fun service(uuid: UUID, binding: RemoteServiceBinding<T>.() -> Unit) {
-        RemoteServiceBindingImpl(callingScope, device.services()[uuid], scope).binding()
+        RemoteServiceBindingImpl(callingScope, device.services().getOrNull(uuid), scope).binding()
     }
 
     override fun <R> R.bindService(uuid: UUID, update: T.(R) -> T, binding: RemoteServiceBinding<R>.() -> Unit) {
-        val serviceUpdate = bind(device.services()[uuid], scope, binding)
+        val serviceUpdate = bind(device.services().getOrNull(uuid), scope, binding)
         scope.launch {
             serviceUpdate.collect { update -> callingScope.update { scope -> scope.update(update) } }
         }

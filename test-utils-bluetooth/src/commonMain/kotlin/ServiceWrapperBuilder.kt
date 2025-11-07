@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.bluetooth
 
+import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.randomUUID
@@ -44,17 +45,17 @@ class ServiceWrapperBuilder {
 
     data class Descriptor(val uuid: UUID = randomUUID())
 
-    data class Characteristic(val uuid: UUID = randomUUID(), val descriptors: List<Descriptor> = listOf(Descriptor()), val properties: Int = 0) {
+    data class Characteristic(val uuid: UUID = randomUUID(), val descriptors: List<Descriptor> = listOf(Descriptor()), val properties: Set<CharacteristicProperty>) {
 
         @MockBuilderDsl
         class Builder {
             var uuid: UUID = randomUUID()
-            var properties: Int = 0
+            val properties = mutableSetOf<CharacteristicProperty>()
             private var _descriptors = arrayListOf<Descriptor>()
             val descriptors: List<Descriptor> get() = _descriptors.toList()
 
             fun descriptors(builder: DescriptorList.() -> Unit) = builder(_descriptors)
-            fun build() = Characteristic(uuid, descriptors, properties)
+            fun build() = Characteristic(uuid, descriptors, properties.toSet())
         }
 
         val descriptorUUIDs get() = descriptors.map(Descriptor::uuid)

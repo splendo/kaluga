@@ -1,10 +1,9 @@
 package com.splendo.kaluga.bluetooth.extensions
 
 import com.splendo.kaluga.bluetooth.Attribute
-import com.splendo.kaluga.bluetooth.RemoteAttribute
 import com.splendo.kaluga.bluetooth.UUIDException
-import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.get
+import com.splendo.kaluga.bluetooth.getOrNull
 import com.splendo.kaluga.bluetooth.uuidFrom
 import kotlinx.coroutines.flow.Flow
 import kotlin.jvm.JvmName
@@ -15,8 +14,7 @@ import kotlin.jvm.JvmName
  * @throws UUIDException.InvalidFormat
  */
 @JvmName("getAttribute")
-operator fun <AttributeType, ReadAction, WriteAction> Flow<List<AttributeType>>.get(
-    uuidString: String,
-): Flow<AttributeType?>
-where AttributeType : RemoteAttribute<ReadAction, WriteAction>, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write =
-    this[uuidFrom(uuidString)]
+operator fun <T : Attribute> Flow<List<T>>.get(uuidString: String): Flow<T> = get(uuidFrom(uuidString))
+
+@JvmName("getAttributeOrNull")
+fun <T : Attribute> Flow<List<T>>.getOrNull(uuidString: String): Flow<T?> = getOrNull(uuidFrom(uuidString))

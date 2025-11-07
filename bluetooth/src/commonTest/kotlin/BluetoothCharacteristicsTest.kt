@@ -28,7 +28,7 @@ class BluetoothCharacteristicsTest : BluetoothFlowTest<BluetoothFlowTest.Configu
         ServiceContext(configuration, scope)
     }
     override val flowFromTestContext: suspend ServiceContext.() -> Flow<List<Characteristic>> = {
-        bluetooth.scannedDevices()[device.identifier].services()[serviceUuid].characteristics()
+        bluetooth.scannedDevices()[device.identifier].services().getOrNull(serviceUuid).characteristics()
     }
 
     @Test

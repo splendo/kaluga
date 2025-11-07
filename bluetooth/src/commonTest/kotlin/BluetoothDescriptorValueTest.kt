@@ -34,7 +34,7 @@ class BluetoothDescriptorValueTest : BluetoothFlowTest<BluetoothFlowTest.Configu
     }
 
     override val flowFromTestContext: suspend DescriptorContext.() -> Flow<RemoteDescriptor?> = {
-        bluetooth.scannedDevices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid].descriptors()[descriptorUuid]
+        bluetooth.scannedDevices()[device.identifier].services().getOrNull(serviceUuid).characteristics().getOrNull(characteristicUuid).descriptors().getOrNull(descriptorUuid)
     }
 
     @Test
@@ -56,7 +56,7 @@ class BluetoothDescriptorValueTest : BluetoothFlowTest<BluetoothFlowTest.Configu
         test { descriptor ->
             assertNotNull(descriptor)
             descriptor.writeValue(newValue)
-            val captor = AnyOrNullCaptor<DeviceAction>()
+            val captor = AnyOrNullCaptor<DeviceAction<*>>()
             connectionManager.performActionMock.verifyWithin(value = captor)
             assertIs<DeviceAction.Write.Descriptor>(captor.lastCaptured)
             connectionManager.handleCurrentAction()

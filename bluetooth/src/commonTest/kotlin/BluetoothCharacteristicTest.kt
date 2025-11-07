@@ -31,7 +31,7 @@ class BluetoothCharacteristicTest : BluetoothFlowTest<BluetoothFlowTest.Configur
     override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithCharacteristic, scope: CoroutineScope) -> CharacteristicContext =
         { configuration, scope -> CharacteristicContext(configuration, scope) }
     override val flowFromTestContext: suspend CharacteristicContext.() -> Flow<Characteristic?> = {
-        bluetooth.scannedDevices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid]
+        bluetooth.scannedDevices()[device.identifier].services().getOrNull(serviceUuid).characteristics().getOrNull(characteristicUuid)
     }
 
     @Test
@@ -40,7 +40,6 @@ class BluetoothCharacteristicTest : BluetoothFlowTest<BluetoothFlowTest.Configur
             serviceWrapperBuilder = {
                 characteristics {
                     characteristic {
-                        properties = 0
                     }
                 }
             },
@@ -78,7 +77,7 @@ class BluetoothCharacteristicTest : BluetoothFlowTest<BluetoothFlowTest.Configur
             serviceWrapperBuilder = {
                 characteristics {
                     characteristic {
-                        properties = setOf(CharacteristicProperty.Read, CharacteristicProperty.WriteWithoutResponse).rawValue(false)
+                        properties += setOf(CharacteristicProperty.Read, CharacteristicProperty.WriteWithoutResponse)
                     }
                 }
             },

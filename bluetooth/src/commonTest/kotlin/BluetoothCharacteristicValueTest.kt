@@ -22,6 +22,8 @@ import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.test.base.mock.verifyWithin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,7 +35,10 @@ class BluetoothCharacteristicValueTest : BluetoothFlowTest<BluetoothFlowTest.Con
         CharacteristicContext(configuration, scope)
     }
     override val flowFromTestContext: suspend CharacteristicContext.() -> Flow<ByteArray?> = {
-        bluetooth.scannedDevices()[device.identifier].services()[serviceUuid].characteristics()[characteristicUuid].value()
+        flow {
+            emit(null)
+            emitAll(bluetooth.scannedDevices()[device.identifier].services().getOrNull(serviceUuid).characteristics().getOrNull(characteristicUuid).value())
+        }
     }
 
     @Test
@@ -52,7 +57,7 @@ class BluetoothCharacteristicValueTest : BluetoothFlowTest<BluetoothFlowTest.Con
         mainAction {
             connectDevice()
             discoverService()
-            val captor = AnyOrNullCaptor<DeviceAction>()
+            val captor = AnyOrNullCaptor<DeviceAction<*>>()
             connectionManager.performActionMock.verifyWithin(value = captor)
             assertIs<DeviceAction.Notification.Enable>(captor.lastCaptured)
             yield()
@@ -64,7 +69,7 @@ class BluetoothCharacteristicValueTest : BluetoothFlowTest<BluetoothFlowTest.Con
         }
         resetFlow()
         mainAction {
-            val captor = AnyOrNullCaptor<DeviceAction>()
+            val captor = AnyOrNullCaptor<DeviceAction<*>>()
             connectionManager.performActionMock.verifyWithin(value = captor, times = 2)
             assertIs<DeviceAction.Notification.Disable>(captor.lastCaptured)
         }

@@ -25,6 +25,7 @@ import com.splendo.kaluga.bluetooth.KalugaBluetoothPeripheralDelegateProtocol
 import com.splendo.kaluga.bluetooth.KalugaBluetoothPeripheralWrapper
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.dataValue
+import com.splendo.kaluga.bluetooth.server.GattResponse
 import com.splendo.kaluga.logging.debug
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
@@ -84,7 +85,7 @@ internal actual class DefaultDeviceConnectionManager(
             val action = currentAction
             if (action is DeviceAction.Notification && action.characteristic.wrapper.uuid == characteristic.UUID) {
                 launch {
-                    action.handleNotificationStateChanged(error == null)
+                    action.handleNotificationStateChanged(if (error == null) GattResponse.WriteSuccess else GattResponse.Error.from(error.code.toInt()))
                 }
             }
         }
@@ -92,23 +93,23 @@ internal actual class DefaultDeviceConnectionManager(
         override fun didUpdateValueForCharacteristic(characteristic: CBCharacteristic, peripheral: CBPeripheral, error: NSError?) {
             handleCharacteristicReadOrNotified(
                 characteristic.UUID,
-                characteristic.value?.asBytes?.takeIf { error == null }?.let { DeviceAction.Read.Result.Success(it) } ?: DeviceAction.Read.Result.Failure,
+                if (error == null) GattResponse.ReadSuccess(characteristic.value?.asBytes ?: byteArrayOf()) else GattResponse.Error.from(error.code.toInt()),
             )
         }
 
         override fun didWriteValueForCharacteristic(characteristic: CBCharacteristic, peripheral: CBPeripheral, error: NSError?) {
-            handleCharacteristicWritten(characteristic.UUID, error == null)
+            handleCharacteristicWritten(characteristic.UUID, if (error == null) GattResponse.WriteSuccess else GattResponse.Error.from(error.code.toInt()))
         }
 
         override fun didUpdateValueForDescriptor(descriptor: CBDescriptor, peripheral: CBPeripheral, error: NSError?) {
             handleDescriptorRead(
                 descriptor.UUID,
-                descriptor.dataValue?.asBytes?.takeIf { error == null }?.let { DeviceAction.Read.Result.Success(it) } ?: DeviceAction.Read.Result.Failure,
+                if (error == null) GattResponse.ReadSuccess(descriptor.dataValue?.asBytes ?: byteArrayOf()) else GattResponse.Error.from(error.code.toInt()),
             )
         }
 
         override fun didWriteValueForDescriptor(descriptor: CBDescriptor, peripheral: CBPeripheral, error: NSError?) {
-            handleDescriptorWritten(descriptor.UUID, error == null)
+            handleDescriptorWritten(descriptor.UUID, if (error == null) GattResponse.WriteSuccess else GattResponse.Error.from(error.code.toInt()))
         }
 
         override fun didDiscoverCharacteristicsFor(service: CBService, peripheral: CBPeripheral, error: NSError?) {
@@ -168,7 +169,7 @@ internal actual class DefaultDeviceConnectionManager(
         peripheral.readRSSI()
     }
 
-    actual override suspend fun didStartPerformingAction(action: DeviceAction) {
+    actual override suspend fun didStartPerformingAction(action: DeviceAction<*>) {
         currentAction = action
         when (action) {
             is DeviceAction.Read.Characteristic -> action.characteristic.wrapper.readValue(peripheral)
@@ -178,7 +179,7 @@ internal actual class DefaultDeviceConnectionManager(
                     !action.characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse)
                 action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral, withResponse)
                 if (!withResponse) {
-                    handleCharacteristicWritten(action.characteristic.uuid, succeeded = true)
+                    handleCharacteristicWritten(action.characteristic.uuid, GattResponse.WriteSuccess)
                 }
             }
             is DeviceAction.Write.Descriptor -> {
@@ -194,7 +195,7 @@ internal actual class DefaultDeviceConnectionManager(
                 val max = peripheral.maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse)
                 debug(TAG) { "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $max" }
                 // Update MTU to current known value, set succeeded to false, because we can't request MTU change from iOS
-                handleNewMtu(max.toInt(), false)
+                handleNewMtu(GattResponse.MTUNotPermitted(max.toInt()))
             }
         }
     }

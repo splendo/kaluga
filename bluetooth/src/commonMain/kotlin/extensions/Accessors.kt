@@ -6,31 +6,20 @@ import com.splendo.kaluga.bluetooth.characteristics
 import com.splendo.kaluga.bluetooth.descriptors
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.RemoteDescriptor
+import com.splendo.kaluga.bluetooth.getOrNull
 import com.splendo.kaluga.bluetooth.services
+import com.splendo.kaluga.bluetooth.value
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 
-// /**
-//  * Provides access to device data flow by service, characteristic and descriptor string uuids.
-//  * @param serviceUUID string service uuid representation
-//  * @param characteristicUUID string characteristic uuid representation
-//  * @throws UUIDException.InvalidFormat
-//  */
-// fun Flow<ConnectableDevice?>.dataFlow(serviceUUID: String, characteristicUUID: String) = characteristicsFlow(serviceUUID, characteristicUUID).flatMapLatest { characteristic ->
-//     characteristic.map { it ?: byteArrayOf() }
-// }
-//
-// /**
-//  * Provides access to device data flow by service, characteristic and descriptor string uuids.
-//  * @param serviceUUID string service uuid representation
-//  * @param characteristicUUID string characteristic uuid representation
-//  * @throws UUIDException.InvalidFormat
-//  */
-// fun Flow<ConnectableDevice?>.dataFlow(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) =
-//     descriptorsFlow(serviceUUID, characteristicUUID, descriptorUUID).flatMapLatest { descriptor ->
-//         descriptor.map { it ?: byteArrayOf() }
-//     }
+/**
+ * Provides access to device data flow by service, characteristic and descriptor string uuids.
+ * @param serviceUUID string service uuid representation
+ * @param characteristicUUID string characteristic uuid representation
+ * @throws UUIDException.InvalidFormat
+ */
+fun Flow<ConnectableDevice?>.dataFlow(serviceUUID: String, characteristicUUID: String) = characteristicsFlow(serviceUUID, characteristicUUID).value()
 
 /**
  * Provides access to characteristic's flow by service and characteristic string uuids.
@@ -38,7 +27,7 @@ import kotlinx.coroutines.flow.first
  * @param characteristicUUID string characteristic uuid representation
  * @throws UUIDException.InvalidFormat
  */
-fun Flow<ConnectableDevice?>.characteristicsFlow(serviceUUID: String, characteristicUUID: String) = services()[serviceUUID]
+fun Flow<ConnectableDevice?>.characteristicsFlow(serviceUUID: String, characteristicUUID: String) = services().getOrNull(serviceUUID)
     .characteristics()[characteristicUUID]
     .filterNotNull()
 
@@ -49,7 +38,7 @@ fun Flow<ConnectableDevice?>.characteristicsFlow(serviceUUID: String, characteri
  * @param characteristicUUID string characteristic uuid representation
  * @throws UUIDException.InvalidFormat
  */
-suspend fun Flow<ConnectableDevice?>.characteristic(serviceUUID: String, characteristicUUID: String) = services()[serviceUUID]
+suspend fun Flow<ConnectableDevice?>.characteristic(serviceUUID: String, characteristicUUID: String) = services().getOrNull(serviceUUID)
     .characteristics()[characteristicUUID]
     .filterNotNull()
     .first()
@@ -61,7 +50,7 @@ suspend fun Flow<ConnectableDevice?>.characteristic(serviceUUID: String, charact
  * @param descriptorUUID string descriptor uuid representation
  * @throws UUIDException.InvalidFormat
  */
-fun Flow<ConnectableDevice?>.descriptorsFlow(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) = services()[serviceUUID]
+fun Flow<ConnectableDevice?>.descriptorsFlow(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) = services().getOrNull(serviceUUID)
     .characteristics()[characteristicUUID]
     .descriptors()[descriptorUUID]
     .filterNotNull()
@@ -74,7 +63,7 @@ fun Flow<ConnectableDevice?>.descriptorsFlow(serviceUUID: String, characteristic
  * @param descriptorUUID string descriptor uuid representation
  * @throws UUIDException.InvalidFormat
  */
-suspend fun Flow<ConnectableDevice?>.descriptor(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) = services()[serviceUUID]
+suspend fun Flow<ConnectableDevice?>.descriptor(serviceUUID: String, characteristicUUID: String, descriptorUUID: String) = services().getOrNull(serviceUUID)
     .characteristics()[characteristicUUID]
     .descriptors()[descriptorUUID]
     .filterNotNull()
