@@ -117,7 +117,7 @@ class BluetoothServerViewModel(private val alertPresenter: BaseAlertPresenter.Bu
                             energyExpended.update { 0(Kilojoule) }
                             GattResponse.WriteSuccess
                         } else {
-                            GattResponse.Custom(0x80)
+                            GattResponse.ApplicationError(0x80)
                         }
                     }
                 }

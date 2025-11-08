@@ -33,13 +33,13 @@ import kotlinx.coroutines.Deferred
  */
 sealed class DeviceAction<Response : GattResponse> {
 
-    private val _completed = CompletableDeferred<Response>()
+    private val _response = CompletableDeferred<Response>()
     internal fun complete(succeeded: Response) {
-        _completed.complete(succeeded)
+        _response.complete(succeeded)
     }
 
     internal fun fail() {
-        _completed.cancel()
+        _response.cancel()
     }
 
     /**
@@ -47,7 +47,7 @@ sealed class DeviceAction<Response : GattResponse> {
      * `true` if [DeviceAction] was completed successfully, or
      * `false` if [DeviceAction] failed
      * */
-    val completedSuccessfully: Deferred<Response> by ::_completed
+    val response: Deferred<Response> by ::_response
 
     /**
      * A [DeviceAction] that attempts to read an [com.splendo.kaluga.bluetooth.Attribute]

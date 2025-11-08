@@ -58,6 +58,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.isActive
@@ -366,28 +367,50 @@ fun Flow<ConnectableDevice?>.state(): Flow<DeviceState> = this.flatMapLatest { d
     device?.state ?: emptyFlow()
 }
 
-/**
- * Gets a ([Flow] of) the list of [Service] associated with the [ConnectableDevice] in a [Flow]
- * This will automatically discover services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
- * @return the [Flow] of the list of [Service] associated with the [ConnectableDevice] in the given [Flow]
- */
-fun Flow<ConnectableDevice?>.services(): Flow<List<RemoteService>> = state().transformLatest { deviceState ->
+internal fun Flow<ConnectableDevice?>.startDiscovering(): Flow<ConnectableDeviceState.Connected.DiscoveredServices?> = flatMapLatest { device ->
+    device?.filterDiscovering() ?: flowOf(null)
+}
+
+fun ConnectableDevice.filterDiscovering() = state.transformLatest { deviceState ->
     emit(
         when (deviceState) {
             is ConnectableDeviceState.Connected -> {
                 when (deviceState) {
                     is ConnectableDeviceState.Connected.NoServices -> {
                         deviceState.startDiscovering()
-                        emptyList()
+                        null
                     }
-                    is ConnectableDeviceState.Connected.Idle -> deviceState.services
-                    is ConnectableDeviceState.Connected.HandlingAction -> deviceState.services
-                    else -> emptyList()
+
+                    is ConnectableDeviceState.Connected.DiscoveredServices -> deviceState
+                    is ConnectableDeviceState.Connected.HandlingAction -> deviceState
+                    else -> null
                 }
             }
-            else -> emptyList()
+
+            else -> null
         },
     )
+}
+
+/**
+ * Gets a ([Flow] of) the list of [Service] associated with the [ConnectableDevice] in a [Flow]
+ * This will automatically discover services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
+ * @return the [Flow] of the list of [Service] associated with the [ConnectableDevice] in the given [Flow]
+ */
+fun Flow<ConnectableDevice?>.services(): Flow<List<RemoteService>> = flatMapLatest { device ->
+    device?.services() ?: flowOf(emptyList())
+}.distinctUntilChanged()
+
+fun ConnectableDevice.services() = filterDiscovering().map { discoveredState ->
+    discoveredState?.services.orEmpty()
+}
+
+fun Flow<ConnectableDevice?>.discoveredServices(): Flow<List<RemoteService>> = flatMapLatest { device ->
+    device?.discoveredServices() ?: emptyFlow()
+}
+
+fun ConnectableDevice.discoveredServices() = filterDiscovering().mapNotNull { discoveredState ->
+    discoveredState?.services
 }.distinctUntilChanged()
 
 /**
@@ -446,7 +469,11 @@ fun Flow<ConnectableDevice?>.rssi(): Flow<RSSI> = info().map { it.rssi }.distinc
  * Gets the ([Flow] of) the [MTU] from a [Flow] of [ConnectableDevice]
  * @return the [Flow] of [MTU] associated with the [ConnectableDevice] in the given [Flow]
  */
-fun Flow<ConnectableDevice?>.mtu() = state().map { state ->
+fun Flow<ConnectableDevice?>.mtu() = flatMapLatest { device ->
+    device?.mtu() ?: flowOf(null)
+}.distinctUntilChanged()
+
+fun ConnectableDevice.mtu() = state.map { state ->
     if (state is ConnectableDeviceState.Connected.MtuHolder) {
         state.mtu
     } else {
@@ -461,9 +488,13 @@ fun Flow<ConnectableDevice?>.mtu() = state().map { state ->
  * @param averageOver averages the calculated distance over this amount of scan results. Always uses the last results.
  * @return the [Flow] of distance in meters between the scanner and the [ConnectableDevice] in the given [Flow]
  */
-fun Flow<ConnectableDevice?>.distance(environmentalFactor: Double = 2.0, averageOver: Int = 5): Flow<Double> {
+fun Flow<ConnectableDevice?>.distance(environmentalFactor: Double = 2.0, averageOver: Int = 5): Flow<Double> = flatMapLatest { device ->
+    device?.distance(environmentalFactor, averageOver) ?: flowOf(Double.NaN)
+}
+
+fun ConnectableDevice.distance(environmentalFactor: Double = 2.0, averageOver: Int = 5): Flow<Double> {
     val lastNResults = mutableListOf<Double>()
-    return this.info().map { deviceInfo ->
+    return info.map { deviceInfo ->
         while (lastNResults.size >= averageOver) {
             lastNResults.removeAt(0)
         }
@@ -480,23 +511,33 @@ fun Flow<ConnectableDevice?>.distance(environmentalFactor: Double = 2.0, average
  * Attempts to request an update to the RSSI of the [ConnectableDevice] from a [Flow] of [ConnectableDevice]
  * When this method completes, the devices should have had [ConnectableDeviceState.Connected.readRssi] called
  */
-suspend fun Flow<ConnectableDevice?>.updateRssi() {
-    state().transformLatest { deviceState ->
-        when (deviceState) {
-            is ConnectableDeviceState.Connected -> {
-                deviceState.readRssi()
-                emit(Unit)
-            }
-            else -> {}
+suspend fun Flow<ConnectableDevice?>.updateRssi() = transformLatest { device ->
+    device?.let {
+        emit(it.updateRssi())
+    }
+}.first()
+
+suspend fun ConnectableDevice.updateRssi() = state.transformLatest { deviceState ->
+    when (deviceState) {
+        is ConnectableDeviceState.Connected -> {
+            deviceState.readRssi()
+            emit(Unit)
         }
-    }.first()
-}
+        else -> {}
+    }
+}.first()
 
 /**
  * Attempts to request a [MTU] size for the [ConnectableDevice] from a [Flow] of [ConnectableDevice]
  * @param mtu the [MTU] size to request
  */
-suspend fun Flow<ConnectableDevice?>.requestMtu(mtu: MTU) = state()
+suspend fun Flow<ConnectableDevice?>.requestMtu(mtu: MTU) = transformLatest { device ->
+    device?.let {
+        emit(it.requestMtu(mtu).response.await())
+    }
+}.first()
+
+suspend fun ConnectableDevice.requestMtu(mtu: MTU) = state
     .filterIsInstance<ConnectableDeviceState.Connected.MtuHolder>()
     .first().requestMtu(mtu)
 
@@ -504,34 +545,34 @@ suspend fun Flow<ConnectableDevice?>.requestMtu(mtu: MTU) = state()
  * Gets a ([Flow] of) the list [RemoteCharacteristic] associated with the [RemoteService] in a [Flow]
  * @return the [Flow] of the list of [RemoteCharacteristic] associated with the [RemoteService] in the given [Flow]
  */
-fun Flow<RemoteService?>.characteristics(): Flow<List<RemoteCharacteristic>> = this.mapLatest { service -> service?.characteristics ?: emptyList() }.distinctUntilChanged()
-fun Flow<RemoteService?>.includedServices(): Flow<List<RemoteService>> = this.mapLatest { service -> service?.includedServices ?: emptyList() }.distinctUntilChanged()
+fun Flow<RemoteService?>.characteristics(): Flow<List<RemoteCharacteristic>> = mapLatest { service -> service?.characteristics ?: emptyList() }.distinctUntilChanged()
+fun Flow<RemoteService?>.includedServices(): Flow<List<RemoteService>> = mapLatest { service -> service?.includedServices ?: emptyList() }.distinctUntilChanged()
 
 /**
  * Gets a ([Flow] of) the list [RemoteDescriptor] associated with the [RemoteCharacteristic] in a [Flow]
  * @return the [Flow] of the list of [RemoteDescriptor] associated with the [RemoteCharacteristic] in the given [Flow]
  */
-fun Flow<RemoteCharacteristic?>.descriptors(): Flow<List<RemoteDescriptor>> = this.mapLatest { characteristic -> characteristic?.descriptors ?: emptyList() }.distinctUntilChanged()
+fun Flow<RemoteCharacteristic?>.descriptors(): Flow<List<RemoteDescriptor>> = mapLatest { characteristic -> characteristic?.descriptors ?: emptyList() }.distinctUntilChanged()
 
 /**
  * Gets a ([Flow] of) the [ByteArray] value from a [Flow] of an [RemoteCharacteristic]
  * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
  * @return the [Flow] of the [ByteArray] value of the [RemoteCharacteristic] in the given [Flow]
  */
-fun Flow<RemoteCharacteristic?>.value(): Flow<ByteArray> = this.distinctUntilChanged().flatMapLatest { characteristic ->
-    characteristic?.let { characteristic ->
-        flow {
-            val valueChannel = Channel<ByteArray>(Channel.UNLIMITED)
-            val subscription = characteristic.subscribe {
-                valueChannel.trySend(it)
-            }
-            try {
-                emitAll(valueChannel)
-            } finally {
-                withContext(NonCancellable) {
-                    subscription.unsubscribe()
-                }
-            }
+fun Flow<RemoteCharacteristic?>.value(): Flow<ByteArray> = distinctUntilChanged().flatMapLatest { characteristic ->
+    characteristic?.value() ?: emptyFlow()
+}
+
+fun RemoteCharacteristic.value(): Flow<ByteArray> = flow {
+    val valueChannel = Channel<ByteArray>(Channel.UNLIMITED)
+    val subscription = subscribe {
+        valueChannel.trySend(it)
+    }
+    try {
+        emitAll(valueChannel)
+    } finally {
+        withContext(NonCancellable) {
+            subscription.unsubscribe()
         }
-    } ?: emptyFlow()
+    }
 }

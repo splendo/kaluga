@@ -61,9 +61,12 @@ sealed interface GattResponse {
         override val statusCode: Int = -1
     }
 
+    sealed interface ReadError : ReadResponse
+    sealed interface WriteError : WriteResponse
+
     sealed interface Error :
-        ReadResponse,
-        WriteResponse {
+        ReadError,
+        WriteError {
 
         companion object {
             fun from(value: Int): Error = when (value) {
@@ -174,7 +177,7 @@ sealed interface GattResponse {
         override val statusCode: Int = 0xFF
     }
 
-    data object DeviceUnavailable : WriteResponse, ReadResponse {
+    data object DeviceUnavailable : WriteError, ReadError {
         override val statusCode: Int = -1
     }
 

@@ -57,7 +57,7 @@ open class RemoteCharacteristic(
         private val onUnsubscribe: suspend Subscription.() -> DeviceAction.Notification?,
         val hasSubscribedSuccessfully: Deferred<GattResponse.WriteResponse>,
     ) {
-        suspend fun unsubscribe(): Deferred<GattResponse.WriteResponse> = onUnsubscribe()?.completedSuccessfully ?: CompletableDeferred(GattResponse.WriteSuccess)
+        suspend fun unsubscribe(): Deferred<GattResponse.WriteResponse> = onUnsubscribe()?.response ?: CompletableDeferred(GattResponse.WriteSuccess)
     }
 
     private val isBusy = MutableStateFlow(false)
@@ -88,7 +88,7 @@ open class RemoteCharacteristic(
     suspend fun subscribe(onUpdate: (ByteArray) -> Unit): Subscription = Subscription(
         onUpdate,
         { unsubscribe(this) },
-        enableNotification()?.completedSuccessfully ?: CompletableDeferred(GattResponse.WriteSuccess),
+        enableNotification()?.response ?: CompletableDeferred(GattResponse.WriteSuccess),
     ).also { subscription ->
         lastKnownValue?.let {
             subscription.onUpdate(it)
@@ -105,8 +105,8 @@ open class RemoteCharacteristic(
         val action = createNotificationAction(enabled = true)
         if (hasAnyProperty(setOf(CharacteristicProperty.Notify, CharacteristicProperty.Indicate))) {
             addAction(action)
-            action.completedSuccessfully.invokeOnCompletion {
-                if (it == null && action.completedSuccessfully.getCompleted() is GattResponse.WriteSuccess) {
+            action.response.invokeOnCompletion {
+                if (it == null && action.response.getCompleted() is GattResponse.WriteSuccess) {
                     isNotifying = true
                 }
                 isBusy.compareAndSet(expect = true, update = false)
@@ -150,8 +150,8 @@ open class RemoteCharacteristic(
         val action = createNotificationAction(enabled = false)
         if (hasAnyProperty(setOf(CharacteristicProperty.Notify, CharacteristicProperty.Indicate))) {
             addAction(action)
-            action.completedSuccessfully.invokeOnCompletion {
-                if (it == null && action.completedSuccessfully.getCompleted() is GattResponse.WriteSuccess) {
+            action.response.invokeOnCompletion {
+                if (it == null && action.response.getCompleted() is GattResponse.WriteSuccess) {
                     isNotifying = false
                 }
                 isBusy.compareAndSet(expect = true, update = false)

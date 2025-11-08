@@ -59,7 +59,7 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
      */
     fun readValue(): ReadAction {
         val action = createReadAction()
-        if (!action.completedSuccessfully.isCompleted) {
+        if (!action.response.isCompleted) {
             addAction(action)
         }
         return action
@@ -74,7 +74,7 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
      */
     fun writeValue(newValue: ByteArray): WriteAction {
         val action = createWriteAction(newValue)
-        if (!action.completedSuccessfully.isCompleted) {
+        if (!action.response.isCompleted) {
             addAction(action)
         }
         return action

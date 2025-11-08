@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.bluetooth
 
+import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.rawValue
 import com.splendo.kaluga.bluetooth.uuidFrom
 import kotlin.test.Test
@@ -35,7 +36,7 @@ class ServiceWrapperBuilderTest {
             characteristics {
                 characteristic {
                     uuid = characteristicUUID
-                    properties = 0x42
+                    properties += CharacteristicProperty.fromInt(0x42)
                     descriptors {
                         descriptor(descriptorUUID)
                     }

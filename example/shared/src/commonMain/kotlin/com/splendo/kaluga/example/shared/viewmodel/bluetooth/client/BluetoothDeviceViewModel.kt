@@ -46,6 +46,8 @@ import com.splendo.kaluga.bluetooth.updateRssi
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.example.shared.stylable.TextStyles
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothSpec
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.warn
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.resources.view.KalugaLabel
@@ -118,29 +120,44 @@ class BluetoothDeviceViewModel(identifier: Identifier) :
             bind(device, coroutineScope) {
                 service(BluetoothSpec.HeartRateService.UUID) {
                     characteristic(BluetoothSpec.HeartRateService.HEART_RATE_MEASUREMENT_CHARACTERISTIC) {
-                        observe { measurementValue ->
-                            val valueEncodedAsShort = measurementValue.isBitSet(0)
-                            heartRateState.value = if (valueEncodedAsShort) {
-                                measurementValue.decodeUShort(2, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
-                            } else {
-                                measurementValue[2].toInt()
-                            }(BeatsPerMinute)
+                        observe {
+                            onNotification { measurementValue ->
+                                val valueEncodedAsShort = measurementValue.isBitSet(0)
+                                heartRateState.value = if (valueEncodedAsShort) {
+                                    measurementValue.decodeUShort(2, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
+                                } else {
+                                    measurementValue[2].toInt()
+                                }(BeatsPerMinute)
 
-                            isPositionVisibleState.value = measurementValue.isBitSet(2)
-                            energyExpendedState.value = if (measurementValue.isBitSet(1)) {
-                                measurementValue.decodeUShort(if (valueEncodedAsShort) 4 else 3, ByteOrder.LEAST_SIGNIFICANT_FIRST).toDouble()
-                            } else {
-                                Double.NaN
-                            }(Kilojoule)
+                                isPositionVisibleState.value = measurementValue.isBitSet(2)
+                                energyExpendedState.value = if (measurementValue.isBitSet(1)) {
+                                    measurementValue.decodeUShort(if (valueEncodedAsShort) 4 else 3, ByteOrder.LEAST_SIGNIFICANT_FIRST).toDouble()
+                                } else {
+                                    Double.NaN
+                                }(Kilojoule)
+                            }
                         }
                     }
                     characteristic(BluetoothSpec.HeartRateService.SENSOR_LOCATION_CHARACTERISTIC) {
-                        requestPositionUpdate.collectAsRead(onRead = { value ->
-                            BluetoothSpec.SensorLocation.from(value[0])
-                        })
+                        requestPositionUpdate.collectToTriggerRead<BluetoothSpec.SensorLocation?>({ BluetoothSpec.SensorLocation.from(first()) }) {
+                            onRead { value ->
+                                positionState.value = value
+                            }
+                            onFailedToRead { error ->
+                                warn { "Failed to read Sensor Location. Reason $error" }
+                                positionState.value = null
+                            }
+                        }
                     }
                     characteristic(BluetoothSpec.HeartRateService.HEART_RATE_CONTROL_POINT_CHARACTERISTIC) {
-                        requestReset.collectAsWrite(asByte = { byteArrayOf(0x01) })
+                        requestReset.collectToTriggerWrite(asByte = { byteArrayOf(0x01) }) {
+                            onWrite {
+                                debug { "Did Write Heart Rate Control Point" }
+                            }
+                            onFailedToWrite { _, error ->
+                                warn { "Failed to write Heart Rate Control Point. Reason $error" }
+                            }
+                        }
                     }
                 }
             }
