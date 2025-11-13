@@ -37,6 +37,7 @@ import com.splendo.kaluga.test.base.mock.singleParametersMock
 import com.splendo.kaluga.test.bluetooth.MockCharacteristicWrapper
 import com.splendo.kaluga.test.bluetooth.MockDescriptorWrapper
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 
 /**
  * Mock implementation of [BaseDeviceConnectionManager]
@@ -170,43 +171,51 @@ class MockDeviceConnectionManager(
     override suspend fun didStartPerformingAction(action: DeviceAction<*>): Unit = performActionMock.call(action)
 
     suspend fun handleCurrentAction() {
-        currentAction?.let { action ->
-            debug("Handle $action")
-            when (action) {
-                is DeviceAction.Read.Characteristic -> {
-                    val value = (action.characteristic.wrapper as MockCharacteristicWrapper).value
-                    debug("Mock Read: ${action.characteristic.uuid} value ${value?.toHexString()}")
-                    handleCharacteristicReadOrNotified(
-                        action.characteristic.uuid,
-                        if (willActionSucceed && value != null) GattResponse.ReadSuccess(value) else GattResponse.ReadNotPermitted,
-                    )
-                }
-                is DeviceAction.Read.Descriptor -> {
-                    val value = (action.descriptor.wrapper as MockDescriptorWrapper).value
-                    debug("Mock Read: ${action.descriptor.uuid} value ${value?.toHexString()}")
-                    handleDescriptorRead(
-                        action.descriptor.uuid,
-                        if (willActionSucceed && value != null) GattResponse.ReadSuccess(value) else GattResponse.ReadNotPermitted,
-                    )
-                }
-                is DeviceAction.Write.Characteristic -> {
-                    (action.characteristic.wrapper as MockCharacteristicWrapper).updateValue(
-                        action.newValue,
-                    )
-                    handleCharacteristicWritten(action.characteristic.uuid, if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
-                    debug("Mock Write: ${action.characteristic.uuid} value ${action.newValue.toHexString()}")
-                }
-                is DeviceAction.Write.Descriptor -> {
-                    (action.descriptor.wrapper as MockDescriptorWrapper).updateValue(
-                        action.newValue,
-                    )
-                    handleDescriptorWritten(action.descriptor.uuid, if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
-                    debug("Mock Write: ${action.descriptor.uuid} value ${action.newValue.toHexString()}")
-                }
-                is DeviceAction.Notification -> action.handleNotificationStateChanged(if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
-
-                is DeviceAction.RequestMtu -> handleNewMtu(if (willActionSucceed) GattResponse.MTUSuccess(action.mtu) else GattResponse.MTUNotPermitted(action.mtu))
+        lateinit var action: DeviceAction<*>
+        do {
+            val success = currentAction?.let {
+                action = it
+                true
+            } ?: run {
+                delay(100)
+                false
             }
+        } while (!success)
+        debug("Handle $action")
+        when (action) {
+            is DeviceAction.Read.Characteristic -> {
+                val value = (action.characteristic.wrapper as MockCharacteristicWrapper).value
+                debug("Mock Read: ${action.characteristic.uuid} value ${value?.toHexString()}")
+                handleCharacteristicReadOrNotified(
+                    action.characteristic.uuid,
+                    if (willActionSucceed && value != null) GattResponse.ReadSuccess(value) else GattResponse.ReadNotPermitted,
+                )
+            }
+            is DeviceAction.Read.Descriptor -> {
+                val value = (action.descriptor.wrapper as MockDescriptorWrapper).value
+                debug("Mock Read: ${action.descriptor.uuid} value ${value?.toHexString()}")
+                handleDescriptorRead(
+                    action.descriptor.uuid,
+                    if (willActionSucceed && value != null) GattResponse.ReadSuccess(value) else GattResponse.ReadNotPermitted,
+                )
+            }
+            is DeviceAction.Write.Characteristic -> {
+                (action.characteristic.wrapper as MockCharacteristicWrapper).updateValue(
+                    action.newValue,
+                )
+                handleCharacteristicWritten(action.characteristic.uuid, if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
+                debug("Mock Write: ${action.characteristic.uuid} value ${action.newValue.toHexString()}")
+            }
+            is DeviceAction.Write.Descriptor -> {
+                (action.descriptor.wrapper as MockDescriptorWrapper).updateValue(
+                    action.newValue,
+                )
+                handleDescriptorWritten(action.descriptor.uuid, if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
+                debug("Mock Write: ${action.descriptor.uuid} value ${action.newValue.toHexString()}")
+            }
+            is DeviceAction.Notification -> action.handleNotificationStateChanged(if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
+
+            is DeviceAction.RequestMtu -> handleNewMtu(if (willActionSucceed) GattResponse.MTUSuccess(action.mtu) else GattResponse.MTUNotPermitted(action.mtu))
         }
     }
 

@@ -18,9 +18,10 @@
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth.client
 
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
+import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.text.format
@@ -56,8 +57,6 @@ import com.splendo.kaluga.scientific.invoke
 import com.splendo.kaluga.scientific.unit.BeatsPerMinute
 import com.splendo.kaluga.scientific.unit.Kilojoule
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -73,8 +72,8 @@ class DeviceDetails(value: Identifier) :
         NavigationBundleSpecType.SerializedType(SerializableIdentifier.serializer()),
     )
 
-class BluetoothDeviceViewModel(identifier: Identifier) :
-    BaseLifecycleViewModel(),
+class BluetoothDeviceViewModel(identifier: Identifier, navigator: Navigator<CloseNavigationAction>) :
+    NavigatingViewModel<BluetoothDeviceViewModel.CloseNavigationAction>(navigator),
     KoinComponent {
 
     companion object {
@@ -86,6 +85,8 @@ class BluetoothDeviceViewModel(identifier: Identifier) :
             }
         })
     }
+
+    object CloseNavigationAction : SingleValueNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
 
     class HeartRateViewModel(coroutineScope: CoroutineScope, device: Flow<ConnectableDevice?>) {
 
@@ -195,10 +196,10 @@ class BluetoothDeviceViewModel(identifier: Identifier) :
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        CoroutineScope(Dispatchers.IO).launch {
+    fun close() {
+        coroutineScope.launch {
             device.disconnect()
+            navigator.navigate(CloseNavigationAction)
         }
     }
 }

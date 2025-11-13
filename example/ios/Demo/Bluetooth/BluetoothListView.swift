@@ -1,12 +1,12 @@
 //
-//  Copyright 2023 Splendo Consulting B.V. The Netherlands
-// 
+//  Copyright 2025 Splendo Consulting B.V. The Netherlands
+//
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
 //    You may obtain a copy of the License at
-// 
+//
 //      http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 //    Unless required by applicable law or agreed to in writing, software
 //    distributed under the License is distributed on an "AS IS" BASIS,
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,90 +18,71 @@ import SwiftUI
 import KalugaExampleShared
 
 struct BluetoothListView: View {
-    
-    private let lifecycleViewModel: LifecycleViewModel<BluetoothListViewModel>
-    private let router = Router()
-    @ObservedObject private var deviceRoute = IdentifiableObjectRoutingState<DeviceRoute>()
-    
-    @ObservedObject private var title: StringObservable
-    @ObservedObject private var isScanning: BoolObservable
-    @ObservedObject private var pairedDevices: ListObservable<BluetoothListDeviceViewModel>
-    @ObservedObject private var scannedDevices: ListObservable<BluetoothListDeviceViewModel>
-    
+
+    @ObservedObject var navigationState = ObjectRoutingState<Route>()
+    @ObservedObject var bluetooth: ListObservable<Bluetooth>
+    let lifecycleViewModel: LifecycleViewModel<BluetoothListViewModel>
+    let router = Router()
+
     init() {
-        let containerView = ContainerView(.alert)
-        let viewModel = BluetoothListViewModel(alertPresenterBuilder: containerView.alertBuilder, navigator: router.navigator)
-        
-        title = StringObservable(viewModel.title)
-        isScanning = BoolObservable(viewModel.isScanning)
-        
-        pairedDevices = ListObservable(viewModel.pairedDevices)
-        scannedDevices = ListObservable(viewModel.scannedDevices)
-        
-        lifecycleViewModel = LifecycleViewModel(viewModel, containerView: containerView)
+
+        let viewModel = BluetoothListViewModel(navigator: router.defaultNavigator)
+        bluetooth = ListObservable(viewModel.bluetooth)
+        lifecycleViewModel = LifecycleViewModel(viewModel)
     }
-    
+
     var body: some View {
-        router.deviceRoutingState = deviceRoute
-        return generateBody()
+        router.nextRouter = navigationState
+        return generateBody().navigationTitle("feature_bluetooth".localized())
     }
-    
+
     func generateBody() -> some View {
         lifecycleViewModel.lifecycleView { viewModel in
             ScrollView {
-                VStack(alignment: .leading) {
-                    Text("Paired").textStyle(TextStyles.shared.defaultTitle)
-                    ForEach(pairedDevices.value, id: \.self) { device in
-                        deviceView(device: device)
-                    }
-                    Text("Discovered").textStyle(TextStyles.shared.defaultTitle)
-                    ForEach(scannedDevices.value, id: \.self) { device in
-                        deviceView(device: device)
-                    }
-                }.padding(8).frame(maxWidth: .infinity, alignment: .leading)
-            }.navigationTitle(title.value).navigationBarItems(
-                trailing: Button(
-                    isScanning.value ? "bluetooth_stop_scanning" : "bluetooth_start_scanning"
-                ) { viewModel.onScanPressed() }
-            )
-        }
-    }
-    
-    private func deviceView(device: BluetoothListDeviceViewModel) -> some View {
-        BluetoothListDeviceView(viewModel: device)
-            .navigation(
-                state: deviceRoute,
-                id: device.identifierString,
-                type: .sheet,
-                didSelect: { },
-                content: { route in
-                    if let object = route.object {
-                        switch object {
-                        case .details(let uuid): BluetoothDeviceDetailsView(identifier: uuid).equatable()
+                VStack(spacing: 10.0) {
+                    ForEach(bluetooth.value, id: \.self) { bluetooth in
+                        Button(bluetooth.title) {
+                            viewModel.onBluetoothSelected(bluetooth: bluetooth)
                         }
                     }
                 }
-            )
+            }
+            .navigation(state: navigationState, type: .push) { state in
+                switch state.object {
+                case .client: BluetoothDeviceListView()
+                case .server: BluetoothServerView {
+                    state.close()
+                }
+                default: EmptyView()
+                }
+            }
+        }
     }
 }
 
 extension BluetoothListView {
-    enum DeviceRoute: Identifiable, Equatable {
-        var id: String {
-            switch self {
-            case .details(let uuid): return uuid.uuidString
-            }
-        }
-        
-        case details(uuid: UUID)
+    enum Route: Equatable {
+        case client
+        case server
     }
-    
+
     class Router {
-        var deviceRoutingState: IdentifiableObjectRoutingState<DeviceRoute>?
-        lazy var navigator = BluetoothListNavigatorKt.BluetoothListNavigator { uuid in
-            self.deviceRoutingState?.show(.details(uuid: uuid))
+
+        var nextRouter: ObjectRoutingState<Route>?
+        lazy var defaultNavigator: DefaultNavigator<BluetoothListNavigationAction> = DefaultNavigator { [weak self] action in
+            self?.nextRouter?.show(action.route)
         }
     }
+}
+
+extension BluetoothListNavigationAction {
+    var route: BluetoothListView.Route {
+        switch self {
+        case is BluetoothListNavigationAction.Server: return .server
+        case is BluetoothListNavigationAction.Client: return .client
+        default: fatalError("Unknown action \(self)")
+        }
+     }
 }
 
 struct BluetoothListView_Previews: PreviewProvider {

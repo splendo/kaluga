@@ -24,9 +24,9 @@ class BluetoothListViewModel(navigator: Navigator<BluetoothListNavigationAction>
 
     val bluetooth = observableOf(Bluetooth.entries)
 
-    fun onBluetoothSelected(resource: Bluetooth) {
+    fun onBluetoothSelected(bluetooth: Bluetooth) {
         navigator.navigate(
-            when (resource) {
+            when (bluetooth) {
                 Bluetooth.SERVER -> BluetoothListNavigationAction.Server
                 Bluetooth.CLIENT -> BluetoothListNavigationAction.Client
             },

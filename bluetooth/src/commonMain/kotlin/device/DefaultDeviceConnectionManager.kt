@@ -275,6 +275,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     }
 
     protected fun handleNewMtu(response: GattResponse.MTUResponse) {
+        println("Handle new MTU $response")
         logger.debug { "Updated Mtu $response" }
         val action = currentAction
         if (action is DeviceAction.RequestMtu) {

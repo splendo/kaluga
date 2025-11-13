@@ -17,9 +17,12 @@
 
 package com.splendo.kaluga.example.bluetooth.client
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,18 +33,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import com.splendo.kaluga.architecture.compose.navigation.NavHostComposableNavigator
+import com.splendo.kaluga.architecture.compose.navigation.back
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
-import com.splendo.kaluga.bluetooth.state
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.client.BluetoothDeviceViewModel
 import com.splendo.kaluga.resources.compose.Composable
+import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun BluetoothDeviceLayout(identifier: String) {
-    val viewModel = koinViewModel<BluetoothDeviceViewModel> { parametersOf(identifier) }
+fun BluetoothDeviceLayout(identifier: String, navHostController: StateFlow<NavHostController?>) {
+    val viewModel = koinViewModel<BluetoothDeviceViewModel> {
+        parametersOf(
+            identifier,
+            NavHostComposableNavigator<BluetoothDeviceViewModel.CloseNavigationAction>(navHostController) {
+                it.back
+            }
+        ) }
+
+    BackHandler(onBack = viewModel::close)
 
     ViewModelComposable(viewModel) {
         Scaffold(
@@ -80,14 +93,16 @@ fun BluetoothDeviceViewModel.HeartRateViewModel.Layout() {
     Column(Modifier.padding(8.dp)) {
         heartRate.Composable()
         if (isEnergyExpendedVisible) {
-            Row(Modifier.fillMaxWidth()) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 energyExpended.Composable()
                 resetEnergyExpandedButton.Composable()
             }
         }
         if (isPositionVisible) {
-            position.Composable()
-            refreshPositionButton.Composable()
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                position.Composable()
+                refreshPositionButton.Composable()
+            }
         }
     }
 }

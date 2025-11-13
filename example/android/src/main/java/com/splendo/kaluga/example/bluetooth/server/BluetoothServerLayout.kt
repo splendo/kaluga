@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.example.bluetooth.server
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,15 +30,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.splendo.kaluga.architecture.compose.navigation.NavHostComposableNavigator
+import com.splendo.kaluga.architecture.compose.navigation.back
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.client.BluetoothDeviceViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.server.BluetoothServerViewModel
 import com.splendo.kaluga.resources.compose.Composable
+import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun BluetoothServerLayout() {
-    val viewModel = koinViewModel<BluetoothServerViewModel>()
+fun BluetoothServerLayout(navHostController: StateFlow<NavHostController?>) {
+    val viewModel = koinViewModel<BluetoothServerViewModel> {
+        parametersOf(
+            NavHostComposableNavigator<BluetoothServerViewModel.CloseNavigationAction>(navHostController) {
+                it.back
+            }
+        )
+    }
+
+    BackHandler(onBack = viewModel::close)
+
     ViewModelComposable(viewModel) {
         Column(
             modifier = Modifier.fillMaxWidth()

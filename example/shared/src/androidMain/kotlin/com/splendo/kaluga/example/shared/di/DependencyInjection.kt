@@ -197,16 +197,16 @@ internal val androidModule = module {
     viewModel { (navigator: Navigator<BluetoothListNavigationAction>) ->
         BluetoothListViewModel(navigator)
     }
-    viewModel {
-        BluetoothServerViewModel(AlertPresenter.Builder())
+    viewModel { (navigator: Navigator<BluetoothServerViewModel.CloseNavigationAction>) ->
+        BluetoothServerViewModel(AlertPresenter.Builder(), navigator)
     }
 
     viewModel { (navigator: Navigator<DeviceDetails>) ->
         BluetoothDeviceListViewModel(AlertPresenter.Builder(), navigator)
     }
 
-    viewModel { (identifier: Identifier) ->
-        BluetoothDeviceViewModel(identifier)
+    viewModel { (identifier: Identifier, navigator: Navigator<BluetoothDeviceViewModel.CloseNavigationAction>) ->
+        BluetoothDeviceViewModel(identifier, navigator)
     }
 
     viewModel {

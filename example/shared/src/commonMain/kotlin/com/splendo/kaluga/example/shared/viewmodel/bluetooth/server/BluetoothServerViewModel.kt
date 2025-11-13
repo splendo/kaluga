@@ -20,8 +20,11 @@ package com.splendo.kaluga.example.shared.viewmodel.bluetooth.server
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.alerts.buildActionSheet
+import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
+import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
+import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.utils.buildByteArray
@@ -55,8 +58,8 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import kotlin.time.Duration.Companion.seconds
 
-class BluetoothServerViewModel(private val alertPresenter: BaseAlertPresenter.Builder) :
-    BaseLifecycleViewModel(),
+class BluetoothServerViewModel(private val alertPresenter: BaseAlertPresenter.Builder, navigator: Navigator<CloseNavigationAction>) :
+    NavigatingViewModel<BluetoothServerViewModel.CloseNavigationAction>(navigator, alertPresenter),
     KoinComponent {
 
     companion object {
@@ -84,6 +87,8 @@ class BluetoothServerViewModel(private val alertPresenter: BaseAlertPresenter.Bu
             }
         })
     }
+
+    object CloseNavigationAction : SingleValueNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType)
 
     val bluetoothServer = coroutineScope.async {
         get<BluetoothBuilder>().createServer(
@@ -184,8 +189,8 @@ class BluetoothServerViewModel(private val alertPresenter: BaseAlertPresenter.Bu
         }
     }
 
-    override fun onCleared() {
+    fun close() {
         bluetoothServer.getCompletedOrNull()?.close()
-        super.onCleared()
+        navigator.navigate(CloseNavigationAction)
     }
 }

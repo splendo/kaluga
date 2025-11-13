@@ -1,5 +1,5 @@
 /*
- Copyright 2023 Splendo Consulting B.V. The Netherlands
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,18 +15,11 @@
 
  */
 
-package com.splendo.kaluga.example.shared.viewmodel.bluetooth
+package com.splendo.kaluga.example.shared.viewmodel.bluetooth.client
 
 import com.splendo.kaluga.architecture.navigation.DefaultNavigator
+import platform.Foundation.NSUUID
 
-interface IOSBluetoothListNavigator {
-    fun onClientPressed()
-    fun onServerPressed()
-}
-
-fun BluetoothListNavigator(iosNavigator: IOSBluetoothListNavigator) = DefaultNavigator<BluetoothListNavigationAction> { action ->
-    when (action) {
-        is BluetoothListNavigationAction.Client -> iosNavigator.onClientPressed()
-        is BluetoothListNavigationAction.Server -> iosNavigator.onServerPressed()
-    }
+fun BluetoothDeviceListNavigator(onDetailsPressed: (NSUUID) -> Unit) = DefaultNavigator<DeviceDetails> { action ->
+    onDetailsPressed(action.value.identifier)
 }

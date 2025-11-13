@@ -87,12 +87,12 @@ fun BluetoothLayout() {
                         }
                     }
                 ) { navigationState ->
-                    composable(BluetoothListNavigationAction.Server.route()) { BluetoothServerLayout() }
+                    composable(BluetoothListNavigationAction.Server.route()) { BluetoothServerLayout(navigationState) }
                     composable(BluetoothListNavigationAction.Client.route()) {
                         BluetoothDeviceListLayout(navigationState)
                     }
                     composable<SerializableIdentifier, DeviceDetails>(SerializableIdentifier.serializer()) { identifier ->
-                        BluetoothDeviceLayout(identifier.identifier)
+                        BluetoothDeviceLayout(identifier.identifier, navigationState)
                     }
                 }
             )

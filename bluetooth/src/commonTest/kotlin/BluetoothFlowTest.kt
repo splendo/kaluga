@@ -222,7 +222,6 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
         }
 
         suspend fun discoverService(service: RemoteService, device: ConnectableDevice, connectionManager: MockDeviceConnectionManager) {
-            println("Discover")
             device.state.filter { it is ConnectableDeviceState.Connected.Discovering }.first()
             connectionManager.discover(listOf(service))
         }
