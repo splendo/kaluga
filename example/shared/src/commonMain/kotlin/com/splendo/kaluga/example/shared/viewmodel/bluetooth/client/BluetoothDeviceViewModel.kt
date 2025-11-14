@@ -125,14 +125,14 @@ class BluetoothDeviceViewModel(identifier: Identifier, navigator: Navigator<Clos
                             onNotification { measurementValue ->
                                 val valueEncodedAsShort = measurementValue.isBitSet(0)
                                 heartRateState.value = if (valueEncodedAsShort) {
-                                    measurementValue.decodeUShort(2, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
+                                    measurementValue.decodeUShort(1, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
                                 } else {
-                                    measurementValue[2].toInt()
+                                    measurementValue[1].toInt()
                                 }(BeatsPerMinute)
 
                                 isPositionVisibleState.value = measurementValue.isBitSet(2)
                                 energyExpendedState.value = if (measurementValue.isBitSet(1)) {
-                                    measurementValue.decodeUShort(if (valueEncodedAsShort) 4 else 3, ByteOrder.LEAST_SIGNIFICANT_FIRST).toDouble()
+                                    measurementValue.decodeUShort(if (valueEncodedAsShort) 3 else 2, ByteOrder.LEAST_SIGNIFICANT_FIRST).toDouble()
                                 } else {
                                     Double.NaN
                                 }(Kilojoule)

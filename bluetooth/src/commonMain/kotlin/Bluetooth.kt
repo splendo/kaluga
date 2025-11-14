@@ -37,6 +37,7 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.bluetooth.server.BluetoothServer
 import com.splendo.kaluga.bluetooth.server.BluetoothServerDSL
 import com.splendo.kaluga.bluetooth.server.ServerSettings
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.base.Permissions
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName

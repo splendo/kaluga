@@ -23,7 +23,7 @@ struct BluetoothDeviceListView : View {
     @ObservedObject private var deviceRoute = IdentifiableObjectRoutingState<DeviceRoute>()
     
     @ObservedObject private var title: StringObservable
-        @ObservedObject private var isScanning: BoolObservable
+    @ObservedObject private var isScanning: BoolObservable
     @ObservedObject private var pairedDevices: ListObservable<BluetoothDeviceListViewModel.DeviceViewModel>
         @ObservedObject private var scannedDevices: ListObservable<BluetoothDeviceListViewModel.DeviceViewModel>
     
@@ -71,14 +71,12 @@ struct BluetoothDeviceListView : View {
             .navigation(
                 state: deviceRoute,
                 id: device.identifierString,
-                type: .sheet,
+                type: .fullscreen,
                 didSelect: { },
                 content: { route in
                     if let object = route.object {
                         switch object {
-                        case .details(let uuid): BluetoothDeviceView(identifier: uuid) {
-                            route.close()
-                        }
+                        case .details(let uuid): BluetoothDeviceView(identifier: uuid).equatable().environmentObject(route)
                         }
                     }
                 }

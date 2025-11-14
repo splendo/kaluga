@@ -23,6 +23,7 @@ struct BluetoothListView: View {
     @ObservedObject var bluetooth: ListObservable<Bluetooth>
     let lifecycleViewModel: LifecycleViewModel<BluetoothListViewModel>
     let router = Router()
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 
     init() {
 
@@ -33,7 +34,7 @@ struct BluetoothListView: View {
 
     var body: some View {
         router.nextRouter = navigationState
-        return generateBody().navigationTitle("feature_bluetooth".localized())
+        return generateBody()
     }
 
     func generateBody() -> some View {
@@ -47,6 +48,7 @@ struct BluetoothListView: View {
                     }
                 }
             }
+            .navigationTitle("feature_bluetooth".localized())
             .navigation(state: navigationState, type: .push) { state in
                 switch state.object {
                 case .client: BluetoothDeviceListView()

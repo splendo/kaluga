@@ -74,14 +74,14 @@ actual interface RemoteCharacteristicWrapper {
  * Default implementation of [RemoteCharacteristicWrapper]
  * @param characteristic the [CBCharacteristic] to wrap
  */
-class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic) : RemoteCharacteristicWrapper {
+class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic, override val service: RemoteServiceWrapper) : RemoteCharacteristicWrapper {
 
     override val uuid: CBUUID get() {
         return characteristic.UUID
     }
-    override val service: RemoteServiceWrapper = DefaultServiceWrapper(characteristic.service!!)
-    override val descriptors: List<RemoteDescriptorWrapper> =
-        characteristic.descriptors?.typedList<CBDescriptor>()?.map { DefaultDescriptorWrapper(it, DefaultCharacteristicWrapper(characteristic)) } ?: emptyList()
+    override val descriptors: List<RemoteDescriptorWrapper> by lazy {
+        characteristic.descriptors?.typedList<CBDescriptor>()?.map { DefaultDescriptorWrapper(it, this) } ?: emptyList()
+    }
     override val properties get() = CharacteristicProperty.fromInt(characteristic.properties.toInt())
 
     override fun readValue(peripheral: CBPeripheral) {

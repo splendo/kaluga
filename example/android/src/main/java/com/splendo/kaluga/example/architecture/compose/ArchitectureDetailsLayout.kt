@@ -18,7 +18,11 @@
 package com.splendo.kaluga.example.architecture.compose
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,7 +56,8 @@ fun ArchitectureDetailsLayout(inputDetails: InputDetails, bottomSheetNavigatorSt
         val nameText by name.state()
         val numberText by number.state()
         HardwareBackButtonNavigation(onBackButtonClickHandler = { onBackPressed() })
-        Column(Modifier.fillMaxWidth()) {
+        Column(Modifier.fillMaxWidth()
+            .padding(WindowInsets.systemBars.asPaddingValues())) {
             Text(nameText)
             Text(numberText)
             inverseButton.Composable(modifier = Modifier.fillMaxWidth())

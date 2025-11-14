@@ -44,6 +44,7 @@ import com.splendo.kaluga.bluetooth.rssi
 import com.splendo.kaluga.bluetooth.state
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothSpec
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.defaultLogger
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton
@@ -161,7 +162,6 @@ class BluetoothDeviceListViewModel(private val alertPresenterBuilder: AlertPrese
                 }
                 setMessage("Select Clean Mode")
                 setPositiveButton("Retain All")
-                setNeutralButton("Clean Only Provided Filter")
                 setNegativeButton("Remove All")
             }.show()
             val cleanMode = when (action?.style) {
@@ -171,7 +171,7 @@ class BluetoothDeviceListViewModel(private val alertPresenterBuilder: AlertPrese
                 -> BluetoothService.CleanMode.RETAIN_ALL
                 Alert.Action.Style.DESTRUCTIVE,
                 Alert.Action.Style.NEUTRAL,
-                -> BluetoothService.CleanMode.ONLY_PROVIDED_FILTER
+                -> return@launch
                 Alert.Action.Style.CANCEL,
                 Alert.Action.Style.NEGATIVE,
                 -> BluetoothService.CleanMode.REMOVE_ALL

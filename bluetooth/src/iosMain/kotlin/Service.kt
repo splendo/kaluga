@@ -46,7 +46,7 @@ actual interface RemoteServiceWrapper {
  * Default implementation of [RemoteServiceWrapper]
  * @param service the [CBService] to wrap
  */
-class DefaultServiceWrapper(service: CBService) : RemoteServiceWrapper {
+class DefaultServiceWrapper(val service: CBService) : RemoteServiceWrapper {
 
     override val uuid: CBUUID = service.UUID
     override val type: Service.Type = if (service.isPrimary) {
@@ -54,6 +54,6 @@ class DefaultServiceWrapper(service: CBService) : RemoteServiceWrapper {
     } else {
         Service.Type.SECONDARY
     }
-    override val includedServices: List<RemoteServiceWrapper> = service.includedServices.orEmpty().typedList<CBService>().map { DefaultServiceWrapper(it) }
-    override val characteristics: List<RemoteCharacteristicWrapper> = service.characteristics.orEmpty().typedList<CBCharacteristic>().map { DefaultCharacteristicWrapper(it) }
+    override val includedServices: List<RemoteServiceWrapper> by lazy { service.includedServices.orEmpty().typedList<CBService>().map { DefaultServiceWrapper(it) } }
+    override val characteristics: List<RemoteCharacteristicWrapper> by lazy { service.characteristics.orEmpty().typedList<CBCharacteristic>().map { DefaultCharacteristicWrapper(it, this) } }
 }

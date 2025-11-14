@@ -24,6 +24,7 @@ import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.characteristics
 import com.splendo.kaluga.bluetooth.descriptors
+import com.splendo.kaluga.bluetooth.discoveredServices
 import com.splendo.kaluga.bluetooth.filterDiscovering
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.getOrNull
@@ -447,7 +448,7 @@ private sealed class ConnectedDeviceBindingImpl<T>(protected val callingScope: M
         override fun service(uuid: UUID, binding: RemoteServiceBinding.RequiresServicesDiscovered<T>.() -> Unit) {
             val serviceBinding = RemoteServiceBindingImpl.RequiresServicesDiscovered(
                 callingScope,
-                device.services()[uuid],
+                device.discoveredServices()[uuid],
                 onServicesDiscoveredActions,
                 onServicesUndiscoveredActions,
                 scope,
@@ -460,7 +461,7 @@ private sealed class ConnectedDeviceBindingImpl<T>(protected val callingScope: M
         override fun <R> R.bindService(uuid: UUID, update: T.(R) -> T, binding: RemoteServiceBinding.RequiresServicesDiscovered<R>.() -> Unit) {
             val serviceBinding = RemoteServiceBindingImpl.RequiresServicesDiscovered(
                 MutableStateFlow(this),
-                device.services()[uuid],
+                device.discoveredServices()[uuid],
                 onServicesDiscoveredActions,
                 onServicesUndiscoveredActions,
                 scope,

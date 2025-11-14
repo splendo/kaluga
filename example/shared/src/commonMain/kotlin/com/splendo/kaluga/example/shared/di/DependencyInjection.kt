@@ -43,7 +43,7 @@ typealias BluetoothBuilderBuilder = (suspend (CoroutineContext) -> Permissions) 
 /*
     Switch this value to use the location permission on Android when using bluetooth.
  */
-const val USE_LOCATION_FOR_BLUETOOTH = false
+const val USE_LOCATION_FOR_BLUETOOTH = true
 
 private fun sharedModule(locationStateRepoBuilderBuilder: LocationStateRepoBuilderBuilder, bluetoothBuilderBuilder: BluetoothBuilderBuilder) = module {
     single<Logger> { RestrictedLogger(RestrictedLogLevel.None) }

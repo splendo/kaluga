@@ -26,6 +26,7 @@
         android:id="@+id/media_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:media="@{viewModel.media.stateFlow}">
 

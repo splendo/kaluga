@@ -23,6 +23,7 @@ struct BluetoothDeviceView : View, Equatable {
         lhs.identifier == rhs.identifier
     }
     
+    @EnvironmentObject var deviceRoutingState: IdentifiableObjectRoutingState<BluetoothDeviceListView.DeviceRoute>
     @ObservedObject var name: StringObservable
     @ObservedObject var rssi: StringObservable
     @ObservedObject var distance: StringObservable
@@ -30,11 +31,12 @@ struct BluetoothDeviceView : View, Equatable {
     
     let identifier: UUID
     let lifecycleViewModel: LifecycleViewModel<BluetoothDeviceViewModel>
+    let router = Router()
     
     
-    init(identifier: UUID, onClose: @escaping () -> Void) {
+    init(identifier: UUID) {
         self.identifier = identifier
-        let viewModel = BluetoothDeviceViewModel(identifier: identifier, navigator: DefaultNavigator<BluetoothDeviceViewModel.CloseNavigationAction> { action in onClose() })
+        let viewModel = BluetoothDeviceViewModel(identifier: identifier, navigator: router.navigator)
         lifecycleViewModel = LifecycleViewModel(viewModel)
         
         name = StringObservable(viewModel.name)
@@ -44,26 +46,38 @@ struct BluetoothDeviceView : View, Equatable {
     }
     
     var body: some View {
+        router.deviceRoutingState = deviceRoutingState
+        return generateBody()
+    }
+    
+    func generateBody() -> some View {
         lifecycleViewModel.lifecycleView { viewModel in
             VStack {
+                HStack {
+                    Spacer()
+                    Text("\(name.value) - \(identifier.uuidString)")
+                    Spacer()
+                    Button("Close") {
+                        viewModel.close()
+                    }
+                }
                 HStack {
                     Text("RSSI: \(rssi.value)")
                     Text("Distance: \(distance.value)")
                     Text("State: \(state.value)")
                 }
                 HeartRateView(heartRateViewModel: viewModel.heartRateViewModel)
-            }.navigationTitle("\(name.value) - \(identifier.uuidString)")
-                .navigationBarItems(
-                leading: Button(
-                    action: { viewModel.close() },
-                    label: {
-                        Image(systemName: "chevron.left")
-                            .scaleEffect(0.83)
-                            .font(Font.title.weight(.medium))
-                    }
-                )
-            )
-            .navigationBarBackButtonHidden(true)
+                
+            }
+        }
+    }
+}
+
+extension BluetoothDeviceView {
+    class Router {
+        var deviceRoutingState: IdentifiableObjectRoutingState<BluetoothDeviceListView.DeviceRoute>?
+        lazy var navigator = DefaultNavigator<BluetoothDeviceViewModel.CloseNavigationAction> { actiom in
+            self.deviceRoutingState?.close()
         }
     }
 }

@@ -45,6 +45,7 @@ import androidx.navigation.NavHostController
 import com.splendo.kaluga.architecture.compose.navigation.NavHostComposableNavigator
 import com.splendo.kaluga.architecture.compose.navigation.next
 import com.splendo.kaluga.architecture.compose.state
+import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.client.BluetoothDeviceListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.client.DeviceDetails
@@ -63,63 +64,72 @@ fun BluetoothDeviceListLayout(navHostController: StateFlow<NavHostController?>) 
         )
     }
 
-    var expanded by remember { mutableStateOf(false) }
-    val isScanning by viewmodel.isScanning.state()
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Bluetooth Client") },
-                actions = {
-                    IconButton(onClick = { expanded = !expanded }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "More options")
-                    }
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        if (isScanning) {
-                            DropdownMenuItem(
-                                text = {
-                                    Row {
-                                        Image(painterResource(R.drawable.ic_stop_circle), "Stop Scanning")
-                                        Text("Stop Scanning")
+    ViewModelComposable(viewmodel) {
+
+        var expanded by remember { mutableStateOf(false) }
+        val isScanning by viewmodel.isScanning.state()
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(
+                    title = { Text("Bluetooth Client") },
+                    actions = {
+                        IconButton(onClick = { expanded = !expanded }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "More options")
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            if (isScanning) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Row {
+                                            Image(painterResource(R.drawable.ic_stop_circle), "Stop Scanning")
+                                            Text("Stop Scanning")
+                                        }
+                                    },
+                                    onClick = {
+                                        viewmodel.onScanPressed()
+                                        expanded = false
                                     }
-                                },
-                                onClick = { viewmodel.onScanPressed() }
-                            )
-                        } else {
-                            DropdownMenuItem(
-                                text = {
-                                    Row {
-                                        Image(painterResource(R.drawable.ic_refresh_circle), "Start Scanning")
-                                        Text("Start Scanning")
+                                )
+                            } else {
+                                DropdownMenuItem(
+                                    text = {
+                                        Row {
+                                            Image(painterResource(R.drawable.ic_refresh_circle), "Start Scanning")
+                                            Text("Start Scanning")
+                                        }
+                                    },
+                                    onClick = {
+                                        viewmodel.onScanPressed()
+                                        expanded = false
                                     }
-                                },
-                                onClick = { viewmodel.onScanPressed() }
-                            )
+                                )
+                            }
                         }
                     }
-                }
-            )
+                )
 
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-        ) {
-            val pairedDevices by viewmodel.pairedDevices.state()
-            val scannedDevices by viewmodel.scannedDevices.state()
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text("Paired")
-                pairedDevices.forEach {
-                    it.Layout()
-                }
+            }
+        ) { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+            ) {
+                val pairedDevices by viewmodel.pairedDevices.state()
+                val scannedDevices by viewmodel.scannedDevices.state()
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text("Paired")
+                    pairedDevices.forEach {
+                        it.Layout()
+                    }
 
-                Text("Scanned")
-                scannedDevices.forEach {
-                    it.Layout()
+                    Text("Scanned")
+                    scannedDevices.forEach {
+                        it.Layout()
+                    }
                 }
             }
         }

@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.ContextualLogger
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
