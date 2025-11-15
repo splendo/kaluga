@@ -45,13 +45,9 @@ class LocalService internal constructor(
     }
 
     override val uuid: UUID = wrapper.uuid
-    override val characteristics: List<LocalCharacteristic> = buildCharacteristics().also { characteristics ->
-        characteristics.forEach { wrapper.addCharacteristic(it.wrapper) }
-    }
+    override val characteristics: List<LocalCharacteristic> = buildCharacteristics()
 
-    override val includedServices: List<LocalService> = buildIncludedServices().also { includedServices ->
-        includedServices.forEach { wrapper.addIncludedService(it.wrapper) }
-    }
+    override val includedServices: List<LocalService> = buildIncludedServices()
 }
 
 internal sealed class LocalServiceDSL(val uuid: UUID) {
@@ -131,8 +127,10 @@ internal sealed class LocalServiceDSL(val uuid: UUID) {
         ),
         type,
         buildIncludedServices = {
-            includedServicesBuilders.map {
-                it.build()
+            includedServicesBuilders.map { includedServiceBuilder ->
+                includedServiceBuilder.build().also {
+                    wrapper.addIncludedService(it.wrapper)
+                }
             }
         },
         buildCharacteristics = {

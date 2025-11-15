@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.server
 
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.bluetooth.asBytes
@@ -24,8 +25,10 @@ import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.logging.warn
 import kotlinx.cinterop.ObjCSignatureOverride
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -47,17 +50,23 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
 
     data class ServiceAdded(val service: CBService, val success: Boolean)
 
-    private val _isEnabled = MutableSharedFlow<Boolean>()
+    private val _isEnabled = MutableSharedFlow<Boolean>(replay = 1)
     val isEnabled = _isEnabled.asSharedFlow()
 
-    private val _serviceAdded = MutableSharedFlow<ServiceAdded>()
+    private val _serviceAdded = MutableSharedFlow<ServiceAdded>(replay = 1)
     val serviceAdded = _serviceAdded.asSharedFlow()
 
-    private val _didStartAdvertising = MutableSharedFlow<Boolean>()
-    val didStartAdvertising = _didStartAdvertising.asSharedFlow()
+    private var didStartAdvertising = CompletableDeferred<Boolean>()
+    fun resetAdvertising(): Deferred<Boolean> {
+        didStartAdvertising = CompletableDeferred()
+        return didStartAdvertising
+    }
 
-    private val _available = MutableSharedFlow<Unit>()
-    val available = _available.asSharedFlow()
+    private var available = CompletableDeferred<Unit>()
+    fun resetAvailable(): Deferred<Unit> {
+        available = CompletableDeferred()
+        return available
+    }
 
     private val readActions = mutableMapOf<CBCharacteristic, suspend (ConnectedDevice, Int) -> GattResponse.ReadResponse>()
     private val writeActions = mutableMapOf<CBCharacteristic, suspend (ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse>()
@@ -167,10 +176,10 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
     }
 
     override fun peripheralManagerDidStartAdvertising(peripheral: CBPeripheralManager, error: NSError?) {
-        _didStartAdvertising.tryEmit(error != null)
+        didStartAdvertising.complete(error != null)
     }
 
     override fun peripheralManagerIsReadyToUpdateSubscribers(peripheral: CBPeripheralManager) {
-        _available.tryEmit(Unit)
+        available.complete()
     }
 }

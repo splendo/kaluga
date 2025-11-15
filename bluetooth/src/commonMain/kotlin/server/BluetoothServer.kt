@@ -25,9 +25,11 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.uuidFrom
+import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.logging.warn
 import com.splendo.kaluga.permissions.base.Permissions
@@ -139,7 +141,7 @@ data class ServerSettings(
     val permissions: Permissions,
     val autoRequestPermission: Boolean = true,
     val autoEnableBluetooth: Boolean = true,
-    val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
+    val logger: Logger = RestrictedLogger(RestrictedLogLevel.Verbose),
 )
 
 class BluetoothServer internal constructor(private val settings: ServerSettings, initialState: ServerState.Initial, coroutineContext: CoroutineContext) :
@@ -167,9 +169,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
 
         suspend fun build(): BluetoothServer = BluetoothServer(settings, initialState, coroutineContext).apply {
             try {
-                advertisementBuilder?.let {
-                    advertise(it)
-                }
+                advertisementBuilder?.let { advertise(it) }
                 for ((uuid, builder) in serviceBuilders) {
                     add(uuid, builder)
                 }
@@ -255,6 +255,8 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
     }
 
     suspend fun advertise(data: AdvertiseData.Builder.() -> Unit): Boolean = performOrFailOnClose(false) {
+
+        debug("TEST", "Advertise")
         val hasStarted = CompletableDeferred<Boolean>()
         val advertisingSettingsBuilder = AdvertisingSettings.Builder().apply(data)
         try {
@@ -342,6 +344,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         _status.value = state.status
         try {
             while (true) {
+                debug("TEST", "Manage state $state")
                 val newState = when (val currentState = state) {
                     is ServerState.AwaitingPermissions -> {
                         logger.info(TAG) { "Missing Permissions" }
@@ -396,6 +399,8 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
                 _status.value = state.status
             }
         } finally {
+
+            debug("TEST", "Finish $initialState")
             val newState = state.close()
             _status.value = newState.status
         }
@@ -466,6 +471,8 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
     private fun monitorAdvertising(available: ServerState.Available) = launch {
         for (advertiseSettingsBuilder in advertiseChannel) {
             stopAdvertising(log = false)
+
+            logger.info(TAG) { "Stop Previous" }
             val advertiseSettings = advertiseSettingsBuilder(available)
             currentAdvertiseSettings = advertiseSettings
             if (available.startAdvertising(advertiseSettings.data)) {

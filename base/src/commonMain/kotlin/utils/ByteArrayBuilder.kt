@@ -21,16 +21,16 @@ import kotlin.experimental.or
 
 interface ByteArrayBuilder {
     fun add(byte: Byte)
-    fun add(short: Short)
-    fun add(int: Int)
-    fun add(long: Long)
-    fun add(float: Float)
-    fun add(double: Double)
+    fun add(short: Short, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    fun add(int: Int, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    fun add(long: Long, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    fun add(float: Float, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    fun add(double: Double, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
     fun add(uByte: UByte)
-    fun add(uShort: UShort)
-    fun add(uInt: UInt)
-    fun add(uLong: ULong)
-    fun add(int24: Int24)
+    fun add(uShort: UShort, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    fun add(uInt: UInt, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    fun add(uLong: ULong, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    fun add(int24: Int24, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
     fun add(flag: Boolean)
     fun add(bytes: ByteArray)
     fun add(char: Char)
@@ -45,7 +45,9 @@ private class ByteArrayBuilderImpl(val order: ByteOrder) : ByteArrayBuilder {
     var currentBit = 0
 
     override fun add(flag: Boolean) {
-        currentByte = currentByte or (if (flag) 1 else 0 shl currentBit).toByte()
+        if (flag) {
+            currentByte = currentByte or (1 shl currentBit).toByte()
+        }
         currentBit++
         if (currentBit == Byte.SIZE_BITS) {
             addCurrentByte()
@@ -56,23 +58,23 @@ private class ByteArrayBuilderImpl(val order: ByteOrder) : ByteArrayBuilder {
         add(byteArrayOf(byte))
     }
 
-    override fun add(short: Short) {
+    override fun add(short: Short, order: ByteOrder) {
         add(short.toByteArray(order))
     }
 
-    override fun add(int: Int) {
+    override fun add(int: Int, order: ByteOrder) {
         add(int.toByteArray(order))
     }
 
-    override fun add(long: Long) {
+    override fun add(long: Long, order: ByteOrder) {
         add(long.toByteArray(order))
     }
 
-    override fun add(float: Float) {
+    override fun add(float: Float, order: ByteOrder) {
         add(float.toByteArray(order))
     }
 
-    override fun add(double: Double) {
+    override fun add(double: Double, order: ByteOrder) {
         add(double.toByteArray(order))
     }
 
@@ -80,19 +82,19 @@ private class ByteArrayBuilderImpl(val order: ByteOrder) : ByteArrayBuilder {
         add(uByte.toByteArray())
     }
 
-    override fun add(uShort: UShort) {
+    override fun add(uShort: UShort, order: ByteOrder) {
         add(uShort.toByteArray(order))
     }
 
-    override fun add(uInt: UInt) {
+    override fun add(uInt: UInt, order: ByteOrder) {
         add(uInt.toByteArray(order))
     }
 
-    override fun add(uLong: ULong) {
+    override fun add(uLong: ULong, order: ByteOrder) {
         add(uLong.toByteArray(order))
     }
 
-    override fun add(int24: Int24) {
+    override fun add(int24: Int24, order: ByteOrder) {
         add(int24.toByteArray(order))
     }
 
@@ -105,6 +107,9 @@ private class ByteArrayBuilderImpl(val order: ByteOrder) : ByteArrayBuilder {
     }
 
     override fun add(bytes: ByteArray) {
+        if (currentBit > 0) {
+            addCurrentByte()
+        }
         when (order) {
             ByteOrder.MOST_SIGNIFICANT_FIRST -> this.bytes = bytes + this.bytes
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> this.bytes += bytes

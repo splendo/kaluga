@@ -19,7 +19,7 @@ fun ByteArray.decodeShort(octetIndex: Int, byteOrder: ByteOrder): Short {
 
 /** Converts this [Short] into [ByteArray] using given [byteOrder] */
 fun Short.toByteArray(byteOrder: ByteOrder) = ByteArray(Short.SIZE_BYTES) {
-    (this shr byteOrder.shift(it, Long.SIZE_BITS)).toByte()
+    (this shr byteOrder.shift(it, Short.SIZE_BITS)).toByte()
 }
 fun Short.isBitSet(index: Number) = (this shr index.toInt()) and 1.toShort() == 1.toShort()
 fun Short.setBit(index: Number) = (this or (1.toShort() shl index.toInt()))

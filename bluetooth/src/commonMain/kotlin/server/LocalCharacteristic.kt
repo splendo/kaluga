@@ -227,9 +227,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
 
         private val _subscribedDevices = MutableStateFlow(emptyList<ConnectedDevice>())
         val subscribedDevices = _subscribedDevices.asStateFlow()
-        override val descriptors: List<LocalDescriptor> = buildDescriptors().also { descriptors ->
-            descriptors.forEach { wrapper.addDescriptor(it.wrapper) }
-        }
+        override val descriptors: List<LocalDescriptor> = buildDescriptors()
         suspend fun notify(device: ConnectedDevice, value: ByteArray): Boolean = subscribedDevices.map { devices ->
             devices.find { it == device }
         }.distinctUntilChanged().transformLatest { device ->
@@ -327,7 +325,6 @@ internal class LocalCharacteristicDSL(
 
     fun build(forService: LocalService): LocalCharacteristic {
         val characteristic = subscriptionActions?.let { (onSubscribe, onUnsubscribe) ->
-
             Notifiable(
                 LocalCharacteristicWrapper(uuid, properties, encryptedNotification, permissions),
                 forService,
@@ -335,6 +332,7 @@ internal class LocalCharacteristicDSL(
                 onSubscribe,
                 onUnsubscribe,
             ) {
+                forService.wrapper.addCharacteristic(wrapper)
                 registerSubscriptionActions(encryptedNotification)
                 descriptorBuilders.mapNotNull { descriptorBuilder ->
                     descriptorBuilder.build(this).takeIf { it.uuid != Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR }
@@ -344,6 +342,7 @@ internal class LocalCharacteristicDSL(
             LocalCharacteristicWrapper(uuid, properties, false, permissions),
             forService,
         ) {
+            forService.wrapper.addCharacteristic(wrapper)
             descriptorBuilders.map { it.build(this) }
         }
 

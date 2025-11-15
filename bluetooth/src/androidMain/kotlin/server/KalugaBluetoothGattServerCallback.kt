@@ -60,10 +60,10 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
         abstract val service: BluetoothGattService
     }
 
-    private val _serviceAdded = MutableSharedFlow<ServiceAdded>()
+    private val _serviceAdded = MutableSharedFlow<ServiceAdded>(replay = 1)
     val serviceAdded = _serviceAdded.asSharedFlow()
 
-    private val _notificationSent = MutableSharedFlow<NotificationSent>()
+    private val _notificationSent = MutableSharedFlow<NotificationSent>(replay = 1)
     val notificationSent = _notificationSent.asSharedFlow()
 
     private var sendResponse: SendResponse? = null

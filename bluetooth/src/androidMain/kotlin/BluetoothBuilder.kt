@@ -11,6 +11,7 @@ import com.splendo.kaluga.bluetooth.server.BluetoothServerDSL
 import com.splendo.kaluga.bluetooth.server.KalugaBluetoothGattServerCallback
 import com.splendo.kaluga.bluetooth.server.ServerSettings
 import com.splendo.kaluga.bluetooth.server.ServerState
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.base.PermissionContext
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
@@ -65,6 +66,8 @@ actual class BluetoothBuilder(
                 settings.logger,
             )
         } ?: ServerState.NotSupported
+
+        debug("TEST", "Initial state $initialState")
 
         return BluetoothServer.DSL(settings, initialState, coroutineContext).apply(specs).build()
     }

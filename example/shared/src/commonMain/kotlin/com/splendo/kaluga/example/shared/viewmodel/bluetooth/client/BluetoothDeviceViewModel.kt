@@ -28,6 +28,7 @@ import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.base.utils.ByteOrder
 import com.splendo.kaluga.base.utils.decodeUShort
 import com.splendo.kaluga.base.utils.isBitSet
+import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
@@ -130,8 +131,8 @@ class BluetoothDeviceViewModel(identifier: Identifier, navigator: Navigator<Clos
                                     measurementValue[1].toInt()
                                 }(BeatsPerMinute)
 
-                                isPositionVisibleState.value = measurementValue.isBitSet(2)
-                                energyExpendedState.value = if (measurementValue.isBitSet(1)) {
+                                isPositionVisibleState.value = measurementValue.isBitSet(1)
+                                energyExpendedState.value = if (measurementValue.isBitSet(3)) {
                                     measurementValue.decodeUShort(if (valueEncodedAsShort) 3 else 2, ByteOrder.LEAST_SIGNIFICANT_FIRST).toDouble()
                                 } else {
                                     Double.NaN

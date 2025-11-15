@@ -61,6 +61,7 @@ internal class LocalDescriptorDSL(val uuid: UUID, val registerReadAction: LocalD
         LocalDescriptorWrapper(uuid, permissions),
         forCharacteristic,
     ).apply {
+        forCharacteristic.wrapper.addDescriptor(wrapper)
         readAction?.let { onRead ->
             registerReadAction(this, onRead)
         }

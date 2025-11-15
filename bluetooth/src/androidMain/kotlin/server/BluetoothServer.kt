@@ -31,25 +31,31 @@ import android.os.ParcelUuid
 import android.provider.Settings.ACTION_BLUETOOTH_SETTINGS
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.DefaultBluetoothMonitor
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.server.BluetoothServer.Companion.TAG
+import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
 import com.splendo.kaluga.service.EnableServiceActivity
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.transformLatest
 import kotlin.experimental.or
 
@@ -139,15 +145,22 @@ internal sealed class AndroidServerState {
 
         private class AdvertisementCallback : AdvertiseCallback() {
 
-            private val _hasStarted = MutableSharedFlow<Boolean>()
-            val hasStarted = _hasStarted.asSharedFlow()
+            private var _hasStarted = CompletableDeferred<Boolean>()
+
+            fun reset(): Deferred<Boolean> {
+                _hasStarted = CompletableDeferred()
+                return _hasStarted
+            }
 
             override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
-                _hasStarted.tryEmit(true)
+
+                info(TAG) { "Start Advertising Android Success" }
+                _hasStarted.complete(true)
             }
 
             override fun onStartFailure(errorCode: Int) {
-                _hasStarted.tryEmit(false)
+                info(TAG) { "Start Advertising Android Failure $errorCode" }
+                _hasStarted.complete(false)
             }
         }
 
@@ -187,16 +200,17 @@ internal sealed class AndroidServerState {
                 .setConnectable(true)
                 .build()
 
-            val advertiseData = AdvertiseData.Builder().setIncludeDeviceName(data.localName != null)
+            val advertiseData = AdvertiseData.Builder().setIncludeDeviceName(false)
                 .apply {
                     data.serviceUUIDs.forEach {
                         addServiceUuid(ParcelUuid(it))
                     }
                 }
                 .build()
-            val didComplete = async { advertiserCallback.hasStarted.first() }
+            val didComplete = advertiserCallback.reset()
             advertiser.startAdvertising(settings, advertiseData, advertiserCallback)
             didComplete.await().also { success ->
+
                 if (success && data.localName != null) {
                     manager.adapter.name = data.localName
                 }
@@ -210,6 +224,7 @@ internal sealed class AndroidServerState {
 
         override suspend fun execute(characteristic: LocalCharacteristic.Notifiable, device: ConnectedDevice, value: ByteArray): Boolean = coroutineScope {
             val didNotify = async { callback.notificationSent.mapNotNull { (deviceNotified, success) -> success.takeIf { deviceNotified == device.device } }.first() }
+            logger.info(TAG) { "Notify characteristic ${characteristic.uuid.uuidString} updated to ${value.toHexString(" ")}" }
             val didStart = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 server.notifyCharacteristicChanged(
                     device.device,
@@ -250,43 +265,41 @@ internal sealed class AndroidServerState {
             callback::registerReadAction,
             callback::registerWriteAction,
             { encrypted ->
-                wrapper.addDescriptor(
-                    LocalDescriptorDSL(
-                        Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR,
-                        callback::registerReadAction,
-                        callback::registerWriteAction,
-                    ).apply {
-                        val deviceStatus = concurrentMutableMapOf<ConnectedDevice, ByteArray>()
-                        readable(encrypted) { device, offset ->
-                            when {
-                                offset != 0 -> GattResponse.InvalidOffset
-                                else -> GattResponse.ReadSuccess(deviceStatus.synchronized { getOrPut(device) { BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE } })
-                            }
+                LocalDescriptorDSL(
+                    Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR,
+                    callback::registerReadAction,
+                    callback::registerWriteAction,
+                ).apply {
+                    val deviceStatus = concurrentMutableMapOf<ConnectedDevice, ByteArray>()
+                    readable(encrypted) { device, offset ->
+                        when {
+                            offset != 0 -> GattResponse.InvalidOffset
+                            else -> GattResponse.ReadSuccess(deviceStatus.synchronized { getOrPut(device) { BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE } })
                         }
-                        writable(encrypted) { device, value, offset ->
-                            when {
-                                offset != 0 -> GattResponse.InvalidOffset
-                                (value.contentEquals(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE) && properties.contains(CharacteristicProperty.Indicate)) ||
-                                    (value.contentEquals(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE) && properties.contains(CharacteristicProperty.Notify)) -> {
-                                    deviceStatus.synchronized {
-                                        val current = getOrDefault(device, BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE)
-                                        val lsb = current[0] or value[0]
-                                        val msb = current[1] or value[1]
-                                        put(device, byteArrayOf(lsb, msb))
-                                    }
-                                    subscribe(device)
-                                    GattResponse.WriteSuccess
+                    }
+                    writable(encrypted) { device, value, offset ->
+                        when {
+                            offset != 0 -> GattResponse.InvalidOffset
+                            (value.contentEquals(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE) && properties.contains(CharacteristicProperty.Indicate)) ||
+                                (value.contentEquals(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE) && properties.contains(CharacteristicProperty.Notify)) -> {
+                                deviceStatus.synchronized {
+                                    val current = getOrDefault(device, BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE)
+                                    val lsb = current[0] or value[0]
+                                    val msb = current[1] or value[1]
+                                    put(device, byteArrayOf(lsb, msb))
                                 }
-                                value.contentEquals(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE) -> {
-                                    deviceStatus[device] = value
-                                    unsubscribe(device)
-                                    GattResponse.WriteSuccess
-                                }
-                                else -> GattResponse.InvalidHandle
+                                subscribe(device)
+                                GattResponse.WriteSuccess
                             }
+                            value.contentEquals(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE) -> {
+                                deviceStatus[device] = value
+                                unsubscribe(device)
+                                GattResponse.WriteSuccess
+                            }
+                            else -> GattResponse.InvalidHandle
                         }
-                    }.build(this).wrapper,
-                )
+                    }
+                }.build(this)
             },
             { uuid ->
                 LocalDescriptorDSL(uuid, callback::registerReadAction, callback::registerWriteAction)

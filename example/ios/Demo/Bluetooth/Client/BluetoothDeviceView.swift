@@ -103,7 +103,7 @@ struct HeartRateView : View {
     }
     
     var body: some View {
-        HStack(spacing: 8) {
+        VStack(spacing: 8) {
             heartRate.value.toText()
             if isEnergyExpendedVisible.value {
                 HStack {

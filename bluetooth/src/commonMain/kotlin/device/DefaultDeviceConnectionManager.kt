@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
+import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.RemoteCharacteristic
@@ -25,6 +26,7 @@ import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.server.BluetoothServer.Companion.TAG
 import com.splendo.kaluga.bluetooth.server.GattResponse
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.ContextualLogger
@@ -388,6 +390,10 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     }
 
     protected fun handleCharacteristicReadOrNotified(uuid: UUID, response: GattResponse.ReadResponse) {
+        if (response is GattResponse.ReadSuccess) {
+            logger.info(TAG) { "Notify characteristic ${uuid.uuidString} updated to ${response.value.toHexString(" ")}" }
+        }
+
         if (response is GattResponse.ReadSuccess) {
             notifyingCharacteristics[uuid.uuidString]?.notify(response.value)
         }

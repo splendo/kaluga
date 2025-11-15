@@ -139,7 +139,7 @@ internal sealed class IOSServerState {
         }
 
         override suspend fun startAdvertising(data: AdvertiseData): Boolean = coroutineScope {
-            val success = async { delegate.didStartAdvertising.first() }
+            val success = delegate.resetAdvertising()
             peripheralManager.startAdvertising(
                 buildMap {
                     data.localName?.let {
@@ -158,7 +158,7 @@ internal sealed class IOSServerState {
         }
 
         override suspend fun execute(characteristic: LocalCharacteristic.Notifiable, device: ConnectedDevice, value: ByteArray): Boolean = coroutineScope {
-            val isAvailable = async { delegate.available.first() }
+            val isAvailable = delegate.resetAvailable()
             if (peripheralManager.updateValue(value.toNSData(), characteristic.wrapper.characteristic, listOf(device.cbCentral))) {
                 true
             } else {
