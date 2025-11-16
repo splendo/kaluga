@@ -179,14 +179,14 @@ open class RemoteCharacteristic(
     }
 
     override fun createReadAction(): DeviceAction.Read.Characteristic = DeviceAction.Read.Characteristic(this).apply {
-        if (!hasAnyProperty(setOf(CharacteristicProperty.Write, CharacteristicProperty.WriteWithoutResponse, CharacteristicProperty.SignedWrite))) {
+        if (!hasProperty(CharacteristicProperty.Read)) {
             complete(GattResponse.ReadNotPermitted)
         }
     }
 
     override fun createWriteAction(newValue: ByteArray): DeviceAction.Write.Characteristic = DeviceAction.Write.Characteristic(newValue, this).apply {
-        if (!hasProperty(CharacteristicProperty.Read)) {
-            complete(GattResponse.ReadNotPermitted)
+        if (!hasAnyProperty(setOf(CharacteristicProperty.Write, CharacteristicProperty.WriteWithoutResponse, CharacteristicProperty.SignedWrite))) {
+            complete(GattResponse.WriteNotPermitted)
         }
     }
 

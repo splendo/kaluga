@@ -113,9 +113,11 @@ struct HeartRateView : View {
                 }
             }
             if isPositionVisible.value {
-                position.value.toText()
-                Spacer()
-                heartRateViewModel.refreshPositionButton.toButton()
+                HStack {
+                    position.value.toText()
+                    Spacer()
+                    heartRateViewModel.refreshPositionButton.toButton()
+                }
             }
         }
     }

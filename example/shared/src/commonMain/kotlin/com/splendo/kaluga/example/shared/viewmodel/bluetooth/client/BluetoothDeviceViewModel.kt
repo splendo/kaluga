@@ -111,11 +111,15 @@ class BluetoothDeviceViewModel(identifier: Identifier, navigator: Navigator<Clos
 
         val resetEnergyExpandedButton =
             KalugaButton.Plain("Reset Energy Expended", ButtonStyles.default) {
-                requestReset.tryEmit(Unit)
+                coroutineScope.launch {
+                    requestReset.emit(Unit)
+                }
             }
 
         val refreshPositionButton = KalugaButton.Plain("Refresh", ButtonStyles.default) {
-            requestPositionUpdate.tryEmit(Unit)
+            coroutineScope.launch {
+                requestPositionUpdate.emit(Unit)
+            }
         }
 
         init {
