@@ -28,7 +28,6 @@ import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.base.utils.ByteOrder
 import com.splendo.kaluga.base.utils.decodeUShort
 import com.splendo.kaluga.base.utils.isBitSet
-import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState

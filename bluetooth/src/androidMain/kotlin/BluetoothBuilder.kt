@@ -67,8 +67,6 @@ actual class BluetoothBuilder(
             )
         } ?: ServerState.NotSupported
 
-        debug("TEST", "Initial state $initialState")
-
         return BluetoothServer.DSL(settings, initialState, coroutineContext).apply(specs).build()
     }
 }

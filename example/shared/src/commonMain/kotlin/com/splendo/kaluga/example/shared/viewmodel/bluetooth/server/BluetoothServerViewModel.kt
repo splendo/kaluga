@@ -29,7 +29,6 @@ import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.utils.buildByteArray
 import com.splendo.kaluga.base.utils.getCompletedOrNull
-import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.server.GattResponse
 import com.splendo.kaluga.bluetooth.server.ServerSettings
@@ -44,7 +43,6 @@ import com.splendo.kaluga.scientific.unit.BeatsPerMinute
 import com.splendo.kaluga.scientific.unit.Kilojoule
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.example.shared.stylable.TextStyles
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.scientific.formatter.CommonScientificValueFormatter
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -139,9 +137,11 @@ class BluetoothServerViewModel(private val alertPresenter: BaseAlertPresenter.Bu
 
     val status = flow {
         val server = bluetoothServer.await()
-        emitAll(server.status.map { status ->
-            KalugaLabel.Plain(status.toString(), TextStyles.defaultTitle)
-        })
+        emitAll(
+            server.status.map { status ->
+                KalugaLabel.Plain(status.toString(), TextStyles.defaultTitle)
+            },
+        )
     }.toInitializedObservable(KalugaLabel.Plain(ServerStatus.NOT_SUPPORTED.name, TextStyles.defaultTitle), coroutineScope)
 
     val increaseBPM = KalugaButton.Plain("+", ButtonStyles.default) {

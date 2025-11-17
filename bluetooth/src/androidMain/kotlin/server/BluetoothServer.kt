@@ -40,6 +40,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.server.BluetoothServer.Companion.TAG
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission

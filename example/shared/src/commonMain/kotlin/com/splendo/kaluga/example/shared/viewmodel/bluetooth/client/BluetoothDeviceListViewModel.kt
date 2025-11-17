@@ -44,7 +44,6 @@ import com.splendo.kaluga.bluetooth.rssi
 import com.splendo.kaluga.bluetooth.state
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothSpec
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.defaultLogger
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton

@@ -255,8 +255,6 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
     }
 
     suspend fun advertise(data: AdvertiseData.Builder.() -> Unit): Boolean = performOrFailOnClose(false) {
-
-        debug("TEST", "Advertise")
         val hasStarted = CompletableDeferred<Boolean>()
         val advertisingSettingsBuilder = AdvertisingSettings.Builder().apply(data)
         try {
@@ -272,6 +270,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
     }
 
     private fun stopAdvertising(log: Boolean) {
+        logger.info(TAG) { "Stop Advertising $currentAdvertiseSettings" }
         currentAdvertiseSettings?.let {
             if (log) {
                 logger.info(TAG) { "Stop Advertising" }
@@ -344,7 +343,6 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         _status.value = state.status
         try {
             while (true) {
-                debug("TEST", "Manage state $state")
                 val newState = when (val currentState = state) {
                     is ServerState.AwaitingPermissions -> {
                         logger.info(TAG) { "Missing Permissions" }
@@ -399,8 +397,6 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
                 _status.value = state.status
             }
         } finally {
-
-            debug("TEST", "Finish $initialState")
             val newState = state.close()
             _status.value = newState.status
         }
@@ -417,10 +413,10 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
             // Keep active so cleanup occurs correctly
             jobs.joinAll()
         } finally {
-            logger.info(TAG) { "Closing Server" }
             jobs.forEach { it.cancel() }
             disconnectAllConnectedDevices()
             removeServicesAndSaveForRestoration(cancelledService.getCompletedOrNull())
+
             stopAdvertisementForRestoration()
         }
     }
@@ -430,7 +426,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         currentlyBeingAdded?.let {
             activeActions.add(it)
         }
-        while (!serviceActionChannel.isEmpty) {
+        while (!serviceActionChannel.isEmpty && !serviceActionChannel.isClosedForReceive) {
             serviceActionChannel.tryReceive().getOrNull()?.let {
                 activeActions.add(it)
             }
@@ -456,6 +452,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
     }
 
     private fun stopAdvertisementForRestoration() {
+        logger.info(TAG) { "Stop Advertising For Restoration" }
         currentAdvertiseSettings?.takeIf { advertiseChannel.isEmpty }?.let { advertisementSettings ->
             advertiseChannel.trySend {
                 if (advertisementSettings.hasStarted.isCompleted) {
