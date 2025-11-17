@@ -58,13 +58,16 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
 
     private var didStartAdvertising = CompletableDeferred<Boolean>()
     fun resetAdvertising(): Deferred<Boolean> {
+        didStartAdvertising.complete(false)
         didStartAdvertising = CompletableDeferred()
         return didStartAdvertising
     }
 
     private var available = CompletableDeferred<Unit>()
     fun resetAvailable(): Deferred<Unit> {
-        available = CompletableDeferred()
+        if (!available.isCompleted) {
+            available = CompletableDeferred()
+        }
         return available
     }
 
@@ -107,9 +110,9 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
 
     fun removeService(service: CBService) {
         service.includedServices.orEmpty().typedList<CBService>().forEach(::removeService)
-        readActions -= readActions.keys.filter { it.service == service.UUID }
-        writeActions -= writeActions.keys.filter { it.service == service.UUID }
-        subscribeActions -= subscribeActions.keys.filter { it.service == service.UUID }
+        readActions -= readActions.keys.filter { it.service == service.UUID }.toSet()
+        writeActions -= writeActions.keys.filter { it.service == service.UUID }.toSet()
+        subscribeActions -= subscribeActions.keys.filter { it.service == service.UUID }.toSet()
     }
 
     fun removeAllServices() {
@@ -176,7 +179,7 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
     }
 
     override fun peripheralManagerDidStartAdvertising(peripheral: CBPeripheralManager, error: NSError?) {
-        didStartAdvertising.complete(error != null)
+        didStartAdvertising.complete(error == null)
     }
 
     override fun peripheralManagerIsReadyToUpdateSubscribers(peripheral: CBPeripheralManager) {

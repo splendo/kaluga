@@ -270,10 +270,9 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
     }
 
     private fun stopAdvertising(log: Boolean) {
-        logger.info(TAG) { "Stop Advertising $currentAdvertiseSettings" }
         currentAdvertiseSettings?.let {
             if (log) {
-                logger.info(TAG) { "Stop Advertising" }
+                logger.info(TAG) { "Stop Advertising ${it.data}" }
             }
             // If not started, inform starting failed
             it.stop()
@@ -452,7 +451,6 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
     }
 
     private fun stopAdvertisementForRestoration() {
-        logger.info(TAG) { "Stop Advertising For Restoration" }
         currentAdvertiseSettings?.takeIf { advertiseChannel.isEmpty }?.let { advertisementSettings ->
             advertiseChannel.trySend {
                 if (advertisementSettings.hasStarted.isCompleted) {
@@ -468,8 +466,6 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
     private fun monitorAdvertising(available: ServerState.Available) = launch {
         for (advertiseSettingsBuilder in advertiseChannel) {
             stopAdvertising(log = false)
-
-            logger.info(TAG) { "Stop Previous" }
             val advertiseSettings = advertiseSettingsBuilder(available)
             currentAdvertiseSettings = advertiseSettings
             if (available.startAdvertising(advertiseSettings.data)) {

@@ -40,7 +40,6 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.server.BluetoothServer.Companion.TAG
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.Logger
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
@@ -50,13 +49,9 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.transformLatest
 import kotlin.experimental.or
 
@@ -146,22 +141,21 @@ internal sealed class AndroidServerState {
 
         private class AdvertisementCallback : AdvertiseCallback() {
 
-            private var _hasStarted = CompletableDeferred<Boolean>()
+            private var hasStarted = CompletableDeferred<Boolean>()
 
             fun reset(): Deferred<Boolean> {
-                _hasStarted = CompletableDeferred()
-                return _hasStarted
+                hasStarted.complete(false) // Complete previous if not completed
+                hasStarted = CompletableDeferred()
+                return hasStarted
             }
 
             override fun onStartSuccess(settingsInEffect: AdvertiseSettings?) {
-
-                info(TAG) { "Start Advertising Android Success" }
-                _hasStarted.complete(true)
+                hasStarted.complete(true)
             }
 
             override fun onStartFailure(errorCode: Int) {
-                info(TAG) { "Start Advertising Android Failure $errorCode" }
-                _hasStarted.complete(false)
+                info(TAG) { "Start Advertising Android Failure with $errorCode" }
+                hasStarted.complete(false)
             }
         }
 
@@ -208,12 +202,17 @@ internal sealed class AndroidServerState {
                     }
                 }
                 .build()
+            val scanResponse = AdvertiseData.Builder().setIncludeDeviceName(data.localName != null).build()
+
             val didComplete = advertiserCallback.reset()
-            advertiser.startAdvertising(settings, advertiseData, advertiserCallback)
+            data.localName?.let {
+                manager.adapter.name = it
+            }
+            advertiser.startAdvertising(settings, advertiseData, scanResponse, advertiserCallback)
             didComplete.await().also { success ->
 
-                if (success && data.localName != null) {
-                    manager.adapter.name = data.localName
+                if (!success) {
+                    manager.adapter.name = defaultLocalName
                 }
             }
         }
