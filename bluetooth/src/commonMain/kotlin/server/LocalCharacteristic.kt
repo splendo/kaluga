@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.collections.concurrentMutableMapOf
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Notifiable
 import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Static

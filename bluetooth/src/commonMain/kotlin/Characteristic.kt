@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.bluetooth.server.GattResponse
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.logging.ContextualLogger
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CompletableDeferred

@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.base.utils.toHexString
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier

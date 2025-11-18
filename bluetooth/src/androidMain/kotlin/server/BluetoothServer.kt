@@ -36,6 +36,7 @@ import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.DefaultBluetoothMonitor
 import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.server.BluetoothServer.Companion.TAG
 import com.splendo.kaluga.bluetooth.uuidString

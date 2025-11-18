@@ -29,7 +29,7 @@ import com.splendo.kaluga.bluetooth.filterDiscovering
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.getOrNull
 import com.splendo.kaluga.bluetooth.includedServices
-import com.splendo.kaluga.bluetooth.server.GattResponse
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.bluetooth.startDiscovering
 import com.splendo.kaluga.bluetooth.uuidFrom

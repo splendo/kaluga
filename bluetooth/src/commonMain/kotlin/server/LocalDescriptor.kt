@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.UUID
 
 class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characteristic: LocalCharacteristic) : Descriptor {

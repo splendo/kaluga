@@ -25,6 +25,7 @@ import android.bluetooth.BluetoothGattServerCallback
 import android.bluetooth.BluetoothGattService
 import android.bluetooth.BluetoothProfile
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.logging.warn

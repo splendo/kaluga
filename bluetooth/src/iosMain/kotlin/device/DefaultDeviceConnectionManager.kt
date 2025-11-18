@@ -25,7 +25,7 @@ import com.splendo.kaluga.bluetooth.KalugaBluetoothPeripheralDelegateProtocol
 import com.splendo.kaluga.bluetooth.KalugaBluetoothPeripheralWrapper
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.dataValue
-import com.splendo.kaluga.bluetooth.server.GattResponse
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.logging.debug
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate

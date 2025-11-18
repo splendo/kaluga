@@ -27,7 +27,7 @@ import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.server.BluetoothServer.Companion.TAG
-import com.splendo.kaluga.bluetooth.server.GattResponse
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.ContextualLogger
 import com.splendo.kaluga.logging.debug

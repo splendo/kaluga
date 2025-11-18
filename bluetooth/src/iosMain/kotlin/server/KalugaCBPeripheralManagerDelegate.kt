@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.server
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.info

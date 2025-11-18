@@ -20,7 +20,7 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.bluetooth.server.GattResponse
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.test.base.mock.verify
 import com.splendo.kaluga.test.base.mock.verifyWithin

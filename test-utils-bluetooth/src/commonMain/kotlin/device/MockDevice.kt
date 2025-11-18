@@ -27,7 +27,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.randomIdentifier
-import com.splendo.kaluga.bluetooth.server.GattResponse
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.logging.ContextualLogger
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel

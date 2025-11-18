@@ -18,7 +18,7 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
-import com.splendo.kaluga.bluetooth.server.GattResponse
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.test.base.mock.matcher.AnyOrNullCaptor
 import com.splendo.kaluga.test.base.mock.on
 import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.never

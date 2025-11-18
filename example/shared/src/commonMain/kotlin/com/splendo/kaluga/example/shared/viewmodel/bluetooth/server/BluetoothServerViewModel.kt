@@ -30,7 +30,7 @@ import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.utils.buildByteArray
 import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
-import com.splendo.kaluga.bluetooth.server.GattResponse
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.server.ServerSettings
 import com.splendo.kaluga.bluetooth.server.ServerStatus
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothSpec

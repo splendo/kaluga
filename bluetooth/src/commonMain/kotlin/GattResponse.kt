@@ -15,9 +15,7 @@
 
  */
 
-package com.splendo.kaluga.bluetooth.server
-
-import com.splendo.kaluga.bluetooth.MTU
+package com.splendo.kaluga.bluetooth
 
 sealed interface GattResponse {
     sealed interface ReadResponse : GattResponse

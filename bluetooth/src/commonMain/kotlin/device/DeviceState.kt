@@ -24,7 +24,7 @@ import com.splendo.kaluga.bluetooth.RemoteCharacteristic
 import com.splendo.kaluga.bluetooth.RemoteDescriptor
 import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.bluetooth.server.GattResponse
+import com.splendo.kaluga.bluetooth.GattResponse
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 

@@ -25,7 +25,7 @@ import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.NotConnectableDeviceState
-import com.splendo.kaluga.bluetooth.server.GattResponse
+import com.splendo.kaluga.bluetooth.GattResponse
 
 sealed class MockDeviceState : KalugaState {
     data object NotConnectable : MockDeviceState(), NotConnectableDeviceState
