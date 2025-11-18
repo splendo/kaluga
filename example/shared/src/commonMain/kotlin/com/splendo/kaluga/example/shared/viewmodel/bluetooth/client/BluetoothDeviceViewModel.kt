@@ -131,7 +131,7 @@ class BluetoothDeviceViewModel(identifier: Identifier, navigator: Navigator<Clos
                                 heartRateState.value = if (valueEncodedAsShort) {
                                     measurementValue.decodeUShort(1, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
                                 } else {
-                                    measurementValue[1].toInt()
+                                    measurementValue[1].toUByte().toInt()
                                 }(BeatsPerMinute)
 
                                 isPositionVisibleState.value = measurementValue.isBitSet(1)
