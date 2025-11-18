@@ -34,7 +34,7 @@ interface ByteArrayBuilder {
     fun add(flag: Boolean)
     fun add(bytes: ByteArray)
     fun add(char: Char)
-    fun add(string: String)
+    fun add(string: String, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
 }
 
 fun buildByteArray(order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST, block: ByteArrayBuilder.() -> Unit) = ByteArrayBuilderImpl(order).apply(block).bytes
@@ -98,8 +98,12 @@ private class ByteArrayBuilderImpl(val order: ByteOrder) : ByteArrayBuilder {
         add(int24.toByteArray(order))
     }
 
-    override fun add(string: String) {
-        add(string.encodeToByteArray())
+    override fun add(string: String, order: ByteOrder) {
+        if (order == ByteOrder.MOST_SIGNIFICANT_FIRST) {
+            add(string.encodeToByteArray().reversedArray())
+        } else {
+            add(string.encodeToByteArray())
+        }
     }
 
     override fun add(char: Char) {
