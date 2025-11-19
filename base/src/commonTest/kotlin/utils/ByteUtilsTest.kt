@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.base.test.utils
 
-import com.splendo.kaluga.base.utils.ByteOrder
+import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.utils.bytesOf
 import com.splendo.kaluga.base.utils.decodeHex
 import com.splendo.kaluga.base.utils.decodeInt
 import com.splendo.kaluga.base.utils.decodeShort
 import com.splendo.kaluga.base.utils.decodeUInt
-import com.splendo.kaluga.base.utils.isBitSet
-import com.splendo.kaluga.base.utils.setBit
-import com.splendo.kaluga.base.utils.toByteArray
+import com.splendo.kaluga.base.bytes.isBitSet
+import com.splendo.kaluga.base.bytes.setBit
+import com.splendo.kaluga.base.bytes.toByteArray
 import com.splendo.kaluga.base.utils.toHexString
 import kotlin.test.Test
 import kotlin.test.assertContentEquals

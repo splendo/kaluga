@@ -1,4 +1,6 @@
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.bytes
+
+import com.splendo.kaluga.base.bytes.ByteOrder
 
 infix fun UShort.shl(bitCount: Int) = (toUInt() shl bitCount).toUShort()
 infix fun UShort.shr(bitCount: Int) = (toUInt() shr bitCount).toUShort()

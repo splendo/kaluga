@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
-import com.splendo.kaluga.base.utils.ByteArrayBuilder
-import com.splendo.kaluga.base.utils.buildByteArray
+import com.splendo.kaluga.base.bytes.ByteArrayBuilder
+import com.splendo.kaluga.base.bytes.buildByteArray
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
@@ -49,7 +49,7 @@ sealed class BluetoothFormat(
         val encoder = BluetoothBinaryEncoder(builder, 0, serializersModule)
         serializer.serialize(encoder, value)
 
-        return buildByteArray(serializer.descriptor.byteOrder, builder::build)
+        return buildByteArray(serializer.descriptor.annotations.byteOrder, builder::build)
     }
 
     override fun <T> decodeFromByteArray(deserializer: DeserializationStrategy<T>, bytes: ByteArray): T {

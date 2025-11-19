@@ -1,4 +1,6 @@
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.bytes
+
+import com.splendo.kaluga.base.bytes.ByteOrder
 
 fun ByteArray.decodeUInt(octetIndex: Int, byteOrder: ByteOrder): UInt = decodeInt(octetIndex, byteOrder).toUInt()
 fun UInt.toByteArray(byteOrder: ByteOrder) = toInt().toByteArray(byteOrder)

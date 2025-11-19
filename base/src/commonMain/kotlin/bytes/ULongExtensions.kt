@@ -1,4 +1,6 @@
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.bytes
+
+import com.splendo.kaluga.base.bytes.ByteOrder
 
 fun ByteArray.decodeULong(octetIndex: Int, byteOrder: ByteOrder): ULong = decodeLong(octetIndex, byteOrder).toULong()
 fun ULong.toByteArray(byteOrder: ByteOrder) = this.toLong().toByteArray(byteOrder)

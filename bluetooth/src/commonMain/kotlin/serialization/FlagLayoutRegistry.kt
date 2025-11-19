@@ -18,8 +18,11 @@
 package com.splendo.kaluga.bluetooth.serialization
 
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.SerialKind
 import kotlin.math.ceil
+import kotlin.math.floor
 import kotlin.math.sqrt
 
 data class FlagLayoutEntry(
@@ -41,33 +44,38 @@ object FlagLayoutRegistry {
         (0 until descriptor.elementsCount).map { i ->
             val elementName = descriptor.getElementName(i)
             val annotations = descriptor.getElementAnnotations(i)
-            val isNullable = descriptor.isElementOptional(i) ||
-                    descriptor.getElementDescriptor(i).isNullable
+            val elementDescriptor = descriptor.getElementDescriptor(i)
+            val isNullable = elementDescriptor.isNullable
             val customIndex = annotations.filterIsInstance<FlagIndex>().firstOrNull()?.index
-            val autoSizing = annotations.filterIsInstance<AutoSizing>().firstOrNull()?.let { autoSizing ->
-                if (autoSizing.maxByteSize - autoSizing.minByteSize > 0) {
-                    val numberOfSteps = (autoSizing.maxByteSize - autoSizing.minByteSize / autoSizing.steps)
-                    when (val root = sqrt(numberOfSteps.toDouble())) {
-                        1.0 -> 1
-                        ceil(root) -> root.toInt() + 1
-                        else -> ceil(root).toInt()
-                    }
-                } else {
-                    null
-                }
+            val supportSizing = elementDescriptor.kind in setOf(
+                PrimitiveKind.INT, PrimitiveKind.LONG, PrimitiveKind.FLOAT,
+                PrimitiveKind.DOUBLE, PrimitiveKind.BYTE, PrimitiveKind.SHORT,
+                SerialKind.ENUM,
+            )
+            val supportedLengths = annotations.takeIf { supportSizing }?.filterIsInstance<Sizing>().orEmpty().map { it.length }.toSet()
+            val sizingWidth = when (supportedLengths.size) {
+                0 -> 0
+                1 -> 0
+                2 -> 1
+                else -> floor(sqrt(supportedLengths.size.toDouble())).toInt() + 1
             }
-            val defaultWidth = (autoSizing ?: 0) + (if (isNullable) 1 else 0)
+
+
+            val minimumWidth = if (customIndex != null) 1 else 0
+            val defaultWidth = (if (supportSizing) sizingWidth else minimumWidth) + (if (isNullable) 1 else 0)
             val width = annotations.filterIsInstance<FlagWidth>().firstOrNull()?.bits ?: defaultWidth
 
-            val bitIndex = customIndex ?: if (isNullable) nextBit else -1
+            val bitIndex = customIndex ?: if (isNullable || supportSizing) nextBit else -1
             if (bitIndex >= 0) {
-                val flagIndicesToUse = (0..width).map { bitIndex + it }.toSet()
-                if (flagIndicesToUse.any { it in reservedIndices }) {
+                val flagIndicesToUse = (0..<width).map { bitIndex + it }.toSet()
+                if (flagIndicesToUse.intersect(reservedIndices).isNotEmpty()) {
                     throw FlagLayoutException("Flag at index $bitIndex cannot be used for $elementName. Is already reserved")
                 }
                 reservedIndices += flagIndicesToUse
             }
-            if (width > 0 && customIndex == null) nextBit += width
+            while (nextBit in reservedIndices) {
+                nextBit++
+            }
             FlagLayoutEntry(
                 fieldName = elementName,
                 fieldIndex = i,

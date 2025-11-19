@@ -1,4 +1,7 @@
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.bytes
+
+import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.shift
 
 fun ByteArray.decodeLong(octetIndex: Int, byteOrder: ByteOrder): Long {
     for (offset in 0..<Long.SIZE_BYTES) {

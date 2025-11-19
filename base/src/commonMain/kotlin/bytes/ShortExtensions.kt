@@ -1,5 +1,7 @@
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.bytes
 
+import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.shift
 import kotlin.experimental.and
 import kotlin.experimental.or
 

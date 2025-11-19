@@ -17,9 +17,54 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
-import com.splendo.kaluga.base.utils.ByteOrder
+import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.StringEncodingSettings
+import com.splendo.kaluga.base.utils.Int24
+import com.splendo.kaluga.base.utils.UInt24
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialInfo
+
+enum class Length(val bytes: Int) {
+    `8_BIT`(1),
+    `16_BIT`(2),
+    `24_BIT`(3),
+    `32_BIT`(4),
+    `64_BIT`(8);
+
+    fun fits(number: Number, signed: Boolean) = when (this) {
+        `8_BIT` -> if (signed) {
+            number.toInt() in Byte.MIN_VALUE.toInt()..Byte.MAX_VALUE.toInt()
+        } else {
+            number.toInt().toUInt() in UByte.MIN_VALUE.toUInt() ..UByte.MAX_VALUE.toUInt()
+        }
+        `16_BIT` -> if (signed) {
+            number.toInt() in Short.MIN_VALUE.toInt()..Short.MAX_VALUE.toInt()
+        } else {
+            number.toInt().toUInt() in UShort.MIN_VALUE.toUInt() ..UShort.MAX_VALUE.toUInt()
+        }
+        `24_BIT` -> if (signed) {
+            number.toLong() in Int24.MIN_VALUE.value.toLong()..Int24.MAX_VALUE.value.toLong()
+        } else {
+            number.toLong().toULong() in UInt24.MIN_VALUE.value.toULong() ..UInt24.MAX_VALUE.value.toULong()
+        }
+        `32_BIT` -> if (signed) {
+            number.toLong() in Int.MIN_VALUE.toLong()..Int.MAX_VALUE.toLong()
+        } else {
+            number.toLong().toULong() in UInt.MIN_VALUE.toULong() ..Int.MAX_VALUE.toULong()
+        }
+        `64_BIT` -> true // Always fits as it is the max we support
+    }
+}
+
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.CLASS)
+annotation class Prefix(val value: ByteArray)
+
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.CLASS)
+annotation class Postfix(val value: ByteArray)
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
@@ -39,12 +84,12 @@ annotation class ByteOrder(val order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FI
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
-annotation class LengthPrefix(val bytes: Int = 1, val canOverflow: Boolean = false, val sentinel: Short = 0xFF)
+annotation class LengthPrefix(val lengthAsShort: Boolean = false, val canOverflow: Boolean = false, val sentinel: Byte = 0xFF.toByte())
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
-annotation class FixedLength(val bytes: Int = 2)
+annotation class Encoded(val encoding: StringEncodingSettings.Encoding = StringEncodingSettings.Encoding.UTF_8)
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
@@ -68,8 +113,9 @@ annotation class MedFloat
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
+@Repeatable
 @Target(AnnotationTarget.PROPERTY)
-annotation class AutoSizing(val minByteSize: Int = 1, val maxByteSize: Int = 2, val steps: Int = 1)
+annotation class Sizing(val length: Length)
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo

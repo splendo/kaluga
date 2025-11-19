@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,19 +15,19 @@
 
  */
 
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.base.bytes
 
+import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.toByteArray
-import platform.Foundation.NSData
 
 /**
- * The value of a bluetooth attribute
+ * Converts [ByteArray] to [Float]
+ * @param octetIndex index of byte to start
+ * @param byteOrder can take [ByteOrder.MOST_SIGNIFICANT_FIRST] and [ByteOrder.LEAST_SIGNIFICANT_FIRST]
+ * @throws IllegalArgumentException
  */
-actual typealias Value = NSData
+fun ByteArray.decodeDouble(octetIndex: Int, byteOrder: ByteOrder): Double = Double.fromBits(
+    decodeLong(octetIndex, byteOrder),
+)
 
-/**
- * Gets the [ByteArray] value of a [Value]
- */
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER") // not relevant from Common
-actual val Value.asBytes: ByteArray
-    get() = this.toByteArray()
+fun Double.toByteArray(byteOrder: ByteOrder) = toRawBits().toByteArray(byteOrder)

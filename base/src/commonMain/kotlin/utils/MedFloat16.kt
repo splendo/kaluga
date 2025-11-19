@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,19 +15,21 @@
 
  */
 
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.bytes.toByteArray
-import platform.Foundation.NSData
+import com.splendo.kaluga.base.bytes.ByteOrder
+import kotlin.jvm.JvmInline
+import kotlin.math.pow
 
-/**
- * The value of a bluetooth attribute
- */
-actual typealias Value = NSData
+@JvmInline
+value class MedFloat16(val value: Float) : Comparable<MedFloat16> {
+    internal companion object {
+        const val NAN = 0x07FF
+        const val POSITIVE_INFINITY = 0x07FE
+        const val NEGATIVE_INFINITY = 0x0802
+    }
 
-/**
- * Gets the [ByteArray] value of a [Value]
- */
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER") // not relevant from Common
-actual val Value.asBytes: ByteArray
-    get() = this.toByteArray()
+    override fun compareTo(other: MedFloat16): Int = value.compareTo(other.value)
+}
+
+

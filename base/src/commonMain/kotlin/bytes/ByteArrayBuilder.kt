@@ -15,31 +15,45 @@
 
  */
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.bytes
 
+import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.utils.UInt24
+import com.splendo.kaluga.base.bytes.toByteArray
+import com.splendo.kaluga.base.utils.Int24
+import com.splendo.kaluga.base.utils.MedFloat16
+import com.splendo.kaluga.base.utils.MedFloat32
 import kotlin.experimental.or
 
 interface ByteArrayBuilder {
+
+    val byteOrder: ByteOrder
+
     fun add(byte: Byte)
-    fun add(short: Short, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
-    fun add(int: Int, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
-    fun add(long: Long, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
-    fun add(float: Float, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
-    fun add(double: Double, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    fun add(short: Short, order: ByteOrder = byteOrder)
+    fun add(int24: Int24, order: ByteOrder = byteOrder)
+    fun add(int: Int, order: ByteOrder = byteOrder)
+    fun add(long: Long, order: ByteOrder = byteOrder)
+    fun add(float: Float, order: ByteOrder = byteOrder)
+    fun add(double: Double, order: ByteOrder = byteOrder)
     fun add(uByte: UByte)
-    fun add(uShort: UShort, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
-    fun add(uInt: UInt, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
-    fun add(uLong: ULong, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
-    fun add(int24: Int24, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    fun add(uShort: UShort, order: ByteOrder = byteOrder)
+    fun add(uInt: UInt, order: ByteOrder = byteOrder)
+    fun add(uLong: ULong, order: ByteOrder = byteOrder)
+    fun add(uInt24: UInt24, order: ByteOrder = byteOrder)
+    fun add(medFloat16: MedFloat16)
+    fun add(medFloat32: MedFloat32)
     fun add(flag: Boolean)
     fun add(bytes: ByteArray)
-    fun add(char: Char)
-    fun add(string: String, order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    fun add(char: Char, encoding: StringEncodingSettings.Encoding = StringEncodingSettings.Encoding.UTF_8, order: ByteOrder = byteOrder)
+    fun add(string: String, settings: StringEncodingSettings, order: ByteOrder = byteOrder)
 }
 
-fun buildByteArray(order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST, block: ByteArrayBuilder.() -> Unit) = ByteArrayBuilderImpl(order).apply(block).bytes
+fun buildByteArray(order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST, block: ByteArrayBuilder.() -> Unit) = ByteArrayBuilderImpl(
+    order
+).apply(block).build()
 
-private class ByteArrayBuilderImpl(val order: ByteOrder) : ByteArrayBuilder {
+private class ByteArrayBuilderImpl(override val byteOrder: ByteOrder) : ByteArrayBuilder {
     var bytes = byteArrayOf()
     var currentByte: Byte = 0
     var currentBit = 0
@@ -62,6 +76,10 @@ private class ByteArrayBuilderImpl(val order: ByteOrder) : ByteArrayBuilder {
         add(short.toByteArray(order))
     }
 
+    override fun add(int24: Int24, order: ByteOrder) {
+        add(int24.toByteArray(order))
+    }
+
     override fun add(int: Int, order: ByteOrder) {
         add(int.toByteArray(order))
     }
@@ -76,6 +94,14 @@ private class ByteArrayBuilderImpl(val order: ByteOrder) : ByteArrayBuilder {
 
     override fun add(double: Double, order: ByteOrder) {
         add(double.toByteArray(order))
+    }
+
+    override fun add(medFloat16: MedFloat16) {
+        add(medFloat16.toByteArray())
+    }
+
+    override fun add(medFloat32: MedFloat32) {
+        add(medFloat32.toByteArray())
     }
 
     override fun add(uByte: UByte) {
@@ -94,38 +120,41 @@ private class ByteArrayBuilderImpl(val order: ByteOrder) : ByteArrayBuilder {
         add(uLong.toByteArray(order))
     }
 
-    override fun add(int24: Int24, order: ByteOrder) {
-        add(int24.toByteArray(order))
+    override fun add(uInt24: UInt24, order: ByteOrder) {
+        add(uInt24.toByteArray(order))
     }
 
-    override fun add(string: String, order: ByteOrder) {
-        if (order == ByteOrder.MOST_SIGNIFICANT_FIRST) {
-            add(string.encodeToByteArray().reversedArray())
-        } else {
-            add(string.encodeToByteArray())
-        }
+    override fun add(string: String, settings: StringEncodingSettings, order: ByteOrder) {
+        add(string.toByteArray(settings, order))
     }
 
-    override fun add(char: Char) {
-        add(char.toString())
+    override fun add(char: Char, encoding: StringEncodingSettings.Encoding, order: ByteOrder) {
+        add(char.toString(), StringEncodingSettings(StringEncodingSettings.NoMarking, encoding), order)
     }
 
     override fun add(bytes: ByteArray) {
         if (currentBit > 0) {
             addCurrentByte()
         }
-        when (order) {
+        when (byteOrder) {
             ByteOrder.MOST_SIGNIFICANT_FIRST -> this.bytes = bytes + this.bytes
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> this.bytes += bytes
         }
     }
 
     private fun addCurrentByte() {
-        when (order) {
+        when (byteOrder) {
             ByteOrder.MOST_SIGNIFICANT_FIRST -> this.bytes = byteArrayOf(currentByte) + this.bytes
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> this.bytes += currentByte
         }
         currentByte = 0
         currentBit = 0
+    }
+
+    fun build(): ByteArray {
+        if (currentBit > 0) {
+            addCurrentByte()
+        }
+        return bytes
     }
 }

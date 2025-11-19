@@ -1,4 +1,4 @@
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.base.bytes
 
 infix fun UByte.shl(bitCount: Int) = (toUInt() shl bitCount).toUByte()
 infix fun UByte.shr(bitCount: Int) = (toUInt() shr bitCount).toUByte()

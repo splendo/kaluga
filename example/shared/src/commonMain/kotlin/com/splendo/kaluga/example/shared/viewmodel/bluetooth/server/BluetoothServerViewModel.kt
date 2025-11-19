@@ -27,7 +27,7 @@ import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
-import com.splendo.kaluga.base.utils.buildByteArray
+import com.splendo.kaluga.base.bytes.buildByteArray
 import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.GattResponse

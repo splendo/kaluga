@@ -17,9 +17,13 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
-import com.splendo.kaluga.base.utils.ByteArrayBuilder
-import com.splendo.kaluga.base.utils.ByteOrder
-import com.splendo.kaluga.base.utils.buildByteArray
+import com.splendo.kaluga.base.bytes.ByteArrayBuilder
+import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.StringEncodingSettings
+import com.splendo.kaluga.base.bytes.buildByteArray
+import com.splendo.kaluga.base.bytes.isBitSet
+import com.splendo.kaluga.base.utils.toInt24
+import com.splendo.kaluga.base.utils.toUInt24
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -63,8 +67,10 @@ internal class BluetoothBinaryEncoder(
         }
 
         fun build(builder: ByteArrayBuilder) {
-            (0..flagBits.keys.max()).forEach {
-                builder.add(flagBits[it] ?: false)
+            if (flagBits.isNotEmpty()) {
+                (0..flagBits.keys.max()).forEach {
+                    builder.add(flagBits[it] ?: false)
+                }
             }
             actions.forEach { builder.apply(it) }
         }
@@ -90,13 +96,41 @@ private class BluetoothBinaryCompositeEncoder(
         }
     }
 
-    private fun encodeNumericElement(descriptor: SerialDescriptor, index: Int, value: Number, defaultByteSize: Int) {
-        val flag = index.flag
+    private fun encodeNumericElement(descriptor: SerialDescriptor, index: Int, value: Number, length: Length) {
+        val annotations = descriptor.getElementAnnotations(index)
+        val supportedLengths = annotations.filterIsInstance<Sizing>().map { it.length }
+        val isSigned = annotations.filterIsInstance<Unsigned>().isEmpty()
+        val lengthToAdd = when (supportedLengths.size) {
+            0 -> length
+            1 -> supportedLengths.first()
+            else -> {
+                val (lengthIndex, length) = supportedLengths.withIndex().firstOrNull { (_, length) ->
+                    length.fits(value, isSigned)
+                } ?: supportedLengths.withIndex().last()
 
+                val flag = index.flag
+                val offset = if (flag.isNullable) 1 else 0
+                for (offsetIndex in offset..<flag.bitWidth) {
+                    builder.addFlag(offsetIndex, lengthIndex.isBitSet(offsetIndex - offset))
+                }
+
+                length
+            }
+        }
+        builder.addAction {
+            val byteOrder = annotations.byteOrder
+            when (lengthToAdd) {
+                Length.`8_BIT` -> if (isSigned) add(value.toByte()) else add(value.toByte().toUByte())
+                Length.`16_BIT` -> if (isSigned) add(value.toShort(), byteOrder) else add(value.toShort().toUShort(), byteOrder)
+                Length.`24_BIT` -> if (isSigned) add(value.toInt().toInt24(), byteOrder) else add(value.toInt().toUInt().toUInt24(), byteOrder)
+                Length.`32_BIT` -> if (isSigned) add(value.toInt(), byteOrder) else add(value.toInt().toUInt(), byteOrder)
+                Length.`64_BIT` -> if (isSigned) add(value.toLong(), byteOrder) else add(value.toLong().toULong(), byteOrder)
+            }
+        }
     }
 
     override fun encodeByteElement(descriptor: SerialDescriptor, index: Int, value: Byte) {
-        encodeNumericElement(descriptor, index, value, 1)
+        encodeNumericElement(descriptor, index, value, Length.`8_BIT`)
     }
 
     override fun encodeCharElement(descriptor: SerialDescriptor, index: Int, value: Char) {
@@ -112,49 +146,50 @@ private class BluetoothBinaryCompositeEncoder(
     }
 
     override fun encodeInlineElement(descriptor: SerialDescriptor, index: Int): Encoder = object : Encoder {
+        val inlineIndex = index
         override val serializersModule: SerializersModule = this@BluetoothBinaryCompositeEncoder.serializersModule
 
         @ExperimentalSerializationApi
         override fun encodeNull() {}
 
         override fun encodeBoolean(value: Boolean) {
-            encodeBooleanElement(descriptor, index, value)
+            encodeBooleanElement(descriptor, inlineIndex, value)
         }
 
         override fun encodeByte(value: Byte) {
-            encodeByteElement(descriptor, index, value)
+            encodeByteElement(descriptor, inlineIndex, value)
         }
 
         override fun encodeShort(value: Short) {
-            encodeShortElement(descriptor, index, value)
+            encodeShortElement(descriptor, inlineIndex, value)
         }
 
         override fun encodeChar(value: Char) {
-            encodeCharElement(descriptor, index, value)
+            encodeCharElement(descriptor, inlineIndex, value)
         }
 
         override fun encodeInt(value: Int) {
-            encodeIntElement(descriptor, index, value)
+            encodeIntElement(descriptor, inlineIndex, value)
         }
 
         override fun encodeLong(value: Long) {
-            encodeLongElement(descriptor, index, value)
+            encodeLongElement(descriptor, inlineIndex, value)
         }
 
         override fun encodeFloat(value: Float) {
-            encodeFloatElement(descriptor, index, value)
+            encodeFloatElement(descriptor, inlineIndex, value)
         }
 
         override fun encodeDouble(value: Double) {
-            encodeDoubleElement(descriptor, index, value)
+            encodeDoubleElement(descriptor, inlineIndex, value)
         }
 
         override fun encodeString(value: String) {
-            encodeStringElement(descriptor, index, value)
+            encodeStringElement(descriptor, inlineIndex, value)
         }
 
         override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
-            TODO()
+            encodeIntElement(descriptor, inlineIndex, index)
         }
 
         override fun encodeInline(descriptor: SerialDescriptor): Encoder = this
@@ -163,11 +198,11 @@ private class BluetoothBinaryCompositeEncoder(
     }
 
     override fun encodeIntElement(descriptor: SerialDescriptor, index: Int, value: Int) {
-        encodeNumericElement(descriptor, index, value, 4)
+        encodeNumericElement(descriptor, index, value, Length.`32_BIT`)
     }
 
     override fun encodeLongElement(descriptor: SerialDescriptor, index: Int, value: Long) {
-        encodeNumericElement(descriptor, index, value, 8)
+        encodeNumericElement(descriptor, index, value, Length.`64_BIT`)
     }
 
     @ExperimentalSerializationApi
@@ -180,7 +215,56 @@ private class BluetoothBinaryCompositeEncoder(
         val flag = index.flag
         builder.addFlag(flag.bitIndex, value != null)
         value?.let {
-            BluetoothBinaryEncoder(builder, indexOffset + index, serializersModule).encodeSerializableValue(serializer, it)
+            serializer.serialize(
+                object : AbstractEncoder() {
+                    override val serializersModule: SerializersModule = this@BluetoothBinaryCompositeEncoder.serializersModule
+
+                    override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder {
+                        TODO()
+                    }
+
+                    override fun encodeBoolean(value: Boolean) {
+                        this@BluetoothBinaryCompositeEncoder.encodeBooleanElement(descriptor, index, value)
+                    }
+
+                    override fun encodeByte(value: Byte) {
+                        this@BluetoothBinaryCompositeEncoder.encodeByteElement(descriptor, index, value)
+                    }
+
+                    override fun encodeChar(value: Char) {
+                        this@BluetoothBinaryCompositeEncoder.encodeCharElement(descriptor, index, value)
+                    }
+
+                    override fun encodeDouble(value: Double) {
+                        this@BluetoothBinaryCompositeEncoder.encodeDoubleElement(descriptor, index, value)
+                    }
+
+                    override fun encodeFloat(value: Float) {
+                        this@BluetoothBinaryCompositeEncoder.encodeFloatElement(descriptor, index, value)
+                    }
+
+                    override fun encodeInline(descriptor: SerialDescriptor): Encoder {
+                        TODO()
+                    }
+
+                    override fun encodeInt(value: Int) {
+                        this@BluetoothBinaryCompositeEncoder.encodeIntElement(descriptor, index, value)
+                    }
+
+                    override fun encodeLong(value: Long) {
+                        this@BluetoothBinaryCompositeEncoder.encodeLongElement(descriptor, index, value)
+                    }
+
+                    override fun encodeShort(value: Short) {
+                        this@BluetoothBinaryCompositeEncoder.encodeShortElement(descriptor, index, value)
+                    }
+
+                    override fun encodeString(value: String) {
+                        this@BluetoothBinaryCompositeEncoder.encodeStringElement(descriptor, index, value)
+                    }
+                },
+                it
+            )
         }
     }
 
@@ -190,10 +274,10 @@ private class BluetoothBinaryCompositeEncoder(
         serializer: SerializationStrategy<T>,
         value: T
     ) {
-        val newBuilder = BluetoothBinaryEncoder.BinaryBuilder(descriptor)
+        val newBuilder = BluetoothBinaryEncoder.BinaryBuilder(descriptor.getElementDescriptor(index))
         BluetoothBinaryEncoder(newBuilder, 0, serializersModule).encodeSerializableValue(serializer, value)
         builder.addAction {
-            add(buildByteArray(descriptor.byteOrder, newBuilder::build))
+            add(buildByteArray(descriptor.getElementAnnotations(index).byteOrder, newBuilder::build))
         }
         if (newBuilder.isOfUnconstrainedSize) {
             builder.makeUnconstrained()
@@ -201,36 +285,27 @@ private class BluetoothBinaryCompositeEncoder(
     }
 
     override fun encodeShortElement(descriptor: SerialDescriptor, index: Int, value: Short) {
-        encodeNumericElement(descriptor, index, value, 2)
+        encodeNumericElement(descriptor, index, value, Length.`16_BIT`)
     }
 
     override fun encodeStringElement(descriptor: SerialDescriptor, index: Int, value: String) {
-        val fixedLength = descriptor.annotations.filterIsInstance<FixedLength>().firstOrNull()
-        val lengthPrefix = descriptor.annotations.filterIsInstance<LengthPrefix>().firstOrNull()
-        val nullTerminated = descriptor.annotations.filterIsInstance<NullTerminated>().firstOrNull()
-        when {
-            fixedLength != null -> {}
-            lengthPrefix != null -> {
-                
+        val annotations = descriptor.getElementAnnotations(index)
+        val encoding = annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: StringEncodingSettings.Encoding.UTF_8
+        val endMarking = when {
+            annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> StringEncodingSettings.NullTerminated
+            annotations.filterIsInstance<Sizing>().isNotEmpty() -> StringEncodingSettings.FixedLength(annotations.filterIsInstance<Sizing>().first().length.bytes)
+            annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> annotations.filterIsInstance<LengthPrefix>().first().let { lengthPrefix ->
+                StringEncodingSettings.LengthPrefix(lengthPrefix.lengthAsShort, lengthPrefix.canOverflow, lengthPrefix.sentinel)
             }
-            nullTerminated != null -> {
-                builder.addAction {
-                    val encoded = value.encodeToByteArray()
-                    require(!encoded.contains(0x00)) { "Null Terminated Strings must not include U+0000" }
-                    when (descriptor.byteOrder) {
-                        ByteOrder.MOST_SIGNIFICANT_FIRST -> add(byteArrayOf(0x00) + encoded.reversedArray())
-                        ByteOrder.LEAST_SIGNIFICANT_FIRST -> add(encoded + 0x00)
-                    }
-                }
-            }
-            else -> {
-                builder.addAction { add(value, descriptor.byteOrder) }
-                builder.makeUnconstrained()
-            }
+            else -> StringEncodingSettings.NoMarking
+        }
+        builder.addAction { add(value, StringEncodingSettings(endMarking, encoding), annotations.byteOrder) }
+        if (endMarking is StringEncodingSettings.NoMarking) {
+            builder.makeUnconstrained()
         }
     }
 
     override fun endStructure(descriptor: SerialDescriptor) {}
 }
 
-internal val SerialDescriptor.byteOrder: ByteOrder get() = annotations.filterIsInstance<com.splendo.kaluga.bluetooth.serialization.ByteOrder>().firstOrNull()?.order ?: ByteOrder.LEAST_SIGNIFICANT_FIRST
+internal val List<Annotation>.byteOrder: ByteOrder get() = filterIsInstance<com.splendo.kaluga.bluetooth.serialization.ByteOrder>().firstOrNull()?.order ?: ByteOrder.LEAST_SIGNIFICANT_FIRST

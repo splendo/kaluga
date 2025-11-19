@@ -22,25 +22,25 @@ import com.splendo.kaluga.base.bytes.shift
 import kotlin.jvm.JvmInline
 
 @JvmInline
-value class Int24(val value: Int) : Comparable<Int24> {
+value class UInt24(val value: UInt) : Comparable<UInt24> {
+
     companion object {
-        val MIN_VALUE = Int24(-0x800000)
-        val MAX_VALUE = Int24(0x7FFFFF)
+        val MIN_VALUE = UInt24(0U)
+        val MAX_VALUE = UInt24(0xFFFFFFU)
         const val SIZE_BYTES = 3
         const val SIZE_BITS = 24
     }
+
     init {
         require(value in MIN_VALUE.value..MAX_VALUE.value) {
-            "Value $value out of signed 24-bit range"
+            "Value $value out of unsigned 24-bit range"
         }
     }
 
-    override fun compareTo(other: Int24): Int = value.compareTo(other.value)
-    operator fun plus(other: Int24) = (value + other.value).toInt24()
-    operator fun minus(other: Int24) = (value - other.value).toInt24()
-    operator fun times(other: Int24) = (value * other.value).toInt24()
-    operator fun div(other: Int24) = (value / other.value).toInt24()
-
+    override fun compareTo(other: UInt24): Int = value.compareTo(other.value)
+    operator fun plus(other: UInt24) = (value + other.value).toUInt24()
+    operator fun minus(other: UInt24) = (value - other.value).toUInt24()
+    operator fun times(other: UInt24) = (value * other.value).toUInt24()
+    operator fun div(other: UInt24) = (value / other.value).toUInt24()
 }
-fun Int.toInt24() = Int24(this.coerceIn(Int24.MIN_VALUE.value, Int24.MAX_VALUE.value))
-
+fun UInt.toUInt24() = UInt24(coerceIn(UInt24.MIN_VALUE.value, UInt24.MAX_VALUE.value))
