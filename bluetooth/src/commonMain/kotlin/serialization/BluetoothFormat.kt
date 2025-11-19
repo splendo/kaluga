@@ -45,11 +45,34 @@ sealed class BluetoothFormat(
     }
 
     override fun <T> encodeToByteArray(serializer: SerializationStrategy<T>, value: T): ByteArray {
-        val builder = BluetoothBinaryEncoder.BinaryBuilder(serializer.descriptor)
-        val encoder = BluetoothBinaryEncoder(builder, 0, serializersModule)
+        val flag = serializer.descriptor.flagLayoutEntry
+        val builder = object : BinaryBuilder {
+            val flags = MutableList(maxOf( flag.bitIndex + flag.bitWidth, 0)) { false }
+            private val actions = mutableListOf<ByteArrayBuilder.() -> Unit>()
+            private var isOfUnconstrainedSize: Boolean = false
+
+            override fun addFlag(index: Int, value: Boolean) {
+                flags[index] = value
+            }
+
+            override fun addAction(action: ByteArrayBuilder.() -> Unit) {
+                require(!isOfUnconstrainedSize) { "This object has data of an unconstrained size." }
+                actions += action
+            }
+
+            override fun makeUnconstrained() {
+                isOfUnconstrainedSize = true
+            }
+
+            override fun build(): ByteArray = buildByteArray(flag.byteOrder) {
+                flags.forEach { add(it) }
+                actions.forEach { apply(it) }
+            }
+        }
+        val encoder = BluetoothBinaryEncoder(flag, builder, serializersModule)
         serializer.serialize(encoder, value)
 
-        return buildByteArray(serializer.descriptor.annotations.byteOrder, builder::build)
+        return builder.build()
     }
 
     override fun <T> decodeFromByteArray(deserializer: DeserializationStrategy<T>, bytes: ByteArray): T {

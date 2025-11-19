@@ -50,7 +50,7 @@ class BluetoothFormatTest {
             @LengthPrefix()
             val text: String
         )
-        
+
         validateEncoding(
             HeartRate(
                 heartRate = 85,

@@ -17,10 +17,14 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
+import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.StringEncodingSettings
+import com.splendo.kaluga.base.utils.toHexString
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.SerialKind
+import kotlin.jvm.JvmInline
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.sqrt
@@ -30,59 +34,190 @@ data class FlagLayoutEntry(
     val fieldIndex: Int,
     val bitIndex: Int,
     val bitWidth: Int,
-    val isNullable: Boolean
-)
+    val byteOrder: ByteOrder,
+    val isNullable: Boolean,
+    val numericSettings: NumericSettings?,
+    val stringSettings: StringSettings?,
+    val blockSettings: BlockSettings,
+    val children: List<FlagLayoutEntry>,
+) {
+
+    sealed class NumericSettings {
+        data class Natural(
+            val supportedLengths: Set<Length>,
+            val signed: Boolean,
+        ) : NumericSettings()
+
+        data class Scalar(
+            val supportedLengths: Set<Length>,
+            val signed: Boolean,
+            val multiplier: Int,
+            val decimalExponent: Int,
+            val binaryExponent: Int,
+            val offset: Int,
+        ) : NumericSettings()
+
+        data class Decimal(
+            val supportedLengths: Set<Length>,
+        ) : NumericSettings() {
+            init {
+                require((supportedLengths -setOf(Length.`16_BIT`, Length.`32_BIT`)).isEmpty()) { "Decimal only supports 16 and 32 bit encoding" }
+            }
+        }
+
+        data class MedFloat(
+            val supportedLengths: Set<Length>,
+        ) : NumericSettings() {
+            init {
+                require((supportedLengths -setOf(Length.`16_BIT`, Length.`32_BIT`)).isEmpty()) { "MedFloat only supports 16 and 32 bit encoding" }
+            }
+        }
+    }
+    data class StringSettings(
+        val encoding: StringEncodingSettings.Encoding,
+        val endMarking: StringEncodingSettings.EndMarking,
+    )
+
+    data class BlockSettings(
+        val prefix: ByteArrayHolder?,
+        val postfix: ByteArrayHolder?,
+        val checksumAlgorithm: ChecksumAlgorithm
+    )
+}
+
+@JvmInline
+value class ByteArrayHolder(val array: ByteArray) {
+    override fun toString(): String = array.toHexString(separator = " ")
+}
 
 class FlagLayoutException(message: String) : SerializationException(message)
 
-object FlagLayoutRegistry {
-    private val cache = mutableMapOf<SerialDescriptor, List<FlagLayoutEntry>>()
+internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout(this, serialName, 0, emptyList(), 0, ByteOrder.LEAST_SIGNIFICANT_FIRST) {}
 
-    fun getLayout(descriptor: SerialDescriptor): List<FlagLayoutEntry> = cache.getOrPut(descriptor) {
-        var nextBit = 0
-        val reservedIndices = mutableSetOf<Int>()
-        (0 until descriptor.elementsCount).map { i ->
-            val elementName = descriptor.getElementName(i)
-            val annotations = descriptor.getElementAnnotations(i)
-            val elementDescriptor = descriptor.getElementDescriptor(i)
-            val isNullable = elementDescriptor.isNullable
-            val customIndex = annotations.filterIsInstance<FlagIndex>().firstOrNull()?.index
-            val supportSizing = elementDescriptor.kind in setOf(
-                PrimitiveKind.INT, PrimitiveKind.LONG, PrimitiveKind.FLOAT,
-                PrimitiveKind.DOUBLE, PrimitiveKind.BYTE, PrimitiveKind.SHORT,
-                SerialKind.ENUM,
-            )
-            val supportedLengths = annotations.takeIf { supportSizing }?.filterIsInstance<Sizing>().orEmpty().map { it.length }.toSet()
-            val sizingWidth = when (supportedLengths.size) {
-                0 -> 0
-                1 -> 0
-                2 -> 1
-                else -> floor(sqrt(supportedLengths.size.toDouble())).toInt() + 1
-            }
-
-
-            val minimumWidth = if (customIndex != null) 1 else 0
-            val defaultWidth = (if (supportSizing) sizingWidth else minimumWidth) + (if (isNullable) 1 else 0)
-            val width = annotations.filterIsInstance<FlagWidth>().firstOrNull()?.bits ?: defaultWidth
-
-            val bitIndex = customIndex ?: if (isNullable || supportSizing) nextBit else -1
-            if (bitIndex >= 0) {
-                val flagIndicesToUse = (0..<width).map { bitIndex + it }.toSet()
-                if (flagIndicesToUse.intersect(reservedIndices).isNotEmpty()) {
-                    throw FlagLayoutException("Flag at index $bitIndex cannot be used for $elementName. Is already reserved")
-                }
-                reservedIndices += flagIndicesToUse
-            }
-            while (nextBit in reservedIndices) {
-                nextBit++
-            }
-            FlagLayoutEntry(
-                fieldName = elementName,
-                fieldIndex = i,
-                bitIndex = bitIndex,
-                bitWidth = width,
-                isNullable = isNullable
-            )
+    private fun getLayout(
+        descriptor: SerialDescriptor,
+        fieldName: String,
+        fieldIndex: Int,
+        fieldAnnotations: List<Annotation>,
+        defaultBitIndex: Int,
+        preferredByteOrder: ByteOrder,
+        reserveIndices: (Set<Int>) -> Unit
+    ): FlagLayoutEntry {
+        val annotations = descriptor.annotations + fieldAnnotations
+        var desiredWidth = 0
+        val isNullable = descriptor.isNullable
+        if (isNullable) {
+            desiredWidth++
         }
+        val customIndex = annotations.filterIsInstance<FlagIndex>().firstOrNull()?.index
+        val byteOrder = annotations.filterIsInstance<com.splendo.kaluga.bluetooth.serialization.ByteOrder>().firstOrNull()?.order ?: preferredByteOrder
+        if (descriptor.kind is PrimitiveKind.BOOLEAN && customIndex != null) {
+            desiredWidth++
+        }
+        val numericSettings = when (descriptor.kind) {
+            PrimitiveKind.INT,
+            PrimitiveKind.BYTE,
+            PrimitiveKind.SHORT,
+            PrimitiveKind.LONG -> {
+                val supportedLengths = annotations.filterIsInstance<Sizing>().map { it.length }.toSet()
+                val sizingWidth = when (supportedLengths.size) {
+                    0 -> 0
+                    1 -> 0
+                    2 -> 1
+                    else -> floor(sqrt(supportedLengths.size.toDouble())).toInt() + 1
+                }
+                desiredWidth += sizingWidth
+                val isSigned = annotations.filterIsInstance<Unsigned>().isEmpty()
+                annotations.filterIsInstance<Scalar>().firstOrNull()?.let { scalar ->
+                    FlagLayoutEntry.NumericSettings.Scalar(supportedLengths, isSigned, scalar.multiplier, scalar.decimalExponent, scalar.binaryExponent, scalar.offset)
+                } ?: FlagLayoutEntry.NumericSettings.Natural(supportedLengths, isSigned)
+            }
+            PrimitiveKind.DOUBLE,
+            PrimitiveKind.FLOAT -> {
+                if (annotations.filterIsInstance<MedFloat>().isNotEmpty()) {
+                    val supportedLengths = annotations.filterIsInstance<Sizing>().map { it.length }.toSet()
+                    // Since MedFloat only supports 16 and 32 bits, only one flag can ever be set
+                    if (supportedLengths.size > 1) {
+                        desiredWidth++
+                    }
+                    FlagLayoutEntry.NumericSettings.MedFloat(supportedLengths)
+                } else if (annotations.filterIsInstance<Scalar>().isNotEmpty()) {
+                    val supportedLengths = annotations.filterIsInstance<Sizing>().map { it.length }.toSet()
+                    val sizingWidth = when (supportedLengths.size) {
+                        0 -> 0
+                        1 -> 0
+                        2 -> 1
+                        else -> floor(sqrt(supportedLengths.size.toDouble())).toInt() + 1
+                    }
+                    desiredWidth += sizingWidth
+                    val scalar = annotations.filterIsInstance<Scalar>().first()
+                    val isSigned = annotations.filterIsInstance<Unsigned>().isEmpty()
+                    FlagLayoutEntry.NumericSettings.Scalar(supportedLengths, isSigned, scalar.multiplier, scalar.decimalExponent, scalar.binaryExponent, scalar.offset)
+                } else {
+                    val supportedLengths = annotations.filterIsInstance<Sizing>().map { it.length }.toSet()
+                    // Since Decimal only supports 16 and 32 bits, only one flag can ever be set
+                    if (supportedLengths.size > 1) {
+                        desiredWidth++
+                    }
+                    FlagLayoutEntry.NumericSettings.Decimal(supportedLengths)
+                }
+            }
+            else -> null
+        }
+        val stringSettings = when (descriptor.kind) {
+            PrimitiveKind.STRING -> {
+                val encoding = annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: StringEncodingSettings.Encoding.UTF_8
+                when {
+                    annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.NullTerminated)
+                    annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
+                        val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
+                        FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.LengthPrefix(lengthPrefix.lengthAsShort, lengthPrefix.canOverflow, lengthPrefix.sentinel))
+                    }
+                    annotations.filterIsInstance<Sizing>().size == 1 -> {
+                        FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.FixedLength(annotations.filterIsInstance<Sizing>().first().length.bytes))
+                    }
+                    else -> FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.NoMarking)
+                }
+            }
+            PrimitiveKind.CHAR -> FlagLayoutEntry.StringSettings(annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: StringEncodingSettings.Encoding.UTF_8, StringEncodingSettings.NoMarking)
+            else -> null
+        }
+
+        val blockSettings = FlagLayoutEntry.BlockSettings(
+            annotations.filterIsInstance<Prefix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
+            annotations.filterIsInstance<Postfix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
+            annotations.filterIsInstance<Checksum>().firstOrNull()?.algorithm ?: ChecksumAlgorithm.NONE,
+        )
+        val width = annotations.filterIsInstance<FlagWidth>().firstOrNull()?.bits ?: desiredWidth
+        val bitIndex = if (width > 0) {
+            customIndex ?: defaultBitIndex
+        } else -1
+        reserveIndices((0..<width).map { bitIndex + it }.toSet())
+        val reservedSubIndices = mutableSetOf<Int>()
+        var nextBit = 0
+        return FlagLayoutEntry(
+            fieldName,
+            fieldIndex,
+            bitIndex,
+            width,
+            byteOrder,
+            isNullable,
+            numericSettings,
+            stringSettings,
+            blockSettings,
+            (0 until descriptor.elementsCount).map { i ->
+                val elementName = descriptor.getElementName(i)
+                val annotations = descriptor.getElementAnnotations(i)
+                val elementDescriptor = descriptor.getElementDescriptor(i)
+                getLayout(elementDescriptor, elementName, i, annotations, nextBit, byteOrder) { flagIndicesToUse ->
+                    if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
+                        throw FlagLayoutException("Flag at index $bitIndex cannot be used for $elementName. Is already reserved")
+                    }
+                    reservedSubIndices += flagIndicesToUse
+                    while (nextBit in reservedSubIndices) {
+                        nextBit++
+                    }
+                }
+            }
+        )
     }
-}

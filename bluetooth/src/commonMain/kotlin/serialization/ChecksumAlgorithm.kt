@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.serialization
 
 enum class ChecksumAlgorithm {
+    NONE,
     CRC16,
     CRC32
 }
