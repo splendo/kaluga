@@ -231,7 +231,9 @@ internal class BluetoothBinaryEncoder(
     }
 
     override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
-        TODO("Not yet implemented")
+        builder.addAction {
+            add(enumDescriptor.getElementAnnotations(index).filterIsInstance<SerializedByteValue>().first().value)
+        }
     }
 
     override fun encodeFloat(value: Float) {

@@ -27,6 +27,13 @@ import kotlin.test.assertTrue
 
 class BluetoothFormatTest {
 
+    enum class SomeEnum {
+        @SerializedByteValue(value = 0x01)
+        A,
+        @SerializedByteValue(value = 0x02)
+        B
+    }
+
     @Test
     fun encodeHeartRate() {
         @Serializable
@@ -47,7 +54,7 @@ class BluetoothFormatTest {
         @Serializable
         data class Nested(
             val heartRate: HeartRate,
-            @LengthPrefix()
+            @LengthPrefix
             val text: String
         )
 
