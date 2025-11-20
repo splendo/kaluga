@@ -20,7 +20,7 @@ package com.splendo.kaluga.base.utils
 import kotlin.jvm.JvmInline
 
 @JvmInline
-value class MedFloat16(val value: Float) : Comparable<MedFloat16> {
+value class MedFloat16(val value: Double) : Comparable<MedFloat16> {
     internal companion object {
         const val NAN = 0x07FF
         const val POSITIVE_INFINITY = 0x07FE

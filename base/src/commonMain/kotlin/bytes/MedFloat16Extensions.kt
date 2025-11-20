@@ -46,36 +46,36 @@ fun ByteArray.decodeMedFloat16(octetIndex: Int): MedFloat16 {
         }
     }
 
-    val floatValue = when (mantissa) {
-        MedFloat16.NAN -> Float.NaN
-        MedFloat16.POSITIVE_INFINITY -> Float.POSITIVE_INFINITY
-        MedFloat16.NEGATIVE_INFINITY -> Float.NEGATIVE_INFINITY
-        else -> mantissa * 10.0.pow(exponent).toFloat()
+    val doubleValue = when (mantissa) {
+        MedFloat16.NAN -> Double.NaN
+        MedFloat16.POSITIVE_INFINITY -> Double.POSITIVE_INFINITY
+        MedFloat16.NEGATIVE_INFINITY -> Double.NEGATIVE_INFINITY
+        else -> mantissa * 10.0.pow(exponent)
     }
-    return MedFloat16(floatValue)
+    return MedFloat16(doubleValue)
 }
 
 fun MedFloat16.toByteArray(): ByteArray {
     if (value.isNaN()) return MedFloat16.NAN.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
-    if (value == Float.POSITIVE_INFINITY) return MedFloat16.POSITIVE_INFINITY.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
-    if (value == Float.NEGATIVE_INFINITY) return MedFloat16.NEGATIVE_INFINITY.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    if (value == Double.POSITIVE_INFINITY) return MedFloat16.POSITIVE_INFINITY.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    if (value == Double.NEGATIVE_INFINITY) return MedFloat16.NEGATIVE_INFINITY.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
     var mantissa = value
     var exponent = 0
 
-    while (mantissa !in -2048f..2047f && exponent < 7) {
-        mantissa /= 10f
+    while (mantissa !in -2048.0..2047.0 && exponent < 7) {
+        mantissa /= 10.0
         exponent++
     }
 
-    while (mantissa in -204.8f..204.7f &&
-        mantissa != mantissa.toInt().toFloat() &&
+    while (mantissa in -204.8..204.7 &&
+        mantissa != mantissa.toInt().toDouble() &&
         exponent > -8
     ) {
-        mantissa *= 10f
+        mantissa *= 10.0
         exponent--
 
-        if (mantissa !in -2048f..2047f) {
-            mantissa /= 10f
+        if (mantissa !in -2048.0..2047.0) {
+            mantissa /= 10.0
             exponent++
             break
         }
