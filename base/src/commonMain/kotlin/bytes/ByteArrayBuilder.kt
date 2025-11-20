@@ -50,7 +50,7 @@ interface ByteArrayBuilder {
 }
 
 fun buildByteArray(order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST, block: ByteArrayBuilder.() -> Unit) = ByteArrayBuilderImpl(
-    order
+    order,
 ).apply(block).build()
 
 private class ByteArrayBuilderImpl(override val byteOrder: ByteOrder) : ByteArrayBuilder {

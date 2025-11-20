@@ -26,7 +26,7 @@ import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.utils.decodeUShort
+import com.splendo.kaluga.base.bytes.decodeUShort
 import com.splendo.kaluga.base.bytes.isBitSet
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice

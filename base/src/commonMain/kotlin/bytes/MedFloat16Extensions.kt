@@ -32,16 +32,18 @@ fun ByteArray.decodeMedFloat16(octetIndex: Int): MedFloat16 {
 
     // Extract fields
     val mantissa = (raw and 0x0FFF).let { mantissa ->
-        if (mantissa and 0x800 != 0)
+        if (mantissa and 0x800 != 0) {
             mantissa or 0xFFFF0000.toInt()
-        else
+        } else {
             mantissa
+        }
     }
     val exponent = ((raw shr 12) and 0x0F).let { exponent ->
-        if (exponent and 0x08 != 0)
+        if (exponent and 0x08 != 0) {
             exponent or 0xFFFFFFF0.toInt()
-        else
+        } else {
             exponent
+        }
     }
 
     val floatValue = when (mantissa) {
@@ -54,7 +56,7 @@ fun ByteArray.decodeMedFloat16(octetIndex: Int): MedFloat16 {
 }
 
 fun MedFloat16.toByteArray(): ByteArray {
-    if (value.isNaN())   return MedFloat16.NAN.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    if (value.isNaN()) return MedFloat16.NAN.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
     if (value == Float.POSITIVE_INFINITY) return MedFloat16.POSITIVE_INFINITY.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
     if (value == Float.NEGATIVE_INFINITY) return MedFloat16.NEGATIVE_INFINITY.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
     var mantissa = value
@@ -65,11 +67,10 @@ fun MedFloat16.toByteArray(): ByteArray {
         exponent++
     }
 
-    while (
-        mantissa in -204.8f..204.7f &&
+    while (mantissa in -204.8f..204.7f &&
         mantissa != mantissa.toInt().toFloat() &&
-        exponent > -8) {
-
+        exponent > -8
+    ) {
         mantissa *= 10f
         exponent--
 
@@ -87,6 +88,6 @@ fun MedFloat16.toByteArray(): ByteArray {
 
     return byteArrayOf(
         (raw and 0xFF).toByte(),
-        ((raw shr 8) and 0xFF).toByte()
+        ((raw shr 8) and 0xFF).toByte(),
     )
 }

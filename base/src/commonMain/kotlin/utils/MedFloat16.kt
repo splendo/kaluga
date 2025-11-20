@@ -17,9 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.bytes.ByteOrder
 import kotlin.jvm.JvmInline
-import kotlin.math.pow
 
 @JvmInline
 value class MedFloat16(val value: Float) : Comparable<MedFloat16> {
@@ -31,5 +29,3 @@ value class MedFloat16(val value: Float) : Comparable<MedFloat16> {
 
     override fun compareTo(other: MedFloat16): Int = value.compareTo(other.value)
 }
-
-

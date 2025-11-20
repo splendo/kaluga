@@ -17,9 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.bytes.ByteOrder
 import kotlin.jvm.JvmInline
-import kotlin.math.pow
 
 @JvmInline
 value class MedFloat32(val value: Double) : Comparable<MedFloat32> {

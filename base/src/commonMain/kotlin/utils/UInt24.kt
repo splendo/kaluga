@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.shift
 import kotlin.jvm.JvmInline
 
 @JvmInline

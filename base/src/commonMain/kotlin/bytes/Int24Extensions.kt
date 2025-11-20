@@ -20,13 +20,11 @@ package com.splendo.kaluga.base.bytes
 import com.splendo.kaluga.base.utils.Int24
 import com.splendo.kaluga.base.utils.toInt24
 
-
 infix fun Int24.shr(bitCount: Int) = (value shr bitCount).toInt24()
 infix fun Int24.shl(bitCount: Int) = (value shl bitCount).toInt24()
 
 infix fun Int24.or(other: Int24) = Int24(value or other.value)
 infix fun Int24.and(other: Int24) = Int24(value and other.value)
-
 
 fun ByteArray.decodeInt24(octetIndex: Int, byteOrder: ByteOrder): Int24 {
     for (offset in 0..<Int24.SIZE_BYTES) {

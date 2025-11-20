@@ -59,7 +59,6 @@ fun MedFloat32.toByteArray(): ByteArray {
         mantissa != mantissa.toInt().toDouble() &&
         exponent > Byte.MIN_VALUE
     ) {
-
         mantissa *= 10.0
         exponent--
 

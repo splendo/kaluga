@@ -24,10 +24,10 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.PolymorphicKind
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.descriptors.SerialKind
 import kotlinx.serialization.descriptors.StructureKind
+import kotlinx.serialization.descriptors.getPolymorphicDescriptors
+import kotlinx.serialization.modules.SerializersModule
 import kotlin.jvm.JvmInline
-import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.sqrt
 
@@ -49,10 +49,7 @@ data class FlagLayoutEntry(
     sealed class NumericSettings {
 
         abstract val supportedLengths: Set<Length>
-        data class Natural(
-            override val supportedLengths: Set<Length>,
-            val signed: Boolean,
-        ) : NumericSettings() {
+        data class Natural(override val supportedLengths: Set<Length>, val signed: Boolean) : NumericSettings() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
             }
@@ -71,28 +68,21 @@ data class FlagLayoutEntry(
             }
         }
 
-        data class Decimal(
-            override val supportedLengths: Set<Length>,
-        ) : NumericSettings() {
+        data class Decimal(override val supportedLengths: Set<Length>) : NumericSettings() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
-                require((supportedLengths -setOf(Length.`32_BIT`, Length.`64_BIT`)).isEmpty()) { "Decimal only supports 32 and 64 bit encoding" }
+                require((supportedLengths - setOf(Length.`32_BIT`, Length.`64_BIT`)).isEmpty()) { "Decimal only supports 32 and 64 bit encoding" }
             }
         }
 
-        data class MedFloat(
-            override val supportedLengths: Set<Length>,
-        ) : NumericSettings() {
+        data class MedFloat(override val supportedLengths: Set<Length>) : NumericSettings() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
-                require((supportedLengths -setOf(Length.`16_BIT`, Length.`32_BIT`)).isEmpty()) { "MedFloat only supports 16 and 32 bit encoding" }
+                require((supportedLengths - setOf(Length.`16_BIT`, Length.`32_BIT`)).isEmpty()) { "MedFloat only supports 16 and 32 bit encoding" }
             }
         }
     }
-    data class StringSettings(
-        val encoding: StringEncodingSettings.Encoding,
-        val endMarking: StringEncodingSettings.EndMarking,
-    )
+    data class StringSettings(val encoding: StringEncodingSettings.Encoding, val endMarking: StringEncodingSettings.EndMarking)
 
     sealed class CollectionSettings {
         data class LengthPrefix(val endMarking: StringEncodingSettings.LengthPrefix) : CollectionSettings()
@@ -105,11 +95,7 @@ data class FlagLayoutEntry(
         }
     }
 
-    data class BlockSettings(
-        val prefix: ByteArrayHolder?,
-        val postfix: ByteArrayHolder?,
-        val checksumAlgorithm: ChecksumAlgorithm
-    )
+    data class BlockSettings(val prefix: ByteArrayHolder?, val postfix: ByteArrayHolder?, val checksumAlgorithm: ChecksumAlgorithm)
 }
 
 @JvmInline
@@ -119,7 +105,12 @@ value class ByteArrayHolder(val array: ByteArray) {
 
 class FlagLayoutException(message: String) : SerializationException(message)
 
-internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout(this, serialName, 0, emptyList(), 0, ByteOrder.LEAST_SIGNIFICANT_FIRST) {}
+object FlagLayoutRegistry {
+    private val cache = mutableMapOf<Pair<SerialDescriptor, SerializersModule>, FlagLayoutEntry>()
+
+    internal fun flagLayoutEntry(descriptor: SerialDescriptor, module: SerializersModule): FlagLayoutEntry =
+        getLayout(descriptor, descriptor.serialName, 0, emptyList(), 0, ByteOrder.LEAST_SIGNIFICANT_FIRST, module) {
+        }
 
     private fun getLayout(
         descriptor: SerialDescriptor,
@@ -128,8 +119,9 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
         fieldAnnotations: List<Annotation>,
         defaultBitIndex: Int,
         preferredByteOrder: ByteOrder,
-        reserveIndices: (Set<Int>) -> Unit
-    ): FlagLayoutEntry {
+        serializersModule: SerializersModule,
+        reserveIndices: (Set<Int>) -> Unit,
+    ): FlagLayoutEntry = cache.getOrPut(descriptor to serializersModule) {
         val annotations = descriptor.annotations + fieldAnnotations
         var desiredWidth = 0
         val isNullable = descriptor.isNullable || (descriptor.kind in setOf(StructureKind.LIST, StructureKind.MAP) && annotations.filterIsInstance<NullIfEmpty>().isNotEmpty())
@@ -152,11 +144,13 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
                     annotations.filterIsInstance<Scalar>().isNotEmpty() -> setOf(Length.`32_BIT`)
                     else -> setOf(Length.`32_BIT`)
                 }
+
                 PrimitiveKind.DOUBLE -> when {
                     annotations.filterIsInstance<MedFloat>().isNotEmpty() -> setOf(Length.`32_BIT`)
                     annotations.filterIsInstance<Scalar>().isNotEmpty() -> setOf(Length.`32_BIT`)
                     else -> setOf(Length.`64_BIT`)
                 }
+
                 StructureKind.MAP -> setOf(Length.`8_BIT`)
                 StructureKind.LIST -> setOf(Length.`8_BIT`)
                 else -> emptySet()
@@ -172,15 +166,18 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
             PrimitiveKind.INT,
             PrimitiveKind.BYTE,
             PrimitiveKind.SHORT,
-            PrimitiveKind.LONG -> {
+            PrimitiveKind.LONG,
+                -> {
                 desiredWidth += sizingWidth
                 val isSigned = annotations.filterIsInstance<Unsigned>().isEmpty()
                 annotations.filterIsInstance<Scalar>().firstOrNull()?.let { scalar ->
                     FlagLayoutEntry.NumericSettings.Scalar(supportedLengths, isSigned, scalar.multiplier, scalar.decimalExponent, scalar.binaryExponent, scalar.offset)
                 } ?: FlagLayoutEntry.NumericSettings.Natural(supportedLengths, isSigned)
             }
+
             PrimitiveKind.DOUBLE,
-            PrimitiveKind.FLOAT -> {
+            PrimitiveKind.FLOAT,
+                -> {
                 if (annotations.filterIsInstance<MedFloat>().isNotEmpty()) {
                     desiredWidth += sizingWidth
                     FlagLayoutEntry.NumericSettings.MedFloat(supportedLengths)
@@ -194,6 +191,7 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
                     FlagLayoutEntry.NumericSettings.Decimal(supportedLengths)
                 }
             }
+
             else -> null
         }
         val stringSettings = when (descriptor.kind) {
@@ -205,46 +203,72 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
                         val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
                         FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.LengthPrefix(lengthPrefix.lengthAsShort, lengthPrefix.canOverflow, lengthPrefix.sentinel))
                     }
+
                     supportedLengths.size == 1 -> {
                         FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.FixedLength(supportedLengths.first().bytes))
                     }
+
                     annotations.filterIsInstance<Unsized>().isNotEmpty() -> FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.NoMarking)
                     else -> FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.LengthPrefix())
                 }
             }
-            PrimitiveKind.CHAR -> FlagLayoutEntry.StringSettings(annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: StringEncodingSettings.Encoding.UTF_8, StringEncodingSettings.NoMarking)
+
+            PrimitiveKind.CHAR -> FlagLayoutEntry.StringSettings(
+                annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: StringEncodingSettings.Encoding.UTF_8,
+                StringEncodingSettings.NoMarking,
+            )
+
             else -> null
         }
 
         val collectionSettings = when (descriptor.kind) {
             is StructureKind.LIST,
-                is StructureKind.MAP -> {
-                    when {
-                        annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> FlagLayoutEntry.CollectionSettings.NullMarked
-                        annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
-                            val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
-                            FlagLayoutEntry.CollectionSettings.LengthPrefix(StringEncodingSettings.LengthPrefix(lengthPrefix.lengthAsShort, lengthPrefix.canOverflow, lengthPrefix.sentinel))
-                        }
-                        annotations.filterIsInstance<Unsized>().isNotEmpty() -> FlagLayoutEntry.CollectionSettings.Unmarked
-                        else -> {
-                            desiredWidth += sizingWidth
-                            FlagLayoutEntry.CollectionSettings.NumericLength(supportedLengths)
-                        }
+            is StructureKind.MAP,
+                -> {
+                when {
+                    annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> FlagLayoutEntry.CollectionSettings.NullMarked
+                    annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
+                        val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
+                        FlagLayoutEntry.CollectionSettings.LengthPrefix(
+                            StringEncodingSettings.LengthPrefix(lengthPrefix.lengthAsShort, lengthPrefix.canOverflow, lengthPrefix.sentinel),
+                        )
+                    }
+
+                    annotations.filterIsInstance<Unsized>().isNotEmpty() -> FlagLayoutEntry.CollectionSettings.Unmarked
+                    else -> {
+                        desiredWidth += sizingWidth
+                        FlagLayoutEntry.CollectionSettings.NumericLength(supportedLengths)
                     }
                 }
+            }
+
             else -> null
         }
 
-        val polymorphicMap = if (descriptor.kind is PolymorphicKind) {
-            val sealedDescriptor = descriptor.getElementDescriptor(1)
-            val polymorphicMap = (0..<sealedDescriptor.elementsCount).mapNotNull { index ->
-                val optionDescriptor = sealedDescriptor.getElementDescriptor(index)
-                optionDescriptor.annotations.filterIsInstance<SerializedByteValue>().firstOrNull()?.let {
-                    optionDescriptor.serialName to it.value
-                }
-            }.toMap()
-            if (polymorphicMap.size == sealedDescriptor.elementsCount) polymorphicMap else emptyMap()
-        } else emptyMap()
+        val polymorphicMap = when (descriptor.kind) {
+            is PolymorphicKind.SEALED -> {
+                val sealedDescriptor = descriptor.getElementDescriptor(1)
+                val polymorphicMap = (0..<sealedDescriptor.elementsCount).mapNotNull { index ->
+                    val optionDescriptor = sealedDescriptor.getElementDescriptor(index)
+                    optionDescriptor.annotations.filterIsInstance<SerializedByteValue>().firstOrNull()?.let {
+                        optionDescriptor.serialName to it.value
+                    }
+                }.toMap()
+                if (polymorphicMap.size == sealedDescriptor.elementsCount) polymorphicMap else emptyMap()
+            }
+
+            is PolymorphicKind.OPEN -> {
+                val polymorphicDescriptors = serializersModule.getPolymorphicDescriptors(descriptor)
+                val polymorphicMap = polymorphicDescriptors.mapNotNull { optionDescriptor ->
+                    optionDescriptor.annotations.filterIsInstance<SerializedByteValue>().firstOrNull()?.let {
+                        optionDescriptor.serialName to it.value
+                    }
+                }.toMap()
+                if (polymorphicMap.size == polymorphicDescriptors.size) polymorphicMap else emptyMap()
+            }
+
+            else -> emptyMap()
+        }
 
         val blockSettings = FlagLayoutEntry.BlockSettings(
             annotations.filterIsInstance<Prefix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
@@ -254,7 +278,9 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
         val width = annotations.filterIsInstance<FlagWidth>().firstOrNull()?.bits ?: desiredWidth
         val bitIndex = if (width > 0) {
             customIndex ?: defaultBitIndex
-        } else -1
+        } else {
+            -1
+        }
         reserveIndices((0..<width).map { bitIndex + it }.toSet())
         val reservedSubIndices = mutableSetOf<Int>()
         var nextBit = 0
@@ -270,19 +296,34 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
             collectionSettings,
             polymorphicMap,
             blockSettings,
-            (0 until descriptor.elementsCount).map { i ->
-                val elementName = descriptor.getElementName(i)
-                val annotations = descriptor.getElementAnnotations(i)
-                val elementDescriptor = descriptor.getElementDescriptor(i)
-                getLayout(elementDescriptor, elementName, i, annotations, nextBit, byteOrder) { flagIndicesToUse ->
-                    if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
-                        throw FlagLayoutException("Flag at index $bitIndex cannot be used for $elementName. Is already reserved")
-                    }
-                    reservedSubIndices += flagIndicesToUse
-                    while (nextBit in reservedSubIndices) {
-                        nextBit++
+            if (descriptor.kind == PolymorphicKind.OPEN) {
+                serializersModule.getPolymorphicDescriptors(descriptor).map { optionDescriptor ->
+                    getLayout(optionDescriptor, optionDescriptor.serialName, 0, optionDescriptor.annotations, nextBit, byteOrder, serializersModule) { flagIndicesToUse ->
+                        if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
+                            throw FlagLayoutException("Flag at index $bitIndex cannot be used for ${optionDescriptor.serialName}. Is already reserved")
+                        }
+                        reservedSubIndices += flagIndicesToUse
+                        while (nextBit in reservedSubIndices) {
+                            nextBit++
+                        }
                     }
                 }
-            }
+            } else {
+                (0 until descriptor.elementsCount).map { i ->
+                    val elementName = descriptor.getElementName(i)
+                    val annotations = descriptor.getElementAnnotations(i)
+                    val elementDescriptor = descriptor.getElementDescriptor(i)
+                    getLayout(elementDescriptor, elementName, i, annotations, nextBit, byteOrder, serializersModule) { flagIndicesToUse ->
+                        if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
+                            throw FlagLayoutException("Flag at index $bitIndex cannot be used for $elementName. Is already reserved")
+                        }
+                        reservedSubIndices += flagIndicesToUse
+                        while (nextBit in reservedSubIndices) {
+                            nextBit++
+                        }
+                    }
+                }
+            },
         )
     }
+}

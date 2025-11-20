@@ -17,15 +17,13 @@
 
 package com.splendo.kaluga.base.bytes
 
-data class StringEncodingSettings(
-    val endMarking: EndMarking = LengthPrefix(),
-    val encoding: Encoding = Encoding.UTF_8,
-) {
+data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix(), val encoding: Encoding = Encoding.UTF_8) {
 
     enum class Encoding {
         UTF_8,
         UTF_16,
-        ASCII;
+        ASCII,
+        ;
 
         fun encodeString(string: String, byteOrder: ByteOrder) = when (this) {
             UTF_8 -> string.encodeToByteArray().let {
@@ -36,7 +34,6 @@ data class StringEncodingSettings(
             }
             UTF_16 -> string.toUTF16(byteOrder)
             ASCII -> string.toAscii(byteOrder)
-
         }
     }
 
@@ -62,7 +59,7 @@ data class StringEncodingSettings(
     data class FixedLength(val length: Int) : EndMarking()
 }
 
-fun String.toByteArray(settings: StringEncodingSettings, order: ByteOrder) : ByteArray = when (val endMarking = settings.endMarking) {
+fun String.toByteArray(settings: StringEncodingSettings, order: ByteOrder): ByteArray = when (val endMarking = settings.endMarking) {
     is StringEncodingSettings.LengthPrefix -> {
         val encodedString = settings.encoding.encodeString(this, order)
         val encodedSize = endMarking.encodeSize(encodedString.size.toUInt(), order)

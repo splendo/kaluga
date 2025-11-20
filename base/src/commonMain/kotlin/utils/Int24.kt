@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.shift
 import kotlin.jvm.JvmInline
 
 @JvmInline
@@ -40,7 +38,5 @@ value class Int24(val value: Int) : Comparable<Int24> {
     operator fun minus(other: Int24) = (value - other.value).toInt24()
     operator fun times(other: Int24) = (value * other.value).toInt24()
     operator fun div(other: Int24) = (value / other.value).toInt24()
-
 }
 fun Int.toInt24() = Int24(this.coerceIn(Int24.MIN_VALUE.value, Int24.MAX_VALUE.value))
-

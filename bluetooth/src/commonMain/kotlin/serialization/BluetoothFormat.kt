@@ -25,9 +25,7 @@ import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 
-sealed class BluetoothFormat(
-    override val serializersModule: SerializersModule = EmptySerializersModule()
-) : BinaryFormat {
+sealed class BluetoothFormat(override val serializersModule: SerializersModule = EmptySerializersModule()) : BinaryFormat {
 
     class Builder internal constructor(from: BluetoothFormat) {
         var serializersModule: SerializersModule = from.serializersModule
@@ -36,18 +34,18 @@ sealed class BluetoothFormat(
     companion object Default : BluetoothFormat() {
         operator fun invoke(from: BluetoothFormat = this, builder: Builder.() -> Unit): BluetoothFormat {
             val b = Builder(
-                from
+                from,
             ).apply(builder)
             return BluetoothFormatImpl(
-                b
+                b,
             )
         }
     }
 
     override fun <T> encodeToByteArray(serializer: SerializationStrategy<T>, value: T): ByteArray {
-        val flag = serializer.descriptor.flagLayoutEntry
+        val flag = FlagLayoutRegistry.flagLayoutEntry(serializer.descriptor, serializersModule)
         val builder = object : BinaryBuilder {
-            val flags = MutableList(maxOf( flag.bitIndex + flag.bitWidth, 0)) { false }
+            val flags = MutableList(maxOf(flag.bitIndex + flag.bitWidth, 0)) { false }
             private val actions = mutableListOf<ByteArrayBuilder.() -> Unit>()
             private var isOfUnconstrainedSize: Boolean = false
 

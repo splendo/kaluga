@@ -55,5 +55,7 @@ class DefaultServiceWrapper(val service: CBService) : RemoteServiceWrapper {
         Service.Type.SECONDARY
     }
     override val includedServices: List<RemoteServiceWrapper> by lazy { service.includedServices.orEmpty().typedList<CBService>().map { DefaultServiceWrapper(it) } }
-    override val characteristics: List<RemoteCharacteristicWrapper> by lazy { service.characteristics.orEmpty().typedList<CBCharacteristic>().map { DefaultCharacteristicWrapper(it, this) } }
+    override val characteristics: List<RemoteCharacteristicWrapper> by lazy {
+        service.characteristics.orEmpty().typedList<CBCharacteristic>().map { DefaultCharacteristicWrapper(it, this) }
+    }
 }
