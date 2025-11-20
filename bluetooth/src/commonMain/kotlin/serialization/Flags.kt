@@ -119,10 +119,20 @@ annotation class Sizing(val length: Length)
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
+@Target(AnnotationTarget.PROPERTY)
+annotation class Unsized
+
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.PROPERTY)
+annotation class NullIfEmpty
+
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
 @Target(AnnotationTarget.CLASS)
 annotation class Checksum(val algorithm: ChecksumAlgorithm = ChecksumAlgorithm.CRC16)
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
-@Target(AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
 annotation class SerializedByteValue(val value: Byte)

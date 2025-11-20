@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.utils.toHexString
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.descriptors.PolymorphicKind
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.SerialKind
@@ -40,6 +41,7 @@ data class FlagLayoutEntry(
     val numericSettings: NumericSettings?,
     val stringSettings: StringSettings?,
     val collectionSettings: CollectionSettings?,
+    val polymorphicMap: Map<String, Byte>,
     val blockSettings: BlockSettings,
     val children: List<FlagLayoutEntry>,
 ) {
@@ -92,9 +94,16 @@ data class FlagLayoutEntry(
         val endMarking: StringEncodingSettings.EndMarking,
     )
 
-    data class CollectionSettings(
-        val supportedLengths: Set<Length>,
-    )
+    sealed class CollectionSettings {
+        data class LengthPrefix(val endMarking: StringEncodingSettings.LengthPrefix) : CollectionSettings()
+        data object NullMarked : CollectionSettings()
+        data object Unmarked : CollectionSettings()
+        data class NumericLength(val supportedLengths: Set<Length>) : CollectionSettings() {
+            init {
+                require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
+            }
+        }
+    }
 
     data class BlockSettings(
         val prefix: ByteArrayHolder?,
@@ -123,7 +132,7 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
     ): FlagLayoutEntry {
         val annotations = descriptor.annotations + fieldAnnotations
         var desiredWidth = 0
-        val isNullable = descriptor.isNullable
+        val isNullable = descriptor.isNullable || (descriptor.kind in setOf(StructureKind.LIST, StructureKind.MAP) && annotations.filterIsInstance<NullIfEmpty>().isNotEmpty())
         if (isNullable) {
             desiredWidth++
         }
@@ -138,8 +147,16 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
                 PrimitiveKind.SHORT -> setOf(Length.`16_BIT`)
                 PrimitiveKind.INT -> setOf(Length.`32_BIT`)
                 PrimitiveKind.LONG -> setOf(Length.`64_BIT`)
-                PrimitiveKind.FLOAT -> setOf(Length.`32_BIT`)
-                PrimitiveKind.DOUBLE -> setOf(Length.`64_BIT`)
+                PrimitiveKind.FLOAT -> when {
+                    annotations.filterIsInstance<MedFloat>().isNotEmpty() -> setOf(Length.`16_BIT`)
+                    annotations.filterIsInstance<Scalar>().isNotEmpty() -> setOf(Length.`32_BIT`)
+                    else -> setOf(Length.`32_BIT`)
+                }
+                PrimitiveKind.DOUBLE -> when {
+                    annotations.filterIsInstance<MedFloat>().isNotEmpty() -> setOf(Length.`32_BIT`)
+                    annotations.filterIsInstance<Scalar>().isNotEmpty() -> setOf(Length.`32_BIT`)
+                    else -> setOf(Length.`64_BIT`)
+                }
                 StructureKind.MAP -> setOf(Length.`8_BIT`)
                 StructureKind.LIST -> setOf(Length.`8_BIT`)
                 else -> emptySet()
@@ -191,7 +208,8 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
                     supportedLengths.size == 1 -> {
                         FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.FixedLength(supportedLengths.first().bytes))
                     }
-                    else -> FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.NoMarking)
+                    annotations.filterIsInstance<Unsized>().isNotEmpty() -> FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.NoMarking)
+                    else -> FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.LengthPrefix())
                 }
             }
             PrimitiveKind.CHAR -> FlagLayoutEntry.StringSettings(annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: StringEncodingSettings.Encoding.UTF_8, StringEncodingSettings.NoMarking)
@@ -201,12 +219,32 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
         val collectionSettings = when (descriptor.kind) {
             is StructureKind.LIST,
                 is StructureKind.MAP -> {
-                    desiredWidth += sizingWidth
-                    FlagLayoutEntry.CollectionSettings(supportedLengths)
+                    when {
+                        annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> FlagLayoutEntry.CollectionSettings.NullMarked
+                        annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
+                            val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
+                            FlagLayoutEntry.CollectionSettings.LengthPrefix(StringEncodingSettings.LengthPrefix(lengthPrefix.lengthAsShort, lengthPrefix.canOverflow, lengthPrefix.sentinel))
+                        }
+                        annotations.filterIsInstance<Unsized>().isNotEmpty() -> FlagLayoutEntry.CollectionSettings.Unmarked
+                        else -> {
+                            desiredWidth += sizingWidth
+                            FlagLayoutEntry.CollectionSettings.NumericLength(supportedLengths)
+                        }
+                    }
                 }
             else -> null
-
         }
+
+        val polymorphicMap = if (descriptor.kind is PolymorphicKind) {
+            val sealedDescriptor = descriptor.getElementDescriptor(1)
+            val polymorphicMap = (0..<sealedDescriptor.elementsCount).mapNotNull { index ->
+                val optionDescriptor = sealedDescriptor.getElementDescriptor(index)
+                optionDescriptor.annotations.filterIsInstance<SerializedByteValue>().firstOrNull()?.let {
+                    optionDescriptor.serialName to it.value
+                }
+            }.toMap()
+            if (polymorphicMap.size == sealedDescriptor.elementsCount) polymorphicMap else emptyMap()
+        } else emptyMap()
 
         val blockSettings = FlagLayoutEntry.BlockSettings(
             annotations.filterIsInstance<Prefix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
@@ -230,6 +268,7 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
             numericSettings,
             stringSettings,
             collectionSettings,
+            polymorphicMap,
             blockSettings,
             (0 until descriptor.elementsCount).map { i ->
                 val elementName = descriptor.getElementName(i)

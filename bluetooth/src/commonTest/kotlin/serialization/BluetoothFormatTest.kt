@@ -22,17 +22,51 @@ import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.serializer
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class BluetoothFormatTest {
 
+    @Serializable
+    @Prefix([0x42, 0x23])
+    @Postfix([0x22])
+    class Nested<T>(
+        val nested: T,
+    )
+
+    @Serializable
     enum class SomeEnum {
         @SerializedByteValue(value = 0x01)
         A,
         @SerializedByteValue(value = 0x02)
         B
+    }
+
+    @Serializable
+    sealed class SomeSealedClass {
+        @Serializable
+        @SerializedByteValue(value = 0x01)
+
+        data class A(val a: Int) : SomeSealedClass()
+        @Serializable
+        @SerializedByteValue(value = 0x02)
+        data class B(
+            @Scalar(decimalExponent = -2)
+            val b: Double
+        ) : SomeSealedClass()
+    }
+
+    @Test
+    fun encodeEnum() {
+        validateEncoding(SomeEnum.A, SomeEnum.serializer(), byteArrayOf(0x01))
+    }
+
+    @Test
+    fun encodeSealed() {
+        validateEncoding(SomeSealedClass.A(4), SomeSealedClass.serializer(), byteArrayOf(0x01, 0x04, 0x00, 0x00, 0x00))
+        validateEncoding(SomeSealedClass.B(600.0), SomeSealedClass.serializer(), byteArrayOf(0x02, 0x06, 0x00, 0x00, 0x00))
     }
 
     @Test
@@ -52,13 +86,6 @@ class BluetoothFormatTest {
             val energyExpended: Int? = null,
         )
 
-        @Serializable
-        data class Nested(
-            val heartRate: HeartRate,
-            @LengthPrefix
-            val text: String
-        )
-
         validateEncoding(
             HeartRate(
                 heartRate = 85,
@@ -76,13 +103,6 @@ class BluetoothFormatTest {
             ),
             byteArrayOf(0x0B, 0x2C, 0x01, 0xF4.toByte(), 0x01)
         )
-        validateEncoding(
-            Nested(
-                HeartRate(50, contactSupported = true, contactDetected = true),
-                "Hello World"
-            ),
-            byteArrayOf(0x06, 0x32, 0x0B, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x57, 0x6F, 0x72, 0x6C, 0x64)
-        )
 
         validateEncoding(
             listOf(HeartRate(50, contactSupported = true, contactDetected = true),
@@ -96,5 +116,8 @@ class BluetoothFormatTest {
     private fun <T> validateEncoding(value: T, serializer: KSerializer<T>, expectedValue: ByteArray) {
         val bytes = BluetoothFormat.encodeToByteArray(serializer, value)
         assertTrue(bytes.contentEquals(expectedValue), "Expected ${expectedValue.toHexString(separator = " ")} but got ${bytes.toHexString(separator = " ")}")
+
+        val nestedBytes = BluetoothFormat.encodeToByteArray(Nested.serializer(serializer), Nested(value))
+        assertTrue(nestedBytes.contentEquals(byteArrayOf(0x42, 0x23) + expectedValue + 0x22))
     }
 }

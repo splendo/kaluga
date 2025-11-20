@@ -43,7 +43,7 @@ data class StringEncodingSettings(
     sealed class EndMarking
 
     data class LengthPrefix(val lengthAsShort: Boolean = false, val canOverflow: Boolean = false, val sentinel: Byte = 0xFF.toByte()) : EndMarking() {
-        internal fun encodeSize(size: UInt, order: ByteOrder): ByteArray = when {
+        fun encodeSize(size: UInt, order: ByteOrder): ByteArray = when {
             lengthAsShort && size < UShort.MAX_VALUE.toUInt() -> size.toUShort().toByteArray(order)
             lengthAsShort -> throw IllegalArgumentException("Size $size is too large to encode as short")
             size <= UByte.MAX_VALUE.toUInt() -> byteArrayOf(size.toUByte().toByte())

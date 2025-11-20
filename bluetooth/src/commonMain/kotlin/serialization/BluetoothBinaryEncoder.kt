@@ -27,12 +27,16 @@ import com.splendo.kaluga.base.utils.MedFloat32
 import com.splendo.kaluga.base.utils.toInt24
 import com.splendo.kaluga.base.utils.toUInt24
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.descriptors.PolymorphicKind
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.StructureKind
+import kotlinx.serialization.descriptors.elementDescriptors
 import kotlinx.serialization.encoding.AbstractEncoder
 import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.internal.AbstractPolymorphicSerializer
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.math.pow
 
@@ -142,21 +146,20 @@ internal fun BinaryBuilder.encodeNumericElement(
         }
         is FlagLayoutEntry.NumericSettings.Decimal -> {
             val lengthToAdd = if (settings.supportedLengths.size > 1) {
-
                 val flagIndex = entry.bitIndex + if (entry.isNullable) 1 else 0
                 if (value.toDouble() >= Float.MIN_VALUE && value.toDouble() <= Float.MAX_VALUE) {
                     addFlag(flagIndex, false)
-                    Length.`16_BIT`
+                    Length.`32_BIT`
                 } else {
                     addFlag(flagIndex, true)
-                    Length.`32_BIT`
+                    Length.`64_BIT`
                 }
             } else settings.supportedLengths.first()
 
             addAction {
                 when (lengthToAdd) {
-                    Length.`16_BIT` -> add(value.toFloat())
-                    Length.`32_BIT` -> add(value.toDouble())
+                    Length.`32_BIT` -> add(value.toFloat())
+                    Length.`64_BIT` -> add(value.toDouble())
                     else -> throw IllegalArgumentException("Decimal only supports 16 and 32 bit encoding")
                 }
             }
@@ -209,17 +212,17 @@ internal fun BinaryBuilder.encodeLongElement(value: Long, entry: FlagLayoutEntry
 internal fun BinaryBuilder.encodeFloatElement(value: Float, entry: FlagLayoutEntry) = encodeNumericElement(
     value,
     entry,
-    entry.numericSettings ?: FlagLayoutEntry.NumericSettings.Decimal(setOf(Length.`16_BIT`))
+    entry.numericSettings ?: FlagLayoutEntry.NumericSettings.Decimal(setOf(Length.`32_BIT`))
 )
 internal fun BinaryBuilder.encodeDoubleElement(value: Double, entry: FlagLayoutEntry) = encodeNumericElement(
     value,
     entry,
-    entry.numericSettings ?: FlagLayoutEntry.NumericSettings.Decimal(setOf(Length.`32_BIT`))
+    entry.numericSettings ?: FlagLayoutEntry.NumericSettings.Decimal(setOf(Length.`64_BIT`))
 )
 
 internal fun BinaryBuilder.encodeStringElement(value: String, entry: FlagLayoutEntry) {
     val encoding = entry.stringSettings?.encoding  ?: StringEncodingSettings.Encoding.UTF_8
-    val endMarking = entry.stringSettings?.endMarking ?: StringEncodingSettings.NoMarking
+    val endMarking = entry.stringSettings?.endMarking ?: StringEncodingSettings.LengthPrefix()
     addAction { add(value, StringEncodingSettings(endMarking, encoding), entry.byteOrder) }
     if (endMarking is StringEncodingSettings.NoMarking) {
         makeUnconstrained()
@@ -239,8 +242,26 @@ internal class BluetoothBinaryEncoder(
         val builder = StructureBinaryBuilder(flag) { builder.makeUnconstrained() }.apply {
             builder.addAction { add(build()) }
         }
-        return BluetoothBinaryCompositeEncoder(flag, builder, serializersModule) { index ->
+        return BluetoothBinaryCompositeEncoder(
+            flag,
+            builder,
+            serializersModule,
+            onFinishStructure = {
+                when (descriptor.kind) {
+                    is StructureKind.MAP,
+                        is StructureKind.LIST -> {
+                            when (flag.collectionSettings) {
+                                is FlagLayoutEntry.CollectionSettings.NullMarked -> builder.addAction { add(0x00.toByte()) }
+                                is FlagLayoutEntry.CollectionSettings.Unmarked -> { builder.makeUnconstrained() }
+                                else -> {}
+                            }
+                        }
+                    else -> {}
+                }
+            }
+        ) { index ->
             when (descriptor.kind) {
+                is PolymorphicKind -> flag.children[index]
                 is StructureKind.CLASS -> flag.children[index]
                 is StructureKind.LIST -> flag.children.first()
                 is StructureKind.MAP -> if (index % 2 == 0) flag.children.first() else flag.children[1]
@@ -250,8 +271,16 @@ internal class BluetoothBinaryEncoder(
     }
 
     override fun beginCollection(descriptor: SerialDescriptor, collectionSize: Int): CompositeEncoder {
-        val length = flag.collectionSettings?.supportedLengths ?: setOf(Length.`8_BIT`)
-        builder.encodeNumericElement(collectionSize, flag, FlagLayoutEntry.NumericSettings.Natural(length, false))
+        if (flag.isNullable) {
+            builder.addFlag(flag.bitIndex, collectionSize > 0)
+        }
+        when (val collectionSettings = flag.collectionSettings ?: FlagLayoutEntry.CollectionSettings.NumericLength(setOf(Length.`8_BIT`))) {
+            is FlagLayoutEntry.CollectionSettings.LengthPrefix ->
+                builder.addAction { collectionSettings.endMarking.encodeSize(collectionSize.toUInt(), flag.byteOrder) }
+            is FlagLayoutEntry.CollectionSettings.NumericLength -> builder.encodeNumericElement(collectionSize, flag, FlagLayoutEntry.NumericSettings.Natural(collectionSettings.supportedLengths, true))
+            is FlagLayoutEntry.CollectionSettings.Unmarked -> {}
+            is FlagLayoutEntry.CollectionSettings.NullMarked -> {}
+        }
         return beginStructure(descriptor)
     }
 
@@ -273,7 +302,11 @@ internal class BluetoothBinaryEncoder(
 
     override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
         builder.addAction {
-            add(enumDescriptor.getElementAnnotations(index).filterIsInstance<SerializedByteValue>().first().value)
+            if ((0 until enumDescriptor.elementsCount).all { enumDescriptor.getElementAnnotations(it).filterIsInstance<SerializedByteValue>().isNotEmpty() }) {
+                add(enumDescriptor.getElementAnnotations(index).filterIsInstance<SerializedByteValue>().first().value)
+            } else {
+                add(enumDescriptor.getElementName(index), StringEncodingSettings(StringEncodingSettings.NoMarking, StringEncodingSettings.Encoding.UTF_8), flag.byteOrder)
+            }
         }
     }
 
@@ -308,6 +341,7 @@ private class BluetoothBinaryCompositeEncoder(
     private val flag: FlagLayoutEntry,
     private val builder: BinaryBuilder,
     override val serializersModule: SerializersModule,
+    private val onFinishStructure: () -> Unit,
     private val getFlag: (Int) -> FlagLayoutEntry,
 ) : CompositeEncoder {
 
@@ -360,7 +394,10 @@ private class BluetoothBinaryCompositeEncoder(
         serializer: SerializationStrategy<T>,
         value: T
     ) {
-        BluetoothBinaryEncoder(getFlag(index), builder, serializersModule).encodeSerializableValue(serializer, value)
+        val flag = if (descriptor.kind is PolymorphicKind) {
+            getFlag(index).children.first { entry -> entry.fieldName == serializer.descriptor.serialName }
+        } else getFlag(index)
+        BluetoothBinaryEncoder(flag, builder, serializersModule).encodeSerializableValue(serializer, value)
     }
 
     override fun encodeShortElement(descriptor: SerialDescriptor, index: Int, value: Short) {
@@ -368,8 +405,18 @@ private class BluetoothBinaryCompositeEncoder(
     }
 
     override fun encodeStringElement(descriptor: SerialDescriptor, index: Int, value: String) {
-        builder.encodeStringElement(value, getFlag(index))
+        if (descriptor.kind is PolymorphicKind && index == 0) {
+            builder.addAction {
+                flag.polymorphicMap[value]?.let {
+                    add(it)
+                } ?: add(value, StringEncodingSettings(StringEncodingSettings.NoMarking, StringEncodingSettings.Encoding.UTF_8), flag.byteOrder)
+            }
+        } else {
+            builder.encodeStringElement(value, getFlag(index))
+        }
     }
 
-    override fun endStructure(descriptor: SerialDescriptor) {}
+    override fun endStructure(descriptor: SerialDescriptor) {
+        onFinishStructure()
+    }
 }
