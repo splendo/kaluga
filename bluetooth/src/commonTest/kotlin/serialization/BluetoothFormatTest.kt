@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.utils.toHexString
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.serializer
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -82,6 +83,11 @@ class BluetoothFormatTest {
             ),
             byteArrayOf(0x06, 0x32, 0x0B, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x57, 0x6F, 0x72, 0x6C, 0x64)
         )
+
+        validateEncoding(
+            listOf(HeartRate(50, contactSupported = true, contactDetected = true),
+                HeartRate(500, contactSupported = true, contactDetected = false),
+            ), ListSerializer(HeartRate.serializer()), byteArrayOf(0x02, 0x06, 0x32, 0x03, 0xF4.toByte(), 0x01))
     }
 
     @OptIn(InternalSerializationApi::class)

@@ -24,6 +24,7 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.SerialKind
+import kotlinx.serialization.descriptors.StructureKind
 import kotlin.jvm.JvmInline
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -38,37 +39,50 @@ data class FlagLayoutEntry(
     val isNullable: Boolean,
     val numericSettings: NumericSettings?,
     val stringSettings: StringSettings?,
+    val collectionSettings: CollectionSettings?,
     val blockSettings: BlockSettings,
     val children: List<FlagLayoutEntry>,
 ) {
 
     sealed class NumericSettings {
+
+        abstract val supportedLengths: Set<Length>
         data class Natural(
-            val supportedLengths: Set<Length>,
+            override val supportedLengths: Set<Length>,
             val signed: Boolean,
-        ) : NumericSettings()
+        ) : NumericSettings() {
+            init {
+                require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
+            }
+        }
 
         data class Scalar(
-            val supportedLengths: Set<Length>,
+            override val supportedLengths: Set<Length>,
             val signed: Boolean,
             val multiplier: Int,
             val decimalExponent: Int,
             val binaryExponent: Int,
             val offset: Int,
-        ) : NumericSettings()
-
-        data class Decimal(
-            val supportedLengths: Set<Length>,
         ) : NumericSettings() {
             init {
-                require((supportedLengths -setOf(Length.`16_BIT`, Length.`32_BIT`)).isEmpty()) { "Decimal only supports 16 and 32 bit encoding" }
+                require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
+            }
+        }
+
+        data class Decimal(
+            override val supportedLengths: Set<Length>,
+        ) : NumericSettings() {
+            init {
+                require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
+                require((supportedLengths -setOf(Length.`32_BIT`, Length.`64_BIT`)).isEmpty()) { "Decimal only supports 32 and 64 bit encoding" }
             }
         }
 
         data class MedFloat(
-            val supportedLengths: Set<Length>,
+            override val supportedLengths: Set<Length>,
         ) : NumericSettings() {
             init {
+                require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
                 require((supportedLengths -setOf(Length.`16_BIT`, Length.`32_BIT`)).isEmpty()) { "MedFloat only supports 16 and 32 bit encoding" }
             }
         }
@@ -76,6 +90,10 @@ data class FlagLayoutEntry(
     data class StringSettings(
         val encoding: StringEncodingSettings.Encoding,
         val endMarking: StringEncodingSettings.EndMarking,
+    )
+
+    data class CollectionSettings(
+        val supportedLengths: Set<Length>,
     )
 
     data class BlockSettings(
@@ -114,18 +132,30 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
         if (descriptor.kind is PrimitiveKind.BOOLEAN && customIndex != null) {
             desiredWidth++
         }
+        val supportedLengths = annotations.filterIsInstance<Sizing>().map { it.length }.toSet().ifEmpty {
+            when (descriptor.kind) {
+                PrimitiveKind.BYTE -> setOf(Length.`8_BIT`)
+                PrimitiveKind.SHORT -> setOf(Length.`16_BIT`)
+                PrimitiveKind.INT -> setOf(Length.`32_BIT`)
+                PrimitiveKind.LONG -> setOf(Length.`64_BIT`)
+                PrimitiveKind.FLOAT -> setOf(Length.`32_BIT`)
+                PrimitiveKind.DOUBLE -> setOf(Length.`64_BIT`)
+                StructureKind.MAP -> setOf(Length.`8_BIT`)
+                StructureKind.LIST -> setOf(Length.`8_BIT`)
+                else -> emptySet()
+            }
+        }
+        val sizingWidth = when (supportedLengths.size) {
+            0 -> 0
+            1 -> 0
+            2 -> 1
+            else -> floor(sqrt(supportedLengths.size.toDouble())).toInt() + 1
+        }
         val numericSettings = when (descriptor.kind) {
             PrimitiveKind.INT,
             PrimitiveKind.BYTE,
             PrimitiveKind.SHORT,
             PrimitiveKind.LONG -> {
-                val supportedLengths = annotations.filterIsInstance<Sizing>().map { it.length }.toSet()
-                val sizingWidth = when (supportedLengths.size) {
-                    0 -> 0
-                    1 -> 0
-                    2 -> 1
-                    else -> floor(sqrt(supportedLengths.size.toDouble())).toInt() + 1
-                }
                 desiredWidth += sizingWidth
                 val isSigned = annotations.filterIsInstance<Unsigned>().isEmpty()
                 annotations.filterIsInstance<Scalar>().firstOrNull()?.let { scalar ->
@@ -135,30 +165,15 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
             PrimitiveKind.DOUBLE,
             PrimitiveKind.FLOAT -> {
                 if (annotations.filterIsInstance<MedFloat>().isNotEmpty()) {
-                    val supportedLengths = annotations.filterIsInstance<Sizing>().map { it.length }.toSet()
-                    // Since MedFloat only supports 16 and 32 bits, only one flag can ever be set
-                    if (supportedLengths.size > 1) {
-                        desiredWidth++
-                    }
+                    desiredWidth += sizingWidth
                     FlagLayoutEntry.NumericSettings.MedFloat(supportedLengths)
                 } else if (annotations.filterIsInstance<Scalar>().isNotEmpty()) {
-                    val supportedLengths = annotations.filterIsInstance<Sizing>().map { it.length }.toSet()
-                    val sizingWidth = when (supportedLengths.size) {
-                        0 -> 0
-                        1 -> 0
-                        2 -> 1
-                        else -> floor(sqrt(supportedLengths.size.toDouble())).toInt() + 1
-                    }
                     desiredWidth += sizingWidth
                     val scalar = annotations.filterIsInstance<Scalar>().first()
                     val isSigned = annotations.filterIsInstance<Unsigned>().isEmpty()
                     FlagLayoutEntry.NumericSettings.Scalar(supportedLengths, isSigned, scalar.multiplier, scalar.decimalExponent, scalar.binaryExponent, scalar.offset)
                 } else {
-                    val supportedLengths = annotations.filterIsInstance<Sizing>().map { it.length }.toSet()
-                    // Since Decimal only supports 16 and 32 bits, only one flag can ever be set
-                    if (supportedLengths.size > 1) {
-                        desiredWidth++
-                    }
+                    desiredWidth += sizingWidth
                     FlagLayoutEntry.NumericSettings.Decimal(supportedLengths)
                 }
             }
@@ -173,14 +188,24 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
                         val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
                         FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.LengthPrefix(lengthPrefix.lengthAsShort, lengthPrefix.canOverflow, lengthPrefix.sentinel))
                     }
-                    annotations.filterIsInstance<Sizing>().size == 1 -> {
-                        FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.FixedLength(annotations.filterIsInstance<Sizing>().first().length.bytes))
+                    supportedLengths.size == 1 -> {
+                        FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.FixedLength(supportedLengths.first().bytes))
                     }
                     else -> FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.NoMarking)
                 }
             }
             PrimitiveKind.CHAR -> FlagLayoutEntry.StringSettings(annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: StringEncodingSettings.Encoding.UTF_8, StringEncodingSettings.NoMarking)
             else -> null
+        }
+
+        val collectionSettings = when (descriptor.kind) {
+            is StructureKind.LIST,
+                is StructureKind.MAP -> {
+                    desiredWidth += sizingWidth
+                    FlagLayoutEntry.CollectionSettings(supportedLengths)
+                }
+            else -> null
+
         }
 
         val blockSettings = FlagLayoutEntry.BlockSettings(
@@ -204,6 +229,7 @@ internal val SerialDescriptor.flagLayoutEntry: FlagLayoutEntry get() = getLayout
             isNullable,
             numericSettings,
             stringSettings,
+            collectionSettings,
             blockSettings,
             (0 until descriptor.elementsCount).map { i ->
                 val elementName = descriptor.getElementName(i)
