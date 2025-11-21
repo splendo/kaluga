@@ -137,3 +137,4 @@ annotation class Checksum(val algorithm: ChecksumAlgorithm = ChecksumAlgorithm.C
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
 annotation class SerializedByteValue(val value: Byte)
+

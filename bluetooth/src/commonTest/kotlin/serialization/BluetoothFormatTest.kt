@@ -60,6 +60,17 @@ class BluetoothFormatTest {
     }
 
     @Test
+    fun encodeList() {
+        @Serializable
+        data class Container(
+            @ItemSize(Length.`8_BIT`)
+            val list: List<Int>
+        )
+
+        validateEncoding(Container(listOf(1, 2, 3)), byteArrayOf(0x03, 0x01, 0x02, 0x03))
+    }
+
+    @Test
     fun encodeEnum() {
         validateEncoding(SomeEnum.A, SomeEnum.serializer(), byteArrayOf(0x01))
     }

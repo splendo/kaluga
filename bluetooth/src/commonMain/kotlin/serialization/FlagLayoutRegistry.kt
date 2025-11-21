@@ -311,9 +311,13 @@ object FlagLayoutRegistry {
             } else {
                 (0 until descriptor.elementsCount).map { i ->
                     val elementName = descriptor.getElementName(i)
-                    val annotations = descriptor.getElementAnnotations(i)
+                    val elementAnnotations = when (descriptor.kind) {
+                        StructureKind.MAP -> if (i % 2 == 0) annotations.keyAnnotations() else annotations.valueAnnotations()
+                        StructureKind.LIST -> annotations.itemAnnotations()
+                        else -> descriptor.getElementAnnotations(i)
+                    }
                     val elementDescriptor = descriptor.getElementDescriptor(i)
-                    getLayout(elementDescriptor, elementName, i, annotations, nextBit, byteOrder, serializersModule) { flagIndicesToUse ->
+                    getLayout(elementDescriptor, elementName, i, elementAnnotations, nextBit, byteOrder, serializersModule) { flagIndicesToUse ->
                         if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
                             throw FlagLayoutException("Flag at index $bitIndex cannot be used for $elementName. Is already reserved")
                         }
@@ -325,5 +329,47 @@ object FlagLayoutRegistry {
                 }
             },
         )
+    }
+
+    private fun List<Annotation>.itemAnnotations(): List<Annotation> = mapNotNull { annotation ->
+        when (annotation) {
+            is ItemByteOrder -> ByteOrder(annotation.order)
+            is ItemLengthPrefix -> LengthPrefix(annotation.lengthAsShort, annotation.canOverflow, annotation.sentinel)
+            is ItemEncoded -> Encoded(annotation.encoding)
+            is ItemNullTerminated -> NullTerminated()
+            is ItemUnsigned -> Unsigned()
+            is ItemScalar -> Scalar(annotation.multiplier, annotation.decimalExponent, annotation.binaryExponent, annotation.offset)
+            is ItemMedFloat -> MedFloat()
+            is ItemSize -> Sizing(annotation.size)
+            else -> null
+        }
+    }
+
+    private fun List<Annotation>.keyAnnotations(): List<Annotation> = mapNotNull { annotation ->
+        when (annotation) {
+            is KeyByteOrder -> ByteOrder(annotation.order)
+            is KeyLengthPrefix -> LengthPrefix(annotation.lengthAsShort, annotation.canOverflow, annotation.sentinel)
+            is KeyEncoded -> Encoded(annotation.encoding)
+            is KeyNullTerminated -> NullTerminated()
+            is KeyUnsigned -> Unsigned()
+            is KeyScalar -> Scalar(annotation.multiplier, annotation.decimalExponent, annotation.binaryExponent, annotation.offset)
+            is KeyMedFloat -> MedFloat()
+            is KeySize -> Sizing(annotation.size)
+            else -> null
+        }
+    }
+
+    private fun List<Annotation>.valueAnnotations(): List<Annotation> = mapNotNull { annotation ->
+        when (annotation) {
+            is ValueByteOrder -> ByteOrder(annotation.order)
+            is ValueLengthPrefix -> LengthPrefix(annotation.lengthAsShort, annotation.canOverflow, annotation.sentinel)
+            is ValueEncoded -> Encoded(annotation.encoding)
+            is ValueNullTerminated -> NullTerminated()
+            is ValueUnsigned -> Unsigned()
+            is ValueScalar -> Scalar(annotation.multiplier, annotation.decimalExponent, annotation.binaryExponent, annotation.offset)
+            is ValueMedFloat -> MedFloat()
+            is ValueSize -> Sizing(annotation.size)
+            else -> null
+        }
     }
 }
