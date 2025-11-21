@@ -28,7 +28,7 @@ import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.descriptors.getPolymorphicDescriptors
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.jvm.JvmInline
-import kotlin.math.floor
+import kotlin.math.ceil
 import kotlin.math.sqrt
 
 data class FlagLayoutEntry(
@@ -160,7 +160,7 @@ object FlagLayoutRegistry {
             0 -> 0
             1 -> 0
             2 -> 1
-            else -> floor(sqrt(supportedLengths.size.toDouble())).toInt() + 1
+            else -> ceil(sqrt(supportedLengths.size.toDouble())).toInt()
         }
         val numericSettings = when (descriptor.kind) {
             PrimitiveKind.INT,
