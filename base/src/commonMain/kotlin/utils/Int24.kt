@@ -22,13 +22,15 @@ import kotlin.jvm.JvmInline
 @JvmInline
 value class Int24(val value: Int) : Comparable<Int24> {
     companion object {
-        val MIN_VALUE = Int24(-0x800000)
-        val MAX_VALUE = Int24(0x7FFFFF)
+        private const val MIN_VALUE_INT = -0x800000
+        private const val MAX_VALUE_INT = 0x7FFFFF
+        val MIN_VALUE = Int24(MIN_VALUE_INT)
+        val MAX_VALUE = Int24(MAX_VALUE_INT)
         const val SIZE_BYTES = 3
         const val SIZE_BITS = 24
     }
     init {
-        require(value in MIN_VALUE.value..MAX_VALUE.value) {
+        require(value in MIN_VALUE_INT..MAX_VALUE_INT) {
             "Value $value out of signed 24-bit range"
         }
     }
@@ -39,4 +41,4 @@ value class Int24(val value: Int) : Comparable<Int24> {
     operator fun times(other: Int24) = (value * other.value).toInt24()
     operator fun div(other: Int24) = (value / other.value).toInt24()
 }
-fun Int.toInt24() = Int24(this.coerceIn(Int24.MIN_VALUE.value, Int24.MAX_VALUE.value))
+fun Int.toInt24(): Int24 = Int24(this)

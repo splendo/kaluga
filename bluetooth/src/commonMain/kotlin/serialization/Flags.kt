@@ -24,6 +24,7 @@ import com.splendo.kaluga.base.utils.UInt24
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialInfo
 
+@Suppress("EnumEntryName")
 enum class Length(val bytes: Int) {
     `8_BIT`(1),
     `16_BIT`(2),
@@ -137,4 +138,3 @@ annotation class Checksum(val algorithm: ChecksumAlgorithm = ChecksumAlgorithm.C
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
 annotation class SerializedByteValue(val value: Byte)
-

@@ -29,13 +29,9 @@ internal interface BinaryBuilder {
     fun build(): ByteArray
 }
 
-internal abstract class StructureBinaryBuilder(
-    val entry: FlagLayoutEntry,
-    flagBitsSize: Int,
-    private val onUnconstrained: () -> Unit
-) : BinaryBuilder {
+internal abstract class StructureBinaryBuilder(val entry: FlagLayoutEntry, flagBitsSize: Int, private val onUnconstrained: () -> Unit) : BinaryBuilder {
 
-    val flagBits: MutableList<Boolean> = MutableList(flagBitsSize.coerceAtLeast(0)) {false }
+    val flagBits: MutableList<Boolean> = MutableList(flagBitsSize.coerceAtLeast(0)) { false }
     private val actions = mutableListOf<ByteArrayBuilder.() -> Unit>()
     private var isOfUnconstrainedSize: Boolean = false
 
@@ -78,30 +74,23 @@ internal abstract class StructureBinaryBuilder(
     }
 }
 
-internal class ClassBinaryBuilder(
-    entry: FlagLayoutEntry,
-    onUnconstrained: () -> Unit
-) : StructureBinaryBuilder(
-    entry,
-    entry.children.fold(0) { max, entry ->
-        maxOf(entry.bitIndex + entry.bitWidth, max)
-    },
-    onUnconstrained
-)
+internal class ClassBinaryBuilder(entry: FlagLayoutEntry, onUnconstrained: () -> Unit) :
+    StructureBinaryBuilder(
+        entry,
+        entry.children.fold(0) { max, entry ->
+            maxOf(entry.bitIndex + entry.bitWidth, max)
+        },
+        onUnconstrained,
+    )
 
-internal class ItemBinaryBuilder(
-    entry: FlagLayoutEntry,
-    onUnconstrained: () -> Unit
-) : StructureBinaryBuilder(
-    entry,
-    (entry.bitIndex + entry.bitWidth),
-    onUnconstrained
-)
+internal class ItemBinaryBuilder(entry: FlagLayoutEntry, onUnconstrained: () -> Unit) :
+    StructureBinaryBuilder(
+        entry,
+        (entry.bitIndex + entry.bitWidth),
+        onUnconstrained,
+    )
 
-internal abstract class CollectionBinaryBuilder(
-    private val byteOrder: ByteOrder,
-    private val classBuilders: List<ItemBinaryBuilder>,
-) : BinaryBuilder {
+internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder, private val classBuilders: List<ItemBinaryBuilder>) : BinaryBuilder {
     private var currentIndex = 0
     val currentClassBuilder: ItemBinaryBuilder get() = classBuilders[currentIndex]
 
@@ -128,25 +117,19 @@ internal abstract class CollectionBinaryBuilder(
         }
     }
 }
-internal class ListBinaryBuilder(
-    entry: FlagLayoutEntry,
-    size: Int,
-    onUnconstrained: () -> Unit,
-) : CollectionBinaryBuilder(
-    entry.byteOrder,
-    MutableList(size) {
-        ItemBinaryBuilder(entry.children.first(), onUnconstrained)
-    }
-)
+internal class ListBinaryBuilder(entry: FlagLayoutEntry, size: Int, onUnconstrained: () -> Unit) :
+    CollectionBinaryBuilder(
+        entry.byteOrder,
+        MutableList(size) {
+            ItemBinaryBuilder(entry.children.first(), onUnconstrained)
+        },
+    )
 
-internal class MapBinaryBuilder(
-    entry: FlagLayoutEntry,
-    size: Int,
-    onUnconstrained: () -> Unit,
-) : CollectionBinaryBuilder(
-    entry.byteOrder,
-    MutableList(size) {
-        val index = it % 2
-        ItemBinaryBuilder(entry.children[index], onUnconstrained)
-    }
-)
+internal class MapBinaryBuilder(entry: FlagLayoutEntry, size: Int, onUnconstrained: () -> Unit) :
+    CollectionBinaryBuilder(
+        entry.byteOrder,
+        MutableList(size) {
+            val index = it % 2
+            ItemBinaryBuilder(entry.children[index], onUnconstrained)
+        },
+    )

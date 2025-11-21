@@ -85,17 +85,17 @@ annotation class ValueNullTerminated
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
-annotation class ItemUnsigned()
+annotation class ItemUnsigned
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
-annotation class KeyUnsigned()
+annotation class KeyUnsigned
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
-annotation class ValueUnsigned()
+annotation class ValueUnsigned
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo

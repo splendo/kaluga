@@ -23,14 +23,16 @@ import kotlin.jvm.JvmInline
 value class UInt24(val value: UInt) : Comparable<UInt24> {
 
     companion object {
-        val MIN_VALUE = UInt24(0U)
-        val MAX_VALUE = UInt24(0xFFFFFFU)
+        private const val MIN_UINT_VALUE = 0U
+        private const val MAX_UINT_VALUE = 0xFFFFFFU
+        val MIN_VALUE = UInt24(MIN_UINT_VALUE)
+        val MAX_VALUE = UInt24(MAX_UINT_VALUE)
         const val SIZE_BYTES = 3
         const val SIZE_BITS = 24
     }
 
     init {
-        require(value in MIN_VALUE.value..MAX_VALUE.value) {
+        require(value in MIN_UINT_VALUE..MAX_UINT_VALUE) {
             "Value $value out of unsigned 24-bit range"
         }
     }

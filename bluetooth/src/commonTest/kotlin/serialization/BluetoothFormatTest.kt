@@ -17,11 +17,17 @@
 
 package com.splendo.kaluga.bluetooth.serialization
 
+import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.toByteArray
+import com.splendo.kaluga.base.utils.MedFloat16
+import com.splendo.kaluga.base.utils.MedFloat32
 import com.splendo.kaluga.base.utils.toHexString
+import com.splendo.kaluga.base.utils.toInt24
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
@@ -60,14 +66,106 @@ class BluetoothFormatTest {
     }
 
     @Test
-    fun encodeList() {
+    fun encodeBoolean() {
+        validateEncoding(true, byteArrayOf(0x01))
+        validateEncoding(false, byteArrayOf(0x00))
+
         @Serializable
         data class Container(
-            @ItemSize(Length.`8_BIT`)
-            val list: List<Int>
+            val fieldValue: Boolean,
+            @FlagIndex(0)
+            val flagValue: Boolean,
+            val nullableValue: Boolean?,
         )
 
-        validateEncoding(Container(listOf(1, 2, 3)), byteArrayOf(0x03, 0x01, 0x02, 0x03))
+        validateEncoding(Container(false, flagValue = true, nullableValue = null), byteArrayOf(0b0001))
+        validateEncoding(Container(true, flagValue = false, nullableValue = true), byteArrayOf(0b1110))
+        validateEncoding(Container(true, flagValue = true, nullableValue = false), byteArrayOf(0b0111))
+    }
+
+    @Test
+    fun encodeInteger() {
+        validateEncoding(42, 42.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST))
+
+        @Serializable
+        data class Container(
+            val defaultLength: Int,
+            @Sizing(Length.`8_BIT`) val `8bit`: Int,
+            @Sizing(Length.`16_BIT`) val `16bit`: Int,
+            @Sizing(Length.`24_BIT`) val `24bit`: Int,
+            @Sizing(Length.`32_BIT`) val `32bit`: Int,
+            @Sizing(Length.`64_BIT`) val `64bit`: UInt,
+            @Sizing(Length.`8_BIT`) @Scalar(decimalExponent = -2) val scalar: Int,
+            @Sizing(Length.`16_BIT`) @MedFloat val medFloat16: Int,
+            @Sizing(Length.`32_BIT`) @MedFloat val medFloat32: Int,
+            @Sizing(Length.`16_BIT`) @Sizing(Length.`32_BIT`) val variableSizeLowRange: Int,
+            @Sizing(Length.`16_BIT`) @Sizing(Length.`24_BIT`) @Sizing(Length.`32_BIT`) val variableSizeHighRange: Int,
+            @Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) @Sizing(Length.`24_BIT`) @Sizing(Length.`32_BIT`) @Sizing(Length.`64_BIT`) val fullRange: UInt,
+            @Unsigned val unsigned: UInt,
+            @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val mostSignificant: Int,
+            val nullable: Int?,
+        )
+
+        validateEncoding(
+            Container(
+                defaultLength = 42,
+                `8bit` = 112,
+                `16bit` = 512,
+                `24bit` = 16777,
+                `32bit` = 0x7ABCDEFF,
+                `64bit` = UInt.MAX_VALUE - 12u,
+                scalar = 500,
+                medFloat16 = 123,
+                medFloat32 = 1234567,
+                variableSizeLowRange = 123,
+                variableSizeHighRange = 1234567,
+                fullRange = 0xFFFFFFAAu,
+                unsigned = 0x12345678u,
+                mostSignificant = 0x12345678,
+                nullable = null,
+            ),
+            byteArrayOf(0x02) +
+                42.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) +
+                112.toByte() +
+                512.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) +
+                16777.toInt24().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) +
+                0x7ABCDEFF.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) +
+                (UInt.MAX_VALUE - 12u).toULong().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) +
+                5.toByte() +
+                MedFloat16(123.0).toByteArray() +
+                MedFloat32(1234567.0).toByteArray() +
+                123.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) +
+                1234567.toInt24().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) +
+                0xFFFFFFAAu.toULong().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) +
+                0x12345678u.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) +
+                0x12345678.toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST),
+
+        )
+    }
+
+    @Test
+    fun encodeIntList() {
+        validateEncoding(
+            listOf(1, 2, 3),
+            ListSerializer(Int.serializer()),
+            byteArrayOf(0x03, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00),
+        )
+        @Serializable
+        data class LengthContainer(
+            @ItemSize(Length.`8_BIT`)
+            val list: List<Int>,
+        )
+
+        validateEncoding(LengthContainer(listOf(1, 2, 3)), byteArrayOf(0x03, 0x01, 0x02, 0x03))
+
+        @Serializable
+        data class FlexibleLengthContainer(
+            @ItemSize(Length.`8_BIT`)
+            @ItemSize(Length.`16_BIT`)
+            val list: List<Int>,
+        )
+
+        validateEncoding(FlexibleLengthContainer(listOf(1, 512, 3)), byteArrayOf(0x03, 0x00, 0x01, 0x01, 0x00, 0x02, 0x00, 0x03))
     }
 
     @Test

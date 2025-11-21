@@ -167,28 +167,21 @@ object FlagLayoutRegistry {
             PrimitiveKind.BYTE,
             PrimitiveKind.SHORT,
             PrimitiveKind.LONG,
-                -> {
-                desiredWidth += sizingWidth
-                val isSigned = annotations.filterIsInstance<Unsigned>().isEmpty()
-                annotations.filterIsInstance<Scalar>().firstOrNull()?.let { scalar ->
-                    FlagLayoutEntry.NumericSettings.Scalar(supportedLengths, isSigned, scalar.multiplier, scalar.decimalExponent, scalar.binaryExponent, scalar.offset)
-                } ?: FlagLayoutEntry.NumericSettings.Natural(supportedLengths, isSigned)
-            }
-
             PrimitiveKind.DOUBLE,
             PrimitiveKind.FLOAT,
-                -> {
+            -> {
+                desiredWidth += sizingWidth
                 if (annotations.filterIsInstance<MedFloat>().isNotEmpty()) {
-                    desiredWidth += sizingWidth
                     FlagLayoutEntry.NumericSettings.MedFloat(supportedLengths)
                 } else if (annotations.filterIsInstance<Scalar>().isNotEmpty()) {
-                    desiredWidth += sizingWidth
                     val scalar = annotations.filterIsInstance<Scalar>().first()
                     val isSigned = annotations.filterIsInstance<Unsigned>().isEmpty()
                     FlagLayoutEntry.NumericSettings.Scalar(supportedLengths, isSigned, scalar.multiplier, scalar.decimalExponent, scalar.binaryExponent, scalar.offset)
-                } else {
-                    desiredWidth += sizingWidth
+                } else if (descriptor.kind == PrimitiveKind.DOUBLE || descriptor.kind == PrimitiveKind.FLOAT) {
                     FlagLayoutEntry.NumericSettings.Decimal(supportedLengths)
+                } else {
+                    val isSigned = annotations.filterIsInstance<Unsigned>().isEmpty()
+                    FlagLayoutEntry.NumericSettings.Natural(supportedLengths, isSigned)
                 }
             }
 
@@ -224,7 +217,7 @@ object FlagLayoutRegistry {
         val collectionSettings = when (descriptor.kind) {
             is StructureKind.LIST,
             is StructureKind.MAP,
-                -> {
+            -> {
                 when {
                     annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> FlagLayoutEntry.CollectionSettings.NullMarked
                     annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
@@ -314,7 +307,13 @@ object FlagLayoutRegistry {
                     val elementAnnotations = when (descriptor.kind) {
                         StructureKind.MAP -> if (i % 2 == 0) annotations.keyAnnotations() else annotations.valueAnnotations()
                         StructureKind.LIST -> annotations.itemAnnotations()
-                        else -> descriptor.getElementAnnotations(i)
+                        else -> when (descriptor.serialName) {
+                            "kotlin.UByte" -> annotations + Unsigned()
+                            "kotlin.UShort" -> annotations + Unsigned()
+                            "kotlin.UInt" -> annotations + Unsigned()
+                            "kotlin.ULong" -> annotations + Unsigned()
+                            else -> descriptor.getElementAnnotations(i)
+                        }
                     }
                     val elementDescriptor = descriptor.getElementDescriptor(i)
                     getLayout(elementDescriptor, elementName, i, elementAnnotations, nextBit, byteOrder, serializersModule) { flagIndicesToUse ->
