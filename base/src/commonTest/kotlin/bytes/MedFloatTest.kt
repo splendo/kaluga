@@ -15,23 +15,23 @@
 
  */
 
-package com.splendo.kaluga.base.utils
+package bytes
 
-import kotlin.jvm.JvmInline
+import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.decodeMedFloat16
+import com.splendo.kaluga.base.bytes.toByteArray
+import com.splendo.kaluga.base.utils.MedFloat16
 import kotlin.math.pow
+import kotlin.test.Test
+import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
 
-@JvmInline
-value class MedFloat16(val value: Double) : Comparable<MedFloat16> {
-    companion object {
-        const val NAN = 0x07FF
-        const val POSITIVE_INFINITY = 0x07FE
-        const val NEGATIVE_INFINITY = 0x0802
+class MedFloatTest {
 
-        const val NOT_AT_THIS_RESOLUTION = 0x0800
-        const val RESERVED_FOR_FUTURE_USE = 0x0801
-        val MIN_VALUE = -2048 * 10.0.pow(-8)
-        val MAX_VALUE = 2047 * 10.0.pow(7)
+    @Test
+    fun medFloat16() {
+        val byteValue = MedFloat16(123400000.0).toByteArray()
+        assertContentEquals((5 * 2.0.pow(12).toInt() + 1234).toUShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST), byteValue)
+        assertEquals(MedFloat16(123400000.0), byteValue.decodeMedFloat16(0))
     }
-
-    override fun compareTo(other: MedFloat16): Int = value.compareTo(other.value)
 }

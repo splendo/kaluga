@@ -50,6 +50,8 @@ fun ByteArray.decodeMedFloat16(octetIndex: Int): MedFloat16 {
         MedFloat16.NAN -> Double.NaN
         MedFloat16.POSITIVE_INFINITY -> Double.POSITIVE_INFINITY
         MedFloat16.NEGATIVE_INFINITY -> Double.NEGATIVE_INFINITY
+        MedFloat16.NOT_AT_THIS_RESOLUTION -> Double.NaN
+        MedFloat16.RESERVED_FOR_FUTURE_USE -> Double.NaN
         else -> mantissa * 10.0.pow(exponent)
     }
     return MedFloat16(doubleValue)
@@ -59,6 +61,7 @@ fun MedFloat16.toByteArray(): ByteArray {
     if (value.isNaN()) return MedFloat16.NAN.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
     if (value == Double.POSITIVE_INFINITY) return MedFloat16.POSITIVE_INFINITY.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
     if (value == Double.NEGATIVE_INFINITY) return MedFloat16.NEGATIVE_INFINITY.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    if (value < MedFloat16.MIN_VALUE || value > MedFloat16.MAX_VALUE) return MedFloat16.NOT_AT_THIS_RESOLUTION.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
     var mantissa = value
     var exponent = 0
 

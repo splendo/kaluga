@@ -33,6 +33,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.serializer
+import kotlin.jvm.JvmInline
 import kotlin.math.pow
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -67,6 +68,14 @@ class BluetoothFormatTest {
         ) : SomeSealedClass()
     }
 
+    @Serializable
+    @JvmInline
+    value class ValueContainer<T>(val value: T)
+
+    @Serializable
+    @JvmInline
+    value class NumberValueContainer<T>(@Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) val value: T)
+
     @Test
     fun encodeBoolean() {
         validateEncoding(true, byteArrayOf(0x01))
@@ -78,11 +87,13 @@ class BluetoothFormatTest {
             @FlagIndex(0)
             val flagValue: Boolean,
             val nullableValue: Boolean?,
+            val inlineValue: ValueContainer<Boolean>,
+            val inlineNullableValue: ValueContainer<Boolean>?,
         )
 
-        validateEncoding(Container(false, flagValue = true, nullableValue = null), byteArrayOf(0b0001))
-        validateEncoding(Container(true, flagValue = false, nullableValue = true), byteArrayOf(0b1110))
-        validateEncoding(Container(true, flagValue = true, nullableValue = false), byteArrayOf(0b0111))
+        validateEncoding(Container(false, flagValue = true, nullableValue = null, ValueContainer(true), null), byteArrayOf(0b10001))
+        validateEncoding(Container(true, flagValue = false, nullableValue = false, ValueContainer(false), ValueContainer(true)), byteArrayOf(0b1001110))
+        validateEncoding(Container(true, flagValue = true, nullableValue = true, ValueContainer(true), ValueContainer(true)), byteArrayOf(0b1111111))
     }
 
     @Test
@@ -96,6 +107,11 @@ class BluetoothFormatTest {
             @Sizing(Length.`16_BIT`) val `16bit`: UByte,
             @Unsigned val unsigned: UByte,
             val nullable: Byte?,
+            val nullableUnsigned: UByte?,
+            val inlineValue: ValueContainer<Byte>,
+            val nullableInlineValue: ValueContainer<Byte>?,
+            val inlineUnsignedValue: ValueContainer<UByte>,
+            val nullableInlineUnsignedValue: ValueContainer<UByte>?,
         )
 
         validateEncoding(
@@ -105,13 +121,24 @@ class BluetoothFormatTest {
                 `16bit` = 250.toUByte(),
                 unsigned = 123u,
                 nullable = null,
+                nullableUnsigned = null,
+                inlineValue = ValueContainer(4),
+                nullableInlineValue = ValueContainer(10),
+                inlineUnsignedValue = ValueContainer(23u),
+                nullableInlineUnsignedValue = null
             ),
             buildByteArray {
                 add(false)
+                add(false)
+                add(true) // nullableInlineValue
+                add(false) // nullableInlineUnsignedValue
                 add(byte = 42)
                 add(byte = 23)
                 add(short = 250)
                 add(byte = 123)
+                add(byte = 4)
+                add(byte = 10)
+                add(uByte = 23u)
             },
         )
 
@@ -122,14 +149,26 @@ class BluetoothFormatTest {
                 `16bit` = 230.toUByte(),
                 unsigned = 24u,
                 nullable = 20,
+                nullableUnsigned = 10u,
+                inlineValue = ValueContainer(8),
+                nullableInlineValue = null,
+                inlineUnsignedValue = ValueContainer(99u),
+                nullableInlineUnsignedValue = ValueContainer(77u)
             ),
             buildByteArray {
+                add(true)
+                add(true)
+                add(false)
                 add(true)
                 add(byte = 80)
                 add(byte = 45)
                 add(short = 230)
                 add(byte = 24)
                 add(byte = 20)
+                add(byte = 10)
+                add(byte = 8)
+                add(uByte = 99u)
+                add(uByte = 77u)
             },
         )
     }
@@ -238,6 +277,8 @@ class BluetoothFormatTest {
             @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val mostSignificant: Int,
             val nullable: Int?,
             @Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) @Sizing(Length.`24_BIT`) @Sizing(Length.`32_BIT`) val nullableVariableSizing: Int?,
+            val inlineValue: NumberValueContainer<Int>,
+            val inlineUnsignedValue: NumberValueContainer<UInt>
         )
 
         validateEncoding(
@@ -257,6 +298,8 @@ class BluetoothFormatTest {
                 mostSignificant = 0x12345678,
                 nullable = null,
                 nullableVariableSizing = null,
+                inlineValue = NumberValueContainer(800),
+                inlineUnsignedValue = NumberValueContainer(2345u)
             ),
             buildByteArray {
                 add(false) // variableSizeLowRange flags
@@ -266,6 +309,8 @@ class BluetoothFormatTest {
                 add(false) // nullableVariableSizing
                 add(false)
                 add(false)
+                add(true) // inlineValue sizing
+                add(true) // inlineUnsignedValue
                 add(int = 42)
                 add(byte = 112)
                 add(short = 512)
@@ -279,6 +324,8 @@ class BluetoothFormatTest {
                 add(1234567.toInt24())
                 add(0x12345678u)
                 add(0x12345678u, ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(short = 800)
+                add(uShort = 2345u)
             },
         )
         validateEncoding(
@@ -298,6 +345,8 @@ class BluetoothFormatTest {
                 mostSignificant = 67,
                 nullable = 78,
                 nullableVariableSizing = 10000000,
+                inlineValue = NumberValueContainer(59),
+                inlineUnsignedValue = NumberValueContainer(250u)
             ),
             buildByteArray {
                 add(true) // variableSizeLowRange flags
@@ -307,6 +356,8 @@ class BluetoothFormatTest {
                 add(true) // nullableVariableSizing
                 add(true)
                 add(true)
+                add(false) // inlineValue sizing
+                add(false) // inlineUnsignedValue sizing
                 add(int = 80)
                 add(byte = 20)
                 add(short = 5)
@@ -322,6 +373,8 @@ class BluetoothFormatTest {
                 add(67, ByteOrder.MOST_SIGNIFICANT_FIRST)
                 add(78)
                 add(10000000)
+                add(byte = 59)
+                add(uByte = 250u)
             },
         )
     }
@@ -514,6 +567,79 @@ class BluetoothFormatTest {
     }
 
     @Test
+    fun encodeDouble() {
+        validateEncoding(42.0, 42.0.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST))
+
+        @Serializable
+        class Container(
+            val defaultLength: Double,
+            @Sizing(Length.`32_BIT`) val `32bit`: Double,
+            @Sizing(Length.`64_BIT`) val `64bit`: Double,
+            @Sizing(Length.`32_BIT`) @Sizing(Length.`64_BIT`) val variableSizing: Double,
+            @Sizing(Length.`8_BIT`) @Scalar(multiplier = 5, decimalExponent = 2, binaryExponent = 3, offset = 50) val scalar: Double,
+            @Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) @Scalar(decimalExponent = 4) val flexibleScalar: Double,
+            @Sizing(Length.`16_BIT`) @MedFloat val medFloat16: Double,
+            @Sizing(Length.`32_BIT`) @MedFloat val medFloat32: Double,
+            val nullable: Double?,
+        )
+
+        validateEncoding(
+            Container(
+                1234.56,
+                567.89,
+                0.124,
+                variableSizing = 5e33,
+                ((3.0 - 50.0) / (5 * 10.0.pow(2) * 2.0.pow(3))),
+                0.025,
+                123.0,
+                1234567.0,
+                null,
+            ),
+            buildByteArray {
+                add(false) // variableSizing
+                add(true) // flexibleScalar flags
+                add(false) // nullable flag
+                add(1234.56)
+                add(567.89f)
+                add(0.124)
+                add(5e33.toFloat())
+                add(byte = 3)
+                add(short = 250)
+                add(MedFloat16(123.0))
+                add(MedFloat32(1234567.0))
+            },
+        )
+
+        validateEncoding(
+            Container(
+                -12.34,
+                -234.56,
+                8.0,
+                7e-100,
+                ((6.0 - 50.0) / (5 * 10.0.pow(2) * 2.0.pow(3))),
+                0.0025,
+                10.0,
+                0.5,
+                0.01,
+            ),
+            buildByteArray {
+                add(true) // variableSizing)
+                add(false) // flexibleScalar flag
+                add(true) // nullable flag
+                add(-12.34)
+                add(-234.56f)
+                add(8.0)
+                add(7e-100)
+                add(byte = 6)
+                add(byte = 25)
+                add(MedFloat16(10.0))
+                add(MedFloat32(0.5))
+                add(0.01)
+            },
+        )
+    }
+
+    @Test
     fun encodeList() {
         validateEncoding(
             listOf(1, 2, 3),
@@ -578,7 +704,7 @@ class BluetoothFormatTest {
         data class Container(val base: Base)
 
         validateEncoding(Container(A(4)), Container.serializer(), byteArrayOf(0x01, 0x04, 0x00, 0x00, 0x00), BluetoothFormat { serializersModule = module })
-        validateEncoding(Container(B(600.0)), Container.serializer(), byteArrayOf(0x02, 0x00, 0x58, 0x02, 0x00), BluetoothFormat { serializersModule = module })
+        validateEncoding(Container(B(600.0)), Container.serializer(), byteArrayOf(0x02) + MedFloat32(600.0).toByteArray(), BluetoothFormat { serializersModule = module })
     }
 
     @Test

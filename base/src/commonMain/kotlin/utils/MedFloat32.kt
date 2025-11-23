@@ -18,13 +18,18 @@
 package com.splendo.kaluga.base.utils
 
 import kotlin.jvm.JvmInline
+import kotlin.math.pow
 
 @JvmInline
 value class MedFloat32(val value: Double) : Comparable<MedFloat32> {
-    internal companion object {
+    companion object {
         const val NAN = 0x007FFFFF
         const val POSITIVE_INFINITY = 0x007FFFFE
         const val NEGATIVE_INFINITY = 0x00800002
+        const val NOT_AT_THIS_RESOLUTION = 0x00800000
+        const val RESERVED_FOR_FUTURE_USE = 0x00800001
+        val MIN_VALUE = Int24.MIN_VALUE.value * 10.0.pow(Byte.MIN_VALUE.toInt())
+        val MAX_VALUE = Int24.MAX_VALUE.value * 10.0.pow(Byte.MAX_VALUE.toInt())
     }
 
     override fun compareTo(other: MedFloat32): Int = value.compareTo(other.value)

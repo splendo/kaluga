@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.base.bytes
 
+import com.splendo.kaluga.base.utils.Int24
 import com.splendo.kaluga.base.utils.MedFloat32
 import kotlin.math.pow
 
@@ -26,13 +27,15 @@ fun ByteArray.decodeMedFloat32(octetIndex: Int): MedFloat32 {
             "Cannot convert ByteArray to MedFloat32. The byte with index ${octetIndex + offset} is not available in ByteArray."
         }
     }
-    val mantissa = decodeInt24(octetIndex + 1, ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    val mantissa = decodeInt24(octetIndex, ByteOrder.LEAST_SIGNIFICANT_FIRST)
     val double = when (mantissa.value) {
         MedFloat32.NAN -> Double.NaN
         MedFloat32.POSITIVE_INFINITY -> Double.POSITIVE_INFINITY
         MedFloat32.NEGATIVE_INFINITY -> Double.NEGATIVE_INFINITY
+        MedFloat32.NOT_AT_THIS_RESOLUTION -> Double.NaN
+        MedFloat32.RESERVED_FOR_FUTURE_USE -> Double.NaN
         else -> {
-            val exponent = get(octetIndex).toInt()
+            val exponent = get(octetIndex+3).toInt()
             mantissa.value * 10.0.pow(exponent)
         }
     }
@@ -46,35 +49,36 @@ fun MedFloat32.toByteArray(): ByteArray {
     if (value == Double.POSITIVE_INFINITY) return MedFloat32.POSITIVE_INFINITY.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
 
     if (value == Double.NEGATIVE_INFINITY) return MedFloat32.NEGATIVE_INFINITY.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    if (value < MedFloat32.MIN_VALUE || value > MedFloat32.MAX_VALUE) return MedFloat32.NOT_AT_THIS_RESOLUTION.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
     var mantissa = value
     var exponent = 0
 
-    while (mantissa !in -8388608.0..8388607.0 && exponent < Byte.MAX_VALUE) {
+    while (mantissa !in Int24.MIN_VALUE.value.toDouble()..Int24.MAX_VALUE.value.toDouble() && exponent < Byte.MAX_VALUE) {
         mantissa /= 10.0
         exponent++
     }
 
     while (
-        mantissa in -838860.8..838860.7 &&
+        mantissa in (Int24.MIN_VALUE.value.toDouble()) / 10.0..(Int24.MAX_VALUE.value.toDouble() / 10.0) &&
         mantissa != mantissa.toInt().toDouble() &&
         exponent > Byte.MIN_VALUE
     ) {
         mantissa *= 10.0
         exponent--
 
-        if (mantissa !in -8388608.0..8388607.0) {
+        if (mantissa !in Int24.MIN_VALUE.value.toDouble()..Int24.MAX_VALUE.value.toDouble()) {
             mantissa /= 10.0
             exponent++
             break
         }
     }
 
-    val mant = mantissa.toInt().coerceIn(-8388608..8388607)
+    val mant = mantissa.toInt().coerceIn(Int24.MIN_VALUE.value..Int24.MAX_VALUE.value)
 
     return byteArrayOf(
-        exponent.toByte(),
         (mant and 0xFF).toByte(),
         ((mant shr 8) and 0xFF).toByte(),
         ((mant shr 16) and 0xFF).toByte(),
+        exponent.toByte(),
     )
 }

@@ -200,14 +200,7 @@ private class BluetoothBinaryCompositeEncoder(
             }
             else -> {
                 val flag = getFlag(index)
-                val actualFlag = when (serializer.descriptor.serialName) {
-                    "kotlin.UByte" -> flag.children.first().copy(bitIndex = flag.bitIndex, bitWidth = flag.bitWidth, isNullable = flag.isNullable)
-                    "kotlin.UShort" -> flag.children.first().copy(bitIndex = flag.bitIndex, bitWidth = flag.bitWidth, isNullable = flag.isNullable)
-                    "kotlin.UInt" -> flag.children.first().copy(bitIndex = flag.bitIndex, bitWidth = flag.bitWidth, isNullable = flag.isNullable)
-                    "kotlin.ULong" -> flag.children.first().copy(bitIndex = flag.bitIndex, bitWidth = flag.bitWidth, isNullable = flag.isNullable)
-                    else -> flag
-                }
-                BluetoothBinaryEncoder(actualFlag, builder, serializersModule).encodeSerializableValue(serializer, value)
+                BluetoothBinaryEncoder(flag, builder, serializersModule).encodeSerializableValue(serializer, value)
             }
         }
     }
@@ -301,7 +294,7 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, entry: FlagLayout
         is FlagLayoutEntry.NumericSettings.MedFloat -> {
             val lengthToAdd = if (settings.supportedLengths.size > 1) {
                 val flagIndex = entry.bitIndex + if (entry.isNullable) 1 else 0
-                if (value.toDouble() >= Float.MIN_VALUE && value.toDouble() <= Float.MAX_VALUE) {
+                if (value.toDouble() >= MedFloat16.MIN_VALUE && value.toDouble() <= MedFloat16.MAX_VALUE) {
                     addFlag(flagIndex, false)
                     Length.`16_BIT`
                 } else {

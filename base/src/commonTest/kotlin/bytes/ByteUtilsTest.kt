@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,17 +15,17 @@
 
  */
 
-package com.splendo.kaluga.base.test.utils
+package bytes
 
 import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.utils.bytesOf
-import com.splendo.kaluga.base.utils.decodeHex
-import com.splendo.kaluga.base.utils.decodeInt
-import com.splendo.kaluga.base.utils.decodeShort
-import com.splendo.kaluga.base.utils.decodeUInt
+import com.splendo.kaluga.base.bytes.decodeInt
+import com.splendo.kaluga.base.bytes.decodeShort
+import com.splendo.kaluga.base.bytes.decodeUInt
 import com.splendo.kaluga.base.bytes.isBitSet
 import com.splendo.kaluga.base.bytes.setBit
 import com.splendo.kaluga.base.bytes.toByteArray
+import com.splendo.kaluga.base.utils.bytesOf
+import com.splendo.kaluga.base.utils.decodeHex
 import com.splendo.kaluga.base.utils.toHexString
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
@@ -92,25 +92,67 @@ class ByteUtilsTest {
 
     @Test
     fun encodeDecodeIntAsByte() {
-        assertEquals(42, 42.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST).decodeInt(0, ByteOrder.LEAST_SIGNIFICANT_FIRST))
-        assertContentEquals(byteArrayOf(0x2A, 0x00, 0x00, 0x00), 42.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST))
-        assertEquals(42, 42.toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST).decodeInt(0, ByteOrder.MOST_SIGNIFICANT_FIRST))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x2A), 42.toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST))
+        assertEquals(
+            42,
+            42.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+                .decodeInt(0, ByteOrder.LEAST_SIGNIFICANT_FIRST)
+        )
+        assertContentEquals(
+            byteArrayOf(0x2A, 0x00, 0x00, 0x00),
+            42.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+        )
+        assertEquals(
+            42,
+            42.toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST)
+                .decodeInt(0, ByteOrder.MOST_SIGNIFICANT_FIRST)
+        )
+        assertContentEquals(
+            byteArrayOf(0x00, 0x00, 0x00, 0x2A),
+            42.toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST)
+        )
     }
 
     @Test
     fun encodeDecodeUIntAsByte() {
-        assertEquals(42u, 42u.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST).decodeUInt(0, ByteOrder.LEAST_SIGNIFICANT_FIRST))
-        assertContentEquals(byteArrayOf(0x2A, 0x00, 0x00, 0x00), 42u.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST))
-        assertEquals(42u, 42u.toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST).decodeUInt(0, ByteOrder.MOST_SIGNIFICANT_FIRST))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x2A), 42u.toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST))
+        assertEquals(
+            42u,
+            42u.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+                .decodeUInt(0, ByteOrder.LEAST_SIGNIFICANT_FIRST)
+        )
+        assertContentEquals(
+            byteArrayOf(0x2A, 0x00, 0x00, 0x00),
+            42u.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+        )
+        assertEquals(
+            42u,
+            42u.toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST)
+                .decodeUInt(0, ByteOrder.MOST_SIGNIFICANT_FIRST)
+        )
+        assertContentEquals(
+            byteArrayOf(0x00, 0x00, 0x00, 0x2A),
+            42u.toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST)
+        )
     }
 
     @Test
     fun encodeDecodeShortAsByte() {
-        assertEquals(42.toShort(), 42.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST).decodeShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST))
-        assertContentEquals(byteArrayOf(0x2A, 0x00), 42.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST))
-        assertEquals(42.toShort(), 42.toShort().toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST).decodeShort(0, ByteOrder.MOST_SIGNIFICANT_FIRST))
-        assertContentEquals(byteArrayOf(0x00, 0x2A), 42.toShort().toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST))
+        assertEquals(
+            42.toShort(),
+            42.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+                .decodeShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST)
+        )
+        assertContentEquals(
+            byteArrayOf(0x2A, 0x00),
+            42.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+        )
+        assertEquals(
+            42.toShort(),
+            42.toShort().toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST)
+                .decodeShort(0, ByteOrder.MOST_SIGNIFICANT_FIRST)
+        )
+        assertContentEquals(
+            byteArrayOf(0x00, 0x2A),
+            42.toShort().toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST)
+        )
     }
 }

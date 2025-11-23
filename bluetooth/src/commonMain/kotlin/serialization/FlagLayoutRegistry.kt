@@ -108,23 +108,36 @@ class FlagLayoutException(message: String) : SerializationException(message)
 object FlagLayoutRegistry {
     private val cache = mutableMapOf<Pair<SerialDescriptor, SerializersModule>, FlagLayoutEntry>()
 
-    internal fun flagLayoutEntry(descriptor: SerialDescriptor, module: SerializersModule): FlagLayoutEntry =
-        getLayout(descriptor, descriptor.serialName, 0, emptyList(), 0, ByteOrder.LEAST_SIGNIFICANT_FIRST, module) {
+    internal fun flagLayoutEntry(descriptor: SerialDescriptor, module: SerializersModule): FlagLayoutEntry = cache.getOrPut(descriptor to module) {
+        getLayout(descriptor, descriptor.serialName, 0, emptyList(), descriptor.isNullable, 0, ByteOrder.LEAST_SIGNIFICANT_FIRST, module) {
         }
+    }
 
     private fun getLayout(
         descriptor: SerialDescriptor,
         fieldName: String,
         fieldIndex: Int,
         fieldAnnotations: List<Annotation>,
+        isNullable: Boolean,
         defaultBitIndex: Int,
         preferredByteOrder: ByteOrder,
         serializersModule: SerializersModule,
         reserveIndices: (Set<Int>) -> Unit,
-    ): FlagLayoutEntry = cache.getOrPut(descriptor to serializersModule) {
+    ): FlagLayoutEntry = if (descriptor.isInline) {
+        val inlineDescriptor = descriptor.getElementDescriptor(0)
+        val annotations = descriptor.annotations + fieldAnnotations + descriptor.getElementAnnotations(0)
+        val actualAnnotations = when (descriptor.serialName) {
+            "kotlin.UByte" -> annotations + Unsigned()
+            "kotlin.UShort" -> annotations + Unsigned()
+            "kotlin.UInt" -> annotations + Unsigned()
+            "kotlin.ULong" -> annotations + Unsigned()
+            else -> annotations
+        }
+        getLayout(inlineDescriptor, fieldName, fieldIndex, actualAnnotations, isNullable || inlineDescriptor.isNullable, defaultBitIndex, preferredByteOrder, serializersModule, reserveIndices)
+    } else {
         val annotations = descriptor.annotations + fieldAnnotations
         var desiredWidth = 0
-        val isNullable = descriptor.isNullable || (descriptor.kind in setOf(StructureKind.LIST, StructureKind.MAP) && annotations.filterIsInstance<NullIfEmpty>().isNotEmpty())
+        val isNullable = isNullable || (descriptor.kind in setOf(StructureKind.LIST, StructureKind.MAP) && annotations.filterIsInstance<NullIfEmpty>().isNotEmpty())
         if (isNullable) {
             desiredWidth++
         }
@@ -277,7 +290,8 @@ object FlagLayoutRegistry {
         reserveIndices((0..<width).map { bitIndex + it }.toSet())
         val reservedSubIndices = mutableSetOf<Int>()
         var nextBit = 0
-        return FlagLayoutEntry(
+
+        FlagLayoutEntry(
             fieldName,
             fieldIndex,
             bitIndex,
@@ -291,7 +305,7 @@ object FlagLayoutRegistry {
             blockSettings,
             if (descriptor.kind == PolymorphicKind.OPEN) {
                 serializersModule.getPolymorphicDescriptors(descriptor).map { optionDescriptor ->
-                    getLayout(optionDescriptor, optionDescriptor.serialName, 0, optionDescriptor.annotations, nextBit, byteOrder, serializersModule) { flagIndicesToUse ->
+                    getLayout(optionDescriptor, optionDescriptor.serialName, 0, optionDescriptor.annotations, optionDescriptor.isNullable, nextBit, byteOrder, serializersModule) { flagIndicesToUse ->
                         if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
                             throw FlagLayoutException("Flag at index $bitIndex cannot be used for ${optionDescriptor.serialName}. Is already reserved")
                         }
@@ -307,16 +321,10 @@ object FlagLayoutRegistry {
                     val elementAnnotations = when (descriptor.kind) {
                         StructureKind.MAP -> if (i % 2 == 0) annotations.keyAnnotations() else annotations.valueAnnotations()
                         StructureKind.LIST -> annotations.itemAnnotations()
-                        else -> when (descriptor.serialName) {
-                            "kotlin.UByte" -> annotations + Unsigned()
-                            "kotlin.UShort" -> annotations + Unsigned()
-                            "kotlin.UInt" -> annotations + Unsigned()
-                            "kotlin.ULong" -> annotations + Unsigned()
-                            else -> descriptor.getElementAnnotations(i)
-                        }
+                        else -> descriptor.getElementAnnotations(i)
                     }
                     val elementDescriptor = descriptor.getElementDescriptor(i)
-                    getLayout(elementDescriptor, elementName, i, elementAnnotations, nextBit, byteOrder, serializersModule) { flagIndicesToUse ->
+                    getLayout(elementDescriptor, elementName, i, elementAnnotations, elementDescriptor.isNullable, nextBit, byteOrder, serializersModule) { flagIndicesToUse ->
                         if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
                             throw FlagLayoutException("Flag at index $bitIndex cannot be used for $elementName. Is already reserved")
                         }
