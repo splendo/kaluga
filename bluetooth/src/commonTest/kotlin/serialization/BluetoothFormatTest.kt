@@ -845,6 +845,159 @@ class BluetoothFormatTest {
 
     @Test
     fun encodeList() {
+        @Serializable
+        data class Item(val valueA: Byte, val valueB: Byte, val valueC: Byte)
+
+        validateEncoding(
+            listOf(
+                Item(0xA0.toByte(), 0xA1.toByte(), 0xA2.toByte()),
+                Item(0xB0.toByte(), 0xB1.toByte(), 0xB2.toByte()),
+                Item(0xC0.toByte(), 0xC1.toByte(), 0xC2.toByte()),
+            ),
+            ListSerializer(Item.serializer()),
+            buildByteArray {
+                add(uByte = 3u)
+                add(0xA0.toByte())
+                add(0xA1.toByte())
+                add(0xA2.toByte())
+                add(0xB0.toByte())
+                add(0xB1.toByte())
+                add(0xB2.toByte())
+                add(0xC0.toByte())
+                add(0xC1.toByte())
+                add(0xC2.toByte())
+            },
+        )
+
+        @Serializable
+        data class ListContainer(
+            val default: List<Item>,
+            @Sizing(Length.`16_BIT`) val shortSized: List<Item>,
+            @Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) val flexibleSized: List<Item>,
+            @LengthPrefix(canOverflow = true) val lengthPrefix: List<Item>,
+            @NullIfEmpty val nullIfEmpty: List<Item>,
+            @NullTerminated val nullTerminated: List<Item>,
+            @Unsized val unsized: List<Item>,
+        )
+
+        validateEncoding(
+            ListContainer(
+                MutableList(10) { Item(it.toByte(), (it + 10).toByte(), (it + 20).toByte()) },
+                MutableList(500) { Item(it.toByte(), (it + 30).toByte(), (it + 40).toByte()) },
+                MutableList(40) { Item(it.toByte(), (it - 30).toByte(), (it - 40).toByte()) },
+                MutableList(33) { Item(it.toByte(), (it - 10).toByte(), (it - 20).toByte()) },
+                MutableList(5) { Item(it.toByte(), (it - 50).toByte(), (it + 50).toByte()) },
+                listOf(Item(0x01, 0x00, 0x03), Item(0x04, 0x05, 0x00)),
+                listOf(Item(0x06, 0x07, 0x08)),
+            ),
+            buildByteArray {
+                add(false) // flexibleSized
+                add(true) // nullIfEmpty
+                add(uByte = 10u)
+                repeat(10) {
+                    add(byte = it.toByte())
+                    add(byte = (it + 10).toByte())
+                    add(byte = (it + 20).toByte())
+                }
+                add(uShort = 500u)
+                repeat(500) {
+                    add(byte = it.toByte())
+                    add(byte = (it + 30).toByte())
+                    add(byte = (it + 40).toByte())
+                }
+                add(uByte = 40u)
+                repeat(40) {
+                    add(byte = it.toByte())
+                    add(byte = (it - 30).toByte())
+                    add(byte = (it - 40).toByte())
+                }
+                add(uByte = 33u)
+                repeat(33) {
+                    add(byte = it.toByte())
+                    add(byte = (it - 10).toByte())
+                    add(byte = (it - 20).toByte())
+                }
+                add(uByte = 5u)
+                repeat(5) {
+                    add(byte = it.toByte())
+                    add(byte = (it - 50).toByte())
+                    add(byte = (it + 50).toByte())
+                }
+                add(byte = 0x01)
+                add(byte = 0x00)
+                add(byte = 0x03)
+                add(byte = 0x04)
+                add(byte = 0x05)
+                add(byte = 0x00)
+                add(byte = 0x00)
+                add(byte = 0x06)
+                add(byte = 0x07)
+                add(byte = 0x08)
+            },
+        )
+
+        validateEncoding(
+            ListContainer(
+                MutableList(8) { Item(it.toByte(), (it + 10).toByte(), (it + 20).toByte()) },
+                MutableList(2) { Item(it.toByte(), (it + 30).toByte(), (it + 40).toByte()) },
+                MutableList(1000) { Item(it.toByte(), (it - 30).toByte(), (it - 40).toByte()) },
+                MutableList(800) { Item(it.toByte(), (it - 10).toByte(), (it - 20).toByte()) },
+                emptyList(),
+                listOf(Item(0x01, 0x02, 0x03)),
+                emptyList(),
+            ),
+            buildByteArray {
+                add(true) // flexibleSized
+                add(false) // nullIfEmpty
+                add(uByte = 8u)
+                repeat(8) {
+                    add(byte = it.toByte())
+                    add(byte = (it + 10).toByte())
+                    add(byte = (it + 20).toByte())
+                }
+                add(uShort = 2u)
+                repeat(2) {
+                    add(byte = it.toByte())
+                    add(byte = (it + 30).toByte())
+                    add(byte = (it + 40).toByte())
+                }
+                add(uShort = 1000u)
+                repeat(1000) {
+                    add(byte = it.toByte())
+                    add(byte = (it - 30).toByte())
+                    add(byte = (it - 40).toByte())
+                }
+                add(0xFF.toByte())
+                add(uShort = 800u)
+                repeat(800) {
+                    add(byte = it.toByte())
+                    add(byte = (it - 10).toByte())
+                    add(byte = (it - 20).toByte())
+                }
+                add(byte = 0x01)
+                add(byte = 0x02)
+                add(byte = 0x03)
+                add(byte = 0x00)
+            },
+        )
+
+        @Serializable
+        data class NullTerminatedList(@NullTerminated val list: List<Byte>)
+
+        assertFailsWith<UnexpectedNullTermination> {
+            BluetoothFormat.encodeToByteArray(NullTerminatedList.serializer(), NullTerminatedList(listOf(0x00.toByte(), 0x01.toByte())))
+        }
+
+        @Serializable
+        data class ContentAfterUnsized(@Unsized val list: List<Byte>, val otherContent: Byte)
+
+        assertFailsWith<DataAfterUnconstainedData> {
+            BluetoothFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized(listOf(0x01, 0x02, 0x03), 0x01))
+        }
+    }
+
+    @Test
+    fun encodeNumericList() {
         validateEncoding(
             listOf(1, 2, 3),
             ListSerializer(Int.serializer()),
@@ -856,21 +1009,166 @@ class BluetoothFormatTest {
             },
         )
         @Serializable
-        data class LengthContainer(
+        data class NumericListContainer(
             @ItemSize(Length.`8_BIT`)
-            val list: List<Int>,
-        )
-
-        validateEncoding(LengthContainer(listOf(1, 2, 3)), byteArrayOf(0x03, 0x01, 0x02, 0x03))
-
-        @Serializable
-        data class FlexibleLengthContainer(
+            val intList: List<Int>,
             @ItemSize(Length.`8_BIT`)
             @ItemSize(Length.`16_BIT`)
-            val list: List<Int>,
+            val variableSizedIntList: List<Int>,
+            val nullableList: List<Int?>,
+            @NullIfEmpty val nullIfEmptyList: List<Int>,
+            @ItemSize(Length.`8_BIT`) @ItemScalar(decimalExponent = 4) val scalarList: List<Double>,
+            @ItemSize(Length.`16_BIT`) @ItemMedFloat val medFloatList: List<Double>,
+            @ItemByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val mostSignificant: List<Short>,
+            val unsignedList: List<UByte>,
+            val inlineList: List<NumberValueContainer<Int>>,
         )
 
-        validateEncoding(FlexibleLengthContainer(listOf(1, 512, 3)), byteArrayOf(0x03, 0x00, 0x01, 0x01, 0x00, 0x02, 0x00, 0x03))
+        validateEncoding(
+            NumericListContainer(
+                listOf(1, 2, 3),
+                listOf(4, 300, -12, 8000),
+                listOf(5, null, 6),
+                emptyList(),
+                listOf(0.0001, 0.0002, 0.0004),
+                listOf(1.5, 2.5, 3.5, 4.5),
+                listOf(100, 200, 300),
+                listOf(5u, 7u, 9u, 11u),
+                listOf(12, 13, 14, 600).map { NumberValueContainer(it) },
+
+            ),
+            buildByteArray {
+                add(false) // nullIfEmptyList
+                // intList
+                add(uByte = 3u)
+                add(byte = 1)
+                add(byte = 2)
+                add(byte = 3)
+                // variableSizedIntList
+                add(uByte = 4u)
+                add(false)
+                add(byte = 4)
+                add(true)
+                add(short = 300)
+                add(false)
+                add(byte = -12)
+                add(true)
+                add(short = 8000)
+                // nullableList
+                add(uByte = 3u)
+                add(true)
+                add(5)
+                add(false)
+                add(byte = 0x01)
+                add(6)
+                // scalar list
+                add(uByte = 3u)
+                add(byte = 1)
+                add(byte = 2)
+                add(byte = 4)
+                // medFloatList
+                add(uByte = 4u)
+                add(MedFloat16(1.5))
+                add(MedFloat16(2.5))
+                add(MedFloat16(3.5))
+                add(MedFloat16(4.5))
+                // mostSignificant
+                add(uByte = 3u)
+                add(short = 100, ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(short = 200, ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(short = 300, ByteOrder.MOST_SIGNIFICANT_FIRST)
+                // unsignedList
+                add(uByte = 4u)
+                add(uByte = 5u)
+                add(uByte = 7u)
+                add(uByte = 9u)
+                add(uByte = 11u)
+                // inlineList
+                add(uByte = 4u)
+                add(false)
+                add(byte = 12)
+                add(false)
+                add(byte = 13)
+                add(false)
+                add(byte = 14)
+                add(true)
+                add(short = 600)
+            },
+        )
+    }
+
+    @Test
+    fun encodeStringList() {
+        validateEncoding(
+            listOf("A", "B", "C"),
+            ListSerializer(String.serializer()),
+            buildByteArray {
+                add(uByte = 3u)
+                add("A")
+                add("B")
+                add("C")
+            },
+        )
+        @Serializable
+        data class StringListContainer(
+            @ItemEncoded(StringEncodingSettings.Encoding.UTF_8)
+            val utf8List: List<String>,
+            @ItemEncoded(StringEncodingSettings.Encoding.UTF_16)
+            val utf16List: List<String>,
+            @ItemEncoded(StringEncodingSettings.Encoding.ASCII)
+            val asciiList: List<String>,
+            @ItemLengthPrefix(canOverflow = true)
+            val lengthPrefixList: List<String>,
+            @ItemNullTerminated
+            val nullTerminatedList: List<String>,
+            val nullableList: List<String?>,
+        )
+
+        validateEncoding(
+            StringListContainer(
+                listOf("A", "B", "C", "D"),
+                listOf("E", "F", "G", "H"),
+                listOf("I", "J", "K", "L"),
+                listOf("M", "N", MutableList(500) { "O" }.joinToString(), "P"),
+                listOf("Q", "R", "S", "T"),
+                listOf("U", "V", null, "X"),
+            ),
+            buildByteArray {
+                add(uByte = 4u)
+                add("A")
+                add("B")
+                add("C")
+                add("D")
+                add(uByte = 4u)
+                add("E", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
+                add("F", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
+                add("G", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
+                add("H", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
+                add(uByte = 4u)
+                add("I", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
+                add("J", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
+                add("K", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
+                add("L", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
+                add(uByte = 4u)
+                add("M", settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))
+                add("N", settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))
+                add(MutableList(500) { "O" }.joinToString(), settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))
+                add("P", settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))
+                add(uByte = 4u)
+                add("Q", settings = StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("R", settings = StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("S", settings = StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("T", settings = StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add(uByte = 4u)
+                add(true)
+                add("U")
+                add(true)
+                add("V")
+                add(false)
+                add(byte = 0x01)
+                add("X")
+            },
+        )
     }
 
     @Test

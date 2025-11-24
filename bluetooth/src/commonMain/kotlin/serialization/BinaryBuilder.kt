@@ -93,9 +93,17 @@ internal class ItemBinaryBuilder(entry: FlagLayoutEntry, onUnconstrained: () -> 
         entry,
         (entry.bitIndex + entry.bitWidth),
         onUnconstrained,
-    )
+    ) {
+    fun checkIfStartsWithNull(value: ByteArray, order: ByteOrder): Boolean = when (order) {
+        ByteOrder.LEAST_SIGNIFICANT_FIRST -> value.firstOrNull() == 0x00.toByte()
+        ByteOrder.MOST_SIGNIFICANT_FIRST -> value.lastOrNull() == 0x00.toByte()
+    }
+}
 
-internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder, private val classBuilders: List<ItemBinaryBuilder>) : BinaryBuilder {
+class UnexpectedNullTermination(override val message: String) : SerializationException()
+
+internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder, private val classBuilders: List<ItemBinaryBuilder>, private val isNullTerminated: Boolean) :
+    BinaryBuilder {
     private var currentIndex = 0
     val currentClassBuilder: ItemBinaryBuilder get() = classBuilders[currentIndex]
 
@@ -117,24 +125,30 @@ internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder
     }
 
     override fun build(): ByteArray = buildByteArray(byteOrder) {
-        classBuilders.forEach {
-            add(it.build())
+        classBuilders.forEachIndexed { index, classBuilder ->
+            val value = classBuilder.build()
+            if (isNullTerminated && classBuilder.checkIfStartsWithNull(value, byteOrder)) {
+                throw UnexpectedNullTermination("The element at $index starts with Null Byte in a Null Terminated List")
+            }
+            add(value)
         }
     }
 }
-internal class ListBinaryBuilder(entry: FlagLayoutEntry, size: Int, onUnconstrained: () -> Unit) :
+internal class ListBinaryBuilder(entry: FlagLayoutEntry, size: Int, isNullTerminated: Boolean, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
         entry.byteOrder,
         MutableList(size) {
             ItemBinaryBuilder(entry.children.first(), onUnconstrained)
         },
+        isNullTerminated,
     )
 
-internal class MapBinaryBuilder(entry: FlagLayoutEntry, size: Int, onUnconstrained: () -> Unit) :
+internal class MapBinaryBuilder(entry: FlagLayoutEntry, size: Int, isNullTerminated: Boolean, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
         entry.byteOrder,
         MutableList(size) {
             val index = it % 2
             ItemBinaryBuilder(entry.children[index], onUnconstrained)
         },
+        isNullTerminated,
     )

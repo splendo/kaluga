@@ -46,6 +46,17 @@ data class FlagLayoutEntry(
     val children: List<FlagLayoutEntry>,
 ) {
 
+    val flagByteSize = if (children.isNotEmpty()) {
+        val highestBitIndex = children.maxBy { it.bitIndex }
+        if (highestBitIndex.bitIndex >= 0) {
+            ceil((highestBitIndex.bitIndex + highestBitIndex.bitWidth) / 8.0).toInt()
+        } else {
+            0
+        }
+    } else {
+        0
+    }
+
     sealed class NumericSettings {
 
         abstract val supportedLengths: Set<Length>
@@ -85,10 +96,10 @@ data class FlagLayoutEntry(
     data class StringSettings(val encoding: StringEncodingSettings.Encoding, val endMarking: StringEncodingSettings.EndMarking)
 
     sealed class CollectionSettings {
-        data class LengthPrefix(val endMarking: StringEncodingSettings.LengthPrefix) : CollectionSettings()
+        data class LengthPrefix(val endMarking: StringEncodingSettings.LengthPrefix, val nullIfEmpty: Boolean) : CollectionSettings()
         data object NullMarked : CollectionSettings()
         data object Unmarked : CollectionSettings()
-        data class NumericLength(val supportedLengths: Set<Length>) : CollectionSettings() {
+        data class NumericLength(val supportedLengths: Set<Length>, val nullIfEmpty: Boolean) : CollectionSettings() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
             }
@@ -260,13 +271,14 @@ object FlagLayoutRegistry {
                         val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
                         FlagLayoutEntry.CollectionSettings.LengthPrefix(
                             StringEncodingSettings.LengthPrefix(lengthPrefix.lengthAsShort, lengthPrefix.canOverflow, lengthPrefix.sentinel),
+                            annotations.filterIsInstance<NullIfEmpty>().isNotEmpty(),
                         )
                     }
 
                     annotations.filterIsInstance<Unsized>().isNotEmpty() -> FlagLayoutEntry.CollectionSettings.Unmarked
                     else -> {
                         desiredWidth += sizingWidth
-                        FlagLayoutEntry.CollectionSettings.NumericLength(supportedLengths)
+                        FlagLayoutEntry.CollectionSettings.NumericLength(supportedLengths, annotations.filterIsInstance<NullIfEmpty>().isNotEmpty())
                     }
                 }
             }
@@ -403,7 +415,6 @@ object FlagLayoutRegistry {
             is ValueByteOrder -> ByteOrder(annotation.order)
             is ValueLengthPrefix -> LengthPrefix(annotation.lengthAsShort, annotation.canOverflow, annotation.sentinel)
             is ValueEncoded -> Encoded(annotation.encoding)
-            is ValueNullTerminated -> NullTerminated()
             is ValueUnsigned -> Unsigned()
             is ValueScalar -> Scalar(annotation.multiplier, annotation.decimalExponent, annotation.binaryExponent, annotation.offset)
             is ValueMedFloat -> MedFloat()
