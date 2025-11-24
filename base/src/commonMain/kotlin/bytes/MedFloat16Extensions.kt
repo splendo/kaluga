@@ -61,30 +61,33 @@ fun MedFloat16.toByteArray(): ByteArray {
     if (value.isNaN()) return MedFloat16.NAN.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
     if (value == Double.POSITIVE_INFINITY) return MedFloat16.POSITIVE_INFINITY.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
     if (value == Double.NEGATIVE_INFINITY) return MedFloat16.NEGATIVE_INFINITY.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
-    if (value < MedFloat16.MIN_VALUE || value > MedFloat16.MAX_VALUE) return MedFloat16.NOT_AT_THIS_RESOLUTION.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
     var mantissa = value
     var exponent = 0
 
-    while (mantissa !in -2048.0..2047.0 && exponent < 7) {
+    while (mantissa !in MedFloat16.MIN_MANTISSA.toDouble()..MedFloat16.MAX_MANTISSA.toDouble() && exponent < MedFloat16.MAX_EXPONENT) {
         mantissa /= 10.0
         exponent++
     }
 
-    while (mantissa in -204.8..204.7 &&
+    while (mantissa in (MedFloat16.MIN_MANTISSA.toDouble() / 10.0)..(MedFloat16.MAX_MANTISSA.toDouble() / 10.0) &&
         mantissa != mantissa.toInt().toDouble() &&
-        exponent > -8
+        exponent > MedFloat16.MIN_EXPONENT
     ) {
         mantissa *= 10.0
         exponent--
 
-        if (mantissa !in -2048.0..2047.0) {
+        if (mantissa !in MedFloat16.MIN_MANTISSA.toDouble()..MedFloat16.MAX_MANTISSA.toDouble()) {
             mantissa /= 10.0
             exponent++
             break
         }
     }
 
-    val mant = mantissa.toInt().coerceIn(-2048, 2047)
+    if (mantissa.toInt() !in MedFloat16.MIN_MANTISSA..MedFloat16.MAX_MANTISSA) {
+        return MedFloat16.NOT_AT_THIS_RESOLUTION.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    }
+
+    val mant = mantissa.toInt()
     val exp = exponent and 0x0F
 
     val raw = (exp shl 12) or (mant and 0x0FFF)

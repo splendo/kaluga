@@ -19,6 +19,7 @@ package com.splendo.kaluga.base.utils
 
 import kotlin.jvm.JvmInline
 import kotlin.math.pow
+import kotlin.math.roundToInt
 
 @JvmInline
 value class MedFloat16(val value: Double) : Comparable<MedFloat16> {
@@ -29,8 +30,22 @@ value class MedFloat16(val value: Double) : Comparable<MedFloat16> {
 
         const val NOT_AT_THIS_RESOLUTION = 0x0800
         const val RESERVED_FOR_FUTURE_USE = 0x0801
-        val MIN_VALUE = -2048 * 10.0.pow(-8)
-        val MAX_VALUE = 2047 * 10.0.pow(7)
+
+        const val MIN_MANTISSA = -2048
+        const val MAX_MANTISSA = 2047
+        const val MIN_EXPONENT = -8
+        const val MAX_EXPONENT = 7
+
+        fun canRepresent(value: Double): Boolean {
+            if (value.isNaN() || value.isInfinite()) return true
+
+            return (MIN_EXPONENT..MAX_EXPONENT).find { exp ->
+                val scaled = value / 10.0.pow(exp)
+
+                val mantissa = scaled.roundToInt()
+                mantissa.toDouble() == scaled && mantissa in MIN_MANTISSA..MAX_MANTISSA
+            } != null
+        }
     }
 
     override fun compareTo(other: MedFloat16): Int = value.compareTo(other.value)

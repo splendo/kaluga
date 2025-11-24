@@ -35,7 +35,7 @@ fun ByteArray.decodeMedFloat32(octetIndex: Int): MedFloat32 {
         MedFloat32.NOT_AT_THIS_RESOLUTION -> Double.NaN
         MedFloat32.RESERVED_FOR_FUTURE_USE -> Double.NaN
         else -> {
-            val exponent = get(octetIndex+3).toInt()
+            val exponent = get(octetIndex + 3).toInt()
             mantissa.value * 10.0.pow(exponent)
         }
     }
@@ -49,7 +49,6 @@ fun MedFloat32.toByteArray(): ByteArray {
     if (value == Double.POSITIVE_INFINITY) return MedFloat32.POSITIVE_INFINITY.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
 
     if (value == Double.NEGATIVE_INFINITY) return MedFloat32.NEGATIVE_INFINITY.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
-    if (value < MedFloat32.MIN_VALUE || value > MedFloat32.MAX_VALUE) return MedFloat32.NOT_AT_THIS_RESOLUTION.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
     var mantissa = value
     var exponent = 0
 
@@ -73,7 +72,11 @@ fun MedFloat32.toByteArray(): ByteArray {
         }
     }
 
-    val mant = mantissa.toInt().coerceIn(Int24.MIN_VALUE.value..Int24.MAX_VALUE.value)
+    if (mantissa.toInt() !in Int24.MIN_VALUE.value..Int24.MAX_VALUE.value) {
+        return MedFloat32.NOT_AT_THIS_RESOLUTION.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    }
+
+    val mant = mantissa.toInt()
 
     return byteArrayOf(
         (mant and 0xFF).toByte(),

@@ -17,12 +17,10 @@
 
 package com.splendo.kaluga.base.bytes
 
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.utils.UInt24
-import com.splendo.kaluga.base.bytes.toByteArray
 import com.splendo.kaluga.base.utils.Int24
 import com.splendo.kaluga.base.utils.MedFloat16
 import com.splendo.kaluga.base.utils.MedFloat32
+import com.splendo.kaluga.base.utils.UInt24
 import kotlin.experimental.or
 
 interface ByteArrayBuilder {
@@ -46,7 +44,7 @@ interface ByteArrayBuilder {
     fun add(flag: Boolean)
     fun add(bytes: ByteArray)
     fun add(char: Char, encoding: StringEncodingSettings.Encoding = StringEncodingSettings.Encoding.UTF_8, order: ByteOrder = byteOrder)
-    fun add(string: String, settings: StringEncodingSettings, order: ByteOrder = byteOrder)
+    fun add(string: String, settings: StringEncodingSettings = StringEncodingSettings(), order: ByteOrder = byteOrder)
 }
 
 fun buildByteArray(order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST, block: ByteArrayBuilder.() -> Unit) = ByteArrayBuilderImpl(

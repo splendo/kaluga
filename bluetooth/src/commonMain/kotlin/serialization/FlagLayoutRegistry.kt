@@ -104,12 +104,22 @@ value class ByteArrayHolder(val array: ByteArray) {
 }
 
 class FlagLayoutException(message: String) : SerializationException(message)
+class InvalidByteOrderException(message: String) : SerializationException(message)
 
 object FlagLayoutRegistry {
     private val cache = mutableMapOf<Pair<SerialDescriptor, SerializersModule>, FlagLayoutEntry>()
 
     internal fun flagLayoutEntry(descriptor: SerialDescriptor, module: SerializersModule): FlagLayoutEntry = cache.getOrPut(descriptor to module) {
-        getLayout(descriptor, descriptor.serialName, 0, emptyList(), descriptor.isNullable, 0, ByteOrder.LEAST_SIGNIFICANT_FIRST, module) {
+        getLayout(
+            descriptor,
+            descriptor.serialName,
+            0,
+            emptyList(),
+            descriptor.isNullable,
+            0,
+            descriptor.annotations.filterIsInstance<com.splendo.kaluga.bluetooth.serialization.ByteOrder>().firstOrNull()?.order ?: ByteOrder.LEAST_SIGNIFICANT_FIRST,
+            module,
+        ) {
         }
     }
 
@@ -133,7 +143,17 @@ object FlagLayoutRegistry {
             "kotlin.ULong" -> annotations + Unsigned()
             else -> annotations
         }
-        getLayout(inlineDescriptor, fieldName, fieldIndex, actualAnnotations, isNullable || inlineDescriptor.isNullable, defaultBitIndex, preferredByteOrder, serializersModule, reserveIndices)
+        getLayout(
+            inlineDescriptor,
+            fieldName,
+            fieldIndex,
+            actualAnnotations,
+            isNullable || inlineDescriptor.isNullable,
+            defaultBitIndex,
+            preferredByteOrder,
+            serializersModule,
+            reserveIndices,
+        )
     } else {
         val annotations = descriptor.annotations + fieldAnnotations
         var desiredWidth = 0
@@ -143,6 +163,9 @@ object FlagLayoutRegistry {
         }
         val customIndex = annotations.filterIsInstance<FlagIndex>().firstOrNull()?.index
         val byteOrder = annotations.filterIsInstance<com.splendo.kaluga.bluetooth.serialization.ByteOrder>().firstOrNull()?.order ?: preferredByteOrder
+        if ((descriptor.kind is StructureKind || descriptor.kind is PrimitiveKind.STRING) && byteOrder != preferredByteOrder) {
+            throw InvalidByteOrderException("Nested class ${descriptor.serialName} cannot have a byteOrder different than $preferredByteOrder")
+        }
         if (descriptor.kind is PrimitiveKind.BOOLEAN && customIndex != null) {
             desiredWidth++
         }
@@ -168,7 +191,7 @@ object FlagLayoutRegistry {
                 StructureKind.LIST -> setOf(Length.`8_BIT`)
                 else -> emptySet()
             }
-        }
+        }.sortedBy { it.bytes }.toSet()
         val sizingWidth = when (supportedLengths.size) {
             0 -> 0
             1 -> 0
@@ -305,7 +328,16 @@ object FlagLayoutRegistry {
             blockSettings,
             if (descriptor.kind == PolymorphicKind.OPEN) {
                 serializersModule.getPolymorphicDescriptors(descriptor).map { optionDescriptor ->
-                    getLayout(optionDescriptor, optionDescriptor.serialName, 0, optionDescriptor.annotations, optionDescriptor.isNullable, nextBit, byteOrder, serializersModule) { flagIndicesToUse ->
+                    getLayout(
+                        optionDescriptor,
+                        optionDescriptor.serialName,
+                        0,
+                        optionDescriptor.annotations,
+                        optionDescriptor.isNullable,
+                        nextBit,
+                        byteOrder,
+                        serializersModule,
+                    ) { flagIndicesToUse ->
                         if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
                             throw FlagLayoutException("Flag at index $bitIndex cannot be used for ${optionDescriptor.serialName}. Is already reserved")
                         }

@@ -272,7 +272,7 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, entry: FlagLayout
         is FlagLayoutEntry.NumericSettings.Decimal -> {
             val lengthToAdd = if (settings.supportedLengths.size > 1) {
                 val flagIndex = entry.bitIndex + if (entry.isNullable) 1 else 0
-                if (value.toDouble() >= Float.MIN_VALUE && value.toDouble() <= Float.MAX_VALUE) {
+                if (value.toDouble() == value.toFloat().toDouble()) {
                     addFlag(flagIndex, false)
                     Length.`32_BIT`
                 } else {
@@ -294,7 +294,7 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, entry: FlagLayout
         is FlagLayoutEntry.NumericSettings.MedFloat -> {
             val lengthToAdd = if (settings.supportedLengths.size > 1) {
                 val flagIndex = entry.bitIndex + if (entry.isNullable) 1 else 0
-                if (value.toDouble() >= MedFloat16.MIN_VALUE && value.toDouble() <= MedFloat16.MAX_VALUE) {
+                if (MedFloat16.canRepresent(value.toDouble())) {
                     addFlag(flagIndex, false)
                     Length.`16_BIT`
                 } else {

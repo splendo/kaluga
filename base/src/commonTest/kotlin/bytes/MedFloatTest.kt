@@ -31,6 +31,7 @@ class MedFloatTest {
     @Test
     fun medFloat16() {
         val byteValue = MedFloat16(123400000.0).toByteArray()
+
         assertContentEquals((5 * 2.0.pow(12).toInt() + 1234).toUShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST), byteValue)
         assertEquals(MedFloat16(123400000.0), byteValue.decodeMedFloat16(0))
     }

@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.serialization
 import com.splendo.kaluga.base.bytes.ByteArrayBuilder
 import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.buildByteArray
+import kotlinx.serialization.SerializationException
 
 internal interface BinaryBuilder {
     fun addFlag(index: Int, value: Boolean)
@@ -28,6 +29,8 @@ internal interface BinaryBuilder {
 
     fun build(): ByteArray
 }
+
+class DataAfterUnconstainedData(override val message: String?) : SerializationException()
 
 internal abstract class StructureBinaryBuilder(val entry: FlagLayoutEntry, flagBitsSize: Int, private val onUnconstrained: () -> Unit) : BinaryBuilder {
 
@@ -40,7 +43,9 @@ internal abstract class StructureBinaryBuilder(val entry: FlagLayoutEntry, flagB
     }
 
     override fun addAction(action: ByteArrayBuilder.() -> Unit) {
-        require(!isOfUnconstrainedSize) { "This object has data of an unconstrained size." }
+        if (isOfUnconstrainedSize) {
+            throw DataAfterUnconstainedData("Attempted to add data after data of an unconstained size")
+        }
         actions += action
     }
 
