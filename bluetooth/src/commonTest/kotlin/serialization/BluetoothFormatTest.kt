@@ -30,6 +30,7 @@ import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -58,6 +59,13 @@ class BluetoothFormatTest {
     }
 
     @Serializable
+    @Prefix([0x22, 0x44])
+    @Postfix([0x33])
+    data object Object
+
+    @Serializable
+    @Prefix([0x11, 0x55])
+    @Postfix([0x66, 0xAA.toByte()])
     sealed class SomeSealedClass {
         @Serializable
         @SerializedByteValue(value = 0x01)
@@ -1172,14 +1180,368 @@ class BluetoothFormatTest {
     }
 
     @Test
+    fun encodeMap() {
+        @Serializable
+        data class Key(val keyValue: UShort)
+
+        @Serializable
+        data class Value(val value: Byte)
+
+        validateEncoding(
+            mapOf(
+                Key(0xA0.toUShort()) to Value(0xA1.toByte()),
+                Key(0xB0.toUShort()) to Value(0xB1.toByte()),
+                Key(0xC0.toUShort()) to Value(0xC1.toByte()),
+            ),
+            MapSerializer(Key.serializer(), Value.serializer()),
+            buildByteArray {
+                add(uByte = 3u)
+                add(0xA0.toUShort())
+                add(0xA1.toByte())
+                add(0xB0.toUShort())
+                add(0xB1.toByte())
+                add(0xC0.toUShort())
+                add(0xC1.toByte())
+            },
+        )
+
+        @Serializable
+        data class MapContainer(
+            val default: Map<Key, Value>,
+            @Sizing(Length.`16_BIT`) val shortSized: Map<Key, Value>,
+            @Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) val flexibleSized: Map<Key, Value>,
+            @LengthPrefix(canOverflow = true) val lengthPrefix: Map<Key, Value>,
+            @NullIfEmpty val nullIfEmpty: Map<Key, Value>,
+            @NullTerminated val nullTerminated: Map<Key, Value>,
+            @Unsized val unsized: Map<Key, Value>,
+        )
+
+        validateEncoding(
+            MapContainer(
+                MutableList(10) { Key(it.toUShort()) to Value((it + 10).toByte()) }.toMap(),
+                MutableList(500) { Key(it.toUShort()) to Value((it + 30).toByte()) }.toMap(),
+                MutableList(40) { Key(it.toUShort()) to Value((it - 30).toByte()) }.toMap(),
+                MutableList(33) { Key(it.toUShort()) to Value((it - 10).toByte()) }.toMap(),
+                MutableList(5) { Key(it.toUShort()) to Value((it - 50).toByte()) }.toMap(),
+                mapOf(Key(0x01u) to Value(0x00), Key(0x02u) to Value(0x03)),
+                mapOf(Key(0x06u) to Value(0x07), Key(0x08u) to Value(0x09)),
+            ),
+            buildByteArray {
+                add(false) // flexibleSized
+                add(true) // nullIfEmpty
+                add(uByte = 10u)
+                repeat(10) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it + 10).toByte())
+                }
+                add(uShort = 500u)
+                repeat(500) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it + 30).toByte())
+                }
+                add(uByte = 40u)
+                repeat(40) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it - 30).toByte())
+                }
+                add(uByte = 33u)
+                repeat(33) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it - 10).toByte())
+                }
+                add(uByte = 5u)
+                repeat(5) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it - 50).toByte())
+                }
+                add(uShort = 0x01u)
+                add(byte = 0x00)
+                add(uShort = 0x02u)
+                add(byte = 0x03)
+                add(byte = 0x00)
+                add(uShort = 0x06u)
+                add(byte = 0x07)
+                add(uShort = 0x08u)
+                add(byte = 0x09)
+            },
+        )
+
+        validateEncoding(
+            MapContainer(
+                MutableList(8) { Key(it.toUShort()) to Value((it + 10).toByte()) }.toMap(),
+                MutableList(2) { Key(it.toUShort()) to Value((it + 30).toByte()) }.toMap(),
+                MutableList(1000) { Key(it.toUShort()) to Value((it - 30).toByte()) }.toMap(),
+                MutableList(800) { Key(it.toUShort()) to Value((it - 10).toByte()) }.toMap(),
+                emptyMap(),
+                mapOf(Key(0x01u) to Value(0x02), Key(0x03u) to Value(0x04)),
+                emptyMap(),
+            ),
+            buildByteArray {
+                add(true) // flexibleSized
+                add(false) // nullIfEmpty
+                add(uByte = 8u)
+                repeat(8) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it + 10).toByte())
+                }
+                add(uShort = 2u)
+                repeat(2) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it + 30).toByte())
+                }
+                add(uShort = 1000u)
+                repeat(1000) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it - 30).toByte())
+                }
+                add(0xFF.toByte())
+                add(uShort = 800u)
+                repeat(800) {
+                    add(uShort = it.toUShort())
+                    add(byte = (it - 10).toByte())
+                }
+                add(uShort = 0x01u)
+                add(byte = 0x02)
+                add(uShort = 0x03u)
+                add(byte = 0x04)
+                add(byte = 0x00)
+            },
+        )
+
+        @Serializable
+        data class NullTerminatedMap(@NullTerminated val map: Map<Byte, Byte>)
+
+        assertFailsWith<UnexpectedNullTermination> {
+            BluetoothFormat.encodeToByteArray(NullTerminatedMap.serializer(), NullTerminatedMap(mapOf(0x00.toByte() to 0x01.toByte())))
+        }
+
+        @Serializable
+        data class ContentAfterUnsized(@Unsized val map: Map<Byte, Byte>, val otherContent: Byte)
+
+        assertFailsWith<DataAfterUnconstainedData> {
+            BluetoothFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized(mapOf(0x01.toByte() to 0x02.toByte(), 0x03.toByte() to 0x04.toByte()), 0x01))
+        }
+    }
+
+    @Test
+    fun encodeNumericMap() {
+        validateEncoding(
+            mapOf(1.toShort() to 2, 3.toShort() to 4),
+            MapSerializer(Short.serializer(), Int.serializer()),
+            buildByteArray {
+                add(uByte = 2u)
+                add(short = 1)
+                add(2)
+                add(short = 3)
+                add(4)
+            },
+        )
+        @Serializable
+        data class NumericMapContainer(
+            @KeySize(Length.`8_BIT`)
+            @ValueSize(Length.`24_BIT`)
+            val fixedMap: Map<Short, Int>,
+            @KeySize(Length.`8_BIT`)
+            @KeySize(Length.`16_BIT`)
+            @ValueSize(Length.`24_BIT`)
+            @ValueSize(Length.`32_BIT`)
+            val variableSizedMap: Map<Short, Int>,
+            val nullableMap: Map<Short?, Int?>,
+            @KeySize(Length.`8_BIT`) @KeyScalar(decimalExponent = 2)
+            @ValueSize(Length.`24_BIT`)
+            @ValueScalar(decimalExponent = 3)
+            val scalarMap: Map<Double, Double>,
+            @KeySize(Length.`16_BIT`) @KeyMedFloat
+            @ValueSize(Length.`32_BIT`)
+            @ValueMedFloat
+            val medFloatList: Map<Double, Double>,
+            @KeyByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+            @ValueByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST)
+            val mostSignificant: Map<Short, Int>,
+            val unsignedMap: Map<UShort, UInt>,
+            val inlineMap: Map<NumberValueContainer<Short>, ValueContainer<Int>>,
+        )
+
+        validateEncoding(
+            NumericMapContainer(
+                mapOf(1.toShort() to 2, 3.toShort() to 4),
+                mapOf(5.toShort() to 5000000, 300.toShort() to 10000000),
+                mapOf(6.toShort() to 11, null to 12, 7.toShort() to null),
+                mapOf(0.25 to 0.125, 0.75 to 5.0),
+                mapOf(0.3 to 0.6, 5.0 to 7.0, 45.0 to 0.98),
+                mapOf((-10).toShort() to 999, 1000.toShort() to -54),
+                mapOf(20u.toUShort() to 777777u, 25u.toUShort() to 89898989u),
+                mapOf(NumberValueContainer(30.toShort()) to ValueContainer(12345), NumberValueContainer(400.toShort()) to ValueContainer(3456)),
+
+            ),
+            buildByteArray {
+                // fixedMap
+                add(uByte = 2u)
+                add(byte = 1)
+                add(2.toInt24())
+                add(byte = 3)
+                add(4.toInt24())
+                // variableSizedMap
+                add(uByte = 2u)
+                add(false)
+                add(byte = 5)
+                add(false)
+                add(5000000.toInt24())
+                add(true)
+                add(short = 300)
+                add(true)
+                add(10000000)
+                // nullableMap
+                add(uByte = 3u)
+                add(true)
+                add(short = 6)
+                add(true)
+                add(11)
+                add(byte = 0x00)
+                add(true)
+                add(12)
+                add(true)
+                add(short = 7)
+                add(false)
+                // scalarMap
+                add(uByte = 2u)
+                add(byte = 25)
+                add(125.toInt24())
+                add(byte = 75)
+                add(5000.toInt24())
+                add(uByte = 3u)
+                add(MedFloat16(0.3))
+                add(MedFloat32(0.6))
+                add(MedFloat16(5.0))
+                add(MedFloat32(7.0))
+                add(MedFloat16(45.0))
+                add(MedFloat32(0.98))
+                add(uByte = 2u)
+                add(short = -10, order = ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(999, order = ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(short = 1000, order = ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(-54, order = ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add(uByte = 2u)
+                add(uShort = 20u)
+                add(777777u)
+                add(uShort = 25u)
+                add(89898989u)
+                add(uByte = 2u)
+                add(false)
+                add(byte = 30)
+                add(12345)
+                add(true)
+                add(short = 400)
+                add(3456)
+            },
+        )
+    }
+
+    @Test
+    fun encodeStringMap() {
+        validateEncoding(
+            mapOf('A' to "Alfa", 'B' to "Bravo", 'C' to "Charlie"),
+            MapSerializer(Char.serializer(), String.serializer()),
+            buildByteArray {
+                add(uByte = 3u)
+                add('A')
+                add("Alfa")
+                add('B')
+                add("Bravo")
+                add('C')
+                add("Charlie")
+            },
+        )
+        @Serializable
+        data class StringMapContainer(
+            @KeyEncoded(StringEncodingSettings.Encoding.UTF_8)
+            @ValueEncoded(StringEncodingSettings.Encoding.UTF_8)
+            val utf8Map: Map<Char, String>,
+            @KeyEncoded(StringEncodingSettings.Encoding.UTF_16)
+            @ValueEncoded(StringEncodingSettings.Encoding.UTF_16)
+            val utf16Map: Map<Char, String>,
+            @KeyEncoded(StringEncodingSettings.Encoding.ASCII)
+            @ValueEncoded(StringEncodingSettings.Encoding.ASCII)
+            val asciiMap: Map<Char, String>,
+            @KeyLengthPrefix(lengthAsShort = true)
+            @ValueLengthPrefix(canOverflow = true)
+            val lengthPrefixMap: Map<String, String>,
+            @KeyNullTerminated
+            @ValueNullTerminated
+            val nullTerminatedMap: Map<String, String>,
+            val nullableMap: Map<String?, String?>,
+        )
+
+        validateEncoding(
+            StringMapContainer(
+                mapOf('A' to "Alfa", 'B' to "Bravo", 'C' to "Charlie"),
+                mapOf('D' to "Delta", 'E' to "Echo", 'F' to "Foxtrot"),
+                mapOf('G' to "Golf", 'H' to "Hotel", 'I' to "India"),
+                mapOf("Key" to "Value", "Long" to MutableList(1000) { "A" }.joinToString()),
+                mapOf("" to "Empty", "Empty" to ""),
+                mapOf("Key" to "Value", null to "Empty", "NoKey" to null),
+            ),
+            buildByteArray {
+                add(uByte = 3u)
+                add('A', StringEncodingSettings.Encoding.UTF_8)
+                add("Alfa", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_8))
+                add('B', StringEncodingSettings.Encoding.UTF_8)
+                add("Bravo", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_8))
+                add('C', StringEncodingSettings.Encoding.UTF_8)
+                add("Charlie", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_8))
+                add(uByte = 3u)
+                add('D', StringEncodingSettings.Encoding.UTF_16)
+                add("Delta", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
+                add('E', StringEncodingSettings.Encoding.UTF_16)
+                add("Echo", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
+                add('F', StringEncodingSettings.Encoding.UTF_16)
+                add("Foxtrot", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
+                add(uByte = 3u)
+                add('G', StringEncodingSettings.Encoding.ASCII)
+                add("Golf", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
+                add('H', StringEncodingSettings.Encoding.ASCII)
+                add("Hotel", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
+                add('I', StringEncodingSettings.Encoding.ASCII)
+                add("India", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
+                add(uByte = 2u)
+                add("Key", StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(lengthAsShort = true)))
+                add("Value", StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))
+                add("Long", StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(lengthAsShort = true)))
+                add(MutableList(1000) { "A" }.joinToString(), StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))
+                add(uByte = 2u)
+                add("", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("Empty", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("Empty", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add("", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
+                add(uByte = 3u)
+                add(true)
+                add("Key")
+                add(true)
+                add("Value")
+                add(byte = 0x00)
+                add(true)
+                add("Empty")
+                add(true)
+                add("NoKey")
+                add(false)
+            },
+        )
+    }
+
+    @Test
     fun encodeEnum() {
         validateEncoding(SomeEnum.A, SomeEnum.serializer(), byteArrayOf(0x01))
     }
 
     @Test
+    fun encodeObject() {
+        validateEncoding(Object, byteArrayOf(0x22, 0x44, 0x33))
+    }
+
+    @Test
     fun encodeSealed() {
-        validateEncoding(SomeSealedClass.A(4), SomeSealedClass.serializer(), byteArrayOf(0x01, 0x04, 0x00, 0x00, 0x00))
-        validateEncoding(SomeSealedClass.B(600.0), SomeSealedClass.serializer(), byteArrayOf(0x02, 0x06, 0x00, 0x00, 0x00))
+        validateEncoding(SomeSealedClass.A(4), SomeSealedClass.serializer(), byteArrayOf(0x11, 0x55, 0x01, 0x04, 0x00, 0x00, 0x00, 0x66, 0xAA.toByte()))
+        validateEncoding(SomeSealedClass.B(600.0), SomeSealedClass.serializer(), byteArrayOf(0x11, 0x55, 0x02, 0x06, 0x00, 0x00, 0x00, 0x66, 0xAA.toByte()))
     }
 
     @Test

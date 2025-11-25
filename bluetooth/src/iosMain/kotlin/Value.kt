@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.bytes.toByteArray
+import com.splendo.kaluga.base.utils.toByteArray
 import platform.Foundation.NSData
 
 /**

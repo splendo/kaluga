@@ -127,7 +127,7 @@ internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder
     override fun build(): ByteArray = buildByteArray(byteOrder) {
         classBuilders.forEachIndexed { index, classBuilder ->
             val value = classBuilder.build()
-            if (isNullTerminated && classBuilder.checkIfStartsWithNull(value, byteOrder)) {
+            if (isNullTerminated && classBuilder.entry.fieldIndex == 0 && classBuilder.checkIfStartsWithNull(value, byteOrder)) {
                 throw UnexpectedNullTermination("The element at $index starts with Null Byte in a Null Terminated List")
             }
             add(value)
@@ -146,7 +146,7 @@ internal class ListBinaryBuilder(entry: FlagLayoutEntry, size: Int, isNullTermin
 internal class MapBinaryBuilder(entry: FlagLayoutEntry, size: Int, isNullTerminated: Boolean, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
         entry.byteOrder,
-        MutableList(size) {
+        MutableList(size * 2) {
             val index = it % 2
             ItemBinaryBuilder(entry.children[index], onUnconstrained)
         },

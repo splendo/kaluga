@@ -323,8 +323,6 @@ object FlagLayoutRegistry {
             -1
         }
         reserveIndices((0..<width).map { bitIndex + it }.toSet())
-        val reservedSubIndices = mutableSetOf<Int>()
-        var nextBit = 0
 
         FlagLayoutEntry(
             fieldName,
@@ -338,43 +336,104 @@ object FlagLayoutRegistry {
             collectionSettings,
             polymorphicMap,
             blockSettings,
-            if (descriptor.kind == PolymorphicKind.OPEN) {
-                serializersModule.getPolymorphicDescriptors(descriptor).map { optionDescriptor ->
-                    getLayout(
-                        optionDescriptor,
-                        optionDescriptor.serialName,
-                        0,
-                        optionDescriptor.annotations,
-                        optionDescriptor.isNullable,
-                        nextBit,
-                        byteOrder,
-                        serializersModule,
-                    ) { flagIndicesToUse ->
-                        if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
-                            throw FlagLayoutException("Flag at index $bitIndex cannot be used for ${optionDescriptor.serialName}. Is already reserved")
-                        }
-                        reservedSubIndices += flagIndicesToUse
-                        while (nextBit in reservedSubIndices) {
-                            nextBit++
+            when (descriptor.kind) {
+                PolymorphicKind.OPEN -> {
+                    serializersModule.getPolymorphicDescriptors(descriptor).map { optionDescriptor ->
+                        val reservedSubIndices = mutableSetOf<Int>()
+                        getLayout(
+                            optionDescriptor,
+                            optionDescriptor.serialName,
+                            0,
+                            optionDescriptor.annotations,
+                            optionDescriptor.isNullable,
+                            0,
+                            byteOrder,
+                            serializersModule,
+                        ) { flagIndicesToUse ->
+                            if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
+                                throw FlagLayoutException("Flag at index $bitIndex cannot be used for ${optionDescriptor.serialName}. Is already reserved")
+                            }
+                            reservedSubIndices += flagIndicesToUse
                         }
                     }
                 }
-            } else {
-                (0 until descriptor.elementsCount).map { i ->
-                    val elementName = descriptor.getElementName(i)
-                    val elementAnnotations = when (descriptor.kind) {
-                        StructureKind.MAP -> if (i % 2 == 0) annotations.keyAnnotations() else annotations.valueAnnotations()
-                        StructureKind.LIST -> annotations.itemAnnotations()
-                        else -> descriptor.getElementAnnotations(i)
-                    }
-                    val elementDescriptor = descriptor.getElementDescriptor(i)
-                    getLayout(elementDescriptor, elementName, i, elementAnnotations, elementDescriptor.isNullable, nextBit, byteOrder, serializersModule) { flagIndicesToUse ->
-                        if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
-                            throw FlagLayoutException("Flag at index $bitIndex cannot be used for $elementName. Is already reserved")
-                        }
-                        reservedSubIndices += flagIndicesToUse
-                        while (nextBit in reservedSubIndices) {
-                            nextBit++
+                StructureKind.MAP -> {
+                    val keyDescriptor = descriptor.getElementDescriptor(0)
+                    val valueDescriptor = descriptor.getElementDescriptor(1)
+
+                    val reservedKeySubIndices = mutableSetOf<Int>()
+                    val reservedValueSubIndices = mutableSetOf<Int>()
+                    listOf(
+                        getLayout(
+                            keyDescriptor,
+                            descriptor.getElementName(0),
+                            0,
+                            annotations.keyAnnotations(),
+                            keyDescriptor.isNullable,
+                            0,
+                            byteOrder,
+                            serializersModule,
+                        ) { flagIndicesToUse ->
+                            if (flagIndicesToUse.intersect(reservedKeySubIndices).isNotEmpty()) {
+                                throw FlagLayoutException("Flags at index $flagIndicesToUse cannot be used for ${keyDescriptor.serialName}. Is already reserved")
+                            }
+                            reservedKeySubIndices += flagIndicesToUse
+                        },
+                        getLayout(
+                            valueDescriptor,
+                            descriptor.getElementName(1),
+                            1,
+                            annotations.valueAnnotations(),
+                            valueDescriptor.isNullable,
+                            0,
+                            byteOrder,
+                            serializersModule,
+                        ) { flagIndicesToUse ->
+                            if (flagIndicesToUse.intersect(reservedValueSubIndices).isNotEmpty()) {
+                                throw FlagLayoutException("Flags at index $flagIndicesToUse cannot be used for ${valueDescriptor.serialName}. Is already reserved")
+                            }
+                            reservedValueSubIndices += flagIndicesToUse
+                        },
+                    )
+                }
+                StructureKind.LIST -> {
+                    val itemDescriptor = descriptor.getElementDescriptor(0)
+                    val reservedSubIndices = mutableSetOf<Int>()
+                    listOf(
+                        getLayout(
+                            itemDescriptor,
+                            descriptor.getElementName(0),
+                            0,
+                            annotations.itemAnnotations(),
+                            itemDescriptor.isNullable,
+                            0,
+                            byteOrder,
+                            serializersModule,
+                        ) { flagIndicesToUse ->
+                            if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
+                                throw FlagLayoutException("Flags at index $flagIndicesToUse cannot be used for ${itemDescriptor.serialName}. Is already reserved")
+                            }
+                            reservedSubIndices += flagIndicesToUse
+                        },
+                    )
+                }
+                else -> {
+                    var nextBit = 0
+                    val reservedSubIndices = mutableSetOf<Int>()
+                    (0 until descriptor.elementsCount).map { i ->
+                        val elementName = descriptor.getElementName(i)
+                        val elementAnnotations = descriptor.getElementAnnotations(i)
+                        val elementDescriptor = descriptor.getElementDescriptor(i)
+                        getLayout(elementDescriptor, elementName, i, elementAnnotations, elementDescriptor.isNullable, nextBit, byteOrder, serializersModule) { flagIndicesToUse ->
+                            if (descriptor.kind !is StructureKind.MAP) {
+                                if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
+                                    throw FlagLayoutException("Flag at index $bitIndex cannot be used for $elementName. Is already reserved")
+                                }
+                                reservedSubIndices += flagIndicesToUse
+                                while (nextBit in reservedSubIndices) {
+                                    nextBit++
+                                }
+                            }
                         }
                     }
                 }
@@ -415,6 +474,7 @@ object FlagLayoutRegistry {
             is ValueByteOrder -> ByteOrder(annotation.order)
             is ValueLengthPrefix -> LengthPrefix(annotation.lengthAsShort, annotation.canOverflow, annotation.sentinel)
             is ValueEncoded -> Encoded(annotation.encoding)
+            is KeyNullTerminated -> NullTerminated()
             is ValueUnsigned -> Unsigned()
             is ValueScalar -> Scalar(annotation.multiplier, annotation.decimalExponent, annotation.binaryExponent, annotation.offset)
             is ValueMedFloat -> MedFloat()
