@@ -1,7 +1,5 @@
 package com.splendo.kaluga.base.bytes
 
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.shift
 import kotlin.experimental.and
 import kotlin.experimental.or
 
@@ -15,7 +13,7 @@ fun ByteArray.decodeShort(octetIndex: Int, byteOrder: ByteOrder): Short {
         }
     }
     return drop(octetIndex).take(Short.SIZE_BYTES).foldIndexed(0.toShort()) { index, acc, byte ->
-        acc or (byte.toShort() shl byteOrder.shift(index, Short.SIZE_BITS))
+        acc or ((byte.toShort() and 0xFF) shl byteOrder.shift(index, Short.SIZE_BITS))
     }
 }
 

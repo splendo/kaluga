@@ -36,7 +36,7 @@ internal interface BluetoothBinaryDescriptorDecoder {
     fun endStructure()
 
     fun isEmpty(): Boolean
-    fun peekNextIsNull(): Boolean
+    fun peekNextIs(value: ByteArray): Boolean
     fun isNextBitSet(): Boolean
     fun nextBytes(size: Int): ByteArray
 }
@@ -49,11 +49,16 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
 
     override fun isEmpty(): Boolean = !hasAtLeast(1)
 
-    override fun peekNextIsNull(): Boolean = ensureAvailable(1) {
-        when (byteOrder) {
-            ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArray[byteArray.size - offset]
-            ByteOrder.LEAST_SIGNIFICANT_FIRST -> byteArray[offset + 1]
-        } == 0x00.toByte()
+    override fun peekNextIs(value: ByteArray): Boolean {
+        return if (hasAtLeast(value.size)) {
+            val start = if (bitOffset > 0) offset + 1 else offset
+            when (byteOrder) {
+                ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(byteArray.size - start - value.size - 1, byteArray.size - start)
+                ByteOrder.LEAST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(start, start + value.size)
+            }.contentEquals(value)
+        } else {
+            false
+        }
     }
 
     override fun isNextBitSet(): Boolean {
@@ -96,7 +101,7 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
     }
 
     override fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor): BluetoothBinaryDescriptorDecoder = beginStructure(binaryDescriptor, 0)
-    fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor, parentFooterSize: Int): ClassBluetoothBinaryDescriptorDecoder {
+    fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor, parentFooterSize: Int): StructureBluetoothBinaryDescriptorDecoder {
         binaryDescriptor.blockSettings.prefix?.let { prefixBytes ->
             val actualPrefix = nextBytes(prefixBytes.array.size)
             if (!actualPrefix.contentEquals(prefixBytes.array)) {
@@ -110,12 +115,12 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> flagBytes
         }
 
-        val flags = (0..<binaryDescriptor.flagByteSize).map {
+        val flags = (0..<binaryDescriptor.flagByteSize * 8).map {
             val byte = it / 8
             val bit = it % 8
             orderedFlagBytes[byte].isBitSet(bit)
         }
-        return ClassBluetoothBinaryDescriptorDecoder(binaryDescriptor, this, flags, startingOffset, parentFooterSize)
+        return StructureBluetoothBinaryDescriptorDecoder(binaryDescriptor, this, flags, startingOffset, parentFooterSize)
     }
 
     override fun endStructure() {
@@ -124,10 +129,13 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
         }
     }
 
-    fun hasAtLeast(bytes: Int) = (offset < byteArray.size - bytes)
+    fun hasAtLeast(bytes: Int): Boolean{
+        val start = if (bitOffset > 0) offset + 1 else offset
+        return  (start < byteArray.size - bytes)
+    }
 }
 
-internal class ClassBluetoothBinaryDescriptorDecoder(
+internal class StructureBluetoothBinaryDescriptorDecoder(
     val descriptor: BluetoothBinaryDescriptor,
     val rootDecoder: RootBluetoothBinaryDescriptorDecoder,
     override val flags: List<Boolean>,
@@ -139,7 +147,7 @@ internal class ClassBluetoothBinaryDescriptorDecoder(
 
     override fun isEmpty(): Boolean = rootDecoder.hasAtLeast(footerSize)
 
-    override fun peekNextIsNull(): Boolean = rootDecoder.peekNextIsNull()
+    override fun peekNextIs(value: ByteArray): Boolean = rootDecoder.peekNextIs(value)
     override fun isNextBitSet(): Boolean = rootDecoder.isNextBitSet()
     override fun nextBytes(size: Int): ByteArray = rootDecoder.nextBytes(size)
 

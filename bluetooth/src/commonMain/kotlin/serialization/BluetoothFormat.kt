@@ -75,6 +75,9 @@ sealed class BluetoothFormat(override val serializersModule: SerializersModule =
 
     override fun <T> decodeFromByteArray(deserializer: DeserializationStrategy<T>, bytes: ByteArray): T {
         val flag = BluetoothBinaryDescriptorRegistry.bluetoothBinaryDescriptor(deserializer.descriptor, serializersModule)
+        val decoder = BluetoothBinaryDecoder(flag, RootBluetoothBinaryDescriptorDecoder(bytes, flag.byteOrder), serializersModule)
+
+        return deserializer.deserialize(decoder)
     }
 }
 

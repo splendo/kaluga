@@ -1,8 +1,5 @@
 package com.splendo.kaluga.base.bytes
 
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.shift
-
 fun ByteArray.decodeLong(octetIndex: Int, byteOrder: ByteOrder): Long {
     for (offset in 0..<Long.SIZE_BYTES) {
         require(octetIndex + offset in indices) {
@@ -10,7 +7,7 @@ fun ByteArray.decodeLong(octetIndex: Int, byteOrder: ByteOrder): Long {
         }
     }
     return drop(octetIndex).take(Long.SIZE_BYTES).foldIndexed(0L) { index, acc, byte ->
-        acc or (byte.toLong() shl byteOrder.shift(index, Long.SIZE_BITS))
+        acc or ((byte.toLong() and 0xFF) shl byteOrder.shift(index, Long.SIZE_BITS))
     }
 }
 

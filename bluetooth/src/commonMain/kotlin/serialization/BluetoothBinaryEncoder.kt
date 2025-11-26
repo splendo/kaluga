@@ -246,7 +246,7 @@ private class BluetoothBinaryCompositeEncoder(
             builder.addAction {
                 binaryDescriptor.polymorphicMap[value]?.let {
                     add(it)
-                } ?: add(value, StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), binaryDescriptor.byteOrder)
+                } ?: throw IllegalStateException("Polymorphic class for $value has not been annotated with SerializedByteValue")
             }
         } else {
             builder.encodeStringElement(value, getBinaryDescriptor(index))

@@ -33,7 +33,7 @@ fun ByteArray.decodeUInt24(octetIndex: Int, byteOrder: ByteOrder): UInt24 {
         }
     }
     return drop(octetIndex).take(UInt24.SIZE_BYTES).foldIndexed(0U) { index, acc, byte ->
-        acc or (byte.toUInt() shl byteOrder.shift(index, UInt24.SIZE_BITS))
+        acc or ((byte.toUInt() and 0xFF.toUInt()) shl byteOrder.shift(index, UInt24.SIZE_BITS))
     }.toUInt24()
 }
 

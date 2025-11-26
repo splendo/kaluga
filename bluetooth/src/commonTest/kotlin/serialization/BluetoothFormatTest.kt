@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.buildByteArray
 import com.splendo.kaluga.base.bytes.toByteArray
@@ -48,7 +49,7 @@ class BluetoothFormatTest {
     @Serializable
     @Prefix([0x42, 0x23])
     @Postfix([0x22])
-    class Nested<T>(val nested: T)
+    data class Nested<T>(val nested: T)
 
     @Serializable
     enum class SomeEnum {
@@ -669,7 +670,7 @@ class BluetoothFormatTest {
         validateEncoding(42.0, 42.0.toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST))
 
         @Serializable
-        class Container(
+        data class Container(
             val defaultLength: Double,
             @Sizing(Length.`32_BIT`) val `32bit`: Double,
             @Sizing(Length.`64_BIT`) val `64bit`: Double,
@@ -751,12 +752,12 @@ class BluetoothFormatTest {
         @Serializable
         data class Container(
             val default: Char,
-            @Encoded(StringEncodingSettings.Encoding.UTF_8) val utf8: Char,
-            @Encoded(StringEncodingSettings.Encoding.UTF_16) val utf16: Char,
-            @Encoded(StringEncodingSettings.Encoding.ASCII) val ascii: Char,
+            @Encoded(Encoding.UTF_8) val utf8: Char,
+            @Encoded(Encoding.UTF_16) val utf16: Char,
+            @Encoded(Encoding.ASCII) val ascii: Char,
             val nullable: Char?,
-            @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) @Encoded(StringEncodingSettings.Encoding.UTF_16) val utf16MostSignificant: Char,
-            @Encoded(StringEncodingSettings.Encoding.UTF_16) val nullableUTF16: Char?,
+            @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) @Encoded(Encoding.UTF_16) val utf16MostSignificant: Char,
+            @Encoded(Encoding.UTF_16) val nullableUTF16: Char?,
         )
 
         validateEncoding(
@@ -774,11 +775,11 @@ class BluetoothFormatTest {
                 add(true) // nullableUTF16
                 add('a')
                 add('b')
-                add('c', StringEncodingSettings.Encoding.UTF_16)
-                add('d', StringEncodingSettings.Encoding.ASCII)
+                add('c', Encoding.UTF_16)
+                add('d', Encoding.ASCII)
                 add('e')
-                add('f', StringEncodingSettings.Encoding.UTF_16, ByteOrder.MOST_SIGNIFICANT_FIRST)
-                add('g', StringEncodingSettings.Encoding.UTF_16)
+                add('f', Encoding.UTF_16, ByteOrder.MOST_SIGNIFICANT_FIRST)
+                add('g', Encoding.UTF_16)
             },
         )
     }
@@ -790,11 +791,11 @@ class BluetoothFormatTest {
         @Serializable
         data class Container(
             val default: String,
-            @Encoded(StringEncodingSettings.Encoding.UTF_8) val utf8: String,
-            @Encoded(StringEncodingSettings.Encoding.UTF_16) val utf16: String,
-            @Encoded(StringEncodingSettings.Encoding.ASCII) val ascii: String,
+            @Encoded(Encoding.UTF_8) val utf8: String,
+            @Encoded(Encoding.UTF_16) val utf16: String,
+            @Encoded(Encoding.ASCII) val ascii: String,
             val nullable: String?,
-            @Encoded(StringEncodingSettings.Encoding.UTF_16) val nullableUTF16: String?,
+            @Encoded(Encoding.UTF_16) val nullableUTF16: String?,
             @NullTerminated val nullTerminated: String,
             @LengthPrefix(lengthAsShort = false, canOverflow = true) val lengthPrefix: String,
             @Unsized val unsized: String,
@@ -817,10 +818,10 @@ class BluetoothFormatTest {
                 add(true)
                 add("Sentence A")
                 add("Sentence B")
-                add("Sentence C", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
-                add("Sentence D", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
+                add("Sentence C", StringEncodingSettings(encoding = Encoding.UTF_16))
+                add("Sentence D", StringEncodingSettings(encoding = Encoding.ASCII))
                 add("Sentence E")
-                add("Sentence F", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
+                add("Sentence F", StringEncodingSettings(encoding = Encoding.UTF_16))
                 add("Sentence G", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
                 add(
                     "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.",
@@ -1120,11 +1121,11 @@ class BluetoothFormatTest {
         )
         @Serializable
         data class StringListContainer(
-            @ItemEncoded(StringEncodingSettings.Encoding.UTF_8)
+            @ItemEncoded(Encoding.UTF_8)
             val utf8List: List<String>,
-            @ItemEncoded(StringEncodingSettings.Encoding.UTF_16)
+            @ItemEncoded(Encoding.UTF_16)
             val utf16List: List<String>,
-            @ItemEncoded(StringEncodingSettings.Encoding.ASCII)
+            @ItemEncoded(Encoding.ASCII)
             val asciiList: List<String>,
             @ItemLengthPrefix(canOverflow = true)
             val lengthPrefixList: List<String>,
@@ -1149,15 +1150,15 @@ class BluetoothFormatTest {
                 add("C")
                 add("D")
                 add(uByte = 4u)
-                add("E", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
-                add("F", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
-                add("G", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
-                add("H", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
+                add("E", settings = StringEncodingSettings(encoding = Encoding.UTF_16))
+                add("F", settings = StringEncodingSettings(encoding = Encoding.UTF_16))
+                add("G", settings = StringEncodingSettings(encoding = Encoding.UTF_16))
+                add("H", settings = StringEncodingSettings(encoding = Encoding.UTF_16))
                 add(uByte = 4u)
-                add("I", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
-                add("J", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
-                add("K", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
-                add("L", settings = StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
+                add("I", settings = StringEncodingSettings(encoding = Encoding.ASCII))
+                add("J", settings = StringEncodingSettings(encoding = Encoding.ASCII))
+                add("K", settings = StringEncodingSettings(encoding = Encoding.ASCII))
+                add("L", settings = StringEncodingSettings(encoding = Encoding.ASCII))
                 add(uByte = 4u)
                 add("M", settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))
                 add("N", settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))
@@ -1455,14 +1456,14 @@ class BluetoothFormatTest {
         )
         @Serializable
         data class StringMapContainer(
-            @KeyEncoded(StringEncodingSettings.Encoding.UTF_8)
-            @ValueEncoded(StringEncodingSettings.Encoding.UTF_8)
+            @KeyEncoded(Encoding.UTF_8)
+            @ValueEncoded(Encoding.UTF_8)
             val utf8Map: Map<Char, String>,
-            @KeyEncoded(StringEncodingSettings.Encoding.UTF_16)
-            @ValueEncoded(StringEncodingSettings.Encoding.UTF_16)
+            @KeyEncoded(Encoding.UTF_16)
+            @ValueEncoded(Encoding.UTF_16)
             val utf16Map: Map<Char, String>,
-            @KeyEncoded(StringEncodingSettings.Encoding.ASCII)
-            @ValueEncoded(StringEncodingSettings.Encoding.ASCII)
+            @KeyEncoded(Encoding.ASCII)
+            @ValueEncoded(Encoding.ASCII)
             val asciiMap: Map<Char, String>,
             @KeyLengthPrefix(lengthAsShort = true)
             @ValueLengthPrefix(canOverflow = true)
@@ -1484,26 +1485,26 @@ class BluetoothFormatTest {
             ),
             buildByteArray {
                 add(uByte = 3u)
-                add('A', StringEncodingSettings.Encoding.UTF_8)
-                add("Alfa", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_8))
-                add('B', StringEncodingSettings.Encoding.UTF_8)
-                add("Bravo", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_8))
-                add('C', StringEncodingSettings.Encoding.UTF_8)
-                add("Charlie", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_8))
+                add('A', Encoding.UTF_8)
+                add("Alfa", StringEncodingSettings(encoding = Encoding.UTF_8))
+                add('B', Encoding.UTF_8)
+                add("Bravo", StringEncodingSettings(encoding = Encoding.UTF_8))
+                add('C', Encoding.UTF_8)
+                add("Charlie", StringEncodingSettings(encoding = Encoding.UTF_8))
                 add(uByte = 3u)
-                add('D', StringEncodingSettings.Encoding.UTF_16)
-                add("Delta", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
-                add('E', StringEncodingSettings.Encoding.UTF_16)
-                add("Echo", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
-                add('F', StringEncodingSettings.Encoding.UTF_16)
-                add("Foxtrot", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.UTF_16))
+                add('D', Encoding.UTF_16)
+                add("Delta", StringEncodingSettings(encoding = Encoding.UTF_16))
+                add('E', Encoding.UTF_16)
+                add("Echo", StringEncodingSettings(encoding = Encoding.UTF_16))
+                add('F', Encoding.UTF_16)
+                add("Foxtrot", StringEncodingSettings(encoding = Encoding.UTF_16))
                 add(uByte = 3u)
-                add('G', StringEncodingSettings.Encoding.ASCII)
-                add("Golf", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
-                add('H', StringEncodingSettings.Encoding.ASCII)
-                add("Hotel", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
-                add('I', StringEncodingSettings.Encoding.ASCII)
-                add("India", StringEncodingSettings(encoding = StringEncodingSettings.Encoding.ASCII))
+                add('G', Encoding.ASCII)
+                add("Golf", StringEncodingSettings(encoding = Encoding.ASCII))
+                add('H', Encoding.ASCII)
+                add("Hotel", StringEncodingSettings(encoding = Encoding.ASCII))
+                add('I', Encoding.ASCII)
+                add("India", StringEncodingSettings(encoding = Encoding.ASCII))
                 add(uByte = 2u)
                 add("Key", StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(lengthAsShort = true)))
                 add("Value", StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))

@@ -33,7 +33,7 @@ fun ByteArray.decodeInt24(octetIndex: Int, byteOrder: ByteOrder): Int24 {
         }
     }
     val value = drop(octetIndex).take(Int24.SIZE_BYTES).foldIndexed(0) { index, acc, byte ->
-        acc or (byte.toInt() shl byteOrder.shift(index, Int24.SIZE_BITS))
+        acc or ((byte.toInt() and 0xFF) shl byteOrder.shift(index, Int24.SIZE_BITS))
     }
     return if (value and 0x800000 != 0) {
         Int24(value or 0xFF000000.toInt())

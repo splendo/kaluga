@@ -43,4 +43,4 @@ value class UInt24(val value: UInt) : Comparable<UInt24> {
     operator fun times(other: UInt24) = (value * other.value).toUInt24()
     operator fun div(other: UInt24) = (value / other.value).toUInt24()
 }
-fun UInt.toUInt24() = UInt24(coerceIn(UInt24.MIN_VALUE.value, UInt24.MAX_VALUE.value))
+fun UInt.toUInt24() = UInt24(this and 0xFFFFFF.toUInt())

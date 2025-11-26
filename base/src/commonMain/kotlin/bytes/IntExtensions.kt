@@ -1,7 +1,5 @@
 package com.splendo.kaluga.base.bytes
 
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.shift
 import kotlin.math.abs
 import kotlin.math.log10
 
@@ -20,7 +18,7 @@ fun ByteArray.decodeInt(octetIndex: Int, byteOrder: ByteOrder): Int {
         }
     }
     return drop(octetIndex).take(Int.SIZE_BYTES).foldIndexed(0) { index, acc, byte ->
-        acc or (byte.toInt() shl byteOrder.shift(index, Int.SIZE_BITS))
+        acc or ((byte.toInt() and 0xFF) shl byteOrder.shift(index, Int.SIZE_BITS))
     }
 }
 

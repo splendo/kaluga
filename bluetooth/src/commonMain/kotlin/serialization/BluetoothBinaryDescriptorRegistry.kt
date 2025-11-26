@@ -311,7 +311,6 @@ internal object BluetoothBinaryDescriptorRegistry {
                 }.toMap()
                 if (polymorphicMap.size == polymorphicDescriptors.size) polymorphicMap else emptyMap()
             }
-
             else -> emptyMap()
         }
 
