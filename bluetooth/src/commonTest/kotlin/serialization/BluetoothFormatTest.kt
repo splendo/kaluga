@@ -39,6 +39,7 @@ import kotlinx.serialization.serializer
 import kotlin.jvm.JvmInline
 import kotlin.math.pow
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
@@ -1623,7 +1624,13 @@ class BluetoothFormatTest {
         val bytes = format.encodeToByteArray(serializer, value)
         assertTrue(bytes.contentEquals(expectedValue), "Expected ${expectedValue.toHexString(separator = " ")} but got ${bytes.toHexString(separator = " ")}")
 
-        val nestedBytes = format.encodeToByteArray(Nested.serializer(serializer), Nested(value))
+        assertEquals(value, format.decodeFromByteArray(serializer, bytes))
+
+        val nestedSerializer = Nested.serializer(serializer)
+        val nested = Nested(value)
+        val nestedBytes = format.encodeToByteArray(nestedSerializer, nested)
         assertTrue(nestedBytes.contentEquals(byteArrayOf(0x42, 0x23) + expectedValue + 0x22))
+
+        assertEquals(nested, format.decodeFromByteArray(nestedSerializer, nestedBytes))
     }
 }

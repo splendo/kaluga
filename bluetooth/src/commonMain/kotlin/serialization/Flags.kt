@@ -18,7 +18,7 @@
 package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.StringEncodingSettings
+import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.utils.Int24
 import com.splendo.kaluga.base.utils.UInt24
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -91,7 +91,7 @@ annotation class LengthPrefix(val lengthAsShort: Boolean = false, val canOverflo
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
-annotation class Encoded(val encoding: StringEncodingSettings.Encoding = StringEncodingSettings.Encoding.UTF_8)
+annotation class Encoded(val encoding: Encoding = Encoding.UTF_8)
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo

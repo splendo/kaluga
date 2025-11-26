@@ -43,7 +43,7 @@ sealed class BluetoothFormat(override val serializersModule: SerializersModule =
     }
 
     override fun <T> encodeToByteArray(serializer: SerializationStrategy<T>, value: T): ByteArray {
-        val flag = FlagLayoutRegistry.flagLayoutEntry(serializer.descriptor, serializersModule)
+        val flag = BluetoothBinaryDescriptorRegistry.bluetoothBinaryDescriptor(serializer.descriptor, serializersModule)
         val builder = object : BinaryBuilder {
             val flags = MutableList(maxOf(flag.bitIndex + flag.bitWidth, 0)) { false }
             private val actions = mutableListOf<ByteArrayBuilder.() -> Unit>()
@@ -74,7 +74,7 @@ sealed class BluetoothFormat(override val serializersModule: SerializersModule =
     }
 
     override fun <T> decodeFromByteArray(deserializer: DeserializationStrategy<T>, bytes: ByteArray): T {
-        TODO("Not yet implemented")
+        val flag = BluetoothBinaryDescriptorRegistry.bluetoothBinaryDescriptor(deserializer.descriptor, serializersModule)
     }
 }
 

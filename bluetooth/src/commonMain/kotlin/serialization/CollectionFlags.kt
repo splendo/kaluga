@@ -18,7 +18,7 @@
 package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.StringEncodingSettings
+import com.splendo.kaluga.base.bytes.Encoding
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialInfo
 
@@ -55,17 +55,17 @@ annotation class ValueLengthPrefix(val lengthAsShort: Boolean = false, val canOv
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
-annotation class ItemEncoded(val encoding: StringEncodingSettings.Encoding = StringEncodingSettings.Encoding.UTF_8)
+annotation class ItemEncoded(val encoding: Encoding = Encoding.UTF_8)
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
-annotation class KeyEncoded(val encoding: StringEncodingSettings.Encoding = StringEncodingSettings.Encoding.UTF_8)
+annotation class KeyEncoded(val encoding: Encoding = Encoding.UTF_8)
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
-annotation class ValueEncoded(val encoding: StringEncodingSettings.Encoding = StringEncodingSettings.Encoding.UTF_8)
+annotation class ValueEncoded(val encoding: Encoding = Encoding.UTF_8)
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo

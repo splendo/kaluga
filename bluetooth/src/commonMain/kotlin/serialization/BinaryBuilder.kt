@@ -32,7 +32,7 @@ internal interface BinaryBuilder {
 
 class DataAfterUnconstainedData(override val message: String?) : SerializationException()
 
-internal abstract class StructureBinaryBuilder(val entry: FlagLayoutEntry, flagBitsSize: Int, private val onUnconstrained: () -> Unit) : BinaryBuilder {
+internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBinaryDescriptor, flagBitsSize: Int, private val onUnconstrained: () -> Unit) : BinaryBuilder {
 
     val flagBits: MutableList<Boolean> = MutableList(flagBitsSize.coerceAtLeast(0)) { false }
     private val actions = mutableListOf<ByteArrayBuilder.() -> Unit>()
@@ -55,43 +55,43 @@ internal abstract class StructureBinaryBuilder(val entry: FlagLayoutEntry, flagB
     }
 
     override fun build(): ByteArray {
-        val body = buildByteArray(entry.byteOrder) {
+        val body = buildByteArray(binaryDescriptor.byteOrder) {
             flagBits.forEach {
                 add(it)
             }
             actions.forEach { apply(it) }
         }
-        val checksum = when (entry.blockSettings.checksumAlgorithm) {
+        val checksum = when (binaryDescriptor.blockSettings.checksumAlgorithm) {
             ChecksumAlgorithm.NONE -> byteArrayOf()
             ChecksumAlgorithm.CRC16 -> byteArrayOf()
             ChecksumAlgorithm.CRC32 -> byteArrayOf()
         }
-        return buildByteArray(entry.byteOrder) {
-            entry.blockSettings.prefix?.let {
+        return buildByteArray(binaryDescriptor.byteOrder) {
+            binaryDescriptor.blockSettings.prefix?.let {
                 add(it.array)
             }
             add(body)
             add(checksum)
-            entry.blockSettings.postfix?.let {
+            binaryDescriptor.blockSettings.postfix?.let {
                 add(it.array)
             }
         }
     }
 }
 
-internal class ClassBinaryBuilder(entry: FlagLayoutEntry, onUnconstrained: () -> Unit) :
+internal class ClassBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, onUnconstrained: () -> Unit) :
     StructureBinaryBuilder(
-        entry,
-        entry.children.fold(0) { max, entry ->
-            maxOf(entry.bitIndex + entry.bitWidth, max)
+        binaryDescriptor,
+        binaryDescriptor.children.fold(0) { max, binaryDescriptor ->
+            maxOf(binaryDescriptor.bitIndex + binaryDescriptor.bitWidth, max)
         },
         onUnconstrained,
     )
 
-internal class ItemBinaryBuilder(entry: FlagLayoutEntry, onUnconstrained: () -> Unit) :
+internal class ItemBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, onUnconstrained: () -> Unit) :
     StructureBinaryBuilder(
-        entry,
-        (entry.bitIndex + entry.bitWidth),
+        binaryDescriptor,
+        (binaryDescriptor.bitIndex + binaryDescriptor.bitWidth),
         onUnconstrained,
     ) {
     fun checkIfStartsWithNull(value: ByteArray, order: ByteOrder): Boolean = when (order) {
@@ -107,9 +107,9 @@ internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder
     private var currentIndex = 0
     val currentClassBuilder: ItemBinaryBuilder get() = classBuilders[currentIndex]
 
-    fun setIndex(index: Int): FlagLayoutEntry {
+    fun setIndex(index: Int): BluetoothBinaryDescriptor {
         currentIndex = index
-        return currentClassBuilder.entry
+        return currentClassBuilder.binaryDescriptor
     }
 
     override fun addAction(action: ByteArrayBuilder.() -> Unit) {
@@ -127,28 +127,28 @@ internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder
     override fun build(): ByteArray = buildByteArray(byteOrder) {
         classBuilders.forEachIndexed { index, classBuilder ->
             val value = classBuilder.build()
-            if (isNullTerminated && classBuilder.entry.fieldIndex == 0 && classBuilder.checkIfStartsWithNull(value, byteOrder)) {
+            if (isNullTerminated && classBuilder.binaryDescriptor.fieldIndex == 0 && classBuilder.checkIfStartsWithNull(value, byteOrder)) {
                 throw UnexpectedNullTermination("The element at $index starts with Null Byte in a Null Terminated List")
             }
             add(value)
         }
     }
 }
-internal class ListBinaryBuilder(entry: FlagLayoutEntry, size: Int, isNullTerminated: Boolean, onUnconstrained: () -> Unit) :
+internal class ListBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, size: Int, isNullTerminated: Boolean, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
-        entry.byteOrder,
+        binaryDescriptor.byteOrder,
         MutableList(size) {
-            ItemBinaryBuilder(entry.children.first(), onUnconstrained)
+            ItemBinaryBuilder(binaryDescriptor.children.first(), onUnconstrained)
         },
         isNullTerminated,
     )
 
-internal class MapBinaryBuilder(entry: FlagLayoutEntry, size: Int, isNullTerminated: Boolean, onUnconstrained: () -> Unit) :
+internal class MapBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, size: Int, isNullTerminated: Boolean, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
-        entry.byteOrder,
+        binaryDescriptor.byteOrder,
         MutableList(size * 2) {
             val index = it % 2
-            ItemBinaryBuilder(entry.children[index], onUnconstrained)
+            ItemBinaryBuilder(binaryDescriptor.children[index], onUnconstrained)
         },
         isNullTerminated,
     )

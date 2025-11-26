@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.utils.toHexString
 import kotlinx.serialization.SerializationException
@@ -31,19 +32,19 @@ import kotlin.jvm.JvmInline
 import kotlin.math.ceil
 import kotlin.math.sqrt
 
-data class FlagLayoutEntry(
+data class BluetoothBinaryDescriptor(
     val fieldName: String,
     val fieldIndex: Int,
     val bitIndex: Int,
     val bitWidth: Int,
     val byteOrder: ByteOrder,
     val isNullable: Boolean,
-    val numericSettings: NumericSettings?,
+    val numericSettings: BluetoothBinaryDescriptor.NumericSettings?,
     val stringSettings: StringSettings?,
-    val collectionSettings: CollectionSettings?,
+    val collectionSettings: BluetoothBinaryDescriptor.CollectionSettings?,
     val polymorphicMap: Map<String, Byte>,
     val blockSettings: BlockSettings,
-    val children: List<FlagLayoutEntry>,
+    val children: List<BluetoothBinaryDescriptor>,
 ) {
 
     val flagByteSize = if (children.isNotEmpty()) {
@@ -60,7 +61,7 @@ data class FlagLayoutEntry(
     sealed class NumericSettings {
 
         abstract val supportedLengths: Set<Length>
-        data class Natural(override val supportedLengths: Set<Length>, val signed: Boolean) : NumericSettings() {
+        data class Natural(override val supportedLengths: Set<Length>, val signed: Boolean) : BluetoothBinaryDescriptor.NumericSettings() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
             }
@@ -73,33 +74,33 @@ data class FlagLayoutEntry(
             val decimalExponent: Int,
             val binaryExponent: Int,
             val offset: Int,
-        ) : NumericSettings() {
+        ) : BluetoothBinaryDescriptor.NumericSettings() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
             }
         }
 
-        data class Decimal(override val supportedLengths: Set<Length>) : NumericSettings() {
+        data class Decimal(override val supportedLengths: Set<Length>) : BluetoothBinaryDescriptor.NumericSettings() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
                 require((supportedLengths - setOf(Length.`32_BIT`, Length.`64_BIT`)).isEmpty()) { "Decimal only supports 32 and 64 bit encoding" }
             }
         }
 
-        data class MedFloat(override val supportedLengths: Set<Length>) : NumericSettings() {
+        data class MedFloat(override val supportedLengths: Set<Length>) : BluetoothBinaryDescriptor.NumericSettings() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
                 require((supportedLengths - setOf(Length.`16_BIT`, Length.`32_BIT`)).isEmpty()) { "MedFloat only supports 16 and 32 bit encoding" }
             }
         }
     }
-    data class StringSettings(val encoding: StringEncodingSettings.Encoding, val endMarking: StringEncodingSettings.EndMarking)
+    data class StringSettings(val encoding: Encoding, val endMarking: StringEncodingSettings.EndMarking)
 
     sealed class CollectionSettings {
-        data class LengthPrefix(val endMarking: StringEncodingSettings.LengthPrefix, val nullIfEmpty: Boolean) : CollectionSettings()
-        data object NullMarked : CollectionSettings()
-        data object Unmarked : CollectionSettings()
-        data class NumericLength(val supportedLengths: Set<Length>, val nullIfEmpty: Boolean) : CollectionSettings() {
+        data class LengthPrefix(val endMarking: StringEncodingSettings.LengthPrefix, val nullIfEmpty: Boolean) : BluetoothBinaryDescriptor.CollectionSettings()
+        data object NullMarked : BluetoothBinaryDescriptor.CollectionSettings()
+        data object Unmarked : BluetoothBinaryDescriptor.CollectionSettings()
+        data class NumericLength(val supportedLengths: Set<Length>, val nullIfEmpty: Boolean) : BluetoothBinaryDescriptor.CollectionSettings() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
             }
@@ -114,14 +115,14 @@ value class ByteArrayHolder(val array: ByteArray) {
     override fun toString(): String = array.toHexString(separator = " ")
 }
 
-class FlagLayoutException(message: String) : SerializationException(message)
+class FlagIndexException(message: String) : SerializationException(message)
 class InvalidByteOrderException(message: String) : SerializationException(message)
 
-object FlagLayoutRegistry {
-    private val cache = mutableMapOf<Pair<SerialDescriptor, SerializersModule>, FlagLayoutEntry>()
+internal object BluetoothBinaryDescriptorRegistry {
+    private val cache = mutableMapOf<Pair<SerialDescriptor, SerializersModule>, BluetoothBinaryDescriptor>()
 
-    internal fun flagLayoutEntry(descriptor: SerialDescriptor, module: SerializersModule): FlagLayoutEntry = cache.getOrPut(descriptor to module) {
-        getLayout(
+    internal fun bluetoothBinaryDescriptor(descriptor: SerialDescriptor, module: SerializersModule): BluetoothBinaryDescriptor = cache.getOrPut(descriptor to module) {
+        getDescriptor(
             descriptor,
             descriptor.serialName,
             0,
@@ -134,7 +135,7 @@ object FlagLayoutRegistry {
         }
     }
 
-    private fun getLayout(
+    private fun getDescriptor(
         descriptor: SerialDescriptor,
         fieldName: String,
         fieldIndex: Int,
@@ -144,7 +145,7 @@ object FlagLayoutRegistry {
         preferredByteOrder: ByteOrder,
         serializersModule: SerializersModule,
         reserveIndices: (Set<Int>) -> Unit,
-    ): FlagLayoutEntry = if (descriptor.isInline) {
+    ): BluetoothBinaryDescriptor = if (descriptor.isInline) {
         val inlineDescriptor = descriptor.getElementDescriptor(0)
         val annotations = descriptor.annotations + fieldAnnotations + descriptor.getElementAnnotations(0)
         val actualAnnotations = when (descriptor.serialName) {
@@ -154,7 +155,7 @@ object FlagLayoutRegistry {
             "kotlin.ULong" -> annotations + Unsigned()
             else -> annotations
         }
-        getLayout(
+        getDescriptor(
             inlineDescriptor,
             fieldName,
             fieldIndex,
@@ -219,16 +220,16 @@ object FlagLayoutRegistry {
             -> {
                 desiredWidth += sizingWidth
                 if (annotations.filterIsInstance<MedFloat>().isNotEmpty()) {
-                    FlagLayoutEntry.NumericSettings.MedFloat(supportedLengths)
+                    BluetoothBinaryDescriptor.NumericSettings.MedFloat(supportedLengths)
                 } else if (annotations.filterIsInstance<Scalar>().isNotEmpty()) {
                     val scalar = annotations.filterIsInstance<Scalar>().first()
                     val isSigned = annotations.filterIsInstance<Unsigned>().isEmpty()
-                    FlagLayoutEntry.NumericSettings.Scalar(supportedLengths, isSigned, scalar.multiplier, scalar.decimalExponent, scalar.binaryExponent, scalar.offset)
+                    BluetoothBinaryDescriptor.NumericSettings.Scalar(supportedLengths, isSigned, scalar.multiplier, scalar.decimalExponent, scalar.binaryExponent, scalar.offset)
                 } else if (descriptor.kind == PrimitiveKind.DOUBLE || descriptor.kind == PrimitiveKind.FLOAT) {
-                    FlagLayoutEntry.NumericSettings.Decimal(supportedLengths)
+                    BluetoothBinaryDescriptor.NumericSettings.Decimal(supportedLengths)
                 } else {
                     val isSigned = annotations.filterIsInstance<Unsigned>().isEmpty()
-                    FlagLayoutEntry.NumericSettings.Natural(supportedLengths, isSigned)
+                    BluetoothBinaryDescriptor.NumericSettings.Natural(supportedLengths, isSigned)
                 }
             }
 
@@ -236,25 +237,28 @@ object FlagLayoutRegistry {
         }
         val stringSettings = when (descriptor.kind) {
             PrimitiveKind.STRING -> {
-                val encoding = annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: StringEncodingSettings.Encoding.UTF_8
+                val encoding = annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: Encoding.UTF_8
                 when {
-                    annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.NullTerminated)
+                    annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.NullTerminated)
                     annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
                         val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
-                        FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.LengthPrefix(lengthPrefix.lengthAsShort, lengthPrefix.canOverflow, lengthPrefix.sentinel))
+                        BluetoothBinaryDescriptor.StringSettings(
+                            encoding,
+                            StringEncodingSettings.LengthPrefix(lengthPrefix.lengthAsShort, lengthPrefix.canOverflow, lengthPrefix.sentinel),
+                        )
                     }
 
                     supportedLengths.size == 1 -> {
-                        FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.FixedLength(supportedLengths.first().bytes))
+                        BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.FixedLength(supportedLengths.first().bytes))
                     }
 
-                    annotations.filterIsInstance<Unsized>().isNotEmpty() -> FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.NoMarking)
-                    else -> FlagLayoutEntry.StringSettings(encoding, StringEncodingSettings.LengthPrefix())
+                    annotations.filterIsInstance<Unsized>().isNotEmpty() -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.NoMarking)
+                    else -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.LengthPrefix())
                 }
             }
 
-            PrimitiveKind.CHAR -> FlagLayoutEntry.StringSettings(
-                annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: StringEncodingSettings.Encoding.UTF_8,
+            PrimitiveKind.CHAR -> BluetoothBinaryDescriptor.StringSettings(
+                annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: Encoding.UTF_8,
                 StringEncodingSettings.NoMarking,
             )
 
@@ -266,19 +270,19 @@ object FlagLayoutRegistry {
             is StructureKind.MAP,
             -> {
                 when {
-                    annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> FlagLayoutEntry.CollectionSettings.NullMarked
+                    annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> BluetoothBinaryDescriptor.CollectionSettings.NullMarked
                     annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
                         val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
-                        FlagLayoutEntry.CollectionSettings.LengthPrefix(
+                        BluetoothBinaryDescriptor.CollectionSettings.LengthPrefix(
                             StringEncodingSettings.LengthPrefix(lengthPrefix.lengthAsShort, lengthPrefix.canOverflow, lengthPrefix.sentinel),
                             annotations.filterIsInstance<NullIfEmpty>().isNotEmpty(),
                         )
                     }
 
-                    annotations.filterIsInstance<Unsized>().isNotEmpty() -> FlagLayoutEntry.CollectionSettings.Unmarked
+                    annotations.filterIsInstance<Unsized>().isNotEmpty() -> BluetoothBinaryDescriptor.CollectionSettings.Unmarked
                     else -> {
                         desiredWidth += sizingWidth
-                        FlagLayoutEntry.CollectionSettings.NumericLength(supportedLengths, annotations.filterIsInstance<NullIfEmpty>().isNotEmpty())
+                        BluetoothBinaryDescriptor.CollectionSettings.NumericLength(supportedLengths, annotations.filterIsInstance<NullIfEmpty>().isNotEmpty())
                     }
                 }
             }
@@ -311,7 +315,7 @@ object FlagLayoutRegistry {
             else -> emptyMap()
         }
 
-        val blockSettings = FlagLayoutEntry.BlockSettings(
+        val blockSettings = BluetoothBinaryDescriptor.BlockSettings(
             annotations.filterIsInstance<Prefix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
             annotations.filterIsInstance<Postfix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
             annotations.filterIsInstance<Checksum>().firstOrNull()?.algorithm ?: ChecksumAlgorithm.NONE,
@@ -324,7 +328,7 @@ object FlagLayoutRegistry {
         }
         reserveIndices((0..<width).map { bitIndex + it }.toSet())
 
-        FlagLayoutEntry(
+        BluetoothBinaryDescriptor(
             fieldName,
             fieldIndex,
             bitIndex,
@@ -340,7 +344,7 @@ object FlagLayoutRegistry {
                 PolymorphicKind.OPEN -> {
                     serializersModule.getPolymorphicDescriptors(descriptor).map { optionDescriptor ->
                         val reservedSubIndices = mutableSetOf<Int>()
-                        getLayout(
+                        getDescriptor(
                             optionDescriptor,
                             optionDescriptor.serialName,
                             0,
@@ -351,7 +355,7 @@ object FlagLayoutRegistry {
                             serializersModule,
                         ) { flagIndicesToUse ->
                             if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
-                                throw FlagLayoutException("Flag at index $bitIndex cannot be used for ${optionDescriptor.serialName}. Is already reserved")
+                                throw FlagIndexException("Flag at index $bitIndex cannot be used for ${optionDescriptor.serialName}. Is already reserved")
                             }
                             reservedSubIndices += flagIndicesToUse
                         }
@@ -364,7 +368,7 @@ object FlagLayoutRegistry {
                     val reservedKeySubIndices = mutableSetOf<Int>()
                     val reservedValueSubIndices = mutableSetOf<Int>()
                     listOf(
-                        getLayout(
+                        getDescriptor(
                             keyDescriptor,
                             descriptor.getElementName(0),
                             0,
@@ -375,11 +379,11 @@ object FlagLayoutRegistry {
                             serializersModule,
                         ) { flagIndicesToUse ->
                             if (flagIndicesToUse.intersect(reservedKeySubIndices).isNotEmpty()) {
-                                throw FlagLayoutException("Flags at index $flagIndicesToUse cannot be used for ${keyDescriptor.serialName}. Is already reserved")
+                                throw FlagIndexException("Flags at index $flagIndicesToUse cannot be used for ${keyDescriptor.serialName}. Is already reserved")
                             }
                             reservedKeySubIndices += flagIndicesToUse
                         },
-                        getLayout(
+                        getDescriptor(
                             valueDescriptor,
                             descriptor.getElementName(1),
                             1,
@@ -390,7 +394,7 @@ object FlagLayoutRegistry {
                             serializersModule,
                         ) { flagIndicesToUse ->
                             if (flagIndicesToUse.intersect(reservedValueSubIndices).isNotEmpty()) {
-                                throw FlagLayoutException("Flags at index $flagIndicesToUse cannot be used for ${valueDescriptor.serialName}. Is already reserved")
+                                throw FlagIndexException("Flags at index $flagIndicesToUse cannot be used for ${valueDescriptor.serialName}. Is already reserved")
                             }
                             reservedValueSubIndices += flagIndicesToUse
                         },
@@ -400,7 +404,7 @@ object FlagLayoutRegistry {
                     val itemDescriptor = descriptor.getElementDescriptor(0)
                     val reservedSubIndices = mutableSetOf<Int>()
                     listOf(
-                        getLayout(
+                        getDescriptor(
                             itemDescriptor,
                             descriptor.getElementName(0),
                             0,
@@ -411,7 +415,7 @@ object FlagLayoutRegistry {
                             serializersModule,
                         ) { flagIndicesToUse ->
                             if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
-                                throw FlagLayoutException("Flags at index $flagIndicesToUse cannot be used for ${itemDescriptor.serialName}. Is already reserved")
+                                throw FlagIndexException("Flags at index $flagIndicesToUse cannot be used for ${itemDescriptor.serialName}. Is already reserved")
                             }
                             reservedSubIndices += flagIndicesToUse
                         },
@@ -424,10 +428,19 @@ object FlagLayoutRegistry {
                         val elementName = descriptor.getElementName(i)
                         val elementAnnotations = descriptor.getElementAnnotations(i)
                         val elementDescriptor = descriptor.getElementDescriptor(i)
-                        getLayout(elementDescriptor, elementName, i, elementAnnotations, elementDescriptor.isNullable, nextBit, byteOrder, serializersModule) { flagIndicesToUse ->
+                        getDescriptor(
+                            elementDescriptor,
+                            elementName,
+                            i,
+                            elementAnnotations,
+                            elementDescriptor.isNullable,
+                            nextBit,
+                            byteOrder,
+                            serializersModule,
+                        ) { flagIndicesToUse ->
                             if (descriptor.kind !is StructureKind.MAP) {
                                 if (flagIndicesToUse.intersect(reservedSubIndices).isNotEmpty()) {
-                                    throw FlagLayoutException("Flag at index $bitIndex cannot be used for $elementName. Is already reserved")
+                                    throw FlagIndexException("Flag at index $bitIndex cannot be used for $elementName. Is already reserved")
                                 }
                                 reservedSubIndices += flagIndicesToUse
                                 while (nextBit in reservedSubIndices) {

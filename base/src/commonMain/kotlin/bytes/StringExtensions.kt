@@ -17,25 +17,21 @@
 
 package com.splendo.kaluga.base.bytes
 
-data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix(), val encoding: Encoding = Encoding.UTF_8) {
+import com.splendo.kaluga.base.bytes.Encoding.ASCII
+import com.splendo.kaluga.base.bytes.Encoding.UTF_16
+import com.splendo.kaluga.base.bytes.Encoding.UTF_8
 
-    enum class Encoding {
-        UTF_8,
-        UTF_16,
-        ASCII,
-        ;
-
-        fun encodeString(string: String, byteOrder: ByteOrder) = when (this) {
-            UTF_8 -> string.encodeToByteArray().let {
-                when (byteOrder) {
-                    ByteOrder.MOST_SIGNIFICANT_FIRST -> it.reversedArray()
-                    ByteOrder.LEAST_SIGNIFICANT_FIRST -> it
-                }
-            }
-            UTF_16 -> string.toUTF16(byteOrder)
-            ASCII -> string.toAscii(byteOrder)
+fun Encoding.encodeString(string: String, byteOrder: ByteOrder) = when (this) {
+    UTF_8 -> string.encodeToByteArray().let {
+        when (byteOrder) {
+            ByteOrder.MOST_SIGNIFICANT_FIRST -> it.reversedArray()
+            ByteOrder.LEAST_SIGNIFICANT_FIRST -> it
         }
     }
+    UTF_16 -> string.toUTF16(byteOrder)
+    ASCII -> string.toAscii(byteOrder)
+}
+data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix(), val encoding: Encoding = Encoding.UTF_8) {
 
     sealed class EndMarking
 
@@ -62,7 +58,7 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix(), v
 fun String.toByteArray(settings: StringEncodingSettings, order: ByteOrder): ByteArray = when (val endMarking = settings.endMarking) {
     is StringEncodingSettings.LengthPrefix -> {
         val encodedString = settings.encoding.encodeString(this, order)
-        val encodedSize = endMarking.encodeSize(encodedString.size.toUInt(), order)
+        val encodedSize = endMarking.encodeSize((encodedString.size / settings.encoding.byteSize).toUInt(), order)
         when (order) {
             ByteOrder.MOST_SIGNIFICANT_FIRST -> encodedString + encodedSize
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedSize + encodedString
@@ -70,20 +66,25 @@ fun String.toByteArray(settings: StringEncodingSettings, order: ByteOrder): Byte
     }
     is StringEncodingSettings.NullTerminated -> {
         require(!contains('\u0000')) { "Null terminated string cannot contain null character" }
-        settings.encoding.encodeString(this + '\u0000', order)
+        val encodedString = settings.encoding.encodeString(this, order)
+        when (order) {
+            ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArrayOf(0x00.toByte()) + encodedString
+            ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedString + 0x00.toByte()
+        }
     }
     is StringEncodingSettings.NoMarking -> settings.encoding.encodeString(this, order)
     is StringEncodingSettings.FixedLength -> {
         val encodedString = settings.encoding.encodeString(this, order)
-        if (encodedString.size < endMarking.length) {
+        if (encodedString.size < settings.encoding.byteSize * endMarking.length) {
+            val extraBytes = ByteArray(settings.encoding.byteSize * endMarking.length - encodedString.size)
             when (order) {
-                ByteOrder.MOST_SIGNIFICANT_FIRST -> ByteArray(endMarking.length - encodedString.size) + encodedString
-                ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedString + ByteArray(endMarking.length - encodedString.size)
+                ByteOrder.MOST_SIGNIFICANT_FIRST -> extraBytes + encodedString
+                ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedString + extraBytes
             }
         } else {
             when (order) {
-                ByteOrder.MOST_SIGNIFICANT_FIRST -> encodedString.takeLast(endMarking.length).toByteArray()
-                ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedString.take(endMarking.length).toByteArray()
+                ByteOrder.MOST_SIGNIFICANT_FIRST -> encodedString.takeLast(settings.encoding.byteSize * endMarking.length).toByteArray()
+                ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedString.take(settings.encoding.byteSize * endMarking.length).toByteArray()
             }
         }
     }
@@ -94,15 +95,15 @@ fun String.toUTF16(byteOrder: ByteOrder): ByteArray {
     val result = ByteArray(byteLength)
 
     forEachIndexed { index, character ->
-        val code = character.code
+        val utf16Char = character.toUTF16(byteOrder)
         when (byteOrder) {
             ByteOrder.MOST_SIGNIFICANT_FIRST -> {
-                result[byteLength - index * 2 - 1] = ((code shr 8) and 0xFF).toByte()
-                result[byteLength - index * 2 - 2] = (code and 0xFF).toByte()
+                result[byteLength - index * 2 - 1] = utf16Char[1]
+                result[byteLength - index * 2 - 2] = utf16Char[0]
             }
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
-                result[index] = (code and 0xFF).toByte()
-                result[index + 1] = ((code shr 8) and 0xFF).toByte()
+                result[index * 2] = utf16Char[0]
+                result[index * 2 + 1] = utf16Char[1]
             }
         }
     }
@@ -112,17 +113,12 @@ fun String.toUTF16(byteOrder: ByteOrder): ByteArray {
 fun String.toAscii(byteOrder: ByteOrder): ByteArray {
     val result = ByteArray(this.length)
     forEachIndexed { index, character ->
-        val code = character.code
         val index = when (byteOrder) {
             ByteOrder.MOST_SIGNIFICANT_FIRST -> length - index - 1
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> index
         }
 
-        if (code > 0x7F) {
-            throw IllegalArgumentException("Non-ASCII character: '$character' (0x${code.toString(16)})")
-        } else {
-            result[index] = code.toByte()
-        }
+        result[index] = character.toAscii()
     }
     return result
 }
@@ -131,4 +127,84 @@ fun String.toAsciiOrNull(byteOrder: ByteOrder): ByteArray? = try {
     toAscii(byteOrder)
 } catch (_: IllegalArgumentException) {
     null
+}
+
+fun ByteArray.decodeString(settings: StringEncodingSettings, order: ByteOrder) = when (order) {
+    ByteOrder.MOST_SIGNIFICANT_FIRST -> reversedArray()
+    ByteOrder.LEAST_SIGNIFICANT_FIRST -> this
+}.asSequence().constrainOnce().decodeString(settings)
+
+private sealed class LengthPrefixDecodingState {
+
+    data class Ready(val current: Byte, val knownLength: KnownLength) : LengthPrefixDecodingState()
+    sealed class NotReady : LengthPrefixDecodingState()
+    data class KnownLength(val length: Int, val offset: Int) : NotReady()
+    class UnknownLength(val prefix: ByteArray) : NotReady()
+}
+fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
+    val terminatingSequence = when (val endMarking = settings.endMarking) {
+        is StringEncodingSettings.LengthPrefix -> {
+            runningFold<Byte, LengthPrefixDecodingState>(LengthPrefixDecodingState.UnknownLength(byteArrayOf())) { state, byte ->
+                when (state) {
+                    is LengthPrefixDecodingState.Ready -> state.copy(current = byte)
+                    is LengthPrefixDecodingState.KnownLength -> LengthPrefixDecodingState.Ready(byte, state)
+                    is LengthPrefixDecodingState.UnknownLength -> {
+                        when {
+                            endMarking.lengthAsShort && !state.prefix.isEmpty() -> {
+                                LengthPrefixDecodingState.KnownLength(
+                                    (state.prefix + byte).decodeUShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt(),
+                                    2,
+                                )
+                            }
+                            endMarking.lengthAsShort -> LengthPrefixDecodingState.UnknownLength(state.prefix + byte)
+                            endMarking.canOverflow && state.prefix.size == 2 ->
+                                LengthPrefixDecodingState.KnownLength(
+                                    byteArrayOf(state.prefix[0], byte).decodeUShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt(),
+                                    3,
+                                )
+                            endMarking.canOverflow && state.prefix.size == 1 -> LengthPrefixDecodingState.UnknownLength(state.prefix + byte)
+                            endMarking.canOverflow && byte == endMarking.sentinel -> LengthPrefixDecodingState.UnknownLength(byteArrayOf(byte))
+                            else -> LengthPrefixDecodingState.KnownLength(
+                                byte.toUByte().toInt(),
+                                1,
+                            )
+                        }
+                    }
+                }
+            }.withIndex().takeWhile { (index, state) ->
+                when (state) {
+                    is LengthPrefixDecodingState.Ready -> index <= (settings.encoding.byteSize * state.knownLength.length) + state.knownLength.offset
+                    is LengthPrefixDecodingState.NotReady -> true
+                }
+            }.mapNotNull { (_, state) ->
+                when (state) {
+                    is LengthPrefixDecodingState.Ready -> state.current
+                    is LengthPrefixDecodingState.NotReady -> null
+                }
+            }
+        }
+        is StringEncodingSettings.FixedLength -> {
+            take(settings.encoding.byteSize * endMarking.length)
+        }
+        is StringEncodingSettings.NullTerminated -> {
+            withIndex().takeWhile { (index, byte) -> index % 2 != 0 || byte != 0x00.toByte() }.map { (_, byte) -> byte }
+        }
+        is StringEncodingSettings.NoMarking -> {
+            this
+        }
+    }
+    var result = ""
+    val iterator = terminatingSequence.iterator()
+    while (iterator.hasNext()) {
+        result += when (settings.encoding) {
+            UTF_8 -> iterator.next().decodeUTF8Char()
+            UTF_16 -> listOf(iterator.next(), iterator.next()).toByteArray().decodeUTF16Char(0, ByteOrder.LEAST_SIGNIFICANT_FIRST)
+            ASCII -> iterator.next().decodeAsciiChar()
+        }
+    }
+    return if (settings.endMarking is StringEncodingSettings.FixedLength) {
+        result.dropLastWhile { it == 0x00.toChar() }
+    } else {
+        result
+    }
 }

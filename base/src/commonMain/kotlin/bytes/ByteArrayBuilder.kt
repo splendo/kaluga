@@ -43,7 +43,7 @@ interface ByteArrayBuilder {
     fun add(medFloat32: MedFloat32)
     fun add(flag: Boolean)
     fun add(bytes: ByteArray)
-    fun add(char: Char, encoding: StringEncodingSettings.Encoding = StringEncodingSettings.Encoding.UTF_8, order: ByteOrder = byteOrder)
+    fun add(char: Char, encoding: Encoding = Encoding.UTF_8, order: ByteOrder = byteOrder)
     fun add(string: String, settings: StringEncodingSettings = StringEncodingSettings(), order: ByteOrder = byteOrder)
 }
 
@@ -126,7 +126,7 @@ private class ByteArrayBuilderImpl(override val byteOrder: ByteOrder) : ByteArra
         add(string.toByteArray(settings, order))
     }
 
-    override fun add(char: Char, encoding: StringEncodingSettings.Encoding, order: ByteOrder) {
+    override fun add(char: Char, encoding: Encoding, order: ByteOrder) {
         add(char.toString(), StringEncodingSettings(StringEncodingSettings.NoMarking, encoding), order)
     }
 
