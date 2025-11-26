@@ -70,7 +70,10 @@ internal class BluetoothBinaryDecoder(
 
     override fun decodeDouble(): Double = binaryDescriptor.decodeDoubleElement(decoder)
 
-    override fun decodeEnum(enumDescriptor: SerialDescriptor): Int = if ((0 until enumDescriptor.elementsCount).all { enumDescriptor.getElementAnnotations(it).filterIsInstance<SerializedByteValue>().isNotEmpty() }) {
+    override fun decodeEnum(enumDescriptor: SerialDescriptor): Int = if ((0 until enumDescriptor.elementsCount).all {
+            enumDescriptor.getElementAnnotations(it).filterIsInstance<SerializedByteValue>().isNotEmpty()
+        }
+    ) {
         val byteValue = decoder.nextBytes(1).first()
         (0 until enumDescriptor.elementsCount).first { index ->
             enumDescriptor.getElementAnnotations(index).filterIsInstance<SerializedByteValue>().first().value == byteValue
@@ -81,7 +84,7 @@ internal class BluetoothBinaryDecoder(
             decoder.peekNextIs(encodedName)
         }.also {
             decoder.nextBytes(
-                enumDescriptor.getElementName(it).toByteArray(StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), binaryDescriptor.byteOrder).size
+                enumDescriptor.getElementName(it).toByteArray(StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), binaryDescriptor.byteOrder).size,
             )
         }
     }
@@ -111,11 +114,8 @@ private sealed class BluetoothBinaryCompositeDecoder(
     override val serializersModule: SerializersModule,
 ) : CompositeDecoder {
 
-    class Class(
-        binaryDescriptor: BluetoothBinaryDescriptor,
-        decoder: BluetoothBinaryDescriptorDecoder,
-        serializersModule: SerializersModule,
-    ) : BluetoothBinaryCompositeDecoder(binaryDescriptor, decoder, serializersModule) {
+    class Class(binaryDescriptor: BluetoothBinaryDescriptor, decoder: BluetoothBinaryDescriptorDecoder, serializersModule: SerializersModule) :
+        BluetoothBinaryCompositeDecoder(binaryDescriptor, decoder, serializersModule) {
 
         var currentIndex = 0
 
@@ -146,12 +146,7 @@ private sealed class BluetoothBinaryCompositeDecoder(
     override fun decodeLongElement(descriptor: SerialDescriptor, index: Int): Long = binaryDescriptorAtIndex(index).decodeLongElement(decoder)
 
     @ExperimentalSerializationApi
-    override fun <T : Any> decodeNullableSerializableElement(
-        descriptor: SerialDescriptor,
-        index: Int,
-        deserializer: DeserializationStrategy<T?>,
-        previousValue: T?,
-    ): T? {
+    override fun <T : Any> decodeNullableSerializableElement(descriptor: SerialDescriptor, index: Int, deserializer: DeserializationStrategy<T?>, previousValue: T?): T? {
         val binaryDescriptor = binaryDescriptorAtIndex(index)
         return if (decoder.flags[binaryDescriptor.bitIndex]) {
             decodeSerializableElement(descriptor, index, deserializer, previousValue)
@@ -160,12 +155,7 @@ private sealed class BluetoothBinaryCompositeDecoder(
         }
     }
 
-    override fun <T> decodeSerializableElement(
-        descriptor: SerialDescriptor,
-        index: Int,
-        deserializer: DeserializationStrategy<T>,
-        previousValue: T?,
-    ): T = when (descriptor.kind) {
+    override fun <T> decodeSerializableElement(descriptor: SerialDescriptor, index: Int, deserializer: DeserializationStrategy<T>, previousValue: T?): T = when (descriptor.kind) {
         is PolymorphicKind.SEALED -> {
             val binaryDescriptor = binaryDescriptorAtIndex(index).children.first { binaryDescriptor ->
                 binaryDescriptor.fieldName == deserializer.descriptor.serialName
@@ -181,9 +171,7 @@ private sealed class BluetoothBinaryCompositeDecoder(
         }
     }
 
-
     override fun decodeShortElement(descriptor: SerialDescriptor, index: Int): Short = binaryDescriptorAtIndex(index).decodeShortElement(decoder)
-
 
     override fun decodeStringElement(descriptor: SerialDescriptor, index: Int): String = if (descriptor.kind is PolymorphicKind && index == 0) {
         TODO()
@@ -196,7 +184,6 @@ private sealed class BluetoothBinaryCompositeDecoder(
     }
 }
 
-
 internal fun BluetoothBinaryDescriptor.decodeBoolean(decoder: BluetoothBinaryDescriptorDecoder): Boolean {
     val offset = if (isNullable) 1 else 0
     return if (bitIndex >= 0 && bitWidth > offset) {
@@ -206,122 +193,170 @@ internal fun BluetoothBinaryDescriptor.decodeBoolean(decoder: BluetoothBinaryDes
     }
 }
 
-internal fun BluetoothBinaryDescriptor.decodeNumericElement(decoder: BluetoothBinaryDescriptorDecoder, settings: BluetoothBinaryDescriptor.NumericSettings): Number =
+internal fun BluetoothBinaryDescriptor.decodeNaturalNumericElement(decoder: BluetoothBinaryDescriptorDecoder, settings: BluetoothBinaryDescriptor.NumericSettings.Natural): Long {
+    val supportedLengths = settings.supportedLengths.toList()
+    val expectedLength = when (supportedLengths.size) {
+        0 -> throw IllegalArgumentException("Size should be set")
+        1 -> supportedLengths.first()
+        else -> {
+            val offset = if (isNullable) 1 else 0
+            val lengthIndex = (0..<bitWidth - offset).fold(0) { acc, index ->
+                if (decoder.flags[bitIndex + index + offset]) 2.0.pow(index).toInt() + acc else acc
+            }
+            supportedLengths[lengthIndex]
+        }
+    }
+    val bytes = decoder.nextBytes(expectedLength.bytes)
+    return when (expectedLength) {
+        Length.`8_BIT` -> if (settings.signed) bytes[0].toLong() else bytes[0].toUByte().toUShort().toShort().toLong()
+        Length.`16_BIT` -> if (settings.signed) bytes.decodeShort(0, byteOrder).toLong() else bytes.decodeUShort(0, byteOrder).toUInt().toLong()
+        Length.`24_BIT` -> if (settings.signed) bytes.decodeInt24(0, byteOrder).value.toLong() else bytes.decodeUInt24(0, byteOrder).value.toULong().toLong()
+        Length.`32_BIT` -> if (settings.signed) bytes.decodeInt(0, byteOrder).toLong() else bytes.decodeUInt(0, byteOrder).toULong().toLong()
+        Length.`64_BIT` -> if (settings.signed) bytes.decodeLong(0, byteOrder) else bytes.decodeULong(0, byteOrder).toLong()
+    }
+}
+
+internal fun BluetoothBinaryDescriptor.decodeScalarNumericElement(decoder: BluetoothBinaryDescriptorDecoder, settings: BluetoothBinaryDescriptor.NumericSettings.Scalar): Double {
+    val decoded = decodeNaturalNumericElement(decoder, BluetoothBinaryDescriptor.NumericSettings.Natural(settings.supportedLengths, settings.signed))
+    val double = if (settings.signed) {
+        decoded.toDouble()
+    } else {
+        decoded.toULong().toDouble()
+    }
+    return (double - settings.offset) / (settings.multiplier * 10.0.pow(settings.decimalExponent) * 2.0.pow(settings.binaryExponent))
+}
+
+internal fun BluetoothBinaryDescriptor.decodeDecimalNumericElement(decoder: BluetoothBinaryDescriptorDecoder, settings: BluetoothBinaryDescriptor.NumericSettings.Decimal): Double {
+    val lengthToDecode = if (settings.supportedLengths.size > 1) {
+        val flagIndex = bitIndex + if (isNullable) 1 else 0
+        if (decoder.flags[flagIndex]) {
+            Length.`64_BIT`
+        } else {
+            Length.`32_BIT`
+        }
+    } else {
+        settings.supportedLengths.first()
+    }
+    val bytes = decoder.nextBytes(lengthToDecode.bytes)
+    return when (lengthToDecode) {
+        Length.`32_BIT` -> bytes.decodeFloat(0, byteOrder).toDouble()
+        Length.`64_BIT` -> bytes.decodeDouble(0, byteOrder)
+        else -> throw IllegalArgumentException("Decimal only supports 16 and 32 bit decoding")
+    }
+}
+
+internal fun BluetoothBinaryDescriptor.decodeMedFloatNumericElement(
+    decoder: BluetoothBinaryDescriptorDecoder,
+    settings: BluetoothBinaryDescriptor.NumericSettings.MedFloat,
+): Double {
+    val lengthToDecode = if (settings.supportedLengths.size > 1) {
+        val flagIndex = bitIndex + if (isNullable) 1 else 0
+        if (decoder.flags[flagIndex]) {
+            Length.`32_BIT`
+        } else {
+            Length.`16_BIT`
+        }
+    } else {
+        settings.supportedLengths.first()
+    }
+    val bytes = decoder.nextBytes(lengthToDecode.bytes)
+    return when (lengthToDecode) {
+        Length.`16_BIT` -> bytes.decodeMedFloat16(0).value
+        Length.`32_BIT` -> bytes.decodeMedFloat32(0).value
+        else -> throw IllegalArgumentException("MedFloat only supports 16 and 32 bit decoding")
+    }
+}
+
+internal fun BluetoothBinaryDescriptor.numericSettingsOrNaturalDefault(defaultLength: Length) =
+    numericSettings ?: BluetoothBinaryDescriptor.NumericSettings.Natural(setOf(defaultLength), false)
+internal fun BluetoothBinaryDescriptor.numericSettingsOrDecimalDefault(defaultLength: Length) =
+    numericSettings ?: BluetoothBinaryDescriptor.NumericSettings.Decimal(setOf(defaultLength))
+
+internal fun BluetoothBinaryDescriptor.decodeByteElement(decoder: BluetoothBinaryDescriptorDecoder) = numericSettingsOrNaturalDefault(Length.`8_BIT`).let { settings ->
     when (settings) {
-        is BluetoothBinaryDescriptor.NumericSettings.Natural -> {
-            val supportedLengths = settings.supportedLengths.toList()
-            val expectedLength = when (supportedLengths.size) {
-                0 -> throw IllegalArgumentException("Size should be set")
-                1 -> supportedLengths.first()
-                else -> {
-                    val offset = if (isNullable) 1 else 0
-                    val lengthIndex = (0..<bitWidth - offset).fold(0) { acc, index ->
-                        if (decoder.flags[bitIndex + index + offset]) 2.0.pow(index).toInt() + acc else acc
-                    }
-                    supportedLengths[lengthIndex]
-                }
-            }
-            val bytes = decoder.nextBytes(expectedLength.bytes)
-            when (expectedLength) {
-                Length.`8_BIT` -> if (settings.signed) bytes[0] else bytes[0].toUByte().toUShort().toShort()
-                Length.`16_BIT` -> if (settings.signed) bytes.decodeShort(0, byteOrder) else bytes.decodeUShort(0, byteOrder).toUInt().toInt()
-                Length.`24_BIT` -> if (settings.signed) bytes.decodeInt24(0, byteOrder).value else bytes.decodeUInt24(0, byteOrder).value.toULong().toLong()
-                Length.`32_BIT` -> if (settings.signed) bytes.decodeInt(0, byteOrder) else bytes.decodeUInt(0, byteOrder).toULong().toLong()
-                Length.`64_BIT` -> if (settings.signed) bytes.decodeLong(0, byteOrder) else bytes.decodeULong(0, byteOrder).toLong()
-            }
+        is BluetoothBinaryDescriptor.NumericSettings.Natural -> if (settings.signed) {
+            decodeNaturalNumericElement(decoder, settings).toByte()
+        } else {
+            decodeNaturalNumericElement(decoder, settings).toULong().toUInt().toByte()
         }
-        is BluetoothBinaryDescriptor.NumericSettings.Scalar -> {
-            val decoded = decodeNumericElement(decoder, BluetoothBinaryDescriptor.NumericSettings.Natural(settings.supportedLengths, settings.signed))
-            val double = if (settings.signed) {
-                decoded.toDouble()
-            } else {
-                decoded.toLong().toULong().toDouble()
-            }
-            (double - settings.offset) / (settings.multiplier * 10.0.pow(settings.decimalExponent) * 2.0.pow(settings.binaryExponent))
-        }
-        is BluetoothBinaryDescriptor.NumericSettings.Decimal -> {
-            val lengthToDecode = if (settings.supportedLengths.size > 1) {
-                val flagIndex = bitIndex + if (isNullable) 1 else 0
-                if (decoder.flags[flagIndex]) {
-                    Length.`64_BIT`
-                } else {
-                    Length.`32_BIT`
-                }
-            } else {
-                settings.supportedLengths.first()
-            }
-            val bytes = decoder.nextBytes(lengthToDecode.bytes)
-            when (lengthToDecode) {
-                Length.`32_BIT` -> bytes.decodeFloat(0, byteOrder)
-                Length.`64_BIT` -> bytes.decodeDouble(0, byteOrder)
-                else -> throw IllegalArgumentException("Decimal only supports 16 and 32 bit decoding")
-            }
-        }
-        is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> {
-            val lengthToDecode = if (settings.supportedLengths.size > 1) {
-                val flagIndex = bitIndex + if (isNullable) 1 else 0
-                if (decoder.flags[flagIndex]) {
-                    Length.`32_BIT`
-                } else {
-                    Length.`16_BIT`
-                }
-            } else {
-                settings.supportedLengths.first()
-            }
-            val bytes = decoder.nextBytes(lengthToDecode.bytes)
-            when (lengthToDecode) {
-                Length.`16_BIT` -> bytes.decodeMedFloat16(0).value
-                Length.`32_BIT` -> bytes.decodeMedFloat32(0).value
-                else -> throw IllegalArgumentException("MedFloat only supports 16 and 32 bit decoding")
-            }
-        }
+        is BluetoothBinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toInt().toByte()
+        is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt().toByte()
+        is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt().toByte()
     }
+}
 
-internal fun BluetoothBinaryDescriptor.decodeByteElement(decoder: BluetoothBinaryDescriptorDecoder) =
-    decodeNumericElement(decoder, numericSettings ?: BluetoothBinaryDescriptor.NumericSettings.Natural(setOf(Length.`8_BIT`), false)).toByte()
-
-internal fun BluetoothBinaryDescriptor.decodeShortElement(decoder: BluetoothBinaryDescriptorDecoder) = decodeNumericElement(
-    decoder,
-    numericSettings ?: BluetoothBinaryDescriptor.NumericSettings.Natural(setOf(Length.`16_BIT`), false),
-).toLong().coerceIn(Short.MIN_VALUE.toLong(), Short.MAX_VALUE.toLong()).toShort()
-
-internal fun BluetoothBinaryDescriptor.decodeIntElement(decoder: BluetoothBinaryDescriptorDecoder) = decodeNumericElement(
-    decoder,
-    numericSettings ?: BluetoothBinaryDescriptor.NumericSettings.Natural(setOf(Length.`32_BIT`), false),
-).toLong().coerceIn(Int.MIN_VALUE.toLong(), Int.MAX_VALUE.toLong()).toInt()
-
-internal fun BluetoothBinaryDescriptor.decodeLongElement(decoder: BluetoothBinaryDescriptorDecoder) = decodeNumericElement(
-    decoder,
-    numericSettings ?: BluetoothBinaryDescriptor.NumericSettings.Natural(setOf(Length.`64_BIT`), false),
-).toLong()
-
-internal fun BluetoothBinaryDescriptor.decodeFloatElement(decoder: BluetoothBinaryDescriptorDecoder) = decodeNumericElement(
-    decoder,
-    numericSettings ?: BluetoothBinaryDescriptor.NumericSettings.Decimal(setOf(Length.`32_BIT`)),
-).toFloat()
-
-internal fun BluetoothBinaryDescriptor.decodeDoubleElement(decoder: BluetoothBinaryDescriptorDecoder) = decodeNumericElement(
-    decoder,
-    numericSettings ?: BluetoothBinaryDescriptor.NumericSettings.Decimal(setOf(Length.`64_BIT`)),
-).toDouble()
-
-internal fun BluetoothBinaryDescriptor.decodeCharElement(decoder: BluetoothBinaryDescriptorDecoder): Char =
-    when (stringSettings?.encoding ?: Encoding.UTF_8) {
-        Encoding.UTF_8 -> decoder.nextBytes(1).first().decodeUTF8Char()
-        Encoding.UTF_16 -> decoder.nextBytes(2).decodeUTF16Char(0, byteOrder)
-        Encoding.ASCII -> decoder.nextBytes(1).first().decodeAsciiChar()
+internal fun BluetoothBinaryDescriptor.decodeShortElement(decoder: BluetoothBinaryDescriptorDecoder) = numericSettingsOrNaturalDefault(Length.`16_BIT`).let { settings ->
+    when (settings) {
+        is BluetoothBinaryDescriptor.NumericSettings.Natural -> if (settings.signed) {
+            decodeNaturalNumericElement(decoder, settings).toShort()
+        } else {
+            decodeNaturalNumericElement(decoder, settings).toULong().toUShort().toShort()
+        }
+        is BluetoothBinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toInt().toShort()
+        is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt().toShort()
+        is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt().toShort()
     }
+}
+
+internal fun BluetoothBinaryDescriptor.decodeIntElement(decoder: BluetoothBinaryDescriptorDecoder) = numericSettingsOrNaturalDefault(Length.`32_BIT`).let { settings ->
+    when (settings) {
+        is BluetoothBinaryDescriptor.NumericSettings.Natural -> if (settings.signed) {
+            decodeNaturalNumericElement(decoder, settings).toInt()
+        } else {
+            decodeNaturalNumericElement(decoder, settings).toULong().toUInt().toInt()
+        }
+        is BluetoothBinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toInt()
+        is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toInt()
+        is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toInt()
+    }
+}
+
+internal fun BluetoothBinaryDescriptor.decodeLongElement(decoder: BluetoothBinaryDescriptorDecoder) = numericSettingsOrNaturalDefault(Length.`64_BIT`).let { settings ->
+    when (settings) {
+        is BluetoothBinaryDescriptor.NumericSettings.Natural -> decodeNaturalNumericElement(decoder, settings)
+        is BluetoothBinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toLong()
+        is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toLong()
+        is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toLong()
+    }
+}
+
+internal fun BluetoothBinaryDescriptor.decodeFloatElement(decoder: BluetoothBinaryDescriptorDecoder) = numericSettingsOrDecimalDefault(Length.`32_BIT`).let { settings ->
+    when (settings) {
+        is BluetoothBinaryDescriptor.NumericSettings.Natural -> decodeNaturalNumericElement(decoder, settings).toDouble().toFloat()
+        is BluetoothBinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings).toFloat()
+        is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings).toFloat()
+        is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings).toFloat()
+    }
+}
+
+internal fun BluetoothBinaryDescriptor.decodeDoubleElement(decoder: BluetoothBinaryDescriptorDecoder) = numericSettingsOrDecimalDefault(Length.`64_BIT`).let { settings ->
+    when (settings) {
+        is BluetoothBinaryDescriptor.NumericSettings.Natural -> decodeNaturalNumericElement(decoder, settings).toDouble()
+        is BluetoothBinaryDescriptor.NumericSettings.Scalar -> decodeScalarNumericElement(decoder, settings)
+        is BluetoothBinaryDescriptor.NumericSettings.Decimal -> decodeDecimalNumericElement(decoder, settings)
+        is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> decodeMedFloatNumericElement(decoder, settings)
+    }
+}
+
+internal fun BluetoothBinaryDescriptor.decodeCharElement(decoder: BluetoothBinaryDescriptorDecoder): Char = when (stringSettings?.encoding ?: Encoding.UTF_8) {
+    Encoding.UTF_8 -> decoder.nextBytes(1).first().decodeUTF8Char()
+    Encoding.UTF_16 -> decoder.nextBytes(2).decodeUTF16Char(0, byteOrder)
+    Encoding.ASCII -> decoder.nextBytes(1).first().decodeAsciiChar()
+}
 
 internal fun BluetoothBinaryDescriptor.decodeStringElement(decoder: BluetoothBinaryDescriptorDecoder): String {
     val settings = stringSettings?.let {
         StringEncodingSettings(it.endMarking, it.encoding)
     } ?: StringEncodingSettings(StringEncodingSettings.LengthPrefix(), Encoding.UTF_8)
-    val stringSequence = generateSequence {
+    val next = {
         if (!decoder.isEmpty()) {
             decoder.nextBytes(1)[0]
         } else {
             null
         }
+    }
+    val stringSequence = generateSequence(next) {
+        next()
     }
     return stringSequence.decodeString(settings)
 }

@@ -33,11 +33,12 @@ fun ByteArray.decodeMedFloat16(octetIndex: Int): MedFloat16 {
     // Extract fields
     val mantissa = (raw and 0x0FFF).let { mantissa ->
         if (mantissa and 0x800 != 0) {
-            mantissa or 0xFFFF0000.toInt()
+            mantissa or 0xFFFFF000.toInt()
         } else {
             mantissa
         }
     }
+
     val exponent = ((raw shr 12) and 0x0F).let { exponent ->
         if (exponent and 0x08 != 0) {
             exponent or 0xFFFFFFF0.toInt()

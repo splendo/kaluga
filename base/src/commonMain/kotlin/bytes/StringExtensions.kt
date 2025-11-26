@@ -129,59 +129,31 @@ fun String.toAsciiOrNull(byteOrder: ByteOrder): ByteArray? = try {
     null
 }
 
-fun ByteArray.decodeString(settings: StringEncodingSettings, order: ByteOrder) = when (order) {
-    ByteOrder.MOST_SIGNIFICANT_FIRST -> reversedArray()
-    ByteOrder.LEAST_SIGNIFICANT_FIRST -> this
-}.asSequence().constrainOnce().decodeString(settings)
-
-private sealed class LengthPrefixDecodingState {
-
-    data class Ready(val current: Byte, val knownLength: KnownLength) : LengthPrefixDecodingState()
-    sealed class NotReady : LengthPrefixDecodingState()
-    data class KnownLength(val length: Int, val offset: Int) : NotReady()
-    class UnknownLength(val prefix: ByteArray) : NotReady()
+fun ByteArray.decodeString(settings: StringEncodingSettings, order: ByteOrder): String {
+    val array = when (order) {
+        ByteOrder.MOST_SIGNIFICANT_FIRST -> reversedArray()
+        ByteOrder.LEAST_SIGNIFICANT_FIRST -> this
+    }
+    var index = 0
+    val next = { array.getOrNull(index++) }
+    return generateSequence(next, { next() }).decodeString(settings)
 }
 fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
     val terminatingSequence = when (val endMarking = settings.endMarking) {
         is StringEncodingSettings.LengthPrefix -> {
-            runningFold<Byte, LengthPrefixDecodingState>(LengthPrefixDecodingState.UnknownLength(byteArrayOf())) { state, byte ->
-                when (state) {
-                    is LengthPrefixDecodingState.Ready -> state.copy(current = byte)
-                    is LengthPrefixDecodingState.KnownLength -> LengthPrefixDecodingState.Ready(byte, state)
-                    is LengthPrefixDecodingState.UnknownLength -> {
-                        when {
-                            endMarking.lengthAsShort && !state.prefix.isEmpty() -> {
-                                LengthPrefixDecodingState.KnownLength(
-                                    (state.prefix + byte).decodeUShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt(),
-                                    2,
-                                )
-                            }
-                            endMarking.lengthAsShort -> LengthPrefixDecodingState.UnknownLength(state.prefix + byte)
-                            endMarking.canOverflow && state.prefix.size == 2 ->
-                                LengthPrefixDecodingState.KnownLength(
-                                    byteArrayOf(state.prefix[0], byte).decodeUShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt(),
-                                    3,
-                                )
-                            endMarking.canOverflow && state.prefix.size == 1 -> LengthPrefixDecodingState.UnknownLength(state.prefix + byte)
-                            endMarking.canOverflow && byte == endMarking.sentinel -> LengthPrefixDecodingState.UnknownLength(byteArrayOf(byte))
-                            else -> LengthPrefixDecodingState.KnownLength(
-                                byte.toUByte().toInt(),
-                                1,
-                            )
-                        }
+            val length = when {
+                endMarking.lengthAsShort -> take(2).toList().toByteArray().decodeUShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
+                endMarking.canOverflow -> {
+                    val first = take(1).first()
+                    if (first == endMarking.sentinel) {
+                        take(2).toList().toByteArray().decodeUShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
+                    } else {
+                        first
                     }
                 }
-            }.withIndex().takeWhile { (index, state) ->
-                when (state) {
-                    is LengthPrefixDecodingState.Ready -> index <= (settings.encoding.byteSize * state.knownLength.length) + state.knownLength.offset
-                    is LengthPrefixDecodingState.NotReady -> true
-                }
-            }.mapNotNull { (_, state) ->
-                when (state) {
-                    is LengthPrefixDecodingState.Ready -> state.current
-                    is LengthPrefixDecodingState.NotReady -> null
-                }
+                else -> take(1).first()
             }
+            take(settings.encoding.byteSize * length.toInt())
         }
         is StringEncodingSettings.FixedLength -> {
             take(settings.encoding.byteSize * endMarking.length)

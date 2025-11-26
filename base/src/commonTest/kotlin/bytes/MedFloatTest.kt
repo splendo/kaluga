@@ -19,9 +19,11 @@ package bytes
 
 import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.decodeMedFloat16
+import com.splendo.kaluga.base.bytes.decodeMedFloat32
 import com.splendo.kaluga.base.bytes.toByteArray
 import com.splendo.kaluga.base.utils.MedFloat16
-import kotlin.math.pow
+import com.splendo.kaluga.base.utils.MedFloat32
+import com.splendo.kaluga.base.utils.toInt24
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -30,9 +32,32 @@ class MedFloatTest {
 
     @Test
     fun medFloat16() {
-        val byteValue = MedFloat16(123400000.0).toByteArray()
+        assertMedFloat16(123400000.0, byteArrayOf(0xD2.toByte(), 0x54))
+        assertMedFloat16(-123400000.0, byteArrayOf(0x2E.toByte(), 0x5B))
+        assertMedFloat16(0.25, byteArrayOf(0x19, 0xE0.toByte()))
+        assertMedFloat16(-0.25, byteArrayOf(0xE7.toByte(), 0xEF.toByte()))
+    }
 
-        assertContentEquals((5 * 2.0.pow(12).toInt() + 1234).toUShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST), byteValue)
-        assertEquals(MedFloat16(123400000.0), byteValue.decodeMedFloat16(0))
+    @Test
+    fun medFloat32() {
+        assertMedFloat32(123400000.0, 1234000, 2)
+        assertMedFloat32(-123400000.0, -1234000, 2)
+        assertMedFloat32(0.25, 25, -2)
+        assertMedFloat32(-0.25, -25, -2)
+    }
+
+    private fun assertMedFloat16(value: Double, expected: ByteArray) {
+        val byteValue = MedFloat16(value).toByteArray()
+
+        assertContentEquals(expected, byteValue)
+        assertEquals(MedFloat16(value), byteValue.decodeMedFloat16(0))
+    }
+
+    private fun assertMedFloat32(value: Double, expectedMantissa: Int, expectedExponent: Byte) {
+        val byteValue = MedFloat32(value).toByteArray()
+
+        val expected = expectedMantissa.toInt24().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) + expectedExponent
+        assertContentEquals(expected, byteValue)
+        assertEquals(MedFloat32(value), byteValue.decodeMedFloat32(0))
     }
 }

@@ -103,61 +103,61 @@ class ByteUtilsTest {
             42L,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeLong(0, order) },
-            byteArrayOf(0x2A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+            byteArrayOf(0x2A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00),
         )
         assertEncodeDecode(
             500L,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeLong(0, order) },
-            byteArrayOf(0xF4.toByte(), 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+            byteArrayOf(0xF4.toByte(), 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00),
         )
         assertEncodeDecode(
             80000L,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeLong(0, order) },
-            byteArrayOf(0x80.toByte(), 0x38, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00)
+            byteArrayOf(0x80.toByte(), 0x38, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00),
         )
         assertEncodeDecode(
             150000000L,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeLong(0, order) },
-            byteArrayOf(0x80.toByte(), 0xD1.toByte(), 0xF0.toByte(), 0x08, 0x00, 0x00, 0x00, 0x00)
+            byteArrayOf(0x80.toByte(), 0xD1.toByte(), 0xF0.toByte(), 0x08, 0x00, 0x00, 0x00, 0x00),
         )
         assertEncodeDecode(
             876543210000000000L,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeLong(0, order) },
-            byteArrayOf(0x00.toByte(), 0xA4.toByte(), 0x54.toByte(), 0xC6.toByte(), 0x67, 0x1B, 0x2A, 0x0C)
+            byteArrayOf(0x00.toByte(), 0xA4.toByte(), 0x54.toByte(), 0xC6.toByte(), 0x67, 0x1B, 0x2A, 0x0C),
         )
         assertEncodeDecode(
             -42L,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeLong(0, order) },
-            byteArrayOf(0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte())
+            byteArrayOf(0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             -500L,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeLong(0, order) },
-            byteArrayOf(0x0C.toByte(), 0xFE.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte())
+            byteArrayOf(0x0C.toByte(), 0xFE.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             -80000L,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeLong(0, order) },
-            byteArrayOf(0x80.toByte(), 0xC7.toByte(), 0xFE.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte())
+            byteArrayOf(0x80.toByte(), 0xC7.toByte(), 0xFE.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             -150000000L,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeLong(0, order) },
-            byteArrayOf(0x80.toByte(), 0x2E.toByte(), 0x0F.toByte(), 0xF7.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte())
+            byteArrayOf(0x80.toByte(), 0x2E.toByte(), 0x0F.toByte(), 0xF7.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             -876543210000000000L,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeLong(0, order) },
-            byteArrayOf(0x00, 0x5C.toByte(), 0xAB.toByte(), 0x39.toByte(), 0x98.toByte(), 0xE4.toByte(), 0xD5.toByte(), 0xF3.toByte())
+            byteArrayOf(0x00, 0x5C.toByte(), 0xAB.toByte(), 0x39.toByte(), 0x98.toByte(), 0xE4.toByte(), 0xD5.toByte(), 0xF3.toByte()),
         )
     }
 
@@ -167,61 +167,61 @@ class ByteUtilsTest {
             42UL,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeULong(0, order) },
-            byteArrayOf(0x2A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+            byteArrayOf(0x2A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00),
         )
         assertEncodeDecode(
             500UL,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeULong(0, order) },
-            byteArrayOf(0xF4.toByte(), 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+            byteArrayOf(0xF4.toByte(), 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00),
         )
         assertEncodeDecode(
             80000UL,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeULong(0, order) },
-            byteArrayOf(0x80.toByte(), 0x38, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00)
+            byteArrayOf(0x80.toByte(), 0x38, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00),
         )
         assertEncodeDecode(
             150000000UL,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeULong(0, order) },
-            byteArrayOf(0x80.toByte(), 0xD1.toByte(), 0xF0.toByte(), 0x08, 0x00, 0x00, 0x00, 0x00)
+            byteArrayOf(0x80.toByte(), 0xD1.toByte(), 0xF0.toByte(), 0x08, 0x00, 0x00, 0x00, 0x00),
         )
         assertEncodeDecode(
             876543210000000000UL,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeULong(0, order) },
-            byteArrayOf(0x00.toByte(), 0xA4.toByte(), 0x54.toByte(), 0xC6.toByte(), 0x67, 0x1B, 0x2A, 0x0C)
+            byteArrayOf(0x00.toByte(), 0xA4.toByte(), 0x54.toByte(), 0xC6.toByte(), 0x67, 0x1B, 0x2A, 0x0C),
         )
         assertEncodeDecode(
             (-42L).toULong(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeULong(0, order) },
-            byteArrayOf(0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte())
+            byteArrayOf(0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             (-500L).toULong(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeULong(0, order) },
-            byteArrayOf(0x0C.toByte(), 0xFE.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte())
+            byteArrayOf(0x0C.toByte(), 0xFE.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             (-80000L).toULong(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeULong(0, order) },
-            byteArrayOf(0x80.toByte(), 0xC7.toByte(), 0xFE.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte())
+            byteArrayOf(0x80.toByte(), 0xC7.toByte(), 0xFE.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             (-150000000L).toULong(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeULong(0, order) },
-            byteArrayOf(0x80.toByte(), 0x2E.toByte(), 0x0F.toByte(), 0xF7.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte())
+            byteArrayOf(0x80.toByte(), 0x2E.toByte(), 0x0F.toByte(), 0xF7.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             (-876543210000000000L).toULong(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeULong(0, order) },
-            byteArrayOf(0x00, 0x5C.toByte(), 0xAB.toByte(), 0x39.toByte(), 0x98.toByte(), 0xE4.toByte(), 0xD5.toByte(), 0xF3.toByte())
+            byteArrayOf(0x00, 0x5C.toByte(), 0xAB.toByte(), 0x39.toByte(), 0x98.toByte(), 0xE4.toByte(), 0xD5.toByte(), 0xF3.toByte()),
         )
     }
 
@@ -231,49 +231,49 @@ class ByteUtilsTest {
             42,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeInt(0, order) },
-            byteArrayOf(0x2A, 0x00, 0x00, 0x00)
+            byteArrayOf(0x2A, 0x00, 0x00, 0x00),
         )
         assertEncodeDecode(
             500,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeInt(0, order) },
-            byteArrayOf(0xF4.toByte(), 0x01, 0x00, 0x00)
+            byteArrayOf(0xF4.toByte(), 0x01, 0x00, 0x00),
         )
         assertEncodeDecode(
             80000,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeInt(0, order) },
-            byteArrayOf(0x80.toByte(), 0x38, 0x01, 0x00)
+            byteArrayOf(0x80.toByte(), 0x38, 0x01, 0x00),
         )
         assertEncodeDecode(
             150000000,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeInt(0, order) },
-            byteArrayOf(0x80.toByte(), 0xD1.toByte(), 0xF0.toByte(), 0x08)
+            byteArrayOf(0x80.toByte(), 0xD1.toByte(), 0xF0.toByte(), 0x08),
         )
         assertEncodeDecode(
             -42,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeInt(0, order) },
-            byteArrayOf(0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte())
+            byteArrayOf(0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             -500,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeInt(0, order) },
-            byteArrayOf(0x0C.toByte(), 0xFE.toByte(), 0xFF.toByte(), 0xFF.toByte())
+            byteArrayOf(0x0C.toByte(), 0xFE.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             -80000,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeInt(0, order) },
-            byteArrayOf(0x80.toByte(), 0xC7.toByte(), 0xFE.toByte(), 0xFF.toByte())
+            byteArrayOf(0x80.toByte(), 0xC7.toByte(), 0xFE.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             -150000000,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeInt(0, order) },
-            byteArrayOf(0x80.toByte(), 0x2E.toByte(), 0x0F.toByte(), 0xF7.toByte())
+            byteArrayOf(0x80.toByte(), 0x2E.toByte(), 0x0F.toByte(), 0xF7.toByte()),
         )
     }
 
@@ -283,49 +283,49 @@ class ByteUtilsTest {
             42U,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt(0, order) },
-            byteArrayOf(0x2A, 0x00, 0x00, 0x00)
+            byteArrayOf(0x2A, 0x00, 0x00, 0x00),
         )
         assertEncodeDecode(
             500U,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt(0, order) },
-            byteArrayOf(0xF4.toByte(), 0x01, 0x00, 0x00)
+            byteArrayOf(0xF4.toByte(), 0x01, 0x00, 0x00),
         )
         assertEncodeDecode(
             80000U,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt(0, order) },
-            byteArrayOf(0x80.toByte(), 0x38, 0x01, 0x00)
+            byteArrayOf(0x80.toByte(), 0x38, 0x01, 0x00),
         )
         assertEncodeDecode(
             150000000U,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt(0, order) },
-            byteArrayOf(0x80.toByte(), 0xD1.toByte(), 0xF0.toByte(), 0x08)
+            byteArrayOf(0x80.toByte(), 0xD1.toByte(), 0xF0.toByte(), 0x08),
         )
         assertEncodeDecode(
             (-42).toUInt(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt(0, order) },
-            byteArrayOf(0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte())
+            byteArrayOf(0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             (-500).toUInt(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt(0, order) },
-            byteArrayOf(0x0C.toByte(), 0xFE.toByte(), 0xFF.toByte(), 0xFF.toByte())
+            byteArrayOf(0x0C.toByte(), 0xFE.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             (-80000).toUInt(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt(0, order) },
-            byteArrayOf(0x80.toByte(), 0xC7.toByte(), 0xFE.toByte(), 0xFF.toByte())
+            byteArrayOf(0x80.toByte(), 0xC7.toByte(), 0xFE.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             (-150000000).toUInt(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt(0, order) },
-            byteArrayOf(0x80.toByte(), 0x2E.toByte(), 0x0F.toByte(), 0xF7.toByte())
+            byteArrayOf(0x80.toByte(), 0x2E.toByte(), 0x0F.toByte(), 0xF7.toByte()),
         )
     }
 
@@ -335,37 +335,37 @@ class ByteUtilsTest {
             42.toInt24(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeInt24(0, order) },
-            byteArrayOf(0x2A, 0x00, 0x00)
+            byteArrayOf(0x2A, 0x00, 0x00),
         )
         assertEncodeDecode(
             500.toInt24(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeInt24(0, order) },
-            byteArrayOf(0xF4.toByte(), 0x01, 0x00)
+            byteArrayOf(0xF4.toByte(), 0x01, 0x00),
         )
         assertEncodeDecode(
             80000.toInt24(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeInt24(0, order) },
-            byteArrayOf(0x80.toByte(), 0x38, 0x01)
+            byteArrayOf(0x80.toByte(), 0x38, 0x01),
         )
         assertEncodeDecode(
             (-42).toInt24(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeInt24(0, order) },
-            byteArrayOf(0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte())
+            byteArrayOf(0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             (-500).toInt24(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeInt24(0, order) },
-            byteArrayOf(0x0C.toByte(), 0xFE.toByte(), 0xFF.toByte())
+            byteArrayOf(0x0C.toByte(), 0xFE.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             (-80000).toInt24(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeInt24(0, order) },
-            byteArrayOf(0x80.toByte(), 0xC7.toByte(), 0xFE.toByte())
+            byteArrayOf(0x80.toByte(), 0xC7.toByte(), 0xFE.toByte()),
         )
     }
 
@@ -375,37 +375,37 @@ class ByteUtilsTest {
             42U.toUInt24(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt24(0, order) },
-            byteArrayOf(0x2A, 0x00, 0x00)
+            byteArrayOf(0x2A, 0x00, 0x00),
         )
         assertEncodeDecode(
             500U.toUInt24(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt24(0, order) },
-            byteArrayOf(0xF4.toByte(), 0x01, 0x00)
+            byteArrayOf(0xF4.toByte(), 0x01, 0x00),
         )
         assertEncodeDecode(
             80000U.toUInt24(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt24(0, order) },
-            byteArrayOf(0x80.toByte(), 0x38, 0x01)
+            byteArrayOf(0x80.toByte(), 0x38, 0x01),
         )
         assertEncodeDecode(
             (-42).toUInt().toUInt24(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt24(0, order) },
-            byteArrayOf(0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte())
+            byteArrayOf(0xD6.toByte(), 0xFF.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             (-500).toUInt().toUInt24(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt24(0, order) },
-            byteArrayOf(0x0C.toByte(), 0xFE.toByte(), 0xFF.toByte())
+            byteArrayOf(0x0C.toByte(), 0xFE.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             (-80000).toUInt().toUInt24(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUInt24(0, order) },
-            byteArrayOf(0x80.toByte(), 0xC7.toByte(), 0xFE.toByte())
+            byteArrayOf(0x80.toByte(), 0xC7.toByte(), 0xFE.toByte()),
         )
     }
 
@@ -415,25 +415,25 @@ class ByteUtilsTest {
             42.toShort(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeShort(0, order) },
-            byteArrayOf(0x2A, 0x00)
+            byteArrayOf(0x2A, 0x00),
         )
         assertEncodeDecode(
             500.toShort(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeShort(0, order) },
-            byteArrayOf(0xF4.toByte(), 0x01)
+            byteArrayOf(0xF4.toByte(), 0x01),
         )
         assertEncodeDecode(
             (-42).toShort(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeShort(0, order) },
-            byteArrayOf(0xD6.toByte(), 0xFF.toByte())
+            byteArrayOf(0xD6.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             (-500).toShort(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeShort(0, order) },
-            byteArrayOf(0x0C.toByte(), 0xFE.toByte())
+            byteArrayOf(0x0C.toByte(), 0xFE.toByte()),
         )
     }
 
@@ -443,34 +443,29 @@ class ByteUtilsTest {
             42U,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUShort(0, order) },
-            byteArrayOf(0x2A, 0x00)
+            byteArrayOf(0x2A, 0x00),
         )
         assertEncodeDecode(
             500U,
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUShort(0, order) },
-            byteArrayOf(0xF4.toByte(), 0x01)
+            byteArrayOf(0xF4.toByte(), 0x01),
         )
         assertEncodeDecode(
             (-42).toShort().toUShort(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUShort(0, order) },
-            byteArrayOf(0xD6.toByte(), 0xFF.toByte())
+            byteArrayOf(0xD6.toByte(), 0xFF.toByte()),
         )
         assertEncodeDecode(
             (-500).toShort().toUShort(),
             { value, order -> value.toByteArray(order) },
             { value, order -> value.decodeUShort(0, order) },
-            byteArrayOf(0x0C.toByte(), 0xFE.toByte())
+            byteArrayOf(0x0C.toByte(), 0xFE.toByte()),
         )
     }
 
-    private fun <T> assertEncodeDecode(
-        value: T,
-        encode: (T, ByteOrder) -> ByteArray,
-        decode: (ByteArray, ByteOrder) -> T,
-        expected: ByteArray
-    ) {
+    private fun <T> assertEncodeDecode(value: T, encode: (T, ByteOrder) -> ByteArray, decode: (ByteArray, ByteOrder) -> T, expected: ByteArray) {
         assertContentEquals(expected, encode(value, ByteOrder.LEAST_SIGNIFICANT_FIRST))
         assertEquals(value, decode(expected, ByteOrder.LEAST_SIGNIFICANT_FIRST))
         assertContentEquals(expected.reversed().toByteArray(), encode(value, ByteOrder.MOST_SIGNIFICANT_FIRST))

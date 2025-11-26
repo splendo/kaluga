@@ -49,16 +49,14 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
 
     override fun isEmpty(): Boolean = !hasAtLeast(1)
 
-    override fun peekNextIs(value: ByteArray): Boolean {
-        return if (hasAtLeast(value.size)) {
-            val start = if (bitOffset > 0) offset + 1 else offset
-            when (byteOrder) {
-                ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(byteArray.size - start - value.size - 1, byteArray.size - start)
-                ByteOrder.LEAST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(start, start + value.size)
-            }.contentEquals(value)
-        } else {
-            false
-        }
+    override fun peekNextIs(value: ByteArray): Boolean = if (hasAtLeast(value.size)) {
+        val start = if (bitOffset > 0) offset + 1 else offset
+        when (byteOrder) {
+            ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(byteArray.size - start - value.size - 1, byteArray.size - start)
+            ByteOrder.LEAST_SIGNIFICANT_FIRST -> byteArray.copyOfRange(start, start + value.size)
+        }.contentEquals(value)
+    } else {
+        false
     }
 
     override fun isNextBitSet(): Boolean {
@@ -91,7 +89,7 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
     private fun consumeBit() {
         if (bitOffset > 0) {
             bitOffset = 0
-            nextBytes(0)
+            nextBytes(1)
         }
     }
 
@@ -129,9 +127,9 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
         }
     }
 
-    fun hasAtLeast(bytes: Int): Boolean{
+    fun hasAtLeast(bytes: Int): Boolean {
         val start = if (bitOffset > 0) offset + 1 else offset
-        return  (start < byteArray.size - bytes)
+        return (start <= byteArray.size - bytes)
     }
 }
 
@@ -145,7 +143,7 @@ internal class StructureBluetoothBinaryDescriptorDecoder(
 
     private val footerSize = parentFooterSize + (descriptor.blockSettings.postfix?.array?.size ?: 0)
 
-    override fun isEmpty(): Boolean = rootDecoder.hasAtLeast(footerSize)
+    override fun isEmpty(): Boolean = !rootDecoder.hasAtLeast(footerSize + 1)
 
     override fun peekNextIs(value: ByteArray): Boolean = rootDecoder.peekNextIs(value)
     override fun isNextBitSet(): Boolean = rootDecoder.isNextBitSet()
