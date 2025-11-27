@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.RemoteAttribute
 import com.splendo.kaluga.bluetooth.RemoteCharacteristic
 import com.splendo.kaluga.bluetooth.RemoteDescriptor
@@ -29,8 +30,7 @@ import com.splendo.kaluga.bluetooth.filterDiscovering
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.getOrNull
 import com.splendo.kaluga.bluetooth.includedServices
-import com.splendo.kaluga.bluetooth.GattResponse
-import com.splendo.kaluga.bluetooth.services
+import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
 import com.splendo.kaluga.bluetooth.startDiscovering
 import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.bluetooth.value
@@ -45,6 +45,8 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.SerializationStrategy
 import kotlin.jvm.JvmName
 
 sealed interface RequiresServicesDiscoveredBinding<T, TransFormation> {
@@ -105,6 +107,14 @@ interface RemoteAttributeBinding<T> {
             UnitReadBuilder.NonMutating(this).apply(unitBuilder)
         })
 
+    fun <Response> Channel<Unit>.consumeToTriggerRead(
+        deserializationStrategy: DeserializationStrategy<Response>,
+        bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        unitBuilder: UnitReadBuilder.NonMutating<T, Response>.() -> Unit,
+    ) = consumeToTriggerRead({
+        bluetoothFormat.decodeFromByteArray(deserializationStrategy, this)
+    }, unitBuilder)
+
     fun <Trigger> Channel<Trigger>.consumeToTriggerRead(builder: ReadBuilder.NonMutating<T, Trigger, ByteArray>.() -> Unit) =
         consumeToTriggerRead(asValue = { this }, builder = builder)
 
@@ -121,6 +131,14 @@ interface RemoteAttributeBinding<T> {
             UnitReadBuilder.NonMutating(this).apply(unitBuilder)
         })
 
+    fun <Response> Flow<Unit>.collectToTriggerRead(
+        deserializationStrategy: DeserializationStrategy<Response>,
+        bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        unitBuilder: UnitReadBuilder.NonMutating<T, Response>.() -> Unit,
+    ) = collectToTriggerRead({
+        bluetoothFormat.decodeFromByteArray(deserializationStrategy, this)
+    }, unitBuilder)
+
     fun <Trigger> Flow<Trigger>.collectToTriggerRead(builder: ReadBuilder.NonMutating<T, Trigger, ByteArray>.() -> Unit) =
         collectToTriggerRead(asValue = { this }, builder = builder)
 
@@ -131,9 +149,21 @@ interface RemoteAttributeBinding<T> {
 
     fun <Data> Channel<Data>.consumeToTriggerWrite(asByte: Data.() -> ByteArray, builder: WriteBuilder.NonMutating<T, Data>.() -> Unit)
 
+    fun <Data> Channel<Data>.consumeToTriggerWrite(
+        serializationStrategy: SerializationStrategy<Data>,
+        bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        builder: WriteBuilder.NonMutating<T, Data>.() -> Unit,
+    ) = consumeToTriggerWrite({ bluetoothFormat.encodeToByteArray(serializationStrategy, this) }, builder)
+
     fun Channel<ByteArray>.consumeToTriggerWrite(builder: WriteBuilder.NonMutating<T, ByteArray>.() -> Unit) = consumeToTriggerWrite({ this }, builder)
 
     fun <Data> Flow<Data>.collectToTriggerWrite(asByte: Data.() -> ByteArray, builder: WriteBuilder.NonMutating<T, Data>.() -> Unit)
+
+    fun <Data> Flow<Data>.collectToTriggerWrite(
+        serializationStrategy: SerializationStrategy<Data>,
+        bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        builder: WriteBuilder.NonMutating<T, Data>.() -> Unit,
+    ) = collectToTriggerWrite({ bluetoothFormat.encodeToByteArray(serializationStrategy, this) }, builder)
 
     fun Flow<ByteArray>.collectToTriggerWrite(builder: WriteBuilder.NonMutating<T, ByteArray>.() -> Unit) = collectToTriggerWrite({ this }, builder)
 }
@@ -254,6 +284,8 @@ sealed interface RemoteCharacteristicBinding<T> : RemoteAttributeBinding<T> {
     }
 
     fun <R> observe(asValue: ByteArray.() -> R, builder: ObserveBuilder.NonMutating<T, R>.() -> Unit)
+    fun <R> observe(deserializationStrategy: DeserializationStrategy<R>, bluetoothFormat: BluetoothFormat = BluetoothFormat, builder: ObserveBuilder.NonMutating<T, R>.() -> Unit) =
+        observe({ bluetoothFormat.decodeFromByteArray(deserializationStrategy, this) }, builder)
     fun observe(builder: ObserveBuilder.NonMutating<T, ByteArray>.() -> Unit) = observe(asValue = { this }, builder = builder)
 }
 interface RemoteDescriptorBinding<T> : RemoteAttributeBinding<T> {

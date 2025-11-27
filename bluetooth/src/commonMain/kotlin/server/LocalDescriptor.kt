@@ -20,13 +20,72 @@ package com.splendo.kaluga.bluetooth.server
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.SerializationStrategy
 
 class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characteristic: LocalCharacteristic) : Descriptor {
 
     interface DSL {
         fun readable(encrypted: Boolean = false, onRead: suspend LocalDescriptor.(ConnectedDevice, Int) -> GattResponse.ReadResponse)
 
+        fun readableAlwaysSuccess(encrypted: Boolean = false, onRead: suspend LocalDescriptor.(ConnectedDevice, Int) -> ByteArray) {
+            readable(encrypted) { device, offset ->
+                GattResponse.ReadSuccess(onRead(this, device, offset))
+            }
+        }
+
+        fun <T> readableAlwaysSuccess(
+            encrypted: Boolean = false,
+            onRead: suspend LocalDescriptor.(ConnectedDevice) -> T,
+            serializationStrategy: SerializationStrategy<T>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        ) {
+            readableAlwaysSuccess(encrypted) { device, offset ->
+                bluetoothFormat.encodeToByteArray(
+                    serializationStrategy,
+                    onRead(device),
+                ).drop(offset).toByteArray()
+            }
+        }
         fun writable(encrypted: Boolean = false, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse)
+
+        fun writableAlwaysSuccess(encrypted: Boolean = false, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> Unit) {
+            writable(encrypted) { device, value, offset ->
+                onWrite(device, value, offset)
+                GattResponse.WriteSuccess
+            }
+        }
+
+        fun <T> writableAlwaysSuccess(
+            encrypted: Boolean = false,
+            onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> Unit,
+            serializationStrategy: DeserializationStrategy<T>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        ) {
+            val cache = mutableMapOf<ConnectedDevice, ByteArray>()
+            writableAlwaysSuccess(encrypted) { device, value, offset ->
+                val currentCache = cache[device] ?: byteArrayOf()
+                val valueToDeserialize = when (offset) {
+                    0 -> {
+                        cache.remove(device)
+                        value
+                    }
+                    currentCache.size -> {
+                        currentCache + value
+                    }
+                    else -> null
+                }
+                valueToDeserialize?.let {
+                    try {
+                        onWrite(device, bluetoothFormat.decodeFromByteArray(serializationStrategy, it))
+                    } catch (e: SerializationException) {
+                        cache[device] = valueToDeserialize
+                    }
+                }
+            }
+        }
     }
 
     enum class Permissions {

@@ -23,6 +23,7 @@ import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
 import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Notifiable
 import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Static
 import com.splendo.kaluga.bluetooth.uuidFrom
@@ -45,6 +46,9 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.SerializationStrategy
 
 internal typealias Notify = suspend (characteristic: Notifiable, device: ConnectedDevice, value: ByteArray) -> Boolean
 internal typealias BuildDescriptor = (
@@ -55,11 +59,27 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
 
     interface DSL {
         fun readable(encrypted: Boolean = false, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse)
+
         fun readableAlwaysSuccess(encrypted: Boolean = false, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> ByteArray) {
             readable(encrypted) { device, offset ->
                 GattResponse.ReadSuccess(onRead(this, device, offset))
             }
         }
+
+        fun <T> readableAlwaysSuccess(
+            encrypted: Boolean = false,
+            onRead: suspend LocalCharacteristic.(ConnectedDevice) -> T,
+            serializationStrategy: SerializationStrategy<T>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        ) {
+            readableAlwaysSuccess(encrypted) { device, offset ->
+                bluetoothFormat.encodeToByteArray(
+                    serializationStrategy,
+                    onRead(device),
+                ).drop(offset).toByteArray()
+            }
+        }
+
         fun writable(
             properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
             encrypted: Boolean = false,
@@ -74,6 +94,36 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             writable(properties, encrypted) { device, value, offset ->
                 onWrite(device, value, offset)
                 GattResponse.WriteSuccess
+            }
+        }
+
+        fun <T> writableAlwaysSuccess(
+            properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
+            encrypted: Boolean = false,
+            onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> Unit,
+            serializationStrategy: DeserializationStrategy<T>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        ) {
+            val cache = mutableMapOf<ConnectedDevice, ByteArray>()
+            writableAlwaysSuccess(properties, encrypted) { device, value, offset ->
+                val currentCache = cache[device] ?: byteArrayOf()
+                val valueToDeserialize = when (offset) {
+                    0 -> {
+                        cache.remove(device)
+                        value
+                    }
+                    currentCache.size -> {
+                        currentCache + value
+                    }
+                    else -> null
+                }
+                valueToDeserialize?.let {
+                    try {
+                        onWrite(device, bluetoothFormat.decodeFromByteArray(serializationStrategy, it))
+                    } catch (e: SerializationException) {
+                        cache[device] = valueToDeserialize
+                    }
+                }
             }
         }
 
@@ -100,6 +150,23 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             val sharedFlow = shareIn(scope, started, replay)
             sharedFlow.collectAsNotification(scope, properties, encrypted, toByteArray)
         }
+
+        fun <T> Flow<T>.collectAsNotification(
+            scope: CoroutineScope,
+            started: SharingStarted,
+            replay: Int = 0,
+            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+            encrypted: Boolean = false,
+            serializationStrategy: SerializationStrategy<T>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        ) = collectAsNotification(
+            scope,
+            started,
+            replay,
+            properties,
+            encrypted,
+            { bluetoothFormat.encodeToByteArray(serializationStrategy, this) },
+        )
 
         fun Flow<ByteArray>.collectAsNotification(
             scope: CoroutineScope,
@@ -131,6 +198,19 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
                 },
             )
         }
+
+        fun <T> SharedFlow<T>.collectAsNotification(
+            scope: CoroutineScope,
+            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+            encrypted: Boolean = false,
+            serializationStrategy: SerializationStrategy<T>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        ) = collectAsNotification(
+            scope,
+            properties,
+            encrypted,
+            { bluetoothFormat.encodeToByteArray(serializationStrategy, this) },
+        )
 
         fun SharedFlow<ByteArray>.collectAsNotification(
             scope: CoroutineScope,
@@ -165,6 +245,19 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             )
         }
 
+        fun <T> StateFlow<T>.collectAsNotification(
+            scope: CoroutineScope,
+            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+            encrypted: Boolean = false,
+            serializationStrategy: SerializationStrategy<T>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        ) = collectAsNotification(
+            scope,
+            properties,
+            encrypted,
+            { bluetoothFormat.encodeToByteArray(serializationStrategy, this) },
+        )
+
         fun StateFlow<ByteArray>.collectAsNotification(
             scope: CoroutineScope,
             properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
@@ -194,6 +287,19 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
                 onUnsubscribe = {},
             )
         }
+
+        fun <T> ReceiveChannel<T>.consumeAsNotification(
+            scope: CoroutineScope,
+            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+            encrypted: Boolean = false,
+            serializationStrategy: SerializationStrategy<T>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        ) = consumeAsNotification(
+            scope,
+            properties,
+            encrypted,
+            { bluetoothFormat.encodeToByteArray(serializationStrategy, this) },
+        )
 
         fun ReceiveChannel<ByteArray>.consumeAsNotification(
             scope: CoroutineScope,
