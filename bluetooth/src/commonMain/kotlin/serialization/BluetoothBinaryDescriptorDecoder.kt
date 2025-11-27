@@ -149,7 +149,9 @@ internal class StructureBluetoothBinaryDescriptorDecoder(
     override fun isNextBitSet(): Boolean = rootDecoder.isNextBitSet()
     override fun nextBytes(size: Int): ByteArray = rootDecoder.nextBytes(size)
 
-    override fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor): BluetoothBinaryDescriptorDecoder = rootDecoder.beginStructure(binaryDescriptor, footerSize)
+    override fun beginStructure(
+        binaryDescriptor: BluetoothBinaryDescriptor
+    ): BluetoothBinaryDescriptorDecoder = rootDecoder.beginStructure(binaryDescriptor, footerSize)
     override fun endStructure() {
         when (descriptor.blockSettings.checksumAlgorithm) {
             ChecksumAlgorithm.NONE -> {}

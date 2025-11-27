@@ -94,19 +94,19 @@ class BluetoothFormatTest {
         validateEncoding(true, byteArrayOf(0x01))
         validateEncoding(false, byteArrayOf(0x00))
 
-        // @Serializable
-        // data class Container(
-        //     val fieldValue: Boolean,
-        //     @FlagIndex(0)
-        //     val flagValue: Boolean,
-        //     val nullableValue: Boolean?,
-        //     val inlineValue: ValueContainer<Boolean>,
-        //     val inlineNullableValue: ValueContainer<Boolean>?,
-        // )
-        //
-        // validateEncoding(Container(false, flagValue = true, nullableValue = null, ValueContainer(true), null), byteArrayOf(0b10001))
-        // validateEncoding(Container(true, flagValue = false, nullableValue = false, ValueContainer(false), ValueContainer(true)), byteArrayOf(0b1001110))
-        // validateEncoding(Container(true, flagValue = true, nullableValue = true, ValueContainer(true), ValueContainer(true)), byteArrayOf(0b1111111))
+        @Serializable
+        data class Container(
+            val fieldValue: Boolean,
+            @FlagIndex(0)
+            val flagValue: Boolean,
+            val nullableValue: Boolean?,
+            val inlineValue: ValueContainer<Boolean>,
+            val inlineNullableValue: ValueContainer<Boolean>?,
+        )
+
+        validateEncoding(Container(false, flagValue = true, nullableValue = null, ValueContainer(true), null), byteArrayOf(0b10001))
+        validateEncoding(Container(true, flagValue = false, nullableValue = false, ValueContainer(false), ValueContainer(true)), byteArrayOf(0b1001110))
+        validateEncoding(Container(true, flagValue = true, nullableValue = true, ValueContainer(true), ValueContainer(true)), byteArrayOf(0b1111111))
     }
 
     @Test

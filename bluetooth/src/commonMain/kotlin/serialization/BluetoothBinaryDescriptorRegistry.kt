@@ -20,11 +20,13 @@ package com.splendo.kaluga.bluetooth.serialization
 import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
+import com.splendo.kaluga.base.bytes.toByteArray
 import com.splendo.kaluga.base.utils.toHexString
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.PolymorphicKind
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.SerialKind
 import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.descriptors.getPolymorphicDescriptors
 import kotlinx.serialization.modules.SerializersModule
@@ -39,10 +41,11 @@ data class BluetoothBinaryDescriptor(
     val bitWidth: Int,
     val byteOrder: ByteOrder,
     val isNullable: Boolean,
-    val numericSettings: BluetoothBinaryDescriptor.NumericSettings?,
+    val numericSettings: NumericSettings?,
     val stringSettings: StringSettings?,
-    val collectionSettings: BluetoothBinaryDescriptor.CollectionSettings?,
-    val polymorphicMap: Map<String, Byte>,
+    val collectionSettings: CollectionSettings?,
+    val enumMap: Map<Int, ByteArrayHolder>,
+    val polymorphicMap: Map<String, ByteArrayHolder>,
     val blockSettings: BlockSettings,
     val children: List<BluetoothBinaryDescriptor>,
 ) {
@@ -96,11 +99,16 @@ data class BluetoothBinaryDescriptor(
     }
     data class StringSettings(val encoding: Encoding, val endMarking: StringEncodingSettings.EndMarking)
 
-    sealed class CollectionSettings {
-        data class LengthPrefix(val endMarking: StringEncodingSettings.LengthPrefix, val nullIfEmpty: Boolean) : BluetoothBinaryDescriptor.CollectionSettings()
-        data object NullMarked : BluetoothBinaryDescriptor.CollectionSettings()
-        data object Unmarked : BluetoothBinaryDescriptor.CollectionSettings()
-        data class NumericLength(val supportedLengths: Set<Length>, val nullIfEmpty: Boolean) : BluetoothBinaryDescriptor.CollectionSettings() {
+    data class CollectionSettings(
+        val lengthMarking: LengthMarking,
+        val nullIfEmpty: Boolean
+    ) {
+
+        sealed class LengthMarking
+        data class LengthPrefix(val endMarking: StringEncodingSettings.LengthPrefix) : LengthMarking()
+        data object NullMarked : LengthMarking()
+        data object Unmarked : LengthMarking()
+        data class NumericLength(val supportedLengths: Set<Length>) : LengthMarking() {
             init {
                 require(supportedLengths.isNotEmpty()) { "Must Support at least one Length" }
             }
@@ -269,47 +277,60 @@ internal object BluetoothBinaryDescriptorRegistry {
             is StructureKind.LIST,
             is StructureKind.MAP,
             -> {
-                when {
+                val lengthMarking = when {
                     annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> BluetoothBinaryDescriptor.CollectionSettings.NullMarked
                     annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
                         val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
                         BluetoothBinaryDescriptor.CollectionSettings.LengthPrefix(
                             StringEncodingSettings.LengthPrefix(lengthPrefix.lengthAsShort, lengthPrefix.canOverflow, lengthPrefix.sentinel),
-                            annotations.filterIsInstance<NullIfEmpty>().isNotEmpty(),
                         )
                     }
 
                     annotations.filterIsInstance<Unsized>().isNotEmpty() -> BluetoothBinaryDescriptor.CollectionSettings.Unmarked
                     else -> {
                         desiredWidth += sizingWidth
-                        BluetoothBinaryDescriptor.CollectionSettings.NumericLength(supportedLengths, annotations.filterIsInstance<NullIfEmpty>().isNotEmpty())
+                        BluetoothBinaryDescriptor.CollectionSettings.NumericLength(supportedLengths)
                     }
                 }
+                BluetoothBinaryDescriptor.CollectionSettings(
+                    lengthMarking,
+                    annotations.filterIsInstance<NullIfEmpty>().isNotEmpty(),
+                )
             }
 
             else -> null
         }
 
+        val enumMap = if (descriptor.kind is SerialKind.ENUM) {
+            (0 until descriptor.elementsCount).associateWith { index ->
+                ByteArrayHolder(
+                    descriptor.getElementAnnotations(index).filterIsInstance<SerializedByteValue>().firstOrNull()?.let {
+                        byteArrayOf(it.value)
+                    } ?: descriptor.getElementName(index).toByteArray(StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), byteOrder)
+                )
+            }
+        } else emptyMap()
+
         val polymorphicMap = when (descriptor.kind) {
             is PolymorphicKind.SEALED -> {
                 val sealedDescriptor = descriptor.getElementDescriptor(1)
-                val polymorphicMap = (0..<sealedDescriptor.elementsCount).mapNotNull { index ->
+                (0..<sealedDescriptor.elementsCount).associate { index ->
                     val optionDescriptor = sealedDescriptor.getElementDescriptor(index)
-                    optionDescriptor.annotations.filterIsInstance<SerializedByteValue>().firstOrNull()?.let {
-                        optionDescriptor.serialName to it.value
-                    }
-                }.toMap()
-                if (polymorphicMap.size == sealedDescriptor.elementsCount) polymorphicMap else emptyMap()
+                    val serialIdentifier = optionDescriptor.annotations.filterIsInstance<SerializedByteValue>().firstOrNull()?.let {
+                        byteArrayOf(it.value)
+                    } ?: optionDescriptor.getElementName(index).toByteArray(StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), byteOrder)
+                    optionDescriptor.serialName to ByteArrayHolder(serialIdentifier)
+                }
             }
 
             is PolymorphicKind.OPEN -> {
                 val polymorphicDescriptors = serializersModule.getPolymorphicDescriptors(descriptor)
-                val polymorphicMap = polymorphicDescriptors.mapNotNull { optionDescriptor ->
-                    optionDescriptor.annotations.filterIsInstance<SerializedByteValue>().firstOrNull()?.let {
-                        optionDescriptor.serialName to it.value
-                    }
-                }.toMap()
-                if (polymorphicMap.size == polymorphicDescriptors.size) polymorphicMap else emptyMap()
+                polymorphicDescriptors.associate { optionDescriptor ->
+                    val serialIdentifier = optionDescriptor.annotations.filterIsInstance<SerializedByteValue>().firstOrNull()?.let {
+                        byteArrayOf(it.value)
+                    } ?: optionDescriptor.serialName.toByteArray(StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), byteOrder)
+                    optionDescriptor.serialName to ByteArrayHolder(serialIdentifier)
+                }
             }
             else -> emptyMap()
         }
@@ -337,6 +358,7 @@ internal object BluetoothBinaryDescriptorRegistry {
             numericSettings,
             stringSettings,
             collectionSettings,
+            enumMap,
             polymorphicMap,
             blockSettings,
             when (descriptor.kind) {
