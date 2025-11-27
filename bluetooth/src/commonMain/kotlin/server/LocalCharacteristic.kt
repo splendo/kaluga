@@ -24,6 +24,7 @@ import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bluetooth.serialization.ByteArrayEndedBeforeSerializationCompleted
 import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Notifiable
 import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Static
 import com.splendo.kaluga.bluetooth.uuidFrom
@@ -47,8 +48,8 @@ import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.serializer
 
 internal typealias Notify = suspend (characteristic: Notifiable, device: ConnectedDevice, value: ByteArray) -> Boolean
 internal typealias BuildDescriptor = (
@@ -72,11 +73,8 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             bluetoothFormat: BluetoothFormat = BluetoothFormat,
             onRead: suspend LocalCharacteristic.(ConnectedDevice) -> T,
         ) {
-            readableAlwaysSuccess(encrypted) { device, offset ->
-                bluetoothFormat.encodeToByteArray(
-                    serializationStrategy,
-                    onRead(device),
-                ).drop(offset).toByteArray()
+            readable(encrypted) { device, offset ->
+                GattResponse.ReadSuccess(onRead(device), offset, serializationStrategy, bluetoothFormat)
             }
         }
 
@@ -85,6 +83,39 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             encrypted: Boolean = false,
             onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse,
         )
+
+        fun <T> writable(
+            properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
+            encrypted: Boolean = false,
+            serializationStrategy: DeserializationStrategy<T>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            onFailedToWrite: suspend LocalCharacteristic.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
+            onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> GattResponse.WriteResponse,
+        ) {
+            val cache = mutableMapOf<ConnectedDevice, ByteArray>()
+            writable(properties, encrypted) { device, value, offset ->
+                val currentCache = cache.remove(device) ?: byteArrayOf()
+                val valueToDeserialize = when (offset) {
+                    0 -> {
+                        value
+                    }
+                    currentCache.size -> {
+                        currentCache + value
+                    }
+                    else -> null
+                }
+                valueToDeserialize?.let {
+                    try {
+                        onWrite(device, bluetoothFormat.decodeFromByteArray(serializationStrategy, it))
+                    } catch (_: ByteArrayEndedBeforeSerializationCompleted) {
+                        cache[device] = valueToDeserialize
+                        GattResponse.WriteSuccess
+                    } catch (e: Exception) {
+                        onFailedToWrite(device, e)
+                    }
+                } ?: GattResponse.InvalidOffset
+            }
+        }
 
         fun writableAlwaysSuccess(
             properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
@@ -103,28 +134,15 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             serializationStrategy: DeserializationStrategy<T>,
             bluetoothFormat: BluetoothFormat = BluetoothFormat,
             onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> Unit,
-        ) {
-            val cache = mutableMapOf<ConnectedDevice, ByteArray>()
-            writableAlwaysSuccess(properties, encrypted) { device, value, offset ->
-                val currentCache = cache[device] ?: byteArrayOf()
-                val valueToDeserialize = when (offset) {
-                    0 -> {
-                        cache.remove(device)
-                        value
-                    }
-                    currentCache.size -> {
-                        currentCache + value
-                    }
-                    else -> null
-                }
-                valueToDeserialize?.let {
-                    try {
-                        onWrite(device, bluetoothFormat.decodeFromByteArray(serializationStrategy, it))
-                    } catch (e: SerializationException) {
-                        cache[device] = valueToDeserialize
-                    }
-                }
-            }
+        ) = writable(
+            properties,
+            encrypted,
+            serializationStrategy,
+            bluetoothFormat,
+            { _, _ -> GattResponse.WriteSuccess },
+        ) { device, value ->
+            onWrite(device, value)
+            GattResponse.WriteSuccess
         }
 
         fun notifiable(
@@ -476,4 +494,67 @@ expect class LocalCharacteristicWrapper {
     )
 
     fun addDescriptor(descriptor: LocalDescriptorWrapper)
+}
+
+inline fun <reified T : Any> LocalCharacteristic.DSL.readableAlwaysSuccess(
+    encrypted: Boolean = false,
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    noinline onRead: suspend LocalCharacteristic.(ConnectedDevice) -> T,
+) = readableAlwaysSuccess(encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat, onRead)
+
+inline fun <reified T : Any> LocalCharacteristic.DSL.writable(
+    properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
+    encrypted: Boolean = false,
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    noinline onFailedToWrite: suspend LocalCharacteristic.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
+    noinline onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> GattResponse.WriteResponse,
+) = writable(properties, encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat, onFailedToWrite, onWrite)
+
+inline fun <reified T : Any> LocalCharacteristic.DSL.writableAlwaysSuccess(
+    properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
+    encrypted: Boolean = false,
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    noinline onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> Unit,
+) = writableAlwaysSuccess(properties, encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat, onWrite)
+
+inline fun <reified T> Flow<T>.collectAsNotification(
+    dsl: LocalCharacteristic.DSL,
+    scope: CoroutineScope,
+    started: SharingStarted,
+    replay: Int = 0,
+    properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+    encrypted: Boolean = false,
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+) = with(dsl) {
+    collectAsNotification(scope, started, replay, properties, encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat)
+}
+
+inline fun <reified T> SharedFlow<T>.collectAsNotification(
+    dsl: LocalCharacteristic.DSL,
+    scope: CoroutineScope,
+    properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+    encrypted: Boolean = false,
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+) = with(dsl) {
+    collectAsNotification(scope, properties, encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat)
+}
+
+inline fun <reified T> StateFlow<T>.collectAsNotification(
+    dsl: LocalCharacteristic.DSL,
+    scope: CoroutineScope,
+    properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+    encrypted: Boolean = false,
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+) = with(dsl) {
+    collectAsNotification(scope, properties, encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat)
+}
+
+inline fun <reified T> ReceiveChannel<T>.consumeAsNotification(
+    dsl: LocalCharacteristic.DSL,
+    scope: CoroutineScope,
+    properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+    encrypted: Boolean = false,
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+) = with(dsl) {
+    consumeAsNotification(scope, properties, encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat)
 }

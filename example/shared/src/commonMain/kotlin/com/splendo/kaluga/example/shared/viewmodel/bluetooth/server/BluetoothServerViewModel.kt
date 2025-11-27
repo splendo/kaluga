@@ -27,12 +27,14 @@ import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
-import com.splendo.kaluga.base.bytes.buildByteArray
 import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.server.ServerSettings
 import com.splendo.kaluga.bluetooth.server.ServerStatus
+import com.splendo.kaluga.bluetooth.server.collectAsNotification
+import com.splendo.kaluga.bluetooth.server.writable
+import com.splendo.kaluga.bluetooth.server.readableAlwaysSuccess
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothSpec
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.resources.view.KalugaLabel
@@ -55,8 +57,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.serializer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import kotlin.time.Duration.Companion.seconds
@@ -99,21 +99,17 @@ class BluetoothServerViewModel(private val alertPresenter: BaseAlertPresenter.Bu
                             energyExpended.value.toInt(),
                             listOf(BluetoothSpec.RRInterval(1.seconds)),
                         )
-                    }.sample(1.seconds).collectAsNotification(coroutineScope, SharingStarted.Lazily, 1, serializationStrategy = BluetoothSpec.HeartRate.serializer())
+                    }.sample(1.seconds).collectAsNotification(this, coroutineScope, SharingStarted.Lazily, 1)
                 }
                 characteristic(BluetoothSpec.HeartRateService.SENSOR_LOCATION_CHARACTERISTIC) {
-                    readableAlwaysSuccess(serializationStrategy = BluetoothSpec.SensorLocation.serializer()) { _ ->
+                    readableAlwaysSuccess { _ ->
                         position.value ?: BluetoothSpec.SensorLocation.OTHER
                     }
                 }
                 characteristic(BluetoothSpec.HeartRateService.HEART_RATE_CONTROL_POINT_CHARACTERISTIC) {
-                    writable { _, value, _ ->
-                        if (value.contentEquals(byteArrayOf(0x01))) {
-                            energyExpended.update { 0(Kilojoule) }
-                            GattResponse.WriteSuccess
-                        } else {
-                            GattResponse.ApplicationError(0x80)
-                        }
+                    writable<BluetoothSpec.ResetEnergyCommand> { _, _ ->
+                        energyExpended.update { 0(Kilojoule) }
+                        GattResponse.WriteSuccess
                     }
                 }
             }

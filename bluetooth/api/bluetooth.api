@@ -460,6 +460,7 @@ public abstract interface class com/splendo/kaluga/bluetooth/GattResponse$ReadRe
 }
 
 public final class com/splendo/kaluga/bluetooth/GattResponse$ReadSuccess : com/splendo/kaluga/bluetooth/GattResponse$ReadResponse, com/splendo/kaluga/bluetooth/GattResponse$Success {
+	public static final field Companion Lcom/splendo/kaluga/bluetooth/GattResponse$ReadSuccess$Companion;
 	public fun <init> ([B)V
 	public final fun component1 ()[B
 	public final fun copy ([B)Lcom/splendo/kaluga/bluetooth/GattResponse$ReadSuccess;
@@ -468,6 +469,11 @@ public final class com/splendo/kaluga/bluetooth/GattResponse$ReadSuccess : com/s
 	public final fun getValue ()[B
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/GattResponse$ReadSuccess$Companion {
+	public final fun invoke (Ljava/lang/Object;ILkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;)Lcom/splendo/kaluga/bluetooth/GattResponse$ReadSuccess;
+	public static synthetic fun invoke$default (Lcom/splendo/kaluga/bluetooth/GattResponse$ReadSuccess$Companion;Ljava/lang/Object;ILkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/GattResponse$ReadSuccess;
 }
 
 public final class com/splendo/kaluga/bluetooth/GattResponse$RequestNotSupported : com/splendo/kaluga/bluetooth/GattResponse$Error {
@@ -1192,14 +1198,26 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/NotConnectab
 public abstract interface class com/splendo/kaluga/bluetooth/device/RemoteAttributeBinding {
 	public fun collectToTriggerRead (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun collectToTriggerRead (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public fun collectToTriggerRead (Lkotlinx/coroutines/flow/Flow;Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun collectToTriggerRead$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding;Lkotlinx/coroutines/flow/Flow;Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 	public fun collectToTriggerWrite (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun collectToTriggerWrite (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public fun collectToTriggerWrite (Lkotlinx/coroutines/flow/Flow;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;)V
+	public fun collectToTriggerWrite (Lkotlinx/coroutines/flow/Flow;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun collectToTriggerWrite$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding;Lkotlinx/coroutines/flow/Flow;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun collectToTriggerWrite$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding;Lkotlinx/coroutines/flow/Flow;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 	public fun collectUnitToTriggerRead (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)V
 	public fun collectUnitToTriggerRead (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 	public fun consumeToTriggerRead (Lkotlinx/coroutines/channels/Channel;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun consumeToTriggerRead (Lkotlinx/coroutines/channels/Channel;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public fun consumeToTriggerRead (Lkotlinx/coroutines/channels/Channel;Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun consumeToTriggerRead$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding;Lkotlinx/coroutines/channels/Channel;Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 	public fun consumeToTriggerWrite (Lkotlinx/coroutines/channels/Channel;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun consumeToTriggerWrite (Lkotlinx/coroutines/channels/Channel;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public fun consumeToTriggerWrite (Lkotlinx/coroutines/channels/Channel;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;)V
+	public fun consumeToTriggerWrite (Lkotlinx/coroutines/channels/Channel;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun consumeToTriggerWrite$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding;Lkotlinx/coroutines/channels/Channel;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun consumeToTriggerWrite$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding;Lkotlinx/coroutines/channels/Channel;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 	public fun consumeUnitToTriggerRead (Lkotlinx/coroutines/channels/Channel;Lkotlin/jvm/functions/Function1;)V
 	public fun consumeUnitToTriggerRead (Lkotlinx/coroutines/channels/Channel;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 }
@@ -1244,6 +1262,8 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/RemoteAttrib
 public abstract interface class com/splendo/kaluga/bluetooth/device/RemoteCharacteristicBinding : com/splendo/kaluga/bluetooth/device/RemoteAttributeBinding {
 	public fun observe (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun observe (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public fun observe (Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun observe$default (Lcom/splendo/kaluga/bluetooth/device/RemoteCharacteristicBinding;Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/device/RemoteCharacteristicBinding$EnsuresServicesAvailable : com/splendo/kaluga/bluetooth/device/RemoteCharacteristicBinding {
@@ -1702,6 +1722,681 @@ public final class com/splendo/kaluga/bluetooth/scanner/ScanningStateRepo : com/
 	public fun <init> (Lkotlin/jvm/functions/Function2;Lcom/splendo/kaluga/bluetooth/scanner/BaseScanner$Builder;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/CoroutineContext;)V
 }
 
+public final class com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor {
+	public fun <init> (Ljava/lang/String;IIILcom/splendo/kaluga/base/bytes/ByteOrder;ZLcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$StringSettings;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings;Ljava/util/Map;Ljava/util/Map;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$BlockSettings;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/util/Map;
+	public final fun component11 ()Ljava/util/Map;
+	public final fun component12 ()Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$BlockSettings;
+	public final fun component13 ()Ljava/util/List;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun component5 ()Lcom/splendo/kaluga/base/bytes/ByteOrder;
+	public final fun component6 ()Z
+	public final fun component7 ()Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings;
+	public final fun component8 ()Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$StringSettings;
+	public final fun component9 ()Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings;
+	public final fun copy (Ljava/lang/String;IIILcom/splendo/kaluga/base/bytes/ByteOrder;ZLcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$StringSettings;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings;Ljava/util/Map;Ljava/util/Map;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$BlockSettings;Ljava/util/List;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor;Ljava/lang/String;IIILcom/splendo/kaluga/base/bytes/ByteOrder;ZLcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$StringSettings;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings;Ljava/util/Map;Ljava/util/Map;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$BlockSettings;Ljava/util/List;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBitIndex ()I
+	public final fun getBitWidth ()I
+	public final fun getBlockSettings ()Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$BlockSettings;
+	public final fun getByteOrder ()Lcom/splendo/kaluga/base/bytes/ByteOrder;
+	public final fun getChildren ()Ljava/util/List;
+	public final fun getCollectionSettings ()Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings;
+	public final fun getEnumMap ()Ljava/util/Map;
+	public final fun getFieldIndex ()I
+	public final fun getFieldName ()Ljava/lang/String;
+	public final fun getFlagBitSize ()I
+	public final fun getNumericSettings ()Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings;
+	public final fun getPolymorphicMap ()Ljava/util/Map;
+	public final fun getStringSettings ()Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$StringSettings;
+	public fun hashCode ()I
+	public final fun isNullable ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$BlockSettings {
+	public synthetic fun <init> ([B[BLcom/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-yBi1KSo ()[B
+	public final fun component2-yBi1KSo ()[B
+	public final fun component3 ()Lcom/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm;
+	public final fun copy-cW7IiTc ([B[BLcom/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$BlockSettings;
+	public static synthetic fun copy-cW7IiTc$default (Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$BlockSettings;[B[BLcom/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$BlockSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChecksumAlgorithm ()Lcom/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm;
+	public final fun getPostfix-yBi1KSo ()[B
+	public final fun getPrefix-yBi1KSo ()[B
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings {
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$LengthMarking;Z)V
+	public final fun component1 ()Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$LengthMarking;
+	public final fun component2 ()Z
+	public final fun copy (Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$LengthMarking;Z)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$LengthMarking;ZILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLengthMarking ()Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$LengthMarking;
+	public final fun getNullIfEmpty ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$LengthMarking {
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$LengthPrefix : com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$LengthMarking {
+	public fun <init> (Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix;)V
+	public final fun component1 ()Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix;
+	public final fun copy (Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$LengthPrefix;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$LengthPrefix;Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$LengthPrefix;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEndMarking ()Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$NullMarked : com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$LengthMarking {
+	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$NullMarked;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$NumericLength : com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$LengthMarking {
+	public fun <init> (Ljava/util/Set;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/Set;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$NumericLength;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$NumericLength;Ljava/util/Set;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$NumericLength;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSupportedLengths ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$Unmarked : com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$LengthMarking {
+	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$CollectionSettings$Unmarked;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings {
+	public abstract fun getSupportedLengths ()Ljava/util/Set;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$Decimal : com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings {
+	public fun <init> (Ljava/util/Set;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/Set;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$Decimal;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$Decimal;Ljava/util/Set;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$Decimal;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getSupportedLengths ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$MedFloat : com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings {
+	public fun <init> (Ljava/util/Set;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/Set;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$MedFloat;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$MedFloat;Ljava/util/Set;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$MedFloat;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getSupportedLengths ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$Natural : com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings {
+	public fun <init> (Ljava/util/Set;Z)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun component2 ()Z
+	public final fun copy (Ljava/util/Set;Z)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$Natural;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$Natural;Ljava/util/Set;ZILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$Natural;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSigned ()Z
+	public fun getSupportedLengths ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$Scalar : com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings {
+	public fun <init> (Ljava/util/Set;ZIIII)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun component2 ()Z
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun component5 ()I
+	public final fun component6 ()I
+	public final fun copy (Ljava/util/Set;ZIIII)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$Scalar;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$Scalar;Ljava/util/Set;ZIIIIILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$NumericSettings$Scalar;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBinaryExponent ()I
+	public final fun getDecimalExponent ()I
+	public final fun getMultiplier ()I
+	public final fun getOffset ()I
+	public final fun getSigned ()Z
+	public fun getSupportedLengths ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$StringSettings {
+	public fun <init> (Lcom/splendo/kaluga/base/bytes/Encoding;Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking;)V
+	public final fun component1 ()Lcom/splendo/kaluga/base/bytes/Encoding;
+	public final fun component2 ()Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking;
+	public final fun copy (Lcom/splendo/kaluga/base/bytes/Encoding;Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$StringSettings;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$StringSettings;Lcom/splendo/kaluga/base/bytes/Encoding;Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothBinaryDescriptor$StringSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEncoding ()Lcom/splendo/kaluga/base/bytes/Encoding;
+	public final fun getEndMarking ()Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/splendo/kaluga/bluetooth/serialization/BluetoothFormat : kotlinx/serialization/BinaryFormat {
+	public static final field Default Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat$Default;
+	public synthetic fun <init> (Lkotlinx/serialization/modules/SerializersModule;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lkotlinx/serialization/modules/SerializersModule;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun decodeFromByteArray (Lkotlinx/serialization/DeserializationStrategy;[B)Ljava/lang/Object;
+	public fun encodeToByteArray (Lkotlinx/serialization/SerializationStrategy;Ljava/lang/Object;)[B
+	public fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/BluetoothFormat$Builder {
+	public final fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+	public final fun setSerializersModule (Lkotlinx/serialization/modules/SerializersModule;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/BluetoothFormat$Default : com/splendo/kaluga/bluetooth/serialization/BluetoothFormat {
+	public final fun invoke (Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;
+	public static synthetic fun invoke$default (Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat$Default;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/ByteArrayEndedBeforeSerializationCompleted : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/ByteArrayHolder {
+	public static final synthetic fun box-impl ([B)Lcom/splendo/kaluga/bluetooth/serialization/ByteArrayHolder;
+	public static fun constructor-impl ([B)[B
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl ([BLjava/lang/Object;)Z
+	public static final fun equals-impl0 ([B[B)Z
+	public final fun getArray ()[B
+	public fun hashCode ()I
+	public static fun hashCode-impl ([B)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl ([B)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()[B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ByteOrder : java/lang/annotation/Annotation {
+	public abstract fun order ()Lcom/splendo/kaluga/base/bytes/ByteOrder;
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ByteOrder$Impl : com/splendo/kaluga/bluetooth/serialization/ByteOrder {
+	public fun <init> (Lcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/base/bytes/ByteOrder;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun order ()Lcom/splendo/kaluga/base/bytes/ByteOrder;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/Checksum : java/lang/annotation/Annotation {
+	public abstract fun algorithm ()Lcom/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm;
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/Checksum$Impl : com/splendo/kaluga/bluetooth/serialization/Checksum {
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun algorithm ()Lcom/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm : java/lang/Enum {
+	public static final field CRC16 Lcom/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm;
+	public static final field CRC32 Lcom/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm;
+	public static final field NONE Lcom/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm;
+	public static fun values ()[Lcom/splendo/kaluga/bluetooth/serialization/ChecksumAlgorithm;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/DataAfterUnconstainedData : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/Encoded : java/lang/annotation/Annotation {
+	public abstract fun encoding ()Lcom/splendo/kaluga/base/bytes/Encoding;
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/Encoded$Impl : com/splendo/kaluga/bluetooth/serialization/Encoded {
+	public fun <init> (Lcom/splendo/kaluga/base/bytes/Encoding;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/base/bytes/Encoding;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun encoding ()Lcom/splendo/kaluga/base/bytes/Encoding;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/FlagIndex : java/lang/annotation/Annotation {
+	public abstract fun index ()I
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/FlagIndex$Impl : com/splendo/kaluga/bluetooth/serialization/FlagIndex {
+	public fun <init> (I)V
+	public final synthetic fun index ()I
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/FlagIndexException : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/FlagWidth : java/lang/annotation/Annotation {
+	public abstract fun bits ()I
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/FlagWidth$Impl : com/splendo/kaluga/bluetooth/serialization/FlagWidth {
+	public fun <init> (I)V
+	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun bits ()I
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/InvalidByteOrderException : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/InvalidPostfix : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/InvalidPrefix : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ItemByteOrder : java/lang/annotation/Annotation {
+	public abstract fun order ()Lcom/splendo/kaluga/base/bytes/ByteOrder;
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ItemByteOrder$Impl : com/splendo/kaluga/bluetooth/serialization/ItemByteOrder {
+	public fun <init> (Lcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/base/bytes/ByteOrder;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun order ()Lcom/splendo/kaluga/base/bytes/ByteOrder;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ItemEncoded : java/lang/annotation/Annotation {
+	public abstract fun encoding ()Lcom/splendo/kaluga/base/bytes/Encoding;
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ItemEncoded$Impl : com/splendo/kaluga/bluetooth/serialization/ItemEncoded {
+	public fun <init> (Lcom/splendo/kaluga/base/bytes/Encoding;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/base/bytes/Encoding;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun encoding ()Lcom/splendo/kaluga/base/bytes/Encoding;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ItemLengthPrefix : java/lang/annotation/Annotation {
+	public abstract fun canOverflow ()Z
+	public abstract fun lengthAsShort ()Z
+	public abstract fun sentinel ()B
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ItemLengthPrefix$Impl : com/splendo/kaluga/bluetooth/serialization/ItemLengthPrefix {
+	public fun <init> (ZZB)V
+	public synthetic fun <init> (ZZBILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun canOverflow ()Z
+	public final synthetic fun lengthAsShort ()Z
+	public final synthetic fun sentinel ()B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ItemMedFloat : java/lang/annotation/Annotation {
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ItemMedFloat$Impl : com/splendo/kaluga/bluetooth/serialization/ItemMedFloat {
+	public fun <init> ()V
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ItemNullTerminated : java/lang/annotation/Annotation {
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ItemNullTerminated$Impl : com/splendo/kaluga/bluetooth/serialization/ItemNullTerminated {
+	public fun <init> ()V
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ItemScalar : java/lang/annotation/Annotation {
+	public abstract fun binaryExponent ()I
+	public abstract fun decimalExponent ()I
+	public abstract fun multiplier ()I
+	public abstract fun offset ()I
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ItemScalar$Impl : com/splendo/kaluga/bluetooth/serialization/ItemScalar {
+	public fun <init> (IIII)V
+	public synthetic fun <init> (IIIIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun binaryExponent ()I
+	public final synthetic fun decimalExponent ()I
+	public final synthetic fun multiplier ()I
+	public final synthetic fun offset ()I
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ItemSize : java/lang/annotation/Annotation {
+	public abstract fun size ()Lcom/splendo/kaluga/bluetooth/serialization/Length;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ItemSize$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Lcom/splendo/kaluga/bluetooth/serialization/ItemSize;
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ItemSize$Impl : com/splendo/kaluga/bluetooth/serialization/ItemSize {
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/serialization/Length;)V
+	public final synthetic fun size ()Lcom/splendo/kaluga/bluetooth/serialization/Length;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ItemUnsigned : java/lang/annotation/Annotation {
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ItemUnsigned$Impl : com/splendo/kaluga/bluetooth/serialization/ItemUnsigned {
+	public fun <init> ()V
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/KeyByteOrder : java/lang/annotation/Annotation {
+	public abstract fun order ()Lcom/splendo/kaluga/base/bytes/ByteOrder;
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/KeyByteOrder$Impl : com/splendo/kaluga/bluetooth/serialization/KeyByteOrder {
+	public fun <init> (Lcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/base/bytes/ByteOrder;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun order ()Lcom/splendo/kaluga/base/bytes/ByteOrder;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/KeyEncoded : java/lang/annotation/Annotation {
+	public abstract fun encoding ()Lcom/splendo/kaluga/base/bytes/Encoding;
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/KeyEncoded$Impl : com/splendo/kaluga/bluetooth/serialization/KeyEncoded {
+	public fun <init> (Lcom/splendo/kaluga/base/bytes/Encoding;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/base/bytes/Encoding;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun encoding ()Lcom/splendo/kaluga/base/bytes/Encoding;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/KeyLengthPrefix : java/lang/annotation/Annotation {
+	public abstract fun canOverflow ()Z
+	public abstract fun lengthAsShort ()Z
+	public abstract fun sentinel ()B
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/KeyLengthPrefix$Impl : com/splendo/kaluga/bluetooth/serialization/KeyLengthPrefix {
+	public fun <init> (ZZB)V
+	public synthetic fun <init> (ZZBILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun canOverflow ()Z
+	public final synthetic fun lengthAsShort ()Z
+	public final synthetic fun sentinel ()B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/KeyMedFloat : java/lang/annotation/Annotation {
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/KeyMedFloat$Impl : com/splendo/kaluga/bluetooth/serialization/KeyMedFloat {
+	public fun <init> ()V
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/KeyNullTerminated : java/lang/annotation/Annotation {
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/KeyNullTerminated$Impl : com/splendo/kaluga/bluetooth/serialization/KeyNullTerminated {
+	public fun <init> ()V
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/KeyScalar : java/lang/annotation/Annotation {
+	public abstract fun binaryExponent ()I
+	public abstract fun decimalExponent ()I
+	public abstract fun multiplier ()I
+	public abstract fun offset ()I
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/KeyScalar$Impl : com/splendo/kaluga/bluetooth/serialization/KeyScalar {
+	public fun <init> (IIII)V
+	public synthetic fun <init> (IIIIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun binaryExponent ()I
+	public final synthetic fun decimalExponent ()I
+	public final synthetic fun multiplier ()I
+	public final synthetic fun offset ()I
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/KeySize : java/lang/annotation/Annotation {
+	public abstract fun size ()Lcom/splendo/kaluga/bluetooth/serialization/Length;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/KeySize$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Lcom/splendo/kaluga/bluetooth/serialization/KeySize;
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/KeySize$Impl : com/splendo/kaluga/bluetooth/serialization/KeySize {
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/serialization/Length;)V
+	public final synthetic fun size ()Lcom/splendo/kaluga/bluetooth/serialization/Length;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/KeyUnsigned : java/lang/annotation/Annotation {
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/KeyUnsigned$Impl : com/splendo/kaluga/bluetooth/serialization/KeyUnsigned {
+	public fun <init> ()V
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/Length : java/lang/Enum {
+	public static final field 16_BIT Lcom/splendo/kaluga/bluetooth/serialization/Length;
+	public static final field 24_BIT Lcom/splendo/kaluga/bluetooth/serialization/Length;
+	public static final field 32_BIT Lcom/splendo/kaluga/bluetooth/serialization/Length;
+	public static final field 64_BIT Lcom/splendo/kaluga/bluetooth/serialization/Length;
+	public static final field 8_BIT Lcom/splendo/kaluga/bluetooth/serialization/Length;
+	public final fun fits (Ljava/lang/Number;Z)Z
+	public final fun getBytes ()I
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/serialization/Length;
+	public static fun values ()[Lcom/splendo/kaluga/bluetooth/serialization/Length;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/LengthPrefix : java/lang/annotation/Annotation {
+	public abstract fun canOverflow ()Z
+	public abstract fun lengthAsShort ()Z
+	public abstract fun sentinel ()B
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/LengthPrefix$Impl : com/splendo/kaluga/bluetooth/serialization/LengthPrefix {
+	public fun <init> (ZZB)V
+	public synthetic fun <init> (ZZBILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun canOverflow ()Z
+	public final synthetic fun lengthAsShort ()Z
+	public final synthetic fun sentinel ()B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/MedFloat : java/lang/annotation/Annotation {
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/MedFloat$Impl : com/splendo/kaluga/bluetooth/serialization/MedFloat {
+	public fun <init> ()V
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/NullIfEmpty : java/lang/annotation/Annotation {
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/NullIfEmpty$Impl : com/splendo/kaluga/bluetooth/serialization/NullIfEmpty {
+	public fun <init> ()V
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/NullTerminated : java/lang/annotation/Annotation {
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/NullTerminated$Impl : com/splendo/kaluga/bluetooth/serialization/NullTerminated {
+	public fun <init> ()V
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/Postfix : java/lang/annotation/Annotation {
+	public abstract fun value ()[B
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/Postfix$Impl : com/splendo/kaluga/bluetooth/serialization/Postfix {
+	public fun <init> ([B)V
+	public final synthetic fun value ()[B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/Prefix : java/lang/annotation/Annotation {
+	public abstract fun value ()[B
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/Prefix$Impl : com/splendo/kaluga/bluetooth/serialization/Prefix {
+	public fun <init> ([B)V
+	public final synthetic fun value ()[B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/Scalar : java/lang/annotation/Annotation {
+	public abstract fun binaryExponent ()I
+	public abstract fun decimalExponent ()I
+	public abstract fun multiplier ()I
+	public abstract fun offset ()I
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/Scalar$Impl : com/splendo/kaluga/bluetooth/serialization/Scalar {
+	public fun <init> (IIII)V
+	public synthetic fun <init> (IIIIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun binaryExponent ()I
+	public final synthetic fun decimalExponent ()I
+	public final synthetic fun multiplier ()I
+	public final synthetic fun offset ()I
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/SerializedByteValue : java/lang/annotation/Annotation {
+	public abstract fun value ()B
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/SerializedByteValue$Impl : com/splendo/kaluga/bluetooth/serialization/SerializedByteValue {
+	public fun <init> (B)V
+	public final synthetic fun value ()B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/Sizing : java/lang/annotation/Annotation {
+	public abstract fun length ()Lcom/splendo/kaluga/bluetooth/serialization/Length;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/Sizing$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Lcom/splendo/kaluga/bluetooth/serialization/Sizing;
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/Sizing$Impl : com/splendo/kaluga/bluetooth/serialization/Sizing {
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/serialization/Length;)V
+	public final synthetic fun length ()Lcom/splendo/kaluga/bluetooth/serialization/Length;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/UnexpectedBytesRemaining : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/serialization/UnexpectedNullTermination : kotlinx/serialization/SerializationException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/Unsigned : java/lang/annotation/Annotation {
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/Unsigned$Impl : com/splendo/kaluga/bluetooth/serialization/Unsigned {
+	public fun <init> ()V
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/Unsized : java/lang/annotation/Annotation {
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/Unsized$Impl : com/splendo/kaluga/bluetooth/serialization/Unsized {
+	public fun <init> ()V
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ValueByteOrder : java/lang/annotation/Annotation {
+	public abstract fun order ()Lcom/splendo/kaluga/base/bytes/ByteOrder;
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ValueByteOrder$Impl : com/splendo/kaluga/bluetooth/serialization/ValueByteOrder {
+	public fun <init> (Lcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/base/bytes/ByteOrder;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun order ()Lcom/splendo/kaluga/base/bytes/ByteOrder;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ValueEncoded : java/lang/annotation/Annotation {
+	public abstract fun encoding ()Lcom/splendo/kaluga/base/bytes/Encoding;
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ValueEncoded$Impl : com/splendo/kaluga/bluetooth/serialization/ValueEncoded {
+	public fun <init> (Lcom/splendo/kaluga/base/bytes/Encoding;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/base/bytes/Encoding;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun encoding ()Lcom/splendo/kaluga/base/bytes/Encoding;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ValueLengthPrefix : java/lang/annotation/Annotation {
+	public abstract fun canOverflow ()Z
+	public abstract fun lengthAsShort ()Z
+	public abstract fun sentinel ()B
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ValueLengthPrefix$Impl : com/splendo/kaluga/bluetooth/serialization/ValueLengthPrefix {
+	public fun <init> (ZZB)V
+	public synthetic fun <init> (ZZBILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun canOverflow ()Z
+	public final synthetic fun lengthAsShort ()Z
+	public final synthetic fun sentinel ()B
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ValueMedFloat : java/lang/annotation/Annotation {
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ValueMedFloat$Impl : com/splendo/kaluga/bluetooth/serialization/ValueMedFloat {
+	public fun <init> ()V
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ValueNullTerminated : java/lang/annotation/Annotation {
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ValueNullTerminated$Impl : com/splendo/kaluga/bluetooth/serialization/ValueNullTerminated {
+	public fun <init> ()V
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ValueScalar : java/lang/annotation/Annotation {
+	public abstract fun binaryExponent ()I
+	public abstract fun decimalExponent ()I
+	public abstract fun multiplier ()I
+	public abstract fun offset ()I
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ValueScalar$Impl : com/splendo/kaluga/bluetooth/serialization/ValueScalar {
+	public fun <init> (IIII)V
+	public synthetic fun <init> (IIIIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun binaryExponent ()I
+	public final synthetic fun decimalExponent ()I
+	public final synthetic fun multiplier ()I
+	public final synthetic fun offset ()I
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ValueSize : java/lang/annotation/Annotation {
+	public abstract fun size ()Lcom/splendo/kaluga/bluetooth/serialization/Length;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ValueSize$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Lcom/splendo/kaluga/bluetooth/serialization/ValueSize;
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ValueSize$Impl : com/splendo/kaluga/bluetooth/serialization/ValueSize {
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/serialization/Length;)V
+	public final synthetic fun size ()Lcom/splendo/kaluga/bluetooth/serialization/Length;
+}
+
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/ValueUnsigned : java/lang/annotation/Annotation {
+}
+
+public synthetic class com/splendo/kaluga/bluetooth/serialization/ValueUnsigned$Impl : com/splendo/kaluga/bluetooth/serialization/ValueUnsigned {
+	public fun <init> ()V
+}
+
 public final class com/splendo/kaluga/bluetooth/server/AdvertiseData {
 	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
 	public final fun component1 ()Ljava/lang/String;
@@ -1766,20 +2461,28 @@ public abstract class com/splendo/kaluga/bluetooth/server/LocalCharacteristic : 
 public abstract interface class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL {
 	public fun collectAsNotification (Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILjava/util/Set;Z)V
 	public fun collectAsNotification (Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILjava/util/Set;ZLkotlin/jvm/functions/Function1;)V
+	public fun collectAsNotification (Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILjava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;)V
 	public fun collectAsNotification (Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;Z)V
 	public fun collectAsNotification (Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlin/jvm/functions/Function1;)V
+	public fun collectAsNotification (Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;)V
 	public fun collectAsNotification (Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;Z)V
 	public fun collectAsNotification (Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlin/jvm/functions/Function1;)V
+	public fun collectAsNotification (Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;)V
 	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILjava/util/Set;ZILjava/lang/Object;)V
 	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILjava/util/Set;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILjava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;ILjava/lang/Object;)V
 	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZILjava/lang/Object;)V
 	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;ILjava/lang/Object;)V
 	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZILjava/lang/Object;)V
 	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;ILjava/lang/Object;)V
 	public fun consumeAsNotification (Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;Z)V
 	public fun consumeAsNotification (Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlin/jvm/functions/Function1;)V
+	public fun consumeAsNotification (Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;)V
 	public static synthetic fun consumeAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZILjava/lang/Object;)V
 	public static synthetic fun consumeAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun consumeAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;ILjava/lang/Object;)V
 	public fun descriptor (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun descriptor (Ljava/util/UUID;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun notifiable (Ljava/util/Set;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)V
@@ -1787,11 +2490,17 @@ public abstract interface class com/splendo/kaluga/bluetooth/server/LocalCharact
 	public abstract fun readable (ZLkotlin/jvm/functions/Function4;)V
 	public static synthetic fun readable$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;ZLkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
 	public fun readableAlwaysSuccess (ZLkotlin/jvm/functions/Function4;)V
+	public fun readableAlwaysSuccess (ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function3;)V
 	public static synthetic fun readableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;ZLkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public static synthetic fun readableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)V
 	public abstract fun writable (Ljava/util/Set;ZLkotlin/jvm/functions/Function5;)V
+	public fun writable (Ljava/util/Set;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;)V
 	public static synthetic fun writable$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlin/jvm/functions/Function5;ILjava/lang/Object;)V
+	public static synthetic fun writable$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
 	public fun writableAlwaysSuccess (Ljava/util/Set;ZLkotlin/jvm/functions/Function5;)V
+	public fun writableAlwaysSuccess (Ljava/util/Set;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;)V
 	public static synthetic fun writableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlin/jvm/functions/Function5;ILjava/lang/Object;)V
+	public static synthetic fun writableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
 }
 
 public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$Notifiable : com/splendo/kaluga/bluetooth/server/LocalCharacteristic, kotlinx/coroutines/flow/FlowCollector {
@@ -1838,8 +2547,18 @@ public final class com/splendo/kaluga/bluetooth/server/LocalDescriptor : com/spl
 public abstract interface class com/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL {
 	public abstract fun readable (ZLkotlin/jvm/functions/Function4;)V
 	public static synthetic fun readable$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public fun readableAlwaysSuccess (ZLkotlin/jvm/functions/Function4;)V
+	public fun readableAlwaysSuccess (ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function3;)V
+	public static synthetic fun readableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public static synthetic fun readableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)V
 	public abstract fun writable (ZLkotlin/jvm/functions/Function5;)V
+	public fun writable (ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;)V
 	public static synthetic fun writable$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlin/jvm/functions/Function5;ILjava/lang/Object;)V
+	public static synthetic fun writable$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+	public fun writableAlwaysSuccess (ZLkotlin/jvm/functions/Function5;)V
+	public fun writableAlwaysSuccess (ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;)V
+	public static synthetic fun writableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlin/jvm/functions/Function5;ILjava/lang/Object;)V
+	public static synthetic fun writableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalDescriptor$DSL;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
 }
 
 public final class com/splendo/kaluga/bluetooth/server/LocalDescriptor$Permissions : java/lang/Enum {

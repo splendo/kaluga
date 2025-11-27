@@ -21,9 +21,10 @@ import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bluetooth.serialization.ByteArrayEndedBeforeSerializationCompleted
 import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.serializer
 
 class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characteristic: LocalCharacteristic) : Descriptor {
 
@@ -38,38 +39,28 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
 
         fun <T> readableAlwaysSuccess(
             encrypted: Boolean = false,
-            onRead: suspend LocalDescriptor.(ConnectedDevice) -> T,
             serializationStrategy: SerializationStrategy<T>,
             bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            onRead: suspend LocalDescriptor.(ConnectedDevice) -> T,
         ) {
-            readableAlwaysSuccess(encrypted) { device, offset ->
-                bluetoothFormat.encodeToByteArray(
-                    serializationStrategy,
-                    onRead(device),
-                ).drop(offset).toByteArray()
+            readable(encrypted) { device, offset ->
+                GattResponse.ReadSuccess(onRead(device), offset, serializationStrategy, bluetoothFormat)
             }
         }
         fun writable(encrypted: Boolean = false, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse)
 
-        fun writableAlwaysSuccess(encrypted: Boolean = false, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> Unit) {
-            writable(encrypted) { device, value, offset ->
-                onWrite(device, value, offset)
-                GattResponse.WriteSuccess
-            }
-        }
-
-        fun <T> writableAlwaysSuccess(
+        fun <T> writable(
             encrypted: Boolean = false,
-            onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> Unit,
             serializationStrategy: DeserializationStrategy<T>,
             bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            onFailedToWrite: suspend LocalDescriptor.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
+            onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> GattResponse.WriteResponse,
         ) {
             val cache = mutableMapOf<ConnectedDevice, ByteArray>()
-            writableAlwaysSuccess(encrypted) { device, value, offset ->
-                val currentCache = cache[device] ?: byteArrayOf()
+            writable(encrypted) { device, value, offset ->
+                val currentCache = cache.remove(device) ?: byteArrayOf()
                 val valueToDeserialize = when (offset) {
                     0 -> {
-                        cache.remove(device)
                         value
                     }
                     currentCache.size -> {
@@ -80,11 +71,36 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
                 valueToDeserialize?.let {
                     try {
                         onWrite(device, bluetoothFormat.decodeFromByteArray(serializationStrategy, it))
-                    } catch (e: SerializationException) {
+                    } catch (_: ByteArrayEndedBeforeSerializationCompleted) {
                         cache[device] = valueToDeserialize
+                        GattResponse.WriteSuccess
+                    } catch (e: Exception) {
+                        onFailedToWrite(device, e)
                     }
-                }
+                } ?: GattResponse.InvalidOffset
             }
+        }
+
+        fun writableAlwaysSuccess(encrypted: Boolean = false, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> Unit) {
+            writable(encrypted) { device, value, offset ->
+                onWrite(device, value, offset)
+                GattResponse.WriteSuccess
+            }
+        }
+
+        fun <T> writableAlwaysSuccess(
+            encrypted: Boolean = false,
+            serializationStrategy: DeserializationStrategy<T>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> Unit,
+        ) = writable(
+            encrypted,
+            serializationStrategy,
+            bluetoothFormat,
+            { _, _ -> GattResponse.WriteSuccess },
+        ) { device, value ->
+            onWrite(device, value)
+            GattResponse.WriteSuccess
         }
     }
 
@@ -134,3 +150,22 @@ internal class LocalDescriptorDSL(val uuid: UUID, val registerReadAction: LocalD
 expect class LocalDescriptorWrapper internal constructor(uuid: UUID, permissions: Set<LocalDescriptor.Permissions>) {
     val uuid: UUID
 }
+
+inline fun <reified T : Any> LocalDescriptor.DSL.readableAlwaysSuccess(
+    encrypted: Boolean = false,
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    noinline onRead: suspend LocalDescriptor.(ConnectedDevice) -> T,
+) = readableAlwaysSuccess(encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat, onRead)
+
+inline fun <reified T : Any> LocalDescriptor.DSL.writable(
+    encrypted: Boolean = false,
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    noinline onFailedToWrite: suspend LocalDescriptor.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
+    noinline onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> GattResponse.WriteResponse,
+) = writable(encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat, onFailedToWrite, onWrite)
+
+inline fun <reified T : Any> LocalDescriptor.DSL.writableAlwaysSuccess(
+    encrypted: Boolean = false,
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    noinline onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> Unit,
+) = writableAlwaysSuccess(encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat, onWrite)

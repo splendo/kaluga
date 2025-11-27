@@ -20,6 +20,7 @@ package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 import com.splendo.kaluga.bluetooth.serialization.FlagIndex
 import com.splendo.kaluga.bluetooth.serialization.Length
 import com.splendo.kaluga.bluetooth.serialization.NullIfEmpty
+import com.splendo.kaluga.bluetooth.serialization.Prefix
 import com.splendo.kaluga.bluetooth.serialization.Scalar
 import com.splendo.kaluga.bluetooth.serialization.SerializedByteValue
 import com.splendo.kaluga.bluetooth.serialization.Sizing
@@ -84,22 +85,31 @@ object BluetoothSpec {
     )
 
     @Serializable
-    enum class SensorLocation() {
+    enum class SensorLocation {
 
         @SerializedByteValue(0x00)
         OTHER,
+
         @SerializedByteValue(0x01)
         CHEST,
+
         @SerializedByteValue(0x02)
         WRIST,
+
         @SerializedByteValue(0x03)
         FINGER,
+
         @SerializedByteValue(0x04)
         HAND,
+
         @SerializedByteValue(0x05)
         EAR_LOBE,
+
         @SerializedByteValue(0x06)
         FOOT,
-        ;
     }
+
+    @Serializable
+    @Prefix(byteArrayOf(0x01))
+    data object ResetEnergyCommand
 }
