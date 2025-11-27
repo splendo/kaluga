@@ -63,6 +63,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.serialization.serializer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -125,26 +126,17 @@ class BluetoothDeviceViewModel(identifier: Identifier, navigator: Navigator<Clos
             bind(device, coroutineScope) {
                 service(BluetoothSpec.HeartRateService.UUID) {
                     characteristic(BluetoothSpec.HeartRateService.HEART_RATE_MEASUREMENT_CHARACTERISTIC) {
-                        observe {
-                            onNotification { measurementValue ->
-                                val valueEncodedAsShort = measurementValue.isBitSet(0)
-                                heartRateState.value = if (valueEncodedAsShort) {
-                                    measurementValue.decodeUShort(1, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
-                                } else {
-                                    measurementValue[1].toUByte().toInt()
-                                }(BeatsPerMinute)
+                        observe(deserializationStrategy = BluetoothSpec.HeartRate.serializer()) {
+                            onNotification { heartRate ->
+                                heartRateState.value = (heartRate.heartRate)(BeatsPerMinute)
 
-                                isPositionVisibleState.value = measurementValue.isBitSet(1)
-                                energyExpendedState.value = if (measurementValue.isBitSet(3)) {
-                                    measurementValue.decodeUShort(if (valueEncodedAsShort) 3 else 2, ByteOrder.LEAST_SIGNIFICANT_FIRST).toDouble()
-                                } else {
-                                    Double.NaN
-                                }(Kilojoule)
+                                isPositionVisibleState.value = heartRate.contactDetected
+                                energyExpendedState.value = (heartRate.energyExpended?.toDouble() ?: Double.NaN)(Kilojoule)
                             }
                         }
                     }
                     characteristic(BluetoothSpec.HeartRateService.SENSOR_LOCATION_CHARACTERISTIC) {
-                        requestPositionUpdate.collectToTriggerRead<BluetoothSpec.SensorLocation?>({ BluetoothSpec.SensorLocation.from(first()) }) {
+                        requestPositionUpdate.collectToTriggerRead<BluetoothSpec.SensorLocation?>(deserializationStrategy = serializer<BluetoothSpec.SensorLocation>()) {
                             onRead { value ->
                                 positionState.value = value
                             }

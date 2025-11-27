@@ -55,6 +55,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.serializer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import kotlin.time.Duration.Companion.seconds
@@ -64,24 +66,6 @@ class BluetoothServerViewModel(private val alertPresenter: BaseAlertPresenter.Bu
     KoinComponent {
 
     companion object {
-        fun generateHeartRateMeasurement(heartRate: Int, energyExpended: Int, sensorContactDetected: Boolean): ByteArray = buildByteArray {
-            require(heartRate in 0..65535) { "Heart rate must be 0..65535" }
-
-            add(heartRate > UByte.MAX_VALUE.toInt())
-            add(sensorContactDetected)
-            add(true)
-            add(true) // Energy Expended
-            add(false) // RR Intervals
-
-            if (heartRate <= UByte.MAX_VALUE.toInt()) {
-                add(heartRate.toUByte())
-            } else {
-                add(heartRate.toUShort())
-            }
-
-            add(energyExpended.toUShort())
-        }
-
         val formatter = CommonScientificValueFormatter.with(builder = {
             defaultValueFormatter = NumberFormatter(style = NumberFormatStyle.Integer(minDigits = 1U)).apply {
                 notANumberSymbol = "--"
@@ -108,13 +92,18 @@ class BluetoothServerViewModel(private val alertPresenter: BaseAlertPresenter.Bu
                         energyExpended,
                         position,
                     ) { heartRate, energyExpended, position ->
-                        generateHeartRateMeasurement(heartRate.value.toInt(), energyExpended.value.toInt(), position != null)
-                    }.sample(1.seconds).collectAsNotification(coroutineScope, SharingStarted.Lazily, 1)
+                        BluetoothSpec.HeartRate(
+                            heartRate.value.toInt(),
+                            true,
+                            position != null,
+                            energyExpended.value.toInt(),
+                            listOf(BluetoothSpec.RRInterval(1.seconds)),
+                        )
+                    }.sample(1.seconds).collectAsNotification(coroutineScope, SharingStarted.Lazily, 1, serializationStrategy = BluetoothSpec.HeartRate.serializer())
                 }
                 characteristic(BluetoothSpec.HeartRateService.SENSOR_LOCATION_CHARACTERISTIC) {
-                    readableAlwaysSuccess { _, _ ->
-                        val position = position.value ?: BluetoothSpec.SensorLocation.OTHER
-                        byteArrayOf(position.value)
+                    readableAlwaysSuccess(serializationStrategy = BluetoothSpec.SensorLocation.serializer()) { _ ->
+                        position.value ?: BluetoothSpec.SensorLocation.OTHER
                     }
                 }
                 characteristic(BluetoothSpec.HeartRateService.HEART_RATE_CONTROL_POINT_CHARACTERISTIC) {

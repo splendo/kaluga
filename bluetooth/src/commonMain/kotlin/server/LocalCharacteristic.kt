@@ -68,9 +68,9 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
 
         fun <T> readableAlwaysSuccess(
             encrypted: Boolean = false,
-            onRead: suspend LocalCharacteristic.(ConnectedDevice) -> T,
             serializationStrategy: SerializationStrategy<T>,
             bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            onRead: suspend LocalCharacteristic.(ConnectedDevice) -> T,
         ) {
             readableAlwaysSuccess(encrypted) { device, offset ->
                 bluetoothFormat.encodeToByteArray(
@@ -100,9 +100,9 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         fun <T> writableAlwaysSuccess(
             properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
             encrypted: Boolean = false,
-            onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> Unit,
             serializationStrategy: DeserializationStrategy<T>,
             bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> Unit,
         ) {
             val cache = mutableMapOf<ConnectedDevice, ByteArray>()
             writableAlwaysSuccess(properties, encrypted) { device, value, offset ->
@@ -165,8 +165,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             replay,
             properties,
             encrypted,
-            { bluetoothFormat.encodeToByteArray(serializationStrategy, this) },
-        )
+        ) { bluetoothFormat.encodeToByteArray(serializationStrategy, this) }
 
         fun Flow<ByteArray>.collectAsNotification(
             scope: CoroutineScope,
