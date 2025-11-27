@@ -159,7 +159,9 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
             take(settings.encoding.byteSize * endMarking.length)
         }
         is StringEncodingSettings.NullTerminated -> {
-            withIndex().takeWhile { (index, byte) -> index % 2 != 0 || byte != 0x00.toByte() }.map { (_, byte) -> byte }
+            withIndex().takeWhile { (index, byte) ->
+                (settings.encoding == Encoding.UTF_16 && index % 2 != 0) || byte != 0x00.toByte()
+            }.map { (_, byte) -> byte }
         }
         is StringEncodingSettings.NoMarking -> {
             this

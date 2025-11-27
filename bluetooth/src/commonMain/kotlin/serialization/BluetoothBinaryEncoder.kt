@@ -58,7 +58,9 @@ internal class BluetoothBinaryEncoder(
         if (binaryDescriptor.isNullable) {
             builder.addFlag(binaryDescriptor.bitIndex, collectionSize > 0)
         }
-        val collectionSettings = binaryDescriptor.collectionSettings ?: BluetoothBinaryDescriptor.CollectionSettings(BluetoothBinaryDescriptor.CollectionSettings.NumericLength(setOf(Length.`8_BIT`)), false)
+        val collectionSettings =
+            binaryDescriptor.collectionSettings
+                ?: BluetoothBinaryDescriptor.CollectionSettings(BluetoothBinaryDescriptor.CollectionSettings.NumericLength(setOf(Length.`8_BIT`)), false)
         when (val lengthMarking = collectionSettings.lengthMarking) {
             is BluetoothBinaryDescriptor.CollectionSettings.LengthPrefix ->
                 if (collectionSize > 0 || !collectionSettings.nullIfEmpty) {

@@ -50,13 +50,8 @@ data class BluetoothBinaryDescriptor(
     val children: List<BluetoothBinaryDescriptor>,
 ) {
 
-    val flagByteSize = if (children.isNotEmpty()) {
-        val highestBitIndex = children.maxBy { it.bitIndex }
-        if (highestBitIndex.bitIndex >= 0) {
-            ceil((highestBitIndex.bitIndex + highestBitIndex.bitWidth) / 8.0).toInt()
-        } else {
-            0
-        }
+    val flagBitSize = if (children.isNotEmpty()) {
+        children.maxOf { if (it.bitIndex >= 0) it.bitIndex + it.bitWidth else 0 }
     } else {
         0
     }
@@ -99,10 +94,7 @@ data class BluetoothBinaryDescriptor(
     }
     data class StringSettings(val encoding: Encoding, val endMarking: StringEncodingSettings.EndMarking)
 
-    data class CollectionSettings(
-        val lengthMarking: LengthMarking,
-        val nullIfEmpty: Boolean
-    ) {
+    data class CollectionSettings(val lengthMarking: LengthMarking, val nullIfEmpty: Boolean) {
 
         sealed class LengthMarking
         data class LengthPrefix(val endMarking: StringEncodingSettings.LengthPrefix) : LengthMarking()
@@ -306,10 +298,12 @@ internal object BluetoothBinaryDescriptorRegistry {
                 ByteArrayHolder(
                     descriptor.getElementAnnotations(index).filterIsInstance<SerializedByteValue>().firstOrNull()?.let {
                         byteArrayOf(it.value)
-                    } ?: descriptor.getElementName(index).toByteArray(StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), byteOrder)
+                    } ?: descriptor.getElementName(index).toByteArray(StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8), byteOrder),
                 )
             }
-        } else emptyMap()
+        } else {
+            emptyMap()
+        }
 
         val polymorphicMap = when (descriptor.kind) {
             is PolymorphicKind.SEALED -> {

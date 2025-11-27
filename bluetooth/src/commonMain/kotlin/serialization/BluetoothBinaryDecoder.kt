@@ -52,12 +52,10 @@ internal class BluetoothBinaryDecoder(
     override val serializersModule: SerializersModule,
 ) : Decoder {
 
-    override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
-        return when (descriptor.kind) {
-            is StructureKind.LIST -> BluetoothBinaryCompositeDecoder.List(binaryDescriptor, decoder, serializersModule)
-            is StructureKind.MAP -> BluetoothBinaryCompositeDecoder.Map(binaryDescriptor, decoder, serializersModule)
-            else -> BluetoothBinaryCompositeDecoder.Class(binaryDescriptor, decoder.beginStructure(binaryDescriptor), serializersModule)
-        }
+    override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder = when (descriptor.kind) {
+        is StructureKind.LIST -> BluetoothBinaryCompositeDecoder.List(binaryDescriptor, decoder, serializersModule)
+        is StructureKind.MAP -> BluetoothBinaryCompositeDecoder.Map(binaryDescriptor, decoder, serializersModule)
+        else -> BluetoothBinaryCompositeDecoder.Class(binaryDescriptor, decoder.beginStructure(binaryDescriptor), serializersModule)
     }
 
     override fun decodeBoolean(): Boolean = binaryDescriptor.decodeBoolean(decoder)
@@ -96,14 +94,11 @@ internal class BluetoothBinaryDecoder(
     override fun decodeString(): String = binaryDescriptor.decodeStringElement(decoder)
 }
 
-private sealed class BluetoothBinaryCompositeDecoder(
-    protected val binaryDescriptor: BluetoothBinaryDescriptor,
-    protected val decoder: BluetoothBinaryDescriptorDecoder,
-    override val serializersModule: SerializersModule,
-) : CompositeDecoder {
+private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescriptor: BluetoothBinaryDescriptor, override val serializersModule: SerializersModule) :
+    CompositeDecoder {
 
-    class Class(binaryDescriptor: BluetoothBinaryDescriptor, decoder: BluetoothBinaryDescriptorDecoder, serializersModule: SerializersModule) :
-        BluetoothBinaryCompositeDecoder(binaryDescriptor, decoder, serializersModule) {
+    class Class(binaryDescriptor: BluetoothBinaryDescriptor, private val decoder: BluetoothBinaryDescriptorDecoder, serializersModule: SerializersModule) :
+        BluetoothBinaryCompositeDecoder(binaryDescriptor, serializersModule) {
 
         var currentIndex = 0
 
@@ -114,22 +109,20 @@ private sealed class BluetoothBinaryCompositeDecoder(
         }
         override fun binaryDescriptorAtIndex(index: Int): BluetoothBinaryDescriptor = binaryDescriptor.children[index]
 
-
         override fun endStructure(descriptor: SerialDescriptor) {
             decoder.endStructure()
         }
+
+        override fun decoderAtIndex(index: Int): BluetoothBinaryDescriptorDecoder = decoder
     }
 
-    sealed class Collection(
-        binaryDescriptor: BluetoothBinaryDescriptor,
-        decoder: BluetoothBinaryDescriptorDecoder,
-        serializersModule: SerializersModule,
-    ) :
-        BluetoothBinaryCompositeDecoder(binaryDescriptor, decoder, serializersModule) {
+    sealed class Collection(binaryDescriptor: BluetoothBinaryDescriptor, private val decoder: BluetoothBinaryDescriptorDecoder, serializersModule: SerializersModule) :
+        BluetoothBinaryCompositeDecoder(binaryDescriptor, serializersModule) {
 
+        private val decoders = mutableMapOf<Int, BluetoothBinaryDescriptorDecoder>()
         private val collectionSettings = binaryDescriptor.collectionSettings ?: BluetoothBinaryDescriptor.CollectionSettings(
             BluetoothBinaryDescriptor.CollectionSettings.NumericLength(setOf(Length.`8_BIT`)),
-            false
+            false,
         )
         private val expectedSize = if (!binaryDescriptor.isNullable || !collectionSettings.nullIfEmpty || decoder.flags[binaryDescriptor.bitIndex]) {
             when (val lengthMarking = collectionSettings.lengthMarking) {
@@ -172,15 +165,16 @@ private sealed class BluetoothBinaryCompositeDecoder(
             }
         }
 
-        override fun endStructure(descriptor: SerialDescriptor) {}
+        override fun decoderAtIndex(index: Int): BluetoothBinaryDescriptorDecoder = decoders.getOrPut(index) {
+            val elementDescriptor = binaryDescriptorAtIndex(index)
+            decoder.beginStructure(elementDescriptor, elementDescriptor.bitWidth)
+        }
 
+        override fun endStructure(descriptor: SerialDescriptor) {}
     }
 
-    class List(
-        binaryDescriptor: BluetoothBinaryDescriptor,
-        decoder: BluetoothBinaryDescriptorDecoder,
-        serializersModule: SerializersModule,
-    ) : Collection(binaryDescriptor, decoder, serializersModule) {
+    class List(binaryDescriptor: BluetoothBinaryDescriptor, decoder: BluetoothBinaryDescriptorDecoder, serializersModule: SerializersModule) :
+        Collection(binaryDescriptor, decoder, serializersModule) {
 
         var currentIndex = 0
 
@@ -193,11 +187,8 @@ private sealed class BluetoothBinaryCompositeDecoder(
         override fun binaryDescriptorAtIndex(index: Int): BluetoothBinaryDescriptor = binaryDescriptor.children.first()
     }
 
-    class Map(
-        binaryDescriptor: BluetoothBinaryDescriptor,
-        decoder: BluetoothBinaryDescriptorDecoder,
-        serializersModule: SerializersModule,
-    ) : Collection(binaryDescriptor, decoder, serializersModule) {
+    class Map(binaryDescriptor: BluetoothBinaryDescriptor, decoder: BluetoothBinaryDescriptorDecoder, serializersModule: SerializersModule) :
+        Collection(binaryDescriptor, decoder, serializersModule) {
 
         var currentIndex = 0
 
@@ -211,27 +202,29 @@ private sealed class BluetoothBinaryCompositeDecoder(
     }
 
     abstract fun binaryDescriptorAtIndex(index: Int): BluetoothBinaryDescriptor
+    abstract fun decoderAtIndex(index: Int): BluetoothBinaryDescriptorDecoder
 
-    override fun decodeBooleanElement(descriptor: SerialDescriptor, index: Int): Boolean = binaryDescriptorAtIndex(index).decodeBoolean(decoder)
+    override fun decodeBooleanElement(descriptor: SerialDescriptor, index: Int): Boolean = binaryDescriptorAtIndex(index).decodeBoolean(decoderAtIndex(index))
 
-    override fun decodeByteElement(descriptor: SerialDescriptor, index: Int): Byte = binaryDescriptorAtIndex(index).decodeByteElement(decoder)
+    override fun decodeByteElement(descriptor: SerialDescriptor, index: Int): Byte = binaryDescriptorAtIndex(index).decodeByteElement(decoderAtIndex(index))
 
-    override fun decodeCharElement(descriptor: SerialDescriptor, index: Int): Char = binaryDescriptorAtIndex(index).decodeCharElement(decoder)
+    override fun decodeCharElement(descriptor: SerialDescriptor, index: Int): Char = binaryDescriptorAtIndex(index).decodeCharElement(decoderAtIndex(index))
 
-    override fun decodeDoubleElement(descriptor: SerialDescriptor, index: Int): Double = binaryDescriptorAtIndex(index).decodeDoubleElement(decoder)
+    override fun decodeDoubleElement(descriptor: SerialDescriptor, index: Int): Double = binaryDescriptorAtIndex(index).decodeDoubleElement(decoderAtIndex(index))
 
-    override fun decodeFloatElement(descriptor: SerialDescriptor, index: Int): Float = binaryDescriptorAtIndex(index).decodeFloatElement(decoder)
+    override fun decodeFloatElement(descriptor: SerialDescriptor, index: Int): Float = binaryDescriptorAtIndex(index).decodeFloatElement(decoderAtIndex(index))
 
-    override fun decodeInlineElement(descriptor: SerialDescriptor, index: Int): Decoder = BluetoothBinaryDecoder(binaryDescriptorAtIndex(index), decoder, serializersModule)
+    override fun decodeInlineElement(descriptor: SerialDescriptor, index: Int): Decoder =
+        BluetoothBinaryDecoder(binaryDescriptorAtIndex(index), decoderAtIndex(index), serializersModule)
 
-    override fun decodeIntElement(descriptor: SerialDescriptor, index: Int): Int = binaryDescriptorAtIndex(index).decodeIntElement(decoder)
+    override fun decodeIntElement(descriptor: SerialDescriptor, index: Int): Int = binaryDescriptorAtIndex(index).decodeIntElement(decoderAtIndex(index))
 
-    override fun decodeLongElement(descriptor: SerialDescriptor, index: Int): Long = binaryDescriptorAtIndex(index).decodeLongElement(decoder)
+    override fun decodeLongElement(descriptor: SerialDescriptor, index: Int): Long = binaryDescriptorAtIndex(index).decodeLongElement(decoderAtIndex(index))
 
     @ExperimentalSerializationApi
     override fun <T : Any> decodeNullableSerializableElement(descriptor: SerialDescriptor, index: Int, deserializer: DeserializationStrategy<T?>, previousValue: T?): T? {
         val binaryDescriptor = binaryDescriptorAtIndex(index)
-        return if (decoder.flags[binaryDescriptor.bitIndex]) {
+        return if (decoderAtIndex(index).flags[binaryDescriptor.bitIndex]) {
             decodeSerializableElement(descriptor, index, deserializer, previousValue)
         } else {
             null
@@ -243,21 +236,22 @@ private sealed class BluetoothBinaryCompositeDecoder(
             val binaryDescriptor = binaryDescriptorAtIndex(index).children.first { binaryDescriptor ->
                 binaryDescriptor.fieldName == deserializer.descriptor.serialName
             }
-            BluetoothBinaryDecoder(binaryDescriptor, decoder, serializersModule).decodeSerializableValue(deserializer)
+            BluetoothBinaryDecoder(binaryDescriptor, decoderAtIndex(index), serializersModule).decodeSerializableValue(deserializer)
         }
         is PolymorphicKind.OPEN -> {
             val binaryDescriptor = binaryDescriptor.children.first { binaryDescriptor -> binaryDescriptor.fieldName == deserializer.descriptor.serialName }
-            BluetoothBinaryDecoder(binaryDescriptor, decoder, serializersModule).decodeSerializableValue(deserializer)
+            BluetoothBinaryDecoder(binaryDescriptor, decoderAtIndex(index), serializersModule).decodeSerializableValue(deserializer)
         }
         else -> {
-            BluetoothBinaryDecoder(binaryDescriptorAtIndex(index), decoder, serializersModule).decodeSerializableValue(deserializer)
+            BluetoothBinaryDecoder(binaryDescriptorAtIndex(index), decoderAtIndex(index), serializersModule).decodeSerializableValue(deserializer)
         }
     }
 
-    override fun decodeShortElement(descriptor: SerialDescriptor, index: Int): Short = binaryDescriptorAtIndex(index).decodeShortElement(decoder)
+    override fun decodeShortElement(descriptor: SerialDescriptor, index: Int): Short = binaryDescriptorAtIndex(index).decodeShortElement(decoderAtIndex(index))
 
     override fun decodeStringElement(descriptor: SerialDescriptor, index: Int): String = if (descriptor.kind is PolymorphicKind && index == 0) {
         binaryDescriptor.polymorphicMap.firstNotNullOf { (key, value) ->
+            val decoder = decoderAtIndex(index)
             if (decoder.peekNextIs(value.array)) {
                 decoder.nextBytes(value.array.size)
                 key
@@ -266,7 +260,7 @@ private sealed class BluetoothBinaryCompositeDecoder(
             }
         }
     } else {
-        binaryDescriptorAtIndex(index).decodeStringElement(decoder)
+        binaryDescriptorAtIndex(index).decodeStringElement(decoderAtIndex(index))
     }
 }
 
