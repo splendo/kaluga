@@ -25,6 +25,7 @@ import com.splendo.kaluga.base.bytes.toByteArray
 import com.splendo.kaluga.base.utils.MedFloat16
 import com.splendo.kaluga.base.utils.MedFloat32
 import com.splendo.kaluga.base.utils.UInt24
+import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.base.utils.toInt24
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -41,6 +42,10 @@ import kotlin.math.pow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 class BluetoothFormatTest {
 
@@ -86,6 +91,16 @@ class BluetoothFormatTest {
     @Serializable
     @JvmInline
     value class NumberValueContainer<T>(@Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) val value: T)
+
+    @Serializable
+    @JvmInline
+    value class RRInterval(
+        @Sizing(Length.`16_BIT`)
+        @Scalar(binaryExponent = 10)
+        val seconds: Double,
+    ) {
+        constructor(duration: Duration) : this(duration.toDouble(DurationUnit.SECONDS))
+    }
 
     @Test
     fun encodeBoolean() {
@@ -1439,46 +1454,46 @@ class BluetoothFormatTest {
 
     @Test
     fun encodeStringMap() {
-        // validateEncoding(
-        //     mapOf('A' to "Alfa", 'B' to "Bravo", 'C' to "Charlie"),
-        //     MapSerializer(Char.serializer(), String.serializer()),
-        //     buildByteArray {
-        //         add(uByte = 3u)
-        //         add('A')
-        //         add("Alfa")
-        //         add('B')
-        //         add("Bravo")
-        //         add('C')
-        //         add("Charlie")
-        //     },
-        // )
+        validateEncoding(
+            mapOf('A' to "Alfa", 'B' to "Bravo", 'C' to "Charlie"),
+            MapSerializer(Char.serializer(), String.serializer()),
+            buildByteArray {
+                add(uByte = 3u)
+                add('A')
+                add("Alfa")
+                add('B')
+                add("Bravo")
+                add('C')
+                add("Charlie")
+            },
+        )
         @Serializable
         data class StringMapContainer(
-            // @KeyEncoded(Encoding.UTF_8)
-            // @ValueEncoded(Encoding.UTF_8)
-            // val utf8Map: Map<Char, String>,
-            // @KeyEncoded(Encoding.UTF_16)
-            // @ValueEncoded(Encoding.UTF_16)
-            // val utf16Map: Map<Char, String>,
-            // @KeyEncoded(Encoding.ASCII)
-            // @ValueEncoded(Encoding.ASCII)
-            // val asciiMap: Map<Char, String>,
-            // @KeyLengthPrefix(lengthAsShort = true)
-            // @ValueLengthPrefix(canOverflow = true)
-            // val lengthPrefixMap: Map<String, String>,
-            // @KeyNullTerminated
-            // @ValueNullTerminated
-            // val nullTerminatedMap: Map<String, String>,
+            @KeyEncoded(Encoding.UTF_8)
+            @ValueEncoded(Encoding.UTF_8)
+            val utf8Map: Map<Char, String>,
+            @KeyEncoded(Encoding.UTF_16)
+            @ValueEncoded(Encoding.UTF_16)
+            val utf16Map: Map<Char, String>,
+            @KeyEncoded(Encoding.ASCII)
+            @ValueEncoded(Encoding.ASCII)
+            val asciiMap: Map<Char, String>,
+            @KeyLengthPrefix(lengthAsShort = true)
+            @ValueLengthPrefix(canOverflow = true)
+            val lengthPrefixMap: Map<String, String>,
+            @KeyNullTerminated
+            @ValueNullTerminated
+            val nullTerminatedMap: Map<String, String>,
             val nullableMap: Map<String?, String?>,
         )
 
         validateEncoding(
             StringMapContainer(
-                // mapOf('A' to "Alfa", 'B' to "Bravo", 'C' to "Charlie"),
-                // mapOf('D' to "Delta", 'E' to "Echo", 'F' to "Foxtrot"),
-                // mapOf('G' to "Golf", 'H' to "Hotel", 'I' to "India"),
-                // mapOf("Key" to "Value", "Long" to MutableList(1000) { "A" }.joinToString()),
-                // mapOf("" to "Empty", "Empty" to ""),
+                mapOf('A' to "Alfa", 'B' to "Bravo", 'C' to "Charlie"),
+                mapOf('D' to "Delta", 'E' to "Echo", 'F' to "Foxtrot"),
+                mapOf('G' to "Golf", 'H' to "Hotel", 'I' to "India"),
+                mapOf("Key" to "Value", "Long" to MutableList(1000) { "A" }.joinToString()),
+                mapOf("" to "Empty", "Empty" to ""),
                 mapOf("Key" to "Value", null to "Empty", "NoKey" to null),
             ),
             buildByteArray {
@@ -1586,6 +1601,9 @@ class BluetoothFormatTest {
             @Unsigned
             @Sizing(Length.`16_BIT`)
             val energyExpended: Int? = null,
+            @NullIfEmpty
+            @Unsized
+            val rrIntervals: List<RRInterval> = emptyList(),
         )
 
         validateEncoding(
@@ -1593,6 +1611,7 @@ class BluetoothFormatTest {
                 heartRate = 85,
                 contactSupported = true,
                 contactDetected = false,
+                rrIntervals = emptyList(),
             ),
             byteArrayOf(0x02, 0x55),
         )
@@ -1602,17 +1621,18 @@ class BluetoothFormatTest {
                 contactSupported = true,
                 contactDetected = false,
                 energyExpended = 500,
+                rrIntervals = listOf(RRInterval(1.seconds), RRInterval(0.5.seconds)),
             ),
-            byteArrayOf(0x0B, 0x2C, 0x01, 0xF4.toByte(), 0x01),
+            byteArrayOf(0x1B, 0x2C, 0x01, 0xF4.toByte(), 0x01, 0x00, 0x04, 0x00, 0x02),
         )
 
         validateEncoding(
             listOf(
                 HeartRate(50, contactSupported = true, contactDetected = true),
-                HeartRate(500, contactSupported = true, contactDetected = false),
+                HeartRate(500, contactSupported = true, contactDetected = false, rrIntervals = listOf(RRInterval(2.seconds), RRInterval(0.25.seconds))),
             ),
             ListSerializer(HeartRate.serializer()),
-            byteArrayOf(0x02, 0x06, 0x32, 0x03, 0xF4.toByte(), 0x01),
+            byteArrayOf(0x02, 0x06, 0x32, 0x13, 0xF4.toByte(), 0x01, 0x00, 0x08, 0x00, 0x01),
         )
     }
 
@@ -1621,15 +1641,15 @@ class BluetoothFormatTest {
 
     private fun <T> validateEncoding(value: T, serializer: KSerializer<T>, expectedValue: ByteArray, format: BluetoothFormat = BluetoothFormat) {
         val bytes = format.encodeToByteArray(serializer, value)
-        // assertTrue(bytes.contentEquals(expectedValue), "Expected ${expectedValue.toHexString(separator = " ")} but got ${bytes.toHexString(separator = " ")}")
+        assertTrue(bytes.contentEquals(expectedValue), "Expected ${expectedValue.toHexString(separator = " ")} but got ${bytes.toHexString(separator = " ")}")
 
         assertEquals(value, format.decodeFromByteArray(serializer, bytes))
 
-        // val nestedSerializer = Nested.serializer(serializer)
-        // val nested = Nested(value)
-        // val nestedBytes = format.encodeToByteArray(nestedSerializer, nested)
-        // assertTrue(nestedBytes.contentEquals(byteArrayOf(0x42, 0x23) + expectedValue + 0x22))
-        //
-        // assertEquals(nested, format.decodeFromByteArray(nestedSerializer, nestedBytes))
+        val nestedSerializer = Nested.serializer(serializer)
+        val nested = Nested(value)
+        val nestedBytes = format.encodeToByteArray(nestedSerializer, nested)
+        assertTrue(nestedBytes.contentEquals(byteArrayOf(0x42, 0x23) + expectedValue + 0x22))
+
+        assertEquals(nested, format.decodeFromByteArray(nestedSerializer, nestedBytes))
     }
 }
