@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.CRC16
 import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.buildByteArray
@@ -1633,6 +1634,29 @@ class BluetoothFormatTest {
             ),
             ListSerializer(HeartRate.serializer()),
             byteArrayOf(0x02, 0x06, 0x32, 0x13, 0xF4.toByte(), 0x01, 0x00, 0x08, 0x00, 0x01),
+        )
+    }
+
+    @Test
+    fun encodeWithChecksum() {
+        @Serializable
+        @Prefix([0x19])
+        @Postfix([0x45])
+        @Checksum(16, 0x8005u, 0x0000u, reflectIn = true, reflectOut = true)
+        data class WithChecksum(val index: Int, val content: String)
+
+        validateEncoding(
+            WithChecksum(1234, "123456789"),
+            buildByteArray {
+                add(0x19.toByte())
+                val body = buildByteArray {
+                    add(1234)
+                    add("123456789")
+                }
+                add(body)
+                add(CRC16.compute(body).toUShort())
+                add(0x45.toByte())
+            },
         )
     }
 

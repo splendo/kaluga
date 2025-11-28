@@ -27,13 +27,15 @@ import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.serializer
 
-sealed class BluetoothFormat(override val serializersModule: SerializersModule = EmptySerializersModule()) : BinaryFormat {
+sealed class BluetoothFormat(private val validateChecksum: Boolean, override val serializersModule: SerializersModule = EmptySerializersModule()) : BinaryFormat {
 
     class Builder internal constructor(from: BluetoothFormat) {
+
+        var validateChecksum: Boolean = true
         var serializersModule: SerializersModule = from.serializersModule
     }
 
-    companion object Default : BluetoothFormat() {
+    companion object Default : BluetoothFormat(true) {
         operator fun invoke(from: BluetoothFormat = this, builder: Builder.() -> Unit): BluetoothFormat {
             val b = Builder(
                 from,
@@ -77,7 +79,7 @@ sealed class BluetoothFormat(override val serializersModule: SerializersModule =
 
     override fun <T> decodeFromByteArray(deserializer: DeserializationStrategy<T>, bytes: ByteArray): T {
         val flag = BluetoothBinaryDescriptorRegistry.bluetoothBinaryDescriptor(deserializer.descriptor, serializersModule)
-        val decoder = BluetoothBinaryDecoder(flag, RootBluetoothBinaryDescriptorDecoder(bytes, flag.byteOrder), serializersModule)
+        val decoder = BluetoothBinaryDecoder(flag, RootBluetoothBinaryDescriptorDecoder(bytes, flag.byteOrder, validateChecksum), serializersModule)
 
         return deserializer.deserialize(decoder)
     }
@@ -85,4 +87,4 @@ sealed class BluetoothFormat(override val serializersModule: SerializersModule =
     inline fun <reified T> serializer(): KSerializer<T> = serializersModule.serializer()
 }
 
-private class BluetoothFormatImpl(builder: BluetoothFormat.Builder) : BluetoothFormat(builder.serializersModule)
+private class BluetoothFormatImpl(builder: BluetoothFormat.Builder) : BluetoothFormat(builder.validateChecksum, builder.serializersModule)

@@ -18,6 +18,8 @@
 package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.buildByteArray
+import com.splendo.kaluga.base.bytes.decodeULong
 import com.splendo.kaluga.base.bytes.isBitSet
 import com.splendo.kaluga.base.utils.toHexString
 import kotlinx.serialization.SerializationException
@@ -41,7 +43,8 @@ internal interface BluetoothBinaryDescriptorDecoder {
     fun nextBytes(size: Int): ByteArray
 }
 
-internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteArray, private val byteOrder: ByteOrder) : BluetoothBinaryDescriptorDecoder {
+internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteArray, private val byteOrder: ByteOrder, private val validateChecksum: Boolean) :
+    BluetoothBinaryDescriptorDecoder {
 
     override val flags: List<Boolean> = emptyList()
     private var offset = 0
@@ -110,7 +113,7 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
             isNextBitSet()
         }
 
-        return StructureBluetoothBinaryDescriptorDecoder(binaryDescriptor, this, flags, startingOffset, parentFooterSize)
+        return StructureBluetoothBinaryDescriptorDecoder(binaryDescriptor, this, flags, startingOffset, validateChecksum, parentFooterSize)
     }
 
     override fun endStructure() {
@@ -125,11 +128,15 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
     }
 }
 
+class InvalidChecksumException(val expected: ULong, val actual: ULong) : SerializationException() {
+    override val message: String = "Checksum expected $expected but got $actual"
+}
 internal class StructureBluetoothBinaryDescriptorDecoder(
     val descriptor: BluetoothBinaryDescriptor,
     val rootDecoder: RootBluetoothBinaryDescriptorDecoder,
     override val flags: List<Boolean>,
     private val startingOffset: Int,
+    private val validateChecksum: Boolean,
     parentFooterSize: Int,
 ) : BluetoothBinaryDescriptorDecoder {
     private val footerSize = parentFooterSize + (descriptor.blockSettings.postfix?.array?.size ?: 0)
@@ -143,15 +150,20 @@ internal class StructureBluetoothBinaryDescriptorDecoder(
     override fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor, flagBitSize: Int): BluetoothBinaryDescriptorDecoder =
         rootDecoder.beginStructure(binaryDescriptor, footerSize, flagBitSize)
     override fun endStructure() {
-        when (descriptor.blockSettings.checksumAlgorithm) {
-            ChecksumAlgorithm.NONE -> {}
-            ChecksumAlgorithm.CRC16 -> {
-                val bytesToValidate = rootDecoder.subArrayFrom(startingOffset)
-                // TODO: Validate
-            }
-            ChecksumAlgorithm.CRC32 -> {
-                val bytesToValidate = rootDecoder.subArrayFrom(startingOffset)
-                // TODO: Validate
+        descriptor.blockSettings.checksumAlgorithm?.let { crc ->
+            val body = rootDecoder.subArrayFrom(startingOffset)
+            val checksum = buildByteArray(descriptor.byteOrder) {
+                add(nextBytes(crc.byteWidth))
+                // Zero pad so we can decode as ULong
+                if (crc.byteWidth < 8) {
+                    add(ByteArray(8 - crc.byteWidth))
+                }
+            }.decodeULong(0, descriptor.byteOrder)
+            if (validateChecksum) {
+                val actual = crc.compute(body)
+                if (checksum != actual) {
+                    throw InvalidChecksumException(checksum, actual)
+                }
             }
         }
         descriptor.blockSettings.postfix?.let { postfixBytes ->

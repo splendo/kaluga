@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.serialization
 import com.splendo.kaluga.base.bytes.ByteArrayBuilder
 import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.buildByteArray
+import com.splendo.kaluga.base.bytes.toByteArray
 import kotlinx.serialization.SerializationException
 
 internal interface BinaryBuilder {
@@ -61,11 +62,14 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
             }
             actions.forEach { apply(it) }
         }
-        val checksum = when (binaryDescriptor.blockSettings.checksumAlgorithm) {
-            ChecksumAlgorithm.NONE -> byteArrayOf()
-            ChecksumAlgorithm.CRC16 -> byteArrayOf()
-            ChecksumAlgorithm.CRC32 -> byteArrayOf()
-        }
+        val checksum = binaryDescriptor.blockSettings.checksumAlgorithm?.let { crc ->
+            crc.compute(body).toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST).take(crc.byteWidth).let {
+                when (binaryDescriptor.byteOrder) {
+                    ByteOrder.MOST_SIGNIFICANT_FIRST -> it.reversed()
+                    ByteOrder.LEAST_SIGNIFICANT_FIRST -> it
+                }.toByteArray()
+            }
+        } ?: byteArrayOf()
         return buildByteArray(binaryDescriptor.byteOrder) {
             binaryDescriptor.blockSettings.prefix?.let {
                 add(it.array)

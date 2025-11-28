@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteOrder
+import com.splendo.kaluga.base.bytes.CRC
 import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.bytes.toByteArray
@@ -107,7 +108,7 @@ data class BluetoothBinaryDescriptor(
         }
     }
 
-    data class BlockSettings(val prefix: ByteArrayHolder?, val postfix: ByteArrayHolder?, val checksumAlgorithm: ChecksumAlgorithm)
+    data class BlockSettings(val prefix: ByteArrayHolder?, val postfix: ByteArrayHolder?, val checksumAlgorithm: CRC?)
 }
 
 @JvmInline
@@ -332,7 +333,9 @@ internal object BluetoothBinaryDescriptorRegistry {
         val blockSettings = BluetoothBinaryDescriptor.BlockSettings(
             annotations.filterIsInstance<Prefix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
             annotations.filterIsInstance<Postfix>().firstOrNull()?.value?.let { ByteArrayHolder(it) },
-            annotations.filterIsInstance<Checksum>().firstOrNull()?.algorithm ?: ChecksumAlgorithm.NONE,
+            annotations.filterIsInstance<Checksum>().firstOrNull()?.let { checksum ->
+                CRC(checksum.width, checksum.polynomial, checksum.init, checksum.xorOut, checksum.reflectIn, checksum.reflectOut)
+            },
         )
         val width = annotations.filterIsInstance<FlagWidth>().firstOrNull()?.bits ?: desiredWidth
         val bitIndex = if (width > 0) {

@@ -132,7 +132,7 @@ annotation class NullIfEmpty
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.CLASS)
-annotation class Checksum(val algorithm: ChecksumAlgorithm = ChecksumAlgorithm.CRC16)
+annotation class Checksum(val width: Int, val polynomial: ULong, val init: ULong, val xorOut: ULong = 0u, val reflectIn: Boolean = false, val reflectOut: Boolean = false)
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
