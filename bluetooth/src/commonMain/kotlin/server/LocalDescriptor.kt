@@ -155,17 +155,17 @@ inline fun <reified T : Any> LocalDescriptor.DSL.readableAlwaysSuccess(
     encrypted: Boolean = false,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
     noinline onRead: suspend LocalDescriptor.(ConnectedDevice) -> T,
-) = readableAlwaysSuccess(encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat, onRead)
+) = readableAlwaysSuccess(encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onRead)
 
 inline fun <reified T : Any> LocalDescriptor.DSL.writable(
     encrypted: Boolean = false,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
     noinline onFailedToWrite: suspend LocalDescriptor.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
     noinline onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> GattResponse.WriteResponse,
-) = writable(encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat, onFailedToWrite, onWrite)
+) = writable(encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onFailedToWrite, onWrite)
 
 inline fun <reified T : Any> LocalDescriptor.DSL.writableAlwaysSuccess(
     encrypted: Boolean = false,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
     noinline onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> Unit,
-) = writableAlwaysSuccess(encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat, onWrite)
+) = writableAlwaysSuccess(encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onWrite)

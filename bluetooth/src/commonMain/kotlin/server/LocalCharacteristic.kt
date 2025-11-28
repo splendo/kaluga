@@ -500,7 +500,7 @@ inline fun <reified T : Any> LocalCharacteristic.DSL.readableAlwaysSuccess(
     encrypted: Boolean = false,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
     noinline onRead: suspend LocalCharacteristic.(ConnectedDevice) -> T,
-) = readableAlwaysSuccess(encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat, onRead)
+) = readableAlwaysSuccess(encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onRead)
 
 inline fun <reified T : Any> LocalCharacteristic.DSL.writable(
     properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
@@ -508,14 +508,14 @@ inline fun <reified T : Any> LocalCharacteristic.DSL.writable(
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
     noinline onFailedToWrite: suspend LocalCharacteristic.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
     noinline onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> GattResponse.WriteResponse,
-) = writable(properties, encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat, onFailedToWrite, onWrite)
+) = writable(properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onFailedToWrite, onWrite)
 
 inline fun <reified T : Any> LocalCharacteristic.DSL.writableAlwaysSuccess(
     properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
     encrypted: Boolean = false,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
     noinline onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> Unit,
-) = writableAlwaysSuccess(properties, encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat, onWrite)
+) = writableAlwaysSuccess(properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onWrite)
 
 inline fun <reified T> Flow<T>.collectAsNotification(
     dsl: LocalCharacteristic.DSL,
@@ -526,7 +526,7 @@ inline fun <reified T> Flow<T>.collectAsNotification(
     encrypted: Boolean = false,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
 ) = with(dsl) {
-    collectAsNotification(scope, started, replay, properties, encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat)
+    collectAsNotification(scope, started, replay, properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat)
 }
 
 inline fun <reified T> SharedFlow<T>.collectAsNotification(
@@ -536,7 +536,7 @@ inline fun <reified T> SharedFlow<T>.collectAsNotification(
     encrypted: Boolean = false,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
 ) = with(dsl) {
-    collectAsNotification(scope, properties, encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat)
+    collectAsNotification(scope, properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat)
 }
 
 inline fun <reified T> StateFlow<T>.collectAsNotification(
@@ -546,7 +546,7 @@ inline fun <reified T> StateFlow<T>.collectAsNotification(
     encrypted: Boolean = false,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
 ) = with(dsl) {
-    collectAsNotification(scope, properties, encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat)
+    collectAsNotification(scope, properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat)
 }
 
 inline fun <reified T> ReceiveChannel<T>.consumeAsNotification(
@@ -556,5 +556,5 @@ inline fun <reified T> ReceiveChannel<T>.consumeAsNotification(
     encrypted: Boolean = false,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
 ) = with(dsl) {
-    consumeAsNotification(scope, properties, encrypted, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat)
+    consumeAsNotification(scope, properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat)
 }

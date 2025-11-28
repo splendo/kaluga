@@ -19,11 +19,14 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
 import com.splendo.kaluga.logging.ContextualLogger
 import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.SerializationStrategy
 
 interface Attribute {
     /**
@@ -41,6 +44,8 @@ fun <T : Attribute> Flow<List<T>>.getOrNull(uuid: UUID): Flow<T?> = this.map { a
     attributes.getOrNull(uuid)
 }.distinctUntilChanged()
 
+class FailedToReadException(val reason: GattResponse.ReadError) : Exception()
+
 /**
  * A bluetooth attribute conforming to the Attribute Protocol in Bluetooth Low Energy
  * @param ReadAction the [DeviceAction.Read] associated with the attribute
@@ -53,11 +58,24 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
     private val logger: ContextualLogger,
 ) : Attribute {
 
+    suspend fun read(): GattResponse.ReadResponse = startRead().response.await()
+    suspend fun <T> read(deserializationStrategy: DeserializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat): T = when (val response = read()) {
+        is GattResponse.ReadSuccess -> bluetoothFormat.decodeFromByteArray(deserializationStrategy, response.value)
+        is GattResponse.ReadError -> throw FailedToReadException(response)
+    }
+
+    suspend fun <T> readOrNull(deserializationStrategy: DeserializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat) =
+        runCatching { read(deserializationStrategy, bluetoothFormat) }.getOrNull()
+
+    suspend inline fun <reified T> read(bluetoothFormat: BluetoothFormat = BluetoothFormat): T = read(bluetoothFormat.serializer<T>(), bluetoothFormat)
+    suspend inline fun <reified T> readOrNull(bluetoothFormat: BluetoothFormat = BluetoothFormat): T? =
+        runCatching<RemoteAttribute<ReadAction, WriteAction>, T> { read(bluetoothFormat) }.getOrNull()
+
     /**
      * Creates and emits a [ReadAction]
      * @return the [ReadAction] created
      */
-    fun readValue(): ReadAction {
+    fun startRead(): ReadAction {
         val action = createReadAction()
         if (!action.response.isCompleted) {
             addAction(action)
@@ -67,12 +85,18 @@ abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : Dev
 
     internal abstract fun createReadAction(): ReadAction
 
+    suspend fun write(newValue: ByteArray): GattResponse.WriteResponse = startWrite(newValue).response.await()
+    suspend fun <T> write(serializationStrategy: SerializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat, newValue: T): GattResponse.WriteResponse =
+        write(bluetoothFormat.encodeToByteArray(serializationStrategy, newValue))
+    suspend inline fun <reified T> write(bluetoothFormat: BluetoothFormat = BluetoothFormat, newValue: T): GattResponse.WriteResponse =
+        write(bluetoothFormat.encodeToByteArray(bluetoothFormat.serializer<T>(), newValue))
+
     /**
      * Creates and emits a [WriteAction] to write a given [ByteArray]
      * @param newValue the [ByteArray] to write to the attribute
      * @return the [WriteAction] created
      */
-    fun writeValue(newValue: ByteArray): WriteAction {
+    fun startWrite(newValue: ByteArray): WriteAction {
         val action = createWriteAction(newValue)
         if (!action.response.isCompleted) {
             addAction(action)

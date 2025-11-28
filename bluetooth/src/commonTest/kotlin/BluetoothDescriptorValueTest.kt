@@ -55,7 +55,7 @@ class BluetoothDescriptorValueTest : BluetoothFlowTest<BluetoothFlowTest.Configu
         }
         test { descriptor ->
             assertNotNull(descriptor)
-            descriptor.writeValue(newValue)
+            descriptor.startWrite(newValue)
             val captor = AnyOrNullCaptor<DeviceAction<*>>()
             connectionManager.performActionMock.verifyWithin(value = captor)
             assertIs<DeviceAction.Write.Descriptor>(captor.lastCaptured)

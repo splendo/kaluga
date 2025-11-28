@@ -34,6 +34,7 @@ import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
+import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
 import com.splendo.kaluga.bluetooth.server.BluetoothServer
 import com.splendo.kaluga.bluetooth.server.BluetoothServerDSL
 import com.splendo.kaluga.bluetooth.server.ServerSettings
@@ -63,6 +64,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.serializer
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.seconds
 
@@ -563,6 +566,14 @@ fun Flow<RemoteCharacteristic?>.value(): Flow<ByteArray> = distinctUntilChanged(
     characteristic?.value() ?: emptyFlow()
 }
 
+fun <T> Flow<RemoteCharacteristic?>.value(deserializationStrategy: DeserializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat): Flow<T> =
+    distinctUntilChanged().flatMapLatest { characteristic ->
+        characteristic?.value(deserializationStrategy, bluetoothFormat) ?: emptyFlow()
+    }
+
+inline fun <reified T> Flow<RemoteCharacteristic?>.value(bluetoothFormat: BluetoothFormat = BluetoothFormat): Flow<T> =
+    value(bluetoothFormat.serializersModule.serializer(), bluetoothFormat)
+
 fun RemoteCharacteristic.value(): Flow<ByteArray> = flow {
     val valueChannel = Channel<ByteArray>(Channel.UNLIMITED)
     val subscription = subscribe {
@@ -576,3 +587,9 @@ fun RemoteCharacteristic.value(): Flow<ByteArray> = flow {
         }
     }
 }
+
+fun <T> RemoteCharacteristic.value(deserializationStrategy: DeserializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat): Flow<T> = value().map { value ->
+    bluetoothFormat.decodeFromByteArray(deserializationStrategy, value)
+}
+
+inline fun <reified T> RemoteCharacteristic.value(bluetoothFormat: BluetoothFormat = BluetoothFormat) = value(bluetoothFormat.serializer<T>(), bluetoothFormat)

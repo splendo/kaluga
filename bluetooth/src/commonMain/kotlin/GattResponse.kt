@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
 import kotlinx.serialization.SerializationStrategy
-import kotlinx.serialization.serializer
 
 sealed interface GattResponse {
     sealed interface ReadResponse : GattResponse
@@ -36,7 +35,7 @@ sealed interface GattResponse {
                 ReadSuccess(bluetoothFormat.encodeToByteArray(serializationStrategy, value).drop(offset).toByteArray())
 
             inline operator fun <reified T : Any> invoke(value: T, offset: Int = 0, bluetoothFormat: BluetoothFormat = BluetoothFormat) =
-                invoke(value, offset, bluetoothFormat.serializersModule.serializer<T>(), bluetoothFormat)
+                invoke(value, offset, bluetoothFormat.serializer<T>(), bluetoothFormat)
         }
 
         override fun equals(other: Any?): Boolean {

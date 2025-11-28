@@ -138,37 +138,60 @@ fun ByteArray.decodeString(settings: StringEncodingSettings, order: ByteOrder): 
     val next = { array.getOrNull(index++) }
     return generateSequence(next, { next() }).decodeString(settings)
 }
+
+/**
+ * Decodes a Sequence of Byte ordered Least Significant first into a String using [StringEncodingSettings]
+ * @throws [IllegalArgumentException] if the sequence terminates before allowed by [settings]
+ * @param settings the [StringEncodingSettings] to be used for decoding the String
+ * @return the decoded String
+ */
 fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
-    val terminatingSequence = when (val endMarking = settings.endMarking) {
+    val stringBytes = when (val endMarking = settings.endMarking) {
         is StringEncodingSettings.LengthPrefix -> {
             val length = when {
-                endMarking.lengthAsShort -> take(2).toList().toByteArray().decodeUShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
+                endMarking.lengthAsShort -> {
+                    val encodedShort = take(2).toList().toByteArray()
+                    require(encodedShort.size == 2) { "Did not include a Short as length" }
+                    encodedShort.decodeUShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
+                }
                 endMarking.canOverflow -> {
-                    val first = take(1).first()
+                    val first = first()
                     if (first == endMarking.sentinel) {
-                        take(2).toList().toByteArray().decodeUShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
+                        val encodedShort = take(2).toList().toByteArray()
+                        require(encodedShort.size == 2) { "Did not include a Short as length" }
+                        encodedShort.decodeUShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
                     } else {
                         first
                     }
                 }
-                else -> take(1).first()
-            }
-            take(settings.encoding.byteSize * length.toInt())
+                else -> first()
+            }.toInt() * settings.encoding.byteSize
+            val stringBytes = take(length).toList()
+            require(stringBytes.size == length) { "String size ${stringBytes.size} does not match encoded size $length" }
+            stringBytes
         }
         is StringEncodingSettings.FixedLength -> {
-            take(settings.encoding.byteSize * endMarking.length)
+            val length = settings.encoding.byteSize * endMarking.length
+            val stringBytes = take(length).toList()
+            require(stringBytes.size == length) { "String size ${stringBytes.size} does not match fixed size $length" }
+            stringBytes
         }
         is StringEncodingSettings.NullTerminated -> {
-            withIndex().takeWhile { (index, byte) ->
-                (settings.encoding == Encoding.UTF_16 && index % 2 != 0) || byte != 0x00.toByte()
-            }.map { (_, byte) -> byte }
+            var hasFoundNull = false
+            val stringBytes = withIndex().takeWhile { (index, byte) ->
+                val isCharacterByte = (settings.encoding == Encoding.UTF_16 && index % 2 != 0) || byte != 0x00.toByte()
+                hasFoundNull = !isCharacterByte
+                isCharacterByte
+            }.map { (_, byte) -> byte }.toList()
+            require(hasFoundNull) { "Does not end with a null marker" }
+            stringBytes
         }
         is StringEncodingSettings.NoMarking -> {
-            this
+            toList()
         }
     }
     var result = ""
-    val iterator = terminatingSequence.iterator()
+    val iterator = stringBytes.iterator()
     while (iterator.hasNext()) {
         result += when (settings.encoding) {
             UTF_8 -> iterator.next().decodeUTF8Char()

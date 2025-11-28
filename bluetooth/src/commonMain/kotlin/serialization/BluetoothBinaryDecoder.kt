@@ -438,5 +438,13 @@ internal fun BluetoothBinaryDescriptor.decodeStringElement(decoder: BluetoothBin
     val stringSequence = generateSequence(next) {
         next()
     }
-    return stringSequence.decodeString(settings)
+    // Decode String. Since the sequence would simply terminate if decoder is empty, any unexpected data will be thrown by ByteArray.decodeString
+    // Treat these exceptions as a ByteArrayEndedBeforeSerializationCompleted
+    return try {
+        stringSequence.decodeString(settings)
+    } catch (e: IllegalArgumentException) {
+        throw ByteArrayEndedBeforeSerializationCompleted(e.message.orEmpty())
+    } catch (e: NoSuchElementException) {
+        throw ByteArrayEndedBeforeSerializationCompleted(e.message.orEmpty())
+    }
 }

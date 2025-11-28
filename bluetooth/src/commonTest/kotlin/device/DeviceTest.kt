@@ -189,7 +189,7 @@ class DeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithD
         }
 
         mainAction {
-            characteristic.readValue()
+            characteristic.startRead()
             yieldMultiple(2)
         }
 
@@ -203,7 +203,7 @@ class DeviceTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithD
         }
 
         mainAction {
-            descriptor.writeValue(byteArrayOf())
+            descriptor.startWrite(byteArrayOf())
             yieldMultiple(2)
         }
 

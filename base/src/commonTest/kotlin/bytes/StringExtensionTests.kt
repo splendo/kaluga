@@ -111,6 +111,12 @@ class StringExtensionTests {
             ByteOrder.MOST_SIGNIFICANT_FIRST,
             SHORT_STRING.reversed().map { it.toAscii() }.toByteArray() + SHORT_STRING.length.toUShort().toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST),
         )
+
+        assertFails {
+            val settings = StringEncodingSettings(StringEncodingSettings.LengthPrefix(), Encoding.UTF_8)
+            val encoded = SHORT_STRING.toByteArray(settings, ByteOrder.LEAST_SIGNIFICANT_FIRST).dropLast(5).toByteArray()
+            encoded.decodeString(settings, ByteOrder.LEAST_SIGNIFICANT_FIRST)
+        }
     }
 
     @Test
@@ -358,9 +364,9 @@ class StringExtensionTests {
         )
 
         SHORT_STRING.encodeDecode(
-            StringEncodingSettings(StringEncodingSettings.NullTerminated, Encoding.ASCII),
+            StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.ASCII),
             ByteOrder.MOST_SIGNIFICANT_FIRST,
-            byteArrayOf(0x00.toByte()) + SHORT_STRING.reversed().map { it.toAscii() }.toByteArray(),
+            SHORT_STRING.reversed().map { it.toAscii() }.toByteArray(),
         )
     }
 

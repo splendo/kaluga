@@ -21,13 +21,14 @@ import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.utils.containsAny
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.bluetooth.GattResponse
+import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
 import com.splendo.kaluga.logging.ContextualLogger
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.serialization.DeserializationStrategy
 
 interface Characteristic : Attribute {
     val service: Service
@@ -95,6 +96,14 @@ open class RemoteCharacteristic(
         }
         subscriptions.add(subscription)
     }
+
+    suspend fun <T> subscribe(deserializationStrategy: DeserializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat, onUpdate: (T) -> Unit): Subscription =
+        subscribe {
+            bluetoothFormat.decodeFromByteArray(deserializationStrategy, it)
+        }
+
+    suspend inline fun <reified T> subscribe(bluetoothFormat: BluetoothFormat = BluetoothFormat, noinline onUpdate: (T) -> Unit) =
+        subscribe(bluetoothFormat.serializer<T>(), bluetoothFormat, onUpdate)
 
     suspend fun enableNotification(): DeviceAction.Notification? {
         do {
