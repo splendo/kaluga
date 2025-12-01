@@ -101,7 +101,7 @@ internal class RootBluetoothBinaryDescriptorDecoder(private val byteArray: ByteA
 
     override fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor, flagBitSize: Int): BluetoothBinaryDescriptorDecoder = beginStructure(binaryDescriptor, 0, flagBitSize)
     fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor, parentFooterSize: Int, flagBitSize: Int): StructureBluetoothBinaryDescriptorDecoder {
-        binaryDescriptor.blockSettings.prefix?.let { prefixBytes ->
+        binaryDescriptor.structureSettings.prefix?.let { prefixBytes ->
             val actualPrefix = nextBytes(prefixBytes.array.size)
             if (!actualPrefix.contentEquals(prefixBytes.array)) {
                 throw InvalidPrefix("Expected Prefix ${prefixBytes.array.toHexString()} but got ${actualPrefix.toHexString()}")
@@ -139,7 +139,7 @@ internal class StructureBluetoothBinaryDescriptorDecoder(
     private val validateChecksum: Boolean,
     parentFooterSize: Int,
 ) : BluetoothBinaryDescriptorDecoder {
-    private val footerSize = parentFooterSize + (descriptor.blockSettings.postfix?.array?.size ?: 0)
+    private val footerSize = parentFooterSize + (descriptor.structureSettings.postfix?.array?.size ?: 0)
 
     override fun isEmpty(): Boolean = !rootDecoder.hasAtLeast(footerSize + 1)
 
@@ -150,7 +150,7 @@ internal class StructureBluetoothBinaryDescriptorDecoder(
     override fun beginStructure(binaryDescriptor: BluetoothBinaryDescriptor, flagBitSize: Int): BluetoothBinaryDescriptorDecoder =
         rootDecoder.beginStructure(binaryDescriptor, footerSize, flagBitSize)
     override fun endStructure() {
-        descriptor.blockSettings.checksumAlgorithm?.let { crc ->
+        descriptor.structureSettings.checksumAlgorithm?.let { crc ->
             val body = rootDecoder.subArrayFrom(startingOffset)
             val checksum = buildByteArray(descriptor.byteOrder) {
                 add(nextBytes(crc.byteWidth))
@@ -166,7 +166,7 @@ internal class StructureBluetoothBinaryDescriptorDecoder(
                 }
             }
         }
-        descriptor.blockSettings.postfix?.let { postfixBytes ->
+        descriptor.structureSettings.postfix?.let { postfixBytes ->
             val actualPostfix = nextBytes(postfixBytes.array.size)
             if (!actualPostfix.contentEquals(postfixBytes.array)) {
                 throw InvalidPostfix("Expected Postfix ${postfixBytes.array.toHexString()} but got ${actualPostfix.toHexString()}")

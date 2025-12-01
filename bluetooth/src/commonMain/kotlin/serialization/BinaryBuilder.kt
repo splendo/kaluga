@@ -62,7 +62,7 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
             }
             actions.forEach { apply(it) }
         }
-        val checksum = binaryDescriptor.blockSettings.checksumAlgorithm?.let { crc ->
+        val checksum = binaryDescriptor.structureSettings.checksumAlgorithm?.let { crc ->
             crc.compute(body).toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST).take(crc.byteWidth).let {
                 when (binaryDescriptor.byteOrder) {
                     ByteOrder.MOST_SIGNIFICANT_FIRST -> it.reversed()
@@ -71,12 +71,12 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
             }
         } ?: byteArrayOf()
         return buildByteArray(binaryDescriptor.byteOrder) {
-            binaryDescriptor.blockSettings.prefix?.let {
+            binaryDescriptor.structureSettings.prefix?.let {
                 add(it.array)
             }
             add(body)
             add(checksum)
-            binaryDescriptor.blockSettings.postfix?.let {
+            binaryDescriptor.structureSettings.postfix?.let {
                 add(it.array)
             }
         }
