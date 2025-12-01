@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.serialization
 
 import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.Encoding
+import com.splendo.kaluga.base.bytes.StringEncodingSettings
 import com.splendo.kaluga.base.utils.Int24
 import com.splendo.kaluga.base.utils.UInt24
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -87,6 +88,12 @@ annotation class ByteOrder(val order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FI
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
 annotation class LengthPrefix(val lengthAsShort: Boolean = false, val canOverflow: Boolean = false, val sentinel: Byte = 0xFF.toByte())
+
+internal fun LengthPrefix.asLengthPrefix() = when {
+    lengthAsShort -> StringEncodingSettings.LengthPrefix.ShortLength
+    canOverflow -> StringEncodingSettings.LengthPrefix.WithOverflow(sentinel)
+    else -> StringEncodingSettings.LengthPrefix.ByteLength
+}
 
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo

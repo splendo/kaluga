@@ -17,18 +17,20 @@
 
 package com.splendo.kaluga.base.bytes
 
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.decodeInt
-import com.splendo.kaluga.base.bytes.toByteArray
-
 /**
  * Converts [ByteArray] to [Float]
- * @param octetIndex index of byte to start
- * @param byteOrder can take [com.splendo.kaluga.base.bytes.ByteOrder.MOST_SIGNIFICANT_FIRST] and [com.splendo.kaluga.base.bytes.ByteOrder.LEAST_SIGNIFICANT_FIRST]
- * @throws IllegalArgumentException
+ * @param octetIndex index of byte to start. Must not be higher than the fourth to last octet.
+ * @param byteOrder [ByteOrder] to use for decoding.
+ * @throws IllegalArgumentException if [octetIndex] is bigger than the size of the [ByteArray] minus 4.
+ * @return the decoded [Float]
  */
 fun ByteArray.decodeFloat(octetIndex: Int, byteOrder: ByteOrder): Float = Float.fromBits(
     decodeInt(octetIndex, byteOrder),
 )
 
+/**
+ * Encodes a [Float] into a [ByteArray]
+ * @param byteOrder [ByteOrder] to use for encoding.
+ * @return [ByteArray] representing the [Float]
+ */
 fun Float.toByteArray(byteOrder: ByteOrder) = toRawBits().toByteArray(byteOrder)

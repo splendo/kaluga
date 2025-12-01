@@ -1073,19 +1073,35 @@ public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$FixedLen
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix : com/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking {
-	public fun <init> ()V
-	public fun <init> (ZZB)V
-	public synthetic fun <init> (ZZBILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Z
-	public final fun component2 ()Z
-	public final fun component3 ()B
-	public final fun copy (ZZB)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix;ZZBILjava/lang/Object;)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix;
-	public final fun encodeSize-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+public abstract class com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix : com/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking {
+	public abstract fun encodeSize-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$ByteLength : com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$ByteLength;
+	public fun encodeSize-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getCanOverflow ()Z
-	public final fun getLengthAsShort ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$ShortLength : com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$ShortLength;
+	public fun encodeSize-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$WithOverflow : com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix {
+	public fun <init> ()V
+	public fun <init> (B)V
+	public synthetic fun <init> (BILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()B
+	public final fun copy (B)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$WithOverflow;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$WithOverflow;BILjava/lang/Object;)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$WithOverflow;
+	public fun encodeSize-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getSentinel ()B
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -2233,7 +2249,8 @@ public final class com/splendo/kaluga/base/utils/Int24$Companion {
 }
 
 public final class com/splendo/kaluga/base/utils/Int24Kt {
-	public static final fun toInt24 (I)I
+	public static final fun toInt24 (Ljava/lang/Number;)I
+	public static final fun toUInt24-utNcqao (I)I
 }
 
 public abstract class com/splendo/kaluga/base/utils/KalugaDate : java/lang/Comparable {
@@ -2374,11 +2391,6 @@ public final class com/splendo/kaluga/base/utils/MedFloat16 : java/lang/Comparab
 	public static final field MAX_MANTISSA I
 	public static final field MIN_EXPONENT I
 	public static final field MIN_MANTISSA I
-	public static final field NAN I
-	public static final field NEGATIVE_INFINITY I
-	public static final field NOT_AT_THIS_RESOLUTION I
-	public static final field POSITIVE_INFINITY I
-	public static final field RESERVED_FOR_FUTURE_USE I
 	public static final synthetic fun box-impl (D)Lcom/splendo/kaluga/base/utils/MedFloat16;
 	public synthetic fun compareTo (Ljava/lang/Object;)I
 	public fun compareTo-8th3mqE (D)I
@@ -2390,6 +2402,12 @@ public final class com/splendo/kaluga/base/utils/MedFloat16 : java/lang/Comparab
 	public final fun getValue ()D
 	public fun hashCode ()I
 	public static fun hashCode-impl (D)I
+	public static final fun isFinite-impl (D)Z
+	public static final fun isInfinite-impl (D)Z
+	public static final fun isNaN-impl (D)Z
+	public static final fun isNegativeInfinity-impl (D)Z
+	public static final fun isNotAvailableAtThisResolution-impl (D)Z
+	public static final fun isPositiveInfinity-impl (D)Z
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (D)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()D
@@ -2397,15 +2415,13 @@ public final class com/splendo/kaluga/base/utils/MedFloat16 : java/lang/Comparab
 
 public final class com/splendo/kaluga/base/utils/MedFloat16$Companion {
 	public final fun canRepresent (D)Z
+	public final fun getNAN-ZdtFW6w ()D
+	public final fun getNEGATIVE_INFINITY-ZdtFW6w ()D
+	public final fun getPOSITIVE_INFINITY-ZdtFW6w ()D
 }
 
 public final class com/splendo/kaluga/base/utils/MedFloat32 : java/lang/Comparable {
 	public static final field Companion Lcom/splendo/kaluga/base/utils/MedFloat32$Companion;
-	public static final field NAN I
-	public static final field NEGATIVE_INFINITY I
-	public static final field NOT_AT_THIS_RESOLUTION I
-	public static final field POSITIVE_INFINITY I
-	public static final field RESERVED_FOR_FUTURE_USE I
 	public static final synthetic fun box-impl (D)Lcom/splendo/kaluga/base/utils/MedFloat32;
 	public synthetic fun compareTo (Ljava/lang/Object;)I
 	public fun compareTo-F5bENeA (D)I
@@ -2417,6 +2433,12 @@ public final class com/splendo/kaluga/base/utils/MedFloat32 : java/lang/Comparab
 	public final fun getValue ()D
 	public fun hashCode ()I
 	public static fun hashCode-impl (D)I
+	public static final fun isFinite-impl (D)Z
+	public static final fun isInfinite-impl (D)Z
+	public static final fun isNaN-impl (D)Z
+	public static final fun isNegativeInfinity-impl (D)Z
+	public static final fun isNotAvailableAtThisResolution-impl (D)Z
+	public static final fun isPositiveInfinity-impl (D)Z
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (D)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()D
@@ -2488,6 +2510,7 @@ public final class com/splendo/kaluga/base/utils/UInt24$Companion {
 }
 
 public final class com/splendo/kaluga/base/utils/UInt24Kt {
+	public static final fun toInt24-AwlQDGc (I)I
 	public static final fun toUInt24-WZ4Q5Ns (I)I
 }
 

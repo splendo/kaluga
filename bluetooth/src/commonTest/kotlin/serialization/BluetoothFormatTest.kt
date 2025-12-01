@@ -839,7 +839,7 @@ class BluetoothFormatTest {
                 add("Sentence G", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
                 add(
                     "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.",
-                    StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(lengthAsShort = false, canOverflow = true)),
+                    StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()),
                 )
                 add("Sentence I", StringEncodingSettings(endMarking = StringEncodingSettings.NoMarking))
             },
@@ -1174,10 +1174,10 @@ class BluetoothFormatTest {
                 add("K", settings = StringEncodingSettings(encoding = Encoding.ASCII))
                 add("L", settings = StringEncodingSettings(encoding = Encoding.ASCII))
                 add(uByte = 4u)
-                add("M", settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))
-                add("N", settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))
-                add(MutableList(500) { "O" }.joinToString(), settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))
-                add("P", settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))
+                add("M", settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()))
+                add("N", settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()))
+                add(MutableList(500) { "O" }.joinToString(), settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()))
+                add("P", settings = StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()))
                 add(uByte = 4u)
                 add("Q", settings = StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
                 add("R", settings = StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
@@ -1520,10 +1520,10 @@ class BluetoothFormatTest {
                 add('I', Encoding.ASCII)
                 add("India", StringEncodingSettings(encoding = Encoding.ASCII))
                 add(uByte = 2u)
-                add("Key", StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(lengthAsShort = true)))
-                add("Value", StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))
-                add("Long", StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(lengthAsShort = true)))
-                add(MutableList(1000) { "A" }.joinToString(), StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix(canOverflow = true)))
+                add("Key", StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.ShortLength))
+                add("Value", StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()))
+                add("Long", StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.ShortLength))
+                add(MutableList(1000) { "A" }.joinToString(), StringEncodingSettings(endMarking = StringEncodingSettings.LengthPrefix.WithOverflow()))
                 add(uByte = 2u)
                 add("", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))
                 add("Empty", StringEncodingSettings(endMarking = StringEncodingSettings.NullTerminated))

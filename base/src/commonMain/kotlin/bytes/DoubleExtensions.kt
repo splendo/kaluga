@@ -17,17 +17,20 @@
 
 package com.splendo.kaluga.base.bytes
 
-import com.splendo.kaluga.base.bytes.ByteOrder
-import com.splendo.kaluga.base.bytes.toByteArray
-
 /**
- * Converts [ByteArray] to [Float]
- * @param octetIndex index of byte to start
- * @param byteOrder can take [ByteOrder.MOST_SIGNIFICANT_FIRST] and [ByteOrder.LEAST_SIGNIFICANT_FIRST]
- * @throws IllegalArgumentException
+ * Converts [ByteArray] to [Double]
+ * @param octetIndex index of byte to start. Must not be higher than the eight to last octet.
+ * @param byteOrder [ByteOrder] to use for decoding.
+ * @throws IllegalArgumentException if [octetIndex] is bigger than the size of the [ByteArray] minus 8.
+ * @return the decoded [Double]
  */
 fun ByteArray.decodeDouble(octetIndex: Int, byteOrder: ByteOrder): Double = Double.fromBits(
     decodeLong(octetIndex, byteOrder),
 )
 
+/**
+ * Encodes a [Double] into a [ByteArray]
+ * @param byteOrder [ByteOrder] to use for encoding.
+ * @return [ByteArray] representing the [Double]
+ */
 fun Double.toByteArray(byteOrder: ByteOrder) = toRawBits().toByteArray(byteOrder)

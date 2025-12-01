@@ -18,50 +18,63 @@
 package com.splendo.kaluga.base.bytes
 
 import com.splendo.kaluga.base.utils.MedFloat16
+import kotlin.experimental.and
+import kotlin.experimental.or
 import kotlin.math.pow
 
+/**
+ * Converts [ByteArray] to [MedFloat16]
+ * @param octetIndex index of byte to start. Must not be higher than the second to last octet.
+ * @throws IllegalArgumentException if [octetIndex] is bigger than the size of the [ByteArray] minus 2.
+ * @return the decoded [MedFloat16]
+ */
 fun ByteArray.decodeMedFloat16(octetIndex: Int): MedFloat16 {
     for (offset in 0..<Short.SIZE_BYTES) {
         require(octetIndex + offset in indices) {
             "Cannot convert ByteArray to MedFloat16. The byte with index ${octetIndex + offset} is not available in ByteArray."
         }
     }
-    val bytes = drop(octetIndex)
 
-    val raw = (bytes[1].toInt() shl 8) or (bytes[0].toInt() and 0xFF)
+    val content = drop(octetIndex).take(2).toByteArray()
+    return when {
+        content.contentEquals(MedFloat16.NAN_BYTE_VALUE) -> Double.NaN
+        content.contentEquals(MedFloat16.POSITIVE_INFINITY_BYTE_VALUE) -> Double.POSITIVE_INFINITY
+        content.contentEquals(MedFloat16.NEGATIVE_INFINITY_BYTE_VALUE) -> Double.NEGATIVE_INFINITY
+        content.contentEquals(MedFloat16.NOT_AT_THIS_RESOLUTION_BYTE_VALUE) -> Double.NaN
+        content.contentEquals(MedFloat16.RESERVED_FOR_FUTURE_USE_BYTE_VALUE) -> Double.NaN
+        else -> {
+            val raw = content.decodeShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST)
 
-    // Extract fields
-    val mantissa = (raw and 0x0FFF).let { mantissa ->
-        if (mantissa and 0x800 != 0) {
-            mantissa or 0xFFFFF000.toInt()
-        } else {
-            mantissa
+            // Extract fields
+            val mantissa = (raw and 0x0FFF).let { mantissa ->
+                if (mantissa and 0x800 != 0.toShort()) {
+                    mantissa or 0xF000.toShort()
+                } else {
+                    mantissa
+                }
+            }
+
+            val exponent = ((raw shr 12) and 0x0F).let { exponent ->
+                if (exponent and 0x08 != 0.toShort()) {
+                    exponent or 0xFFF0.toShort()
+                } else {
+                    exponent
+                }
+            }
+
+            mantissa * 10.0.pow(exponent.toInt())
         }
-    }
-
-    val exponent = ((raw shr 12) and 0x0F).let { exponent ->
-        if (exponent and 0x08 != 0) {
-            exponent or 0xFFFFFFF0.toInt()
-        } else {
-            exponent
-        }
-    }
-
-    val doubleValue = when (mantissa) {
-        MedFloat16.NAN -> Double.NaN
-        MedFloat16.POSITIVE_INFINITY -> Double.POSITIVE_INFINITY
-        MedFloat16.NEGATIVE_INFINITY -> Double.NEGATIVE_INFINITY
-        MedFloat16.NOT_AT_THIS_RESOLUTION -> Double.NaN
-        MedFloat16.RESERVED_FOR_FUTURE_USE -> Double.NaN
-        else -> mantissa * 10.0.pow(exponent)
-    }
-    return MedFloat16(doubleValue)
+    }.let { MedFloat16(it) }
 }
 
+/**
+ * Encodes this [MedFloat16] into a [ByteArray].
+ * @return the encoded [ByteArray].
+ */
 fun MedFloat16.toByteArray(): ByteArray {
-    if (value.isNaN()) return MedFloat16.NAN.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
-    if (value == Double.POSITIVE_INFINITY) return MedFloat16.POSITIVE_INFINITY.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
-    if (value == Double.NEGATIVE_INFINITY) return MedFloat16.NEGATIVE_INFINITY.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+    if (value.isNaN()) return MedFloat16.NAN_BYTE_VALUE
+    if (value == Double.POSITIVE_INFINITY) return MedFloat16.POSITIVE_INFINITY_BYTE_VALUE
+    if (value == Double.NEGATIVE_INFINITY) return MedFloat16.NEGATIVE_INFINITY_BYTE_VALUE
     var mantissa = value
     var exponent = 0
 
@@ -85,7 +98,7 @@ fun MedFloat16.toByteArray(): ByteArray {
     }
 
     if (mantissa.toInt() !in MedFloat16.MIN_MANTISSA..MedFloat16.MAX_MANTISSA) {
-        return MedFloat16.NOT_AT_THIS_RESOLUTION.toShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+        return MedFloat16.NOT_AT_THIS_RESOLUTION_BYTE_VALUE
     }
 
     val mant = mantissa.toInt()

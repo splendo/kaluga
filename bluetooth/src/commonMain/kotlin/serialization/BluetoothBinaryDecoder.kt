@@ -127,10 +127,11 @@ private sealed class BluetoothBinaryCompositeDecoder(protected val binaryDescrip
         private val expectedSize = if (!binaryDescriptor.isNullable || !collectionSettings.nullIfEmpty || decoder.flags[binaryDescriptor.bitIndex]) {
             when (val lengthMarking = collectionSettings.lengthMarking) {
                 is BluetoothBinaryDescriptor.CollectionSettings.LengthPrefix -> {
-                    when {
-                        lengthMarking.endMarking.lengthAsShort -> decoder.nextBytes(2).decodeUShort(0, binaryDescriptor.byteOrder).toInt()
-                        else -> {
-                            if (decoder.peekNextIs(byteArrayOf(lengthMarking.endMarking.sentinel))) {
+                    when (val endMarking = lengthMarking.endMarking) {
+                        is StringEncodingSettings.LengthPrefix.ByteLength -> decoder.nextBytes(1)[0].toInt()
+                        is StringEncodingSettings.LengthPrefix.ShortLength -> decoder.nextBytes(2).decodeUShort(0, binaryDescriptor.byteOrder).toInt()
+                        is StringEncodingSettings.LengthPrefix.WithOverflow -> {
+                            if (decoder.peekNextIs(byteArrayOf(endMarking.sentinel))) {
                                 decoder.nextBytes(3).decodeUShort(1, binaryDescriptor.byteOrder).toInt()
                             } else {
                                 decoder.nextBytes(1)[0].toInt()
@@ -427,7 +428,7 @@ internal fun BluetoothBinaryDescriptor.decodeCharElement(decoder: BluetoothBinar
 internal fun BluetoothBinaryDescriptor.decodeStringElement(decoder: BluetoothBinaryDescriptorDecoder): String {
     val settings = stringSettings?.let {
         StringEncodingSettings(it.endMarking, it.encoding)
-    } ?: StringEncodingSettings(StringEncodingSettings.LengthPrefix(), Encoding.UTF_8)
+    } ?: StringEncodingSettings(StringEncodingSettings.LengthPrefix.ByteLength, Encoding.UTF_8)
     val next = {
         if (!decoder.isEmpty()) {
             decoder.nextBytes(1)[0]

@@ -206,9 +206,22 @@ object CRC64 : CRC by CRC(64, 0x42f0e1eba9ea3693u, 0x0000000000000000u) {
     object XZ : CRC by CRC(64, 0x42f0e1eba9ea3693u, 0xffffffffffffffffu, xorOut = 0xffffffffffffffffu, reflectIn = true, reflectOut = true)
 }
 
+/**
+ * A Cyclic Redundancy Check (CRC)
+ */
 interface CRC {
 
     companion object {
+
+        /**
+         * Creates a [CRC] with the given parameters.
+         * @param width the width of the CRC in bits. Must be between 1 and 64 bits.
+         * @param polynomial the polynomial used to compute the CRC.
+         * @param init the initial value of the CRC.
+         * @param xorOut the value to XOR with the result to get the final CRC.
+         * @param reflectIn whether to reflect the input bytes before computing the CRC.
+         * @param reflectOut whether to reflect the output bytes after computing the CRC.
+         */
         operator fun invoke(width: Int, polynomial: ULong, init: ULong, xorOut: ULong = 0u, reflectIn: Boolean = false, reflectOut: Boolean = false): CRC =
             Impl(width, polynomial, init, xorOut, reflectIn, reflectOut)
     }
@@ -291,5 +304,10 @@ interface CRC {
     val width: Int
     val byteWidth: Int get() = ceil(width / 8.0).toInt()
 
+    /**
+     * Computes the CRC of the given data.
+     * @param data the data to compute the CRC of.
+     * @return the CRC of the given data.
+     */
     fun compute(data: ByteArray): ULong
 }

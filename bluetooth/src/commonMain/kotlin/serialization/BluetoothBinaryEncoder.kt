@@ -397,7 +397,7 @@ internal fun BinaryBuilder.encodeDoubleElement(value: Double, binaryDescriptor: 
 
 internal fun BinaryBuilder.encodeStringElement(value: String, binaryDescriptor: BluetoothBinaryDescriptor) {
     val encoding = binaryDescriptor.stringSettings?.encoding ?: Encoding.UTF_8
-    val endMarking = binaryDescriptor.stringSettings?.endMarking ?: StringEncodingSettings.LengthPrefix()
+    val endMarking = binaryDescriptor.stringSettings?.endMarking ?: StringEncodingSettings.LengthPrefix.ByteLength
     addAction { add(value, StringEncodingSettings(endMarking, encoding), binaryDescriptor.byteOrder) }
     if (endMarking is StringEncodingSettings.NoMarking) {
         makeUnconstrained()

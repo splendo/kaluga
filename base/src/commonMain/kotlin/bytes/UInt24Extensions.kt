@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.base.bytes
 
+import com.splendo.kaluga.base.utils.Int24
 import com.splendo.kaluga.base.utils.UInt24
 import com.splendo.kaluga.base.utils.toUInt24
 
@@ -26,6 +27,13 @@ infix fun UInt24.shl(bitCount: Int) = (value shl bitCount).toUInt24()
 infix fun UInt24.or(other: UInt24) = UInt24(value or other.value)
 infix fun UInt24.and(other: UInt24) = UInt24(value and other.value)
 
+/**
+ * Decodes a [ByteArray] into an [UInt24] using the 3 bytes starting from [octetIndex]
+ * @param octetIndex the the index of the octet start the decoding from. Must be be at most the third to last octet
+ * @param byteOrder the [ByteOrder] in which the [UInt24] is encoded
+ * @throws IllegalArgumentException if [octetIndex] or its next two octets are not available in the [ByteArray]
+ * @return the decoded [UInt24]
+ */
 fun ByteArray.decodeUInt24(octetIndex: Int, byteOrder: ByteOrder): UInt24 {
     for (offset in 0..<UInt24.SIZE_BYTES) {
         require(octetIndex + offset in indices) {
@@ -37,8 +45,25 @@ fun ByteArray.decodeUInt24(octetIndex: Int, byteOrder: ByteOrder): UInt24 {
     }.toUInt24()
 }
 
+/**
+ * Encodes this [Int24] into a [ByteArray].
+ * @param byteOrder the [ByteOrder] in which the [Int24] is encoded
+ * @return the encoded [ByteArray].
+ */
 fun UInt24.toByteArray(byteOrder: ByteOrder) = ByteArray(UInt24.SIZE_BYTES) {
     (value shr byteOrder.shift(it, UInt24.SIZE_BITS)).toByte()
 }
+
+/**
+ * Checks whether the bit at [index] is set in this [UInt24]
+ * @param index the index of the bit to check.
+ * @return `true` if the bit is set, `false` otherwise.
+ */
 fun UInt24.isBitSet(index: Number) = (this shr index.toInt()) and UInt24(1U) == UInt24(1U)
+
+/**
+ * Creates a [UInt24] that is equal to this [UInt24] except the bit at [index] is set
+ * @param index the index of the bit to set.
+ * @return the new [UInt24]
+ */
 fun UInt24.setBit(index: Number) = (this or (1U.toUInt24() shl index.toInt()))

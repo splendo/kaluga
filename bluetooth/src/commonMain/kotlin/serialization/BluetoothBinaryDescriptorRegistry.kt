@@ -245,7 +245,7 @@ internal object BluetoothBinaryDescriptorRegistry {
                         val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
                         BluetoothBinaryDescriptor.StringSettings(
                             encoding,
-                            StringEncodingSettings.LengthPrefix(lengthPrefix.lengthAsShort, lengthPrefix.canOverflow, lengthPrefix.sentinel),
+                            lengthPrefix.asLengthPrefix(),
                         )
                     }
 
@@ -254,7 +254,7 @@ internal object BluetoothBinaryDescriptorRegistry {
                     }
 
                     annotations.filterIsInstance<Unsized>().isNotEmpty() -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.NoMarking)
-                    else -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.LengthPrefix())
+                    else -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.LengthPrefix.ByteLength)
                 }
             }
 
@@ -275,7 +275,7 @@ internal object BluetoothBinaryDescriptorRegistry {
                     annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
                         val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
                         BluetoothBinaryDescriptor.CollectionSettings.LengthPrefix(
-                            StringEncodingSettings.LengthPrefix(lengthPrefix.lengthAsShort, lengthPrefix.canOverflow, lengthPrefix.sentinel),
+                            lengthPrefix.asLengthPrefix(),
                         )
                     }
 

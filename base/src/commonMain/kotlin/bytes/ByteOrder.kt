@@ -17,28 +17,24 @@
 
 package com.splendo.kaluga.base.bytes
 
-import com.splendo.kaluga.base.bytes.octetIndex
-
+/**
+ * Byte order used for encoding and decoding primary types into a [ByteArray]
+ */
 enum class ByteOrder {
+    /**
+     * The most significant byte will be added to the front of the byte array.
+     */
     MOST_SIGNIFICANT_FIRST,
+
+    /**
+     * The least significant byte will be added to the front of the byte array.
+     */
     LEAST_SIGNIFICANT_FIRST,
 }
 
-/**
- * Returns octet index for given [index] based on this [ByteOrder] inside group of [bitsCount] Bits
- *
- * @see ByteOrder
- */
 internal fun ByteOrder.octetIndex(index: Int, bitsCount: Int) = when (this) {
     ByteOrder.LEAST_SIGNIFICANT_FIRST -> index
     ByteOrder.MOST_SIGNIFICANT_FIRST -> bitsCount / Byte.SIZE_BITS - index - 1
 }
 
-/**
- * Returns numbers of bits for [Byte]
- * to be shifted (left or right) at given [index]
- * based on this [ByteOrder] inside group of [bitsCount] bits
- *
- * @see ByteOrder
- * */
 internal fun ByteOrder.shift(index: Int, bitsCount: Int) = octetIndex(index, bitsCount) * Byte.SIZE_BITS
