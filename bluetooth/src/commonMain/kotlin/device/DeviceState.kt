@@ -19,17 +19,18 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.RemoteCharacteristic
 import com.splendo.kaluga.bluetooth.RemoteDescriptor
 import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.bluetooth.GattResponse
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 
 /**
- * An action a [Device] can execute on one of its [com.splendo.kaluga.bluetooth.Attribute]
+ * An action a [ConnectableDevice] can execute on one of its [com.splendo.kaluga.bluetooth.RemoteAttribute]
+ * @property Response the type of [GattResponse] the action will receive.
  */
 sealed class DeviceAction<Response : GattResponse> {
 
@@ -43,14 +44,13 @@ sealed class DeviceAction<Response : GattResponse> {
     }
 
     /**
-     * A Deferred that will be completed with
-     * `true` if [DeviceAction] was completed successfully, or
-     * `false` if [DeviceAction] failed
+     * A Deferred that will be completed with [Response] when [DeviceAction] has been handled by the [ConnectableDevice]
      * */
     val response: Deferred<Response> by ::_response
 
     /**
-     * A [DeviceAction] that attempts to read an [com.splendo.kaluga.bluetooth.Attribute]
+     * A [DeviceAction] that attempts to read an [com.splendo.kaluga.bluetooth.RemoteAttribute]
+     * Returns a [GattResponse.ReadResponse]
      */
     sealed class Read : DeviceAction<GattResponse.ReadResponse>() {
 
@@ -72,7 +72,8 @@ sealed class DeviceAction<Response : GattResponse> {
     }
 
     /**
-     * A [DeviceAction] that attempts to write a value to an [com.splendo.kaluga.bluetooth.Attribute]
+     * A [DeviceAction] that attempts to write a value to an [com.splendo.kaluga.bluetooth.RemoteAttribute].
+     * Returns a [GattResponse.WriteResponse]
      * @property newValue the [ByteArray] to write
      */
     sealed class Write(val newValue: ByteArray) : DeviceAction<GattResponse.WriteResponse>() {
@@ -98,6 +99,7 @@ sealed class DeviceAction<Response : GattResponse> {
 
     /**
      * A [DeviceAction] that updates that notifying status of a [RemoteCharacteristic]
+     * Returns a [GattResponse.WriteResponse]
      * @property characteristic the [RemoteCharacteristic] to notify
      */
     sealed class Notification(val characteristic: RemoteCharacteristic) : DeviceAction<GattResponse.WriteResponse>() {
@@ -119,7 +121,12 @@ sealed class DeviceAction<Response : GattResponse> {
         }
     }
 
-    /** Requests MTU. */
+    /**
+     * A [DeviceAction] that requests an update to the [MTU] size of the device.
+     * This is unsupported on iOS
+     * Returns a [GattResponse.MTUResponse]
+     * @property mtu the [MTU] to request.
+     */
     data class RequestMtu(val mtu: MTU) : DeviceAction<GattResponse.MTUResponse>()
 }
 

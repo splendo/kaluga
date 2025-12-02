@@ -20,20 +20,46 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.ContextualLogger
 
+/**
+ * A GATT Service is an [Attribute] that forms collection of data and associated behaviors to accomplish a particular function or feature.
+ * In GATT, a service is defined by its service definition.
+ * A service definition may contain included services, mandatory characteristics, and optional characteristics.
+ */
 interface Service : Attribute {
+
+    /**
+     * There are two types of services: primary service and secondary service.
+     * A primary service is a service that exposes functionality of this device.
+     * A primary service can be included by another service.
+     * Primary services can be discovered using Primary Service Discovery procedures.
+     * A secondary service is a service that should only be included from a primary service or another secondary service or other higher layer specification.
+     * A secondary service is only relevant in the context of the entity that includes it.
+     */
     enum class Type {
         PRIMARY,
         SECONDARY,
     }
 
+    /**
+     * The [Type] of the service
+     */
     val type: Type
+
+    /**
+     * The list of [Service] that this service includes
+     */
     val includedServices: List<Service>
+
+    /**
+     * The list of [Characteristic] this service supports
+     */
     val characteristics: List<Characteristic>
 }
 
 /**
- * A Bluetooth Service
- * @param service the [RemoteServiceWrapper] to access the platform service
+ * A [Service] that is accessed remotely by a bluetooth client using [Bluetooth]
+ * @param service the [RemoteServiceWrapper] to access the platform service.
+ * @param includedServices the list of [com.splendo.kaluga.bluetooth.RemoteService] this service includes.
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
  * @param logger the [ContextualLogger] to use for logging.
  */
@@ -44,14 +70,11 @@ class RemoteService(
     logger: ContextualLogger,
 ) : Service {
 
-    /**
-     * The [UUID] of the service
-     */
     override val uuid = service.uuid
     override val type = service.type
 
     /**
-     * The list of [Characteristic] associated with the service
+     * The list of [RemoteCharacteristic] this service supports
      */
     override val characteristics: List<RemoteCharacteristic> = service.characteristics.map {
         RemoteCharacteristic(

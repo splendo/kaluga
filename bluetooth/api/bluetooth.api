@@ -564,7 +564,9 @@ public abstract class com/splendo/kaluga/bluetooth/RemoteAttribute : com/splendo
 	public final fun readOrNull (Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun readOrNull$default (Lcom/splendo/kaluga/bluetooth/RemoteAttribute;Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public final fun startRead ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Read;
+	public final fun startWrite (Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Ljava/lang/Object;)Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Write;
 	public final fun startWrite ([B)Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Write;
+	public static synthetic fun startWrite$default (Lcom/splendo/kaluga/bluetooth/RemoteAttribute;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Ljava/lang/Object;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Write;
 	public final fun write (Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun write ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun write$default (Lcom/splendo/kaluga/bluetooth/RemoteAttribute;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Ljava/lang/Object;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
@@ -591,9 +593,37 @@ public class com/splendo/kaluga/bluetooth/RemoteCharacteristic : com/splendo/kal
 }
 
 public final class com/splendo/kaluga/bluetooth/RemoteCharacteristic$Subscription {
-	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlinx/coroutines/Deferred;)V
-	public final fun getHasSubscribedSuccessfully ()Lkotlinx/coroutines/Deferred;
 	public final fun unsubscribe (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class com/splendo/kaluga/bluetooth/RemoteCharacteristic$SubscriptionResult {
+	public abstract fun getResponse ()Lcom/splendo/kaluga/bluetooth/GattResponse$WriteResponse;
+	public abstract fun getSubscription ()Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic$Subscription;
+}
+
+public final class com/splendo/kaluga/bluetooth/RemoteCharacteristic$SubscriptionResult$DidSubscribe : com/splendo/kaluga/bluetooth/RemoteCharacteristic$SubscriptionResult {
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic$Subscription;)V
+	public final fun component1 ()Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic$Subscription;
+	public final fun copy (Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic$Subscription;)Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic$SubscriptionResult$DidSubscribe;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic$SubscriptionResult$DidSubscribe;Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic$Subscription;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic$SubscriptionResult$DidSubscribe;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getResponse ()Lcom/splendo/kaluga/bluetooth/GattResponse$WriteResponse;
+	public fun getSubscription ()Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic$Subscription;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/RemoteCharacteristic$SubscriptionResult$FailedToSubscribe : com/splendo/kaluga/bluetooth/RemoteCharacteristic$SubscriptionResult {
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/GattResponse$WriteError;)V
+	public final fun component1 ()Lcom/splendo/kaluga/bluetooth/GattResponse$WriteError;
+	public final fun copy (Lcom/splendo/kaluga/bluetooth/GattResponse$WriteError;)Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic$SubscriptionResult$FailedToSubscribe;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic$SubscriptionResult$FailedToSubscribe;Lcom/splendo/kaluga/bluetooth/GattResponse$WriteError;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic$SubscriptionResult$FailedToSubscribe;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getResponse ()Lcom/splendo/kaluga/bluetooth/GattResponse$WriteError;
+	public synthetic fun getResponse ()Lcom/splendo/kaluga/bluetooth/GattResponse$WriteResponse;
+	public fun getSubscription ()Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic$Subscription;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/RemoteCharacteristicWrapper {
