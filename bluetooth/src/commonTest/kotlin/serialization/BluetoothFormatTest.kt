@@ -91,12 +91,12 @@ class BluetoothFormatTest {
 
     @Serializable
     @JvmInline
-    value class NumberValueContainer<T>(@Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) val value: T)
+    value class NumberValueContainer<T>(@Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val value: T)
 
     @Serializable
     @JvmInline
     value class RRInterval(
-        @Sizing(Length.`16_BIT`)
+        @Size(Length.`16_BIT`)
         @Scalar(binaryExponent = 10)
         val seconds: Double,
     ) {
@@ -130,8 +130,8 @@ class BluetoothFormatTest {
         @Serializable
         data class Container(
             val defaultLength: Byte,
-            @Sizing(Length.`8_BIT`) val `8bit`: Byte,
-            @Sizing(Length.`16_BIT`) val `16bit`: UByte,
+            @Size(Length.`8_BIT`) val `8bit`: Byte,
+            @Size(Length.`16_BIT`) val `16bit`: UByte,
             @Unsigned val unsigned: UByte,
             val nullable: Byte?,
             val nullableUnsigned: UByte?,
@@ -207,16 +207,16 @@ class BluetoothFormatTest {
         @Serializable
         data class Container(
             val defaultLength: Short,
-            @Sizing(Length.`8_BIT`) val `8bit`: Short,
-            @Sizing(Length.`16_BIT`) val `16bit`: Short,
-            @Sizing(Length.`24_BIT`) val `24bit`: UShort,
-            @Sizing(Length.`8_BIT`) @Scalar(decimalExponent = -2) val scalar: Short,
-            @Sizing(Length.`16_BIT`) @MedFloat val medFloat16: Short,
-            @Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) val variableSizeRange: Short,
+            @Size(Length.`8_BIT`) val `8bit`: Short,
+            @Size(Length.`16_BIT`) val `16bit`: Short,
+            @Size(Length.`24_BIT`) val `24bit`: UShort,
+            @Size(Length.`8_BIT`) @Scalar(decimalExponent = -2) val scalar: Short,
+            @Size(Length.`16_BIT`) @MedFloat val medFloat16: Short,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val variableSizeRange: Short,
             @Unsigned val unsigned: UShort,
             @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val mostSignificant: Short,
             val nullable: Short?,
-            @Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) val nullableVariableSizing: Short?,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val nullableVariableSizing: Short?,
             val inlineValue: NumberValueContainer<Short>,
             val nullableInlineValue: NumberValueContainer<Short>?,
             val inlineUnsignedValue: NumberValueContainer<UShort>,
@@ -321,24 +321,24 @@ class BluetoothFormatTest {
         @Serializable
         data class Container(
             val defaultLength: Int,
-            @Sizing(Length.`8_BIT`) val `8bit`: Int,
-            @Sizing(Length.`16_BIT`) val `16bit`: Int,
-            @Sizing(Length.`24_BIT`) val `24bit`: Int,
-            @Sizing(Length.`32_BIT`) val `32bit`: Int,
-            @Sizing(Length.`64_BIT`) val `64bit`: UInt,
-            @Sizing(Length.`8_BIT`) @Scalar(decimalExponent = -2) val scalar: Int,
-            @Sizing(Length.`16_BIT`) @MedFloat val medFloat16: Int,
-            @Sizing(Length.`32_BIT`) @MedFloat val medFloat32: Int,
-            @Sizing(Length.`16_BIT`) @Sizing(Length.`32_BIT`) val variableSizeLowRange: Int,
-            @Sizing(Length.`16_BIT`) @Sizing(Length.`24_BIT`) @Sizing(Length.`32_BIT`) val variableSizeHighRange: Int,
+            @Size(Length.`8_BIT`) val `8bit`: Int,
+            @Size(Length.`16_BIT`) val `16bit`: Int,
+            @Size(Length.`24_BIT`) val `24bit`: Int,
+            @Size(Length.`32_BIT`) val `32bit`: Int,
+            @Size(Length.`64_BIT`) val `64bit`: UInt,
+            @Size(Length.`8_BIT`) @Scalar(decimalExponent = -2) val scalar: Int,
+            @Size(Length.`16_BIT`) @MedFloat val medFloat16: Int,
+            @Size(Length.`32_BIT`) @MedFloat val medFloat32: Int,
+            @Size(Length.`16_BIT`) @Size(Length.`32_BIT`) val variableSizeLowRange: Int,
+            @Size(Length.`16_BIT`) @Size(Length.`24_BIT`) @Size(Length.`32_BIT`) val variableSizeHighRange: Int,
             @Unsigned val unsigned: UInt,
             @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val mostSignificant: Int,
             val nullable: Int?,
-            @Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) @Sizing(Length.`24_BIT`) @Sizing(Length.`32_BIT`) val nullableVariableSizing: Int?,
-            @Sizing(Length.`24_BIT`) @Sizing(Length.`32_BIT`) val inlineValue: NumberValueContainer<Int>,
-            @Sizing(Length.`24_BIT`) val nullableInlineValue: NumberValueContainer<Int>?,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) @Size(Length.`24_BIT`) @Size(Length.`32_BIT`) val nullableVariableSizing: Int?,
+            @Size(Length.`24_BIT`) @Size(Length.`32_BIT`) val inlineValue: NumberValueContainer<Int>,
+            @Size(Length.`24_BIT`) val nullableInlineValue: NumberValueContainer<Int>?,
             val inlineUnsignedValue: NumberValueContainer<UInt>,
-            @Sizing(Length.`24_BIT`) val nullableInlineUnsignedValue: NumberValueContainer<UInt>?,
+            @Size(Length.`24_BIT`) val nullableInlineUnsignedValue: NumberValueContainer<UInt>?,
         )
 
         validateEncoding(
@@ -466,24 +466,24 @@ class BluetoothFormatTest {
         @Serializable
         data class Container(
             val defaultLength: Long,
-            @Sizing(Length.`8_BIT`) val `8bit`: Long,
-            @Sizing(Length.`16_BIT`) val `16bit`: Long,
-            @Sizing(Length.`24_BIT`) val `24bit`: Long,
-            @Sizing(Length.`32_BIT`) val `32bit`: Long,
-            @Sizing(Length.`64_BIT`) val `64bit`: Long,
-            @Sizing(Length.`8_BIT`) @Scalar(decimalExponent = -2) val scalar: Long,
-            @Sizing(Length.`16_BIT`) @MedFloat val medFloat16: Long,
-            @Sizing(Length.`32_BIT`) @MedFloat val medFloat32: Long,
-            @Sizing(Length.`16_BIT`) @Sizing(Length.`32_BIT`) val variableSizeLowRange: Long,
-            @Sizing(Length.`16_BIT`) @Sizing(Length.`24_BIT`) @Sizing(Length.`32_BIT`) val variableSizeHighRange: Long,
-            @Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) @Sizing(Length.`24_BIT`) @Sizing(Length.`32_BIT`) @Sizing(Length.`64_BIT`) val variableFullRange: Long,
-            @Sizing(Length.`16_BIT`) @Sizing(Length.`32_BIT`) @MedFloat val variableMedFloat: Long,
+            @Size(Length.`8_BIT`) val `8bit`: Long,
+            @Size(Length.`16_BIT`) val `16bit`: Long,
+            @Size(Length.`24_BIT`) val `24bit`: Long,
+            @Size(Length.`32_BIT`) val `32bit`: Long,
+            @Size(Length.`64_BIT`) val `64bit`: Long,
+            @Size(Length.`8_BIT`) @Scalar(decimalExponent = -2) val scalar: Long,
+            @Size(Length.`16_BIT`) @MedFloat val medFloat16: Long,
+            @Size(Length.`32_BIT`) @MedFloat val medFloat32: Long,
+            @Size(Length.`16_BIT`) @Size(Length.`32_BIT`) val variableSizeLowRange: Long,
+            @Size(Length.`16_BIT`) @Size(Length.`24_BIT`) @Size(Length.`32_BIT`) val variableSizeHighRange: Long,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) @Size(Length.`24_BIT`) @Size(Length.`32_BIT`) @Size(Length.`64_BIT`) val variableFullRange: Long,
+            @Size(Length.`16_BIT`) @Size(Length.`32_BIT`) @MedFloat val variableMedFloat: Long,
             @Unsigned val unsigned: ULong,
             @com.splendo.kaluga.bluetooth.serialization.ByteOrder(ByteOrder.MOST_SIGNIFICANT_FIRST) val mostSignificant: Long,
             val nullable: Long?,
-            @Sizing(Length.`16_BIT`) @Sizing(Length.`24_BIT`) @Sizing(Length.`32_BIT`) @Sizing(Length.`64_BIT`) val nullableVariableSizing: Long?,
-            @Sizing(Length.`32_BIT`) @Sizing(Length.`64_BIT`) val inlineValue: ValueContainer<Long>,
-            @Sizing(Length.`32_BIT`) @Sizing(Length.`64_BIT`) val nullableInlineValue: ValueContainer<Long>?,
+            @Size(Length.`16_BIT`) @Size(Length.`24_BIT`) @Size(Length.`32_BIT`) @Size(Length.`64_BIT`) val nullableVariableSizing: Long?,
+            @Size(Length.`32_BIT`) @Size(Length.`64_BIT`) val inlineValue: ValueContainer<Long>,
+            @Size(Length.`32_BIT`) @Size(Length.`64_BIT`) val nullableInlineValue: ValueContainer<Long>?,
             val unsignedInlineValue: ValueContainer<ULong>,
             val nullableUnsignedInlineValue: ValueContainer<ULong>?,
         )
@@ -620,12 +620,12 @@ class BluetoothFormatTest {
         @Serializable
         data class Container(
             val defaultLength: Float,
-            @Sizing(Length.`32_BIT`) val `32bit`: Float,
-            @Sizing(Length.`64_BIT`) val `64bit`: Float,
-            @Sizing(Length.`8_BIT`) @Scalar(multiplier = 3, decimalExponent = -5, binaryExponent = 2, offset = 10) val scalar: Float,
-            @Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) @Scalar(decimalExponent = 4) val flexibleScalar: Float,
-            @Sizing(Length.`16_BIT`) @MedFloat val medFloat16: Float,
-            @Sizing(Length.`32_BIT`) @MedFloat val medFloat32: Float,
+            @Size(Length.`32_BIT`) val `32bit`: Float,
+            @Size(Length.`64_BIT`) val `64bit`: Float,
+            @Size(Length.`8_BIT`) @Scalar(multiplier = 3, decimalExponent = -5, binaryExponent = 2, offset = 10) val scalar: Float,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) @Scalar(decimalExponent = 4) val flexibleScalar: Float,
+            @Size(Length.`16_BIT`) @MedFloat val medFloat16: Float,
+            @Size(Length.`32_BIT`) @MedFloat val medFloat32: Float,
             val nullable: Float?,
         )
 
@@ -686,14 +686,14 @@ class BluetoothFormatTest {
         @Serializable
         data class Container(
             val defaultLength: Double,
-            @Sizing(Length.`32_BIT`) val `32bit`: Double,
-            @Sizing(Length.`64_BIT`) val `64bit`: Double,
-            @Sizing(Length.`32_BIT`) @Sizing(Length.`64_BIT`) val variableSizing: Double,
-            @Sizing(Length.`8_BIT`) @Scalar(multiplier = 5, decimalExponent = 2, binaryExponent = 3, offset = 50) val scalar: Double,
-            @Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) @Scalar(decimalExponent = 4) val flexibleScalar: Double,
-            @Sizing(Length.`16_BIT`) @MedFloat val medFloat16: Double,
-            @Sizing(Length.`32_BIT`) @MedFloat val medFloat32: Double,
-            @Sizing(Length.`16_BIT`) @Sizing(Length.`32_BIT`) @MedFloat val flexibleMedFloat: Double,
+            @Size(Length.`32_BIT`) val `32bit`: Double,
+            @Size(Length.`64_BIT`) val `64bit`: Double,
+            @Size(Length.`32_BIT`) @Size(Length.`64_BIT`) val variableSizing: Double,
+            @Size(Length.`8_BIT`) @Scalar(multiplier = 5, decimalExponent = 2, binaryExponent = 3, offset = 50) val scalar: Double,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) @Scalar(decimalExponent = 4) val flexibleScalar: Double,
+            @Size(Length.`16_BIT`) @MedFloat val medFloat16: Double,
+            @Size(Length.`32_BIT`) @MedFloat val medFloat32: Double,
+            @Size(Length.`16_BIT`) @Size(Length.`32_BIT`) @MedFloat val flexibleMedFloat: Double,
             val nullable: Double?,
         )
 
@@ -862,7 +862,7 @@ class BluetoothFormatTest {
         @Serializable
         data class ContentAfterUnsized(@Unsized val string: String, val otherContent: Byte)
 
-        assertFailsWith<DataAfterUnconstainedData> {
+        assertFailsWith<DataAfterUnconstrainedData> {
             BluetoothFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized("StringContent", 0x01))
         }
     }
@@ -896,8 +896,8 @@ class BluetoothFormatTest {
         @Serializable
         data class ListContainer(
             val default: List<Item>,
-            @Sizing(Length.`16_BIT`) val shortSized: List<Item>,
-            @Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) val flexibleSized: List<Item>,
+            @Size(Length.`16_BIT`) val shortSized: List<Item>,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val flexibleSized: List<Item>,
             @LengthPrefix(canOverflow = true) val lengthPrefix: List<Item>,
             @NullIfEmpty val nullIfEmpty: List<Item>,
             @NullTerminated val nullTerminated: List<Item>,
@@ -1015,7 +1015,7 @@ class BluetoothFormatTest {
         @Serializable
         data class ContentAfterUnsized(@Unsized val list: List<Byte>, val otherContent: Byte)
 
-        assertFailsWith<DataAfterUnconstainedData> {
+        assertFailsWith<DataAfterUnconstrainedData> {
             BluetoothFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized(listOf(0x01, 0x02, 0x03), 0x01))
         }
     }
@@ -1224,8 +1224,8 @@ class BluetoothFormatTest {
         @Serializable
         data class MapContainer(
             val default: Map<Key, Value>,
-            @Sizing(Length.`16_BIT`) val shortSized: Map<Key, Value>,
-            @Sizing(Length.`8_BIT`) @Sizing(Length.`16_BIT`) val flexibleSized: Map<Key, Value>,
+            @Size(Length.`16_BIT`) val shortSized: Map<Key, Value>,
+            @Size(Length.`8_BIT`) @Size(Length.`16_BIT`) val flexibleSized: Map<Key, Value>,
             @LengthPrefix(canOverflow = true) val lengthPrefix: Map<Key, Value>,
             @NullIfEmpty val nullIfEmpty: Map<Key, Value>,
             @NullTerminated val nullTerminated: Map<Key, Value>,
@@ -1334,7 +1334,7 @@ class BluetoothFormatTest {
         @Serializable
         data class ContentAfterUnsized(@Unsized val map: Map<Byte, Byte>, val otherContent: Byte)
 
-        assertFailsWith<DataAfterUnconstainedData> {
+        assertFailsWith<DataAfterUnconstrainedData> {
             BluetoothFormat.encodeToByteArray(ContentAfterUnsized.serializer(), ContentAfterUnsized(mapOf(0x01.toByte() to 0x02.toByte(), 0x03.toByte() to 0x04.toByte()), 0x01))
         }
     }
@@ -1591,8 +1591,8 @@ class BluetoothFormatTest {
     fun encodeHeartRate() {
         @Serializable
         data class HeartRate(
-            @Sizing(Length.`8_BIT`)
-            @Sizing(Length.`16_BIT`)
+            @Size(Length.`8_BIT`)
+            @Size(Length.`16_BIT`)
             @Unsigned
             val heartRate: Int,
             @FlagIndex(1)
@@ -1600,7 +1600,7 @@ class BluetoothFormatTest {
             @FlagIndex(2)
             val contactDetected: Boolean = !contactSupported,
             @Unsigned
-            @Sizing(Length.`16_BIT`)
+            @Size(Length.`16_BIT`)
             val energyExpended: Int? = null,
             @NullIfEmpty
             @Unsized

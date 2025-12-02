@@ -213,6 +213,10 @@ internal object BluetoothBinaryDescriptorRegistry {
         val annotations = descriptor.annotations + fieldAnnotations + descriptor.getElementAnnotations(0)
         // Unsigned numbers in Kotlin are simply Inline wrappers around a primary type. However since we encode with flexible lengths, we should preserve this information.
         val actualAnnotations = when (descriptor.serialName) {
+            "com.splendo.kaluga.base.utils.MedFloat16" -> annotations + MedFloat() + Size(Length.`16_BIT`)
+            "com.splendo.kaluga.base.utils.MedFloat32" -> annotations + MedFloat() + Size(Length.`32_BIT`)
+            "com.splendo.kaluga.base.utils.Int24" -> annotations + Size(Length.`24_BIT`)
+            "com.splendo.kaluga.base.utils.UInt24" -> annotations + Unsigned() + Size(Length.`24_BIT`)
             "kotlin.UByte" -> annotations + Unsigned()
             "kotlin.UShort" -> annotations + Unsigned()
             "kotlin.UInt" -> annotations + Unsigned()
@@ -257,12 +261,14 @@ internal object BluetoothBinaryDescriptorRegistry {
         val polymorphicMap = polymorphicMap(descriptor, byteOrder, serializersModule)
 
         val blockSettings = blockSettings(annotations)
-        val width = annotations.filterIsInstance<FlagWidth>().firstOrNull()?.bits ?: desiredFlagBitWidth.width
+        val minWidth = annotations.filterIsInstance<FlagWidth>().firstOrNull()?.bits ?: 0
+        val width = maxOf(desiredFlagBitWidth.width, minWidth)
         val bitIndex = if (width > 0) {
             customIndex ?: defaultBitIndex
         } else {
             -1
         }
+        // Notify parent of flag indices to be used
         reserveIndices((0..<width).map { bitIndex + it }.toSet())
 
         BluetoothBinaryDescriptor(
@@ -412,15 +418,23 @@ internal object BluetoothBinaryDescriptorRegistry {
             }
         }
 
-    private fun lengths(annotations: List<Annotation>, descriptor: SerialDescriptor): Set<Length> = annotations.filterIsInstance<Sizing>().map { it.length }.toSet().ifEmpty {
+    private fun lengths(annotations: List<Annotation>, descriptor: SerialDescriptor): Set<Length> = annotations.filterIsInstance<Size>().map { it.length }.toSet().ifEmpty {
         when (descriptor.kind) {
-            PrimitiveKind.BYTE -> setOf(Length.`8_BIT`)
+            PrimitiveKind.BYTE -> if (annotations.filterIsInstance<MedFloat>().isNotEmpty()) {
+                setOf(Length.`16_BIT`)
+            } else {
+                setOf(Length.`8_BIT`)
+            }
             PrimitiveKind.SHORT -> setOf(Length.`16_BIT`)
             PrimitiveKind.INT -> setOf(Length.`32_BIT`)
-            PrimitiveKind.LONG -> setOf(Length.`64_BIT`)
+            PrimitiveKind.LONG -> if (annotations.filterIsInstance<MedFloat>().isNotEmpty()) {
+                setOf(Length.`32_BIT`)
+            } else {
+                setOf(Length.`64_BIT`)
+            }
             PrimitiveKind.FLOAT -> when {
                 annotations.filterIsInstance<MedFloat>().isNotEmpty() -> setOf(Length.`16_BIT`)
-                annotations.filterIsInstance<Scalar>().isNotEmpty() -> setOf(Length.`32_BIT`)
+                annotations.filterIsInstance<Scalar>().isNotEmpty() -> setOf(Length.`16_BIT`)
                 else -> setOf(Length.`32_BIT`)
             }
 
@@ -605,7 +619,7 @@ internal object BluetoothBinaryDescriptorRegistry {
             is ItemUnsigned -> Unsigned()
             is ItemScalar -> Scalar(annotation.multiplier, annotation.decimalExponent, annotation.binaryExponent, annotation.offset)
             is ItemMedFloat -> MedFloat()
-            is ItemSize -> Sizing(annotation.size)
+            is ItemSize -> Size(annotation.size)
             else -> null
         }
     }
@@ -619,7 +633,7 @@ internal object BluetoothBinaryDescriptorRegistry {
             is KeyUnsigned -> Unsigned()
             is KeyScalar -> Scalar(annotation.multiplier, annotation.decimalExponent, annotation.binaryExponent, annotation.offset)
             is KeyMedFloat -> MedFloat()
-            is KeySize -> Sizing(annotation.size)
+            is KeySize -> Size(annotation.size)
             else -> null
         }
     }
@@ -633,7 +647,7 @@ internal object BluetoothBinaryDescriptorRegistry {
             is ValueUnsigned -> Unsigned()
             is ValueScalar -> Scalar(annotation.multiplier, annotation.decimalExponent, annotation.binaryExponent, annotation.offset)
             is ValueMedFloat -> MedFloat()
-            is ValueSize -> Sizing(annotation.size)
+            is ValueSize -> Size(annotation.size)
             else -> null
         }
     }

@@ -301,7 +301,14 @@ interface CRC {
         }
     }
 
+    /**
+     * Number of bits used to calculate the CRC
+     */
     val width: Int
+
+    /**
+     * Number of bytes used to calculate the CRC
+     */
     val byteWidth: Int get() = ceil(width / 8.0).toInt()
 
     /**

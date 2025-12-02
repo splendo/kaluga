@@ -1797,7 +1797,7 @@ public synthetic class com/splendo/kaluga/bluetooth/serialization/Checksum$Impl 
 	public final synthetic fun xorOut ()J
 }
 
-public final class com/splendo/kaluga/bluetooth/serialization/DataAfterUnconstainedData : kotlinx/serialization/SerializationException {
+public final class com/splendo/kaluga/bluetooth/serialization/DataAfterUnconstrainedData : kotlinx/serialization/SerializationException {
 	public fun <init> (Ljava/lang/String;)V
 	public fun getMessage ()Ljava/lang/String;
 }
@@ -2030,7 +2030,6 @@ public final class com/splendo/kaluga/bluetooth/serialization/Length : java/lang
 	public static final field 32_BIT Lcom/splendo/kaluga/bluetooth/serialization/Length;
 	public static final field 64_BIT Lcom/splendo/kaluga/bluetooth/serialization/Length;
 	public static final field 8_BIT Lcom/splendo/kaluga/bluetooth/serialization/Length;
-	public final fun fits (Ljava/lang/Number;Z)Z
 	public final fun getBytes ()I
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/serialization/Length;
@@ -2115,15 +2114,15 @@ public synthetic class com/splendo/kaluga/bluetooth/serialization/SerializedByte
 	public final synthetic fun value ()B
 }
 
-public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/Sizing : java/lang/annotation/Annotation {
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/Size : java/lang/annotation/Annotation {
 	public abstract fun length ()Lcom/splendo/kaluga/bluetooth/serialization/Length;
 }
 
-public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/Sizing$Container : java/lang/annotation/Annotation {
-	public abstract fun value ()[Lcom/splendo/kaluga/bluetooth/serialization/Sizing;
+public abstract interface annotation class com/splendo/kaluga/bluetooth/serialization/Size$Container : java/lang/annotation/Annotation {
+	public abstract fun value ()[Lcom/splendo/kaluga/bluetooth/serialization/Size;
 }
 
-public synthetic class com/splendo/kaluga/bluetooth/serialization/Sizing$Impl : com/splendo/kaluga/bluetooth/serialization/Sizing {
+public synthetic class com/splendo/kaluga/bluetooth/serialization/Size$Impl : com/splendo/kaluga/bluetooth/serialization/Size {
 	public fun <init> (Lcom/splendo/kaluga/bluetooth/serialization/Length;)V
 	public final synthetic fun length ()Lcom/splendo/kaluga/bluetooth/serialization/Length;
 }

@@ -23,6 +23,9 @@ import com.splendo.kaluga.base.bytes.buildByteArray
 import com.splendo.kaluga.base.bytes.toByteArray
 import kotlinx.serialization.SerializationException
 
+/**
+ * Builder for creating a [ByteArray] from a [BluetoothBinaryDescriptor]
+ */
 internal interface BinaryBuilder {
     fun addFlag(index: Int, value: Boolean)
     fun addAction(action: ByteArrayBuilder.() -> Unit)
@@ -31,8 +34,15 @@ internal interface BinaryBuilder {
     fun build(): ByteArray
 }
 
-class DataAfterUnconstainedData(override val message: String?) : SerializationException()
+/**
+ * Exception thrown if trying to add data after a collection of data marked with [Unsized].
+ * Since [Unsized] elements do not indicate an end point, there is no way to know when to stop decoding them.
+ */
+class DataAfterUnconstrainedData(override val message: String?) : SerializationException()
 
+/**
+ * A [BinaryBuilder] to build data for a single [BluetoothBinaryDescriptor] structure
+ */
 internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBinaryDescriptor, flagBitsSize: Int, private val onUnconstrained: () -> Unit) : BinaryBuilder {
 
     val flagBits: MutableList<Boolean> = MutableList(flagBitsSize.coerceAtLeast(0)) { false }
@@ -45,7 +55,7 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
 
     override fun addAction(action: ByteArrayBuilder.() -> Unit) {
         if (isOfUnconstrainedSize) {
-            throw DataAfterUnconstainedData("Attempted to add data after data of an unconstained size")
+            throw DataAfterUnconstrainedData("Attempted to add data after data of an unconstrained size")
         }
         actions += action
     }
@@ -56,12 +66,14 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
     }
 
     override fun build(): ByteArray {
+        // The body is the flag bits + remaining body. This is also the part used for checksum verification
         val body = buildByteArray(binaryDescriptor.byteOrder) {
             flagBits.forEach {
                 add(it)
             }
             actions.forEach { apply(it) }
         }
+        // Calculate checksum if necessary
         val checksum = binaryDescriptor.structureSettings.checksumAlgorithm?.let { crc ->
             crc.compute(body).toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST).take(crc.byteWidth).let {
                 when (binaryDescriptor.byteOrder) {
@@ -70,6 +82,8 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
                 }.toByteArray()
             }
         } ?: byteArrayOf()
+
+        // Full data consists of prefix + body + checksum + postfix
         return buildByteArray(binaryDescriptor.byteOrder) {
             binaryDescriptor.structureSettings.prefix?.let {
                 add(it.array)
@@ -83,6 +97,9 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
     }
 }
 
+/**
+ * A [StructureBinaryBuilder] to build data for a single class
+ */
 internal class ClassBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, onUnconstrained: () -> Unit) :
     StructureBinaryBuilder(
         binaryDescriptor,
@@ -92,6 +109,10 @@ internal class ClassBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, o
         onUnconstrained,
     )
 
+/**
+ * A [StructureBinaryBuilder] to build data for an item in a collection.
+ * Unlike [ClassBinaryBuilder], this assumes its flag width from the parent rather than the children, as each item will have its individual flag bytes.
+ */
 internal class ItemBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, onUnconstrained: () -> Unit) :
     StructureBinaryBuilder(
         binaryDescriptor,
@@ -104,8 +125,14 @@ internal class ItemBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, on
     }
 }
 
+/**
+ * Exception thrown when a collection is marked with [NullTerminated] but one of its items starts with a 0x00 byte.
+ */
 class UnexpectedNullTermination(override val message: String) : SerializationException()
 
+/**
+ * A [BinaryBuilder] to build data for a collection (List/Map) structure
+ */
 internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder, private val classBuilders: List<ItemBinaryBuilder>, private val isNullTerminated: Boolean) :
     BinaryBuilder {
     private var currentIndex = 0
@@ -131,6 +158,8 @@ internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder
     override fun build(): ByteArray = buildByteArray(byteOrder) {
         classBuilders.forEachIndexed { index, classBuilder ->
             val value = classBuilder.build()
+
+            // Ensure no unexpected null termination occurs
             if (isNullTerminated && classBuilder.binaryDescriptor.fieldIndex == 0 && classBuilder.checkIfStartsWithNull(value, byteOrder)) {
                 throw UnexpectedNullTermination("The element at $index starts with Null Byte in a Null Terminated List")
             }
@@ -138,6 +167,10 @@ internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder
         }
     }
 }
+
+/**
+ * A [CollectionBinaryBuilder] for a List
+ */
 internal class ListBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, size: Int, isNullTerminated: Boolean, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
         binaryDescriptor.byteOrder,
@@ -147,6 +180,9 @@ internal class ListBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, si
         isNullTerminated,
     )
 
+/**
+ * A [CollectionBinaryBuilder] for a Map
+ */
 internal class MapBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, size: Int, isNullTerminated: Boolean, onUnconstrained: () -> Unit) :
     CollectionBinaryBuilder(
         binaryDescriptor.byteOrder,

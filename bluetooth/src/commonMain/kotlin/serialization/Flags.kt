@@ -20,70 +20,82 @@ package com.splendo.kaluga.bluetooth.serialization
 import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.Encoding
 import com.splendo.kaluga.base.bytes.StringEncodingSettings
-import com.splendo.kaluga.base.utils.Int24
-import com.splendo.kaluga.base.utils.UInt24
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialInfo
 
-@Suppress("EnumEntryName")
-enum class Length(val bytes: Int) {
-    `8_BIT`(1),
-    `16_BIT`(2),
-    `24_BIT`(3),
-    `32_BIT`(4),
-    `64_BIT`(8),
-    ;
-
-    fun fits(number: Number, signed: Boolean) = when (this) {
-        `8_BIT` -> if (signed) {
-            number.toInt() in Byte.MIN_VALUE.toInt()..Byte.MAX_VALUE.toInt()
-        } else {
-            number.toInt().toUInt() in UByte.MIN_VALUE.toUInt()..UByte.MAX_VALUE.toUInt()
-        }
-        `16_BIT` -> if (signed) {
-            number.toInt() in Short.MIN_VALUE.toInt()..Short.MAX_VALUE.toInt()
-        } else {
-            number.toInt().toUInt() in UShort.MIN_VALUE.toUInt()..UShort.MAX_VALUE.toUInt()
-        }
-        `24_BIT` -> if (signed) {
-            number.toLong() in Int24.MIN_VALUE.value.toLong()..Int24.MAX_VALUE.value.toLong()
-        } else {
-            number.toLong().toULong() in UInt24.MIN_VALUE.value.toULong()..UInt24.MAX_VALUE.value.toULong()
-        }
-        `32_BIT` -> if (signed) {
-            number.toLong() in Int.MIN_VALUE.toLong()..Int.MAX_VALUE.toLong()
-        } else {
-            number.toLong().toULong() in UInt.MIN_VALUE.toULong()..Int.MAX_VALUE.toULong()
-        }
-        `64_BIT` -> true // Always fits as it is the max we support
-    }
-}
-
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied, the encoded object will be prefixed by [value]
+ * @property value the [ByteArray] to add as a Prefix
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.CLASS)
 annotation class Prefix(val value: ByteArray)
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied, the encoded object will be postfixed by [value]
+ * @property value the [ByteArray] to add as a Postfix
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.CLASS)
 annotation class Postfix(val value: ByteArray)
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied, the position of the header flag(s) to be used for storing headers will be set to [index].
+ * If applied to a Boolean, the boolean will be stored as a flag at [index] instead of within the body itself.
+ *
+ * If the index was already claimed by another property a [FlagIndexException] may be thrown.
+ *
+ * @property index the position of the header flag(s) to be used for storing headers
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
 annotation class FlagIndex(val index: Int)
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied, the width of the flags to be used by this element will be at minimum [bits] bits
+ *
+ * @property bits the number of bits the flag for this property will take up at a minimum
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
 annotation class FlagWidth(val bits: Int = 1)
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied, the [com.splendo.kaluga.base.bytes.ByteOrder] in which this element is encoded is set to [order].
+ * When applied to a class or collection, a [InvalidByteOrderException] may be thrown if the byte order changed.
+ *
+ * @property order the [com.splendo.kaluga.base.bytes.ByteOrder] in which to encode the element.
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
 annotation class ByteOrder(val order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST)
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied to a String, a [StringEncodingSettings.LengthPrefix] will be used as the [StringEncodingSettings.endMarking].
+ * Similar encoding will be used to add a length to a List/Map.
+ * Defaults to [StringEncodingSettings.LengthPrefix.ByteLength]
+ *
+ * @property lengthAsShort if `true` will use [StringEncodingSettings.LengthPrefix.ShortLength]
+ * @property canOverflow if `true` will use [StringEncodingSettings.LengthPrefix.WithOverflow]
+ * @property sentinel the [Byte] to use as the sentinel for [StringEncodingSettings.LengthPrefix.WithOverflow]
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
@@ -95,52 +107,138 @@ internal fun LengthPrefix.asLengthPrefix() = when {
     else -> StringEncodingSettings.LengthPrefix.ByteLength
 }
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied to a [String] or [Char], [encoding] will be used for encoding each char.
+ *
+ * @property encoding the [Encoding] to use.
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
 annotation class Encoded(val encoding: Encoding = Encoding.UTF_8)
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied to a String or Collection, they will be marked with `0x00` to indicate completion.
+ * Will throw an exception if:
+ * - Encoding a String and it contains `\u0000`
+ * - Encoding a List and an encoded item starts with `0x00`
+ * - Encoding a Map and an encoded key starts with `0x00`
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
 annotation class NullTerminated
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied to a numeric value, will encode as an unsigned value.
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
 annotation class Unsigned
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied to a numeric value, will calculate an integer using (`value * [multiplier] * 2.pow([binaryExponent]) * 10.pow([decimalExponent]) + [offset])`)
+ *
+ * Combine with any [Size] to set the preferred [Length] of the value to be encoded
+ *
+ * @property multiplier the multiplier to multiply the value to be encoded with
+ * @property decimalExponent the exponent of the decimal component the value will be multiplied with so that `scaled = value * 10.pow(decimalExponent)`
+ * @property binaryExponent the exponent of the binary component the value will be multiplied with so that `scaled = value * 2.pow(binaryExponent)`
+ * @property offset the offset the value will be offset by so that `scaled = value + offset`
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
 annotation class Scalar(val multiplier: Int = 1, val decimalExponent: Int = 0, val binaryExponent: Int = 0, val offset: Int = 0)
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied to a numeric value, it will be encoded as either [com.splendo.kaluga.base.utils.MedFloat16] or [com.splendo.kaluga.base.utils.MedFloat32], depending on [Size]
+ * Can only add [Length.`16_BIT`] or [Length.`32_BIT`] using [Size].
+ * Size defaults to:
+ * - [Length.`16_BIT`] for [Byte], [Short], and [Float]
+ * - [Length.`32_BIT`] for [Int], [Long], and [Double]
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
 annotation class MedFloat
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied to a numeric value this will set [length] as the length to be encoded.
+ * When applied to Double or Float, [length] must be either [Length.`32_BIT`] or [Length.`64_BIT`].
+ * When combined with [MedFloat], [length] must be either [Length.`16_BIT`] or [Length.`32_BIT`].
+ *
+ * When applied to a Collection, will determine the length of the size indicating bytes.
+ *
+ * When this flag is repeated, the best fitting [length] will be picked and flags will be added to the header to indicate which value was picked
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Repeatable
 @Target(AnnotationTarget.PROPERTY)
-annotation class Sizing(val length: Length)
+annotation class Size(val length: Length)
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied to a String or Collection, no end marking will be applied.
+ * This will result in a [DataAfterUnconstrainedData] exception if data (besides checksum or postfix) is added after this element.
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
 annotation class Unsized
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * When applied to a Collection, a null flag will be added and set to 0 if the list is empty (resulting in no length being encoded in the body).
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
 annotation class NullIfEmpty
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * Adds a [com.splendo.kaluga.base.bytes.CRC] value of size [width] to the end of the body (before any prefix)
+ * If the decoded checksum does not match the calculated checksum of the body and [BluetoothFormat.validateChecksum] is `true` will result in a [InvalidChecksumException].
+ *
+ * @see [com.splendo.kaluga.base.bytes.CRC.invoke]
+ *
+ * @param width the width of the CRC in bits. Must be between 1 and 64 bits.
+ * @param polynomial the polynomial used to compute the CRC.
+ * @param init the initial value of the CRC.
+ * @param xorOut the value to XOR with the result to get the final CRC.
+ * @param reflectIn whether to reflect the input bytes before computing the CRC.
+ * @param reflectOut whether to reflect the output bytes after computing the CRC.
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.CLASS)
 annotation class Checksum(val width: Int, val polynomial: ULong, val init: ULong, val xorOut: ULong = 0u, val reflectIn: Boolean = false, val reflectOut: Boolean = false)
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * Can be added to elements of an Enum or Polymorphic class. This replaces serializing using the encoded SerialName with [value]
+ *
+ * @property value the value to use as an identifier of an enum case / polymorphic type
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
