@@ -283,6 +283,9 @@ expect interface RemoteCharacteristicWrapper {
      */
     val uuid: UUID
 
+    /**
+     * The [RemoteServiceWrapper] this characteristic belongs to
+     */
     val service: RemoteServiceWrapper
 
     /**

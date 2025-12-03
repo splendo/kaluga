@@ -26,7 +26,6 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.uuidFrom
-import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
@@ -53,19 +52,62 @@ import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.cancellation.CancellationException
 
+/**
+ * Sets up a [BluetoothServer]
+ */
 interface BluetoothServerDSL {
+
+    /**
+     * Starts advertising with the given [data]
+     * @param data the [AdvertiseData.Builder] to use to set up the advertising
+     */
     fun advertise(data: AdvertiseData.Builder.() -> Unit)
+
+    /**
+     * Adds a [LocalService] using [LocalService.DSL.Primary]
+     * @param uuid the [UUID] of the [LocalService] to add
+     * @param service the [LocalService.DSL.Primary] to use to set up the [LocalService]
+     */
     fun service(uuid: UUID, service: LocalService.DSL.Primary.() -> Unit)
+
+    /**
+     * Adds a [LocalService] using [LocalService.DSL.Primary]
+     * @param uuidString the string of the [UUID] of the [LocalService] to add
+     * @param service the [LocalService.DSL.Primary] to use to set up the [LocalService]
+     * @throws com.splendo.kaluga.bluetooth.UUIDException if [uuidString] is not a valid [UUID]
+     */
     fun service(uuidString: String, service: LocalService.DSL.Primary.() -> Unit) {
         service(uuidFrom(uuidString), service)
     }
 }
 
+/**
+ * The Status of a [BluetoothServer]
+ */
 enum class ServerStatus {
+    /**
+     * The hardware does not support acting as a Bluetooth Server
+     */
     NOT_SUPPORTED,
+
+    /**
+     * The user must provide permissions to [com.splendo.kaluga.permissions.bluetooth.BluetoothPermission.Type.Server] first
+     */
     AWAITING_PERMISSIONS,
+
+    /**
+     * Bluetooth is disabled by the hardware,
+     */
     AWAITING_BLUETOOTH_ENABLED,
+
+    /**
+     * The server is available to connect to
+     */
     AVAILABLE,
+
+    /**
+     * The server was closed using [BluetoothServer.close] and is no longer available.
+     */
     CLOSED,
 }
 
@@ -137,13 +179,23 @@ internal sealed interface ServerState {
     val status: ServerStatus
 }
 
+/**
+ * Settings for configuring a [BluetoothServer]
+ * @property permissions the [Permissions] to manage the bluetooth related permissions
+ * @property autoRequestPermission if `true` the server should automatically request permissions if not granted
+ * @property autoEnableBluetooth if `true` the server should automatically enable the Bluetooth service if disabled
+ * @property logger the [Logger] to log to
+ */
 data class ServerSettings(
     val permissions: Permissions,
     val autoRequestPermission: Boolean = true,
     val autoEnableBluetooth: Boolean = true,
-    val logger: Logger = RestrictedLogger(RestrictedLogLevel.Verbose),
+    val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
 )
 
+/**
+ * A Bluetooth Server that makes the Hardware advertise [AdvertiseData] and exposes [LocalService] to connect to.
+ */
 class BluetoothServer internal constructor(private val settings: ServerSettings, initialState: ServerState.Initial, coroutineContext: CoroutineContext) :
     CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("BluetoothServer")),
     AutoCloseable {
@@ -235,11 +287,23 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
 
     private val logger = settings.logger
     private val _status = MutableStateFlow(initialState.status)
+
+    /**
+     * A [StateFlow] of the [ServerStatus] of this Server
+     */
     val status: StateFlow<ServerStatus> = _status.asStateFlow()
     private val _isAdvertising = MutableStateFlow(false)
+
+    /**
+     * A [StateFlow] indicating whether this server is currently advertising
+     */
     val isAdvertising: StateFlow<Boolean> = _isAdvertising.asStateFlow()
 
     private val _services = MutableStateFlow<List<LocalService>>(emptyList())
+
+    /**
+     * A [StateFlow] of the [LocalService]s that are currently discoverable
+     */
     val services: StateFlow<List<LocalService>> = _services.asStateFlow()
 
     private val advertiseChannel = Channel<(ServerState.Available?) -> AdvertisingSettings>(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST) { undelivered ->
@@ -254,6 +318,11 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         is ServerState.Unavailable -> null
     }
 
+    /**
+     * Starts advertising with the given [data]
+     * @param data the [AdvertiseData.Builder] to use to set up the advertising
+     * @return `true` if advertising was started, `false` if not
+     */
     suspend fun advertise(data: AdvertiseData.Builder.() -> Unit): Boolean = performOrFailOnClose(false) {
         val hasStarted = CompletableDeferred<Boolean>()
         val advertisingSettingsBuilder = AdvertisingSettings.Builder().apply(data)
@@ -265,6 +334,9 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         }
     }
 
+    /**
+     * Stops advertising any [AdvertiseData]
+     */
     fun stopAdvertising() {
         stopAdvertising(true)
     }
@@ -281,6 +353,12 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         _isAdvertising.value = false
     }
 
+    /**
+     * Attempts to add a [LocalService] at a given [UUID] and suspends until it has been added.
+     * @param uuid the [UUID] of the [LocalService] to add
+     * @param service the [LocalService.DSL.Primary] to use to set up the [LocalService]
+     * @return the [LocalService] added or `null` if it could not be added
+     */
     suspend fun add(uuid: UUID, service: LocalService.DSL.Primary.() -> Unit): LocalService? = performOrFailOnClose(null) {
         val response = CompletableDeferred<LocalService?>()
         val serviceBuilder: (ServerState.Available) -> LocalService = { available ->
@@ -294,6 +372,11 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         }
     }
 
+    /**
+     * Attempts to remove a [LocalService] and suspends until it has been removed.
+     * @param service the [LocalService] to remove
+     * @return `true` if the [LocalService] was removed, `false` if not
+     */
     suspend fun remove(service: LocalService) = performOrFailOnClose(false) {
         val completed = EmptyCompletableDeferred()
         try {
@@ -305,6 +388,10 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         }
     }
 
+    /**
+     * Attempts to remove all [LocalService] and suspends until they have been removed.
+     * @return `true` if all [LocalService] were removed, `false` if not
+     */
     suspend fun removeAllServices() = performOrFailOnClose(false) {
         val completed = EmptyCompletableDeferred()
         try {
@@ -330,6 +417,10 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         }
     }
 
+    /**
+     * Closes this [BluetoothServer]
+     * After this method has been called the Server will no longer be available. Any subsequent calls to [advertise], [add], [remove], or [removeAllServices] will fail.
+     */
     override fun close() {
         stateJob?.cancel()
         advertiseChannel.close()
@@ -342,8 +433,10 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
         _status.value = state.status
         try {
             while (true) {
+                // Keep tracking state until this job gets cancelled by close
                 val newState = when (val currentState = state) {
                     is ServerState.AwaitingPermissions -> {
+                        // Next state change occurs whenever we get permissions
                         logger.info(TAG) { "Missing Permissions" }
                         currentState.awaitPermitted(settings.autoRequestPermission).also {
                             logger.info(TAG) { "Has Permissions" }
@@ -352,6 +445,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
 
                     is ServerState.AwaitingBluetoothEnabled -> {
                         logger.info(TAG) { "Bluetooth Disabled" }
+                        // Next state change occurs wen either bluetooth gets enabled or permissions get revoked
                         val isEnabled = async { currentState.awaitEnabled(settings.autoEnableBluetooth) }
                         val isRevoked = async { currentState.awaitRevoked() }
                         try {
@@ -371,9 +465,11 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
                     }
 
                     is ServerState.Available -> {
+                        // Run availability lifecycle
                         val availableJob = launch {
                             onAvailable(currentState)
                         }
+                        // Next state change occurs wen either bluetooth gets disabled or permissions get revoked
                         val isDisabled = async { currentState.awaitDisabled() }
                         val isRevoked = async { currentState.awaitRevoked() }
                         try {
@@ -403,6 +499,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
 
     private suspend fun onAvailable(available: ServerState.Available) {
         val cancelledService = CompletableDeferred<ServiceAction.Add?>()
+        // Start monitoring all actions
         val jobs = listOf(
             monitorAdvertising(available),
             monitorAddServices(available, cancelledService),
@@ -412,6 +509,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
             // Keep active so cleanup occurs correctly
             jobs.joinAll()
         } finally {
+            // Prepare for restoration
             jobs.forEach { it.cancel() }
             disconnectAllConnectedDevices()
             removeServicesAndSaveForRestoration(cancelledService.getCompletedOrNull())
@@ -421,6 +519,7 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
     }
 
     private fun removeServicesAndSaveForRestoration(currentlyBeingAdded: ServiceAction.Add?) {
+        // First grab all open ServiceActions so they may be executed as soon as Server becomes available again
         val activeActions = mutableListOf<ServiceAction>()
         currentlyBeingAdded?.let {
             activeActions.add(it)
@@ -430,9 +529,11 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
                 activeActions.add(it)
             }
         }
+        // Add actions for adding current services back. These should be at the front of the queue
         _services.value.forEach { service ->
             serviceActionChannel.trySend(ServiceAction.Add({ service }, CompletableDeferred()))
         }
+        // Add pending actions back
         activeActions.forEach { serviceActionChannel.trySend(it) }
         _services.value = emptyList()
     }
@@ -575,6 +676,11 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
     }
 }
 
+/**
+ * Data advertised by a [BluetoothServer]
+ * @property localName the name of the device to advertise
+ * @property serviceUUIDs the [UUID]s of the [LocalService] to advertise
+ */
 data class AdvertiseData(val localName: String?, val serviceUUIDs: List<UUID>) {
     interface Builder {
         var localName: String?
@@ -588,6 +694,9 @@ data class AdvertiseData(val localName: String?, val serviceUUIDs: List<UUID>) {
     }
 }
 
+/**
+ * A [Device] that connected to a [BluetoothServer]
+ */
 expect class ConnectedDevice : Device {
     override val identifier: Identifier
 }

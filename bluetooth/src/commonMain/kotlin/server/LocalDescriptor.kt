@@ -22,21 +22,57 @@ import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
 import com.splendo.kaluga.bluetooth.serialization.ByteArrayEndedBeforeSerializationCompleted
+import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Permission
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
-import kotlinx.serialization.serializer
 
+/**
+ * A [Descriptor] available from a [BluetoothServer]
+ * @property wrapper the [LocalDescriptorWrapper] to access the platform descriptor
+ * @property characteristic the [LocalCharacteristic] this descriptor belongs to
+ */
 class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characteristic: LocalCharacteristic) : Descriptor {
 
+    /**
+     * DSL for setting up a [com.splendo.kaluga.bluetooth.server.LocalDescriptor]
+     */
     interface DSL {
+
+        /**
+         * Makes this [LocalDescriptor] readable by a [ConnectedDevice]
+         * Cannot be called if [readable], or [readableAlwaysSuccess] has been called before
+         * @param encrypted `true` if reading from the descriptor should be encrypted. This will result in [Permission.READ_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.READABLE]
+         * @param onRead the function to call when reading from the descriptor.
+         * This contains the [ConnectedDevice] and the offset of the data to read and should return a [GattResponse.ReadResponse]
+         */
         fun readable(encrypted: Boolean = false, onRead: suspend LocalDescriptor.(ConnectedDevice, Int) -> GattResponse.ReadResponse)
 
+        /**
+         * Makes this [LocalDescriptor] readable by a [ConnectedDevice] to always return [GattResponse.ReadSuccess]
+         * Cannot be called if [readable], or [readableAlwaysSuccess] has been called before
+         * @param encrypted `true` if reading from the descriptor should be encrypted. This will result in [Permission.READ_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.READABLE]
+         * @param onRead the function to call when reading from the descriptor.
+         * This contains the [ConnectedDevice] and the offset of the data to read and should return the [ByteArray] being read.
+         */
         fun readableAlwaysSuccess(encrypted: Boolean = false, onRead: suspend LocalDescriptor.(ConnectedDevice, Int) -> ByteArray) {
             readable(encrypted) { device, offset ->
                 GattResponse.ReadSuccess(onRead(this, device, offset))
             }
         }
 
+        /**
+         * Makes this [LocalDescriptor] readable by a [ConnectedDevice] to always return [GattResponse.ReadSuccess]
+         * Cannot be called if [readable], or [readableAlwaysSuccess] has been called before
+         * @param T the type of the data being read
+         * @param encrypted `true` if reading from the descriptor should be encrypted. This will result in [Permission.READ_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.READABLE]
+         * @param serializationStrategy the [SerializationStrategy] to use to encode the [T] to a [ByteArray]
+         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
+         * @param onRead the function to call when reading from the descriptor.
+         * This contains the [ConnectedDevice] and the offset of the data to read and should return the [ByteArray] being read.
+         */
         fun <T> readableAlwaysSuccess(
             encrypted: Boolean = false,
             serializationStrategy: SerializationStrategy<T>,
@@ -47,11 +83,33 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
                 GattResponse.ReadSuccess(onRead(device), offset, serializationStrategy, bluetoothFormat)
             }
         }
+
+        /**
+         * Makes this [LocalDescriptor] writable by a [ConnectedDevice]
+         * Cannot be called if [writable] has been called before
+         * @param encrypted `true` if reading from the descriptor should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.WRITABLE]
+         * @param onWrite the function to call when reading from the descriptor.
+         * This contains the [ConnectedDevice], the [ByteArray] to write and the offset of the data to write and should return a [GattResponse.WriteResponse]
+         */
         fun writable(encrypted: Boolean = false, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse)
 
+        /**
+         * Makes this [LocalDescriptor] writable by a [ConnectedDevice]
+         * Cannot be called if [writable] has been called before
+         * @param T the type of the data being written
+         * @param encrypted `true` if reading from the descriptor should be encrypted.  This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.WRITABLE]
+         * @param deserializationStrategy the [DeserializationStrategy] to use to decode the [ByteArray] being written to an instance of [T]
+         * @param onFailedToWrite the function to call when writing to the descriptor fails.
+         * This contains the [ConnectedDevice] and the exception that caused deserialization to fail and should return a [GattResponse.WriteResponse]
+         * @param onWrite the function to call when reading from the descriptor.
+         * This contains the [ConnectedDevice], and the [T] to write and should return a [GattResponse.WriteResponse].
+         * If the data being written is split over multiple offsets, this will only be called when the data can be fully deserialized
+         */
         fun <T> writable(
             encrypted: Boolean = false,
-            serializationStrategy: DeserializationStrategy<T>,
+            deserializationStrategy: DeserializationStrategy<T>,
             bluetoothFormat: BluetoothFormat = BluetoothFormat,
             onFailedToWrite: suspend LocalDescriptor.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
             onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> GattResponse.WriteResponse,
@@ -70,7 +128,7 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
                 }
                 valueToDeserialize?.let {
                     try {
-                        onWrite(device, bluetoothFormat.decodeFromByteArray(serializationStrategy, it))
+                        onWrite(device, bluetoothFormat.decodeFromByteArray(deserializationStrategy, it))
                     } catch (_: ByteArrayEndedBeforeSerializationCompleted) {
                         cache[device] = valueToDeserialize
                         GattResponse.WriteSuccess
@@ -81,6 +139,14 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
             }
         }
 
+        /**
+         * Makes this [LocalDescriptor] writable by a [ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+         * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
+         * @param encrypted `true` if reading from the descriptor should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.WRITABLE]
+         * @param onWrite the function to call when reading from the descriptor.
+         * This contains the [ConnectedDevice], the [ByteArray] to write and the offset of the data to write
+         */
         fun writableAlwaysSuccess(encrypted: Boolean = false, onWrite: suspend LocalDescriptor.(ConnectedDevice, ByteArray, Int) -> Unit) {
             writable(encrypted) { device, value, offset ->
                 onWrite(device, value, offset)
@@ -88,14 +154,25 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
             }
         }
 
+        /**
+         * Makes this [LocalDescriptor] writable by a [ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+         * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
+         * @param T the type of the data being written
+         * @param encrypted `true` if reading from the descriptor should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.WRITABLE]
+         * @param deserializationStrategy the [DeserializationStrategy] to use to decode the [ByteArray] being written to an instance of [T]
+         * @param onWrite the function to call when reading from the descriptor.
+         * This contains the [ConnectedDevice], and the [T] to write.
+         * If the data being written is split over multiple offsets, this will only be called when the data can be fully deserialized
+         */
         fun <T> writableAlwaysSuccess(
             encrypted: Boolean = false,
-            serializationStrategy: DeserializationStrategy<T>,
+            deserializationStrategy: DeserializationStrategy<T>,
             bluetoothFormat: BluetoothFormat = BluetoothFormat,
             onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> Unit,
         ) = writable(
             encrypted,
-            serializationStrategy,
+            deserializationStrategy,
             bluetoothFormat,
             { _, _ -> GattResponse.WriteSuccess },
         ) { device, value ->
@@ -104,10 +181,28 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
         }
     }
 
+    /**
+     * The permissions this descriptor gives to [ConnectedDevice]
+     */
     enum class Permissions {
+        /**
+         * The descriptor can be read by a [ConnectedDevice]
+         */
         READ,
+
+        /**
+         * The descriptor can be read by a [ConnectedDevice] if an encrypted connection has been established
+         */
         READ_ENCRYPTED,
+
+        /**
+         * The descriptor can be written to by a [ConnectedDevice]
+         */
         WRITE,
+
+        /**
+         * The descriptor can be written to by a [ConnectedDevice] if an encrypted connection has been established
+         */
         WRITE_ENCRYPTED,
     }
 
@@ -147,16 +242,41 @@ internal class LocalDescriptorDSL(val uuid: UUID, val registerReadAction: LocalD
     }
 }
 
+/**
+ * Accessor to the platform level Local Bluetooth descriptor
+ */
 expect class LocalDescriptorWrapper internal constructor(uuid: UUID, permissions: Set<LocalDescriptor.Permissions>) {
     val uuid: UUID
 }
 
+/**
+ * Makes this [LocalDescriptor] readable by a [ConnectedDevice] to always return [GattResponse.ReadSuccess]
+ * Cannot be called if [LocalDescriptor.DSL.readable], or [LocalDescriptor.DSL.readableAlwaysSuccess] has been called before
+ * @param T the type of the data being read
+ * @param encrypted `true` if reading from the descriptor should be encrypted. This will result in [Permission.READ_ENCRYPTION_REQUIRED].
+ * Otherwise will add [Permission.READABLE]
+ * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
+ * @param onRead the function to call when reading from the descriptor.
+ * This contains the [ConnectedDevice] and the offset of the data to read and should return the [ByteArray] being read.
+ */
 inline fun <reified T : Any> LocalDescriptor.DSL.readableAlwaysSuccess(
     encrypted: Boolean = false,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
     noinline onRead: suspend LocalDescriptor.(ConnectedDevice) -> T,
 ) = readableAlwaysSuccess(encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onRead)
 
+/**
+ * Makes this [LocalDescriptor] writable by a [ConnectedDevice]
+ * Cannot be called if [LocalDescriptor.DSL.writable] or [LocalDescriptor.DSL.writableAlwaysSuccess] has been called before
+ * @param T the type of the data being written
+ * @param encrypted `true` if reading from the descriptor should be encrypted.  This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
+ * Otherwise will add [Permission.WRITABLE]
+ * @param onFailedToWrite the function to call when writing to the descriptor fails.
+ * This contains the [ConnectedDevice] and the exception that caused deserialization to fail and should return a [GattResponse.WriteResponse]
+ * @param onWrite the function to call when reading from the descriptor.
+ * This contains the [ConnectedDevice], and the [T] to write and should return a [GattResponse.WriteResponse].
+ * If the data being written is split over multiple offsets, this will only be called when the data can be fully deserialized
+ */
 inline fun <reified T : Any> LocalDescriptor.DSL.writable(
     encrypted: Boolean = false,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
@@ -164,6 +284,16 @@ inline fun <reified T : Any> LocalDescriptor.DSL.writable(
     noinline onWrite: suspend LocalDescriptor.(ConnectedDevice, T) -> GattResponse.WriteResponse,
 ) = writable(encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onFailedToWrite, onWrite)
 
+/**
+ * Makes this [LocalDescriptor] writable by a [ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+ * Cannot be called if [LocalDescriptor.DSL.writable] or [LocalDescriptor.DSL.writableAlwaysSuccess] has been called before
+ * @param T the type of the data being written
+ * @param encrypted `true` if reading from the descriptor should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
+ * Otherwise will add [Permission.WRITABLE]
+ * @param onWrite the function to call when reading from the descriptor.
+ * This contains the [ConnectedDevice], and the [T] to write.
+ * If the data being written is split over multiple offsets, this will only be called when the data can be fully deserialized
+ */
 inline fun <reified T : Any> LocalDescriptor.DSL.writableAlwaysSuccess(
     encrypted: Boolean = false,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,

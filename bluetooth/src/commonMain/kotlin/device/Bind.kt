@@ -964,8 +964,11 @@ sealed interface RemoteCharacteristicBinding<T> : RemoteAttributeBinding<T> {
      * @param bluetoothFormat the [BluetoothFormat] to use to convert the [ByteArray] to the [Notification]
      * @param builder sets up the observation response to a new [Notification]
      */
-    fun <Notification> observe(deserializationStrategy: DeserializationStrategy<Notification>, bluetoothFormat: BluetoothFormat = BluetoothFormat, builder: ObserveBuilder.NonMutating<T, Notification>.() -> Unit) =
-        observe({ bluetoothFormat.decodeFromByteArray(deserializationStrategy, this) }, builder)
+    fun <Notification> observe(
+        deserializationStrategy: DeserializationStrategy<Notification>,
+        bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        builder: ObserveBuilder.NonMutating<T, Notification>.() -> Unit,
+    ) = observe({ bluetoothFormat.decodeFromByteArray(deserializationStrategy, this) }, builder)
 
     /**
      * Sets up observation of a [ByteArray] from the [RemoteCharacteristic]
@@ -985,7 +988,6 @@ inline fun <reified Notification, T> RemoteCharacteristicBinding<T>.observe(
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
     noinline builder: ObserveBuilder.NonMutating<T, Notification>.() -> Unit,
 ) = observe(bluetoothFormat.serializersModule.serializer<Notification>(), bluetoothFormat, builder)
-
 
 /**
  * Builder for setting up binding to an object [T] so that it may be changed by a [RemoteDescriptor].
@@ -1181,7 +1183,6 @@ fun <T> T.bind(characteristic: RemoteCharacteristic, scope: CoroutineScope, bind
         characteristic,
         scope,
     ).apply(binding).build()
-
 
 /**
  * Binds an object of type [T] to the [Flow] of a [RemoteDescriptor], so that it may be updated according to [binding]

@@ -18,6 +18,7 @@ dependencies {
 ```
 
 ## Usage
+### Client
 Create a `Bluetooth` object through the `BluetoothBuilder`. This gives you access to a `Flow` of Bluetooth devices. To scan for devices simply call
 
 ```kotlin

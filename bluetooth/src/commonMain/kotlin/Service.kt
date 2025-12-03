@@ -90,8 +90,15 @@ class RemoteService(
  * Accessor to the platform level Bluetooth service
  */
 expect interface RemoteServiceWrapper {
+
+    /**
+     * The [Service.Type] of the service
+     */
     val type: Service.Type
 
+    /**
+     * The list of [RemoteServiceWrapper] this service includes
+     */
     val includedServices: List<RemoteServiceWrapper>
 
     /**

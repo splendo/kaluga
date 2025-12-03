@@ -2376,8 +2376,14 @@ public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$Notif
 	public fun emit ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getDescriptors ()Ljava/util/List;
 	public final fun getSubscribedDevices ()Lkotlinx/coroutines/flow/StateFlow;
+	public final fun notify (Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun notify (Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;Ljava/lang/Object;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun notify (Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun notify$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$Notifiable;Lcom/splendo/kaluga/bluetooth/server/ConnectedDevice;Ljava/lang/Object;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun notifyAll (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun notifyAll (Ljava/lang/Object;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun notifyAll ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun notifyAll$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$Notifiable;Ljava/lang/Object;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$Permission : java/lang/Enum {

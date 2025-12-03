@@ -23,7 +23,7 @@ import com.splendo.kaluga.bluetooth.serialization.NullIfEmpty
 import com.splendo.kaluga.bluetooth.serialization.Prefix
 import com.splendo.kaluga.bluetooth.serialization.Scalar
 import com.splendo.kaluga.bluetooth.serialization.SerializedByteValue
-import com.splendo.kaluga.bluetooth.serialization.Sizing
+import com.splendo.kaluga.bluetooth.serialization.Size
 import com.splendo.kaluga.bluetooth.serialization.Unsigned
 import com.splendo.kaluga.bluetooth.serialization.Unsized
 import com.splendo.kaluga.bluetooth.uuidFrom
@@ -57,7 +57,7 @@ object BluetoothSpec {
     @Serializable
     @JvmInline
     value class RRInterval private constructor(
-        @Sizing(Length.`16_BIT`)
+        @Size(Length.`16_BIT`)
         @Scalar(binaryExponent = 10)
         val seconds: Double,
     ) {
@@ -68,8 +68,8 @@ object BluetoothSpec {
 
     @Serializable
     data class HeartRate(
-        @Sizing(Length.`8_BIT`)
-        @Sizing(Length.`16_BIT`)
+        @Size(Length.`8_BIT`)
+        @Size(Length.`16_BIT`)
         @Unsigned
         val heartRate: Int,
         @FlagIndex(1)
@@ -77,7 +77,7 @@ object BluetoothSpec {
         @FlagIndex(2)
         val contactDetected: Boolean = !contactSupported,
         @Unsigned
-        @Sizing(Length.`16_BIT`)
+        @Size(Length.`16_BIT`)
         val energyExpended: Int? = null,
         @NullIfEmpty
         @Unsized
@@ -110,6 +110,6 @@ object BluetoothSpec {
     }
 
     @Serializable
-    @Prefix(byteArrayOf(0x01))
+    @Prefix([0x01])
     data object ResetEnergyCommand
 }

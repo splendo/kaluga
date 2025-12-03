@@ -21,6 +21,10 @@ import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidFrom
 
+/**
+ * A [Service] available from a [BluetoothServer]
+ * @property wrapper the [LocalServiceWrapper] to access the platform service.
+ */
 class LocalService internal constructor(
     val wrapper: LocalServiceWrapper,
     override val type: Service.Type,
@@ -28,25 +32,67 @@ class LocalService internal constructor(
     buildCharacteristics: LocalService.() -> List<LocalCharacteristic>,
 ) : Service {
 
+    /**
+     * DSL for setting up a [LocalService]
+     */
     sealed interface DSL {
 
+        /**
+         * [DSL] for setting up a [LocalService] with a [Service.Type.PRIMARY] type
+         */
         interface Primary : DSL {
+
+            /**
+             * Includes a [LocalService] to the service being built
+             * @param uuid the [UUID] of the [LocalService] to include
+             * @param service the [LocalService.DSL.Secondary] to use to set up the included [LocalService]
+             */
             fun includedService(uuid: UUID, service: Secondary.() -> Unit)
+
+            /**
+             * Includes a [LocalService] to the service being built
+             * @param uuidString string of the [UUID] of the [LocalService] to include
+             * @param service the [LocalService.DSL.Secondary] to use to set up the included [LocalService]
+             * @throws com.splendo.kaluga.bluetooth.UUIDException if [uuidString] is not a valid [UUID]
+             */
             fun includedService(uuidString: String, service: Secondary.() -> Unit) {
                 includedService(uuidFrom(uuidString), service)
             }
         }
 
+        /**
+         * [DSL] for setting up a [LocalService] with a [Service.Type.SECONDARY] type
+         */
         interface Secondary : DSL
+
+        /**
+         * Adds a [LocalCharacteristic] to the service being built
+         * @param uuid the [UUID] of the [LocalCharacteristic] to add
+         * @param characteristic the [LocalCharacteristic.DSL] to use to set up the [LocalCharacteristic]
+         */
         fun characteristic(uuid: UUID, characteristic: LocalCharacteristic.DSL.() -> Unit)
+
+        /**
+         * Adds a [LocalCharacteristic] to the service being built
+         * @param uuidString string of the [UUID] of the [LocalCharacteristic] to add
+         * @param characteristic the [LocalCharacteristic.DSL] to use to set up the [LocalCharacteristic]
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if [uuidString] is not a valid [UUID]
+         */
         fun characteristic(uuidString: String, characteristic: LocalCharacteristic.DSL.() -> Unit) {
             characteristic(uuidFrom(uuidString), characteristic)
         }
     }
 
     override val uuid: UUID = wrapper.uuid
+
+    /**
+     * The list of [LocalCharacteristic] this service supports
+     */
     override val characteristics: List<LocalCharacteristic> = buildCharacteristics()
 
+    /**
+     * The list of [LocalService] included in this service
+     */
     override val includedServices: List<LocalService> = buildIncludedServices()
 }
 
@@ -141,12 +187,25 @@ internal sealed class LocalServiceDSL(val uuid: UUID) {
     )
 }
 
+/**
+ * Accessor to the platform level Local Bluetooth service
+ */
 expect class LocalServiceWrapper {
 
-    constructor(uuid: UUID, type: Service.Type)
+    internal constructor(uuid: UUID, type: Service.Type)
 
+    /**
+     * The [UUID] of the service
+     */
     val uuid: UUID
 
+    /**
+     * Adds an included [LocalServiceWrapper] to the service
+     */
     fun addIncludedService(service: LocalServiceWrapper)
+
+    /**
+     * Adds a [LocalCharacteristicWrapper] to the service
+     */
     fun addCharacteristic(characteristic: LocalCharacteristicWrapper)
 }
