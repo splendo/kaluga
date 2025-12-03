@@ -165,7 +165,9 @@ val server = builder.createServer(context) {
             }
             
             // Alternative notification
-            flowOf(byteArrayOf()).collectAsNotification(coroutineScope)
+            flowOf(byteArrayOf()).collectTo(coroutineScope) {
+                triggerNotification()
+            }
             
             // Ignored on iOS
             descriptor(descriptorUUID) {
