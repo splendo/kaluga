@@ -142,8 +142,7 @@ open class RemoteCharacteristic(
     ) {
         is GattResponse.WriteSuccess -> Subscription(
             onUpdate,
-            { unsubscribe(this) },
-        ).let { subscription ->
+        ) { unsubscribe(this) }.let { subscription ->
             lastKnownValue?.let {
                 subscription.onUpdate(it)
             }
