@@ -33,10 +33,10 @@ import com.splendo.kaluga.bluetooth.device.NotConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.SerializableIdentifier
 import com.splendo.kaluga.bluetooth.device.bind
 import com.splendo.kaluga.bluetooth.device.observe
-import com.splendo.kaluga.bluetooth.device.collectToTriggerRead
-import com.splendo.kaluga.bluetooth.device.collectToTriggerWrite
 import com.splendo.kaluga.bluetooth.device.serializable
 import com.splendo.kaluga.bluetooth.device.stringValue
+import com.splendo.kaluga.bluetooth.device.triggerRead
+import com.splendo.kaluga.bluetooth.device.triggerWrite
 import com.splendo.kaluga.bluetooth.disconnect
 import com.splendo.kaluga.bluetooth.distance
 import com.splendo.kaluga.bluetooth.get
@@ -140,23 +140,27 @@ class BluetoothDeviceViewModel(identifier: Identifier, navigator: Navigator<Clos
                         }
                     }
                     characteristic(BluetoothSpec.HeartRateService.SENSOR_LOCATION_CHARACTERISTIC) {
-                        requestPositionUpdate.collectToTriggerRead<BluetoothSpec.SensorLocation, HeartRateViewModel>(this) {
-                            onRead { value ->
-                                positionState.value = value
-                            }
-                            onFailedToRead { error ->
-                                warn { "Failed to read Sensor Location. Reason $error" }
-                                positionState.value = null
+                        requestPositionUpdate.collectTo {
+                            triggerRead<BluetoothSpec.SensorLocation, HeartRateViewModel> {
+                                onRead { value ->
+                                    positionState.value = value
+                                }
+                                onFailedToRead { error ->
+                                    warn { "Failed to read Sensor Location. Reason $error" }
+                                    positionState.value = null
+                                }
                             }
                         }
                     }
                     characteristic(BluetoothSpec.HeartRateService.HEART_RATE_CONTROL_POINT_CHARACTERISTIC) {
-                        requestReset.collectToTriggerWrite(this, mapper = { BluetoothSpec.ResetEnergyCommand }) {
-                            onWrite {
-                                debug { "Did Write Heart Rate Control Point" }
-                            }
-                            onFailedToWrite { _, error ->
-                                warn { "Failed to write Heart Rate Control Point. Reason $error" }
+                        requestReset.collectTo {
+                            triggerWrite(mapper = { BluetoothSpec.ResetEnergyCommand }) {
+                                onWrite {
+                                    debug { "Did Write Heart Rate Control Point" }
+                                }
+                                onFailedToWrite { _, error ->
+                                    warn { "Failed to write Heart Rate Control Point. Reason $error" }
+                                }
                             }
                         }
                     }

@@ -226,300 +226,188 @@ interface RemoteAttributeBinding<T> {
     }
 
     /**
-     * Consumes a [Trigger] from a [Channel] to cause the [RemoteAttribute] to be read.
-     * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be read.
-     * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
-     * @param asValue maps the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
-     * @param builder sets up the response to a triggered read using a [ReadBuilder.NonMutating]
+     * Sets up binding to respond to a [Trigger]
+     * @property Trigger the type of Trigger that will cause actions to occur
+     * @property T the type of the object to bind to
      */
-    fun <Trigger, Response> Channel<Trigger>.consumeToTriggerRead(asValue: ByteArray.() -> Response, builder: ReadBuilder.NonMutating<T, Trigger, Response>.() -> Unit)
+    interface TriggerResponse<Trigger, T> {
+        /**
+         * Responds to a [Trigger] to cause the [RemoteAttribute] to be read.
+         * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
+         * @param asValue maps the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
+         * @param builder sets up the response to a triggered read using a [ReadBuilder.NonMutating]
+         */
+        fun <Response> triggerRead(asValue: ByteArray.() -> Response, builder: ReadBuilder.NonMutating<T, Trigger, Response>.() -> Unit)
+
+        /**
+         * Responds to a [Trigger] to cause the [RemoteAttribute] to be read.
+         * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
+         * @param deserializationStrategy the [DeserializationStrategy] to map the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
+         * @param bluetoothFormat the [BluetoothFormat] to use for deserialization.
+         * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
+         */
+        fun <Response> triggerRead(
+            deserializationStrategy: DeserializationStrategy<Response>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            unitBuilder: ReadBuilder.NonMutating<T, Trigger, Response>.() -> Unit,
+        ) = triggerRead({
+            bluetoothFormat.decodeFromByteArray(deserializationStrategy, this)
+        }, unitBuilder)
+
+        /**
+         * Responds to a [Trigger] to cause the [RemoteAttribute] to be read.
+         * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be read.
+         * @param builder sets up the response to a triggered read using a [ReadBuilder.NonMutating]
+         */
+        fun triggerRead(builder: ReadBuilder.NonMutating<T, Trigger, ByteArray>.() -> Unit) = triggerRead(asValue = { this }, builder = builder)
+
+        /**
+         * Responds to a [Trigger] to cause the [RemoteAttribute] to be written to.
+         * @param asByte maps the [Trigger] to a [ByteArray] to write.
+         * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+         */
+        fun triggerWrite(asByte: Trigger.() -> ByteArray, builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit)
+
+        /**
+         * Responds to a [Trigger] to have [Data] written to the [RemoteAttribute].
+         * @param Data the type of data to write to the [RemoteAttribute].
+         * @param serializationStrategy the [SerializationStrategy] to map the [Data] to a [ByteArray] to write.
+         * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
+         * @param mapper maps the [Trigger] to the [Data] to write.
+         * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+         */
+        fun <Data> triggerWrite(
+            serializationStrategy: SerializationStrategy<Data>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            mapper: Trigger.() -> Data,
+            builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit,
+        ) = triggerWrite({ bluetoothFormat.encodeToByteArray(serializationStrategy, mapper()) }, builder)
+
+        /**
+         * Responds to a [Trigger] to write it to the [RemoteAttribute].
+         * @param serializationStrategy the [SerializationStrategy] to map the [Trigger] to a [ByteArray] to write.
+         * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
+         * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+         */
+        fun triggerWrite(
+            serializationStrategy: SerializationStrategy<Trigger>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit,
+        ) = triggerWrite(serializationStrategy, bluetoothFormat, { this }, builder)
+    }
 
     /**
-     * Consumes a [Unit] from a [Channel] to cause the [RemoteAttribute] to be read.
-     * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
-     * @param asValue maps the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
-     * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
+     * Consumes this [Channel] and responds to its [Trigger]
+     * @param Trigger the type of the [Channel] to respond to
+     * @param trigger sets up the [TriggerResponse] caused by each element in the [Channel]
      */
-    @JvmName("consumeUnitToTriggerRead")
-    fun <Response> Channel<Unit>.consumeToTriggerRead(asValue: ByteArray.() -> Response, unitBuilder: UnitReadBuilder.NonMutating<T, Response>.() -> Unit) =
-        consumeToTriggerRead(asValue, builder = {
-            UnitReadBuilder.NonMutating(this).apply(unitBuilder)
-        })
+    fun <Trigger> Channel<Trigger>.consumeTo(trigger: TriggerResponse<Trigger, T>.() -> Unit)
 
     /**
-     * Consumes a [Unit] from a [Channel] to cause the [RemoteAttribute] to be read.
-     * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
-     * @param deserializationStrategy the [DeserializationStrategy] to map the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
-     * @param bluetoothFormat the [BluetoothFormat] to use for deserialization.
-     * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
+     * Collects this [Flow] and responds to its [Trigger]
+     * @param Trigger the type of the [Flow] to respond to
+     * @param trigger sets up the [TriggerResponse] caused by each element in the [Flow]
      */
-    fun <Response> Channel<Unit>.consumeToTriggerRead(
-        deserializationStrategy: DeserializationStrategy<Response>,
-        bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        unitBuilder: UnitReadBuilder.NonMutating<T, Response>.() -> Unit,
-    ) = consumeToTriggerRead({
-        bluetoothFormat.decodeFromByteArray(deserializationStrategy, this)
-    }, unitBuilder)
+    fun <Trigger> Flow<Trigger>.collectTo(trigger: TriggerResponse<Trigger, T>.() -> Unit)
+}
 
-    /**
-     * Consumes a [Trigger] from a [Channel] to cause the [RemoteAttribute] to be read.
-     * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be read.
-     * @param builder sets up the response to a triggered read using a [ReadBuilder.NonMutating]
-     */
-    fun <Trigger> Channel<Trigger>.consumeToTriggerRead(builder: ReadBuilder.NonMutating<T, Trigger, ByteArray>.() -> Unit) =
-        consumeToTriggerRead(asValue = { this }, builder = builder)
-
-    /**
-     * Consumes a [Unit] from a [Channel] to cause the [RemoteAttribute] to be read.
-     * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
-     * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
-     */
-    @JvmName("consumeUnitToTriggerRead")
-    fun <Response> Channel<Unit>.consumeToTriggerRead(unitBuilder: UnitReadBuilder.NonMutating<T, ByteArray>.() -> Unit) = consumeToTriggerRead(builder = {
+/**
+ * Responds to a [Unit] to cause the [RemoteAttribute] to be read.
+ * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
+ * @param T  the type of the object to bind to
+ * @param asValue maps the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
+ * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
+ */
+fun <Response, T> RemoteAttributeBinding.TriggerResponse<Unit, T>.triggerRead(asValue: ByteArray.() -> Response, unitBuilder: UnitReadBuilder.NonMutating<T, Response>.() -> Unit) =
+    triggerRead(asValue, builder = {
         UnitReadBuilder.NonMutating(this).apply(unitBuilder)
     })
 
-    /**
-     * Collects a [Trigger] from a [Flow] to cause the [RemoteAttribute] to be read.
-     * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be read.
-     * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
-     * @param asValue maps the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
-     * @param builder sets up the response to a triggered read using a [ReadBuilder.NonMutating]
-     */
-    fun <Trigger, Response> Flow<Trigger>.collectToTriggerRead(asValue: ByteArray.() -> Response, builder: ReadBuilder.NonMutating<T, Trigger, Response>.() -> Unit)
-
-    /**
-     * Collects a [Unit] from a [Flow] to cause the [RemoteAttribute] to be read.
-     * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
-     * @param asValue maps the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
-     * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
-     */
-    @JvmName("collectUnitToTriggerRead")
-    fun <Response> Flow<Unit>.collectToTriggerRead(asValue: ByteArray.() -> Response, unitBuilder: UnitReadBuilder.NonMutating<T, Response>.() -> Unit) =
-        collectToTriggerRead(asValue, builder = {
-            UnitReadBuilder.NonMutating(this).apply(unitBuilder)
-        })
-
-    /**
-     * Collects a [Unit] from a [Flow] to cause the [RemoteAttribute] to be read.
-     * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
-     * @param deserializationStrategy the [DeserializationStrategy] to map the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
-     * @param bluetoothFormat the [BluetoothFormat] to use for deserialization.
-     * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
-     */
-    fun <Response> Flow<Unit>.collectToTriggerRead(
-        deserializationStrategy: DeserializationStrategy<Response>,
-        bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        unitBuilder: UnitReadBuilder.NonMutating<T, Response>.() -> Unit,
-    ) = collectToTriggerRead({
-        bluetoothFormat.decodeFromByteArray(deserializationStrategy, this)
-    }, unitBuilder)
-
-    /**
-     * Collects a [Trigger] from a [Flow] to cause the [RemoteAttribute] to be read.
-     * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be read.
-     * @param builder sets up the response to a triggered read using a [ReadBuilder.NonMutating]
-     */
-    fun <Trigger> Flow<Trigger>.collectToTriggerRead(builder: ReadBuilder.NonMutating<T, Trigger, ByteArray>.() -> Unit) =
-        collectToTriggerRead(asValue = { this }, builder = builder)
-
-    /**
-     * Collects a [Unit] from a [Flow] to cause the [RemoteAttribute] to be read.
-     * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
-     */
-    @JvmName("collectUnitToTriggerRead")
-    fun <Response> Flow<Unit>.collectToTriggerRead(unitBuilder: UnitReadBuilder.NonMutating<T, ByteArray>.() -> Unit) = collectToTriggerRead(builder = {
-        UnitReadBuilder.NonMutating(this).apply(unitBuilder)
-    })
-
-    /**
-     * Consumes [Data] from a [Channel] to cause the [RemoteAttribute] to be written to.
-     * @param Data the type of data to write to the [RemoteAttribute].
-     * @param asByte maps the [Data] to a [ByteArray] to write.
-     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
-     */
-    fun <Data> Channel<Data>.consumeToTriggerWrite(asByte: Data.() -> ByteArray, builder: WriteBuilder.NonMutating<T, Data>.() -> Unit)
-
-    /**
-     * Consumes [Trigger] from a [Channel] to have [Data] written to the [RemoteAttribute].
-     * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be written to.
-     * @param Data the type of data to write to the [RemoteAttribute].
-     * @param serializationStrategy the [SerializationStrategy] to map the [Data] to a [ByteArray] to write.
-     * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
-     * @param mapper maps the [Trigger] to the [Data] to write.
-     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
-     */
-    fun <Trigger, Data> Channel<Trigger>.consumeToTriggerWrite(
-        serializationStrategy: SerializationStrategy<Data>,
-        bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        mapper: Trigger.() -> Data,
-        builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit,
-    ) = consumeToTriggerWrite({ bluetoothFormat.encodeToByteArray(serializationStrategy, mapper()) }, builder)
-
-    /**
-     * Consumes [Data] from a [Channel] to write it to the [RemoteAttribute].
-     * @param Data the type of data to write to the [RemoteAttribute].
-     * @param serializationStrategy the [SerializationStrategy] to map the [Data] to a [ByteArray] to write.
-     * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
-     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
-     */
-    fun <Data> Channel<Data>.consumeToTriggerWrite(
-        serializationStrategy: SerializationStrategy<Data>,
-        bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        builder: WriteBuilder.NonMutating<T, Data>.() -> Unit,
-    ) = consumeToTriggerWrite(serializationStrategy, bluetoothFormat, { this }, builder)
-
-    /**
-     * Consumes [ByteArray] from a [Channel] to write it to the [RemoteAttribute].
-     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
-     */
-    fun Channel<ByteArray>.consumeToTriggerWrite(builder: WriteBuilder.NonMutating<T, ByteArray>.() -> Unit) = consumeToTriggerWrite({ this }, builder)
-
-    /**
-     * Collects [Data] from a [Flow] to cause the [RemoteAttribute] to be written to.
-     * @param Data the type of data to write to the [RemoteAttribute].
-     * @param asByte maps the [Data] to a [ByteArray] to write.
-     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
-     */
-    fun <Data> Flow<Data>.collectToTriggerWrite(asByte: Data.() -> ByteArray, builder: WriteBuilder.NonMutating<T, Data>.() -> Unit)
-
-    /**
-     * Collects [Trigger] from a [Flow] to have [Data] written to the [RemoteAttribute].
-     * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be written to.
-     * @param Data the type of data to write to the [RemoteAttribute].
-     * @param serializationStrategy the [SerializationStrategy] to map the [Data] to a [ByteArray] to write.
-     * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
-     * @param mapper maps the [Trigger] to the [Data] to write.
-     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
-     */
-    fun <Trigger, Data> Flow<Trigger>.collectToTriggerWrite(
-        serializationStrategy: SerializationStrategy<Data>,
-        bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        mapper: Trigger.() -> Data,
-        builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit,
-    ) = collectToTriggerWrite({ bluetoothFormat.encodeToByteArray(serializationStrategy, mapper()) }, builder)
-
-    /**
-     * Collects [Data] from a [Flow] to write it to the [RemoteAttribute].
-     * @param Data the type of data to write to the [RemoteAttribute].
-     * @param serializationStrategy the [SerializationStrategy] to map the [Data] to a [ByteArray] to write.
-     * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
-     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
-     */
-    fun <Data> Flow<Data>.collectToTriggerWrite(
-        serializationStrategy: SerializationStrategy<Data>,
-        bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        builder: WriteBuilder.NonMutating<T, Data>.() -> Unit,
-    ) = collectToTriggerWrite(serializationStrategy, bluetoothFormat, { this }, builder)
-
-    /**
-     * Collects [ByteArray] from a [Flow] to write it to the [RemoteAttribute].
-     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
-     */
-    fun Flow<ByteArray>.collectToTriggerWrite(builder: WriteBuilder.NonMutating<T, ByteArray>.() -> Unit) = collectToTriggerWrite({ this }, builder)
-}
-
 /**
- * Consumes a [Unit] from a [Channel] to cause the [RemoteAttribute] to be read.
+ * Responds to a [Unit] to cause the [RemoteAttribute] to be read.
  * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
  * @param T  the type of the object to bind to
- * @param remoteAttributeBinding the [RemoteAttributeBinding] to bind this [Channel] to
+ * @param deserializationStrategy the [DeserializationStrategy] to map the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
  * @param bluetoothFormat the [BluetoothFormat] to use for deserialization.
  * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
  */
-inline fun <reified Response, T> Channel<Unit>.consumeToTriggerRead(
-    remoteAttributeBinding: RemoteAttributeBinding<T>,
+fun <Response, T> RemoteAttributeBinding.TriggerResponse<Unit, T>.triggerRead(
+    deserializationStrategy: DeserializationStrategy<Response>,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
-    noinline unitBuilder: UnitReadBuilder.NonMutating<T, Response>.() -> Unit,
-) = with(remoteAttributeBinding) {
-    consumeToTriggerRead(bluetoothFormat.serializersModule.serializer<Response>(), bluetoothFormat, unitBuilder)
-}
+    unitBuilder: UnitReadBuilder.NonMutating<T, Response>.() -> Unit,
+) = triggerRead({
+    bluetoothFormat.decodeFromByteArray(deserializationStrategy, this)
+}, unitBuilder)
 
 /**
- * Collects a [Unit] from a [Flow] to cause the [RemoteAttribute] to be read.
+ * Responds to a [Unit] to cause the [RemoteAttribute] to be read.
+ * @param T  the type of the object to bind to
+ * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
+ */
+@JvmName("consumeUnitToTriggerRead")
+fun <T> RemoteAttributeBinding.TriggerResponse<Unit, T>.triggerRead(unitBuilder: UnitReadBuilder.NonMutating<T, ByteArray>.() -> Unit) = triggerRead(builder = {
+    UnitReadBuilder.NonMutating(this).apply(unitBuilder)
+})
+
+/**
+ * Responds to a [ByteArray] to write it to the [RemoteAttribute].
+ * @param T  the type of the object to bind to
+ * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+ */
+fun <T> RemoteAttributeBinding.TriggerResponse<ByteArray, T>.triggerWrite(builder: WriteBuilder.NonMutating<T, ByteArray>.() -> Unit) = triggerWrite({ this }, builder)
+
+/**
+ * Responds to a [Trigger] to cause the [RemoteAttribute] to be read.
+ * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
+ * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be read.
+ * @param T  the type of the object to bind to
+ * @param bluetoothFormat the [BluetoothFormat] to use for deserialization.
+ * @param builder sets up the response to a triggered read using a [RemoteAttributeBinding.ReadBuilder.NonMutating]
+ */
+inline fun <reified Response, Trigger, T> RemoteAttributeBinding.TriggerResponse<Trigger, T>.triggerRead(
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    noinline builder: RemoteAttributeBinding.ReadBuilder.NonMutating<T, Trigger, Response>.() -> Unit,
+) = triggerRead(bluetoothFormat.serializersModule.serializer<Response>(), bluetoothFormat, builder)
+
+/**
+ * Responds to a [Unit] to cause the [RemoteAttribute] to be read.
  * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
  * @param T  the type of the object to bind to
- * @param remoteAttributeBinding the [RemoteAttributeBinding] to bind this [Channel] to
  * @param bluetoothFormat the [BluetoothFormat] to use for deserialization.
  * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
  */
-inline fun <reified Response, T> Flow<Unit>.collectToTriggerRead(
-    remoteAttributeBinding: RemoteAttributeBinding<T>,
+@JvmName("triggerReadFromUnit")
+inline fun <reified Response, T> RemoteAttributeBinding.TriggerResponse<Unit, T>.triggerRead(
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
     noinline unitBuilder: UnitReadBuilder.NonMutating<T, Response>.() -> Unit,
-) = with(remoteAttributeBinding) {
-    collectToTriggerRead(bluetoothFormat.serializersModule.serializer<Response>(), bluetoothFormat, unitBuilder)
-}
+) = triggerRead(bluetoothFormat.serializersModule.serializer<Response>(), bluetoothFormat, unitBuilder)
 
 /**
- * Consumes [Trigger] from a [Channel] to have [Trigger] written to the [RemoteAttribute].
+ * Responds to a [Trigger] to have [Data] written to the [RemoteAttribute].
  * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be written to.
  * @param Data the type of data to write to the [RemoteAttribute].
  * @param T  the type of the object to bind to
- * @param remoteAttributeBinding the [RemoteAttributeBinding] to bind this [Channel] to
  * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
  * @param mapper maps the [Trigger] to the [Data] to write.
  * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
  */
-inline fun <Trigger, reified Data, T> Channel<Trigger>.consumeToTriggerWrite(
-    remoteAttributeBinding: RemoteAttributeBinding<T>,
+inline fun <Trigger, reified Data, T> RemoteAttributeBinding.TriggerResponse<Trigger, T>.triggerWrite(
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
     noinline mapper: Trigger.() -> Data,
     noinline builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit,
-) = with(remoteAttributeBinding) {
-    consumeToTriggerWrite(bluetoothFormat.serializersModule.serializer<Data>(), bluetoothFormat, mapper, builder)
-}
+) = triggerWrite(bluetoothFormat.serializersModule.serializer<Data>(), bluetoothFormat, mapper, builder)
 
 /**
- * Consumes [Data] from a [Channel] to write it to the [RemoteAttribute].
- * @param Data the type of data to write to the [RemoteAttribute].
+ * Consumes [Trigger] from a [Channel] to write it to the [RemoteAttribute].
+ * @param Trigger the type of data to write to the [RemoteAttribute].
  * @param T  the type of the object to bind to
- * @param remoteAttributeBinding the [RemoteAttributeBinding] to bind this [Channel] to
  * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
  * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
  */
-inline fun <reified Data, T> Channel<Data>.consumeToTriggerWrite(
-    remoteAttributeBinding: RemoteAttributeBinding<T>,
+inline fun <reified Trigger, T> RemoteAttributeBinding.TriggerResponse<Trigger, T>.triggerWrite(
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
-    noinline builder: WriteBuilder.NonMutating<T, Data>.() -> Unit,
-) = with(remoteAttributeBinding) {
-    consumeToTriggerWrite(bluetoothFormat.serializersModule.serializer<Data>(), bluetoothFormat, builder)
-}
-
-/**
- * Collects [Trigger] from a [Flow] to have [Trigger] written to the [RemoteAttribute].
- * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be written to.
- * @param Data the type of data to write to the [RemoteAttribute].
- * @param T  the type of the object to bind to
- * @param remoteAttributeBinding the [RemoteAttributeBinding] to bind this [Channel] to
- * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
- * @param mapper maps the [Trigger] to the [Data] to write.
- * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
- */
-inline fun <Trigger, reified Data, T> Flow<Trigger>.collectToTriggerWrite(
-    remoteAttributeBinding: RemoteAttributeBinding<T>,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
-    noinline mapper: Trigger.() -> Data,
     noinline builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit,
-) = with(remoteAttributeBinding) {
-    collectToTriggerWrite(bluetoothFormat.serializersModule.serializer<Data>(), bluetoothFormat, mapper, builder)
-}
-
-/**
- * Collects [Data] from a [Flow] to write it to the [RemoteAttribute].
- * @param Data the type of data to write to the [RemoteAttribute].
- * @param T  the type of the object to bind to
- * @param remoteAttributeBinding the [RemoteAttributeBinding] to bind this [Channel] to
- * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
- * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
- */
-inline fun <reified Data, T> Flow<Data>.collectToTriggerWrite(
-    remoteAttributeBinding: RemoteAttributeBinding<T>,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
-    noinline builder: WriteBuilder.NonMutating<T, Data>.() -> Unit,
-) = with(remoteAttributeBinding) {
-    collectToTriggerWrite(bluetoothFormat.serializersModule.serializer<Data>(), bluetoothFormat, builder)
-}
+) = triggerWrite(bluetoothFormat.serializersModule.serializer<Trigger>(), bluetoothFormat, builder)
 
 /**
  * Builder for setting up binding to an object [T] so that it may be changed by a [ConnectableDevice].
@@ -1664,54 +1552,72 @@ private abstract class RemoteAttributeBindingImpl<T, ReadAction : DeviceAction.R
     protected val bindingSubActions = mutableListOf<() -> Unit>()
     protected val observations = mutableListOf<suspend CoroutineScope.() -> Unit>()
 
-    override fun <Trigger, Response> Channel<Trigger>.consumeToTriggerRead(
-        asValue: ByteArray.() -> Response,
-        builder: RemoteAttributeBinding.ReadBuilder.NonMutating<T, Trigger, Response>.() -> Unit,
-    ) {
-        val builder = ReadBuilder.NonMutating<T, Trigger, Response>().apply(builder)
-        val onReadActions = builder.readActions()
-        val onFailedToReadActions = builder.failedToReadActions()
-        observations += {
-            consumeEach { trigger ->
-                read(trigger, asValue, onReadActions, onFailedToReadActions)
+    private sealed class TriggerHandler<Trigger, T> : RemoteAttributeBinding.TriggerResponse<Trigger, T> {
+
+        class ChannelTriggerHandler<Trigger, T, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write>(
+            val binding: RemoteAttributeBindingImpl<T, ReadAction, WriteAction>,
+            val channel: Channel<Trigger>,
+        ) : TriggerHandler<Trigger, T>() {
+
+            override fun <Response> triggerRead(asValue: ByteArray.() -> Response, builder: RemoteAttributeBinding.ReadBuilder.NonMutating<T, Trigger, Response>.() -> Unit) {
+                val builder = ReadBuilder.NonMutating<T, Trigger, Response>().apply(builder)
+                val onReadActions = builder.readActions()
+                val onFailedToReadActions = builder.failedToReadActions()
+                binding.observations += {
+                    channel.consumeEach { trigger ->
+                        binding.read(trigger, asValue, onReadActions, onFailedToReadActions)
+                    }
+                }
+            }
+
+            override fun triggerWrite(asByte: Trigger.() -> ByteArray, builder: RemoteAttributeBinding.WriteBuilder.NonMutating<T, Trigger>.() -> Unit) {
+                val builder = WriteBuilder.NonMutating<T, Trigger>().apply(builder)
+                val onWriteActions = builder.writeActions()
+                val onFailedToWriteActions = builder.failedToWriteActions()
+                binding.observations += {
+                    channel.consumeEach { value ->
+                        binding.write(value, asByte, onWriteActions, onFailedToWriteActions)
+                    }
+                }
+            }
+        }
+
+        class FlowTriggerHandler<Trigger, T, ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write>(
+            val binding: RemoteAttributeBindingImpl<T, ReadAction, WriteAction>,
+            val flow: Flow<Trigger>,
+        ) : TriggerHandler<Trigger, T>() {
+
+            override fun <Response> triggerRead(asValue: ByteArray.() -> Response, builder: RemoteAttributeBinding.ReadBuilder.NonMutating<T, Trigger, Response>.() -> Unit) =
+                with(binding) {
+                    val builder = ReadBuilder.NonMutating<T, Trigger, Response>().apply(builder)
+                    val onReadActions = builder.readActions()
+                    val onFailedToReadActions = builder.failedToReadActions()
+                    binding.observations += {
+                        flow.collect { trigger ->
+                            binding.read(trigger, asValue, onReadActions, onFailedToReadActions)
+                        }
+                    }
+                }
+
+            override fun triggerWrite(asByte: Trigger.() -> ByteArray, builder: RemoteAttributeBinding.WriteBuilder.NonMutating<T, Trigger>.() -> Unit) {
+                val builder = WriteBuilder.NonMutating<T, Trigger>().apply(builder)
+                val onWriteActions = builder.writeActions()
+                val onFailedToWriteActions = builder.failedToWriteActions()
+                binding.observations += {
+                    flow.collect { value ->
+                        binding.write(value, asByte, onWriteActions, onFailedToWriteActions)
+                    }
+                }
             }
         }
     }
 
-    override fun <Trigger, Response> Flow<Trigger>.collectToTriggerRead(
-        asValue: ByteArray.() -> Response,
-        builder: RemoteAttributeBinding.ReadBuilder.NonMutating<T, Trigger, Response>.() -> Unit,
-    ) {
-        val builder = ReadBuilder.NonMutating<T, Trigger, Response>().apply(builder)
-        val onReadActions = builder.readActions()
-        val onFailedToReadActions = builder.failedToReadActions()
-        observations += {
-            collect { trigger ->
-                read(trigger, asValue, onReadActions, onFailedToReadActions)
-            }
-        }
+    override fun <Trigger> Flow<Trigger>.collectTo(trigger: RemoteAttributeBinding.TriggerResponse<Trigger, T>.() -> Unit) {
+        TriggerHandler.FlowTriggerHandler(this@RemoteAttributeBindingImpl, this).trigger()
     }
 
-    override fun <Data> Channel<Data>.consumeToTriggerWrite(asByte: Data.() -> ByteArray, builder: RemoteAttributeBinding.WriteBuilder.NonMutating<T, Data>.() -> Unit) {
-        val builder = WriteBuilder.NonMutating<T, Data>().apply(builder)
-        val onWriteActions = builder.writeActions()
-        val onFailedToWriteActions = builder.failedToWriteActions()
-        observations += {
-            consumeEach { value ->
-                write(value, asByte, onWriteActions, onFailedToWriteActions)
-            }
-        }
-    }
-
-    override fun <Data> Flow<Data>.collectToTriggerWrite(asByte: Data.() -> ByteArray, builder: RemoteAttributeBinding.WriteBuilder.NonMutating<T, Data>.() -> Unit) {
-        val builder = WriteBuilder.NonMutating<T, Data>().apply(builder)
-        val onWriteActions = builder.writeActions()
-        val onFailedToWriteActions = builder.failedToWriteActions()
-        observations += {
-            collect { value ->
-                write(value, asByte, onWriteActions, onFailedToWriteActions)
-            }
-        }
+    override fun <Trigger> Channel<Trigger>.consumeTo(trigger: RemoteAttributeBinding.TriggerResponse<Trigger, T>.() -> Unit) {
+        TriggerHandler.ChannelTriggerHandler(this@RemoteAttributeBindingImpl, this).trigger()
     }
 
     private suspend fun <Trigger, Response> read(

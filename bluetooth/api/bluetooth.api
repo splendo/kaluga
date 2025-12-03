@@ -792,6 +792,11 @@ public final class com/splendo/kaluga/bluetooth/device/BindKt {
 	public static final fun bindDescriptor (Ljava/lang/Object;Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/StateFlow;
 	public static final fun bindDevice (Ljava/lang/Object;Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/StateFlow;
 	public static final fun bindService (Ljava/lang/Object;Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/StateFlow;
+	public static final fun consumeUnitToTriggerRead (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding$TriggerResponse;Lkotlin/jvm/functions/Function1;)V
+	public static final fun triggerRead (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding$TriggerResponse;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public static final fun triggerRead (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding$TriggerResponse;Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun triggerRead$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding$TriggerResponse;Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun triggerWrite (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding$TriggerResponse;Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/device/BluetoothGattWrapper {
@@ -1245,30 +1250,8 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/NotConnectab
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/device/RemoteAttributeBinding {
-	public fun collectToTriggerRead (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)V
-	public abstract fun collectToTriggerRead (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
-	public fun collectToTriggerRead (Lkotlinx/coroutines/flow/Flow;Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun collectToTriggerRead$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding;Lkotlinx/coroutines/flow/Flow;Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public fun collectToTriggerWrite (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)V
-	public abstract fun collectToTriggerWrite (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
-	public fun collectToTriggerWrite (Lkotlinx/coroutines/flow/Flow;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;)V
-	public fun collectToTriggerWrite (Lkotlinx/coroutines/flow/Flow;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun collectToTriggerWrite$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding;Lkotlinx/coroutines/flow/Flow;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static synthetic fun collectToTriggerWrite$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding;Lkotlinx/coroutines/flow/Flow;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public fun collectUnitToTriggerRead (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)V
-	public fun collectUnitToTriggerRead (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
-	public fun consumeToTriggerRead (Lkotlinx/coroutines/channels/Channel;Lkotlin/jvm/functions/Function1;)V
-	public abstract fun consumeToTriggerRead (Lkotlinx/coroutines/channels/Channel;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
-	public fun consumeToTriggerRead (Lkotlinx/coroutines/channels/Channel;Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun consumeToTriggerRead$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding;Lkotlinx/coroutines/channels/Channel;Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public fun consumeToTriggerWrite (Lkotlinx/coroutines/channels/Channel;Lkotlin/jvm/functions/Function1;)V
-	public abstract fun consumeToTriggerWrite (Lkotlinx/coroutines/channels/Channel;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
-	public fun consumeToTriggerWrite (Lkotlinx/coroutines/channels/Channel;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;)V
-	public fun consumeToTriggerWrite (Lkotlinx/coroutines/channels/Channel;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun consumeToTriggerWrite$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding;Lkotlinx/coroutines/channels/Channel;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static synthetic fun consumeToTriggerWrite$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding;Lkotlinx/coroutines/channels/Channel;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public fun consumeUnitToTriggerRead (Lkotlinx/coroutines/channels/Channel;Lkotlin/jvm/functions/Function1;)V
-	public fun consumeUnitToTriggerRead (Lkotlinx/coroutines/channels/Channel;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun collectTo (Lkotlinx/coroutines/flow/Flow;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun consumeTo (Lkotlinx/coroutines/channels/Channel;Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/device/RemoteAttributeBinding$ReadBuilder {
@@ -1281,6 +1264,18 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/RemoteAttrib
 
 public abstract interface class com/splendo/kaluga/bluetooth/device/RemoteAttributeBinding$ReadBuilder$NonMutating : com/splendo/kaluga/bluetooth/device/RemoteAttributeBinding$ReadBuilder {
 	public abstract fun mutate (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/device/RemoteAttributeBinding$TriggerResponse {
+	public fun triggerRead (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun triggerRead (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public fun triggerRead (Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun triggerRead$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding$TriggerResponse;Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun triggerWrite (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public fun triggerWrite (Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;)V
+	public fun triggerWrite (Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun triggerWrite$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding$TriggerResponse;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun triggerWrite$default (Lcom/splendo/kaluga/bluetooth/device/RemoteAttributeBinding$TriggerResponse;Lkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 }
 
 public abstract class com/splendo/kaluga/bluetooth/device/RemoteAttributeBinding$UnitReadBuilder {

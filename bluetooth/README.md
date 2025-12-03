@@ -117,9 +117,11 @@ val value = "".bind(device) {
             }
             
             // Observe flows or channels to trigger read/writes
-            flowOf(1, 2 ,3).collectToTriggerRead {
-                onRead { response, trigger ->
-                    println("$trigger Did read $response.toHexString()")
+            flowOf(1, 2 ,3).collectTo {
+                triggerRead {
+                    onRead { response, trigger ->
+                        println("$trigger Did read $response.toHexString()")
+                    }
                 }
             }
         }
