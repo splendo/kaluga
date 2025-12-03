@@ -32,7 +32,7 @@ import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.server.ServerSettings
 import com.splendo.kaluga.bluetooth.server.ServerStatus
-import com.splendo.kaluga.bluetooth.server.collectAsNotification
+import com.splendo.kaluga.bluetooth.server.triggerNotification
 import com.splendo.kaluga.bluetooth.server.writable
 import com.splendo.kaluga.bluetooth.server.readableAlwaysSuccess
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothSpec
@@ -99,7 +99,9 @@ class BluetoothServerViewModel(private val alertPresenter: BaseAlertPresenter.Bu
                             energyExpended.value.toInt(),
                             listOf(BluetoothSpec.RRInterval(1.seconds)),
                         )
-                    }.sample(1.seconds).collectAsNotification(this, coroutineScope, SharingStarted.Lazily, 1)
+                    }.sample(1.seconds).collectTo(coroutineScope, SharingStarted.Lazily, 1) {
+                        triggerNotification()
+                    }
                 }
                 characteristic(BluetoothSpec.HeartRateService.SENSOR_LOCATION_CHARACTERISTIC) {
                     readableAlwaysSuccess { _ ->

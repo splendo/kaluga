@@ -2322,30 +2322,11 @@ public abstract class com/splendo/kaluga/bluetooth/server/LocalCharacteristic : 
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL {
-	public fun collectAsNotification (Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILjava/util/Set;Z)V
-	public fun collectAsNotification (Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILjava/util/Set;ZLkotlin/jvm/functions/Function1;)V
-	public fun collectAsNotification (Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILjava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;)V
-	public fun collectAsNotification (Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;Z)V
-	public fun collectAsNotification (Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlin/jvm/functions/Function1;)V
-	public fun collectAsNotification (Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;)V
-	public fun collectAsNotification (Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;Z)V
-	public fun collectAsNotification (Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlin/jvm/functions/Function1;)V
-	public fun collectAsNotification (Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;)V
-	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILjava/util/Set;ZILjava/lang/Object;)V
-	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILjava/util/Set;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILjava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;ILjava/lang/Object;)V
-	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZILjava/lang/Object;)V
-	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;ILjava/lang/Object;)V
-	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZILjava/lang/Object;)V
-	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static synthetic fun collectAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;ILjava/lang/Object;)V
-	public fun consumeAsNotification (Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;Z)V
-	public fun consumeAsNotification (Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlin/jvm/functions/Function1;)V
-	public fun consumeAsNotification (Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;)V
-	public static synthetic fun consumeAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZILjava/lang/Object;)V
-	public static synthetic fun consumeAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static synthetic fun consumeAsNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;ILjava/lang/Object;)V
+	public fun collectTo (Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILkotlin/jvm/functions/Function1;)V
+	public fun collectTo (Lkotlinx/coroutines/flow/SharedFlow;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)V
+	public fun collectTo (Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun collectTo$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/SharingStarted;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public fun consumeTo (Lkotlinx/coroutines/channels/ReceiveChannel;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function1;)V
 	public fun descriptor (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun descriptor (Ljava/util/UUID;Lkotlin/jvm/functions/Function1;)V
 	public abstract fun notifiable (Ljava/util/Set;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)V
@@ -2364,6 +2345,16 @@ public abstract interface class com/splendo/kaluga/bluetooth/server/LocalCharact
 	public fun writableAlwaysSuccess (Ljava/util/Set;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;)V
 	public static synthetic fun writableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlin/jvm/functions/Function5;ILjava/lang/Object;)V
 	public static synthetic fun writableAlwaysSuccess$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;Ljava/util/Set;ZLkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL$NotificationDSL {
+	public final fun getDsl ()Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL;
+	public final fun getOnSubscribe ()Lkotlin/jvm/functions/Function3;
+	public final fun getOnUnsubscribe ()Lkotlin/jvm/functions/Function2;
+	public final fun triggerNotification (Ljava/util/Set;ZLkotlin/jvm/functions/Function1;)V
+	public final fun triggerNotification (Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;)V
+	public static synthetic fun triggerNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL$NotificationDSL;Ljava/util/Set;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun triggerNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL$NotificationDSL;Ljava/util/Set;ZLkotlinx/serialization/SerializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;ILjava/lang/Object;)V
 }
 
 public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$Notifiable : com/splendo/kaluga/bluetooth/server/LocalCharacteristic, kotlinx/coroutines/flow/FlowCollector {
@@ -2393,6 +2384,11 @@ public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$Permi
 
 public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristic$Static : com/splendo/kaluga/bluetooth/server/LocalCharacteristic {
 	public fun getDescriptors ()Ljava/util/List;
+}
+
+public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristicKt {
+	public static final fun triggerNotification (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL$NotificationDSL;Ljava/util/Set;Z)V
+	public static synthetic fun triggerNotification$default (Lcom/splendo/kaluga/bluetooth/server/LocalCharacteristic$DSL$NotificationDSL;Ljava/util/Set;ZILjava/lang/Object;)V
 }
 
 public final class com/splendo/kaluga/bluetooth/server/LocalCharacteristicWrapper {

@@ -259,26 +259,54 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         }
 
         /**
-         * Collects a [Flow] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
-         * Results in a call to [notifiable] that may only be called once
-         * @param T the type of the data being collected
-         * @param scope the [CoroutineScope] to use to collect the [Flow]
-         * @param started the [SharingStarted] to determine when to start collecting from the Flow
-         * @param replay the number of values to replay to new subscribers
-         * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
-         * @param encrypted `true` if subscribing to the characteristic should be encrypted.
-         * @param toByteArray method to convert the [T] to a [ByteArray]
+         * Sets up notification to notify all [ConnectedDevice] of changes to this [LocalCharacteristic] whenever a [Trigger] fires
+         * @param [Trigger] the type of the Trigger that will cause the notification.
          */
-        fun <T> Flow<T>.collectAsNotification(
-            scope: CoroutineScope,
-            started: SharingStarted,
-            replay: Int = 0,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-            toByteArray: T.() -> ByteArray,
+        class NotificationDSL<Trigger> internal constructor(
+            val dsl: DSL,
+            val onSubscribe: Notifiable.(ConnectedDevice, (Trigger.() -> ByteArray)) -> Unit,
+            val onUnsubscribe: Notifiable.(ConnectedDevice) -> Unit,
         ) {
-            val sharedFlow = shareIn(scope, started, replay)
-            sharedFlow.collectAsNotification(scope, properties, encrypted, toByteArray)
+            /**
+             * Makes this [LocalCharacteristic] a [LocalCharacteristic.Notifiable]
+             * and automatically sends a [ByteArray] notification upon [Trigger]
+             * This method can only be called once.
+             * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
+             * @param encrypted `true` if subscribing to the characteristic should be encrypted.
+             * @param toByteArray method to convert the [Trigger] to a [ByteArray]
+             */
+            fun triggerNotification(
+                properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+                encrypted: Boolean = false,
+                toByteArray: Trigger.() -> ByteArray,
+            ) {
+                dsl.notifiable(
+                    properties,
+                    encrypted,
+                    onSubscribe = { device ->
+                        onSubscribe(device, toByteArray)
+                    },
+                    onUnsubscribe = onUnsubscribe,
+                )
+            }
+
+            /**
+             * Makes this [LocalCharacteristic] a [LocalCharacteristic.Notifiable]
+             * and automatically sends a [ByteArray] notification upon [Trigger]
+             * This method can only be called once.
+             * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
+             * @param encrypted `true` if subscribing to the characteristic should be encrypted.
+             * @param serializationStrategy the [SerializationStrategy] to use to encode the [Trigger] to a [ByteArray]
+             * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Trigger] to a [ByteArray]
+             */
+            fun triggerNotification(
+                properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+                encrypted: Boolean = false,
+                serializationStrategy: SerializationStrategy<Trigger>,
+                bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            ) = triggerNotification(properties, encrypted) {
+                bluetoothFormat.encodeToByteArray(serializationStrategy, this)
+            }
         }
 
         /**
@@ -286,66 +314,27 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
          * Results in a call to [notifiable] that may only be called once
          * @param T the type of the data being collected
          * @param scope the [CoroutineScope] to use to collect the [Flow]
-         * @param started the [SharingStarted] to determine when to start collecting from the Flow
+         * @param started the [SharingStarted] to use to collect the [Flow]
          * @param replay the number of values to replay to new subscribers
-         * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
-         * @param encrypted `true` if subscribing to the characteristic should be encrypted.
-         * @param serializationStrategy the [SerializationStrategy] to use to encode the [T] to a [ByteArray]
-         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
+         * @param notification the [NotificationDSL] to use to set up notification
          */
-        fun <T> Flow<T>.collectAsNotification(
-            scope: CoroutineScope,
-            started: SharingStarted,
-            replay: Int = 0,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-            serializationStrategy: SerializationStrategy<T>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        ) = collectAsNotification(
-            scope,
-            started,
-            replay,
-            properties,
-            encrypted,
-        ) { bluetoothFormat.encodeToByteArray(serializationStrategy, this) }
-
-        /**
-         * Collects a [Flow] of [ByteArray] and notifies any subscribed [ConnectedDevice] of any changes.
-         * Results in a call to [notifiable] that may only be called once
-         * @param scope the [CoroutineScope] to use to collect the [Flow]
-         * @param started the [SharingStarted] to determine when to start collecting from the Flow
-         * @param replay the number of values to replay to new subscribers
-         * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
-         * @param encrypted `true` if subscribing to the characteristic should be encrypted.
-         */
-        fun Flow<ByteArray>.collectAsNotification(
-            scope: CoroutineScope,
-            started: SharingStarted,
-            replay: Int = 0,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-        ) = collectAsNotification(scope, started, replay, properties, encrypted) { this }
+        fun <T> Flow<T>.collectTo(scope: CoroutineScope, started: SharingStarted, replay: Int = 0, notification: NotificationDSL<T>.() -> Unit) {
+            val sharedFlow = shareIn(scope, started, replay)
+            sharedFlow.collectTo(scope, notification)
+        }
 
         /**
          * Collects a [SharedFlow] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
          * Results in a call to [notifiable] that may only be called once
          * @param T the type of the data being collected
          * @param scope the [CoroutineScope] to use to collect the [Flow]
-         * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
-         * @param encrypted `true` if subscribing to the characteristic should be encrypted.
-         * @param toByteArray method to convert the [T] to a [ByteArray]
+         * @param notification the [NotificationDSL] to use to set up notification
          */
-        fun <T> SharedFlow<T>.collectAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-            toByteArray: T.() -> ByteArray,
-        ) {
+        fun <T> SharedFlow<T>.collectTo(scope: CoroutineScope, notification: NotificationDSL<T>.() -> Unit) {
             val observingJobs = concurrentMutableMapOf<ConnectedDevice, Job>()
-            notifiable(
-                properties,
-                encrypted,
-                onSubscribe = { device ->
+            NotificationDSL(
+                this@DSL,
+                onSubscribe = { device, toByteArray ->
                     observingJobs[device] = scope.launch {
                         map { it.toByteArray() }.collect { value ->
                             notify(device, value)
@@ -355,68 +344,25 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
                 onUnsubscribe = { device ->
                     observingJobs.remove(device)?.cancel()
                 },
-            )
+            ).apply(notification)
         }
-
-        /**
-         * Collects a [SharedFlow] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
-         * Results in a call to [notifiable] that may only be called once
-         * @param T the type of the data being collected
-         * @param scope the [CoroutineScope] to use to collect the [Flow]
-         * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
-         * @param encrypted `true` if subscribing to the characteristic should be encrypted.
-         * @param serializationStrategy the [SerializationStrategy] to use to encode the [T] to a [ByteArray]
-         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
-         */
-        fun <T> SharedFlow<T>.collectAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-            serializationStrategy: SerializationStrategy<T>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        ) = collectAsNotification(
-            scope,
-            properties,
-            encrypted,
-        ) { bluetoothFormat.encodeToByteArray(serializationStrategy, this) }
-
-        /**
-         * Collects a [SharedFlow] of [ByteArray] and notifies any subscribed [ConnectedDevice] of any changes.
-         * Results in a call to [notifiable] that may only be called once
-         * @param scope the [CoroutineScope] to use to collect the [Flow]
-         * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
-         * @param encrypted `true` if subscribing to the characteristic should be encrypted.
-         */
-        fun SharedFlow<ByteArray>.collectAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-        ) = collectAsNotification(scope, properties, encrypted) { this }
 
         /**
          * Collects a [StateFlow] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
          * Results in a call to [notifiable] that may only be called once
          * @param T the type of the data being collected
          * @param scope the [CoroutineScope] to use to collect the [Flow]
-         * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
-         * @param encrypted `true` if subscribing to the characteristic should be encrypted.
-         * @param toByteArray method to convert the [T] to a [ByteArray]
+         * @param notification the [NotificationDSL] to use to set up notification
          */
-        fun <T> StateFlow<T>.collectAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-            toByteArray: T.() -> ByteArray,
-        ) {
+        fun <T> StateFlow<T>.collectTo(scope: CoroutineScope, notification: NotificationDSL<T>.() -> Unit) {
             val hasStarted = CompletableDeferred<Unit>()
-            notifiable(
-                properties,
-                encrypted,
-                onSubscribe = { device ->
+            NotificationDSL(
+                this@DSL,
+                onSubscribe = { device, toByteArray ->
                     // We only know the Characteristic on first subscription, so this is the point at which to collect the state flow
                     if (hasStarted.complete(Unit)) {
                         scope.launch {
-                            map { it.toByteArray() }.collect(this@notifiable)
+                            map { it.toByteArray() }.collect(this@NotificationDSL)
                         }
                     } else {
                         // If scope already launched, then the subscription will have missed the initial value. So report it immediately
@@ -426,64 +372,21 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
                     }
                 },
                 onUnsubscribe = {},
-            )
+            ).apply(notification)
         }
 
         /**
-         * Collects a [StateFlow] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
+         * Consumes a [ReceiveChannel] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
          * Results in a call to [notifiable] that may only be called once
          * @param T the type of the data being collected
          * @param scope the [CoroutineScope] to use to collect the [Flow]
-         * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
-         * @param encrypted `true` if subscribing to the characteristic should be encrypted.
-         * @param serializationStrategy the [SerializationStrategy] to use to encode the [T] to a [ByteArray]
-         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
+         * @param notification the [NotificationDSL] to use to set up notification
          */
-        fun <T> StateFlow<T>.collectAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-            serializationStrategy: SerializationStrategy<T>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        ) = collectAsNotification(
-            scope,
-            properties,
-            encrypted,
-        ) { bluetoothFormat.encodeToByteArray(serializationStrategy, this) }
-
-        /**
-         * Collects a [StateFlow] of [ByteArray] and notifies any subscribed [ConnectedDevice] of any changes.
-         * Results in a call to [notifiable] that may only be called once
-         * @param scope the [CoroutineScope] to use to collect the [Flow]
-         * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
-         * @param encrypted `true` if subscribing to the characteristic should be encrypted.
-         */
-        fun StateFlow<ByteArray>.collectAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-        ) = collectAsNotification(scope, properties, encrypted, { this })
-
-        /**
-         * Consumed a [ReceiveChannel] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
-         * Results in a call to [notifiable] that may only be called once
-         * @param T the type of the data being collected
-         * @param scope the [CoroutineScope] to use to collect the [Flow]
-         * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
-         * @param encrypted `true` if subscribing to the characteristic should be encrypted.
-         * @param toByteArray method to convert the [T] to a [ByteArray]
-         */
-        fun <T> ReceiveChannel<T>.consumeAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-            toByteArray: T.() -> ByteArray,
-        ) {
+        fun <T> ReceiveChannel<T>.consumeTo(scope: CoroutineScope, notification: NotificationDSL<T>.() -> Unit) {
             val hasStarted = CompletableDeferred<Unit>()
-            notifiable(
-                properties,
-                encrypted,
-                onSubscribe = { device ->
+            NotificationDSL(
+                this@DSL,
+                onSubscribe = { device, toByteArray ->
                     // We only know the Characteristic on first subscription, so this is the point at which to collect the state flow
                     if (hasStarted.complete(Unit)) {
                         scope.launch {
@@ -494,43 +397,8 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
                     }
                 },
                 onUnsubscribe = {},
-            )
+            ).apply(notification)
         }
-
-        /**
-         * Consumed a [ReceiveChannel] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
-         * Results in a call to [notifiable] that may only be called once
-         * @param T the type of the data being collected
-         * @param scope the [CoroutineScope] to use to collect the [Flow]
-         * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
-         * @param encrypted `true` if subscribing to the characteristic should be encrypted.
-         * @param serializationStrategy the [SerializationStrategy] to use to encode the [T] to a [ByteArray]
-         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
-         */
-        fun <T> ReceiveChannel<T>.consumeAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-            serializationStrategy: SerializationStrategy<T>,
-            bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        ) = consumeAsNotification(
-            scope,
-            properties,
-            encrypted,
-        ) { bluetoothFormat.encodeToByteArray(serializationStrategy, this) }
-
-        /**
-         * Consumes a [ReceiveChannel] of [ByteArray] and notifies any subscribed [ConnectedDevice] of any changes.
-         * Results in a call to [notifiable] that may only be called once
-         * @param scope the [CoroutineScope] to use to collect the [Flow]
-         * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
-         * @param encrypted `true` if subscribing to the characteristic should be encrypted.
-         */
-        fun ReceiveChannel<ByteArray>.consumeAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-        ) = consumeAsNotification(scope, properties, encrypted) { this }
     }
 
     /**
@@ -888,81 +756,28 @@ inline fun <reified T : Any> LocalCharacteristic.DSL.writableAlwaysSuccess(
 ) = writableAlwaysSuccess(properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onWrite)
 
 /**
- * Collects a [Flow] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
- * Results in a call to [LocalCharacteristic.DSL.notifiable] that may only be called once
- * @param T the type of the data being collected
- * @param scope the [CoroutineScope] to use to collect the [Flow]
- * @param started the [SharingStarted] to determine when to start collecting from the Flow
- * @param replay the number of values to replay to new subscribers
+ * Makes this [LocalCharacteristic] a [LocalCharacteristic.Notifiable]
+ * and automatically sends the [ByteArray] as a notification
+ * This method can only be called once.
  * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
  * @param encrypted `true` if subscribing to the characteristic should be encrypted.
- * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
  */
-inline fun <reified T> Flow<T>.collectAsNotification(
-    dsl: LocalCharacteristic.DSL,
-    scope: CoroutineScope,
-    started: SharingStarted,
-    replay: Int = 0,
+fun LocalCharacteristic.DSL.NotificationDSL<ByteArray>.triggerNotification(
     properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
     encrypted: Boolean = false,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
-) = with(dsl) {
-    collectAsNotification(scope, started, replay, properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat)
-}
+) = triggerNotification(properties, encrypted) { this }
 
 /**
- * Collects a [SharedFlow] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
- * Results in a call to [LocalCharacteristic.DSL.notifiable] that may only be called once
- * @param T the type of the data being collected
- * @param scope the [CoroutineScope] to use to collect the [Flow]
+ * Makes this [LocalCharacteristic] a [LocalCharacteristic.Notifiable]
+ * and automatically sends a [ByteArray] notification upon [Trigger]
+ * This method can only be called once.
+ * @param Trigger the type of the data being collected
  * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
  * @param encrypted `true` if subscribing to the characteristic should be encrypted.
- * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
+ * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Trigger] to a [ByteArray]
  */
-inline fun <reified T> SharedFlow<T>.collectAsNotification(
-    dsl: LocalCharacteristic.DSL,
-    scope: CoroutineScope,
+inline fun <reified Trigger> LocalCharacteristic.DSL.NotificationDSL<Trigger>.triggerNotification(
     properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
     encrypted: Boolean = false,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
-) = with(dsl) {
-    collectAsNotification(scope, properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat)
-}
-
-/**
- * Collects a [StateFlow] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
- * Results in a call to [LocalCharacteristic.DSL.notifiable] that may only be called once
- * @param T the type of the data being collected
- * @param scope the [CoroutineScope] to use to collect the [Flow]
- * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
- * @param encrypted `true` if subscribing to the characteristic should be encrypted.
- * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
- */
-inline fun <reified T> StateFlow<T>.collectAsNotification(
-    dsl: LocalCharacteristic.DSL,
-    scope: CoroutineScope,
-    properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-    encrypted: Boolean = false,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
-) = with(dsl) {
-    collectAsNotification(scope, properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat)
-}
-
-/**
- * Consumes a [ReceiveChannel] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
- * Results in a call to [LocalCharacteristic.DSL.notifiable] that may only be called once
- * @param T the type of the data being collected
- * @param scope the [CoroutineScope] to use to collect the [Flow]
- * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
- * @param encrypted `true` if subscribing to the characteristic should be encrypted.
- * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
- */
-inline fun <reified T> ReceiveChannel<T>.consumeAsNotification(
-    dsl: LocalCharacteristic.DSL,
-    scope: CoroutineScope,
-    properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-    encrypted: Boolean = false,
-    bluetoothFormat: BluetoothFormat = BluetoothFormat,
-) = with(dsl) {
-    consumeAsNotification(scope, properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat)
-}
+) = triggerNotification(properties, encrypted, bluetoothFormat.serializer<Trigger>(), bluetoothFormat)
