@@ -53,64 +53,206 @@ import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.serializer
 import kotlin.jvm.JvmName
 
-sealed interface RequiresServicesDiscoveredBinding<T, TransFormation> {
+/**
+ * Builder for setting up binding to an object [T] so that it may be notified when [RemoteService] become available / unavailable.
+ * @property T the type of the object to bind to
+ * @property Transformation the type of Transformation that should be applied to the object when availability changes.
+ */
+sealed interface RequiresServicesDiscoveredBinding<T, Transformation> {
+
+    /**
+     * A [RequiresServicesDiscoveredBinding] that does not mutate the object when availability changes.
+     * @property T the type of the object to bind to
+     */
     interface NonMutating<T> : RequiresServicesDiscoveredBinding<T, Unit> {
         fun mutate(builder: Mutating<T>.() -> Unit)
     }
 
+    /**
+     * A [RequiresServicesDiscoveredBinding] that mutates the object when availability changes.
+     * @property T the type of the object to bind to and mutate when availability changes.
+     */
     interface Mutating<T> : RequiresServicesDiscoveredBinding<T, T>
 
-    fun onAvailable(action: T.() -> TransFormation)
-    fun onUnavailable(action: T.() -> TransFormation)
+    /**
+     * Sets up a [Transformation] action when [RemoteService] become available.
+     * @param action the [Transformation] to apply when [RemoteService] become available.
+     */
+    fun onAvailable(action: T.() -> Transformation)
+
+    /**
+     * Sets up a [Transformation] action when [RemoteService] become unavailable.
+     * @param action the [Transformation] to apply when [RemoteService] become unavailable.
+     */
+    fun onUnavailable(action: T.() -> Transformation)
 }
 
+/**
+ * Builder for setting up binding to an object [T] so that it may be changed by a [RemoteAttribute].
+ * @property T the type of the object to bind to
+ */
 @Suppress("INAPPLICABLE_JVM_NAME")
 interface RemoteAttributeBinding<T> {
 
+    /**
+     * Builder for setting up binding to an object [T] so that it may be changed when reading from a [RemoteAttribute] after being triggered by a [Trigger].
+     * @property T the type of the object to bind to
+     * @property Trigger the type of Trigger will cause the [RemoteAttribute] to be read.
+     * @property Response the type of Response that will be returned when the [RemoteAttribute] is read.
+     * @property Transformation the type of Transformation that should be applied to the object when the [RemoteAttribute] is read.
+     */
     sealed interface ReadBuilder<T, Trigger, Response, Transformation> {
 
+        /**
+         * A [ReadBuilder] that does not mutate the object when reading from a [RemoteAttribute] after being triggered by a [Trigger].
+         * @property T the type of the object to bind to
+         * @property Trigger the type of Trigger will cause the [RemoteAttribute] to be read.
+         * @property Response the type of Response that will be returned when the [RemoteAttribute] is read.
+         */
         interface NonMutating<T, Trigger, Response> : ReadBuilder<T, Trigger, Response, Unit> {
+
+            /**
+             * Creates a [Mutating] [ReadBuilder] that mutates the object when reading from a [RemoteAttribute] after being triggered by a [Trigger].
+             * @param builder the builder to apply to the [Mutating] [ReadBuilder]
+             */
             fun mutate(builder: Mutating<T, Trigger, Response>.() -> Unit)
         }
 
+        /**
+         * A [ReadBuilder] that mutates the object when reading from a [RemoteAttribute] after being triggered by a [Trigger].
+         * @property T the type of the object to bind to and mutate when reading from the [RemoteAttribute].
+         * @property Trigger the type of Trigger will cause the [RemoteAttribute] to be read.
+         * @property Response the type of Response that will be returned when the [RemoteAttribute] is read.
+         */
         interface Mutating<T, Trigger, Response> : ReadBuilder<T, Trigger, Response, T>
 
+        /**
+         * Sets up a [Transformation] when a [Response] is read from a [RemoteAttribute].
+         * @param action the [Transformation] to apply when a [Response] is received. Contains the [Trigger] that caused the [RemoteAttribute] to be read and the [Response] that was read.
+         */
         fun onRead(action: T.(Response, Trigger) -> Transformation)
+
+        /**
+         * Sets up a [Transformation] when failing to read from a [RemoteAttribute].
+         * @param action the [Transformation] to apply when a [Response] is received. Contains the [Trigger] that caused the [RemoteAttribute] to be read and the [GattResponse.ReadError] that was received.
+         */
         fun onFailedToRead(action: T.(Trigger, GattResponse.ReadError) -> Transformation)
     }
 
+    /**
+     * Builder for setting up binding to an object [T] so that it may be changed when reading from a [RemoteAttribute] after being triggered by a [Unit].
+     * @property T the type of the object to bind to
+     * @property Response the type of Response that will be returned when the [RemoteAttribute] is read.
+     * @property Transformation the type of Transformation that should be applied to the object when the [RemoteAttribute] is read.
+     */
     sealed class UnitReadBuilder<T, Response, Transformation> protected constructor(private val builder: ReadBuilder<T, Unit, Response, Transformation>) {
+
+        /**
+         * A [ReadBuilder] that does not mutate the object when reading from a [RemoteAttribute] after being triggered by a [Unit].
+         * @property T the type of the object to bind to
+         * @property Response the type of Response that will be returned when the [RemoteAttribute] is read.
+         */
         class NonMutating<T, Response> internal constructor(private val builder: ReadBuilder.NonMutating<T, Unit, Response>) : UnitReadBuilder<T, Response, Unit>(builder) {
+
+            /**
+             * Creates a [Mutating] [UnitReadBuilder] that mutates the object when reading from a [RemoteAttribute] after being triggered by a [Unit].
+             * @param builder the builder to apply to the [Mutating] [UnitReadBuilder]
+             */
             fun mutate(builder: Mutating<T, Response>.() -> Unit) = this.builder.mutate {
                 Mutating(this).apply(builder)
             }
         }
+
+        /**
+         * A [ReadBuilder] that mutates the object when reading from a [RemoteAttribute] after being triggered by a [Unit].
+         * @property T the type of the object to bind to and mutate when reading from the [RemoteAttribute].
+         * @property Response the type of Response that will be returned when the [RemoteAttribute] is read.
+         */
         class Mutating<T, Response> internal constructor(private val builder: ReadBuilder.Mutating<T, Unit, Response>) : UnitReadBuilder<T, Response, T>(builder)
 
+        /**
+         * Sets up a [Transformation] when a [Response] is read from a [RemoteAttribute].
+         * @param action the [Transformation] to apply when a [Response] is received. Contains the [Response] that was read.
+         */
         fun onRead(action: T.(Response) -> Transformation) = builder.onRead { response, _ -> action(response) }
+
+        /**
+         * Sets up a [Transformation] when failing to read from a [RemoteAttribute].
+         * @param action the [Transformation] to apply when a [Response] is received. Contains the [GattResponse.ReadError] that was received.
+         */
         fun onFailedToRead(action: T.(GattResponse.ReadError) -> Transformation) = builder.onFailedToRead { _, error -> action(error) }
     }
 
+    /**
+     * Builder for setting up binding to an object [T] so that it may be changed when writing [Data] to a [RemoteAttribute].
+     * @property T the type of the object to bind to
+     * @property Data the type of data to write to the [RemoteAttribute].
+     * @property Transformation the type of Transformation that should be applied to the object when the [RemoteAttribute] is written to.
+     */
     sealed interface WriteBuilder<T, Data, Transformation> {
 
+        /**
+         * A [WriteBuilder] that does not mutate the object when writing [Data] to a [RemoteAttribute].
+         * @property T the type of the object to bind to
+         * @property Data the type of data to write to the [RemoteAttribute].
+         */
         interface NonMutating<T, Data> : WriteBuilder<T, Data, Unit> {
+
+            /**
+             * Creates a [Mutating] [WriteBuilder] that mutates the object when writing [Data] to a [RemoteAttribute].
+             * @param builder the builder to apply to the [Mutating] [WriteBuilder]
+             */
             fun mutate(builder: Mutating<T, Data>.() -> Unit)
         }
 
+        /**
+         * A [WriteBuilder] that mutates the object when writing [Data] to a [RemoteAttribute].
+         * @property T the type of the object to bind to
+         * @property Data the type of data to write to the [RemoteAttribute].
+         */
         interface Mutating<T, Data> : WriteBuilder<T, Data, T>
 
+        /**
+         * Sets up a [Transformation] when a [Data] is written to a [RemoteAttribute].
+         * @param action the [Transformation] to apply when a [Data] has been written. Contains the [Data] that was written.
+         */
         fun onWrite(action: T.(Data) -> Transformation)
+
+        /**
+         * Sets up a [Transformation] when failing to write [Data] to a [RemoteAttribute].
+         * @param action the [Transformation] to apply when a [Data] has been written. Contains the [Data] that was attempted to be written and the [GattResponse.WriteError] that was received.
+         */
         fun onFailedToWrite(action: T.(Data, GattResponse.WriteError) -> Transformation)
     }
 
+    /**
+     * Consumes a [Trigger] from a [Channel] to cause the [RemoteAttribute] to be read.
+     * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be read.
+     * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
+     * @param asValue maps the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
+     * @param builder sets up the response to a triggered read using a [ReadBuilder.NonMutating]
+     */
     fun <Trigger, Response> Channel<Trigger>.consumeToTriggerRead(asValue: ByteArray.() -> Response, builder: ReadBuilder.NonMutating<T, Trigger, Response>.() -> Unit)
 
+    /**
+     * Consumes a [Unit] from a [Channel] to cause the [RemoteAttribute] to be read.
+     * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
+     * @param asValue maps the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
+     * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
+     */
     @JvmName("consumeUnitToTriggerRead")
     fun <Response> Channel<Unit>.consumeToTriggerRead(asValue: ByteArray.() -> Response, unitBuilder: UnitReadBuilder.NonMutating<T, Response>.() -> Unit) =
         consumeToTriggerRead(asValue, builder = {
             UnitReadBuilder.NonMutating(this).apply(unitBuilder)
         })
 
+    /**
+     * Consumes a [Unit] from a [Channel] to cause the [RemoteAttribute] to be read.
+     * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
+     * @param deserializationStrategy the [DeserializationStrategy] to map the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
+     * @param bluetoothFormat the [BluetoothFormat] to use for deserialization.
+     * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
+     */
     fun <Response> Channel<Unit>.consumeToTriggerRead(
         deserializationStrategy: DeserializationStrategy<Response>,
         bluetoothFormat: BluetoothFormat = BluetoothFormat,
@@ -119,22 +261,52 @@ interface RemoteAttributeBinding<T> {
         bluetoothFormat.decodeFromByteArray(deserializationStrategy, this)
     }, unitBuilder)
 
+    /**
+     * Consumes a [Trigger] from a [Channel] to cause the [RemoteAttribute] to be read.
+     * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be read.
+     * @param builder sets up the response to a triggered read using a [ReadBuilder.NonMutating]
+     */
     fun <Trigger> Channel<Trigger>.consumeToTriggerRead(builder: ReadBuilder.NonMutating<T, Trigger, ByteArray>.() -> Unit) =
         consumeToTriggerRead(asValue = { this }, builder = builder)
 
+    /**
+     * Consumes a [Unit] from a [Channel] to cause the [RemoteAttribute] to be read.
+     * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
+     * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
+     */
     @JvmName("consumeUnitToTriggerRead")
     fun <Response> Channel<Unit>.consumeToTriggerRead(unitBuilder: UnitReadBuilder.NonMutating<T, ByteArray>.() -> Unit) = consumeToTriggerRead(builder = {
         UnitReadBuilder.NonMutating(this).apply(unitBuilder)
     })
 
+    /**
+     * Collects a [Trigger] from a [Flow] to cause the [RemoteAttribute] to be read.
+     * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be read.
+     * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
+     * @param asValue maps the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
+     * @param builder sets up the response to a triggered read using a [ReadBuilder.NonMutating]
+     */
     fun <Trigger, Response> Flow<Trigger>.collectToTriggerRead(asValue: ByteArray.() -> Response, builder: ReadBuilder.NonMutating<T, Trigger, Response>.() -> Unit)
 
+    /**
+     * Collects a [Unit] from a [Flow] to cause the [RemoteAttribute] to be read.
+     * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
+     * @param asValue maps the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
+     * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
+     */
     @JvmName("collectUnitToTriggerRead")
     fun <Response> Flow<Unit>.collectToTriggerRead(asValue: ByteArray.() -> Response, unitBuilder: UnitReadBuilder.NonMutating<T, Response>.() -> Unit) =
         collectToTriggerRead(asValue, builder = {
             UnitReadBuilder.NonMutating(this).apply(unitBuilder)
         })
 
+    /**
+     * Collects a [Unit] from a [Flow] to cause the [RemoteAttribute] to be read.
+     * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
+     * @param deserializationStrategy the [DeserializationStrategy] to map the [ByteArray] received from the [GattResponse.ReadSuccess] to the [Response] that will be returned.
+     * @param bluetoothFormat the [BluetoothFormat] to use for deserialization.
+     * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
+     */
     fun <Response> Flow<Unit>.collectToTriggerRead(
         deserializationStrategy: DeserializationStrategy<Response>,
         bluetoothFormat: BluetoothFormat = BluetoothFormat,
@@ -143,49 +315,118 @@ interface RemoteAttributeBinding<T> {
         bluetoothFormat.decodeFromByteArray(deserializationStrategy, this)
     }, unitBuilder)
 
+    /**
+     * Collects a [Trigger] from a [Flow] to cause the [RemoteAttribute] to be read.
+     * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be read.
+     * @param builder sets up the response to a triggered read using a [ReadBuilder.NonMutating]
+     */
     fun <Trigger> Flow<Trigger>.collectToTriggerRead(builder: ReadBuilder.NonMutating<T, Trigger, ByteArray>.() -> Unit) =
         collectToTriggerRead(asValue = { this }, builder = builder)
 
+    /**
+     * Collects a [Unit] from a [Flow] to cause the [RemoteAttribute] to be read.
+     * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
+     */
     @JvmName("collectUnitToTriggerRead")
     fun <Response> Flow<Unit>.collectToTriggerRead(unitBuilder: UnitReadBuilder.NonMutating<T, ByteArray>.() -> Unit) = collectToTriggerRead(builder = {
         UnitReadBuilder.NonMutating(this).apply(unitBuilder)
     })
 
+    /**
+     * Consumes [Data] from a [Channel] to cause the [RemoteAttribute] to be written to.
+     * @param Data the type of data to write to the [RemoteAttribute].
+     * @param asByte maps the [Data] to a [ByteArray] to write.
+     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+     */
     fun <Data> Channel<Data>.consumeToTriggerWrite(asByte: Data.() -> ByteArray, builder: WriteBuilder.NonMutating<T, Data>.() -> Unit)
 
-    fun <Data, WriteData> Channel<Data>.consumeToTriggerWrite(
-        serializationStrategy: SerializationStrategy<WriteData>,
+    /**
+     * Consumes [Trigger] from a [Channel] to have [Data] written to the [RemoteAttribute].
+     * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be written to.
+     * @param Data the type of data to write to the [RemoteAttribute].
+     * @param serializationStrategy the [SerializationStrategy] to map the [Data] to a [ByteArray] to write.
+     * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
+     * @param mapper maps the [Trigger] to the [Data] to write.
+     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+     */
+    fun <Trigger, Data> Channel<Trigger>.consumeToTriggerWrite(
+        serializationStrategy: SerializationStrategy<Data>,
         bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        mapper: Data.() -> WriteData,
-        builder: WriteBuilder.NonMutating<T, Data>.() -> Unit,
+        mapper: Trigger.() -> Data,
+        builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit,
     ) = consumeToTriggerWrite({ bluetoothFormat.encodeToByteArray(serializationStrategy, mapper()) }, builder)
 
+    /**
+     * Consumes [Data] from a [Channel] to write it to the [RemoteAttribute].
+     * @param Data the type of data to write to the [RemoteAttribute].
+     * @param serializationStrategy the [SerializationStrategy] to map the [Data] to a [ByteArray] to write.
+     * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
+     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+     */
     fun <Data> Channel<Data>.consumeToTriggerWrite(
         serializationStrategy: SerializationStrategy<Data>,
         bluetoothFormat: BluetoothFormat = BluetoothFormat,
         builder: WriteBuilder.NonMutating<T, Data>.() -> Unit,
     ) = consumeToTriggerWrite(serializationStrategy, bluetoothFormat, { this }, builder)
 
+    /**
+     * Consumes [ByteArray] from a [Channel] to write it to the [RemoteAttribute].
+     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+     */
     fun Channel<ByteArray>.consumeToTriggerWrite(builder: WriteBuilder.NonMutating<T, ByteArray>.() -> Unit) = consumeToTriggerWrite({ this }, builder)
 
+    /**
+     * Collects [Data] from a [Flow] to cause the [RemoteAttribute] to be written to.
+     * @param Data the type of data to write to the [RemoteAttribute].
+     * @param asByte maps the [Data] to a [ByteArray] to write.
+     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+     */
     fun <Data> Flow<Data>.collectToTriggerWrite(asByte: Data.() -> ByteArray, builder: WriteBuilder.NonMutating<T, Data>.() -> Unit)
 
-    fun <Data, WriteData> Flow<Data>.collectToTriggerWrite(
-        serializationStrategy: SerializationStrategy<WriteData>,
+    /**
+     * Collects [Trigger] from a [Flow] to have [Data] written to the [RemoteAttribute].
+     * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be written to.
+     * @param Data the type of data to write to the [RemoteAttribute].
+     * @param serializationStrategy the [SerializationStrategy] to map the [Data] to a [ByteArray] to write.
+     * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
+     * @param mapper maps the [Trigger] to the [Data] to write.
+     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+     */
+    fun <Trigger, Data> Flow<Trigger>.collectToTriggerWrite(
+        serializationStrategy: SerializationStrategy<Data>,
         bluetoothFormat: BluetoothFormat = BluetoothFormat,
-        mapper: Data.() -> WriteData,
-        builder: WriteBuilder.NonMutating<T, Data>.() -> Unit,
+        mapper: Trigger.() -> Data,
+        builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit,
     ) = collectToTriggerWrite({ bluetoothFormat.encodeToByteArray(serializationStrategy, mapper()) }, builder)
 
+    /**
+     * Collects [Data] from a [Flow] to write it to the [RemoteAttribute].
+     * @param Data the type of data to write to the [RemoteAttribute].
+     * @param serializationStrategy the [SerializationStrategy] to map the [Data] to a [ByteArray] to write.
+     * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
+     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+     */
     fun <Data> Flow<Data>.collectToTriggerWrite(
         serializationStrategy: SerializationStrategy<Data>,
         bluetoothFormat: BluetoothFormat = BluetoothFormat,
         builder: WriteBuilder.NonMutating<T, Data>.() -> Unit,
     ) = collectToTriggerWrite(serializationStrategy, bluetoothFormat, { this }, builder)
 
+    /**
+     * Collects [ByteArray] from a [Flow] to write it to the [RemoteAttribute].
+     * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+     */
     fun Flow<ByteArray>.collectToTriggerWrite(builder: WriteBuilder.NonMutating<T, ByteArray>.() -> Unit) = collectToTriggerWrite({ this }, builder)
 }
 
+/**
+ * Consumes a [Unit] from a [Channel] to cause the [RemoteAttribute] to be read.
+ * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
+ * @param T  the type of the object to bind to
+ * @param remoteAttributeBinding the [RemoteAttributeBinding] to bind this [Channel] to
+ * @param bluetoothFormat the [BluetoothFormat] to use for deserialization.
+ * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
+ */
 inline fun <reified Response, T> Channel<Unit>.consumeToTriggerRead(
     remoteAttributeBinding: RemoteAttributeBinding<T>,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
@@ -194,6 +435,14 @@ inline fun <reified Response, T> Channel<Unit>.consumeToTriggerRead(
     consumeToTriggerRead(bluetoothFormat.serializersModule.serializer<Response>(), bluetoothFormat, unitBuilder)
 }
 
+/**
+ * Collects a [Unit] from a [Flow] to cause the [RemoteAttribute] to be read.
+ * @param Response the type of Response that will be returned when the [RemoteAttribute] is read.
+ * @param T  the type of the object to bind to
+ * @param remoteAttributeBinding the [RemoteAttributeBinding] to bind this [Channel] to
+ * @param bluetoothFormat the [BluetoothFormat] to use for deserialization.
+ * @param unitBuilder sets up the response to a triggered read using a [UnitReadBuilder.NonMutating]
+ */
 inline fun <reified Response, T> Flow<Unit>.collectToTriggerRead(
     remoteAttributeBinding: RemoteAttributeBinding<T>,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
@@ -202,15 +451,33 @@ inline fun <reified Response, T> Flow<Unit>.collectToTriggerRead(
     collectToTriggerRead(bluetoothFormat.serializersModule.serializer<Response>(), bluetoothFormat, unitBuilder)
 }
 
-inline fun <Data, reified WriteData, T> Channel<Data>.consumeToTriggerWrite(
+/**
+ * Consumes [Trigger] from a [Channel] to have [Trigger] written to the [RemoteAttribute].
+ * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be written to.
+ * @param Data the type of data to write to the [RemoteAttribute].
+ * @param T  the type of the object to bind to
+ * @param remoteAttributeBinding the [RemoteAttributeBinding] to bind this [Channel] to
+ * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
+ * @param mapper maps the [Trigger] to the [Data] to write.
+ * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+ */
+inline fun <Trigger, reified Data, T> Channel<Trigger>.consumeToTriggerWrite(
     remoteAttributeBinding: RemoteAttributeBinding<T>,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
-    noinline mapper: Data.() -> WriteData,
-    noinline builder: WriteBuilder.NonMutating<T, Data>.() -> Unit,
+    noinline mapper: Trigger.() -> Data,
+    noinline builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit,
 ) = with(remoteAttributeBinding) {
-    consumeToTriggerWrite(bluetoothFormat.serializersModule.serializer<WriteData>(), bluetoothFormat, mapper, builder)
+    consumeToTriggerWrite(bluetoothFormat.serializersModule.serializer<Data>(), bluetoothFormat, mapper, builder)
 }
 
+/**
+ * Consumes [Data] from a [Channel] to write it to the [RemoteAttribute].
+ * @param Data the type of data to write to the [RemoteAttribute].
+ * @param T  the type of the object to bind to
+ * @param remoteAttributeBinding the [RemoteAttributeBinding] to bind this [Channel] to
+ * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
+ * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+ */
 inline fun <reified Data, T> Channel<Data>.consumeToTriggerWrite(
     remoteAttributeBinding: RemoteAttributeBinding<T>,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
@@ -219,15 +486,33 @@ inline fun <reified Data, T> Channel<Data>.consumeToTriggerWrite(
     consumeToTriggerWrite(bluetoothFormat.serializersModule.serializer<Data>(), bluetoothFormat, builder)
 }
 
-inline fun <Data, reified WriteData, T> Flow<Data>.collectToTriggerWrite(
+/**
+ * Collects [Trigger] from a [Flow] to have [Trigger] written to the [RemoteAttribute].
+ * @param Trigger the type of Trigger that will cause the [RemoteAttribute] to be written to.
+ * @param Data the type of data to write to the [RemoteAttribute].
+ * @param T  the type of the object to bind to
+ * @param remoteAttributeBinding the [RemoteAttributeBinding] to bind this [Channel] to
+ * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
+ * @param mapper maps the [Trigger] to the [Data] to write.
+ * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+ */
+inline fun <Trigger, reified Data, T> Flow<Trigger>.collectToTriggerWrite(
     remoteAttributeBinding: RemoteAttributeBinding<T>,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
-    noinline mapper: Data.() -> WriteData,
-    noinline builder: WriteBuilder.NonMutating<T, Data>.() -> Unit,
+    noinline mapper: Trigger.() -> Data,
+    noinline builder: WriteBuilder.NonMutating<T, Trigger>.() -> Unit,
 ) = with(remoteAttributeBinding) {
-    collectToTriggerWrite(bluetoothFormat.serializersModule.serializer<WriteData>(), bluetoothFormat, mapper, builder)
+    collectToTriggerWrite(bluetoothFormat.serializersModule.serializer<Data>(), bluetoothFormat, mapper, builder)
 }
 
+/**
+ * Collects [Data] from a [Flow] to write it to the [RemoteAttribute].
+ * @param Data the type of data to write to the [RemoteAttribute].
+ * @param T  the type of the object to bind to
+ * @param remoteAttributeBinding the [RemoteAttributeBinding] to bind this [Channel] to
+ * @param bluetoothFormat the [BluetoothFormat] to use for serialization.
+ * @param builder sets up the response to a triggered write using a [WriteBuilder.NonMutating]
+ */
 inline fun <reified Data, T> Flow<Data>.collectToTriggerWrite(
     remoteAttributeBinding: RemoteAttributeBinding<T>,
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
@@ -236,138 +521,495 @@ inline fun <reified Data, T> Flow<Data>.collectToTriggerWrite(
     collectToTriggerWrite(bluetoothFormat.serializersModule.serializer<Data>(), bluetoothFormat, builder)
 }
 
+/**
+ * Builder for setting up binding to an object [T] so that it may be changed by a [ConnectableDevice].
+ * @property T the type of the object to bind to
+ */
 sealed interface ConnectedDeviceBinding<T> {
 
+    /**
+     * A [ConnectedDeviceBinding] that assumes the [ConnectableDevice] being bound to is actually connected and has discovered its [RemoteService]
+     * @property T the type of the object to bind to
+     */
     interface EnsuresAvailable<T> : ConnectedDeviceBinding<T> {
 
+        /**
+         * Binds the object to the [RemoteService] at a given [UUID].
+         * @param uuid the [UUID] of the [RemoteService] to bind to
+         * @param binding the [RemoteServiceBinding.EnsuresAvailable] set up binding to the [RemoteService]
+         * @throws NoSuchElementException if the [RemoteService] is not found
+         */
         fun service(uuid: UUID, binding: RemoteServiceBinding.EnsuresAvailable<T>.() -> Unit)
+
+        /**
+         * Binds the object to the [RemoteService] at a given [UUID].
+         * @param uuidString the string of the [UUID] of the [RemoteService] to bind to
+         * @param binding the [RemoteServiceBinding.EnsuresAvailable] set up binding to the [RemoteService]
+         * @throws NoSuchElementException if the [RemoteService] is not found
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun service(uuidString: String, binding: RemoteServiceBinding.EnsuresAvailable<T>.() -> Unit) {
             service(uuidFrom(uuidString), binding)
         }
 
+        /**
+         * Binds an object of type [R] to the [RemoteService] at a given [UUID] and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuid the [UUID] of the [RemoteService] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteServiceBinding.EnsuresAvailable] set up binding to the [RemoteService]
+         * @throws NoSuchElementException if the [RemoteService] is not found
+         */
         fun <R> R.bindService(uuid: UUID, update: T.(R) -> T = { this }, binding: RemoteServiceBinding.EnsuresAvailable<R>.() -> Unit)
+
+        /**
+         * Binds an object of type [R] to the [RemoteService] at a given [UUID] and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuidString the string of the [UUID] of the [RemoteService] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteServiceBinding.EnsuresAvailable] set up binding to the [RemoteService]
+         * @throws NoSuchElementException if the [RemoteService] is not found
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun <R> R.bindService(uuidString: String, update: T.(R) -> T = { this }, binding: RemoteServiceBinding.EnsuresAvailable<R>.() -> Unit) {
             bindService(uuidFrom(uuidString), update, binding)
         }
     }
 
+    /**
+     * A [ConnectedDeviceBinding] and [RequiresServicesDiscoveredBinding.NonMutating] that will only bind whenever a service is discovered.
+     * @property T the type of the object to bind to
+     */
     interface RequiresServicesDiscovered<T> :
         ConnectedDeviceBinding<T>,
         RequiresServicesDiscoveredBinding.NonMutating<T> {
 
+        /**
+         * Binds the object to the [RemoteService] at a given [UUID] whenever it is available.
+         * @param uuid the [UUID] of the [RemoteService] to bind to
+         * @param binding the [RemoteServiceBinding.RequiresServicesDiscovered] set up binding to the [RemoteService]
+         */
         fun service(uuid: UUID, binding: RemoteServiceBinding.RequiresServicesDiscovered<T>.() -> Unit)
+
+        /**
+         * Binds the object to the [RemoteService] at a given [UUID] whenever it is available.
+         * @param uuidString the string of the [UUID] of the [RemoteService] to bind to
+         * @param binding the [RemoteServiceBinding.RequiresServicesDiscovered] set up binding to the [RemoteService]
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun service(uuidString: String, binding: RemoteServiceBinding.RequiresServicesDiscovered<T>.() -> Unit) {
             service(uuidFrom(uuidString), binding)
         }
 
+        /**
+         * Binds an object of type [R] to the [RemoteService] at a given [UUID] whenever it is available and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuid the [UUID] of the [RemoteService] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteServiceBinding.RequiresServicesDiscovered] set up binding to the [RemoteService]
+         * @throws NoSuchElementException if the [RemoteService] is not found
+         */
         fun <R> R.bindService(uuid: UUID, update: T.(R) -> T = { this }, binding: RemoteServiceBinding.RequiresServicesDiscovered<R>.() -> Unit)
+
+        /**
+         * Binds an object of type [R] to the [RemoteService] at a given [UUID] whenever it is available and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuidString the string of the [UUID] of the [RemoteService] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteServiceBinding.RequiresServicesDiscovered] set up binding to the [RemoteService]
+         * @throws NoSuchElementException if the [RemoteService] is not found
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun <R> R.bindService(uuidString: String, update: T.(R) -> T = { this }, binding: RemoteServiceBinding.RequiresServicesDiscovered<R>.() -> Unit) {
             bindService(uuidFrom(uuidString), update, binding)
         }
     }
 }
 
+/**
+ * Builder for setting up binding to an object [T] so that it may be changed by a [RemoteService].
+ * @property T the type of the object to bind to
+ */
 interface RemoteServiceBinding<T> {
 
+    /**
+     * A [RemoteServiceBinding] that assumes the [RemoteService] being bound to has been discovered.
+     * @property T the type of the object to bind to
+     */
     interface EnsuresAvailable<T> : RemoteServiceBinding<T> {
 
+        /**
+         * Binds the object to the included [RemoteService] at a given [UUID].
+         * @param uuid the [UUID] of the [RemoteService] to bind to
+         * @param binding the [RemoteServiceBinding.EnsuresAvailable] set up binding to the [RemoteService]
+         * @throws NoSuchElementException if the [RemoteService] is not found
+         */
         fun service(uuid: UUID, binding: EnsuresAvailable<T>.() -> Unit)
+
+        /**
+         * Binds the object to the included [RemoteService] at a given [UUID].
+         * @param uuidString the string of the [UUID] of the [RemoteService] to bind to
+         * @param binding the [RemoteServiceBinding.EnsuresAvailable] set up binding to the [RemoteService]
+         * @throws NoSuchElementException if the [RemoteService] is not found
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun service(uuidString: String, binding: EnsuresAvailable<T>.() -> Unit) {
             service(uuidFrom(uuidString), binding)
         }
+
+        /**
+         * Binds an object of type [R] to the included [RemoteService] at a given [UUID] and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuid the [UUID] of the [RemoteService] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteServiceBinding.EnsuresAvailable] set up binding to the [RemoteService]
+         * @throws NoSuchElementException if the [RemoteService] is not found
+         */
         fun <R> R.bindService(uuid: UUID, update: T.(R) -> T = { this }, binding: EnsuresAvailable<R>.() -> Unit)
+
+        /**
+         * Binds an object of type [R] to the included [RemoteService] at a given [UUID] and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuidString the string of the [UUID] of the [RemoteService] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteServiceBinding.EnsuresAvailable] set up binding to the [RemoteService]
+         * @throws NoSuchElementException if the [RemoteService] is not found
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun <R> R.bindService(uuidString: String, update: T.(R) -> T = { this }, binding: EnsuresAvailable<R>.() -> Unit) {
             bindService(uuidFrom(uuidString), update, binding)
         }
 
+        /**
+         * Binds the object to the [RemoteCharacteristic] at a given [UUID].
+         * @param uuid the [UUID] of the [RemoteCharacteristic] to bind to
+         * @param binding the [RemoteCharacteristicBinding.EnsuresServicesAvailable] set up binding to the [RemoteCharacteristic]
+         * @throws NoSuchElementException if the [RemoteCharacteristic] is not found
+         */
         fun characteristic(uuid: UUID, binding: RemoteCharacteristicBinding.EnsuresServicesAvailable<T>.() -> Unit)
+
+        /**
+         * Binds the object to the [RemoteCharacteristic] at a given [UUID].
+         * @param uuidString the string of the [UUID] of the [RemoteCharacteristic] to bind to
+         * @param binding the [RemoteCharacteristicBinding.EnsuresServicesAvailable] set up binding to the [RemoteCharacteristic]
+         * @throws NoSuchElementException if the [RemoteCharacteristic] is not found
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun characteristic(uuidString: String, binding: RemoteCharacteristicBinding.EnsuresServicesAvailable<T>.() -> Unit) {
             characteristic(uuidFrom(uuidString), binding)
         }
 
+        /**
+         * Binds an object of type [R] to the [RemoteCharacteristic] at a given [UUID] and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuid the [UUID] of the [RemoteCharacteristic] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteCharacteristicBinding.EnsuresServicesAvailable] set up binding to the [RemoteCharacteristic]
+         * @throws NoSuchElementException if the [RemoteCharacteristic] is not found
+         */
         fun <R> R.bindCharacteristic(uuid: UUID, update: T.(R) -> T = { this }, binding: RemoteCharacteristicBinding.EnsuresServicesAvailable<R>.() -> Unit)
+
+        /**
+         * Binds an object of type [R] to the [RemoteCharacteristic] at a given [UUID] and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuidString the string of the [UUID] of the [RemoteCharacteristic] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteCharacteristicBinding.EnsuresServicesAvailable] set up binding to the [RemoteCharacteristic]
+         * @throws NoSuchElementException if the [RemoteCharacteristic] is not found
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun <R> R.bindCharacteristic(uuidString: String, update: T.(R) -> T = { this }, binding: RemoteCharacteristicBinding.EnsuresServicesAvailable<R>.() -> Unit) {
             bindCharacteristic(uuidFrom(uuidString), update, binding)
         }
     }
+
+    /**
+     * A [RemoteServiceBinding] and [RequiresServicesDiscoveredBinding.NonMutating] that will only bind whenever the [RemoteService] has been discovered.
+     * @property T the type of the object to bind to
+     */
     interface RequiresServicesDiscovered<T> :
         RemoteServiceBinding<T>,
         RequiresServicesDiscoveredBinding.NonMutating<T> {
+
+        /**
+         * Binds the object to the included [RemoteService] at a given [UUID] whenever it is available.
+         * @param uuid the [UUID] of the [RemoteService] to bind to
+         * @param binding the [RemoteServiceBinding.RequiresServicesDiscovered] set up binding to the [RemoteService]
+         */
         fun service(uuid: UUID, binding: RequiresServicesDiscovered<T>.() -> Unit)
+
+        /**
+         * Binds the object to the included [RemoteService] at a given [UUID] whenever it is available.
+         * @param uuidString the string of the [UUID] of the [RemoteService] to bind to
+         * @param binding the [RemoteServiceBinding.RequiresServicesDiscovered] set up binding to the [RemoteService]
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun service(uuidString: String, binding: RequiresServicesDiscovered<T>.() -> Unit) {
             service(uuidFrom(uuidString), binding)
         }
+
+        /**
+         * Binds an object of type [R] to the included [RemoteService] at a given [UUID] whenever it is available and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuid the [UUID] of the [RemoteService] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteServiceBinding.RequiresServicesDiscovered] set up binding to the [RemoteService]
+         */
         fun <R> R.bindService(uuid: UUID, update: T.(R) -> T = { this }, binding: RequiresServicesDiscovered<R>.() -> Unit)
+
+        /**
+         * Binds an object of type [R] to the included [RemoteService] at a given [UUID] whenever it is available and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuidString the string of the [UUID] of the [RemoteService] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteServiceBinding.RequiresServicesDiscovered] set up binding to the [RemoteService]
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun <R> R.bindService(uuidString: String, update: T.(R) -> T = { this }, binding: RequiresServicesDiscovered<R>.() -> Unit) {
             bindService(uuidFrom(uuidString), update, binding)
         }
 
+        /**
+         * Binds the object to the [RemoteCharacteristic] at a given [UUID] whenever it is available.
+         * @param uuid the [UUID] of the [RemoteCharacteristic] to bind to
+         * @param binding the [RemoteCharacteristicBinding.RequiresServicesDiscovered] set up binding to the [RemoteCharacteristic]
+         */
         fun characteristic(uuid: UUID, binding: RemoteCharacteristicBinding.RequiresServicesDiscovered<T>.() -> Unit)
+
+        /**
+         * Binds the object to the [RemoteCharacteristic] at a given [UUID] whenever it is available.
+         * @param uuidString the string of the [UUID] of the [RemoteCharacteristic] to bind to
+         * @param binding the [RemoteCharacteristicBinding.RequiresServicesDiscovered] set up binding to the [RemoteCharacteristic]
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun characteristic(uuidString: String, binding: RemoteCharacteristicBinding.RequiresServicesDiscovered<T>.() -> Unit) {
             characteristic(uuidFrom(uuidString), binding)
         }
 
+        /**
+         * Binds an object of type [R] to the [RemoteCharacteristic] at a given [UUID] whenever it is available and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuid the [UUID] of the [RemoteCharacteristic] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteCharacteristicBinding.RequiresServicesDiscovered] set up binding to the [RemoteCharacteristic]
+         */
         fun <R> R.bindCharacteristic(uuid: UUID, update: T.(R) -> T = { this }, binding: RemoteCharacteristicBinding.RequiresServicesDiscovered<R>.() -> Unit)
+
+        /**
+         * Binds an object of type [R] to the [RemoteCharacteristic] at a given [UUID] whenever it is available and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuidString the string of the [UUID] of the [RemoteCharacteristic] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteCharacteristicBinding.RequiresServicesDiscovered] set up binding to the [RemoteCharacteristic]
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun <R> R.bindCharacteristic(uuidString: String, update: T.(R) -> T = { this }, binding: RemoteCharacteristicBinding.RequiresServicesDiscovered<R>.() -> Unit) {
             bindCharacteristic(uuidFrom(uuidString), update, binding)
         }
     }
 }
 
+/**
+ * Builder for setting up binding to an object [T] so that it may be changed by a [RemoteCharacteristic].
+ * @property T the type of the object to bind to
+ */
 sealed interface RemoteCharacteristicBinding<T> : RemoteAttributeBinding<T> {
 
+    /**
+     * A [RemoteCharacteristicBinding] that assumes the [RemoteCharacteristic] being bound to has been discovered.
+     * @property T the type of the object to bind to
+     */
     interface EnsuresServicesAvailable<T> : RemoteCharacteristicBinding<T> {
+
+        /**
+         * Binds the object to the [RemoteDescriptor] at a given [UUID].
+         * @param uuid the [UUID] of the [RemoteDescriptor] to bind to
+         * @param binding the [RemoteDescriptorBinding] set up binding to the [RemoteDescriptor]
+         * @throws NoSuchElementException if the [RemoteDescriptor] is not found
+         */
         fun descriptor(uuid: UUID, binding: RemoteDescriptorBinding<T>.() -> Unit)
+
+        /**
+         * Binds the object to the [RemoteDescriptor] at a given [UUID].
+         * @param uuidString the string of the [UUID] of the [RemoteDescriptor] to bind to
+         * @param binding the [RemoteDescriptorBinding] set up binding to the [RemoteDescriptor]
+         * @throws NoSuchElementException if the [RemoteDescriptor] is not found
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun descriptor(uuidString: String, binding: RemoteDescriptorBinding<T>.() -> Unit) {
             descriptor(uuidFrom(uuidString), binding)
         }
 
+        /**
+         * Binds an object of type [R] to the [RemoteDescriptor] at a given [UUID] and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuid the [UUID] of the [RemoteDescriptor] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteDescriptorBinding] set up binding to the [RemoteDescriptor]
+         * @throws NoSuchElementException if the [RemoteDescriptor] is not found
+         */
         fun <R> R.bindDescriptor(uuid: UUID, update: T.(R) -> T = { this }, binding: RemoteDescriptorBinding<R>.() -> Unit)
+
+        /**
+         * Binds an object of type [R] to the [RemoteDescriptor] at a given [UUID] and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuidString the string of the [UUID] of the [RemoteDescriptor] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteDescriptorBinding] set up binding to the [RemoteDescriptor]
+         * @throws NoSuchElementException if the [RemoteDescriptor] is not found
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun <R> R.bindDescriptor(uuidString: String, update: T.(R) -> T = { this }, binding: RemoteDescriptorBinding<R>.() -> Unit) {
             bindDescriptor(uuidFrom(uuidString), update, binding)
         }
     }
 
+    /**
+     * A [RemoteCharacteristicBinding] and [RequiresServicesDiscoveredBinding.NonMutating] that will only bind whenever the [RemoteCharacteristic] has been discovered.
+     * @property T the type of the object to bind to
+     */
     interface RequiresServicesDiscovered<T> :
         RemoteCharacteristicBinding<T>,
         RequiresServicesDiscoveredBinding.NonMutating<T> {
+
+        /**
+         * Binds the object to the [RemoteDescriptor] at a given [UUID] whenever it is available.
+         * @param uuid the [UUID] of the [RemoteDescriptor] to bind to
+         * @param binding the [RemoteDescriptorBinding.RequiresServicesDiscovered] set up binding to the [RemoteDescriptor]
+         */
         fun descriptor(uuid: UUID, binding: RemoteDescriptorBinding.RequiresServicesDiscovered<T>.() -> Unit)
+
+        /**
+         * Binds the object to the [RemoteDescriptor] at a given [UUID] whenever it is available.
+         * @param uuidString the string of the [UUID] of the [RemoteDescriptor] to bind to
+         * @param binding the [RemoteDescriptorBinding.RequiresServicesDiscovered] set up binding to the [RemoteDescriptor]
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun descriptor(uuidString: String, binding: RemoteDescriptorBinding.RequiresServicesDiscovered<T>.() -> Unit) {
             descriptor(uuidFrom(uuidString), binding)
         }
 
+        /**
+         * Binds an object of type [R] to the [RemoteDescriptor] at a given [UUID] whenever it is available and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuid the [UUID] of the [RemoteDescriptor] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteDescriptorBinding.RequiresServicesDiscovered] set up binding to the [RemoteDescriptor]
+         */
         fun <R> R.bindDescriptor(uuid: UUID, update: T.(R) -> T = { this }, binding: RemoteDescriptorBinding.RequiresServicesDiscovered<R>.() -> Unit)
+
+        /**
+         * Binds an object of type [R] to the [RemoteDescriptor] at a given [UUID] whenever it is available and updates the object whenever it changes.
+         * @param R the type of the object to bind to
+         * @param uuidString the string of the [UUID] of the [RemoteDescriptor] to bind to
+         * @param update the function that updates the object whenever the bound object changes
+         * @param binding the [RemoteDescriptorBinding.RequiresServicesDiscovered] set up binding to the [RemoteDescriptor]
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if the [UUID] is not valid
+         */
         fun <R> R.bindDescriptor(uuidString: String, update: T.(R) -> T = { this }, binding: RemoteDescriptorBinding.RequiresServicesDiscovered<R>.() -> Unit) {
             bindDescriptor(uuidFrom(uuidString), update, binding)
         }
     }
 
+    /**
+     * Builder for setting up binding to an object [T] so that it may be changed when the [Notification] from a [RemoteCharacteristic] changed.
+     * @property T the type of the object to bind to
+     * @property Notification the type of Notification that the [RemoteCharacteristic] sends.
+     * @property Transformation the type of Transformation that should be applied to the object when the [RemoteAttribute] is read.
+     */
     sealed interface ObserveBuilder<T, Notification, Transformation> {
+
+        /**
+         * A [ObserveBuilder] that does not mutate the object when a [RemoteCharacteristic] receives a [Notification].
+         * @property T the type of the object to bind to
+         * @property Notification the type of Notification that the [RemoteCharacteristic] sends.
+         * @property Transformation the type of Transformation that should be applied to the object when the [RemoteAttribute] is read.
+         */
         interface NonMutating<T, Notification> : ObserveBuilder<T, Notification, Unit> {
+
+            /**
+             * Creates a [Mutating] [ObserveBuilder] that mutates the object when when a [RemoteCharacteristic] receives a [Notification].
+             * @param builder the builder to apply to the [Mutating] [ObserveBuilder]
+             */
             fun mutate(builder: Mutating<T, Notification>.() -> Unit)
         }
+
+        /**
+         * A [ObserveBuilder] that mutates the object when a [RemoteCharacteristic] receives a [Notification].
+         * @property T the type of the object to bind to
+         * @property Notification the type of Notification that the [RemoteCharacteristic] sends.
+         * @property Transformation the type of Transformation that should be applied to the object when the [RemoteAttribute] is read.
+         */
         interface Mutating<T, Notification> : ObserveBuilder<T, Notification, T>
 
+        /**
+         * Sets up a [Transformation] when a [Notification] is received from a [RemoteCharacteristic].
+         * @param action the [Transformation] to apply when a [Notification] is received. Contains the received [Notification].
+         */
         fun onNotification(action: suspend T.(Notification) -> Transformation)
     }
 
-    fun <R> observe(asValue: ByteArray.() -> R, builder: ObserveBuilder.NonMutating<T, R>.() -> Unit)
-    fun <R> observe(deserializationStrategy: DeserializationStrategy<R>, bluetoothFormat: BluetoothFormat = BluetoothFormat, builder: ObserveBuilder.NonMutating<T, R>.() -> Unit) =
+    /**
+     * Sets up observation of a [Notification] from the [RemoteCharacteristic]
+     * @param Notification the type of Notification to receive from the [RemoteCharacteristic]
+     * @param asValue the function that converts the [ByteArray] to the [Notification]
+     * @param builder sets up the observation response to a new [Notification]
+     */
+    fun <Notification> observe(asValue: ByteArray.() -> Notification, builder: ObserveBuilder.NonMutating<T, Notification>.() -> Unit)
+
+    /**
+     * Sets up observation of a [Notification] from the [RemoteCharacteristic]
+     * @param Notification the type of Notification to receive from the [RemoteCharacteristic]
+     * @param deserializationStrategy the [DeserializationStrategy] to use to convert the [ByteArray] to the [Notification]
+     * @param bluetoothFormat the [BluetoothFormat] to use to convert the [ByteArray] to the [Notification]
+     * @param builder sets up the observation response to a new [Notification]
+     */
+    fun <Notification> observe(deserializationStrategy: DeserializationStrategy<Notification>, bluetoothFormat: BluetoothFormat = BluetoothFormat, builder: ObserveBuilder.NonMutating<T, Notification>.() -> Unit) =
         observe({ bluetoothFormat.decodeFromByteArray(deserializationStrategy, this) }, builder)
+
+    /**
+     * Sets up observation of a [ByteArray] from the [RemoteCharacteristic]
+     * @param builder sets up the observation response to a new [ByteArray]
+     */
     fun observe(builder: ObserveBuilder.NonMutating<T, ByteArray>.() -> Unit) = observe(asValue = { this }, builder = builder)
 }
 
-inline fun <reified R, T> RemoteCharacteristicBinding<T>.observe(
+/**
+ * Sets up observation of a [Notification] from the [RemoteCharacteristic]
+ * @param Notification the type of Notification to receive from the [RemoteCharacteristic]
+ * @param T  the type of the object to bind to
+ * @param bluetoothFormat the [BluetoothFormat] to use to convert the [ByteArray] to the [Notification]
+ * @param builder sets up the observation response to a new [Notification]
+ */
+inline fun <reified Notification, T> RemoteCharacteristicBinding<T>.observe(
     bluetoothFormat: BluetoothFormat = BluetoothFormat,
-    noinline builder: ObserveBuilder.NonMutating<T, R>.() -> Unit,
-) = observe(bluetoothFormat.serializersModule.serializer<R>(), bluetoothFormat, builder)
+    noinline builder: ObserveBuilder.NonMutating<T, Notification>.() -> Unit,
+) = observe(bluetoothFormat.serializersModule.serializer<Notification>(), bluetoothFormat, builder)
 
+
+/**
+ * Builder for setting up binding to an object [T] so that it may be changed by a [RemoteDescriptor].
+ * @property T the type of the object to bind to
+ */
 interface RemoteDescriptorBinding<T> : RemoteAttributeBinding<T> {
+
+    /**
+     * A [RemoteDescriptorBinding] and [RequiresServicesDiscoveredBinding.NonMutating] that will only bind whenever the [RemoteDescriptor] has been discovered.
+     * @property T the type of the object to bind to
+     */
     interface RequiresServicesDiscovered<T> :
         RemoteDescriptorBinding<T>,
         RequiresServicesDiscoveredBinding.NonMutating<T>
 }
 
+/**
+ * Binds an object of type [T] to the [Flow] of a [ConnectableDevice], so that it may be updated according to [binding]
+ * @param T the type of the object to bind to
+ * @param device the [Flow] of the [ConnectableDevice] that should trigger updates.
+ * @param scope the [CoroutineScope] in which to bind
+ * @param binding the [ConnectedDeviceBinding.RequiresServicesDiscovered] that sets up binding to the [ConnectableDevice]
+ * @return a [StateFlow] of [T] that updates whenever mutating occurs due to actions set up in [binding]
+ */
 @JvmName("bindDevice")
 fun <T> T.bind(device: Flow<ConnectableDevice?>, scope: CoroutineScope, binding: ConnectedDeviceBinding.RequiresServicesDiscovered<T>.() -> Unit): StateFlow<T> {
     val onServicesDiscoveredActions = mutableListOf<() -> Unit>()
@@ -393,6 +1035,14 @@ fun <T> T.bind(device: Flow<ConnectableDevice?>, scope: CoroutineScope, binding:
     return builder.build()
 }
 
+/**
+ * Binds an object of type [T] to a [ConnectableDevice], so that it may be updated according to [binding]
+ * @param T the type of the object to bind to
+ * @param device the [ConnectableDevice] that should trigger updates.
+ * @param scope the [CoroutineScope] in which to bind
+ * @param binding the [ConnectedDeviceBinding.RequiresServicesDiscovered] that sets up binding to the [ConnectableDevice]
+ * @return a [StateFlow] of [T] that updates whenever mutating occurs due to actions set up in [binding]
+ */
 fun <T> T.bind(device: ConnectableDevice, scope: CoroutineScope, binding: ConnectedDeviceBinding.RequiresServicesDiscovered<T>.() -> Unit): StateFlow<T> {
     val onServicesDiscoveredActions = mutableListOf<() -> Unit>()
     val onServicesUndiscoveredActions = mutableListOf<() -> Unit>()
@@ -417,6 +1067,15 @@ fun <T> T.bind(device: ConnectableDevice, scope: CoroutineScope, binding: Connec
     return builder.build()
 }
 
+/**
+ * Binds an object of type [T] to a [ConnectableDeviceState.Connected.DiscoveredServices] state, so that it may be updated according to [binding].
+ * This assumes services has been discovered and as such any [binding] will fail if a [RemoteAttribute] is not available.
+ * @param T the type of the object to bind to
+ * @param deviceState the  [ConnectableDeviceState.Connected.DiscoveredServices] state
+ * @param scope the [CoroutineScope] in which to bind
+ * @param binding the [ConnectedDeviceBinding.EnsuresAvailable] that sets up binding to the [ConnectableDevice]
+ * @return a [StateFlow] of [T] that updates whenever mutating occurs due to actions set up in [binding]
+ */
 fun <T> T.bind(
     deviceState: ConnectableDeviceState.Connected.DiscoveredServices,
     scope: CoroutineScope,
@@ -427,6 +1086,14 @@ fun <T> T.bind(
     scope,
 ).apply(binding).build()
 
+/**
+ * Binds an object of type [T] to the [Flow] of a [RemoteService], so that it may be updated according to [binding]
+ * @param T the type of the object to bind to
+ * @param service the [Flow] of the [RemoteService] that should trigger updates.
+ * @param scope the [CoroutineScope] in which to bind
+ * @param binding the [RemoteServiceBinding.RequiresServicesDiscovered] that sets up binding to the [RemoteService]
+ * @return a [StateFlow] of [T] that updates whenever mutating occurs due to actions set up in [binding]
+ */
 @JvmName("bindService")
 fun <T> T.bind(service: Flow<RemoteService?>, scope: CoroutineScope, binding: RemoteServiceBinding.RequiresServicesDiscovered<T>.() -> Unit): StateFlow<T> {
     val onServicesDiscoveredActions = mutableListOf<() -> Unit>()
@@ -452,6 +1119,14 @@ fun <T> T.bind(service: Flow<RemoteService?>, scope: CoroutineScope, binding: Re
     return builder.build()
 }
 
+/**
+ * Binds an object of type [T] to a [RemoteService], so that it may be updated according to [binding].
+ * @param T the type of the object to bind to
+ * @param service the [RemoteService] that should trigger updates.
+ * @param scope the [CoroutineScope] in which to bind
+ * @param binding the [RemoteServiceBinding.EnsuresAvailable] that sets up binding to the [RemoteService]
+ * @return a [StateFlow] of [T] that updates whenever mutating occurs due to actions set up in [binding]
+ */
 fun <T> T.bind(service: RemoteService, scope: CoroutineScope, binding: RemoteServiceBinding.EnsuresAvailable<T>.() -> Unit): StateFlow<T> =
     RemoteServiceBindingImpl.EnsuresServicesAvailable(
         MutableStateFlow(this),
@@ -459,6 +1134,14 @@ fun <T> T.bind(service: RemoteService, scope: CoroutineScope, binding: RemoteSer
         scope,
     ).apply(binding).build()
 
+/**
+ * Binds an object of type [T] to the [Flow] of a [RemoteCharacteristic], so that it may be updated according to [binding]
+ * @param T the type of the object to bind to
+ * @param characteristic the [Flow] of the [RemoteCharacteristic] that should trigger updates.
+ * @param scope the [CoroutineScope] in which to bind
+ * @param binding the [RemoteCharacteristicBinding.RequiresServicesDiscovered] that sets up binding to the [RemoteCharacteristic]
+ * @return a [StateFlow] of [T] that updates whenever mutating occurs due to actions set up in [binding]
+ */
 @JvmName("bindCharacteristic")
 fun <T> T.bind(characteristic: Flow<RemoteCharacteristic?>, scope: CoroutineScope, binding: RemoteCharacteristicBinding.RequiresServicesDiscovered<T>.() -> Unit): StateFlow<T> {
     val onServicesDiscoveredActions = mutableListOf<() -> Unit>()
@@ -484,6 +1167,14 @@ fun <T> T.bind(characteristic: Flow<RemoteCharacteristic?>, scope: CoroutineScop
     return builder.build()
 }
 
+/**
+ * Binds an object of type [T] to a [RemoteCharacteristic], so that it may be updated according to [binding].
+ * @param T the type of the object to bind to
+ * @param characteristic the [RemoteCharacteristic] that should trigger updates.
+ * @param scope the [CoroutineScope] in which to bind
+ * @param binding the [RemoteCharacteristicBinding.EnsuresServicesAvailable] that sets up binding to the [RemoteCharacteristic]
+ * @return a [StateFlow] of [T] that updates whenever mutating occurs due to actions set up in [binding]
+ */
 fun <T> T.bind(characteristic: RemoteCharacteristic, scope: CoroutineScope, binding: RemoteCharacteristicBinding.EnsuresServicesAvailable<T>.() -> Unit) =
     RemoteCharacteristicBindingImpl.EnsuresServicesAvailable(
         MutableStateFlow(this),
@@ -491,6 +1182,15 @@ fun <T> T.bind(characteristic: RemoteCharacteristic, scope: CoroutineScope, bind
         scope,
     ).apply(binding).build()
 
+
+/**
+ * Binds an object of type [T] to the [Flow] of a [RemoteDescriptor], so that it may be updated according to [binding]
+ * @param T the type of the object to bind to
+ * @param descriptor the [Flow] of the [RemoteDescriptor] that should trigger updates.
+ * @param scope the [CoroutineScope] in which to bind
+ * @param binding the [RemoteDescriptorBinding.RequiresServicesDiscovered] that sets up binding to the [RemoteDescriptor]
+ * @return a [StateFlow] of [T] that updates whenever mutating occurs due to actions set up in [binding]
+ */
 @JvmName("bindDescriptor")
 fun <T> T.bind(descriptor: Flow<RemoteDescriptor?>, scope: CoroutineScope, binding: RemoteDescriptorBinding.RequiresServicesDiscovered<T>.() -> Unit): StateFlow<T> {
     val onServicesDiscoveredActions = mutableListOf<() -> Unit>()
@@ -516,6 +1216,14 @@ fun <T> T.bind(descriptor: Flow<RemoteDescriptor?>, scope: CoroutineScope, bindi
     return builder.build()
 }
 
+/**
+ * Binds an object of type [T] to a [RemoteDescriptor], so that it may be updated according to [binding].
+ * @param T the type of the object to bind to
+ * @param descriptor the [RemoteDescriptor] that should trigger updates.
+ * @param scope the [CoroutineScope] in which to bind
+ * @param binding the [RemoteDescriptorBinding] that sets up binding to the [RemoteDescriptor]
+ * @return a [StateFlow] of [T] that updates whenever mutating occurs due to actions set up in [binding]
+ */
 fun <T> T.bind(descriptor: RemoteDescriptor, scope: CoroutineScope, binding: RemoteDescriptorBinding<T>.() -> Unit): StateFlow<T> =
     RemoteDescriptorBindingImpl.EnsuresAvailable(MutableStateFlow(this), descriptor, scope).apply(binding).build()
 
@@ -554,7 +1262,7 @@ private sealed class ConnectedDeviceBindingImpl<T>(protected val callingScope: M
         override fun service(uuid: UUID, binding: RemoteServiceBinding.RequiresServicesDiscovered<T>.() -> Unit) {
             val serviceBinding = RemoteServiceBindingImpl.RequiresServicesDiscovered(
                 callingScope,
-                device.discoveredServices()[uuid],
+                device.discoveredServices().getOrNull(uuid),
                 onServicesDiscoveredActions,
                 onServicesUndiscoveredActions,
                 scope,
@@ -567,7 +1275,7 @@ private sealed class ConnectedDeviceBindingImpl<T>(protected val callingScope: M
         override fun <R> R.bindService(uuid: UUID, update: T.(R) -> T, binding: RemoteServiceBinding.RequiresServicesDiscovered<R>.() -> Unit) {
             val serviceBinding = RemoteServiceBindingImpl.RequiresServicesDiscovered(
                 MutableStateFlow(this),
-                device.discoveredServices()[uuid],
+                device.discoveredServices().getOrNull(uuid),
                 onServicesDiscoveredActions,
                 onServicesUndiscoveredActions,
                 scope,
@@ -728,7 +1436,7 @@ private sealed class RemoteCharacteristicBindingImpl<T>(callingScope: MutableSta
             }
         }
 
-        override fun <R> observe(asValue: ByteArray.() -> R, builder: RemoteCharacteristicBinding.ObserveBuilder.NonMutating<T, R>.() -> Unit) {
+        override fun <R> observe(asValue: ByteArray.() -> R, builder: ObserveBuilder.NonMutating<T, R>.() -> Unit) {
             val builder = ObserverBuilder.NonMutating<T, R>().apply(builder)
             val onNotificationActions = builder.notificationActions()
             observations += {
@@ -781,7 +1489,7 @@ private sealed class RemoteCharacteristicBindingImpl<T>(callingScope: MutableSta
             }
         }
 
-        override fun <R> observe(asValue: ByteArray.() -> R, builder: RemoteCharacteristicBinding.ObserveBuilder.NonMutating<T, R>.() -> Unit) {
+        override fun <R> observe(asValue: ByteArray.() -> R, builder: ObserveBuilder.NonMutating<T, R>.() -> Unit) {
             val builder = ObserverBuilder.NonMutating<T, R>().apply(builder)
             val onNotificationActions = builder.notificationActions()
             observations += {
@@ -800,8 +1508,8 @@ private sealed class RemoteCharacteristicBindingImpl<T>(callingScope: MutableSta
 
         class NonMutating<T, Notification> :
             ObserverBuilder<T, Notification>(),
-            RemoteCharacteristicBinding.ObserveBuilder.NonMutating<T, Notification> {
-            override fun mutate(builder: RemoteCharacteristicBinding.ObserveBuilder.Mutating<T, Notification>.() -> Unit) {
+            ObserveBuilder.NonMutating<T, Notification> {
+            override fun mutate(builder: ObserveBuilder.Mutating<T, Notification>.() -> Unit) {
                 val mutating = Mutating<T, Notification>().apply(builder)
                 onNotificationActions += mutating.notificationActions()
             }
@@ -816,7 +1524,7 @@ private sealed class RemoteCharacteristicBindingImpl<T>(callingScope: MutableSta
 
         class Mutating<T, Notification> :
             ObserverBuilder<T, Notification>(),
-            RemoteCharacteristicBinding.ObserveBuilder.Mutating<T, Notification> {
+            ObserveBuilder.Mutating<T, Notification> {
 
             override fun onNotification(action: suspend T.(Notification) -> T) {
                 onNotificationActions += action
@@ -825,18 +1533,6 @@ private sealed class RemoteCharacteristicBindingImpl<T>(callingScope: MutableSta
 
         fun notificationActions() = onNotificationActions.toList()
     }
-
-    // override fun descriptor(uuid: UUID, binding: RemoteDescriptorBinding<T>.() -> Unit) {
-    //     RemoteDescriptorBindingImpl(callingScope, characteristic.descriptors().getOrNull(uuid), scope).binding()
-    // }
-    //
-    // override fun <R> R.bindDescriptor(uuid: UUID, update: T.(R) -> T, binding: RemoteDescriptorBinding<R>.() -> Unit) {
-    //     val descriptorUpdates = bind(characteristic.descriptors().getOrNull(uuid), scope, binding)
-    //     scope.launch {
-    //         descriptorUpdates.collect { update -> callingScope.update { scope -> scope.update(update) } }
-    //     }
-    // }
-    //
 }
 
 private sealed class RemoteDescriptorBindingImpl<T>(callingScope: MutableStateFlow<T>, getDescriptor: suspend () -> RemoteDescriptor?, scope: CoroutineScope) :
