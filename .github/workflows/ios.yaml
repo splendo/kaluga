@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-15
     steps:
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         submodules: recursive
 
@@ -41,7 +41,7 @@ jobs:
         module: ${{ fromJSON(needs.build.outputs.projects) }}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup tools and cache for workspace
         uses: ./.github/workflows/setup_tools_macos/
@@ -63,7 +63,7 @@ jobs:
     runs-on: macos-15
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup tools and cache for workspace
         uses: ./.github/workflows/setup_tools_macos/

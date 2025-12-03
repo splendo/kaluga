@@ -21,14 +21,14 @@ import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.typedMap
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
+import com.splendo.kaluga.bluetooth.KalugaBluetoothScanningDelegateProtocol
+import com.splendo.kaluga.bluetooth.KalugaBluetoothWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.PairedAdvertisementData
-import com.splendo.kaluga.bluetooth.KalugaBluetoothScanningDelegateProtocol
-import com.splendo.kaluga.bluetooth.KalugaBluetoothWrapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
@@ -145,11 +145,11 @@ actual class DefaultScanner internal constructor(
         }
 
         override fun didDisconnectPeripheral(peripheral: CBPeripheral, withError: NSError?, forCentralManager: CBCentralManager) {
-            scanner.handleDeviceDisconnected(peripheral.identifier)
+            scanner.handleDeviceDisconnected(peripheral.identifier, withError?.description)
         }
 
         override fun didFailToConnectPeripheral(peripheral: CBPeripheral, withError: NSError?, forCentralManager: CBCentralManager) {
-            scanner.handleDeviceDisconnected(peripheral.identifier)
+            scanner.handleDeviceDisconnected(peripheral.identifier, withError?.description ?: "Failed to connect")
         }
     }
 

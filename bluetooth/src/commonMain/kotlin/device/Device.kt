@@ -76,22 +76,14 @@ interface ConnectableDevice : Device {
      * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use when reconnecting if the device disconnects unexpectedly
      * @return `true` if connection was successful.
      */
-    suspend fun connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null): Boolean {
-        var hasStartedConnecting = false
-        return state.transform { deviceState ->
-            when (deviceState) {
-                is ConnectableDeviceState.Disconnected -> if (!hasStartedConnecting) {
-                    deviceState.startConnecting(reconnectionSettings)
-                    hasStartedConnecting = true
-                } else {
-                    emit(false)
-                }
-                is ConnectableDeviceState.Connected -> emit(true)
-                is ConnectableDeviceState.Connecting, is ConnectableDeviceState.Disconnecting -> {}
-                is NotConnectableDeviceState -> emit(false)
-            }
-        }.first()
-    }
+    suspend fun connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null): Boolean = state.transform { deviceState ->
+        when (deviceState) {
+            is ConnectableDeviceState.Disconnected -> deviceState.startConnecting(reconnectionSettings)
+            is ConnectableDeviceState.Connected -> emit(true)
+            is ConnectableDeviceState.Connecting, is ConnectableDeviceState.Disconnecting -> {}
+            is NotConnectableDeviceState -> emit(false)
+        }
+    }.first()
 
     /**
      * Notifies the device that is has connected
