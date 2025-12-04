@@ -24,8 +24,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
 import com.splendo.kaluga.logging.ContextualLogger
 import kotlinx.atomicfu.atomic
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.channels.Channel
 import kotlinx.serialization.DeserializationStrategy
 
 /**
@@ -105,7 +104,7 @@ open class RemoteCharacteristic(
      * A subscription to a [com.splendo.kaluga.bluetooth.RemoteCharacteristic]. Can be created using [RemoteCharacteristic.subscribe] if [Characteristic.properties] contains [CharacteristicProperty.Notifiable].
      * Call [unsubscribe] to remove the subscription. This will automatically stop notification if this is the last remaining subscription to the characteristic.
      */
-    class Subscription internal constructor(internal val onUpdate: (ByteArray) -> Unit, private val onUnsubscribe: suspend Subscription.() -> DeviceAction.Notification?) {
+    class Subscription internal constructor(internal val onUpdate: (ByteArray) -> Unit, private val onUnsubscribe: Subscription.() -> DeviceAction.Notification?) {
 
         /**
          * Unsubscribes from the remote device.
@@ -114,10 +113,9 @@ open class RemoteCharacteristic(
          */
         suspend fun unsubscribe(): GattResponse.WriteResponse = startUnsubscribe()?.response?.await() ?: GattResponse.WriteSuccess
 
-        internal suspend fun startUnsubscribe() = onUnsubscribe()
+        internal fun startUnsubscribe() = onUnsubscribe()
     }
 
-    private val isBusy = MutableStateFlow(false)
     private val _isNotifying = atomic(false)
     private val subscriptions = concurrentMutableListOf<Subscription>()
     private var lastKnownValue: ByteArray? = null
@@ -187,14 +185,14 @@ open class RemoteCharacteristic(
      * @see [disableNotification]
      * @see [isNotifying]
      */
-    suspend fun enableNotification() = createNotificationAction(true, DeviceAction.Notification.Enable(this))
+    fun enableNotification() = createNotificationAction(true, DeviceAction.Notification.Enable(this))
 
     internal fun notify(value: ByteArray) {
         lastKnownValue = value
         subscriptions.forEach { it.onUpdate(value) }
     }
 
-    private suspend fun unsubscribe(subscription: Subscription): DeviceAction.Notification? = if (subscriptions.remove(subscription) && subscriptions.isEmpty()) {
+    private fun unsubscribe(subscription: Subscription): DeviceAction.Notification? = if (subscriptions.remove(subscription) && subscriptions.isEmpty()) {
         lastKnownValue = null
         disableNotification()
     } else {
@@ -211,28 +209,44 @@ open class RemoteCharacteristic(
      * @see [enableNotification]
      * @see [isNotifying]
      */
-    suspend fun disableNotification() = createNotificationAction(
+    fun disableNotification() = createNotificationAction(
         false,
         DeviceAction.Notification.Disable(this),
     )
 
-    private suspend fun <N : DeviceAction.Notification> createNotificationAction(expected: Boolean, action: N): N? {
-        do {
-            isBusy.first { !it }
-            if (isNotifying == expected) return null
-        } while (!isBusy.compareAndSet(expect = false, update = true))
+    private val notificationActionQueue = Channel<DeviceAction.Notification>(Channel.UNLIMITED)
+    private val currentNotificationAction = atomic<DeviceAction.Notification?>(null)
 
-        if (hasAnyProperty(setOf(CharacteristicProperty.Notify, CharacteristicProperty.Indicate))) {
-            addAction(action)
-            action.response.invokeOnCompletion {
-                if (it == null && action.response.getCompleted() is GattResponse.WriteSuccess) {
-                    isNotifying = expected
+    private fun DeviceAction.Notification.handle() {
+        try {
+            if (hasAnyProperty(setOf(CharacteristicProperty.Notify, CharacteristicProperty.Indicate))) {
+                response.invokeOnCompletion {
+                    if (it == null && response.getCompleted() is GattResponse.WriteSuccess) {
+                        isNotifying = this is DeviceAction.Notification.Enable
+                    }
+                    notificationActionQueue.tryReceive().getOrNull()?.let { nextAction ->
+                        if (currentNotificationAction.compareAndSet(null, nextAction)) {
+                            nextAction.handle()
+                        } else {
+                            notificationActionQueue.trySend(nextAction)
+                        }
+                    }
                 }
-                isBusy.compareAndSet(expect = true, update = false)
+                addAction(this)
+            } else {
+                complete(GattResponse.WriteNotPermitted)
             }
+        } finally {
+            currentNotificationAction.compareAndSet(this, null)
+        }
+    }
+
+    private fun <N : DeviceAction.Notification> createNotificationAction(expected: Boolean, action: N): N? {
+        if (isNotifying == expected) return null
+        if (notificationActionQueue.isEmpty && currentNotificationAction.compareAndSet(null, action)) {
+            action.handle()
         } else {
-            action.complete(GattResponse.WriteNotPermitted)
-            isBusy.compareAndSet(expect = true, update = false)
+            notificationActionQueue.trySend(action)
         }
         return action
     }

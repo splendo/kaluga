@@ -656,9 +656,7 @@ fun RemoteCharacteristic.value(): Flow<ByteArray> = flow {
         try {
             emitAll(valueChannel)
         } finally {
-            withContext(NonCancellable) {
-                subscription.startUnsubscribe()
-            }
+            subscription.startUnsubscribe()
         }
     }
 }

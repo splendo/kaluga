@@ -576,8 +576,8 @@ public class com/splendo/kaluga/bluetooth/RemoteCharacteristic : com/splendo/kal
 	public fun <init> (Lcom/splendo/kaluga/bluetooth/RemoteCharacteristicWrapper;Lcom/splendo/kaluga/bluetooth/RemoteService;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/ContextualLogger;)V
 	public synthetic fun createReadAction$bluetooth_release ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Read;
 	public synthetic fun createWriteAction$bluetooth_release ([B)Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Write;
-	public final fun disableNotification (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun enableNotification (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun disableNotification ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Notification$Disable;
+	public final fun enableNotification ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Notification$Enable;
 	public fun getDescriptors ()Ljava/util/List;
 	public fun getProperties ()Ljava/util/Set;
 	public fun getService ()Lcom/splendo/kaluga/bluetooth/RemoteService;
