@@ -576,8 +576,8 @@ public class com/splendo/kaluga/bluetooth/RemoteCharacteristic : com/splendo/kal
 	public fun <init> (Lcom/splendo/kaluga/bluetooth/RemoteCharacteristicWrapper;Lcom/splendo/kaluga/bluetooth/RemoteService;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/ContextualLogger;)V
 	public synthetic fun createReadAction$bluetooth_release ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Read;
 	public synthetic fun createWriteAction$bluetooth_release ([B)Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Write;
-	public final fun disableNotification ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Notification$Disable;
-	public final fun enableNotification ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Notification$Enable;
+	public final fun disableNotification (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun enableNotification (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getDescriptors ()Ljava/util/List;
 	public fun getProperties ()Ljava/util/Set;
 	public fun getService ()Lcom/splendo/kaluga/bluetooth/RemoteService;
@@ -587,6 +587,8 @@ public class com/splendo/kaluga/bluetooth/RemoteCharacteristic : com/splendo/kal
 	public final fun hasProperty (Lcom/splendo/kaluga/bluetooth/CharacteristicProperty;)Z
 	public final fun isNotifying ()Z
 	public final fun setNotifying (Z)V
+	public final fun startDisableNotification ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Notification$Disable;
+	public final fun startEnableNotification ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Notification$Enable;
 	public final fun subscribe (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun subscribe (Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun subscribe$default (Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic;Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
