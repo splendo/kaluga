@@ -24,6 +24,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
 import com.splendo.kaluga.logging.ContextualLogger
 import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.update
 import kotlinx.atomicfu.updateAndGet
 import kotlinx.serialization.DeserializationStrategy
 
@@ -196,32 +197,53 @@ open class RemoteCharacteristic(
      * @see [startDisableNotification]
      * @see [isNotifying]
      */
-    fun startEnableNotification() = currentNotificationAction.updateAndGet { currentNotificationAction ->
-        when {
-            currentNotificationAction == null -> {
-                if (!isNotifying) {
-                    val action = DeviceAction.Notification.Enable(this)
-                    action.handle()
-                    NotificationActionQueue(action, null)
-                } else {
-                    null
+    fun startEnableNotification(): DeviceAction.Notification.Enable? {
+        var enableAction: DeviceAction.Notification.Enable? = null
+        var actionToFail: DeviceAction.Notification? = null
+        var shouldHandleAction = false
+        currentNotificationAction.update { currentNotificationAction ->
+            when {
+                currentNotificationAction == null -> {
+                    actionToFail = null
+                    if (!isNotifying) {
+                        val action = DeviceAction.Notification.Enable(this)
+                        enableAction = action
+                        shouldHandleAction = true
+                        NotificationActionQueue(action, null)
+                    } else {
+                        enableAction = null
+                        shouldHandleAction = false
+                        null
+                    }
                 }
-            }
-            else -> when (currentNotificationAction.current) {
-                is DeviceAction.Notification.Disable -> if (currentNotificationAction.next is DeviceAction.Notification.Enable) {
-                    currentNotificationAction
-                } else {
-                    currentNotificationAction.next?.fail()
-                    NotificationActionQueue(currentNotificationAction.current, DeviceAction.Notification.Enable(this))
+                else -> when (val current = currentNotificationAction.current) {
+                    is DeviceAction.Notification.Disable -> {
+                        val next = currentNotificationAction.next
+                        if (next is DeviceAction.Notification.Enable) {
+                            enableAction = currentNotificationAction.next
+                            actionToFail = null
+                            shouldHandleAction = false
+                            currentNotificationAction
+                        } else {
+                            val nextToDisable = DeviceAction.Notification.Enable(this)
+                            enableAction = nextToDisable
+                            actionToFail = currentNotificationAction.next
+                            shouldHandleAction = false
+                            NotificationActionQueue(current, nextToDisable)
+                        }
+                    }
+                    is DeviceAction.Notification.Enable -> {
+                        enableAction = current
+                        shouldHandleAction = false
+                        actionToFail = currentNotificationAction.next
+                        NotificationActionQueue(current, null)
+                    }
                 }
-                is DeviceAction.Notification.Enable -> currentNotificationAction.next?.let {
-                    it.fail()
-                    NotificationActionQueue(currentNotificationAction.current, null)
-                } ?: currentNotificationAction
             }
         }
-    }?.let { currentNotificationAction ->
-        (currentNotificationAction.next as? DeviceAction.Notification.Enable) ?: (currentNotificationAction.next as? DeviceAction.Notification.Enable)
+        actionToFail?.fail()
+        enableAction?.takeIf { shouldHandleAction }?.handle()
+        return enableAction
     }
 
     internal fun notify(value: ByteArray) {
@@ -255,32 +277,53 @@ open class RemoteCharacteristic(
      * @see [startEnableNotification]
      * @see [isNotifying]
      */
-    fun startDisableNotification() = currentNotificationAction.updateAndGet { currentNotificationAction ->
-        when {
-            currentNotificationAction == null -> {
-                if (isNotifying) {
-                    val action = DeviceAction.Notification.Disable(this)
-                    action.handle()
-                    NotificationActionQueue(action, null)
-                } else {
-                    null
+    fun startDisableNotification(): DeviceAction.Notification.Disable? {
+        var disableAction: DeviceAction.Notification.Disable? = null
+        var actionToFail: DeviceAction.Notification? = null
+        var shouldHandleAction = false
+        currentNotificationAction.update { currentNotificationAction ->
+            when {
+                currentNotificationAction == null -> {
+                    actionToFail = null
+                    if (isNotifying) {
+                        val action = DeviceAction.Notification.Disable(this)
+                        disableAction = action
+                        shouldHandleAction = true
+                        NotificationActionQueue(action, null)
+                    } else {
+                        disableAction = null
+                        shouldHandleAction = false
+                        null
+                    }
                 }
-            }
-            else -> when (currentNotificationAction.current) {
-                is DeviceAction.Notification.Enable -> if (currentNotificationAction.next is DeviceAction.Notification.Disable) {
-                    currentNotificationAction
-                } else {
-                    currentNotificationAction.next?.fail()
-                    NotificationActionQueue(currentNotificationAction.current, DeviceAction.Notification.Disable(this))
+                else -> when (val current = currentNotificationAction.current) {
+                    is DeviceAction.Notification.Enable -> {
+                        val next = currentNotificationAction.next
+                        if (next is DeviceAction.Notification.Disable) {
+                            disableAction = currentNotificationAction.next
+                            actionToFail = null
+                            shouldHandleAction = false
+                            currentNotificationAction
+                        } else {
+                            val nextToDisable = DeviceAction.Notification.Disable(this)
+                            disableAction = nextToDisable
+                            actionToFail = currentNotificationAction.next
+                            shouldHandleAction = false
+                            NotificationActionQueue(current, nextToDisable)
+                        }
+                    }
+                    is DeviceAction.Notification.Disable -> {
+                        disableAction = current
+                        shouldHandleAction = false
+                        actionToFail = currentNotificationAction.next
+                        NotificationActionQueue(current, null)
+                    }
                 }
-                is DeviceAction.Notification.Disable -> currentNotificationAction.next?.let {
-                    it.fail()
-                    NotificationActionQueue(currentNotificationAction.current, null)
-                } ?: currentNotificationAction
             }
         }
-    }?.let { currentNotificationAction ->
-        (currentNotificationAction.next as? DeviceAction.Notification.Disable) ?: (currentNotificationAction.next as? DeviceAction.Notification.Disable)
+        actionToFail?.fail()
+        disableAction?.takeIf { shouldHandleAction }?.handle()
+        return disableAction
     }
 
     private data class NotificationActionQueue(val current: DeviceAction.Notification, val next: DeviceAction.Notification?) {
