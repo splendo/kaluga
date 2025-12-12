@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -48,6 +49,8 @@ dependencies {
 
 val compileKotlin: KotlinCompile by tasks
 
-compileKotlin.kotlinOptions {
-    languageVersion = "2.1"
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        languageVersion.set(KotlinVersion.KOTLIN_2_2)
+    }
 }
