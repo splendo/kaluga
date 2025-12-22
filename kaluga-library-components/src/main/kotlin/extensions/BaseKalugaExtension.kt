@@ -17,9 +17,8 @@
 
 package com.splendo.kaluga.plugin.extensions
 
-import com.android.build.api.dsl.Publishing
-import com.splendo.kaluga.plugin.helpers.kalugaVersion
 import com.splendo.kaluga.plugin.helpers.jvmTarget
+import com.splendo.kaluga.plugin.helpers.kalugaVersion
 import com.vanniktech.maven.publish.AndroidMultiVariantLibrary
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
@@ -30,15 +29,11 @@ import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.plugins.catalog.VersionCatalogPlugin
 import org.gradle.api.provider.Property
-import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.api.tasks.testing.logging.TestLoggingContainer
 import org.gradle.kotlin.dsl.configure
-import org.jetbrains.dokka.gradle.DokkaExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
@@ -139,7 +134,6 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
                                 JavadocJar.Empty()
                             else
                                 JavadocJar.Dokka("dokkaGeneratePublicationHtml"),
-                            androidVariantsToPublish = listOf("debug", "release"),
                             sourcesJar = true,
                         )
                     )
