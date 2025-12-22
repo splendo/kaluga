@@ -26,7 +26,6 @@ import com.splendo.kaluga.plugin.container.sdkName
 import com.splendo.kaluga.plugin.helpers.jvmTarget
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Action
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
@@ -63,10 +62,29 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
     }
 
     var supportJVM: Boolean = false
-    var supportJS: Boolean = false
-        get() = field
         set(value) {
             field = value
+            if (value) {
+                multiplatformExtension.jvm()
+            }
+        }
+    var supportJS: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                multiplatformExtension.js(KotlinJsCompilerType.IR) {
+                    nodejs()
+                    browser()
+                    compilations.configureEach {
+                        compileTaskProvider.configure {
+                            compilerOptions {
+                                sourceMap.set(true)
+                                moduleKind.set(JsModuleKind.MODULE_UMD)
+                            }
+                        }
+                    }
+                }
+            }
         }
     var iosDeploymentTarget: String = "15.0"
 
@@ -175,26 +193,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
 
         project.afterEvaluate {
 
-            if (supportJVM) {
-                jvm()
-            }
-            if (supportJS) {
-                js(KotlinJsCompilerType.IR) {
-                    nodejs()
-                    browser()
-                    compilations.configureEach {
-                        compileTaskProvider.configure {
-                            compilerOptions {
-                                sourceMap.set(true)
-                                moduleKind.set(JsModuleKind.MODULE_UMD)
-                            }
-                        }
-                    }
-                }
-            }
-
             applyDefaultHierarchyTemplate()
-
             dependencies {
                 implementation("kotlinx-coroutines-core".asDependency())
 

@@ -19,7 +19,7 @@ kaluga {
                 implementation(project(":base", ""))
             }
             test {
-                api(project(":test-utils-hud", ""))
+                implementation(project(":test-utils-hud", ""))
             }
         }
     }
