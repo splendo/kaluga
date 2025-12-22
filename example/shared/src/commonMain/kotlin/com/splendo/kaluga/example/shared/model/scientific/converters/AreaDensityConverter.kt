@@ -33,18 +33,23 @@ val PhysicalQuantity.AreaDensity.converters get() = listOf<QuantityConverter<Phy
             leftUnit is MetricAreaDensity && rightUnit is MetricLength -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialAreaDensity && rightUnit is ImperialLength -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialAreaDensity && rightUnit is ImperialLength -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryAreaDensity && rightUnit is ImperialLength -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is AreaDensity && rightUnit is Length -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
         }
     },
@@ -57,30 +62,39 @@ val PhysicalQuantity.AreaDensity.converters get() = listOf<QuantityConverter<Phy
             leftUnit is MetricAreaDensity && rightUnit is MetricSpecificVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialAreaDensity && rightUnit is ImperialSpecificVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialAreaDensity && rightUnit is UKImperialSpecificVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialAreaDensity && rightUnit is USCustomarySpecificVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialAreaDensity && rightUnit is ImperialSpecificVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialAreaDensity && rightUnit is UKImperialSpecificVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryAreaDensity && rightUnit is ImperialSpecificVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryAreaDensity && rightUnit is USCustomarySpecificVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is AreaDensity && rightUnit is SpecificVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
         }
     },
@@ -93,30 +107,39 @@ val PhysicalQuantity.AreaDensity.converters get() = listOf<QuantityConverter<Phy
             leftUnit is MetricAreaDensity && rightUnit is MetricDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialAreaDensity && rightUnit is ImperialDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialAreaDensity && rightUnit is UKImperialDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialAreaDensity && rightUnit is USCustomaryDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialAreaDensity && rightUnit is ImperialDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialAreaDensity && rightUnit is UKImperialDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryAreaDensity && rightUnit is ImperialDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryAreaDensity && rightUnit is USCustomaryDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is AreaDensity && rightUnit is Density -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
         }
     },
@@ -129,18 +152,23 @@ val PhysicalQuantity.AreaDensity.converters get() = listOf<QuantityConverter<Phy
             leftUnit is MetricAreaDensity && rightUnit is MetricLength -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialAreaDensity && rightUnit is ImperialLength -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialAreaDensity && rightUnit is ImperialLength -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryAreaDensity && rightUnit is ImperialLength -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is AreaDensity && rightUnit is Length -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
         }
     },
@@ -153,18 +181,23 @@ val PhysicalQuantity.AreaDensity.converters get() = listOf<QuantityConverter<Phy
             leftUnit is MetricAreaDensity && rightUnit is MetricArea -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialAreaDensity && rightUnit is ImperialArea -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialAreaDensity && rightUnit is ImperialArea -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryAreaDensity && rightUnit is ImperialArea -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is AreaDensity && rightUnit is Area -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit $rightUnit")
         }
     },

@@ -36,7 +36,7 @@ jobs:
           java-version: 17
 
       - name: run Android unit tests
-        run: ./gradlew testDebugUnitTest testDebugHostTest koverHtmlReport koverXmlReport
+        run: ./gradlew testDebugUnitTest testAndroidHostTest koverHtmlReport koverXmlReport
       - name: add coverage report to PR
         id: kover
         uses: mi-kas/kover-report@v1

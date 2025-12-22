@@ -40,12 +40,15 @@ val PhysicalQuantity.Jolt.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is MetricJolt && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialJolt && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Jolt && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -58,18 +61,23 @@ val PhysicalQuantity.Jolt.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is MetricJolt && rightUnit is MetricWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialJolt && rightUnit is ImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialJolt && rightUnit is UKImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialJolt && rightUnit is USCustomaryWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Jolt && rightUnit is Weight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

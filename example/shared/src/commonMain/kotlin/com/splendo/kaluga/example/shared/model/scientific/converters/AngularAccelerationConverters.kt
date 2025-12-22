@@ -36,6 +36,7 @@ val PhysicalQuantity.AngularAcceleration.converters get() = listOf<QuantityConve
                     timeUnit,
                 )
             }
+
             else -> throw RuntimeException("Unexpected units: $angularAccelerationUnit $timeUnit")
         }
     },

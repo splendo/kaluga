@@ -50,18 +50,23 @@ val PhysicalQuantity.DynamicViscosity.converters get() = listOf<QuantityConverte
             leftUnit is MetricDynamicViscosity && rightUnit is MetricKinematicViscosity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialDynamicViscosity && rightUnit is ImperialKinematicViscosity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialDynamicViscosity && rightUnit is ImperialKinematicViscosity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryDynamicViscosity && rightUnit is ImperialKinematicViscosity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is DynamicViscosity && rightUnit is KinematicViscosity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -74,30 +79,39 @@ val PhysicalQuantity.DynamicViscosity.converters get() = listOf<QuantityConverte
             leftUnit is MetricDynamicViscosity && rightUnit is MetricDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialDynamicViscosity && rightUnit is ImperialDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialDynamicViscosity && rightUnit is UKImperialDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialDynamicViscosity && rightUnit is USCustomaryDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialDynamicViscosity && rightUnit is ImperialDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialDynamicViscosity && rightUnit is UKImperialDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryDynamicViscosity && rightUnit is ImperialDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryDynamicViscosity && rightUnit is USCustomaryDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is DynamicViscosity && rightUnit is Density -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -110,18 +124,23 @@ val PhysicalQuantity.DynamicViscosity.converters get() = listOf<QuantityConverte
             leftUnit is MetricDynamicViscosity && rightUnit is MetricArea -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialDynamicViscosity && rightUnit is ImperialArea -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialDynamicViscosity && rightUnit is ImperialArea -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryDynamicViscosity && rightUnit is ImperialArea -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is DynamicViscosity && rightUnit is Area -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -134,18 +153,23 @@ val PhysicalQuantity.DynamicViscosity.converters get() = listOf<QuantityConverte
             leftUnit is MetricDynamicViscosity && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialDynamicViscosity && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialDynamicViscosity && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryDynamicViscosity && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is DynamicViscosity && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -158,6 +182,7 @@ val PhysicalQuantity.DynamicViscosity.converters get() = listOf<QuantityConverte
             leftUnit is DynamicViscosity && rightUnit is Pressure -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

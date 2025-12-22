@@ -33,9 +33,11 @@ val PhysicalQuantity.Power.converters get() = listOf<QuantityConverter<PhysicalQ
             leftUnit is MetricCombinedPower && rightUnit is Abvolt -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Power && rightUnit is Voltage -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -48,57 +50,75 @@ val PhysicalQuantity.Power.converters get() = listOf<QuantityConverter<PhysicalQ
             leftUnit is Watt && rightUnit is Hour -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Nanowatt && rightUnit is Hour -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Microwatt && rightUnit is Hour -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Milliwatt && rightUnit is Hour -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Centiwatt && rightUnit is Hour -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Deciwatt && rightUnit is Hour -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Decawatt && rightUnit is Hour -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Hectowatt && rightUnit is Hour -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Kilowatt && rightUnit is Hour -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Megawatt && rightUnit is Hour -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Gigawatt && rightUnit is Hour -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndImperialCombinedPower && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricCombinedPower && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricPower && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Horsepower && rightUnit is Hour -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Power && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -111,21 +131,27 @@ val PhysicalQuantity.Power.converters get() = listOf<QuantityConverter<PhysicalQ
             leftUnit is MetricCombinedPower && rightUnit is MetricSpeed -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricPower && rightUnit is MetricSpeed -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is MetricSpeed -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is ImperialSpeed -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndImperialPower && rightUnit is ImperialSpeed -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Power && rightUnit is Speed -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -138,27 +164,35 @@ val PhysicalQuantity.Power.converters get() = listOf<QuantityConverter<PhysicalQ
             leftUnit is MetricCombinedPower && rightUnit is MetricVolumetricFlow -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is ImperialVolumetricFlow -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is UKImperialVolumetricFlow -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is USCustomaryVolumetricFlow -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is ImperialVolumetricFlow -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is UKImperialVolumetricFlow -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is USCustomaryVolumetricFlow -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Power && rightUnit is VolumetricFlow -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -171,36 +205,47 @@ val PhysicalQuantity.Power.converters get() = listOf<QuantityConverter<PhysicalQ
             leftUnit is MetricCombinedPower && rightUnit is Dyne -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricCombinedPower && rightUnit is DyneMultiple -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricPower && rightUnit is MetricForce -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is ImperialForce -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is ImperialForce -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is UKImperialForce -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is USCustomaryForce -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndImperialPower && rightUnit is ImperialForce -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndImperialPower && rightUnit is UKImperialForce -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndImperialPower && rightUnit is USCustomaryForce -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Power && rightUnit is Force -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -213,27 +258,35 @@ val PhysicalQuantity.Power.converters get() = listOf<QuantityConverter<PhysicalQ
             leftUnit is Power && rightUnit is MetricAndUKImperialThermalResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndImperialPower && rightUnit is MetricThermalResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricPower && rightUnit is MetricThermalResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndImperialPower && rightUnit is UKImperialThermalResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is UKImperialThermalResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndImperialPower && rightUnit is USCustomaryThermalResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is USCustomaryThermalResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Power && rightUnit is ThermalResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -246,12 +299,15 @@ val PhysicalQuantity.Power.converters get() = listOf<QuantityConverter<PhysicalQ
             leftUnit is MetricCombinedPower && rightUnit is Abampere -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricCombinedPower && rightUnit is Biot -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Power && rightUnit is ElectricCurrent -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -264,66 +320,87 @@ val PhysicalQuantity.Power.converters get() = listOf<QuantityConverter<PhysicalQ
             leftUnit is MetricCombinedPower && rightUnit is Barye -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricCombinedPower && rightUnit is BaryeMultiple -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is PoundSquareInch -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is OunceSquareInch -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is KiloPoundSquareInch -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is KipSquareInch -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is USTonSquareInch -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is ImperialTonSquareInch -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is ImperialPressure -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is UKImperialPressure -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialCombinedPower && rightUnit is USCustomaryPressure -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is PoundSquareInch -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is OunceSquareInch -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is KiloPoundSquareInch -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is KipSquareInch -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is USTonSquareInch -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is ImperialTonSquareInch -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is ImperialPressure -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is UKImperialPressure -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialPower && rightUnit is USCustomaryPressure -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Power && rightUnit is Pressure -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
