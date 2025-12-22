@@ -102,7 +102,7 @@ jobs:
           cores: 6
           script: |
             ./script/check_emulator.sh
-            ./gradlew ${{ inputs.video && 'recordAndroid' }} :${{ matrix.project }}:connectedDebugAndroidTest
+            ./gradlew ${{ inputs.video && 'recordAndroid' }} :${{ matrix.project }}:connectedAndroidTest
 
       - name: Upload test reports on failure
         if: failure()
