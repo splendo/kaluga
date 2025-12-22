@@ -131,6 +131,7 @@ actual class DefaultNetworkManager internal constructor(private val appleNetwork
                         networkChannel.trySend(NetworkConnectionType.Known.Cellular)
                     }
                 }
+
                 nw_path_status_unsatisfied -> {
                     networkChannel.trySend(NetworkConnectionType.Known.Absent)
                 }
@@ -198,6 +199,7 @@ actual class DefaultNetworkManager internal constructor(private val appleNetwork
                         scNetworkManager.networkChannel.trySend(NetworkConnectionType.Known.Wifi())
                     }
                 }
+
                 else -> {
                     scNetworkManager.networkChannel.trySend(NetworkConnectionType.Known.Absent)
                 }

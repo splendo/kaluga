@@ -75,24 +75,29 @@ class DefaultDescriptorWrapper(private val descriptor: CBDescriptor) : Descripto
             CBUUIDCharacteristicFormatString -> {
                 descriptor.value as? NSData
             }
+
             CBUUIDCharacteristicUserDescriptionString -> {
                 (descriptor.value as? NSString)?.dataUsingEncoding(NSUTF8StringEncoding)
             }
+
             CBUUIDCharacteristicExtendedPropertiesString -> {
                 (descriptor.value as? NSNumber)?.let {
                     byteArrayOf(it.shortValue.toByte()).toNSData()
                 }
             }
+
             CBUUIDClientCharacteristicConfigurationString -> {
                 (descriptor.value as? NSNumber)?.let {
                     byteArrayOf(it.shortValue.toByte()).toNSData()
                 }
             }
+
             CBUUIDServerCharacteristicConfigurationString -> {
                 (descriptor.value as? NSNumber)?.let {
                     byteArrayOf(it.shortValue.toByte()).toNSData()
                 }
             }
+
             else -> descriptor.value as? NSData
         }
     }

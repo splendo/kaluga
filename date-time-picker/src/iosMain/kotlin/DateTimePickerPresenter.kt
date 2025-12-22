@@ -96,6 +96,7 @@ actual class DateTimePickerPresenter(dateTimePicker: DateTimePicker, private val
                 timeZone = this@DateTimePickerPresenter.dateTimePicker.selectedDate.timeZone.timeZone
                 datePickerMode = when (val type = this@DateTimePickerPresenter.dateTimePicker.type) {
                     is DateTimePicker.Type.TimeType -> UIDatePickerMode.UIDatePickerModeTime
+
                     is DateTimePicker.Type.DateType -> {
                         type.latestDate?.let {
                             maximumDate = NSDate.dateWithTimeIntervalSince1970(it.durationSinceEpoch.toDouble(DurationUnit.SECONDS))
@@ -110,6 +111,7 @@ actual class DateTimePickerPresenter(dateTimePicker: DateTimePicker, private val
                     IOSVersion.systemVersion >= IOSVersion(14, 0, 0) -> {
                         preferredDatePickerStyle = UIDatePickerStyle.UIDatePickerStyleInline
                     }
+
                     IOSVersion.systemVersion >= IOSVersion(13, 4, 0) -> {
                         preferredDatePickerStyle = UIDatePickerStyle.UIDatePickerStyleWheels
                     }

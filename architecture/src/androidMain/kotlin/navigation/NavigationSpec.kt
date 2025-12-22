@@ -334,12 +334,14 @@ sealed class NavigationSpec {
         ) {
             val intent get() = when (attachments.size) {
                 0 -> Intent(Intent.ACTION_SEND)
+
                 1 -> Intent(Intent.ACTION_SEND).apply {
                     putExtra(
                         Intent.EXTRA_STREAM,
                         attachments[0],
                     )
                 }
+
                 else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
                     putExtra(
                         Intent.EXTRA_STREAM,
@@ -511,12 +513,14 @@ sealed class NavigationSpec {
         ) {
             val intent: Intent = when (attachments.size) {
                 0 -> Intent(Intent.ACTION_SEND)
+
                 1 -> Intent(Intent.ACTION_SEND).apply {
                     putExtra(
                         Intent.EXTRA_STREAM,
                         attachments[0],
                     )
                 }
+
                 else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
                     putExtra(
                         Intent.EXTRA_STREAM,

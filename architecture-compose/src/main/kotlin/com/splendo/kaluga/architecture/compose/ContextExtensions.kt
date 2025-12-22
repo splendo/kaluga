@@ -28,7 +28,10 @@ import androidx.appcompat.app.AppCompatActivity
  */
 val Context.activity: ComponentActivity? get() = when (this) {
     is ComponentActivity -> this
-    is ContextWrapper -> baseContext.activity // recursive lookup
+
+    is ContextWrapper -> baseContext.activity
+
+    // recursive lookup
     else -> null
 }
 

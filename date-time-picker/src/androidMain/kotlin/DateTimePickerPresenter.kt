@@ -112,6 +112,7 @@ actual class DateTimePickerPresenter(
                 dateTimePicker.selectedDate.minute,
                 dateTimePicker.locale.uses24HourClock,
             )
+
             is DateTimePicker.Type.DateType -> {
                 DatePickerDialog(
                     context,

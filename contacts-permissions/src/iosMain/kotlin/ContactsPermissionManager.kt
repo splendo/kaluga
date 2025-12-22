@@ -105,9 +105,13 @@ actual class ContactsPermissionManagerBuilder actual constructor(private val con
 
 private fun CNAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
     CNAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+
     CNAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+
     CNAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+
     CNAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+
     else -> {
         error(
             "ContactsPermissionManager",

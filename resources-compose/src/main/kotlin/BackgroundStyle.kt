@@ -89,6 +89,7 @@ val KalugaBackgroundStyle.Shape.shape: Shape get() = when (this) {
             },
         )
     }
+
     is KalugaBackgroundStyle.Shape.Oval -> androidx.compose.foundation.shape.CircleShape
 }
 

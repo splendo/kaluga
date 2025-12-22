@@ -79,6 +79,7 @@ actual class AlertPresenter(
             -> UIAlertActionStyleDefault
 
             Alert.Action.Style.DESTRUCTIVE -> UIAlertActionStyleDestructive
+
             Alert.Action.Style.CANCEL,
             Alert.Action.Style.NEGATIVE,
             -> UIAlertActionStyleCancel

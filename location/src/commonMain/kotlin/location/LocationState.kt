@@ -215,6 +215,7 @@ internal sealed class LocationStateImpl {
                 is LocationState.Initializing,
                 is LocationState.Disabled.NotPermitted,
                 -> locationManager.stopMonitoringLocationEnabled()
+
                 else -> {}
             }
         }
@@ -225,6 +226,7 @@ internal sealed class LocationStateImpl {
                 is LocationState.Initializing,
                 is LocationState.Disabled.NotPermitted,
                 -> locationManager.startMonitoringLocationEnabled()
+
                 else -> {}
             }
         }
@@ -337,7 +339,9 @@ internal fun Flow<Location>.known(maxAge: Duration, nowProvider: () -> KalugaDat
         val now = nowProvider()
         when {
             maxAge <= ZERO -> emit(knownLocation)
+
             expirationTime <= now -> emit(null)
+
             else -> {
                 emit(knownLocation)
                 delay(expirationTime - now)

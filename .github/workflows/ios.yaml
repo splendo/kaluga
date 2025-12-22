@@ -79,7 +79,7 @@ jobs:
 
       - name: build example
         working-directory: example/ios
-        run: set -o pipefail && xcodebuild -project Demo.xcodeproj -sdk iphonesimulator -scheme Demo -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.6' | tee xcodebuild.log | xcpretty
+        run: set -o pipefail && xcodebuild -project Demo.xcodeproj -sdk iphonesimulator -scheme Demo -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.6'
         shell: bash
 
       - name: 'upload xcodebuild.log'

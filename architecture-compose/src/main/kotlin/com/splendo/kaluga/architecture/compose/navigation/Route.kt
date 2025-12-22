@@ -113,50 +113,75 @@ private fun route(navigationActionClass: KClass<out NavigationAction<*>>, vararg
 private val NavigationBundleValue<*>.routeArgument: String?
     get() = when (this) {
         is NavigationBundleValue.UnitValue -> null
+
         is NavigationBundleValue.BooleanArrayValue -> Json.encodeToString(
             BooleanArraySerializer(),
             value,
         )
+
         is NavigationBundleValue.BooleanValue -> Json.encodeToString(Boolean.serializer(), value)
-        is NavigationBundleValue.BundleValue<*> -> null // Unsupported for now
+
+        is NavigationBundleValue.BundleValue<*> -> null
+
+        // Unsupported for now
         is NavigationBundleValue.ByteArrayValue -> Json.encodeToString(ByteArraySerializer(), value)
+
         is NavigationBundleValue.ByteValue -> Json.encodeToString(Byte.serializer(), value)
+
         is NavigationBundleValue.CharArrayValue -> Json.encodeToString(CharArraySerializer(), value)
+
         is NavigationBundleValue.CharSequenceValue -> value.toString()
+
         is NavigationBundleValue.CharValue -> Json.encodeToString(Char.serializer(), value)
+
         is NavigationBundleValue.DateArrayValue -> Json.encodeToString(
             ListSerializer(String.serializer()),
             value.map { KalugaDateFormatter.Companion.iso8601Pattern().format(it) },
         )
+
         is NavigationBundleValue.DateValue -> KalugaDateFormatter.Companion.iso8601Pattern().format(value)
+
         is NavigationBundleValue.DoubleArrayValue -> Json.encodeToString(
             DoubleArraySerializer(),
             value,
         )
+
         is NavigationBundleValue.DoubleValue -> Json.encodeToString(Double.serializer(), value)
+
         is NavigationBundleValue.FloatArrayValue -> Json.encodeToString(
             FloatArraySerializer(),
             value,
         )
+
         is NavigationBundleValue.FloatValue -> Json.encodeToString(Float.serializer(), value)
+
         is NavigationBundleValue.IntegerArrayValue -> Json.encodeToString(
             IntArraySerializer(),
             value,
         )
+
         is NavigationBundleValue.IntegerValue -> Json.encodeToString(Int.serializer(), value)
+
         is NavigationBundleValue.LongArrayValue -> Json.encodeToString(LongArraySerializer(), value)
+
         is NavigationBundleValue.LongValue -> Json.encodeToString(Long.serializer(), value)
+
         is NavigationBundleValue.OptionalValue<*> -> optionalValue?.routeArgument
+
         is NavigationBundleValue.SerializedValue<*> -> valueString
+
         is NavigationBundleValue.ShortArrayValue -> Json.encodeToString(
             ShortArraySerializer(),
             value,
         )
+
         is NavigationBundleValue.ShortValue -> Json.encodeToString(Short.serializer(), value)
+
         is NavigationBundleValue.StringArrayValue -> Json.encodeToString(
             ListSerializer(String.serializer()),
             value,
         )
+
         is NavigationBundleValue.StringValue -> value
     }
 
@@ -355,5 +380,6 @@ internal val <T> NavigationBundleSpecType<T>.isRequired: Boolean get() = when (t
     is NavigationBundleSpecType.OptionalType<*>,
     is NavigationBundleSpecType.StringType,
     -> false
+
     else -> true
 }

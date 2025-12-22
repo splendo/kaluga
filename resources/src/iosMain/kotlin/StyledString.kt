@@ -104,9 +104,11 @@ actual class StyledStringBuilder constructor(string: String, private val default
                     )
                 }
             }
+
             is StringStyleAttribute.ParagraphStyleAttribute -> {
                 attribute.updateParagraphAttribute(range, defaultTextStyle.alignment)
             }
+
             is StringStyleAttribute.Link -> {
                 NSURL.Companion.URLWithString(attribute.url)?.let {
                     attributedString.addAttribute("NSLink", it, nsRange)
@@ -117,27 +119,37 @@ actual class StyledStringBuilder constructor(string: String, private val default
 
     private val StringStyleAttribute.CharacterStyleAttribute.characterAttributes: Map<NSAttributedStringKey, Any> get() = when (this) {
         is StringStyleAttribute.CharacterStyleAttribute.ForegroundColor -> mapOf("NSColor" to color.uiColor)
+
         is StringStyleAttribute.CharacterStyleAttribute.BackgroundColor -> mapOf("NSBackgroundColor" to color.uiColor)
+
         is StringStyleAttribute.CharacterStyleAttribute.Stroke -> mapOf(
             "NSStrokeColor" to color.uiColor,
             "NSStrokeWidth" to -1.0 * width,
         )
+
         is StringStyleAttribute.CharacterStyleAttribute.SuperScript -> {
             val offset = defaultTextStyle.font.fontWithSize(defaultTextStyle.size.toDouble()).ascender / 2.0
             mapOf("NSBaselineOffset" to offset)
         }
+
         is StringStyleAttribute.CharacterStyleAttribute.SubScript -> {
             val offset = defaultTextStyle.font.fontWithSize(defaultTextStyle.size.toDouble()).ascender / 2.0
             mapOf("NSBaselineOffset" to (-1.0 * offset))
         }
+
         is StringStyleAttribute.CharacterStyleAttribute.Underline -> mapOf("NSUnderline" to NSUnderlineStyleSingle)
+
         is StringStyleAttribute.CharacterStyleAttribute.Strikethrough -> mapOf("NSStrikethrough" to NSUnderlineStyleSingle)
+
         is StringStyleAttribute.CharacterStyleAttribute.Font -> mapOf("NSFont" to font.fontWithSize(size.toDouble()))
+
         is StringStyleAttribute.CharacterStyleAttribute.TextStyle -> mapOf(
             "NSFont" to textStyle.font.fontWithSize(textStyle.size.toDouble()),
             "NSColor" to textStyle.color.uiColor,
         )
+
         is StringStyleAttribute.CharacterStyleAttribute.Kerning -> mapOf("NSKern" to kern * defaultTextStyle.size)
+
         is StringStyleAttribute.CharacterStyleAttribute.Shadow -> mapOf(
             "NSShadow" to NSShadow().apply {
                 shadowColor = color.uiColor
@@ -196,11 +208,13 @@ actual class StyledStringBuilder constructor(string: String, private val default
                     paragraphStyle.setHeadIndent(indent.toDouble())
                     paragraphStyle.setFirstLineHeadIndent(firstLineIndent.toDouble())
                 }
+
                 is StringStyleAttribute.ParagraphStyleAttribute.LineSpacing -> {
                     paragraphStyle.setLineSpacing(spacing.toDouble())
                     paragraphStyle.setParagraphSpacing(paragraphSpacing.toDouble())
                     paragraphStyle.setParagraphSpacingBefore(paragraphSpacingBefore.toDouble())
                 }
+
                 is StringStyleAttribute.ParagraphStyleAttribute.Alignment -> {
                     paragraphStyle.setAlignment(alignment.nsTextAlignment)
                 }

@@ -91,6 +91,7 @@ data class DateTimePicker(
                     millisecond = 0
                 },
             )
+
             is Type.TimeType -> DefaultKalugaDate.epoch().apply {
                 val now = DefaultKalugaDate.now()
                 hour = now.hour

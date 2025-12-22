@@ -35,13 +35,17 @@ fun KalugaTextAlignment.alignment(context: Context): Layout.Alignment = when (th
     } else {
         Layout.Alignment.ALIGN_OPPOSITE
     }
+
     KalugaTextAlignment.RIGHT -> if (context.isLayoutLeftToRight()) {
         Layout.Alignment.ALIGN_OPPOSITE
     } else {
         Layout.Alignment.ALIGN_NORMAL
     }
+
     KalugaTextAlignment.CENTER -> Layout.Alignment.ALIGN_CENTER
+
     KalugaTextAlignment.END -> Layout.Alignment.ALIGN_OPPOSITE
+
     KalugaTextAlignment.START -> Layout.Alignment.ALIGN_NORMAL
 }
 

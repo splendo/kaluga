@@ -220,6 +220,7 @@ abstract class BaseLocationManager(private val settings: Settings, private val c
                     logger.info(LOG_TAG) { "Request Permission" }
                     state.request()
                 }
+
                 else -> {}
             }
         }

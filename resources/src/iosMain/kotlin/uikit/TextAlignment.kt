@@ -37,13 +37,17 @@ import platform.UIKit.UIUserInterfaceLayoutDirection
  */
 val KalugaTextAlignment.nsTextAlignment: NSTextAlignment get() = when (this) {
     KalugaTextAlignment.LEFT -> NSTextAlignmentLeft
+
     KalugaTextAlignment.RIGHT -> NSTextAlignmentRight
+
     KalugaTextAlignment.CENTER -> NSTextAlignmentCenter
+
     KalugaTextAlignment.END -> if (UIApplication.sharedApplication.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionLeftToRight) {
         NSTextAlignmentRight
     } else {
         NSTextAlignmentLeft
     }
+
     KalugaTextAlignment.START -> NSTextAlignmentNatural
 }
 
