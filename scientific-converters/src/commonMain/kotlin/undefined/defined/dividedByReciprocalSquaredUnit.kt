@@ -56,8 +56,8 @@ fun <
         DenominatorReciprocalUnit,
         >,
     WrappedNumeratorUnit : WrappedUndefinedExtendedUnit<
-    NumeratorQuantity,
-    NumeratorUnit,
+        NumeratorQuantity,
+        NumeratorUnit,
         >,
     TargetLeftUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -79,17 +79,17 @@ fun <
         DenominatorReciprocalLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
         UndefinedQuantityType.Multiplying<
-            UndefinedQuantityType.Extended<
-                NumeratorQuantity,
+            UndefinedQuantityType.Multiplying<
+                UndefinedQuantityType.Extended<
+                    NumeratorQuantity,
+                    >,
+                DenominatorReciprocalLeftAndRightQuantity,
                 >,
             DenominatorReciprocalLeftAndRightQuantity,
             >,
-        DenominatorReciprocalLeftAndRightQuantity,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<NumeratorQuantity, NumeratorUnit>.dividedByReciprocalSquaredUnit(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Reciprocal<

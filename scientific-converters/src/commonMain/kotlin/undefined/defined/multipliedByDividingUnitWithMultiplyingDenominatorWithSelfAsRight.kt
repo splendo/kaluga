@@ -43,9 +43,7 @@ fun <
     RightNumeratorUnit : AbstractUndefinedScientificUnit<RightNumeratorQuantity>,
     RightDenominatorLeftQuantity : UndefinedQuantityType,
     RightDenominatorLeftUnit : AbstractUndefinedScientificUnit<RightDenominatorLeftQuantity>,
-    ExtendedRightDenominatorRightUnit : UndefinedExtendedUnit<
-        LeftAndRightDenominatorRightQuantity,
-        >,
+    ExtendedRightDenominatorRightUnit,
     RightDenominatorUnit : UndefinedMultipliedUnit<
         RightDenominatorLeftQuantity,
         RightDenominatorLeftUnit,
@@ -72,12 +70,12 @@ fun <
         RightDenominatorLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        RightNumeratorQuantity,
-        RightDenominatorLeftQuantity,
+        UndefinedQuantityType.Dividing<
+            RightNumeratorQuantity,
+            RightDenominatorLeftQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<LeftAndRightDenominatorRightQuantity, LeftUnit>.multipliedByDividingUnitWithMultiplyingDenominatorWithSelfAsRight(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Dividing<
@@ -93,6 +91,15 @@ fun <
         >,
     rightNumeratorUnitPerRightDenominatorLeftUnit: RightNumeratorUnit.(RightDenominatorLeftUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = right.unit.numerator.rightNumeratorUnitPerRightDenominatorLeftUnit(
-    right.unit.denominator.left,
-).byMultiplying(this, right, factory)
+) where
+        ExtendedRightDenominatorRightUnit : UndefinedExtendedUnit<
+            LeftAndRightDenominatorRightQuantity,
+            >,
+        ExtendedRightDenominatorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightDenominatorRightQuantity,
+                >,
+            > =
+    right.unit.numerator.rightNumeratorUnitPerRightDenominatorLeftUnit(
+        right.unit.denominator.left,
+    ).byMultiplying(this, right, factory)

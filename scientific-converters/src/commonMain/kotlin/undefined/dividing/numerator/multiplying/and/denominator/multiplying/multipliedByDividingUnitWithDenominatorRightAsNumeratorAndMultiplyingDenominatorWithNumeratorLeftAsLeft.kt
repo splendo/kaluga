@@ -99,15 +99,15 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        LeftNumeratorRightQuantity,
-        UndefinedQuantityType.Multiplying<
-            LeftDenominatorLeftQuantity,
-            RightDenominatorRightQuantity,
+        UndefinedQuantityType.Dividing<
+            LeftNumeratorRightQuantity,
+            UndefinedQuantityType.Multiplying<
+                LeftDenominatorLeftQuantity,
+                RightDenominatorRightQuantity,
+                >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<
@@ -136,6 +136,6 @@ fun <
     factory: (Decimal, TargetUnit) -> TargetValue,
 ) = unit.numerator.right.leftNumeratorRightUnitPerTargetDenominatorUnit(
     unit.denominator.left.leftDenominatorLeftUnitXRightDenominatorRightUnit(
-    right.unit.denominator.right,
-),
+        right.unit.denominator.right,
+    ),
 ).byMultiplying(this, right, factory)

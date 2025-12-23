@@ -124,27 +124,27 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Dividing<
             UndefinedQuantityType.Multiplying<
-                LeftNumeratorLeftAndRightNumeratorRightQuantity,
-                LeftNumeratorRightAndRightNumeratorLeftQuantity,
+                UndefinedQuantityType.Multiplying<
+                    LeftNumeratorLeftAndRightNumeratorRightQuantity,
+                    LeftNumeratorRightAndRightNumeratorLeftQuantity,
+                    >,
+                UndefinedQuantityType.Multiplying<
+                    LeftNumeratorRightAndRightNumeratorLeftQuantity,
+                    LeftNumeratorLeftAndRightNumeratorRightQuantity,
+                    >,
                 >,
             UndefinedQuantityType.Multiplying<
-                LeftNumeratorRightAndRightNumeratorLeftQuantity,
-                LeftNumeratorLeftAndRightNumeratorRightQuantity,
+                UndefinedQuantityType.Multiplying<
+                    LeftDenominatorAndRightDenominatorLeftAndRightQuantity,
+                    LeftDenominatorAndRightDenominatorLeftAndRightQuantity,
+                    >,
+                LeftDenominatorAndRightDenominatorLeftAndRightQuantity,
                 >,
             >,
-        UndefinedQuantityType.Multiplying<
-            UndefinedQuantityType.Multiplying<
-                LeftDenominatorAndRightDenominatorLeftAndRightQuantity,
-                LeftDenominatorAndRightDenominatorLeftAndRightQuantity,
-                >,
-            LeftDenominatorAndRightDenominatorLeftAndRightQuantity,
-            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<
@@ -176,6 +176,6 @@ fun <
     right.unit.numerator,
 ).targetNumeratorUnitPerTargetDenominatorUnit(
     right.unit.denominator.rightDenominatorUnitXLeftDenominatorUnit(
-    unit.denominator,
-),
+        unit.denominator,
+    ),
 ).byMultiplying(this, right, factory)

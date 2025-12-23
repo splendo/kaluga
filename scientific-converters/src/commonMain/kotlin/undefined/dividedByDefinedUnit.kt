@@ -41,8 +41,8 @@ fun <
     DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorUnit : DefinedScientificUnit<DenominatorQuantity>,
     WrappedDenominatorUnit : WrappedUndefinedExtendedUnit<
-    DenominatorQuantity,
-    DenominatorUnit,
+        DenominatorQuantity,
+        DenominatorUnit,
         >,
     TargetUnit : UndefinedDividedUnit<
         NumeratorQuantity,
@@ -53,14 +53,14 @@ fun <
         WrappedDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        NumeratorQuantity,
-        UndefinedQuantityType.Extended<
-            DenominatorQuantity,
+        UndefinedQuantityType.Dividing<
+            NumeratorQuantity,
+            UndefinedQuantityType.Extended<
+                DenominatorQuantity,
+                >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     NumeratorQuantity,
     NumeratorUnit,

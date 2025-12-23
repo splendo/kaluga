@@ -61,12 +61,12 @@ fun <
         NumeratorDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        NumeratorNumeratorRightQuantity,
-        NumeratorDenominatorQuantity,
+        UndefinedQuantityType.Dividing<
+            NumeratorNumeratorRightQuantity,
+            NumeratorDenominatorQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<

@@ -90,20 +90,20 @@ fun <
         TargetReciprocalUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Reciprocal<
             UndefinedQuantityType.Multiplying<
-                LeftReciprocalLeftAndRightAndRightReciprocalRightQuantity,
-                LeftReciprocalLeftAndRightAndRightReciprocalRightQuantity,
-                >,
-            UndefinedQuantityType.Multiplying<
-                RightReciprocalLeftQuantity,
-                LeftReciprocalLeftAndRightAndRightReciprocalRightQuantity,
+                UndefinedQuantityType.Multiplying<
+                    LeftReciprocalLeftAndRightAndRightReciprocalRightQuantity,
+                    LeftReciprocalLeftAndRightAndRightReciprocalRightQuantity,
+                    >,
+                UndefinedQuantityType.Multiplying<
+                    RightReciprocalLeftQuantity,
+                    LeftReciprocalLeftAndRightAndRightReciprocalRightQuantity,
+                    >,
                 >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Reciprocal<
         UndefinedQuantityType.Multiplying<

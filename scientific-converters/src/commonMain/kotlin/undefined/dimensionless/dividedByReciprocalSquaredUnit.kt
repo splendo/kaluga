@@ -55,12 +55,12 @@ fun <
         DenominatorReciprocalUnit,
         >,
     DenominatorReciprocalValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
-        DenominatorReciprocalLeftAndRightQuantity,
-        DenominatorReciprocalLeftAndRightQuantity,
+        UndefinedQuantityType.Multiplying<
+            DenominatorReciprocalLeftAndRightQuantity,
+            DenominatorReciprocalLeftAndRightQuantity,
+            >,
+        DenominatorReciprocalUnit,
         >,
-    DenominatorReciprocalUnit,
-    >,
     > ScientificValue<PhysicalQuantity.Dimensionless, NumeratorUnit>.dividedByReciprocalSquaredUnit(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Reciprocal<

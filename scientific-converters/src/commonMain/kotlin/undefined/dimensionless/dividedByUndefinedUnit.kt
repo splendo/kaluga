@@ -44,11 +44,11 @@ fun <
         DenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        DenominatorQuantity,
+        UndefinedQuantityType.Reciprocal<
+            DenominatorQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<PhysicalQuantity.Dimensionless, NumeratorUnit>.dividedByUndefinedUnit(
     right: UndefinedScientificValue<
         DenominatorQuantity,

@@ -126,27 +126,27 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Dividing<
             UndefinedQuantityType.Multiplying<
-                NumeratorNumeratorLeftQuantity,
-                NumeratorNumeratorRightQuantity,
+                UndefinedQuantityType.Multiplying<
+                    NumeratorNumeratorLeftQuantity,
+                    NumeratorNumeratorRightQuantity,
+                    >,
+                DenominatorDenominatorQuantity,
                 >,
-            DenominatorDenominatorQuantity,
+            UndefinedQuantityType.Multiplying<
+                UndefinedQuantityType.Multiplying<
+                    NumeratorDenominatorLeftQuantity,
+                    NumeratorDenominatorRightAndDenominatorNumeratorLeftAndRightQuantity,
+                    >,
+                UndefinedQuantityType.Multiplying<
+                    NumeratorDenominatorRightAndDenominatorNumeratorLeftAndRightQuantity,
+                    NumeratorDenominatorRightAndDenominatorNumeratorLeftAndRightQuantity,
+                    >,
+                >,
             >,
-        UndefinedQuantityType.Multiplying<
-            UndefinedQuantityType.Multiplying<
-                NumeratorDenominatorLeftQuantity,
-                NumeratorDenominatorRightAndDenominatorNumeratorLeftAndRightQuantity,
-                >,
-            UndefinedQuantityType.Multiplying<
-                NumeratorDenominatorRightAndDenominatorNumeratorLeftAndRightQuantity,
-                NumeratorDenominatorRightAndDenominatorNumeratorLeftAndRightQuantity,
-                >,
-            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<
@@ -178,6 +178,6 @@ fun <
     right.unit.denominator,
 ).targetNumeratorUnitPerTargetDenominatorUnit(
     unit.denominator.numeratorDenominatorUnitXDenominatorNumeratorUnit(
-    right.unit.numerator,
-),
+        right.unit.numerator,
+    ),
 ).byDividing(this, right, factory)

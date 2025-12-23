@@ -48,9 +48,9 @@ fun <
         DenominatorReciprocalUnit,
         >,
     NumeratorNumeratorValue : UndefinedScientificValue<
-    NumeratorNumeratorQuantity,
-    NumeratorNumeratorUnit,
-    >,
+        NumeratorNumeratorQuantity,
+        NumeratorNumeratorUnit,
+        >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         NumeratorNumeratorQuantity,

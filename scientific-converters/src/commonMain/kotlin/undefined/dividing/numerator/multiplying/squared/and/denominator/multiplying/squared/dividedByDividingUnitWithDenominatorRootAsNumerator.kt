@@ -108,24 +108,24 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Dividing<
             UndefinedQuantityType.Multiplying<
-                NumeratorNumeratorLeftAndRightQuantity,
-                NumeratorNumeratorLeftAndRightQuantity,
+                UndefinedQuantityType.Multiplying<
+                    NumeratorNumeratorLeftAndRightQuantity,
+                    NumeratorNumeratorLeftAndRightQuantity,
+                    >,
+                DenominatorDenominatorQuantity,
                 >,
-            DenominatorDenominatorQuantity,
-            >,
-        UndefinedQuantityType.Multiplying<
             UndefinedQuantityType.Multiplying<
-                NumeratorDenominatorLeftAndRightAndDenominatorNumeratorQuantity,
+                UndefinedQuantityType.Multiplying<
+                    NumeratorDenominatorLeftAndRightAndDenominatorNumeratorQuantity,
+                    NumeratorDenominatorLeftAndRightAndDenominatorNumeratorQuantity,
+                    >,
                 NumeratorDenominatorLeftAndRightAndDenominatorNumeratorQuantity,
                 >,
-            NumeratorDenominatorLeftAndRightAndDenominatorNumeratorQuantity,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<
@@ -154,6 +154,6 @@ fun <
     right.unit.denominator,
 ).targetNumeratorUnitPerTargetDenominatorUnit(
     unit.denominator.numeratorDenominatorUnitXNumeratorDenominatorLeftUnit(
-    unit.denominator.left,
-),
+        unit.denominator.left,
+    ),
 ).byDividing(this, right, factory)

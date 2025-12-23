@@ -61,9 +61,9 @@ fun <
         RightRightUnit,
         >,
     LeftNumeratorValue : UndefinedScientificValue<
-    LeftNumeratorQuantity,
-    LeftNumeratorUnit,
-    >,
+        LeftNumeratorQuantity,
+        LeftNumeratorUnit,
+        >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         LeftNumeratorQuantity,

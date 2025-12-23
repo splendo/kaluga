@@ -9,13 +9,13 @@ public abstract interface class com/splendo/kaluga/scientific/ByteScientificArra
 public final class com/splendo/kaluga/scientific/ConvertScientificValueKt {
 	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
-	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static synthetic fun convert$default (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
-	public static synthetic fun convert$default (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/ScientificValue;
+	public static synthetic fun convert$default (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static synthetic fun convert$default (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun convertDefinedImperialValueToDefaultUndefined (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static synthetic fun convertDefinedImperialValueToDefaultUndefined$default (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -164,6 +164,15 @@ public final class com/splendo/kaluga/scientific/DefaultScientificValue : com/sp
 
 public final class com/splendo/kaluga/scientific/DefaultScientificValue$Companion {
 	public final fun serializer (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/splendo/kaluga/scientific/DefaultScientificValueSerializer : kotlinx/serialization/KSerializer {
+	public fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/DefaultScientificValue;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 }
 
 public abstract interface class com/splendo/kaluga/scientific/DoubleScientificArray : com/splendo/kaluga/scientific/ScientificArray {
@@ -17752,7 +17761,7 @@ public final class com/splendo/kaluga/scientific/unit/UndefinedUnitPerUSCustomar
 public final class com/splendo/kaluga/scientific/unit/UndefinedUnitReciprocalImperialKt {
 	public static final fun imperialDefinedReciprocal (Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit$Imperial;
 	public static final fun imperialDividedUnitReciprocal (Lcom/splendo/kaluga/scientific/unit/UndefinedDividedUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedDividedUnit$Imperial;
-	public static final fun imperialReciprocalDefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
+	public static final fun imperialReciprocalDefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;
 	public static final fun imperialReciprocalUndefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;
 	public static final fun imperialUndefinedReciprocal (Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit$Imperial;
 }
@@ -17760,7 +17769,7 @@ public final class com/splendo/kaluga/scientific/unit/UndefinedUnitReciprocalImp
 public final class com/splendo/kaluga/scientific/unit/UndefinedUnitReciprocalMetricAndImperialKt {
 	public static final fun metricAndImperialDefinedReciprocal (Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit$MetricAndImperial;
 	public static final fun metricAndImperialDividedUnitReciprocal (Lcom/splendo/kaluga/scientific/unit/UndefinedDividedUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedDividedUnit$MetricAndImperial;
-	public static final fun metricAndImperialReciprocalDefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
+	public static final fun metricAndImperialReciprocalDefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;
 	public static final fun metricAndImperialReciprocalUndefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;
 	public static final fun metricAndImperialUndefinedReciprocal (Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit$MetricAndImperial;
 }
@@ -17768,7 +17777,7 @@ public final class com/splendo/kaluga/scientific/unit/UndefinedUnitReciprocalMet
 public final class com/splendo/kaluga/scientific/unit/UndefinedUnitReciprocalMetricAndUKImperialKt {
 	public static final fun metricAndUKImperialDefinedReciprocal (Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit$MetricAndUKImperial;
 	public static final fun metricAndUKImperialDividedUnitReciprocal (Lcom/splendo/kaluga/scientific/unit/UndefinedDividedUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedDividedUnit$MetricAndUKImperial;
-	public static final fun metricAndUKImperialReciprocalDefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
+	public static final fun metricAndUKImperialReciprocalDefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;
 	public static final fun metricAndUKImperialReciprocalUndefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;
 	public static final fun metricAndUKImperialUndefinedReciprocal (Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit$MetricAndUKImperial;
 }
@@ -17776,7 +17785,7 @@ public final class com/splendo/kaluga/scientific/unit/UndefinedUnitReciprocalMet
 public final class com/splendo/kaluga/scientific/unit/UndefinedUnitReciprocalMetricAndUSCustomaryKt {
 	public static final fun metricAndUSCustomaryDefinedReciprocal (Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit$MetricAndUSCustomary;
 	public static final fun metricAndUSCustomaryDividedUnitReciprocal (Lcom/splendo/kaluga/scientific/unit/UndefinedDividedUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedDividedUnit$MetricAndUSCustomary;
-	public static final fun metricAndUSCustomaryReciprocalDefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
+	public static final fun metricAndUSCustomaryReciprocalDefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;
 	public static final fun metricAndUSCustomaryReciprocalUndefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;
 	public static final fun metricAndUSCustomaryUndefinedReciprocal (Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit$MetricAndUSCustomary;
 }
@@ -17784,7 +17793,7 @@ public final class com/splendo/kaluga/scientific/unit/UndefinedUnitReciprocalMet
 public final class com/splendo/kaluga/scientific/unit/UndefinedUnitReciprocalMetricKt {
 	public static final fun metricDefinedReciprocal (Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit$Metric;
 	public static final fun metricDividedUnitReciprocal (Lcom/splendo/kaluga/scientific/unit/UndefinedDividedUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedDividedUnit$Metric;
-	public static final fun metricReciprocalDefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
+	public static final fun metricReciprocalDefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;
 	public static final fun metricReciprocalUndefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;
 	public static final fun metricUndefinedReciprocal (Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit$Metric;
 }
@@ -17792,7 +17801,7 @@ public final class com/splendo/kaluga/scientific/unit/UndefinedUnitReciprocalMet
 public final class com/splendo/kaluga/scientific/unit/UndefinedUnitReciprocalUKImperialKt {
 	public static final fun uKImperialDefinedReciprocal (Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit$UKImperial;
 	public static final fun uKImperialDividedUnitReciprocal (Lcom/splendo/kaluga/scientific/unit/UndefinedDividedUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedDividedUnit$UKImperial;
-	public static final fun uKImperialReciprocalDefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
+	public static final fun uKImperialReciprocalDefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;
 	public static final fun uKImperialReciprocalUndefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;
 	public static final fun uKImperialUndefinedReciprocal (Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit$UKImperial;
 }
@@ -17800,7 +17809,7 @@ public final class com/splendo/kaluga/scientific/unit/UndefinedUnitReciprocalUKI
 public final class com/splendo/kaluga/scientific/unit/UndefinedUnitReciprocalUSCustomaryKt {
 	public static final fun uSCustomaryDefinedReciprocal (Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit$USCustomary;
 	public static final fun uSCustomaryDividedUnitReciprocal (Lcom/splendo/kaluga/scientific/unit/UndefinedDividedUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedDividedUnit$USCustomary;
-	public static final fun uSCustomaryReciprocalDefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
+	public static final fun uSCustomaryReciprocalDefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;
 	public static final fun uSCustomaryReciprocalUndefined (Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit;)Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;
 	public static final fun uSCustomaryUndefinedReciprocal (Lcom/splendo/kaluga/scientific/unit/AbstractUndefinedScientificUnit;)Lcom/splendo/kaluga/scientific/unit/UndefinedReciprocalUnit$USCustomary;
 }

@@ -47,12 +47,12 @@ fun <
         DenominatorReciprocalUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
-        NumeratorQuantity,
-        DenominatorReciprocalQuantity,
+        UndefinedQuantityType.Multiplying<
+            NumeratorQuantity,
+            DenominatorReciprocalQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     NumeratorQuantity,
     NumeratorUnit,

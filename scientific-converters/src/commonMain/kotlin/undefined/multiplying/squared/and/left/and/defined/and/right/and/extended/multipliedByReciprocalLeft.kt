@@ -41,12 +41,10 @@ fun <
     LeftLeftAndRightAndRightReciprocalQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     LeftLeftUnit : DefinedScientificUnit<LeftLeftAndRightAndRightReciprocalQuantity>,
     WrappedLeftLeftUnit : WrappedUndefinedExtendedUnit<
-    LeftLeftAndRightAndRightReciprocalQuantity,
-    LeftLeftUnit,
-        >,
-    ExtendedLeftRightUnit : UndefinedExtendedUnit<
         LeftLeftAndRightAndRightReciprocalQuantity,
+        LeftLeftUnit,
         >,
+    ExtendedLeftRightUnit,
     LeftUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             LeftLeftAndRightAndRightReciprocalQuantity,
@@ -57,9 +55,7 @@ fun <
             >,
         ExtendedLeftRightUnit,
         >,
-    ExtendedRightReciprocalUnit : UndefinedExtendedUnit<
-        LeftLeftAndRightAndRightReciprocalQuantity,
-        >,
+    ExtendedRightReciprocalUnit,
     RightUnit : UndefinedReciprocalUnit<
         UndefinedQuantityType.Extended<
             LeftLeftAndRightAndRightReciprocalQuantity,
@@ -87,4 +83,21 @@ fun <
         RightUnit,
         >,
     factory: (Decimal, LeftLeftUnit) -> LeftLeftValue,
-) = unit.left.wrapped.byMultiplying(this, right, factory)
+) where
+        ExtendedLeftRightUnit : UndefinedExtendedUnit<
+            LeftLeftAndRightAndRightReciprocalQuantity,
+            >,
+        ExtendedLeftRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftLeftAndRightAndRightReciprocalQuantity,
+                >,
+            >,
+        ExtendedRightReciprocalUnit : UndefinedExtendedUnit<
+            LeftLeftAndRightAndRightReciprocalQuantity,
+            >,
+        ExtendedRightReciprocalUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftLeftAndRightAndRightReciprocalQuantity,
+                >,
+            > =
+    unit.left.wrapped.byMultiplying(this, right, factory)

@@ -54,11 +54,11 @@ fun <
         DenominatorReciprocalUnit,
         >,
     DenominatorValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        NumeratorReciprocalLeftAndRightAndDenominatorReciprocalQuantity,
+        UndefinedQuantityType.Reciprocal<
+            NumeratorReciprocalLeftAndRightAndDenominatorReciprocalQuantity,
+            >,
+        DenominatorUnit,
         >,
-    DenominatorUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Reciprocal<
         UndefinedQuantityType.Multiplying<

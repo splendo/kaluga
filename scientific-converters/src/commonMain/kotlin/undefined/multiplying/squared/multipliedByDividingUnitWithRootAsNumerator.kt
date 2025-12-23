@@ -72,18 +72,18 @@ fun <
         RightDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Dividing<
             UndefinedQuantityType.Multiplying<
-                LeftLeftAndRightAndRightNumeratorQuantity,
+                UndefinedQuantityType.Multiplying<
+                    LeftLeftAndRightAndRightNumeratorQuantity,
+                    LeftLeftAndRightAndRightNumeratorQuantity,
+                    >,
                 LeftLeftAndRightAndRightNumeratorQuantity,
                 >,
-            LeftLeftAndRightAndRightNumeratorQuantity,
+            RightDenominatorQuantity,
             >,
-        RightDenominatorQuantity,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
         LeftLeftAndRightAndRightNumeratorQuantity,

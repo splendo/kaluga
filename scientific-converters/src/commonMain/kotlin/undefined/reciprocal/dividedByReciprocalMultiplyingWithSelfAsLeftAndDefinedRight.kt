@@ -47,8 +47,8 @@ fun <
     DenominatorReciprocalRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorReciprocalRightUnit : DefinedScientificUnit<DenominatorReciprocalRightQuantity>,
     WrappedDenominatorReciprocalRightUnit : WrappedUndefinedExtendedUnit<
-    DenominatorReciprocalRightQuantity,
-    DenominatorReciprocalRightUnit,
+        DenominatorReciprocalRightQuantity,
+        DenominatorReciprocalRightUnit,
         >,
     DenominatorReciprocalUnit : UndefinedMultipliedUnit<
         NumeratorReciprocalAndDenominatorReciprocalLeftQuantity,

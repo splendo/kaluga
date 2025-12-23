@@ -39,9 +39,7 @@ import kotlin.jvm.JvmName
 fun <
     LeftAndRightReciprocalLeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     LeftUnit : DefinedScientificUnit<LeftAndRightReciprocalLeftQuantity>,
-    ExtendedRightReciprocalLeftUnit : UndefinedExtendedUnit<
-        LeftAndRightReciprocalLeftQuantity,
-        >,
+    ExtendedRightReciprocalLeftUnit,
     RightReciprocalRightQuantity : UndefinedQuantityType,
     RightReciprocalRightUnit : AbstractUndefinedScientificUnit<RightReciprocalRightQuantity>,
     RightReciprocalUnit : UndefinedMultipliedUnit<
@@ -66,11 +64,11 @@ fun <
         RightReciprocalRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        RightReciprocalRightQuantity,
+        UndefinedQuantityType.Reciprocal<
+            RightReciprocalRightQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<LeftAndRightReciprocalLeftQuantity, LeftUnit>.multipliedByReciprocalMultiplyingWithSelfAsLeft(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Reciprocal<
@@ -85,4 +83,13 @@ fun <
         >,
     reciprocalTargetUnit: RightReciprocalRightUnit.() -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = right.unit.inverse.right.reciprocalTargetUnit().byMultiplying(this, right, factory)
+) where
+        ExtendedRightReciprocalLeftUnit : UndefinedExtendedUnit<
+            LeftAndRightReciprocalLeftQuantity,
+            >,
+        ExtendedRightReciprocalLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightReciprocalLeftQuantity,
+                >,
+            > =
+    right.unit.inverse.right.reciprocalTargetUnit().byMultiplying(this, right, factory)

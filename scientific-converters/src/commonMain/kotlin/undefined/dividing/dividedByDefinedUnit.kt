@@ -50,8 +50,8 @@ fun <
     DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorUnit : DefinedScientificUnit<DenominatorQuantity>,
     WrappedDenominatorUnit : WrappedUndefinedExtendedUnit<
-    DenominatorQuantity,
-    DenominatorUnit,
+        DenominatorQuantity,
+        DenominatorUnit,
         >,
     TargetDenominatorUnit : UndefinedMultipliedUnit<
         NumeratorDenominatorQuantity,
@@ -73,17 +73,17 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        NumeratorNumeratorQuantity,
-        UndefinedQuantityType.Multiplying<
-            NumeratorDenominatorQuantity,
-            UndefinedQuantityType.Extended<
-                DenominatorQuantity,
+        UndefinedQuantityType.Dividing<
+            NumeratorNumeratorQuantity,
+            UndefinedQuantityType.Multiplying<
+                NumeratorDenominatorQuantity,
+                UndefinedQuantityType.Extended<
+                    DenominatorQuantity,
+                    >,
                 >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         NumeratorNumeratorQuantity,
@@ -98,6 +98,6 @@ fun <
     factory: (Decimal, TargetUnit) -> TargetValue,
 ) = unit.numerator.numeratorNumeratorUnitPerTargetDenominatorUnit(
     unit.denominator.numeratorDenominatorUnitXWrappedDenominatorUnit(
-    right.unit.denominatorAsUndefined(),
-),
+        right.unit.denominatorAsUndefined(),
+    ),
 ).byDividing(this, right, factory)

@@ -37,9 +37,7 @@ import kotlin.jvm.JvmName
 // Div<Ex<A>, B> / A! -> Inv<B>
 
 fun <
-    ExtendedNumeratorNumeratorUnit : UndefinedExtendedUnit<
-        NumeratorNumeratorAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorNumeratorUnit,
     NumeratorDenominatorQuantity : UndefinedQuantityType,
     NumeratorDenominatorUnit : AbstractUndefinedScientificUnit<NumeratorDenominatorQuantity>,
     NumeratorUnit : UndefinedDividedUnit<
@@ -57,11 +55,11 @@ fun <
         NumeratorDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        NumeratorDenominatorQuantity,
+        UndefinedQuantityType.Reciprocal<
+            NumeratorDenominatorQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Extended<
@@ -74,4 +72,13 @@ fun <
     right: ScientificValue<NumeratorNumeratorAndDenominatorQuantity, DenominatorUnit>,
     reciprocalTargetUnit: NumeratorDenominatorUnit.() -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.denominator.reciprocalTargetUnit().byDividing(this, right, factory)
+) where
+        ExtendedNumeratorNumeratorUnit : UndefinedExtendedUnit<
+            NumeratorNumeratorAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorNumeratorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorNumeratorAndDenominatorQuantity,
+                >,
+            > =
+    unit.denominator.reciprocalTargetUnit().byDividing(this, right, factory)

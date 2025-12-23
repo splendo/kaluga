@@ -107,24 +107,24 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Dividing<
             UndefinedQuantityType.Multiplying<
-                NumeratorNumeratorLeftAndRightAndDenominatorDenominatorLeftAndRightQuantity,
-                NumeratorNumeratorLeftAndRightAndDenominatorDenominatorLeftAndRightQuantity,
+                UndefinedQuantityType.Multiplying<
+                    NumeratorNumeratorLeftAndRightAndDenominatorDenominatorLeftAndRightQuantity,
+                    NumeratorNumeratorLeftAndRightAndDenominatorDenominatorLeftAndRightQuantity,
+                    >,
+                UndefinedQuantityType.Multiplying<
+                    NumeratorNumeratorLeftAndRightAndDenominatorDenominatorLeftAndRightQuantity,
+                    NumeratorNumeratorLeftAndRightAndDenominatorDenominatorLeftAndRightQuantity,
+                    >,
                 >,
             UndefinedQuantityType.Multiplying<
-                NumeratorNumeratorLeftAndRightAndDenominatorDenominatorLeftAndRightQuantity,
-                NumeratorNumeratorLeftAndRightAndDenominatorDenominatorLeftAndRightQuantity,
+                NumeratorDenominatorAndDenominatorNumeratorQuantity,
+                NumeratorDenominatorAndDenominatorNumeratorQuantity,
                 >,
             >,
-        UndefinedQuantityType.Multiplying<
-            NumeratorDenominatorAndDenominatorNumeratorQuantity,
-            NumeratorDenominatorAndDenominatorNumeratorQuantity,
-            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<
@@ -153,6 +153,6 @@ fun <
     unit.numerator,
 ).targetNumeratorUnitPerTargetDenominatorUnit(
     unit.denominator.numeratorDenominatorUnitXNumeratorDenominatorUnit(
-    unit.denominator,
-),
+        unit.denominator,
+    ),
 ).byDividing(this, right, factory)

@@ -40,8 +40,8 @@ fun <
     NumeratorNumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     NumeratorNumeratorUnit : DefinedScientificUnit<NumeratorNumeratorQuantity>,
     WrappedNumeratorNumeratorUnit : WrappedUndefinedExtendedUnit<
-    NumeratorNumeratorQuantity,
-    NumeratorNumeratorUnit,
+        NumeratorNumeratorQuantity,
+        NumeratorNumeratorUnit,
         >,
     NumeratorDenominatorAndDenominatorReciprocalQuantity : UndefinedQuantityType,
     NumeratorDenominatorUnit : AbstractUndefinedScientificUnit<NumeratorDenominatorAndDenominatorReciprocalQuantity>,

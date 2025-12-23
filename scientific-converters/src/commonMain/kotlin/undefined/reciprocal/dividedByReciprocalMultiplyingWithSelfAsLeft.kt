@@ -55,9 +55,9 @@ fun <
         DenominatorReciprocalUnit,
         >,
     DenominatorReciprocalRightValue : UndefinedScientificValue<
-    DenominatorReciprocalRightQuantity,
-    DenominatorReciprocalRightUnit,
-    >,
+        DenominatorReciprocalRightQuantity,
+        DenominatorReciprocalRightUnit,
+        >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Reciprocal<
         NumeratorReciprocalAndDenominatorReciprocalLeftQuantity,

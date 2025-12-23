@@ -56,14 +56,14 @@ fun <
         DenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        UndefinedQuantityType.Multiplying<
-            DenominatorLeftQuantity,
-            DenominatorRightQuantity,
+        UndefinedQuantityType.Reciprocal<
+            UndefinedQuantityType.Multiplying<
+                DenominatorLeftQuantity,
+                DenominatorRightQuantity,
+                >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<PhysicalQuantity.Dimensionless, NumeratorUnit>.dividedByMultiplyingUnit(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Multiplying<

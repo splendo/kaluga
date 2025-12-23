@@ -41,12 +41,10 @@ fun <
     NumeratorNumeratorLeftAndRightAndDenominatorNumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     NumeratorNumeratorLeftUnit : DefinedScientificUnit<NumeratorNumeratorLeftAndRightAndDenominatorNumeratorQuantity>,
     WrappedNumeratorNumeratorLeftUnit : WrappedUndefinedExtendedUnit<
-    NumeratorNumeratorLeftAndRightAndDenominatorNumeratorQuantity,
-    NumeratorNumeratorLeftUnit,
-        >,
-    ExtendedNumeratorNumeratorRightUnit : UndefinedExtendedUnit<
         NumeratorNumeratorLeftAndRightAndDenominatorNumeratorQuantity,
+        NumeratorNumeratorLeftUnit,
         >,
+    ExtendedNumeratorNumeratorRightUnit,
     NumeratorNumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             NumeratorNumeratorLeftAndRightAndDenominatorNumeratorQuantity,
@@ -82,9 +80,7 @@ fun <
             >,
         NumeratorDenominatorUnit,
         >,
-    ExtendedDenominatorNumeratorUnit : UndefinedExtendedUnit<
-        NumeratorNumeratorLeftAndRightAndDenominatorNumeratorQuantity,
-        >,
+    ExtendedDenominatorNumeratorUnit,
     DenominatorDenominatorLeftUnit : AbstractUndefinedScientificUnit<NumeratorDenominatorLeftAndRightAndDenominatorDenominatorLeftAndRightQuantity>,
     DenominatorDenominatorRightUnit : AbstractUndefinedScientificUnit<NumeratorDenominatorLeftAndRightAndDenominatorDenominatorLeftAndRightQuantity>,
     DenominatorDenominatorUnit : UndefinedMultipliedUnit<
@@ -135,4 +131,21 @@ fun <
         DenominatorUnit,
         >,
     factory: (Decimal, NumeratorNumeratorLeftUnit) -> NumeratorNumeratorLeftValue,
-) = unit.numerator.left.wrapped.byDividing(this, right, factory)
+) where
+        ExtendedNumeratorNumeratorRightUnit : UndefinedExtendedUnit<
+            NumeratorNumeratorLeftAndRightAndDenominatorNumeratorQuantity,
+            >,
+        ExtendedNumeratorNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorNumeratorLeftAndRightAndDenominatorNumeratorQuantity,
+                >,
+            >,
+        ExtendedDenominatorNumeratorUnit : UndefinedExtendedUnit<
+            NumeratorNumeratorLeftAndRightAndDenominatorNumeratorQuantity,
+            >,
+        ExtendedDenominatorNumeratorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorNumeratorLeftAndRightAndDenominatorNumeratorQuantity,
+                >,
+            > =
+    unit.numerator.left.wrapped.byDividing(this, right, factory)

@@ -39,12 +39,8 @@ import kotlin.jvm.JvmName
 fun <
     NumeratorAndDenominatorNumeratorLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     NumeratorUnit : DefinedScientificUnit<NumeratorAndDenominatorNumeratorLeftAndRightQuantity>,
-    ExtendedDenominatorNumeratorLeftUnit : UndefinedExtendedUnit<
-        NumeratorAndDenominatorNumeratorLeftAndRightQuantity,
-        >,
-    ExtendedDenominatorNumeratorRightUnit : UndefinedExtendedUnit<
-        NumeratorAndDenominatorNumeratorLeftAndRightQuantity,
-        >,
+    ExtendedDenominatorNumeratorLeftUnit,
+    ExtendedDenominatorNumeratorRightUnit,
     DenominatorNumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             NumeratorAndDenominatorNumeratorLeftAndRightQuantity,
@@ -79,14 +75,14 @@ fun <
         ExtendedDenominatorNumeratorLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        DenominatorDenominatorQuantity,
-        UndefinedQuantityType.Extended<
-            NumeratorAndDenominatorNumeratorLeftAndRightQuantity,
+        UndefinedQuantityType.Dividing<
+            DenominatorDenominatorQuantity,
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorNumeratorLeftAndRightQuantity,
+                >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<NumeratorAndDenominatorNumeratorLeftAndRightQuantity, NumeratorUnit>.dividedByDividingUnitWithSquaredNumeratorWithSelfAsRoot(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Dividing<
@@ -104,6 +100,23 @@ fun <
         >,
     denominatorDenominatorUnitPerExtendedDenominatorNumeratorLeftUnit: DenominatorDenominatorUnit.(ExtendedDenominatorNumeratorLeftUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = right.unit.denominator.denominatorDenominatorUnitPerExtendedDenominatorNumeratorLeftUnit(
-    right.unit.numerator.left,
-).byDividing(this, right, factory)
+) where
+        ExtendedDenominatorNumeratorLeftUnit : UndefinedExtendedUnit<
+            NumeratorAndDenominatorNumeratorLeftAndRightQuantity,
+            >,
+        ExtendedDenominatorNumeratorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorNumeratorLeftAndRightQuantity,
+                >,
+            >,
+        ExtendedDenominatorNumeratorRightUnit : UndefinedExtendedUnit<
+            NumeratorAndDenominatorNumeratorLeftAndRightQuantity,
+            >,
+        ExtendedDenominatorNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorNumeratorLeftAndRightQuantity,
+                >,
+            > =
+    right.unit.denominator.denominatorDenominatorUnitPerExtendedDenominatorNumeratorLeftUnit(
+        right.unit.numerator.left,
+    ).byDividing(this, right, factory)

@@ -58,15 +58,15 @@ fun <
         LeftRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
         UndefinedQuantityType.Multiplying<
+            UndefinedQuantityType.Multiplying<
+                LeftRightAndRightQuantity,
+                LeftLeftQuantity,
+                >,
             LeftRightAndRightQuantity,
-            LeftLeftQuantity,
             >,
-        LeftRightAndRightQuantity,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
         LeftLeftQuantity,

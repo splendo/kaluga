@@ -37,14 +37,12 @@ import kotlin.jvm.JvmName
 // Mul<Ex<A>, Wr<B>> / A! -> B!
 
 fun <
-    ExtendedNumeratorLeftUnit : UndefinedExtendedUnit<
-        NumeratorLeftAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorLeftUnit,
     NumeratorRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     NumeratorRightUnit : DefinedScientificUnit<NumeratorRightQuantity>,
     WrappedNumeratorRightUnit : WrappedUndefinedExtendedUnit<
-    NumeratorRightQuantity,
-    NumeratorRightUnit,
+        NumeratorRightQuantity,
+        NumeratorRightUnit,
         >,
     NumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -72,4 +70,13 @@ fun <
     >.dividedByLeft(
     right: ScientificValue<NumeratorLeftAndDenominatorQuantity, DenominatorUnit>,
     factory: (Decimal, NumeratorRightUnit) -> NumeratorRightValue,
-) = unit.right.wrapped.byDividing(this, right, factory)
+) where
+        ExtendedNumeratorLeftUnit : UndefinedExtendedUnit<
+            NumeratorLeftAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorLeftAndDenominatorQuantity,
+                >,
+            > =
+    unit.right.wrapped.byDividing(this, right, factory)

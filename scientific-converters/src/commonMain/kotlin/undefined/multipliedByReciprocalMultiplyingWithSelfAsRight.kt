@@ -55,11 +55,11 @@ fun <
         RightReciprocalLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        RightReciprocalLeftQuantity,
+        UndefinedQuantityType.Reciprocal<
+            RightReciprocalLeftQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     LeftAndRightReciprocalRightQuantity,
     LeftUnit,

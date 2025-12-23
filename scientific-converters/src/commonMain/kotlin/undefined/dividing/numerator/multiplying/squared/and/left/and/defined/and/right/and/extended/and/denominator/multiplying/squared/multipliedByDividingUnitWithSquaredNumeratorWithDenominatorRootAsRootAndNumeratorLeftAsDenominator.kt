@@ -41,12 +41,10 @@ fun <
     LeftNumeratorLeftAndRightAndRightDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     LeftNumeratorLeftUnit : DefinedScientificUnit<LeftNumeratorLeftAndRightAndRightDenominatorQuantity>,
     WrappedLeftNumeratorLeftUnit : WrappedUndefinedExtendedUnit<
-    LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
-    LeftNumeratorLeftUnit,
-        >,
-    ExtendedLeftNumeratorRightUnit : UndefinedExtendedUnit<
         LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+        LeftNumeratorLeftUnit,
         >,
+    ExtendedLeftNumeratorRightUnit,
     LeftNumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
@@ -90,9 +88,7 @@ fun <
         LeftDenominatorLeftAndRightAndRightNumeratorLeftAndRightQuantity,
         RightNumeratorRightUnit,
         >,
-    ExtendedRightDenominatorUnit : UndefinedExtendedUnit<
-        LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
-        >,
+    ExtendedRightDenominatorUnit,
     RightUnit : UndefinedDividedUnit<
         UndefinedQuantityType.Multiplying<
             LeftDenominatorLeftAndRightAndRightNumeratorLeftAndRightQuantity,
@@ -135,4 +131,21 @@ fun <
         RightUnit,
         >,
     factory: (Decimal, LeftNumeratorLeftUnit) -> LeftNumeratorLeftValue,
-) = unit.numerator.left.wrapped.byMultiplying(this, right, factory)
+) where
+        ExtendedLeftNumeratorRightUnit : UndefinedExtendedUnit<
+            LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+            >,
+        ExtendedLeftNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+                >,
+            >,
+        ExtendedRightDenominatorUnit : UndefinedExtendedUnit<
+            LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+            >,
+        ExtendedRightDenominatorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+                >,
+            > =
+    unit.numerator.left.wrapped.byMultiplying(this, right, factory)

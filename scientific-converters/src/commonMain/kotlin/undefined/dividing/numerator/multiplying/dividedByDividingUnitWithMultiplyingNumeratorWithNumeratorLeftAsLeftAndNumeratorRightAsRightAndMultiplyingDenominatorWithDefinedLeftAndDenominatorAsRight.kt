@@ -69,8 +69,8 @@ fun <
     DenominatorDenominatorLeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorDenominatorLeftUnit : DefinedScientificUnit<DenominatorDenominatorLeftQuantity>,
     WrappedDenominatorDenominatorLeftUnit : WrappedUndefinedExtendedUnit<
-    DenominatorDenominatorLeftQuantity,
-    DenominatorDenominatorLeftUnit,
+        DenominatorDenominatorLeftQuantity,
+        DenominatorDenominatorLeftUnit,
         >,
     DenominatorDenominatorRightUnit : AbstractUndefinedScientificUnit<NumeratorDenominatorAndDenominatorDenominatorRightQuantity>,
     DenominatorDenominatorUnit : UndefinedMultipliedUnit<

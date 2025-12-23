@@ -62,15 +62,15 @@ fun <
         LeftReciprocalUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        RightQuantity,
-        UndefinedQuantityType.Multiplying<
-            LeftReciprocalLeftQuantity,
-            LeftReciprocalRightQuantity,
+        UndefinedQuantityType.Dividing<
+            RightQuantity,
+            UndefinedQuantityType.Multiplying<
+                LeftReciprocalLeftQuantity,
+                LeftReciprocalRightQuantity,
+                >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Reciprocal<
         UndefinedQuantityType.Multiplying<

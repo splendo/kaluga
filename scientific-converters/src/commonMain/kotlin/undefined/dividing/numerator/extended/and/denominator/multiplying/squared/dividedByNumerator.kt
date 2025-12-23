@@ -38,9 +38,7 @@ import kotlin.jvm.JvmName
 // Div<Ex<A>, Mul<B, B>> / A! -> Inv<Mul<B, B>>
 
 fun <
-    ExtendedNumeratorNumeratorUnit : UndefinedExtendedUnit<
-        NumeratorNumeratorAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorNumeratorUnit,
     NumeratorDenominatorLeftAndRightQuantity : UndefinedQuantityType,
     NumeratorDenominatorLeftUnit : AbstractUndefinedScientificUnit<NumeratorDenominatorLeftAndRightQuantity>,
     NumeratorDenominatorRightUnit : AbstractUndefinedScientificUnit<NumeratorDenominatorLeftAndRightQuantity>,
@@ -71,14 +69,14 @@ fun <
         NumeratorDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        UndefinedQuantityType.Multiplying<
-            NumeratorDenominatorLeftAndRightQuantity,
-            NumeratorDenominatorLeftAndRightQuantity,
+        UndefinedQuantityType.Reciprocal<
+            UndefinedQuantityType.Multiplying<
+                NumeratorDenominatorLeftAndRightQuantity,
+                NumeratorDenominatorLeftAndRightQuantity,
+                >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Extended<
@@ -94,4 +92,13 @@ fun <
     right: ScientificValue<NumeratorNumeratorAndDenominatorQuantity, DenominatorUnit>,
     reciprocalTargetUnit: NumeratorDenominatorUnit.() -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.denominator.reciprocalTargetUnit().byDividing(this, right, factory)
+) where
+        ExtendedNumeratorNumeratorUnit : UndefinedExtendedUnit<
+            NumeratorNumeratorAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorNumeratorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorNumeratorAndDenominatorQuantity,
+                >,
+            > =
+    unit.denominator.reciprocalTargetUnit().byDividing(this, right, factory)

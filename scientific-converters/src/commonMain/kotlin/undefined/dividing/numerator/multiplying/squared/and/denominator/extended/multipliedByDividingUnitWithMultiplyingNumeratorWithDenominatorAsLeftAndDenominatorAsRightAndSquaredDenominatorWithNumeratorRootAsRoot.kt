@@ -47,9 +47,7 @@ fun <
         LeftNumeratorLeftAndRightAndRightDenominatorLeftAndRightQuantity,
         LeftNumeratorRightUnit,
         >,
-    ExtendedLeftDenominatorUnit : UndefinedExtendedUnit<
-        LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
-        >,
+    ExtendedLeftDenominatorUnit,
     LeftUnit : UndefinedDividedUnit<
         UndefinedQuantityType.Multiplying<
             LeftNumeratorLeftAndRightAndRightDenominatorLeftAndRightQuantity,
@@ -64,12 +62,10 @@ fun <
     LeftDenominatorAndRightNumeratorLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     RightNumeratorLeftUnit : DefinedScientificUnit<LeftDenominatorAndRightNumeratorLeftAndRightQuantity>,
     WrappedRightNumeratorLeftUnit : WrappedUndefinedExtendedUnit<
-    LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
-    RightNumeratorLeftUnit,
-        >,
-    ExtendedRightNumeratorRightUnit : UndefinedExtendedUnit<
         LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
+        RightNumeratorLeftUnit,
         >,
+    ExtendedRightNumeratorRightUnit,
     RightNumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
@@ -135,4 +131,21 @@ fun <
         RightUnit,
         >,
     factory: (Decimal, RightNumeratorLeftUnit) -> RightNumeratorLeftValue,
-) = right.unit.numerator.left.wrapped.byMultiplying(this, right, factory)
+) where
+        ExtendedLeftDenominatorUnit : UndefinedExtendedUnit<
+            LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
+            >,
+        ExtendedLeftDenominatorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
+                >,
+            >,
+        ExtendedRightNumeratorRightUnit : UndefinedExtendedUnit<
+            LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
+            >,
+        ExtendedRightNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
+                >,
+            > =
+    right.unit.numerator.left.wrapped.byMultiplying(this, right, factory)

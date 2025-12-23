@@ -38,12 +38,8 @@ import kotlin.jvm.JvmName
 // Div<Mul<Ex<A>, Ex<A>>, Mul<B, C>> * Div<Mul<B, C>, Wr<A>> -> A!
 
 fun <
-    ExtendedLeftNumeratorLeftUnit : UndefinedExtendedUnit<
-        LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
-        >,
-    ExtendedLeftNumeratorRightUnit : UndefinedExtendedUnit<
-        LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
-        >,
+    ExtendedLeftNumeratorLeftUnit,
+    ExtendedLeftNumeratorRightUnit,
     LeftNumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
@@ -91,8 +87,8 @@ fun <
     LeftNumeratorLeftAndRightAndRightDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     RightDenominatorUnit : DefinedScientificUnit<LeftNumeratorLeftAndRightAndRightDenominatorQuantity>,
     WrappedRightDenominatorUnit : WrappedUndefinedExtendedUnit<
-    LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
-    RightDenominatorUnit,
+        LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+        RightDenominatorUnit,
         >,
     RightUnit : UndefinedDividedUnit<
         UndefinedQuantityType.Multiplying<
@@ -136,4 +132,21 @@ fun <
         RightUnit,
         >,
     factory: (Decimal, RightDenominatorUnit) -> RightDenominatorValue,
-) = right.unit.denominator.wrapped.byMultiplying(this, right, factory)
+) where
+        ExtendedLeftNumeratorLeftUnit : UndefinedExtendedUnit<
+            LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+            >,
+        ExtendedLeftNumeratorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+                >,
+            >,
+        ExtendedLeftNumeratorRightUnit : UndefinedExtendedUnit<
+            LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+            >,
+        ExtendedLeftNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+                >,
+            > =
+    right.unit.denominator.wrapped.byMultiplying(this, right, factory)

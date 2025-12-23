@@ -121,24 +121,24 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Dividing<
             UndefinedQuantityType.Multiplying<
-                NumeratorNumeratorAndDenominatorDenominatorLeftQuantity,
-                NumeratorNumeratorAndDenominatorDenominatorLeftQuantity,
+                UndefinedQuantityType.Multiplying<
+                    NumeratorNumeratorAndDenominatorDenominatorLeftQuantity,
+                    NumeratorNumeratorAndDenominatorDenominatorLeftQuantity,
+                    >,
+                DenominatorDenominatorRightQuantity,
                 >,
-            DenominatorDenominatorRightQuantity,
-            >,
-        UndefinedQuantityType.Multiplying<
             UndefinedQuantityType.Multiplying<
-                NumeratorDenominatorAndDenominatorNumeratorLeftQuantity,
-                NumeratorDenominatorAndDenominatorNumeratorLeftQuantity,
+                UndefinedQuantityType.Multiplying<
+                    NumeratorDenominatorAndDenominatorNumeratorLeftQuantity,
+                    NumeratorDenominatorAndDenominatorNumeratorLeftQuantity,
+                    >,
+                DenominatorNumeratorRightQuantity,
                 >,
-            DenominatorNumeratorRightQuantity,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         NumeratorNumeratorAndDenominatorDenominatorLeftQuantity,
@@ -171,8 +171,8 @@ fun <
     right.unit.denominator.right,
 ).targetNumeratorUnitPerTargetDenominatorUnit(
     unit.denominator.numeratorDenominatorUnitXNumeratorDenominatorUnit(
-    unit.denominator,
-).targetDenominatorLeftUnitXDenominatorNumeratorRightUnit(
-    right.unit.numerator.right,
-),
+        unit.denominator,
+    ).targetDenominatorLeftUnitXDenominatorNumeratorRightUnit(
+        right.unit.numerator.right,
+    ),
 ).byDividing(this, right, factory)

@@ -99,12 +99,12 @@ fun <
         LeftNumeratorRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        LeftNumeratorLeftQuantity,
-        LeftNumeratorRightAndRightDenominatorLeftAndRightQuantity,
+        UndefinedQuantityType.Dividing<
+            LeftNumeratorLeftQuantity,
+            LeftNumeratorRightAndRightDenominatorLeftAndRightQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<

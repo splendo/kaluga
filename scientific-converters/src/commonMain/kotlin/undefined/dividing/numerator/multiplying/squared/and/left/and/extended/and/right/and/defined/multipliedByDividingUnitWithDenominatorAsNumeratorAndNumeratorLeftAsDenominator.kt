@@ -38,14 +38,12 @@ import kotlin.jvm.JvmName
 // Div<Mul<Ex<A>, Wr<A>>, B> * Div<B, Ex<A>> -> A!
 
 fun <
-    ExtendedLeftNumeratorLeftUnit : UndefinedExtendedUnit<
-        LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
-        >,
+    ExtendedLeftNumeratorLeftUnit,
     LeftNumeratorLeftAndRightAndRightDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     LeftNumeratorRightUnit : DefinedScientificUnit<LeftNumeratorLeftAndRightAndRightDenominatorQuantity>,
     WrappedLeftNumeratorRightUnit : WrappedUndefinedExtendedUnit<
-    LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
-    LeftNumeratorRightUnit,
+        LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+        LeftNumeratorRightUnit,
         >,
     LeftNumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -73,9 +71,7 @@ fun <
         LeftDenominatorUnit,
         >,
     RightNumeratorUnit : AbstractUndefinedScientificUnit<LeftDenominatorAndRightNumeratorQuantity>,
-    ExtendedRightDenominatorUnit : UndefinedExtendedUnit<
-        LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
-        >,
+    ExtendedRightDenominatorUnit,
     RightUnit : UndefinedDividedUnit<
         LeftDenominatorAndRightNumeratorQuantity,
         RightNumeratorUnit,
@@ -109,4 +105,21 @@ fun <
         RightUnit,
         >,
     factory: (Decimal, LeftNumeratorRightUnit) -> LeftNumeratorRightValue,
-) = unit.numerator.right.wrapped.byMultiplying(this, right, factory)
+) where
+        ExtendedLeftNumeratorLeftUnit : UndefinedExtendedUnit<
+            LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+            >,
+        ExtendedLeftNumeratorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+                >,
+            >,
+        ExtendedRightDenominatorUnit : UndefinedExtendedUnit<
+            LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+            >,
+        ExtendedRightDenominatorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftNumeratorLeftAndRightAndRightDenominatorQuantity,
+                >,
+            > =
+    unit.numerator.right.wrapped.byMultiplying(this, right, factory)

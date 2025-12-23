@@ -57,8 +57,8 @@ fun <
     RightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     RightUnit : DefinedScientificUnit<RightQuantity>,
     WrappedRightUnit : WrappedUndefinedExtendedUnit<
-    RightQuantity,
-    RightUnit,
+        RightQuantity,
+        RightUnit,
         >,
     TargetUnit : UndefinedDividedUnit<
         UndefinedQuantityType.Extended<
@@ -72,17 +72,17 @@ fun <
         LeftReciprocalUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Extended<
-            RightQuantity,
+        UndefinedQuantityType.Dividing<
+            UndefinedQuantityType.Extended<
+                RightQuantity,
+                >,
+            UndefinedQuantityType.Multiplying<
+                LeftReciprocalLeftAndRightQuantity,
+                LeftReciprocalLeftAndRightQuantity,
+                >,
             >,
-        UndefinedQuantityType.Multiplying<
-            LeftReciprocalLeftAndRightQuantity,
-            LeftReciprocalLeftAndRightQuantity,
-            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Reciprocal<
         UndefinedQuantityType.Multiplying<

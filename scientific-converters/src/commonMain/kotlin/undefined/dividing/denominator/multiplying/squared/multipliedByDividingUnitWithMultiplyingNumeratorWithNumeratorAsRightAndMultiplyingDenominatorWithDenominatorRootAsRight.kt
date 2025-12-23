@@ -131,27 +131,27 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Dividing<
             UndefinedQuantityType.Multiplying<
+                UndefinedQuantityType.Multiplying<
+                    LeftNumeratorAndRightNumeratorRightQuantity,
+                    RightNumeratorLeftQuantity,
+                    >,
                 LeftNumeratorAndRightNumeratorRightQuantity,
-                RightNumeratorLeftQuantity,
-                >,
-            LeftNumeratorAndRightNumeratorRightQuantity,
-            >,
-        UndefinedQuantityType.Multiplying<
-            UndefinedQuantityType.Multiplying<
-                LeftDenominatorLeftAndRightAndRightDenominatorRightQuantity,
-                LeftDenominatorLeftAndRightAndRightDenominatorRightQuantity,
                 >,
             UndefinedQuantityType.Multiplying<
-                RightDenominatorLeftQuantity,
-                LeftDenominatorLeftAndRightAndRightDenominatorRightQuantity,
+                UndefinedQuantityType.Multiplying<
+                    LeftDenominatorLeftAndRightAndRightDenominatorRightQuantity,
+                    LeftDenominatorLeftAndRightAndRightDenominatorRightQuantity,
+                    >,
+                UndefinedQuantityType.Multiplying<
+                    RightDenominatorLeftQuantity,
+                    LeftDenominatorLeftAndRightAndRightDenominatorRightQuantity,
+                    >,
                 >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         LeftNumeratorAndRightNumeratorRightQuantity,
@@ -186,6 +186,6 @@ fun <
     unit.numerator,
 ).targetNumeratorUnitPerTargetDenominatorUnit(
     unit.denominator.leftDenominatorUnitXRightDenominatorUnit(
-    right.unit.denominator,
-),
+        right.unit.denominator,
+    ),
 ).byMultiplying(this, right, factory)

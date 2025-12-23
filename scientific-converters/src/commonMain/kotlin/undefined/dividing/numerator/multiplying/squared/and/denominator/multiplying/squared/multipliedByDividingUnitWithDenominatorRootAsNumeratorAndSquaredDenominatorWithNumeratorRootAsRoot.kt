@@ -86,11 +86,11 @@ fun <
         LeftDenominatorLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        LeftDenominatorLeftAndRightAndRightNumeratorQuantity,
+        UndefinedQuantityType.Reciprocal<
+            LeftDenominatorLeftAndRightAndRightNumeratorQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<

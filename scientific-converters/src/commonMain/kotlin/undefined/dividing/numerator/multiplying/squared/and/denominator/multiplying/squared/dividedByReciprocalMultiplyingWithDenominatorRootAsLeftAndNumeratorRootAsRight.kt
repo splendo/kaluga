@@ -100,18 +100,18 @@ fun <
         NumeratorDenominatorLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Dividing<
             UndefinedQuantityType.Multiplying<
-                NumeratorNumeratorLeftAndRightAndDenominatorReciprocalRightQuantity,
+                UndefinedQuantityType.Multiplying<
+                    NumeratorNumeratorLeftAndRightAndDenominatorReciprocalRightQuantity,
+                    NumeratorNumeratorLeftAndRightAndDenominatorReciprocalRightQuantity,
+                    >,
                 NumeratorNumeratorLeftAndRightAndDenominatorReciprocalRightQuantity,
                 >,
-            NumeratorNumeratorLeftAndRightAndDenominatorReciprocalRightQuantity,
+            NumeratorDenominatorLeftAndRightAndDenominatorReciprocalLeftQuantity,
             >,
-        NumeratorDenominatorLeftAndRightAndDenominatorReciprocalLeftQuantity,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<

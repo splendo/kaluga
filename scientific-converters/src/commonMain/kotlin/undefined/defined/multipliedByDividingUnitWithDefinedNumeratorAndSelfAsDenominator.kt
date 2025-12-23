@@ -42,12 +42,10 @@ fun <
     RightNumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     RightNumeratorUnit : DefinedScientificUnit<RightNumeratorQuantity>,
     WrappedRightNumeratorUnit : WrappedUndefinedExtendedUnit<
-    RightNumeratorQuantity,
-    RightNumeratorUnit,
+        RightNumeratorQuantity,
+        RightNumeratorUnit,
         >,
-    ExtendedRightDenominatorUnit : UndefinedExtendedUnit<
-        LeftAndRightDenominatorQuantity,
-        >,
+    ExtendedRightDenominatorUnit,
     RightUnit : UndefinedDividedUnit<
         UndefinedQuantityType.Extended<
             RightNumeratorQuantity,
@@ -72,4 +70,13 @@ fun <
         RightUnit,
         >,
     factory: (Decimal, RightNumeratorUnit) -> RightNumeratorValue,
-) = right.unit.numerator.wrapped.byMultiplying(this, right, factory)
+) where
+        ExtendedRightDenominatorUnit : UndefinedExtendedUnit<
+            LeftAndRightDenominatorQuantity,
+            >,
+        ExtendedRightDenominatorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightDenominatorQuantity,
+                >,
+            > =
+    right.unit.numerator.wrapped.byMultiplying(this, right, factory)

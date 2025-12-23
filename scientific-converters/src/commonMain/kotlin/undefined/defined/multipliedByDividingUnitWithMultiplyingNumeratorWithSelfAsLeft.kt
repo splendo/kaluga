@@ -40,9 +40,7 @@ import kotlin.jvm.JvmName
 fun <
     LeftAndRightNumeratorLeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     LeftUnit : DefinedScientificUnit<LeftAndRightNumeratorLeftQuantity>,
-    ExtendedRightNumeratorLeftUnit : UndefinedExtendedUnit<
-        LeftAndRightNumeratorLeftQuantity,
-        >,
+    ExtendedRightNumeratorLeftUnit,
     RightNumeratorRightQuantity : UndefinedQuantityType,
     RightNumeratorRightUnit : AbstractUndefinedScientificUnit<RightNumeratorRightQuantity>,
     RightNumeratorUnit : UndefinedMultipliedUnit<
@@ -67,8 +65,8 @@ fun <
         RightDenominatorUnit,
         >,
     WrappedLeftUnit : WrappedUndefinedExtendedUnit<
-    LeftAndRightNumeratorLeftQuantity,
-    LeftUnit,
+        LeftAndRightNumeratorLeftQuantity,
+        LeftUnit,
         >,
     TargetNumeratorLeftUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -110,22 +108,22 @@ fun <
         RightDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Dividing<
             UndefinedQuantityType.Multiplying<
-                UndefinedQuantityType.Extended<
-                    LeftAndRightNumeratorLeftQuantity,
+                UndefinedQuantityType.Multiplying<
+                    UndefinedQuantityType.Extended<
+                        LeftAndRightNumeratorLeftQuantity,
+                        >,
+                    UndefinedQuantityType.Extended<
+                        LeftAndRightNumeratorLeftQuantity,
+                        >,
                     >,
-                UndefinedQuantityType.Extended<
-                    LeftAndRightNumeratorLeftQuantity,
-                    >,
+                RightNumeratorRightQuantity,
                 >,
-            RightNumeratorRightQuantity,
+            RightDenominatorQuantity,
             >,
-        RightDenominatorQuantity,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<LeftAndRightNumeratorLeftQuantity, LeftUnit>.multipliedByDividingUnitWithMultiplyingNumeratorWithSelfAsLeft(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Dividing<
@@ -144,10 +142,19 @@ fun <
     targetNumeratorLeftUnitXRightNumeratorRightUnit: TargetNumeratorLeftUnit.(RightNumeratorRightUnit) -> TargetNumeratorUnit,
     targetNumeratorUnitPerRightDenominatorUnit: TargetNumeratorUnit.(RightDenominatorUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.leftAsUndefined().wrappedLeftUnitXExtendedRightNumeratorLeftUnit(
-    right.unit.numerator.left,
-).targetNumeratorLeftUnitXRightNumeratorRightUnit(
-    right.unit.numerator.right,
-).targetNumeratorUnitPerRightDenominatorUnit(
-    right.unit.denominator,
-).byMultiplying(this, right, factory)
+) where
+        ExtendedRightNumeratorLeftUnit : UndefinedExtendedUnit<
+            LeftAndRightNumeratorLeftQuantity,
+            >,
+        ExtendedRightNumeratorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightNumeratorLeftQuantity,
+                >,
+            > =
+    unit.leftAsUndefined().wrappedLeftUnitXExtendedRightNumeratorLeftUnit(
+        right.unit.numerator.left,
+    ).targetNumeratorLeftUnitXRightNumeratorRightUnit(
+        right.unit.numerator.right,
+    ).targetNumeratorUnitPerRightDenominatorUnit(
+        right.unit.denominator,
+    ).byMultiplying(this, right, factory)

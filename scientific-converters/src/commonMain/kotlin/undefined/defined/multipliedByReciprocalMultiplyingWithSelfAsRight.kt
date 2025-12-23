@@ -41,9 +41,7 @@ fun <
     LeftUnit : DefinedScientificUnit<LeftAndRightReciprocalRightQuantity>,
     RightReciprocalLeftQuantity : UndefinedQuantityType,
     RightReciprocalLeftUnit : AbstractUndefinedScientificUnit<RightReciprocalLeftQuantity>,
-    ExtendedRightReciprocalRightUnit : UndefinedExtendedUnit<
-        LeftAndRightReciprocalRightQuantity,
-        >,
+    ExtendedRightReciprocalRightUnit,
     RightReciprocalUnit : UndefinedMultipliedUnit<
         RightReciprocalLeftQuantity,
         RightReciprocalLeftUnit,
@@ -66,11 +64,11 @@ fun <
         RightReciprocalLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        RightReciprocalLeftQuantity,
+        UndefinedQuantityType.Reciprocal<
+            RightReciprocalLeftQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<LeftAndRightReciprocalRightQuantity, LeftUnit>.multipliedByReciprocalMultiplyingWithSelfAsRight(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Reciprocal<
@@ -85,4 +83,13 @@ fun <
         >,
     reciprocalTargetUnit: RightReciprocalLeftUnit.() -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = right.unit.inverse.left.reciprocalTargetUnit().byMultiplying(this, right, factory)
+) where
+        ExtendedRightReciprocalRightUnit : UndefinedExtendedUnit<
+            LeftAndRightReciprocalRightQuantity,
+            >,
+        ExtendedRightReciprocalRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightReciprocalRightQuantity,
+                >,
+            > =
+    right.unit.inverse.left.reciprocalTargetUnit().byMultiplying(this, right, factory)

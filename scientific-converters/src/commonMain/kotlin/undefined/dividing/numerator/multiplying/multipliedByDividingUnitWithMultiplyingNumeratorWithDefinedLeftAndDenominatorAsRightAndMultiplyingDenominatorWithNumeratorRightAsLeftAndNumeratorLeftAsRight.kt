@@ -61,8 +61,8 @@ fun <
     RightNumeratorLeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     RightNumeratorLeftUnit : DefinedScientificUnit<RightNumeratorLeftQuantity>,
     WrappedRightNumeratorLeftUnit : WrappedUndefinedExtendedUnit<
-    RightNumeratorLeftQuantity,
-    RightNumeratorLeftUnit,
+        RightNumeratorLeftQuantity,
+        RightNumeratorLeftUnit,
         >,
     RightNumeratorRightUnit : AbstractUndefinedScientificUnit<LeftDenominatorAndRightNumeratorRightQuantity>,
     RightNumeratorUnit : UndefinedMultipliedUnit<

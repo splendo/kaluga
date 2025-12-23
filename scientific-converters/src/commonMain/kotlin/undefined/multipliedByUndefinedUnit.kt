@@ -42,12 +42,12 @@ fun <
         RightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
-        LeftQuantity,
-        RightQuantity,
+        UndefinedQuantityType.Multiplying<
+            LeftQuantity,
+            RightQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     LeftQuantity,
     LeftUnit,

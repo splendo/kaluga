@@ -51,12 +51,12 @@ fun <
         NumeratorReciprocalUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        DenominatorReciprocalQuantity,
-        NumeratorReciprocalQuantity,
+        UndefinedQuantityType.Dividing<
+            DenominatorReciprocalQuantity,
+            NumeratorReciprocalQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Reciprocal<
         NumeratorReciprocalQuantity,

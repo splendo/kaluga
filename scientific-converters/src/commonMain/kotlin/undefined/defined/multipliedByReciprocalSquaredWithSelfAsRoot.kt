@@ -39,12 +39,8 @@ import kotlin.jvm.JvmName
 fun <
     LeftAndRightReciprocalLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     LeftUnit : DefinedScientificUnit<LeftAndRightReciprocalLeftAndRightQuantity>,
-    ExtendedRightReciprocalLeftUnit : UndefinedExtendedUnit<
-        LeftAndRightReciprocalLeftAndRightQuantity,
-        >,
-    ExtendedRightReciprocalRightUnit : UndefinedExtendedUnit<
-        LeftAndRightReciprocalLeftAndRightQuantity,
-        >,
+    ExtendedRightReciprocalLeftUnit,
+    ExtendedRightReciprocalRightUnit,
     RightReciprocalUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             LeftAndRightReciprocalLeftAndRightQuantity,
@@ -73,13 +69,13 @@ fun <
         ExtendedRightReciprocalLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        UndefinedQuantityType.Extended<
-            LeftAndRightReciprocalLeftAndRightQuantity,
+        UndefinedQuantityType.Reciprocal<
+            UndefinedQuantityType.Extended<
+                LeftAndRightReciprocalLeftAndRightQuantity,
+                >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<LeftAndRightReciprocalLeftAndRightQuantity, LeftUnit>.multipliedByReciprocalSquaredWithSelfAsRoot(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Reciprocal<
@@ -96,4 +92,21 @@ fun <
         >,
     reciprocalTargetUnit: ExtendedRightReciprocalLeftUnit.() -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = right.unit.inverse.left.reciprocalTargetUnit().byMultiplying(this, right, factory)
+) where
+        ExtendedRightReciprocalLeftUnit : UndefinedExtendedUnit<
+            LeftAndRightReciprocalLeftAndRightQuantity,
+            >,
+        ExtendedRightReciprocalLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightReciprocalLeftAndRightQuantity,
+                >,
+            >,
+        ExtendedRightReciprocalRightUnit : UndefinedExtendedUnit<
+            LeftAndRightReciprocalLeftAndRightQuantity,
+            >,
+        ExtendedRightReciprocalRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightReciprocalLeftAndRightQuantity,
+                >,
+            > =
+    right.unit.inverse.left.reciprocalTargetUnit().byMultiplying(this, right, factory)

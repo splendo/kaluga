@@ -49,8 +49,8 @@ fun <
         RightRightUnit,
         >,
     WrappedLeftUnit : WrappedUndefinedExtendedUnit<
-    LeftQuantity,
-    LeftUnit,
+        LeftQuantity,
+        LeftUnit,
         >,
     TargetLeftUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -72,17 +72,17 @@ fun <
         RightRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
         UndefinedQuantityType.Multiplying<
-            UndefinedQuantityType.Extended<
-                LeftQuantity,
+            UndefinedQuantityType.Multiplying<
+                UndefinedQuantityType.Extended<
+                    LeftQuantity,
+                    >,
+                RightLeftQuantity,
                 >,
-            RightLeftQuantity,
+            RightRightQuantity,
             >,
-        RightRightQuantity,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<LeftQuantity, LeftUnit>.multipliedByMultiplyingUnit(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Multiplying<

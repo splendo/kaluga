@@ -36,9 +36,7 @@ import kotlin.jvm.JvmName
 // Mul<Ex<A>, B> / A! -> B
 
 fun <
-    ExtendedNumeratorLeftUnit : UndefinedExtendedUnit<
-        NumeratorLeftAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorLeftUnit,
     NumeratorRightQuantity : UndefinedQuantityType,
     NumeratorRightUnit : AbstractUndefinedScientificUnit<NumeratorRightQuantity>,
     NumeratorUnit : UndefinedMultipliedUnit<
@@ -52,9 +50,9 @@ fun <
     NumeratorLeftAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorUnit : DefinedScientificUnit<NumeratorLeftAndDenominatorQuantity>,
     NumeratorRightValue : UndefinedScientificValue<
-    NumeratorRightQuantity,
-    NumeratorRightUnit,
-    >,
+        NumeratorRightQuantity,
+        NumeratorRightUnit,
+        >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
         UndefinedQuantityType.Extended<
@@ -66,4 +64,13 @@ fun <
     >.dividedByLeft(
     right: ScientificValue<NumeratorLeftAndDenominatorQuantity, DenominatorUnit>,
     factory: (Decimal, NumeratorRightUnit) -> NumeratorRightValue,
-) = unit.right.byDividing(this, right, factory)
+) where
+        ExtendedNumeratorLeftUnit : UndefinedExtendedUnit<
+            NumeratorLeftAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorLeftAndDenominatorQuantity,
+                >,
+            > =
+    unit.right.byDividing(this, right, factory)

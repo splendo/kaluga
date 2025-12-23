@@ -37,9 +37,7 @@ import kotlin.jvm.JvmName
 // Mul<Ex<A>, B> * A! -> Mul<Mul<Ex<A>, B>, Wr<A>>
 
 fun <
-    ExtendedLeftLeftUnit : UndefinedExtendedUnit<
-        LeftLeftAndRightQuantity,
-        >,
+    ExtendedLeftLeftUnit,
     LeftRightQuantity : UndefinedQuantityType,
     LeftRightUnit : AbstractUndefinedScientificUnit<LeftRightQuantity>,
     LeftUnit : UndefinedMultipliedUnit<
@@ -53,8 +51,8 @@ fun <
     LeftLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     RightUnit : DefinedScientificUnit<LeftLeftAndRightQuantity>,
     WrappedRightUnit : WrappedUndefinedExtendedUnit<
-    LeftLeftAndRightQuantity,
-    RightUnit,
+        LeftLeftAndRightQuantity,
+        RightUnit,
         >,
     TargetUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Multiplying<
@@ -70,19 +68,19 @@ fun <
         WrappedRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
         UndefinedQuantityType.Multiplying<
+            UndefinedQuantityType.Multiplying<
+                UndefinedQuantityType.Extended<
+                    LeftLeftAndRightQuantity,
+                    >,
+                LeftRightQuantity,
+                >,
             UndefinedQuantityType.Extended<
                 LeftLeftAndRightQuantity,
                 >,
-            LeftRightQuantity,
             >,
-        UndefinedQuantityType.Extended<
-            LeftLeftAndRightQuantity,
-            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
         UndefinedQuantityType.Extended<
@@ -96,6 +94,15 @@ fun <
     rightAsUndefined: RightUnit.() -> WrappedRightUnit,
     leftUnitXWrappedRightUnit: LeftUnit.(WrappedRightUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.leftUnitXWrappedRightUnit(
-    right.unit.rightAsUndefined(),
-).byMultiplying(this, right, factory)
+) where
+        ExtendedLeftLeftUnit : UndefinedExtendedUnit<
+            LeftLeftAndRightQuantity,
+            >,
+        ExtendedLeftLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftLeftAndRightQuantity,
+                >,
+            > =
+    unit.leftUnitXWrappedRightUnit(
+        right.unit.rightAsUndefined(),
+    ).byMultiplying(this, right, factory)

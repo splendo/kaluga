@@ -42,9 +42,9 @@ fun <
         >,
     DenominatorUnit : AbstractUndefinedScientificUnit<NumeratorLeftAndRightAndDenominatorQuantity>,
     NumeratorLeftValue : UndefinedScientificValue<
-    NumeratorLeftAndRightAndDenominatorQuantity,
-    NumeratorLeftUnit,
-    >,
+        NumeratorLeftAndRightAndDenominatorQuantity,
+        NumeratorLeftUnit,
+        >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
         NumeratorLeftAndRightAndDenominatorQuantity,

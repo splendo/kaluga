@@ -42,12 +42,12 @@ fun <
         DenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        NumeratorQuantity,
-        DenominatorQuantity,
+        UndefinedQuantityType.Dividing<
+            NumeratorQuantity,
+            DenominatorQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     NumeratorQuantity,
     NumeratorUnit,

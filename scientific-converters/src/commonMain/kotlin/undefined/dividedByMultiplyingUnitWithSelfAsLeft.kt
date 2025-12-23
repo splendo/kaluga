@@ -48,11 +48,11 @@ fun <
         DenominatorRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        DenominatorRightQuantity,
+        UndefinedQuantityType.Reciprocal<
+            DenominatorRightQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     NumeratorAndDenominatorLeftQuantity,
     NumeratorUnit,

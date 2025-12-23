@@ -62,18 +62,18 @@ fun <
         RightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
         UndefinedQuantityType.Multiplying<
-            LeftLeftAndRightLeftAndRightQuantity,
-            LeftRightQuantity,
+            UndefinedQuantityType.Multiplying<
+                LeftLeftAndRightLeftAndRightQuantity,
+                LeftRightQuantity,
+                >,
+            UndefinedQuantityType.Multiplying<
+                LeftLeftAndRightLeftAndRightQuantity,
+                LeftLeftAndRightLeftAndRightQuantity,
+                >,
             >,
-        UndefinedQuantityType.Multiplying<
-            LeftLeftAndRightLeftAndRightQuantity,
-            LeftLeftAndRightLeftAndRightQuantity,
-            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
         LeftLeftAndRightLeftAndRightQuantity,

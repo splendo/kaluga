@@ -40,12 +40,8 @@ import kotlin.jvm.JvmName
 fun <
     NumeratorAndDenominatorReciprocalLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     NumeratorUnit : DefinedScientificUnit<NumeratorAndDenominatorReciprocalLeftAndRightQuantity>,
-    ExtendedDenominatorReciprocalLeftUnit : UndefinedExtendedUnit<
-        NumeratorAndDenominatorReciprocalLeftAndRightQuantity,
-        >,
-    ExtendedDenominatorReciprocalRightUnit : UndefinedExtendedUnit<
-        NumeratorAndDenominatorReciprocalLeftAndRightQuantity,
-        >,
+    ExtendedDenominatorReciprocalLeftUnit,
+    ExtendedDenominatorReciprocalRightUnit,
     DenominatorReciprocalUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             NumeratorAndDenominatorReciprocalLeftAndRightQuantity,
@@ -68,8 +64,8 @@ fun <
         DenominatorReciprocalUnit,
         >,
     WrappedNumeratorUnit : WrappedUndefinedExtendedUnit<
-    NumeratorAndDenominatorReciprocalLeftAndRightQuantity,
-    NumeratorUnit,
+        NumeratorAndDenominatorReciprocalLeftAndRightQuantity,
+        NumeratorUnit,
         >,
     TargetLeftUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -97,21 +93,21 @@ fun <
         ExtendedDenominatorReciprocalLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
         UndefinedQuantityType.Multiplying<
-            UndefinedQuantityType.Extended<
-                NumeratorAndDenominatorReciprocalLeftAndRightQuantity,
+            UndefinedQuantityType.Multiplying<
+                UndefinedQuantityType.Extended<
+                    NumeratorAndDenominatorReciprocalLeftAndRightQuantity,
+                    >,
+                UndefinedQuantityType.Extended<
+                    NumeratorAndDenominatorReciprocalLeftAndRightQuantity,
+                    >,
                 >,
             UndefinedQuantityType.Extended<
                 NumeratorAndDenominatorReciprocalLeftAndRightQuantity,
                 >,
             >,
-        UndefinedQuantityType.Extended<
-            NumeratorAndDenominatorReciprocalLeftAndRightQuantity,
-            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<NumeratorAndDenominatorReciprocalLeftAndRightQuantity, NumeratorUnit>.dividedByReciprocalSquaredWithSelfAsRoot(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Reciprocal<
@@ -130,8 +126,25 @@ fun <
     wrappedNumeratorUnitXExtendedDenominatorReciprocalLeftUnit: WrappedNumeratorUnit.(ExtendedDenominatorReciprocalLeftUnit) -> TargetLeftUnit,
     targetLeftUnitXExtendedDenominatorReciprocalLeftUnit: TargetLeftUnit.(ExtendedDenominatorReciprocalLeftUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.numeratorAsUndefined().wrappedNumeratorUnitXExtendedDenominatorReciprocalLeftUnit(
-    right.unit.inverse.left,
-).targetLeftUnitXExtendedDenominatorReciprocalLeftUnit(
-    right.unit.inverse.left,
-).byDividing(this, right, factory)
+) where
+        ExtendedDenominatorReciprocalLeftUnit : UndefinedExtendedUnit<
+            NumeratorAndDenominatorReciprocalLeftAndRightQuantity,
+            >,
+        ExtendedDenominatorReciprocalLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorReciprocalLeftAndRightQuantity,
+                >,
+            >,
+        ExtendedDenominatorReciprocalRightUnit : UndefinedExtendedUnit<
+            NumeratorAndDenominatorReciprocalLeftAndRightQuantity,
+            >,
+        ExtendedDenominatorReciprocalRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorReciprocalLeftAndRightQuantity,
+                >,
+            > =
+    unit.numeratorAsUndefined().wrappedNumeratorUnitXExtendedDenominatorReciprocalLeftUnit(
+        right.unit.inverse.left,
+    ).targetLeftUnitXExtendedDenominatorReciprocalLeftUnit(
+        right.unit.inverse.left,
+    ).byDividing(this, right, factory)

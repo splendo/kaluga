@@ -38,9 +38,7 @@ import kotlin.jvm.JvmName
 // Inv<Ex<A>> / Inv<Mul<Wr<A>, Ex<A>>> -> A!
 
 fun <
-    ExtendedNumeratorReciprocalUnit : UndefinedExtendedUnit<
-        NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity,
-        >,
+    ExtendedNumeratorReciprocalUnit,
     NumeratorUnit : UndefinedReciprocalUnit<
         UndefinedQuantityType.Extended<
             NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity,
@@ -50,12 +48,10 @@ fun <
     NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorReciprocalLeftUnit : DefinedScientificUnit<NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity>,
     WrappedDenominatorReciprocalLeftUnit : WrappedUndefinedExtendedUnit<
-    NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity,
-    DenominatorReciprocalLeftUnit,
-        >,
-    ExtendedDenominatorReciprocalRightUnit : UndefinedExtendedUnit<
         NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity,
+        DenominatorReciprocalLeftUnit,
         >,
+    ExtendedDenominatorReciprocalRightUnit,
     DenominatorReciprocalUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity,
@@ -100,4 +96,21 @@ fun <
         DenominatorUnit,
         >,
     factory: (Decimal, DenominatorReciprocalLeftUnit) -> DenominatorReciprocalLeftValue,
-) = right.unit.inverse.left.wrapped.byDividing(this, right, factory)
+) where
+        ExtendedNumeratorReciprocalUnit : UndefinedExtendedUnit<
+            NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity,
+            >,
+        ExtendedNumeratorReciprocalUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity,
+                >,
+            >,
+        ExtendedDenominatorReciprocalRightUnit : UndefinedExtendedUnit<
+            NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity,
+            >,
+        ExtendedDenominatorReciprocalRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity,
+                >,
+            > =
+    right.unit.inverse.left.wrapped.byDividing(this, right, factory)

@@ -58,8 +58,8 @@ fun <
     DenominatorDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorDenominatorUnit : DefinedScientificUnit<DenominatorDenominatorQuantity>,
     WrappedDenominatorDenominatorUnit : WrappedUndefinedExtendedUnit<
-    DenominatorDenominatorQuantity,
-    DenominatorDenominatorUnit,
+        DenominatorDenominatorQuantity,
+        DenominatorDenominatorUnit,
         >,
     DenominatorUnit : UndefinedDividedUnit<
         UndefinedQuantityType.Multiplying<

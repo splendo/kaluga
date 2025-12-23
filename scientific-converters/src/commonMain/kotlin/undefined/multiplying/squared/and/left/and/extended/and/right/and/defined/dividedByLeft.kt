@@ -37,14 +37,12 @@ import kotlin.jvm.JvmName
 // Mul<Ex<A>, Wr<A>> / Ex<A> -> A!
 
 fun <
-    ExtendedNumeratorLeftUnit : UndefinedExtendedUnit<
-        NumeratorLeftAndRightAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorLeftUnit,
     NumeratorLeftAndRightAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     NumeratorRightUnit : DefinedScientificUnit<NumeratorLeftAndRightAndDenominatorQuantity>,
     WrappedNumeratorRightUnit : WrappedUndefinedExtendedUnit<
-    NumeratorLeftAndRightAndDenominatorQuantity,
-    NumeratorRightUnit,
+        NumeratorLeftAndRightAndDenominatorQuantity,
+        NumeratorRightUnit,
         >,
     NumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -56,9 +54,7 @@ fun <
             >,
         WrappedNumeratorRightUnit,
         >,
-    ExtendedDenominatorUnit : UndefinedExtendedUnit<
-        NumeratorLeftAndRightAndDenominatorQuantity,
-        >,
+    ExtendedDenominatorUnit,
     NumeratorRightValue : ScientificValue<NumeratorLeftAndRightAndDenominatorQuantity, NumeratorRightUnit>,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
@@ -78,4 +74,21 @@ fun <
         ExtendedDenominatorUnit,
         >,
     factory: (Decimal, NumeratorRightUnit) -> NumeratorRightValue,
-) = unit.right.wrapped.byDividing(this, right, factory)
+) where
+        ExtendedNumeratorLeftUnit : UndefinedExtendedUnit<
+            NumeratorLeftAndRightAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorLeftAndRightAndDenominatorQuantity,
+                >,
+            >,
+        ExtendedDenominatorUnit : UndefinedExtendedUnit<
+            NumeratorLeftAndRightAndDenominatorQuantity,
+            >,
+        ExtendedDenominatorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorLeftAndRightAndDenominatorQuantity,
+                >,
+            > =
+    unit.right.wrapped.byDividing(this, right, factory)

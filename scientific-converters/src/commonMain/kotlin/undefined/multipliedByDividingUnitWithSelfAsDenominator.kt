@@ -43,9 +43,9 @@ fun <
         RightDenominatorUnit,
         >,
     RightNumeratorValue : UndefinedScientificValue<
-    RightNumeratorQuantity,
-    RightNumeratorUnit,
-    >,
+        RightNumeratorQuantity,
+        RightNumeratorUnit,
+        >,
     > UndefinedScientificValue<
     LeftAndRightDenominatorQuantity,
     LeftUnit,

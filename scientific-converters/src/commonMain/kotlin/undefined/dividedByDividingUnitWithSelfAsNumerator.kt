@@ -43,9 +43,9 @@ fun <
         DenominatorDenominatorUnit,
         >,
     DenominatorDenominatorValue : UndefinedScientificValue<
-    DenominatorDenominatorQuantity,
-    DenominatorDenominatorUnit,
-    >,
+        DenominatorDenominatorQuantity,
+        DenominatorDenominatorUnit,
+        >,
     > UndefinedScientificValue<
     NumeratorAndDenominatorNumeratorQuantity,
     NumeratorUnit,

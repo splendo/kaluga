@@ -46,8 +46,8 @@ fun <
         RightReciprocalUnit,
         >,
     WrappedLeftUnit : WrappedUndefinedExtendedUnit<
-    LeftQuantity,
-    LeftUnit,
+        LeftQuantity,
+        LeftUnit,
         >,
     TargetUnit : UndefinedDividedUnit<
         UndefinedQuantityType.Extended<
@@ -58,14 +58,14 @@ fun <
         RightReciprocalUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Extended<
-            LeftQuantity,
+        UndefinedQuantityType.Dividing<
+            UndefinedQuantityType.Extended<
+                LeftQuantity,
+                >,
+            RightReciprocalQuantity,
             >,
-        RightReciprocalQuantity,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<LeftQuantity, LeftUnit>.multipliedByReciprocalUndefinedUnit(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Reciprocal<

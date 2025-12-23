@@ -48,9 +48,9 @@ fun <
         RightReciprocalUnit,
         >,
     LeftLeftValue : UndefinedScientificValue<
-    LeftLeftQuantity,
-    LeftLeftUnit,
-    >,
+        LeftLeftQuantity,
+        LeftLeftUnit,
+        >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
         LeftLeftQuantity,

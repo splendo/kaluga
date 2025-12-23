@@ -37,9 +37,7 @@ import kotlin.jvm.JvmName
 // Inv<Mul<Ex<A>, B>> * A! -> Inv<B>
 
 fun <
-    ExtendedLeftReciprocalLeftUnit : UndefinedExtendedUnit<
-        LeftReciprocalLeftAndRightQuantity,
-        >,
+    ExtendedLeftReciprocalLeftUnit,
     LeftReciprocalRightQuantity : UndefinedQuantityType,
     LeftReciprocalRightUnit : AbstractUndefinedScientificUnit<LeftReciprocalRightQuantity>,
     LeftReciprocalUnit : UndefinedMultipliedUnit<
@@ -66,11 +64,11 @@ fun <
         LeftReciprocalRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        LeftReciprocalRightQuantity,
+        UndefinedQuantityType.Reciprocal<
+            LeftReciprocalRightQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Reciprocal<
         UndefinedQuantityType.Multiplying<
@@ -85,4 +83,13 @@ fun <
     right: ScientificValue<LeftReciprocalLeftAndRightQuantity, RightUnit>,
     reciprocalTargetUnit: LeftReciprocalRightUnit.() -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.inverse.right.reciprocalTargetUnit().byMultiplying(this, right, factory)
+) where
+        ExtendedLeftReciprocalLeftUnit : UndefinedExtendedUnit<
+            LeftReciprocalLeftAndRightQuantity,
+            >,
+        ExtendedLeftReciprocalLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftReciprocalLeftAndRightQuantity,
+                >,
+            > =
+    unit.inverse.right.reciprocalTargetUnit().byMultiplying(this, right, factory)

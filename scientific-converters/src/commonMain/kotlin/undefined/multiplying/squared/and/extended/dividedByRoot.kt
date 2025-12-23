@@ -36,12 +36,8 @@ import kotlin.jvm.JvmName
 // Mul<Ex<A>, Ex<A>> / A! -> Ex<A>
 
 fun <
-    ExtendedNumeratorLeftUnit : UndefinedExtendedUnit<
-        NumeratorLeftAndRightAndDenominatorQuantity,
-        >,
-    ExtendedNumeratorRightUnit : UndefinedExtendedUnit<
-        NumeratorLeftAndRightAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorLeftUnit,
+    ExtendedNumeratorRightUnit,
     NumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             NumeratorLeftAndRightAndDenominatorQuantity,
@@ -55,11 +51,11 @@ fun <
     NumeratorLeftAndRightAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorUnit : DefinedScientificUnit<NumeratorLeftAndRightAndDenominatorQuantity>,
     ExtendedNumeratorLeftValue : UndefinedScientificValue<
-    UndefinedQuantityType.Extended<
-        NumeratorLeftAndRightAndDenominatorQuantity,
+        UndefinedQuantityType.Extended<
+            NumeratorLeftAndRightAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorLeftUnit,
         >,
-    ExtendedNumeratorLeftUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
         UndefinedQuantityType.Extended<
@@ -73,4 +69,21 @@ fun <
     >.dividedByRoot(
     right: ScientificValue<NumeratorLeftAndRightAndDenominatorQuantity, DenominatorUnit>,
     factory: (Decimal, ExtendedNumeratorLeftUnit) -> ExtendedNumeratorLeftValue,
-) = unit.left.byDividing(this, right, factory)
+) where
+        ExtendedNumeratorLeftUnit : UndefinedExtendedUnit<
+            NumeratorLeftAndRightAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorLeftAndRightAndDenominatorQuantity,
+                >,
+            >,
+        ExtendedNumeratorRightUnit : UndefinedExtendedUnit<
+            NumeratorLeftAndRightAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorLeftAndRightAndDenominatorQuantity,
+                >,
+            > =
+    unit.left.byDividing(this, right, factory)

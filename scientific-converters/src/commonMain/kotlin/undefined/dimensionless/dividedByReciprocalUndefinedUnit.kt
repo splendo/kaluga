@@ -44,9 +44,9 @@ fun <
         DenominatorReciprocalUnit,
         >,
     DenominatorReciprocalValue : UndefinedScientificValue<
-    DenominatorReciprocalQuantity,
-    DenominatorReciprocalUnit,
-    >,
+        DenominatorReciprocalQuantity,
+        DenominatorReciprocalUnit,
+        >,
     > ScientificValue<PhysicalQuantity.Dimensionless, NumeratorUnit>.dividedByReciprocalUndefinedUnit(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Reciprocal<

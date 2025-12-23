@@ -39,8 +39,8 @@ fun <
     LeftUnit : DefinedScientificUnit<LeftAndRightQuantity>,
     RightUnit : DefinedScientificUnit<LeftAndRightQuantity>,
     WrappedLeftUnit : WrappedUndefinedExtendedUnit<
-    LeftAndRightQuantity,
-    LeftUnit,
+        LeftAndRightQuantity,
+        LeftUnit,
         >,
     TargetUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -53,16 +53,16 @@ fun <
         WrappedLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
-        UndefinedQuantityType.Extended<
-            LeftAndRightQuantity,
+        UndefinedQuantityType.Multiplying<
+            UndefinedQuantityType.Extended<
+                LeftAndRightQuantity,
+                >,
+            UndefinedQuantityType.Extended<
+                LeftAndRightQuantity,
+                >,
             >,
-        UndefinedQuantityType.Extended<
-            LeftAndRightQuantity,
-            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<LeftAndRightQuantity, LeftUnit>.multipliedBySelf(
     right: ScientificValue<LeftAndRightQuantity, RightUnit>,
     leftAsUndefined: LeftUnit.() -> WrappedLeftUnit,

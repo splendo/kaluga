@@ -40,9 +40,7 @@ import kotlin.jvm.JvmName
 fun <
     NumeratorNumeratorQuantity : UndefinedQuantityType,
     NumeratorNumeratorUnit : AbstractUndefinedScientificUnit<NumeratorNumeratorQuantity>,
-    ExtendedNumeratorDenominatorLeftUnit : UndefinedExtendedUnit<
-        NumeratorDenominatorLeftAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorDenominatorLeftUnit,
     NumeratorDenominatorRightQuantity : UndefinedQuantityType,
     NumeratorDenominatorRightUnit : AbstractUndefinedScientificUnit<NumeratorDenominatorRightQuantity>,
     NumeratorDenominatorUnit : UndefinedMultipliedUnit<
@@ -67,8 +65,8 @@ fun <
     NumeratorDenominatorLeftAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorUnit : DefinedScientificUnit<NumeratorDenominatorLeftAndDenominatorQuantity>,
     WrappedDenominatorUnit : WrappedUndefinedExtendedUnit<
-    NumeratorDenominatorLeftAndDenominatorQuantity,
-    DenominatorUnit,
+        NumeratorDenominatorLeftAndDenominatorQuantity,
+        DenominatorUnit,
         >,
     TargetDenominatorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Multiplying<
@@ -100,22 +98,22 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        NumeratorNumeratorQuantity,
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Dividing<
+            NumeratorNumeratorQuantity,
             UndefinedQuantityType.Multiplying<
+                UndefinedQuantityType.Multiplying<
+                    UndefinedQuantityType.Extended<
+                        NumeratorDenominatorLeftAndDenominatorQuantity,
+                        >,
+                    NumeratorDenominatorRightQuantity,
+                    >,
                 UndefinedQuantityType.Extended<
                     NumeratorDenominatorLeftAndDenominatorQuantity,
                     >,
-                NumeratorDenominatorRightQuantity,
-                >,
-            UndefinedQuantityType.Extended<
-                NumeratorDenominatorLeftAndDenominatorQuantity,
                 >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         NumeratorNumeratorQuantity,
@@ -133,8 +131,17 @@ fun <
     numeratorDenominatorUnitXWrappedDenominatorUnit: NumeratorDenominatorUnit.(WrappedDenominatorUnit) -> TargetDenominatorUnit,
     numeratorNumeratorUnitPerTargetDenominatorUnit: NumeratorNumeratorUnit.(TargetDenominatorUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.numerator.numeratorNumeratorUnitPerTargetDenominatorUnit(
-    unit.denominator.numeratorDenominatorUnitXWrappedDenominatorUnit(
-    right.unit.denominatorAsUndefined(),
-),
-).byDividing(this, right, factory)
+) where
+        ExtendedNumeratorDenominatorLeftUnit : UndefinedExtendedUnit<
+            NumeratorDenominatorLeftAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorDenominatorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorDenominatorLeftAndDenominatorQuantity,
+                >,
+            > =
+    unit.numerator.numeratorNumeratorUnitPerTargetDenominatorUnit(
+        unit.denominator.numeratorDenominatorUnitXWrappedDenominatorUnit(
+            right.unit.denominatorAsUndefined(),
+        ),
+    ).byDividing(this, right, factory)

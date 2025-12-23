@@ -59,11 +59,11 @@ fun <
         NumeratorReciprocalLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        NumeratorReciprocalLeftQuantity,
+        UndefinedQuantityType.Reciprocal<
+            NumeratorReciprocalLeftQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Reciprocal<
         UndefinedQuantityType.Multiplying<

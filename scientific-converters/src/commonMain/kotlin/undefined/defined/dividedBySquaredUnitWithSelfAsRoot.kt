@@ -39,12 +39,8 @@ import kotlin.jvm.JvmName
 fun <
     NumeratorAndDenominatorLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     NumeratorUnit : DefinedScientificUnit<NumeratorAndDenominatorLeftAndRightQuantity>,
-    ExtendedDenominatorLeftUnit : UndefinedExtendedUnit<
-        NumeratorAndDenominatorLeftAndRightQuantity,
-        >,
-    ExtendedDenominatorRightUnit : UndefinedExtendedUnit<
-        NumeratorAndDenominatorLeftAndRightQuantity,
-        >,
+    ExtendedDenominatorLeftUnit,
+    ExtendedDenominatorRightUnit,
     DenominatorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             NumeratorAndDenominatorLeftAndRightQuantity,
@@ -62,13 +58,13 @@ fun <
         ExtendedDenominatorLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        UndefinedQuantityType.Extended<
-            NumeratorAndDenominatorLeftAndRightQuantity,
+        UndefinedQuantityType.Reciprocal<
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorLeftAndRightQuantity,
+                >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<NumeratorAndDenominatorLeftAndRightQuantity, NumeratorUnit>.dividedBySquaredUnitWithSelfAsRoot(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Multiplying<
@@ -83,4 +79,21 @@ fun <
         >,
     reciprocalTargetUnit: ExtendedDenominatorLeftUnit.() -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = right.unit.left.reciprocalTargetUnit().byDividing(this, right, factory)
+) where
+        ExtendedDenominatorLeftUnit : UndefinedExtendedUnit<
+            NumeratorAndDenominatorLeftAndRightQuantity,
+            >,
+        ExtendedDenominatorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorLeftAndRightQuantity,
+                >,
+            >,
+        ExtendedDenominatorRightUnit : UndefinedExtendedUnit<
+            NumeratorAndDenominatorLeftAndRightQuantity,
+            >,
+        ExtendedDenominatorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorLeftAndRightQuantity,
+                >,
+            > =
+    right.unit.left.reciprocalTargetUnit().byDividing(this, right, factory)

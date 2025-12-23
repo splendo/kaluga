@@ -39,9 +39,7 @@ import kotlin.jvm.JvmName
 fun <
     LeftAndRightReciprocalQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     LeftUnit : DefinedScientificUnit<LeftAndRightReciprocalQuantity>,
-    ExtendedRightReciprocalUnit : UndefinedExtendedUnit<
-        LeftAndRightReciprocalQuantity,
-        >,
+    ExtendedRightReciprocalUnit,
     RightUnit : UndefinedReciprocalUnit<
         UndefinedQuantityType.Extended<
             LeftAndRightReciprocalQuantity,
@@ -61,4 +59,13 @@ fun <
         >,
     getDimensionless: () -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = getDimensionless().byMultiplying(this, right, factory)
+) where
+        ExtendedRightReciprocalUnit : UndefinedExtendedUnit<
+            LeftAndRightReciprocalQuantity,
+            >,
+        ExtendedRightReciprocalUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightReciprocalQuantity,
+                >,
+            > =
+    getDimensionless().byMultiplying(this, right, factory)

@@ -43,9 +43,9 @@ fun <
         >,
     RightUnit : AbstractUndefinedScientificUnit<LeftDenominatorAndRightQuantity>,
     LeftNumeratorValue : UndefinedScientificValue<
-    LeftNumeratorQuantity,
-    LeftNumeratorUnit,
-    >,
+        LeftNumeratorQuantity,
+        LeftNumeratorUnit,
+        >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         LeftNumeratorQuantity,

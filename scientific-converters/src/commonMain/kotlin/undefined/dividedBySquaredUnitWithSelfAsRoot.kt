@@ -47,11 +47,11 @@ fun <
         NumeratorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        NumeratorAndDenominatorLeftAndRightQuantity,
+        UndefinedQuantityType.Reciprocal<
+            NumeratorAndDenominatorLeftAndRightQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     NumeratorAndDenominatorLeftAndRightQuantity,
     NumeratorUnit,

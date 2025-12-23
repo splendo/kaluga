@@ -46,12 +46,8 @@ fun <
         LeftNumeratorLeftAndRightQuantity,
         LeftNumeratorRightUnit,
         >,
-    ExtendedLeftDenominatorLeftUnit : UndefinedExtendedUnit<
-        LeftDenominatorLeftAndRightAndRightQuantity,
-        >,
-    ExtendedLeftDenominatorRightUnit : UndefinedExtendedUnit<
-        LeftDenominatorLeftAndRightAndRightQuantity,
-        >,
+    ExtendedLeftDenominatorLeftUnit,
+    ExtendedLeftDenominatorRightUnit,
     LeftDenominatorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             LeftDenominatorLeftAndRightAndRightQuantity,
@@ -92,17 +88,17 @@ fun <
         ExtendedLeftDenominatorLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Multiplying<
-            LeftNumeratorLeftAndRightQuantity,
-            LeftNumeratorLeftAndRightQuantity,
+        UndefinedQuantityType.Dividing<
+            UndefinedQuantityType.Multiplying<
+                LeftNumeratorLeftAndRightQuantity,
+                LeftNumeratorLeftAndRightQuantity,
+                >,
+            UndefinedQuantityType.Extended<
+                LeftDenominatorLeftAndRightAndRightQuantity,
+                >,
             >,
-        UndefinedQuantityType.Extended<
-            LeftDenominatorLeftAndRightAndRightQuantity,
-            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<
@@ -123,6 +119,23 @@ fun <
     right: ScientificValue<LeftDenominatorLeftAndRightAndRightQuantity, RightUnit>,
     leftNumeratorUnitPerExtendedLeftDenominatorLeftUnit: LeftNumeratorUnit.(ExtendedLeftDenominatorLeftUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.numerator.leftNumeratorUnitPerExtendedLeftDenominatorLeftUnit(
-    unit.denominator.left,
-).byMultiplying(this, right, factory)
+) where
+        ExtendedLeftDenominatorLeftUnit : UndefinedExtendedUnit<
+            LeftDenominatorLeftAndRightAndRightQuantity,
+            >,
+        ExtendedLeftDenominatorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftDenominatorLeftAndRightAndRightQuantity,
+                >,
+            >,
+        ExtendedLeftDenominatorRightUnit : UndefinedExtendedUnit<
+            LeftDenominatorLeftAndRightAndRightQuantity,
+            >,
+        ExtendedLeftDenominatorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftDenominatorLeftAndRightAndRightQuantity,
+                >,
+            > =
+    unit.numerator.leftNumeratorUnitPerExtendedLeftDenominatorLeftUnit(
+        unit.denominator.left,
+    ).byMultiplying(this, right, factory)

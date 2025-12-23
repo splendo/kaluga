@@ -38,9 +38,7 @@ import kotlin.jvm.JvmName
 fun <
     NumeratorLeftQuantity : UndefinedQuantityType,
     NumeratorLeftUnit : AbstractUndefinedScientificUnit<NumeratorLeftQuantity>,
-    ExtendedNumeratorRightUnit : UndefinedExtendedUnit<
-        NumeratorRightAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorRightUnit,
     NumeratorUnit : UndefinedMultipliedUnit<
         NumeratorLeftQuantity,
         NumeratorLeftUnit,
@@ -52,9 +50,9 @@ fun <
     NumeratorRightAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorUnit : DefinedScientificUnit<NumeratorRightAndDenominatorQuantity>,
     NumeratorLeftValue : UndefinedScientificValue<
-    NumeratorLeftQuantity,
-    NumeratorLeftUnit,
-    >,
+        NumeratorLeftQuantity,
+        NumeratorLeftUnit,
+        >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
         NumeratorLeftQuantity,
@@ -66,4 +64,13 @@ fun <
     >.dividedByRight(
     right: ScientificValue<NumeratorRightAndDenominatorQuantity, DenominatorUnit>,
     factory: (Decimal, NumeratorLeftUnit) -> NumeratorLeftValue,
-) = unit.left.byDividing(this, right, factory)
+) where
+        ExtendedNumeratorRightUnit : UndefinedExtendedUnit<
+            NumeratorRightAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorRightAndDenominatorQuantity,
+                >,
+            > =
+    unit.left.byDividing(this, right, factory)

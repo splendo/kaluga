@@ -38,9 +38,7 @@ import kotlin.jvm.JvmName
 // Inv<Mul<Ex<A>, B>> / A! -> Inv<Mul<Mul<Ex<A>, B>, Wr<A>>>
 
 fun <
-    ExtendedNumeratorReciprocalLeftUnit : UndefinedExtendedUnit<
-        NumeratorReciprocalLeftAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorReciprocalLeftUnit,
     NumeratorReciprocalRightQuantity : UndefinedQuantityType,
     NumeratorReciprocalRightUnit : AbstractUndefinedScientificUnit<NumeratorReciprocalRightQuantity>,
     NumeratorReciprocalUnit : UndefinedMultipliedUnit<
@@ -63,8 +61,8 @@ fun <
     NumeratorReciprocalLeftAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorUnit : DefinedScientificUnit<NumeratorReciprocalLeftAndDenominatorQuantity>,
     WrappedDenominatorUnit : WrappedUndefinedExtendedUnit<
-    NumeratorReciprocalLeftAndDenominatorQuantity,
-    DenominatorUnit,
+        NumeratorReciprocalLeftAndDenominatorQuantity,
+        DenominatorUnit,
         >,
     TargetReciprocalUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Multiplying<
@@ -94,21 +92,21 @@ fun <
         TargetReciprocalUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Reciprocal<
             UndefinedQuantityType.Multiplying<
+                UndefinedQuantityType.Multiplying<
+                    UndefinedQuantityType.Extended<
+                        NumeratorReciprocalLeftAndDenominatorQuantity,
+                        >,
+                    NumeratorReciprocalRightQuantity,
+                    >,
                 UndefinedQuantityType.Extended<
                     NumeratorReciprocalLeftAndDenominatorQuantity,
                     >,
-                NumeratorReciprocalRightQuantity,
-                >,
-            UndefinedQuantityType.Extended<
-                NumeratorReciprocalLeftAndDenominatorQuantity,
                 >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Reciprocal<
         UndefinedQuantityType.Multiplying<
@@ -125,6 +123,15 @@ fun <
     numeratorReciprocalUnitXWrappedDenominatorUnit: NumeratorReciprocalUnit.(WrappedDenominatorUnit) -> TargetReciprocalUnit,
     reciprocalTargetUnit: TargetReciprocalUnit.() -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.inverse.numeratorReciprocalUnitXWrappedDenominatorUnit(
-    right.unit.denominatorAsUndefined(),
-).reciprocalTargetUnit().byDividing(this, right, factory)
+) where
+        ExtendedNumeratorReciprocalLeftUnit : UndefinedExtendedUnit<
+            NumeratorReciprocalLeftAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorReciprocalLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorReciprocalLeftAndDenominatorQuantity,
+                >,
+            > =
+    unit.inverse.numeratorReciprocalUnitXWrappedDenominatorUnit(
+        right.unit.denominatorAsUndefined(),
+    ).reciprocalTargetUnit().byDividing(this, right, factory)

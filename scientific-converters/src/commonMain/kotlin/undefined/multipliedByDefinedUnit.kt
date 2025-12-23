@@ -41,8 +41,8 @@ fun <
     RightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     RightUnit : DefinedScientificUnit<RightQuantity>,
     WrappedRightUnit : WrappedUndefinedExtendedUnit<
-    RightQuantity,
-    RightUnit,
+        RightQuantity,
+        RightUnit,
         >,
     TargetUnit : UndefinedMultipliedUnit<
         LeftQuantity,
@@ -53,14 +53,14 @@ fun <
         WrappedRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
-        LeftQuantity,
-        UndefinedQuantityType.Extended<
-            RightQuantity,
+        UndefinedQuantityType.Multiplying<
+            LeftQuantity,
+            UndefinedQuantityType.Extended<
+                RightQuantity,
+                >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     LeftQuantity,
     LeftUnit,

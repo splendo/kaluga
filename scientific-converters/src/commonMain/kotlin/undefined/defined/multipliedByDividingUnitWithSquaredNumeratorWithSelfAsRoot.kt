@@ -40,12 +40,8 @@ import kotlin.jvm.JvmName
 fun <
     LeftAndRightNumeratorLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     LeftUnit : DefinedScientificUnit<LeftAndRightNumeratorLeftAndRightQuantity>,
-    ExtendedRightNumeratorLeftUnit : UndefinedExtendedUnit<
-        LeftAndRightNumeratorLeftAndRightQuantity,
-        >,
-    ExtendedRightNumeratorRightUnit : UndefinedExtendedUnit<
-        LeftAndRightNumeratorLeftAndRightQuantity,
-        >,
+    ExtendedRightNumeratorLeftUnit,
+    ExtendedRightNumeratorRightUnit,
     RightNumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             LeftAndRightNumeratorLeftAndRightQuantity,
@@ -72,8 +68,8 @@ fun <
         RightDenominatorUnit,
         >,
     WrappedLeftUnit : WrappedUndefinedExtendedUnit<
-    LeftAndRightNumeratorLeftAndRightQuantity,
-    LeftUnit,
+        LeftAndRightNumeratorLeftAndRightQuantity,
+        LeftUnit,
         >,
     TargetNumeratorLeftUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -119,24 +115,24 @@ fun <
         RightDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Dividing<
             UndefinedQuantityType.Multiplying<
-                UndefinedQuantityType.Extended<
-                    LeftAndRightNumeratorLeftAndRightQuantity,
+                UndefinedQuantityType.Multiplying<
+                    UndefinedQuantityType.Extended<
+                        LeftAndRightNumeratorLeftAndRightQuantity,
+                        >,
+                    UndefinedQuantityType.Extended<
+                        LeftAndRightNumeratorLeftAndRightQuantity,
+                        >,
                     >,
                 UndefinedQuantityType.Extended<
                     LeftAndRightNumeratorLeftAndRightQuantity,
                     >,
                 >,
-            UndefinedQuantityType.Extended<
-                LeftAndRightNumeratorLeftAndRightQuantity,
-                >,
+            RightDenominatorQuantity,
             >,
-        RightDenominatorQuantity,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<LeftAndRightNumeratorLeftAndRightQuantity, LeftUnit>.multipliedByDividingUnitWithSquaredNumeratorWithSelfAsRoot(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Dividing<
@@ -157,10 +153,27 @@ fun <
     targetNumeratorLeftUnitXExtendedRightNumeratorLeftUnit: TargetNumeratorLeftUnit.(ExtendedRightNumeratorLeftUnit) -> TargetNumeratorUnit,
     targetNumeratorUnitPerRightDenominatorUnit: TargetNumeratorUnit.(RightDenominatorUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.leftAsUndefined().wrappedLeftUnitXExtendedRightNumeratorLeftUnit(
-    right.unit.numerator.left,
-).targetNumeratorLeftUnitXExtendedRightNumeratorLeftUnit(
-    right.unit.numerator.left,
-).targetNumeratorUnitPerRightDenominatorUnit(
-    right.unit.denominator,
-).byMultiplying(this, right, factory)
+) where
+        ExtendedRightNumeratorLeftUnit : UndefinedExtendedUnit<
+            LeftAndRightNumeratorLeftAndRightQuantity,
+            >,
+        ExtendedRightNumeratorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightNumeratorLeftAndRightQuantity,
+                >,
+            >,
+        ExtendedRightNumeratorRightUnit : UndefinedExtendedUnit<
+            LeftAndRightNumeratorLeftAndRightQuantity,
+            >,
+        ExtendedRightNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightNumeratorLeftAndRightQuantity,
+                >,
+            > =
+    unit.leftAsUndefined().wrappedLeftUnitXExtendedRightNumeratorLeftUnit(
+        right.unit.numerator.left,
+    ).targetNumeratorLeftUnitXExtendedRightNumeratorLeftUnit(
+        right.unit.numerator.left,
+    ).targetNumeratorUnitPerRightDenominatorUnit(
+        right.unit.denominator,
+    ).byMultiplying(this, right, factory)

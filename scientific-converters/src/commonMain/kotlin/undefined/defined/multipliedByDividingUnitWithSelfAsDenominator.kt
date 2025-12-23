@@ -40,9 +40,7 @@ fun <
     LeftUnit : DefinedScientificUnit<LeftAndRightDenominatorQuantity>,
     RightNumeratorQuantity : UndefinedQuantityType,
     RightNumeratorUnit : AbstractUndefinedScientificUnit<RightNumeratorQuantity>,
-    ExtendedRightDenominatorUnit : UndefinedExtendedUnit<
-        LeftAndRightDenominatorQuantity,
-        >,
+    ExtendedRightDenominatorUnit,
     RightUnit : UndefinedDividedUnit<
         RightNumeratorQuantity,
         RightNumeratorUnit,
@@ -52,9 +50,9 @@ fun <
         ExtendedRightDenominatorUnit,
         >,
     RightNumeratorValue : UndefinedScientificValue<
-    RightNumeratorQuantity,
-    RightNumeratorUnit,
-    >,
+        RightNumeratorQuantity,
+        RightNumeratorUnit,
+        >,
     > ScientificValue<LeftAndRightDenominatorQuantity, LeftUnit>.multipliedByDividingUnitWithSelfAsDenominator(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Dividing<
@@ -66,4 +64,13 @@ fun <
         RightUnit,
         >,
     factory: (Decimal, RightNumeratorUnit) -> RightNumeratorValue,
-) = right.unit.numerator.byMultiplying(this, right, factory)
+) where
+        ExtendedRightDenominatorUnit : UndefinedExtendedUnit<
+            LeftAndRightDenominatorQuantity,
+            >,
+        ExtendedRightDenominatorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightDenominatorQuantity,
+                >,
+            > =
+    right.unit.numerator.byMultiplying(this, right, factory)

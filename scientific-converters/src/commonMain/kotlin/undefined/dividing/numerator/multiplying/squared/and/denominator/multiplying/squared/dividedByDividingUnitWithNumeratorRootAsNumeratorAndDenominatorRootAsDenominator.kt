@@ -71,12 +71,12 @@ fun <
         DenominatorDenominatorUnit,
         >,
     DenominatorValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        NumeratorNumeratorLeftAndRightAndDenominatorNumeratorQuantity,
-        NumeratorDenominatorLeftAndRightAndDenominatorDenominatorQuantity,
+        UndefinedQuantityType.Dividing<
+            NumeratorNumeratorLeftAndRightAndDenominatorNumeratorQuantity,
+            NumeratorDenominatorLeftAndRightAndDenominatorDenominatorQuantity,
+            >,
+        DenominatorUnit,
         >,
-    DenominatorUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<

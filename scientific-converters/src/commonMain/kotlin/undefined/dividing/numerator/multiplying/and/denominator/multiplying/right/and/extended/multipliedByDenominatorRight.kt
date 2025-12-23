@@ -49,9 +49,7 @@ fun <
         >,
     LeftDenominatorLeftQuantity : UndefinedQuantityType,
     LeftDenominatorLeftUnit : AbstractUndefinedScientificUnit<LeftDenominatorLeftQuantity>,
-    ExtendedLeftDenominatorRightUnit : UndefinedExtendedUnit<
-        LeftDenominatorRightAndRightQuantity,
-        >,
+    ExtendedLeftDenominatorRightUnit,
     LeftDenominatorUnit : UndefinedMultipliedUnit<
         LeftDenominatorLeftQuantity,
         LeftDenominatorLeftUnit,
@@ -86,15 +84,15 @@ fun <
         LeftDenominatorLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Multiplying<
-            LeftNumeratorLeftQuantity,
-            LeftNumeratorRightQuantity,
+        UndefinedQuantityType.Dividing<
+            UndefinedQuantityType.Multiplying<
+                LeftNumeratorLeftQuantity,
+                LeftNumeratorRightQuantity,
+                >,
+            LeftDenominatorLeftQuantity,
             >,
-        LeftDenominatorLeftQuantity,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<
@@ -113,6 +111,15 @@ fun <
     right: ScientificValue<LeftDenominatorRightAndRightQuantity, RightUnit>,
     leftNumeratorUnitPerLeftDenominatorLeftUnit: LeftNumeratorUnit.(LeftDenominatorLeftUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.numerator.leftNumeratorUnitPerLeftDenominatorLeftUnit(
-    unit.denominator.left,
-).byMultiplying(this, right, factory)
+) where
+        ExtendedLeftDenominatorRightUnit : UndefinedExtendedUnit<
+            LeftDenominatorRightAndRightQuantity,
+            >,
+        ExtendedLeftDenominatorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftDenominatorRightAndRightQuantity,
+                >,
+            > =
+    unit.numerator.leftNumeratorUnitPerLeftDenominatorLeftUnit(
+        unit.denominator.left,
+    ).byMultiplying(this, right, factory)

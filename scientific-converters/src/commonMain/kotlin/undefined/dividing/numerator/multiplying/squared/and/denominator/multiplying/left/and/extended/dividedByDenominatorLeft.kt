@@ -47,9 +47,7 @@ fun <
         NumeratorNumeratorLeftAndRightQuantity,
         NumeratorNumeratorRightUnit,
         >,
-    ExtendedNumeratorDenominatorLeftUnit : UndefinedExtendedUnit<
-        NumeratorDenominatorLeftAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorDenominatorLeftUnit,
     NumeratorDenominatorRightQuantity : UndefinedQuantityType,
     NumeratorDenominatorRightUnit : AbstractUndefinedScientificUnit<NumeratorDenominatorRightQuantity>,
     NumeratorDenominatorUnit : UndefinedMultipliedUnit<
@@ -77,8 +75,8 @@ fun <
     NumeratorDenominatorLeftAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorUnit : DefinedScientificUnit<NumeratorDenominatorLeftAndDenominatorQuantity>,
     WrappedDenominatorUnit : WrappedUndefinedExtendedUnit<
-    NumeratorDenominatorLeftAndDenominatorQuantity,
-    DenominatorUnit,
+        NumeratorDenominatorLeftAndDenominatorQuantity,
+        DenominatorUnit,
         >,
     TargetDenominatorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Multiplying<
@@ -113,25 +111,25 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Multiplying<
-            NumeratorNumeratorLeftAndRightQuantity,
-            NumeratorNumeratorLeftAndRightQuantity,
-            >,
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Dividing<
             UndefinedQuantityType.Multiplying<
+                NumeratorNumeratorLeftAndRightQuantity,
+                NumeratorNumeratorLeftAndRightQuantity,
+                >,
+            UndefinedQuantityType.Multiplying<
+                UndefinedQuantityType.Multiplying<
+                    UndefinedQuantityType.Extended<
+                        NumeratorDenominatorLeftAndDenominatorQuantity,
+                        >,
+                    NumeratorDenominatorRightQuantity,
+                    >,
                 UndefinedQuantityType.Extended<
                     NumeratorDenominatorLeftAndDenominatorQuantity,
                     >,
-                NumeratorDenominatorRightQuantity,
-                >,
-            UndefinedQuantityType.Extended<
-                NumeratorDenominatorLeftAndDenominatorQuantity,
                 >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<
@@ -152,8 +150,17 @@ fun <
     numeratorDenominatorUnitXWrappedDenominatorUnit: NumeratorDenominatorUnit.(WrappedDenominatorUnit) -> TargetDenominatorUnit,
     numeratorNumeratorUnitPerTargetDenominatorUnit: NumeratorNumeratorUnit.(TargetDenominatorUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.numerator.numeratorNumeratorUnitPerTargetDenominatorUnit(
-    unit.denominator.numeratorDenominatorUnitXWrappedDenominatorUnit(
-    right.unit.denominatorAsUndefined(),
-),
-).byDividing(this, right, factory)
+) where
+        ExtendedNumeratorDenominatorLeftUnit : UndefinedExtendedUnit<
+            NumeratorDenominatorLeftAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorDenominatorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorDenominatorLeftAndDenominatorQuantity,
+                >,
+            > =
+    unit.numerator.numeratorNumeratorUnitPerTargetDenominatorUnit(
+        unit.denominator.numeratorDenominatorUnitXWrappedDenominatorUnit(
+            right.unit.denominatorAsUndefined(),
+        ),
+    ).byDividing(this, right, factory)

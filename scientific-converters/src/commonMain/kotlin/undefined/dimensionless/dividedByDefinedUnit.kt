@@ -40,8 +40,8 @@ fun <
     DenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorUnit : DefinedScientificUnit<DenominatorQuantity>,
     WrappedDenominatorUnit : WrappedUndefinedExtendedUnit<
-    DenominatorQuantity,
-    DenominatorUnit,
+        DenominatorQuantity,
+        DenominatorUnit,
         >,
     TargetUnit : UndefinedReciprocalUnit<
         UndefinedQuantityType.Extended<
@@ -50,13 +50,13 @@ fun <
         WrappedDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        UndefinedQuantityType.Extended<
-            DenominatorQuantity,
+        UndefinedQuantityType.Reciprocal<
+            UndefinedQuantityType.Extended<
+                DenominatorQuantity,
+                >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<PhysicalQuantity.Dimensionless, NumeratorUnit>.dividedByDefinedUnit(
     right: ScientificValue<DenominatorQuantity, DenominatorUnit>,
     denominatorAsUndefined: DenominatorUnit.() -> WrappedDenominatorUnit,

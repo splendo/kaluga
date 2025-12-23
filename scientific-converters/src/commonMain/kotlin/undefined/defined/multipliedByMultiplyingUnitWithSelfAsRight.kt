@@ -41,9 +41,7 @@ fun <
     LeftUnit : DefinedScientificUnit<LeftAndRightRightQuantity>,
     RightLeftQuantity : UndefinedQuantityType,
     RightLeftUnit : AbstractUndefinedScientificUnit<RightLeftQuantity>,
-    ExtendedRightRightUnit : UndefinedExtendedUnit<
-        LeftAndRightRightQuantity,
-        >,
+    ExtendedRightRightUnit,
     RightUnit : UndefinedMultipliedUnit<
         RightLeftQuantity,
         RightLeftUnit,
@@ -53,8 +51,8 @@ fun <
         ExtendedRightRightUnit,
         >,
     WrappedLeftUnit : WrappedUndefinedExtendedUnit<
-    LeftAndRightRightQuantity,
-    LeftUnit,
+        LeftAndRightRightQuantity,
+        LeftUnit,
         >,
     TargetLeftUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -78,19 +76,19 @@ fun <
         ExtendedRightRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
         UndefinedQuantityType.Multiplying<
+            UndefinedQuantityType.Multiplying<
+                UndefinedQuantityType.Extended<
+                    LeftAndRightRightQuantity,
+                    >,
+                RightLeftQuantity,
+                >,
             UndefinedQuantityType.Extended<
                 LeftAndRightRightQuantity,
                 >,
-            RightLeftQuantity,
             >,
-        UndefinedQuantityType.Extended<
-            LeftAndRightRightQuantity,
-            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<LeftAndRightRightQuantity, LeftUnit>.multipliedByMultiplyingUnitWithSelfAsRight(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Multiplying<
@@ -105,8 +103,17 @@ fun <
     wrappedLeftUnitXRightLeftUnit: WrappedLeftUnit.(RightLeftUnit) -> TargetLeftUnit,
     targetLeftUnitXExtendedRightRightUnit: TargetLeftUnit.(ExtendedRightRightUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.leftAsUndefined().wrappedLeftUnitXRightLeftUnit(
-    right.unit.left,
-).targetLeftUnitXExtendedRightRightUnit(
-    right.unit.right,
-).byMultiplying(this, right, factory)
+) where
+        ExtendedRightRightUnit : UndefinedExtendedUnit<
+            LeftAndRightRightQuantity,
+            >,
+        ExtendedRightRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightRightQuantity,
+                >,
+            > =
+    unit.leftAsUndefined().wrappedLeftUnitXRightLeftUnit(
+        right.unit.left,
+    ).targetLeftUnitXExtendedRightRightUnit(
+        right.unit.right,
+    ).byMultiplying(this, right, factory)

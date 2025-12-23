@@ -40,9 +40,7 @@ import kotlin.jvm.JvmName
 fun <
     NumeratorNumeratorAndDenominatorNumeratorQuantity : UndefinedQuantityType,
     NumeratorNumeratorUnit : AbstractUndefinedScientificUnit<NumeratorNumeratorAndDenominatorNumeratorQuantity>,
-    ExtendedNumeratorDenominatorUnit : UndefinedExtendedUnit<
-        NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
-        >,
+    ExtendedNumeratorDenominatorUnit,
     NumeratorUnit : UndefinedDividedUnit<
         NumeratorNumeratorAndDenominatorNumeratorQuantity,
         NumeratorNumeratorUnit,
@@ -55,12 +53,10 @@ fun <
     NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorDenominatorLeftUnit : DefinedScientificUnit<NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity>,
     WrappedDenominatorDenominatorLeftUnit : WrappedUndefinedExtendedUnit<
-    NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
-    DenominatorDenominatorLeftUnit,
-        >,
-    ExtendedDenominatorDenominatorRightUnit : UndefinedExtendedUnit<
         NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
+        DenominatorDenominatorLeftUnit,
         >,
+    ExtendedDenominatorDenominatorRightUnit,
     DenominatorDenominatorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
@@ -109,4 +105,21 @@ fun <
         DenominatorUnit,
         >,
     factory: (Decimal, DenominatorDenominatorLeftUnit) -> DenominatorDenominatorLeftValue,
-) = right.unit.denominator.left.wrapped.byDividing(this, right, factory)
+) where
+        ExtendedNumeratorDenominatorUnit : UndefinedExtendedUnit<
+            NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
+            >,
+        ExtendedNumeratorDenominatorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
+                >,
+            >,
+        ExtendedDenominatorDenominatorRightUnit : UndefinedExtendedUnit<
+            NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
+            >,
+        ExtendedDenominatorDenominatorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
+                >,
+            > =
+    right.unit.denominator.left.wrapped.byDividing(this, right, factory)

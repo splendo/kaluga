@@ -51,8 +51,8 @@ fun <
     LeftDenominatorAndRightNumeratorLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     LeftDenominatorUnit : DefinedScientificUnit<LeftDenominatorAndRightNumeratorLeftAndRightQuantity>,
     WrappedLeftDenominatorUnit : WrappedUndefinedExtendedUnit<
-    LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
-    LeftDenominatorUnit,
+        LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
+        LeftDenominatorUnit,
         >,
     LeftUnit : UndefinedDividedUnit<
         UndefinedQuantityType.Multiplying<
@@ -65,12 +65,8 @@ fun <
             >,
         WrappedLeftDenominatorUnit,
         >,
-    ExtendedRightNumeratorLeftUnit : UndefinedExtendedUnit<
-        LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
-        >,
-    ExtendedRightNumeratorRightUnit : UndefinedExtendedUnit<
-        LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
-        >,
+    ExtendedRightNumeratorLeftUnit,
+    ExtendedRightNumeratorRightUnit,
     RightNumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
@@ -136,4 +132,21 @@ fun <
         RightUnit,
         >,
     factory: (Decimal, LeftDenominatorUnit) -> LeftDenominatorValue,
-) = unit.denominator.wrapped.byMultiplying(this, right, factory)
+) where
+        ExtendedRightNumeratorLeftUnit : UndefinedExtendedUnit<
+            LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
+            >,
+        ExtendedRightNumeratorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
+                >,
+            >,
+        ExtendedRightNumeratorRightUnit : UndefinedExtendedUnit<
+            LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
+            >,
+        ExtendedRightNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
+                >,
+            > =
+    unit.denominator.wrapped.byMultiplying(this, right, factory)

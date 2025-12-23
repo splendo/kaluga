@@ -49,8 +49,8 @@ fun <
         DenominatorRightUnit,
         >,
     WrappedNumeratorUnit : WrappedUndefinedExtendedUnit<
-    NumeratorQuantity,
-    NumeratorUnit,
+        NumeratorQuantity,
+        NumeratorUnit,
         >,
     TargetUnit : UndefinedDividedUnit<
         UndefinedQuantityType.Extended<
@@ -64,17 +64,17 @@ fun <
         DenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        UndefinedQuantityType.Extended<
-            NumeratorQuantity,
+        UndefinedQuantityType.Dividing<
+            UndefinedQuantityType.Extended<
+                NumeratorQuantity,
+                >,
+            UndefinedQuantityType.Multiplying<
+                DenominatorLeftAndRightQuantity,
+                DenominatorLeftAndRightQuantity,
+                >,
             >,
-        UndefinedQuantityType.Multiplying<
-            DenominatorLeftAndRightQuantity,
-            DenominatorLeftAndRightQuantity,
-            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<NumeratorQuantity, NumeratorUnit>.dividedBySquaredUnit(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Multiplying<

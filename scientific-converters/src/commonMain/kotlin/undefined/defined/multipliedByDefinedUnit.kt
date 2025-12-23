@@ -40,12 +40,12 @@ fun <
     RightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     RightUnit : DefinedScientificUnit<RightQuantity>,
     WrappedLeftUnit : WrappedUndefinedExtendedUnit<
-    LeftQuantity,
-    LeftUnit,
+        LeftQuantity,
+        LeftUnit,
         >,
     WrappedRightUnit : WrappedUndefinedExtendedUnit<
-    RightQuantity,
-    RightUnit,
+        RightQuantity,
+        RightUnit,
         >,
     TargetUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -58,16 +58,16 @@ fun <
         WrappedRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
-        UndefinedQuantityType.Extended<
-            LeftQuantity,
+        UndefinedQuantityType.Multiplying<
+            UndefinedQuantityType.Extended<
+                LeftQuantity,
+                >,
+            UndefinedQuantityType.Extended<
+                RightQuantity,
+                >,
             >,
-        UndefinedQuantityType.Extended<
-            RightQuantity,
-            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<LeftQuantity, LeftUnit>.multipliedByDefinedUnit(
     right: ScientificValue<RightQuantity, RightUnit>,
     leftAsUndefined: LeftUnit.() -> WrappedLeftUnit,

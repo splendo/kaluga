@@ -65,12 +65,12 @@ fun <
         NumeratorNumeratorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
-        NumeratorNumeratorAndDenominatorReciprocalLeftQuantity,
-        NumeratorNumeratorAndDenominatorReciprocalLeftQuantity,
+        UndefinedQuantityType.Multiplying<
+            NumeratorNumeratorAndDenominatorReciprocalLeftQuantity,
+            NumeratorNumeratorAndDenominatorReciprocalLeftQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         NumeratorNumeratorAndDenominatorReciprocalLeftQuantity,

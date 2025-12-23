@@ -39,9 +39,7 @@ import kotlin.jvm.JvmName
 fun <
     LeftNumeratorQuantity : UndefinedQuantityType,
     LeftNumeratorUnit : AbstractUndefinedScientificUnit<LeftNumeratorQuantity>,
-    ExtendedLeftDenominatorLeftUnit : UndefinedExtendedUnit<
-        LeftDenominatorLeftAndRightQuantity,
-        >,
+    ExtendedLeftDenominatorLeftUnit,
     LeftDenominatorRightQuantity : UndefinedQuantityType,
     LeftDenominatorRightUnit : AbstractUndefinedScientificUnit<LeftDenominatorRightQuantity>,
     LeftDenominatorUnit : UndefinedMultipliedUnit<
@@ -72,12 +70,12 @@ fun <
         LeftDenominatorRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        LeftNumeratorQuantity,
-        LeftDenominatorRightQuantity,
+        UndefinedQuantityType.Dividing<
+            LeftNumeratorQuantity,
+            LeftDenominatorRightQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         LeftNumeratorQuantity,
@@ -93,6 +91,15 @@ fun <
     right: ScientificValue<LeftDenominatorLeftAndRightQuantity, RightUnit>,
     leftNumeratorUnitPerLeftDenominatorRightUnit: LeftNumeratorUnit.(LeftDenominatorRightUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.numerator.leftNumeratorUnitPerLeftDenominatorRightUnit(
-    unit.denominator.right,
-).byMultiplying(this, right, factory)
+) where
+        ExtendedLeftDenominatorLeftUnit : UndefinedExtendedUnit<
+            LeftDenominatorLeftAndRightQuantity,
+            >,
+        ExtendedLeftDenominatorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftDenominatorLeftAndRightQuantity,
+                >,
+            > =
+    unit.numerator.leftNumeratorUnitPerLeftDenominatorRightUnit(
+        unit.denominator.right,
+    ).byMultiplying(this, right, factory)

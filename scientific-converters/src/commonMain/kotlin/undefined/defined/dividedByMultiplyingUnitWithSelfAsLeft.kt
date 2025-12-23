@@ -39,9 +39,7 @@ import kotlin.jvm.JvmName
 fun <
     NumeratorAndDenominatorLeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     NumeratorUnit : DefinedScientificUnit<NumeratorAndDenominatorLeftQuantity>,
-    ExtendedDenominatorLeftUnit : UndefinedExtendedUnit<
-        NumeratorAndDenominatorLeftQuantity,
-        >,
+    ExtendedDenominatorLeftUnit,
     DenominatorRightQuantity : UndefinedQuantityType,
     DenominatorRightUnit : AbstractUndefinedScientificUnit<DenominatorRightQuantity>,
     DenominatorUnit : UndefinedMultipliedUnit<
@@ -57,11 +55,11 @@ fun <
         DenominatorRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        DenominatorRightQuantity,
+        UndefinedQuantityType.Reciprocal<
+            DenominatorRightQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<NumeratorAndDenominatorLeftQuantity, NumeratorUnit>.dividedByMultiplyingUnitWithSelfAsLeft(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Multiplying<
@@ -74,4 +72,13 @@ fun <
         >,
     reciprocalTargetUnit: DenominatorRightUnit.() -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = right.unit.right.reciprocalTargetUnit().byDividing(this, right, factory)
+) where
+        ExtendedDenominatorLeftUnit : UndefinedExtendedUnit<
+            NumeratorAndDenominatorLeftQuantity,
+            >,
+        ExtendedDenominatorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorLeftQuantity,
+                >,
+            > =
+    right.unit.right.reciprocalTargetUnit().byDividing(this, right, factory)

@@ -74,17 +74,17 @@ fun <
         TargetReciprocalUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Reciprocal<
-        UndefinedQuantityType.Multiplying<
+        UndefinedQuantityType.Reciprocal<
             UndefinedQuantityType.Multiplying<
-                NumeratorReciprocalQuantity,
-                DenominatorLeftQuantity,
+                UndefinedQuantityType.Multiplying<
+                    NumeratorReciprocalQuantity,
+                    DenominatorLeftQuantity,
+                    >,
+                DenominatorRightQuantity,
                 >,
-            DenominatorRightQuantity,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Reciprocal<
         NumeratorReciprocalQuantity,

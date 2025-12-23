@@ -70,18 +70,18 @@ fun <
         DenominatorReciprocalUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
         UndefinedQuantityType.Multiplying<
-            NumeratorLeftAndRightAndDenominatorReciprocalLeftQuantity,
-            NumeratorLeftAndRightAndDenominatorReciprocalLeftQuantity,
+            UndefinedQuantityType.Multiplying<
+                NumeratorLeftAndRightAndDenominatorReciprocalLeftQuantity,
+                NumeratorLeftAndRightAndDenominatorReciprocalLeftQuantity,
+                >,
+            UndefinedQuantityType.Multiplying<
+                NumeratorLeftAndRightAndDenominatorReciprocalLeftQuantity,
+                DenominatorReciprocalRightQuantity,
+                >,
             >,
-        UndefinedQuantityType.Multiplying<
-            NumeratorLeftAndRightAndDenominatorReciprocalLeftQuantity,
-            DenominatorReciprocalRightQuantity,
-            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
         NumeratorLeftAndRightAndDenominatorReciprocalLeftQuantity,

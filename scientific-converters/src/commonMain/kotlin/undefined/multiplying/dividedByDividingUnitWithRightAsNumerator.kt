@@ -58,12 +58,12 @@ fun <
         DenominatorDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
-        NumeratorLeftQuantity,
-        DenominatorDenominatorQuantity,
+        UndefinedQuantityType.Multiplying<
+            NumeratorLeftQuantity,
+            DenominatorDenominatorQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
         NumeratorLeftQuantity,

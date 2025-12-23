@@ -61,9 +61,9 @@ fun <
         DenominatorDenominatorUnit,
         >,
     NumeratorDenominatorValue : UndefinedScientificValue<
-    NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
-    NumeratorDenominatorUnit,
-    >,
+        NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
+        NumeratorDenominatorUnit,
+        >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         NumeratorNumeratorAndDenominatorNumeratorQuantity,

@@ -40,12 +40,10 @@ fun <
     NumeratorLeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     NumeratorLeftUnit : DefinedScientificUnit<NumeratorLeftQuantity>,
     WrappedNumeratorLeftUnit : WrappedUndefinedExtendedUnit<
-    NumeratorLeftQuantity,
-    NumeratorLeftUnit,
+        NumeratorLeftQuantity,
+        NumeratorLeftUnit,
         >,
-    ExtendedNumeratorRightUnit : UndefinedExtendedUnit<
-        NumeratorRightAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorRightUnit,
     NumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             NumeratorLeftQuantity,
@@ -72,4 +70,13 @@ fun <
     >.dividedByRight(
     right: ScientificValue<NumeratorRightAndDenominatorQuantity, DenominatorUnit>,
     factory: (Decimal, NumeratorLeftUnit) -> NumeratorLeftValue,
-) = unit.left.wrapped.byDividing(this, right, factory)
+) where
+        ExtendedNumeratorRightUnit : UndefinedExtendedUnit<
+            NumeratorRightAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorRightAndDenominatorQuantity,
+                >,
+            > =
+    unit.left.wrapped.byDividing(this, right, factory)

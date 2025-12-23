@@ -62,9 +62,9 @@ fun <
         DenominatorDenominatorUnit,
         >,
     NumeratorNumeratorLeftValue : UndefinedScientificValue<
-    NumeratorNumeratorLeftQuantity,
-    NumeratorNumeratorLeftUnit,
-    >,
+        NumeratorNumeratorLeftQuantity,
+        NumeratorNumeratorLeftUnit,
+        >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<

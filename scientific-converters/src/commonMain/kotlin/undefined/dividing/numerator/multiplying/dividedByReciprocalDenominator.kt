@@ -60,12 +60,12 @@ fun <
         DenominatorReciprocalUnit,
         >,
     NumeratorNumeratorValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
-        NumeratorNumeratorLeftQuantity,
-        NumeratorNumeratorRightQuantity,
+        UndefinedQuantityType.Multiplying<
+            NumeratorNumeratorLeftQuantity,
+            NumeratorNumeratorRightQuantity,
+            >,
+        NumeratorNumeratorUnit,
         >,
-    NumeratorNumeratorUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<

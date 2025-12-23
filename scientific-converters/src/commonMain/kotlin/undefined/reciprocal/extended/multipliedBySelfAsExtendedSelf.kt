@@ -37,9 +37,7 @@ import kotlin.jvm.JvmName
 // Inv<Ex<A>> * A! -> One
 
 fun <
-    ExtendedLeftReciprocalUnit : UndefinedExtendedUnit<
-        LeftReciprocalAndRightQuantity,
-        >,
+    ExtendedLeftReciprocalUnit,
     LeftUnit : UndefinedReciprocalUnit<
         UndefinedQuantityType.Extended<
             LeftReciprocalAndRightQuantity,
@@ -61,4 +59,13 @@ fun <
     right: ScientificValue<LeftReciprocalAndRightQuantity, RightUnit>,
     getDimensionless: () -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = getDimensionless().byMultiplying(this, right, factory)
+) where
+        ExtendedLeftReciprocalUnit : UndefinedExtendedUnit<
+            LeftReciprocalAndRightQuantity,
+            >,
+        ExtendedLeftReciprocalUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftReciprocalAndRightQuantity,
+                >,
+            > =
+    getDimensionless().byMultiplying(this, right, factory)

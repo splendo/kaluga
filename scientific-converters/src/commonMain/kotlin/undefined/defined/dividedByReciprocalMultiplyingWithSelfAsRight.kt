@@ -42,9 +42,7 @@ fun <
     NumeratorUnit : DefinedScientificUnit<NumeratorAndDenominatorReciprocalRightQuantity>,
     DenominatorReciprocalLeftQuantity : UndefinedQuantityType,
     DenominatorReciprocalLeftUnit : AbstractUndefinedScientificUnit<DenominatorReciprocalLeftQuantity>,
-    ExtendedDenominatorReciprocalRightUnit : UndefinedExtendedUnit<
-        NumeratorAndDenominatorReciprocalRightQuantity,
-        >,
+    ExtendedDenominatorReciprocalRightUnit,
     DenominatorReciprocalUnit : UndefinedMultipliedUnit<
         DenominatorReciprocalLeftQuantity,
         DenominatorReciprocalLeftUnit,
@@ -63,8 +61,8 @@ fun <
         DenominatorReciprocalUnit,
         >,
     WrappedNumeratorUnit : WrappedUndefinedExtendedUnit<
-    NumeratorAndDenominatorReciprocalRightQuantity,
-    NumeratorUnit,
+        NumeratorAndDenominatorReciprocalRightQuantity,
+        NumeratorUnit,
         >,
     TargetLeftUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -88,19 +86,19 @@ fun <
         ExtendedDenominatorReciprocalRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Multiplying<
         UndefinedQuantityType.Multiplying<
+            UndefinedQuantityType.Multiplying<
+                UndefinedQuantityType.Extended<
+                    NumeratorAndDenominatorReciprocalRightQuantity,
+                    >,
+                DenominatorReciprocalLeftQuantity,
+                >,
             UndefinedQuantityType.Extended<
                 NumeratorAndDenominatorReciprocalRightQuantity,
                 >,
-            DenominatorReciprocalLeftQuantity,
             >,
-        UndefinedQuantityType.Extended<
-            NumeratorAndDenominatorReciprocalRightQuantity,
-            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<NumeratorAndDenominatorReciprocalRightQuantity, NumeratorUnit>.dividedByReciprocalMultiplyingWithSelfAsRight(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Reciprocal<
@@ -117,8 +115,17 @@ fun <
     wrappedNumeratorUnitXDenominatorReciprocalLeftUnit: WrappedNumeratorUnit.(DenominatorReciprocalLeftUnit) -> TargetLeftUnit,
     targetLeftUnitXExtendedDenominatorReciprocalRightUnit: TargetLeftUnit.(ExtendedDenominatorReciprocalRightUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.numeratorAsUndefined().wrappedNumeratorUnitXDenominatorReciprocalLeftUnit(
-    right.unit.inverse.left,
-).targetLeftUnitXExtendedDenominatorReciprocalRightUnit(
-    right.unit.inverse.right,
-).byDividing(this, right, factory)
+) where
+        ExtendedDenominatorReciprocalRightUnit : UndefinedExtendedUnit<
+            NumeratorAndDenominatorReciprocalRightQuantity,
+            >,
+        ExtendedDenominatorReciprocalRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorReciprocalRightQuantity,
+                >,
+            > =
+    unit.numeratorAsUndefined().wrappedNumeratorUnitXDenominatorReciprocalLeftUnit(
+        right.unit.inverse.left,
+    ).targetLeftUnitXExtendedDenominatorReciprocalRightUnit(
+        right.unit.inverse.right,
+    ).byDividing(this, right, factory)

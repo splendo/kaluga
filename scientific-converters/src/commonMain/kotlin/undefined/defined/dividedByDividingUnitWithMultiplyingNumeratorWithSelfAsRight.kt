@@ -41,9 +41,7 @@ fun <
     NumeratorUnit : DefinedScientificUnit<NumeratorAndDenominatorNumeratorRightQuantity>,
     DenominatorNumeratorLeftQuantity : UndefinedQuantityType,
     DenominatorNumeratorLeftUnit : AbstractUndefinedScientificUnit<DenominatorNumeratorLeftQuantity>,
-    ExtendedDenominatorNumeratorRightUnit : UndefinedExtendedUnit<
-        NumeratorAndDenominatorNumeratorRightQuantity,
-        >,
+    ExtendedDenominatorNumeratorRightUnit,
     DenominatorNumeratorUnit : UndefinedMultipliedUnit<
         DenominatorNumeratorLeftQuantity,
         DenominatorNumeratorLeftUnit,
@@ -72,12 +70,12 @@ fun <
         DenominatorNumeratorLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        DenominatorDenominatorQuantity,
-        DenominatorNumeratorLeftQuantity,
+        UndefinedQuantityType.Dividing<
+            DenominatorDenominatorQuantity,
+            DenominatorNumeratorLeftQuantity,
+            >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > ScientificValue<NumeratorAndDenominatorNumeratorRightQuantity, NumeratorUnit>.dividedByDividingUnitWithMultiplyingNumeratorWithSelfAsRight(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Dividing<
@@ -93,6 +91,15 @@ fun <
         >,
     denominatorDenominatorUnitPerDenominatorNumeratorLeftUnit: DenominatorDenominatorUnit.(DenominatorNumeratorLeftUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = right.unit.denominator.denominatorDenominatorUnitPerDenominatorNumeratorLeftUnit(
-    right.unit.numerator.left,
-).byDividing(this, right, factory)
+) where
+        ExtendedDenominatorNumeratorRightUnit : UndefinedExtendedUnit<
+            NumeratorAndDenominatorNumeratorRightQuantity,
+            >,
+        ExtendedDenominatorNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorNumeratorRightQuantity,
+                >,
+            > =
+    right.unit.denominator.denominatorDenominatorUnitPerDenominatorNumeratorLeftUnit(
+        right.unit.numerator.left,
+    ).byDividing(this, right, factory)

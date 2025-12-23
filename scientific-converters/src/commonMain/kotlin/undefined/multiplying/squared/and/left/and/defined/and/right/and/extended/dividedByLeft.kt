@@ -40,12 +40,10 @@ fun <
     NumeratorLeftAndRightAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     NumeratorLeftUnit : DefinedScientificUnit<NumeratorLeftAndRightAndDenominatorQuantity>,
     WrappedNumeratorLeftUnit : WrappedUndefinedExtendedUnit<
-    NumeratorLeftAndRightAndDenominatorQuantity,
-    NumeratorLeftUnit,
-        >,
-    ExtendedNumeratorRightUnit : UndefinedExtendedUnit<
         NumeratorLeftAndRightAndDenominatorQuantity,
+        NumeratorLeftUnit,
         >,
+    ExtendedNumeratorRightUnit,
     NumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             NumeratorLeftAndRightAndDenominatorQuantity,
@@ -56,9 +54,7 @@ fun <
             >,
         ExtendedNumeratorRightUnit,
         >,
-    ExtendedDenominatorUnit : UndefinedExtendedUnit<
-        NumeratorLeftAndRightAndDenominatorQuantity,
-        >,
+    ExtendedDenominatorUnit,
     NumeratorLeftValue : ScientificValue<NumeratorLeftAndRightAndDenominatorQuantity, NumeratorLeftUnit>,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
@@ -78,4 +74,21 @@ fun <
         ExtendedDenominatorUnit,
         >,
     factory: (Decimal, NumeratorLeftUnit) -> NumeratorLeftValue,
-) = unit.left.wrapped.byDividing(this, right, factory)
+) where
+        ExtendedNumeratorRightUnit : UndefinedExtendedUnit<
+            NumeratorLeftAndRightAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorLeftAndRightAndDenominatorQuantity,
+                >,
+            >,
+        ExtendedDenominatorUnit : UndefinedExtendedUnit<
+            NumeratorLeftAndRightAndDenominatorQuantity,
+            >,
+        ExtendedDenominatorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorLeftAndRightAndDenominatorQuantity,
+                >,
+            > =
+    unit.left.wrapped.byDividing(this, right, factory)

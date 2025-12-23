@@ -37,9 +37,7 @@ import kotlin.jvm.JvmName
 // Div<Mul<Ex<A>, B>, Mul<C, D>> / A! -> Div<B, Mul<C, D>>
 
 fun <
-    ExtendedNumeratorNumeratorLeftUnit : UndefinedExtendedUnit<
-        NumeratorNumeratorLeftAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorNumeratorLeftUnit,
     NumeratorNumeratorRightQuantity : UndefinedQuantityType,
     NumeratorNumeratorRightUnit : AbstractUndefinedScientificUnit<NumeratorNumeratorRightQuantity>,
     NumeratorNumeratorUnit : UndefinedMultipliedUnit<
@@ -86,15 +84,15 @@ fun <
         NumeratorDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-    UndefinedQuantityType.Dividing<
-        NumeratorNumeratorRightQuantity,
-        UndefinedQuantityType.Multiplying<
-            NumeratorDenominatorLeftQuantity,
-            NumeratorDenominatorRightQuantity,
+        UndefinedQuantityType.Dividing<
+            NumeratorNumeratorRightQuantity,
+            UndefinedQuantityType.Multiplying<
+                NumeratorDenominatorLeftQuantity,
+                NumeratorDenominatorRightQuantity,
+                >,
             >,
+        TargetUnit,
         >,
-    TargetUnit,
-    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<
@@ -113,6 +111,15 @@ fun <
     right: ScientificValue<NumeratorNumeratorLeftAndDenominatorQuantity, DenominatorUnit>,
     numeratorNumeratorRightUnitPerNumeratorDenominatorUnit: NumeratorNumeratorRightUnit.(NumeratorDenominatorUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.numerator.right.numeratorNumeratorRightUnitPerNumeratorDenominatorUnit(
-    unit.denominator,
-).byDividing(this, right, factory)
+) where
+        ExtendedNumeratorNumeratorLeftUnit : UndefinedExtendedUnit<
+            NumeratorNumeratorLeftAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorNumeratorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorNumeratorLeftAndDenominatorQuantity,
+                >,
+            > =
+    unit.numerator.right.numeratorNumeratorRightUnitPerNumeratorDenominatorUnit(
+        unit.denominator,
+    ).byDividing(this, right, factory)

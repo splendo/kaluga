@@ -47,8 +47,8 @@ fun <
     RightRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     RightRightUnit : DefinedScientificUnit<RightRightQuantity>,
     WrappedRightRightUnit : WrappedUndefinedExtendedUnit<
-    RightRightQuantity,
-    RightRightUnit,
+        RightRightQuantity,
+        RightRightUnit,
         >,
     RightUnit : UndefinedMultipliedUnit<
         LeftReciprocalAndRightLeftQuantity,

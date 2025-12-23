@@ -39,14 +39,12 @@ import kotlin.jvm.JvmName
 fun <
     NumeratorAndDenominatorNumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     NumeratorUnit : DefinedScientificUnit<NumeratorAndDenominatorNumeratorQuantity>,
-    ExtendedDenominatorNumeratorUnit : UndefinedExtendedUnit<
-        NumeratorAndDenominatorNumeratorQuantity,
-        >,
+    ExtendedDenominatorNumeratorUnit,
     DenominatorDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     DenominatorDenominatorUnit : DefinedScientificUnit<DenominatorDenominatorQuantity>,
     WrappedDenominatorDenominatorUnit : WrappedUndefinedExtendedUnit<
-    DenominatorDenominatorQuantity,
-    DenominatorDenominatorUnit,
+        DenominatorDenominatorQuantity,
+        DenominatorDenominatorUnit,
         >,
     DenominatorUnit : UndefinedDividedUnit<
         UndefinedQuantityType.Extended<
@@ -72,4 +70,13 @@ fun <
         DenominatorUnit,
         >,
     factory: (Decimal, DenominatorDenominatorUnit) -> DenominatorDenominatorValue,
-) = right.unit.denominator.wrapped.byDividing(this, right, factory)
+) where
+        ExtendedDenominatorNumeratorUnit : UndefinedExtendedUnit<
+            NumeratorAndDenominatorNumeratorQuantity,
+            >,
+        ExtendedDenominatorNumeratorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorNumeratorQuantity,
+                >,
+            > =
+    right.unit.denominator.wrapped.byDividing(this, right, factory)
