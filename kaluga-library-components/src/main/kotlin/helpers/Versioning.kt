@@ -24,15 +24,10 @@ import org.gradle.internal.extensions.core.extra
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.invoke
 
-internal fun calculateVersion(
-    version: String,
-    releaseType: String,
-    branchName: String?,
-    gitHash: String?,
-    buildNumber: String?,
-): String {
+internal fun calculateVersion(version: String, releaseType: String, branchName: String?, gitHash: String?, buildNumber: String?): String {
     var appendix = when (releaseType) {
         "release" -> ""
+
         "-branch-alpha" -> branchName?.let { branch ->
             val sanitizedBranch = branch.substringAfterLast('/')
                 .replace(' ', '-')
@@ -43,7 +38,9 @@ internal fun calculateVersion(
                 .joinToString("-")
             "-$sanitizedBranch-alpha"
         } ?: error("Trying to append a branch name to the version, but no branch is present.")
+
         "-commit-alpha" -> "-$gitHash-alpha"
+
         else -> "-alpha"
     }
 

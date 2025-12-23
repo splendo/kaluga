@@ -34,6 +34,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.api.tasks.testing.logging.TestLoggingContainer
 import org.gradle.kotlin.dsl.configure
+import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
@@ -56,7 +57,6 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
     }
 
     fun beforeProjectEvaluated(project: Project) {
-
         // XXX: re-enable if there are problems with Dokka
         // this is currently sidestepped by excluding scientific units
         // project.extensions.configure(type = DokkaExtension::class) {
@@ -78,19 +78,17 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
     }
 
     private fun Project.setupPublishingDuringEvaluation() {
-
         project.extensions.configure(MavenPublishBaseExtension::class) {
-
             coordinates(version = project.kalugaVersion)
 
             // this specific android config must go early
             if (project.plugins.hasPlugin(com.android.build.gradle.LibraryPlugin::class.java)) {
-                    configure(
-                        platform = AndroidMultiVariantLibrary(
-                            sourcesJar = true,
-                            publishJavadocJar = false,
-                        )
-                    )
+                configure(
+                    platform = AndroidMultiVariantLibrary(
+                        sourcesJar = true,
+                        publishJavadocJar = false,
+                    ),
+                )
             }
 
             // Provide artifacts information requited by Maven Central
@@ -120,33 +118,33 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
     }
 
     protected fun Project.setupPublishingAfterEvaluation() {
-
         project.extensions.configure(MavenPublishBaseExtension::class) {
-
-                // scientific docs take an enormous amount of RAM so we skip them
-
-                when {
-
-                    project.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> configure(
-                        KotlinMultiplatform(
-                            // scientific docs take an enormous amount of RAM so we skip them
-                            javadocJar = if (project.name.startsWith("scientific"))
-                                JavadocJar.Empty()
-                            else
-                                JavadocJar.Dokka("dokkaGeneratePublicationHtml"),
-                            sourcesJar = true,
-                        )
-                    )
-
+            // scientific docs take an enormous amount of RAM so we skip them
+            when {
+                project.plugins.hasPlugin(KotlinMultiplatformPluginWrapper::class.java) -> configure(
+                    KotlinMultiplatform(
+                        // scientific docs take an enormous amount of RAM so we skip them
+                        javadocJar = if (project.name.startsWith("scientific")) {
+                            JavadocJar.Empty()
+                        } else {
+                            JavadocJar.Dokka("dokkaGeneratePublicationHtml")
+                        },
+                        sourcesJar = true,
+                    ),
+                )
 
                 project.plugins.hasPlugin(VersionCatalogPlugin::class.java) -> configure(platform = com.vanniktech.maven.publish.VersionCatalog())
 
                 project.plugins.hasPlugin(com.android.build.gradle.LibraryPlugin::class.java) -> {
                     // noop, android went in before evaluate
-
                 }
+
                 else -> {
-                    project.logger.info("No plugin type detected that can be published for ${project.name}, skipping configuration. Plugins: ${project.plugins.joinToString { it.javaClass.name }}")
+                    project.logger.info(
+                        "No plugin type detected that can be published for ${project.name}, skipping configuration. Plugins: ${project.plugins.joinToString {
+                            it.javaClass.name
+                        }}",
+                    )
                 }
             }
             publishToMavenCentral()
@@ -182,5 +180,4 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
      * Abstract setup of a [Project] with the configuration of this extension after it has been evaluated.
      */
     protected abstract fun Project.afterProjectEvaluated()
-
 }

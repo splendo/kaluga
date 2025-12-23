@@ -48,12 +48,15 @@ import java.io.FileWriter
 import java.util.Locale.getDefault
 import javax.inject.Inject
 
-open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multiplatformExtension: KotlinMultiplatformExtension, versionCatalog: VersionCatalog, objects: ObjectFactory) :
-    BaseKalugaSubprojectExtension(versionCatalog, null, objects) {
+open class KalugaMultiplatformSubprojectExtension @Inject constructor(
+    val multiplatformExtension: KotlinMultiplatformExtension,
+    versionCatalog: VersionCatalog,
+    objects: ObjectFactory,
+) : BaseKalugaSubprojectExtension(versionCatalog, null, objects) {
 
     companion object {
-        private const val testDependentProjectsEnvName = "TEST_DEPENDENT_PROJECTS"
-        private const val onCiEnvName = "CI"
+        private const val TEST_DEPENDENT_PROJECTS_ENV_NAME = "TEST_DEPENDENT_PROJECTS"
+        private const val ON_CI_ENV_NAME = "CI"
     }
     private enum class IOSTarget(val sourceSetName: String) {
         X64("iosX64"),
@@ -104,17 +107,11 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
         frameworkConfig = action
     }
 
-    override var moduleName: String
-        get()  {
-            val ext = multiplatformExtension.extensions.findByType(KotlinMultiplatformAndroidLibraryExtension::class.java)!!
-            return ext.namespace.orEmpty()
-                .removePrefix("$BASE_GROUP.")
-                .removeSuffix(namespacePostfix?.let { ".$it" } ?: "")
-        }
-
+    private val androidLibraryExtension = multiplatformExtension.extensions.findByType(KotlinMultiplatformAndroidLibraryExtension::class.java)!!
+    override var namespace: String?
+        get() = androidLibraryExtension.namespace
         set(value) {
-            val ext = multiplatformExtension.extensions.findByType(KotlinMultiplatformAndroidLibraryExtension::class.java)!!
-            ext.namespace = listOfNotNull(BASE_GROUP, value, namespacePostfix).joinToString(".")
+            androidLibraryExtension.namespace = value
         }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -151,18 +148,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
                 }
             }
         }
-
-        if (listOf(testDependentProjectsEnvName, onCiEnvName).any { System.getenv().containsKey(it) }) {
-            parent?.subprojects?.filter {
-                it.name.startsWith("${project.name}-") || it.name.endsWith("-${project.name}")
-            }?.forEach { module ->
-                afterEvaluate {
-                    // logger.info("[connect_check_expansion] :${project.name}:connectedDebugAndroidTest dependsOn:${module.name}:connectedDebugAndroidTest")
-                    // tasks.getByPath("connectedDebugAndroidTest")
-                    //     .dependsOn(":${module.name}:connectedDebugAndroidTest")
-                }
-            }
-        }
     }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -192,7 +177,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
         }
 
         project.afterEvaluate {
-
             applyDefaultHierarchyTemplate()
             dependencies {
                 implementation("kotlinx-coroutines-core".asDependency())
@@ -220,7 +204,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
                 }
 
                 androidMain.configure {
-
                     dependencies {
                         androidMainDependencies.forEach {
                             implementation(it)
@@ -242,6 +225,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
                 }
 
                 getByName("androidDeviceTest") {
+                    // No longer allowed so leads to warning. Seems to work for now but probably fragile
                     dependsOn(getByName("commonTest"))
                     dependencies {
                         androidDeviceTestDependencies.forEach {
@@ -272,7 +256,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
                 }
 
                 iosMain.configure {
-                    iosDeploymentTarget = "15.0"  
+                    iosDeploymentTarget = "15.0"
                     dependencies {
                         multiplatformDependencies.ios.mainDependencies.forEach {
                             it.execute(this)
@@ -350,7 +334,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(val multip
                     main.cinterops.let { mainInterops ->
                         buildSwiftLibTask?.let { buildSwiftLibTask ->
                             mainInterops.create("swiftInterop") {
-
                                 val defFile = File(layout.buildDirectory.asFile.get(), "cinterop/$name/$targetName/swiftinterop.def")
 
                                 if (defFile.exists()) {

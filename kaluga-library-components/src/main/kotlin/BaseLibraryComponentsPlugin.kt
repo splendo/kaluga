@@ -22,7 +22,7 @@ import com.splendo.kaluga.plugin.extensions.ComposeKalugaAndroidSubprojectExtens
 import com.splendo.kaluga.plugin.extensions.DatabindingKalugaAndroidSubprojectExtension
 import com.splendo.kaluga.plugin.extensions.KalugaMultiplatformSubprojectExtension
 import com.splendo.kaluga.plugin.extensions.KalugaRootExtension
-// import kotlinx.kover.gradle.plugin.KoverGradlePlugin
+import kotlinx.kover.gradle.plugin.KoverGradlePlugin
 import kotlinx.validation.BinaryCompatibilityValidatorPlugin
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Plugin
@@ -58,30 +58,31 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
         } catch (e: InvalidUserDataException) {
             project.logger.error(
                 "Missing Version Catalog named \"libs\". " +
-                    "Make sure the version catalog provided by this plugin is linked to your project as \"libs\""
+                    "Make sure the version catalog provided by this plugin is linked to your project as \"libs\"",
             )
             throw e
         }
         pluginManager.apply(KotlinterPlugin::class)
         pluginManager.apply(DependencyCheckPlugin::class)
         pluginManager.apply(DokkaPlugin::class)
-        //pluginManager.apply(KoverGradlePlugin::class)
         pluginManager.apply(com.palantir.gradle.gitversion.GitVersionPlugin::class)
 
         val kalugaExtension = when {
             rootProject == this -> {
                 pluginManager.apply(BinaryCompatibilityValidatorPlugin::class)
-                extensions.create<KalugaRootExtension>(EXTENSION_NAME,  versionCatalog)
+                extensions.create<KalugaRootExtension>(EXTENSION_NAME, versionCatalog)
             }
+
             subExtensionClass == ComposeKalugaAndroidSubprojectExtension::class -> {
                 pluginManager.addSubprojectExtensionPlugins(extensions)
                 val libraryExtension = extensions.findByType(com.android.build.gradle.LibraryExtension::class)!!
-                extensions.create<ComposeKalugaAndroidSubprojectExtension>(EXTENSION_NAME,  versionCatalog, libraryExtension, project.objects)
+                extensions.create<ComposeKalugaAndroidSubprojectExtension>(EXTENSION_NAME, versionCatalog, libraryExtension, project.objects)
             }
+
             subExtensionClass == DatabindingKalugaAndroidSubprojectExtension::class -> {
                 pluginManager.addSubprojectExtensionPlugins(extensions)
                 val libraryExtension = extensions.findByType(com.android.build.gradle.LibraryExtension::class)!!
-                extensions.create<DatabindingKalugaAndroidSubprojectExtension>(EXTENSION_NAME,versionCatalog, libraryExtension, project.objects)
+                extensions.create<DatabindingKalugaAndroidSubprojectExtension>(EXTENSION_NAME, versionCatalog, libraryExtension, project.objects)
             }
 
             subExtensionClass == KalugaMultiplatformSubprojectExtension::class -> {
@@ -89,6 +90,7 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
                 val multiplatformExtension = extensions.findByType(KotlinMultiplatformExtension::class)!!
                 extensions.create<KalugaMultiplatformSubprojectExtension>(EXTENSION_NAME, multiplatformExtension, versionCatalog, project.objects)
             }
+
             else -> {
                 error("Unknown project project applied plugin: ${project.name} subExtensionClass: ${subExtensionClass.simpleName}")
             }
@@ -96,6 +98,8 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
 
         pluginManager.apply(com.vanniktech.maven.publish.MavenPublishBasePlugin::class)
         kalugaExtension.beforeProjectEvaluated(this)
+        // Must be applied after setup due to https://github.com/Kotlin/kotlinx-kover/issues/772
+        pluginManager.apply(KoverGradlePlugin::class)
 
         afterEvaluate {
             kalugaExtension.afterProjectEvaluated(this)

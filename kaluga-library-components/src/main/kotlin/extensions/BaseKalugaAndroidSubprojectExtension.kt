@@ -32,12 +32,10 @@ import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatalog, val libraryExtension: LibraryExtension, namespacePostfix: String, objects: ObjectFactory) :
     BaseKalugaSubprojectExtension(versionCatalog, namespacePostfix, objects) {
 
-    override var moduleName: String
-        get() = libraryExtension.namespace.orEmpty()
-            .removePrefix("$BASE_GROUP.")
-            .removeSuffix(namespacePostfix?.let { ".$it" } ?: "")
+    override var namespace: String?
+        get() = libraryExtension.namespace
         set(value) {
-            libraryExtension.namespace = listOfNotNull(BASE_GROUP, value, namespacePostfix).joinToString(".")
+            libraryExtension.namespace = value
         }
 
     override fun Project.setupSubproject() {}
@@ -118,6 +116,4 @@ abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatal
         }
         configureSubproject()
     }
-
-
 }
