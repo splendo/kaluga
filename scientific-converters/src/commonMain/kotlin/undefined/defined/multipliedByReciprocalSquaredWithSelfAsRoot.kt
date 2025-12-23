@@ -19,21 +19,26 @@
 package com.splendo.kaluga.scientific.converter.undefined.defined
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
+import kotlin.jvm.JvmName
 
 // A! * Inv<Mul<Ex<A>, Ex<A>>> -> Inv<Ex<A>>
 
 fun <
     LeftAndRightReciprocalLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    LeftUnit : ScientificUnit<LeftAndRightReciprocalLeftAndRightQuantity>,
+    LeftUnit : DefinedScientificUnit<LeftAndRightReciprocalLeftAndRightQuantity>,
     ExtendedRightReciprocalLeftUnit : UndefinedExtendedUnit<
         LeftAndRightReciprocalLeftAndRightQuantity,
         >,
@@ -68,13 +73,13 @@ fun <
         ExtendedRightReciprocalLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-        UndefinedQuantityType.Reciprocal<
-            UndefinedQuantityType.Extended<
-                LeftAndRightReciprocalLeftAndRightQuantity,
-                >,
+    UndefinedQuantityType.Reciprocal<
+        UndefinedQuantityType.Extended<
+            LeftAndRightReciprocalLeftAndRightQuantity,
             >,
-        TargetUnit,
         >,
+    TargetUnit,
+    >,
     > ScientificValue<LeftAndRightReciprocalLeftAndRightQuantity, LeftUnit>.multipliedByReciprocalSquaredWithSelfAsRoot(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Reciprocal<

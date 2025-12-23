@@ -19,12 +19,15 @@
 package com.splendo.kaluga.scientific.converter.undefined.multiplying
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
+import kotlin.jvm.JvmName
 
 // Mul<A, B> / Mul<A, A> -> Div<B, A>
 
@@ -54,12 +57,12 @@ fun <
         NumeratorLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-        UndefinedQuantityType.Dividing<
-            NumeratorRightQuantity,
-            NumeratorLeftAndDenominatorLeftAndRightQuantity,
-            >,
-        TargetUnit,
+    UndefinedQuantityType.Dividing<
+        NumeratorRightQuantity,
+        NumeratorLeftAndDenominatorLeftAndRightQuantity,
         >,
+    TargetUnit,
+    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
         NumeratorLeftAndDenominatorLeftAndRightQuantity,

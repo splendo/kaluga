@@ -19,23 +19,27 @@
 package com.splendo.kaluga.scientific.converter.undefined.defined
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
+import kotlin.jvm.JvmName
 
 // A! / Div<B, Mul<C, Ex<A>>> -> Div<Mul<Mul<Wr<A>, C>, Ex<A>>, B>
 
 fun <
     NumeratorAndDenominatorDenominatorRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit : ScientificUnit<NumeratorAndDenominatorDenominatorRightQuantity>,
+    NumeratorUnit : DefinedScientificUnit<NumeratorAndDenominatorDenominatorRightQuantity>,
     DenominatorNumeratorQuantity : UndefinedQuantityType,
     DenominatorNumeratorUnit : AbstractUndefinedScientificUnit<DenominatorNumeratorQuantity>,
     DenominatorDenominatorLeftQuantity : UndefinedQuantityType,
@@ -63,8 +67,8 @@ fun <
         DenominatorDenominatorUnit,
         >,
     WrappedNumeratorUnit : WrappedUndefinedExtendedUnit<
-        NumeratorAndDenominatorDenominatorRightQuantity,
-        NumeratorUnit,
+    NumeratorAndDenominatorDenominatorRightQuantity,
+    NumeratorUnit,
         >,
     TargetNumeratorLeftUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -104,22 +108,22 @@ fun <
         DenominatorNumeratorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-        UndefinedQuantityType.Dividing<
+    UndefinedQuantityType.Dividing<
+        UndefinedQuantityType.Multiplying<
             UndefinedQuantityType.Multiplying<
-                UndefinedQuantityType.Multiplying<
-                    UndefinedQuantityType.Extended<
-                        NumeratorAndDenominatorDenominatorRightQuantity,
-                        >,
-                    DenominatorDenominatorLeftQuantity,
-                    >,
                 UndefinedQuantityType.Extended<
                     NumeratorAndDenominatorDenominatorRightQuantity,
                     >,
+                DenominatorDenominatorLeftQuantity,
                 >,
-            DenominatorNumeratorQuantity,
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorDenominatorRightQuantity,
+                >,
             >,
-        TargetUnit,
+        DenominatorNumeratorQuantity,
         >,
+    TargetUnit,
+    >,
     > ScientificValue<NumeratorAndDenominatorDenominatorRightQuantity, NumeratorUnit>.dividedByDividingUnitWithMultiplyingDenominatorWithSelfAsRight(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Dividing<

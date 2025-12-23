@@ -19,17 +19,21 @@
 package com.splendo.kaluga.scientific.converter.undefined.dividing.denominator.defined
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
+import kotlin.jvm.JvmName
 
 // Div<A, Wr<B>> / Div<A, Mul<Ex<B>, Ex<B>>> -> B!
 
@@ -37,10 +41,10 @@ fun <
     NumeratorNumeratorAndDenominatorNumeratorQuantity : UndefinedQuantityType,
     NumeratorNumeratorUnit : AbstractUndefinedScientificUnit<NumeratorNumeratorAndDenominatorNumeratorQuantity>,
     NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorDenominatorUnit : ScientificUnit<NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity>,
+    NumeratorDenominatorUnit : DefinedScientificUnit<NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity>,
     WrappedNumeratorDenominatorUnit : WrappedUndefinedExtendedUnit<
-        NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
-        NumeratorDenominatorUnit,
+    NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
+    NumeratorDenominatorUnit,
         >,
     NumeratorUnit : UndefinedDividedUnit<
         NumeratorNumeratorAndDenominatorNumeratorQuantity,

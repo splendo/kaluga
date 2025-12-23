@@ -19,15 +19,19 @@
 package com.splendo.kaluga.scientific.converter.undefined.multiplying.right.and.extended
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
+import kotlin.jvm.JvmName
 
 // Mul<A, Ex<B>> / B! -> A
 
@@ -46,11 +50,11 @@ fun <
         ExtendedNumeratorRightUnit,
         >,
     NumeratorRightAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit : ScientificUnit<NumeratorRightAndDenominatorQuantity>,
+    DenominatorUnit : DefinedScientificUnit<NumeratorRightAndDenominatorQuantity>,
     NumeratorLeftValue : UndefinedScientificValue<
-        NumeratorLeftQuantity,
-        NumeratorLeftUnit,
-        >,
+    NumeratorLeftQuantity,
+    NumeratorLeftUnit,
+    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
         NumeratorLeftQuantity,

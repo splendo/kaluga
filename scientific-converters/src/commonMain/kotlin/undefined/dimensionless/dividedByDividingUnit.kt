@@ -19,15 +19,19 @@
 package com.splendo.kaluga.scientific.converter.undefined.dimensionless
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.Dimensionless
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
+import kotlin.jvm.JvmName
 
 // One / Div<A, B> -> Div<B, A>
 
@@ -50,12 +54,12 @@ fun <
         DenominatorNumeratorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-        UndefinedQuantityType.Dividing<
-            DenominatorDenominatorQuantity,
-            DenominatorNumeratorQuantity,
-            >,
-        TargetUnit,
+    UndefinedQuantityType.Dividing<
+        DenominatorDenominatorQuantity,
+        DenominatorNumeratorQuantity,
         >,
+    TargetUnit,
+    >,
     > ScientificValue<PhysicalQuantity.Dimensionless, NumeratorUnit>.dividedByDividingUnit(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Dividing<

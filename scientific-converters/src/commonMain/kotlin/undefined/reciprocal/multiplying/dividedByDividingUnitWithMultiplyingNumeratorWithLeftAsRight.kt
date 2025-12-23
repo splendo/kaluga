@@ -19,13 +19,16 @@
 package com.splendo.kaluga.scientific.converter.undefined.reciprocal.multiplying
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
+import kotlin.jvm.JvmName
 
 // Inv<Mul<A, B>> / Div<Mul<C, A>, D> -> Div<D, Mul<Mul<A, B>, Mul<C, A>>>
 
@@ -95,21 +98,21 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-        UndefinedQuantityType.Dividing<
-            DenominatorDenominatorQuantity,
+    UndefinedQuantityType.Dividing<
+        DenominatorDenominatorQuantity,
+        UndefinedQuantityType.Multiplying<
             UndefinedQuantityType.Multiplying<
-                UndefinedQuantityType.Multiplying<
-                    NumeratorReciprocalLeftAndDenominatorNumeratorRightQuantity,
-                    NumeratorReciprocalRightQuantity,
-                    >,
-                UndefinedQuantityType.Multiplying<
-                    DenominatorNumeratorLeftQuantity,
-                    NumeratorReciprocalLeftAndDenominatorNumeratorRightQuantity,
-                    >,
+                NumeratorReciprocalLeftAndDenominatorNumeratorRightQuantity,
+                NumeratorReciprocalRightQuantity,
+                >,
+            UndefinedQuantityType.Multiplying<
+                DenominatorNumeratorLeftQuantity,
+                NumeratorReciprocalLeftAndDenominatorNumeratorRightQuantity,
                 >,
             >,
-        TargetUnit,
         >,
+    TargetUnit,
+    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Reciprocal<
         UndefinedQuantityType.Multiplying<
@@ -134,6 +137,6 @@ fun <
     factory: (Decimal, TargetUnit) -> TargetValue,
 ) = right.unit.denominator.denominatorDenominatorUnitPerTargetDenominatorUnit(
     unit.inverse.numeratorReciprocalUnitXDenominatorNumeratorUnit(
-        right.unit.numerator,
-    ),
+    right.unit.numerator,
+),
 ).byDividing(this, right, factory)

@@ -19,17 +19,21 @@
 package com.splendo.kaluga.scientific.converter.undefined.dividing.numerator.multiplying.left.and.extended
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
+import kotlin.jvm.JvmName
 
 // Div<Mul<Ex<A>, B>, C> * A! -> Div<Mul<Mul<Ex<A>, B>, Wr<A>>, C>
 
@@ -61,10 +65,10 @@ fun <
         LeftDenominatorUnit,
         >,
     LeftNumeratorLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    RightUnit : ScientificUnit<LeftNumeratorLeftAndRightQuantity>,
+    RightUnit : DefinedScientificUnit<LeftNumeratorLeftAndRightQuantity>,
     WrappedRightUnit : WrappedUndefinedExtendedUnit<
-        LeftNumeratorLeftAndRightQuantity,
-        RightUnit,
+    LeftNumeratorLeftAndRightQuantity,
+    RightUnit,
         >,
     TargetNumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Multiplying<
@@ -96,22 +100,22 @@ fun <
         LeftDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-        UndefinedQuantityType.Dividing<
+    UndefinedQuantityType.Dividing<
+        UndefinedQuantityType.Multiplying<
             UndefinedQuantityType.Multiplying<
-                UndefinedQuantityType.Multiplying<
-                    UndefinedQuantityType.Extended<
-                        LeftNumeratorLeftAndRightQuantity,
-                        >,
-                    LeftNumeratorRightQuantity,
-                    >,
                 UndefinedQuantityType.Extended<
                     LeftNumeratorLeftAndRightQuantity,
                     >,
+                LeftNumeratorRightQuantity,
                 >,
-            LeftDenominatorQuantity,
+            UndefinedQuantityType.Extended<
+                LeftNumeratorLeftAndRightQuantity,
+                >,
             >,
-        TargetUnit,
+        LeftDenominatorQuantity,
         >,
+    TargetUnit,
+    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<

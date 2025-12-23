@@ -19,12 +19,15 @@
 package com.splendo.kaluga.scientific.converter.undefined.dividing.numerator.multiplying
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
+import kotlin.jvm.JvmName
 
 // Div<Mul<A, B>, C> * Div<Mul<B, B>, A> -> Div<Mul<Mul<B, B>, B>, C>
 
@@ -90,18 +93,18 @@ fun <
         LeftDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-        UndefinedQuantityType.Dividing<
+    UndefinedQuantityType.Dividing<
+        UndefinedQuantityType.Multiplying<
             UndefinedQuantityType.Multiplying<
-                UndefinedQuantityType.Multiplying<
-                    LeftNumeratorRightAndRightNumeratorLeftAndRightQuantity,
-                    LeftNumeratorRightAndRightNumeratorLeftAndRightQuantity,
-                    >,
+                LeftNumeratorRightAndRightNumeratorLeftAndRightQuantity,
                 LeftNumeratorRightAndRightNumeratorLeftAndRightQuantity,
                 >,
-            LeftDenominatorQuantity,
+            LeftNumeratorRightAndRightNumeratorLeftAndRightQuantity,
             >,
-        TargetUnit,
+        LeftDenominatorQuantity,
         >,
+    TargetUnit,
+    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<

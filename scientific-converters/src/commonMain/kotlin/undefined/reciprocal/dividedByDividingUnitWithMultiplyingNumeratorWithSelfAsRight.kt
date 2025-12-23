@@ -19,13 +19,16 @@
 package com.splendo.kaluga.scientific.converter.undefined.reciprocal
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
+import kotlin.jvm.JvmName
 
 // Inv<A> / Div<Mul<B, A>, C> -> Div<C, Mul<Mul<A, B>, A>>
 
@@ -84,18 +87,18 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-        UndefinedQuantityType.Dividing<
-            DenominatorDenominatorQuantity,
+    UndefinedQuantityType.Dividing<
+        DenominatorDenominatorQuantity,
+        UndefinedQuantityType.Multiplying<
             UndefinedQuantityType.Multiplying<
-                UndefinedQuantityType.Multiplying<
-                    NumeratorReciprocalAndDenominatorNumeratorRightQuantity,
-                    DenominatorNumeratorLeftQuantity,
-                    >,
                 NumeratorReciprocalAndDenominatorNumeratorRightQuantity,
+                DenominatorNumeratorLeftQuantity,
                 >,
+            NumeratorReciprocalAndDenominatorNumeratorRightQuantity,
             >,
-        TargetUnit,
         >,
+    TargetUnit,
+    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Reciprocal<
         NumeratorReciprocalAndDenominatorNumeratorRightQuantity,
@@ -118,8 +121,8 @@ fun <
     factory: (Decimal, TargetUnit) -> TargetValue,
 ) = right.unit.denominator.denominatorDenominatorUnitPerTargetDenominatorUnit(
     unit.inverse.numeratorReciprocalUnitXDenominatorNumeratorLeftUnit(
-        right.unit.numerator.left,
-    ).targetDenominatorLeftUnitXNumeratorReciprocalUnit(
-        unit.inverse,
-    ),
+    right.unit.numerator.left,
+).targetDenominatorLeftUnitXNumeratorReciprocalUnit(
+    unit.inverse,
+),
 ).byDividing(this, right, factory)

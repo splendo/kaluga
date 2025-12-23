@@ -19,17 +19,21 @@
 package com.splendo.kaluga.scientific.converter.undefined.dividing.denominator.extended
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
+import kotlin.jvm.JvmName
 
 // Div<A, Ex<B>> / B! -> Div<A, Mul<Ex<B>, Wr<B>>>
 
@@ -48,10 +52,10 @@ fun <
         ExtendedNumeratorDenominatorUnit,
         >,
     NumeratorDenominatorAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit : ScientificUnit<NumeratorDenominatorAndDenominatorQuantity>,
+    DenominatorUnit : DefinedScientificUnit<NumeratorDenominatorAndDenominatorQuantity>,
     WrappedDenominatorUnit : WrappedUndefinedExtendedUnit<
-        NumeratorDenominatorAndDenominatorQuantity,
-        DenominatorUnit,
+    NumeratorDenominatorAndDenominatorQuantity,
+    DenominatorUnit,
         >,
     TargetDenominatorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -77,19 +81,19 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-        UndefinedQuantityType.Dividing<
-            NumeratorNumeratorQuantity,
-            UndefinedQuantityType.Multiplying<
-                UndefinedQuantityType.Extended<
-                    NumeratorDenominatorAndDenominatorQuantity,
-                    >,
-                UndefinedQuantityType.Extended<
-                    NumeratorDenominatorAndDenominatorQuantity,
-                    >,
+    UndefinedQuantityType.Dividing<
+        NumeratorNumeratorQuantity,
+        UndefinedQuantityType.Multiplying<
+            UndefinedQuantityType.Extended<
+                NumeratorDenominatorAndDenominatorQuantity,
+                >,
+            UndefinedQuantityType.Extended<
+                NumeratorDenominatorAndDenominatorQuantity,
                 >,
             >,
-        TargetUnit,
         >,
+    TargetUnit,
+    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         NumeratorNumeratorQuantity,
@@ -106,6 +110,6 @@ fun <
     factory: (Decimal, TargetUnit) -> TargetValue,
 ) = unit.numerator.numeratorNumeratorUnitPerTargetDenominatorUnit(
     unit.denominator.extendedNumeratorDenominatorUnitXWrappedDenominatorUnit(
-        right.unit.denominatorAsUndefined(),
-    ),
+    right.unit.denominatorAsUndefined(),
+),
 ).byDividing(this, right, factory)

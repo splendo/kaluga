@@ -19,25 +19,30 @@
 package com.splendo.kaluga.scientific.converter.undefined.reciprocal.defined
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
+import kotlin.jvm.JvmName
 
 // Inv<Wr<A>> / Inv<Mul<Ex<A>, Ex<A>>> -> A!
 
 fun <
     NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorReciprocalUnit : ScientificUnit<NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity>,
+    NumeratorReciprocalUnit : DefinedScientificUnit<NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity>,
     WrappedNumeratorReciprocalUnit : WrappedUndefinedExtendedUnit<
-        NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity,
-        NumeratorReciprocalUnit,
+    NumeratorReciprocalAndDenominatorReciprocalLeftAndRightQuantity,
+    NumeratorReciprocalUnit,
         >,
     NumeratorUnit : UndefinedReciprocalUnit<
         UndefinedQuantityType.Extended<

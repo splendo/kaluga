@@ -19,21 +19,26 @@
 package com.splendo.kaluga.scientific.converter.undefined.defined
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
+import kotlin.jvm.JvmName
 
 // A! * Mul<Ex<A>, Ex<A>> -> Mul<Mul<Wr<A>, Ex<A>>, Ex<A>>
 
 fun <
     LeftAndRightLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    LeftUnit : ScientificUnit<LeftAndRightLeftAndRightQuantity>,
+    LeftUnit : DefinedScientificUnit<LeftAndRightLeftAndRightQuantity>,
     ExtendedRightLeftUnit : UndefinedExtendedUnit<
         LeftAndRightLeftAndRightQuantity,
         >,
@@ -51,8 +56,8 @@ fun <
         ExtendedRightRightUnit,
         >,
     WrappedLeftUnit : WrappedUndefinedExtendedUnit<
-        LeftAndRightLeftAndRightQuantity,
-        LeftUnit,
+    LeftAndRightLeftAndRightQuantity,
+    LeftUnit,
         >,
     TargetLeftUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -80,21 +85,21 @@ fun <
         ExtendedRightLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
+    UndefinedQuantityType.Multiplying<
         UndefinedQuantityType.Multiplying<
-            UndefinedQuantityType.Multiplying<
-                UndefinedQuantityType.Extended<
-                    LeftAndRightLeftAndRightQuantity,
-                    >,
-                UndefinedQuantityType.Extended<
-                    LeftAndRightLeftAndRightQuantity,
-                    >,
+            UndefinedQuantityType.Extended<
+                LeftAndRightLeftAndRightQuantity,
                 >,
             UndefinedQuantityType.Extended<
                 LeftAndRightLeftAndRightQuantity,
                 >,
             >,
-        TargetUnit,
+        UndefinedQuantityType.Extended<
+            LeftAndRightLeftAndRightQuantity,
+            >,
         >,
+    TargetUnit,
+    >,
     > ScientificValue<LeftAndRightLeftAndRightQuantity, LeftUnit>.multipliedBySquaredUnitWithSelfAsRoot(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Multiplying<

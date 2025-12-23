@@ -19,16 +19,20 @@
 package com.splendo.kaluga.scientific.converter.undefined.dividing.numerator.multiplying
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
+import kotlin.jvm.JvmName
 
 // Div<Mul<A, B>, C> / Div<Mul<A, B>, Mul<C, Wr<D>>> -> D!
 
@@ -64,10 +68,10 @@ fun <
         >,
     DenominatorDenominatorLeftUnit : AbstractUndefinedScientificUnit<NumeratorDenominatorAndDenominatorDenominatorLeftQuantity>,
     DenominatorDenominatorRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorDenominatorRightUnit : ScientificUnit<DenominatorDenominatorRightQuantity>,
+    DenominatorDenominatorRightUnit : DefinedScientificUnit<DenominatorDenominatorRightQuantity>,
     WrappedDenominatorDenominatorRightUnit : WrappedUndefinedExtendedUnit<
-        DenominatorDenominatorRightQuantity,
-        DenominatorDenominatorRightUnit,
+    DenominatorDenominatorRightQuantity,
+    DenominatorDenominatorRightUnit,
         >,
     DenominatorDenominatorUnit : UndefinedMultipliedUnit<
         NumeratorDenominatorAndDenominatorDenominatorLeftQuantity,

@@ -19,12 +19,15 @@
 package com.splendo.kaluga.scientific.converter.undefined.dividing.numerator.multiplying.and.denominator.multiplying.squared
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
+import kotlin.jvm.JvmName
 
 // Div<Mul<A, B>, Mul<C, C>> / Div<Mul<C, C>, Mul<B, D>> -> Div<Mul<Mul<A, B>, Mul<B, D>>, Mul<Mul<C, C>, Mul<C, C>>>
 
@@ -138,30 +141,30 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-        UndefinedQuantityType.Dividing<
+    UndefinedQuantityType.Dividing<
+        UndefinedQuantityType.Multiplying<
             UndefinedQuantityType.Multiplying<
-                UndefinedQuantityType.Multiplying<
-                    NumeratorNumeratorLeftQuantity,
-                    NumeratorNumeratorRightAndDenominatorDenominatorLeftQuantity,
-                    >,
-                UndefinedQuantityType.Multiplying<
-                    NumeratorNumeratorRightAndDenominatorDenominatorLeftQuantity,
-                    DenominatorDenominatorRightQuantity,
-                    >,
+                NumeratorNumeratorLeftQuantity,
+                NumeratorNumeratorRightAndDenominatorDenominatorLeftQuantity,
                 >,
             UndefinedQuantityType.Multiplying<
-                UndefinedQuantityType.Multiplying<
-                    NumeratorDenominatorLeftAndRightAndDenominatorNumeratorLeftAndRightQuantity,
-                    NumeratorDenominatorLeftAndRightAndDenominatorNumeratorLeftAndRightQuantity,
-                    >,
-                UndefinedQuantityType.Multiplying<
-                    NumeratorDenominatorLeftAndRightAndDenominatorNumeratorLeftAndRightQuantity,
-                    NumeratorDenominatorLeftAndRightAndDenominatorNumeratorLeftAndRightQuantity,
-                    >,
+                NumeratorNumeratorRightAndDenominatorDenominatorLeftQuantity,
+                DenominatorDenominatorRightQuantity,
                 >,
             >,
-        TargetUnit,
+        UndefinedQuantityType.Multiplying<
+            UndefinedQuantityType.Multiplying<
+                NumeratorDenominatorLeftAndRightAndDenominatorNumeratorLeftAndRightQuantity,
+                NumeratorDenominatorLeftAndRightAndDenominatorNumeratorLeftAndRightQuantity,
+                >,
+            UndefinedQuantityType.Multiplying<
+                NumeratorDenominatorLeftAndRightAndDenominatorNumeratorLeftAndRightQuantity,
+                NumeratorDenominatorLeftAndRightAndDenominatorNumeratorLeftAndRightQuantity,
+                >,
+            >,
         >,
+    TargetUnit,
+    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
         UndefinedQuantityType.Multiplying<
@@ -196,6 +199,6 @@ fun <
     right.unit.denominator,
 ).targetNumeratorUnitPerTargetDenominatorUnit(
     unit.denominator.numeratorDenominatorUnitXNumeratorDenominatorUnit(
-        unit.denominator,
-    ),
+    unit.denominator,
+),
 ).byDividing(this, right, factory)

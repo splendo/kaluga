@@ -19,13 +19,16 @@
 package com.splendo.kaluga.scientific.converter.undefined.reciprocal.multiplying
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
+import kotlin.jvm.JvmName
 
 // Inv<Mul<A, B>> * Div<Mul<B, C>, Mul<D, A>> -> Div<C, Mul<Mul<A, D>, A>>
 
@@ -105,18 +108,18 @@ fun <
         TargetDenominatorUnit,
         >,
     TargetValue : UndefinedScientificValue<
-        UndefinedQuantityType.Dividing<
-            RightNumeratorRightQuantity,
+    UndefinedQuantityType.Dividing<
+        RightNumeratorRightQuantity,
+        UndefinedQuantityType.Multiplying<
             UndefinedQuantityType.Multiplying<
-                UndefinedQuantityType.Multiplying<
-                    LeftReciprocalLeftAndRightDenominatorRightQuantity,
-                    RightDenominatorLeftQuantity,
-                    >,
                 LeftReciprocalLeftAndRightDenominatorRightQuantity,
+                RightDenominatorLeftQuantity,
                 >,
+            LeftReciprocalLeftAndRightDenominatorRightQuantity,
             >,
-        TargetUnit,
         >,
+    TargetUnit,
+    >,
     > UndefinedScientificValue<
     UndefinedQuantityType.Reciprocal<
         UndefinedQuantityType.Multiplying<
@@ -145,8 +148,8 @@ fun <
     factory: (Decimal, TargetUnit) -> TargetValue,
 ) = right.unit.numerator.right.rightNumeratorRightUnitPerTargetDenominatorUnit(
     unit.inverse.left.leftReciprocalLeftUnitXRightDenominatorLeftUnit(
-        right.unit.denominator.left,
-    ).targetDenominatorLeftUnitXLeftReciprocalLeftUnit(
-        unit.inverse.left,
-    ),
+    right.unit.denominator.left,
+).targetDenominatorLeftUnitXLeftReciprocalLeftUnit(
+    unit.inverse.left,
+),
 ).byMultiplying(this, right, factory)

@@ -19,23 +19,27 @@
 package com.splendo.kaluga.scientific.converter.undefined.defined
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
+import kotlin.jvm.JvmName
 
 // A! / Inv<Mul<Ex<A>, B>> -> Mul<Mul<Wr<A>, Ex<A>>, B>
 
 fun <
     NumeratorAndDenominatorReciprocalLeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit : ScientificUnit<NumeratorAndDenominatorReciprocalLeftQuantity>,
+    NumeratorUnit : DefinedScientificUnit<NumeratorAndDenominatorReciprocalLeftQuantity>,
     ExtendedDenominatorReciprocalLeftUnit : UndefinedExtendedUnit<
         NumeratorAndDenominatorReciprocalLeftQuantity,
         >,
@@ -59,8 +63,8 @@ fun <
         DenominatorReciprocalUnit,
         >,
     WrappedNumeratorUnit : WrappedUndefinedExtendedUnit<
-        NumeratorAndDenominatorReciprocalLeftQuantity,
-        NumeratorUnit,
+    NumeratorAndDenominatorReciprocalLeftQuantity,
+    NumeratorUnit,
         >,
     TargetLeftUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
@@ -86,19 +90,19 @@ fun <
         DenominatorReciprocalRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
+    UndefinedQuantityType.Multiplying<
         UndefinedQuantityType.Multiplying<
-            UndefinedQuantityType.Multiplying<
-                UndefinedQuantityType.Extended<
-                    NumeratorAndDenominatorReciprocalLeftQuantity,
-                    >,
-                UndefinedQuantityType.Extended<
-                    NumeratorAndDenominatorReciprocalLeftQuantity,
-                    >,
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorReciprocalLeftQuantity,
                 >,
-            DenominatorReciprocalRightQuantity,
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorReciprocalLeftQuantity,
+                >,
             >,
-        TargetUnit,
+        DenominatorReciprocalRightQuantity,
         >,
+    TargetUnit,
+    >,
     > ScientificValue<NumeratorAndDenominatorReciprocalLeftQuantity, NumeratorUnit>.dividedByReciprocalMultiplyingWithSelfAsLeft(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Reciprocal<

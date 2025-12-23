@@ -19,22 +19,26 @@
 package com.splendo.kaluga.scientific.converter.undefined.defined
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
+import kotlin.jvm.JvmName
 
 // A! * Div<B, Mul<Ex<A>, Ex<A>>> -> Div<B, Ex<A>>
 
 fun <
     LeftAndRightDenominatorLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    LeftUnit : ScientificUnit<LeftAndRightDenominatorLeftAndRightQuantity>,
+    LeftUnit : DefinedScientificUnit<LeftAndRightDenominatorLeftAndRightQuantity>,
     RightNumeratorQuantity : UndefinedQuantityType,
     RightNumeratorUnit : AbstractUndefinedScientificUnit<RightNumeratorQuantity>,
     ExtendedRightDenominatorLeftUnit : UndefinedExtendedUnit<
@@ -75,14 +79,14 @@ fun <
         ExtendedRightDenominatorLeftUnit,
         >,
     TargetValue : UndefinedScientificValue<
-        UndefinedQuantityType.Dividing<
-            RightNumeratorQuantity,
-            UndefinedQuantityType.Extended<
-                LeftAndRightDenominatorLeftAndRightQuantity,
-                >,
+    UndefinedQuantityType.Dividing<
+        RightNumeratorQuantity,
+        UndefinedQuantityType.Extended<
+            LeftAndRightDenominatorLeftAndRightQuantity,
             >,
-        TargetUnit,
         >,
+    TargetUnit,
+    >,
     > ScientificValue<LeftAndRightDenominatorLeftAndRightQuantity, LeftUnit>.multipliedByDividingUnitWithSquaredDenominatorWithSelfAsRoot(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Dividing<

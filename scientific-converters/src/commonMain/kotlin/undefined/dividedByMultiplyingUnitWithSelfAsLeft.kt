@@ -19,12 +19,15 @@
 package com.splendo.kaluga.scientific.converter.undefined
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
+import kotlin.jvm.JvmName
 
 // A / Mul<A, B> -> Inv<B>
 
@@ -45,11 +48,11 @@ fun <
         DenominatorRightUnit,
         >,
     TargetValue : UndefinedScientificValue<
-        UndefinedQuantityType.Reciprocal<
-            DenominatorRightQuantity,
-            >,
-        TargetUnit,
+    UndefinedQuantityType.Reciprocal<
+        DenominatorRightQuantity,
         >,
+    TargetUnit,
+    >,
     > UndefinedScientificValue<
     NumeratorAndDenominatorLeftQuantity,
     NumeratorUnit,

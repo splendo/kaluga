@@ -19,17 +19,21 @@
 package com.splendo.kaluga.scientific.converter.undefined.dividing.denominator.extended
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
+import kotlin.jvm.JvmName
 
 // Div<A, Ex<B>> / Div<A, Mul<Wr<B>, Ex<B>>> -> B!
 
@@ -49,10 +53,10 @@ fun <
         >,
     DenominatorNumeratorUnit : AbstractUndefinedScientificUnit<NumeratorNumeratorAndDenominatorNumeratorQuantity>,
     NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorDenominatorLeftUnit : ScientificUnit<NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity>,
+    DenominatorDenominatorLeftUnit : DefinedScientificUnit<NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity>,
     WrappedDenominatorDenominatorLeftUnit : WrappedUndefinedExtendedUnit<
-        NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
-        DenominatorDenominatorLeftUnit,
+    NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
+    DenominatorDenominatorLeftUnit,
         >,
     ExtendedDenominatorDenominatorRightUnit : UndefinedExtendedUnit<
         NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,

@@ -19,22 +19,26 @@
 package com.splendo.kaluga.scientific.converter.undefined.defined
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
+import kotlin.jvm.JvmName
 
 // A! * Inv<B> -> Div<Wr<A>, B>
 
 fun <
     LeftQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    LeftUnit : ScientificUnit<LeftQuantity>,
+    LeftUnit : DefinedScientificUnit<LeftQuantity>,
     RightReciprocalQuantity : UndefinedQuantityType,
     RightReciprocalUnit : AbstractUndefinedScientificUnit<RightReciprocalQuantity>,
     RightUnit : UndefinedReciprocalUnit<
@@ -42,8 +46,8 @@ fun <
         RightReciprocalUnit,
         >,
     WrappedLeftUnit : WrappedUndefinedExtendedUnit<
-        LeftQuantity,
-        LeftUnit,
+    LeftQuantity,
+    LeftUnit,
         >,
     TargetUnit : UndefinedDividedUnit<
         UndefinedQuantityType.Extended<
@@ -54,14 +58,14 @@ fun <
         RightReciprocalUnit,
         >,
     TargetValue : UndefinedScientificValue<
-        UndefinedQuantityType.Dividing<
-            UndefinedQuantityType.Extended<
-                LeftQuantity,
-                >,
-            RightReciprocalQuantity,
+    UndefinedQuantityType.Dividing<
+        UndefinedQuantityType.Extended<
+            LeftQuantity,
             >,
-        TargetUnit,
+        RightReciprocalQuantity,
         >,
+    TargetUnit,
+    >,
     > ScientificValue<LeftQuantity, LeftUnit>.multipliedByReciprocalUndefinedUnit(
     right: UndefinedScientificValue<
         UndefinedQuantityType.Reciprocal<
