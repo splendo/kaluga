@@ -22,7 +22,7 @@ on:
         value: ${{ jobs.setup.outputs.projects }}
 jobs:
   setup:
-    runs-on: macos-15
+    runs-on: macos-26
 
     outputs:
       projects: ${{ steps.envFile.outputs.projects }}
