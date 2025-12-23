@@ -9,7 +9,7 @@ jobs:
 
   lint:
     needs: build
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
     - name: checkout
       uses: actions/checkout@v6
@@ -34,7 +34,7 @@ jobs:
 
   test:
     needs: build
-    runs-on: macos-15
+    runs-on: macos-26
     strategy:
       fail-fast: false
       matrix:
