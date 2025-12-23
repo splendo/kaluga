@@ -39,7 +39,6 @@ import platform.UIKit.NSMutableParagraphStyle
 import platform.UIKit.NSParagraphStyle
 import platform.UIKit.NSShadow
 import platform.UIKit.NSUnderlineStyleSingle
-import platform.UIKit.size
 
 /**
  * A text configured with [StringStyleAttribute]

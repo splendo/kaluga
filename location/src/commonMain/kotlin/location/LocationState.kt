@@ -26,8 +26,6 @@ import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.minus
 import com.splendo.kaluga.base.utils.plus
-import com.splendo.kaluga.permissions.base.PermissionState.Inactive
-import com.splendo.kaluga.permissions.base.PermissionState.Initialized
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

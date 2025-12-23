@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.test.bluetooth
 
-import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
 import kotlinx.coroutines.CompletableDeferred
 import platform.CoreBluetooth.CBPeripheral

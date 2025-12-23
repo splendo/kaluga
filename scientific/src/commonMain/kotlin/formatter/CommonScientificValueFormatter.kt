@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.formatter.CommonScientificValueFormatter.Builder.Companion.build
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 
 internal typealias CustomFormatHandler = (Number) -> String

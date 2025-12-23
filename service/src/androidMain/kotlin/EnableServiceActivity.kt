@@ -26,6 +26,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.base.collections.ConcurrentMutableMap
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
+import com.splendo.kaluga.service.EnableServiceActivity.Companion.showEnableServiceActivity
 import kotlinx.coroutines.CompletableDeferred
 
 /**

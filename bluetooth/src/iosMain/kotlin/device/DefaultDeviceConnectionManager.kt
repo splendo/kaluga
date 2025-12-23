@@ -19,11 +19,10 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
-import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.CharacteristicProperties
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
-import com.splendo.kaluga.bluetooth.KalugaBluetoothPeripheralWrapper
 import com.splendo.kaluga.bluetooth.KalugaBluetoothPeripheralDelegateProtocol
+import com.splendo.kaluga.bluetooth.KalugaBluetoothPeripheralWrapper
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
 import kotlinx.atomicfu.atomic

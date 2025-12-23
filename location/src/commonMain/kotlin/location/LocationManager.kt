@@ -18,7 +18,6 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.location.BaseLocationManager.Settings
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger

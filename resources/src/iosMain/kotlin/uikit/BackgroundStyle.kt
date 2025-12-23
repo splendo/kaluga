@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.resources.uikit
 
-import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.GradientStyle
+import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import platform.CoreFoundation.CFRetain

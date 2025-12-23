@@ -18,8 +18,8 @@
 package com.splendo.kaluga.architecture.navigation
 
 import com.splendo.kaluga.architecture.KalugaStoreProductViewControllerDelegateProtocol
-import com.splendo.kaluga.architecture.KalugaUIImagePickerControllerWrapper
 import com.splendo.kaluga.architecture.KalugaStoreProductViewControllerWrapper
+import com.splendo.kaluga.architecture.KalugaUIImagePickerControllerWrapper
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import platform.CoreGraphics.CGFloat
 import platform.Foundation.CFBridgingRelease
