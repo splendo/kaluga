@@ -70,9 +70,6 @@ jobs:
         with:
           kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
           arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
-      - name: List Simulators
-        run: xcrun simctl list
-        shell: bash
       - name: run install
         working-directory: example/ios
         run: | 
