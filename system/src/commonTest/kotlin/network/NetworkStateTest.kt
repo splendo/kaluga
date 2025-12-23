@@ -20,10 +20,8 @@ package com.splendo.kaluga.system.network
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.system.network.state.NetworkState
 import com.splendo.kaluga.system.network.state.NetworkStateRepo
-import com.splendo.kaluga.test.base.mock.verify
-import com.splendo.kaluga.test.base.yieldMultiple
+import com.splendo.kaluga.test.base.mock.verifyWithin
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.yield
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -45,12 +43,10 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
 
         action {
             resetFlow()
-            yield()
         }
 
         mainAction {
-            yieldMultiple(4)
-            networkManager.stopMonitoringMock.verify()
+            networkManager.stopMonitoringMock.verifyWithin()
         }
     }
 
@@ -106,11 +102,18 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
 
         mainAction {
             networkManager.network.value = NetworkConnectionType.Known.Wifi()
-            yield()
+        }
+
+        test {
+            assertIs<NetworkState.Available>(it)
+            assertEquals(NetworkConnectionType.Known.Wifi(), it.networkConnectionType)
+        }
+
+        mainAction {
             networkManager.network.value = NetworkConnectionType.Known.Cellular
         }
 
-        test(1) {
+        test {
             assertIs<NetworkState.Available>(it)
             assertEquals(NetworkConnectionType.Known.Cellular, it.networkConnectionType)
         }
@@ -140,11 +143,18 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
 
         mainAction {
             networkManager.network.value = NetworkConnectionType.Known.Absent
-            yield()
+        }
+
+        test {
+            assertIs<NetworkState.Unavailable>(it)
+            assertEquals(NetworkConnectionType.Known.Absent, it.networkConnectionType)
+        }
+
+        mainAction {
             networkManager.network.value = NetworkConnectionType.Known.Wifi()
         }
 
-        test(1) {
+        test {
             assertIs<NetworkState.Available>(it)
             assertEquals(NetworkConnectionType.Known.Wifi(), it.networkConnectionType)
         }
@@ -175,7 +185,6 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
 
         mainAction {
             networkManager.network.value = NetworkConnectionType.Known.Wifi()
-            yieldMultiple(4)
         }
 
         test {
@@ -185,7 +194,6 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
 
         action {
             resetFlow()
-            yield()
         }
 
         test {
@@ -195,7 +203,6 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
 
         mainAction {
             networkManager.network.value = NetworkConnectionType.Known.Absent
-            yieldMultiple(4)
         }
 
         test {
@@ -210,7 +217,7 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
                 NetworkConnectionType.Unknown.WithoutLastNetwork(NetworkConnectionType.Unknown.Reason.NOT_CLEAR),
                 it.networkConnectionType,
             )
-            networkManager.startMonitoringMock.verify()
+            networkManager.startMonitoringMock.verifyWithin()
         }
     }
 }
