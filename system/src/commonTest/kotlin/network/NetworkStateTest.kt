@@ -22,6 +22,7 @@ import com.splendo.kaluga.system.network.state.NetworkState
 import com.splendo.kaluga.system.network.state.NetworkStateRepo
 import com.splendo.kaluga.test.base.mock.verifyWithin
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -31,7 +32,7 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
     override val flowFromTestContext: suspend Context.() -> NetworkStateRepo =
         { networkStateRepo }
 
-    override val filter: (Flow<NetworkState>) -> Flow<NetworkState> = { it.filterOnlyImportant() }
+    override val filter: (Flow<NetworkState>) -> Flow<NetworkState> = { it.filterOnlyImportant().distinctUntilChanged() }
 
     @Test
     fun testInitialValueUnknown() = testNetworkState(
