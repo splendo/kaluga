@@ -20,7 +20,7 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
-import com.splendo.kaluga.logging.ContextualLogger
+import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -81,11 +81,11 @@ class FailedToReadException(val reason: GattResponse.ReadError) : Exception()
  * @param ReadAction the [DeviceAction.Read] associated with the attribute
  * @param WriteAction the [DeviceAction.Write] associated with the attribute
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
- * @param logger the [ContextualLogger] to use for logging.
+ * @param logger the [Logger] to use for logging.
  */
 abstract class RemoteAttribute<ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write>(
     private val emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
-    private val logger: ContextualLogger,
+    private val logger: Logger,
 ) : Attribute {
 
     /**

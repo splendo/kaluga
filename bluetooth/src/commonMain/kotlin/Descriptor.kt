@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.logging.ContextualLogger
+import com.splendo.kaluga.logging.Logger
 
 /**
  * [Characteristic] descriptors are used to contain related information about the Characteristic Value.
@@ -47,13 +47,13 @@ interface Descriptor : Attribute {
  * @property wrapper the [RemoteDescriptorWrapper] to access the platform descriptor
  * @property characteristic the [RemoteCharacteristic] this descriptor belongs to
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
- * @param logger the [ContextualLogger] to use for logging.
+ * @param logger the [Logger] to use for logging.
  */
 open class RemoteDescriptor(
     val wrapper: RemoteDescriptorWrapper,
     override val characteristic: RemoteCharacteristic,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
-    logger: ContextualLogger,
+    logger: Logger,
 ) : RemoteAttribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(
     emitNewAction,
     logger,
