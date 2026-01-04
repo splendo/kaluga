@@ -173,7 +173,9 @@ internal actual class DefaultDeviceConnectionManager(
         currentAction = action
         when (action) {
             is DeviceAction.Read.Characteristic -> action.characteristic.wrapper.readValue(peripheral)
+
             is DeviceAction.Read.Descriptor -> action.descriptor.wrapper.readValue(peripheral)
+
             is DeviceAction.Write.Characteristic -> {
                 val withResponse = action.characteristic.hasProperty(CharacteristicProperty.Write) ||
                     !action.characteristic.hasProperty(CharacteristicProperty.WriteWithoutResponse)
@@ -182,15 +184,19 @@ internal actual class DefaultDeviceConnectionManager(
                     handleCharacteristicWritten(action.characteristic.uuid, GattResponse.WriteSuccess)
                 }
             }
+
             is DeviceAction.Write.Descriptor -> {
                 action.descriptor.wrapper.writeValue(action.newValue.toNSData(), peripheral)
             }
+
             is DeviceAction.Notification.Enable -> {
                 action.characteristic.wrapper.setNotificationValue(true, peripheral)
             }
+
             is DeviceAction.Notification.Disable -> {
                 action.characteristic.wrapper.setNotificationValue(false, peripheral)
             }
+
             is DeviceAction.RequestMtu -> {
                 val max = peripheral.maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse)
                 debug(TAG) { "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $max" }

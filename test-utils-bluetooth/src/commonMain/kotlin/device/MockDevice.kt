@@ -148,7 +148,9 @@ class MockDevice(
                     is ConnectionSettings.ReconnectionSettings.Always -> state.reconnect
                     is ConnectionSettings.ReconnectionSettings.Never -> state.didDisconnect
                 }
+
                 is ConnectableDeviceState.Disconnected -> state.remain()
+
                 is ConnectableDeviceState.Connecting,
                 is ConnectableDeviceState.Disconnecting,
                 -> state.didDisconnect

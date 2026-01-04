@@ -196,11 +196,13 @@ actual class DefaultKalugaDate internal constructor(private val calendar: NSCale
                     value >= location.toInt() && value < (location + length).toInt()
                 }
             }
+
             NSCalendarUnitHour -> {
                 calendar.rangeOfUnit(NSCalendarUnitHour, NSCalendarUnitDay, date).useContents {
                     value >= location.toInt() && value < (location + length).toInt()
                 }
             }
+
             else -> {
                 false
             }

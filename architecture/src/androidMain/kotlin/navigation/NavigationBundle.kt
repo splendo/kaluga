@@ -38,29 +38,53 @@ fun <Row : NavigationBundleSpecRow<*>> NavigationBundle<Row>.toBundle(): Bundle 
 internal fun mapValue(key: String, value: NavigationBundleValue<*>, bundle: Bundle) {
     when (value) {
         is NavigationBundleValue.UnitValue -> {}
+
         is NavigationBundleValue.BooleanValue -> bundle.putBoolean(key, value.value)
+
         is NavigationBundleValue.BooleanArrayValue -> bundle.putBooleanArray(key, value.value)
+
         is NavigationBundleValue.ByteValue -> bundle.putByte(key, value.value)
+
         is NavigationBundleValue.ByteArrayValue -> bundle.putByteArray(key, value.value)
+
         is NavigationBundleValue.BundleValue<*> -> bundle.putBundle(key, value.value.toBundle())
+
         is NavigationBundleValue.CharValue -> bundle.putChar(key, value.value)
+
         is NavigationBundleValue.CharArrayValue -> bundle.putCharArray(key, value.value)
+
         is NavigationBundleValue.CharSequenceValue -> bundle.putCharSequence(key, value.value)
+
         is NavigationBundleValue.DoubleValue -> bundle.putDouble(key, value.value)
+
         is NavigationBundleValue.DoubleArrayValue -> bundle.putDoubleArray(key, value.value)
+
         is NavigationBundleValue.FloatValue -> bundle.putFloat(key, value.value)
+
         is NavigationBundleValue.FloatArrayValue -> bundle.putFloatArray(key, value.value)
+
         is NavigationBundleValue.IntegerValue -> bundle.putInt(key, value.value)
+
         is NavigationBundleValue.IntegerArrayValue -> bundle.putIntArray(key, value.value)
+
         is NavigationBundleValue.LongValue -> bundle.putLong(key, value.value)
+
         is NavigationBundleValue.LongArrayValue -> bundle.putLongArray(key, value.value)
+
         is NavigationBundleValue.SerializedValue<*> -> bundle.putString(key, value.valueString)
+
         is NavigationBundleValue.ShortValue -> bundle.putShort(key, value.value)
+
         is NavigationBundleValue.ShortArrayValue -> bundle.putShortArray(key, value.value)
+
         is NavigationBundleValue.StringValue -> bundle.putString(key, value.value)
+
         is NavigationBundleValue.StringArrayValue -> bundle.putStringArrayList(key, ArrayList(value.value))
+
         is NavigationBundleValue.OptionalValue<*> -> value.optionalValue?.let { mapValue(key, it, bundle) }
+
         is NavigationBundleValue.DateValue -> bundle.putLong(key, value.value.durationSinceEpoch.inWholeMilliseconds)
+
         is NavigationBundleValue.DateArrayValue ->
             bundle.putLongArray(key, LongArray(value.value.size) { value.value[it].durationSinceEpoch.inWholeMilliseconds })
     }
@@ -87,31 +111,53 @@ class BundleConversionError : Exception()
 
 internal fun Bundle.mapValue(key: String, specType: NavigationBundleSpecType<*>): NavigationBundleValue<*>? = when (specType) {
     is NavigationBundleSpecType.UnitType -> specType.convertValue(Unit)
+
     is NavigationBundleSpecType.BooleanType -> specType.convertValue(getBoolean(key))
+
     is NavigationBundleSpecType.BooleanArrayType -> getBooleanArray(key)?.let { specType.convertValue(it) }
+
     is NavigationBundleSpecType.ByteType -> specType.convertValue(getByte(key))
+
     is NavigationBundleSpecType.ByteArrayType -> getByteArray(key)?.let { specType.convertValue(it) }
+
     is NavigationBundleSpecType.BundleType<*> -> {
         getBundle(key)?.let {
             NavigationBundleValue.BundleValue(it.toNavigationBundle(specType.spec))
         }
     }
+
     is NavigationBundleSpecType.CharType -> specType.convertValue(getChar(key))
+
     is NavigationBundleSpecType.CharArrayType -> getCharArray(key)?.let { specType.convertValue(it) }
+
     is NavigationBundleSpecType.CharSequenceType -> getCharSequence(key)?.let { specType.convertValue(it) }
+
     is NavigationBundleSpecType.DoubleType -> specType.convertValue(getDouble(key))
+
     is NavigationBundleSpecType.DoubleArrayType -> getDoubleArray(key)?.let { specType.convertValue(it) }
+
     is NavigationBundleSpecType.FloatType -> specType.convertValue(getFloat(key))
+
     is NavigationBundleSpecType.FloatArrayType -> getFloatArray(key)?.let { specType.convertValue(it) }
+
     is NavigationBundleSpecType.IntegerType -> specType.convertValue(getInt(key))
+
     is NavigationBundleSpecType.IntegerArrayType -> getIntArray(key)?.let { specType.convertValue(it) }
+
     is NavigationBundleSpecType.LongType -> specType.convertValue(getLong(key))
+
     is NavigationBundleSpecType.LongArrayType -> getLongArray(key)?.let { specType.convertValue(it) }
+
     is NavigationBundleSpecType.SerializedType<*> -> getString(key)?.let { specType.generateValue(it) }
+
     is NavigationBundleSpecType.ShortType -> specType.convertValue(getShort(key))
+
     is NavigationBundleSpecType.ShortArrayType -> getShortArray(key)?.let { specType.convertValue(it) }
+
     is NavigationBundleSpecType.StringType -> getString(key)?.let { specType.convertValue(it) }
+
     is NavigationBundleSpecType.StringArrayType -> getStringArrayList(key)?.let { specType.convertValue(it) }
+
     is NavigationBundleSpecType.OptionalType<*> -> {
         val optionalType = specType.type
         if (containsKey(key)) {
@@ -120,9 +166,11 @@ internal fun Bundle.mapValue(key: String, specType: NavigationBundleSpecType<*>)
             specType.convertValue(null)
         }
     }
+
     is NavigationBundleSpecType.DateType -> getLong(key).let { value ->
         specType.convertValue(DefaultKalugaDate.epoch(value.milliseconds))
     }
+
     is NavigationBundleSpecType.DateArrayType -> getLongArray(key)?.let { array ->
         specType.convertValue(array.map { DefaultKalugaDate.epoch(it.milliseconds) })
     }

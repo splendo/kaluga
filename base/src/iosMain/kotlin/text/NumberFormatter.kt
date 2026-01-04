@@ -50,6 +50,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
                 minimumFractionDigits = 0.toULong()
                 maximumFractionDigits = 0.toULong()
             }
+
             is NumberFormatStyle.Decimal -> {
                 numberStyle = NSNumberFormatterDecimalStyle
                 minimumIntegerDigits = style.minIntegerDigits.toULong()
@@ -57,6 +58,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
                 minimumFractionDigits = style.minFractionDigits.toULong()
                 maximumFractionDigits = style.maxFractionDigits.toULong()
             }
+
             is NumberFormatStyle.Percentage -> {
                 numberStyle = NSNumberFormatterPercentStyle
                 minimumIntegerDigits = style.minIntegerDigits.toULong()
@@ -64,6 +66,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
                 minimumFractionDigits = style.minFractionDigits.toULong()
                 maximumFractionDigits = style.maxFractionDigits.toULong()
             }
+
             is NumberFormatStyle.Permillage -> {
                 numberStyle = NSNumberFormatterPercentStyle
                 positiveFormat = positiveFormat.replace('%', '‰')
@@ -73,11 +76,13 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
                 minimumFractionDigits = style.minFractionDigits.toULong()
                 maximumFractionDigits = style.maxFractionDigits.toULong()
             }
+
             is NumberFormatStyle.Scientific -> {
                 numberStyle = NSNumberFormatterScientificStyle
                 positiveFormat = style.pattern
                 negativeFormat = "-${style.pattern}"
             }
+
             is NumberFormatStyle.Currency -> {
                 numberStyle = NSNumberFormatterCurrencyStyle
                 style.currencyCode?.let { currencyCode ->
@@ -92,6 +97,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
                     maximumFractionDigits = it.toULong()
                 }
             }
+
             is NumberFormatStyle.Pattern -> {
                 numberStyle = NSNumberFormatterDecimalStyle
                 positiveFormat = style.positivePattern

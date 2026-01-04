@@ -172,6 +172,7 @@ internal actual class DefaultDeviceConnectionManager(
                             closeGatt()
                         }
                     }
+
                     BluetoothProfile.STATE_CONNECTED -> {
                         handleConnect()
                     }
@@ -281,6 +282,7 @@ internal actual class DefaultDeviceConnectionManager(
                 BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
             !enable && characteristic.wrapper.properties.containsAny(setOf(CharacteristicProperty.Indicate, CharacteristicProperty.Notify)) ->
                 BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+
             else -> null
         }
 

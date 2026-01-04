@@ -19,20 +19,24 @@ package com.splendo.kaluga.plugin.extensions
 
 import com.android.build.gradle.LibraryExtension
 import com.splendo.kaluga.plugin.helpers.jvmTarget
+import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.publish.PublicationContainer
-import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 
-abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatalog, libraryExtension: LibraryExtension, namespacePostfix: String, objects: ObjectFactory) :
-    BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, namespacePostfix, objects) {
+abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatalog, val libraryExtension: LibraryExtension, namespacePostfix: String, objects: ObjectFactory) :
+    BaseKalugaSubprojectExtension(versionCatalog, namespacePostfix, objects) {
+
+    override var namespace: String?
+        get() = libraryExtension.namespace
+        set(value) {
+            libraryExtension.namespace = value
+        }
 
     override fun Project.setupSubproject() {}
 
@@ -57,7 +61,7 @@ abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatal
             androidTestDependencies.forEach {
                 add("testImplementation", it)
             }
-            androidInstrumentedTestDependencies.forEach {
+            androidDeviceTestDependencies.forEach {
                 add("androidTestImplementation", it)
             }
         }
@@ -66,4 +70,50 @@ abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatal
     protected abstract fun LanguageSettingsBuilder.languageSettings()
     protected abstract fun DependencyHandlerScope.commonDependencies()
 
+    override fun Project.afterProjectEvaluated() {
+        setupPublishingAfterEvaluation()
+    }
+
+    protected abstract fun LibraryExtension.configure()
+
+    override fun Project.beforeEvaluated() {
+        setupSubproject()
+        libraryExtension.apply {
+            compileSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
+            buildToolsVersion = versionCatalog.findVersion("androidBuildTools").get().displayName
+
+            defaultConfig {
+                minSdk = versionCatalog.findVersion("androidMinSdk").get().displayName.toInt()
+
+                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+            }
+
+            signingConfigs {
+                create("stableDebug") {
+                    storeFile = project.rootProject.file("keystore/stableDebug.keystore")
+                    storePassword = "stableDebug"
+                    keyAlias = "stableDebug"
+                    keyPassword = "stableDebug"
+                }
+            }
+
+            buildTypes {
+                release {
+                    isMinifyEnabled = false
+                }
+                debug {
+                    signingConfig = signingConfigs.getByName("stableDebug")
+                }
+            }
+
+            compileOptions {
+                val javaVersion = JavaVersion.toVersion(versionCatalog.findVersion("java").get().displayName)
+                sourceCompatibility = javaVersion
+                targetCompatibility = javaVersion
+            }
+
+            configure()
+        }
+        configureSubproject()
+    }
 }

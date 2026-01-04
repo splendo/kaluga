@@ -25,7 +25,7 @@ import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
@@ -34,12 +34,10 @@ import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
 
 fun <
     NumeratorAndDenominatorRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit : ScientificUnit<NumeratorAndDenominatorRightQuantity>,
+    NumeratorUnit : DefinedScientificUnit<NumeratorAndDenominatorRightQuantity>,
     DenominatorLeftQuantity : UndefinedQuantityType,
     DenominatorLeftUnit : AbstractUndefinedScientificUnit<DenominatorLeftQuantity>,
-    ExtendedDenominatorRightUnit : UndefinedExtendedUnit<
-        NumeratorAndDenominatorRightQuantity,
-        >,
+    ExtendedDenominatorRightUnit,
     DenominatorUnit : UndefinedMultipliedUnit<
         DenominatorLeftQuantity,
         DenominatorLeftUnit,
@@ -70,4 +68,13 @@ fun <
         >,
     reciprocalTargetUnit: DenominatorLeftUnit.() -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = right.unit.left.reciprocalTargetUnit().byDividing(this, right, factory)
+) where
+        ExtendedDenominatorRightUnit : UndefinedExtendedUnit<
+            NumeratorAndDenominatorRightQuantity,
+            >,
+        ExtendedDenominatorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorRightQuantity,
+                >,
+            > =
+    right.unit.left.reciprocalTargetUnit().byDividing(this, right, factory)

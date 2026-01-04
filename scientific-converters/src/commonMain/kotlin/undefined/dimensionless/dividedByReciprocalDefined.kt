@@ -24,7 +24,7 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
-import com.splendo.kaluga.scientific.unit.Dimensionless
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
@@ -34,7 +34,7 @@ import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
 fun <
     NumeratorUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
     DenominatorReciprocalQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorReciprocalUnit : ScientificUnit<DenominatorReciprocalQuantity>,
+    DenominatorReciprocalUnit : DefinedScientificUnit<DenominatorReciprocalQuantity>,
     WrappedDenominatorReciprocalUnit : WrappedUndefinedExtendedUnit<
         DenominatorReciprocalQuantity,
         DenominatorReciprocalUnit,

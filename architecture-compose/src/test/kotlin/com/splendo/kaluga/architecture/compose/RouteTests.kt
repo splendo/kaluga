@@ -87,16 +87,23 @@ class RouteTests {
         val bundle = MockSpec.toBundle { row ->
             when (row) {
                 is MockSpecRow.StringSpecRow -> row.convertValue("string")
+
                 is MockSpecRow.BooleanSpecRow -> row.convertValue(true)
+
                 is MockSpecRow.FloatSpecRow -> row.convertValue(0.5f)
+
                 is MockSpecRow.SerializableSpecRow -> row.convertValue(
                     MockSerializable("Mock"),
                 )
+
                 is MockSpecRow.OptionalString -> row.convertValue("optional")
+
                 is MockSpecRow.OptionalFloat -> row.convertValue(null)
+
                 is MockSpecRow.OptionalMockSerializable -> row.convertValue(
                     MockSerializable("OptionalMock"),
                 )
+
                 is MockSpecRow.DateSpecRow -> row.convertValue(time)
             }
         }

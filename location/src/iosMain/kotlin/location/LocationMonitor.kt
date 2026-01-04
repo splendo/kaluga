@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.service.DefaultServiceMonitor
-import com.splendo.kaluga.service.ServiceMonitor
 import com.splendo.kaluga.permissions.location.KalugaLocationPermissionDelegateProtocol
 import com.splendo.kaluga.permissions.location.KalugaLocationPermissionWrapper
+import com.splendo.kaluga.service.DefaultServiceMonitor
+import com.splendo.kaluga.service.ServiceMonitor
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.getAndUpdate
 import platform.CoreLocation.CLLocationManager

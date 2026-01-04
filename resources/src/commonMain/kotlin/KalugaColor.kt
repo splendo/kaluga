@@ -207,12 +207,14 @@ fun colorFrom(hexString: String): KalugaColor.RGBColor? = if (hexString.startsWi
             val blue = hexColor and 0xFF
             colorFrom(red.toInt(), green.toInt(), blue.toInt(), alpha.toInt())
         }
+
         7 -> {
             val red = hexColor ushr 16
             val green = (hexColor shr 8) and 0xFF
             val blue = hexColor and 0xFF
             colorFrom(red.toInt(), green.toInt(), blue.toInt())
         }
+
         else -> null
     }
 } else {
@@ -280,11 +282,13 @@ open class ColorSerializer : KSerializer<SerializableColor> {
                 encoder.encodeString(color.hexString)
                 encoder.encodeNull()
             }
+
             is KalugaColor.DarkLightColor -> {
                 encoder.encodeBoolean(true)
                 encoder.encodeString(color.defaultColor.hexString)
                 encoder.encodeString(color.darkColor.hexString)
             }
+
             else -> throw IllegalArgumentException("Unknown KalugaColor $color")
         }
     }

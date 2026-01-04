@@ -1,5 +1,5 @@
 /*
- Copyright 2024 Splendo Consulting B.V. The Netherlands
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,9 +17,8 @@
 
 package com.splendo.kaluga.plugin.extensions
 
-import com.android.build.gradle.LibraryPlugin
-import com.splendo.kaluga.plugin.helpers.kalugaVersion
 import com.splendo.kaluga.plugin.helpers.jvmTarget
+import com.splendo.kaluga.plugin.helpers.kalugaVersion
 import com.vanniktech.maven.publish.AndroidMultiVariantLibrary
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
@@ -35,7 +34,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.api.tasks.testing.logging.TestLoggingContainer
 import org.gradle.kotlin.dsl.configure
-import org.jetbrains.dokka.gradle.DokkaExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
@@ -58,14 +57,15 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
     }
 
     fun beforeProjectEvaluated(project: Project) {
-
-        project.extensions.configure(type = DokkaExtension::class) {
-
-            // use a separate dokka process
-            dokkaGeneratorIsolation.set(ProcessIsolation {
-                maxHeapSize.set("4g")
-            })
-        }
+        // XXX: re-enable if there are problems with Dokka
+        // this is currently sidestepped by excluding scientific units
+        // project.extensions.configure(type = DokkaExtension::class) {
+        //
+        //     // use a separate dokka process
+        //     dokkaGeneratorIsolation.set(ProcessIsolation {
+        //         maxHeapSize.set("4g")
+        //     })
+        // }
 
         project.tasks.withType(KotlinCompile::class.java) {
             compilerOptions {
@@ -73,44 +73,23 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
                 freeCompilerArgs.addAll("-Xjvm-default=all")
             }
         }
-
         project.beforeEvaluated()
+        project.setupPublishingDuringEvaluation()
+    }
 
-
-
+    private fun Project.setupPublishingDuringEvaluation() {
         project.extensions.configure(MavenPublishBaseExtension::class) {
-
             coordinates(version = project.kalugaVersion)
 
-            when {
-                project.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> configure(
-                    KotlinMultiplatform(
-                        // scientific docs take an enormous amount of RAM so we skip them
-                        javadocJar = if (project.name.startsWith("scientific"))
-                            JavadocJar.Empty()
-                        else
-                            JavadocJar.Dokka("dokkaGeneratePublicationHtml"),
-                        androidVariantsToPublish = listOf("debug", "release"),
-                        sourcesJar = true,
-                    )
-                )
-
-                project.plugins.hasPlugin(LibraryPlugin::class.java) -> {
-                    configure(platform = AndroidMultiVariantLibrary(
+            // this specific android config must go early
+            if (project.plugins.hasPlugin(com.android.build.gradle.LibraryPlugin::class.java)) {
+                configure(
+                    platform = AndroidMultiVariantLibrary(
                         sourcesJar = true,
                         publishJavadocJar = false,
-                    )
-                    )
-                }
-
-                project.plugins.hasPlugin(VersionCatalogPlugin::class.java) -> configure(platform = com.vanniktech.maven.publish.VersionCatalog()) // TODO: This is not correct, it should be a platform
-                else -> {
-                    project.logger.info("No plugin type detected that can be published for ${project.name}, skipping configuration. Plugins: ${project.plugins.joinToString { it.javaClass.name }}")
-                }
+                    ),
+                )
             }
-
-            publishToMavenCentral()
-            signAllPublications()
 
             // Provide artifacts information requited by Maven Central
             pom {
@@ -135,6 +114,41 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
                     url.set("https://github.com/splendo/kaluga")
                 }
             }
+        }
+    }
+
+    protected fun Project.setupPublishingAfterEvaluation() {
+        project.extensions.configure(MavenPublishBaseExtension::class) {
+            // scientific docs take an enormous amount of RAM so we skip them
+            when {
+                project.plugins.hasPlugin(KotlinMultiplatformPluginWrapper::class.java) -> configure(
+                    KotlinMultiplatform(
+                        // scientific docs take an enormous amount of RAM so we skip them
+                        javadocJar = if (project.name.startsWith("scientific")) {
+                            JavadocJar.Empty()
+                        } else {
+                            JavadocJar.Dokka("dokkaGeneratePublicationHtml")
+                        },
+                        sourcesJar = true,
+                    ),
+                )
+
+                project.plugins.hasPlugin(VersionCatalogPlugin::class.java) -> configure(platform = com.vanniktech.maven.publish.VersionCatalog())
+
+                project.plugins.hasPlugin(com.android.build.gradle.LibraryPlugin::class.java) -> {
+                    // noop, android went in before evaluate
+                }
+
+                else -> {
+                    project.logger.info(
+                        "No plugin type detected that can be published for ${project.name}, skipping configuration. Plugins: ${project.plugins.joinToString {
+                            it.javaClass.name
+                        }}",
+                    )
+                }
+            }
+            publishToMavenCentral()
+            signAllPublications()
         }
     }
 
@@ -166,5 +180,4 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
      * Abstract setup of a [Project] with the configuration of this extension after it has been evaluated.
      */
     protected abstract fun Project.afterProjectEvaluated()
-
 }

@@ -77,25 +77,32 @@ sealed class ProvidingNavHostRouteController<Provider>(private val provider: Sta
             is Route.NextRoute<*, *> -> navHostController.navigate(newRoute.route) {
                 launchSingleTop = true
             }
+
             is Route.FromRoute<*, *> -> navHostController.navigate(newRoute.route) {
                 popUpTo(newRoute.from)
             }
+
             is Route.Replace<*, *> -> {
                 navHostController.popBackStack()
                 navHostController.navigate(newRoute.route)
             }
+
             is Route.PopTo<*, *> -> {
                 navHostController.getBackStackEntry(newRoute.route).setResult(newRoute.result)
                 navHostController.popBackStack(newRoute.route, false)
             }
+
             is Route.PopToIncluding<*, *> -> {
                 navHostController.popBackStack(newRoute.route, true)
             }
+
             is Route.Back -> back(newRoute.result)
+
             is Route.PopToRoot -> {
                 navHostController.getBackStackEntry(ROOT_VIEW).setResult(newRoute.result)
                 navHostController.popBackStack(ROOT_VIEW, false)
             }
+
             is Route.Close -> close()
         }
     }

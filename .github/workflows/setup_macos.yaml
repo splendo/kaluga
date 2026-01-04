@@ -22,7 +22,7 @@ on:
         value: ${{ jobs.setup.outputs.projects }}
 jobs:
   setup:
-    runs-on: macos-15
+    runs-on: macos-26
 
     outputs:
       projects: ${{ steps.envFile.outputs.projects }}
@@ -77,7 +77,7 @@ jobs:
         run: ./gradlew :${{ inputs.project }}:${{ inputs.gradleTask }}
 
       - name: Make cache of workspace
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         id: store-build
         with:
           path: |

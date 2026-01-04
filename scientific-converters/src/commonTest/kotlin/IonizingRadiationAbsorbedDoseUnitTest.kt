@@ -20,7 +20,14 @@ package com.splendo.kaluga.scientific.converter
 import com.splendo.kaluga.scientific.converter.energy.absorbedBy
 import com.splendo.kaluga.scientific.converter.specificEnergy.asAbsorbedDose
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Decierg
+import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.Gram
+import com.splendo.kaluga.scientific.unit.Gray
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Rad
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

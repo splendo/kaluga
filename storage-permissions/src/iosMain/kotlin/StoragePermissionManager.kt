@@ -95,9 +95,13 @@ actual class StoragePermissionManagerBuilder actual constructor(private val cont
 
 private fun PHAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
     PHAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+
     PHAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+
     PHAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+
     PHAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+
     else -> {
         error(
             "StoragePermissionManager",

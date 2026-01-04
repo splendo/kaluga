@@ -30,7 +30,7 @@ import kotlin.jvm.JvmName
 
 @JvmName("valueTimesDimensionless")
 infix operator fun <
-    Quantity : PhysicalQuantity.PhysicalQuantityWithDimension,
+    Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     Unit : DefinedScientificUnit<Quantity>,
     DimensionlessUnit : Dimensionless,
     > ScientificValue<Quantity, Unit>.times(
@@ -39,7 +39,7 @@ infix operator fun <
 
 @JvmName("dimensionlessTimesValue")
 infix operator fun <
-    Quantity : PhysicalQuantity.PhysicalQuantityWithDimension,
+    Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     Unit : DefinedScientificUnit<Quantity>,
     DimensionlessUnit : Dimensionless,
     > ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>.times(
@@ -58,7 +58,7 @@ fun <
 
 @JvmName("valueDivDimensionless")
 infix operator fun <
-    Quantity : PhysicalQuantity.PhysicalQuantityWithDimension,
+    Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     Unit : DefinedScientificUnit<Quantity>,
     DimensionlessUnit : Dimensionless,
     > ScientificValue<Quantity, Unit>.div(
@@ -67,7 +67,7 @@ infix operator fun <
 
 @JvmName("dimensionlessDivValue")
 infix operator fun <
-    Quantity : PhysicalQuantity.PhysicalQuantityWithDimension,
+    Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     Unit : DefinedScientificUnit<Quantity>,
     DimensionlessUnit : Dimensionless,
     > ScientificValue<PhysicalQuantity.Dimensionless, DimensionlessUnit>.div(

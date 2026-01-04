@@ -25,7 +25,7 @@ import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
@@ -35,9 +35,7 @@ import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 fun <
     NumeratorNumeratorLeftQuantity : UndefinedQuantityType,
     NumeratorNumeratorLeftUnit : AbstractUndefinedScientificUnit<NumeratorNumeratorLeftQuantity>,
-    ExtendedNumeratorNumeratorRightUnit : UndefinedExtendedUnit<
-        NumeratorNumeratorRightAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorNumeratorRightUnit,
     NumeratorNumeratorUnit : UndefinedMultipliedUnit<
         NumeratorNumeratorLeftQuantity,
         NumeratorNumeratorLeftUnit,
@@ -70,7 +68,7 @@ fun <
         NumeratorDenominatorUnit,
         >,
     NumeratorNumeratorRightAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit : ScientificUnit<NumeratorNumeratorRightAndDenominatorQuantity>,
+    DenominatorUnit : DefinedScientificUnit<NumeratorNumeratorRightAndDenominatorQuantity>,
     TargetUnit : UndefinedDividedUnit<
         NumeratorNumeratorLeftQuantity,
         NumeratorNumeratorLeftUnit,
@@ -108,6 +106,15 @@ fun <
     right: ScientificValue<NumeratorNumeratorRightAndDenominatorQuantity, DenominatorUnit>,
     numeratorNumeratorLeftUnitPerNumeratorDenominatorUnit: NumeratorNumeratorLeftUnit.(NumeratorDenominatorUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.numerator.left.numeratorNumeratorLeftUnitPerNumeratorDenominatorUnit(
-    unit.denominator,
-).byDividing(this, right, factory)
+) where
+        ExtendedNumeratorNumeratorRightUnit : UndefinedExtendedUnit<
+            NumeratorNumeratorRightAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorNumeratorRightAndDenominatorQuantity,
+                >,
+            > =
+    unit.numerator.left.numeratorNumeratorLeftUnitPerNumeratorDenominatorUnit(
+        unit.denominator,
+    ).byDividing(this, right, factory)

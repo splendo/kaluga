@@ -87,12 +87,14 @@ class StringFormatter(private val out: StringBuilder = StringBuilder(), private 
         formatStrings.forEach { formatString ->
             when (val index = formatString.index) {
                 -2 -> formatString.print(null, locale)
+
                 -1 -> {
                     if (last < 0 || last > args.size - 1) {
                         throw StringFormatterException.MissingFormatArgumentException(formatString.toString())
                     }
                     formatString.print(args.getOrNull(last), locale)
                 }
+
                 0 -> {
                     lastOrdinaryIndex++
                     last = lastOrdinaryIndex
@@ -101,6 +103,7 @@ class StringFormatter(private val out: StringBuilder = StringBuilder(), private 
                     }
                     formatString.print(args.getOrNull(lastOrdinaryIndex), locale)
                 }
+
                 else -> {
                     last = index - 1
                     if (last > args.size - 1) {

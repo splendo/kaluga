@@ -230,7 +230,9 @@ abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfacePr
                     startSeek(duration)
                     result
                 }
+
                 queuedSeek != null && queuedSeek.first == duration -> queuedSeek.second
+
                 else -> {
                     this.queuedSeek?.second?.complete(false)
                     this.queuedSeek = duration to result
@@ -259,10 +261,12 @@ abstract class BaseMediaManager(private val mediaSurfaceProvider: MediaSurfacePr
                 val queuedSeek = queuedSeek
                 activeSeek = when {
                     queuedSeek == null -> null
+
                     activeSeek?.first == queuedSeek.first -> {
                         queuedSeek.second.complete(success)
                         null
                     }
+
                     else -> queuedSeek
                 }
                 activeSeek?.let { startSeek(it.first) }

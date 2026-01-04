@@ -48,12 +48,15 @@ val PhysicalQuantity.Speed.converters get() = listOf<QuantityConverter<PhysicalQ
             leftUnit is MetricSpeed && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpeed && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Speed && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -66,12 +69,15 @@ val PhysicalQuantity.Speed.converters get() = listOf<QuantityConverter<PhysicalQ
             leftUnit is MetricSpeed && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpeed && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Speed && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -84,18 +90,23 @@ val PhysicalQuantity.Speed.converters get() = listOf<QuantityConverter<PhysicalQ
             leftUnit is MetricSpeed && rightUnit is MetricWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpeed && rightUnit is ImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpeed && rightUnit is UKImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpeed && rightUnit is USCustomaryWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Speed && rightUnit is Weight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -108,21 +119,27 @@ val PhysicalQuantity.Speed.converters get() = listOf<QuantityConverter<PhysicalQ
             leftUnit is MetricSpeed && rightUnit is Dyne -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricSpeed && rightUnit is DyneMultiple -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpeed && rightUnit is ImperialForce -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpeed && rightUnit is UKImperialForce -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpeed && rightUnit is USCustomaryForce -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Speed && rightUnit is Force -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -135,6 +152,7 @@ val PhysicalQuantity.Speed.converters get() = listOf<QuantityConverter<PhysicalQ
             leftUnit is Speed && rightUnit is Acceleration -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

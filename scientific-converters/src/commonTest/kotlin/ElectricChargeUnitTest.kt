@@ -23,8 +23,24 @@ import com.splendo.kaluga.scientific.converter.energy.div
 import com.splendo.kaluga.scientific.converter.magneticFlux.div
 import com.splendo.kaluga.scientific.converter.time.times
 import com.splendo.kaluga.scientific.converter.voltage.times
-import com.splendo.kaluga.scientific.unit.*
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.Abampere
+import com.splendo.kaluga.scientific.unit.Abcoulomb
+import com.splendo.kaluga.scientific.unit.Abfarad
+import com.splendo.kaluga.scientific.unit.Abohm
+import com.splendo.kaluga.scientific.unit.Abvolt
+import com.splendo.kaluga.scientific.unit.Ampere
+import com.splendo.kaluga.scientific.unit.Biot
+import com.splendo.kaluga.scientific.unit.Coulomb
+import com.splendo.kaluga.scientific.unit.Decierg
+import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.Farad
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.Maxwell
+import com.splendo.kaluga.scientific.unit.Ohm
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.Volt
+import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

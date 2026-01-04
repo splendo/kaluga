@@ -24,7 +24,8 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
@@ -33,12 +34,10 @@ import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
 
 fun <
     NumeratorAndDenominatorNumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorUnit : ScientificUnit<NumeratorAndDenominatorNumeratorQuantity>,
-    ExtendedDenominatorNumeratorUnit : UndefinedExtendedUnit<
-        NumeratorAndDenominatorNumeratorQuantity,
-        >,
+    NumeratorUnit : DefinedScientificUnit<NumeratorAndDenominatorNumeratorQuantity>,
+    ExtendedDenominatorNumeratorUnit,
     DenominatorDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorDenominatorUnit : ScientificUnit<DenominatorDenominatorQuantity>,
+    DenominatorDenominatorUnit : DefinedScientificUnit<DenominatorDenominatorQuantity>,
     WrappedDenominatorDenominatorUnit : WrappedUndefinedExtendedUnit<
         DenominatorDenominatorQuantity,
         DenominatorDenominatorUnit,
@@ -67,4 +66,13 @@ fun <
         DenominatorUnit,
         >,
     factory: (Decimal, DenominatorDenominatorUnit) -> DenominatorDenominatorValue,
-) = right.unit.denominator.wrapped.byDividing(this, right, factory)
+) where
+        ExtendedDenominatorNumeratorUnit : UndefinedExtendedUnit<
+            NumeratorAndDenominatorNumeratorQuantity,
+            >,
+        ExtendedDenominatorNumeratorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorAndDenominatorNumeratorQuantity,
+                >,
+            > =
+    right.unit.denominator.wrapped.byDividing(this, right, factory)
