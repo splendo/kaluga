@@ -24,6 +24,8 @@ rootProject.name = "Kaluga"
 include(":base")
 include(":beacons")
 include(":bluetooth")
+include(":bluetooth-annotations")
+include(":bluetooth-ksp")
 include(":architecture")
 include(":architecture-compose")
 include(":alerts")
