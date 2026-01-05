@@ -38,13 +38,13 @@ class BluetoothPlugin : Plugin<Project> {
         extensions.configure<KotlinMultiplatformExtension> {
             project.dependencies.add(
                 "kspCommonMainMetadata",
-                "com.splendo.kaluga:bluetooth-ksp:1.6.0"
+                "com.splendo.kaluga:bluetooth-ksp:$kalugaVersion"
             )
             targets.configureEach {
                 if (name !in listOf("metadata")) {
                     project.dependencies.add(
                         "ksp${name.uppercaseFirstChar()}",
-                        "com.splendo.kaluga:bluetooth-ksp:1.6.0"
+                        "com.splendo.kaluga:bluetooth-ksp:$kalugaVersion"
                     )
                 }
             }

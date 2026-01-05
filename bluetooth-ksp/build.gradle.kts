@@ -1,12 +1,11 @@
 plugins {
-    id(libs.plugins.kotlin.jvm.get().pluginId)
+    id("com.splendo.kaluga.plugin.ksp")
 }
 
-group = "com.splendo.kaluga"
-version = libs.versions.kaluga.get()
+kaluga {
+    moduleName = "bluetooth"
+}
 
 dependencies {
     implementation(project(":bluetooth-annotations"))
-    implementation(libs.google.devtools.ksp.symbolProcessingAPI)
-    implementation(libs.kotlinpoet.ksp)
 }

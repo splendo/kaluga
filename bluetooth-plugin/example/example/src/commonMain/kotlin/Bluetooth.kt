@@ -20,4 +20,7 @@ package com.splendo.kaluga.bluetooth.example
 import com.splendo.kaluga.bluetooth.annotations.Bluetooth
 
 @Bluetooth
-interface BluetoothTest
+interface BluetoothTest {
+    @Bluetooth
+    interface Nested
+}

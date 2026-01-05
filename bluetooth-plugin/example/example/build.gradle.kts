@@ -18,7 +18,7 @@ android {
 kotlin {
     jvmToolchain(libs.versions.java.get().toInt())
     androidTarget()
-    iosSimulatorArm64()
+//    iosSimulatorArm64()
 }
 
 tasks.withType<KotlinCompile>().configureEach {
