@@ -18,9 +18,27 @@
 package com.splendo.kaluga.bluetooth.example
 
 import com.splendo.kaluga.bluetooth.annotations.Bluetooth
+import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
+import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
+import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 
 @Bluetooth
 interface BluetoothTest {
     @Bluetooth
     interface Nested
+
+    val testService: TestService
 }
+
+@BluetoothService("abcd")
+interface TestService {
+    val testCharacteristic: TestCharacteristic
+}
+
+@BluetoothCharacteristic("1234")
+interface TestCharacteristic {
+    val testDescriptor: TestDescriptor
+}
+
+@BluetoothDescriptor("5678")
+interface TestDescriptor

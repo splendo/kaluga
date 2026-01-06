@@ -29,19 +29,31 @@ annotation class BluetoothClient
 @Retention(AnnotationRetention.SOURCE)
 annotation class BluetoothServer
 
-@Target(AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.SOURCE)
+annotation class BluetoothClientName(val name: String)
+
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.SOURCE)
+annotation class BluetoothServerName(val name: String)
+
+@Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
 annotation class BluetoothService(
     val uuid: String
 )
 
-@Target(AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.SOURCE)
+annotation class Simulated
+
+@Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
 annotation class BluetoothCharacteristic(
     val uuid: String
 )
 
-@Target(AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
 annotation class BluetoothDescriptor(
     val uuid: String

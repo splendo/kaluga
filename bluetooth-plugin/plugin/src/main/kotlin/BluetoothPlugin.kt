@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.plugin
 
+import com.google.devtools.ksp.gradle.KspAATask
+import com.google.devtools.ksp.gradle.KspExtension
 import com.google.devtools.ksp.gradle.KspGradleSubplugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -24,6 +26,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
+import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.util.Properties
 
@@ -40,17 +43,21 @@ class BluetoothPlugin : Plugin<Project> {
                 "kspCommonMainMetadata",
                 "com.splendo.kaluga:bluetooth-ksp:$kalugaVersion"
             )
-            targets.configureEach {
-                if (name !in listOf("metadata")) {
-                    project.dependencies.add(
-                        "ksp${name.uppercaseFirstChar()}",
-                        "com.splendo.kaluga:bluetooth-ksp:$kalugaVersion"
-                    )
+            sourceSets.all {
+                languageSettings.optIn("com.google.devtools.ksp.KspExperimental")
+            }
+            sourceSets.commonMain {
+                kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+                dependencies {
+                    implementation("com.splendo.kaluga:bluetooth-annotations:$kalugaVersion")
+                    implementation("com.splendo.kaluga:bluetooth:$kalugaVersion")
                 }
             }
-            sourceSets.commonMain.dependencies {
-                implementation("com.splendo.kaluga:bluetooth-annotations:$kalugaVersion")
-                implementation("com.splendo.kaluga:bluetooth:$kalugaVersion")
+
+            tasks.withType<KspAATask>().configureEach {
+                if (name != "kspCommonMainKotlinMetadata") {
+                    dependsOn("kspCommonMainKotlinMetadata")
+                }
             }
         }
     }

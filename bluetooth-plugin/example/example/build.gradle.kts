@@ -18,12 +18,12 @@ android {
 kotlin {
     jvmToolchain(libs.versions.java.get().toInt())
     androidTarget()
-//    iosSimulatorArm64()
+    iosSimulatorArm64()
 }
 
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
-        languageVersion.set(KotlinVersion.KOTLIN_2_1)
+        languageVersion.set(KotlinVersion.KOTLIN_2_3)
         jvmTarget.set(JvmTarget.fromTarget(libs.versions.java.get())) // your JVM target
     }
 }
