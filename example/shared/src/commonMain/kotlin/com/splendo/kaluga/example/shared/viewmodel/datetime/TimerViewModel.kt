@@ -57,9 +57,11 @@ class TimerViewModel(private val alertPresenterBuilder: AlertPresenter.Builder) 
         timer.state.map { state ->
             when (state) {
                 is Timer.State.NotRunning.Paused -> KalugaButton.Plain("Start", ButtonStyles.default) { coroutineScope.launch { timer.start() } }
+
                 is Timer.State.NotRunning.Finished -> KalugaButton.Plain("Reset", ButtonStyles.default) {
                     this.timer.value = RecurringTimer(1.minutes, coroutineScope = coroutineScope)
                 }
+
                 is Timer.State.Running -> KalugaButton.Plain("Pause", ButtonStyles.default) { coroutineScope.launch { timer.pause() } }
             }
         }

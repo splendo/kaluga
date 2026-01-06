@@ -175,10 +175,12 @@ class MockDeviceConnectionManager(
                 ) {
                     debug("Mock Read: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
                 }
+
                 is DeviceAction.Read.Descriptor -> handleUpdatedDescriptor(
                     action.descriptor.uuid,
                     willActionSucceed,
                 )
+
                 is DeviceAction.Write.Characteristic -> {
                     (action.characteristic.wrapper as MockCharacteristicWrapper).updateMockValue(
                         action.newValue,
@@ -187,10 +189,12 @@ class MockDeviceConnectionManager(
                         debug("Mock Write: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
                     }
                 }
+
                 is DeviceAction.Write.Descriptor -> {
                     (action.descriptor.wrapper as MockDescriptorWrapper).updateMockValue(action.newValue)
                     handleUpdatedDescriptor(action.descriptor.uuid, willActionSucceed)
                 }
+
                 is DeviceAction.Notification -> handleCurrentActionCompleted(willActionSucceed)
 
                 is DeviceAction.RequestMtu -> handleNewMtu(action.mtu, willActionSucceed)

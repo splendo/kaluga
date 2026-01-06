@@ -37,9 +37,11 @@ val PhysicalQuantity.ElectricCapacitance.converters get() = listOf<QuantityConve
             leftUnit is Abfarad && rightUnit is Abvolt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ElectricCapacitance && rightUnit is Voltage -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -52,9 +54,11 @@ val PhysicalQuantity.ElectricCapacitance.converters get() = listOf<QuantityConve
             leftUnit is Abfarad && rightUnit is Frequency -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ElectricCapacitance && rightUnit is Frequency -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -67,6 +71,7 @@ val PhysicalQuantity.ElectricCapacitance.converters get() = listOf<QuantityConve
             leftUnit is ElectricCapacitance && rightUnit is ElectricResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

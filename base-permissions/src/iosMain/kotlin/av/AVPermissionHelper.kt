@@ -104,6 +104,7 @@ class AVPermissionHelper(
             AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> {
                 authorizationStatusHandler.status(IOSPermissionsHelper.AuthorizationStatus.Denied)
             }
+
             else -> timerHelper.startMonitoring(interval)
         }
     }
@@ -118,9 +119,13 @@ class AVPermissionHelper(
 
 private fun AVAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
     AVAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+
     AVAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+
     AVAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+
     AVAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+
     else -> {
         error(
             "AVPermissionManager",

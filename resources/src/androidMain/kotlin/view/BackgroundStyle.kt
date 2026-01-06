@@ -55,6 +55,7 @@ private fun GradientDrawable.applyShape(shape: KalugaBackgroundStyle.Shape, cont
             )
             GradientDrawable.RECTANGLE
         }
+
         is KalugaBackgroundStyle.Shape.Oval -> GradientDrawable.OVAL
     }
 }
@@ -64,6 +65,7 @@ private fun GradientDrawable.applyFillStyle(fillStyle: KalugaBackgroundStyle.Fil
         is KalugaBackgroundStyle.FillStyle.Solid -> {
             color = ColorStateList(arrayOf(intArrayOf()), intArrayOf(fillStyle.color.currentColor))
         }
+
         is KalugaBackgroundStyle.FillStyle.Gradient -> {
             val colors = fillStyle.gradientStyle.colorPoints.map { it.color.currentColor }.toIntArray()
             val offsets = fillStyle.gradientStyle.colorPoints.map { it.offset }.toFloatArray()
@@ -95,11 +97,13 @@ private fun GradientDrawable.applyGradientStyle(gradientStyle: GradientStyle, co
                 GradientStyle.Linear.Orientation.RIGHT_LEFT -> GradientDrawable.Orientation.RIGHT_LEFT
             }
         }
+
         is GradientStyle.Radial -> {
             gradientType = GradientDrawable.RADIAL_GRADIENT
             gradientRadius = gradientStyle.radius.dpToPixel(context)
             setGradientCenter(gradientStyle.centerPoint.x, gradientStyle.centerPoint.y)
         }
+
         is GradientStyle.Angular -> {
             gradientType = GradientDrawable.SWEEP_GRADIENT
             setGradientCenter(gradientStyle.centerPoint.x, gradientStyle.centerPoint.y)
@@ -112,6 +116,7 @@ private fun GradientDrawable.applyStrokeStyle(strokeStyle: KalugaBackgroundStyle
         is KalugaBackgroundStyle.StrokeStyle.Stroke -> {
             setStroke(strokeStyle.width.dpToPixel(context).toInt(), ColorStateList(arrayOf(intArrayOf()), intArrayOf(strokeStyle.color.currentColor)))
         }
+
         is KalugaBackgroundStyle.StrokeStyle.None -> {}
     }
 }

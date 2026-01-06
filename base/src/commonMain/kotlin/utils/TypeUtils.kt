@@ -42,6 +42,7 @@ inline fun <reified K : Any, reified V : Any> Map<*, *>.typedMap(): Map<K, V> = 
                 else -> null
             }
         }
+
         else -> null
     }
 }.toMap()

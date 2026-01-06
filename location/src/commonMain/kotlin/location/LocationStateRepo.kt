@@ -59,6 +59,7 @@ abstract class BaseLocationStateRepo(
             is LocationState.Inactive -> {
                 repo.createInitializingState(state)
             }
+
             is LocationState.Active -> state.remain()
         }
     },
@@ -86,10 +87,12 @@ open class LocationStateImplRepo(createLocationManager: suspend () -> LocationMa
                     (this as LocationStateImplRepo).startMonitoringLocationManager(locationManager)
                     state.startInitializing(locationManager)
                 }
+
                 is LocationStateImpl.Deinitialized -> {
                     (this as LocationStateImplRepo).startMonitoringLocationManager(state.locationManager)
                     state.reinitialize
                 }
+
                 else -> state.remain()
             }
         },
@@ -125,10 +128,13 @@ open class LocationStateImplRepo(createLocationManager: suspend () -> LocationMa
             is LocationState.Initializing -> {
                 state.initialize(event.hasPermission, locationManager.isLocationEnabled())
             }
+
             is LocationState.Permitted -> {
                 if (event.hasPermission) state.remain() else state.revokePermission
             }
+
             is LocationState.Disabled.NotPermitted -> if (event.hasPermission) state.permit(locationManager.isLocationEnabled()) else state.remain()
+
             else -> {
                 state.remain()
             }

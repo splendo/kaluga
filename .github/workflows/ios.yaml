@@ -9,10 +9,10 @@ jobs:
 
   lint:
     needs: build
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         submodules: recursive
 
@@ -34,14 +34,14 @@ jobs:
 
   test:
     needs: build
-    runs-on: macos-15
+    runs-on: macos-26
     strategy:
       fail-fast: false
       matrix:
         module: ${{ fromJSON(needs.build.outputs.projects) }}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup tools and cache for workspace
         uses: ./.github/workflows/setup_tools_macos/
@@ -60,17 +60,16 @@ jobs:
 
   example:
     needs: build
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup tools and cache for workspace
         uses: ./.github/workflows/setup_tools_macos/
         with:
           kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
           arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
-
       - name: run install
         working-directory: example/ios
         run: | 
@@ -79,7 +78,7 @@ jobs:
 
       - name: build example
         working-directory: example/ios
-        run: set -o pipefail && xcodebuild -project Demo.xcodeproj -sdk iphonesimulator -scheme Demo -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.6' | tee xcodebuild.log | xcpretty
+        run: set -o pipefail && xcodebuild -project Demo.xcodeproj -sdk iphonesimulator -scheme Demo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1'
         shell: bash
 
       - name: 'upload xcodebuild.log'

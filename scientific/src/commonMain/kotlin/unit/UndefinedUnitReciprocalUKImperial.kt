@@ -66,7 +66,7 @@ fun <
     InverseUnit,
     ReciprocalUnit,
     > ReciprocalUnit.reciprocal() where
-                                        WrappedUnit : ScientificUnit<WrappedQuantity>, WrappedUnit : MeasurementUsage.UsedInUKImperial,
+                                        WrappedUnit : DefinedScientificUnit<WrappedQuantity>, WrappedUnit : MeasurementUsage.UsedInUKImperial,
                                         InverseUnit : WrappedUndefinedExtendedUnit<WrappedQuantity, WrappedUnit>, InverseUnit : MeasurementUsage.UsedInUKImperial,
                                         ReciprocalUnit : UndefinedReciprocalUnit<UndefinedQuantityType.Extended<WrappedQuantity>, InverseUnit>,
                                         ReciprocalUnit : MeasurementUsage.UsedInUKImperial =

@@ -40,21 +40,27 @@ val PhysicalQuantity.IonizingRadiationAbsorbedDose.converters get() = listOf<Qua
             leftUnit is Rad && rightUnit is Gram -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is RadMultiple && rightUnit is Gram -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is IonizingRadiationAbsorbedDose && rightUnit is ImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is IonizingRadiationAbsorbedDose && rightUnit is UKImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is IonizingRadiationAbsorbedDose && rightUnit is USCustomaryWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is IonizingRadiationAbsorbedDose && rightUnit is Weight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

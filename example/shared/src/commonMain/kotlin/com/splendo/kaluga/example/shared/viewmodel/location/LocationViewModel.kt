@@ -55,6 +55,7 @@ class LocationViewModel(permission: LocationPermission) :
             locationStateRepo.location().map { location ->
                 when (location) {
                     is Location.KnownLocation -> "${location.latitudeDMS} ${location.longitudeDMS}"
+
                     is Location.UnknownLocation -> {
                         val lastKnownLocation = (location as? Location.UnknownLocation.WithLastLocation)?.let {
                             " Last Known Location: ${location.lastKnownLocation.latitudeDMS} ${location.lastKnownLocation.longitudeDMS}"

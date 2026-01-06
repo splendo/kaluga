@@ -150,7 +150,9 @@ sealed class MockPlaybackState {
         override val completedLoop: suspend () -> PlaybackState.PlayingOrCompleted = {
             val newLoopMode = when (val loopMode = playbackParameters.loopMode) {
                 is PlaybackState.LoopMode.NotLooping -> PlaybackState.LoopMode.NotLooping
+
                 is PlaybackState.LoopMode.LoopingForever -> PlaybackState.LoopMode.LoopingForever
+
                 is PlaybackState.LoopMode.LoopingForFixedNumber -> {
                     if (loopMode.loops > 0U) {
                         PlaybackState.LoopMode.LoopingForFixedNumber(loopMode.loops - 1U)

@@ -46,7 +46,7 @@ dependencies {
     implementation(libs.kotlinter.gradle)
     implementation(libs.kotlinx.atomicfu.gradle)
     implementation(libs.kotlinx.binarycompatibilityvalidator.gradle)
-    // implementation(libs.kotlinx.kover.gradle)
+    implementation(libs.kotlinx.kover.gradle)
     implementation(libs.palantir.git.version)
 
     testImplementation(libs.junit)

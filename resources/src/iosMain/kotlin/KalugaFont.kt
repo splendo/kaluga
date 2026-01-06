@@ -78,30 +78,39 @@ actual fun createDefaultFont(weight: Int, style: FontStyle, traits: Set<FontTrai
             // Not a bug, iOS flips these names
             calculateWeight(UIFontWeightUltraLight, UIFontWeightThin - UIFontWeightUltraLight, FontWeight.THIN)
         }
+
         weight <= FontWeight.EXTRA_LIGHT.value -> {
             calculateWeight(UIFontWeightThin, UIFontWeightThin - UIFontWeightUltraLight, FontWeight.EXTRA_LIGHT)
         }
+
         weight <= FontWeight.LIGHT.value -> {
             calculateWeight(UIFontWeightLight, UIFontWeightLight - UIFontWeightThin, FontWeight.LIGHT)
         }
+
         weight <= FontWeight.NORMAL.value -> {
             calculateWeight(UIFontWeightRegular, UIFontWeightRegular - UIFontWeightLight, FontWeight.NORMAL)
         }
+
         weight <= FontWeight.MEDIUM.value -> {
             calculateWeight(UIFontWeightMedium, UIFontWeightMedium - UIFontWeightRegular, FontWeight.MEDIUM)
         }
+
         weight <= FontWeight.SEMI_BOLD.value -> {
             calculateWeight(UIFontWeightSemibold, UIFontWeightSemibold - UIFontWeightMedium, FontWeight.SEMI_BOLD)
         }
+
         weight <= FontWeight.BOLD.value -> {
             calculateWeight(UIFontWeightBold, UIFontWeightBold - UIFontWeightSemibold, FontWeight.BOLD)
         }
+
         weight <= FontWeight.EXTRA_BOLD.value -> {
             calculateWeight(UIFontWeightHeavy, UIFontWeightHeavy - UIFontWeightBold, FontWeight.EXTRA_BOLD)
         }
+
         weight <= FontWeight.EXTRA_LIGHT.value -> {
             calculateWeight(UIFontWeightBlack, UIFontWeightBlack - UIFontWeightHeavy, FontWeight.BLACK)
         }
+
         else -> {
             val difference = ((weight - FontWeight.BLACK.value).toDouble() / 100.0) * UIFontWeightBlack - UIFontWeightHeavy
             UIFontWeightBlack + difference

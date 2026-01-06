@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.plugin
 
+import com.android.build.gradle.api.KotlinMultiplatformAndroidPlugin
 import com.splendo.kaluga.plugin.extensions.KalugaMultiplatformSubprojectExtension
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.PluginManager
@@ -30,6 +31,6 @@ class MultiplatformLibraryComponentsPlugin : BaseLibraryComponentsPlugin<KalugaM
 
     override fun PluginManager.addSubprojectExtensionPlugins(extensions: ExtensionContainer) {
         apply(KotlinMultiplatformPluginWrapper::class)
-        apply("com.android.kotlin.multiplatform.library")
+        apply(KotlinMultiplatformAndroidPlugin::class)
     }
 }

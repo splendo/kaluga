@@ -6,7 +6,7 @@ kaluga {
     moduleName = "datetimepicker"
     dependencies {
         android {
-            instrumented {
+            device {
                 implementation(libs.androidx.activity.ktx)
             }
         }

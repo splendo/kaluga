@@ -49,18 +49,23 @@ val PhysicalQuantity.HeatCapacity.converters get() = listOf<QuantityConverter<Ph
             leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is MetricAndUKImperialTemperature -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricHeatCapacity && rightUnit is MetricAndUKImperialTemperature -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialHeatCapacity && rightUnit is MetricAndUKImperialTemperature -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryHeatCapacity && rightUnit is USCustomaryTemperature -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is HeatCapacity && rightUnit is Temperature -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -73,30 +78,39 @@ val PhysicalQuantity.HeatCapacity.converters get() = listOf<QuantityConverter<Ph
             leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is MetricWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is ImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is UKImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricHeatCapacity && rightUnit is MetricWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialHeatCapacity && rightUnit is ImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialHeatCapacity && rightUnit is UKImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryHeatCapacity && rightUnit is ImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryHeatCapacity && rightUnit is USCustomaryWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is HeatCapacity && rightUnit is Weight -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -109,21 +123,27 @@ val PhysicalQuantity.HeatCapacity.converters get() = listOf<QuantityConverter<Ph
             leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is MetricSpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndUKImperialHeatCapacity && rightUnit is UKImperialSpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricHeatCapacity && rightUnit is MetricSpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialHeatCapacity && rightUnit is UKImperialSpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryHeatCapacity && rightUnit is USCustomarySpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is HeatCapacity && rightUnit is SpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

@@ -36,7 +36,7 @@ actual sealed class KalugaColor {
      * A [KalugaColor] that is represented by a single rgb-value
      * @property color the [ColorInt] describing the color
      */
-    actual data class RGBColor(@ColorInt val color: Int) : KalugaColor() {
+    actual data class RGBColor(@param:ColorInt val color: Int) : KalugaColor() {
         override val currentColor: Int = color
     }
 

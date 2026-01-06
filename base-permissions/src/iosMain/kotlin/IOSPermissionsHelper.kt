@@ -109,10 +109,12 @@ class DefaultAuthorizationStatusHandler(private val eventChannel: SendChannel<Pe
                 logger.info(logTag) { "Permission Revoked" }
                 tryAndEmitEvent(PermissionManager.Event.PermissionDenied(false))
             }
+
             AuthorizationStatus.Authorized -> {
                 logger.info(logTag) { "Permission Granted" }
                 tryAndEmitEvent(PermissionManager.Event.PermissionGranted)
             }
+
             AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> {
                 logger.info(logTag) { "Permission Locked" }
                 tryAndEmitEvent(PermissionManager.Event.PermissionDenied(true))

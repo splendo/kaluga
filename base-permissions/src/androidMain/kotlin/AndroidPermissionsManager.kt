@@ -243,10 +243,12 @@ class DefaultAndroidPermissionStateHandler(private val eventChannel: SendChannel
                 logger.info(logTag) { "Permission Revoked" }
                 tryAndEmitEvent(PermissionManager.Event.PermissionDenied(locked = false))
             }
+
             AndroidPermissionState.GRANTED -> {
                 logger.info(logTag) { "Permission Granted" }
                 tryAndEmitEvent(PermissionManager.Event.PermissionGranted)
             }
+
             AndroidPermissionState.DENIED_DO_NOT_ASK -> {
                 logger.info(logTag) { "Permission Locked" }
                 tryAndEmitEvent(PermissionManager.Event.PermissionDenied(locked = true))

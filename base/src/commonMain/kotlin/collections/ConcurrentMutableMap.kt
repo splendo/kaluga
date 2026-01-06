@@ -47,9 +47,11 @@ class ConcurrentMutableMap<K, V> internal constructor(private val internal: Muta
                 inner == this
             }
         }
+
         is Map<*, *> -> synchronized {
             this == other
         }
+
         else -> false
     }
 

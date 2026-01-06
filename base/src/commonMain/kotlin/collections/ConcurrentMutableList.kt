@@ -57,9 +57,11 @@ class ConcurrentMutableList<E> internal constructor(private val internal: Mutabl
                 }
             }
         }
+
         is List<*> -> synchronized {
             this == other
         }
+
         else -> false
     }
 

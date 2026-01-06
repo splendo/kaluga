@@ -120,12 +120,15 @@ class BluetoothListViewModel(private val alertPresenterBuilder: AlertPresenter.B
             }.show()
             val cleanMode = when (action?.style) {
                 null -> return@launch
+
                 Alert.Action.Style.DEFAULT,
                 Alert.Action.Style.POSITIVE,
                 -> BluetoothService.CleanMode.RETAIN_ALL
+
                 Alert.Action.Style.DESTRUCTIVE,
                 Alert.Action.Style.NEUTRAL,
                 -> BluetoothService.CleanMode.ONLY_PROVIDED_FILTER
+
                 Alert.Action.Style.CANCEL,
                 Alert.Action.Style.NEGATIVE,
                 -> BluetoothService.CleanMode.REMOVE_ALL

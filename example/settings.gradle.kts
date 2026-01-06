@@ -1,7 +1,4 @@
 import com.splendo.kaluga.example.plugin.EmbeddingMode
-import java.io.File
-import java.io.FileInputStream
-import java.util.Properties
 
 pluginManagement {
     repositories {

@@ -17,25 +17,21 @@
 
 package com.splendo.kaluga.plugin.extensions
 
-// import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 
-sealed class BaseKalugaSubprojectExtension(
-    versionCatalog: VersionCatalog,
-    protected val namespacePostfix: String?,
-    objects: ObjectFactory,
-) : BaseKalugaExtension(versionCatalog, objects) {
+sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, protected val namespacePostfix: String?, objects: ObjectFactory) :
+    BaseKalugaExtension(versionCatalog, objects) {
 
-    abstract var moduleName: String
-        // TODO: fix
-        // get() = libraryExtension.namespace.orEmpty()
-        //     .removePrefix("$BASE_GROUP.")
-        //     .removeSuffix(namespacePostfix?.let { ".$it" } ?: "")
-        // set(value) {
-        //     libraryExtension.namespace = listOfNotNull(BASE_GROUP, value, namespacePostfix).joinToString(".")
-        // }
+    abstract var namespace: String?
+    var moduleName: String
+        get() = namespace.orEmpty()
+            .removePrefix("$BASE_GROUP.")
+            .removeSuffix(namespacePostfix?.let { ".$it" } ?: "")
+        set(value) {
+            namespace = listOfNotNull(BASE_GROUP, value, namespacePostfix).joinToString(".")
+        }
 
     protected val androidMainDependencies = listOf(
         "androidx-activity-ktx",

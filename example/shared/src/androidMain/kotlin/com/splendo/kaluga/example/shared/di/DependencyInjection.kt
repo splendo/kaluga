@@ -245,7 +245,7 @@ fun initKoin(customModules: List<Module> = emptyList()) = initKoin(
             permissionsBuilder = it,
         )
     },
-    { BluetoothBuilder(useLocationPermission = useBluetoothForLocation, permissionsBuilder = it) },
+    { BluetoothBuilder(useLocationPermission = USE_BLUETOOTH_FOR_LOCATION, permissionsBuilder = it) },
     customModules,
 )
 

@@ -95,10 +95,13 @@ actual class DefaultNetworkManager internal constructor(private val androidNetwo
             val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
             return when {
                 capabilities == null -> NetworkConnectionType.Known.Absent
+
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
                     NetworkConnectionType.Known.Wifi(!capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED))
                 }
+
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> NetworkConnectionType.Known.Cellular
+
                 else -> NetworkConnectionType.Known.Absent
             }
         }

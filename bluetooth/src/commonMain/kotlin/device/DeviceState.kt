@@ -416,11 +416,17 @@ internal sealed class ConnectableDeviceStateImpl {
                 var newMtu = mtu
                 when (action) {
                     is DeviceAction.Read.Characteristic -> action.characteristic.updateValue()
+
                     is DeviceAction.Read.Descriptor -> action.descriptor.updateValue()
+
                     is DeviceAction.Write.Characteristic -> action.characteristic.updateValue()
+
                     is DeviceAction.Write.Descriptor -> action.descriptor.updateValue()
+
                     is DeviceAction.Notification.Enable -> action.characteristic.updateValue()
+
                     is DeviceAction.Notification.Disable -> { }
+
                     is DeviceAction.RequestMtu -> {
                         newMtu = action.mtuResponse
                     }
@@ -474,6 +480,7 @@ internal sealed class ConnectableDeviceStateImpl {
         override suspend fun afterOldStateIsRemoved(oldState: ConnectableDeviceState) {
             when (oldState) {
                 is Disconnected, is Connected -> deviceConnectionManager.connect()
+
                 else -> {
                     // do nothing: TODO check all these are correct, e.g. Disconnecting
                 }

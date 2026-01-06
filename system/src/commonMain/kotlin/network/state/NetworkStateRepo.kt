@@ -53,6 +53,7 @@ abstract class BaseNetworkStateRepo(
             is NetworkState.Inactive -> {
                 repo.createInitializingState(state)
             }
+
             is NetworkState.Active -> state.remain()
         }
     },
@@ -80,10 +81,12 @@ open class NetworkStateImplRepo(createNetworkManager: suspend () -> NetworkManag
                     (this as NetworkStateImplRepo).startMonitoringNetworkManager(manager)
                     state.startInitializing(manager)
                 }
+
                 is NetworkStateImpl.Deinitialized -> {
                     (this as NetworkStateImplRepo).startMonitoringNetworkManager(state.networkManager)
                     state.reinitialize
                 }
+
                 else -> state.remain()
             }
         },
@@ -100,21 +103,25 @@ open class NetworkStateImplRepo(createNetworkManager: suspend () -> NetworkManag
                 takeAndChangeState { networkState ->
                     when (networkState) {
                         is NetworkState.Initializing -> networkState.initialized(networkType)
+
                         is NetworkState.Available -> when (networkType) {
                             is NetworkConnectionType.Known.Available -> networkState.available(networkType)
                             is NetworkConnectionType.Known.Absent -> networkState.unavailable
                             is NetworkConnectionType.Unknown -> networkState.unknown(networkType.reason)
                         }
+
                         is NetworkState.Unavailable -> when (networkType) {
                             is NetworkConnectionType.Known.Available -> networkState.available(networkType)
                             is NetworkConnectionType.Known.Absent -> networkState.remain()
                             is NetworkConnectionType.Unknown -> networkState.unknown(networkType.reason)
                         }
+
                         is NetworkState.Unknown -> when (networkType) {
                             is NetworkConnectionType.Known.Available -> networkState.available(networkType)
                             is NetworkConnectionType.Known.Absent -> networkState.unavailable
                             is NetworkConnectionType.Unknown -> networkState.unknown(networkType.reason)
                         }
+
                         is NetworkState.Deinitialized, is NetworkState.NotInitialized -> networkState.remain()
                     }
                 }

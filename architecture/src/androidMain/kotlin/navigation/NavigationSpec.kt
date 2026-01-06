@@ -24,15 +24,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.AnimRes
 import androidx.annotation.AnimatorRes
 import androidx.annotation.IdRes
+import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.Activity.LaunchType
-import com.splendo.kaluga.architecture.navigation.NavigationSpec.FileSelector.FileSelectorSettings
-import com.splendo.kaluga.architecture.navigation.NavigationSpec.Fragment.AnimationSettings
-import com.splendo.kaluga.architecture.navigation.NavigationSpec.Fragment.BackStackSettings
-import com.splendo.kaluga.architecture.navigation.NavigationSpec.TextMessenger.TextMessengerSettings
-import com.splendo.kaluga.architecture.navigation.NavigationSpec.ThirdPartyApp.OpenMode
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Activity.LaunchType.Companion.ActivityContract
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Companion.Activity
 import java.net.URL
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
@@ -157,7 +155,7 @@ sealed class NavigationSpec {
      * @param createFragment Function to create the [androidx.fragment.app.Fragment]
      */
     data class Fragment(
-        @IdRes val containerId: Int,
+        @param:IdRes val containerId: Int,
         val type: Type = Type.Replace,
         val tag: String? = null,
         val backStackSettings: BackStackSettings = BackStackSettings.DontAdd,
@@ -205,17 +203,17 @@ sealed class NavigationSpec {
          * @param popExit Pop Exit Animation
          */
         data class AnimationSettings(
-            @AnimatorRes
-            @AnimRes
+            @param:AnimatorRes
+            @param:AnimRes
             val enter: Int = 0,
-            @AnimatorRes
-            @AnimRes
+            @param:AnimatorRes
+            @param:AnimRes
             val exit: Int = 0,
-            @AnimatorRes
-            @AnimRes
+            @param:AnimatorRes
+            @param:AnimRes
             val popEnter: Int = 0,
-            @AnimatorRes
-            @AnimRes
+            @param:AnimatorRes
+            @param:AnimRes
             val popExit: Int = 0,
         )
     }
@@ -334,12 +332,14 @@ sealed class NavigationSpec {
         ) {
             val intent get() = when (attachments.size) {
                 0 -> Intent(Intent.ACTION_SEND)
+
                 1 -> Intent(Intent.ACTION_SEND).apply {
                     putExtra(
                         Intent.EXTRA_STREAM,
                         attachments[0],
                     )
                 }
+
                 else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
                     putExtra(
                         Intent.EXTRA_STREAM,
@@ -350,7 +350,7 @@ sealed class NavigationSpec {
                 }
             }.apply {
                 setDataAndType(
-                    Uri.parse("mailto:"),
+                    "mailto:".toUri(),
                     when (this@EmailSettings.type) {
                         is Type.Plain -> "text/plain"
                         is Type.Stylized -> "*/*"
@@ -511,12 +511,14 @@ sealed class NavigationSpec {
         ) {
             val intent: Intent = when (attachments.size) {
                 0 -> Intent(Intent.ACTION_SEND)
+
                 1 -> Intent(Intent.ACTION_SEND).apply {
                     putExtra(
                         Intent.EXTRA_STREAM,
                         attachments[0],
                     )
                 }
+
                 else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
                     putExtra(
                         Intent.EXTRA_STREAM,
@@ -528,7 +530,7 @@ sealed class NavigationSpec {
             }.apply {
                 val recipients = recipients.fold("") { acc, recipient -> if (acc.isNotEmpty()) "$acc;$recipient" else recipient }
                 setDataAndType(
-                    Uri.parse("smsto:$recipients"),
+                    "smsto:$recipients".toUri(),
                     when (this@TextMessengerSettings.type) {
                         is Type.Plain -> "text/plain"
                         is Type.Image -> "image/*"

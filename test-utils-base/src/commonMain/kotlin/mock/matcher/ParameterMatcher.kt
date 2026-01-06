@@ -17,6 +17,12 @@
 
 package com.splendo.kaluga.test.base.mock.matcher
 
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.any
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.isInstance
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.notEq
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.notNull
+import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.oneOf
 import kotlin.reflect.KClass
 
 /**

@@ -24,7 +24,8 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
@@ -33,12 +34,8 @@ import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
 // Mul<Ex<A>, Ex<A>> * Inv<Wr<A>> -> A!
 
 fun <
-    ExtendedLeftLeftUnit : UndefinedExtendedUnit<
-        LeftLeftAndRightAndRightReciprocalQuantity,
-        >,
-    ExtendedLeftRightUnit : UndefinedExtendedUnit<
-        LeftLeftAndRightAndRightReciprocalQuantity,
-        >,
+    ExtendedLeftLeftUnit,
+    ExtendedLeftRightUnit,
     LeftUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             LeftLeftAndRightAndRightReciprocalQuantity,
@@ -50,7 +47,7 @@ fun <
         ExtendedLeftRightUnit,
         >,
     LeftLeftAndRightAndRightReciprocalQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    RightReciprocalUnit : ScientificUnit<LeftLeftAndRightAndRightReciprocalQuantity>,
+    RightReciprocalUnit : DefinedScientificUnit<LeftLeftAndRightAndRightReciprocalQuantity>,
     WrappedRightReciprocalUnit : WrappedUndefinedExtendedUnit<
         LeftLeftAndRightAndRightReciprocalQuantity,
         RightReciprocalUnit,
@@ -82,4 +79,21 @@ fun <
         RightUnit,
         >,
     factory: (Decimal, RightReciprocalUnit) -> RightReciprocalValue,
-) = right.unit.inverse.wrapped.byMultiplying(this, right, factory)
+) where
+        ExtendedLeftLeftUnit : UndefinedExtendedUnit<
+            LeftLeftAndRightAndRightReciprocalQuantity,
+            >,
+        ExtendedLeftLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftLeftAndRightAndRightReciprocalQuantity,
+                >,
+            >,
+        ExtendedLeftRightUnit : UndefinedExtendedUnit<
+            LeftLeftAndRightAndRightReciprocalQuantity,
+            >,
+        ExtendedLeftRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftLeftAndRightAndRightReciprocalQuantity,
+                >,
+            > =
+    right.unit.inverse.wrapped.byMultiplying(this, right, factory)

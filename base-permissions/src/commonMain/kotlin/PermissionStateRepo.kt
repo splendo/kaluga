@@ -87,6 +87,7 @@ open class PermissionStateRepo<P : Permission>(
                 (this as PermissionStateRepo<P>).startMonitoringManager(permissionManager)
                 stateImpl.initialize(monitoringInterval, permissionManager)
             }
+
             is PermissionStateImpl.Deinitialized -> {
                 (this as PermissionStateRepo<P>).startMonitoringManager(stateImpl.permissionManager)
                 stateImpl.reinitialize
@@ -122,7 +123,9 @@ open class PermissionStateRepo<P : Permission>(
                 allowed = true,
                 locked = false,
             )
+
             is PermissionState.Denied -> state.allow
+
             is PermissionState.Allowed, is PermissionState.Inactive -> state.remain()
         }
     }
@@ -130,12 +133,15 @@ open class PermissionStateRepo<P : Permission>(
     private suspend fun handlePermissionDenied(locked: Boolean) = takeAndChangeState { state ->
         when (state) {
             is PermissionState.Initializing -> state.initialize(false, locked)
+
             is PermissionState.Allowed -> state.deny(locked)
+
             is PermissionState.Denied.Requestable -> if (locked) {
                 state.lock
             } else {
                 state.remain()
             }
+
             is PermissionState.Denied.Locked, is PermissionState.Inactive -> state.remain()
         }
     }

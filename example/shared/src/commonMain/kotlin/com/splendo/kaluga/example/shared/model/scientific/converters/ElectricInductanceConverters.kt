@@ -40,9 +40,11 @@ val PhysicalQuantity.ElectricInductance.converters get() = listOf<QuantityConver
             leftUnit is Abhenry && rightUnit is Frequency -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ElectricInductance && rightUnit is Frequency -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -55,9 +57,11 @@ val PhysicalQuantity.ElectricInductance.converters get() = listOf<QuantityConver
             leftUnit is Abhenry && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ElectricInductance && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -70,12 +74,15 @@ val PhysicalQuantity.ElectricInductance.converters get() = listOf<QuantityConver
             leftUnit is Abhenry && rightUnit is Abampere -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Abhenry && rightUnit is Biot -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ElectricInductance && rightUnit is ElectricCurrent -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -88,6 +95,7 @@ val PhysicalQuantity.ElectricInductance.converters get() = listOf<QuantityConver
             leftUnit is ElectricInductance && rightUnit is ElectricResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

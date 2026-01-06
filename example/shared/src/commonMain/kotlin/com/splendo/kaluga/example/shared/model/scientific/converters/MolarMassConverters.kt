@@ -34,30 +34,39 @@ val PhysicalQuantity.MolarMass.converters get() = listOf<QuantityConverter<Physi
             leftUnit is MetricMolarMass && rightUnit is MetricMolarity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialMolarMass && rightUnit is ImperialMolarity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialMolarMass && rightUnit is UKImperialMolarity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialMolarMass && rightUnit is USCustomaryMolarity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialMolarMass && rightUnit is ImperialMolarity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialMolarMass && rightUnit is UKImperialMolarity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryMolarMass && rightUnit is ImperialMolarity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryMolarMass && rightUnit is USCustomaryMolarity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is Molarity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -70,30 +79,39 @@ val PhysicalQuantity.MolarMass.converters get() = listOf<QuantityConverter<Physi
             leftUnit is MetricMolarMass && rightUnit is MetricMolarVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialMolarMass && rightUnit is ImperialMolarVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialMolarMass && rightUnit is UKImperialMolarVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialMolarMass && rightUnit is USCustomaryMolarVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialMolarMass && rightUnit is ImperialMolarVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialMolarMass && rightUnit is UKImperialMolarVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryMolarMass && rightUnit is ImperialMolarVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryMolarMass && rightUnit is USCustomaryMolarVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is MolarVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -116,18 +134,23 @@ val PhysicalQuantity.MolarMass.converters get() = listOf<QuantityConverter<Physi
             leftUnit is MolarMass && rightUnit is MetricSpecificEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is ImperialSpecificEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is UKImperialSpecificEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is USCustomarySpecificEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is SpecificEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -140,18 +163,23 @@ val PhysicalQuantity.MolarMass.converters get() = listOf<QuantityConverter<Physi
             leftUnit is MolarMass && rightUnit is MetricDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is ImperialDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is UKImperialDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is USCustomaryDensity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is Density -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -164,18 +192,23 @@ val PhysicalQuantity.MolarMass.converters get() = listOf<QuantityConverter<Physi
             leftUnit is MolarMass && rightUnit is MetricSpecificVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is ImperialSpecificVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is UKImperialSpecificVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is USCustomarySpecificVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is SpecificVolume -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -188,18 +221,23 @@ val PhysicalQuantity.MolarMass.converters get() = listOf<QuantityConverter<Physi
             leftUnit is MetricMolarMass && rightUnit is AmountOfSubstance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialMolarMass && rightUnit is AmountOfSubstance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialMolarMass && rightUnit is AmountOfSubstance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryMolarMass && rightUnit is AmountOfSubstance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MolarMass && rightUnit is AmountOfSubstance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

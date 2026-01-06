@@ -167,6 +167,7 @@ internal actual class DefaultDeviceConnectionManager(
                             closeGatt()
                         }
                     }
+
                     BluetoothProfile.STATE_CONNECTED -> {
                         handleConnect()
                     }
@@ -272,10 +273,13 @@ internal actual class DefaultDeviceConnectionManager(
         val writeValue = when {
             enable && characteristic.wrapper.containsAnyOf(PROPERTY_NOTIFY) ->
                 BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+
             enable && characteristic.wrapper.containsAnyOf(PROPERTY_INDICATE) ->
                 BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
+
             !enable && characteristic.wrapper.containsAnyOf(PROPERTY_INDICATE, PROPERTY_NOTIFY) ->
                 BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+
             else -> null
         }
 

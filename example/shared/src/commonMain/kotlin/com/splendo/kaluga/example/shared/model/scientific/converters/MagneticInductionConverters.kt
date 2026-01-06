@@ -35,9 +35,11 @@ val PhysicalQuantity.MagneticInduction.converters get() = listOf<QuantityConvert
             leftUnit is Gauss && rightUnit is SquareCentimeter -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MagneticInduction && rightUnit is Area -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

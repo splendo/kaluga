@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.resources.stylable
 
-import com.splendo.kaluga.resources.KalugaFont
 import com.splendo.kaluga.resources.KalugaColor
+import com.splendo.kaluga.resources.KalugaFont
 
 /**
  * The style to apply to a text

@@ -61,7 +61,6 @@ enum class RoundingMode {
     HalfUp,
 }
 
-@ExperimentalUnsignedTypes
 /**
  * Style used for formatting a [Number] to and from a [String]
  */

@@ -35,30 +35,39 @@ val PhysicalQuantity.SpecificEnergy.converters get() = listOf<QuantityConverter<
             leftUnit is MetricSpecificEnergy && rightUnit is MetricWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpecificEnergy && rightUnit is ImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpecificEnergy && rightUnit is UKImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpecificEnergy && rightUnit is USCustomaryWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialSpecificEnergy && rightUnit is ImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialSpecificEnergy && rightUnit is UKImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomarySpecificEnergy && rightUnit is ImperialWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomarySpecificEnergy && rightUnit is USCustomaryWeight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is SpecificEnergy && rightUnit is Weight -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -83,18 +92,23 @@ val PhysicalQuantity.SpecificEnergy.converters get() = listOf<QuantityConverter<
             leftUnit is MetricSpecificEnergy && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpecificEnergy && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialSpecificEnergy && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomarySpecificEnergy && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is SpecificEnergy && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -107,18 +121,23 @@ val PhysicalQuantity.SpecificEnergy.converters get() = listOf<QuantityConverter<
             leftUnit is MetricSpecificEnergy && rightUnit is MolarEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpecificEnergy && rightUnit is MolarEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialSpecificEnergy && rightUnit is MolarEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomarySpecificEnergy && rightUnit is MolarEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is SpecificEnergy && rightUnit is MolarEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -131,18 +150,23 @@ val PhysicalQuantity.SpecificEnergy.converters get() = listOf<QuantityConverter<
             leftUnit is MetricSpecificEnergy && rightUnit is MolarMass -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpecificEnergy && rightUnit is MolarMass -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialSpecificEnergy && rightUnit is MolarMass -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomarySpecificEnergy && rightUnit is MolarMass -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is SpecificEnergy && rightUnit is MolarMass -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -155,18 +179,23 @@ val PhysicalQuantity.SpecificEnergy.converters get() = listOf<QuantityConverter<
             leftUnit is MetricSpecificEnergy && rightUnit is Molality -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpecificEnergy && rightUnit is Molality -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialSpecificEnergy && rightUnit is Molality -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomarySpecificEnergy && rightUnit is Molality -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is SpecificEnergy && rightUnit is Molality -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -179,21 +208,27 @@ val PhysicalQuantity.SpecificEnergy.converters get() = listOf<QuantityConverter<
             leftUnit is MetricSpecificEnergy && rightUnit is MetricAndUKImperialTemperature -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpecificEnergy && rightUnit is MetricAndUKImperialTemperature -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpecificEnergy && rightUnit is USCustomaryTemperature -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialSpecificEnergy && rightUnit is MetricAndUKImperialTemperature -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomarySpecificEnergy && rightUnit is USCustomaryTemperature -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is SpecificEnergy && rightUnit is Temperature -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -206,21 +241,27 @@ val PhysicalQuantity.SpecificEnergy.converters get() = listOf<QuantityConverter<
             leftUnit is MetricSpecificEnergy && rightUnit is MetricSpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpecificEnergy && rightUnit is UKImperialSpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialSpecificEnergy && rightUnit is USCustomarySpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is UKImperialSpecificEnergy && rightUnit is UKImperialSpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomarySpecificEnergy && rightUnit is USCustomarySpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is SpecificEnergy && rightUnit is SpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
