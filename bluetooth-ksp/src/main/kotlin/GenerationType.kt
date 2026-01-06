@@ -17,8 +17,16 @@
 
 package com.splendo.kaluga.bluetooth.ksp
 
-internal enum class GenerationType {
-    CLIENT,
-    SERVER,
-    BOTH,
+internal data class GenerationType(val side: Side, val type: Type) {
+
+    enum class Side {
+        CLIENT,
+        SERVER,
+    }
+
+    enum class Type {
+        API,
+        BLUETOOTH,
+        SIMULATOR,
+    }
 }

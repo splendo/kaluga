@@ -39,6 +39,11 @@ open class KSPSubprojectExtension(versionCatalog: VersionCatalog, objects: Objec
             compilerOptions {
                 jvmTarget.set(versionCatalog.jvmTarget)
             }
+            sourceSets.all {
+                languageSettings {
+                    optIn("com.google.devtools.ksp.KspExperimental")
+                }
+            }
         }
         extensions.configure(JavaPluginExtension::class) {
             sourceCompatibility = versionCatalog.javaVersion

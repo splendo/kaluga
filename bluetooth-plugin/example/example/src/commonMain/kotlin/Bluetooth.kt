@@ -21,6 +21,9 @@ import com.splendo.kaluga.bluetooth.annotations.Bluetooth
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
+import com.splendo.kaluga.bluetooth.annotations.Notifiable
+import com.splendo.kaluga.bluetooth.annotations.Readable
+import com.splendo.kaluga.bluetooth.annotations.Writable
 
 @Bluetooth
 interface BluetoothTest {
@@ -37,8 +40,21 @@ interface TestService {
 
 @BluetoothCharacteristic("1234")
 interface TestCharacteristic {
+    @BluetoothDescriptor("5678")
+    interface TestDescriptor {
+        @Readable
+        val name: String
+        @Writable
+        val age: Int
+    }
+
+    @Readable
+    val status: String
+    @Writable
+    val shouldUpdate: Boolean
+    @Notifiable
+    val state: Int
+
     val testDescriptor: TestDescriptor
 }
 
-@BluetoothDescriptor("5678")
-interface TestDescriptor
