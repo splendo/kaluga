@@ -39,7 +39,6 @@ import platform.Foundation.numberWithInt
  */
 actual class NumberFormatter actual constructor(actual override val locale: KalugaLocale, style: NumberFormatStyle) : BaseNumberFormatter {
 
-    @ExperimentalUnsignedTypes
     private val formatter = NSNumberFormatter().apply {
         locale = this@NumberFormatter.locale.nsLocale
         when (style) {

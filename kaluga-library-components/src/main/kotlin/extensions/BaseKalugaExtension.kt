@@ -34,6 +34,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.api.tasks.testing.logging.TestLoggingContainer
 import org.gradle.kotlin.dsl.configure
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -70,7 +71,7 @@ sealed class BaseKalugaExtension(protected val versionCatalog: VersionCatalog, o
         project.tasks.withType(KotlinCompile::class.java) {
             compilerOptions {
                 jvmTarget.set(versionCatalog.jvmTarget)
-                freeCompilerArgs.addAll("-Xjvm-default=all")
+                jvmDefault.set(JvmDefaultMode.ENABLE)
             }
         }
         project.beforeEvaluated()

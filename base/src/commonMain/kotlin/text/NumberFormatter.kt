@@ -64,7 +64,6 @@ enum class RoundingMode {
 /**
  * Style used for formatting a [Number] to and from a [String]
  */
-@ExperimentalUnsignedTypes
 sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
 
     /**
