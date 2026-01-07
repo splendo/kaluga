@@ -58,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v6
         if: ${{ always() && hashFiles(format('{0}/build/reports/kover/html/index.html', github.workspace)) != '' }}
         with:
-          name: "Android Test Report HTML"
+          name: "Coverage Report HTML"
           path: "**/build/reports/kover/html"
       - name: run apiCheck
         run: ./gradlew apiCheck
