@@ -21,7 +21,18 @@ import com.splendo.kaluga.scientific.converter.electricCharge.div
 import com.splendo.kaluga.scientific.converter.electricConductance.div
 import com.splendo.kaluga.scientific.converter.time.div
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Abcoulomb
+import com.splendo.kaluga.scientific.unit.Abfarad
+import com.splendo.kaluga.scientific.unit.Abohm
+import com.splendo.kaluga.scientific.unit.Absiemens
+import com.splendo.kaluga.scientific.unit.Abvolt
+import com.splendo.kaluga.scientific.unit.Coulomb
+import com.splendo.kaluga.scientific.unit.Farad
+import com.splendo.kaluga.scientific.unit.Hertz
+import com.splendo.kaluga.scientific.unit.Ohm
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.Siemens
+import com.splendo.kaluga.scientific.unit.Volt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

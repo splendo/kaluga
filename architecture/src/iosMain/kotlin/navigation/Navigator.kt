@@ -17,9 +17,6 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import com.splendo.kaluga.architecture.KalugaStoreProductViewControllerDelegateProtocol
-import com.splendo.kaluga.architecture.KalugaUIImagePickerControllerWrapper
-import com.splendo.kaluga.architecture.KalugaStoreProductViewControllerWrapper
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import platform.CoreGraphics.CGFloat
 import platform.Foundation.CFBridgingRelease
@@ -38,6 +35,7 @@ import platform.StoreKit.SKStoreProductParameterITunesItemIdentifier
 import platform.StoreKit.SKStoreProductParameterProductIdentifier
 import platform.StoreKit.SKStoreProductParameterProviderToken
 import platform.StoreKit.SKStoreProductViewController
+import platform.StoreKit.SKStoreProductViewControllerDelegateProtocol
 import platform.UIKit.NSLayoutAttributeBottom
 import platform.UIKit.NSLayoutAttributeLeading
 import platform.UIKit.NSLayoutAttributeTop
@@ -96,9 +94,9 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(parentVC: UIViewCont
 
     private inner class StoreKitDelegate :
         NSObject(),
-        KalugaStoreProductViewControllerDelegateProtocol {
+        SKStoreProductViewControllerDelegateProtocol {
 
-        override fun didFinish(viewController: SKStoreProductViewController) {
+        override fun productViewControllerDidFinish(viewController: SKStoreProductViewController) {
             viewController.dismissViewControllerAnimated(true, null)
         }
     }
@@ -222,11 +220,8 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(parentVC: UIViewCont
         val pickerVC = UIImagePickerController()
         pickerVC.sourceType = imagePickerSpec.sourceType
         pickerVC.mediaTypes = mediaTypes
-        val delegate = KalugaUIImagePickerControllerWrapper.createByLinkingWithController(pickerVC, imagePickerSpec.delegate)
-        assertParent().presentViewController(pickerVC, imagePickerSpec.animated) {
-            imagePickerSpec.completion?.invoke()
-            delegate.unlink()
-        }
+        pickerVC.delegate = imagePickerSpec.delegate
+        assertParent().presentViewController(pickerVC, imagePickerSpec.animated) { imagePickerSpec.completion?.invoke() }
     }
 
     private fun presentMediaPicker(mediaPickerSpec: NavigationSpec.MediaPicker) {
@@ -324,6 +319,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(parentVC: UIViewCont
             NavigationSpec.Browser.Type.Normal -> {
                 UIApplication.sharedApplication.openURL(browserSpec.url)
             }
+
             is NavigationSpec.Browser.Type.SafariView -> {
                 val safariVc = SFSafariViewController(browserSpec.url)
                 assertParent().presentViewController(safariVc, spec.animated) {
@@ -375,15 +371,14 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(parentVC: UIViewCont
         storeInfo.providerToken?.let {
             parameters[SKStoreProductParameterProviderToken] = it
         }
-        val productViewController = SKStoreProductViewController()
-        val delegate = KalugaStoreProductViewControllerWrapper.createByLinkingWithController(productViewController, storeKitDelegate)
+        val productViewController = SKStoreProductViewController().apply {
+            delegate = storeKitDelegate
+        }
         productViewController.loadProductWithParameters(
             parameters,
         ) { isLoaded, _ ->
             if (isLoaded) {
-                parent.presentViewController(productViewController, true) {
-                    delegate.unlink()
-                }
+                parent.presentViewController(productViewController, true, null)
             }
         }
     }

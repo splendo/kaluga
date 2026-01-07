@@ -11,7 +11,7 @@ kaluga {
                 implementation(project(":base", ""))
             }
             test {
-                api(project(":test-utils-keyboard", ""))
+                implementation(project(":test-utils-keyboard", ""))
             }
         }
     }

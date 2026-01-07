@@ -24,7 +24,8 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
@@ -32,11 +33,9 @@ import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
 // Mul<Ex<A>, Wr<B>> / A! -> B!
 
 fun <
-    ExtendedNumeratorLeftUnit : UndefinedExtendedUnit<
-        NumeratorLeftAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorLeftUnit,
     NumeratorRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorRightUnit : ScientificUnit<NumeratorRightQuantity>,
+    NumeratorRightUnit : DefinedScientificUnit<NumeratorRightQuantity>,
     WrappedNumeratorRightUnit : WrappedUndefinedExtendedUnit<
         NumeratorRightQuantity,
         NumeratorRightUnit,
@@ -52,7 +51,7 @@ fun <
         WrappedNumeratorRightUnit,
         >,
     NumeratorLeftAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit : ScientificUnit<NumeratorLeftAndDenominatorQuantity>,
+    DenominatorUnit : DefinedScientificUnit<NumeratorLeftAndDenominatorQuantity>,
     NumeratorRightValue : ScientificValue<NumeratorRightQuantity, NumeratorRightUnit>,
     > UndefinedScientificValue<
     UndefinedQuantityType.Multiplying<
@@ -67,4 +66,13 @@ fun <
     >.dividedByLeft(
     right: ScientificValue<NumeratorLeftAndDenominatorQuantity, DenominatorUnit>,
     factory: (Decimal, NumeratorRightUnit) -> NumeratorRightValue,
-) = unit.right.wrapped.byDividing(this, right, factory)
+) where
+        ExtendedNumeratorLeftUnit : UndefinedExtendedUnit<
+            NumeratorLeftAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorLeftAndDenominatorQuantity,
+                >,
+            > =
+    unit.right.wrapped.byDividing(this, right, factory)

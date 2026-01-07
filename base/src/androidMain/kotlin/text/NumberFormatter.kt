@@ -22,7 +22,6 @@ import java.text.DecimalFormatSymbols
 import java.text.ParseException
 import java.util.Currency
 
-@ExperimentalUnsignedTypes
 /**
  * Default implementation of [BaseNumberFormatter]
  * @param locale The [KalugaLocale] used for parsing. Defaults to [KalugaLocale.defaultLocale].
@@ -37,18 +36,21 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             minimumFractionDigits = 0
             maximumFractionDigits = 0
         }
+
         is NumberFormatStyle.Decimal -> DecimalFormat.getInstance(locale.locale).apply {
             minimumIntegerDigits = style.minIntegerDigits.toInt()
             maximumIntegerDigits = style.maxIntegerDigits.toInt()
             minimumFractionDigits = style.minFractionDigits.toInt()
             maximumFractionDigits = style.maxFractionDigits.toInt()
         }
+
         is NumberFormatStyle.Percentage -> DecimalFormat.getPercentInstance(locale.locale).apply {
             minimumIntegerDigits = style.minIntegerDigits.toInt()
             maximumIntegerDigits = style.maxIntegerDigits.toInt()
             minimumFractionDigits = style.minFractionDigits.toInt()
             maximumFractionDigits = style.maxFractionDigits.toInt()
         }
+
         is NumberFormatStyle.Permillage -> {
             val pattern = (DecimalFormat.getPercentInstance(locale.locale) as DecimalFormat).toPattern().replace("%", "\u2030")
             DecimalFormat(pattern, DecimalFormatSymbols(locale.locale)).apply {
@@ -58,7 +60,9 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
                 maximumFractionDigits = style.maxFractionDigits.toInt()
             }
         }
+
         is NumberFormatStyle.Scientific -> DecimalFormat(style.pattern, DecimalFormatSymbols(locale.locale))
+
         is NumberFormatStyle.Currency -> DecimalFormat.getCurrencyInstance(locale.locale).apply {
             style.currencyCode?.let { currencyCode ->
                 currency = Currency.getInstance(currencyCode)
@@ -68,6 +72,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             minimumFractionDigits = style.minFractionDigits?.toInt() ?: currency?.defaultFractionDigits ?: 0
             maximumFractionDigits = style.maxFractionDigits?.toInt() ?: currency?.defaultFractionDigits ?: 0
         }
+
         is NumberFormatStyle.Pattern -> DecimalFormat("${style.positivePattern};${style.negativePattern}", DecimalFormatSymbols(locale.locale))
     } as DecimalFormat
     private val symbols: DecimalFormatSymbols get() = format.decimalFormatSymbols

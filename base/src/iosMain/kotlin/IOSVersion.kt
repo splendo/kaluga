@@ -40,6 +40,7 @@ data class IOSVersion(val major: Int, val minor: Int = 0, val patch: Int = 0) : 
 
     override fun compareTo(other: IOSVersion): Int = when {
         this.major > other.major -> 1
+
         this.major == other.major -> {
             when {
                 this.minor > other.minor -> 1
@@ -47,6 +48,7 @@ data class IOSVersion(val major: Int, val minor: Int = 0, val patch: Int = 0) : 
                 else -> -1
             }
         }
+
         else -> -1
     }
 }

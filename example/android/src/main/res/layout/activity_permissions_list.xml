@@ -10,6 +10,7 @@
         android:id="@+id/permissions_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:permissions="@{viewModel.permissions.stateFlow}">
 

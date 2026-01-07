@@ -25,7 +25,7 @@ import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
@@ -43,12 +43,8 @@ fun <
         NumeratorNumeratorLeftAndRightQuantity,
         NumeratorNumeratorRightUnit,
         >,
-    ExtendedNumeratorDenominatorLeftUnit : UndefinedExtendedUnit<
-        NumeratorDenominatorLeftAndRightAndDenominatorQuantity,
-        >,
-    ExtendedNumeratorDenominatorRightUnit : UndefinedExtendedUnit<
-        NumeratorDenominatorLeftAndRightAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorDenominatorLeftUnit,
+    ExtendedNumeratorDenominatorRightUnit,
     NumeratorDenominatorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             NumeratorDenominatorLeftAndRightAndDenominatorQuantity,
@@ -76,7 +72,7 @@ fun <
         NumeratorDenominatorUnit,
         >,
     NumeratorDenominatorLeftAndRightAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit : ScientificUnit<NumeratorDenominatorLeftAndRightAndDenominatorQuantity>,
+    DenominatorUnit : DefinedScientificUnit<NumeratorDenominatorLeftAndRightAndDenominatorQuantity>,
     WrappedDenominatorUnit : WrappedUndefinedExtendedUnit<
         NumeratorDenominatorLeftAndRightAndDenominatorQuantity,
         DenominatorUnit,
@@ -161,8 +157,25 @@ fun <
     numeratorDenominatorUnitXWrappedDenominatorUnit: NumeratorDenominatorUnit.(WrappedDenominatorUnit) -> TargetDenominatorUnit,
     numeratorNumeratorUnitPerTargetDenominatorUnit: NumeratorNumeratorUnit.(TargetDenominatorUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.numerator.numeratorNumeratorUnitPerTargetDenominatorUnit(
-    unit.denominator.numeratorDenominatorUnitXWrappedDenominatorUnit(
-        right.unit.denominatorAsUndefined(),
-    ),
-).byDividing(this, right, factory)
+) where
+        ExtendedNumeratorDenominatorLeftUnit : UndefinedExtendedUnit<
+            NumeratorDenominatorLeftAndRightAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorDenominatorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorDenominatorLeftAndRightAndDenominatorQuantity,
+                >,
+            >,
+        ExtendedNumeratorDenominatorRightUnit : UndefinedExtendedUnit<
+            NumeratorDenominatorLeftAndRightAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorDenominatorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorDenominatorLeftAndRightAndDenominatorQuantity,
+                >,
+            > =
+    unit.numerator.numeratorNumeratorUnitPerTargetDenominatorUnit(
+        unit.denominator.numeratorDenominatorUnitXWrappedDenominatorUnit(
+            right.unit.denominatorAsUndefined(),
+        ),
+    ).byDividing(this, right, factory)

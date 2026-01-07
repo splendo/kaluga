@@ -33,6 +33,7 @@ suspend fun Flow<Device?>.pair() = state().transformLatest { deviceState ->
         is ConnectableDeviceState.Connected -> {
             emit(deviceState.pair())
         }
+
         else -> {}
     }
 }.first()
@@ -45,6 +46,7 @@ suspend fun Flow<Device?>.unpair() = state().transformLatest { deviceState ->
         is ConnectableDeviceState -> {
             emit(deviceState.unpair())
         }
+
         else -> {}
     }
 }.first()

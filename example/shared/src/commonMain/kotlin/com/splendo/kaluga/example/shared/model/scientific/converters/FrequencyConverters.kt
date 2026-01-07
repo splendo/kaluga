@@ -38,9 +38,11 @@ val PhysicalQuantity.Frequency.converters get() = listOf<QuantityConverter<Physi
             leftUnit is Frequency && rightUnit is Abfarad -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Frequency && rightUnit is ElectricCapacitance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -53,9 +55,11 @@ val PhysicalQuantity.Frequency.converters get() = listOf<QuantityConverter<Physi
             leftUnit is Frequency && rightUnit is Abhenry -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Frequency && rightUnit is ElectricInductance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

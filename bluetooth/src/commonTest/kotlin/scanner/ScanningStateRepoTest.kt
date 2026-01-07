@@ -262,6 +262,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.
                         assertEquals(newRssi, scanningState.devices.allDevices[device.identifier]?.info?.first()?.rssi)
                         newState
                     }
+
                     else -> fail("unexpected state")
                 }
             }

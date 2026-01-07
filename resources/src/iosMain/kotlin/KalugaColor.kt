@@ -56,7 +56,7 @@ actual sealed class KalugaColor {
 /**
  * Gets the red value of the color in a range between `0.0` and `1.0`.
  */
-actual val KalugaColor.RGBColor.red: Double get() = CGColorGetComponents(uiColor.CGColor)?.get(0)?.toDouble() ?: 0.0
+actual val KalugaColor.RGBColor.red: Double get() = CGColorGetComponents(uiColor.CGColor)?.get(0) ?: 0.0
 
 /**
  * Gets the red value of the color in a range between `0` and `255`.
@@ -66,7 +66,7 @@ actual val KalugaColor.RGBColor.redInt: Int get() = (red * 255.0).toInt()
 /**
  * Gets the green value of the color in a range between `0.0` and `1.0`.
  */
-actual val KalugaColor.RGBColor.green: Double get() = CGColorGetComponents(uiColor.CGColor)?.get(1)?.toDouble() ?: 0.0
+actual val KalugaColor.RGBColor.green: Double get() = CGColorGetComponents(uiColor.CGColor)?.get(1) ?: 0.0
 
 /**
  * Gets the green value of the color in a range between `0` and `255`.
@@ -76,7 +76,7 @@ actual val KalugaColor.RGBColor.blueInt: Int get() = (blue * 255.0).toInt()
 /**
  * Gets the blue value of the color in a range between `0.0` and `1.0`.
  */
-actual val KalugaColor.RGBColor.blue: Double get() = CGColorGetComponents(uiColor.CGColor)?.get(2)?.toDouble() ?: 0.0
+actual val KalugaColor.RGBColor.blue: Double get() = CGColorGetComponents(uiColor.CGColor)?.get(2) ?: 0.0
 
 /**
  * Gets the blue value of the color in a range between `0` and `255`.
@@ -86,7 +86,7 @@ actual val KalugaColor.RGBColor.greenInt: Int get() = (green * 255.0).toInt()
 /**
  * Gets the alpha value of the color in a range between `0.0` and `1.0`.
  */
-actual val KalugaColor.RGBColor.alpha: Double get() = CGColorGetAlpha(uiColor.CGColor).toDouble()
+actual val KalugaColor.RGBColor.alpha: Double get() = CGColorGetAlpha(uiColor.CGColor)
 
 /**
  * Gets the alpha value of the color in a range between `0` and `255`.

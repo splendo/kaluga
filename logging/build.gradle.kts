@@ -20,7 +20,7 @@ kaluga {
                 implementation(libs.napier)
             }
             test {
-                api(project(":test-utils-base", ""))
+                implementation(project(":test-utils-base", ""))
             }
         }
         js {

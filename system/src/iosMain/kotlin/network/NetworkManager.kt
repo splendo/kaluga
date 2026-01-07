@@ -41,7 +41,6 @@ import platform.Network.nw_path_monitor_set_queue
 import platform.Network.nw_path_monitor_set_update_handler
 import platform.Network.nw_path_monitor_start
 import platform.Network.nw_path_monitor_t
-import platform.Network.nw_path_monitor_update_handler_t
 import platform.Network.nw_path_status_satisfied
 import platform.Network.nw_path_status_unsatisfied
 import platform.Network.nw_path_t
@@ -92,11 +91,6 @@ actual class DefaultNetworkManager internal constructor(private val appleNetwork
 
         private val networkChannel = Channel<NetworkConnectionType>(Channel.UNLIMITED)
         override val network: Flow<NetworkConnectionType> = networkChannel.receiveAsFlow()
-        private val networkMonitor = object : nw_path_monitor_update_handler_t {
-            override fun invoke(network: nw_path_t) {
-                checkReachability(network)
-            }
-        }
         private val nwPathMonitor: nw_path_monitor_t = nw_path_monitor_create().apply {
             val queue = dispatch_queue_create(
                 "com.splendo.kaluga.system.network",
@@ -110,7 +104,9 @@ actual class DefaultNetworkManager internal constructor(private val appleNetwork
                 this,
                 queue,
             )
-            nw_path_monitor_set_update_handler(this, networkMonitor)
+            nw_path_monitor_set_update_handler(this) { network ->
+                checkReachability(network)
+            }
         }
 
         override suspend fun startMonitoring() {
@@ -135,6 +131,7 @@ actual class DefaultNetworkManager internal constructor(private val appleNetwork
                         networkChannel.trySend(NetworkConnectionType.Known.Cellular)
                     }
                 }
+
                 nw_path_status_unsatisfied -> {
                     networkChannel.trySend(NetworkConnectionType.Known.Absent)
                 }
@@ -202,6 +199,7 @@ actual class DefaultNetworkManager internal constructor(private val appleNetwork
                         scNetworkManager.networkChannel.trySend(NetworkConnectionType.Known.Wifi())
                     }
                 }
+
                 else -> {
                     scNetworkManager.networkChannel.trySend(NetworkConnectionType.Known.Absent)
                 }

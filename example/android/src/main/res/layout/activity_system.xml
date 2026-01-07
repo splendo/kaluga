@@ -12,7 +12,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="@dimen/networkLayoutsMargin">
+        android:layout_margin="@dimen/networkLayoutsMargin"
+        android:fitsSystemWindows="true">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/system_features_list"

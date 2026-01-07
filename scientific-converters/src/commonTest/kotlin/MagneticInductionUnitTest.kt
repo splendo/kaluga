@@ -19,7 +19,12 @@ package com.splendo.kaluga.scientific.converter
 
 import com.splendo.kaluga.scientific.converter.magneticFlux.div
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Gauss
+import com.splendo.kaluga.scientific.unit.Maxwell
+import com.splendo.kaluga.scientific.unit.SquareCentimeter
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.Tesla
+import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

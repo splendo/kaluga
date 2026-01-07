@@ -148,7 +148,7 @@ fun <
 
 fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    Unit : ScientificUnit<Quantity>,
+    Unit : DefinedScientificUnit<Quantity>,
     UndefinedUnit : WrappedUndefinedExtendedUnit<Quantity, Unit>,
     TargetUnit : UndefinedExtendedUnit<Quantity>,
     TargetValue : UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, TargetUnit>,
@@ -602,7 +602,7 @@ fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     Unit : UndefinedExtendedUnit<Quantity>,
     UndefinedUnit : WrappedUndefinedExtendedUnit<Quantity, TargetUnit>,
-    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : DefinedScientificUnit<Quantity>,
     TargetValue : ScientificValue<Quantity, TargetUnit>,
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,
@@ -806,7 +806,7 @@ fun <
     Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
     Unit : UndefinedExtendedUnit<Quantity>,
     UndefinedUnit : WrappedUndefinedExtendedUnit<Quantity, TargetUnit>,
-    TargetUnit : ScientificUnit<Quantity>,
+    TargetUnit : DefinedScientificUnit<Quantity>,
     TargetValue : ScientificValue<Quantity, TargetUnit>,
     > UndefinedScientificValue<UndefinedQuantityType.Extended<Quantity>, Unit>.convert(
     target: TargetUnit,

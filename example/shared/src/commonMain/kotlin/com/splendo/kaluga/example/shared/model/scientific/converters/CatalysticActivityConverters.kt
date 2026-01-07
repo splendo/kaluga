@@ -33,6 +33,7 @@ val PhysicalQuantity.CatalysticActivity.converters get() = listOf<QuantityConver
             leftUnit is CatalysticActivity && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

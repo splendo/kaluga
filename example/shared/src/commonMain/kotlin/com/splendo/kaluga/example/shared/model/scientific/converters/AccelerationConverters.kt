@@ -48,36 +48,47 @@ val PhysicalQuantity.Acceleration.converters get() = listOf<QuantityConverter<Ph
             accelerationUnit is MetricAcceleration && weightUnit is Gram -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(weightValue, weightUnit)
             }
+
             accelerationUnit is MetricAcceleration && weightUnit is MetricWeight -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(weightValue, weightUnit)
             }
+
             accelerationUnit is ImperialAcceleration && weightUnit is Pound -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(weightValue, weightUnit)
             }
+
             accelerationUnit is ImperialAcceleration && weightUnit is Ounce -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(weightValue, weightUnit)
             }
+
             accelerationUnit is ImperialAcceleration && weightUnit is Grain -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(weightValue, weightUnit)
             }
+
             accelerationUnit is ImperialAcceleration && weightUnit is UsTon -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(weightValue, weightUnit)
             }
+
             accelerationUnit is ImperialAcceleration && weightUnit is ImperialTon -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(weightValue, weightUnit)
             }
+
             accelerationUnit is ImperialAcceleration && weightUnit is ImperialWeight -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(weightValue, weightUnit)
             }
+
             accelerationUnit is ImperialAcceleration && weightUnit is UKImperialWeight -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(weightValue, weightUnit)
             }
+
             accelerationUnit is ImperialAcceleration && weightUnit is USCustomaryWeight -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(weightValue, weightUnit)
             }
+
             accelerationUnit is Acceleration && weightUnit is Weight -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(weightValue, weightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $accelerationUnit, $weightUnit")
         }
     },
@@ -90,12 +101,15 @@ val PhysicalQuantity.Acceleration.converters get() = listOf<QuantityConverter<Ph
             accelerationUnit is MetricAcceleration && timeUnit is Time -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) / DefaultScientificValue(timeValue, timeUnit)
             }
+
             accelerationUnit is ImperialAcceleration && timeUnit is Time -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) / DefaultScientificValue(timeValue, timeUnit)
             }
+
             accelerationUnit is Acceleration && timeUnit is Time -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) / DefaultScientificValue(timeValue, timeUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $accelerationUnit, $timeUnit")
         }
     },
@@ -108,12 +122,15 @@ val PhysicalQuantity.Acceleration.converters get() = listOf<QuantityConverter<Ph
             accelerationUnit is MetricAcceleration && timeUnit is Time -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(timeValue, timeUnit)
             }
+
             accelerationUnit is ImperialAcceleration && timeUnit is Time -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(timeValue, timeUnit)
             }
+
             accelerationUnit is Acceleration && timeUnit is Time -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) * DefaultScientificValue(timeValue, timeUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $accelerationUnit, $timeUnit")
         }
     },
@@ -126,6 +143,7 @@ val PhysicalQuantity.Acceleration.converters get() = listOf<QuantityConverter<Ph
             accelerationUnit is Acceleration && joltUnit is Jolt -> {
                 DefaultScientificValue(accelerationValue, accelerationUnit) / DefaultScientificValue(joltValue, joltUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $accelerationUnit, $joltUnit")
         }
     },

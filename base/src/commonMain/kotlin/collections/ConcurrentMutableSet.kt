@@ -47,9 +47,11 @@ class ConcurrentMutableSet<E> internal constructor(private val internal: Mutable
                 }
             }
         }
+
         is Set<*> -> synchronized {
             this == other
         }
+
         else -> false
     }
 

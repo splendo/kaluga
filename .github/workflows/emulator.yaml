@@ -51,7 +51,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: AVD cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: avd-cache
         with:
           path: |
@@ -102,11 +102,11 @@ jobs:
           cores: 6
           script: |
             ./script/check_emulator.sh
-            ./gradlew ${{ inputs.video && 'recordAndroid' }} :${{ matrix.project }}:connectedDebugAndroidTest
+            ./gradlew ${{ inputs.video && 'recordAndroid' }} :${{ matrix.project }}:connectedAndroidTest
 
       - name: Upload test reports on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: "Android UI tests for ${{ matrix.project }}"
           path: "${{ matrix.project }}/build/reports/androidTests/connected/debug/**"

@@ -25,16 +25,14 @@ import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 
 // Mul<Ex<A>, B> / A! -> B
 
 fun <
-    ExtendedNumeratorLeftUnit : UndefinedExtendedUnit<
-        NumeratorLeftAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorLeftUnit,
     NumeratorRightQuantity : UndefinedQuantityType,
     NumeratorRightUnit : AbstractUndefinedScientificUnit<NumeratorRightQuantity>,
     NumeratorUnit : UndefinedMultipliedUnit<
@@ -46,7 +44,7 @@ fun <
         NumeratorRightUnit,
         >,
     NumeratorLeftAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit : ScientificUnit<NumeratorLeftAndDenominatorQuantity>,
+    DenominatorUnit : DefinedScientificUnit<NumeratorLeftAndDenominatorQuantity>,
     NumeratorRightValue : UndefinedScientificValue<
         NumeratorRightQuantity,
         NumeratorRightUnit,
@@ -62,4 +60,13 @@ fun <
     >.dividedByLeft(
     right: ScientificValue<NumeratorLeftAndDenominatorQuantity, DenominatorUnit>,
     factory: (Decimal, NumeratorRightUnit) -> NumeratorRightValue,
-) = unit.right.byDividing(this, right, factory)
+) where
+        ExtendedNumeratorLeftUnit : UndefinedExtendedUnit<
+            NumeratorLeftAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorLeftAndDenominatorQuantity,
+                >,
+            > =
+    unit.right.byDividing(this, right, factory)

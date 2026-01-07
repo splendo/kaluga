@@ -381,6 +381,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
                     null
                 }
             }
+
             is DeviceAction.Write.Characteristic -> {
                 if (action.characteristic.uuid.uuidString == uuid.uuidString) {
                     action.characteristic
@@ -388,6 +389,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
                     null
                 }
             }
+
             else -> null
         }
 
@@ -407,6 +409,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
                     null
                 }
             }
+
             is DeviceAction.Write.Descriptor -> {
                 if (action.descriptor.uuid.uuidString == uuid.uuidString) {
                     action.descriptor
@@ -414,6 +417,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
                     null
                 }
             }
+
             else -> {
                 null
             }

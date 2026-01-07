@@ -90,11 +90,11 @@ interface MediaPlayer :
          */
         class Play(val perform: suspend (PlaybackState.PlaybackParameters) -> Unit) : ControlType() {
 
-            @JvmName("performDefault")
-            @JsName("performDefault")
             /**
              * Start the [MediaPlayer]
              */
+            @JvmName("performDefault")
+            @JsName("performDefault")
             suspend fun perform() = perform(PlaybackState.PlaybackParameters())
         }
 
@@ -312,6 +312,7 @@ class DefaultMediaPlayer(createPlaybackStateRepo: (CoroutineContext) -> BasePlay
                 play = playControl,
                 seek = seekControl,
             )
+
             is PlaybackState.Playing -> MediaPlayer.Controls(
                 pause = pauseControl,
                 stop = stopControl,
@@ -319,6 +320,7 @@ class DefaultMediaPlayer(createPlaybackStateRepo: (CoroutineContext) -> BasePlay
                 setRate = state.createSetRateControls(),
                 setLoopMode = state.createSetLoopModeControls(),
             )
+
             is PlaybackState.Paused -> MediaPlayer.Controls(
                 play = Play { parameters -> forceStart(parameters, true) },
                 unpause = Unpause { unpause() },
@@ -327,15 +329,21 @@ class DefaultMediaPlayer(createPlaybackStateRepo: (CoroutineContext) -> BasePlay
                 setRate = state.createSetRateControls(),
                 setLoopMode = state.createSetLoopModeControls(),
             )
+
             is PlaybackState.Completed -> MediaPlayer.Controls(
                 play = playControl,
                 stop = stopControl,
                 seek = seekControl,
             )
+
             is PlaybackState.Stopped -> MediaPlayer.Controls(play = playControl)
+
             is PlaybackState.Error -> MediaPlayer.Controls(displayError = DisplayError(state.error))
+
             is PlaybackState.Closed -> MediaPlayer.Controls(displayError = DisplayError(PlaybackError.PlaybackHasEnded))
+
             is PlaybackState.Uninitialized -> MediaPlayer.Controls()
+
             is PlaybackState.Initialized -> MediaPlayer.Controls(awaitPreparation = AwaitPreparation)
         }
     }.shareIn(this, SharingStarted.WhileSubscribed())
@@ -357,6 +365,7 @@ class DefaultMediaPlayer(createPlaybackStateRepo: (CoroutineContext) -> BasePlay
                         source,
                     )
                 }
+
                 is PlaybackState.Initialized -> {
                     if (state.source == source) {
                         emit(Unit)
@@ -364,6 +373,7 @@ class DefaultMediaPlayer(createPlaybackStateRepo: (CoroutineContext) -> BasePlay
                         changePlaybackState<PlaybackState.Active> { it.reset }
                     }
                 }
+
                 is PlaybackState.Idle -> {
                     if (state.playableMedia.source == source) {
                         emit(Unit)
@@ -371,7 +381,9 @@ class DefaultMediaPlayer(createPlaybackStateRepo: (CoroutineContext) -> BasePlay
                         changePlaybackState<PlaybackState.Active> { it.reset }
                     }
                 }
+
                 is PlaybackState.Closed -> throw PlaybackError.PlaybackHasEnded
+
                 is PlaybackState.Error -> {
                     if (resetOnError) {
                         changePlaybackState<PlaybackState.Active> { it.reset }
@@ -379,6 +391,7 @@ class DefaultMediaPlayer(createPlaybackStateRepo: (CoroutineContext) -> BasePlay
                         throw state.error
                     }
                 }
+
                 is PlaybackState.Active -> changePlaybackState<PlaybackState.Active> { it.reset }
             }
         }.first()
@@ -401,11 +414,18 @@ class DefaultMediaPlayer(createPlaybackStateRepo: (CoroutineContext) -> BasePlay
 
     override suspend fun forceStart(playbackParameters: PlaybackState.PlaybackParameters, restartIfStarted: Boolean) = playbackStateRepo.transformLatest { state ->
         when (state) {
-            is PlaybackState.Uninitialized -> {} // Do nothing until Initialized
-            is PlaybackState.Initialized -> {} // Do nothing until prepared
+            is PlaybackState.Uninitialized -> {}
+
+            // Do nothing until Initialized
+            is PlaybackState.Initialized -> {}
+
+            // Do nothing until prepared
             is PlaybackState.Idle -> changePlaybackState<PlaybackState.Idle> { it.play(playbackParameters) }
+
             is PlaybackState.Completed -> changePlaybackState<PlaybackState.Completed> { it.start(playbackParameters) }
+
             is PlaybackState.Stopped -> changePlaybackState<PlaybackState.Stopped> { it.reinitialize }
+
             is PlaybackState.Playing -> {
                 if (state.playbackParameters != playbackParameters) {
                     changePlaybackState<PlaybackState.Playing> {
@@ -418,6 +438,7 @@ class DefaultMediaPlayer(createPlaybackStateRepo: (CoroutineContext) -> BasePlay
                     emit(Unit)
                 }
             }
+
             is PlaybackState.Paused -> {
                 changePlaybackState<PlaybackState.Paused> {
                     if (state.playbackParameters != playbackParameters) {
@@ -430,7 +451,9 @@ class DefaultMediaPlayer(createPlaybackStateRepo: (CoroutineContext) -> BasePlay
                     }
                 }
             }
+
             is PlaybackState.Closed -> throw PlaybackError.PlaybackHasEnded
+
             is PlaybackState.Error -> throw state.error
         }
     }.first()
@@ -444,6 +467,7 @@ class DefaultMediaPlayer(createPlaybackStateRepo: (CoroutineContext) -> BasePlay
     private suspend fun seekTo(duration: Duration) = playbackStateRepo.useState { state ->
         when (state) {
             is PlaybackState.Prepared -> state.seekTo(duration)
+
             is PlaybackState.Active,
             is PlaybackState.Closed,
             -> false

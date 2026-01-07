@@ -203,9 +203,11 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, pr
                     AVPlayerStatusUnknown,
                     AVPlayerStatusReadyToPlay,
                     -> {}
+
                     AVPlayerStatusFailed -> {
                         avPlayer.error?.handleError()
                     }
+
                     else -> {}
                 }
             }
@@ -226,10 +228,13 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, pr
             avPlayerItem.observeKeyValueAsFlow<AVPlayerItemStatus>("status", NSKeyValueObservingOptionInitial or NSKeyValueObservingOptionNew).collect { status ->
                 when (status) {
                     AVPlayerItemStatusUnknown -> {}
+
                     AVPlayerItemStatusReadyToPlay -> handlePrepared(DefaultPlayableMedia(playableMedia.source, avPlayer.currentItem!!))
+
                     AVPlayerStatusFailed -> {
                         avPlayer.error?.handleError()
                     }
+
                     else -> {}
                 }
             }
@@ -282,6 +287,7 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, pr
                         }
                     }
                 }
+
                 else -> {}
             }
         },
@@ -289,7 +295,9 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, pr
 
     private val MediaSource.avPlayerItem: AVPlayerItem get() = when (this) {
         is MediaSource.Asset -> AVPlayerItem(asset)
+
         is MediaSource.URL -> AVPlayerItem(AVURLAsset.URLAssetWithURL(url, options.associate { it.entry }))
+
         is MediaSource.Bundle -> {
             val path = NSBundle.mainBundle.pathForResource(fileName, fileType)
             requireNotNull(path)
@@ -365,13 +373,18 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, pr
                 AVErrorContentIsProtected,
                 AVErrorContentIsUnavailable,
                 -> PlaybackError.Unsupported
+
                 AVErrorDecodeFailed,
                 AVErrorFailedToParse,
                 -> PlaybackError.MalformedMediaSource
+
                 AVErrorNoLongerPlayable -> PlaybackError.IO
+
                 AVErrorContentNotUpdated -> PlaybackError.TimedOut
+
                 else -> null
             }
+
             else -> null
         } ?: PlaybackError.Unknown
         handleError(playbackError)

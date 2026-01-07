@@ -25,7 +25,7 @@ import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 
@@ -34,9 +34,7 @@ import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 fun <
     NumeratorLeftQuantity : UndefinedQuantityType,
     NumeratorLeftUnit : AbstractUndefinedScientificUnit<NumeratorLeftQuantity>,
-    ExtendedNumeratorRightUnit : UndefinedExtendedUnit<
-        NumeratorRightAndDenominatorQuantity,
-        >,
+    ExtendedNumeratorRightUnit,
     NumeratorUnit : UndefinedMultipliedUnit<
         NumeratorLeftQuantity,
         NumeratorLeftUnit,
@@ -46,7 +44,7 @@ fun <
         ExtendedNumeratorRightUnit,
         >,
     NumeratorRightAndDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    DenominatorUnit : ScientificUnit<NumeratorRightAndDenominatorQuantity>,
+    DenominatorUnit : DefinedScientificUnit<NumeratorRightAndDenominatorQuantity>,
     NumeratorLeftValue : UndefinedScientificValue<
         NumeratorLeftQuantity,
         NumeratorLeftUnit,
@@ -62,4 +60,13 @@ fun <
     >.dividedByRight(
     right: ScientificValue<NumeratorRightAndDenominatorQuantity, DenominatorUnit>,
     factory: (Decimal, NumeratorLeftUnit) -> NumeratorLeftValue,
-) = unit.left.byDividing(this, right, factory)
+) where
+        ExtendedNumeratorRightUnit : UndefinedExtendedUnit<
+            NumeratorRightAndDenominatorQuantity,
+            >,
+        ExtendedNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorRightAndDenominatorQuantity,
+                >,
+            > =
+    unit.left.byDividing(this, right, factory)

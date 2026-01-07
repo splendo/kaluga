@@ -5,9 +5,15 @@ on:
       release_type:
         description: |
           Select the type of version to publish:
+
           - `release`: A final, stable release (e.g., 1.2.3).
+
           - `-alpha`: A general pre-release (e.g., 1.2.3-alpha.GITHUB_RUN_NUMBER).
-          - `-branch-alpha`: A pre-release for a feature branch (e.g., 1.2.3-my-feature-alpha.GITHUB_RUN_NUMBER). Note: This takes the words of the last part of the branch and separates them with hyphens (e.g. `feature/#789_test_feature` becomes `1.2.3-test-feature-alpha`.GITHUB_RUN_NUMBER)
+
+          - `-branch-alpha`: A pre-release for a feature branch (e.g., 1.2.3-my-feature-alpha.GITHUB_RUN_NUMBER).
+            Note: This takes the words of the last part of the branch and separates them with hyphens.
+            For example: `feature/#789_test_feature` becomes `1.2.3-test-feature-alpha`.GITHUB_RUN_NUMBER.
+
           - `-commit-alpha`: A pre-release based on the git short commit hash (e.g., 1.2.3-a1b2c3d-alpha.GITHUB_RUN_NUMBER).
         required: true
         type: choice
@@ -28,20 +34,20 @@ jobs:
       ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ vars.SIGNING_IN_MEMORY_KEY_ID }}
       ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_IN_MEMORY_KEY_PASSWORD }}
       ORG_GRADLE_PROJECT_releaseType: ${{ github.event.inputs.release_type }}
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - name: checkout
         uses: actions/checkout@v6
         with:
           submodules: recursive
       - name : set up JDK 17
-        uses : actions/setup-java@v4
+        uses : actions/setup-java@v5
         with :
           distribution : 'temurin'
           java-version : 17
 
       - name: Konan cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: konan-cache
         with:
           path: ~/.konan/*

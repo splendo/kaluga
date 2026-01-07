@@ -140,8 +140,12 @@ sealed class BaseMethodMock<
                 val matcherAtIndexForAcc = acc.first().first[index]
                 val matcherAtIndexForPossibleBestMatch = possibleBestMatch.first[index]
                 when {
-                    matcherAtIndexForAcc < matcherAtIndexForPossibleBestMatch -> acc // Worse, so return acc
-                    matcherAtIndexForAcc == matcherAtIndexForPossibleBestMatch -> acc.toMutableList() + possibleBestMatch // Equal so return acc + possibleBestMatch
+                    matcherAtIndexForAcc < matcherAtIndexForPossibleBestMatch -> acc
+
+                    // Worse, so return acc
+                    matcherAtIndexForAcc == matcherAtIndexForPossibleBestMatch -> acc.toMutableList() + possibleBestMatch
+
+                    // Equal so return acc + possibleBestMatch
                     else -> listOf(possibleBestMatch) // Better so return possibleBestMatch
                 }
             }

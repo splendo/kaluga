@@ -43,7 +43,7 @@ typealias BluetoothBuilderBuilder = (suspend (CoroutineContext) -> Permissions) 
 /*
     Switch this value to use the location permission on Android when using bluetooth.
  */
-const val useBluetoothForLocation = false
+const val USE_BLUETOOTH_FOR_LOCATION = false
 
 private fun sharedModule(locationStateRepoBuilderBuilder: LocationStateRepoBuilderBuilder, bluetoothBuilderBuilder: BluetoothBuilderBuilder) = module {
     single<Logger> { RestrictedLogger(RestrictedLogLevel.None) }
@@ -65,7 +65,7 @@ private fun sharedModule(locationStateRepoBuilderBuilder: LocationStateRepoBuild
             builder.registerLocationPermissionIfNotRegistered(settings = settings)
             Permissions(builder, it)
         }.create(
-            scannerSettingsBuilder = { BaseScanner.Settings(permissions = it, useLocation = useBluetoothForLocation, logger = get()) },
+            scannerSettingsBuilder = { BaseScanner.Settings(permissions = it, useLocation = USE_BLUETOOTH_FOR_LOCATION, logger = get()) },
         )
     }
     single { DefaultBeacons(get<Bluetooth>(), beaconLifetime = 1.minutes, logger = get()) }
