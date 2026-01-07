@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
+import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.CoreLocation.kCLLocationAccuracyBest
 import platform.CoreLocation.kCLLocationAccuracyReduced
 import platform.Foundation.NSBundle
@@ -55,16 +56,19 @@ actual class DefaultLocationManager(settings: Settings, coroutineScope: Coroutin
 
     private class Delegate(private val onLocationsChanged: MutableSharedFlow<Location.KnownLocation>) :
         NSObject(),
-        KalugaLocationDelegateProtocol {
-        override fun didUpdateLocations(locations: List<*>, manager: CLLocationManager) {
-            val locations = locations.mapNotNull { (it as? CLLocation)?.knownLocation }
+        CLLocationManagerDelegateProtocol {
+        override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
+            val locations = didUpdateLocations.mapNotNull { (it as? CLLocation)?.knownLocation }
             if (locations.isNotEmpty()) {
                 handleLocationChanged(locations)
             }
         }
 
-        override fun didFinishDeferredUpdatesWithError(error: NSError?, manager: CLLocationManager) {
+        override fun locationManager(manager: CLLocationManager, didUpdateToLocation: CLLocation, fromLocation: CLLocation) {
+            handleLocationChanged(listOf(didUpdateToLocation.knownLocation))
         }
+
+        override fun locationManager(manager: CLLocationManager, didFinishDeferredUpdatesWithError: NSError?) {}
 
         private fun handleLocationChanged(locations: List<Location.KnownLocation>) = locations.forEach {
             onLocationsChanged.tryEmit(it) // should always works as the buffer is DROP_OLDEST
@@ -79,7 +83,7 @@ actual class DefaultLocationManager(settings: Settings, coroutineScope: Coroutin
     }
 
     private val locationUpdateDelegate: Delegate
-    private var locationWrapper: KalugaLocationWrapper? = null
+
     init {
         val sharedLocations = sharedLocations
         locationUpdateDelegate = Delegate(sharedLocations)
@@ -93,8 +97,7 @@ actual class DefaultLocationManager(settings: Settings, coroutineScope: Coroutin
     actual override suspend fun startMonitoringLocation() {
         val locationUpdateDelegate = locationUpdateDelegate
         locationManager.updateLocationManager {
-            locationWrapper?.unlink()
-            locationWrapper = KalugaLocationWrapper.createByLinkingWithLocationManager(this, locationUpdateDelegate)
+            delegate = locationUpdateDelegate
             startUpdatingLocation()
         }
     }
@@ -103,8 +106,7 @@ actual class DefaultLocationManager(settings: Settings, coroutineScope: Coroutin
         launch {
             locationManager.updateLocationManager {
                 stopUpdatingLocation()
-                locationWrapper?.unlink()
-                locationWrapper = null
+                delegate = null
             }
         }
     }
