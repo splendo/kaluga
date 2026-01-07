@@ -41,13 +41,14 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
         val nested = generateNested(generationType)
         val newGenerated = when (generationType.type) {
             GenerationType.Type.API -> generateAPI(generationType, nested.flatMap { it.typeSpec })
-            GenerationType.Type.BLUETOOTH -> TODO()
+            GenerationType.Type.BLUETOOTH -> generateBluetooth(generationType, nested.flatMap { it.typeSpec })
             GenerationType.Type.SIMULATOR -> TODO()
         }
         Generated(newGenerated.typeSpec)
     }
 
     abstract fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated
+    abstract fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): Generated
 
     protected fun KSClassDeclaration.generateNested(generationType: GenerationType): List<Generated> = buildList {
         val bluetoothDeclarations = declarations.filter { it.isAnnotationPresent(Bluetooth::class) }.filterIsInstance<KSClassDeclaration>()

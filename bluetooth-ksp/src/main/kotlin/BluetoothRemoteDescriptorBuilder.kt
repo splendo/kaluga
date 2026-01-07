@@ -32,7 +32,7 @@ import com.squareup.kotlinpoet.ksp.toClassName
 
 internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration, logger: KSPLogger) : AbstractBluetoothClassBuilder(declaration, logger) {
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, NameHelper.Target.CLIENT)).addModifiers(KModifier.SEALED)
+        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType)).addModifiers(KModifier.SEALED)
             .addTypes(nested)
             .apply {
                 var hasReadMethod = false
@@ -81,5 +81,10 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                 }
             }
         return Generated(listOf(typeSpec.build()))
+    }
+
+
+    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): Generated {
+        TODO()
     }
 }

@@ -31,25 +31,20 @@ import com.splendo.kaluga.bluetooth.annotations.BluetoothServerName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.squareup.kotlinpoet.ClassName
 
-object NameHelper {
+internal object NameHelper {
 
-    enum class Target {
-        CLIENT,
-        SERVER,
-    }
-
-    fun nameFor(declaration: KSClassDeclaration, target: Target): ClassName {
-        val names = mutableListOf(declaration.simpleName(target))
+    fun nameFor(declaration: KSClassDeclaration, generationType: GenerationType): ClassName {
+        val names = mutableListOf(declaration.simpleName(generationType))
         var current = declaration.parentDeclaration
         while (current != null) {
-            names.add(0, current.simpleName(target))
+            names.add(0, current.simpleName(generationType))
             current = current.parentDeclaration
         }
         return ClassName(declaration.packageName.asString(), names)
     }
 
-    private fun KSDeclaration.simpleName(target: Target): String = when (target) {
-        Target.CLIENT ->
+    private fun KSDeclaration.simpleName(generationType: GenerationType): String = when (generationType.side) {
+        GenerationType.Side.CLIENT ->
             getAnnotationsByType(BluetoothClientName::class).firstOrNull()?.name ?: when {
                 isAnnotationPresent(Bluetooth::class) -> "${simpleName.asString()}Client"
                 isAnnotationPresent(BluetoothClient::class) -> "${simpleName.asString()}Client"
@@ -59,7 +54,7 @@ object NameHelper {
                 else -> simpleName.asString()
             }
 
-        Target.SERVER -> getAnnotationsByType(BluetoothServerName::class).firstOrNull()?.name ?: when {
+        GenerationType.Side.SERVER -> getAnnotationsByType(BluetoothServerName::class).firstOrNull()?.name ?: when {
             isAnnotationPresent(Bluetooth::class) -> "${simpleName.asString()}Server"
             isAnnotationPresent(BluetoothServer::class) -> "${simpleName.asString()}Server"
             isAnnotationPresent(BluetoothService::class) -> "Local${simpleName.asString()}"
@@ -67,5 +62,14 @@ object NameHelper {
             isAnnotationPresent(BluetoothDescriptor::class) -> "Local${simpleName.asString()}"
             else -> simpleName.asString()
         }
+    }.let {
+        "${generationType.type.prefix}$it"
     }
+
+    private val GenerationType.Type.prefix: String
+        get() = when (this) {
+            GenerationType.Type.API -> ""
+            GenerationType.Type.BLUETOOTH -> "Bluetooth"
+            GenerationType.Type.SIMULATOR -> "Simulated"
+        }
 }

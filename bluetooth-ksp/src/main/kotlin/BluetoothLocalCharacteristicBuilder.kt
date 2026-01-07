@@ -38,7 +38,7 @@ import com.squareup.kotlinpoet.ksp.toClassName
 
 internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclaration, logger: KSPLogger) : AbstractBluetoothClassBuilder(declaration, logger) {
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, NameHelper.Target.SERVER)).addModifiers(KModifier.SEALED)
+        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType)).addModifiers(KModifier.SEALED)
             .addTypes(nested)
             .addType(
                 TypeSpec.interfaceBuilder("DSL")
@@ -55,7 +55,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                         val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration)
 
                                         val lambdaType = LambdaTypeName.get(
-                                            receiver = NameHelper.nameFor(this@generateAPI, NameHelper.Target.SERVER),
+                                            receiver = NameHelper.nameFor(this@generateAPI, generationType),
                                             returnType = resultType.responseClassName,
                                         ).copy(suspending = true)
                                         addFunction(
@@ -74,7 +74,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                         val writeMethod = "onWrite${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
 
                                         val lambdaType = LambdaTypeName.get(
-                                            receiver = NameHelper.nameFor(this@generateAPI, NameHelper.Target.SERVER),
+                                            receiver = NameHelper.nameFor(this@generateAPI, generationType),
                                             parameters = listOf(ParameterSpec(propertyDeclaration.simpleName.asString(), propertyDeclaration.type.resolve().toClassName())),
                                             returnType = ClassName("com.splendo.kaluga.bluetooth", "GattResponse", "WriteResponse"),
                                         ).copy(suspending = true)
@@ -94,7 +94,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
 
                                 typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class) -> {
                                     val lambdaType = LambdaTypeName.get(
-                                        receiver = NameHelper.nameFor(typeDeclaration, NameHelper.Target.SERVER).nestedClass("DSL"),
+                                        receiver = NameHelper.nameFor(typeDeclaration, generationType).nestedClass("DSL"),
                                         returnType = UNIT,
                                     )
                                     addFunction(
@@ -137,7 +137,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
 
                         typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class) -> {
                             addProperty(
-                                PropertySpec.builder(propertyDeclaration.simpleName.asString(), NameHelper.nameFor(typeDeclaration, NameHelper.Target.SERVER))
+                                PropertySpec.builder(propertyDeclaration.simpleName.asString(), NameHelper.nameFor(typeDeclaration, generationType))
                                     .addModifiers(KModifier.ABSTRACT).build(),
                             )
                         }
@@ -149,5 +149,9 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                 }
             }
         return Generated(listOf(typeSpec.build()))
+    }
+
+    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): Generated {
+        TODO()
     }
 }

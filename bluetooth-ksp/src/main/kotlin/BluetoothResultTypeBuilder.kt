@@ -40,7 +40,7 @@ internal class BluetoothResultTypeBuilder(val classDeclaration: KSClassDeclarati
     }
 
     val responseClassName: ClassName get() {
-        val className = NameHelper.nameFor(classDeclaration, NameHelper.Target.CLIENT)
+        val className = NameHelper.nameFor(classDeclaration, GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.API))
         return ClassName(className.packageName, className.simpleNames.dropLast(1) + "${classDeclaration.simpleName.asString()}ReadResponse")
     }
 

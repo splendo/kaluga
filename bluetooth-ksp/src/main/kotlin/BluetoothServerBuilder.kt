@@ -32,7 +32,7 @@ import com.squareup.kotlinpoet.UNIT
 
 internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: KSPLogger) : AbstractBluetoothClassBuilder(declaration, logger) {
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, NameHelper.Target.SERVER)).addModifiers(KModifier.SEALED)
+        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType)).addModifiers(KModifier.SEALED)
             .addTypes(nested)
             .addType(
                 TypeSpec.interfaceBuilder("DSL")
@@ -41,7 +41,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                             val typeDeclaration = propertyDeclaration.type.resolve().declaration
                             if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class)) {
                                 val lambdaType = LambdaTypeName.get(
-                                    receiver = NameHelper.nameFor(typeDeclaration, NameHelper.Target.SERVER).nestedClass("DSL"),
+                                    receiver = NameHelper.nameFor(typeDeclaration, generationType).nestedClass("DSL"),
                                     returnType = UNIT,
                                 )
                                 FunSpec.builder(propertyDeclaration.simpleName.asString()).addModifiers(KModifier.ABSTRACT)
@@ -61,7 +61,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                     if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class)) {
                         PropertySpec.builder(
                             propertyDeclaration.simpleName.asString(),
-                            NameHelper.nameFor(typeDeclaration, NameHelper.Target.SERVER),
+                            NameHelper.nameFor(typeDeclaration, generationType),
                         ).build()
                     } else {
                         logger.error("A BluetoothServer should only have BluetoothService properties $typeDeclaration ${typeDeclaration.annotations}")
@@ -70,5 +70,10 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                 }.toList(),
             )
         return Generated(listOf(typeSpec.build()))
+    }
+
+
+    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): Generated {
+        TODO()
     }
 }

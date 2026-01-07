@@ -33,7 +33,7 @@ import com.squareup.kotlinpoet.UNIT
 
 internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, logger: KSPLogger) : AbstractBluetoothClassBuilder(declaration, logger) {
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, NameHelper.Target.SERVER)).addModifiers(KModifier.SEALED)
+        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType)).addModifiers(KModifier.SEALED)
             .addTypes(nested)
             .addType(
                 TypeSpec.interfaceBuilder("DSL")
@@ -48,7 +48,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, log
                                     )
                             ) {
                                 val lambdaType = LambdaTypeName.get(
-                                    receiver = NameHelper.nameFor(typeDeclaration, NameHelper.Target.SERVER).nestedClass("DSL"),
+                                    receiver = NameHelper.nameFor(typeDeclaration, generationType).nestedClass("DSL"),
                                     returnType = UNIT,
                                 )
                                 FunSpec.builder(propertyDeclaration.simpleName.asString()).addModifiers(KModifier.ABSTRACT)
@@ -76,7 +76,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, log
                     ) {
                         PropertySpec.builder(
                             propertyDeclaration.simpleName.asString(),
-                            NameHelper.nameFor(typeDeclaration, NameHelper.Target.SERVER),
+                            NameHelper.nameFor(typeDeclaration, generationType),
                         ).build()
                     } else {
                         logger.error("A BluetoothService should only have BluetoothService and BluetoothCharacteristic properties $typeDeclaration ${typeDeclaration.annotations}")
@@ -85,5 +85,9 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, log
                 }.toList(),
             )
         return Generated(listOf(typeSpec.build()))
+    }
+
+    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): Generated {
+        TODO()
     }
 }

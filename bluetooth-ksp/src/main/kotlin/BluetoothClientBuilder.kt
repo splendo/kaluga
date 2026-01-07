@@ -29,7 +29,7 @@ import com.squareup.kotlinpoet.TypeSpec
 
 internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: KSPLogger) : AbstractBluetoothClassBuilder(declaration, logger) {
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, NameHelper.Target.CLIENT)).addModifiers(KModifier.SEALED)
+        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType)).addModifiers(KModifier.SEALED)
             .addTypes(nested)
             .addProperties(
                 declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull { propertyDeclaration ->
@@ -37,7 +37,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
                     if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class)) {
                         PropertySpec.builder(
                             propertyDeclaration.simpleName.asString(),
-                            NameHelper.nameFor(typeDeclaration, NameHelper.Target.CLIENT),
+                            NameHelper.nameFor(typeDeclaration, generationType),
                         ).build()
                     } else {
                         logger.error("A BluetoothClient should only have BluetoothService properties $typeDeclaration ${typeDeclaration.annotations}")
@@ -46,5 +46,9 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
                 }.toList(),
             )
         return Generated(listOf(typeSpec.build()))
+    }
+
+    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): Generated {
+        TODO()
     }
 }
