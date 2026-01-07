@@ -106,7 +106,7 @@ jobs:
 
       - name: Upload test reports on failure
         if: failure()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: "Android UI tests for ${{ matrix.project }}"
           path: "${{ matrix.project }}/build/reports/androidTests/connected/debug/**"
