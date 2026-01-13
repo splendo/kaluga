@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.bluetooth.ksp
+package com.splendo.kaluga.bluetooth.ksp.helpers
 
 import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.isAnnotationPresent
@@ -29,6 +29,7 @@ import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.BluetoothServer
 import com.splendo.kaluga.bluetooth.annotations.BluetoothServerName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
+import com.splendo.kaluga.bluetooth.ksp.GenerationType
 import com.squareup.kotlinpoet.ClassName
 
 internal object NameHelper {

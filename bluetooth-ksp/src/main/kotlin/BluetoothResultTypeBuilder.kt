@@ -19,15 +19,23 @@ package com.splendo.kaluga.bluetooth.ksp
 
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.Readable
+import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
+import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
+import com.splendo.kaluga.bluetooth.ksp.helpers.READ
+import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
+import com.splendo.kaluga.bluetooth.ksp.helpers.References
+import com.splendo.kaluga.bluetooth.ksp.helpers.WHEN
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.toClassName
+import java.sql.Ref
 
 internal class BluetoothResultTypeBuilder(val classDeclaration: KSClassDeclaration, val propertyDeclaration: KSPropertyDeclaration) {
 
@@ -36,45 +44,77 @@ internal class BluetoothResultTypeBuilder(val classDeclaration: KSClassDeclarati
             declaration.declarations.filterIsInstance<KSPropertyDeclaration>().firstOrNull { it.isAnnotationPresent(Readable::class) }?.let {
                 BluetoothResultTypeBuilder(declaration, it)
             }
-        private val errorTypeClass = ClassName("com.splendo.kaluga.bluetooth", "GattResponse", "ReadError")
+
+        const val SUCCESS = "Success"
+        const val FAILURE = "Failure"
+        const val RESPONSE = "response"
+        const val ERROR = "error"
     }
 
-    val responseClassName: ClassName get() {
+    internal val hasCustomResult = propertyDeclaration.type.resolve().toClassName() != References.Kotlin.byteArray
+
+    val responseClassName: ClassName get() = if (hasCustomResult) {
         val className = NameHelper.nameFor(classDeclaration, GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.API))
-        return ClassName(className.packageName, className.simpleNames.dropLast(1) + "${classDeclaration.simpleName.asString()}ReadResponse")
+        ClassName(className.packageName, className.simpleNames.dropLast(1) + "${classDeclaration.simpleName.asString()}ReadResponse")
+    } else {
+        propertyDeclaration.type.resolve().toClassName()
     }
 
-    fun generateType() = TypeSpec.classBuilder(responseClassName)
-        .addModifiers(KModifier.SEALED)
-        .addType(
-            TypeSpec.classBuilder("Success")
-                .addModifiers(KModifier.DATA)
-                .primaryConstructor(
-                    FunSpec.constructorBuilder()
-                        .addParameter("response", propertyDeclaration.type.resolve().toClassName())
-                        .build(),
-                )
-                .addProperty(
-                    PropertySpec.builder("response", propertyDeclaration.type.resolve().toClassName())
-                        .initializer("response")
-                        .build(),
-                )
-                .build(),
+    fun generateType() = if (hasCustomResult) {
+        TypeSpec.classBuilder(responseClassName)
+            .addModifiers(KModifier.SEALED)
+            .addType(
+                TypeSpec.classBuilder(SUCCESS)
+                    .superclass(responseClassName)
+                    .addModifiers(KModifier.DATA)
+                    .primaryConstructor(
+                        FunSpec.constructorBuilder()
+                            .addParameter(RESPONSE, propertyDeclaration.type.resolve().toClassName())
+                            .build(),
+                    )
+                    .addProperty(
+                        PropertySpec.builder(RESPONSE, propertyDeclaration.type.resolve().toClassName())
+                            .initializer(RESPONSE)
+                            .build(),
+                    )
+                    .build(),
+            )
+            .addType(
+                TypeSpec.classBuilder(FAILURE)
+                    .superclass(responseClassName)
+                    .addModifiers(KModifier.DATA)
+                    .primaryConstructor(
+                        FunSpec.constructorBuilder()
+                            .addParameter(ERROR, References.Bluetooth.readError)
+                            .build(),
+                    )
+                    .addProperty(
+                        PropertySpec.builder(ERROR, References.Bluetooth.readError)
+                            .initializer(ERROR)
+                            .build(),
+                    )
+                    .build(),
+            )
+            .build()
+    } else {
+        null
+    }
+
+    fun generateBluetoothResult(funSpec: FunSpec.Builder, attributeName: String) = if (hasCustomResult) {
+        val readResult = "readResult"
+        funSpec.addCode(
+            CodeBlock.builder()
+                .beginControlFlow("$RETURN $WHEN (val $readResult = $attributeName.$READ())")
+                .beginControlFlow("is %T ->", References.Bluetooth.readSuccess)
+                .addStatement("%T.$SUCCESS($FORMAT.decodeFromByteArray(%T.%M(), $readResult.value))", responseClassName, propertyDeclaration.type.resolve().toClassName(), References.KotlinX.Serialization.serializer)
+                .endControlFlow()
+                .beginControlFlow("is %T ->", References.Bluetooth.readError)
+                .addStatement("%T.$FAILURE($readResult)", responseClassName)
+                .endControlFlow()
+                .endControlFlow()
+                .build()
         )
-        .addType(
-            TypeSpec.classBuilder("Failure")
-                .addModifiers(KModifier.DATA)
-                .primaryConstructor(
-                    FunSpec.constructorBuilder()
-                        .addParameter("error", errorTypeClass)
-                        .build(),
-                )
-                .addProperty(
-                    PropertySpec.builder("error", errorTypeClass)
-                        .initializer("error")
-                        .build(),
-                )
-                .build(),
-        )
-        .build()
+    } else {
+        funSpec.addStatement("$RETURN $attributeName.$READ()")
+    }
 }

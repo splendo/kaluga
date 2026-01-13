@@ -57,4 +57,3 @@ interface TestCharacteristic {
 
     val testDescriptor: TestDescriptor
 }
-

@@ -388,9 +388,16 @@ internal fun Flow<ConnectableDevice?>.startDiscovering(): Flow<ConnectableDevice
 }
 
 /**
+ * Gets a ([Flow] of) [ConnectableDeviceState.Connected.DiscoveredServices] associated with the [ConnectableDevice] in a [Flow]
+ * This will automatically start discovering services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
+ * @return the [Flow] of [ConnectableDeviceState.Connected.DiscoveredServices] associated with the [ConnectableDevice].
+ */
+fun Flow<ConnectableDevice?>.filterDiscovering() = flatMapLatest { it?.filterDiscovering() ?: flowOf(null) }
+
+/**
  * Gets a ([Flow] of) [ConnectableDeviceState.Connected.DiscoveredServices] from a [ConnectableDevice]
  * This will automatically start discovering services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
- * @return the [Flow] of [ConnectableDeviceState.Connected.DiscoveredServices] associated with the [ConnectableDevice]. Only emits once services are discovered.
+ * @return the [Flow] of [ConnectableDeviceState.Connected.DiscoveredServices] associated with the [ConnectableDevice].
  */
 fun ConnectableDevice.filterDiscovering() = state.transformLatest { deviceState ->
     emit(

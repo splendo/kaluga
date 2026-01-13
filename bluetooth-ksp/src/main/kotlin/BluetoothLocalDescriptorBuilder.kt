@@ -23,6 +23,12 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.Readable
 import com.splendo.kaluga.bluetooth.annotations.Writable
+import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION
+import com.splendo.kaluga.bluetooth.ksp.helpers.DSL
+import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
+import com.splendo.kaluga.bluetooth.ksp.helpers.ON_READ
+import com.splendo.kaluga.bluetooth.ksp.helpers.ON_WRITE
+import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -36,7 +42,7 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
         val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType)).addModifiers(KModifier.SEALED)
             .addTypes(nested)
             .addType(
-                TypeSpec.interfaceBuilder("DSL")
+                TypeSpec.interfaceBuilder(DSL)
                     .apply {
                         var hasReadMethod = false
                         var hasWriteMethod = false
@@ -45,7 +51,7 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
                                 propertyDeclaration.isAnnotationPresent(Readable::class) -> {
                                     if (!hasReadMethod) {
                                         hasReadMethod = true
-                                        val readMethod = "onRead${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
+                                        val readMethod = "$ON_READ${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
                                         val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration)
 
                                         val lambdaType = LambdaTypeName.get(
@@ -54,36 +60,36 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
                                         ).copy(suspending = true)
                                         addFunction(
                                             FunSpec.builder(readMethod).addModifiers(KModifier.ABSTRACT)
-                                                .addParameter("action", lambdaType)
+                                                .addParameter(ACTION, lambdaType)
                                                 .build(),
                                         )
                                     } else {
-                                        logger.error("Only one @Readable property can be declared")
+                                        logger.error("Only one @${Readable::class.simpleName} property can be declared")
                                     }
                                 }
 
                                 propertyDeclaration.isAnnotationPresent(Writable::class) -> {
                                     if (!hasWriteMethod) {
                                         hasWriteMethod = true
-                                        val writeMethod = "onWrite${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
+                                        val writeMethod = "$ON_WRITE${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
 
                                         val lambdaType = LambdaTypeName.get(
                                             receiver = NameHelper.nameFor(this@generateAPI, generationType),
                                             parameters = listOf(ParameterSpec(propertyDeclaration.simpleName.asString(), propertyDeclaration.type.resolve().toClassName())),
-                                            returnType = ClassName("com.splendo.kaluga.bluetooth", "GattResponse", "WriteResponse"),
+                                            returnType = References.Bluetooth.writeResponse,
                                         ).copy(suspending = true)
                                         addFunction(
                                             FunSpec.builder(writeMethod).addModifiers(KModifier.ABSTRACT)
-                                                .addParameter("action", lambdaType)
+                                                .addParameter(ACTION, lambdaType)
                                                 .build(),
                                         )
                                     } else {
-                                        logger.error("Only one @Writable property can be declared")
+                                        logger.error("Only one @${Writable::class.simpleName} property can be declared")
                                     }
                                 }
 
                                 else -> {
-                                    logger.error("Only @Readable and @Writable properties can be declared")
+                                    logger.error("Only @${Readable::class.simpleName} and @${Writable::class.simpleName} properties can be declared")
                                 }
                             }
                         }
@@ -93,64 +99,6 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
         return Generated(listOf(typeSpec.build()))
     }
 
-    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType)).addModifiers(KModifier.SEALED)
-            .addTypes(nested)
-            .addType(
-                TypeSpec.interfaceBuilder("DSL")
-                    .apply {
-                        var hasReadMethod = false
-                        var hasWriteMethod = false
-                        declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
-                            when {
-                                propertyDeclaration.isAnnotationPresent(Readable::class) -> {
-                                    if (!hasReadMethod) {
-                                        hasReadMethod = true
-                                        val readMethod = "onRead${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
-                                        val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration)
-
-                                        val lambdaType = LambdaTypeName.get(
-                                            receiver = NameHelper.nameFor(this@generateBluetooth, generationType),
-                                            returnType = resultType.responseClassName,
-                                        ).copy(suspending = true)
-                                        addFunction(
-                                            FunSpec.builder(readMethod).addModifiers(KModifier.ABSTRACT)
-                                                .addParameter("action", lambdaType)
-                                                .build(),
-                                        )
-                                    } else {
-                                        logger.error("Only one @Readable property can be declared")
-                                    }
-                                }
-
-                                propertyDeclaration.isAnnotationPresent(Writable::class) -> {
-                                    if (!hasWriteMethod) {
-                                        hasWriteMethod = true
-                                        val writeMethod = "onWrite${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
-
-                                        val lambdaType = LambdaTypeName.get(
-                                            receiver = NameHelper.nameFor(this@generateBluetooth, generationType),
-                                            parameters = listOf(ParameterSpec(propertyDeclaration.simpleName.asString(), propertyDeclaration.type.resolve().toClassName())),
-                                            returnType = ClassName("com.splendo.kaluga.bluetooth", "GattResponse", "WriteResponse"),
-                                        ).copy(suspending = true)
-                                        addFunction(
-                                            FunSpec.builder(writeMethod).addModifiers(KModifier.ABSTRACT)
-                                                .addParameter("action", lambdaType)
-                                                .build(),
-                                        )
-                                    } else {
-                                        logger.error("Only one @Writable property can be declared")
-                                    }
-                                }
-
-                                else -> {
-                                    logger.error("Only @Readable and @Writable properties can be declared")
-                                }
-                            }
-                        }
-                    }
-                    .build(),
-            )
-        return Generated(listOf(typeSpec.build()))
-    }
+    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): Generated = Generated(emptyList())
+    override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): Generated = Generated(emptyList())
 }
