@@ -46,6 +46,7 @@ object References {
             val localServiceDSL = className("LocalService", "DSL")
             val localCharacteristic = className("LocalCharacteristic")
             val localCharacteristicDSL = className("LocalCharacteristic", "DSL")
+            val localCharacteristicNotifiable = className("LocalCharacteristic", "Notifiable")
             val localDescriptor = className("LocalDescriptor")
             val localDescriptorDSL = className("LocalDescriptor", "DSL")
         }
@@ -59,6 +60,12 @@ object References {
         val readError = className("GattResponse", "ReadError")
         val requestNotSupported = className("GattResponse", "RequestNotSupported")
         val writeRequestRejected = className("GattResponse", "WriteRequestRejected")
+
+        val writeProperty = className("CharacteristicProperty", "Write")
+        val writeWithoutResponseProperty = className("CharacteristicProperty", "WriteWithoutResponse")
+        val signedWriteProperty = className("CharacteristicProperty", "SignedWrite")
+        val notifyProperty = className("CharacteristicProperty", "Notify")
+        val indicatableProperty = className("CharacteristicProperty", "Indicatable")
 
         val get = memberName("get")
         val uuidFrom = memberName("uuidFrom")

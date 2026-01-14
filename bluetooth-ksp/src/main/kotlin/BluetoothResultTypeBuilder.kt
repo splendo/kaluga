@@ -122,16 +122,14 @@ internal class BluetoothResultTypeBuilder(val classDeclaration: KSClassDeclarati
 
     fun parseBluetoothResult(addReadStatement: CodeBlock) = if (hasCustomResult) {
         CodeBlock.builder()
-            .add("$WHEN (val response = %L) {\n", addReadStatement)
-            .indent()
+            .beginControlFlow("$WHEN (val response = %L) {", addReadStatement)
             .beginControlFlow("is %T.$SUCCESS -> {", responseClassName)
             .addStatement("%T($FORMAT.encodeToByteArray(%T.%M(), response.$RESPONSE).drop($OFFSET))", References.Bluetooth.readSuccess, propertyDeclaration.type.resolve().toClassName(), References.KotlinX.Serialization.serializer)
             .endControlFlow()
             .beginControlFlow("is %T.$FAILURE -> {", responseClassName)
             .addStatement("response.$ERROR")
             .endControlFlow()
-            .unindent()
-            .addStatement("}")
+            .endControlFlow()
             .build()
     } else {
         CodeBlock.builder()

@@ -24,9 +24,13 @@ import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
+import com.splendo.kaluga.bluetooth.annotations.Indicatable
 import com.splendo.kaluga.bluetooth.annotations.Notifiable
 import com.splendo.kaluga.bluetooth.annotations.Readable
 import com.splendo.kaluga.bluetooth.annotations.Writable
+import com.splendo.kaluga.bluetooth.annotations.WritableSigned
+import com.splendo.kaluga.bluetooth.annotations.WritableWithoutResponse
+import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTIC
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_SERVICE
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
@@ -34,6 +38,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.READ
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
+import com.splendo.kaluga.bluetooth.ksp.helpers.SERVICE
 import com.splendo.kaluga.bluetooth.ksp.helpers.WRITE
 import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
 import com.squareup.kotlinpoet.ClassName
@@ -51,11 +56,6 @@ internal class BluetoothRemoteCharacteristicBuilder(
     private val characteristic: BluetoothCharacteristic,
     logger: KSPLogger
 ) : AbstractBluetoothClassBuilder(declaration, logger) {
-
-    companion object {
-        const val SERVICE = "service"
-        const val CHARACTERISTIC = "characteristic"
-    }
 
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
         val imports = Generated.Imports()
@@ -133,8 +133,13 @@ internal class BluetoothRemoteCharacteristicBuilder(
         var hasWriteMethod = false
         declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
             val typeDeclaration = propertyDeclaration.type.resolve().declaration
-            if (propertyDeclaration.isAnnotationPresent(Readable::class) || propertyDeclaration.isAnnotationPresent(Writable::class) || propertyDeclaration.isAnnotationPresent(
-                    Notifiable::class)) {
+            if (propertyDeclaration.isAnnotationPresent(Readable::class) ||
+                propertyDeclaration.isAnnotationPresent(Writable::class) ||
+                propertyDeclaration.isAnnotationPresent(WritableWithoutResponse::class) ||
+                propertyDeclaration.isAnnotationPresent(WritableSigned::class) ||
+                propertyDeclaration.isAnnotationPresent(Notifiable::class) ||
+                propertyDeclaration.isAnnotationPresent(Indicatable::class)
+                    ) {
                 if (propertyDeclaration.isAnnotationPresent(Readable::class)) {
                     if (!hasReadMethod) {
                         hasReadMethod = true
@@ -162,7 +167,8 @@ internal class BluetoothRemoteCharacteristicBuilder(
                     }
                 }
 
-                if (propertyDeclaration.isAnnotationPresent(Writable::class)) {
+                if (propertyDeclaration.isAnnotationPresent(Writable::class) || propertyDeclaration.isAnnotationPresent(WritableWithoutResponse::class) || propertyDeclaration.isAnnotationPresent(
+                        WritableSigned::class)) {
                     if (!hasWriteMethod) {
                         hasWriteMethod = true
                         val writeMethod = "$WRITE${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
@@ -196,11 +202,11 @@ internal class BluetoothRemoteCharacteristicBuilder(
                             }.build(),
                         )
                     } else {
-                        logger.error("Only one @${Readable::class.simpleName} property can be declared")
+                        logger.error("Only one @${Writable::class.simpleName} / @${WritableWithoutResponse::class.simpleName } / @${WritableSigned::class.simpleName} property can be declared")
                     }
                 }
 
-                if (propertyDeclaration.isAnnotationPresent(Notifiable::class)) {
+                if (propertyDeclaration.isAnnotationPresent(Notifiable::class) || propertyDeclaration.isAnnotationPresent(Indicatable::class)) {
                     if (!hasNotifiableProperty) {
                         hasNotifiableProperty = true
                         addProperty(
@@ -241,7 +247,7 @@ internal class BluetoothRemoteCharacteristicBuilder(
                                 }.build(),
                         )
                     } else {
-                        logger.error("Only one @${Notifiable::class.simpleName} property can be declared")
+                        logger.error("Only one @${Notifiable::class.simpleName} or @${Indicatable::class.simpleName} property can be declared")
                     }
                 }
 
@@ -264,7 +270,7 @@ internal class BluetoothRemoteCharacteristicBuilder(
                         }.build(),
                 )
             } else {
-                logger.error("Only @${Readable::class.simpleName}, @${Writable::class.simpleName}, @${Notifiable::class.simpleName}, or @${BluetoothDescriptor::class.simpleName} properties can be declared")
+                logger.error("Only @${Readable::class.simpleName}, @${Writable::class.simpleName}, @${WritableWithoutResponse::class.simpleName}, @${WritableSigned::class.simpleName}, @${Notifiable::class.simpleName}, @${Indicatable::class.simpleName} and @${BluetoothDescriptor::class.simpleName} properties can be declared")
             }
         }
     }

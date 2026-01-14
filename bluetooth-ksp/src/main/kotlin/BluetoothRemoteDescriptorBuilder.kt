@@ -25,6 +25,8 @@ import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.Readable
 import com.splendo.kaluga.bluetooth.annotations.Writable
+import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTIC
+import com.splendo.kaluga.bluetooth.ksp.helpers.DESCRIPTOR
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
@@ -48,8 +50,6 @@ internal class BluetoothRemoteDescriptorBuilder(
     logger: KSPLogger) : AbstractBluetoothClassBuilder(declaration, logger) {
 
     companion object {
-        const val CHARACTERISTIC = "characteristic"
-        const val DESCRIPTOR = "descriptor"
         const val FROM_CHARACTERISTIC = "fromCharacteristic"
     }
 

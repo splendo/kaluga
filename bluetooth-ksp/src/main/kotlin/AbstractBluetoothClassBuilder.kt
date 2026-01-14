@@ -121,16 +121,17 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
 
         val characteristicDeclarations = declarations.filter { it.isAnnotationPresent(BluetoothCharacteristic::class) }.filterIsInstance<KSClassDeclaration>()
         characteristicDeclarations.forEach { characteristicDeclaration ->
+            val characteristic = characteristicDeclaration.getAnnotationsByType(BluetoothCharacteristic::class).first()
             if (generationType.side == GenerationType.Side.CLIENT) {
                 if (generationType.type == GenerationType.Type.API) {
                     BluetoothResultTypeBuilder.fromClassDeclaration(characteristicDeclaration)?.generateType()?.let {
                         add(Generated(listOf(it)))
                     }
                 }
-                add(BluetoothRemoteCharacteristicBuilder(characteristicDeclaration, characteristicDeclaration.getAnnotationsByType(BluetoothCharacteristic::class).first(), logger).generate(generationType))
+                add(BluetoothRemoteCharacteristicBuilder(characteristicDeclaration, characteristic, logger).generate(generationType))
             }
             if (generationType.side == GenerationType.Side.SERVER) {
-                add(BluetoothLocalCharacteristicBuilder(characteristicDeclaration, logger).generate(generationType))
+                add(BluetoothLocalCharacteristicBuilder(characteristicDeclaration, characteristic,logger).generate(generationType))
             }
         }
 

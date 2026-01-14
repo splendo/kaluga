@@ -30,6 +30,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
+import com.splendo.kaluga.bluetooth.ksp.helpers.SERVICE
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LIST
@@ -45,7 +46,6 @@ internal class BluetoothRemoteServiceBuilder(
 ) : AbstractBluetoothClassBuilder(declaration, logger) {
 
     companion object {
-        const val SERVICE = "service"
         const val DISCOVERED_SERVICES = "discoveredServices"
         const val FROM_DISCOVERED_SERVICES = "fromDiscoveredServices"
 

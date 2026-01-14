@@ -142,9 +142,9 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
                 Generated(listOf(it))
             },
             BluetoothRemoteCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.API)),
-            BluetoothLocalCharacteristicBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.API)),
+            BluetoothLocalCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.API)),
             BluetoothRemoteCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.BLUETOOTH)),
-            BluetoothLocalCharacteristicBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.BLUETOOTH)),
+            BluetoothLocalCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.BLUETOOTH)),
 //            BluetoothRemoteCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.SIMULATOR)),
 //            BluetoothLocalCharacteristicBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.SIMULATOR)),
         )
@@ -179,7 +179,7 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
             addImport(packageName, *names.toTypedArray())
         }
         addTypes(generated.flatMap { it.typeSpec })
-    }.build().writeTo(codeGenerator, Dependencies.ALL_FILES)
+    }.indent("    ").build().writeTo(codeGenerator, Dependencies.ALL_FILES)
 
     private fun KSClassDeclaration.clientName(prefix: String = "", postFix: String = "Client") =
         getAnnotationsByType(BluetoothClientName::class).firstOrNull()?.name ?: "$prefix${simpleName.asString()}$postFix"

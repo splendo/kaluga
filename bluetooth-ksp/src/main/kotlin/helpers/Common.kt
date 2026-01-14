@@ -25,6 +25,9 @@ const val FROM_SERVICE = "fromService"
 
 const val ACTION = "action"
 const val IDENTIFIER = "identifier"
+const val SERVICE = "service"
+const val CHARACTERISTIC = "characteristic"
+const val DESCRIPTOR = "descriptor"
 
 const val DSL = "DSL"
 

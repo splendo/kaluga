@@ -26,10 +26,10 @@ import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.Encrypted
 import com.splendo.kaluga.bluetooth.annotations.Readable
 import com.splendo.kaluga.bluetooth.annotations.Writable
-import com.splendo.kaluga.bluetooth.ksp.BluetoothRemoteDescriptorBuilder.Companion.DESCRIPTOR
 import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION
 import com.splendo.kaluga.bluetooth.ksp.helpers.BUILD
 import com.splendo.kaluga.bluetooth.ksp.helpers.BUILDER
+import com.splendo.kaluga.bluetooth.ksp.helpers.DESCRIPTOR
 import com.splendo.kaluga.bluetooth.ksp.helpers.DSL
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.IDENTIFIER
@@ -103,11 +103,9 @@ internal class BluetoothLocalDescriptorBuilder(
                                     )
                                     .addCode(
                                         CodeBlock.builder()
-                                            .addStatement("$BUILDER.descriptor(%M(%S)) {", References.Bluetooth.uuidFrom, descriptor.uuid)
-                                            .indent()
+                                            .beginControlFlow("$BUILDER.descriptor(%M(%S)) {", References.Bluetooth.uuidFrom, descriptor.uuid)
                                             .add(buildBody.build())
-                                            .unindent()
-                                            .addStatement("}")
+                                            .endControlFlow()
                                             .build()
                                     )
                                     .build()
@@ -125,6 +123,7 @@ internal class BluetoothLocalDescriptorBuilder(
             .generateBody(declarations, generationType, imports)
         return Generated(listOf(typeSpec.build()), imports)
     }
+
     override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): Generated {
         val imports = Generated.Imports()
         val className = NameHelper.nameFor(this, generationType)
@@ -195,13 +194,11 @@ internal class BluetoothLocalDescriptorBuilder(
                                     .mutable(true)
                                     .initializer(
                                         CodeBlock.builder()
-                                            .addStatement("{ _ ->")
-                                            .indent()
+                                            .beginControlFlow("{ _ ->")
                                             .apply {
                                                 resultType.generateDefaultResult(this)
                                             }
-                                            .unindent()
-                                            .addStatement("}")
+                                            .endControlFlow()
                                             .build()
                                     )
                                     .build()
@@ -212,11 +209,9 @@ internal class BluetoothLocalDescriptorBuilder(
                             )
 
                             builderBody
-                                .addStatement("readable(${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { device, $OFFSET ->")
-                                .indent()
+                                .beginControlFlow("readable(${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { device, $OFFSET ->")
                                 .add(resultType.parseBluetoothResult(CodeBlock.of("%T(this).${readAction}(device.identifier)", NameHelper.nameFor(declaration, generationType))))
-                                .unindent()
-                                .addStatement("}")
+                                .endControlFlow()
                         }
 
                         GenerationType.Type.SIMULATOR -> {
@@ -264,11 +259,9 @@ internal class BluetoothLocalDescriptorBuilder(
                                         .mutable(true)
                                         .initializer(
                                             CodeBlock.builder()
-                                                .addStatement("{ _, _ ->")
-                                                .indent()
+                                                .beginControlFlow("{ _, _ ->")
                                                 .addStatement("%T", References.Bluetooth.writeRequestRejected)
-                                                .unindent()
-                                                .addStatement("}")
+                                                .endControlFlow()
                                                 .build()
                                         )
                                         .build()
@@ -279,11 +272,9 @@ internal class BluetoothLocalDescriptorBuilder(
                                 )
 
                                 builderBody
-                                    .addStatement("writable(${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { device, value, $OFFSET ->")
-                                    .indent()
+                                    .beginControlFlow("writable(${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { device, value, $OFFSET ->")
                                     .addStatement("%T(this).${writeAction}(value, $OFFSET, device.identifier)", NameHelper.nameFor(declaration, generationType))
-                                    .unindent()
-                                    .addStatement("}")
+                                    .endControlFlow()
                             }
 
                             GenerationType.Type.SIMULATOR -> {
@@ -320,7 +311,7 @@ internal class BluetoothLocalDescriptorBuilder(
                         val onWriteFunSpec = FunSpec.builder(writeMethod).addModifiers(*generationType.additionalModifiers.toTypedArray())
                             .addParameter(ACTION, writeLambdaType)
                         val onFailedToWriteFunSpec = FunSpec.builder(failedToWriteMethod).addModifiers(*generationType.additionalModifiers.toTypedArray())
-                            .addParameter(ACTION, writeLambdaType)
+                            .addParameter(ACTION, failedToWriteLambdaType)
 
                         when (generationType.type) {
                             GenerationType.Type.API -> {}
@@ -334,11 +325,9 @@ internal class BluetoothLocalDescriptorBuilder(
                                         .mutable(true)
                                         .initializer(
                                             CodeBlock.builder()
-                                                .addStatement("{ _, _ ->")
-                                                .indent()
+                                                .beginControlFlow("{ _, _ ->")
                                                 .addStatement("%T", References.Bluetooth.writeRequestRejected)
-                                                .unindent()
-                                                .addStatement("}")
+                                                .endControlFlow()
                                                 .build()
                                         )
                                         .build()
@@ -349,11 +338,9 @@ internal class BluetoothLocalDescriptorBuilder(
                                         .mutable(true)
                                         .initializer(
                                             CodeBlock.builder()
-                                                .addStatement("{ _, _ ->")
-                                                .indent()
+                                                .beginControlFlow("{ _, _ ->")
                                                 .addStatement("%T", References.Bluetooth.writeRequestRejected)
-                                                .unindent()
-                                                .addStatement("}")
+                                                .endControlFlow()
                                                 .build()
                                         )
                                         .build()
@@ -393,6 +380,10 @@ internal class BluetoothLocalDescriptorBuilder(
 
                         addFunction(
                             onWriteFunSpec
+                                .build(),
+                        )
+                        addFunction(
+                            onFailedToWriteFunSpec
                                 .build(),
                         )
                     }
