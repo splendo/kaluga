@@ -144,7 +144,7 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
             BluetoothRemoteCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.API)),
             BluetoothLocalCharacteristicBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.API)),
             BluetoothRemoteCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.BLUETOOTH)),
-//            BluetoothLocalCharacteristicBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.BLUETOOTH)),
+            BluetoothLocalCharacteristicBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.BLUETOOTH)),
 //            BluetoothRemoteCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.SIMULATOR)),
 //            BluetoothLocalCharacteristicBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.SIMULATOR)),
         )
@@ -161,9 +161,9 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
                 Generated(listOf(it))
             },
             BluetoothRemoteDescriptorBuilder(this, descriptor, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.API)),
-            BluetoothLocalDescriptorBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.API)),
+            BluetoothLocalDescriptorBuilder(this, descriptor, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.API)),
             BluetoothRemoteDescriptorBuilder(this, descriptor, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.BLUETOOTH)),
-//            BluetoothLocalDescriptorBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.BLUETOOTH)),
+            BluetoothLocalDescriptorBuilder(this, descriptor, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.BLUETOOTH)),
 //            BluetoothRemoteDescriptorBuilder(this, descriptor, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.SIMULATOR)),
 //            BluetoothLocalDescriptorBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.SIMULATOR)),
         )

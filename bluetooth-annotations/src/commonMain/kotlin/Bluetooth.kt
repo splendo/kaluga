@@ -61,18 +61,16 @@ annotation class BluetoothDescriptor(
 
 @Target(AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Readable(
-    val encrypted: Boolean = false
-)
+annotation class Readable
 
 @Target(AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Writable (
-    val encrypted: Boolean = false
-)
+annotation class Writable
 
 @Target(AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Notifiable(
-    val encrypted: Boolean = false
-)
+annotation class Notifiable
+
+@Target(AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.SOURCE)
+annotation class Encrypted

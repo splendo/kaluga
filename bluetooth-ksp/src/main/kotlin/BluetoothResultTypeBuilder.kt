@@ -23,10 +23,12 @@ import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.Readable
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
+import com.splendo.kaluga.bluetooth.ksp.helpers.OFFSET
 import com.splendo.kaluga.bluetooth.ksp.helpers.READ
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.WHEN
+import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -51,7 +53,7 @@ internal class BluetoothResultTypeBuilder(val classDeclaration: KSClassDeclarati
         const val ERROR = "error"
     }
 
-    internal val hasCustomResult = propertyDeclaration.type.resolve().toClassName() != References.Kotlin.byteArray
+    internal val hasCustomResult = !propertyDeclaration.isByteArray
 
     val responseClassName: ClassName get() = if (hasCustomResult) {
         val className = NameHelper.nameFor(classDeclaration, GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.API))
@@ -116,5 +118,30 @@ internal class BluetoothResultTypeBuilder(val classDeclaration: KSClassDeclarati
         )
     } else {
         funSpec.addStatement("$RETURN $attributeName.$READ()")
+    }
+
+    fun parseBluetoothResult(addReadStatement: CodeBlock) = if (hasCustomResult) {
+        CodeBlock.builder()
+            .add("$WHEN (val response = %L) {\n", addReadStatement)
+            .indent()
+            .beginControlFlow("is %T.$SUCCESS -> {", responseClassName)
+            .addStatement("%T($FORMAT.encodeToByteArray(%T.%M(), response.$RESPONSE).drop($OFFSET))", References.Bluetooth.readSuccess, propertyDeclaration.type.resolve().toClassName(), References.KotlinX.Serialization.serializer)
+            .endControlFlow()
+            .beginControlFlow("is %T.$FAILURE -> {", responseClassName)
+            .addStatement("response.$ERROR")
+            .endControlFlow()
+            .unindent()
+            .addStatement("}")
+            .build()
+    } else {
+        CodeBlock.builder()
+            .add("%L.drop($OFFSET)", addReadStatement)
+            .build()
+    }
+
+    fun generateDefaultResult(funSpec: CodeBlock.Builder) = if (hasCustomResult) {
+        funSpec.addStatement("%T.$FAILURE(%T)", responseClassName, References.Bluetooth.requestNotSupported)
+    } else {
+        funSpec.addStatement("%T", References.Bluetooth.requestNotSupported)
     }
 }

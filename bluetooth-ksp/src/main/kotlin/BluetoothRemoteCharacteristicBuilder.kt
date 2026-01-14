@@ -35,6 +35,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.READ
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.WRITE
+import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -132,8 +133,9 @@ internal class BluetoothRemoteCharacteristicBuilder(
         var hasWriteMethod = false
         declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
             val typeDeclaration = propertyDeclaration.type.resolve().declaration
-            when {
-                propertyDeclaration.isAnnotationPresent(Readable::class) -> {
+            if (propertyDeclaration.isAnnotationPresent(Readable::class) || propertyDeclaration.isAnnotationPresent(Writable::class) || propertyDeclaration.isAnnotationPresent(
+                    Notifiable::class)) {
+                if (propertyDeclaration.isAnnotationPresent(Readable::class)) {
                     if (!hasReadMethod) {
                         hasReadMethod = true
                         val responseType = propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }
@@ -148,6 +150,7 @@ internal class BluetoothRemoteCharacteristicBuilder(
                                     GenerationType.Type.BLUETOOTH -> {
                                         resultType.generateBluetoothResult(this, CHARACTERISTIC)
                                     }
+
                                     GenerationType.Type.SIMULATOR -> {
 
                                     }
@@ -159,7 +162,7 @@ internal class BluetoothRemoteCharacteristicBuilder(
                     }
                 }
 
-                propertyDeclaration.isAnnotationPresent(Writable::class) -> {
+                if (propertyDeclaration.isAnnotationPresent(Writable::class)) {
                     if (!hasWriteMethod) {
                         hasWriteMethod = true
                         val writeMethod = "$WRITE${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
@@ -175,14 +178,17 @@ internal class BluetoothRemoteCharacteristicBuilder(
                                 when (generationType.type) {
                                     GenerationType.Type.API -> {}
                                     GenerationType.Type.BLUETOOTH -> {
-                                        if (propertyDeclaration.type.resolve().toClassName() == References.Kotlin.byteArray) {
+                                        if (propertyDeclaration.isByteArray) {
                                             addStatement("$RETURN $CHARACTERISTIC.$WRITE(${propertyDeclaration.simpleName.asString()})")
                                         } else {
-                                            addStatement("$RETURN $CHARACTERISTIC.$WRITE($FORMAT.encodeToByteArray(%T.%M(), ${propertyDeclaration.simpleName.asString()}))", propertyDeclaration.type.resolve().toClassName(),
+                                            addStatement(
+                                                "$RETURN $CHARACTERISTIC.$WRITE($FORMAT.encodeToByteArray(%T.%M(), ${propertyDeclaration.simpleName.asString()}))",
+                                                propertyDeclaration.type.resolve().toClassName(),
                                                 References.KotlinX.Serialization.serializer
                                             )
                                         }
                                     }
+
                                     GenerationType.Type.SIMULATOR -> {
 
                                     }
@@ -194,7 +200,7 @@ internal class BluetoothRemoteCharacteristicBuilder(
                     }
                 }
 
-                propertyDeclaration.isAnnotationPresent(Notifiable::class) -> {
+                if (propertyDeclaration.isAnnotationPresent(Notifiable::class)) {
                     if (!hasNotifiableProperty) {
                         hasNotifiableProperty = true
                         addProperty(
@@ -205,48 +211,49 @@ internal class BluetoothRemoteCharacteristicBuilder(
                                 *generationType.additionalModifiers.toTypedArray()
                             )
                                 .apply {
-                                when (generationType.type) {
-                                    GenerationType.Type.API -> {}
-                                    GenerationType.Type.BLUETOOTH -> {
-                                        getter(
-                                            FunSpec.getterBuilder()
-                                                .apply {
-                                                    val member = References.Bluetooth.value
-                                                    if (propertyDeclaration.type.resolve().toClassName() == References.Kotlin.byteArray) {
-                                                        addStatement("$RETURN $CHARACTERISTIC.%M()", member)
-                                                    } else {
-                                                        addStatement(
-                                                            "$RETURN $CHARACTERISTIC.%M(%T.%M(), $FORMAT)",
-                                                            member,
-                                                            propertyDeclaration.type.resolve().toClassName(),
-                                                            References.KotlinX.Serialization.serializer,
-                                                        )
+                                    when (generationType.type) {
+                                        GenerationType.Type.API -> {}
+                                        GenerationType.Type.BLUETOOTH -> {
+                                            getter(
+                                                FunSpec.getterBuilder()
+                                                    .apply {
+                                                        val member = References.Bluetooth.value
+                                                        if (propertyDeclaration.isByteArray) {
+                                                            addStatement("$RETURN $CHARACTERISTIC.%M()", member)
+                                                        } else {
+                                                            addStatement(
+                                                                "$RETURN $CHARACTERISTIC.%M(%T.%M(), $FORMAT)",
+                                                                member,
+                                                                propertyDeclaration.type.resolve().toClassName(),
+                                                                References.KotlinX.Serialization.serializer,
+                                                            )
+                                                        }
                                                     }
-                                                }
-                                                .build()
-                                        )
+                                                    .build()
+                                            )
 
-                                    }
-                                    GenerationType.Type.SIMULATOR -> {
+                                        }
 
+                                        GenerationType.Type.SIMULATOR -> {
+
+                                        }
                                     }
-                                }
-                            }.build(),
+                                }.build(),
                         )
                     } else {
                         logger.error("Only one @${Notifiable::class.simpleName} property can be declared")
                     }
                 }
 
-                typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class) -> {
-                    addProperty(
-                        PropertySpec.builder(
-                            propertyDeclaration.simpleName.asString(),
-                            NameHelper.nameFor(typeDeclaration, generationType),
-                        ).addModifiers(
-                            *generationType.additionalModifiers.toTypedArray()
-                        )
-                            .apply {
+            } else if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class)) {
+                addProperty(
+                    PropertySpec.builder(
+                        propertyDeclaration.simpleName.asString(),
+                        NameHelper.nameFor(typeDeclaration, generationType),
+                    ).addModifiers(
+                        *generationType.additionalModifiers.toTypedArray()
+                    )
+                        .apply {
                             when (generationType.type) {
                                 GenerationType.Type.API -> {}
                                 GenerationType.Type.BLUETOOTH -> {
@@ -255,12 +262,9 @@ internal class BluetoothRemoteCharacteristicBuilder(
                                 GenerationType.Type.SIMULATOR -> {}
                             }
                         }.build(),
-                    )
-                }
-
-                else -> {
-                    logger.error("Only @${Readable::class.simpleName}, @${Writable::class.simpleName}, @${Notifiable::class.simpleName}, or @${BluetoothDescriptor::class.simpleName} properties can be declared")
-                }
+                )
+            } else {
+                logger.error("Only @${Readable::class.simpleName}, @${Writable::class.simpleName}, @${Notifiable::class.simpleName}, or @${BluetoothDescriptor::class.simpleName} properties can be declared")
             }
         }
     }

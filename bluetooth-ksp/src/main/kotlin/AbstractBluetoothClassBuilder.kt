@@ -136,16 +136,17 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
 
         val descriptorDeclarations = declarations.filter { it.isAnnotationPresent(BluetoothDescriptor::class) }.filterIsInstance<KSClassDeclaration>()
         descriptorDeclarations.forEach { descriptorDeclaration ->
+            val descriptor = descriptorDeclaration.getAnnotationsByType(BluetoothDescriptor::class).first()
             if (generationType.side == GenerationType.Side.CLIENT) {
                 if (generationType.type == GenerationType.Type.API) {
                     BluetoothResultTypeBuilder.fromClassDeclaration(descriptorDeclaration)?.generateType()?.let {
                         add(Generated(listOf(it)))
                     }
                 }
-                add(BluetoothRemoteDescriptorBuilder(descriptorDeclaration, descriptorDeclaration.getAnnotationsByType(BluetoothDescriptor::class).first(), logger).generate(generationType))
+                add(BluetoothRemoteDescriptorBuilder(descriptorDeclaration, descriptor, logger).generate(generationType))
             }
             if (generationType.side == GenerationType.Side.SERVER) {
-                add(BluetoothLocalDescriptorBuilder(descriptorDeclaration, logger).generate(generationType))
+                add(BluetoothLocalDescriptorBuilder(descriptorDeclaration, descriptor, logger).generate(generationType))
             }
         }
     }

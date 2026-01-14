@@ -17,31 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.ksp.helpers
 
-const val RETURN = "return"
-const val WHEN = "when"
+import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import com.squareup.kotlinpoet.BYTE_ARRAY
+import com.squareup.kotlinpoet.ksp.toClassName
 
-const val FORMAT = "format"
-const val FROM_SERVICE = "fromService"
-
-const val ACTION = "action"
-const val IDENTIFIER = "identifier"
-
-const val DSL = "DSL"
-
-const val READ = "read"
-const val ON_READ = "onRead"
-const val WRITE = "write"
-const val ON_WRITE = "onWrite"
-const val ON_FAILED_TO_WRITE = "onFailedToWrite"
-const val ON_SUBSCRIBE = "onSubscribeTo"
-const val ON_UNSUBSCRIBE = "onUnsubscribeTo"
-const val SUBSCRIBERS = "Subscribers"
-
-const val NOTIFY = "notify"
-const val NOTIFY_ALL = "notifyAll"
-const val CHANGED = "Changed"
-
-const val BUILD = "build"
-const val BUILDER = "builder"
-
-const val OFFSET = "offset"
+val KSPropertyDeclaration.isByteArray: Boolean get() = type.resolve().toClassName() == BYTE_ARRAY

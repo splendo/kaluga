@@ -32,6 +32,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.READ
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.WRITE
+import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -127,8 +128,7 @@ internal class BluetoothRemoteDescriptorBuilder(
         var hasReadMethod = false
         var hasWriteMethod = false
         declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
-            when {
-                propertyDeclaration.isAnnotationPresent(Readable::class) -> {
+            if (propertyDeclaration.isAnnotationPresent(Readable::class)) {
                     if (!hasReadMethod) {
                         hasReadMethod = true
                         val responseType = propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }
@@ -155,7 +155,7 @@ internal class BluetoothRemoteDescriptorBuilder(
                     }
                 }
 
-                propertyDeclaration.isAnnotationPresent(Writable::class) -> {
+                if (propertyDeclaration.isAnnotationPresent(Writable::class)) {
                     if (!hasWriteMethod) {
                         hasWriteMethod = true
                         val writeMethod = "$WRITE${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
@@ -171,7 +171,7 @@ internal class BluetoothRemoteDescriptorBuilder(
                                 when (generationType.type) {
                                     GenerationType.Type.API -> {}
                                     GenerationType.Type.BLUETOOTH -> {
-                                        if (propertyDeclaration.type.resolve().toClassName() == References.Kotlin.byteArray) {
+                                        if (propertyDeclaration.isByteArray) {
                                             addStatement("$RETURN $DESCRIPTOR.$WRITE(${propertyDeclaration.simpleName.asString()})")
                                         } else {
                                             addStatement("$RETURN $DESCRIPTOR.$WRITE($FORMAT.encodeToByteArray(%T.%M(), ${propertyDeclaration.simpleName.asString()}))", propertyDeclaration.type.resolve().toClassName(),
@@ -191,10 +191,9 @@ internal class BluetoothRemoteDescriptorBuilder(
                     }
                 }
 
-                else -> {
+                if (!propertyDeclaration.isAnnotationPresent(Readable::class) && !propertyDeclaration.isAnnotationPresent(Writable::class)) {
                     logger.error("Only @${Readable::class.simpleName} and @${Writable::class.simpleName} properties can be declared")
                 }
-            }
         }
     }
 }

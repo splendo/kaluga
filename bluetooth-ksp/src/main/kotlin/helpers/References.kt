@@ -39,15 +39,26 @@ object References {
 
             val bluetoothFormat = className("BluetoothFormat")
         }
+        object Server : ClassNameProvider {
+            override val packageName: String = "${Bluetooth.packageName}.server"
+
+            val localService = className("LocalService")
+            val localServiceDSL = className("LocalService", "DSL")
+            val localCharacteristic = className("LocalCharacteristic")
+            val localCharacteristicDSL = className("LocalCharacteristic", "DSL")
+            val localDescriptor = className("LocalDescriptor")
+            val localDescriptorDSL = className("LocalDescriptor", "DSL")
+        }
         override val packageName = "com.splendo.kaluga.bluetooth"
         val bluetoothService = className("BluetoothService")
         val remoteService = className("RemoteService")
         val remoteCharacteristic = className("RemoteCharacteristic")
         val remoteDescriptor = className("RemoteDescriptor")
-        val gattResponse = className("GattResponse")
         val writeResponse = className("GattResponse", "WriteResponse")
         val readSuccess = className("GattResponse", "ReadSuccess")
         val readError = className("GattResponse", "ReadError")
+        val requestNotSupported = className("GattResponse", "RequestNotSupported")
+        val writeRequestRejected = className("GattResponse", "WriteRequestRejected")
 
         val get = memberName("get")
         val uuidFrom = memberName("uuidFrom")
@@ -58,7 +69,7 @@ object References {
     object Kotlin : ClassNameProvider {
         override val packageName: String = "kotlin"
 
-        val byteArray = className("ByteArray")
+        val exception = className("Exception")
 
     }
 
