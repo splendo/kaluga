@@ -388,7 +388,6 @@ internal class BluetoothLocalCharacteristicBuilder(
     override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): Generated = Generated(emptyList())
 
     private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, generationType: GenerationType, imports: Generated.Imports): TypeSpec.Builder = apply {
-        val receiver = NameHelper.nameFor(declaration, generationType.copy(type = GenerationType.Type.API))
         var hasReadMethod = false
         var hasWriteMethod = false
         var hasNotifyMethods = false

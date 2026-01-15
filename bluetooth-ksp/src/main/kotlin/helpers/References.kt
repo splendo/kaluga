@@ -41,11 +41,16 @@ object References {
         }
         object Server : ClassNameProvider {
             override val packageName: String = "${Bluetooth.packageName}.server"
+            val advertiseData = className("AdvertiseData")
+            val advertiseDataBuilder = className("AdvertiseData", "Builder")
 
+            val bluetoothServer = className("BluetoothServer")
+            val bluetoothServerDSL = className("BluetoothServerDSL")
             val connectedDevice = className("ConnectedDevice")
 
             val localService = className("LocalService")
             val localServiceDSL = className("LocalService", "DSL")
+            val localServiceDSLPrimary = className("LocalService", "DSL", "Primary")
             val localCharacteristic = className("LocalCharacteristic")
             val localCharacteristicDSL = className("LocalCharacteristic", "DSL")
             val localCharacteristicNotifiable = className("LocalCharacteristic", "Notifiable")

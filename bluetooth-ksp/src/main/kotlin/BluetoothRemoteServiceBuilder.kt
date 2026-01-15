@@ -151,6 +151,12 @@ internal class BluetoothRemoteServiceBuilder(
                                     typeDeclaration.isAnnotationPresent(BluetoothCharacteristic::class)
                             )
                 ) {
+                    if (typeDeclaration.isAnnotationPresent(BluetoothService::class) && typeDeclaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { serviceProperties ->
+                        serviceProperties.isAnnotationPresent(BluetoothService::class)
+                        }) {
+                        logger.error("An included @${BluetoothService::class} can not include its own services")
+                    }
+
                     PropertySpec.builder(
                         propertyDeclaration.simpleName.asString(),
                         NameHelper.nameFor(typeDeclaration, generationType),

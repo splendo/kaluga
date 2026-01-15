@@ -111,11 +111,13 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
 
         val serviceDeclarations = declarations.filter { it.isAnnotationPresent(BluetoothService::class) }.filterIsInstance<KSClassDeclaration>()
         serviceDeclarations.forEach { serviceDeclaration ->
+            val service = serviceDeclaration.getAnnotationsByType(BluetoothService::class).first()
+
             if (generationType.side == GenerationType.Side.CLIENT) {
-                add(BluetoothRemoteServiceBuilder(serviceDeclaration, serviceDeclaration.getAnnotationsByType(BluetoothService::class).first(), logger).generate(generationType))
+                add(BluetoothRemoteServiceBuilder(serviceDeclaration, service, logger).generate(generationType))
             }
             if (generationType.side == GenerationType.Side.SERVER) {
-                add(BluetoothLocalServiceBuilder(serviceDeclaration, logger).generate(generationType))
+                add(BluetoothLocalServiceBuilder(serviceDeclaration, service, logger).generate(generationType))
             }
         }
 

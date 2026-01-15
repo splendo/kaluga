@@ -124,9 +124,9 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
         val serviceClass = ClassName(packageName.asString(), clientName(prefix = "RemoteAndLocal", postFix = ""))
         val generated = listOf(
             BluetoothRemoteServiceBuilder(this, service, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.API)),
-            BluetoothLocalServiceBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.API)),
+            BluetoothLocalServiceBuilder(this, service, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.API)),
             BluetoothRemoteServiceBuilder(this, service, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.BLUETOOTH)),
-//            BluetoothLocalServiceBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.BLUETOOTH)),
+            BluetoothLocalServiceBuilder(this, service, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.BLUETOOTH)),
 //            BluetoothRemoteServiceBuilder(this, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.SIMULATOR)),
 //            BluetoothLocalServiceBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.SIMULATOR)),
         )
