@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.ksp
 
+import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
@@ -32,12 +33,15 @@ import com.splendo.kaluga.bluetooth.annotations.Writable
 import com.splendo.kaluga.bluetooth.annotations.WritableSigned
 import com.splendo.kaluga.bluetooth.annotations.WritableWithoutResponse
 import com.splendo.kaluga.bluetooth.ksp.helpers.BUILDER
+import com.splendo.kaluga.bluetooth.ksp.helpers.CHANGED
 import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTIC
 import com.splendo.kaluga.bluetooth.ksp.helpers.CONFIGURE
 import com.splendo.kaluga.bluetooth.ksp.helpers.DELEGATE
 import com.splendo.kaluga.bluetooth.ksp.helpers.EXCEPTION
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.IDENTIFIER
+import com.splendo.kaluga.bluetooth.ksp.helpers.NOTIFY
+import com.splendo.kaluga.bluetooth.ksp.helpers.NOTIFY_ALL
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.OFFSET
@@ -48,17 +52,21 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.ON_UNSUBSCRIBE
 import com.splendo.kaluga.bluetooth.ksp.helpers.ON_WRITE
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
+import com.splendo.kaluga.bluetooth.ksp.helpers.SUBSCRIBERS
 import com.splendo.kaluga.bluetooth.ksp.helpers.THIS
 import com.splendo.kaluga.bluetooth.ksp.helpers.WITH
 import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
 import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
+import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
@@ -379,115 +387,145 @@ internal class BluetoothLocalCharacteristicBuilder(
 
     override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): Generated = Generated(emptyList())
 
-//                if (propertyDeclaration.isAnnotationPresent(Notifiable::class) || propertyDeclaration.isAnnotationPresent(Indicatable::class)) {
-//                    if (!hasNotifyMethods) {
-//                        hasNotifyMethods = true
-//
-//                        val properties = listOfNotNull(
-//                            References.Bluetooth.notifyProperty.takeIf { propertyDeclaration.isAnnotationPresent(Notifiable::class) },
-//                            References.Bluetooth.indicatableProperty.takeIf { propertyDeclaration.isAnnotationPresent(Indicatable::class) },
-//                        )
-//                        val propertiesCode = properties.joinToCode(prefix = "setOf(", suffix = ")") { CodeBlock.of("%T", it)  }
-//
-//                        val subscribeMethod = "$ON_SUBSCRIBE${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
-//                        val unsubscribeMethod = "$ON_UNSUBSCRIBE${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
-//
-//                        val subscriptionChangeLambdaType = LambdaTypeName.get(
-//                            receiver = NameHelper.nameFor(declaration, generationType.copy(type = GenerationType.Type.API)),
-//                            parameters = listOf(
-//                                ParameterSpec(IDENTIFIER, References.Bluetooth.Device.identifier),
-//                            ),
-//                            returnType = UNIT,
-//                        )
-//
-//                        val onSubscribeFunSpec = FunSpec.builder(subscribeMethod).addModifiers(*generationType.additionalModifiers.toTypedArray())
-//                            .addParameter(ACTION, subscriptionChangeLambdaType)
-//                        val onUnsubscribeFunSpec = FunSpec.builder(unsubscribeMethod).addModifiers(*generationType.additionalModifiers.toTypedArray())
-//                            .addParameter(ACTION, subscriptionChangeLambdaType)
-//
-//                        when (generationType.type) {
-//                            GenerationType.Type.API -> {}
-//
-//                            GenerationType.Type.BLUETOOTH -> {
-//                                val subscribeAction = "${subscribeMethod}${ACTION.replaceFirstChar { it.uppercase() }}"
-//                                val unsubscribeAction = "${unsubscribeMethod}${ACTION.replaceFirstChar { it.uppercase() }}"
-//                                addProperty(
-//                                    PropertySpec.builder(subscribeAction, subscriptionChangeLambdaType)
-//                                        .addModifiers(KModifier.PRIVATE)
-//                                        .mutable(true)
-//                                        .initializer("{ }")
-//                                        .build()
-//                                )
-//                                addProperty(
-//                                    PropertySpec.builder(unsubscribeAction, subscriptionChangeLambdaType)
-//                                        .addModifiers(KModifier.PRIVATE)
-//                                        .mutable(true)
-//                                        .initializer("{ }")
-//                                        .build()
-//                                )
-//
-//                                onSubscribeFunSpec.addStatement(
-//                                    "$subscribeAction = $ACTION"
-//                                )
-//                                onUnsubscribeFunSpec.addStatement(
-//                                    "$unsubscribeAction = $ACTION"
-//                                )
-//
-//                                builderBody
-//                                    .addStatement("notifiable(")
-//                                    .indent()
-//                                    .addStatement("properties = %L,", propertiesCode)
-//                                    .addStatement("encrypted = ${propertyDeclaration.isAnnotationPresent(Encrypted::class)},")
-//                                    .addStatement("onSubscribe = { device ->")
-//                                    .indent()
-//                                    .addStatement("%T(this$constructorFormat).$subscribeAction(device.identifier)", NameHelper.nameFor(declaration, generationType))
-//                                    .unindent()
-//                                    .addStatement("},")
-//                                    .addStatement("onUnsubscribe = { device ->")
-//                                    .indent()
-//                                    .addStatement("%T(this$constructorFormat).$unsubscribeAction(device.identifier)", NameHelper.nameFor(declaration, generationType))
-//                                    .unindent()
-//                                    .addStatement("}")
-//                                    .unindent()
-//                                    .addStatement(")")
-//                            }
-//
-//                            GenerationType.Type.SIMULATOR -> {
-//
-//                            }
-//                        }
-//
-//                        addFunction(
-//                            onSubscribeFunSpec
-//                                .build(),
-//                        )
-//                        addFunction(
-//                            onUnsubscribeFunSpec
-//                                .build(),
-//                        )
-//                    } else {
-//                        logger.error("Only one @${Notifiable::class.simpleName} / @${Indicatable::class.simpleName} property can be declared")
-//                    }
-//
-//                }
-//            } else if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class)) {
-//                val lambdaType = LambdaTypeName.get(
-//                    receiver = NameHelper.nameFor(typeDeclaration, generationType.copy(type = GenerationType.Type.API)).nestedClass(DSL),
-//                    returnType = UNIT,
-//                )
-//                addFunction(
-//                    FunSpec.builder(propertyDeclaration.simpleName.asString()).addModifiers(*generationType.additionalModifiers.toTypedArray())
-//                        .addParameter(ACTION, lambdaType)
-//                        .build(),
-//                )
-//            } else {
-//                logger.error("Only @${Readable::class.simpleName}, @${Writable::class.simpleName}, @${WritableWithoutResponse::class.simpleName}, @${WritableSigned::class.simpleName}, @${Notifiable::class.simpleName}, @${Indicatable::class.simpleName} and @${BluetoothDescriptor::class.simpleName} properties can be declared")
-//            }
-//        }
-//    }
-
     private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, generationType: GenerationType, imports: Generated.Imports): TypeSpec.Builder = apply {
+        val receiver = NameHelper.nameFor(declaration, generationType.copy(type = GenerationType.Type.API))
+        var hasReadMethod = false
+        var hasWriteMethod = false
+        var hasNotifyMethods = false
+        declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
+            val typeDeclaration = propertyDeclaration.type.resolve().declaration
+            if (propertyDeclaration.isAnnotationPresent(Readable::class) ||
+                propertyDeclaration.isAnnotationPresent(Writable::class) ||
+                propertyDeclaration.isAnnotationPresent(WritableWithoutResponse::class) ||
+                propertyDeclaration.isAnnotationPresent(WritableSigned::class) ||
+                propertyDeclaration.isAnnotationPresent(Notifiable::class) ||
+                propertyDeclaration.isAnnotationPresent(Indicatable::class)
+            ) {
+                if (propertyDeclaration.isAnnotationPresent(Readable::class)) {
+                    if (!hasReadMethod) {
+                        hasReadMethod = true
+                    } else {
+                        logger.error("Only one @${Readable::class.simpleName} property can be declared")
+                    }
+                }
+                if (propertyDeclaration.isAnnotationPresent(Writable::class) || propertyDeclaration.isAnnotationPresent(WritableWithoutResponse::class) || propertyDeclaration.isAnnotationPresent(
+                        WritableSigned::class)) {
+                    if (!hasWriteMethod) {
+                        hasWriteMethod = true
+                    } else {
+                        logger.error("Only one @${Writable::class.simpleName} / @${WritableWithoutResponse::class.simpleName} / @${WritableSigned::class.simpleName} property can be declared")
+                    }
+                }
 
+                if (propertyDeclaration.isAnnotationPresent(Notifiable::class) || propertyDeclaration.isAnnotationPresent(Indicatable::class)) {
+                    if (!hasNotifyMethods) {
+                        hasNotifyMethods = true
+
+                        addProperty(
+                            PropertySpec.builder("${propertyDeclaration.simpleName.asString()}$SUBSCRIBERS", References.KotlinX.Coroutines.Flow.flow.parameterizedBy(LIST.parameterizedBy(References.Bluetooth.Device.identifier)))
+                                .addModifiers(*generationType.additionalModifiers.toTypedArray())
+                                .apply {
+                                    when (generationType.type) {
+                                        GenerationType.Type.API -> {}
+                                        GenerationType.Type.BLUETOOTH -> {
+                                            initializer(
+                                                CodeBlock.builder()
+                                                    .beginControlFlow("$CHARACTERISTIC.subscribedDevices.%M { devices ->", References.KotlinX.Coroutines.Flow.map)
+                                                    .addStatement("devices.map(%T::identifier)", References.Bluetooth.Server.connectedDevice)
+                                                    .endControlFlow()
+                                                    .build()
+                                            )
+                                        }
+                                        GenerationType.Type.SIMULATOR -> {}
+                                    }
+                                }
+                                .build()
+                        )
+                        val resolvedType = propertyDeclaration.type.resolve()
+                        addFunctions(
+                            listOf(
+                                FunSpec.builder("$NOTIFY_ALL${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}$CHANGED")
+                                    .addModifiers(KModifier.SUSPEND, *generationType.additionalModifiers.toTypedArray())
+                                    .addParameter(propertyDeclaration.simpleName.asString(), resolvedType.toTypeName())
+                                    .returns(BOOLEAN)
+                                    .apply {
+                                        when (generationType.type) {
+                                            GenerationType.Type.API -> {}
+                                            GenerationType.Type.BLUETOOTH -> {
+                                                if (propertyDeclaration.isByteArray) {
+                                                    addStatement("$RETURN $CHARACTERISTIC.notifyAll(${propertyDeclaration.simpleName.asString()})")
+                                                } else {
+                                                    addStatement("$RETURN $CHARACTERISTIC.notifyAll(${propertyDeclaration.simpleName.asString()}, %L, $FORMAT)", resolvedType.toTypeName().serializer(logger))
+                                                }
+                                            }
+                                            GenerationType.Type.SIMULATOR -> {}
+                                        }
+                                    }
+                                    .build(),
+                                FunSpec.builder("$NOTIFY${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}$CHANGED")
+                                    .addModifiers(KModifier.SUSPEND, *generationType.additionalModifiers.toTypedArray())
+                                    .addParameter(IDENTIFIER, References.Bluetooth.Device.identifier)
+                                    .addParameter(propertyDeclaration.simpleName.asString(), resolvedType.toTypeName())
+                                    .returns(BOOLEAN)
+                                    .apply {
+                                        when (generationType.type) {
+                                            GenerationType.Type.API -> {}
+                                            GenerationType.Type.BLUETOOTH -> {
+                                                val notifyCode = if (propertyDeclaration.isByteArray) {
+                                                    CodeBlock.of("$CHARACTERISTIC.notify(it, ${propertyDeclaration.simpleName.asString()})")
+                                                } else {
+                                                    CodeBlock.of("$CHARACTERISTIC.notify(it, ${propertyDeclaration.simpleName.asString()}, %L, $FORMAT)", resolvedType.toTypeName().serializer(logger))
+                                                }
+                                                addCode(
+                                                    CodeBlock.builder()
+                                                        .add("$RETURN $CHARACTERISTIC.subscribedDevices.value.find { it.identifier == $IDENTIFIER }?.let {\n")
+                                                        .indent()
+                                                        .add(notifyCode)
+                                                        .unindent()
+                                                        .add("} ?: false\n")
+                                                        .build()
+                                                )
+                                            }
+                                            GenerationType.Type.SIMULATOR -> {}
+                                        }
+                                    }
+                                    .build(),
+                            )
+                        )
+
+                    } else {
+                        logger.error("Only one @${Notifiable::class.simpleName} / @${Indicatable::class.simpleName} property can be declared")
+                    }
+
+                }
+            } else if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class)) {
+                addProperty(
+                    PropertySpec.builder(propertyDeclaration.simpleName.asString(),NameHelper.nameFor(typeDeclaration, generationType))
+                        .addModifiers(*generationType.additionalModifiers.toTypedArray())
+                        .apply {
+                            val descriptor = typeDeclaration.getAnnotationsByType(BluetoothDescriptor::class).first()
+                            when (generationType.type) {
+                             GenerationType.Type.API -> {}
+                             GenerationType.Type.BLUETOOTH -> {
+                                 delegate(
+                                     "lazy { %L }",
+                                     CodeBlock.of("%T($CHARACTERISTIC.descriptors.%M(%M(%S)))",
+                                     NameHelper.nameFor(typeDeclaration, generationType),
+                                     References.Bluetooth.get,
+                                     References.Bluetooth.uuidFrom,
+                                     descriptor.uuid
+                                     )
+                                 )
+                             }
+                                GenerationType.Type.SIMULATOR -> {}
+                            }
+                        }
+                        .build()
+                )
+            } else {
+                logger.error("Only @${Readable::class.simpleName}, @${Writable::class.simpleName}, @${WritableWithoutResponse::class.simpleName}, @${WritableSigned::class.simpleName}, @${Notifiable::class.simpleName}, @${Indicatable::class.simpleName} and @${BluetoothDescriptor::class.simpleName} properties can be declared")
+            }
+        }
     }
 
     fun KSClassDeclaration.isNotifiable() = declarations.filterIsInstance<KSPropertyDeclaration>().any { it.isAnnotationPresent(Notifiable::class) }

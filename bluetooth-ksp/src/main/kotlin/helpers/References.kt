@@ -42,6 +42,8 @@ object References {
         object Server : ClassNameProvider {
             override val packageName: String = "${Bluetooth.packageName}.server"
 
+            val connectedDevice = className("ConnectedDevice")
+
             val localService = className("LocalService")
             val localServiceDSL = className("LocalService", "DSL")
             val localCharacteristic = className("LocalCharacteristic")
@@ -92,6 +94,7 @@ object References {
                 override val packageName: String = "${Coroutines.packageName}.flow"
                 val flow = className("Flow")
                 val first = memberName("first")
+                val map = memberName("map")
             }
         }
     }
