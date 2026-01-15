@@ -77,6 +77,8 @@ object References {
         override val packageName: String = "kotlin"
 
         val exception = className("Exception")
+        val pair = className("Pair")
+        val triple = className("Triple")
 
     }
 
@@ -95,7 +97,27 @@ object References {
 
         object Serialization : ClassNameProvider {
             override val packageName: String = "${KotlinX.packageName}.serialization.builtins"
+            val nullable = memberName("nullable")
             val serializer = memberName("serializer")
+            val pairSerializer = memberName("PairSerializer")
+            val mapEntrySerializer = memberName("MapEntrySerializer")
+            val tripleSerializer = memberName("TripleSerializer")
+            val byteArraySerializer = memberName("ByteArraySerializer")
+            val charArraySerializer = memberName("CharArraySerializer")
+            val uByteArraySerializer = memberName("UByteArraySerializer")
+            val shortArraySerializer = memberName("ShortArraySerializer")
+            val uShortArraySerializer = memberName("UShortArraySerializer")
+            val intArraySerializer = memberName("IntArraySerializer")
+            val uIntArraySerializer = memberName("UIntArraySerializer")
+            val longArraySerializer = memberName("LongArraySerializer")
+            val uLongArraySerializer = memberName("ULongArraySerializer")
+            val floatArraySerializer = memberName("FloatArraySerializer")
+            val doubleArraySerializer = memberName("DoubleArraySerializer")
+            val booleanArraySerializer = memberName("BooleanArraySerializer")
+            val arraySerializer = memberName("ArraySerializer")
+            val listSerializer = memberName("ListSerializer")
+            val setSerializer = memberName("SetSerializer")
+            val mapSerializer = memberName("MapSerializer")
         }
     }
 

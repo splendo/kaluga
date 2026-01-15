@@ -41,6 +41,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.SERVICE
 import com.splendo.kaluga.bluetooth.ksp.helpers.WRITE
 import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
+import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -50,6 +51,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.toClassName
+import com.squareup.kotlinpoet.ksp.toTypeName
 
 internal class BluetoothRemoteCharacteristicBuilder(
     declaration: KSClassDeclaration,
@@ -145,7 +147,7 @@ internal class BluetoothRemoteCharacteristicBuilder(
                         hasReadMethod = true
                         val responseType = propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }
                         val readMethod = "$READ$responseType"
-                        val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration)
+                        val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, logger)
                         addFunction(
                             FunSpec.builder(readMethod).addModifiers(KModifier.SUSPEND, *generationType.additionalModifiers.toTypedArray()).returns(
                                 resultType.responseClassName,
@@ -188,9 +190,8 @@ internal class BluetoothRemoteCharacteristicBuilder(
                                             addStatement("$RETURN $CHARACTERISTIC.$WRITE(${propertyDeclaration.simpleName.asString()})")
                                         } else {
                                             addStatement(
-                                                "$RETURN $CHARACTERISTIC.$WRITE($FORMAT.encodeToByteArray(%T.%M(), ${propertyDeclaration.simpleName.asString()}))",
-                                                propertyDeclaration.type.resolve().toClassName(),
-                                                References.KotlinX.Serialization.serializer
+                                                "$RETURN $CHARACTERISTIC.$WRITE($FORMAT.encodeToByteArray(%L, ${propertyDeclaration.simpleName.asString()}))",
+                                                propertyDeclaration.type.resolve().toTypeName().serializer(logger)
                                             )
                                         }
                                     }
@@ -212,7 +213,7 @@ internal class BluetoothRemoteCharacteristicBuilder(
                         addProperty(
                             PropertySpec.builder(
                                 propertyDeclaration.simpleName.asString(),
-                                References.KotlinX.Coroutines.Flow.flow.parameterizedBy(propertyDeclaration.type.resolve().toClassName()),
+                                References.KotlinX.Coroutines.Flow.flow.parameterizedBy(propertyDeclaration.type.resolve().toTypeName()),
                             ).addModifiers(
                                 *generationType.additionalModifiers.toTypedArray()
                             )
@@ -228,10 +229,9 @@ internal class BluetoothRemoteCharacteristicBuilder(
                                                             addStatement("$RETURN $CHARACTERISTIC.%M()", member)
                                                         } else {
                                                             addStatement(
-                                                                "$RETURN $CHARACTERISTIC.%M(%T.%M(), $FORMAT)",
+                                                                "$RETURN $CHARACTERISTIC.%M(%L, $FORMAT)",
                                                                 member,
-                                                                propertyDeclaration.type.resolve().toClassName(),
-                                                                References.KotlinX.Serialization.serializer,
+                                                                propertyDeclaration.type.resolve().toTypeName().serializer(logger),
                                                             )
                                                         }
                                                     }

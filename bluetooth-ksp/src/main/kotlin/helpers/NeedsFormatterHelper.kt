@@ -35,6 +35,7 @@ import com.splendo.kaluga.bluetooth.annotations.WritableWithoutResponse
 import com.squareup.kotlinpoet.BYTE_ARRAY
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
+import com.squareup.kotlinpoet.ksp.toTypeName
 
 internal object NeedsFormatterHelper {
 
@@ -62,7 +63,7 @@ internal object NeedsFormatterHelper {
                             property.isAnnotationPresent(WritableSigned::class) ||
                             property.isAnnotationPresent(WritableWithoutResponse::class)
                             ) && target != Target.SERVER) ||
-                            ((property.isAnnotationPresent(Notifiable::class) || property.isAnnotationPresent(Indicatable::class)) && target != Target.SERVER_DSL) -> property.type.resolve().toClassName() != BYTE_ARRAY
+                            ((property.isAnnotationPresent(Notifiable::class) || property.isAnnotationPresent(Indicatable::class)) && target != Target.SERVER_DSL) -> property.type.resolve().toTypeName() != BYTE_ARRAY
                     else -> (property.type.resolve().declaration as? KSClassDeclaration)?.let {
                         needsBluetoothFormatter(it, target)
                     } ?: false
@@ -74,7 +75,7 @@ internal object NeedsFormatterHelper {
                 when {
                     target == Target.SERVER -> false
                     property.isAnnotationPresent(Readable::class) ||
-                            property.isAnnotationPresent(Writable::class) -> property.type.resolve().toClassName() != ClassName("kotlin", "ByteArray")
+                            property.isAnnotationPresent(Writable::class) -> property.type.resolve().toTypeName() != ClassName("kotlin", "ByteArray")
                     else -> false
                 }
             }

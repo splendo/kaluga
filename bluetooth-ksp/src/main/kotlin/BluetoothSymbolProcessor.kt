@@ -43,6 +43,7 @@ import com.squareup.kotlinpoet.Import
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.writeTo
+import kotlin.math.log
 import kotlin.sequences.forEach
 
 class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
@@ -138,7 +139,7 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
     ) {
         val characteristicClass = ClassName(packageName.asString(), clientName(prefix = "RemoteAndLocal", postFix = ""))
         val generated = listOfNotNull(
-            BluetoothResultTypeBuilder.fromClassDeclaration(this)?.generateType()?.let {
+            BluetoothResultTypeBuilder.fromClassDeclaration(this, logger)?.generateType()?.let {
                 Generated(listOf(it))
             },
             BluetoothRemoteCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.API)),
@@ -157,7 +158,7 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
     ) {
         val descriptorClass = ClassName(packageName.asString(), clientName(prefix = "RemoteAndLocal", postFix = ""))
         val generated = listOfNotNull(
-            BluetoothResultTypeBuilder.fromClassDeclaration(this)?.generateType()?.let {
+            BluetoothResultTypeBuilder.fromClassDeclaration(this, logger)?.generateType()?.let {
                 Generated(listOf(it))
             },
             BluetoothRemoteDescriptorBuilder(this, descriptor, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.API)),

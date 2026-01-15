@@ -43,6 +43,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.THIS
 import com.splendo.kaluga.bluetooth.ksp.helpers.WITH
 import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
+import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
@@ -51,6 +52,7 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.toClassName
+import com.squareup.kotlinpoet.ksp.toTypeName
 
 internal class BluetoothLocalDescriptorBuilder(
     declaration: KSClassDeclaration,
@@ -71,7 +73,7 @@ internal class BluetoothLocalDescriptorBuilder(
                                 if (!hasReadMethod) {
                                     hasReadMethod = true
                                     val readMethod = "$ON_READ${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
-                                    val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration)
+                                    val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, logger)
 
                                     val onReadFunSpec = FunSpec.builder(readMethod).addModifiers(KModifier.ABSTRACT, KModifier.SUSPEND)
                                         .receiver(receiver)
@@ -100,7 +102,7 @@ internal class BluetoothLocalDescriptorBuilder(
 
                                     val onWriteFunSpec = FunSpec.builder(writeMethod).addModifiers(KModifier.ABSTRACT, KModifier.SUSPEND)
                                         .receiver(receiver)
-                                        .addParameter(propertyDeclaration.simpleName.asString(), propertyDeclaration.type.resolve().toClassName())
+                                        .addParameter(propertyDeclaration.simpleName.asString(), propertyDeclaration.type.resolve().toTypeName())
                                         .apply {
                                             if (propertyDeclaration.isByteArray) {
                                                 addParameter(OFFSET, INT)
@@ -183,7 +185,7 @@ internal class BluetoothLocalDescriptorBuilder(
                                                     if (!hasReadMethod) {
                                                         hasReadMethod = true
                                                         val readMethod = "$ON_READ${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
-                                                        val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration)
+                                                        val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, logger)
                                                         beginControlFlow("readable(${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { device, $OFFSET ->")
                                                             .beginControlFlow("$WITH($delegateName)")
                                                             .add(resultType.parseBluetoothResult(CodeBlock.of("%T($THIS@readable).${readMethod}(device.identifier)", NameHelper.nameFor(declaration, generationType))))
@@ -208,7 +210,7 @@ internal class BluetoothLocalDescriptorBuilder(
                                                                 addStatement("writable(")
                                                                 .indent()
                                                                 .addStatement("encrypted = ${propertyDeclaration.isAnnotationPresent(Encrypted::class)},")
-                                                                .addStatement("deserializationStrategy = %T.%M(),", propertyDeclaration.type.resolve().toClassName(), References.KotlinX.Serialization.serializer)
+                                                                .addStatement("deserializationStrategy = %L,", propertyDeclaration.type.resolve().toTypeName().serializer(logger))
                                                                 .addStatement("bluetoothFormat = $FORMAT,")
                                                                 .addStatement("onFailedToWrite = { device, exception ->")
                                                                 .indent()

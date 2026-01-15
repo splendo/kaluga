@@ -24,6 +24,8 @@ import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.splendo.kaluga.bluetooth.annotations.Notifiable
 import com.splendo.kaluga.bluetooth.annotations.Readable
 import com.splendo.kaluga.bluetooth.annotations.Writable
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
 
 @Bluetooth
 interface BluetoothTest {
@@ -43,9 +45,9 @@ interface TestCharacteristic {
     @BluetoothDescriptor("5678")
     interface TestDescriptor {
         @Readable
-        val name: String
+        val name: List<String?>
         @Writable
-        val age: Int
+        val age: Test<*>
     }
 
     @Readable
@@ -56,4 +58,26 @@ interface TestCharacteristic {
     val state: Int
 
     val testDescriptor: TestDescriptor
+}
+
+@Serializable
+data class TestClass(
+    val value: String,
+    val test: Test<*>
+)
+
+@Serializable
+sealed class Test<T> {
+
+    abstract val value: T
+
+    @Serializable
+    data class A(
+        override val value: String
+    ) : Test<String>()
+
+    @Serializable
+    data class B(
+        override val value: Int
+    ) : Test<Int>()
 }

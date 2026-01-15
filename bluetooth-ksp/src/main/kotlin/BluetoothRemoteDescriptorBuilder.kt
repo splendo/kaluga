@@ -35,6 +35,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.WRITE
 import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
+import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -43,6 +44,7 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.toClassName
+import com.squareup.kotlinpoet.ksp.toTypeName
 
 internal class BluetoothRemoteDescriptorBuilder(
     declaration: KSClassDeclaration,
@@ -133,7 +135,7 @@ internal class BluetoothRemoteDescriptorBuilder(
                         hasReadMethod = true
                         val responseType = propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }
                         val readMethod = "$READ$responseType"
-                        val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration)
+                        val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, logger)
                         addFunction(
                             FunSpec.builder(readMethod).addModifiers(KModifier.SUSPEND, *generationType.additionalModifiers.toTypedArray()).returns(
                                 resultType.responseClassName,
@@ -164,7 +166,7 @@ internal class BluetoothRemoteDescriptorBuilder(
                                 writeMethod,
                             ).addParameter(
                                 propertyDeclaration.simpleName.asString(),
-                                propertyDeclaration.type.resolve().toClassName(),
+                                propertyDeclaration.type.resolve().toTypeName(),
                             ).addModifiers(KModifier.SUSPEND, *generationType.additionalModifiers.toTypedArray()).returns(
                                 References.Bluetooth.writeResponse,
                             ).apply {
@@ -174,8 +176,7 @@ internal class BluetoothRemoteDescriptorBuilder(
                                         if (propertyDeclaration.isByteArray) {
                                             addStatement("$RETURN $DESCRIPTOR.$WRITE(${propertyDeclaration.simpleName.asString()})")
                                         } else {
-                                            addStatement("$RETURN $DESCRIPTOR.$WRITE($FORMAT.encodeToByteArray(%T.%M(), ${propertyDeclaration.simpleName.asString()}))", propertyDeclaration.type.resolve().toClassName(),
-                                                References.KotlinX.Serialization.serializer
+                                            addStatement("$RETURN $DESCRIPTOR.$WRITE($FORMAT.encodeToByteArray(%L, ${propertyDeclaration.simpleName.asString()}))", propertyDeclaration.type.resolve().toTypeName().serializer(logger)
                                             )
                                         }
                                     }
