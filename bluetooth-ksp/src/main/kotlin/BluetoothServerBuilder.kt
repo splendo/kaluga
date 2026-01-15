@@ -22,8 +22,6 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
-import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION
-import com.splendo.kaluga.bluetooth.ksp.helpers.DSL
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -36,27 +34,27 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
         val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType)).addModifiers(KModifier.SEALED)
             .addTypes(nested)
-            .addType(
-                TypeSpec.interfaceBuilder(DSL)
-                    .addFunctions(
-                        declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull { propertyDeclaration ->
-                            val typeDeclaration = propertyDeclaration.type.resolve().declaration
-                            if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class)) {
-                                val lambdaType = LambdaTypeName.get(
-                                    receiver = NameHelper.nameFor(typeDeclaration, generationType).nestedClass(DSL),
-                                    returnType = UNIT,
-                                )
-                                FunSpec.builder(propertyDeclaration.simpleName.asString()).addModifiers(KModifier.ABSTRACT)
-                                    .addParameter(ACTION, lambdaType)
-                                    .build()
-                            } else {
-                                logger.error("A BluetoothServer should only have @${BluetoothService::class.simpleName} properties $typeDeclaration ${typeDeclaration.annotations}")
-                                null
-                            }
-                        }.toList(),
-                    )
-                    .build(),
-            )
+//            .addType(
+//                TypeSpec.interfaceBuilder(DSL)
+//                    .addFunctions(
+//                        declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull { propertyDeclaration ->
+//                            val typeDeclaration = propertyDeclaration.type.resolve().declaration
+//                            if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class)) {
+//                                val lambdaType = LambdaTypeName.get(
+//                                    receiver = NameHelper.nameFor(typeDeclaration, generationType).nestedClass(DSL),
+//                                    returnType = UNIT,
+//                                )
+//                                FunSpec.builder(propertyDeclaration.simpleName.asString()).addModifiers(KModifier.ABSTRACT)
+//                                    .addParameter(ACTION, lambdaType)
+//                                    .build()
+//                            } else {
+//                                logger.error("A BluetoothServer should only have @${BluetoothService::class.simpleName} properties $typeDeclaration ${typeDeclaration.annotations}")
+//                                null
+//                            }
+//                        }.toList(),
+//                    )
+//                    .build(),
+//            )
             .addProperties(
                 declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull { propertyDeclaration ->
                     val typeDeclaration = propertyDeclaration.type.resolve().declaration

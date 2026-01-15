@@ -19,17 +19,20 @@ package com.splendo.kaluga.bluetooth.ksp.helpers
 
 const val RETURN = "return"
 const val WHEN = "when"
+const val WITH = "with"
+const val THIS = "this"
 
 const val FORMAT = "format"
 const val FROM_SERVICE = "fromService"
 
-const val ACTION = "action"
+const val EXCEPTION = "exception"
 const val IDENTIFIER = "identifier"
 const val SERVICE = "service"
 const val CHARACTERISTIC = "characteristic"
 const val DESCRIPTOR = "descriptor"
 
-const val DSL = "DSL"
+const val CONFIGURE = "configure"
+const val DELEGATE = "Delegate"
 
 const val READ = "read"
 const val ON_READ = "onRead"
