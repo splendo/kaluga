@@ -60,7 +60,7 @@ internal class BluetoothLocalDescriptorBuilder(
     logger: KSPLogger
 ) : AbstractBluetoothClassBuilder(declaration, logger) {
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType)).addModifiers(KModifier.SEALED)
+        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
             .addTypes(nested)
             .addType(
                 TypeSpec.interfaceBuilder(DELEGATE)

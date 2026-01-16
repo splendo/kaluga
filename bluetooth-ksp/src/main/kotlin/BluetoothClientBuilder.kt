@@ -48,7 +48,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
         val imports = Generated.Imports()
         val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(this)
-        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType)).addModifiers(KModifier.SEALED)
+        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
             .addType(
                 TypeSpec.companionObjectBuilder()
                     .addFunction(

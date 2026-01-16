@@ -82,7 +82,7 @@ internal class BluetoothLocalCharacteristicBuilder(
 
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
         val imports = Generated.Imports()
-        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType)).addModifiers(KModifier.SEALED)
+        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
             .addTypes(nested)
             .addType(
                 TypeSpec.interfaceBuilder(DELEGATE)
