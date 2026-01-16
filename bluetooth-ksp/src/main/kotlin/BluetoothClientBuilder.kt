@@ -67,11 +67,6 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
                                         .build().takeIf { needsFormatter },
                                 )
                             )
-                            .addCode(
-                                CodeBlock.builder()
-
-                                    .build()
-                            )
                             .addStatement(
                                 "$RETURN %T($BLUETOOTH.allDevices().%M($IDENTIFIER).%M().%M()${if (needsFormatter) ", $FORMAT" else ""})",
                                 returnType,

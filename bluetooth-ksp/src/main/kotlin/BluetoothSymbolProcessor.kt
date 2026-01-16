@@ -114,7 +114,7 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
         val serverClass = ClassName(packageName.asString(), serverName())
         val generated = listOf(
             BluetoothServerBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.API)),
-//            BluetoothServerBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.BLUETOOTH)),
+            BluetoothServerBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.BLUETOOTH)),
 //            BluetoothServerBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.SIMULATOR)),
         )
         FileSpec.builder(serverClass).generate(generated)

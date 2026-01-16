@@ -28,6 +28,11 @@ interface ClassNameProvider {
 }
 
 object References {
+    object Base : ClassNameProvider {
+        override val packageName: String = "com.splendo.kaluga.base"
+
+        val singleThreadDispatcher = memberName("singleThreadDispatcher")
+    }
     object Bluetooth : ClassNameProvider {
         object Device : ClassNameProvider {
             override val packageName = "${Bluetooth.packageName}.device"
@@ -45,6 +50,7 @@ object References {
             val advertiseDataBuilder = className("AdvertiseData", "Builder")
 
             val bluetoothServer = className("BluetoothServer")
+            val serverSettings = className("ServerSettings")
             val bluetoothServerDSL = className("BluetoothServerDSL")
             val connectedDevice = className("ConnectedDevice")
 
@@ -58,6 +64,7 @@ object References {
             val localDescriptorDSL = className("LocalDescriptor", "DSL")
         }
         override val packageName = "com.splendo.kaluga.bluetooth"
+        val bluetoothBuilder = className("BluetoothBuilder")
         val bluetoothService = className("BluetoothService")
         val remoteService = className("RemoteService")
         val remoteCharacteristic = className("RemoteCharacteristic")
@@ -80,8 +87,20 @@ object References {
         val discoveredServices = memberName("discoveredServices")
     }
 
+    object Permissions : ClassNameProvider {
+        override val packageName: String = "com.splendo.kaluga.permissions.base"
+
+        val permissions = className("Permissions")
+    }
+
     object Kotlin : ClassNameProvider {
         override val packageName: String = "kotlin"
+
+        object Coroutines : ClassNameProvider {
+            override val packageName: String = "${Kotlin.packageName}.coroutines"
+
+            val coroutineContext = className("CoroutineContext")
+        }
 
         val exception = className("Exception")
         val pair = className("Pair")
