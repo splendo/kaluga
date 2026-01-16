@@ -45,9 +45,9 @@ interface TestCharacteristic {
     @BluetoothDescriptor("5678")
     interface TestDescriptor {
         @Readable
-        val name: List<String?>
+        val name: String
         @Writable
-        val age: Test<*>
+        val age: Int
     }
 
     @Readable
@@ -55,29 +55,8 @@ interface TestCharacteristic {
     @Writable
     val shouldUpdate: Boolean
     @Notifiable
-    val state: Int
+    val state: Short
 
     val testDescriptor: TestDescriptor
 }
 
-@Serializable
-data class TestClass(
-    val value: String,
-    val test: Test<*>
-)
-
-@Serializable
-sealed class Test<T> {
-
-    abstract val value: T
-
-    @Serializable
-    data class A(
-        override val value: String
-    ) : Test<String>()
-
-    @Serializable
-    data class B(
-        override val value: Int
-    ) : Test<Int>()
-}

@@ -188,7 +188,7 @@ internal class BluetoothLocalDescriptorBuilder(
                                                         val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, logger)
                                                         beginControlFlow("readable(${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { device, $OFFSET ->")
                                                             .beginControlFlow("$WITH($delegateName)")
-                                                            .add(resultType.parseBluetoothResult(CodeBlock.of("%T($THIS@readable).${readMethod}(device.identifier)", NameHelper.nameFor(declaration, generationType))))
+                                                            .add(resultType.parseBluetoothResult(CodeBlock.of("%T($THIS@readable).${readMethod}(device.identifier", NameHelper.nameFor(declaration, generationType))))
                                                             .endControlFlow()
                                                             .endControlFlow()
                                                     } else {

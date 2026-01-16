@@ -70,6 +70,7 @@ object References {
         val remoteCharacteristic = className("RemoteCharacteristic")
         val remoteDescriptor = className("RemoteDescriptor")
         val writeResponse = className("GattResponse", "WriteResponse")
+        val readResponse = className("GattResponse", "ReadResponse")
         val readSuccess = className("GattResponse", "ReadSuccess")
         val readError = className("GattResponse", "ReadError")
         val requestNotSupported = className("GattResponse", "RequestNotSupported")

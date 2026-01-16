@@ -261,7 +261,7 @@ internal class BluetoothLocalCharacteristicBuilder(
                                                             val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, logger)
                                                             beginControlFlow("readable(${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { device, $OFFSET ->")
                                                                 .beginControlFlow("$WITH($delegateName)")
-                                                                .add(resultType.parseBluetoothResult(CodeBlock.of("%L.${readMethod}(device.identifier)", castingMethod("readable"))))
+                                                                .add(resultType.parseBluetoothResult(CodeBlock.of("%L.${readMethod}(device.identifier", castingMethod("readable"))))
                                                                 .endControlFlow()
                                                                 .endControlFlow()
                                                         } else {
@@ -284,7 +284,7 @@ internal class BluetoothLocalCharacteristicBuilder(
                                                             if (propertyDeclaration.isByteArray) {
                                                                 beginControlFlow("writable(%L, ${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { device, value, $OFFSET ->", propertiesCode)
                                                                     .beginControlFlow("$WITH($delegateName)")
-                                                                    .addStatement("%T($THIS@writable).${writeMethod}(value, $OFFSET, device.identifier)", NameHelper.nameFor(declaration, generationType))
+                                                                    .addStatement("%L.${writeMethod}(value, $OFFSET, device.identifier)", castingMethod("writable"))
                                                                     .endControlFlow()
                                                                     .endControlFlow()
                                                             } else {

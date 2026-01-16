@@ -35,13 +35,9 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
-import java.sql.Ref
 
 internal class BluetoothResultTypeBuilder(
     val classDeclaration: KSClassDeclaration,
@@ -67,7 +63,7 @@ internal class BluetoothResultTypeBuilder(
         val className = NameHelper.nameFor(classDeclaration, GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.API))
         ClassName(className.packageName, className.simpleNames.dropLast(1) + "${classDeclaration.simpleName.asString()}ReadResponse")
     } else {
-        propertyDeclaration.type.resolve().toClassName()
+        References.Bluetooth.readResponse
     }
 
     fun generateType() = if (hasCustomResult) {
@@ -130,7 +126,7 @@ internal class BluetoothResultTypeBuilder(
 
     fun parseBluetoothResult(addReadStatement: CodeBlock) = if (hasCustomResult) {
         CodeBlock.builder()
-            .beginControlFlow("$WHEN (val response = %L) {", addReadStatement)
+            .beginControlFlow("$WHEN (val response = %L)) {", addReadStatement)
             .beginControlFlow("is %T.$SUCCESS -> {", responseClassName)
             .addStatement("%T($FORMAT.encodeToByteArray(%L, response.$RESPONSE).drop($OFFSET))", References.Bluetooth.readSuccess, propertyDeclaration.type.resolve().toTypeName().serializer(logger))
             .endControlFlow()
@@ -141,7 +137,7 @@ internal class BluetoothResultTypeBuilder(
             .build()
     } else {
         CodeBlock.builder()
-            .add("%L.drop($OFFSET)", addReadStatement)
+            .addStatement("%L, $OFFSET)", addReadStatement)
             .build()
     }
 
