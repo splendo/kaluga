@@ -30,6 +30,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.WHEN
 import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
+import com.splendo.kaluga.bluetooth.ksp.helpers.isReadable
 import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -47,7 +48,7 @@ internal class BluetoothResultTypeBuilder(
 
     companion object {
         fun fromClassDeclaration(declaration: KSClassDeclaration, logger: KSPLogger): BluetoothResultTypeBuilder? =
-            declaration.declarations.filterIsInstance<KSPropertyDeclaration>().firstOrNull { it.isAnnotationPresent(Readable::class) }?.let {
+            declaration.declarations.filterIsInstance<KSPropertyDeclaration>().firstOrNull { it.isReadable }?.let {
                 BluetoothResultTypeBuilder(declaration, it, logger)
             }
 

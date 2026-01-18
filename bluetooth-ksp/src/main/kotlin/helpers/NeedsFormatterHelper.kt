@@ -58,12 +58,10 @@ internal object NeedsFormatterHelper {
         declaration.isAnnotationPresent(BluetoothCharacteristic::class) -> {
             declaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { property ->
                 when {
-                    ((property.isAnnotationPresent(Readable::class) ||
-                            property.isAnnotationPresent(Writable::class) ||
-                            property.isAnnotationPresent(WritableSigned::class) ||
-                            property.isAnnotationPresent(WritableWithoutResponse::class)
+                    ((property.isReadable ||
+                            property.isWritable
                             ) && target != Target.SERVER) ||
-                            ((property.isAnnotationPresent(Notifiable::class) || property.isAnnotationPresent(Indicatable::class)) && target != Target.SERVER_DSL) -> property.type.resolve().toTypeName() != BYTE_ARRAY
+                            ((property.isNotifiable) && target != Target.SERVER_DSL) -> property.type.resolve().toTypeName() != BYTE_ARRAY
                     else -> (property.type.resolve().declaration as? KSClassDeclaration)?.let {
                         needsBluetoothFormatter(it, target)
                     } ?: false
@@ -74,7 +72,7 @@ internal object NeedsFormatterHelper {
             declaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { property ->
                 when {
                     target == Target.SERVER -> false
-                    property.isAnnotationPresent(Readable::class) ||
+                    property.isReadable ||
                             property.isAnnotationPresent(Writable::class) -> property.type.resolve().toTypeName() != ClassName("kotlin", "ByteArray")
                     else -> false
                 }

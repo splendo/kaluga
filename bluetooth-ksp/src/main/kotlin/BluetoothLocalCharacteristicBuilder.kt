@@ -56,6 +56,11 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.SUBSCRIBERS
 import com.splendo.kaluga.bluetooth.ksp.helpers.THIS
 import com.splendo.kaluga.bluetooth.ksp.helpers.WITH
 import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
+import com.splendo.kaluga.bluetooth.ksp.helpers.isNotifiable
+import com.splendo.kaluga.bluetooth.ksp.helpers.isReadable
+import com.splendo.kaluga.bluetooth.ksp.helpers.isWritable
+import com.splendo.kaluga.bluetooth.ksp.helpers.onReadMethodName
+import com.splendo.kaluga.bluetooth.ksp.helpers.onWriteMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
@@ -93,17 +98,14 @@ internal class BluetoothLocalCharacteristicBuilder(
                         var hasNotifyMethods = false
                         declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
                             val typeDeclaration = propertyDeclaration.type.resolve().declaration
-                            if (propertyDeclaration.isAnnotationPresent(Readable::class) ||
-                                propertyDeclaration.isAnnotationPresent(Writable::class) ||
-                                propertyDeclaration.isAnnotationPresent(WritableWithoutResponse::class) ||
-                                propertyDeclaration.isAnnotationPresent(WritableSigned::class) ||
-                                propertyDeclaration.isAnnotationPresent(Notifiable::class) ||
-                                propertyDeclaration.isAnnotationPresent(Indicatable::class)
+                            if (propertyDeclaration.isReadable ||
+                                propertyDeclaration.isWritable ||
+                                propertyDeclaration.isNotifiable
                             ) {
                                 if (propertyDeclaration.isAnnotationPresent(Readable::class)) {
                                     if (!hasReadMethod) {
                                         hasReadMethod = true
-                                        val readMethod = "$ON_READ${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
+                                        val readMethod = propertyDeclaration.onReadMethodName
                                         val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, logger)
                                         val onReadFunSpec = FunSpec.builder(readMethod).addModifiers(KModifier.ABSTRACT, KModifier.SUSPEND)
                                             .receiver(receiver)
@@ -128,7 +130,7 @@ internal class BluetoothLocalCharacteristicBuilder(
                                     if (!hasWriteMethod) {
                                         hasWriteMethod = true
 
-                                        val writeMethod = "$ON_WRITE${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
+                                        val writeMethod = propertyDeclaration.onWriteMethodName
 
                                         val onWriteFunSpec = FunSpec.builder(writeMethod).addModifiers(KModifier.ABSTRACT, KModifier.SUSPEND)
                                             .receiver(receiver)
@@ -247,17 +249,14 @@ internal class BluetoothLocalCharacteristicBuilder(
                                             }
                                             declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
                                                 val typeDeclaration = propertyDeclaration.type.resolve().declaration
-                                                if (propertyDeclaration.isAnnotationPresent(Readable::class) ||
-                                                    propertyDeclaration.isAnnotationPresent(Writable::class) ||
-                                                    propertyDeclaration.isAnnotationPresent(WritableWithoutResponse::class) ||
-                                                    propertyDeclaration.isAnnotationPresent(WritableSigned::class) ||
-                                                    propertyDeclaration.isAnnotationPresent(Notifiable::class) ||
-                                                    propertyDeclaration.isAnnotationPresent(Indicatable::class)
+                                                if (propertyDeclaration.isReadable ||
+                                                    propertyDeclaration.isWritable ||
+                                                    propertyDeclaration.isNotifiable
                                                 ) {
-                                                    if (propertyDeclaration.isAnnotationPresent(Readable::class)) {
+                                                    if (propertyDeclaration.isReadable) {
                                                         if (!hasReadMethod) {
                                                             hasReadMethod = true
-                                                            val readMethod = "$ON_READ${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
+                                                            val readMethod = propertyDeclaration.onReadMethodName
                                                             val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, logger)
                                                             beginControlFlow("readable(${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { device, $OFFSET ->")
                                                                 .beginControlFlow("$WITH($delegateName)")
@@ -268,11 +267,10 @@ internal class BluetoothLocalCharacteristicBuilder(
                                                             logger.error("Only one @${Readable::class.simpleName} property can be declared")
                                                         }
                                                     }
-                                                    if (propertyDeclaration.isAnnotationPresent(Writable::class) || propertyDeclaration.isAnnotationPresent(WritableWithoutResponse::class) || propertyDeclaration.isAnnotationPresent(
-                                                            WritableSigned::class)) {
+                                                    if (propertyDeclaration.isWritable) {
                                                         if (!hasWriteMethod) {
                                                             hasWriteMethod = true
-                                                            val writeMethod = "$ON_WRITE${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
+                                                            val writeMethod = propertyDeclaration.onWriteMethodName
 
                                                             val properties = listOfNotNull(
                                                                 References.Bluetooth.writeProperty.takeIf { propertyDeclaration.isAnnotationPresent(Writable::class) },
@@ -317,7 +315,7 @@ internal class BluetoothLocalCharacteristicBuilder(
                                                         }
                                                     }
 
-                                                    if (propertyDeclaration.isAnnotationPresent(Notifiable::class) || propertyDeclaration.isAnnotationPresent(Indicatable::class)) {
+                                                    if (propertyDeclaration.isNotifiable) {
                                                         if (!hasNotifyMethods) {
                                                             hasNotifyMethods = true
                                                             val properties = listOfNotNull(
@@ -393,22 +391,18 @@ internal class BluetoothLocalCharacteristicBuilder(
         var hasNotifyMethods = false
         declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
             val typeDeclaration = propertyDeclaration.type.resolve().declaration
-            if (propertyDeclaration.isAnnotationPresent(Readable::class) ||
-                propertyDeclaration.isAnnotationPresent(Writable::class) ||
-                propertyDeclaration.isAnnotationPresent(WritableWithoutResponse::class) ||
-                propertyDeclaration.isAnnotationPresent(WritableSigned::class) ||
-                propertyDeclaration.isAnnotationPresent(Notifiable::class) ||
-                propertyDeclaration.isAnnotationPresent(Indicatable::class)
+            if (propertyDeclaration.isReadable ||
+                propertyDeclaration.isWritable ||
+                propertyDeclaration.isNotifiable
             ) {
-                if (propertyDeclaration.isAnnotationPresent(Readable::class)) {
+                if (propertyDeclaration.isReadable) {
                     if (!hasReadMethod) {
                         hasReadMethod = true
                     } else {
                         logger.error("Only one @${Readable::class.simpleName} property can be declared")
                     }
                 }
-                if (propertyDeclaration.isAnnotationPresent(Writable::class) || propertyDeclaration.isAnnotationPresent(WritableWithoutResponse::class) || propertyDeclaration.isAnnotationPresent(
-                        WritableSigned::class)) {
+                if (propertyDeclaration.isWritable) {
                     if (!hasWriteMethod) {
                         hasWriteMethod = true
                     } else {
@@ -416,7 +410,7 @@ internal class BluetoothLocalCharacteristicBuilder(
                     }
                 }
 
-                if (propertyDeclaration.isAnnotationPresent(Notifiable::class) || propertyDeclaration.isAnnotationPresent(Indicatable::class)) {
+                if (propertyDeclaration.isNotifiable) {
                     if (!hasNotifyMethods) {
                         hasNotifyMethods = true
 

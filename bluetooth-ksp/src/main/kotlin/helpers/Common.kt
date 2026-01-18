@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.ksp.helpers
 
+import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+
 const val RETURN = "return"
 const val WHEN = "when"
 const val WITH = "with"
@@ -42,6 +44,7 @@ const val ON_FAILED_TO_WRITE = "onFailedToWrite"
 const val ON_SUBSCRIBE = "onSubscribeTo"
 const val ON_UNSUBSCRIBE = "onUnsubscribeTo"
 const val SUBSCRIBERS = "Subscribers"
+const val ACTION = "Action"
 
 const val NOTIFY = "notify"
 const val NOTIFY_ALL = "notifyAll"
@@ -51,3 +54,6 @@ const val BUILD = "build"
 const val BUILDER = "builder"
 
 const val OFFSET = "offset"
+
+val KSPropertyDeclaration.onReadMethodName: String get() = "$ON_READ${simpleName.asString().replaceFirstChar { it.uppercase() }}"
+val KSPropertyDeclaration.onWriteMethodName: String get() = "$ON_WRITE${simpleName.asString().replaceFirstChar { it.uppercase() }}"

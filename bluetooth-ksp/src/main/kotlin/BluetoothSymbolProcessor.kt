@@ -105,7 +105,7 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
         val generated = listOf(
             BluetoothClientBuilder(this, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.API)),
             BluetoothClientBuilder(this, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.BLUETOOTH)),
-//            BluetoothClientBuilder(this, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.SIMULATOR)),
+            BluetoothClientBuilder(this, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.SIMULATOR)),
         )
         FileSpec.builder(clientClass).generate(generated)
     }
@@ -115,7 +115,7 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
         val generated = listOf(
             BluetoothServerBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.API)),
             BluetoothServerBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.BLUETOOTH)),
-//            BluetoothServerBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.SIMULATOR)),
+            BluetoothServerBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.SIMULATOR)),
         )
         FileSpec.builder(serverClass).generate(generated)
     }
@@ -127,8 +127,8 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
             BluetoothLocalServiceBuilder(this, service, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.API)),
             BluetoothRemoteServiceBuilder(this, service, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.BLUETOOTH)),
             BluetoothLocalServiceBuilder(this, service, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.BLUETOOTH)),
-//            BluetoothRemoteServiceBuilder(this, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.SIMULATOR)),
-//            BluetoothLocalServiceBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.SIMULATOR)),
+            BluetoothRemoteServiceBuilder(this, service, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.SIMULATOR)),
+            BluetoothLocalServiceBuilder(this, service, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.SIMULATOR)),
         )
 
         FileSpec.builder(serviceClass).generate(generated)
@@ -146,8 +146,8 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
             BluetoothLocalCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.API)),
             BluetoothRemoteCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.BLUETOOTH)),
             BluetoothLocalCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.BLUETOOTH)),
-//            BluetoothRemoteCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.SIMULATOR)),
-//            BluetoothLocalCharacteristicBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.SIMULATOR)),
+            BluetoothRemoteCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.SIMULATOR)),
+            BluetoothLocalCharacteristicBuilder(this, characteristic, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.SIMULATOR)),
         )
 
         FileSpec.builder(characteristicClass).generate(generated)
@@ -165,8 +165,8 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
             BluetoothLocalDescriptorBuilder(this, descriptor, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.API)),
             BluetoothRemoteDescriptorBuilder(this, descriptor, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.BLUETOOTH)),
             BluetoothLocalDescriptorBuilder(this, descriptor, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.BLUETOOTH)),
-//            BluetoothRemoteDescriptorBuilder(this, descriptor, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.SIMULATOR)),
-//            BluetoothLocalDescriptorBuilder(this, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.SIMULATOR)),
+            BluetoothRemoteDescriptorBuilder(this, descriptor, logger).generate(GenerationType(GenerationType.Side.CLIENT, GenerationType.Type.SIMULATOR)),
+            BluetoothLocalDescriptorBuilder(this, descriptor, logger).generate(GenerationType(GenerationType.Side.SERVER, GenerationType.Type.SIMULATOR)),
         )
 
         FileSpec.builder(descriptorClass).generate(generated)

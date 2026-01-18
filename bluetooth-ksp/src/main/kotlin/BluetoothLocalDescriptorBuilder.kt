@@ -43,6 +43,8 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.THIS
 import com.splendo.kaluga.bluetooth.ksp.helpers.WITH
 import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
+import com.splendo.kaluga.bluetooth.ksp.helpers.onReadMethodName
+import com.splendo.kaluga.bluetooth.ksp.helpers.onWriteMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -72,7 +74,7 @@ internal class BluetoothLocalDescriptorBuilder(
                             if (propertyDeclaration.isAnnotationPresent(Readable::class)) {
                                 if (!hasReadMethod) {
                                     hasReadMethod = true
-                                    val readMethod = "$ON_READ${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
+                                    val readMethod = propertyDeclaration.onReadMethodName
                                     val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, logger)
 
                                     val onReadFunSpec = FunSpec.builder(readMethod).addModifiers(KModifier.ABSTRACT, KModifier.SUSPEND)
@@ -98,7 +100,7 @@ internal class BluetoothLocalDescriptorBuilder(
                                 if (!hasWriteMethod) {
                                     hasWriteMethod = true
 
-                                    val writeMethod = "$ON_WRITE${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
+                                    val writeMethod = propertyDeclaration.onWriteMethodName
 
                                     val onWriteFunSpec = FunSpec.builder(writeMethod).addModifiers(KModifier.ABSTRACT, KModifier.SUSPEND)
                                         .receiver(receiver)
@@ -184,7 +186,7 @@ internal class BluetoothLocalDescriptorBuilder(
                                                 if (propertyDeclaration.isAnnotationPresent(Readable::class)) {
                                                     if (!hasReadMethod) {
                                                         hasReadMethod = true
-                                                        val readMethod = "$ON_READ${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
+                                                        val readMethod = propertyDeclaration.onReadMethodName
                                                         val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, logger)
                                                         beginControlFlow("readable(${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { device, $OFFSET ->")
                                                             .beginControlFlow("$WITH($delegateName)")
@@ -198,7 +200,7 @@ internal class BluetoothLocalDescriptorBuilder(
                                                 if (propertyDeclaration.isAnnotationPresent(Writable::class)) {
                                                     if (!hasWriteMethod) {
                                                         hasWriteMethod = true
-                                                        val writeMethod = "$ON_WRITE${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
+                                                        val writeMethod = propertyDeclaration.onWriteMethodName
                                                         if (propertyDeclaration.isByteArray) {
                                                             beginControlFlow("writable(${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { device, value, $OFFSET ->")
                                                                 .beginControlFlow("$WITH($delegateName)")

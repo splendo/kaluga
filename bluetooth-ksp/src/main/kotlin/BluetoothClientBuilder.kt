@@ -23,11 +23,13 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
+import com.splendo.kaluga.bluetooth.ksp.helpers.DELEGATE
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -117,7 +119,25 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
 
     override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): Generated {
         val imports = Generated.Imports()
+        val properties = declarations.filterIsInstance<KSPropertyDeclaration>()
         val typeSpec = TypeSpec.classBuilder(NameHelper.nameFor(this, generationType))
+            .primaryConstructor(
+                FunSpec.constructorBuilder()
+                    .addParameters(
+                        properties.mapNotNull { propertyDeclaration ->
+                            val typeDeclaration = propertyDeclaration.type.resolve().declaration
+                            if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class)) {
+                                ParameterSpec(
+                                    propertyDeclaration.simpleName.asString(),
+                                    NameHelper.nameFor(typeDeclaration, generationType),
+                                )
+                            } else {
+                                null
+                            }
+                        }.toList()
+                    )
+                    .build()
+            )
             .addSuperinterface(NameHelper.nameFor(this, generationType.copy(type = GenerationType.Type.API)))
             .addTypes(nested)
             .generateBody(declarations, generationType, imports)
@@ -142,7 +162,9 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
                                 GenerationType.Type.BLUETOOTH -> {
                                     initializer("%T.${BluetoothRemoteServiceBuilder.FROM_DISCOVERED_SERVICES}(${DISCOVERED_SERVICES}${if (NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration)) ", $FORMAT" else "" })", NameHelper.nameFor(typeDeclaration, generationType))
                                 }
-                                GenerationType.Type.SIMULATOR -> {}
+                                GenerationType.Type.SIMULATOR -> {
+                                    initializer(propertyDeclaration.simpleName.asString())
+                                }
                             }
                         }
                         .build()

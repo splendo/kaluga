@@ -25,9 +25,14 @@ import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.Readable
 import com.splendo.kaluga.bluetooth.annotations.Writable
+import com.splendo.kaluga.bluetooth.annotations.WritableSigned
+import com.splendo.kaluga.bluetooth.annotations.WritableWithoutResponse
+import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION
 import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTIC
+import com.splendo.kaluga.bluetooth.ksp.helpers.DELEGATE
 import com.splendo.kaluga.bluetooth.ksp.helpers.DESCRIPTOR
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
+import com.splendo.kaluga.bluetooth.ksp.helpers.IDENTIFIER
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.READ
@@ -35,10 +40,14 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.WRITE
 import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
+import com.splendo.kaluga.bluetooth.ksp.helpers.isReadable
+import com.splendo.kaluga.bluetooth.ksp.helpers.onReadMethodName
+import com.splendo.kaluga.bluetooth.ksp.helpers.onWriteMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
@@ -119,8 +128,61 @@ internal class BluetoothRemoteDescriptorBuilder(
 
     override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): Generated {
         val imports = Generated.Imports()
+        val properties = declarations.filterIsInstance<KSPropertyDeclaration>()
+        val readProperty = properties.firstOrNull { it.isReadable }
+        val writeProperty = properties.firstOrNull { it.isAnnotationPresent(Writable::class) }
         val typeSpec = TypeSpec.classBuilder(NameHelper.nameFor(this, generationType))
+            .primaryConstructor(
+                FunSpec.constructorBuilder()
+                    .addParameters(
+                        listOfNotNull(
+                            readProperty?.let { onRead ->
+                                ParameterSpec(
+                                    "${onRead.onReadMethodName}$ACTION",
+                                    LambdaTypeName.get(
+                                        returnType = BluetoothResultTypeBuilder(this, onRead, logger).responseClassName
+                                    ).copy(suspending = true)
+                                )
+                            },
+                            writeProperty?.let { onWrite ->
+                                ParameterSpec(
+                                    "${onWrite.onWriteMethodName}$ACTION",
+                                    LambdaTypeName.get(
+                                        parameters = listOf(ParameterSpec(onWrite.simpleName.asString(), onWrite.type.resolve().toTypeName())),
+                                        returnType = References.Bluetooth.writeResponse
+                                    ).copy(suspending = true)
+                                )
+                            }
+                        )
+                    )
+                    .build()
+            )
             .addSuperinterface(NameHelper.nameFor(this, generationType.copy(type = GenerationType.Type.API)))
+            .addProperties(
+                listOfNotNull(
+                    readProperty?.let { onRead ->
+                        PropertySpec.builder(
+                            "${onRead.onReadMethodName}$ACTION",
+                            LambdaTypeName.get(
+                                returnType = BluetoothResultTypeBuilder(this, onRead, logger).responseClassName
+                            ).copy(suspending = true)
+                        )
+                            .addModifiers(KModifier.PRIVATE)
+                            .initializer("${onRead.onReadMethodName}$ACTION").build()
+                    },
+                    writeProperty?.let { onWrite ->
+                        PropertySpec.builder(
+                            "${onWrite.onWriteMethodName}$ACTION",
+                            LambdaTypeName.get(
+                                parameters = listOf(ParameterSpec(onWrite.simpleName.asString(), onWrite.type.resolve().toTypeName())),
+                                returnType = References.Bluetooth.writeResponse
+                            ).copy(suspending = true)
+                        )
+                            .addModifiers(KModifier.PRIVATE)
+                            .initializer("${onWrite.onWriteMethodName}$ACTION").build()
+                    }
+                )
+            )
             .addTypes(nested)
             .generateBody(declarations, generationType, imports)
         return Generated(listOf(typeSpec.build()), imports)
@@ -130,7 +192,7 @@ internal class BluetoothRemoteDescriptorBuilder(
         var hasReadMethod = false
         var hasWriteMethod = false
         declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
-            if (propertyDeclaration.isAnnotationPresent(Readable::class)) {
+            if (propertyDeclaration.isReadable) {
                     if (!hasReadMethod) {
                         hasReadMethod = true
                         val responseType = propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }
@@ -146,7 +208,7 @@ internal class BluetoothRemoteDescriptorBuilder(
                                         resultType.generateBluetoothResult(this, DESCRIPTOR)
                                     }
                                     GenerationType.Type.SIMULATOR -> {
-
+                                        addStatement("$RETURN ${propertyDeclaration.onReadMethodName}$ACTION()")
                                     }
                                 }
                             }
@@ -181,7 +243,7 @@ internal class BluetoothRemoteDescriptorBuilder(
                                         }
                                     }
                                     GenerationType.Type.SIMULATOR -> {
-
+                                        addStatement("$RETURN ${propertyDeclaration.onWriteMethodName}$ACTION(${propertyDeclaration.simpleName.asString()})")
                                     }
                                 }
                             }
