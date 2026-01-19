@@ -45,10 +45,6 @@ annotation class BluetoothService(
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Simulated
-
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.SOURCE)
 annotation class BluetoothCharacteristic(
     val uuid: String
 )
@@ -58,6 +54,14 @@ annotation class BluetoothCharacteristic(
 annotation class BluetoothDescriptor(
     val uuid: String
 )
+
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.SOURCE)
+annotation class AdvertisingName(val name: String)
+
+@Target(AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.SOURCE)
+annotation class Advertising
 
 @Target(AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.SOURCE)

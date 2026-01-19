@@ -34,6 +34,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.READ
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
+import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
 import com.splendo.kaluga.bluetooth.ksp.helpers.WRITE
 import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
 import com.splendo.kaluga.bluetooth.ksp.helpers.isReadable
@@ -58,6 +59,15 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
         val imports = Generated.Imports()
         val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
+            .addType(
+                TypeSpec.companionObjectBuilder()
+                    .addProperty(
+                        PropertySpec.builder(UUID, References.Bluetooth.uuid)
+                            .initializer("%M(%S)", References.Bluetooth.uuidFrom, descriptor.uuid)
+                            .build(),
+                    )
+                    .build(),
+            )
             .addTypes(nested)
             .generateBody(declarations, generationType, imports)
         return Generated(listOf(typeSpec.build()), imports)
@@ -92,11 +102,10 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                             )
                             .returns(className)
                             .addStatement(
-                                "$RETURN %T($CHARACTERISTIC.descriptors.%M(%M(%S))${if (needsFormatter) ", $FORMAT" else ""})",
+                                "$RETURN %T($CHARACTERISTIC.descriptors.%M(%T.$UUID)${if (needsFormatter) ", $FORMAT" else ""})",
                                 className,
                                 References.Bluetooth.get,
-                                References.Bluetooth.uuidFrom,
-                                descriptor.uuid,
+                                NameHelper.nameFor(this@generateBluetooth, generationType.copy(type = GenerationType.Type.API)),
                             )
                             .build(),
                     )

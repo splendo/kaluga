@@ -81,6 +81,7 @@ object References {
         val signedWriteProperty = className("CharacteristicProperty", "SignedWrite")
         val notifyProperty = className("CharacteristicProperty", "Notify")
         val indicatableProperty = className("CharacteristicProperty", "Indicatable")
+        val uuid = className("UUID")
 
         val get = memberName("get")
         val uuidFrom = memberName("uuidFrom")
@@ -105,7 +106,6 @@ object References {
 
         val exception = className("Exception")
         val pair = className("Pair")
-        val triple = className("Triple")
 
         val autoCloseable = className("AutoCloseable")
     }
@@ -115,8 +115,6 @@ object References {
 
         object Coroutines : ClassNameProvider {
             override val packageName: String = "${KotlinX.packageName}.coroutines"
-
-            val coroutineContext = className("CoroutineContext")
             val coroutineScope = className("CoroutineScope")
             val deferred = className("Deferred")
             val completableDeferred = className("CompletableDeferred")

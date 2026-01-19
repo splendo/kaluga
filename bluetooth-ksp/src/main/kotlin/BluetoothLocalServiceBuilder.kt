@@ -41,6 +41,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.SERVICE
 import com.splendo.kaluga.bluetooth.ksp.helpers.THIS
+import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
 import com.splendo.kaluga.bluetooth.ksp.helpers.WITH
 import com.splendo.kaluga.bluetooth.ksp.helpers.delegateName
 import com.squareup.kotlinpoet.CodeBlock
@@ -58,6 +59,15 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
     AbstractBluetoothClassBuilder(declaration, logger) {
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
         val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
+            .addType(
+                TypeSpec.companionObjectBuilder()
+                    .addProperty(
+                        PropertySpec.builder(UUID, References.Bluetooth.uuid)
+                            .initializer("%M(%S)", References.Bluetooth.uuidFrom, service.uuid)
+                            .build(),
+                    )
+                    .build(),
+            )
             .addTypes(nested)
             .addType(
                 TypeSpec.interfaceBuilder(DELEGATE)
@@ -131,7 +141,10 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                                 }
                                 addCode(
                                     CodeBlock.builder()
-                                        .beginControlFlow("$RETURN $BUILDER.service(%M(%S)) {", References.Bluetooth.uuidFrom, service.uuid)
+                                        .beginControlFlow(
+                                            "$RETURN $BUILDER.service(%T.$UUID) {",
+                                            NameHelper.nameFor(this@generateBluetooth, generationType.copy(type = GenerationType.Type.API)),
+                                        )
                                         .apply {
                                             declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
                                                 val typeDeclaration = propertyDeclaration.type.resolve().declaration
@@ -178,7 +191,10 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                                 }
                                 addCode(
                                     CodeBlock.builder()
-                                        .beginControlFlow("$RETURN $BUILDER.includedService(%M(%S)) {", References.Bluetooth.uuidFrom, service.uuid)
+                                        .beginControlFlow(
+                                            "$RETURN $BUILDER.includedService(%T.$UUID) {",
+                                            NameHelper.nameFor(this@generateBluetooth, generationType.copy(type = GenerationType.Type.API)),
+                                        )
                                         .apply {
                                             declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
                                                 val typeDeclaration = propertyDeclaration.type.resolve().declaration
@@ -256,7 +272,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                 PropertySpec.builder(IS_CLOSED, References.KotlinX.Coroutines.deferred.parameterizedBy(UNIT))
                     .addModifiers(KModifier.PRIVATE)
                     .initializer(IS_CLOSED)
-                    .build()
+                    .build(),
             )
             .addFunction(
                 FunSpec.builder(GENERATE_REMOTE)
@@ -334,11 +350,10 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                                         delegate(
                                             "lazy { %L }",
                                             CodeBlock.of(
-                                                "%T($SERVICE.includedServices.%M(%M(%S))${if (serviceNeedsFormat) ", $FORMAT" else ""})",
+                                                "%T($SERVICE.includedServices.%M(%T.$UUID)${if (serviceNeedsFormat) ", $FORMAT" else ""})",
                                                 NameHelper.nameFor(typeDeclaration, generationType),
                                                 References.Bluetooth.get,
-                                                References.Bluetooth.uuidFrom,
-                                                service.uuid,
+                                                NameHelper.nameFor(typeDeclaration, generationType.copy(type = GenerationType.Type.API)),
                                             ),
                                         )
                                     }
@@ -373,11 +388,10 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                                         delegate(
                                             "lazy { %L }",
                                             CodeBlock.of(
-                                                "%T($SERVICE.characteristics.%M(%M(%S))%L${if (characteristicNeedsFormat) ", $FORMAT" else ""})",
+                                                "%T($SERVICE.characteristics.%M(%T.$UUID)%L${if (characteristicNeedsFormat) ", $FORMAT" else ""})",
                                                 NameHelper.nameFor(typeDeclaration, generationType),
                                                 References.Bluetooth.get,
-                                                References.Bluetooth.uuidFrom,
-                                                characteristic.uuid,
+                                                NameHelper.nameFor(typeDeclaration, generationType.copy(type = GenerationType.Type.API)),
                                                 cast,
                                             ),
                                         )

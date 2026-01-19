@@ -28,7 +28,6 @@ const val THIS = "this"
 const val FORMAT = "format"
 const val FROM_SERVICE = "fromService"
 
-
 const val BLUETOOTH = "bluetooth"
 const val SIMULATED = "simulated"
 const val EXCEPTION = "exception"
@@ -53,12 +52,11 @@ const val ACTION = "Action"
 const val NOTIFY = "notify"
 const val NOTIFY_ALL = "notifyAll"
 const val CHANGED = "Changed"
-
-const val BUILD = "build"
 const val BUILDER = "builder"
 
 const val OFFSET = "offset"
 
+const val UUID = "UUID"
 const val REMOTES = "remotes"
 const val GENERATE_REMOTE = "generateRemote"
 

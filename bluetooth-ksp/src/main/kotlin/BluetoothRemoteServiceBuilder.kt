@@ -31,6 +31,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.SERVICE
+import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LIST
@@ -50,6 +51,15 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
         val imports = Generated.Imports()
         val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
+            .addType(
+                TypeSpec.companionObjectBuilder()
+                    .addProperty(
+                        PropertySpec.builder(UUID, References.Bluetooth.uuid)
+                            .initializer("%M(%S)", References.Bluetooth.uuidFrom, service.uuid)
+                            .build(),
+                    )
+                    .build(),
+            )
             .addTypes(nested)
             .generateBody(declarations, generationType, imports)
         return Generated(listOf(typeSpec.build()), imports)
@@ -84,11 +94,10 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
                             )
                             .returns(className)
                             .addStatement(
-                                "return %T($DISCOVERED_SERVICES.%M(%M(%S))${if (needsFormatter) ", $FORMAT" else ""})",
+                                "return %T($DISCOVERED_SERVICES.%M(%T.$UUID)${if (needsFormatter) ", $FORMAT" else ""})",
                                 className,
                                 References.Bluetooth.get,
-                                References.Bluetooth.uuidFrom,
-                                service.uuid,
+                                NameHelper.nameFor(this@generateBluetooth, generationType.copy(type = GenerationType.Type.API)),
                             )
                             .build(),
                     )
@@ -102,11 +111,10 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
                             )
                             .returns(className)
                             .addStatement(
-                                "$RETURN %T($SERVICE.includedServices.%M(%M(%S))${if (needsFormatter) ", $FORMAT" else ""})",
+                                "$RETURN %T($SERVICE.includedServices.%M(%T.$UUID)${if (needsFormatter) ", $FORMAT" else ""})",
                                 className,
                                 References.Bluetooth.get,
-                                References.Bluetooth.uuidFrom,
-                                service.uuid,
+                                NameHelper.nameFor(this@generateBluetooth, generationType.copy(type = GenerationType.Type.API)),
                             )
                             .build(),
                     )

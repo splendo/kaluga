@@ -90,9 +90,9 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
                                     ),
                                 )
                                 .addStatement("$RETURN server.$GENERATE_CLIENT($IDENTIFIER)")
-                        }.build()
+                        }.build(),
                     )
-                    .build()
+                    .build(),
             )
             .addTypes(nested)
             .generateBody(declarations, generationType, imports)

@@ -55,6 +55,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.SUBSCRIBERS
 import com.splendo.kaluga.bluetooth.ksp.helpers.THIS
+import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
 import com.splendo.kaluga.bluetooth.ksp.helpers.WITH
 import com.splendo.kaluga.bluetooth.ksp.helpers.delegateName
 import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
@@ -92,6 +93,15 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
         val imports = Generated.Imports()
         val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
+            .addType(
+                TypeSpec.companionObjectBuilder()
+                    .addProperty(
+                        PropertySpec.builder(UUID, References.Bluetooth.uuid)
+                            .initializer("%M(%S)", References.Bluetooth.uuidFrom, characteristic.uuid)
+                            .build(),
+                    )
+                    .build(),
+            )
             .addTypes(nested)
             .addType(
                 TypeSpec.interfaceBuilder(DELEGATE)
@@ -248,7 +258,10 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                 }
                                 addCode(
                                     CodeBlock.builder()
-                                        .beginControlFlow("$RETURN $BUILDER.characteristic(%M(%S)) {", References.Bluetooth.uuidFrom, characteristic.uuid)
+                                        .beginControlFlow(
+                                            "$RETURN $BUILDER.characteristic(%T.$UUID) {",
+                                            NameHelper.nameFor(this@generateBluetooth, generationType.copy(type = GenerationType.Type.API)),
+                                        )
                                         .apply {
                                             var hasReadMethod = false
                                             var hasWriteMethod = false
@@ -483,7 +496,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                 PropertySpec.builder(IS_CLOSED, References.KotlinX.Coroutines.deferred.parameterizedBy(UNIT))
                     .addModifiers(KModifier.PRIVATE)
                     .initializer(IS_CLOSED)
-                    .build()
+                    .build(),
             )
             .apply {
                 if (notifiable != null) {
@@ -522,7 +535,11 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                         References.KotlinX.Coroutines.Flow.distinctUntilChanged,
                                     )
                                         .indent()
-                                    addStatement(".%M { _${notifiable.simpleName.asString()}$SUBSCRIBERS.%M { emptyList() } }", References.KotlinX.Coroutines.Flow.onCompletion,  References.KotlinX.Coroutines.Flow.update)
+                                    addStatement(
+                                        ".%M { _${notifiable.simpleName.asString()}$SUBSCRIBERS.%M { emptyList() } }",
+                                        References.KotlinX.Coroutines.Flow.onCompletion,
+                                        References.KotlinX.Coroutines.Flow.update,
+                                    )
                                     beginControlFlow(".%M { hasSubscribed ->", References.KotlinX.Coroutines.Flow.collect)
                                     beginControlFlow("if (hasSubscribed)")
                                     addStatement("_${notifiable.simpleName.asString()}$SUBSCRIBERS.%M { it + $IDENTIFIER }", References.KotlinX.Coroutines.Flow.update)
@@ -788,18 +805,20 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                     delegate(
                                         "lazy { %L }",
                                         CodeBlock.of(
-                                            "%T($CHARACTERISTIC.descriptors.%M(%M(%S)))",
+                                            "%T($CHARACTERISTIC.descriptors.%M(%T.$UUID))",
                                             NameHelper.nameFor(typeDeclaration, generationType),
                                             References.Bluetooth.get,
-                                            References.Bluetooth.uuidFrom,
-                                            descriptor.uuid,
+                                            NameHelper.nameFor(typeDeclaration, generationType.copy(type = GenerationType.Type.API)),
                                         ),
                                     )
                                 }
 
                                 GenerationType.Type.SIMULATOR -> {
                                     initializer(
-                                        CodeBlock.of("%T(${declaration.delegateName}.${propertyDeclaration.delegateName}, $IS_CLOSED)", NameHelper.nameFor(typeDeclaration, generationType)),
+                                        CodeBlock.of(
+                                            "%T(${declaration.delegateName}.${propertyDeclaration.delegateName}, $IS_CLOSED)",
+                                            NameHelper.nameFor(typeDeclaration, generationType),
+                                        ),
                                     )
                                 }
                             }

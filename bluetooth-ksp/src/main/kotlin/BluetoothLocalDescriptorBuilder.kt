@@ -43,6 +43,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.REMOTES
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.THIS
+import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
 import com.splendo.kaluga.bluetooth.ksp.helpers.WITH
 import com.splendo.kaluga.bluetooth.ksp.helpers.delegateName
 import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
@@ -66,6 +67,15 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
     AbstractBluetoothClassBuilder(declaration, logger) {
     override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
         val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
+            .addType(
+                TypeSpec.companionObjectBuilder()
+                    .addProperty(
+                        PropertySpec.builder(UUID, References.Bluetooth.uuid)
+                            .initializer("%M(%S)", References.Bluetooth.uuidFrom, descriptor.uuid)
+                            .build(),
+                    )
+                    .build(),
+            )
             .addTypes(nested)
             .addType(
                 TypeSpec.interfaceBuilder(DELEGATE)
@@ -181,7 +191,10 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
                                 }
                                 addCode(
                                     CodeBlock.builder()
-                                        .beginControlFlow("$RETURN $BUILDER.descriptor(%M(%S)) {", References.Bluetooth.uuidFrom, descriptor.uuid)
+                                        .beginControlFlow(
+                                            "$RETURN $BUILDER.descriptor(%T.$UUID) {",
+                                            NameHelper.nameFor(this@generateBluetooth, generationType.copy(type = GenerationType.Type.API)),
+                                        )
                                         .apply {
                                             var hasReadMethod = false
                                             var hasWriteMethod = false
@@ -308,7 +321,7 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
                 PropertySpec.builder(IS_CLOSED, References.KotlinX.Coroutines.deferred.parameterizedBy(UNIT))
                     .addModifiers(KModifier.PRIVATE)
                     .initializer(IS_CLOSED)
-                    .build()
+                    .build(),
             )
             .addFunction(
                 FunSpec.builder(GENERATE_REMOTE)

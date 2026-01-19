@@ -23,10 +23,13 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import com.splendo.kaluga.bluetooth.annotations.Advertising
+import com.splendo.kaluga.bluetooth.annotations.AdvertisingName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.splendo.kaluga.bluetooth.ksp.helpers.BLUETOOTH
 import com.splendo.kaluga.bluetooth.ksp.helpers.BUILDER
 import com.splendo.kaluga.bluetooth.ksp.helpers.CONFIGURE
+import com.splendo.kaluga.bluetooth.ksp.helpers.COROUTINE_CONTEXT
 import com.splendo.kaluga.bluetooth.ksp.helpers.COROUTINE_SCOPE
 import com.splendo.kaluga.bluetooth.ksp.helpers.DELEGATE
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
@@ -40,6 +43,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.SIMULATED
 import com.splendo.kaluga.bluetooth.ksp.helpers.THIS
+import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
 import com.splendo.kaluga.bluetooth.ksp.helpers.WITH
 import com.splendo.kaluga.bluetooth.ksp.helpers.delegateName
 import com.squareup.kotlinpoet.CodeBlock
@@ -61,8 +65,6 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
         const val SERVER = "server"
         const val SETTINGS_BUILDER = "settingsBuilder"
         const val PERMISSIONS = "permissions"
-        const val COROUTINE_CONTEXT = "coroutineContext"
-        const val ADVERTISEMENT_BUILDER = "advertisementBuilder"
         const val GENERATE_CLIENT = "generateClient"
     }
 
@@ -104,14 +106,6 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                                         ParameterSpec.builder(COROUTINE_CONTEXT, References.Kotlin.Coroutines.coroutineContext)
                                             .defaultValue("%M(%S)", References.Base.singleThreadDispatcher, NameHelper.nameFor(declaration, generationType).simpleName)
                                             .build(),
-                                        ParameterSpec.builder(
-                                            ADVERTISEMENT_BUILDER,
-                                            LambdaTypeName.get(
-                                                receiver = References.Bluetooth.Server.advertiseDataBuilder,
-                                                returnType = UNIT,
-                                            ),
-                                        ).defaultValue(CodeBlock.of("{ }"))
-                                            .build(),
                                     ),
                                 )
                                 .addCode(
@@ -125,7 +119,27 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                                         .unindent()
                                         .addStatement(") {")
                                         .indent()
-                                        .addStatement("advertise($ADVERTISEMENT_BUILDER)")
+                                        .beginControlFlow("advertise")
+                                        .apply {
+                                            declaration.getAnnotationsByType(AdvertisingName::class).firstOrNull()?.let {
+                                                addStatement("localName = %S", it.name)
+                                            }
+                                            val advertisingUUIDs = declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull {
+                                                val resolvedDeclaration = it.type.resolve().declaration
+                                                if (resolvedDeclaration is KSClassDeclaration &&
+                                                    resolvedDeclaration.isAnnotationPresent(BluetoothService::class) &&
+                                                    it.isAnnotationPresent(Advertising::class)
+                                                ) {
+                                                    CodeBlock.of("%T.$UUID", NameHelper.nameFor(resolvedDeclaration, generationType))
+                                                } else {
+                                                    null
+                                                }
+                                            }.toList()
+                                            if (advertisingUUIDs.isNotEmpty()) {
+                                                addStatement("serviceUUIDs(%L)", advertisingUUIDs.joinToCode(separator = ", "))
+                                            }
+                                        }
+                                        .endControlFlow()
                                         .addStatement("%T.$CONFIGURE($THIS,$SERVER$DELEGATE${if (delegateNeedsFormatter) ", $FORMAT" else ""})", returnType)
                                         .unindent()
                                         .addStatement("},")
@@ -147,11 +161,15 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                             .addParameter(
                                 ParameterSpec.builder(COROUTINE_CONTEXT, References.Kotlin.Coroutines.coroutineContext)
                                     .defaultValue("%M(%S)", References.Base.singleThreadDispatcher, NameHelper.nameFor(declaration, generationType).simpleName)
-                                    .build()
+                                    .build(),
                             )
                             .returns(NameHelper.nameFor(this@generateAPI, generationType.copy(type = GenerationType.Type.SIMULATOR)))
-                            .addCode("$RETURN %T(${delegateParameter.name}, %T($COROUTINE_CONTEXT))", NameHelper.nameFor(this@generateAPI, generationType.copy(type = GenerationType.Type.SIMULATOR)), References.KotlinX.Coroutines.coroutineScope)
-                            .build()
+                            .addCode(
+                                "$RETURN %T(${delegateParameter.name}, %T($COROUTINE_CONTEXT))",
+                                NameHelper.nameFor(this@generateAPI, generationType.copy(type = GenerationType.Type.SIMULATOR)),
+                                References.KotlinX.Coroutines.coroutineScope,
+                            )
+                            .build(),
                     )
                     .build(),
             )
@@ -259,7 +277,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                 FunSpec.builder("close")
                     .addModifiers(KModifier.OVERRIDE)
                     .addCode(CodeBlock.of("$SERVER.close()"))
-                    .build()
+                    .build(),
             )
         return Generated(listOf(typeSpec.build()), imports)
     }
@@ -279,7 +297,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                             ParameterSpec(COROUTINE_SCOPE, References.KotlinX.Coroutines.coroutineScope),
                         ),
 
-                        )
+                    )
                     .build(),
             )
             .addSuperinterface(NameHelper.nameFor(this, generationType.copy(type = GenerationType.Type.API)))
@@ -304,7 +322,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                 PropertySpec.builder(IS_CLOSED, References.KotlinX.Coroutines.completableDeferred.parameterizedBy(UNIT))
                     .addModifiers(KModifier.PRIVATE)
                     .initializer("%T()", References.KotlinX.Coroutines.completableDeferred)
-                    .build()
+                    .build(),
             )
             .addFunction(
                 FunSpec.builder(GENERATE_CLIENT)
@@ -349,9 +367,9 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                         CodeBlock.builder()
                             .addStatement("$IS_CLOSED.complete(Unit)")
                             .addStatement("$COROUTINE_SCOPE.%M()", References.KotlinX.Coroutines.cancel)
-                            .build()
+                            .build(),
                     )
-                    .build()
+                    .build(),
             )
             .generateBody(declarations, generationType, imports)
         return Generated(listOf(typeSpec.build()), imports)
@@ -377,11 +395,10 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                                         delegate(
                                             "lazy { %L }",
                                             CodeBlock.of(
-                                                "%T($SERVER.services.value.%M(%M(%S))${if (serviceNeedsFormat) ", $FORMAT" else ""})",
+                                                "%T($SERVER.services.value.%M(%T.$UUID)${if (serviceNeedsFormat) ", $FORMAT" else ""})",
                                                 NameHelper.nameFor(typeDeclaration, generationType),
                                                 References.Bluetooth.get,
-                                                References.Bluetooth.uuidFrom,
-                                                service.uuid,
+                                                NameHelper.nameFor(typeDeclaration, generationType.copy(type = GenerationType.Type.API)),
                                             ),
                                         )
                                     }

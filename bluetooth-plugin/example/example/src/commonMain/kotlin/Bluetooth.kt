@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.example
 
+import com.splendo.kaluga.bluetooth.annotations.Advertising
+import com.splendo.kaluga.bluetooth.annotations.AdvertisingName
 import com.splendo.kaluga.bluetooth.annotations.Bluetooth
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
@@ -35,10 +37,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 
 @Bluetooth
+@AdvertisingName("TestDevice")
 interface BluetoothTest {
     @Bluetooth
     interface Nested
 
+    @Advertising
     val testService: TestService
 }
 
