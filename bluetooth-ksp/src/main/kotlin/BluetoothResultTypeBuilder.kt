@@ -17,11 +17,9 @@
 
 package com.splendo.kaluga.bluetooth.ksp
 
-import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
-import com.splendo.kaluga.bluetooth.annotations.Readable
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.OFFSET
@@ -40,11 +38,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.toTypeName
 
-internal class BluetoothResultTypeBuilder(
-    val classDeclaration: KSClassDeclaration,
-    val propertyDeclaration: KSPropertyDeclaration,
-    private val logger: KSPLogger,
-) {
+internal class BluetoothResultTypeBuilder(val classDeclaration: KSClassDeclaration, val propertyDeclaration: KSPropertyDeclaration, private val logger: KSPLogger) {
 
     companion object {
         fun fromClassDeclaration(declaration: KSClassDeclaration, logger: KSPLogger): BluetoothResultTypeBuilder? =
@@ -113,13 +107,17 @@ internal class BluetoothResultTypeBuilder(
             CodeBlock.builder()
                 .beginControlFlow("$RETURN $WHEN (val $readResult = $attributeName.$READ())")
                 .beginControlFlow("is %T ->", References.Bluetooth.readSuccess)
-                .addStatement("%T.$SUCCESS($FORMAT.decodeFromByteArray(%L, $readResult.value))", responseClassName, propertyDeclaration.type.resolve().toTypeName().serializer(logger))
+                .addStatement(
+                    "%T.$SUCCESS($FORMAT.decodeFromByteArray(%L, $readResult.value))",
+                    responseClassName,
+                    propertyDeclaration.type.resolve().toTypeName().serializer(logger),
+                )
                 .endControlFlow()
                 .beginControlFlow("is %T ->", References.Bluetooth.readError)
                 .addStatement("%T.$FAILURE($readResult)", responseClassName)
                 .endControlFlow()
                 .endControlFlow()
-                .build()
+                .build(),
         )
     } else {
         funSpec.addStatement("$RETURN $attributeName.$READ()")
@@ -129,7 +127,11 @@ internal class BluetoothResultTypeBuilder(
         CodeBlock.builder()
             .beginControlFlow("$WHEN (val response = %L)) {", addReadStatement)
             .beginControlFlow("is %T.$SUCCESS -> {", responseClassName)
-            .addStatement("%T($FORMAT.encodeToByteArray(%L, response.$RESPONSE).drop($OFFSET))", References.Bluetooth.readSuccess, propertyDeclaration.type.resolve().toTypeName().serializer(logger))
+            .addStatement(
+                "%T($FORMAT.encodeToByteArray(%L, response.$RESPONSE).drop($OFFSET))",
+                References.Bluetooth.readSuccess,
+                propertyDeclaration.type.resolve().toTypeName().serializer(logger),
+            )
             .endControlFlow()
             .beginControlFlow("is %T.$FAILURE -> {", responseClassName)
             .addStatement("response.$ERROR")
@@ -140,11 +142,5 @@ internal class BluetoothResultTypeBuilder(
         CodeBlock.builder()
             .addStatement("%L, $OFFSET)", addReadStatement)
             .build()
-    }
-
-    fun generateDefaultResult(funSpec: CodeBlock.Builder) = if (hasCustomResult) {
-        funSpec.addStatement("%T.$FAILURE(%T)", responseClassName, References.Bluetooth.requestNotSupported)
-    } else {
-        funSpec.addStatement("%T", References.Bluetooth.requestNotSupported)
     }
 }

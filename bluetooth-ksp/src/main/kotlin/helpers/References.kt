@@ -73,8 +73,8 @@ object References {
         val readResponse = className("GattResponse", "ReadResponse")
         val readSuccess = className("GattResponse", "ReadSuccess")
         val readError = className("GattResponse", "ReadError")
-        val requestNotSupported = className("GattResponse", "RequestNotSupported")
-        val writeRequestRejected = className("GattResponse", "WriteRequestRejected")
+
+        val deviceUnavailable = className("GattResponse", "DeviceUnavailable")
 
         val writeProperty = className("CharacteristicProperty", "Write")
         val writeWithoutResponseProperty = className("CharacteristicProperty", "WriteWithoutResponse")
@@ -107,6 +107,7 @@ object References {
         val pair = className("Pair")
         val triple = className("Triple")
 
+        val autoCloseable = className("AutoCloseable")
     }
 
     object KotlinX : ClassNameProvider {
@@ -115,13 +116,38 @@ object References {
         object Coroutines : ClassNameProvider {
             override val packageName: String = "${KotlinX.packageName}.coroutines"
 
+            val coroutineContext = className("CoroutineContext")
+            val coroutineScope = className("CoroutineScope")
+            val deferred = className("Deferred")
+            val completableDeferred = className("CompletableDeferred")
+
+            val async = memberName("async")
+            val launch = memberName("launch")
+            val cancel = memberName("cancel")
+            val cancelChildren = memberName("cancelChildren")
+            val coroutineScopeMethod = memberName("coroutineScope")
+
             object Flow : ClassNameProvider {
                 override val packageName: String = "${Coroutines.packageName}.flow"
                 val flow = className("Flow")
+                val mutableStateFlow = className("MutableStateFlow")
+                val mutableSharedFlow = className("MutableSharedFlow")
                 val first = memberName("first")
                 val map = memberName("map")
+                val asStateFlow = memberName("asStateFlow")
+                val asSharedFlow = memberName("asSharedFlow")
+                val distinctUntilChanged = memberName("distinctUntilChanged")
+                val collect = memberName("collect")
+                val update = memberName("update")
+                val onCompletion = memberName("onCompletion")
+            }
+
+            object Selects : ClassNameProvider {
+
+                override val packageName: String = "${Coroutines.packageName}.selects"
+
+                val select = memberName("select")
             }
         }
     }
-
 }

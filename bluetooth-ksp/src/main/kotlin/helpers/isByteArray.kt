@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth.ksp.helpers
 
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.squareup.kotlinpoet.BYTE_ARRAY
-import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 
 val KSPropertyDeclaration.isByteArray: Boolean get() = type.resolve().toTypeName() == BYTE_ARRAY

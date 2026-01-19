@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.ksp.helpers
 
+import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 
 const val RETURN = "return"
@@ -27,6 +28,9 @@ const val THIS = "this"
 const val FORMAT = "format"
 const val FROM_SERVICE = "fromService"
 
+
+const val BLUETOOTH = "bluetooth"
+const val SIMULATED = "simulated"
 const val EXCEPTION = "exception"
 const val IDENTIFIER = "identifier"
 const val SERVICE = "service"
@@ -55,5 +59,16 @@ const val BUILDER = "builder"
 
 const val OFFSET = "offset"
 
+const val REMOTES = "remotes"
+const val GENERATE_REMOTE = "generateRemote"
+
+const val COROUTINE_SCOPE = "coroutineScope"
+const val COROUTINE_CONTEXT = "coroutineContext"
+const val IS_CLOSED = "isClosed"
+
+val KSDeclaration.delegateName: String get() = "${simpleName.asString().replaceFirstChar { it.lowercase() }}$DELEGATE"
+
 val KSPropertyDeclaration.onReadMethodName: String get() = "$ON_READ${simpleName.asString().replaceFirstChar { it.uppercase() }}"
 val KSPropertyDeclaration.onWriteMethodName: String get() = "$ON_WRITE${simpleName.asString().replaceFirstChar { it.uppercase() }}"
+val KSPropertyDeclaration.subscribeMethodName: String get() = "$ON_SUBSCRIBE${simpleName.asString().replaceFirstChar { it.uppercase() }}"
+val KSPropertyDeclaration.unsubscribeMethodName: String get() = "$ON_UNSUBSCRIBE${simpleName.asString().replaceFirstChar { it.uppercase() }}"

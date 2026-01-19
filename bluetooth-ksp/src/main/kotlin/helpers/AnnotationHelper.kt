@@ -27,5 +27,6 @@ import com.splendo.kaluga.bluetooth.annotations.WritableSigned
 import com.splendo.kaluga.bluetooth.annotations.WritableWithoutResponse
 
 val KSAnnotated.isReadable: Boolean get() = isAnnotationPresent(Readable::class)
-val KSAnnotated.isWritable: Boolean get() = isAnnotationPresent(Writable::class) || isAnnotationPresent(WritableWithoutResponse::class) || isAnnotationPresent(WritableSigned::class)
+val KSAnnotated.isWritable: Boolean get() = isAnnotationPresent(Writable::class) || isAnnotationPresent(WritableWithoutResponse::class) ||
+    isAnnotationPresent(WritableSigned::class)
 val KSAnnotated.isNotifiable: Boolean get() = isAnnotationPresent(Notifiable::class) || isAnnotationPresent(Indicatable::class)

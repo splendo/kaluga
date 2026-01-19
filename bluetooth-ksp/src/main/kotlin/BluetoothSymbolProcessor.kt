@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.ksp
 
-import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.processing.Dependencies
@@ -27,7 +26,6 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.Bluetooth
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
 import com.splendo.kaluga.bluetooth.annotations.BluetoothClient
@@ -39,12 +37,7 @@ import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.splendo.kaluga.bluetooth.ksp.AbstractBluetoothClassBuilder.Generated
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.Import
-import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.writeTo
-import kotlin.math.log
-import kotlin.sequences.forEach
 
 class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
 
@@ -134,9 +127,7 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
         FileSpec.builder(serviceClass).generate(generated)
     }
 
-    private fun KSClassDeclaration.generateBluetoothCharacteristicFile(
-        characteristic: BluetoothCharacteristic
-    ) {
+    private fun KSClassDeclaration.generateBluetoothCharacteristicFile(characteristic: BluetoothCharacteristic) {
         val characteristicClass = ClassName(packageName.asString(), clientName(prefix = "RemoteAndLocal", postFix = ""))
         val generated = listOfNotNull(
             BluetoothResultTypeBuilder.fromClassDeclaration(this, logger)?.generateType()?.let {
@@ -153,9 +144,7 @@ class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : Symbol
         FileSpec.builder(characteristicClass).generate(generated)
     }
 
-    private fun KSClassDeclaration.generateBluetoothDescriptorFile(
-        descriptor: BluetoothDescriptor
-    ) {
+    private fun KSClassDeclaration.generateBluetoothDescriptorFile(descriptor: BluetoothDescriptor) {
         val descriptorClass = ClassName(packageName.asString(), clientName(prefix = "RemoteAndLocal", postFix = ""))
         val generated = listOfNotNull(
             BluetoothResultTypeBuilder.fromClassDeclaration(this, logger)?.generateType()?.let {

@@ -26,15 +26,9 @@ import com.splendo.kaluga.bluetooth.annotations.BluetoothClient
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.BluetoothServer
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
-import com.splendo.kaluga.bluetooth.annotations.Indicatable
-import com.splendo.kaluga.bluetooth.annotations.Notifiable
-import com.splendo.kaluga.bluetooth.annotations.Readable
 import com.splendo.kaluga.bluetooth.annotations.Writable
-import com.splendo.kaluga.bluetooth.annotations.WritableSigned
-import com.splendo.kaluga.bluetooth.annotations.WritableWithoutResponse
 import com.squareup.kotlinpoet.BYTE_ARRAY
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 
 internal object NeedsFormatterHelper {
@@ -42,42 +36,51 @@ internal object NeedsFormatterHelper {
     enum class Target {
         CLIENT,
         SERVER,
-        SERVER_DSL
+        SERVER_DSL,
     }
     fun needsBluetoothFormatter(declaration: KSClassDeclaration, target: Target = Target.CLIENT): Boolean = when {
         declaration.isAnnotationPresent(Bluetooth::class) ||
-        declaration.isAnnotationPresent(BluetoothClient::class) ||
-        declaration.isAnnotationPresent(BluetoothServer::class) ||
-        declaration.isAnnotationPresent(BluetoothService::class) -> {
+            declaration.isAnnotationPresent(BluetoothClient::class) ||
+            declaration.isAnnotationPresent(BluetoothServer::class) ||
+            declaration.isAnnotationPresent(BluetoothService::class) -> {
             declaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { property ->
                 (property.type.resolve().declaration as? KSClassDeclaration)?.let {
                     needsBluetoothFormatter(it, target)
                 } ?: false
             }
         }
+
         declaration.isAnnotationPresent(BluetoothCharacteristic::class) -> {
             declaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { property ->
                 when {
-                    ((property.isReadable ||
-                            property.isWritable
-                            ) && target != Target.SERVER) ||
-                            ((property.isNotifiable) && target != Target.SERVER_DSL) -> property.type.resolve().toTypeName() != BYTE_ARRAY
+                    (
+                        (
+                            property.isReadable ||
+                                property.isWritable
+                            ) && target != Target.SERVER
+                        ) ||
+                        ((property.isNotifiable) && target != Target.SERVER_DSL) -> property.type.resolve().toTypeName() != BYTE_ARRAY
+
                     else -> (property.type.resolve().declaration as? KSClassDeclaration)?.let {
                         needsBluetoothFormatter(it, target)
                     } ?: false
                 }
             }
         }
+
         declaration.isAnnotationPresent(BluetoothDescriptor::class) -> {
             declaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { property ->
                 when {
                     target == Target.SERVER -> false
+
                     property.isReadable ||
-                            property.isAnnotationPresent(Writable::class) -> property.type.resolve().toTypeName() != ClassName("kotlin", "ByteArray")
+                        property.isAnnotationPresent(Writable::class) -> property.type.resolve().toTypeName() != ClassName("kotlin", "ByteArray")
+
                     else -> false
                 }
             }
         }
+
         else -> false
     }
 }

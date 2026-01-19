@@ -24,17 +24,13 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.splendo.kaluga.bluetooth.annotations.Bluetooth
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
 import com.splendo.kaluga.bluetooth.annotations.BluetoothClient
-import com.splendo.kaluga.bluetooth.annotations.BluetoothClientName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.BluetoothServer
-import com.splendo.kaluga.bluetooth.annotations.BluetoothServerName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.Import
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.TypeSpec
-import kotlin.reflect.KClass
 
 internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDeclaration, val logger: KSPLogger) {
 
@@ -69,9 +65,12 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
             GenerationType.Type.BLUETOOTH -> generateBluetooth(generationType, nested.flatMap { it.typeSpec })
             GenerationType.Type.SIMULATOR -> generateSimulated(generationType, nested.flatMap { it.typeSpec })
         }
-        Generated(newGenerated.typeSpec, newGenerated.imports.apply {
-            nested.forEach { add(it.imports) }
-        } )
+        Generated(
+            newGenerated.typeSpec,
+            newGenerated.imports.apply {
+                nested.forEach { add(it.imports) }
+            },
+        )
     }
 
     abstract fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated
@@ -133,7 +132,7 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
                 add(BluetoothRemoteCharacteristicBuilder(characteristicDeclaration, characteristic, logger).generate(generationType))
             }
             if (generationType.side == GenerationType.Side.SERVER) {
-                add(BluetoothLocalCharacteristicBuilder(characteristicDeclaration, characteristic,logger).generate(generationType))
+                add(BluetoothLocalCharacteristicBuilder(characteristicDeclaration, characteristic, logger).generate(generationType))
             }
         }
 
@@ -156,6 +155,6 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
 
     protected val GenerationType.additionalModifiers: List<KModifier> get() = listOfNotNull(
         KModifier.ABSTRACT.takeIf { type == GenerationType.Type.API },
-        KModifier.OVERRIDE.takeIf { type != GenerationType.Type.API }
+        KModifier.OVERRIDE.takeIf { type != GenerationType.Type.API },
     )
 }
