@@ -65,8 +65,8 @@ import com.squareup.kotlinpoet.ksp.toTypeName
 
 internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, private val descriptor: BluetoothDescriptor, logger: KSPLogger) :
     AbstractBluetoothClassBuilder(declaration, logger) {
-    override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
+    override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec =
+        TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
             .addType(
                 TypeSpec.companionObjectBuilder()
                     .addProperty(
@@ -155,14 +155,11 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
                         }
                     }
                     .build(),
-            )
-        return Generated(listOf(typeSpec.build()))
-    }
+            ).build()
 
-    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val imports = Generated.Imports()
+    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
         val className = NameHelper.nameFor(this, generationType)
-        val typeSpec = TypeSpec.classBuilder(className).addModifiers(KModifier.DATA)
+        return TypeSpec.classBuilder(className).addModifiers(KModifier.DATA)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
                     .addParameters(
@@ -289,16 +286,15 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
                 ),
             )
             .addTypes(nested)
-        return Generated(listOf(typeSpec.build()), imports)
+            .build()
     }
 
-    override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val imports = Generated.Imports()
+    override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
         val className = NameHelper.nameFor(this, generationType)
         val delegate = NameHelper.nameFor(this, generationType.copy(type = GenerationType.Type.API)).nestedClass(DELEGATE)
         val remote = NameHelper.nameFor(this, generationType.copy(side = GenerationType.Side.CLIENT))
         val properties = declarations.filterIsInstance<KSPropertyDeclaration>()
-        val typeSpec = TypeSpec.classBuilder(className)
+        return TypeSpec.classBuilder(className)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
                     .addParameter(delegateName, delegate)
@@ -390,6 +386,6 @@ internal class BluetoothLocalDescriptorBuilder(declaration: KSClassDeclaration, 
                     .build(),
             )
             .addTypes(nested)
-        return Generated(listOf(typeSpec.build()), imports)
+            .build()
     }
 }

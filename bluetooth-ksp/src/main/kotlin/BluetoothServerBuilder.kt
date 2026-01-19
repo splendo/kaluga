@@ -54,10 +54,10 @@ import com.squareup.kotlinpoet.MUTABLE_MAP
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.joinToCode
-import java.sql.Ref
 
 internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: KSPLogger) : AbstractBluetoothClassBuilder(declaration, logger) {
 
@@ -68,14 +68,14 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
         const val GENERATE_CLIENT = "generateClient"
     }
 
-    override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
+    override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
         val delegateParameter = ParameterSpec(
             "$SERVER$DELEGATE".replaceFirstChar {
                 it.lowercase()
             },
             NameHelper.nameFor(this@generateAPI, generationType).nestedClass(DELEGATE),
         )
-        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
+        return TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
             .addSuperinterface(References.Kotlin.autoCloseable)
             .addType(
                 TypeSpec.companionObjectBuilder()
@@ -103,6 +103,15 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                                             ),
                                         ).defaultValue("{ %T(permissions = it) }", References.Bluetooth.Server.serverSettings)
                                             .build(),
+                                        ParameterSpec.builder(
+                                            "serverName",
+                                            STRING.copy(nullable = true),
+                                        ).defaultValue(
+                                            declaration.getAnnotationsByType(AdvertisingName::class).firstOrNull()?.let {
+                                                CodeBlock.of("%S", it.name)
+                                            } ?: CodeBlock.of("null"),
+                                        )
+                                            .build(),
                                         ParameterSpec.builder(COROUTINE_CONTEXT, References.Kotlin.Coroutines.coroutineContext)
                                             .defaultValue("%M(%S)", References.Base.singleThreadDispatcher, NameHelper.nameFor(declaration, generationType).simpleName)
                                             .build(),
@@ -121,9 +130,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                                         .indent()
                                         .beginControlFlow("advertise")
                                         .apply {
-                                            declaration.getAnnotationsByType(AdvertisingName::class).firstOrNull()?.let {
-                                                addStatement("localName = %S", it.name)
-                                            }
+                                            addStatement("localName = serverName")
                                             val advertisingUUIDs = declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull {
                                                 val resolvedDeclaration = it.type.resolve().declaration
                                                 if (resolvedDeclaration is KSClassDeclaration &&
@@ -197,15 +204,14 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                     )
                     .build(),
             )
-            .generateBody(declarations, generationType, Generated.Imports())
-        return Generated(listOf(typeSpec.build()))
+            .generateBody(declarations, generationType)
+            .build()
     }
 
-    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val imports = Generated.Imports()
+    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
         val className = NameHelper.nameFor(this, generationType)
         val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(this@generateBluetooth, NeedsFormatterHelper.Target.SERVER)
-        val typeSpec = TypeSpec.classBuilder(className).addModifiers(KModifier.DATA)
+        return TypeSpec.classBuilder(className).addModifiers(KModifier.DATA)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
                     .addParameters(
@@ -272,23 +278,22 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                 ),
             )
             .addTypes(nested)
-            .generateBody(declarations, generationType, imports)
+            .generateBody(declarations, generationType)
             .addFunction(
                 FunSpec.builder("close")
                     .addModifiers(KModifier.OVERRIDE)
                     .addCode(CodeBlock.of("$SERVER.close()"))
                     .build(),
             )
-        return Generated(listOf(typeSpec.build()), imports)
+            .build()
     }
 
-    override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val imports = Generated.Imports()
+    override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
         val className = NameHelper.nameFor(this, generationType)
         val delegate = NameHelper.nameFor(this, generationType.copy(type = GenerationType.Type.API)).nestedClass(DELEGATE)
         val remote = NameHelper.nameFor(this, generationType.copy(side = GenerationType.Side.CLIENT))
         val properties = declarations.filterIsInstance<KSPropertyDeclaration>()
-        val typeSpec = TypeSpec.classBuilder(className)
+        return TypeSpec.classBuilder(className)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
                     .addParameters(
@@ -371,11 +376,11 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                     )
                     .build(),
             )
-            .generateBody(declarations, generationType, imports)
-        return Generated(listOf(typeSpec.build()), imports)
+            .generateBody(declarations, generationType)
+            .build()
     }
 
-    private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, generationType: GenerationType, imports: Generated.Imports): TypeSpec.Builder = apply {
+    private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, generationType: GenerationType): TypeSpec.Builder = apply {
         addProperties(
             declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull { propertyDeclaration ->
                 val typeDeclaration = propertyDeclaration.type.resolve().declaration

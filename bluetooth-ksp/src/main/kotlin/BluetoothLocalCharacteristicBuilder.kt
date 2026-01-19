@@ -90,9 +90,8 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
         private const val MUTABLE_FLOW = "mutableFlow"
     }
 
-    override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val imports = Generated.Imports()
-        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
+    override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec =
+        TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
             .addType(
                 TypeSpec.companionObjectBuilder()
                     .addProperty(
@@ -220,15 +219,13 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                     }
                     .build(),
             )
-            .generateBody(declarations, generationType, imports)
-        return Generated(listOf(typeSpec.build()))
-    }
+            .generateBody(declarations, generationType)
+            .build()
 
-    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val imports = Generated.Imports()
+    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
         val className = NameHelper.nameFor(this, generationType)
         val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(this@generateBluetooth, NeedsFormatterHelper.Target.SERVER)
-        val typeSpec = TypeSpec.classBuilder(className).addModifiers(KModifier.DATA)
+        return TypeSpec.classBuilder(className).addModifiers(KModifier.DATA)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
                     .addParameters(
@@ -443,18 +440,17 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                 ),
             )
             .addTypes(nested)
-            .generateBody(declarations, generationType, imports)
-        return Generated(listOf(typeSpec.build()), imports)
+            .generateBody(declarations, generationType)
+            .build()
     }
 
-    override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val imports = Generated.Imports()
+    override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
         val className = NameHelper.nameFor(this, generationType)
         val delegate = NameHelper.nameFor(this, generationType.copy(type = GenerationType.Type.API)).nestedClass(DELEGATE)
         val remote = NameHelper.nameFor(this, generationType.copy(side = GenerationType.Side.CLIENT))
         val properties = declarations.filterIsInstance<KSPropertyDeclaration>()
         val notifiable = properties.firstOrNull { it.isNotifiable }
-        val typeSpec = TypeSpec.classBuilder(className)
+        return TypeSpec.classBuilder(className)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
                     .addParameters(
@@ -639,10 +635,10 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                     .build(),
             )
             .addTypes(nested)
-            .generateBody(declarations, generationType, imports)
-        return Generated(listOf(typeSpec.build()), imports)
+            .generateBody(declarations, generationType)
+            .build()
     }
-    private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, generationType: GenerationType, imports: Generated.Imports): TypeSpec.Builder = apply {
+    private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, generationType: GenerationType): TypeSpec.Builder = apply {
         var hasReadMethod = false
         var hasWriteMethod = false
         var hasNotifyMethods = false

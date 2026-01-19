@@ -57,8 +57,8 @@ import com.squareup.kotlinpoet.joinToCode
 
 internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, private val service: BluetoothService, logger: KSPLogger) :
     AbstractBluetoothClassBuilder(declaration, logger) {
-    override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val typeSpec = TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
+    override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec =
+        TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
             .addType(
                 TypeSpec.companionObjectBuilder()
                     .addProperty(
@@ -103,15 +103,13 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                     )
                     .build(),
             )
-            .generateBody(declarations, generationType, Generated.Imports())
-        return Generated(listOf(typeSpec.build()))
-    }
+            .generateBody(declarations, generationType)
+            .build()
 
-    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val imports = Generated.Imports()
+    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
         val className = NameHelper.nameFor(this, generationType)
         val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(this@generateBluetooth, NeedsFormatterHelper.Target.SERVER)
-        val typeSpec = TypeSpec.classBuilder(className).addModifiers(KModifier.DATA)
+        return TypeSpec.classBuilder(className).addModifiers(KModifier.DATA)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
                     .addParameters(
@@ -233,17 +231,16 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                 ),
             )
             .addTypes(nested)
-            .generateBody(declarations, generationType, imports)
-        return Generated(listOf(typeSpec.build()), imports)
+            .generateBody(declarations, generationType)
+            .build()
     }
 
-    override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): Generated {
-        val imports = Generated.Imports()
+    override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
         val className = NameHelper.nameFor(this, generationType)
         val delegate = NameHelper.nameFor(this, generationType.copy(type = GenerationType.Type.API)).nestedClass(DELEGATE)
         val remote = NameHelper.nameFor(this, generationType.copy(side = GenerationType.Side.CLIENT))
         val properties = declarations.filterIsInstance<KSPropertyDeclaration>()
-        val typeSpec = TypeSpec.classBuilder(className)
+        return TypeSpec.classBuilder(className)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
                     .addParameters(
@@ -319,11 +316,11 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                     .build(),
             )
             .addTypes(nested)
-            .generateBody(declarations, generationType, imports)
-        return Generated(listOf(typeSpec.build()), imports)
+            .generateBody(declarations, generationType)
+            .build()
     }
 
-    private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, generationType: GenerationType, imports: Generated.Imports): TypeSpec.Builder = apply {
+    private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, generationType: GenerationType): TypeSpec.Builder = apply {
         addProperties(
             declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull { propertyDeclaration ->
                 val typeDeclaration = propertyDeclaration.type.resolve().declaration

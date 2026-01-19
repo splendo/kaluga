@@ -27,57 +27,25 @@ import com.splendo.kaluga.bluetooth.annotations.BluetoothClient
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.BluetoothServer
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.TypeSpec
 
 internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDeclaration, val logger: KSPLogger) {
 
-    data class Generated(val typeSpec: List<TypeSpec>, val imports: Imports = Imports()) {
-        class Imports {
-
-            private val mutableImports = mutableMapOf<String, Set<String>>()
-            val imports get() = mutableImports.toMap()
-
-            fun add(member: MemberName) {
-                mutableImports[member.packageName] = mutableImports.getOrPut(member.packageName) { mutableSetOf() } + member.simpleName
-            }
-            fun add(classType: ClassName) {
-                mutableImports[classType.packageName] = mutableImports.getOrPut(classType.packageName) { mutableSetOf() } + classType.simpleName
-            }
-            fun add(packageName: String, toImport: Set<String>) {
-                mutableImports[packageName] = mutableImports.getOrPut(packageName) { mutableSetOf() } + toImport
-            }
-
-            fun add(other: Imports) {
-                other.imports.forEach { (packageName, names) ->
-                    mutableImports[packageName] = mutableImports.getOrPut(packageName) { mutableSetOf() } + names
-                }
-            }
-        }
-    }
-
-    fun generate(generationType: GenerationType): Generated = with(declaration) {
+    fun generate(generationType: GenerationType): TypeSpec = with(declaration) {
         val nested = generateNested(generationType)
-        val newGenerated = when (generationType.type) {
-            GenerationType.Type.API -> generateAPI(generationType, nested.flatMap { it.typeSpec })
-            GenerationType.Type.BLUETOOTH -> generateBluetooth(generationType, nested.flatMap { it.typeSpec })
-            GenerationType.Type.SIMULATOR -> generateSimulated(generationType, nested.flatMap { it.typeSpec })
+        when (generationType.type) {
+            GenerationType.Type.API -> generateAPI(generationType, nested)
+            GenerationType.Type.BLUETOOTH -> generateBluetooth(generationType, nested)
+            GenerationType.Type.SIMULATOR -> generateSimulated(generationType, nested)
         }
-        Generated(
-            newGenerated.typeSpec,
-            newGenerated.imports.apply {
-                nested.forEach { add(it.imports) }
-            },
-        )
     }
 
-    abstract fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): Generated
-    abstract fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): Generated
-    abstract fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): Generated
+    abstract fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec
+    abstract fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec
+    abstract fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec
 
-    protected fun KSClassDeclaration.generateNested(generationType: GenerationType): List<Generated> = buildList {
+    protected fun KSClassDeclaration.generateNested(generationType: GenerationType): List<TypeSpec> = buildList {
         val bluetoothDeclarations = declarations.filter { it.isAnnotationPresent(Bluetooth::class) }.filterIsInstance<KSClassDeclaration>()
         bluetoothDeclarations.forEach { bluetoothDeclaration ->
             if (generationType.side == GenerationType.Side.CLIENT) {
@@ -126,7 +94,7 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
             if (generationType.side == GenerationType.Side.CLIENT) {
                 if (generationType.type == GenerationType.Type.API) {
                     BluetoothResultTypeBuilder.fromClassDeclaration(characteristicDeclaration, logger)?.generateType()?.let {
-                        add(Generated(listOf(it)))
+                        add(it)
                     }
                 }
                 add(BluetoothRemoteCharacteristicBuilder(characteristicDeclaration, characteristic, logger).generate(generationType))
@@ -142,7 +110,7 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
             if (generationType.side == GenerationType.Side.CLIENT) {
                 if (generationType.type == GenerationType.Type.API) {
                     BluetoothResultTypeBuilder.fromClassDeclaration(descriptorDeclaration, logger)?.generateType()?.let {
-                        add(Generated(listOf(it)))
+                        add(it)
                     }
                 }
                 add(BluetoothRemoteDescriptorBuilder(descriptorDeclaration, descriptor, logger).generate(generationType))
