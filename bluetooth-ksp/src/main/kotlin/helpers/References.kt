@@ -46,8 +46,6 @@ object References {
         }
         object Server : ClassNameProvider {
             override val packageName: String = "${Bluetooth.packageName}.server"
-            val advertiseData = className("AdvertiseData")
-            val advertiseDataBuilder = className("AdvertiseData", "Builder")
 
             val bluetoothServer = className("BluetoothServer")
             val serverSettings = className("ServerSettings")
@@ -61,7 +59,6 @@ object References {
             val localCharacteristicDSL = className("LocalCharacteristic", "DSL")
             val localCharacteristicNotifiable = className("LocalCharacteristic", "Notifiable")
             val localDescriptor = className("LocalDescriptor")
-            val localDescriptorDSL = className("LocalDescriptor", "DSL")
         }
         override val packageName = "com.splendo.kaluga.bluetooth"
         val bluetoothBuilder = className("BluetoothBuilder")

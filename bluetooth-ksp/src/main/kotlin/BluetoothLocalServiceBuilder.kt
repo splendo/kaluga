@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.ksp
 
-import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration

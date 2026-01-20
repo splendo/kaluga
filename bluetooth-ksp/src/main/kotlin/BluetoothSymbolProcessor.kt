@@ -36,7 +36,6 @@ import com.splendo.kaluga.bluetooth.annotations.BluetoothServerName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.writeTo
 
 class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
