@@ -34,6 +34,23 @@ import com.squareup.kotlinpoet.ClassName
 
 internal object NameHelper {
 
+    fun clientName(declaration: KSClassDeclaration, type: GenerationType.Type) = nameFor(
+        declaration,
+        when (type) {
+            GenerationType.Type.API -> GenerationType.CLIENT_API
+            GenerationType.Type.BLUETOOTH -> GenerationType.CLIENT_BLUETOOTH
+            GenerationType.Type.SIMULATOR -> GenerationType.CLIENT_SIMULATOR
+        },
+    )
+    fun serverName(declaration: KSClassDeclaration, type: GenerationType.Type) = nameFor(
+        declaration,
+        when (type) {
+            GenerationType.Type.API -> GenerationType.SERVER_API
+            GenerationType.Type.BLUETOOTH -> GenerationType.SERVER_BLUETOOTH
+            GenerationType.Type.SIMULATOR -> GenerationType.SERVER_SIMULATOR
+        },
+    )
+
     fun nameFor(declaration: KSClassDeclaration, generationType: GenerationType): ClassName {
         val names = mutableListOf(declaration.simpleName(generationType))
         var current = declaration.parentDeclaration

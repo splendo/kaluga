@@ -62,8 +62,9 @@ import com.squareup.kotlinpoet.ksp.toTypeName
 internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclaration, private val characteristic: BluetoothCharacteristic, logger: KSPLogger) :
     AbstractBluetoothClassBuilder(declaration, logger) {
 
-    override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec =
-        TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
+    override fun generateAPI(nested: List<TypeSpec>): TypeSpec {
+        val interfaceName = NameHelper.nameFor(declaration, GenerationType.CLIENT_API)
+        return TypeSpec.interfaceBuilder(interfaceName)
             .addType(
                 TypeSpec.companionObjectBuilder()
                     .addProperty(
@@ -74,25 +75,27 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                     .build(),
             )
             .addTypes(nested)
-            .generateBody(declarations, generationType)
+            .generateBody(declarations, GenerationType.Type.API)
             .build()
+    }
 
-    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
-        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(this)
-        val className = NameHelper.nameFor(this, generationType)
+    override fun generateBluetooth(nested: List<TypeSpec>): TypeSpec {
+        val className = NameHelper.nameFor(declaration, GenerationType.CLIENT_BLUETOOTH)
+        val interfaceName = NameHelper.nameFor(declaration, GenerationType.CLIENT_API)
+        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration)
         return TypeSpec.classBuilder(className)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
                     .addParameters(
                         listOfNotNull(
                             ParameterSpec(CHARACTERISTIC, References.Bluetooth.remoteCharacteristic),
-                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter },
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
                         ),
 
                     )
                     .build(),
             )
-            .addSuperinterface(NameHelper.nameFor(this, generationType.copy(type = GenerationType.Type.API)))
+            .addSuperinterface(interfaceName)
             .addType(
                 TypeSpec.companionObjectBuilder()
                     .addFunction(
@@ -100,15 +103,15 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                             .addParameters(
                                 listOfNotNull(
                                     ParameterSpec(SERVICE, References.Bluetooth.remoteService),
-                                    ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter },
+                                    ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
                                 ),
                             )
                             .returns(className)
                             .addStatement(
-                                "$RETURN %T($SERVICE.characteristics.%M(%T.$UUID)${if (needsFormatter) ", $FORMAT" else ""})",
+                                "$RETURN %T($SERVICE.characteristics.%M(%T.$UUID)${needsFormatter.functionArgument})",
                                 className,
                                 References.Bluetooth.get,
-                                NameHelper.nameFor(this@generateBluetooth, generationType.copy(type = GenerationType.Type.API)),
+                                interfaceName,
                             )
                             .build(),
                     )
@@ -120,21 +123,23 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                         .initializer(CHARACTERISTIC).build(),
                     PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
                         .addModifiers(KModifier.PRIVATE)
-                        .initializer(FORMAT).build().takeIf { needsFormatter },
+                        .initializer(FORMAT).build().takeIf { needsFormatter.needsFormatter },
                 ),
             )
             .addTypes(nested)
-            .generateBody(declarations, generationType)
+            .generateBody(declarations, GenerationType.Type.BLUETOOTH)
             .build()
     }
 
-    override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
+    override fun generateSimulated(nested: List<TypeSpec>): TypeSpec {
+        val className = NameHelper.nameFor(declaration, GenerationType.CLIENT_SIMULATOR)
+        val interfaceName = NameHelper.nameFor(declaration, GenerationType.CLIENT_API)
         val properties = declarations.filterIsInstance<KSPropertyDeclaration>()
         val readProperty = properties.firstOrNull { it.isReadable }
         val writeProperty = properties.firstOrNull { it.isWritable }
         val notifiableProperty = properties.firstOrNull { it.isNotifiable }
 
-        return TypeSpec.classBuilder(NameHelper.nameFor(this, generationType))
+        return TypeSpec.classBuilder(className)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
                     .addParameters(
@@ -143,7 +148,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                                 ParameterSpec(
                                     "${onRead.onReadMethodName}$ACTION",
                                     LambdaTypeName.get(
-                                        returnType = BluetoothResultTypeBuilder(this, onRead, logger).responseClassName,
+                                        returnType = BluetoothResultTypeBuilder(declaration, onRead, logger).responseClassName,
                                     ).copy(suspending = true),
                                 )
                             },
@@ -167,7 +172,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                             if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class)) {
                                 ParameterSpec(
                                     propertyDeclaration.simpleName.asString(),
-                                    NameHelper.nameFor(typeDeclaration, generationType),
+                                    NameHelper.nameFor(typeDeclaration, GenerationType.CLIENT_SIMULATOR),
                                 )
                             } else {
                                 null
@@ -176,14 +181,14 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                     )
                     .build(),
             )
-            .addSuperinterface(NameHelper.nameFor(this, generationType.copy(type = GenerationType.Type.API)))
+            .addSuperinterface(interfaceName)
             .addProperties(
                 listOfNotNull(
                     readProperty?.let { onRead ->
                         PropertySpec.builder(
                             "${onRead.onReadMethodName}$ACTION",
                             LambdaTypeName.get(
-                                returnType = BluetoothResultTypeBuilder(this, onRead, logger).responseClassName,
+                                returnType = BluetoothResultTypeBuilder(declaration, onRead, logger).responseClassName,
                             ).copy(suspending = true),
                         )
                             .addModifiers(KModifier.PRIVATE)
@@ -203,11 +208,11 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                 ),
             )
             .addTypes(nested)
-            .generateBody(declarations, generationType)
+            .generateBody(declarations, GenerationType.Type.SIMULATOR)
             .build()
     }
 
-    private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, generationType: GenerationType): TypeSpec.Builder = apply {
+    private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, type: GenerationType.Type): TypeSpec.Builder = apply {
         var hasNotifiableProperty = false
         var hasReadMethod = false
         var hasWriteMethod = false
@@ -224,21 +229,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                         val readMethod = "$READ$responseType"
                         val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, logger)
                         addFunction(
-                            FunSpec.builder(readMethod).addModifiers(KModifier.SUSPEND, *generationType.additionalModifiers.toTypedArray()).returns(
-                                resultType.responseClassName,
-                            ).apply {
-                                when (generationType.type) {
-                                    GenerationType.Type.API -> {}
-
-                                    GenerationType.Type.BLUETOOTH -> {
-                                        resultType.generateBluetoothResult(this, CHARACTERISTIC)
-                                    }
-
-                                    GenerationType.Type.SIMULATOR -> {
-                                        addStatement("$RETURN ${propertyDeclaration.onReadMethodName}$ACTION()")
-                                    }
-                                }
-                            }.build(),
+                            generateReadMethod(readMethod, type, resultType, propertyDeclaration),
                         )
                     } else {
                         logger.error("Only one @${Readable::class.simpleName} property can be declared")
@@ -250,33 +241,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                         hasWriteMethod = true
                         val writeMethod = "$WRITE${propertyDeclaration.simpleName.asString().replaceFirstChar { it.uppercase() }}"
                         addFunction(
-                            FunSpec.builder(
-                                writeMethod,
-                            ).addParameter(
-                                propertyDeclaration.simpleName.asString(),
-                                propertyDeclaration.type.resolve().toClassName(),
-                            ).addModifiers(KModifier.SUSPEND, *generationType.additionalModifiers.toTypedArray()).returns(
-                                References.Bluetooth.writeResponse,
-                            ).apply {
-                                when (generationType.type) {
-                                    GenerationType.Type.API -> {}
-
-                                    GenerationType.Type.BLUETOOTH -> {
-                                        if (propertyDeclaration.isByteArray) {
-                                            addStatement("$RETURN $CHARACTERISTIC.$WRITE(${propertyDeclaration.simpleName.asString()})")
-                                        } else {
-                                            addStatement(
-                                                "$RETURN $CHARACTERISTIC.$WRITE($FORMAT.encodeToByteArray(%L, ${propertyDeclaration.simpleName.asString()}))",
-                                                propertyDeclaration.type.resolve().toTypeName().serializer(logger),
-                                            )
-                                        }
-                                    }
-
-                                    GenerationType.Type.SIMULATOR -> {
-                                        addStatement("$RETURN ${propertyDeclaration.onWriteMethodName}$ACTION(${propertyDeclaration.simpleName.asString()})")
-                                    }
-                                }
-                            }.build(),
+                            generateWriteMethod(writeMethod, propertyDeclaration, type),
                         )
                     } else {
                         logger.error(
@@ -289,40 +254,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                     if (!hasNotifiableProperty) {
                         hasNotifiableProperty = true
                         addProperty(
-                            PropertySpec.builder(
-                                propertyDeclaration.simpleName.asString(),
-                                References.KotlinX.Coroutines.Flow.flow.parameterizedBy(propertyDeclaration.type.resolve().toTypeName()),
-                            ).addModifiers(
-                                *generationType.additionalModifiers.toTypedArray(),
-                            )
-                                .apply {
-                                    when (generationType.type) {
-                                        GenerationType.Type.API -> {}
-
-                                        GenerationType.Type.BLUETOOTH -> {
-                                            getter(
-                                                FunSpec.getterBuilder()
-                                                    .apply {
-                                                        val member = References.Bluetooth.value
-                                                        if (propertyDeclaration.isByteArray) {
-                                                            addStatement("$RETURN $CHARACTERISTIC.%M()", member)
-                                                        } else {
-                                                            addStatement(
-                                                                "$RETURN $CHARACTERISTIC.%M(%L, $FORMAT)",
-                                                                member,
-                                                                propertyDeclaration.type.resolve().toTypeName().serializer(logger),
-                                                            )
-                                                        }
-                                                    }
-                                                    .build(),
-                                            )
-                                        }
-
-                                        GenerationType.Type.SIMULATOR -> {
-                                            initializer(propertyDeclaration.simpleName.asString())
-                                        }
-                                    }
-                                }.build(),
+                            generateNotifiableProperty(propertyDeclaration, type),
                         )
                     } else {
                         logger.error("Only one @${Notifiable::class.simpleName} or @${Indicatable::class.simpleName} property can be declared")
@@ -330,35 +262,7 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
                 }
             } else if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class)) {
                 addProperty(
-                    PropertySpec.builder(
-                        propertyDeclaration.simpleName.asString(),
-                        NameHelper.nameFor(typeDeclaration, generationType),
-                    ).addModifiers(
-                        *generationType.additionalModifiers.toTypedArray(),
-                    )
-                        .apply {
-                            when (generationType.type) {
-                                GenerationType.Type.API -> {}
-
-                                GenerationType.Type.BLUETOOTH -> {
-                                    initializer(
-                                        "%T.${BluetoothRemoteDescriptorBuilder.FROM_CHARACTERISTIC}($CHARACTERISTIC${if (NeedsFormatterHelper.needsBluetoothFormatter(
-                                                typeDeclaration,
-                                            )
-                                        ) {
-                                            ", $FORMAT"
-                                        } else {
-                                            ""
-                                        } })",
-                                        NameHelper.nameFor(typeDeclaration, generationType),
-                                    )
-                                }
-
-                                GenerationType.Type.SIMULATOR -> {
-                                    initializer(propertyDeclaration.simpleName.asString())
-                                }
-                            }
-                        }.build(),
+                    generateDescriptorProperty(propertyDeclaration, typeDeclaration, type),
                 )
             } else {
                 logger.error(
@@ -367,4 +271,110 @@ internal class BluetoothRemoteCharacteristicBuilder(declaration: KSClassDeclarat
             }
         }
     }
+
+    private fun generateReadMethod(readMethod: String, type: GenerationType.Type, resultType: BluetoothResultTypeBuilder, propertyDeclaration: KSPropertyDeclaration): FunSpec =
+        FunSpec.builder(readMethod).addModifiers(KModifier.SUSPEND, *type.additionalModifiers.toTypedArray()).returns(
+            resultType.responseClassName,
+        ).apply {
+            when (type) {
+                GenerationType.Type.API -> {}
+
+                GenerationType.Type.BLUETOOTH -> {
+                    resultType.generateBluetoothResult(this, CHARACTERISTIC)
+                }
+
+                GenerationType.Type.SIMULATOR -> {
+                    addStatement("$RETURN ${propertyDeclaration.onReadMethodName}$ACTION()")
+                }
+            }
+        }.build()
+
+    private fun generateWriteMethod(writeMethod: String, propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type): FunSpec = FunSpec.builder(
+        writeMethod,
+    ).addParameter(
+        propertyDeclaration.simpleName.asString(),
+        propertyDeclaration.type.resolve().toClassName(),
+    ).addModifiers(KModifier.SUSPEND, *type.additionalModifiers.toTypedArray()).returns(
+        References.Bluetooth.writeResponse,
+    ).apply {
+        when (type) {
+            GenerationType.Type.API -> {}
+
+            GenerationType.Type.BLUETOOTH -> {
+                if (propertyDeclaration.isByteArray) {
+                    addStatement("$RETURN $CHARACTERISTIC.$WRITE(${propertyDeclaration.simpleName.asString()})")
+                } else {
+                    addStatement(
+                        "$RETURN $CHARACTERISTIC.$WRITE($FORMAT.encodeToByteArray(%L, ${propertyDeclaration.simpleName.asString()}))",
+                        propertyDeclaration.type.resolve().toTypeName().serializer(logger),
+                    )
+                }
+            }
+
+            GenerationType.Type.SIMULATOR -> {
+                addStatement("$RETURN ${propertyDeclaration.onWriteMethodName}$ACTION(${propertyDeclaration.simpleName.asString()})")
+            }
+        }
+    }.build()
+
+    private fun generateNotifiableProperty(propertyDeclaration: KSPropertyDeclaration, type: GenerationType.Type): PropertySpec = PropertySpec.builder(
+        propertyDeclaration.simpleName.asString(),
+        References.KotlinX.Coroutines.Flow.flow.parameterizedBy(propertyDeclaration.type.resolve().toTypeName()),
+    ).addModifiers(
+        *type.additionalModifiers.toTypedArray(),
+    )
+        .apply {
+            when (type) {
+                GenerationType.Type.API -> {}
+
+                GenerationType.Type.BLUETOOTH -> {
+                    getter(
+                        FunSpec.getterBuilder()
+                            .apply {
+                                val member = References.Bluetooth.value
+                                if (propertyDeclaration.isByteArray) {
+                                    addStatement("$RETURN $CHARACTERISTIC.%M()", member)
+                                } else {
+                                    addStatement(
+                                        "$RETURN $CHARACTERISTIC.%M(%L, $FORMAT)",
+                                        member,
+                                        propertyDeclaration.type.resolve().toTypeName().serializer(logger),
+                                    )
+                                }
+                            }
+                            .build(),
+                    )
+                }
+
+                GenerationType.Type.SIMULATOR -> {
+                    initializer(propertyDeclaration.simpleName.asString())
+                }
+            }
+        }.build()
+
+    private fun generateDescriptorProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec =
+        PropertySpec.builder(
+            propertyDeclaration.simpleName.asString(),
+            NameHelper.clientName(typeDeclaration, type),
+        ).addModifiers(
+            *type.additionalModifiers.toTypedArray(),
+        )
+            .apply {
+                when (type) {
+                    GenerationType.Type.API -> {}
+
+                    GenerationType.Type.BLUETOOTH -> {
+                        initializer(
+                            "%T.${BluetoothRemoteDescriptorBuilder.FROM_CHARACTERISTIC}($CHARACTERISTIC${NeedsFormatterHelper.needsBluetoothFormatter(
+                                typeDeclaration,
+                            ).functionArgument})",
+                            NameHelper.clientName(typeDeclaration, type),
+                        )
+                    }
+
+                    GenerationType.Type.SIMULATOR -> {
+                        initializer(propertyDeclaration.simpleName.asString())
+                    }
+                }
+            }.build()
 }

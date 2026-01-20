@@ -43,7 +43,8 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.SERVICE
 import com.splendo.kaluga.bluetooth.ksp.helpers.THIS
 import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
 import com.splendo.kaluga.bluetooth.ksp.helpers.WITH
-import com.splendo.kaluga.bluetooth.ksp.helpers.delegateName
+import com.splendo.kaluga.bluetooth.ksp.helpers.delegateParameterName
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -57,8 +58,9 @@ import com.squareup.kotlinpoet.joinToCode
 
 internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, private val service: BluetoothService, logger: KSPLogger) :
     AbstractBluetoothClassBuilder(declaration, logger) {
-    override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec =
-        TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
+    override fun generateAPI(nested: List<TypeSpec>): TypeSpec {
+        val interfaceName = NameHelper.nameFor(declaration, GenerationType.SERVER_API)
+        return TypeSpec.interfaceBuilder(interfaceName)
             .addType(
                 TypeSpec.companionObjectBuilder()
                     .addProperty(
@@ -91,7 +93,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
 
                                 PropertySpec.builder(
                                     "${propertyDeclaration.simpleName.asString()}$DELEGATE",
-                                    NameHelper.nameFor(typeDeclaration, generationType).nestedClass(DELEGATE),
+                                    NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_API).nestedClass(DELEGATE),
                                 ).build()
                             } else {
                                 logger.error(
@@ -103,122 +105,30 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                     )
                     .build(),
             )
-            .generateBody(declarations, generationType)
+            .generateBody(declarations, GenerationType.Type.API)
             .build()
+    }
 
-    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
-        val className = NameHelper.nameFor(this, generationType)
-        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(this@generateBluetooth, NeedsFormatterHelper.Target.SERVER)
+    override fun generateBluetooth(nested: List<TypeSpec>): TypeSpec {
+        val className = NameHelper.nameFor(declaration, GenerationType.SERVER_BLUETOOTH)
+        val interfaceName = NameHelper.nameFor(declaration, GenerationType.SERVER_API)
+        val delegateName = interfaceName.nestedClass(DELEGATE)
+        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER)
         return TypeSpec.classBuilder(className).addModifiers(KModifier.DATA)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
                     .addParameters(
                         listOfNotNull(
                             ParameterSpec(SERVICE, References.Bluetooth.Server.localService),
-                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter },
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
                         ),
 
                     )
                     .build(),
             )
-            .addSuperinterface(NameHelper.nameFor(this, generationType.copy(type = GenerationType.Type.API)))
+            .addSuperinterface(interfaceName)
             .addType(
-                TypeSpec.companionObjectBuilder()
-                    .addFunction(
-                        FunSpec.builder(CONFIGURE)
-                            .apply {
-                                val delegateName = "${declaration.simpleName.asString().replaceFirstChar { it.lowercase() }}$DELEGATE"
-                                addParameter(BUILDER, References.Bluetooth.Server.bluetoothServerDSL)
-                                addParameter(
-                                    delegateName,
-                                    NameHelper.nameFor(this@generateBluetooth, generationType.copy(type = GenerationType.Type.API)).nestedClass(DELEGATE),
-                                )
-                                val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(this@generateBluetooth, NeedsFormatterHelper.Target.SERVER_DSL)
-                                if (needsFormatter) {
-                                    addParameter(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
-                                }
-                                addCode(
-                                    CodeBlock.builder()
-                                        .beginControlFlow(
-                                            "$RETURN $BUILDER.service(%T.$UUID) {",
-                                            NameHelper.nameFor(this@generateBluetooth, generationType.copy(type = GenerationType.Type.API)),
-                                        )
-                                        .apply {
-                                            declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
-                                                val typeDeclaration = propertyDeclaration.type.resolve().declaration
-                                                when {
-                                                    typeDeclaration is KSClassDeclaration &&
-                                                        (
-                                                            typeDeclaration.isAnnotationPresent(BluetoothService::class) ||
-                                                                typeDeclaration.isAnnotationPresent(BluetoothCharacteristic::class)
-                                                            ) -> {
-                                                        val delegateNeedsFormatter =
-                                                            NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, NeedsFormatterHelper.Target.SERVER_DSL)
-                                                        addStatement(
-                                                            "%T.$CONFIGURE($THIS, $delegateName.${propertyDeclaration.delegateName}${if (delegateNeedsFormatter) ", $FORMAT" else ""})",
-                                                            NameHelper.nameFor(typeDeclaration, generationType),
-                                                        )
-                                                    }
-
-                                                    else -> {
-                                                        logger.error(
-                                                            "Only @${BluetoothService::class.simpleName} and @${BluetoothCharacteristic::class.simpleName} properties can be declared",
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        .endControlFlow()
-                                        .build(),
-                                )
-                            }
-                            .build(),
-                    )
-                    .addFunction(
-                        FunSpec.builder(CONFIGURE)
-                            .apply {
-                                val delegateName = "${declaration.simpleName.asString().replaceFirstChar { it.lowercase() }}$DELEGATE"
-                                addParameter(BUILDER, References.Bluetooth.Server.localServiceDSLPrimary)
-                                addParameter(
-                                    delegateName,
-                                    NameHelper.nameFor(this@generateBluetooth, generationType.copy(type = GenerationType.Type.API)).nestedClass(DELEGATE),
-                                )
-                                val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(this@generateBluetooth, NeedsFormatterHelper.Target.SERVER_DSL)
-                                if (needsFormatter) {
-                                    addParameter(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
-                                }
-                                addCode(
-                                    CodeBlock.builder()
-                                        .beginControlFlow(
-                                            "$RETURN $BUILDER.includedService(%T.$UUID) {",
-                                            NameHelper.nameFor(this@generateBluetooth, generationType.copy(type = GenerationType.Type.API)),
-                                        )
-                                        .apply {
-                                            declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
-                                                val typeDeclaration = propertyDeclaration.type.resolve().declaration
-                                                when {
-                                                    typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothCharacteristic::class) -> {
-                                                        val characteristicNeedsFormatter =
-                                                            NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, NeedsFormatterHelper.Target.SERVER_DSL)
-                                                        addStatement(
-                                                            "%T.$CONFIGURE($THIS, $delegateName.${propertyDeclaration.delegateName}${if (characteristicNeedsFormatter) ", $FORMAT" else ""})",
-                                                            NameHelper.nameFor(typeDeclaration, generationType),
-                                                        )
-                                                    }
-
-                                                    else -> {
-                                                        logger.error("Only @${BluetoothCharacteristic::class.simpleName} properties can be declared in a nested BluetoothService")
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        .endControlFlow()
-                                        .build(),
-                                )
-                            }
-                            .build(),
-                    )
-                    .build(),
+                generateBluetoothCompanionObject(delegateName, interfaceName),
             )
             .addProperties(
                 listOfNotNull(
@@ -227,25 +137,127 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                     PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
                         .addModifiers(KModifier.PRIVATE)
                         .initializer(FORMAT)
-                        .build().takeIf { needsFormatter },
+                        .build().takeIf { needsFormatter.needsFormatter },
                 ),
             )
             .addTypes(nested)
-            .generateBody(declarations, generationType)
+            .generateBody(declarations, GenerationType.Type.BLUETOOTH)
             .build()
     }
 
-    override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
-        val className = NameHelper.nameFor(this, generationType)
-        val delegate = NameHelper.nameFor(this, generationType.copy(type = GenerationType.Type.API)).nestedClass(DELEGATE)
-        val remote = NameHelper.nameFor(this, generationType.copy(side = GenerationType.Side.CLIENT))
+    private fun generateBluetoothCompanionObject(delegateName: ClassName, interfaceName: ClassName): TypeSpec = TypeSpec.companionObjectBuilder()
+        .addFunction(
+            generateConfigureFromBluetoothServerDSL(delegateName, interfaceName),
+        )
+        .addFunction(
+            generateConfigureFromServiceDSL(delegateName, interfaceName),
+        )
+        .build()
+
+    private fun generateConfigureFromBluetoothServerDSL(delegateName: ClassName, interfaceName: ClassName): FunSpec = FunSpec.builder(CONFIGURE)
+        .apply {
+            val delegateParameterName = declaration.delegateParameterName
+            addParameter(BUILDER, References.Bluetooth.Server.bluetoothServerDSL)
+            addParameter(
+                delegateParameterName,
+                delegateName,
+            )
+            val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER_DSL)
+            if (needsFormatter.needsFormatter) {
+                addParameter(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
+            }
+            addCode(
+                CodeBlock.builder()
+                    .beginControlFlow(
+                        "$RETURN $BUILDER.service(%T.$UUID) {",
+                        interfaceName,
+                    )
+                    .apply {
+                        declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
+                            val typeDeclaration = propertyDeclaration.type.resolve().declaration
+                            when {
+                                typeDeclaration is KSClassDeclaration &&
+                                    (
+                                        typeDeclaration.isAnnotationPresent(BluetoothService::class) ||
+                                            typeDeclaration.isAnnotationPresent(BluetoothCharacteristic::class)
+                                        ) -> {
+                                    val delegateNeedsFormatter =
+                                        NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, NeedsFormatterHelper.Target.SERVER_DSL)
+                                    addStatement(
+                                        "%T.$CONFIGURE($THIS, $delegateParameterName.${propertyDeclaration.delegateParameterName}${delegateNeedsFormatter.functionArgument})",
+                                        NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_BLUETOOTH),
+                                    )
+                                }
+
+                                else -> {
+                                    logger.error(
+                                        "Only @${BluetoothService::class.simpleName} and @${BluetoothCharacteristic::class.simpleName} properties can be declared",
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    .endControlFlow()
+                    .build(),
+            )
+        }
+        .build()
+
+    private fun generateConfigureFromServiceDSL(delegateName: ClassName, interfaceName: ClassName): FunSpec = FunSpec.builder(CONFIGURE)
+        .apply {
+            val delegateParameterName = declaration.delegateParameterName
+            addParameter(BUILDER, References.Bluetooth.Server.localServiceDSLPrimary)
+            addParameter(
+                delegateParameterName,
+                delegateName,
+            )
+            val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration, NeedsFormatterHelper.Target.SERVER_DSL)
+            if (needsFormatter.needsFormatter) {
+                addParameter(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
+            }
+            addCode(
+                CodeBlock.builder()
+                    .beginControlFlow(
+                        "$RETURN $BUILDER.includedService(%T.$UUID) {",
+                        interfaceName,
+                    )
+                    .apply {
+                        declarations.filterIsInstance<KSPropertyDeclaration>().forEach { propertyDeclaration ->
+                            val typeDeclaration = propertyDeclaration.type.resolve().declaration
+                            when {
+                                typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothCharacteristic::class) -> {
+                                    val characteristicNeedsFormatter =
+                                        NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration, NeedsFormatterHelper.Target.SERVER_DSL)
+                                    addStatement(
+                                        "%T.$CONFIGURE($THIS, $delegateParameterName.${propertyDeclaration.delegateParameterName}${characteristicNeedsFormatter.functionArgument})",
+                                        NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_BLUETOOTH),
+                                    )
+                                }
+
+                                else -> {
+                                    logger.error("Only @${BluetoothCharacteristic::class.simpleName} properties can be declared in a nested BluetoothService")
+                                }
+                            }
+                        }
+                    }
+                    .endControlFlow()
+                    .build(),
+            )
+        }
+        .build()
+
+    override fun generateSimulated(nested: List<TypeSpec>): TypeSpec {
+        val className = NameHelper.nameFor(declaration, GenerationType.SERVER_SIMULATOR)
+        val interfaceName = NameHelper.nameFor(declaration, GenerationType.SERVER_API)
+        val delegate = interfaceName.nestedClass(DELEGATE)
+        val remote = NameHelper.nameFor(declaration, GenerationType.CLIENT_SIMULATOR)
         val properties = declarations.filterIsInstance<KSPropertyDeclaration>()
         return TypeSpec.classBuilder(className)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
                     .addParameters(
                         listOfNotNull(
-                            ParameterSpec(delegateName, delegate),
+                            ParameterSpec(declaration.delegateParameterName, delegate),
                             ParameterSpec(COROUTINE_SCOPE, References.KotlinX.Coroutines.coroutineScope),
                             ParameterSpec(IS_CLOSED, References.KotlinX.Coroutines.deferred.parameterizedBy(UNIT)),
                         ),
@@ -253,10 +265,10 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                     )
                     .build(),
             )
-            .addSuperinterface(NameHelper.nameFor(this, generationType.copy(type = GenerationType.Type.API)))
+            .addSuperinterface(interfaceName)
             .addProperty(
-                PropertySpec.builder(delegateName, delegate)
-                    .initializer(delegateName)
+                PropertySpec.builder(declaration.delegateParameterName, delegate)
+                    .initializer(declaration.delegateParameterName)
                     .build(),
             )
             .addProperty(
@@ -272,60 +284,61 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                     .build(),
             )
             .addFunction(
-                FunSpec.builder(GENERATE_REMOTE)
-                    .addParameter(IDENTIFIER, References.Bluetooth.Device.identifier)
-                    .returns(remote)
-                    .addCode(
-                        CodeBlock.builder()
-                            .add("$RETURN $REMOTES.getOrPut($IDENTIFIER) {\n")
-                            .indent()
-                            .beginControlFlow("$WITH ($delegateName)")
-                            .apply {
-                                addStatement("%T(", remote)
-                                indent()
-                                val includedServicesCode = properties.mapNotNull { propertyDeclaration ->
-                                    val typeDeclaration = propertyDeclaration.type.resolve().declaration
-                                    if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class)) {
-                                        CodeBlock.of("${propertyDeclaration.simpleName.asString()} = ${propertyDeclaration.simpleName.asString()}.$GENERATE_REMOTE($IDENTIFIER)")
-                                    } else {
-                                        null
-                                    }
-                                }.toList()
-                                val characteristicsCode = properties.mapNotNull { propertyDeclaration ->
-                                    val typeDeclaration = propertyDeclaration.type.resolve().declaration
-                                    if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothCharacteristic::class)) {
-                                        CodeBlock.of("${propertyDeclaration.simpleName.asString()} = ${propertyDeclaration.simpleName.asString()}.$GENERATE_REMOTE($IDENTIFIER)")
-                                    } else {
-                                        null
-                                    }
-                                }.toList()
-                                val properties = includedServicesCode + characteristicsCode
-                                if (properties.isNotEmpty()) {
-                                    add(
-                                        properties.joinToCode(separator = ",\n", suffix = ",\n"),
-                                    )
-                                }
-                                unindent()
-                                addStatement(")")
-                            }
-                            .endControlFlow()
-                            .unindent()
-                            .add("}\n")
-                            .build(),
-                    )
-                    .build(),
+                generateSimulatorGenerateRemoteMethod(remote, properties),
             )
             .addTypes(nested)
-            .generateBody(declarations, generationType)
+            .generateBody(declarations, GenerationType.Type.SIMULATOR)
             .build()
     }
 
-    private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, generationType: GenerationType): TypeSpec.Builder = apply {
+    private fun generateSimulatorGenerateRemoteMethod(remote: ClassName, properties: Sequence<KSPropertyDeclaration>): FunSpec = FunSpec.builder(GENERATE_REMOTE)
+        .addParameter(IDENTIFIER, References.Bluetooth.Device.identifier)
+        .returns(remote)
+        .addCode(
+            CodeBlock.builder()
+                .add("$RETURN $REMOTES.getOrPut($IDENTIFIER) {\n")
+                .indent()
+                .beginControlFlow("$WITH (${declaration.delegateParameterName})")
+                .apply {
+                    addStatement("%T(", remote)
+                    indent()
+                    val includedServicesCode = properties.mapNotNull { propertyDeclaration ->
+                        val typeDeclaration = propertyDeclaration.type.resolve().declaration
+                        if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class)) {
+                            CodeBlock.of("${propertyDeclaration.simpleName.asString()} = ${propertyDeclaration.simpleName.asString()}.$GENERATE_REMOTE($IDENTIFIER)")
+                        } else {
+                            null
+                        }
+                    }.toList()
+                    val characteristicsCode = properties.mapNotNull { propertyDeclaration ->
+                        val typeDeclaration = propertyDeclaration.type.resolve().declaration
+                        if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothCharacteristic::class)) {
+                            CodeBlock.of("${propertyDeclaration.simpleName.asString()} = ${propertyDeclaration.simpleName.asString()}.$GENERATE_REMOTE($IDENTIFIER)")
+                        } else {
+                            null
+                        }
+                    }.toList()
+                    val properties = includedServicesCode + characteristicsCode
+                    if (properties.isNotEmpty()) {
+                        add(
+                            properties.joinToCode(separator = ",\n", suffix = ",\n"),
+                        )
+                    }
+                    unindent()
+                    addStatement(")")
+                }
+                .endControlFlow()
+                .unindent()
+                .add("}\n")
+                .build(),
+        )
+        .build()
+
+    private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, type: GenerationType.Type): TypeSpec.Builder = apply {
         addProperties(
             declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull { propertyDeclaration ->
-                val typeDeclaration = propertyDeclaration.type.resolve().declaration
-                when {
-                    typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class) -> {
+                when (val typeDeclaration = propertyDeclaration.type.resolve().declaration) {
+                    is KSClassDeclaration if typeDeclaration.isAnnotationPresent(BluetoothService::class) -> {
                         if (typeDeclaration.isAnnotationPresent(BluetoothService::class) && typeDeclaration.declarations.filterIsInstance<KSPropertyDeclaration>()
                                 .any { serviceProperties ->
                                     serviceProperties.isAnnotationPresent(BluetoothService::class)
@@ -333,78 +346,11 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                         ) {
                             logger.error("An included @${BluetoothService::class} can not include its own services")
                         }
-                        PropertySpec.builder(
-                            propertyDeclaration.simpleName.asString(),
-                            NameHelper.nameFor(typeDeclaration, generationType),
-                        ).addModifiers(*generationType.additionalModifiers.toTypedArray())
-                            .apply {
-                                val service = typeDeclaration.getAnnotationsByType(BluetoothService::class).first()
-                                val serviceNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration)
-                                when (generationType.type) {
-                                    GenerationType.Type.API -> {}
-
-                                    GenerationType.Type.BLUETOOTH -> {
-                                        delegate(
-                                            "lazy { %L }",
-                                            CodeBlock.of(
-                                                "%T($SERVICE.includedServices.%M(%T.$UUID)${if (serviceNeedsFormat) ", $FORMAT" else ""})",
-                                                NameHelper.nameFor(typeDeclaration, generationType),
-                                                References.Bluetooth.get,
-                                                NameHelper.nameFor(typeDeclaration, generationType.copy(type = GenerationType.Type.API)),
-                                            ),
-                                        )
-                                    }
-
-                                    GenerationType.Type.SIMULATOR -> {
-                                        initializer(
-                                            CodeBlock.of(
-                                                "%T(${declaration.delegateName}.${propertyDeclaration.delegateName}, $COROUTINE_SCOPE, $IS_CLOSED)",
-                                                NameHelper.nameFor(typeDeclaration, generationType),
-                                            ),
-                                        )
-                                    }
-                                }
-                            }
-                            .build()
+                        generateIncludedServiceProperty(propertyDeclaration, typeDeclaration, type)
                     }
 
-                    typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothCharacteristic::class) -> {
-                        PropertySpec.builder(
-                            propertyDeclaration.simpleName.asString(),
-                            NameHelper.nameFor(typeDeclaration, generationType),
-                        ).addModifiers(*generationType.additionalModifiers.toTypedArray())
-                            .apply {
-                                val characteristic = typeDeclaration.getAnnotationsByType(BluetoothCharacteristic::class).first()
-                                val characteristicNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration)
-                                when (generationType.type) {
-                                    GenerationType.Type.API -> {}
-
-                                    GenerationType.Type.BLUETOOTH -> {
-                                        val isNotifiable = typeDeclaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { it.isAnnotationPresent(Notifiable::class) }
-                                        val cast = if (isNotifiable) CodeBlock.of(" as %T", References.Bluetooth.Server.localCharacteristicNotifiable) else CodeBlock.of("")
-                                        delegate(
-                                            "lazy { %L }",
-                                            CodeBlock.of(
-                                                "%T($SERVICE.characteristics.%M(%T.$UUID)%L${if (characteristicNeedsFormat) ", $FORMAT" else ""})",
-                                                NameHelper.nameFor(typeDeclaration, generationType),
-                                                References.Bluetooth.get,
-                                                NameHelper.nameFor(typeDeclaration, generationType.copy(type = GenerationType.Type.API)),
-                                                cast,
-                                            ),
-                                        )
-                                    }
-
-                                    GenerationType.Type.SIMULATOR -> {
-                                        initializer(
-                                            CodeBlock.of(
-                                                "%T(${declaration.delegateName}.${propertyDeclaration.delegateName}, $COROUTINE_SCOPE, $IS_CLOSED)",
-                                                NameHelper.nameFor(typeDeclaration, generationType),
-                                            ),
-                                        )
-                                    }
-                                }
-                            }
-                            .build()
+                    is KSClassDeclaration if typeDeclaration.isAnnotationPresent(BluetoothCharacteristic::class) -> {
+                        generateCharacteristicProperty(propertyDeclaration, typeDeclaration, type)
                     }
 
                     else -> {
@@ -417,4 +363,75 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
             }.toList(),
         )
     }
+
+    private fun generateIncludedServiceProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec =
+        PropertySpec.builder(
+            propertyDeclaration.simpleName.asString(),
+            NameHelper.serverName(typeDeclaration, type),
+        ).addModifiers(*type.additionalModifiers.toTypedArray())
+            .apply {
+                val serviceNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration)
+                when (type) {
+                    GenerationType.Type.API -> {}
+
+                    GenerationType.Type.BLUETOOTH -> {
+                        delegate(
+                            "lazy { %L }",
+                            CodeBlock.of(
+                                "%T($SERVICE.includedServices.%M(%T.$UUID)${serviceNeedsFormat.functionArgument})",
+                                NameHelper.serverName(typeDeclaration, type),
+                                References.Bluetooth.get,
+                                NameHelper.serverName(typeDeclaration, GenerationType.Type.API),
+                            ),
+                        )
+                    }
+
+                    GenerationType.Type.SIMULATOR -> {
+                        initializer(
+                            CodeBlock.of(
+                                "%T(${declaration.delegateParameterName}.${propertyDeclaration.delegateParameterName}, $COROUTINE_SCOPE, $IS_CLOSED)",
+                                NameHelper.serverName(typeDeclaration, type),
+                            ),
+                        )
+                    }
+                }
+            }
+            .build()
+
+    private fun generateCharacteristicProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec =
+        PropertySpec.builder(
+            propertyDeclaration.simpleName.asString(),
+            NameHelper.serverName(typeDeclaration, type),
+        ).addModifiers(*type.additionalModifiers.toTypedArray())
+            .apply {
+                val characteristicNeedsFormat = NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration)
+                when (type) {
+                    GenerationType.Type.API -> {}
+
+                    GenerationType.Type.BLUETOOTH -> {
+                        val isNotifiable = typeDeclaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { it.isAnnotationPresent(Notifiable::class) }
+                        val cast = if (isNotifiable) CodeBlock.of(" as %T", References.Bluetooth.Server.localCharacteristicNotifiable) else CodeBlock.of("")
+                        delegate(
+                            "lazy { %L }",
+                            CodeBlock.of(
+                                "%T($SERVICE.characteristics.%M(%T.$UUID)%L${characteristicNeedsFormat.functionArgument})",
+                                NameHelper.serverName(typeDeclaration, type),
+                                References.Bluetooth.get,
+                                NameHelper.serverName(typeDeclaration, GenerationType.Type.API),
+                                cast,
+                            ),
+                        )
+                    }
+
+                    GenerationType.Type.SIMULATOR -> {
+                        initializer(
+                            CodeBlock.of(
+                                "%T(${declaration.delegateParameterName}.${propertyDeclaration.delegateParameterName}, $COROUTINE_SCOPE, $IS_CLOSED)",
+                                NameHelper.serverName(typeDeclaration, type),
+                            ),
+                        )
+                    }
+                }
+            }
+            .build()
 }

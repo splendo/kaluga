@@ -38,14 +38,20 @@ internal object NeedsFormatterHelper {
         SERVER,
         SERVER_DSL,
     }
-    fun needsBluetoothFormatter(declaration: KSClassDeclaration, target: Target = Target.CLIENT): Boolean = when {
+
+    @JvmInline
+    value class NeedsFormatter(val needsFormatter: Boolean) {
+        val functionArgument: String get() = if (needsFormatter) ", $FORMAT" else ""
+    }
+
+    fun needsBluetoothFormatter(declaration: KSClassDeclaration, target: Target = Target.CLIENT): NeedsFormatter = when {
         declaration.isAnnotationPresent(Bluetooth::class) ||
             declaration.isAnnotationPresent(BluetoothClient::class) ||
             declaration.isAnnotationPresent(BluetoothServer::class) ||
             declaration.isAnnotationPresent(BluetoothService::class) -> {
             declaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { property ->
                 (property.type.resolve().declaration as? KSClassDeclaration)?.let {
-                    needsBluetoothFormatter(it, target)
+                    needsBluetoothFormatter(it, target).needsFormatter
                 } ?: false
             }
         }
@@ -62,7 +68,7 @@ internal object NeedsFormatterHelper {
                         ((property.isNotifiable) && target != Target.SERVER_DSL) -> property.type.resolve().toTypeName() != BYTE_ARRAY
 
                     else -> (property.type.resolve().declaration as? KSClassDeclaration)?.let {
-                        needsBluetoothFormatter(it, target)
+                        needsBluetoothFormatter(it, target).needsFormatter
                     } ?: false
                 }
             }
@@ -82,5 +88,5 @@ internal object NeedsFormatterHelper {
         }
 
         else -> false
-    }
+    }.let { NeedsFormatter(it) }
 }

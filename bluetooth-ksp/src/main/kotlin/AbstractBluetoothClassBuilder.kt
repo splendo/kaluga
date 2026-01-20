@@ -32,21 +32,22 @@ import com.squareup.kotlinpoet.TypeSpec
 
 internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDeclaration, val logger: KSPLogger) {
 
+    val declarations get() = declaration.declarations
     fun generate(generationType: GenerationType): TypeSpec = with(declaration) {
         val nested = generateNested(generationType)
         when (generationType.type) {
-            GenerationType.Type.API -> generateAPI(generationType, nested)
-            GenerationType.Type.BLUETOOTH -> generateBluetooth(generationType, nested)
-            GenerationType.Type.SIMULATOR -> generateSimulated(generationType, nested)
+            GenerationType.Type.API -> generateAPI(nested)
+            GenerationType.Type.BLUETOOTH -> generateBluetooth(nested)
+            GenerationType.Type.SIMULATOR -> generateSimulated(nested)
         }
     }
 
-    abstract fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec
-    abstract fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec
-    abstract fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec
+    abstract fun generateAPI(nested: List<TypeSpec>): TypeSpec
+    abstract fun generateBluetooth(nested: List<TypeSpec>): TypeSpec
+    abstract fun generateSimulated(nested: List<TypeSpec>): TypeSpec
 
-    protected fun KSClassDeclaration.generateNested(generationType: GenerationType): List<TypeSpec> = buildList {
-        val bluetoothDeclarations = declarations.filter { it.isAnnotationPresent(Bluetooth::class) }.filterIsInstance<KSClassDeclaration>()
+    protected fun generateNested(generationType: GenerationType): List<TypeSpec> = buildList {
+        val bluetoothDeclarations = declaration.declarations.filter { it.isAnnotationPresent(Bluetooth::class) }.filterIsInstance<KSClassDeclaration>()
         bluetoothDeclarations.forEach { bluetoothDeclaration ->
             if (generationType.side == GenerationType.Side.CLIENT) {
                 add(BluetoothClientBuilder(bluetoothDeclaration, logger).generate(generationType))
@@ -58,7 +59,9 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
 
         if (generationType.side == GenerationType.Side.CLIENT) {
             val clientDeclarations =
-                declarations.filter { it.isAnnotationPresent(BluetoothClient::class) && !it.isAnnotationPresent(Bluetooth::class) }.filterIsInstance<KSClassDeclaration>()
+                declaration.declarations.filter {
+                    it.isAnnotationPresent(BluetoothClient::class) && !it.isAnnotationPresent(Bluetooth::class)
+                }.filterIsInstance<KSClassDeclaration>()
             addAll(
                 clientDeclarations.map { clientDeclaration ->
                     BluetoothClientBuilder(clientDeclaration, logger).generate(generationType)
@@ -121,8 +124,8 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
         }
     }
 
-    protected val GenerationType.additionalModifiers: List<KModifier> get() = listOfNotNull(
-        KModifier.ABSTRACT.takeIf { type == GenerationType.Type.API },
-        KModifier.OVERRIDE.takeIf { type != GenerationType.Type.API },
+    protected val GenerationType.Type.additionalModifiers: List<KModifier> get() = listOfNotNull(
+        KModifier.ABSTRACT.takeIf { this == GenerationType.Type.API },
+        KModifier.OVERRIDE.takeIf { this != GenerationType.Type.API },
     )
 }

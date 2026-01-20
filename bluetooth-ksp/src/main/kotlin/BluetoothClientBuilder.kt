@@ -46,61 +46,60 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
         const val DISCOVERED_SERVICES = "discoveredServices"
     }
 
-    override fun KSClassDeclaration.generateAPI(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
-        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(this)
-        return TypeSpec.interfaceBuilder(NameHelper.nameFor(this, generationType))
-            .addType(
-                TypeSpec.companionObjectBuilder()
-                    .addFunction(
-                        FunSpec.builder(
-                            BLUETOOTH,
-                        ).apply {
-                            val returnType = NameHelper.nameFor(this@generateAPI, generationType.copy(type = GenerationType.Type.BLUETOOTH))
-                            returns(returnType)
-                                .addModifiers(KModifier.SUSPEND)
-                                .addParameters(
-                                    listOfNotNull(
-                                        ParameterSpec(BLUETOOTH, References.Bluetooth.bluetoothService),
-                                        ParameterSpec(IDENTIFIER, References.Bluetooth.Device.identifier),
-                                        ParameterSpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
-                                            .defaultValue("%T", References.Bluetooth.Serialization.bluetoothFormat)
-                                            .build().takeIf { needsFormatter },
-                                    ),
-                                )
-                                .addStatement(
-                                    "$RETURN %T($BLUETOOTH.allDevices().%M($IDENTIFIER).%M().%M()${if (needsFormatter) ", $FORMAT" else ""})",
-                                    returnType,
-                                    References.Bluetooth.get,
-                                    References.Bluetooth.discoveredServices,
-                                    References.KotlinX.Coroutines.Flow.first,
-                                )
-                        }
-                            .build(),
-                    )
-                    .addFunction(
-                        FunSpec.builder(SIMULATED).apply {
-                            val returnType = NameHelper.nameFor(this@generateAPI, generationType.copy(type = GenerationType.Type.SIMULATOR))
-                            val serverType = NameHelper.nameFor(this@generateAPI, GenerationType(GenerationType.Side.SERVER, GenerationType.Type.SIMULATOR))
-                            returns(returnType)
-                                .addParameters(
-                                    listOf(
-                                        ParameterSpec(IDENTIFIER, References.Bluetooth.Device.identifier),
-                                        ParameterSpec("server", serverType),
-                                    ),
-                                )
-                                .addStatement("$RETURN server.$GENERATE_CLIENT($IDENTIFIER)")
-                        }.build(),
-                    )
-                    .build(),
-            )
+    override fun generateAPI(nested: List<TypeSpec>): TypeSpec {
+        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration)
+        return TypeSpec.interfaceBuilder(NameHelper.nameFor(declaration, GenerationType.CLIENT_API))
+            .addType(generateAPICompanionObject(needsFormatter))
             .addTypes(nested)
-            .generateBody(declarations, generationType)
+            .generateBody(declarations, GenerationType.Type.API)
             .build()
     }
 
-    override fun KSClassDeclaration.generateBluetooth(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
-        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(this)
-        val className = NameHelper.nameFor(this, generationType)
+    private fun generateAPICompanionObject(needsFormatter: NeedsFormatterHelper.NeedsFormatter): TypeSpec = TypeSpec.companionObjectBuilder()
+        .addFunction(generateAPIBluetoothMethod(needsFormatter))
+        .addFunction(generateAPISimulatorMethod())
+        .build()
+
+    private fun generateAPIBluetoothMethod(needsFormatter: NeedsFormatterHelper.NeedsFormatter): FunSpec = FunSpec.builder(
+        BLUETOOTH,
+    ).apply {
+        val returnType = NameHelper.nameFor(declaration, GenerationType.CLIENT_BLUETOOTH)
+        returns(returnType)
+            .addModifiers(KModifier.SUSPEND)
+            .addParameters(
+                listOfNotNull(
+                    ParameterSpec(BLUETOOTH, References.Bluetooth.bluetoothService),
+                    ParameterSpec(IDENTIFIER, References.Bluetooth.Device.identifier),
+                    ParameterSpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
+                        .defaultValue("%T", References.Bluetooth.Serialization.bluetoothFormat)
+                        .build().takeIf { needsFormatter.needsFormatter },
+                ),
+            )
+            .addStatement(
+                "$RETURN %T($BLUETOOTH.allDevices().%M($IDENTIFIER).%M().%M()${needsFormatter.functionArgument})",
+                returnType,
+                References.Bluetooth.get,
+                References.Bluetooth.discoveredServices,
+                References.KotlinX.Coroutines.Flow.first,
+            )
+    }
+        .build()
+    private fun generateAPISimulatorMethod(): FunSpec = FunSpec.builder(SIMULATED).apply {
+        val returnType = NameHelper.nameFor(declaration, GenerationType.CLIENT_SIMULATOR)
+        val serverType = NameHelper.nameFor(declaration, GenerationType.SERVER_SIMULATOR)
+        returns(returnType)
+            .addParameters(
+                listOf(
+                    ParameterSpec(IDENTIFIER, References.Bluetooth.Device.identifier),
+                    ParameterSpec("server", serverType),
+                ),
+            )
+            .addStatement("$RETURN server.$GENERATE_CLIENT($IDENTIFIER)")
+    }.build()
+
+    override fun generateBluetooth(nested: List<TypeSpec>): TypeSpec {
+        val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration)
+        val className = NameHelper.nameFor(declaration, GenerationType.CLIENT_BLUETOOTH)
 
         return TypeSpec.classBuilder(className)
             .primaryConstructor(
@@ -108,28 +107,28 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
                     .addParameters(
                         listOfNotNull(
                             ParameterSpec(DISCOVERED_SERVICES, LIST.parameterizedBy(References.Bluetooth.remoteService)),
-                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter },
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
                         ),
                     )
                     .build(),
             )
-            .addSuperinterface(NameHelper.nameFor(this, generationType.copy(type = GenerationType.Type.API)))
+            .addSuperinterface(NameHelper.nameFor(declaration, GenerationType.CLIENT_API))
             .addProperties(
                 listOfNotNull(
                     PropertySpec.builder(DISCOVERED_SERVICES, LIST.parameterizedBy(References.Bluetooth.remoteService))
                         .initializer(DISCOVERED_SERVICES).build(),
                     PropertySpec.builder(FORMAT, References.Bluetooth.Serialization.bluetoothFormat)
                         .addModifiers(KModifier.PRIVATE)
-                        .initializer(FORMAT).build().takeIf { needsFormatter },
+                        .initializer(FORMAT).build().takeIf { needsFormatter.needsFormatter },
                 ),
             )
             .addTypes(nested)
-            .generateBody(declarations, generationType).build()
+            .generateBody(declarations, GenerationType.Type.BLUETOOTH).build()
     }
 
-    override fun KSClassDeclaration.generateSimulated(generationType: GenerationType, nested: List<TypeSpec>): TypeSpec {
+    override fun generateSimulated(nested: List<TypeSpec>): TypeSpec {
         val properties = declarations.filterIsInstance<KSPropertyDeclaration>()
-        return TypeSpec.classBuilder(NameHelper.nameFor(this, generationType))
+        return TypeSpec.classBuilder(NameHelper.nameFor(declaration, GenerationType.CLIENT_SIMULATOR))
             .primaryConstructor(
                 FunSpec.constructorBuilder()
                     .addParameters(
@@ -138,7 +137,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
                             if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class)) {
                                 ParameterSpec(
                                     propertyDeclaration.simpleName.asString(),
-                                    NameHelper.nameFor(typeDeclaration, generationType),
+                                    NameHelper.nameFor(typeDeclaration, GenerationType.CLIENT_SIMULATOR),
                                 )
                             } else {
                                 null
@@ -147,48 +146,18 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
                     )
                     .build(),
             )
-            .addSuperinterface(NameHelper.nameFor(this, generationType.copy(type = GenerationType.Type.API)))
+            .addSuperinterface(NameHelper.nameFor(declaration, GenerationType.CLIENT_API))
             .addTypes(nested)
-            .generateBody(declarations, generationType)
+            .generateBody(declarations, GenerationType.Type.SIMULATOR)
             .build()
     }
 
-    private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, generationType: GenerationType): TypeSpec.Builder = apply {
+    private fun TypeSpec.Builder.generateBody(declarations: Sequence<KSDeclaration>, type: GenerationType.Type): TypeSpec.Builder = apply {
         addProperties(
             declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull { propertyDeclaration ->
                 val typeDeclaration = propertyDeclaration.type.resolve().declaration
                 if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class)) {
-                    PropertySpec.builder(
-                        propertyDeclaration.simpleName.asString(),
-                        NameHelper.nameFor(typeDeclaration, generationType),
-                    )
-                        .addModifiers(
-                            *generationType.additionalModifiers.toTypedArray(),
-                        )
-                        .apply {
-                            when (generationType.type) {
-                                GenerationType.Type.API -> {}
-
-                                GenerationType.Type.BLUETOOTH -> {
-                                    initializer(
-                                        "%T.${BluetoothRemoteServiceBuilder.FROM_DISCOVERED_SERVICES}(${DISCOVERED_SERVICES}${if (NeedsFormatterHelper.needsBluetoothFormatter(
-                                                typeDeclaration,
-                                            )
-                                        ) {
-                                            ", $FORMAT"
-                                        } else {
-                                            ""
-                                        } })",
-                                        NameHelper.nameFor(typeDeclaration, generationType),
-                                    )
-                                }
-
-                                GenerationType.Type.SIMULATOR -> {
-                                    initializer(propertyDeclaration.simpleName.asString())
-                                }
-                            }
-                        }
-                        .build()
+                    generateServiceProperty(propertyDeclaration, typeDeclaration, type)
                 } else {
                     logger.error("A BluetoothClient should only have @${BluetoothService::class.simpleName} properties $typeDeclaration ${typeDeclaration.annotations}")
                     null
@@ -196,4 +165,30 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
             }.toList(),
         )
     }
+
+    private fun generateServiceProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec =
+        PropertySpec.builder(
+            propertyDeclaration.simpleName.asString(),
+            NameHelper.clientName(typeDeclaration, type),
+        )
+            .addModifiers(*type.additionalModifiers.toTypedArray())
+            .apply {
+                when (type) {
+                    GenerationType.Type.API -> {}
+
+                    GenerationType.Type.BLUETOOTH -> {
+                        initializer(
+                            "%T.${BluetoothRemoteServiceBuilder.FROM_DISCOVERED_SERVICES}(${DISCOVERED_SERVICES}${NeedsFormatterHelper.needsBluetoothFormatter(
+                                typeDeclaration,
+                            ).functionArgument})",
+                            NameHelper.clientName(typeDeclaration, type),
+                        )
+                    }
+
+                    GenerationType.Type.SIMULATOR -> {
+                        initializer(propertyDeclaration.simpleName.asString())
+                    }
+                }
+            }
+            .build()
 }

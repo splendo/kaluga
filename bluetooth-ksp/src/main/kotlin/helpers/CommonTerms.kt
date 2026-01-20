@@ -64,7 +64,7 @@ const val COROUTINE_SCOPE = "coroutineScope"
 const val COROUTINE_CONTEXT = "coroutineContext"
 const val IS_CLOSED = "isClosed"
 
-val KSDeclaration.delegateName: String get() = "${simpleName.asString().replaceFirstChar { it.lowercase() }}$DELEGATE"
+val KSDeclaration.delegateParameterName: String get() = "${simpleName.asString().replaceFirstChar { it.lowercase() }}$DELEGATE"
 
 val KSPropertyDeclaration.onReadMethodName: String get() = "$ON_READ${simpleName.asString().replaceFirstChar { it.uppercase() }}"
 val KSPropertyDeclaration.onWriteMethodName: String get() = "$ON_WRITE${simpleName.asString().replaceFirstChar { it.uppercase() }}"
