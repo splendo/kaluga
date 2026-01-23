@@ -19,10 +19,34 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
-import com.splendo.kaluga.scientific.converter.pressure.times
 import com.splendo.kaluga.scientific.converter.volumetricFlow.div
 import com.splendo.kaluga.scientific.converter.volumetricFlow.times
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.Barye
+import com.splendo.kaluga.scientific.unit.BaryeMultiple
+import com.splendo.kaluga.scientific.unit.ImperialArea
+import com.splendo.kaluga.scientific.unit.ImperialPressure
+import com.splendo.kaluga.scientific.unit.ImperialTonSquareInch
+import com.splendo.kaluga.scientific.unit.ImperialVolumetricFlow
+import com.splendo.kaluga.scientific.unit.ImperialVolumetricFlux
+import com.splendo.kaluga.scientific.unit.KiloPoundSquareInch
+import com.splendo.kaluga.scientific.unit.KipSquareInch
+import com.splendo.kaluga.scientific.unit.MetricArea
+import com.splendo.kaluga.scientific.unit.MetricVolumetricFlow
+import com.splendo.kaluga.scientific.unit.MetricVolumetricFlux
+import com.splendo.kaluga.scientific.unit.OunceSquareInch
+import com.splendo.kaluga.scientific.unit.PoundSquareInch
+import com.splendo.kaluga.scientific.unit.Pressure
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.UKImperialPressure
+import com.splendo.kaluga.scientific.unit.UKImperialVolumetricFlow
+import com.splendo.kaluga.scientific.unit.UKImperialVolumetricFlux
+import com.splendo.kaluga.scientific.unit.USCustomaryPressure
+import com.splendo.kaluga.scientific.unit.USCustomaryVolumetricFlow
+import com.splendo.kaluga.scientific.unit.USCustomaryVolumetricFlux
+import com.splendo.kaluga.scientific.unit.USTonSquareInch
+import com.splendo.kaluga.scientific.unit.VolumetricFlow
+import com.splendo.kaluga.scientific.unit.VolumetricFlux
 
 val PhysicalQuantity.VolumetricFlow.converters get() = listOf<QuantityConverter<PhysicalQuantity.VolumetricFlow, *>>(
     QuantityConverterWithOperator(

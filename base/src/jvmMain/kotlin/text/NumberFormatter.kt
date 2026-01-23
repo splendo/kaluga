@@ -28,7 +28,6 @@ import java.util.Currency
  * @param locale The [KalugaLocale] used for parsing. Defaults to [KalugaLocale.defaultLocale].
  * @param style The [NumberFormatStyle] to configure the format to use. Defaults to [NumberFormatStyle.Decimal].
  */
-@ExperimentalUnsignedTypes
 actual class NumberFormatter actual constructor(actual override val locale: KalugaLocale, style: NumberFormatStyle) : BaseNumberFormatter {
 
     private val format: DecimalFormat = when (style) {

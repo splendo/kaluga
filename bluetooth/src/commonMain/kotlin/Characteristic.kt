@@ -163,6 +163,7 @@ open class RemoteCharacteristic internal constructor(
             subscriptions.add(subscription)
             SubscriptionResult.DidSubscribe(subscription)
         }
+
         is GattResponse.WriteError -> SubscriptionResult.FailedToSubscribe(enableNotification)
     }
 
@@ -232,6 +233,7 @@ open class RemoteCharacteristic internal constructor(
                         null
                     }
                 }
+
                 else -> when (val current = currentNotificationAction.current) {
                     is DeviceAction.Notification.Disable -> {
                         val next = currentNotificationAction.next
@@ -248,6 +250,7 @@ open class RemoteCharacteristic internal constructor(
                             NotificationActionQueue(current, nextToDisable)
                         }
                     }
+
                     is DeviceAction.Notification.Enable -> {
                         enableAction = current
                         shouldHandleAction = false
@@ -312,6 +315,7 @@ open class RemoteCharacteristic internal constructor(
                         null
                     }
                 }
+
                 else -> when (val current = currentNotificationAction.current) {
                     is DeviceAction.Notification.Enable -> {
                         val next = currentNotificationAction.next
@@ -328,6 +332,7 @@ open class RemoteCharacteristic internal constructor(
                             NotificationActionQueue(current, nextToDisable)
                         }
                     }
+
                     is DeviceAction.Notification.Disable -> {
                         disableAction = current
                         shouldHandleAction = false

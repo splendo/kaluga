@@ -41,21 +41,25 @@ enum class Length(val bytes: Int) {
         } else {
             number.toInt().toUInt() in UByte.MIN_VALUE.toUInt()..UByte.MAX_VALUE.toUInt()
         }
+
         `16_BIT` -> if (signed) {
             number.toInt() in Short.MIN_VALUE.toInt()..Short.MAX_VALUE.toInt()
         } else {
             number.toInt().toUInt() in UShort.MIN_VALUE.toUInt()..UShort.MAX_VALUE.toUInt()
         }
+
         `24_BIT` -> if (signed) {
             number.toLong() in Int24.Companion.MIN_VALUE.value.toLong()..Int24.Companion.MAX_VALUE.value.toLong()
         } else {
             number.toLong().toULong() in UInt24.Companion.MIN_VALUE.value.toULong()..UInt24.Companion.MAX_VALUE.value.toULong()
         }
+
         `32_BIT` -> if (signed) {
             number.toLong() in Int.MIN_VALUE.toLong()..Int.MAX_VALUE.toLong()
         } else {
             number.toLong().toULong() in UInt.MIN_VALUE.toULong()..Int.MAX_VALUE.toULong()
         }
+
         `64_BIT` -> true // Always fits as it is the max we support
     }
 }

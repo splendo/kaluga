@@ -425,13 +425,17 @@ internal object BluetoothBinaryDescriptorRegistry {
             } else {
                 setOf(Length.`8_BIT`)
             }
+
             PrimitiveKind.SHORT -> setOf(Length.`16_BIT`)
+
             PrimitiveKind.INT -> setOf(Length.`32_BIT`)
+
             PrimitiveKind.LONG -> if (annotations.filterIsInstance<MedFloat>().isNotEmpty()) {
                 setOf(Length.`32_BIT`)
             } else {
                 setOf(Length.`64_BIT`)
             }
+
             PrimitiveKind.FLOAT -> when {
                 annotations.filterIsInstance<MedFloat>().isNotEmpty() -> setOf(Length.`16_BIT`)
                 annotations.filterIsInstance<Scalar>().isNotEmpty() -> setOf(Length.`16_BIT`)
@@ -445,7 +449,9 @@ internal object BluetoothBinaryDescriptorRegistry {
             }
 
             StructureKind.MAP -> setOf(Length.`8_BIT`)
+
             StructureKind.LIST -> setOf(Length.`8_BIT`)
+
             else -> emptySet()
         }
     }.sortedBy { it.bytes }.toSet()
@@ -494,6 +500,7 @@ internal object BluetoothBinaryDescriptorRegistry {
                 val encoding = annotations.filterIsInstance<Encoded>().firstOrNull()?.encoding ?: Encoding.UTF_8
                 when {
                     annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.NullTerminated)
+
                     annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
                         val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
                         BluetoothBinaryDescriptor.StringSettings(
@@ -507,6 +514,7 @@ internal object BluetoothBinaryDescriptorRegistry {
                     }
 
                     annotations.filterIsInstance<Unsized>().isNotEmpty() -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.NoMarking)
+
                     else -> BluetoothBinaryDescriptor.StringSettings(encoding, StringEncodingSettings.LengthPrefix.ByteLength)
                 }
             }
@@ -533,6 +541,7 @@ internal object BluetoothBinaryDescriptorRegistry {
             -> {
                 val lengthMarking = when {
                     annotations.filterIsInstance<NullTerminated>().isNotEmpty() -> BluetoothBinaryDescriptor.CollectionSettings.NullMarked
+
                     annotations.filterIsInstance<LengthPrefix>().isNotEmpty() -> {
                         val lengthPrefix = annotations.filterIsInstance<LengthPrefix>().first()
                         BluetoothBinaryDescriptor.CollectionSettings.LengthPrefix(
@@ -541,6 +550,7 @@ internal object BluetoothBinaryDescriptorRegistry {
                     }
 
                     annotations.filterIsInstance<Unsized>().isNotEmpty() -> BluetoothBinaryDescriptor.CollectionSettings.Unmarked
+
                     else -> {
                         desiredFlagBitWidth.raise(supportedLengths.sizingWidth())
                         BluetoothBinaryDescriptor.CollectionSettings.NumericLength(supportedLengths)

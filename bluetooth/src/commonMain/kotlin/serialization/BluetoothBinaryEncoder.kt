@@ -70,6 +70,7 @@ internal class BluetoothBinaryEncoder(
                 if (collectionSize > 0 || !collectionSettings.nullIfEmpty) {
                     builder.addAction { add(lengthMarking.endMarking.encodeSize(collectionSize.toUInt(), binaryDescriptor.byteOrder)) }
                 }
+
             is BluetoothBinaryDescriptor.CollectionSettings.NumericLength ->
                 if (collectionSize > 0 || !collectionSettings.nullIfEmpty) {
                     builder.encodeNumericElement(
@@ -78,7 +79,9 @@ internal class BluetoothBinaryEncoder(
                         BluetoothBinaryDescriptor.NumericSettings.Natural(lengthMarking.supportedLengths, false),
                     )
                 }
+
             is BluetoothBinaryDescriptor.CollectionSettings.Unmarked -> {}
+
             is BluetoothBinaryDescriptor.CollectionSettings.NullMarked -> {}
         }
 
@@ -104,11 +107,13 @@ internal class BluetoothBinaryEncoder(
                             builder.addAction { add(0x00.toByte()) }
                         }
                     }
+
                     is BluetoothBinaryDescriptor.CollectionSettings.Unmarked -> {
                         if (collectionSize > 0 || !collectionSettings.nullIfEmpty) {
                             builder.makeUnconstrained()
                         }
                     }
+
                     else -> {}
                 }
             },
@@ -234,10 +239,12 @@ private class BluetoothBinaryCompositeEncoder(
                 }
                 BluetoothBinaryEncoder(binaryDescriptor, builder, serializersModule).encodeSerializableValue(serializer, value)
             }
+
             is PolymorphicKind.OPEN -> {
                 val binaryDescriptor = binaryDescriptor.children.first { binaryDescriptor -> binaryDescriptor.fieldName == serializer.descriptor.serialName }
                 BluetoothBinaryEncoder(binaryDescriptor, builder, serializersModule).encodeSerializableValue(serializer, value)
             }
+
             else -> {
                 val binaryDescriptor = getBinaryDescriptor(index)
                 BluetoothBinaryEncoder(binaryDescriptor, builder, serializersModule).encodeSerializableValue(serializer, value)
@@ -283,7 +290,9 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
             // Grab desired length
             val lengthToAdd = when (supportedLengths.size) {
                 0 -> IllegalArgumentException("Size should be set")
+
                 1 -> supportedLengths.first()
+
                 else -> {
                     // Find smallest fitting match or take the last size
                     val (lengthIndex, length) = supportedLengths.withIndex().firstOrNull { (_, length) ->
@@ -303,7 +312,9 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
                 // Encode based on length
                 when (lengthToAdd) {
                     Length.`8_BIT` -> if (settings.signed) add(value.toByte()) else add(value.toByte().toUByte())
+
                     Length.`16_BIT` -> if (settings.signed) add(value.toShort(), binaryDescriptor.byteOrder) else add(value.toShort().toUShort(), binaryDescriptor.byteOrder)
+
                     Length.`24_BIT` -> if (settings.signed) {
                         add(
                             value.toInt().toInt24(),
@@ -312,16 +323,20 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
                     } else {
                         add(value.toInt().toUInt().toUInt24(), binaryDescriptor.byteOrder)
                     }
+
                     Length.`32_BIT` -> if (settings.signed) add(value.toInt(), binaryDescriptor.byteOrder) else add(value.toInt().toUInt(), binaryDescriptor.byteOrder)
+
                     Length.`64_BIT` -> if (settings.signed) add(value.toLong(), binaryDescriptor.byteOrder) else add(value.toLong().toULong(), binaryDescriptor.byteOrder)
                 }
             }
         }
+
         is BluetoothBinaryDescriptor.NumericSettings.Scalar -> {
             // Calculate scaled value and store it as a natural number
             val scaledValue = settings.multiplier * value.toDouble() * 10.0.pow(settings.decimalExponent) * 2.0.pow(settings.binaryExponent) + settings.offset
             encodeNumericElement(scaledValue, binaryDescriptor, BluetoothBinaryDescriptor.NumericSettings.Natural(settings.supportedLengths, settings.signed))
         }
+
         is BluetoothBinaryDescriptor.NumericSettings.Decimal -> {
             val lengthToAdd = if (settings.supportedLengths.size > 1) {
                 val flagIndex = binaryDescriptor.bitIndex + if (binaryDescriptor.isNullable) 1 else 0
@@ -344,6 +359,7 @@ internal fun BinaryBuilder.encodeNumericElement(value: Number, binaryDescriptor:
                 }
             }
         }
+
         is BluetoothBinaryDescriptor.NumericSettings.MedFloat -> {
             val lengthToAdd = if (settings.supportedLengths.size > 1) {
                 val flagIndex = binaryDescriptor.bitIndex + if (binaryDescriptor.isNullable) 1 else 0

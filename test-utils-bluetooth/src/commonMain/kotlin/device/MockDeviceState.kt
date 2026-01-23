@@ -19,13 +19,13 @@ package com.splendo.kaluga.test.bluetooth.device
 
 import com.splendo.kaluga.base.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.NotConnectableDeviceState
-import com.splendo.kaluga.bluetooth.GattResponse
 
 sealed class MockDeviceState : KalugaState {
     data object NotConnectable : MockDeviceState(), NotConnectableDeviceState

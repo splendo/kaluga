@@ -20,7 +20,19 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.surfaceTension.times
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.ImperialArea
+import com.splendo.kaluga.scientific.unit.ImperialLength
+import com.splendo.kaluga.scientific.unit.ImperialSurfaceTension
+import com.splendo.kaluga.scientific.unit.Length
+import com.splendo.kaluga.scientific.unit.MetricArea
+import com.splendo.kaluga.scientific.unit.MetricLength
+import com.splendo.kaluga.scientific.unit.MetricSurfaceTension
+import com.splendo.kaluga.scientific.unit.SquareCentimeter
+import com.splendo.kaluga.scientific.unit.SquareInch
+import com.splendo.kaluga.scientific.unit.SurfaceTension
+import com.splendo.kaluga.scientific.unit.UKImperialSurfaceTension
+import com.splendo.kaluga.scientific.unit.USCustomarySurfaceTension
 
 val PhysicalQuantity.SurfaceTension.converters get() = listOf<QuantityConverter<PhysicalQuantity.SurfaceTension, *>>(
     QuantityConverterWithOperator(

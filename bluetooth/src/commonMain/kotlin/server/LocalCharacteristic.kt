@@ -157,9 +157,11 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
                     0 -> {
                         value
                     }
+
                     currentCache.size -> {
                         currentCache + value
                     }
+
                     else -> null
                 }
                 valueToDeserialize?.let {

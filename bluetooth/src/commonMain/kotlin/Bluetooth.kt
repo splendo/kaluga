@@ -410,7 +410,9 @@ fun ConnectableDevice.filterDiscovering() = state.transformLatest { deviceState 
                     }
 
                     is ConnectableDeviceState.Connected.DiscoveredServices -> deviceState
+
                     is ConnectableDeviceState.Connected.HandlingAction -> deviceState
+
                     else -> null
                 }
             }
@@ -583,6 +585,7 @@ suspend fun ConnectableDevice.updateRssi() = state.transformLatest { deviceState
             deviceState.readRssi()
             emit(Unit)
         }
+
         else -> {}
     }
 }.first()
