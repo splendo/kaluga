@@ -19,6 +19,7 @@ package com.splendo.kaluga.test.bluetooth.device
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.utils.toHexString
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
@@ -28,7 +29,6 @@ import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
-import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on

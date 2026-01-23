@@ -42,10 +42,10 @@ import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.RemoteCharacteristic
 import com.splendo.kaluga.bluetooth.RemoteDescriptor
 import com.splendo.kaluga.bluetooth.extensions.printableString
-import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.error

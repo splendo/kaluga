@@ -1,12 +1,11 @@
 package com.splendo.kaluga.bluetooth.extensions
 
 import com.splendo.kaluga.bluetooth.Characteristic
+import com.splendo.kaluga.bluetooth.RemoteDescriptor
 import com.splendo.kaluga.bluetooth.UUIDException
 import com.splendo.kaluga.bluetooth.characteristics
 import com.splendo.kaluga.bluetooth.descriptors
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
-import com.splendo.kaluga.bluetooth.RemoteDescriptor
-import com.splendo.kaluga.bluetooth.getOrNull
 import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.bluetooth.value
 import kotlinx.coroutines.flow.Flow

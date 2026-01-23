@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.RemoteAttribute
 import com.splendo.kaluga.bluetooth.RemoteCharacteristic
 import com.splendo.kaluga.bluetooth.RemoteDescriptor
@@ -29,12 +30,9 @@ import com.splendo.kaluga.bluetooth.filterDiscovering
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.getOrNull
 import com.splendo.kaluga.bluetooth.includedServices
-import com.splendo.kaluga.bluetooth.GattResponse
-import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.bluetooth.startDiscovering
 import com.splendo.kaluga.bluetooth.uuidFrom
 import com.splendo.kaluga.bluetooth.value
-import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach

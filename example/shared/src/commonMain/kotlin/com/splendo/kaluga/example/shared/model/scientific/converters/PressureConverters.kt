@@ -20,7 +20,39 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.pressure.times
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.Barye
+import com.splendo.kaluga.scientific.unit.BaryeMultiple
+import com.splendo.kaluga.scientific.unit.CubicCentimeter
+import com.splendo.kaluga.scientific.unit.CubicFoot
+import com.splendo.kaluga.scientific.unit.CubicInch
+import com.splendo.kaluga.scientific.unit.ImperialArea
+import com.splendo.kaluga.scientific.unit.ImperialPressure
+import com.splendo.kaluga.scientific.unit.ImperialTonSquareFoot
+import com.splendo.kaluga.scientific.unit.ImperialTonSquareInch
+import com.splendo.kaluga.scientific.unit.ImperialVolume
+import com.splendo.kaluga.scientific.unit.ImperialVolumetricFlow
+import com.splendo.kaluga.scientific.unit.KiloPoundSquareInch
+import com.splendo.kaluga.scientific.unit.KipSquareFoot
+import com.splendo.kaluga.scientific.unit.KipSquareInch
+import com.splendo.kaluga.scientific.unit.MetricPressure
+import com.splendo.kaluga.scientific.unit.MetricVolumetricFlow
+import com.splendo.kaluga.scientific.unit.OunceSquareInch
+import com.splendo.kaluga.scientific.unit.PoundSquareFoot
+import com.splendo.kaluga.scientific.unit.PoundSquareInch
+import com.splendo.kaluga.scientific.unit.Pressure
+import com.splendo.kaluga.scientific.unit.SquareCentimeter
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.UKImperialPressure
+import com.splendo.kaluga.scientific.unit.UKImperialVolume
+import com.splendo.kaluga.scientific.unit.UKImperialVolumetricFlow
+import com.splendo.kaluga.scientific.unit.USCustomaryPressure
+import com.splendo.kaluga.scientific.unit.USCustomaryVolume
+import com.splendo.kaluga.scientific.unit.USCustomaryVolumetricFlow
+import com.splendo.kaluga.scientific.unit.USTonSquareFoot
+import com.splendo.kaluga.scientific.unit.USTonSquareInch
+import com.splendo.kaluga.scientific.unit.Volume
+import com.splendo.kaluga.scientific.unit.VolumetricFlow
 
 val PhysicalQuantity.Pressure.converters get() = listOf<QuantityConverter<PhysicalQuantity.Pressure, *>>(
     QuantityConverterWithOperator(

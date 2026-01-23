@@ -35,7 +35,6 @@ import com.splendo.kaluga.architecture.compose.navigation.NavHostComposableNavig
 import com.splendo.kaluga.architecture.compose.navigation.back
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
-import com.splendo.kaluga.example.shared.viewmodel.bluetooth.client.BluetoothDeviceViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.server.BluetoothServerViewModel
 import com.splendo.kaluga.resources.compose.Composable
 import kotlinx.coroutines.flow.StateFlow

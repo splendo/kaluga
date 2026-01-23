@@ -20,7 +20,6 @@ package com.splendo.kaluga.example.architecture.xml
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.parseTypeOfOrNull

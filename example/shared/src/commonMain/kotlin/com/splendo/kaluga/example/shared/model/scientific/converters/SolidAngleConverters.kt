@@ -20,7 +20,12 @@ package com.splendo.kaluga.example.shared.model.scientific.converters
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.solidAngle.times
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.ImperialLuminance
+import com.splendo.kaluga.scientific.unit.Lambert
+import com.splendo.kaluga.scientific.unit.Luminance
+import com.splendo.kaluga.scientific.unit.LuminousIntensity
+import com.splendo.kaluga.scientific.unit.MetricLuminance
+import com.splendo.kaluga.scientific.unit.SolidAngle
 
 val PhysicalQuantity.SolidAngle.converters get() = listOf<QuantityConverter<PhysicalQuantity.SolidAngle, *>>(
     QuantityConverterWithOperator(
