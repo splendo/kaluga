@@ -21,9 +21,9 @@ import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.dataValue
-import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.logging.debug
 import kotlinx.cinterop.ObjCSignatureOverride
 import kotlinx.coroutines.CoroutineScope

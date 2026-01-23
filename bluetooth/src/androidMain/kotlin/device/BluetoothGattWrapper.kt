@@ -22,9 +22,9 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothStatusCodes
+import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.RemoteDescriptorWrapper
-import com.splendo.kaluga.bluetooth.MTU
 
 /**
  * A wrapper to access a [BluetoothGatt]

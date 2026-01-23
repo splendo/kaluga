@@ -22,7 +22,36 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.molality.div
 import com.splendo.kaluga.scientific.converter.molality.molarMass
 import com.splendo.kaluga.scientific.converter.molality.times
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Density
+import com.splendo.kaluga.scientific.unit.ImperialDensity
+import com.splendo.kaluga.scientific.unit.ImperialMolality
+import com.splendo.kaluga.scientific.unit.ImperialMolarEnergy
+import com.splendo.kaluga.scientific.unit.ImperialMolarVolume
+import com.splendo.kaluga.scientific.unit.ImperialMolarity
+import com.splendo.kaluga.scientific.unit.ImperialSpecificVolume
+import com.splendo.kaluga.scientific.unit.MetricAndImperialMolarEnergy
+import com.splendo.kaluga.scientific.unit.MetricDensity
+import com.splendo.kaluga.scientific.unit.MetricMolality
+import com.splendo.kaluga.scientific.unit.MetricMolarEnergy
+import com.splendo.kaluga.scientific.unit.MetricMolarVolume
+import com.splendo.kaluga.scientific.unit.MetricMolarity
+import com.splendo.kaluga.scientific.unit.MetricSpecificVolume
+import com.splendo.kaluga.scientific.unit.Molality
+import com.splendo.kaluga.scientific.unit.MolarEnergy
+import com.splendo.kaluga.scientific.unit.MolarVolume
+import com.splendo.kaluga.scientific.unit.Molarity
+import com.splendo.kaluga.scientific.unit.SpecificVolume
+import com.splendo.kaluga.scientific.unit.UKImperialDensity
+import com.splendo.kaluga.scientific.unit.UKImperialMolality
+import com.splendo.kaluga.scientific.unit.UKImperialMolarVolume
+import com.splendo.kaluga.scientific.unit.UKImperialMolarity
+import com.splendo.kaluga.scientific.unit.UKImperialSpecificVolume
+import com.splendo.kaluga.scientific.unit.USCustomaryDensity
+import com.splendo.kaluga.scientific.unit.USCustomaryMolality
+import com.splendo.kaluga.scientific.unit.USCustomaryMolarVolume
+import com.splendo.kaluga.scientific.unit.USCustomaryMolarity
+import com.splendo.kaluga.scientific.unit.USCustomarySpecificVolume
+import com.splendo.kaluga.scientific.unit.Weight
 
 val PhysicalQuantity.Molality.converters get() = listOf<QuantityConverter<PhysicalQuantity.Molality, *>>(
     QuantityConverterWithOperator(

@@ -23,7 +23,27 @@ import com.splendo.kaluga.scientific.converter.specificEnergy.asAbsorbedDose
 import com.splendo.kaluga.scientific.converter.specificEnergy.asEquivalentDose
 import com.splendo.kaluga.scientific.converter.specificEnergy.div
 import com.splendo.kaluga.scientific.converter.specificEnergy.times
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.ImperialSpecificEnergy
+import com.splendo.kaluga.scientific.unit.ImperialWeight
+import com.splendo.kaluga.scientific.unit.MetricAndUKImperialTemperature
+import com.splendo.kaluga.scientific.unit.MetricSpecificEnergy
+import com.splendo.kaluga.scientific.unit.MetricSpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.MetricWeight
+import com.splendo.kaluga.scientific.unit.Molality
+import com.splendo.kaluga.scientific.unit.MolarEnergy
+import com.splendo.kaluga.scientific.unit.MolarMass
+import com.splendo.kaluga.scientific.unit.SpecificEnergy
+import com.splendo.kaluga.scientific.unit.SpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.Temperature
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.UKImperialSpecificEnergy
+import com.splendo.kaluga.scientific.unit.UKImperialSpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.UKImperialWeight
+import com.splendo.kaluga.scientific.unit.USCustomarySpecificEnergy
+import com.splendo.kaluga.scientific.unit.USCustomarySpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.USCustomaryTemperature
+import com.splendo.kaluga.scientific.unit.USCustomaryWeight
+import com.splendo.kaluga.scientific.unit.Weight
 
 val PhysicalQuantity.SpecificEnergy.converters get() = listOf<QuantityConverter<PhysicalQuantity.SpecificEnergy, *>>(
     QuantityConverterWithOperator(

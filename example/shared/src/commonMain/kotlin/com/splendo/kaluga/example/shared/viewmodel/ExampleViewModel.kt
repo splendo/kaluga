@@ -25,7 +25,6 @@ import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 sealed class ExampleTabNavigation : NavigationAction<Nothing>(null) {

@@ -25,7 +25,6 @@ import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 

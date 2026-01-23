@@ -32,8 +32,8 @@ import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.example.shared.model.scientific.QuantityDetails
 import com.splendo.kaluga.example.shared.model.scientific.allPhysicalQuantities
-import com.splendo.kaluga.example.shared.model.scientific.quantityDetails
 import com.splendo.kaluga.example.shared.model.scientific.name
+import com.splendo.kaluga.example.shared.model.scientific.quantityDetails
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.scientific.PhysicalQuantity

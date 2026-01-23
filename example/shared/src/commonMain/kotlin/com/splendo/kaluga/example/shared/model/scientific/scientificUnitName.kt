@@ -17,7 +17,48 @@
 
 package com.splendo.kaluga.example.shared.model.scientific
 
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Acceleration
+import com.splendo.kaluga.scientific.unit.Action
+import com.splendo.kaluga.scientific.unit.AngularAcceleration
+import com.splendo.kaluga.scientific.unit.AngularVelocity
+import com.splendo.kaluga.scientific.unit.AreaDensity
+import com.splendo.kaluga.scientific.unit.Density
+import com.splendo.kaluga.scientific.unit.DynamicViscosity
+import com.splendo.kaluga.scientific.unit.HeatCapacity
+import com.splendo.kaluga.scientific.unit.ImperialMetricAndImperialEnergyWrapper
+import com.splendo.kaluga.scientific.unit.ImperialMetricAndImperialPowerWrapper
+import com.splendo.kaluga.scientific.unit.Jolt
+import com.splendo.kaluga.scientific.unit.KinematicViscosity
+import com.splendo.kaluga.scientific.unit.LinearMassDensity
+import com.splendo.kaluga.scientific.unit.LuminousEnergy
+import com.splendo.kaluga.scientific.unit.LuminousExposure
+import com.splendo.kaluga.scientific.unit.MassFlowRate
+import com.splendo.kaluga.scientific.unit.MetricMetricAndImperialEnergyWrapper
+import com.splendo.kaluga.scientific.unit.MetricMetricAndImperialPowerWrapper
+import com.splendo.kaluga.scientific.unit.Molality
+import com.splendo.kaluga.scientific.unit.MolarEnergy
+import com.splendo.kaluga.scientific.unit.MolarMass
+import com.splendo.kaluga.scientific.unit.MolarVolume
+import com.splendo.kaluga.scientific.unit.Molarity
+import com.splendo.kaluga.scientific.unit.Momentum
+import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.SpecificEnergy
+import com.splendo.kaluga.scientific.unit.SpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.SpecificVolume
+import com.splendo.kaluga.scientific.unit.Speed
+import com.splendo.kaluga.scientific.unit.SurfaceTension
+import com.splendo.kaluga.scientific.unit.ThermalResistance
+import com.splendo.kaluga.scientific.unit.UKImperialImperialForceWrapper
+import com.splendo.kaluga.scientific.unit.UKImperialImperialVolumeWrapper
+import com.splendo.kaluga.scientific.unit.UKImperialImperialWeightWrapper
+import com.splendo.kaluga.scientific.unit.UKImperialPressureWrapper
+import com.splendo.kaluga.scientific.unit.USCustomaryImperialForceWrapper
+import com.splendo.kaluga.scientific.unit.USCustomaryImperialPressureWrapper
+import com.splendo.kaluga.scientific.unit.USCustomaryImperialVolumeWrapper
+import com.splendo.kaluga.scientific.unit.USCustomaryImperialWeightWrapper
+import com.splendo.kaluga.scientific.unit.VolumetricFlow
+import com.splendo.kaluga.scientific.unit.VolumetricFlux
+import com.splendo.kaluga.scientific.unit.Yank
 
 val ScientificUnit<*>.name: String get() = when (this) {
     is Acceleration -> "${speed.name} per ${per.name}"

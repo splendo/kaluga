@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.system.network
 
-import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.system.network.NetworkConnectionType
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import com.splendo.kaluga.system.network.state.network
