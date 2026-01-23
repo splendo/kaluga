@@ -24,7 +24,8 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
-import com.splendo.kaluga.scientific.unit.Dimensionless
+import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.ScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
@@ -32,9 +33,7 @@ import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
 // Inv<Ex<A>> * A! -> One
 
 fun <
-    ExtendedLeftReciprocalUnit : UndefinedExtendedUnit<
-        LeftReciprocalAndRightQuantity,
-        >,
+    ExtendedLeftReciprocalUnit,
     LeftUnit : UndefinedReciprocalUnit<
         UndefinedQuantityType.Extended<
             LeftReciprocalAndRightQuantity,
@@ -42,7 +41,7 @@ fun <
         ExtendedLeftReciprocalUnit,
         >,
     LeftReciprocalAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    RightUnit : ScientificUnit<LeftReciprocalAndRightQuantity>,
+    RightUnit : DefinedScientificUnit<LeftReciprocalAndRightQuantity>,
     TargetUnit : ScientificUnit<PhysicalQuantity.Dimensionless>,
     TargetValue : ScientificValue<PhysicalQuantity.Dimensionless, TargetUnit>,
     > UndefinedScientificValue<
@@ -56,4 +55,13 @@ fun <
     right: ScientificValue<LeftReciprocalAndRightQuantity, RightUnit>,
     getDimensionless: () -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = getDimensionless().byMultiplying(this, right, factory)
+) where
+        ExtendedLeftReciprocalUnit : UndefinedExtendedUnit<
+            LeftReciprocalAndRightQuantity,
+            >,
+        ExtendedLeftReciprocalUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftReciprocalAndRightQuantity,
+                >,
+            > =
+    getDimensionless().byMultiplying(this, right, factory)

@@ -43,18 +43,23 @@ val PhysicalQuantity.LuminousIntensity.converters get() = listOf<QuantityConvert
             leftUnit is LuminousIntensity && rightUnit is Stilb -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is LuminousIntensity && rightUnit is Lambert -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is LuminousIntensity && rightUnit is MetricLuminance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is LuminousIntensity && rightUnit is ImperialLuminance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is LuminousIntensity && rightUnit is Luminance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -67,15 +72,19 @@ val PhysicalQuantity.LuminousIntensity.converters get() = listOf<QuantityConvert
             leftUnit is LuminousIntensity && rightUnit is SquareCentimeter -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is LuminousIntensity && rightUnit is MetricArea -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is LuminousIntensity && rightUnit is ImperialArea -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is LuminousIntensity && rightUnit is Area -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -88,6 +97,7 @@ val PhysicalQuantity.LuminousIntensity.converters get() = listOf<QuantityConvert
             leftUnit is LuminousIntensity && rightUnit is SolidAngle -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

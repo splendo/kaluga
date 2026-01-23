@@ -36,10 +36,6 @@ android {
         }
     }
 
-    kotlinOptions {
-        jvmTarget = libs.versions.java.get()
-    }
-
     buildTypes {
         debug {
             signingConfig = signingConfigs["debug"]

@@ -106,9 +106,13 @@ actual class CalendarPermissionManagerBuilder actual constructor(private val con
 
 private fun EKAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
     EKAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+
     EKAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+
     EKAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+
     EKAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+
     else -> {
         error(
             "CalendarPermissionManager",

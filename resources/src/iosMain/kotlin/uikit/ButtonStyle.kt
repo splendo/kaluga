@@ -208,18 +208,23 @@ private fun UIButtonConfiguration.applyImageGravity(gravity: ImageGravity, spaci
     imagePadding = spacing.toDouble()
     imagePlacement = when (gravity) {
         ImageGravity.START -> NSDirectionalRectEdgeLeading
+
         ImageGravity.LEFT -> if (UIApplication.sharedApplication.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionLeftToRight) {
             NSDirectionalRectEdgeLeading
         } else {
             NSDirectionalRectEdgeTrailing
         }
+
         ImageGravity.END -> NSDirectionalRectEdgeTrailing
+
         ImageGravity.RIGHT -> if (UIApplication.sharedApplication.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionLeftToRight) {
             NSDirectionalRectEdgeTrailing
         } else {
             NSDirectionalRectEdgeLeading
         }
+
         ImageGravity.TOP -> NSDirectionalRectEdgeTop
+
         ImageGravity.BOTTOM -> NSDirectionalRectEdgeBottom
     }
 }
@@ -232,6 +237,7 @@ private fun ButtonImage.image(size: ImageSize): UIImage {
     }
     return when (size) {
         is ImageSize.Intrinsic -> rawImage
+
         is ImageSize.Sized -> {
             val renderer = UIGraphicsImageRenderer(CGSizeMake(size.width.toDouble(), size.height.toDouble()))
             renderer.imageWithActions { _ ->

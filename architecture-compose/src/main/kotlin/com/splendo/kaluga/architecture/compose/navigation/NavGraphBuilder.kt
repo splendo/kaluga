@@ -220,44 +220,54 @@ private fun Bundle.composableValue(value: String?, specType: NavigationBundleSpe
     val nonNullableValue = value ?: ""
     return when (specType) {
         is NavigationBundleSpecType.UnitType -> specType.convertValue(Unit)
+
         is NavigationBundleSpecType.BooleanArrayType -> specType.convertValue(
             Json.decodeFromString(
                 BooleanArraySerializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.BooleanType -> specType.convertValue(
             Json.decodeFromString(
                 Boolean.serializer(),
                 nonNullableValue,
             ),
         )
-        is NavigationBundleSpecType.BundleType<*> -> throw BundleConversionError() // Unsupported for now
+
+        is NavigationBundleSpecType.BundleType<*> -> throw BundleConversionError()
+
+        // Unsupported for now
         is NavigationBundleSpecType.ByteArrayType -> specType.convertValue(
             Json.decodeFromString(
                 ByteArraySerializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.ByteType -> specType.convertValue(
             Json.decodeFromString(
                 Byte.serializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.CharArrayType -> specType.convertValue(
             Json.decodeFromString(
                 CharArraySerializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.CharSequenceType -> specType.convertValue(nonNullableValue)
+
         is NavigationBundleSpecType.CharType -> specType.convertValue(
             Json.decodeFromString(
                 Char.serializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.DateArrayType -> specType.convertValue(
             Json.decodeFromString(
                 ListSerializer(String.serializer()),
@@ -266,84 +276,99 @@ private fun Bundle.composableValue(value: String?, specType: NavigationBundleSpe
                 KalugaDateFormatter.Companion.iso8601Pattern().parse(it) ?: throw BundleConversionError()
             },
         )
+
         is NavigationBundleSpecType.DateType -> specType.convertValue(
             KalugaDateFormatter.Companion.iso8601Pattern().parse(nonNullableValue)
                 ?: throw BundleConversionError(),
         )
+
         is NavigationBundleSpecType.DoubleArrayType -> specType.convertValue(
             Json.decodeFromString(
                 DoubleArraySerializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.DoubleType -> specType.convertValue(
             Json.decodeFromString(
                 Double.serializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.FloatArrayType -> specType.convertValue(
             Json.decodeFromString(
                 FloatArraySerializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.FloatType -> specType.convertValue(
             Json.decodeFromString(
                 Float.serializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.IntegerArrayType -> specType.convertValue(
             Json.decodeFromString(
                 IntArraySerializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.IntegerType -> specType.convertValue(
             Json.decodeFromString(
                 Int.serializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.LongArrayType -> specType.convertValue(
             Json.decodeFromString(
                 LongArraySerializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.LongType -> specType.convertValue(
             Json.decodeFromString(
                 Long.serializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.OptionalType<*> -> value?.let {
             composableValue(
                 it,
                 specType.type,
             )
         } ?: specType.convertValue(null)
+
         is NavigationBundleSpecType.SerializedType<*> -> specType.generateValue(nonNullableValue)
             ?: throw BundleConversionError()
+
         is NavigationBundleSpecType.ShortArrayType -> specType.convertValue(
             Json.decodeFromString(
                 ShortArraySerializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.ShortType -> specType.convertValue(
             Json.decodeFromString(
                 Short.serializer(),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.StringArrayType -> specType.convertValue(
             Json.decodeFromString(
                 ListSerializer(String.serializer()),
                 nonNullableValue,
             ),
         )
+
         is NavigationBundleSpecType.StringType -> specType.convertValue(nonNullableValue)
     }
 }

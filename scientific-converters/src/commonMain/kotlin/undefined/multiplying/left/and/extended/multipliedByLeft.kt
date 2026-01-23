@@ -25,7 +25,7 @@ import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
@@ -33,9 +33,7 @@ import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
 // Mul<Ex<A>, B> * A! -> Mul<Mul<Ex<A>, B>, Wr<A>>
 
 fun <
-    ExtendedLeftLeftUnit : UndefinedExtendedUnit<
-        LeftLeftAndRightQuantity,
-        >,
+    ExtendedLeftLeftUnit,
     LeftRightQuantity : UndefinedQuantityType,
     LeftRightUnit : AbstractUndefinedScientificUnit<LeftRightQuantity>,
     LeftUnit : UndefinedMultipliedUnit<
@@ -47,7 +45,7 @@ fun <
         LeftRightUnit,
         >,
     LeftLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    RightUnit : ScientificUnit<LeftLeftAndRightQuantity>,
+    RightUnit : DefinedScientificUnit<LeftLeftAndRightQuantity>,
     WrappedRightUnit : WrappedUndefinedExtendedUnit<
         LeftLeftAndRightQuantity,
         RightUnit,
@@ -92,6 +90,15 @@ fun <
     rightAsUndefined: RightUnit.() -> WrappedRightUnit,
     leftUnitXWrappedRightUnit: LeftUnit.(WrappedRightUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.leftUnitXWrappedRightUnit(
-    right.unit.rightAsUndefined(),
-).byMultiplying(this, right, factory)
+) where
+        ExtendedLeftLeftUnit : UndefinedExtendedUnit<
+            LeftLeftAndRightQuantity,
+            >,
+        ExtendedLeftLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftLeftAndRightQuantity,
+                >,
+            > =
+    unit.leftUnitXWrappedRightUnit(
+        right.unit.rightAsUndefined(),
+    ).byMultiplying(this, right, factory)

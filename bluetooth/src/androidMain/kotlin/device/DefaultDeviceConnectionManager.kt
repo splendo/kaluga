@@ -168,6 +168,7 @@ internal actual class DefaultDeviceConnectionManager(
                             closeGatt()
                         }
                     }
+
                     BluetoothProfile.STATE_CONNECTED -> {
                         handleConnect()
                     }
@@ -226,21 +227,27 @@ internal actual class DefaultDeviceConnectionManager(
             is DeviceAction.Read.Characteristic -> if (!readyGatt.readCharacteristic(action.characteristic.wrapper)) {
                 action.handleActionCompleted(GattResponse.DeviceUnavailable)
             }
+
             is DeviceAction.Read.Descriptor -> if (!readyGatt.readDescriptor(action.descriptor.wrapper)) {
                 action.handleActionCompleted(GattResponse.DeviceUnavailable)
             }
+
             is DeviceAction.Write.Characteristic -> if (!readyGatt.writeCharacteristic(action.characteristic, action.newValue)) {
                 action.handleActionCompleted(GattResponse.DeviceUnavailable)
             }
+
             is DeviceAction.Write.Descriptor -> if (!readyGatt.writeDescriptor(action.descriptor, action.newValue)) {
                 action.handleActionCompleted(GattResponse.DeviceUnavailable)
             }
+
             is DeviceAction.Notification.Enable -> if (!readyGatt.setNotification(action.characteristic, true)) {
                 action.handleActionCompleted(GattResponse.DeviceUnavailable)
             }
+
             is DeviceAction.Notification.Disable -> if (!readyGatt.setNotification(action.characteristic, false)) {
                 action.handleActionCompleted(GattResponse.DeviceUnavailable)
             }
+
             is DeviceAction.RequestMtu -> if (!readyGatt.requestMtu(action.mtu)) {
                 action.handleActionCompleted(GattResponse.MTUNotPermitted(action.mtu))
             }
@@ -273,10 +280,13 @@ internal actual class DefaultDeviceConnectionManager(
         val writeValue = when {
             enable && characteristic.wrapper.properties.contains(CharacteristicProperty.Notify) ->
                 BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+
             enable && characteristic.wrapper.properties.contains(CharacteristicProperty.Indicate) ->
                 BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
+
             !enable && characteristic.wrapper.properties.containsAny(setOf(CharacteristicProperty.Indicate, CharacteristicProperty.Notify)) ->
                 BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+
             else -> null
         }
 

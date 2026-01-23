@@ -17,10 +17,11 @@
 
 package com.splendo.kaluga.test.media
 
+import android.view.SurfaceHolder
 import com.splendo.kaluga.media.MediaSurface
 import org.mockito.Mockito
 
 /**
  * Creates a Mock implementation of [MediaSurface]
  */
-actual fun createMockMediaSurface(): MediaSurface = MediaSurface(Mockito.mock())
+actual fun createMockMediaSurface(): MediaSurface = MediaSurface(Mockito.mock(SurfaceHolder::class.java))

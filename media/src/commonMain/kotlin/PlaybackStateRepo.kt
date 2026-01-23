@@ -80,6 +80,7 @@ open class PlaybackStateRepo(mediaManager: MediaManager, coroutineContext: Corou
                 state.playbackParameters.rate -> state.remain()
                 else -> state.updatePlaybackParameters(state.playbackParameters.copy(rate = newRate))
             }
+
             is PlaybackState.Paused -> when (newRate) {
                 0.0f -> state.remain()
                 state.playbackParameters.rate -> state.play

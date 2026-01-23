@@ -334,6 +334,7 @@ abstract class BaseScanner constructor(
                         logger.info(LOG_TAG) { "Request permission" }
                         state.request()
                     }
+
                     else -> {}
                 }
             }
@@ -435,7 +436,9 @@ abstract class BaseScanner constructor(
 
     private fun checkIfNewPairingDiscoveryShouldBeStarted(withServices: Filter): Boolean = when (isRetrievingPairedDevicesFilter) {
         withServices -> false
+
         null -> true
+
         else -> {
             retrievingPairedDevicesJob?.cancel()
             retrievingPairedDevicesJob = null

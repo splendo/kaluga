@@ -85,8 +85,11 @@ actual fun FiniteDecimal.pow(n: Int, scale: Int, roundingMode: RoundingMode): Fi
 
 actual fun Number.toFiniteDecimal(): FiniteDecimal? = when (this) {
     is Int -> BigDecimal(this)
+
     is Long -> BigDecimal(this)
+
     is Short -> BigDecimal(toInt())
+
     else -> toDouble().let {
         when {
             it.isNaN() || it.isInfinite() -> null

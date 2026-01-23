@@ -134,6 +134,7 @@ private class TimerStateRepo(
                 is State.NotRunning.Paused -> suspend {
                     state.start(interval, timeSource, delayFunction, coroutineScope, ::finish)
                 }
+
                 is State.NotRunning.Finished, is State.Running -> state.remain()
             }
         }

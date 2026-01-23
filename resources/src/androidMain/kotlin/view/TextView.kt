@@ -30,6 +30,7 @@ import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 fun TextView.bindLabel(label: KalugaLabel) {
     text = when (label) {
         is KalugaLabel.Plain -> label.text
+
         is KalugaLabel.Styled -> {
             if (label.text.spannable.getSpans(0, label.text.spannable.length, URLSpan::class.java).isNotEmpty()) {
                 label.text.linkStyle?.let {

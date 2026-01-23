@@ -431,6 +431,7 @@ internal sealed class ScanningStateImpl {
                 is ScanningState.Inactive -> {
                     scanner.startMonitoringPermissions()
                 }
+
                 is ScanningState.Active, is ScanningState.NoHardware -> {}
             }
         }
@@ -440,6 +441,7 @@ internal sealed class ScanningStateImpl {
                 is ScanningState.Inactive -> {
                     scanner.stopMonitoringPermissions()
                 }
+
                 is ScanningState.Active, is ScanningState.NoHardware -> {}
             }
         }
@@ -461,6 +463,7 @@ internal sealed class ScanningStateImpl {
                 is ScanningState.NoHardware,
                 is ScanningState.NoBluetooth.MissingPermissions,
                 -> scanner.stopMonitoringHardwareEnabled()
+
                 is ScanningState.Active -> {}
             }
         }
@@ -472,6 +475,7 @@ internal sealed class ScanningStateImpl {
                 is ScanningState.NoHardware,
                 is ScanningState.NoBluetooth.MissingPermissions,
                 -> scanner.startMonitoringHardwareEnabled()
+
                 is ScanningState.Active -> {}
             }
         }

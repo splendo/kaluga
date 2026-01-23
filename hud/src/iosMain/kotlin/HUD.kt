@@ -89,6 +89,7 @@ actual class HUD private constructor(
         private val hudBackgroundColor: UIColor
             get() = when (hudConfig.style) {
                 HUDStyle.CUSTOM -> UIColor.colorNamed("li_colorBackground") ?: UIColor.lightGrayColor
+
                 HUDStyle.SYSTEM ->
                     if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark) UIColor.blackColor else UIColor.whiteColor
             }
@@ -96,6 +97,7 @@ actual class HUD private constructor(
         private val foregroundColor: UIColor
             get() = when (hudConfig.style) {
                 HUDStyle.CUSTOM -> UIColor.colorNamed("li_colorAccent") ?: UIColor.darkGrayColor
+
                 HUDStyle.SYSTEM ->
                     if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark) UIColor.whiteColor else UIColor.blackColor
             }

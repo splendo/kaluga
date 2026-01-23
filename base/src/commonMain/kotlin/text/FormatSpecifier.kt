@@ -77,30 +77,40 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
     override fun print(arg: Any?, locale: KalugaLocale) {
         when (val currentChar = currentChar) {
             is ParsingCharacter.DateTime -> printDateTime(arg, currentChar, locale)
+
             is ParsingCharacter.RegularCharacter -> {
                 when (currentChar.regular) {
                     RegularFormatCharacter.DECIMAL_INTEGER,
                     RegularFormatCharacter.OCTAL_INTEGER,
                     RegularFormatCharacter.HEXADECIMAL_INTEGER,
                     -> printInteger(arg, currentChar, locale)
+
                     RegularFormatCharacter.SCIENTIFIC,
                     RegularFormatCharacter.GENERAL,
                     RegularFormatCharacter.DECIMAL_FLOAT,
                     RegularFormatCharacter.HEXADECIMAL_FLOAT,
                     -> printFloat(arg, currentChar, locale)
+
                     RegularFormatCharacter.CHARACTER,
                     RegularFormatCharacter.CHARACTER_UPPER,
                     -> printCharacter(arg, currentChar, locale)
+
                     RegularFormatCharacter.BOOLEAN -> printBoolean(arg, locale)
+
                     RegularFormatCharacter.STRING,
                     RegularFormatCharacter.STRING_IOS,
                     -> printString(arg, locale)
+
                     RegularFormatCharacter.HASHCODE -> printHashCode(arg, locale)
+
                     RegularFormatCharacter.LINE_SEPARATOR -> out.append(lineSeparator)
+
                     RegularFormatCharacter.PERCENT_SIGN -> print("%", locale)
+
                     else -> throw StringFormatterException.UnknownFormatConversionException(currentChar.char.toString())
                 }
             }
+
             else -> throw StringFormatterException.UnknownFormatConversionException(currentChar.char.toString())
         }
     }
@@ -111,15 +121,18 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 print("null", locale)
                 return
             }
+
             is Long,
             is Int,
             is Short,
             -> {
                 DefaultKalugaDate.epoch((arg as Number).toLong().milliseconds, KalugaTimeZone.current(), locale)
             }
+
             is KalugaDate -> {
                 arg.copy()
             }
+
             else -> throw StringFormatterException.IllegalFormatConversionException(currentChar.char, arg)
         }
         print(date, currentChar, locale)
@@ -219,6 +232,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 // trailing sign indicator
                 trailingSign(sb, neg)
             }
+
             RegularFormatCharacter.OCTAL_INTEGER -> {
                 checkBadFlags(currentChar, Flag.PARENTHESES, Flag.LEADING_SPACE, Flag.PLUS)
                 val valueString = value.toString(8)
@@ -233,6 +247,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 }
                 sb.append(valueString)
             }
+
             RegularFormatCharacter.HEXADECIMAL_INTEGER -> {
                 checkBadFlags(currentChar, Flag.PARENTHESES, Flag.LEADING_SPACE, Flag.PLUS)
                 val hexValue = value.toString(16)
@@ -248,6 +263,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 }
                 sb.append(if (uppercase) hexValue.upperCased(locale) else hexValue)
             }
+
             else -> throw StringFormatterException.UnexpectedChar(currentChar.char)
         }
 
@@ -319,6 +335,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 sb.append(if (flags.contains(Flag.UPPERCASE)) formatter.exponentSymbol.upperCased(locale) else formatter.exponentSymbol.lowerCased(locale))
                 sb.append(exponent)
             }
+
             RegularFormatCharacter.DECIMAL_FLOAT -> {
                 val prec = if (precision == -1) 6 else precision
                 val number = StringBuilder()
@@ -341,6 +358,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
 
                 localizedMagnitude(sb, number, 0, flags, newW, locale)
             }
+
             RegularFormatCharacter.GENERAL -> {
                 val scientificBuilder = StringBuilder()
                 print(scientificBuilder, value, locale, ParsingCharacter.RegularCharacter(RegularFormatCharacter.SCIENTIFIC), precision, neg)
@@ -350,9 +368,11 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 val decimal = decimalBuilder.toString()
                 sb.append(if (decimal.length <= scientific.length) decimal else scientific)
             }
+
             RegularFormatCharacter.HEXADECIMAL_FLOAT -> {
                 // TODO Support Hexadecimal floats
             }
+
             else -> {}
         }
     }
@@ -382,46 +402,54 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 }
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
             }
+
             DateTime.MINUTE -> {
                 // 'M' (00 - 59)
                 val i: Int = time.minute
                 val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
             }
+
             DateTime.NANOSECOND -> {
                 // 'N' (000000000 - 999999999)
                 val i: Int = time.millisecond.milliseconds.inWholeNanoseconds.toInt()
                 val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 9, locale = locale))
             }
+
             DateTime.MILLISECOND -> {
                 // 'L' (000 - 999)
                 val i: Int = time.millisecond
                 val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 3, locale = locale))
             }
+
             DateTime.MILLISECOND_SINCE_EPOCH -> {
                 // 'Q' (0 - 99...?)
                 val i: Long = time.durationSinceEpoch.inWholeMilliseconds
                 sb.append(localizedMagnitude(value = i.toString(10), offset = 0, flags = emptySet(), width = width, locale = locale))
             }
+
             DateTime.AM_PM -> {
                 // 'p' (am or pm)
                 val isAm = time.hour < 12
                 val dateFormat = KalugaDateFormatter.patternFormat("aa", KalugaTimeZone.current(), locale)
                 sb.append((if (isAm) dateFormat.amString else dateFormat.pmString).lowerCased(locale))
             }
+
             DateTime.SECONDS_SINCE_EPOCH -> {
                 // 's' (0 - 99...?)
                 val i: Long = time.durationSinceEpoch.inWholeSeconds
                 sb.append(localizedMagnitude(value = i.toString(10), offset = 0, flags = emptySet(), width = width, locale = locale))
             }
+
             DateTime.SECOND -> {
                 // 'S' (00 - 60 - leap second)
                 val i: Int = time.second
                 val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
             }
+
             DateTime.ZONE_NUMERIC -> {
                 // 'z' ({-|+}####) - ls minus?
                 var i: Long = time.timeZone.offsetFromGMTAtDate(time).inWholeMilliseconds
@@ -435,10 +463,12 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = offset.toString(10), offset = 0, flags = flags, width = 4, locale = locale))
             }
+
             DateTime.ZONE -> {
                 // 'Z' (symbol)
                 sb.append(time.timeZone.displayName(TimeZoneNameStyle.Short, time.timeZone.usesDaylightSavingsTime(time), locale))
             }
+
             DateTime.NAME_OF_DAY_ABBREV, DateTime.NAME_OF_DAY -> {
                 // 'A'
                 val i: Int = time.weekDay - 1
@@ -446,6 +476,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 val weekdays = if (currentChar.dateTime == DateTime.NAME_OF_DAY) dateFormat.weekdays else dateFormat.shortWeekdays
                 sb.append(weekdays[i])
             }
+
             DateTime.NAME_OF_MONTH_ABBREV, DateTime.NAME_OF_MONTH_ABBREV_X, DateTime.NAME_OF_MONTH -> {
                 // 'B'
                 val i: Int = time.month - 1
@@ -453,6 +484,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 val months = if (currentChar.dateTime == DateTime.NAME_OF_MONTH) dateFormat.months else dateFormat.shortMonths
                 sb.append(months[i])
             }
+
             DateTime.CENTURY, DateTime.YEAR_2, DateTime.YEAR_4 -> {
                 // 'Y' (0000 - 9999)
                 var i: Int = time.year
@@ -466,24 +498,28 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = size, locale = locale))
             }
+
             DateTime.DAY_OF_MONTH_0, DateTime.DAY_OF_MONTH -> {
                 // 'e' (1 - 31) -- like d
                 val i: Int = time.day
                 val flags = if (currentChar.dateTime == DateTime.DAY_OF_MONTH_0) setOf(Flag.ZERO_PAD) else emptySet()
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
             }
+
             DateTime.DAY_OF_YEAR -> {
                 // 'j' (001 - 366)
                 val i: Int = time.dayOfYear
                 val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 3, locale = locale))
             }
+
             DateTime.MONTH -> {
                 // 'm' (01 - 12)
                 val i: Int = time.month
                 val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
             }
+
             DateTime.TIME, DateTime.TIME_24_HOUR -> {
                 // 'R' (hh:mm same as %H:%M)
                 val sep = ':'
@@ -494,6 +530,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                     print(sb, time, ParsingCharacter.DateTime(DateTime.SECOND), locale)
                 }
             }
+
             DateTime.TIME_12_HOUR -> {
                 // 'r' (hh:mm:ss [AP]M)
                 val sep = ':'
@@ -506,6 +543,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 print(tsb, time, ParsingCharacter.DateTime(DateTime.AM_PM), locale)
                 sb.append(tsb.toString().upperCased(locale))
             }
+
             DateTime.DATE_TIME -> {
                 // 'c' (Sat Nov 04 12:02:33 EST 1999)
                 val sep = ' '
@@ -516,6 +554,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 print(sb, time, ParsingCharacter.DateTime(DateTime.ZONE), locale).append(sep)
                 print(sb, time, ParsingCharacter.DateTime(DateTime.YEAR_4), locale)
             }
+
             DateTime.DATE -> {
                 // 'D' (mm/dd/yy)
                 val sep = '/'
@@ -523,6 +562,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 print(sb, time, ParsingCharacter.DateTime(DateTime.DAY_OF_MONTH_0), locale).append(sep)
                 print(sb, time, ParsingCharacter.DateTime(DateTime.YEAR_2), locale)
             }
+
             DateTime.ISO_STANDARD_DATE -> {
                 // 'F' (%Y-%m-%d)
                 val sep = '-'
@@ -811,7 +851,9 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             RegularFormatCharacter.DECIMAL_INTEGER -> {
                 checkBadFlags(currentChar, Flag.ALTERNATE)
             }
+
             RegularFormatCharacter.OCTAL_INTEGER -> checkBadFlags(currentChar, Flag.GROUP)
+
             else -> checkBadFlags(currentChar, Flag.GROUP)
         }
     }
@@ -820,15 +862,19 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         checkNumeric()
         when (currentChar.regular) {
             RegularFormatCharacter.DECIMAL_FLOAT -> {}
+
             RegularFormatCharacter.HEXADECIMAL_FLOAT -> {
                 checkBadFlags(currentChar, Flag.PARENTHESES, Flag.GROUP)
             }
+
             RegularFormatCharacter.SCIENTIFIC -> {
                 checkBadFlags(currentChar, Flag.GROUP)
             }
+
             RegularFormatCharacter.GENERAL -> {
                 checkBadFlags(currentChar, Flag.ALTERNATE)
             }
+
             else -> {}
         }
     }
@@ -843,7 +889,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
 
         // bad combination
-        if (flags.contains(Flag.PLUS) && flags.contains(Flag.LEADING_SPACE) || flags.contains(Flag.LEFT_JUSTIFY) && flags.contains(Flag.ZERO_PAD)) {
+        if ((flags.contains(Flag.PLUS) && flags.contains(Flag.LEADING_SPACE)) || (flags.contains(Flag.LEFT_JUSTIFY) && flags.contains(Flag.ZERO_PAD))) {
             throw StringFormatterException.IllegalFormatFlagsException(flags.toString())
         }
     }
@@ -854,6 +900,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             RegularFormatCharacter.PERCENT_SIGN -> {
                 when (flags.size) {
                     0 -> {}
+
                     1 -> {
                         if (!flags.contains(Flag.LEFT_JUSTIFY)) {
                             throw StringFormatterException.IllegalFormatFlagsException(flags.toString())
@@ -861,13 +908,16 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                             throw StringFormatterException.MissingFormatWidthException(toString())
                         }
                     }
+
                     else -> throw StringFormatterException.IllegalFormatFlagsException(flags.toString())
                 }
             }
+
             RegularFormatCharacter.LINE_SEPARATOR -> {
                 if (width != -1) throw StringFormatterException.IllegalFormatWidthException(width)
                 if (flags.isNotEmpty()) throw StringFormatterException.IllegalFormatFlagsException(flags.toString())
             }
+
             else -> throw StringFormatterException.UnexpectedChar(currentChar.char)
         }
     }

@@ -23,17 +23,11 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.internal.extensions.core.extra
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.invoke
-import org.gradle.kotlin.dsl.provideDelegate
 
-internal fun calculateVersion(
-    version: String,
-    releaseType: String,
-    branchName: String?,
-    gitHash: String?,
-    buildNumber: String?,
-): String {
+internal fun calculateVersion(version: String, releaseType: String, branchName: String?, gitHash: String?, buildNumber: String?): String {
     var appendix = when (releaseType) {
         "release" -> ""
+
         "-branch-alpha" -> branchName?.let { branch ->
             val sanitizedBranch = branch.substringAfterLast('/')
                 .replace(' ', '-')
@@ -44,7 +38,9 @@ internal fun calculateVersion(
                 .joinToString("-")
             "-$sanitizedBranch-alpha"
         } ?: error("Trying to append a branch name to the version, but no branch is present.")
+
         "-commit-alpha" -> "-$gitHash-alpha"
+
         else -> "-alpha"
     }
 
@@ -60,7 +56,7 @@ val Project.kalugaVersion: String
         val releaseTypeProvider = providers.gradleProperty("releaseType")
         val releaseType = releaseTypeProvider.getOrElse("alpha")
 
-        val versionDetails: groovy.lang.Closure<VersionDetails> by project.extra
+        val versionDetails = project.extra.get("versionDetails") as groovy.lang.Closure<VersionDetails>
         val details = versionDetails()
         val buildNumberProvider = providers.environmentVariable("GITHUB_RUN_NUMBER")
 

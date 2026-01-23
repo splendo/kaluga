@@ -17,7 +17,13 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import com.splendo.kaluga.architecture.KalugaUIImagePickerControllerDelegateProtocol
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.DocumentSelector.DocumentSelectorAppearance
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.DocumentSelector.DocumentSelectorSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Email.EmailSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.ImagePicker.MediaType
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.Message.MessageSettings
+import com.splendo.kaluga.architecture.navigation.NavigationSpec.ThirdParty.OpenMode
+import kotlinx.cinterop.ObjCSignatureOverride
 import platform.CoreFoundation.CFStringRef
 import platform.CoreServices.kUTTypeImage
 import platform.CoreServices.kUTTypeMovie
@@ -51,6 +57,7 @@ import platform.UIKit.UIDocumentBrowserUserInterfaceStyle
 import platform.UIKit.UIDocumentBrowserUserInterfaceStyleLight
 import platform.UIKit.UIDocumentBrowserViewController
 import platform.UIKit.UIDocumentBrowserViewControllerDelegateProtocol
+import platform.UIKit.UIImage
 import platform.UIKit.UIImagePickerController
 import platform.UIKit.UIImagePickerControllerDelegateProtocol
 import platform.UIKit.UIImagePickerControllerSourceType
@@ -176,39 +183,46 @@ sealed class NavigationSpec {
         val completion: (() -> Unit)? = null,
     ) : NavigationSpec() {
 
-        internal val delegate: KalugaUIImagePickerControllerDelegateProtocol = object : NSObject(), KalugaUIImagePickerControllerDelegateProtocol {
+        internal val delegate: UINavigationControllerDelegateProtocol = object : NSObject(), UIImagePickerControllerDelegateProtocol, UINavigationControllerDelegateProtocol {
 
-            override fun willShowWithNavigationController(navigationController: UINavigationController, viewController: UIViewController, animated: Boolean) {
-                navigationDelegate.navigationController(navigationController, didShowViewController = viewController, animated = animated)
+            @ObjCSignatureOverride
+            override fun navigationController(navigationController: UINavigationController, willShowViewController: UIViewController, animated: Boolean) {
+                navigationDelegate.navigationController(navigationController, willShowViewController = willShowViewController, animated = animated)
             }
 
-            override fun didShowWithNavigationController(navigationController: UINavigationController, viewController: UIViewController, animated: Boolean) {
-                navigationDelegate.navigationController(navigationController, didShowViewController = viewController, animated = animated)
+            @ObjCSignatureOverride
+            override fun navigationController(navigationController: UINavigationController, didShowViewController: UIViewController, animated: Boolean) {
+                navigationDelegate.navigationController(navigationController, didShowViewController = didShowViewController, animated = animated)
             }
 
-            override fun animationControllerWithNavigationController(
+            override fun navigationController(
                 navigationController: UINavigationController,
-                forOperation: UINavigationControllerOperation,
+                animationControllerForOperation: UINavigationControllerOperation,
                 fromViewController: UIViewController,
                 toViewController: UIViewController,
-            ): UIViewControllerAnimatedTransitioningProtocol? = navigationDelegate.navigationController(navigationController, forOperation, fromViewController, toViewController)
+            ): UIViewControllerAnimatedTransitioningProtocol? =
+                navigationDelegate.navigationController(navigationController, animationControllerForOperation, fromViewController, toViewController)
 
-            override fun interactionControllerWithNavigationController(
+            override fun navigationController(
                 navigationController: UINavigationController,
-                transitioning: UIViewControllerAnimatedTransitioningProtocol,
-            ): UIViewControllerInteractiveTransitioningProtocol? = navigationDelegate.navigationController(navigationController, transitioning)
+                interactionControllerForAnimationController: UIViewControllerAnimatedTransitioningProtocol,
+            ): UIViewControllerInteractiveTransitioningProtocol? = navigationDelegate.navigationController(navigationController, interactionControllerForAnimationController)
 
-            override fun preferredInterfaceOrientationForPresentationWithNavigationController(navigationController: UINavigationController): UIInterfaceOrientation =
-                navigationDelegate.navigationControllerPreferredInterfaceOrientationForPresentation(navigationController)
-
-            override fun supportedInterfaceOrientationsWithNavigationController(navigationController: UINavigationController): UIInterfaceOrientationMask =
+            override fun navigationControllerSupportedInterfaceOrientations(navigationController: UINavigationController): UIInterfaceOrientationMask =
                 navigationDelegate.navigationControllerSupportedInterfaceOrientations(navigationController)
 
-            override fun finishPickingMediaWithPicker(picker: UIImagePickerController, info: Map<Any?, *>) {
-                imagePickerDelegate.imagePickerController(picker, info)
+            override fun navigationControllerPreferredInterfaceOrientationForPresentation(navigationController: UINavigationController): UIInterfaceOrientation =
+                navigationDelegate.navigationControllerPreferredInterfaceOrientationForPresentation(navigationController)
+
+            override fun imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo: Map<Any?, *>) {
+                imagePickerDelegate.imagePickerController(picker, didFinishPickingMediaWithInfo)
             }
 
-            override fun didCancelWithPicker(picker: UIImagePickerController) {
+            override fun imagePickerController(picker: UIImagePickerController, didFinishPickingImage: UIImage, editingInfo: Map<Any?, *>?) {
+                imagePickerDelegate.imagePickerController(picker, didFinishPickingImage, editingInfo)
+            }
+
+            override fun imagePickerControllerDidCancel(picker: UIImagePickerController) {
                 imagePickerDelegate.imagePickerControllerDidCancel(picker)
             }
         }

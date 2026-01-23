@@ -49,9 +49,11 @@ val PhysicalQuantity.MagneticFlux.converters get() = listOf<QuantityConverter<Ph
             leftUnit is Maxwell && rightUnit is Gauss -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MagneticFlux && rightUnit is MagneticInduction -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -64,9 +66,11 @@ val PhysicalQuantity.MagneticFlux.converters get() = listOf<QuantityConverter<Ph
             leftUnit is Maxwell && rightUnit is Abohm -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MagneticFlux && rightUnit is ElectricResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -79,9 +83,11 @@ val PhysicalQuantity.MagneticFlux.converters get() = listOf<QuantityConverter<Ph
             leftUnit is Maxwell && rightUnit is Abhenry -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MagneticFlux && rightUnit is ElectricInductance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -94,12 +100,15 @@ val PhysicalQuantity.MagneticFlux.converters get() = listOf<QuantityConverter<Ph
             leftUnit is Maxwell && rightUnit is Abampere -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Maxwell && rightUnit is Biot -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MagneticFlux && rightUnit is ElectricCurrent -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -112,9 +121,11 @@ val PhysicalQuantity.MagneticFlux.converters get() = listOf<QuantityConverter<Ph
             leftUnit is Maxwell && rightUnit is Abcoulomb -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MagneticFlux && rightUnit is ElectricCharge -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -127,12 +138,15 @@ val PhysicalQuantity.MagneticFlux.converters get() = listOf<QuantityConverter<Ph
             leftUnit is Maxwell && rightUnit is Abampere -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Maxwell && rightUnit is Biot -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MagneticFlux && rightUnit is ElectricCurrent -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -145,9 +159,11 @@ val PhysicalQuantity.MagneticFlux.converters get() = listOf<QuantityConverter<Ph
             leftUnit is Maxwell && rightUnit is SquareCentimeter -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MagneticFlux && rightUnit is Area -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -160,6 +176,7 @@ val PhysicalQuantity.MagneticFlux.converters get() = listOf<QuantityConverter<Ph
             leftUnit is MagneticFlux && rightUnit is Voltage -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -172,9 +189,11 @@ val PhysicalQuantity.MagneticFlux.converters get() = listOf<QuantityConverter<Ph
             leftUnit is Maxwell && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MagneticFlux && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

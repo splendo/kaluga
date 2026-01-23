@@ -118,9 +118,13 @@ actual class NotificationsPermissionManagerBuilder actual constructor(context: P
 
 private fun UNAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
     UNAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+
     UNAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+
     UNAuthorizationStatusProvisional -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+
     UNAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+
     else -> {
         error(
             "CalendarPermissionManager",

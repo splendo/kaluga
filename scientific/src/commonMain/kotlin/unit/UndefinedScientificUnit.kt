@@ -92,10 +92,12 @@ sealed class AbstractUndefinedScientificUnit<QuantityType : UndefinedQuantityTyp
             val correctedCount = count - (groupedNumerators[unit] ?: 0)
             when {
                 correctedCount == 1 && !shouldNotateDenominatorWithNegatives -> unit.formatSymbol()
+
                 correctedCount > 0 -> {
                     val countToUse = if (shouldNotateDenominatorWithNegatives) correctedCount * -1 else correctedCount
                     "${unit.formatSymbol()}$countToUse"
                 }
+
                 else -> null
             }
         }.joinToString(" * ")

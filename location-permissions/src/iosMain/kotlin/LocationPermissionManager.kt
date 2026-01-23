@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 import platform.CoreLocation.CLAccuracyAuthorization
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
+import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
 import platform.CoreLocation.kCLAuthorizationStatusDenied
@@ -59,8 +60,11 @@ actual class DefaultLocationPermissionManager(private val bundle: NSBundle, loca
         private val onPermissionChanged: AuthorizationStatusHandler,
         private val coroutineScope: CoroutineScope,
     ) : NSObject(),
-        KalugaLocationPermissionDelegateProtocol {
-        override fun didChangeAuthorizationForLocationManager(manager: CLLocationManager) {
+        CLLocationManagerDelegateProtocol {
+        override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
+            onPermissionChanged.status(manager.authorizationStatus(locationPermission))
+        }
+        override fun locationManager(manager: CLLocationManager, didChangeAuthorizationStatus: CLAuthorizationStatus) {
             onPermissionChanged.status(manager.authorizationStatus(locationPermission))
         }
     }
@@ -72,7 +76,6 @@ actual class DefaultLocationPermissionManager(private val bundle: NSBundle, loca
     }
 
     private val authorizationDelegate = Delegate(permission, permissionHandler, coroutineScope)
-    private var locationWrapper: KalugaLocationPermissionWrapper? = null
 
     actual override fun requestPermissionDidStart() {
         val locationDeclarations = listOf(NS_LOCATION_WHEN_IN_USE_USAGE_DESCRIPTION) + if (permission.background) {
@@ -99,8 +102,7 @@ actual class DefaultLocationPermissionManager(private val bundle: NSBundle, loca
         val permission = permission
         launch {
             val status = locationManager.updateLocationManager {
-                locationWrapper?.unlink()
-                locationWrapper = KalugaLocationPermissionWrapper.createByLinkingWithLocationManager(this, authorizationDelegate)
+                delegate = authorizationDelegate
                 authorizationStatus(permission)
             }
             permissionHandler.status(status)
@@ -110,8 +112,7 @@ actual class DefaultLocationPermissionManager(private val bundle: NSBundle, loca
     actual override fun monitoringDidStop() {
         launch {
             locationManager.updateLocationManager {
-                locationWrapper?.unlink()
-                locationWrapper = null
+                delegate = null
             }
         }
     }
@@ -129,8 +130,11 @@ actual class LocationPermissionManagerBuilder actual constructor(private val con
 
 private fun Pair<CLAuthorizationStatus, Boolean>.toAuthorizationStatus(permission: LocationPermission): IOSPermissionsHelper.AuthorizationStatus = when (first) {
     kCLAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+
     kCLAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+
     kCLAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+
     kCLAuthorizationStatusAuthorizedAlways -> {
         if (permission.precise && !second) {
             IOSPermissionsHelper.AuthorizationStatus.Denied
@@ -138,6 +142,7 @@ private fun Pair<CLAuthorizationStatus, Boolean>.toAuthorizationStatus(permissio
             IOSPermissionsHelper.AuthorizationStatus.Authorized
         }
     }
+
     kCLAuthorizationStatusAuthorizedWhenInUse -> {
         if (permission.background || (permission.precise && !second)) {
             IOSPermissionsHelper.AuthorizationStatus.Denied
@@ -145,6 +150,7 @@ private fun Pair<CLAuthorizationStatus, Boolean>.toAuthorizationStatus(permissio
             IOSPermissionsHelper.AuthorizationStatus.Authorized
         }
     }
+
     else -> {
         com.splendo.kaluga.logging.error("Unknown CLAuthorizationStatus $first")
         IOSPermissionsHelper.AuthorizationStatus.Denied

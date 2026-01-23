@@ -118,7 +118,7 @@ class DimensionlessUnitTest {
 
     @Test
     fun percentDivisorForUnitInverseTest() {
-        /**
+        /*
          * Dividing a Dimensionless value by a Scientific Unit is not a permitted operation.
          * This is because dividing a dimensionless value by an Unit (of any Quantity)
          * Should produce an Inverse of that unit and currently those are not supported.

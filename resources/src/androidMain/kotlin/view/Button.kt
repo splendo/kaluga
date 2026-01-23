@@ -150,6 +150,7 @@ private fun android.widget.Button.applyButtonStyleWithImage(style: KalugaButtonS
             compoundDrawablePadding = style.spacing.dpToPixel(context).toInt()
             style.imageGravity
         }
+
         is KalugaButtonStyle.ImageOnly -> {
             compoundDrawablePadding = 0
             ImageGravity.TOP
@@ -165,6 +166,7 @@ private fun android.widget.Button.applyButtonStyleWithImage(style: KalugaButtonS
             ImageGravity.TOP -> setCompoundDrawablesWithIntrinsicBounds(null, stateListDrawable, null, null)
             ImageGravity.BOTTOM -> setCompoundDrawablesWithIntrinsicBounds(null, null, null, stateListDrawable)
         }
+
         is ImageSize.Sized -> {
             stateListDrawable.setBounds(0, 0, imageSize.width.dpToPixel(context).toInt(), imageSize.height.dpToPixel(context).toInt())
             when (gravity) {
@@ -196,13 +198,16 @@ private fun android.widget.Button.applyBackgroundStyle(style: KalugaButtonStyle<
     }
     background = when (rippleStyle) {
         is RippleStyle.None -> stateListDrawable
+
         is RippleStyle.ForegroundRipple -> {
             val foregroundColor = when (style) {
                 is KalugaButtonStyle.WithText<*> -> style.pressedStyle.textColor
+
                 is KalugaButtonStyle.WithImage<*> -> {
                     val withImage = style.pressedStyle
                     when (val image = withImage.image) {
                         is ButtonImage.Tinted -> image.image.tint
+
                         is ButtonImage.Image,
                         is ButtonImage.Hidden,
                         -> {
@@ -210,6 +215,7 @@ private fun android.widget.Button.applyBackgroundStyle(style: KalugaButtonStyle<
                         }
                     }
                 }
+
                 is KalugaButtonStyle.WithoutText<*> -> defaultRippleForeground
             }
             RippleDrawable(
@@ -218,6 +224,7 @@ private fun android.widget.Button.applyBackgroundStyle(style: KalugaButtonStyle<
                 null,
             )
         }
+
         is RippleStyle.CustomRipple -> {
             RippleDrawable(
                 ColorStateList(arrayOf(intArrayOf()), intArrayOf(rippleStyle.color.currentColor)),

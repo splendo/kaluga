@@ -12,7 +12,7 @@ kaluga {
             test {
                 implementation(libs.androidx.fragment.ktx)
             }
-            instrumented {
+            device {
                 implementation(libs.androidx.activity.ktx)
             }
         }

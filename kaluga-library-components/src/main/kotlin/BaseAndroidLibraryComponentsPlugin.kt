@@ -17,14 +17,18 @@
 
 package com.splendo.kaluga.plugin
 
+import com.android.build.gradle.LibraryPlugin
 import com.splendo.kaluga.plugin.extensions.BaseKalugaAndroidSubprojectExtension
+import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.PluginManager
 import org.gradle.kotlin.dsl.apply
 import org.jetbrains.kotlin.gradle.plugin.KotlinAndroidPluginWrapper
 
 abstract class BaseAndroidLibraryComponentsPlugin<Android : BaseKalugaAndroidSubprojectExtension> : BaseLibraryComponentsPlugin<Android>() {
 
-    override fun PluginManager.addSubprojectExtensionPlugins() {
+    override fun PluginManager.addSubprojectExtensionPlugins(extensions: ExtensionContainer) {
+        apply(LibraryPlugin::class)
+
         apply(KotlinAndroidPluginWrapper::class)
         addAndroidExtensionPlugins()
     }

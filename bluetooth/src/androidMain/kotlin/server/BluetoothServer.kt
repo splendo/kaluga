@@ -282,6 +282,7 @@ internal sealed class AndroidServerState {
                     writable(encrypted) { device, value, offset ->
                         when {
                             offset != 0 -> GattResponse.InvalidOffset
+
                             (value.contentEquals(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE) && properties.contains(CharacteristicProperty.Indicate)) ||
                                 (value.contentEquals(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE) && properties.contains(CharacteristicProperty.Notify)) -> {
                                 // Update the status. Both notifications and indications can be set at the same time so make sure any previously set values remain intact
@@ -294,11 +295,13 @@ internal sealed class AndroidServerState {
                                 subscribe(device)
                                 GattResponse.WriteSuccess
                             }
+
                             value.contentEquals(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE) -> {
                                 deviceStatus[device] = value
                                 unsubscribe(device)
                                 GattResponse.WriteSuccess
                             }
+
                             else -> GattResponse.InvalidHandle
                         }
                     }

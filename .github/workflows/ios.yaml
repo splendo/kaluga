@@ -9,7 +9,7 @@ jobs:
 
   lint:
     needs: build
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
     - name: checkout
       uses: actions/checkout@v6
@@ -26,7 +26,7 @@ jobs:
       run: ./gradlew lintKotlin
 
     - name: ktLint report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: ktLint report
         path: build/reports/ktlint
@@ -34,7 +34,7 @@ jobs:
 
   test:
     needs: build
-    runs-on: macos-15
+    runs-on: macos-26
     strategy:
       fail-fast: false
       matrix:
@@ -52,7 +52,7 @@ jobs:
       - name: run iOS tests
         run: ./gradlew :${{ matrix.module }}:ios${{ runner.arch == 'X86' && 'X86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'SimulatorArm32' || 'SimulatorArm64' }}Test
       - name: Upload iOS test artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: ${{ matrix.module}} iOS Test Report HTML
@@ -60,7 +60,7 @@ jobs:
 
   example:
     needs: build
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - name: checkout
         uses: actions/checkout@v6
@@ -70,7 +70,6 @@ jobs:
         with:
           kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
           arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
-
       - name: run install
         working-directory: example/ios
         run: | 
@@ -79,11 +78,11 @@ jobs:
 
       - name: build example
         working-directory: example/ios
-        run: set -o pipefail && xcodebuild -project Demo.xcodeproj -sdk iphonesimulator -scheme Demo -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.6' | tee xcodebuild.log | xcpretty
+        run: set -o pipefail && xcodebuild -project Demo.xcodeproj -sdk iphonesimulator -scheme Demo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1'
         shell: bash
 
       - name: 'upload xcodebuild.log'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: "xcodebuild.log"
           path: "example/ios/xcodebuild.log"
