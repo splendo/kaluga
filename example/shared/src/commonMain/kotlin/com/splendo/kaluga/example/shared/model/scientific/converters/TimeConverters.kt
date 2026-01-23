@@ -22,7 +22,96 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.time.div
 import com.splendo.kaluga.scientific.converter.time.frequency
 import com.splendo.kaluga.scientific.converter.time.times
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.Abampere
+import com.splendo.kaluga.scientific.unit.Abfarad
+import com.splendo.kaluga.scientific.unit.Abohm
+import com.splendo.kaluga.scientific.unit.Abvolt
+import com.splendo.kaluga.scientific.unit.Acceleration
+import com.splendo.kaluga.scientific.unit.AngularAcceleration
+import com.splendo.kaluga.scientific.unit.AngularVelocity
+import com.splendo.kaluga.scientific.unit.Biot
+import com.splendo.kaluga.scientific.unit.CatalysticActivity
+import com.splendo.kaluga.scientific.unit.Centiwatt
+import com.splendo.kaluga.scientific.unit.Decawatt
+import com.splendo.kaluga.scientific.unit.Deciwatt
+import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.DyneMultiple
+import com.splendo.kaluga.scientific.unit.ElectricCapacitance
+import com.splendo.kaluga.scientific.unit.ElectricCurrent
+import com.splendo.kaluga.scientific.unit.ElectricResistance
+import com.splendo.kaluga.scientific.unit.Energy
+import com.splendo.kaluga.scientific.unit.Force
+import com.splendo.kaluga.scientific.unit.Gigawatt
+import com.splendo.kaluga.scientific.unit.GrainForce
+import com.splendo.kaluga.scientific.unit.GramForce
+import com.splendo.kaluga.scientific.unit.Hectowatt
+import com.splendo.kaluga.scientific.unit.Horsepower
+import com.splendo.kaluga.scientific.unit.Hour
+import com.splendo.kaluga.scientific.unit.Illuminance
+import com.splendo.kaluga.scientific.unit.ImperialAcceleration
+import com.splendo.kaluga.scientific.unit.ImperialCombinedPower
+import com.splendo.kaluga.scientific.unit.ImperialEnergy
+import com.splendo.kaluga.scientific.unit.ImperialForce
+import com.splendo.kaluga.scientific.unit.ImperialIlluminance
+import com.splendo.kaluga.scientific.unit.ImperialJolt
+import com.splendo.kaluga.scientific.unit.ImperialMassFlowRate
+import com.splendo.kaluga.scientific.unit.ImperialPower
+import com.splendo.kaluga.scientific.unit.ImperialPressure
+import com.splendo.kaluga.scientific.unit.ImperialSpecificEnergy
+import com.splendo.kaluga.scientific.unit.ImperialSpeed
+import com.splendo.kaluga.scientific.unit.ImperialTonForce
+import com.splendo.kaluga.scientific.unit.ImperialVolumetricFlow
+import com.splendo.kaluga.scientific.unit.ImperialYank
+import com.splendo.kaluga.scientific.unit.Jolt
+import com.splendo.kaluga.scientific.unit.Kilowatt
+import com.splendo.kaluga.scientific.unit.LuminousFlux
+import com.splendo.kaluga.scientific.unit.MassFlowRate
+import com.splendo.kaluga.scientific.unit.Megawatt
+import com.splendo.kaluga.scientific.unit.MetricAcceleration
+import com.splendo.kaluga.scientific.unit.MetricAndImperialCombinedPower
+import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
+import com.splendo.kaluga.scientific.unit.MetricCombinedPower
+import com.splendo.kaluga.scientific.unit.MetricEnergy
+import com.splendo.kaluga.scientific.unit.MetricForce
+import com.splendo.kaluga.scientific.unit.MetricIlluminance
+import com.splendo.kaluga.scientific.unit.MetricJolt
+import com.splendo.kaluga.scientific.unit.MetricMassFlowRate
+import com.splendo.kaluga.scientific.unit.MetricPower
+import com.splendo.kaluga.scientific.unit.MetricPressure
+import com.splendo.kaluga.scientific.unit.MetricSpecificEnergy
+import com.splendo.kaluga.scientific.unit.MetricSpeed
+import com.splendo.kaluga.scientific.unit.MetricVolumetricFlow
+import com.splendo.kaluga.scientific.unit.MetricYank
+import com.splendo.kaluga.scientific.unit.Microwatt
+import com.splendo.kaluga.scientific.unit.MilligramForce
+import com.splendo.kaluga.scientific.unit.Milliwatt
+import com.splendo.kaluga.scientific.unit.Minute
+import com.splendo.kaluga.scientific.unit.Nanowatt
+import com.splendo.kaluga.scientific.unit.OunceForce
+import com.splendo.kaluga.scientific.unit.Poundal
+import com.splendo.kaluga.scientific.unit.Power
+import com.splendo.kaluga.scientific.unit.Pressure
+import com.splendo.kaluga.scientific.unit.SpecificEnergy
+import com.splendo.kaluga.scientific.unit.Speed
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.TonneForce
+import com.splendo.kaluga.scientific.unit.UKImperialForce
+import com.splendo.kaluga.scientific.unit.UKImperialMassFlowRate
+import com.splendo.kaluga.scientific.unit.UKImperialPressure
+import com.splendo.kaluga.scientific.unit.UKImperialSpecificEnergy
+import com.splendo.kaluga.scientific.unit.UKImperialVolumetricFlow
+import com.splendo.kaluga.scientific.unit.UKImperialYank
+import com.splendo.kaluga.scientific.unit.USCustomaryForce
+import com.splendo.kaluga.scientific.unit.USCustomaryMassFlowRate
+import com.splendo.kaluga.scientific.unit.USCustomaryPressure
+import com.splendo.kaluga.scientific.unit.USCustomarySpecificEnergy
+import com.splendo.kaluga.scientific.unit.USCustomaryVolumetricFlow
+import com.splendo.kaluga.scientific.unit.USCustomaryYank
+import com.splendo.kaluga.scientific.unit.UsTonForce
+import com.splendo.kaluga.scientific.unit.Voltage
+import com.splendo.kaluga.scientific.unit.VolumetricFlow
+import com.splendo.kaluga.scientific.unit.Watt
+import com.splendo.kaluga.scientific.unit.Yank
 
 val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQuantity.Time, *>>(
     QuantityConverterWithOperator(
@@ -34,12 +123,15 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is MetricJolt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ImperialJolt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is Jolt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -52,15 +144,19 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is MetricAndImperialEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is MetricEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ImperialEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is Energy -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -73,6 +169,7 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is CatalysticActivity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -85,6 +182,7 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is AngularVelocity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -97,6 +195,7 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is AngularAcceleration -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -109,18 +208,23 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is MetricPressure -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ImperialPressure -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is UKImperialPressure -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is USCustomaryPressure -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is Pressure -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -133,9 +237,11 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is Abohm -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ElectricResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -148,12 +254,15 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is Abampere -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is Biot -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ElectricCurrent -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -166,9 +275,11 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is Abohm -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ElectricResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -181,9 +292,11 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is Abfarad -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ElectricCapacitance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -196,57 +309,75 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Hour && rightUnit is Watt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Hour && rightUnit is Nanowatt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Hour && rightUnit is Microwatt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Hour && rightUnit is Milliwatt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Hour && rightUnit is Centiwatt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Hour && rightUnit is Deciwatt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Hour && rightUnit is Decawatt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Hour && rightUnit is Hectowatt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Hour && rightUnit is Kilowatt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Hour && rightUnit is Megawatt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Hour && rightUnit is Gigawatt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is MetricAndImperialCombinedPower -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is MetricCombinedPower -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is MetricPower -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ImperialCombinedPower -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Hour && rightUnit is Horsepower -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ImperialPower -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is Power -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -259,18 +390,23 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is MetricYank -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ImperialYank -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is UKImperialYank -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is USCustomaryYank -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is Yank -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -290,18 +426,23 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is MetricSpecificEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ImperialSpecificEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is UKImperialSpecificEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is USCustomarySpecificEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is SpecificEnergy -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -314,12 +455,15 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is MetricSpeed -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ImperialSpeed -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is Speed -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -332,6 +476,7 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is LuminousFlux -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -344,12 +489,15 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is MetricIlluminance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ImperialIlluminance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is Illuminance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -362,9 +510,11 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is Abvolt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is Voltage -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -377,48 +527,63 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is Dyne -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is DyneMultiple -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is TonneForce -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is GramForce -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is MilligramForce -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is MetricForce -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is Poundal -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is OunceForce -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is GrainForce -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is UsTonForce -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ImperialTonForce -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ImperialForce -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is UKImperialForce -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is USCustomaryForce -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is Force -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -431,12 +596,15 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is MetricAcceleration -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ImperialAcceleration -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is Acceleration -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -449,18 +617,23 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is MetricVolumetricFlow -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ImperialVolumetricFlow -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is UKImperialVolumetricFlow -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is USCustomaryVolumetricFlow -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is VolumetricFlow -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -473,18 +646,23 @@ val PhysicalQuantity.Time.converters get() = listOf<QuantityConverter<PhysicalQu
             leftUnit is Time && rightUnit is MetricMassFlowRate -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is ImperialMassFlowRate -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is UKImperialMassFlowRate -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is USCustomaryMassFlowRate -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Time && rightUnit is MassFlowRate -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

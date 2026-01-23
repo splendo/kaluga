@@ -95,6 +95,7 @@ class LifecycleSubscribableManager<ViewModel : BaseLifecycleViewModel>(
             } else {
                 subscribe(activity, lifecycleOwner, fragmentManager)
             }
+
             else -> {}
         }
     }

@@ -82,24 +82,29 @@ internal val CBDescriptor.dataValue: NSData? get() {
         CBUUIDCharacteristicFormatString -> {
             value as? NSData
         }
+
         CBUUIDCharacteristicUserDescriptionString -> {
             (value as? NSString)?.dataUsingEncoding(NSUTF8StringEncoding)
         }
+
         CBUUIDCharacteristicExtendedPropertiesString -> {
             (value as? NSNumber)?.let {
                 byteArrayOf(it.shortValue.toByte()).toNSData()
             }
         }
+
         CBUUIDClientCharacteristicConfigurationString -> {
             (value as? NSNumber)?.let {
                 byteArrayOf(it.shortValue.toByte()).toNSData()
             }
         }
+
         CBUUIDServerCharacteristicConfigurationString -> {
             (value as? NSNumber)?.let {
                 byteArrayOf(it.shortValue.toByte()).toNSData()
             }
         }
+
         else -> value as? NSData
     }
 }

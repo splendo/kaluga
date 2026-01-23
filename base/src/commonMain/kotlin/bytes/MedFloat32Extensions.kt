@@ -36,10 +36,15 @@ fun ByteArray.decodeMedFloat32(octetIndex: Int): MedFloat32 {
     val content = drop(octetIndex).take(4).toByteArray()
     return when {
         content.contentEquals(MedFloat32.NAN_BYTE_VALUE) -> Double.NaN
+
         content.contentEquals(MedFloat32.POSITIVE_INFINITY_BYTE_VALUE) -> Double.POSITIVE_INFINITY
+
         content.contentEquals(MedFloat32.NEGATIVE_INFINITY_BYTE_VALUE) -> Double.NEGATIVE_INFINITY
+
         content.contentEquals(MedFloat32.NOT_AT_THIS_RESOLUTION_BYTE_VALUE) -> Double.NaN
+
         content.contentEquals(MedFloat32.RESERVED_FOR_FUTURE_USE_BYTE_VALUE) -> Double.NaN
+
         else -> {
             val mantissa = content.decodeInt24(0, ByteOrder.LEAST_SIGNIFICANT_FIRST)
             val exponent = get(octetIndex + 3).toInt()

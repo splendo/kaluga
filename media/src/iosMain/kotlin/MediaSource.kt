@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.media
 
-import com.splendo.kaluga.media.MediaSource.URL.Option
 import platform.AVFoundation.AVAsset
 import platform.AVFoundation.AVAssetReferenceRestrictions
 import platform.AVFoundation.AVURLAssetAllowsCellularAccessKey

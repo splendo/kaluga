@@ -101,7 +101,9 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
         val identifier = characteristic.wrapper.characteristic
         when {
             subscribeActions.contains(identifier) -> logger.warn(TAG) { "Subscribe action for $identifier was already set. Ignoring" }
+
             unsubscribeActions.contains(identifier) -> logger.warn(TAG) { "Unsubscribe action for $identifier was already set. Ignoring" }
+
             else -> {
                 subscribeActions[identifier] = { device -> characteristic.subscribe(device) }
                 unsubscribeActions[identifier] = { device -> characteristic.unsubscribe(device) }

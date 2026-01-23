@@ -42,12 +42,15 @@ val PhysicalQuantity.LuminousExposure.converters get() = listOf<QuantityConverte
             leftUnit is MetricLuminousExposure && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialLuminousExposure && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is LuminousExposure && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -60,12 +63,15 @@ val PhysicalQuantity.LuminousExposure.converters get() = listOf<QuantityConverte
             leftUnit is MetricLuminousExposure && rightUnit is MetricArea -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialLuminousExposure && rightUnit is ImperialArea -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is LuminousExposure && rightUnit is Area -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -78,12 +84,15 @@ val PhysicalQuantity.LuminousExposure.converters get() = listOf<QuantityConverte
             leftUnit is MetricLuminousExposure && rightUnit is MetricIlluminance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialLuminousExposure && rightUnit is ImperialIlluminance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is LuminousExposure && rightUnit is Illuminance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

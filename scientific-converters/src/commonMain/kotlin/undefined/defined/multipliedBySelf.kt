@@ -24,7 +24,7 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
 
@@ -32,8 +32,8 @@ import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
 
 fun <
     LeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    LeftUnit : ScientificUnit<LeftAndRightQuantity>,
-    RightUnit : ScientificUnit<LeftAndRightQuantity>,
+    LeftUnit : DefinedScientificUnit<LeftAndRightQuantity>,
+    RightUnit : DefinedScientificUnit<LeftAndRightQuantity>,
     WrappedLeftUnit : WrappedUndefinedExtendedUnit<
         LeftAndRightQuantity,
         LeftUnit,

@@ -19,6 +19,7 @@ package com.splendo.kaluga.test.bluetooth.device
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.utils.toHexString
+import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.RemoteService
 import com.splendo.kaluga.bluetooth.RemoteServiceWrapper
@@ -28,7 +29,6 @@ import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
-import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.on
@@ -191,6 +191,7 @@ class MockDeviceConnectionManager(
                     if (willActionSucceed && value != null) GattResponse.ReadSuccess(value) else GattResponse.ReadNotPermitted,
                 )
             }
+
             is DeviceAction.Read.Descriptor -> {
                 val value = (action.descriptor.wrapper as MockDescriptorWrapper).value
                 debug("Mock Read: ${action.descriptor.uuid} value ${value?.toHexString()}")
@@ -199,6 +200,7 @@ class MockDeviceConnectionManager(
                     if (willActionSucceed && value != null) GattResponse.ReadSuccess(value) else GattResponse.ReadNotPermitted,
                 )
             }
+
             is DeviceAction.Write.Characteristic -> {
                 (action.characteristic.wrapper as MockCharacteristicWrapper).updateValue(
                     action.newValue,
@@ -206,6 +208,7 @@ class MockDeviceConnectionManager(
                 handleCharacteristicWritten(action.characteristic.uuid, if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
                 debug("Mock Write: ${action.characteristic.uuid} value ${action.newValue.toHexString()}")
             }
+
             is DeviceAction.Write.Descriptor -> {
                 (action.descriptor.wrapper as MockDescriptorWrapper).updateValue(
                     action.newValue,
@@ -213,6 +216,7 @@ class MockDeviceConnectionManager(
                 handleDescriptorWritten(action.descriptor.uuid, if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
                 debug("Mock Write: ${action.descriptor.uuid} value ${action.newValue.toHexString()}")
             }
+
             is DeviceAction.Notification -> action.handleNotificationStateChanged(if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
 
             is DeviceAction.RequestMtu -> handleNewMtu(if (willActionSucceed) GattResponse.MTUSuccess(action.mtu) else GattResponse.MTUNotPermitted(action.mtu))

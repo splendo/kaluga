@@ -38,10 +38,15 @@ fun ByteArray.decodeMedFloat16(octetIndex: Int): MedFloat16 {
     val content = drop(octetIndex).take(2).toByteArray()
     return when {
         content.contentEquals(MedFloat16.NAN_BYTE_VALUE) -> Double.NaN
+
         content.contentEquals(MedFloat16.POSITIVE_INFINITY_BYTE_VALUE) -> Double.POSITIVE_INFINITY
+
         content.contentEquals(MedFloat16.NEGATIVE_INFINITY_BYTE_VALUE) -> Double.NEGATIVE_INFINITY
+
         content.contentEquals(MedFloat16.NOT_AT_THIS_RESOLUTION_BYTE_VALUE) -> Double.NaN
+
         content.contentEquals(MedFloat16.RESERVED_FOR_FUTURE_USE_BYTE_VALUE) -> Double.NaN
+
         else -> {
             val raw = content.decodeShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST)
 

@@ -56,9 +56,13 @@ class InfoViewModel(reviewManagerBuilder: ReviewManager.Builder, navigator: Navi
     fun onButtonPressed(button: Button) {
         when (button) {
             is Button.About -> InfoNavigation.Dialog("About Us", "Kaluga is developed by Splendo Consulting BV")
+
             is Button.Website -> InfoNavigation.Link("https://kaluga.splendo.com")
+
             is Button.GitHub -> InfoNavigation.Link("https://github.com/splendo/kaluga")
+
             is Button.Mail -> InfoNavigation.Mail(listOf("info@splendo.com"), ("Question about Kaluga"))
+
             is Button.Review -> {
                 coroutineScope.launch {
                     reviewManager.attemptToRequestReview()

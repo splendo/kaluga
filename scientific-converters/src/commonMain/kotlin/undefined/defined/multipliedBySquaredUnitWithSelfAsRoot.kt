@@ -24,7 +24,8 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
@@ -33,13 +34,9 @@ import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
 
 fun <
     LeftAndRightLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    LeftUnit : ScientificUnit<LeftAndRightLeftAndRightQuantity>,
-    ExtendedRightLeftUnit : UndefinedExtendedUnit<
-        LeftAndRightLeftAndRightQuantity,
-        >,
-    ExtendedRightRightUnit : UndefinedExtendedUnit<
-        LeftAndRightLeftAndRightQuantity,
-        >,
+    LeftUnit : DefinedScientificUnit<LeftAndRightLeftAndRightQuantity>,
+    ExtendedRightLeftUnit,
+    ExtendedRightRightUnit,
     RightUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             LeftAndRightLeftAndRightQuantity,
@@ -111,8 +108,25 @@ fun <
     wrappedLeftUnitXExtendedRightLeftUnit: WrappedLeftUnit.(ExtendedRightLeftUnit) -> TargetLeftUnit,
     targetLeftUnitXExtendedRightLeftUnit: TargetLeftUnit.(ExtendedRightLeftUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.leftAsUndefined().wrappedLeftUnitXExtendedRightLeftUnit(
-    right.unit.left,
-).targetLeftUnitXExtendedRightLeftUnit(
-    right.unit.left,
-).byMultiplying(this, right, factory)
+) where
+        ExtendedRightLeftUnit : UndefinedExtendedUnit<
+            LeftAndRightLeftAndRightQuantity,
+            >,
+        ExtendedRightLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightLeftAndRightQuantity,
+                >,
+            >,
+        ExtendedRightRightUnit : UndefinedExtendedUnit<
+            LeftAndRightLeftAndRightQuantity,
+            >,
+        ExtendedRightRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightLeftAndRightQuantity,
+                >,
+            > =
+    unit.leftAsUndefined().wrappedLeftUnitXExtendedRightLeftUnit(
+        right.unit.left,
+    ).targetLeftUnitXExtendedRightLeftUnit(
+        right.unit.left,
+    ).byMultiplying(this, right, factory)

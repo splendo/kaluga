@@ -70,7 +70,7 @@ fun <
     InverseUnit,
     ReciprocalUnit,
     > ReciprocalUnit.reciprocal() where
-                                        WrappedUnit : ScientificUnit<WrappedQuantity>,
+                                        WrappedUnit : DefinedScientificUnit<WrappedQuantity>,
                                         WrappedUnit : MeasurementUsage.UsedInMetric,
                                         InverseUnit : WrappedUndefinedExtendedUnit<WrappedQuantity, WrappedUnit>,
                                         InverseUnit : MeasurementUsage.UsedInMetric,

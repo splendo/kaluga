@@ -25,7 +25,6 @@ import com.splendo.kaluga.architecture.observable.BaseInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.base.text.format
-import com.splendo.kaluga.base.utils.KalugaTimeZone.Companion.get
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.UUID
@@ -63,7 +62,6 @@ import kotlinx.coroutines.withTimeout
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
-import kotlin.collections.emptyList
 import kotlin.time.Duration.Companion.minutes
 
 class BluetoothDeviceListViewModel(private val alertPresenterBuilder: AlertPresenter.Builder, navigator: Navigator<DeviceDetails>) :
@@ -165,12 +163,15 @@ class BluetoothDeviceListViewModel(private val alertPresenterBuilder: AlertPrese
             }.show()
             val cleanMode = when (action?.style) {
                 null -> return@launch
+
                 Alert.Action.Style.DEFAULT,
                 Alert.Action.Style.POSITIVE,
                 -> BluetoothService.CleanMode.RETAIN_ALL
+
                 Alert.Action.Style.DESTRUCTIVE,
                 Alert.Action.Style.NEUTRAL,
                 -> return@launch
+
                 Alert.Action.Style.CANCEL,
                 Alert.Action.Style.NEGATIVE,
                 -> BluetoothService.CleanMode.REMOVE_ALL

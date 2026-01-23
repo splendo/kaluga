@@ -22,7 +22,33 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.decaysWithHalfLife
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.div
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.times
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.AmountOfSubstance
+import com.splendo.kaluga.scientific.unit.CatalysticActivity
+import com.splendo.kaluga.scientific.unit.ImperialMolality
+import com.splendo.kaluga.scientific.unit.ImperialMolarEnergy
+import com.splendo.kaluga.scientific.unit.ImperialMolarity
+import com.splendo.kaluga.scientific.unit.ImperialVolume
+import com.splendo.kaluga.scientific.unit.ImperialWeight
+import com.splendo.kaluga.scientific.unit.MetricAndImperialMolarEnergy
+import com.splendo.kaluga.scientific.unit.MetricMolality
+import com.splendo.kaluga.scientific.unit.MetricMolarEnergy
+import com.splendo.kaluga.scientific.unit.MetricMolarity
+import com.splendo.kaluga.scientific.unit.MetricVolume
+import com.splendo.kaluga.scientific.unit.MetricWeight
+import com.splendo.kaluga.scientific.unit.Molality
+import com.splendo.kaluga.scientific.unit.MolarEnergy
+import com.splendo.kaluga.scientific.unit.Molarity
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.UKImperialMolality
+import com.splendo.kaluga.scientific.unit.UKImperialMolarity
+import com.splendo.kaluga.scientific.unit.UKImperialVolume
+import com.splendo.kaluga.scientific.unit.UKImperialWeight
+import com.splendo.kaluga.scientific.unit.USCustomaryMolality
+import com.splendo.kaluga.scientific.unit.USCustomaryMolarity
+import com.splendo.kaluga.scientific.unit.USCustomaryVolume
+import com.splendo.kaluga.scientific.unit.USCustomaryWeight
+import com.splendo.kaluga.scientific.unit.Volume
+import com.splendo.kaluga.scientific.unit.Weight
 
 val PhysicalQuantity.AmountOfSubstance.converters get() = listOf<QuantityConverter<PhysicalQuantity.AmountOfSubstance, *>>(
     QuantityConverterWithOperator(
@@ -34,15 +60,19 @@ val PhysicalQuantity.AmountOfSubstance.converters get() = listOf<QuantityConvert
             amountOfSubstanceUnit is AmountOfSubstance && molarEnergyUnit is MetricAndImperialMolarEnergy -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) * DefaultScientificValue(molarEnergyValue, molarEnergyUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && molarEnergyUnit is MetricMolarEnergy -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) * DefaultScientificValue(molarEnergyValue, molarEnergyUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && molarEnergyUnit is ImperialMolarEnergy -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) * DefaultScientificValue(molarEnergyValue, molarEnergyUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && molarEnergyUnit is MolarEnergy -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) * DefaultScientificValue(molarEnergyValue, molarEnergyUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $amountOfSubstanceUnit, $molarEnergyUnit")
         }
     },
@@ -55,18 +85,23 @@ val PhysicalQuantity.AmountOfSubstance.converters get() = listOf<QuantityConvert
             amountOfSubstanceUnit is AmountOfSubstance && weightUnit is MetricWeight -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(weightValue, weightUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && weightUnit is ImperialWeight -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(weightValue, weightUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && weightUnit is UKImperialWeight -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(weightValue, weightUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && weightUnit is USCustomaryWeight -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(weightValue, weightUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && weightUnit is Weight -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(weightValue, weightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $amountOfSubstanceUnit, $weightUnit")
         }
     },
@@ -79,18 +114,23 @@ val PhysicalQuantity.AmountOfSubstance.converters get() = listOf<QuantityConvert
             amountOfSubstanceUnit is AmountOfSubstance && volumeUnit is MetricVolume -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(volumeValue, volumeUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && volumeUnit is ImperialVolume -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(volumeValue, volumeUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && volumeUnit is UKImperialVolume -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(volumeValue, volumeUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && volumeUnit is USCustomaryVolume -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(volumeValue, volumeUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && volumeUnit is Volume -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(volumeValue, volumeUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $amountOfSubstanceUnit, $volumeUnit")
         }
     },
@@ -103,6 +143,7 @@ val PhysicalQuantity.AmountOfSubstance.converters get() = listOf<QuantityConvert
             amountOfSubstanceUnit is AmountOfSubstance && timeUnit is Time -> DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit).decaysWithHalfLife(
                 DefaultScientificValue(timeValue, timeUnit),
             )
+
             else -> throw RuntimeException("Unexpected units: $amountOfSubstanceUnit, $timeUnit")
         }
     },
@@ -115,6 +156,7 @@ val PhysicalQuantity.AmountOfSubstance.converters get() = listOf<QuantityConvert
             amountOfSubstanceUnit is AmountOfSubstance && catalysticActivityUnit is CatalysticActivity -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(catalysticActivityValue, catalysticActivityUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $amountOfSubstanceUnit, $catalysticActivityUnit")
         }
     },
@@ -127,18 +169,23 @@ val PhysicalQuantity.AmountOfSubstance.converters get() = listOf<QuantityConvert
             amountOfSubstanceUnit is AmountOfSubstance && molarityUnit is MetricMolarity -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(molarityValue, molarityUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && molarityUnit is ImperialMolarity -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(molarityValue, molarityUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && molarityUnit is UKImperialMolarity -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(molarityValue, molarityUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && molarityUnit is USCustomaryMolarity -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(molarityValue, molarityUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && molarityUnit is Molarity -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(molarityValue, molarityUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $amountOfSubstanceUnit, $molarityUnit")
         }
     },
@@ -151,18 +198,23 @@ val PhysicalQuantity.AmountOfSubstance.converters get() = listOf<QuantityConvert
             amountOfSubstanceUnit is AmountOfSubstance && molalityUnit is MetricMolality -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(molalityValue, molalityUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && molalityUnit is ImperialMolality -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(molalityValue, molalityUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && molalityUnit is UKImperialMolality -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(molalityValue, molalityUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && molalityUnit is USCustomaryMolality -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(molalityValue, molalityUnit)
             }
+
             amountOfSubstanceUnit is AmountOfSubstance && molalityUnit is Molality -> {
                 DefaultScientificValue(amountOfSubstanceValue, amountOfSubstanceUnit) / DefaultScientificValue(molalityValue, molalityUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $amountOfSubstanceUnit, $molalityUnit")
         }
     },

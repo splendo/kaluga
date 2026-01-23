@@ -25,7 +25,7 @@ import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 
@@ -33,12 +33,10 @@ import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 
 fun <
     LeftAndRightDenominatorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    LeftUnit : ScientificUnit<LeftAndRightDenominatorQuantity>,
+    LeftUnit : DefinedScientificUnit<LeftAndRightDenominatorQuantity>,
     RightNumeratorQuantity : UndefinedQuantityType,
     RightNumeratorUnit : AbstractUndefinedScientificUnit<RightNumeratorQuantity>,
-    ExtendedRightDenominatorUnit : UndefinedExtendedUnit<
-        LeftAndRightDenominatorQuantity,
-        >,
+    ExtendedRightDenominatorUnit,
     RightUnit : UndefinedDividedUnit<
         RightNumeratorQuantity,
         RightNumeratorUnit,
@@ -62,4 +60,13 @@ fun <
         RightUnit,
         >,
     factory: (Decimal, RightNumeratorUnit) -> RightNumeratorValue,
-) = right.unit.numerator.byMultiplying(this, right, factory)
+) where
+        ExtendedRightDenominatorUnit : UndefinedExtendedUnit<
+            LeftAndRightDenominatorQuantity,
+            >,
+        ExtendedRightDenominatorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightDenominatorQuantity,
+                >,
+            > =
+    right.unit.numerator.byMultiplying(this, right, factory)

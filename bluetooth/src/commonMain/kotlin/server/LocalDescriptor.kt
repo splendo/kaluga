@@ -121,9 +121,11 @@ class LocalDescriptor(val wrapper: LocalDescriptorWrapper, override val characte
                     0 -> {
                         value
                     }
+
                     currentCache.size -> {
                         currentCache + value
                     }
+
                     else -> null
                 }
                 valueToDeserialize?.let {

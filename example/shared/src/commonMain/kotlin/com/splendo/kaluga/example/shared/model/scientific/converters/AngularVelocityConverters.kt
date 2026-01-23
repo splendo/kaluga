@@ -35,6 +35,7 @@ val PhysicalQuantity.AngularVelocity.converters get() = listOf<QuantityConverter
             angularVelocityUnit is AngularVelocity && timeUnit is Time -> {
                 DefaultScientificValue(angularVelocityValue, angularVelocityUnit) * DefaultScientificValue(timeValue, timeUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $angularVelocityUnit $timeUnit")
         }
     },
@@ -47,6 +48,7 @@ val PhysicalQuantity.AngularVelocity.converters get() = listOf<QuantityConverter
             angularVelocityUnit is AngularVelocity && timeUnit is Time -> {
                 DefaultScientificValue(angularVelocityValue, angularVelocityUnit) / DefaultScientificValue(timeValue, timeUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $angularVelocityUnit $timeUnit")
         }
     },
@@ -59,6 +61,7 @@ val PhysicalQuantity.AngularVelocity.converters get() = listOf<QuantityConverter
             angularVelocityUnit is AngularVelocity && angularAccelerationUnit is AngularAcceleration -> {
                 DefaultScientificValue(angularVelocityValue, angularVelocityUnit) / DefaultScientificValue(angularAccelerationValue, angularAccelerationUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $angularVelocityUnit $angularAccelerationUnit")
         }
     },

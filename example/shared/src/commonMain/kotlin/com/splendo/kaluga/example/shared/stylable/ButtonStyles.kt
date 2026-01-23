@@ -22,12 +22,12 @@ import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.asImage
 import com.splendo.kaluga.resources.defaultBoldFont
 import com.splendo.kaluga.resources.defaultFont
-import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.stylable.ButtonStateStyle
-import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
 import com.splendo.kaluga.resources.stylable.GradientStyle
 import com.splendo.kaluga.resources.stylable.ImageGravity
 import com.splendo.kaluga.resources.stylable.ImageSize
+import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
+import com.splendo.kaluga.resources.stylable.KalugaButtonStyle
 import com.splendo.kaluga.resources.stylable.KalugaTextAlignment
 import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 

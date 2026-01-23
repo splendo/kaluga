@@ -95,7 +95,9 @@ class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapp
 
         when (val requestType = activitySpec.launchType) {
             is NavigationSpec.Activity.LaunchType.NoResult -> activity.startActivity(intent)
+
             is NavigationSpec.Activity.LaunchType.ActivityResult -> activity.startActivityForResult(intent, requestType.requestCode)
+
             is NavigationSpec.Activity.LaunchType.ActivityContract<*> -> requestType.tryAndGetContract(activity)
                 ?.launch(intent) ?: throw RuntimeException("Activity is not an instance of ${requestType.activityClass.simpleName}")
         }
@@ -127,6 +129,7 @@ class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapp
                 is NavigationSpec.Fragment.BackStackSettings.Add -> it.addToBackStack(
                     backtrackSettings.name,
                 )
+
                 else -> it
             }
         }
@@ -149,6 +152,7 @@ class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapp
                 fragment,
                 fragmentSpec.tag,
             )
+
             is NavigationSpec.Fragment.Type.Replace -> transaction.replace(
                 fragmentSpec.containerId,
                 fragment,
@@ -307,6 +311,7 @@ class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapp
                     Uri.parse(browserSpec.url.toURI().toString()),
                 )
             }
+
             NavigationSpec.Browser.Type.Normal -> {
                 val uri = Uri.parse(browserSpec.url.toURI().toString())
                 val intent = Intent(Intent.ACTION_VIEW, uri)
@@ -323,9 +328,11 @@ class ActivityNavigator<Action : NavigationAction<*>>(private val navigationMapp
             NavigationSpec.ThirdPartyApp.OpenMode.ONLY_WHEN_INSTALLED -> navigateToThirdPartyApp(
                 thirdPartyAppSpec.packageName,
             )
+
             NavigationSpec.ThirdPartyApp.OpenMode.FORCE_STORE -> navigateToPlayStore(
                 thirdPartyAppSpec.packageName,
             )
+
             NavigationSpec.ThirdPartyApp.OpenMode.FALLBACK_TO_STORE -> {
                 if (!navigateToThirdPartyApp(thirdPartyAppSpec.packageName)) {
                     navigateToPlayStore(thirdPartyAppSpec.packageName)

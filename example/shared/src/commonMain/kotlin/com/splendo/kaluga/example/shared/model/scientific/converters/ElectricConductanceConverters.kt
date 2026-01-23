@@ -39,9 +39,11 @@ val PhysicalQuantity.ElectricConductance.converters get() = listOf<QuantityConve
             leftUnit is Absiemens && rightUnit is Frequency -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ElectricConductance && rightUnit is Frequency -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -54,9 +56,11 @@ val PhysicalQuantity.ElectricConductance.converters get() = listOf<QuantityConve
             leftUnit is Absiemens && rightUnit is Abvolt -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ElectricConductance && rightUnit is Voltage -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -76,6 +80,7 @@ val PhysicalQuantity.ElectricConductance.converters get() = listOf<QuantityConve
             leftUnit is ElectricConductance && rightUnit is ElectricCapacitance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

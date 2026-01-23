@@ -25,7 +25,7 @@ import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
@@ -37,7 +37,7 @@ fun <
     NumeratorNumeratorAndDenominatorNumeratorQuantity : UndefinedQuantityType,
     NumeratorNumeratorUnit : AbstractUndefinedScientificUnit<NumeratorNumeratorAndDenominatorNumeratorQuantity>,
     NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    NumeratorDenominatorUnit : ScientificUnit<NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity>,
+    NumeratorDenominatorUnit : DefinedScientificUnit<NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity>,
     WrappedNumeratorDenominatorUnit : WrappedUndefinedExtendedUnit<
         NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
         NumeratorDenominatorUnit,
@@ -51,12 +51,8 @@ fun <
         WrappedNumeratorDenominatorUnit,
         >,
     DenominatorNumeratorUnit : AbstractUndefinedScientificUnit<NumeratorNumeratorAndDenominatorNumeratorQuantity>,
-    ExtendedDenominatorDenominatorLeftUnit : UndefinedExtendedUnit<
-        NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
-        >,
-    ExtendedDenominatorDenominatorRightUnit : UndefinedExtendedUnit<
-        NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
-        >,
+    ExtendedDenominatorDenominatorLeftUnit,
+    ExtendedDenominatorDenominatorRightUnit,
     DenominatorDenominatorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
@@ -105,4 +101,21 @@ fun <
         DenominatorUnit,
         >,
     factory: (Decimal, NumeratorDenominatorUnit) -> NumeratorDenominatorValue,
-) = unit.denominator.wrapped.byDividing(this, right, factory)
+) where
+        ExtendedDenominatorDenominatorLeftUnit : UndefinedExtendedUnit<
+            NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
+            >,
+        ExtendedDenominatorDenominatorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
+                >,
+            >,
+        ExtendedDenominatorDenominatorRightUnit : UndefinedExtendedUnit<
+            NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
+            >,
+        ExtendedDenominatorDenominatorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                NumeratorDenominatorAndDenominatorDenominatorLeftAndRightQuantity,
+                >,
+            > =
+    unit.denominator.wrapped.byDividing(this, right, factory)

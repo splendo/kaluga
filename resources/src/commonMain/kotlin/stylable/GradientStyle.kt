@@ -18,7 +18,6 @@
 package com.splendo.kaluga.resources.stylable
 
 import com.splendo.kaluga.resources.KalugaColor
-import com.splendo.kaluga.resources.stylable.GradientStyle.Linear.Orientation
 import kotlin.jvm.JvmName
 
 /**

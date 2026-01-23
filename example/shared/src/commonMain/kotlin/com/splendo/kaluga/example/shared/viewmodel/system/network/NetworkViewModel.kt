@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.system.network
 
-import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
+import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.system.network.NetworkConnectionType
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import com.splendo.kaluga.system.network.state.network
@@ -42,15 +42,19 @@ class NetworkViewModel(networkStateRepoBuilder: NetworkStateRepoBuilder) : BaseL
                     is NetworkConnectionType.Unknown.WithoutLastNetwork ->
                         _networkState.value =
                             "Network's state is Unknown and without the last available connection."
+
                     is NetworkConnectionType.Unknown.WithLastNetwork ->
                         _networkState.value =
                             "Network's state is Unknown and with last known connection as ${it.lastKnown}."
+
                     is NetworkConnectionType.Known.Cellular ->
                         _networkState.value =
                             "Network's state is Available through Cellular."
+
                     is NetworkConnectionType.Known.Wifi ->
                         _networkState.value =
                             "Network's state is Available through WIFI."
+
                     is NetworkConnectionType.Known.Absent ->
                         _networkState.value =
                             "Network's state is Absent."

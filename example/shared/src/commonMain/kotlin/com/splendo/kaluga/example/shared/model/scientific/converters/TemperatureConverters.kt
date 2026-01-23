@@ -21,7 +21,27 @@ import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.converter.temperature.div
 import com.splendo.kaluga.scientific.converter.temperature.times
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.HeatCapacity
+import com.splendo.kaluga.scientific.unit.ImperialPower
+import com.splendo.kaluga.scientific.unit.MetricAndImperialPower
+import com.splendo.kaluga.scientific.unit.MetricAndUKImperialHeatCapacity
+import com.splendo.kaluga.scientific.unit.MetricAndUKImperialTemperature
+import com.splendo.kaluga.scientific.unit.MetricAndUKImperialThermalResistance
+import com.splendo.kaluga.scientific.unit.MetricHeatCapacity
+import com.splendo.kaluga.scientific.unit.MetricPower
+import com.splendo.kaluga.scientific.unit.MetricSpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.MetricThermalResistance
+import com.splendo.kaluga.scientific.unit.Power
+import com.splendo.kaluga.scientific.unit.SpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.Temperature
+import com.splendo.kaluga.scientific.unit.ThermalResistance
+import com.splendo.kaluga.scientific.unit.UKImperialHeatCapacity
+import com.splendo.kaluga.scientific.unit.UKImperialSpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.UKImperialThermalResistance
+import com.splendo.kaluga.scientific.unit.USCustomaryHeatCapacity
+import com.splendo.kaluga.scientific.unit.USCustomarySpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.USCustomaryTemperature
+import com.splendo.kaluga.scientific.unit.USCustomaryThermalResistance
 
 val PhysicalQuantity.Temperature.converters get() = listOf<QuantityConverter<PhysicalQuantity.Temperature, *>>(
     QuantityConverterWithOperator(
@@ -33,18 +53,23 @@ val PhysicalQuantity.Temperature.converters get() = listOf<QuantityConverter<Phy
             leftUnit is MetricAndUKImperialTemperature && rightUnit is MetricAndUKImperialHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndUKImperialTemperature && rightUnit is MetricHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndUKImperialTemperature && rightUnit is UKImperialHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryTemperature && rightUnit is USCustomaryHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Temperature && rightUnit is HeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -57,18 +82,23 @@ val PhysicalQuantity.Temperature.converters get() = listOf<QuantityConverter<Phy
             leftUnit is MetricAndUKImperialTemperature && rightUnit is MetricAndUKImperialThermalResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndUKImperialTemperature && rightUnit is MetricThermalResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndUKImperialTemperature && rightUnit is UKImperialThermalResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryTemperature && rightUnit is USCustomaryThermalResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Temperature && rightUnit is ThermalResistance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -81,15 +111,19 @@ val PhysicalQuantity.Temperature.converters get() = listOf<QuantityConverter<Phy
             leftUnit is MetricAndUKImperialTemperature && rightUnit is MetricSpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndUKImperialTemperature && rightUnit is UKImperialSpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryTemperature && rightUnit is USCustomarySpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Temperature && rightUnit is SpecificHeatCapacity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -102,18 +136,23 @@ val PhysicalQuantity.Temperature.converters get() = listOf<QuantityConverter<Phy
             leftUnit is MetricAndUKImperialTemperature && rightUnit is MetricAndImperialPower -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndUKImperialTemperature && rightUnit is MetricPower -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricAndUKImperialTemperature && rightUnit is ImperialPower -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is USCustomaryTemperature && rightUnit is ImperialPower -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Temperature && rightUnit is Power -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

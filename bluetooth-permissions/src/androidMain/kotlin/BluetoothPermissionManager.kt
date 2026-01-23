@@ -64,6 +64,7 @@ actual class DefaultBluetoothPermissionManager(
                         add(Manifest.permission.ACCESS_FINE_LOCATION)
                     }
                 }
+
                 is BluetoothPermission.Type.Server -> {
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                         add(Manifest.permission.BLUETOOTH_CONNECT)

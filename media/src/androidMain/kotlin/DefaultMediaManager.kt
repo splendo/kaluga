@@ -141,13 +141,17 @@ actual class DefaultMediaManager(mediaSurfaceProvider: MediaSurfaceProvider?, co
     actual override fun handleCreatePlayableMedia(source: MediaSource): PlayableMedia? = try {
         when (source) {
             is MediaSource.Asset -> mediaPlayer.setDataSource(source.descriptor)
+
             is MediaSource.File -> mediaPlayer.setDataSource(source.descriptor)
+
             is MediaSource.Url -> mediaPlayer.setDataSource(source.url.toExternalForm())
+
             is MediaSource.Content -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 mediaPlayer.setDataSource(source.context, source.uri, source.headers, source.cookies)
             } else {
                 mediaPlayer.setDataSource(source.context, source.uri, source.headers)
             }
+
             is MediaSource.Bundle -> mediaPlayer.setDataSource(context, Uri.parse("android.resource://" + context.packageName + "/" + source.fileName))
         }
         DefaultPlayableMedia(source, mediaPlayer)

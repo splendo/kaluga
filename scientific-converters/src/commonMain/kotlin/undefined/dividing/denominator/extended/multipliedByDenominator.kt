@@ -25,7 +25,7 @@ import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 
@@ -34,9 +34,7 @@ import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 fun <
     LeftNumeratorQuantity : UndefinedQuantityType,
     LeftNumeratorUnit : AbstractUndefinedScientificUnit<LeftNumeratorQuantity>,
-    ExtendedLeftDenominatorUnit : UndefinedExtendedUnit<
-        LeftDenominatorAndRightQuantity,
-        >,
+    ExtendedLeftDenominatorUnit,
     LeftUnit : UndefinedDividedUnit<
         LeftNumeratorQuantity,
         LeftNumeratorUnit,
@@ -46,7 +44,7 @@ fun <
         ExtendedLeftDenominatorUnit,
         >,
     LeftDenominatorAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    RightUnit : ScientificUnit<LeftDenominatorAndRightQuantity>,
+    RightUnit : DefinedScientificUnit<LeftDenominatorAndRightQuantity>,
     LeftNumeratorValue : UndefinedScientificValue<
         LeftNumeratorQuantity,
         LeftNumeratorUnit,
@@ -62,4 +60,13 @@ fun <
     >.multipliedByDenominator(
     right: ScientificValue<LeftDenominatorAndRightQuantity, RightUnit>,
     factory: (Decimal, LeftNumeratorUnit) -> LeftNumeratorValue,
-) = unit.numerator.byMultiplying(this, right, factory)
+) where
+        ExtendedLeftDenominatorUnit : UndefinedExtendedUnit<
+            LeftDenominatorAndRightQuantity,
+            >,
+        ExtendedLeftDenominatorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftDenominatorAndRightQuantity,
+                >,
+            > =
+    unit.numerator.byMultiplying(this, right, factory)

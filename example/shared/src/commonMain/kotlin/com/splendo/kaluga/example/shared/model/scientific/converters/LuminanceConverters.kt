@@ -38,18 +38,23 @@ val PhysicalQuantity.Luminance.converters get() = listOf<QuantityConverter<Physi
             leftUnit is Stilb && rightUnit is SolidAngle -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Lambert && rightUnit is SolidAngle -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is MetricLuminance && rightUnit is SolidAngle -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ImperialLuminance && rightUnit is SolidAngle -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Luminance && rightUnit is SolidAngle -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -62,6 +67,7 @@ val PhysicalQuantity.Luminance.converters get() = listOf<QuantityConverter<Physi
             leftUnit is Luminance && rightUnit is Area -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

@@ -121,21 +121,26 @@ actual class StyledStringBuilder constructor(string: String, private val default
         is StringStyleAttribute.CharacterStyleAttribute.BackgroundColor -> BackgroundColorSpan(
             color.currentColor,
         )
+
         is StringStyleAttribute.CharacterStyleAttribute.ForegroundColor -> ForegroundColorSpan(
             color.currentColor,
         )
+
         is StringStyleAttribute.CharacterStyleAttribute.Font -> CustomCharacterStyle {
             typeface = font
             textSize = size.spToPixel(context)
         }
+
         is StringStyleAttribute.CharacterStyleAttribute.Kerning -> CustomCharacterStyle {
             letterSpacing = kern
         }
+
         is StringStyleAttribute.CharacterStyleAttribute.TextStyle -> CustomCharacterStyle {
             typeface = textStyle.font
             textSize = textStyle.size.spToPixel(context)
             color = textStyle.color.currentColor
         }
+
         is StringStyleAttribute.CharacterStyleAttribute.Shadow -> CustomCharacterStyle {
             setShadowLayer(
                 blurRadius.spToPixel(context),
@@ -144,10 +149,15 @@ actual class StyledStringBuilder constructor(string: String, private val default
                 color,
             )
         }
+
         is StringStyleAttribute.CharacterStyleAttribute.Strikethrough -> StrikethroughSpan()
+
         is StringStyleAttribute.CharacterStyleAttribute.SubScript -> SubscriptSpan()
+
         is StringStyleAttribute.CharacterStyleAttribute.SuperScript -> SuperscriptSpan()
+
         is StringStyleAttribute.CharacterStyleAttribute.Underline -> UnderlineSpan()
+
         is StringStyleAttribute.CharacterStyleAttribute.Stroke ->
             object : MetricAffectingSpan(), LineBackgroundSpan {
                 override fun updateMeasureState(textPaint: TextPaint) {
@@ -210,6 +220,7 @@ actual class StyledStringBuilder constructor(string: String, private val default
                 firstLineIndent.spToPixel(context).toInt(),
                 indent.spToPixel(context).toInt(),
             )
+
             is StringStyleAttribute.ParagraphStyleAttribute.LineSpacing -> object : LineHeightSpan {
                 override fun chooseHeight(text: CharSequence, start: Int, end: Int, spanstartv: Int, lineHeight: Int, fm: Paint.FontMetricsInt?) {
                     val fontMetrics = fm ?: return
@@ -234,6 +245,7 @@ actual class StyledStringBuilder constructor(string: String, private val default
                     }
                 }
             }
+
             is StringStyleAttribute.ParagraphStyleAttribute.Alignment -> AlignmentSpan.Standard(
                 alignment.alignment(context),
             )

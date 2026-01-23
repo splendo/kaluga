@@ -33,7 +33,9 @@ fun Encoding.encodeString(string: String, byteOrder: ByteOrder) = when (this) {
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> it
         }
     }
+
     UTF_16 -> string.toUTF16(byteOrder)
+
     ASCII -> string.toAscii(byteOrder)
 }
 
@@ -85,6 +87,7 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
         data class WithOverflow(val sentinel: Byte = 0xFF.toByte()) : LengthPrefix() {
             override fun encodeSize(size: UInt, order: ByteOrder): ByteArray = when {
                 size <= UByte.MAX_VALUE.toUInt() -> ByteLength.encodeSize(size, order)
+
                 else -> buildByteArray(order) {
                     add(sentinel)
                     add(ShortLength.encodeSize(size, order))
@@ -129,6 +132,7 @@ fun String.toByteArray(settings: StringEncodingSettings, order: ByteOrder): Byte
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedSize + encodedString
         }
     }
+
     is StringEncodingSettings.NullTerminated -> {
         require(!contains('\u0000')) { "Null terminated string cannot contain null character" }
         val encodedString = settings.encoding.encodeString(this, order)
@@ -137,7 +141,9 @@ fun String.toByteArray(settings: StringEncodingSettings, order: ByteOrder): Byte
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedString + 0x00.toByte()
         }
     }
+
     is StringEncodingSettings.NoMarking -> settings.encoding.encodeString(this, order)
+
     is StringEncodingSettings.FixedLength -> {
         val encodedString = settings.encoding.encodeString(this, order)
         if (encodedString.size < settings.encoding.byteSize * endMarking.length) {
@@ -166,6 +172,7 @@ fun String.toUTF16(byteOrder: ByteOrder): ByteArray {
                 result[byteLength - index * 2 - 1] = utf16Char[1]
                 result[byteLength - index * 2 - 2] = utf16Char[0]
             }
+
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
                 result[index * 2] = utf16Char[0]
                 result[index * 2 + 1] = utf16Char[1]
@@ -219,6 +226,7 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
                     require(encodedShort.size == 2) { "Did not include a Short as length" }
                     encodedShort.decodeUShort(0, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
                 }
+
                 is StringEncodingSettings.LengthPrefix.WithOverflow -> {
                     val first = first()
                     if (first == endMarking.sentinel) {
@@ -229,18 +237,21 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
                         first
                     }
                 }
+
                 else -> first()
             }.toInt() * settings.encoding.byteSize
             val stringBytes = take(length).toList()
             require(stringBytes.size == length) { "String size ${stringBytes.size} does not match encoded size $length" }
             stringBytes
         }
+
         is StringEncodingSettings.FixedLength -> {
             val length = settings.encoding.byteSize * endMarking.length
             val stringBytes = take(length).toList()
             require(stringBytes.size == length) { "String size ${stringBytes.size} does not match fixed size $length" }
             stringBytes
         }
+
         is StringEncodingSettings.NullTerminated -> {
             var hasFoundNull = false
             val stringBytes = withIndex().takeWhile { (index, byte) ->
@@ -251,6 +262,7 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
             require(hasFoundNull) { "Does not end with a null marker" }
             stringBytes
         }
+
         is StringEncodingSettings.NoMarking -> {
             toList()
         }

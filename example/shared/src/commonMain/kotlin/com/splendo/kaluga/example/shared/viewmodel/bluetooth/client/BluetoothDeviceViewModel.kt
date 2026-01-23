@@ -63,13 +63,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.serialization.serializer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import kotlin.Double
-import kotlin.Unit
-import kotlin.apply
-import kotlin.isFinite
 
 class DeviceDetails(value: Identifier) :
     SingleValueNavigationAction<SerializableIdentifier>(
