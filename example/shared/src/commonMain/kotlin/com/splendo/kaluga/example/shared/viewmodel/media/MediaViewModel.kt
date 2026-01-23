@@ -137,11 +137,13 @@ class MediaViewModel(
                         setLoopMode.perform(PlaybackState.LoopMode.LoopingForever)
                     }
                 }
+
                 is PlaybackState.LoopMode.LoopingForever -> KalugaButton.WithoutText(ButtonStyles.mediaButtonFocus("repeat_on".asImage()!!), true) {
                     coroutineScope.launch {
                         setLoopMode.perform(PlaybackState.LoopMode.LoopingForFixedNumber(1U))
                     }
                 }
+
                 is PlaybackState.LoopMode.LoopingForFixedNumber -> KalugaButton.Plain(
                     "x${loopMode.loops}",
                     ButtonStyles.mediaButtonFocusWithImageAndText("repeat_on".asImage()!!),
@@ -224,10 +226,13 @@ class MediaViewModel(
 
             when (actionSelected) {
                 defaultAudio -> didSelectFileAt(mediaSourceFromUrl("https://cdn.freesound.org/previews/459/459992_6253486-lq.mp3"))
+
                 defaultVideo -> didSelectFileAt(
                     mediaSourceFromUrl("https://joy1.videvo.net/videvo_files/video/free/2019-04/large_watermarked/190408_07_GulfSturgeon_03_preview.mp4"),
                 )
+
                 selectLocalFile -> navigator.navigate(MediaNavigationAction.SelectLocal)
+
                 selectRemoteFile -> {
                     var input = ""
                     val remoteActionSelected = alertPresenterBuilder.buildAlertWithInput(coroutineScope) {
@@ -242,6 +247,7 @@ class MediaViewModel(
                         else -> {}
                     }
                 }
+
                 else -> {}
             }
         }

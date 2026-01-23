@@ -473,6 +473,7 @@ internal sealed class ConnectableDeviceStateImpl {
         override suspend fun afterOldStateIsRemoved(oldState: ConnectableDeviceState) {
             when (oldState) {
                 is Disconnected, is Connected -> deviceConnectionManager.connect()
+
                 else -> {
                     // do nothing: TODO check all these are correct, e.g. Disconnecting
                 }

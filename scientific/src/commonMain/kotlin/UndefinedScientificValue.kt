@@ -18,7 +18,6 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.unit.AbstractScientificUnit
 import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.MeasurementUsage
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
@@ -196,8 +195,8 @@ fun <
     }
 
 fun <
-    Quantity : PhysicalQuantity.PhysicalQuantityWithDimension,
-    Unit,
+    Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
+    Unit : DefinedScientificUnit<Quantity>,
     Wrapped : WrappedUndefinedExtendedUnit<Quantity, Unit>,
     Value : ScientificValue<Quantity, Unit>,
     > ScientificValue<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<Quantity>>, Wrapped>.asDefined(
@@ -205,8 +204,8 @@ fun <
 ) = factory(decimalValue, unit.wrapped)
 
 fun <
-    Quantity : PhysicalQuantity.PhysicalQuantityWithDimension,
-    Unit : AbstractScientificUnit<Quantity>,
+    Quantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
+    Unit : DefinedScientificUnit<Quantity>,
     Wrapped : WrappedUndefinedExtendedUnit<Quantity, Unit>,
     > ScientificValue<PhysicalQuantity.Undefined<UndefinedQuantityType.Extended<Quantity>>, Wrapped>.asDefined() =
     asDefined(::DefaultScientificValue)

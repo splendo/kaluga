@@ -55,6 +55,7 @@ abstract class BaseScanningStateRepo(
             is ScanningState.Inactive -> {
                 repo.createInitializingState(state)
             }
+
             is ScanningState.Active, is ScanningState.NoHardware -> state.remain()
         }
     },
@@ -83,10 +84,12 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
                     (this as ScanningStateImplRepo).startMonitoringScanner(scanner)
                     state.startInitializing(scanner)
                 }
+
                 is ScanningStateImpl.Deinitialized -> {
                     (this as ScanningStateImplRepo).startMonitoringScanner(state.scanner)
                     state.reinitialize
                 }
+
                 else -> state.remain()
             }
         },
@@ -104,11 +107,15 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
             scanner.events.collect { event ->
                 when (event) {
                     is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
+
                     is Scanner.Event.BluetoothDisabled -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { it.disable }
+
                     is Scanner.Event.BluetoothEnabled -> takeAndChangeState(remainIfStateNot = ScanningState.NoBluetooth.Disabled::class) { it.enable }
+
                     is Scanner.Event.FailedScanning -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) {
                         it.stopScanning(BluetoothService.CleanMode.REMOVE_ALL)
                     }
+
                     is Scanner.Event.PairedDevicesRetrieved -> handlePairedDevice(event)
                 }
             }
@@ -133,6 +140,7 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
             is ScanningState.Initializing -> {
                 state.initialized(event.hasPermission, scanner.isHardwareEnabled())
             }
+
             is ScanningState.Permitted -> {
                 if (event.hasPermission) {
                     state.remain()
@@ -140,7 +148,9 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
                     state.revokePermission
                 }
             }
+
             is ScanningState.NoBluetooth.MissingPermissions -> if (event.hasPermission) state.permit(scanner.isHardwareEnabled()) else state.remain()
+
             else -> {
                 state.remain()
             }

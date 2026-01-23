@@ -48,11 +48,13 @@ sealed class BlendMode {
             is KalugaColor.DarkLightColor -> blendColor(backdrop, source.defaultColor) withDarkMode blendColor(backdrop, source.darkColor)
             else -> throw IllegalArgumentException("Unknown KalugaColor $source")
         }
+
         is KalugaColor.DarkLightColor -> when (source) {
             is KalugaColor.RGBColor -> blendColor(backdrop.defaultColor, source) withDarkMode blendColor(backdrop.darkColor, source)
             is KalugaColor.DarkLightColor -> blendColor(backdrop.defaultColor, source.defaultColor) withDarkMode blendColor(backdrop.darkColor, source.darkColor)
             else -> throw IllegalArgumentException("Unknown KalugaColor $source")
         }
+
         else -> throw IllegalArgumentException("Unknown KalugaColor $backdrop")
     }
 
@@ -97,11 +99,13 @@ sealed class BlendMode {
                             lumination + (((green - lumination) * lumination) / (lumination - min)),
                             lumination + (((blue - lumination) * lumination) / (lumination - min)),
                         )
+
                         max > 1.0 -> colorFrom(
                             lumination + (((red - lumination) * (1.0 - lumination)) / (max - lumination)),
                             lumination + (((green - lumination) * (1.0 - lumination)) / (max - lumination)),
                             lumination + (((blue - lumination) * (1.0 - lumination)) / (max - lumination)),
                         )
+
                         else -> colorFrom(red, green, blue)
                     }
                 }
@@ -282,11 +286,13 @@ private fun KalugaColor.blend(source: KalugaColor, mode: BlendMode): KalugaColor
         is KalugaColor.DarkLightColor -> blend(source.defaultColor, mode) withDarkMode blend(source.darkColor, mode)
         else -> throw IllegalArgumentException("Unknown KalugaColor $source")
     }
+
     is KalugaColor.DarkLightColor -> when (source) {
         is KalugaColor.RGBColor -> defaultColor.blend(source, mode) withDarkMode darkColor.blend(source, mode)
         is KalugaColor.DarkLightColor -> defaultColor.blend(source.defaultColor, mode) withDarkMode darkColor.blend(source.darkColor, mode)
         else -> throw IllegalArgumentException("Unknown KalugaColor $source")
     }
+
     else -> throw IllegalArgumentException("Unknown KalugaColor $this")
 }
 

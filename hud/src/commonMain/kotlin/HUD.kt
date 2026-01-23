@@ -48,7 +48,6 @@ abstract class BaseHUD(coroutineScope: CoroutineScope) : CoroutineScope by corou
      */
     abstract class Builder : LifecycleSubscribable {
 
-        /** */
         /**
          * Builds a [BaseHUD] based on some [HudConfig].
          *

@@ -921,6 +921,7 @@ private abstract class RemoteAttributeBindingImpl<T, ReadAction : DeviceAction.R
         is GattResponse.ReadSuccess -> onReadActions.forEach { action ->
             callingScope.update { it.action(result.value.asResponse(), trigger) }
         }
+
         is GattResponse.ReadError -> onFailedToReadActions.forEach { action ->
             callingScope.update { it.action(trigger, result) }
         }
@@ -935,6 +936,7 @@ private abstract class RemoteAttributeBindingImpl<T, ReadAction : DeviceAction.R
         is GattResponse.WriteSuccess -> onWriteActions.forEach { action ->
             callingScope.update { it.action(value) }
         }
+
         is GattResponse.WriteError -> onFailedToWriteActions.forEach { action ->
             callingScope.update { it.action(value, result) }
         }

@@ -41,11 +41,13 @@ fun GradientStyle.brush(): Brush = when (this) {
         start = orientation.offset.first,
         end = orientation.offset.second,
     )
+
     is GradientStyle.Radial -> RelativeRadialGradient(
         centerPoint,
         radius = radius,
         colorStops = colorPoints.colorStops().toTypedArray(),
     )
+
     is GradientStyle.Angular -> RelativeSweepGradient(
         centerPoint,
         *colorPoints.colorStops().toTypedArray(),
@@ -66,30 +68,37 @@ private val GradientStyle.Linear.Orientation.offset: Pair<Offset, Offset>
             Offset(0.0f, Float.POSITIVE_INFINITY),
             Offset(Float.POSITIVE_INFINITY, 0.0f),
         )
+
         GradientStyle.Linear.Orientation.BOTTOM_TOP -> Pair(
             Offset(0.0f, Float.POSITIVE_INFINITY),
             Offset(0.0f, Float.POSITIVE_INFINITY),
         )
+
         GradientStyle.Linear.Orientation.BOTTOM_RIGHT_TOP_LEFT -> Pair(
             Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY),
             Offset(0.0f, 0.0f),
         )
+
         GradientStyle.Linear.Orientation.LEFT_RIGHT -> Pair(
             Offset(0.0f, 0.0f),
             Offset(Float.POSITIVE_INFINITY, 0.0f),
         )
+
         GradientStyle.Linear.Orientation.RIGHT_LEFT -> Pair(
             Offset(Float.POSITIVE_INFINITY, 0.0f),
             Offset(0.0f, 0.0f),
         )
+
         GradientStyle.Linear.Orientation.TOP_LEFT_BOTTOM_RIGHT -> Pair(
             Offset(0.0f, 0.0f),
             Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY),
         )
+
         GradientStyle.Linear.Orientation.TOP_BOTTOM -> Pair(
             Offset(0.0f, 0.0f),
             Offset(0.0f, Float.POSITIVE_INFINITY),
         )
+
         GradientStyle.Linear.Orientation.TOP_RIGHT_BOTTOM_LEFT -> Pair(
             Offset(Float.POSITIVE_INFINITY, 0.0f),
             Offset(0.0f, Float.POSITIVE_INFINITY),

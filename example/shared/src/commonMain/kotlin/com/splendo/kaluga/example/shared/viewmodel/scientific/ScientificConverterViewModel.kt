@@ -97,6 +97,7 @@ class ScientificConverterViewModel internal constructor(
                     null
                 }
             }
+
             is QuantityConverter.WithOperator<*, *, *> -> {
                 if (left != null && leftUnit != null && right != null && rightUnit != null) {
                     converter.convert(left, leftUnit, right, rightUnit)
@@ -104,6 +105,7 @@ class ScientificConverterViewModel internal constructor(
                     null
                 }
             }
+
             null -> {
                 null
             }

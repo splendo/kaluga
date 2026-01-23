@@ -135,7 +135,7 @@ class UndefinedScientificUnitTest {
         assertEquals(Watt.asUndefined(), hourPerWatt.denominator)
         assertSerialization(hourPerWatt)
 
-        assertEquals(60000.0, hourPerWatt.convert(1, Minute per Kilowatt).toDouble())
+        assertEquals(60000.0, hourPerWatt.convert(1, Minute per Kilowatt))
     }
 
     @Test

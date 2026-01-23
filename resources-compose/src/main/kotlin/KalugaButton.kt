@@ -87,6 +87,7 @@ fun KalugaButton.Composable(modifier: Modifier = Modifier, elevation: ButtonElev
         when (this@Composable) {
             is KalugaButton.WithoutText -> when (val style = style) {
                 is KalugaButtonStyle.WithoutContent -> Spacer(modifier = modifier)
+
                 is KalugaButtonStyle.ImageOnly -> Box(modifier = modifier) {
                     style.Composable(isEnabled = isEnabled, isPressed = pressed)
                 }

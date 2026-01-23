@@ -106,10 +106,12 @@ sealed class NetworkConnectionType {
  */
 fun NetworkConnectionType.unknown(reason: NetworkConnectionType.Unknown.Reason) = when (this) {
     is NetworkConnectionType.Known -> NetworkConnectionType.Unknown.WithLastNetwork(this, reason)
+
     is NetworkConnectionType.Unknown.WithLastNetwork -> NetworkConnectionType.Unknown.WithLastNetwork(
         this.lastKnown,
         reason,
     )
+
     is NetworkConnectionType.Unknown.WithoutLastNetwork -> NetworkConnectionType.Unknown.WithoutLastNetwork(
         reason,
     )

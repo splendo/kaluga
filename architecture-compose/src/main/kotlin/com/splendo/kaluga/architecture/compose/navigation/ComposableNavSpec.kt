@@ -256,6 +256,7 @@ sealed class ComposableNavSpec {
                         data = Uri.parse(url.toURI().toString())
                     }
                 }
+
                 is NavigationSpec.Browser.Type.Normal -> {
                     val uri = Uri.parse(url.toURI().toString())
                     Intent(Intent.ACTION_VIEW, uri)

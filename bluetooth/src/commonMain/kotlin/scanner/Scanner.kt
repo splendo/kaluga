@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.scanner
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.utils.BufferedAsListChannel
+import com.splendo.kaluga.base.utils.applyIf
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.Service
@@ -333,6 +334,7 @@ abstract class BaseScanner constructor(
                         logger.info(LOG_TAG) { "Request permission" }
                         state.request()
                     }
+
                     else -> {}
                 }
             }
@@ -434,7 +436,9 @@ abstract class BaseScanner constructor(
 
     private fun checkIfNewPairingDiscoveryShouldBeStarted(withServices: Filter): Boolean = when (isRetrievingPairedDevicesFilter) {
         withServices -> false
+
         null -> true
+
         else -> {
             retrievingPairedDevicesJob?.cancel()
             retrievingPairedDevicesJob = null
@@ -523,8 +527,8 @@ abstract class BaseScanner constructor(
         connectionEventChannel.trySend(Scanner.ConnectionEvent.DeviceConnected(identifier))
     }
 
-    internal fun handleDeviceDisconnected(identifier: Identifier) {
-        logger.debug(LOG_TAG) { "Device ${identifier.stringValue} disconnected" }
+    internal fun handleDeviceDisconnected(identifier: Identifier, message: String?) {
+        logger.debug(LOG_TAG) { "Device ${identifier.stringValue} disconnected".applyIf(!message.isNullOrEmpty()) { "$this due to $message" } }
         connectionEventChannel.trySend(Scanner.ConnectionEvent.DeviceDisconnected(identifier))
     }
 

@@ -34,6 +34,7 @@ val PhysicalQuantity.Angle.converters get() = listOf<QuantityConverter<PhysicalQ
             angleUnit is Angle && timeUnit is Time -> {
                 DefaultScientificValue(angleValue, angleUnit) / DefaultScientificValue(timeValue, timeUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $angleUnit $timeUnit")
         }
     },
@@ -46,6 +47,7 @@ val PhysicalQuantity.Angle.converters get() = listOf<QuantityConverter<PhysicalQ
             angleUnit is Angle && angularVelocityUnit is AngularVelocity -> {
                 DefaultScientificValue(angleValue, angleUnit) / DefaultScientificValue(angularVelocityValue, angularVelocityUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $angleUnit $angularVelocityUnit")
         }
     },

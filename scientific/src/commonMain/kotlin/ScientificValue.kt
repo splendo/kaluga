@@ -88,7 +88,7 @@ data class DefaultScientificValue<Quantity : PhysicalQuantity, Unit : AbstractSc
  * The [DefaultScientificValue] used to be a data class of "value" and "unit", instead of "decimalValue" and "unit".
  * This custom serializer is backwards compatible with the old serializer.
  */
-private class DefaultScientificValueSerializer<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(
+class DefaultScientificValueSerializer<Quantity : PhysicalQuantity, Unit : AbstractScientificUnit<Quantity>>(
     quantitySerializer: KSerializer<Quantity>,
     private val unitSerializer: KSerializer<Unit>,
 ) : KSerializer<DefaultScientificValue<Quantity, Unit>> {

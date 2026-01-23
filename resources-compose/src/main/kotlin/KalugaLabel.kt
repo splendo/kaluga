@@ -55,6 +55,7 @@ fun KalugaLabel.Composable(modifier: Modifier = Modifier) {
                 textAlign = style.alignment.composable,
             )
         }
+
         is KalugaLabel.Styled -> {
             // Compose does not support SpannedString and AttributedString lacks features so use legacy view
             AndroidView(

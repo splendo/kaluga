@@ -37,15 +37,19 @@ val PhysicalQuantity.Action.converters get() = listOf<QuantityConverter<Physical
             actionUnit is MetricAndImperialAction && timeUnit is Time -> {
                 DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(timeValue, timeUnit)
             }
+
             actionUnit is MetricAction && timeUnit is Time -> {
                 DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(timeValue, timeUnit)
             }
+
             actionUnit is ImperialAction && timeUnit is Time -> {
                 DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(timeValue, timeUnit)
             }
+
             actionUnit is Action && timeUnit is Time -> {
                 DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(timeValue, timeUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $actionUnit, $timeUnit")
         }
     },
@@ -58,6 +62,7 @@ val PhysicalQuantity.Action.converters get() = listOf<QuantityConverter<Physical
             actionUnit is Action && energyUnit is Energy -> {
                 DefaultScientificValue(actionValue, actionUnit) / DefaultScientificValue(energyValue, energyUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $actionUnit, $energyUnit")
         }
     },

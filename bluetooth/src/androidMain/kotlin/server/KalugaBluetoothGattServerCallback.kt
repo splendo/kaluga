@@ -192,10 +192,12 @@ internal class KalugaBluetoothGattServerCallback(private val logger: Logger, han
                 logger.info(TAG) { "Device ${device.address} connected" }
                 mtu[device.address] = DEFAULT_MTU_SIZE
             }
+
             BluetoothProfile.STATE_DISCONNECTED -> {
                 logger.info(TAG) { "Device ${device.address} disconnected" }
                 mtu.remove(device.address)
             }
+
             else -> logger.warn(TAG) { "Device ${device.address} connection changed to $newState with unexpected status $status" }
         }
     }

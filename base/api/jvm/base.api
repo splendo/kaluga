@@ -272,6 +272,10 @@ public abstract interface class com/splendo/kaluga/base/state/KalugaState {
 	public fun remain ()Lkotlin/jvm/functions/Function1;
 }
 
+public final class com/splendo/kaluga/base/state/KalugaState$DefaultImpls {
+	public static fun remain (Lcom/splendo/kaluga/base/state/KalugaState;)Lkotlin/jvm/functions/Function1;
+}
+
 public abstract interface class com/splendo/kaluga/base/state/StateFlowRepo {
 	public abstract fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
 }

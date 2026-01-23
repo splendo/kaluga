@@ -73,22 +73,14 @@ interface ConnectableDevice : Device {
      * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use when reconnecting if the device disconnects unexpectedly
      * @return `true` if connection was successful.
      */
-    suspend fun connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null): Boolean {
-        var hasStartedConnecting = false
-        return state.transform { deviceState ->
-            when (deviceState) {
-                is ConnectableDeviceState.Disconnected -> if (!hasStartedConnecting) {
-                    deviceState.startConnecting(reconnectionSettings)
-                    hasStartedConnecting = true
-                } else {
-                    emit(false)
-                }
-                is ConnectableDeviceState.Connected -> emit(true)
-                is ConnectableDeviceState.Connecting, is ConnectableDeviceState.Disconnecting -> {}
-                is NotConnectableDeviceState -> emit(false)
-            }
-        }.first()
-    }
+    suspend fun connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null): Boolean = state.transform { deviceState ->
+        when (deviceState) {
+            is ConnectableDeviceState.Disconnected -> deviceState.startConnecting(reconnectionSettings)
+            is ConnectableDeviceState.Connected -> emit(true)
+            is ConnectableDeviceState.Connecting, is ConnectableDeviceState.Disconnecting -> {}
+            is NotConnectableDeviceState -> emit(false)
+        }
+    }.first()
 
     /**
      * Notifies the device that is has connected
@@ -102,9 +94,14 @@ interface ConnectableDevice : Device {
         state.transformLatest { deviceState ->
             when (deviceState) {
                 is ConnectableDeviceState.Connected -> deviceState.startDisconnected()
+
                 is ConnectableDeviceState.Connecting -> deviceState.handleCancel()
+
                 is ConnectableDeviceState.Disconnected -> emit(Unit)
-                is ConnectableDeviceState.Disconnecting -> {} // just wait
+
+                is ConnectableDeviceState.Disconnecting -> {}
+
+                // just wait
                 is NotConnectableDeviceState -> emit(Unit)
             }
         }.first()
@@ -200,6 +197,7 @@ class ConnectableDeviceImpl(
                     is DeviceConnectionManager.Event.Connecting,
                     is DeviceConnectionManager.Event.Connected,
                     -> createDeviceStateRepoIfNotCreated()
+
                     is DeviceConnectionManager.Event.CancelledConnecting,
                     is DeviceConnectionManager.Event.Discovering,
                     is DeviceConnectionManager.Event.DiscoveredServices,
@@ -269,7 +267,9 @@ class ConnectableDeviceImpl(
 
     private suspend fun DeviceConnectionManager.Event.Connected.stateTransition(state: ConnectableDeviceState) = when (state) {
         is ConnectableDeviceState.Connecting -> state.didConnect
+
         is ConnectableDeviceState.Connected -> state.remain()
+
         else -> {
             connectionManager.getCompletedOrNull()?.reset()
             state.remain()
@@ -282,12 +282,15 @@ class ConnectableDeviceImpl(
     private suspend fun DeviceConnectionManager.Event.Disconnected.stateTransition(state: ConnectableDeviceState) = when (state) {
         is ConnectableDeviceState.Connected -> when (state.reconnectionSettings) {
             is ConnectionSettings.ReconnectionSettings.Always -> state.reconnect
+
             is ConnectionSettings.ReconnectionSettings.Never -> {
                 onDisconnect()
                 state.didDisconnect
             }
         }
+
         is ConnectableDeviceState.Disconnected -> state.remain()
+
         is ConnectableDeviceState.Connecting,
         is ConnectableDeviceState.Disconnecting,
         -> {
@@ -306,9 +309,11 @@ class ConnectableDeviceImpl(
         is ConnectableDeviceState.Connected.Idle -> {
             state.handleAction(action)
         }
+
         is ConnectableDeviceState.Connected.HandlingAction -> {
             state.addAction(action)
         }
+
         is ConnectableDeviceState.Connected.NoServices,
         is ConnectableDeviceState.Connected.Discovering,
         is ConnectableDeviceState.Connecting,
@@ -357,13 +362,16 @@ class ConnectableDeviceStateImplRepo(
                 defaultReconnectionSettings,
                 connectionManager,
             )
+
             DeviceConnectionManager.State.CONNECTING -> ConnectableDeviceStateImpl.Connecting(
                 defaultReconnectionSettings,
                 connectionManager,
             )
+
             DeviceConnectionManager.State.DISCONNECTED -> ConnectableDeviceStateImpl.Disconnected(
                 connectionManager,
             )
+
             DeviceConnectionManager.State.DISCONNECTING -> ConnectableDeviceStateImpl.Disconnecting(
                 connectionManager,
             )

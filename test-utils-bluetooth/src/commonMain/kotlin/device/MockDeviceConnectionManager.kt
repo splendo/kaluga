@@ -191,6 +191,7 @@ class MockDeviceConnectionManager(
                     if (willActionSucceed && value != null) GattResponse.ReadSuccess(value) else GattResponse.ReadNotPermitted,
                 )
             }
+
             is DeviceAction.Read.Descriptor -> {
                 val value = (action.descriptor.wrapper as MockDescriptorWrapper).value
                 debug("Mock Read: ${action.descriptor.uuid} value ${value?.toHexString()}")
@@ -199,6 +200,7 @@ class MockDeviceConnectionManager(
                     if (willActionSucceed && value != null) GattResponse.ReadSuccess(value) else GattResponse.ReadNotPermitted,
                 )
             }
+
             is DeviceAction.Write.Characteristic -> {
                 (action.characteristic.wrapper as MockCharacteristicWrapper).updateValue(
                     action.newValue,
@@ -206,6 +208,7 @@ class MockDeviceConnectionManager(
                 handleCharacteristicWritten(action.characteristic.uuid, if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
                 debug("Mock Write: ${action.characteristic.uuid} value ${action.newValue.toHexString()}")
             }
+
             is DeviceAction.Write.Descriptor -> {
                 (action.descriptor.wrapper as MockDescriptorWrapper).updateValue(
                     action.newValue,
@@ -213,6 +216,7 @@ class MockDeviceConnectionManager(
                 handleDescriptorWritten(action.descriptor.uuid, if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
                 debug("Mock Write: ${action.descriptor.uuid} value ${action.newValue.toHexString()}")
             }
+
             is DeviceAction.Notification -> action.handleNotificationStateChanged(if (willActionSucceed) GattResponse.WriteSuccess else GattResponse.WriteNotPermitted)
 
             is DeviceAction.RequestMtu -> handleNewMtu(if (willActionSucceed) GattResponse.MTUSuccess(action.mtu) else GattResponse.MTUNotPermitted(action.mtu))

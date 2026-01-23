@@ -20,6 +20,7 @@ package com.splendo.kaluga.base
 
 import android.app.Application
 import android.content.Context
+import com.splendo.kaluga.base.ApplicationHolder.applicationContext
 
 /**
  * Class holding reference to the [Application] [Context] running Kaluga

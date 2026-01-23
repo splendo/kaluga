@@ -68,10 +68,11 @@ open class KalugaRootExtension @Inject constructor(healthVersionCatalog: Version
         project.logger.lifecycle("Kaluga version for publishing: ${project.kalugaVersion}")
         listOf("mavenCentralUsername", "mavenCentralPassword", "signingInMemoryKey", "signingInMemoryKeyId", "signingInMemoryKeyPassword").forEach { property ->
             val value = project.providers.gradleProperty(property).getOrElse("missing")
-            if (value == "missing")
+            if (value == "missing") {
                 project.logger.debug("publishing: $property is not set. Publishing to Maven Central will fail.")
-            else
+            } else {
                 project.logger.info("publishing: $property is present: chars: ${value.length}, lines: ${value.lines().size}")
+            }
         }
 
         afterEvaluate {
@@ -91,6 +92,7 @@ open class KalugaRootExtension @Inject constructor(healthVersionCatalog: Version
                 scanConfigurations = listOf(configuration.name)
             }
         }
+        project.setupPublishingAfterEvaluation()
     }
 
     private fun Project.generateNonDependentProjectsFileTask() {

@@ -25,7 +25,7 @@ import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
@@ -44,7 +44,7 @@ fun <
         LeftNumeratorRightUnit,
         >,
     LeftDenominatorAndRightNumeratorLeftAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    LeftDenominatorUnit : ScientificUnit<LeftDenominatorAndRightNumeratorLeftAndRightQuantity>,
+    LeftDenominatorUnit : DefinedScientificUnit<LeftDenominatorAndRightNumeratorLeftAndRightQuantity>,
     WrappedLeftDenominatorUnit : WrappedUndefinedExtendedUnit<
         LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
         LeftDenominatorUnit,
@@ -60,12 +60,8 @@ fun <
             >,
         WrappedLeftDenominatorUnit,
         >,
-    ExtendedRightNumeratorLeftUnit : UndefinedExtendedUnit<
-        LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
-        >,
-    ExtendedRightNumeratorRightUnit : UndefinedExtendedUnit<
-        LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
-        >,
+    ExtendedRightNumeratorLeftUnit,
+    ExtendedRightNumeratorRightUnit,
     RightNumeratorUnit : UndefinedMultipliedUnit<
         UndefinedQuantityType.Extended<
             LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
@@ -131,4 +127,21 @@ fun <
         RightUnit,
         >,
     factory: (Decimal, LeftDenominatorUnit) -> LeftDenominatorValue,
-) = unit.denominator.wrapped.byMultiplying(this, right, factory)
+) where
+        ExtendedRightNumeratorLeftUnit : UndefinedExtendedUnit<
+            LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
+            >,
+        ExtendedRightNumeratorLeftUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
+                >,
+            >,
+        ExtendedRightNumeratorRightUnit : UndefinedExtendedUnit<
+            LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
+            >,
+        ExtendedRightNumeratorRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftDenominatorAndRightNumeratorLeftAndRightQuantity,
+                >,
+            > =
+    unit.denominator.wrapped.byMultiplying(this, right, factory)

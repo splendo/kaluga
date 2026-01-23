@@ -26,8 +26,8 @@ import kotlinx.cinterop.pointed
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
 import platform.AVFAudio.AVAudioEngine
-import platform.AVFAudio.AVAudioPlayerNode
 import platform.AVFAudio.AVAudioFile
+import platform.AVFAudio.AVAudioPlayerNode
 import platform.AVFAudio.AVAudioSession
 import platform.AVFAudio.AVAudioSessionCategoryPlayback
 import platform.AVFAudio.AVAudioSessionRouteChangeNotification
@@ -97,12 +97,12 @@ actual class DefaultSoundPlayer(source: MediaSource.Local, private val configura
         }
     }
 
-    private var state: State = Foreground(ForegroundMetronomeMediaPlayer())
+    private var state: State = Foreground(ForegroundSoundPlayer())
     private inline fun <reified T : State> ifState(block: T.() -> Unit) {
         (state as? T)?.block()
     }
 
-    inner class ForegroundMetronomeMediaPlayer(private val startAutomatically: Boolean = true) : SoundPlayer {
+    inner class ForegroundSoundPlayer(private val startAutomatically: Boolean = true) : SoundPlayer {
         private val node = AVAudioPlayerNode()
 
         private val audioEngine = AVAudioEngine().apply {
@@ -175,13 +175,13 @@ actual class DefaultSoundPlayer(source: MediaSource.Local, private val configura
         }
         observeNotification(UIApplicationWillEnterForegroundNotification) {
             state = state.enterForeground {
-                ForegroundMetronomeMediaPlayer()
+                ForegroundSoundPlayer()
             }
         }
 
         observeNotification(AVAudioSessionRouteChangeNotification) {
             state = state.changeRoute {
-                ForegroundMetronomeMediaPlayer(startAutomatically = configuration.restartIfRouteChanged)
+                ForegroundSoundPlayer(startAutomatically = configuration.restartIfRouteChanged)
             }
         }
     }

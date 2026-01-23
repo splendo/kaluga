@@ -24,7 +24,8 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
@@ -33,14 +34,12 @@ import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
 
 fun <
     LeftNumeratorQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    LeftNumeratorUnit : ScientificUnit<LeftNumeratorQuantity>,
+    LeftNumeratorUnit : DefinedScientificUnit<LeftNumeratorQuantity>,
     WrappedLeftNumeratorUnit : WrappedUndefinedExtendedUnit<
         LeftNumeratorQuantity,
         LeftNumeratorUnit,
         >,
-    ExtendedLeftDenominatorUnit : UndefinedExtendedUnit<
-        LeftDenominatorAndRightQuantity,
-        >,
+    ExtendedLeftDenominatorUnit,
     LeftUnit : UndefinedDividedUnit<
         UndefinedQuantityType.Extended<
             LeftNumeratorQuantity,
@@ -52,7 +51,7 @@ fun <
         ExtendedLeftDenominatorUnit,
         >,
     LeftDenominatorAndRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    RightUnit : ScientificUnit<LeftDenominatorAndRightQuantity>,
+    RightUnit : DefinedScientificUnit<LeftDenominatorAndRightQuantity>,
     LeftNumeratorValue : ScientificValue<LeftNumeratorQuantity, LeftNumeratorUnit>,
     > UndefinedScientificValue<
     UndefinedQuantityType.Dividing<
@@ -67,4 +66,13 @@ fun <
     >.multipliedByDenominator(
     right: ScientificValue<LeftDenominatorAndRightQuantity, RightUnit>,
     factory: (Decimal, LeftNumeratorUnit) -> LeftNumeratorValue,
-) = unit.numerator.wrapped.byMultiplying(this, right, factory)
+) where
+        ExtendedLeftDenominatorUnit : UndefinedExtendedUnit<
+            LeftDenominatorAndRightQuantity,
+            >,
+        ExtendedLeftDenominatorUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftDenominatorAndRightQuantity,
+                >,
+            > =
+    unit.numerator.wrapped.byMultiplying(this, right, factory)

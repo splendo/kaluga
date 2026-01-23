@@ -20,7 +20,21 @@ package com.splendo.kaluga.scientific.converter.dynamicViscosity
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.density.density
-import com.splendo.kaluga.scientific.unit.*
+import com.splendo.kaluga.scientific.unit.CubicFoot
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.DynamicViscosity
+import com.splendo.kaluga.scientific.unit.ImperialDynamicViscosity
+import com.splendo.kaluga.scientific.unit.ImperialKinematicViscosity
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.KinematicViscosity
+import com.splendo.kaluga.scientific.unit.MetricDynamicViscosity
+import com.splendo.kaluga.scientific.unit.MetricKinematicViscosity
+import com.splendo.kaluga.scientific.unit.Pound
+import com.splendo.kaluga.scientific.unit.UKImperialDynamicViscosity
+import com.splendo.kaluga.scientific.unit.USCustomaryDynamicViscosity
+import com.splendo.kaluga.scientific.unit.per
+import com.splendo.kaluga.scientific.unit.ukImperial
+import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.jvm.JvmName
 
 @JvmName("metricDynamicViscosityDivMetricKinematicViscosity")

@@ -125,9 +125,13 @@ actual class BluetoothPermissionManagerBuilder actual constructor(private val co
 
 private fun CBPeripheralManagerAuthorizationStatus.toPeripheralAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
     CBPeripheralManagerAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+
     CBPeripheralManagerAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+
     CBPeripheralManagerAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+
     CBPeripheralManagerAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+
     else -> {
         error(
             "BluetoothPermissionManager",
@@ -139,9 +143,13 @@ private fun CBPeripheralManagerAuthorizationStatus.toPeripheralAuthorizationStat
 
 private fun CBManagerAuthorization.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
     CBManagerAuthorizationAllowedAlways -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+
     CBManagerAuthorizationDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+
     CBManagerAuthorizationRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+
     CBManagerAuthorizationNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+
     else -> {
         error(
             "BluetoothPermissionManager",

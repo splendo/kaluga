@@ -242,6 +242,7 @@ class Bluetooth constructor(coroutineContext: CoroutineContext, scanningStateRep
                     shouldStartRetrievingPairing = true
                     emit(emptyList())
                 }
+
                 else -> {
                     shouldStartRetrievingPairing = true
                 }
@@ -258,8 +259,10 @@ class Bluetooth constructor(coroutineContext: CoroutineContext, scanningStateRep
                     ) { it.startScanning(scanMode.filter, scanMode.cleanMode, scanMode.connectionSettings) }
                     scanState.devices
                 }
+
                 is ScanMode.Stopped -> scanState.devices
             }
+
             is ScanningState.Enabled.Scanning -> when (scanMode) {
                 is ScanMode.Scan -> {
                     if (scanState.devices.currentScanFilter.filter == scanMode.filter) {
@@ -274,6 +277,7 @@ class Bluetooth constructor(coroutineContext: CoroutineContext, scanningStateRep
                         scanState.devices
                     }
                 }
+
                 is ScanMode.Stopped -> {
                     scanningStateRepo.takeAndChangeState(
                         remainIfStateNot = ScanningState.Enabled.Scanning::class,
@@ -281,7 +285,9 @@ class Bluetooth constructor(coroutineContext: CoroutineContext, scanningStateRep
                     scanState.devices
                 }
             }
+
             is ScanningState.Deinitialized -> scanState.previousDevices
+
             is ScanningState.NoBluetooth, is ScanningState.NoHardware, is ScanningState.Inactive, is ScanningState.Initializing -> scanState.nothingFound
         }
     }.distinctUntilChanged()
@@ -383,7 +389,9 @@ fun ConnectableDevice.filterDiscovering() = state.transformLatest { deviceState 
                     }
 
                     is ConnectableDeviceState.Connected.DiscoveredServices -> deviceState
+
                     is ConnectableDeviceState.Connected.HandlingAction -> deviceState
+
                     else -> null
                 }
             }
@@ -524,6 +532,7 @@ suspend fun ConnectableDevice.updateRssi() = state.transformLatest { deviceState
             deviceState.readRssi()
             emit(Unit)
         }
+
         else -> {}
     }
 }.first()

@@ -66,7 +66,9 @@ actual class DefaultSoundPlayer(source: MediaSource.Local, private val context: 
     @SuppressLint("DiscouragedApi")
     private fun SoundPool.load(source: MediaSource.Local): Int = when (source) {
         is MediaSource.Asset -> load(source.descriptor, 1)
+
         is MediaSource.File -> load(source.descriptor, source.offset, source.length, 1)
+
         is MediaSource.Bundle -> load(
             context,
             context.resources.getIdentifier(source.fileName, source.defType, context.packageName),

@@ -25,7 +25,7 @@ import com.splendo.kaluga.scientific.UndefinedQuantityType
 import com.splendo.kaluga.scientific.UndefinedScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
-import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
 import com.splendo.kaluga.scientific.unit.UndefinedExtendedUnit
 import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
 import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
@@ -34,12 +34,10 @@ import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
 
 fun <
     LeftAndRightRightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
-    LeftUnit : ScientificUnit<LeftAndRightRightQuantity>,
+    LeftUnit : DefinedScientificUnit<LeftAndRightRightQuantity>,
     RightLeftQuantity : UndefinedQuantityType,
     RightLeftUnit : AbstractUndefinedScientificUnit<RightLeftQuantity>,
-    ExtendedRightRightUnit : UndefinedExtendedUnit<
-        LeftAndRightRightQuantity,
-        >,
+    ExtendedRightRightUnit,
     RightUnit : UndefinedMultipliedUnit<
         RightLeftQuantity,
         RightLeftUnit,
@@ -101,8 +99,17 @@ fun <
     wrappedLeftUnitXRightLeftUnit: WrappedLeftUnit.(RightLeftUnit) -> TargetLeftUnit,
     targetLeftUnitXExtendedRightRightUnit: TargetLeftUnit.(ExtendedRightRightUnit) -> TargetUnit,
     factory: (Decimal, TargetUnit) -> TargetValue,
-) = unit.leftAsUndefined().wrappedLeftUnitXRightLeftUnit(
-    right.unit.left,
-).targetLeftUnitXExtendedRightRightUnit(
-    right.unit.right,
-).byMultiplying(this, right, factory)
+) where
+        ExtendedRightRightUnit : UndefinedExtendedUnit<
+            LeftAndRightRightQuantity,
+            >,
+        ExtendedRightRightUnit : AbstractUndefinedScientificUnit<
+            UndefinedQuantityType.Extended<
+                LeftAndRightRightQuantity,
+                >,
+            > =
+    unit.leftAsUndefined().wrappedLeftUnitXRightLeftUnit(
+        right.unit.left,
+    ).targetLeftUnitXExtendedRightRightUnit(
+        right.unit.right,
+    ).byMultiplying(this, right, factory)

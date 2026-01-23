@@ -977,6 +977,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 2732HQPVJP;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2732HQPVJP;
 				FRAMEWORK_SEARCH_PATHS = (
 					$BUILT_PRODUCTS_DIR,
 					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
@@ -995,6 +996,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Kaluga example";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Kaluga example";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1129,6 +1131,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 2732HQPVJP;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2732HQPVJP;
 				FRAMEWORK_SEARCH_PATHS = (
 					$BUILT_PRODUCTS_DIR,
 					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
@@ -1147,6 +1150,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Kaluga example";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Kaluga example";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

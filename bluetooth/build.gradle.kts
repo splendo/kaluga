@@ -4,10 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-kotlin {
-    compilerOptions.freeCompilerArgs.add("-Xwhen-guards")
-}
-
 kaluga {
     moduleName = "bluetooth"
     dependencies {
