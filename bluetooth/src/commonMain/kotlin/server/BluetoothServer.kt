@@ -235,8 +235,8 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
     private sealed class ServiceAction {
         class Add(val service: (ServerState.Available) -> LocalService, val isAdded: CompletableDeferred<LocalService?>) : ServiceAction()
 
-        class Remove(val service: LocalService, val isRemoved: CompletableDeferred<Unit>) : ServiceAction()
-        class RemoveAll(val isRemoved: CompletableDeferred<Unit>) : ServiceAction()
+        class Remove(val service: LocalService, val isRemoved: EmptyCompletableDeferred) : ServiceAction()
+        class RemoveAll(val isRemoved: EmptyCompletableDeferred) : ServiceAction()
     }
 
     private class NotifyingAction(
@@ -594,34 +594,28 @@ class BluetoothServer internal constructor(private val settings: ServerSettings,
                         throw e
                     }
 
-                    withContext(NonCancellable) {
-                        if (didAdd) {
-                            logger.warn(TAG) { "Added service ${service.uuid}" }
-                            _services.update { it + service }
-                            serviceAction.isAdded.complete(service)
-                        } else {
-                            logger.warn(TAG) { "Failed to add service ${service.uuid}" }
-                            serviceAction.isAdded.complete(null)
-                        }
+                    if (didAdd) {
+                        logger.warn(TAG) { "Added service ${service.uuid}" }
+                        _services.update { it + service }
+                        serviceAction.isAdded.complete(service)
+                    } else {
+                        logger.warn(TAG) { "Failed to add service ${service.uuid}" }
+                        serviceAction.isAdded.complete(null)
                     }
                 }
 
                 is ServiceAction.Remove -> {
-                    withContext(NonCancellable) {
-                        available.removeService(serviceAction.service)
-                        _services.update { it - serviceAction.service }
-                        disconnectAllConnectedDevices(serviceAction.service)
-                        serviceAction.isRemoved.complete()
-                    }
+                    available.removeService(serviceAction.service)
+                    _services.update { it - serviceAction.service }
+                    disconnectAllConnectedDevices(serviceAction.service)
+                    serviceAction.isRemoved.complete()
                 }
 
                 is ServiceAction.RemoveAll -> {
-                    withContext(NonCancellable) {
-                        available.removeAllServices()
-                        _services.value = emptyList()
-                        disconnectAllConnectedDevices()
-                        serviceAction.isRemoved.complete()
-                    }
+                    available.removeAllServices()
+                    _services.value = emptyList()
+                    disconnectAllConnectedDevices()
+                    serviceAction.isRemoved.complete()
                 }
             }
         }

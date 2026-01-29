@@ -270,11 +270,13 @@ open class RemoteCharacteristic internal constructor(
         subscriptions.forEach { it.onUpdate(value) }
     }
 
-    private fun unsubscribe(subscription: Subscription): DeviceAction.Notification? = if (subscriptions.remove(subscription) && subscriptions.isEmpty()) {
-        lastKnownValue = null
-        startDisableNotification()
-    } else {
-        null
+    private fun unsubscribe(subscription: Subscription): DeviceAction.Notification? = subscriptions.synchronized {
+        if (remove(subscription) && isEmpty()) {
+            lastKnownValue = null
+            startDisableNotification()
+        } else {
+            null
+        }
     }
 
     /**
@@ -440,10 +442,7 @@ sealed class CharacteristicProperty(val rawValue: Int, val encryptedValue: Int) 
 
     companion object {
 
-        /**
-         * Gets a [Set] of [CharacteristicProperty] from an [Int]
-         */
-        fun fromInt(properties: Int): Set<CharacteristicProperty> = setOf(
+        private val allProperties = setOf(
             Broadcast,
             Read,
             Write,
@@ -452,7 +451,12 @@ sealed class CharacteristicProperty(val rawValue: Int, val encryptedValue: Int) 
             Notify,
             Indicate,
             ExtendedProperties,
-        ).filter {
+        )
+
+        /**
+         * Gets a [Set] of [CharacteristicProperty] from an [Int]
+         */
+        fun fromInt(properties: Int): Set<CharacteristicProperty> = allProperties.filter {
             (properties and it.rawValue) != 0 || (properties and it.encryptedValue) != 0
         }.toSet()
     }
