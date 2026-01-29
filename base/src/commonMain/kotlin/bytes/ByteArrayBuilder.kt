@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.utils.MedFloat16
 import com.splendo.kaluga.base.utils.MedFloat32
 import com.splendo.kaluga.base.utils.UInt24
 import kotlin.experimental.or
+import kotlin.math.min
 
 /**
  * Builds a [ByteArray] from primary types
@@ -164,15 +165,23 @@ interface ByteArrayBuilder {
 /**
  * Builds a [ByteArray] using a [ByteArrayBuilder]
  * @param order the [ByteOrder] in which to add to the [ByteArray]. This is the default order in which elements will be encoded.
+ * @param expectedSize the initial size the ByteArray will use to approximate its final size.
  * @param block the building block using [ByteArrayBuilder] to build the array.
  * @return the built [ByteArray]
  */
-fun buildByteArray(order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST, block: ByteArrayBuilder.() -> Unit) = ByteArrayBuilderImpl(
+fun buildByteArray(order: ByteOrder = ByteOrder.LEAST_SIGNIFICANT_FIRST, expectedSize: Int = Long.SIZE_BYTES, block: ByteArrayBuilder.() -> Unit) = ByteArrayBuilderImpl(
+    expectedSize,
     order,
 ).apply(block).build()
 
-private class ByteArrayBuilderImpl(override val byteOrder: ByteOrder) : ByteArrayBuilder {
-    var bytes = byteArrayOf()
+private class ByteArrayBuilderImpl(expectedSize: Int, override val byteOrder: ByteOrder) : ByteArrayBuilder {
+
+    init {
+        require(expectedSize > 0) { "buildByteArray must have an expected size larger than 0" }
+    }
+    private val completedChunks = mutableListOf<ByteArray>()
+    var currentChunk = ByteArray(expectedSize)
+    var currentByteOffset = 0
     var currentByte: Byte = 0
     var currentBit = 0
 
@@ -187,59 +196,115 @@ private class ByteArrayBuilderImpl(override val byteOrder: ByteOrder) : ByteArra
     }
 
     override fun add(byte: Byte) {
-        add(byteArrayOf(byte))
+        add(
+            Byte.SIZE_BYTES,
+            generateIntoMethod = { currentChunk[it] = byte },
+            generateMethod = { byteArrayOf(byte) },
+        )
     }
 
     override fun add(short: Short, order: ByteOrder) {
-        add(short.toByteArray(order))
+        add(
+            Short.SIZE_BYTES,
+            generateIntoMethod = { short.copyIntoByteArray(currentChunk, it, order) },
+            generateMethod = { short.toByteArray(order) },
+        )
     }
 
     override fun add(int24: Int24, order: ByteOrder) {
-        add(int24.toByteArray(order))
+        add(
+            Int24.SIZE_BYTES,
+            generateIntoMethod = { int24.copyIntoByteArray(currentChunk, it, order) },
+            generateMethod = { int24.toByteArray(order) },
+        )
     }
 
     override fun add(int: Int, order: ByteOrder) {
-        add(int.toByteArray(order))
+        add(
+            Int.SIZE_BYTES,
+            generateIntoMethod = { int.copyIntoByteArray(currentChunk, it, order) },
+            generateMethod = { int.toByteArray(order) },
+        )
     }
 
     override fun add(long: Long, order: ByteOrder) {
-        add(long.toByteArray(order))
+        add(
+            Long.SIZE_BYTES,
+            generateIntoMethod = { long.copyIntoByteArray(currentChunk, it, order) },
+            generateMethod = { long.toByteArray(order) },
+        )
     }
 
     override fun add(float: Float, order: ByteOrder) {
-        add(float.toByteArray(order))
+        add(
+            Float.SIZE_BYTES,
+            generateIntoMethod = { float.copyIntoByteArray(currentChunk, it, order) },
+            generateMethod = { float.toByteArray(order) },
+        )
     }
 
     override fun add(double: Double, order: ByteOrder) {
-        add(double.toByteArray(order))
+        add(
+            Double.SIZE_BYTES,
+            generateIntoMethod = { double.copyIntoByteArray(currentChunk, it, order) },
+            generateMethod = { double.toByteArray(order) },
+        )
     }
 
     override fun add(medFloat16: MedFloat16) {
-        add(medFloat16.toByteArray())
+        add(
+            2,
+            generateIntoMethod = { medFloat16.copyIntoByteArray(currentChunk, it) },
+            generateMethod = { medFloat16.toByteArray() },
+        )
     }
 
     override fun add(medFloat32: MedFloat32) {
-        add(medFloat32.toByteArray())
+        add(
+            4,
+            generateIntoMethod = { medFloat32.copyIntoByteArray(currentChunk, it) },
+            generateMethod = { medFloat32.toByteArray() },
+        )
     }
 
     override fun add(uByte: UByte) {
-        add(uByte.toByteArray())
+        add(
+            UByte.SIZE_BYTES,
+            generateIntoMethod = { currentChunk[it] = uByte.toByte() },
+            generateMethod = { uByte.toByteArray() },
+        )
     }
 
     override fun add(uShort: UShort, order: ByteOrder) {
-        add(uShort.toByteArray(order))
+        add(
+            UShort.SIZE_BYTES,
+            generateIntoMethod = { uShort.copyIntoByteArray(currentChunk, it, order) },
+            generateMethod = { uShort.toByteArray(order) },
+        )
     }
 
     override fun add(uInt: UInt, order: ByteOrder) {
-        add(uInt.toByteArray(order))
+        add(
+            UInt.SIZE_BYTES,
+            generateIntoMethod = { uInt.copyIntoByteArray(currentChunk, it, order) },
+            generateMethod = { uInt.toByteArray(order) },
+        )
     }
 
     override fun add(uLong: ULong, order: ByteOrder) {
-        add(uLong.toByteArray(order))
+        add(
+            ULong.SIZE_BYTES,
+            generateIntoMethod = { uLong.copyIntoByteArray(currentChunk, it, order) },
+            generateMethod = { uLong.toByteArray(order) },
+        )
     }
 
     override fun add(uInt24: UInt24, order: ByteOrder) {
-        add(uInt24.toByteArray(order))
+        add(
+            UInt24.SIZE_BYTES,
+            generateIntoMethod = { uInt24.copyIntoByteArray(currentChunk, it, order) },
+            generateMethod = { uInt24.toByteArray(order) },
+        )
     }
 
     override fun add(string: String, settings: StringEncodingSettings, order: ByteOrder) {
@@ -247,32 +312,131 @@ private class ByteArrayBuilderImpl(override val byteOrder: ByteOrder) : ByteArra
     }
 
     override fun add(char: Char, encoding: Encoding, order: ByteOrder) {
-        add(char.toString(), StringEncodingSettings(StringEncodingSettings.NoMarking, encoding), order)
+        add(
+            encoding.byteSize,
+            generateIntoMethod = { encoding.copyCharIntoByteArray(char, currentChunk, it, order) },
+            generateMethod = { encoding.encodeChar(char, order) },
+        )
     }
 
     override fun add(bytes: ByteArray) {
+        add(
+            bytes.size,
+            generateIntoMethod = { bytes.copyInto(currentChunk, it) },
+            generateMethod = { bytes },
+        )
+    }
+
+    private inline fun add(expectedSize: Int, generateIntoMethod: (Int) -> Unit, generateMethod: () -> ByteArray) {
         if (currentBit > 0) {
             addCurrentByte()
         }
-        when (byteOrder) {
-            ByteOrder.MOST_SIGNIFICANT_FIRST -> this.bytes = bytes + this.bytes
-            ByteOrder.LEAST_SIGNIFICANT_FIRST -> this.bytes += bytes
+
+        val remaining = currentChunk.size - currentByteOffset
+        when {
+            expectedSize in 1..remaining -> {
+                generateIntoMethod(
+                    when (byteOrder) {
+                        ByteOrder.MOST_SIGNIFICANT_FIRST -> remaining - expectedSize
+                        ByteOrder.LEAST_SIGNIFICANT_FIRST -> currentByteOffset
+                    },
+                )
+                currentByteOffset += expectedSize
+            }
+
+            else -> {
+                val fullSegment = generateMethod()
+                val splitIndex = min(fullSegment.size, remaining)
+                when (byteOrder) {
+                    ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
+                        fullSegment.copyInto(currentChunk, currentByteOffset, 0, splitIndex)
+                        currentByteOffset += splitIndex
+                        if (splitIndex < fullSegment.size) {
+                            completedChunks.add(currentChunk)
+                            completedChunks.add(fullSegment.copyInto(ByteArray(fullSegment.size - splitIndex), 0, splitIndex))
+                            currentChunk = ByteArray(currentChunk.size * 2)
+                            currentByteOffset = 0
+                        }
+                    }
+
+                    ByteOrder.MOST_SIGNIFICANT_FIRST -> {
+                        fullSegment.copyInto(currentChunk, remaining - splitIndex, fullSegment.size - splitIndex)
+                        currentByteOffset += splitIndex
+                        if (splitIndex < fullSegment.size) {
+                            completedChunks.add(currentChunk)
+                            completedChunks.add(fullSegment.copyInto(ByteArray(fullSegment.size - splitIndex), endIndex = fullSegment.size - splitIndex))
+                            currentChunk = ByteArray(currentChunk.size * 2)
+                            currentByteOffset = 0
+                        }
+                    }
+                }
+            }
         }
+        checkChunkCompleted()
     }
 
     private fun addCurrentByte() {
         when (byteOrder) {
-            ByteOrder.MOST_SIGNIFICANT_FIRST -> this.bytes = byteArrayOf(currentByte) + this.bytes
-            ByteOrder.LEAST_SIGNIFICANT_FIRST -> this.bytes += currentByte
+            ByteOrder.MOST_SIGNIFICANT_FIRST -> currentChunk[currentChunk.size - currentByteOffset - 1] = currentByte
+            ByteOrder.LEAST_SIGNIFICANT_FIRST -> currentChunk[currentByteOffset] = currentByte
         }
+        currentByteOffset++
         currentByte = 0
         currentBit = 0
+        checkChunkCompleted()
+    }
+
+    private fun checkChunkCompleted() {
+        if (currentByteOffset == currentChunk.size) {
+            completedChunks.add(currentChunk)
+            currentChunk = ByteArray(currentChunk.size * 2)
+            currentByteOffset = 0
+        }
     }
 
     fun build(): ByteArray {
         if (currentBit > 0) {
             addCurrentByte()
         }
-        return bytes
+
+        return if (completedChunks.isEmpty()) {
+            if (currentByteOffset == 0) {
+                byteArrayOf()
+            } else {
+                when (byteOrder) {
+                    ByteOrder.MOST_SIGNIFICANT_FIRST -> currentChunk.sliceArray(currentChunk.size - currentByteOffset..<currentChunk.size)
+                    ByteOrder.LEAST_SIGNIFICANT_FIRST -> currentChunk.sliceArray(0..<currentByteOffset)
+                }
+            }
+        } else {
+            val totalSize = completedChunks.sumOf { it.size } + currentByteOffset
+            val bytes = ByteArray(totalSize)
+            val lastChunkOffset = completedChunks.fold(0) { sumOfOffset, chunk ->
+                when (byteOrder) {
+                    ByteOrder.MOST_SIGNIFICANT_FIRST -> {
+                        chunk.copyInto(bytes, totalSize - sumOfOffset - chunk.size)
+                    }
+
+                    ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
+                        chunk.copyInto(bytes, sumOfOffset)
+                    }
+                }
+                sumOfOffset + chunk.size
+            }
+
+            if (currentByteOffset > 0) {
+                when (byteOrder) {
+                    ByteOrder.MOST_SIGNIFICANT_FIRST -> {
+                        currentChunk.copyInto(bytes, startIndex = currentChunk.size - currentByteOffset)
+                    }
+
+                    ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
+                        currentChunk.copyInto(bytes, lastChunkOffset, endIndex = currentByteOffset)
+                    }
+                }
+            }
+
+            bytes
+        }
     }
 }

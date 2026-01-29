@@ -93,14 +93,15 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
         }
     }
 
-    fun registerWriteAction(characteristic: LocalCharacteristic, onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse) = lock.withLock {
-        val identifier = characteristic.wrapper.characteristic
-        if (writeActions.contains(identifier)) {
-            logger.warn(TAG) { "Write action for $identifier was already set. Ignoring" }
-        } else {
-            writeActions[identifier] = { device, offset, value -> characteristic.onWrite(device, offset, value) }
+    fun registerWriteAction(characteristic: LocalCharacteristic, onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse) =
+        lock.withLock {
+            val identifier = characteristic.wrapper.characteristic
+            if (writeActions.contains(identifier)) {
+                logger.warn(TAG) { "Write action for $identifier was already set. Ignoring" }
+            } else {
+                writeActions[identifier] = { device, offset, value -> characteristic.onWrite(device, offset, value) }
+            }
         }
-    }
 
     fun registerSubscriptionActions(characteristic: LocalCharacteristic.Notifiable) = lock.withLock {
         val identifier = characteristic.wrapper.characteristic

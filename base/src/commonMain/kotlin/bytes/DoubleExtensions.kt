@@ -34,3 +34,13 @@ fun ByteArray.decodeDouble(octetIndex: Int, byteOrder: ByteOrder): Double = Doub
  * @return [ByteArray] representing the [Double]
  */
 fun Double.toByteArray(byteOrder: ByteOrder) = toRawBits().toByteArray(byteOrder)
+
+/**
+ * Encodes this [Double] and copies it into a [ByteArray] at a given offset.
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @param byteOrder the [ByteOrder] in which the [Double] is encoded
+ * @throws IllegalArgumentException if [array] is not  is not large enough to hold 8 bytes at the [offset].
+ * @return the encoded [ByteArray].
+ */
+fun Double.copyIntoByteArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray = toRawBits().copyIntoByteArray(array, offset, byteOrder)

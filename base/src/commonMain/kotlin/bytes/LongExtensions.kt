@@ -23,8 +23,22 @@ fun ByteArray.decodeLong(octetIndex: Int, byteOrder: ByteOrder): Long {
  * @param byteOrder the [ByteOrder] in which the [Long] is encoded
  * @return the encoded [ByteArray].
  */
-fun Long.toByteArray(byteOrder: ByteOrder) = ByteArray(Long.SIZE_BYTES) {
-    (this shr byteOrder.shift(it, Long.SIZE_BITS)).toByte()
+fun Long.toByteArray(byteOrder: ByteOrder) = copyIntoByteArray(ByteArray(Long.SIZE_BYTES), byteOrder = byteOrder)
+
+/**
+ * Encodes this [Long] and copies it into a [ByteArray] at a given offset.
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @param byteOrder the [ByteOrder] in which the [Long] is encoded
+ * @throws IllegalArgumentException if [array] is not  is not large enough to hold 8 bytes at the [offset].
+ * @return the encoded [ByteArray].
+ */
+fun Long.copyIntoByteArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray {
+    require(array.size >= offset + Long.SIZE_BYTES) { "Cannot copy into ByteArray. Must be at least ${offset + Long.SIZE_BYTES} long" }
+    for (index in 0..<Long.SIZE_BYTES) {
+        array[offset + index] = (this shr byteOrder.shift(index, Long.SIZE_BITS)).toByte()
+    }
+    return array
 }
 
 /**
