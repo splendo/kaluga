@@ -42,6 +42,7 @@ internal data class BluetoothBinaryDescriptor(
     val bitWidth: Int,
     val byteOrder: ByteOrder,
     val isNullable: Boolean,
+    val expectedSize: Int,
     val numericSettings: NumericSettings?,
     val stringSettings: StringSettings?,
     val collectionSettings: CollectionSettings?,
@@ -240,6 +241,7 @@ internal object BluetoothBinaryDescriptorRegistry {
 
         // Nullable elements will have a flag bit. This is always the first bit of the flags for this object
         val isNullable = isNullable || (descriptor.kind in setOf(StructureKind.LIST, StructureKind.MAP) && annotations.filterIsInstance<NullIfEmpty>().isNotEmpty())
+        val expectedSize = annotations.filterIsInstance<ExpectedSize>().firstOrNull()?.size ?: Long.SIZE_BYTES
         if (isNullable) {
             desiredFlagBitWidth.raise(1)
         }
@@ -278,6 +280,7 @@ internal object BluetoothBinaryDescriptorRegistry {
             width,
             byteOrder,
             isNullable,
+            expectedSize,
             numericSettings,
             stringSettings,
             collectionSettings,

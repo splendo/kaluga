@@ -187,7 +187,7 @@ internal class StructureBluetoothBinaryDescriptorDecoder(
                 // Get the subset from startingOffset to currentOffset so we know the part decoded by this structure
                 val body = rootDecoder.subArrayFrom(startingOffset)
                 // Use the body to compute the checksum. Must be
-                val checksum = buildByteArray(descriptor.byteOrder) {
+                val checksum = buildByteArray(descriptor.byteOrder, maxOf(crc.byteWidth, 8)) {
                     add(nextBytes(crc.byteWidth))
                     // Zero pad so we can decode as ULong
                     if (crc.byteWidth < 8) {

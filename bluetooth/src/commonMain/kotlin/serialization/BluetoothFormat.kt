@@ -117,7 +117,7 @@ sealed class BluetoothFormat(private val validateChecksum: Boolean, override val
                 isOfUnconstrainedSize = true
             }
 
-            override fun build(): ByteArray = buildByteArray(flag.byteOrder) {
+            override fun build(): ByteArray = buildByteArray(flag.byteOrder, flag.expectedSize) {
                 flags.forEach { add(it) }
                 actions.forEach { apply(it) }
             }

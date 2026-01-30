@@ -55,15 +55,23 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
      * An [EndMarking] where the length of the String is encoded as a prefix.
      */
     sealed class LengthPrefix : EndMarking() {
-        abstract fun encodeSize(size: UInt, order: ByteOrder): ByteArray
+
+        abstract fun expectedByteSize(size: UInt): Int
+        fun encodeSize(size: UInt, order: ByteOrder): ByteArray = copyEncodedSizeInto(ByteArray(expectedByteSize(size)), size, order, 0)
+        abstract fun copyEncodedSizeInto(array: ByteArray, size: UInt, order: ByteOrder, offset: Int): ByteArray
 
         /**
          * A [LengthPrefix] where the size is always encoded as a single [UByte]
          */
         data object ByteLength : LengthPrefix() {
-            override fun encodeSize(size: UInt, order: ByteOrder): ByteArray {
+
+            override fun expectedByteSize(size: UInt): Int = Byte.SIZE_BYTES
+
+            override fun copyEncodedSizeInto(array: ByteArray, size: UInt, order: ByteOrder, offset: Int): ByteArray {
                 require(size <= UByte.MAX_VALUE) { "Size $size is too large to encode as byte" }
-                return byteArrayOf(size.toUByte().toByte())
+                require(array.size >= offset + Byte.SIZE_BYTES) { "Cannot copy into ByteArray. Must be at least ${offset + Byte.SIZE_BYTES} long" }
+                array[offset] = size.toUByte().toByte()
+                return array
             }
         }
 
@@ -71,12 +79,11 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
          * A [LengthPrefix] where the size is always encoded as an [UShort]
          */
         data object ShortLength : LengthPrefix() {
-            override fun encodeSize(size: UInt, order: ByteOrder): ByteArray {
+            override fun expectedByteSize(size: UInt): Int = UShort.SIZE_BYTES
+
+            override fun copyEncodedSizeInto(array: ByteArray, size: UInt, order: ByteOrder, offset: Int): ByteArray {
                 require(size <= UShort.MAX_VALUE) { "Size $size is too large to encode as short" }
-                return when (order) {
-                    ByteOrder.MOST_SIGNIFICANT_FIRST -> size.toUShort().toByteArray(order)
-                    ByteOrder.LEAST_SIGNIFICANT_FIRST -> size.toUShort().toByteArray(order)
-                }
+                return size.toUShort().copyIntoByteArray(array, offset, order)
             }
         }
 
@@ -85,12 +92,18 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
          * @property sentinel the sentinel to indicate length was encoded as a short
          */
         data class WithOverflow(val sentinel: Byte = 0xFF.toByte()) : LengthPrefix() {
-            override fun encodeSize(size: UInt, order: ByteOrder): ByteArray = when {
-                size <= UByte.MAX_VALUE.toUInt() -> ByteLength.encodeSize(size, order)
 
-                else -> buildByteArray(order) {
-                    add(sentinel)
-                    add(ShortLength.encodeSize(size, order))
+            override fun expectedByteSize(size: UInt): Int = when {
+                size <= UByte.MAX_VALUE.toUInt() -> Byte.SIZE_BYTES
+                else -> Byte.SIZE_BYTES + UShort.SIZE_BYTES
+            }
+
+            override fun copyEncodedSizeInto(array: ByteArray, size: UInt, order: ByteOrder, offset: Int): ByteArray = when {
+                size <= UByte.MAX_VALUE.toUInt() -> ByteLength.copyEncodedSizeInto(array, size, order, offset)
+                else -> {
+                    require(array.size >= offset + Byte.SIZE_BYTES + 1) { "Cannot copy into ByteArray. Must be at least ${offset + Byte.SIZE_BYTES + 1} long" }
+                    array[offset] = sentinel
+                    ShortLength.copyEncodedSizeInto(array, size, order, offset + 1)
                 }
             }
         }
@@ -126,19 +139,26 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
 fun String.toByteArray(settings: StringEncodingSettings, order: ByteOrder): ByteArray = when (val endMarking = settings.endMarking) {
     is StringEncodingSettings.LengthPrefix -> {
         val encodedString = settings.encoding.encodeString(this, order)
-        val encodedSize = endMarking.encodeSize((encodedString.size / settings.encoding.byteSize).toUInt(), order)
+        val size = (encodedString.size / settings.encoding.byteSize).toUInt()
+        val byteArray = ByteArray(encodedString.size + endMarking.expectedByteSize(size))
         when (order) {
-            ByteOrder.MOST_SIGNIFICANT_FIRST -> encodedString + encodedSize
-            ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedSize + encodedString
+            ByteOrder.MOST_SIGNIFICANT_FIRST -> {
+                encodedString.copyInto(byteArray)
+                endMarking.copyEncodedSizeInto(byteArray, size, order, encodedString.size - 1)
+            }
+            ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
+                endMarking.copyEncodedSizeInto(byteArray, size, order, 0)
+                encodedString.copyInto(byteArray, endMarking.expectedByteSize(size))
+            }
         }
     }
 
     is StringEncodingSettings.NullTerminated -> {
         require(!contains('\u0000')) { "Null terminated string cannot contain null character" }
         val encodedString = settings.encoding.encodeString(this, order)
-        when (order) {
-            ByteOrder.MOST_SIGNIFICANT_FIRST -> byteArrayOf(0x00.toByte()) + encodedString
-            ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedString + 0x00.toByte()
+        buildByteArray(order, expectedSize = encodedString.size + 1) {
+            add(encodedString)
+            add(0x00.toByte())
         }
     }
 
@@ -146,18 +166,19 @@ fun String.toByteArray(settings: StringEncodingSettings, order: ByteOrder): Byte
 
     is StringEncodingSettings.FixedLength -> {
         val encodedString = settings.encoding.encodeString(this, order)
+        val array = ByteArray(settings.encoding.byteSize * endMarking.length)
         if (encodedString.size < settings.encoding.byteSize * endMarking.length) {
-            val extraBytes = ByteArray(settings.encoding.byteSize * endMarking.length - encodedString.size)
             when (order) {
-                ByteOrder.MOST_SIGNIFICANT_FIRST -> extraBytes + encodedString
-                ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedString + extraBytes
+                ByteOrder.MOST_SIGNIFICANT_FIRST -> encodedString.copyInto(array, encodedString.size)
+                ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedString.copyInto(array)
             }
         } else {
             when (order) {
-                ByteOrder.MOST_SIGNIFICANT_FIRST -> encodedString.takeLast(settings.encoding.byteSize * endMarking.length).toByteArray()
-                ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedString.take(settings.encoding.byteSize * endMarking.length).toByteArray()
+                ByteOrder.MOST_SIGNIFICANT_FIRST -> encodedString.copyInto(array, startIndex = encodedString.size - settings.encoding.byteSize * endMarking.length)
+                ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedString.copyInto(array, endIndex = settings.encoding.byteSize * endMarking.length)
             }
         }
+        array
     }
 }
 

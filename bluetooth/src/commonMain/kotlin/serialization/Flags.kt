@@ -243,3 +243,8 @@ annotation class Checksum(val width: Int, val polynomial: ULong, val init: ULong
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
 annotation class SerializedByteValue(val value: Byte)
+
+@OptIn(ExperimentalSerializationApi::class)
+@SerialInfo
+@Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
+annotation class ExpectedSize(val size: Int)

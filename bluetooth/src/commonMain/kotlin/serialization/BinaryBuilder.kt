@@ -67,7 +67,7 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
 
     override fun build(): ByteArray {
         // The body is the flag bits + remaining body. This is also the part used for checksum verification
-        val body = buildByteArray(binaryDescriptor.byteOrder) {
+        val body = buildByteArray(binaryDescriptor.byteOrder, binaryDescriptor.expectedSize) {
             flagBits.forEach {
                 add(it)
             }
@@ -84,7 +84,7 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
         } ?: byteArrayOf()
 
         // Full data consists of prefix + body + checksum + postfix
-        return buildByteArray(binaryDescriptor.byteOrder) {
+        return buildByteArray(binaryDescriptor.byteOrder, binaryDescriptor.expectedSize) {
             binaryDescriptor.structureSettings.prefix?.let {
                 add(it.array)
             }
