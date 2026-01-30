@@ -43,7 +43,7 @@ interface BluetoothTest {
     interface Nested
 
     @Advertising
-    val testService: TestService
+    val testService: TestService?
 }
 
 @BluetoothService("abcd")

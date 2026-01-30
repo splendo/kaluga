@@ -28,11 +28,13 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_SERVICE
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
+import com.splendo.kaluga.bluetooth.ksp.helpers.OR_NULL
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.SERVICE
 import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LIST
@@ -112,10 +114,30 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
                     )
                     .returns(className)
                     .addStatement(
-                        "return %T($DISCOVERED_SERVICES.%M(%T.$UUID)${needsFormatter.functionArgument})",
+                        "$RETURN %T($DISCOVERED_SERVICES.%M(%T.$UUID)${needsFormatter.functionArgument})",
                         className,
                         References.Bluetooth.get,
                         interfaceName,
+                    )
+                    .build(),
+            )
+            .addFunction(
+                FunSpec.builder("$FROM_DISCOVERED_SERVICES$OR_NULL")
+                    .addParameters(
+                        listOfNotNull(
+                            ParameterSpec(DISCOVERED_SERVICES, LIST.parameterizedBy(References.Bluetooth.remoteService)),
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
+                        ),
+                    )
+                    .returns(className.copy(nullable = true))
+                    .addCode(
+                        CodeBlock.builder()
+                            .beginControlFlow("$RETURN $DISCOVERED_SERVICES.%M(%T.$UUID)?.let",
+                                References.Bluetooth.getOrNull,
+                                interfaceName)
+                            .addStatement("%T(it${needsFormatter.functionArgument})", className)
+                            .endControlFlow()
+                            .build()
                     )
                     .build(),
             )

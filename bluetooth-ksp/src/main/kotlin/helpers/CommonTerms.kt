@@ -48,6 +48,7 @@ const val ON_SUBSCRIBE = "onSubscribeTo"
 const val ON_UNSUBSCRIBE = "onUnsubscribeTo"
 const val SUBSCRIBERS = "Subscribers"
 const val ACTION = "Action"
+const val OR_NULL = "OrNull"
 
 const val NOTIFY = "notify"
 const val NOTIFY_ALL = "notifyAll"
@@ -65,6 +66,9 @@ const val COROUTINE_CONTEXT = "coroutineContext"
 const val IS_CLOSED = "isClosed"
 
 val KSDeclaration.delegateParameterName: String get() = "${simpleName.asString().replaceFirstChar { it.lowercase() }}$DELEGATE"
+
+val KSPropertyDeclaration.orNullIfNullable: String get() = if (type.resolve().isMarkedNullable) OR_NULL else ""
+
 
 val KSPropertyDeclaration.onReadMethodName: String get() = "$ON_READ${simpleName.asString().replaceFirstChar { it.uppercase() }}"
 val KSPropertyDeclaration.onWriteMethodName: String get() = "$ON_WRITE${simpleName.asString().replaceFirstChar { it.uppercase() }}"

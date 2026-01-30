@@ -41,6 +41,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.isReadable
 import com.splendo.kaluga.bluetooth.ksp.helpers.onReadMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.onWriteMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
@@ -86,30 +87,12 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                             ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
                         ),
 
-                    )
+                        )
                     .build(),
             )
             .addSuperinterface(interfaceName)
             .addType(
-                TypeSpec.companionObjectBuilder()
-                    .addFunction(
-                        FunSpec.builder(FROM_CHARACTERISTIC)
-                            .addParameters(
-                                listOfNotNull(
-                                    ParameterSpec(CHARACTERISTIC, References.Bluetooth.remoteCharacteristic),
-                                    ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
-                                ),
-                            )
-                            .returns(className)
-                            .addStatement(
-                                "$RETURN %T($CHARACTERISTIC.descriptors.%M(%T.$UUID)${needsFormatter.functionArgument})",
-                                className,
-                                References.Bluetooth.get,
-                                interfaceName,
-                            )
-                            .build(),
-                    )
-                    .build(),
+                generateBluetoothCompanionObject(needsFormatter, className, interfaceName),
             )
             .addProperties(
                 listOfNotNull(
@@ -124,6 +107,28 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
             .generateBody(declarations, GenerationType.Type.BLUETOOTH)
             .build()
     }
+
+    private fun generateBluetoothCompanionObject(needsFormatter: NeedsFormatterHelper.NeedsFormatter, className: ClassName, interfaceName: ClassName): TypeSpec =
+        TypeSpec.companionObjectBuilder()
+            .addFunction(
+                FunSpec.builder(FROM_CHARACTERISTIC)
+                    .addParameters(
+                        listOfNotNull(
+                            ParameterSpec(CHARACTERISTIC, References.Bluetooth.remoteCharacteristic),
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
+                        ),
+                    )
+                    .returns(className)
+                    .addStatement(
+                        "$RETURN %T($CHARACTERISTIC.descriptors.%M(%T.$UUID)${needsFormatter.functionArgument})",
+                        className,
+                        References.Bluetooth.get,
+                        interfaceName,
+                    )
+                    .build(),
+            )
+            .build()
+
 
     override fun generateSimulated(nested: List<TypeSpec>): TypeSpec {
         val className = NameHelper.nameFor(declaration, GenerationType.CLIENT_SIMULATOR)

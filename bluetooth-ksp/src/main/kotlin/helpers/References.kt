@@ -81,6 +81,7 @@ object References {
         val uuid = className("UUID")
 
         val get = memberName("get")
+        val getOrNull = memberName("getOrNull")
         val uuidFrom = memberName("uuidFrom")
         val value = memberName("value")
         val discoveredServices = memberName("discoveredServices")
