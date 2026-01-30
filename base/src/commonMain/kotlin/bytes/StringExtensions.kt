@@ -27,16 +27,21 @@ import com.splendo.kaluga.base.bytes.Encoding.UTF_8
  * @param byteOrder the [ByteOrder] to use.
  */
 fun Encoding.encodeString(string: String, byteOrder: ByteOrder) = when (this) {
-    UTF_8 -> string.encodeToByteArray().let {
-        when (byteOrder) {
-            ByteOrder.MOST_SIGNIFICANT_FIRST -> it.reversedArray()
-            ByteOrder.LEAST_SIGNIFICANT_FIRST -> it
-        }
-    }
-
+    UTF_8 -> string.toUTF8(byteOrder)
     UTF_16 -> string.toUTF16(byteOrder)
-
     ASCII -> string.toAscii(byteOrder)
+}
+
+fun Encoding.copyEncodedStringIntoArray(string: String, array: ByteArray, offset: Int = 0, byteOrder: ByteOrder) = when (this) {
+    UTF_8 -> string.copyUTF8IntoArray(array, offset, byteOrder)
+    UTF_16 -> string.copyUTF16IntoArray(array, offset, byteOrder)
+    ASCII -> string.copyAsciiIntoArray(array, offset, byteOrder)
+}
+
+fun Encoding.byteSizeOf(string: String): Int = when (this) {
+    UTF_8 -> string.utf8Size
+    UTF_16 -> string.utf16Size
+    ASCII -> string.asciiSize
 }
 
 /**
@@ -100,10 +105,21 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
 
             override fun copyEncodedSizeInto(array: ByteArray, size: UInt, order: ByteOrder, offset: Int): ByteArray = when {
                 size <= UByte.MAX_VALUE.toUInt() -> ByteLength.copyEncodedSizeInto(array, size, order, offset)
+
                 else -> {
                     require(array.size >= offset + Byte.SIZE_BYTES + 1) { "Cannot copy into ByteArray. Must be at least ${offset + Byte.SIZE_BYTES + 1} long" }
-                    array[offset] = sentinel
-                    ShortLength.copyEncodedSizeInto(array, size, order, offset + 1)
+                    when (order) {
+                        ByteOrder.MOST_SIGNIFICANT_FIRST -> {
+                            ShortLength.copyEncodedSizeInto(array, size, order, offset)
+                            array[offset + 2] = sentinel
+                        }
+
+                        ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
+                            array[offset] = sentinel
+                            ShortLength.copyEncodedSizeInto(array, size, order, offset + 1)
+                        }
+                    }
+                    array
                 }
             }
         }
@@ -128,6 +144,22 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
     data class FixedLength(val length: Int) : EndMarking()
 }
 
+fun String.byteArraySize(settings: StringEncodingSettings): Int {
+    val stringSize = settings.encoding.byteSizeOf(this)
+    return when (val endMarking = settings.endMarking) {
+        is StringEncodingSettings.LengthPrefix -> {
+            val lengthSize = endMarking.expectedByteSize((stringSize / settings.encoding.byteSize).toUInt())
+            stringSize + lengthSize
+        }
+
+        is StringEncodingSettings.NullTerminated -> stringSize + 1
+
+        is StringEncodingSettings.NoMarking -> stringSize
+
+        is StringEncodingSettings.FixedLength -> settings.encoding.byteSize * endMarking.length
+    }
+}
+
 /**
  * Encodes a [String] to a [ByteArray] using the given [StringEncodingSettings] and [ByteOrder].
  * @param settings the [StringEncodingSettings] to apply to the encoding.
@@ -136,84 +168,172 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
  * or if the length of the string cannot be encoded by [StringEncodingSettings.LengthPrefix]
  * @return The encoded [ByteArray]
  */
-fun String.toByteArray(settings: StringEncodingSettings, order: ByteOrder): ByteArray = when (val endMarking = settings.endMarking) {
-    is StringEncodingSettings.LengthPrefix -> {
-        val encodedString = settings.encoding.encodeString(this, order)
-        val size = (encodedString.size / settings.encoding.byteSize).toUInt()
-        val byteArray = ByteArray(encodedString.size + endMarking.expectedByteSize(size))
-        when (order) {
-            ByteOrder.MOST_SIGNIFICANT_FIRST -> {
-                encodedString.copyInto(byteArray)
-                endMarking.copyEncodedSizeInto(byteArray, size, order, encodedString.size - 1)
-            }
-            ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
-                endMarking.copyEncodedSizeInto(byteArray, size, order, 0)
-                encodedString.copyInto(byteArray, endMarking.expectedByteSize(size))
-            }
-        }
-    }
-
-    is StringEncodingSettings.NullTerminated -> {
-        require(!contains('\u0000')) { "Null terminated string cannot contain null character" }
-        val encodedString = settings.encoding.encodeString(this, order)
-        buildByteArray(order, expectedSize = encodedString.size + 1) {
-            add(encodedString)
-            add(0x00.toByte())
-        }
-    }
-
-    is StringEncodingSettings.NoMarking -> settings.encoding.encodeString(this, order)
-
-    is StringEncodingSettings.FixedLength -> {
-        val encodedString = settings.encoding.encodeString(this, order)
-        val array = ByteArray(settings.encoding.byteSize * endMarking.length)
-        if (encodedString.size < settings.encoding.byteSize * endMarking.length) {
+fun String.toByteArray(settings: StringEncodingSettings, order: ByteOrder): ByteArray = copyIntoArray(ByteArray(byteArraySize(settings)), settings, order = order)
+fun String.copyIntoArray(array: ByteArray, settings: StringEncodingSettings, offset: Int = 0, order: ByteOrder): ByteArray {
+    val totalSize = byteArraySize(settings)
+    val stringSize = settings.encoding.byteSizeOf(this)
+    require(array.size >= offset + totalSize) { "Cannot copy into ByteArray. Must be at least ${offset + totalSize} long" }
+    return when (val endMarking = settings.endMarking) {
+        is StringEncodingSettings.LengthPrefix -> {
+            val size = (stringSize / settings.encoding.byteSize).toUInt()
             when (order) {
-                ByteOrder.MOST_SIGNIFICANT_FIRST -> encodedString.copyInto(array, encodedString.size)
-                ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedString.copyInto(array)
-            }
-        } else {
-            when (order) {
-                ByteOrder.MOST_SIGNIFICANT_FIRST -> encodedString.copyInto(array, startIndex = encodedString.size - settings.encoding.byteSize * endMarking.length)
-                ByteOrder.LEAST_SIGNIFICANT_FIRST -> encodedString.copyInto(array, endIndex = settings.encoding.byteSize * endMarking.length)
+                ByteOrder.MOST_SIGNIFICANT_FIRST -> {
+                    settings.encoding.copyEncodedStringIntoArray(this, array, offset, order)
+                    endMarking.copyEncodedSizeInto(array, size, order, offset + stringSize)
+                }
+
+                ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
+                    endMarking.copyEncodedSizeInto(array, size, order, offset)
+                    settings.encoding.copyEncodedStringIntoArray(this, array, offset + endMarking.expectedByteSize(size), order)
+                }
             }
         }
-        array
+
+        is StringEncodingSettings.NullTerminated -> {
+            require(!contains('\u0000')) { "Null terminated string cannot contain null character" }
+            when (order) {
+                ByteOrder.MOST_SIGNIFICANT_FIRST -> {
+                    array[offset] = 0x00.toByte()
+                    settings.encoding.copyEncodedStringIntoArray(this, array, offset + 1, order)
+                }
+
+                ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
+                    settings.encoding.copyEncodedStringIntoArray(this, array, offset, order)
+                    array[offset + stringSize] = 0x00.toByte()
+                    array
+                }
+            }
+        }
+
+        is StringEncodingSettings.NoMarking -> settings.encoding.copyEncodedStringIntoArray(this, array, offset, order)
+
+        is StringEncodingSettings.FixedLength -> {
+            if (stringSize < totalSize) {
+                when (order) {
+                    ByteOrder.MOST_SIGNIFICANT_FIRST -> settings.encoding.copyEncodedStringIntoArray(this, array, offset + (totalSize - stringSize), order)
+                    ByteOrder.LEAST_SIGNIFICANT_FIRST -> settings.encoding.copyEncodedStringIntoArray(this, array, offset, order)
+                }
+            } else {
+                settings.encoding.copyEncodedStringIntoArray(take(endMarking.length), array, offset, order)
+            }
+            array
+        }
     }
 }
 
-fun String.toUTF16(byteOrder: ByteOrder): ByteArray {
-    val byteLength = this.length * 2
-    val result = ByteArray(byteLength)
+val String.utf8Size: Int get() {
+    var size = 0
+    var i = 0
+    while (i < length) {
+        val c = this[i]
+        when {
+            c.code < 0x80 -> size += 1
+
+            c.code < 0x800 -> size += 2
+
+            c.isHighSurrogate() -> {
+                size += 4
+                i++ // skip low surrogate
+            }
+
+            else -> size += 3
+        }
+        i++
+    }
+    return size
+}
+
+fun String.toUTF8(byteOrder: ByteOrder): ByteArray = copyUTF8IntoArray(ByteArray(utf8Size), byteOrder = byteOrder)
+
+fun String.copyUTF8IntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray {
+    val size = utf8Size
+    require(array.size >= offset + size) { "Cannot copy into ByteArray. Must be at least ${offset + size} long" }
+    var pos = 0
+    val writeByte = when (byteOrder) {
+        ByteOrder.MOST_SIGNIFICANT_FIRST -> {
+            { byte: Byte ->
+                array[offset + size - pos++ - 1] = byte
+            }
+        }
+
+        ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
+            { byte: Byte -> array[offset + pos++] = byte }
+        }
+    }
+    var i = 0
+
+    while (i < length) {
+        val c = this[i].code
+        when {
+            c < 0x80 -> {
+                writeByte(c.toByte())
+            }
+
+            c < 0x800 -> {
+                writeByte((0xC0 or (c shr 6)).toByte())
+                writeByte((0x80 or (c and 0x3F)).toByte())
+            }
+
+            c in 0xD800..0xDBFF -> { // high surrogate
+                val low = this[++i].code
+                val codePoint =
+                    ((c - 0xD800) shl 10) + (low - 0xDC00) + 0x10000
+                writeByte((0xF0 or (codePoint shr 18)).toByte())
+                writeByte((0x80 or ((codePoint shr 12) and 0x3F)).toByte())
+                writeByte((0x80 or ((codePoint shr 6) and 0x3F)).toByte())
+                writeByte((0x80 or (codePoint and 0x3F)).toByte())
+            }
+
+            else -> {
+                writeByte((0xE0 or (c shr 12)).toByte())
+                writeByte((0x80 or ((c shr 6) and 0x3F)).toByte())
+                writeByte((0x80 or (c and 0x3F)).toByte())
+            }
+        }
+        i++
+    }
+    return array
+}
+
+val String.utf16Size: Int get() = length * 2
+fun String.toUTF16(byteOrder: ByteOrder): ByteArray = copyUTF16IntoArray(ByteArray(utf16Size), byteOrder = byteOrder)
+
+fun String.copyUTF16IntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray {
+    val byteLength = utf16Size
+    require(array.size >= offset + byteLength) { "Cannot copy into ByteArray. Must be at least ${offset + byteLength} long" }
 
     forEachIndexed { index, character ->
         val utf16Char = character.toUTF16(byteOrder)
         when (byteOrder) {
             ByteOrder.MOST_SIGNIFICANT_FIRST -> {
-                result[byteLength - index * 2 - 1] = utf16Char[1]
-                result[byteLength - index * 2 - 2] = utf16Char[0]
+                array[offset + byteLength - index * 2 - 1] = utf16Char[1]
+                array[offset + byteLength - index * 2 - 2] = utf16Char[0]
             }
 
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
-                result[index * 2] = utf16Char[0]
-                result[index * 2 + 1] = utf16Char[1]
+                array[offset + index * 2] = utf16Char[0]
+                array[offset + index * 2 + 1] = utf16Char[1]
             }
         }
     }
-    return result
+    return array
 }
 
-fun String.toAscii(byteOrder: ByteOrder): ByteArray {
-    val result = ByteArray(this.length)
+val String.asciiSize: Int get() = length
+fun String.toAscii(byteOrder: ByteOrder): ByteArray = copyAsciiIntoArray(ByteArray(asciiSize), byteOrder = byteOrder)
+
+fun String.copyAsciiIntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray {
+    val byteLength = asciiSize
+    require(array.size >= offset + byteLength) { "Cannot copy into ByteArray. Must be at least ${offset + byteLength} long" }
     forEachIndexed { index, character ->
         val index = when (byteOrder) {
             ByteOrder.MOST_SIGNIFICANT_FIRST -> length - index - 1
             ByteOrder.LEAST_SIGNIFICANT_FIRST -> index
         }
 
-        result[index] = character.toAscii()
+        array[offset + index] = character.toAscii()
     }
-    return result
+    return array
 }
 
 fun String.toAsciiOrNull(byteOrder: ByteOrder): ByteArray? = try {
