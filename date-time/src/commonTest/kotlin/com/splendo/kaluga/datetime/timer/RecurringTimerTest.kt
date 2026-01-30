@@ -17,9 +17,9 @@
 package com.splendo.kaluga.datetime.timer
 
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.test.base.assertEmits
 import com.splendo.kaluga.test.base.captureFor
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -168,7 +168,7 @@ class RecurringTimerTest {
 
     /** Validates requested delays. */
     private class PredefinedDelayHandler(val delays: List<Duration>) {
-        private val timerFinish = CompletableDeferred<Unit>()
+        private val timerFinish = EmptyCompletableDeferred()
         private var index = -1 // -1 to capture overall timer finish delay
 
         suspend fun delay(delay: Duration) {

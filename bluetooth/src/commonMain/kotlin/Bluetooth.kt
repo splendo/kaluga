@@ -34,6 +34,7 @@ import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
+import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
 import com.splendo.kaluga.bluetooth.server.BluetoothServer
 import com.splendo.kaluga.bluetooth.server.BluetoothServerDSL
 import com.splendo.kaluga.bluetooth.server.ServerSettings
@@ -63,6 +64,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.serializer
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.seconds
 
@@ -335,6 +338,13 @@ interface BaseBluetoothBuilder {
         coroutineContext: CoroutineContext = defaultBluetoothClientDispatcher,
     ): Bluetooth
 
+    /**
+     * Creates a [BluetoothServer]
+     * @param settingsBuilder a method for getting the [ServerSettings] to be used while scanning from a [CoroutineContext]
+     * @param coroutineContext the [CoroutineContext] in which Bluetooth runs
+     * @param specs the [BluetoothServerDSL] to build the [BluetoothServer] from
+     * @return the created [BluetoothServer]
+     */
     suspend fun createServer(
         settingsBuilder: (Permissions) -> ServerSettings = { ServerSettings(permissions = it) },
         coroutineContext: CoroutineContext = defaultBluetoothServerDispatcher,
@@ -377,6 +387,11 @@ internal fun Flow<ConnectableDevice?>.startDiscovering(): Flow<ConnectableDevice
     device?.filterDiscovering() ?: flowOf(null)
 }
 
+/**
+ * Gets a ([Flow] of) [ConnectableDeviceState.Connected.DiscoveredServices] from a [ConnectableDevice]
+ * This will automatically start discovering services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
+ * @return the [Flow] of [ConnectableDeviceState.Connected.DiscoveredServices] associated with the [ConnectableDevice]. Only emits once services are discovered.
+ */
 fun ConnectableDevice.filterDiscovering() = state.transformLatest { deviceState ->
     emit(
         when (deviceState) {
@@ -409,14 +424,31 @@ fun Flow<ConnectableDevice?>.services(): Flow<List<RemoteService>> = flatMapLate
     device?.services() ?: flowOf(emptyList())
 }.distinctUntilChanged()
 
+/**
+ * Gets a ([Flow] of) the list of [Service] associated with the [ConnectableDevice]
+ * This will automatically discover services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
+ * @return the [Flow] of the list of [Service] associated with the [ConnectableDevice]. This may emit an empty list if discovery hasn't completed yet.
+ */
 fun ConnectableDevice.services() = filterDiscovering().map { discoveredState ->
     discoveredState?.services.orEmpty()
 }
 
+/**
+ * Gets a ([Flow] of) the list of [Service] associated with the [ConnectableDevice] in a [Flow]
+ * This will automatically discover services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
+ * This differs from [services] in that the resulting flow will only emit once services are discovered.
+ * @return the [Flow] of the list of [Service] associated with the [ConnectableDevice] in a [Flow].
+ */
 fun Flow<ConnectableDevice?>.discoveredServices(): Flow<List<RemoteService>> = flatMapLatest { device ->
     device?.discoveredServices() ?: emptyFlow()
 }
 
+/**
+ * Gets a ([Flow] of) the list of [Service] associated with the [ConnectableDevice]
+ * This will automatically discover services if the device is in a [ConnectableDeviceState.Connected.NoServices] state.
+ * This differs from [services] in that the resulting flow will only emit once services are discovered.
+ * @return the [Flow] of the list of [Service] associated with the [ConnectableDevice].
+ */
 fun ConnectableDevice.discoveredServices() = filterDiscovering().mapNotNull { discoveredState ->
     discoveredState?.services
 }.distinctUntilChanged()
@@ -481,6 +513,10 @@ fun Flow<ConnectableDevice?>.mtu() = flatMapLatest { device ->
     device?.mtu() ?: flowOf(null)
 }.distinctUntilChanged()
 
+/**
+ * Gets the ([Flow] of) the [MTU] from a [ConnectableDevice]
+ * @return the [Flow] of [MTU] associated with the [ConnectableDevice]
+ */
 fun ConnectableDevice.mtu() = state.map { state ->
     if (state is ConnectableDeviceState.Connected.MtuHolder) {
         state.mtu
@@ -500,6 +536,13 @@ fun Flow<ConnectableDevice?>.distance(environmentalFactor: Double = 2.0, average
     device?.distance(environmentalFactor, averageOver) ?: flowOf(Double.NaN)
 }
 
+/**
+ * Gets the ([Flow] of) the distance in meters between the scanner and a [ConnectableDevice].
+ * To get a more stable result, this method will average the distance over the last [averageOver] results.
+ * @param environmentalFactor the constant to account for environmental interference. Should usually range between 2.0 and 4.0
+ * @param averageOver averages the calculated distance over this amount of scan results. Always uses the last results.
+ * @return the [Flow] of distance in meters between the scanner and the [ConnectableDevice]
+ */
 fun ConnectableDevice.distance(environmentalFactor: Double = 2.0, averageOver: Int = 5): Flow<Double> {
     val lastNResults = mutableListOf<Double>()
     return info.map { deviceInfo ->
@@ -525,6 +568,10 @@ suspend fun Flow<ConnectableDevice?>.updateRssi() = transformLatest { device ->
     }
 }.first()
 
+/**
+ * Attempts to request an update to the RSSI of the [ConnectableDevice] from a [ConnectableDevice]
+ * When this method completes, the devices should have had [ConnectableDeviceState.Connected.readRssi] called
+ */
 suspend fun ConnectableDevice.updateRssi() = state.transformLatest { deviceState ->
     when (deviceState) {
         is ConnectableDeviceState.Connected -> {
@@ -546,6 +593,10 @@ suspend fun Flow<ConnectableDevice?>.requestMtu(mtu: MTU) = transformLatest { de
     }
 }.first()
 
+/**
+ * Attempts to request a [MTU] size for the [ConnectableDevice] from a [ConnectableDevice]
+ * @param mtu the [MTU] size to request
+ */
 suspend fun ConnectableDevice.requestMtu(mtu: MTU) = state
     .filterIsInstance<ConnectableDeviceState.Connected.MtuHolder>()
     .first().requestMtu(mtu)
@@ -555,6 +606,11 @@ suspend fun ConnectableDevice.requestMtu(mtu: MTU) = state
  * @return the [Flow] of the list of [RemoteCharacteristic] associated with the [RemoteService] in the given [Flow]
  */
 fun Flow<RemoteService?>.characteristics(): Flow<List<RemoteCharacteristic>> = mapLatest { service -> service?.characteristics ?: emptyList() }.distinctUntilChanged()
+
+/**
+ * Gets a ([Flow] of) the list [RemoteService] that are included with the [RemoteService] in a [Flow]
+ * @return the [Flow] of the list of [RemoteService] included in with the [RemoteService] in the given [Flow]
+ */
 fun Flow<RemoteService?>.includedServices(): Flow<List<RemoteService>> = mapLatest { service -> service?.includedServices ?: emptyList() }.distinctUntilChanged()
 
 /**
@@ -572,16 +628,65 @@ fun Flow<RemoteCharacteristic?>.value(): Flow<ByteArray> = distinctUntilChanged(
     characteristic?.value() ?: emptyFlow()
 }
 
+/**
+ * Gets a ([Flow] of) [T] value from a [Flow] of an [RemoteCharacteristic]
+ * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
+ * @param T the type of the data to receive
+ * @param deserializationStrategy the [DeserializationStrategy] to use to deserialize the [ByteArray] to [T]
+ * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @return the [Flow] of the [T] value of the [RemoteCharacteristic] in the given [Flow]
+ */
+fun <T> Flow<RemoteCharacteristic?>.value(deserializationStrategy: DeserializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat): Flow<T> =
+    distinctUntilChanged().flatMapLatest { characteristic ->
+        characteristic?.value(deserializationStrategy, bluetoothFormat) ?: emptyFlow()
+    }
+
+/**
+ * Gets a ([Flow] of) [T] value from a [Flow] of an [RemoteCharacteristic]
+ * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
+ * @param T the type of the data to receive
+ * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @return the [Flow] of the [T] value of the [RemoteCharacteristic] in the given [Flow]
+ */
+inline fun <reified T> Flow<RemoteCharacteristic?>.value(bluetoothFormat: BluetoothFormat = BluetoothFormat): Flow<T> =
+    value(bluetoothFormat.serializersModule.serializer(), bluetoothFormat)
+
+/**
+ * Gets a ([Flow] of) the [ByteArray] value from a [RemoteCharacteristic]
+ * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
+ * @return the [Flow] of the [ByteArray] value of the [RemoteCharacteristic]
+ */
 fun RemoteCharacteristic.value(): Flow<ByteArray> = flow {
     val valueChannel = Channel<ByteArray>(Channel.UNLIMITED)
-    val subscription = subscribe {
+    val subscriptionResponse = subscribe {
         valueChannel.trySend(it)
     }
-    try {
-        emitAll(valueChannel)
-    } finally {
-        withContext(NonCancellable) {
-            subscription.unsubscribe()
+    subscriptionResponse.subscription?.let { subscription ->
+        try {
+            emitAll(valueChannel)
+        } finally {
+            subscription.startUnsubscribe()
         }
     }
 }
+
+/**
+ * Gets a ([Flow] of) [T] value from a [RemoteCharacteristic]
+ * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
+ * @param T the type of the data to receive
+ * @param deserializationStrategy the [DeserializationStrategy] to use to deserialize the [ByteArray] to [T]
+ * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @return the [Flow] of the [T] value of the [RemoteCharacteristic]
+ */
+fun <T> RemoteCharacteristic.value(deserializationStrategy: DeserializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat): Flow<T> = value().map { value ->
+    bluetoothFormat.decodeFromByteArray(deserializationStrategy, value)
+}
+
+/**
+ * Gets a ([Flow] of) [T] value from a [RemoteCharacteristic]
+ * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
+ * @param T the type of the data to receive
+ * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @return the [Flow] of the [T] value of the [RemoteCharacteristic]
+ */
+inline fun <reified T> RemoteCharacteristic.value(bluetoothFormat: BluetoothFormat = BluetoothFormat) = value(bluetoothFormat.serializer<T>(), bluetoothFormat)

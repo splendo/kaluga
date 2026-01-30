@@ -72,7 +72,7 @@ internal val scanningDispatcher: CoroutineDispatcher by lazy {
 }
 
 /**
- * Scans for Bluetooth [com.splendo.kaluga.bluetooth.device.Device]
+ * Scans for Bluetooth [com.splendo.kaluga.bluetooth.device.ConnectableDevice]
  */
 interface Scanner {
 

@@ -25,9 +25,6 @@ import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.text.format
-import com.splendo.kaluga.base.utils.ByteOrder
-import com.splendo.kaluga.base.utils.decodeUShort
-import com.splendo.kaluga.base.utils.isBitSet
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.device.ConnectableDevice
 import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
@@ -35,8 +32,11 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.NotConnectableDeviceState
 import com.splendo.kaluga.bluetooth.device.SerializableIdentifier
 import com.splendo.kaluga.bluetooth.device.bind
+import com.splendo.kaluga.bluetooth.device.observe
 import com.splendo.kaluga.bluetooth.device.serializable
 import com.splendo.kaluga.bluetooth.device.stringValue
+import com.splendo.kaluga.bluetooth.device.triggerRead
+import com.splendo.kaluga.bluetooth.device.triggerWrite
 import com.splendo.kaluga.bluetooth.disconnect
 import com.splendo.kaluga.bluetooth.distance
 import com.splendo.kaluga.bluetooth.get
@@ -125,42 +125,37 @@ class BluetoothDeviceViewModel(identifier: Identifier, navigator: Navigator<Clos
             bind(device, coroutineScope) {
                 service(BluetoothSpec.HeartRateService.UUID) {
                     characteristic(BluetoothSpec.HeartRateService.HEART_RATE_MEASUREMENT_CHARACTERISTIC) {
-                        observe {
-                            onNotification { measurementValue ->
-                                val valueEncodedAsShort = measurementValue.isBitSet(0)
-                                heartRateState.value = if (valueEncodedAsShort) {
-                                    measurementValue.decodeUShort(1, ByteOrder.LEAST_SIGNIFICANT_FIRST).toInt()
-                                } else {
-                                    measurementValue[1].toUByte().toInt()
-                                }(BeatsPerMinute)
+                        observe<BluetoothSpec.HeartRate, HeartRateViewModel> {
+                            onNotification { heartRate ->
+                                heartRateState.value = (heartRate.heartRate)(BeatsPerMinute)
 
-                                isPositionVisibleState.value = measurementValue.isBitSet(1)
-                                energyExpendedState.value = if (measurementValue.isBitSet(3)) {
-                                    measurementValue.decodeUShort(if (valueEncodedAsShort) 3 else 2, ByteOrder.LEAST_SIGNIFICANT_FIRST).toDouble()
-                                } else {
-                                    Double.NaN
-                                }(Kilojoule)
+                                isPositionVisibleState.value = heartRate.contactDetected
+                                energyExpendedState.value = (heartRate.energyExpended?.toDouble() ?: Double.NaN)(Kilojoule)
                             }
                         }
                     }
                     characteristic(BluetoothSpec.HeartRateService.SENSOR_LOCATION_CHARACTERISTIC) {
-                        requestPositionUpdate.collectToTriggerRead<BluetoothSpec.SensorLocation?>({ BluetoothSpec.SensorLocation.from(first()) }) {
-                            onRead { value ->
-                                positionState.value = value
-                            }
-                            onFailedToRead { error ->
-                                warn { "Failed to read Sensor Location. Reason $error" }
-                                positionState.value = null
+                        requestPositionUpdate.collectTo {
+                            triggerRead<BluetoothSpec.SensorLocation, HeartRateViewModel> {
+                                onRead { value ->
+                                    positionState.value = value
+                                }
+                                onFailedToRead { error ->
+                                    warn { "Failed to read Sensor Location. Reason $error" }
+                                    positionState.value = null
+                                }
                             }
                         }
                     }
                     characteristic(BluetoothSpec.HeartRateService.HEART_RATE_CONTROL_POINT_CHARACTERISTIC) {
-                        requestReset.collectToTriggerWrite(asByte = { byteArrayOf(0x01) }) {
-                            onWrite {
-                                debug { "Did Write Heart Rate Control Point" }
-                            }
-                            onFailedToWrite { _, error ->
-                                warn { "Failed to write Heart Rate Control Point. Reason $error" }
+                        requestReset.collectTo {
+                            triggerWrite(mapper = { BluetoothSpec.ResetEnergyCommand }) {
+                                onWrite {
+                                    debug { "Did Write Heart Rate Control Point" }
+                                }
+                                onFailedToWrite { _, error ->
+                                    warn { "Failed to write Heart Rate Control Point. Reason $error" }
+                                }
                             }
                         }
                     }

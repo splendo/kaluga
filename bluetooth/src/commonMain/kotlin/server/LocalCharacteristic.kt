@@ -18,12 +18,16 @@
 package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
+import com.splendo.kaluga.bluetooth.serialization.ByteArrayEndedBeforeSerializationCompleted
 import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Notifiable
+import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Permission
 import com.splendo.kaluga.bluetooth.server.LocalCharacteristic.Static
 import com.splendo.kaluga.bluetooth.uuidFrom
 import kotlinx.coroutines.CompletableDeferred
@@ -45,27 +49,144 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.SerializationStrategy
 
 internal typealias Notify = suspend (characteristic: Notifiable, device: ConnectedDevice, value: ByteArray) -> Boolean
 internal typealias BuildDescriptor = (
     uuid: UUID,
 ) -> LocalDescriptorDSL?
 
+/**
+ * A [Characteristic] available from a [BluetoothServer]
+ * @property wrapper the [LocalCharacteristicWrapper] to access the platform characteristic
+ */
 sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, override val service: LocalService) : Characteristic {
 
+    /**
+     * DSL for setting up a [LocalCharacteristic]
+     */
     interface DSL {
+
+        /**
+         * Makes this [LocalCharacteristic] readable by a [ConnectedDevice]
+         * Cannot be called if [readable], or [readableAlwaysSuccess] has been called before
+         * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.READ_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.READABLE]
+         * @param onRead the function to call when reading from the characteristic.
+         * This contains the [ConnectedDevice] and the offset of the data to read and should return a [GattResponse.ReadResponse]
+         */
         fun readable(encrypted: Boolean = false, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse)
+
+        /**
+         * Makes this [LocalCharacteristic] readable by a [ConnectedDevice] to always return [GattResponse.ReadSuccess]
+         * Cannot be called if [readable], or [readableAlwaysSuccess] has been called before
+         * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.READ_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.READABLE]
+         * @param onRead the function to call when reading from the characteristic.
+         * This contains the [ConnectedDevice] and the offset of the data to read and should return the [ByteArray] being read.
+         */
         fun readableAlwaysSuccess(encrypted: Boolean = false, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> ByteArray) {
             readable(encrypted) { device, offset ->
                 GattResponse.ReadSuccess(onRead(this, device, offset))
             }
         }
+
+        /**
+         * Makes this [LocalCharacteristic] readable by a [ConnectedDevice] to always return [GattResponse.ReadSuccess]
+         * Cannot be called if [readable], or [readableAlwaysSuccess] has been called before
+         * @param T the type of the data being read
+         * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.READ_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.READABLE]
+         * @param serializationStrategy the [SerializationStrategy] to use to encode the [T] to a [ByteArray]
+         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
+         * @param onRead the function to call when reading from the characteristic.
+         * This contains the [ConnectedDevice] and the offset of the data to read and should return the [T] being read.
+         */
+        fun <T> readableAlwaysSuccess(
+            encrypted: Boolean = false,
+            serializationStrategy: SerializationStrategy<T>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            onRead: suspend LocalCharacteristic.(ConnectedDevice) -> T,
+        ) {
+            readable(encrypted) { device, offset ->
+                GattResponse.ReadSuccess(onRead(device), offset, serializationStrategy, bluetoothFormat)
+            }
+        }
+
+        /**
+         * Makes this [LocalCharacteristic] writable by a [ConnectedDevice]
+         * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
+         * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
+         * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.WRITABLE]
+         * @param onWrite the function to call when reading from the characteristic.
+         * This contains the [ConnectedDevice], the [ByteArray] to write and the offset of the data to write and should return a [GattResponse.WriteResponse]
+         */
         fun writable(
             properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
             encrypted: Boolean = false,
             onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse,
         )
 
+        /**
+         * Makes this [LocalCharacteristic] writable by a [ConnectedDevice]
+         * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
+         * @param T the type of the data being written
+         * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
+         * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.WRITABLE]
+         * @param deserializationStrategy the [DeserializationStrategy] to use to decode the [ByteArray] being written to an instance of [T]
+         * @param onFailedToWrite the function to call when writing to the characteristic fails.
+         * This contains the [ConnectedDevice] and the exception that caused deserialization to fail and should return a [GattResponse.WriteResponse]
+         * @param onWrite the function to call when reading from the characteristic.
+         * This contains the [ConnectedDevice], and the [T] to write and should return a [GattResponse.WriteResponse].
+         * If the data being written is split over multiple offsets, this will only be called when the data can be fully deserialized
+         */
+        fun <T> writable(
+            properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
+            encrypted: Boolean = false,
+            deserializationStrategy: DeserializationStrategy<T>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            onFailedToWrite: suspend LocalCharacteristic.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
+            onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> GattResponse.WriteResponse,
+        ) {
+            val cache = mutableMapOf<ConnectedDevice, ByteArray>()
+            writable(properties, encrypted) { device, value, offset ->
+                val currentCache = cache.remove(device) ?: byteArrayOf()
+                val valueToDeserialize = when (offset) {
+                    0 -> {
+                        value
+                    }
+
+                    currentCache.size -> {
+                        currentCache + value
+                    }
+
+                    else -> null
+                }
+                valueToDeserialize?.let {
+                    try {
+                        onWrite(device, bluetoothFormat.decodeFromByteArray(deserializationStrategy, it))
+                    } catch (_: ByteArrayEndedBeforeSerializationCompleted) {
+                        cache[device] = valueToDeserialize
+                        GattResponse.WriteSuccess
+                    } catch (e: Exception) {
+                        onFailedToWrite(device, e)
+                    }
+                } ?: GattResponse.InvalidOffset
+            }
+        }
+
+        /**
+         * Makes this [LocalCharacteristic] writable by a [ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+         * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
+         * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
+         * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.WRITABLE]
+         * @param onWrite the function to call when reading from the characteristic.
+         * This contains the [ConnectedDevice], the [ByteArray] to write and the offset of the data to write
+         */
         fun writableAlwaysSuccess(
             properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
             encrypted: Boolean = false,
@@ -77,6 +198,43 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             }
         }
 
+        /**
+         * Makes this [LocalCharacteristic] writable by a [ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+         * Cannot be called if [writable] or [writableAlwaysSuccess] has been called before
+         * @param T the type of the data being written
+         * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
+         * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
+         * Otherwise will add [Permission.WRITABLE]
+         * @param deserializationStrategy the [DeserializationStrategy] to use to decode the [ByteArray] being written to an instance of [T]
+         * @param onWrite the function to call when reading from the characteristic.
+         * This contains the [ConnectedDevice], and the [T] to write.
+         * If the data being written is split over multiple offsets, this will only be called when the data can be fully deserialized
+         */
+        fun <T> writableAlwaysSuccess(
+            properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
+            encrypted: Boolean = false,
+            deserializationStrategy: DeserializationStrategy<T>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> Unit,
+        ) = writable(
+            properties,
+            encrypted,
+            deserializationStrategy,
+            bluetoothFormat,
+            { _, _ -> GattResponse.WriteSuccess },
+        ) { device, value ->
+            onWrite(device, value)
+            GattResponse.WriteSuccess
+        }
+
+        /**
+         * Makes this [LocalCharacteristic] a [LocalCharacteristic.Notifiable]
+         * This method can only be called once.
+         * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
+         * @param encrypted `true` if subscribing to the characteristic should be encrypted.
+         * @param onSubscribe the function to call when subscribing to the characteristic. This contains the [ConnectedDevice] that subscribed
+         * @param onUnsubscribe the function to call when unsubscribing from the characteristic. This contains the [ConnectedDevice] that unsubscribed
+         */
         fun notifiable(
             properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
             encrypted: Boolean = false,
@@ -84,42 +242,102 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             onUnsubscribe: Notifiable.(ConnectedDevice) -> Unit,
         )
 
+        /**
+         * Adds a [LocalDescriptor] to the characteristic being built
+         * This is not supported on iOS and will be ignored there.
+         * @param uuid the [UUID] of the [LocalDescriptor] to add
+         * @param descriptor the [LocalDescriptor.DSL] to use to set up the [LocalDescriptor]
+         */
         fun descriptor(uuid: UUID, descriptor: LocalDescriptor.DSL.() -> Unit)
+
+        /**
+         * Adds a [LocalDescriptor] to the characteristic being built
+         * This is not supported on iOS and will be ignored there.
+         * @param uuidString string of the [UUID] of the [LocalDescriptor] to add
+         * @param descriptor the [LocalDescriptor.DSL] to use to set up the [LocalDescriptor]
+         * @throws com.splendo.kaluga.bluetooth.UUIDException if [uuidString] is not a valid [UUID]
+         */
         fun descriptor(uuidString: String, descriptor: LocalDescriptor.DSL.() -> Unit) {
             descriptor(uuidFrom(uuidString), descriptor)
         }
 
-        fun <T> Flow<T>.collectAsNotification(
-            scope: CoroutineScope,
-            started: SharingStarted,
-            replay: Int = 0,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-            toByteArray: T.() -> ByteArray,
+        /**
+         * Sets up notification to notify all [ConnectedDevice] of changes to this [LocalCharacteristic] whenever a [Trigger] fires
+         * @param [Trigger] the type of the Trigger that will cause the notification.
+         */
+        class NotificationDSL<Trigger> internal constructor(
+            val dsl: DSL,
+            val onSubscribe: Notifiable.(ConnectedDevice, (Trigger.() -> ByteArray)) -> Unit,
+            val onUnsubscribe: Notifiable.(ConnectedDevice) -> Unit,
         ) {
-            val sharedFlow = shareIn(scope, started, replay)
-            sharedFlow.collectAsNotification(scope, properties, encrypted, toByteArray)
+            /**
+             * Makes this [LocalCharacteristic] a [LocalCharacteristic.Notifiable]
+             * and automatically sends a [ByteArray] notification upon [Trigger]
+             * This method can only be called once.
+             * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
+             * @param encrypted `true` if subscribing to the characteristic should be encrypted.
+             * @param toByteArray method to convert the [Trigger] to a [ByteArray]
+             */
+            fun triggerNotification(
+                properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+                encrypted: Boolean = false,
+                toByteArray: Trigger.() -> ByteArray,
+            ) {
+                dsl.notifiable(
+                    properties,
+                    encrypted,
+                    onSubscribe = { device ->
+                        onSubscribe(device, toByteArray)
+                    },
+                    onUnsubscribe = onUnsubscribe,
+                )
+            }
+
+            /**
+             * Makes this [LocalCharacteristic] a [LocalCharacteristic.Notifiable]
+             * and automatically sends a [ByteArray] notification upon [Trigger]
+             * This method can only be called once.
+             * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
+             * @param encrypted `true` if subscribing to the characteristic should be encrypted.
+             * @param serializationStrategy the [SerializationStrategy] to use to encode the [Trigger] to a [ByteArray]
+             * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Trigger] to a [ByteArray]
+             */
+            fun triggerNotification(
+                properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+                encrypted: Boolean = false,
+                serializationStrategy: SerializationStrategy<Trigger>,
+                bluetoothFormat: BluetoothFormat = BluetoothFormat,
+            ) = triggerNotification(properties, encrypted) {
+                bluetoothFormat.encodeToByteArray(serializationStrategy, this)
+            }
         }
 
-        fun Flow<ByteArray>.collectAsNotification(
-            scope: CoroutineScope,
-            started: SharingStarted,
-            replay: Int = 0,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-        ) = collectAsNotification(scope, started, replay, properties, encrypted, { this })
+        /**
+         * Collects a [Flow] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
+         * Results in a call to [notifiable] that may only be called once
+         * @param T the type of the data being collected
+         * @param scope the [CoroutineScope] to use to collect the [Flow]
+         * @param started the [SharingStarted] to use to collect the [Flow]
+         * @param replay the number of values to replay to new subscribers
+         * @param notification the [NotificationDSL] to use to set up notification
+         */
+        fun <T> Flow<T>.collectTo(scope: CoroutineScope, started: SharingStarted, replay: Int = 0, notification: NotificationDSL<T>.() -> Unit) {
+            val sharedFlow = shareIn(scope, started, replay)
+            sharedFlow.collectTo(scope, notification)
+        }
 
-        fun <T> SharedFlow<T>.collectAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-            toByteArray: T.() -> ByteArray,
-        ) {
+        /**
+         * Collects a [SharedFlow] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
+         * Results in a call to [notifiable] that may only be called once
+         * @param T the type of the data being collected
+         * @param scope the [CoroutineScope] to use to collect the [Flow]
+         * @param notification the [NotificationDSL] to use to set up notification
+         */
+        fun <T> SharedFlow<T>.collectTo(scope: CoroutineScope, notification: NotificationDSL<T>.() -> Unit) {
             val observingJobs = concurrentMutableMapOf<ConnectedDevice, Job>()
-            notifiable(
-                properties,
-                encrypted,
-                onSubscribe = { device ->
+            NotificationDSL(
+                this@DSL,
+                onSubscribe = { device, toByteArray ->
                     observingJobs[device] = scope.launch {
                         map { it.toByteArray() }.collect { value ->
                             notify(device, value)
@@ -129,30 +347,25 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
                 onUnsubscribe = { device ->
                     observingJobs.remove(device)?.cancel()
                 },
-            )
+            ).apply(notification)
         }
 
-        fun SharedFlow<ByteArray>.collectAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-        ) = collectAsNotification(scope, properties, encrypted, { this })
-
-        fun <T> StateFlow<T>.collectAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-            toByteArray: T.() -> ByteArray,
-        ) {
-            val hasStarted = CompletableDeferred<Unit>()
-            notifiable(
-                properties,
-                encrypted,
-                onSubscribe = { device ->
+        /**
+         * Collects a [StateFlow] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
+         * Results in a call to [notifiable] that may only be called once
+         * @param T the type of the data being collected
+         * @param scope the [CoroutineScope] to use to collect the [Flow]
+         * @param notification the [NotificationDSL] to use to set up notification
+         */
+        fun <T> StateFlow<T>.collectTo(scope: CoroutineScope, notification: NotificationDSL<T>.() -> Unit) {
+            val hasStarted = EmptyCompletableDeferred()
+            NotificationDSL(
+                this@DSL,
+                onSubscribe = { device, toByteArray ->
                     // We only know the Characteristic on first subscription, so this is the point at which to collect the state flow
                     if (hasStarted.complete(Unit)) {
                         scope.launch {
-                            map { it.toByteArray() }.collect(this@notifiable)
+                            map { it.toByteArray() }.collect(this@NotificationDSL)
                         }
                     } else {
                         // If scope already launched, then the subscription will have missed the initial value. So report it immediately
@@ -162,26 +375,21 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
                     }
                 },
                 onUnsubscribe = {},
-            )
+            ).apply(notification)
         }
 
-        fun StateFlow<ByteArray>.collectAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-        ) = collectAsNotification(scope, properties, encrypted, { this })
-
-        fun <T> ReceiveChannel<T>.consumeAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-            toByteArray: T.() -> ByteArray,
-        ) {
-            val hasStarted = CompletableDeferred<Unit>()
-            notifiable(
-                properties,
-                encrypted,
-                onSubscribe = { device ->
+        /**
+         * Consumes a [ReceiveChannel] of [T] and notifies any subscribed [ConnectedDevice] of any changes.
+         * Results in a call to [notifiable] that may only be called once
+         * @param T the type of the data being collected
+         * @param scope the [CoroutineScope] to use to collect the [Flow]
+         * @param notification the [NotificationDSL] to use to set up notification
+         */
+        fun <T> ReceiveChannel<T>.consumeTo(scope: CoroutineScope, notification: NotificationDSL<T>.() -> Unit) {
+            val hasStarted = EmptyCompletableDeferred()
+            NotificationDSL(
+                this@DSL,
+                onSubscribe = { device, toByteArray ->
                     // We only know the Characteristic on first subscription, so this is the point at which to collect the state flow
                     if (hasStarted.complete(Unit)) {
                         scope.launch {
@@ -192,23 +400,39 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
                     }
                 },
                 onUnsubscribe = {},
-            )
+            ).apply(notification)
         }
-
-        fun ReceiveChannel<ByteArray>.consumeAsNotification(
-            scope: CoroutineScope,
-            properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
-            encrypted: Boolean = false,
-        ) = consumeAsNotification(scope, properties, encrypted, { this })
     }
 
+    /**
+     * The permissions this characteristic gives to [ConnectedDevice]
+     */
     enum class Permission {
+
+        /**
+         * The characteristic can be read by a [ConnectedDevice]
+         */
         READABLE,
+
+        /**
+         * The characteristic can be written to by a [ConnectedDevice]
+         */
         WRITABLE,
+
+        /**
+         * The characteristic can be read by a [ConnectedDevice] if an encrypted connection has been established
+         */
         READ_ENCRYPTION_REQUIRED,
+
+        /**
+         * The characteristic can be written to by a [ConnectedDevice] if an encrypted connection has been established
+         */
         WRITE_ENCRYPTION_REQUIRED,
     }
 
+    /**
+     * A [LocalCharacteristic] that cannot be observed
+     */
     class Static internal constructor(wrapper: LocalCharacteristicWrapper, service: LocalService, buildDescriptors: Static.() -> List<LocalDescriptor>) :
         LocalCharacteristic(wrapper, service) {
         override val descriptors: List<LocalDescriptor> = buildDescriptors().also { descriptors ->
@@ -216,6 +440,9 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         }
     }
 
+    /**
+     * A [LocalCharacteristic] that can be observed
+     */
     class Notifiable internal constructor(
         wrapper: LocalCharacteristicWrapper,
         service: LocalService,
@@ -227,14 +454,68 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
         FlowCollector<ByteArray> {
 
         private val _subscribedDevices = MutableStateFlow(emptyList<ConnectedDevice>())
+
+        /**
+         * A [StateFlow] of all [ConnectedDevice] that have subscribed to this [LocalCharacteristic.Notifiable]
+         */
         val subscribedDevices = _subscribedDevices.asStateFlow()
         override val descriptors: List<LocalDescriptor> = buildDescriptors()
+
+        /**
+         * Notifies a [ConnectedDevice] that that the data changed to [value]
+         * @param device the [ConnectedDevice] that should be notified
+         * @param value the new data
+         * @return `true` if the notification was successful, `false` otherwise
+         */
         suspend fun notify(device: ConnectedDevice, value: ByteArray): Boolean = subscribedDevices.map { devices ->
             devices.find { it == device }
         }.distinctUntilChanged().transformLatest { device ->
             emit(device?.let { notify(this@Notifiable, device, value) } ?: false)
         }.first()
 
+        /**
+         * Notifies a [ConnectedDevice] that that the data changed to [notification]
+         * @param Notification the type of the data to notify
+         * @param device the [ConnectedDevice] that should be notified
+         * @param notification the new data
+         * @param toByteArray method to convert the [Notification] to a [ByteArray]
+         * @return `true` if the notification was successful, `false` otherwise
+         */
+        suspend fun <Notification> notify(device: ConnectedDevice, notification: Notification, toByteArray: Notification.() -> ByteArray): Boolean =
+            notify(device, notification.toByteArray())
+
+        /**
+         * Notifies a [ConnectedDevice] that that the data changed to [notification]
+         * @param Notification the type of the data to notify
+         * @param device the [ConnectedDevice] that should be notified
+         * @param notification the new data
+         * @param serializationStrategy the [SerializationStrategy] to use to encode the [Notification] to a [ByteArray]
+         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Notification] to a [ByteArray]
+         * @return `true` if the notification was successful, `false` otherwise
+         */
+        suspend fun <Notification> notify(
+            device: ConnectedDevice,
+            notification: Notification,
+            serializationStrategy: SerializationStrategy<Notification>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        ): Boolean = notify(device, bluetoothFormat.encodeToByteArray(serializationStrategy, notification))
+
+        /**
+         * Notifies a [ConnectedDevice] that that the data changed to [notification]
+         * @param Notification the type of the data to notify
+         * @param device the [ConnectedDevice] that should be notified
+         * @param notification the new data
+         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Notification] to a [ByteArray]
+         * @return `true` if the notification was successful, `false` otherwise
+         */
+        suspend inline fun <reified Notification> notify(device: ConnectedDevice, notification: Notification, bluetoothFormat: BluetoothFormat = BluetoothFormat): Boolean =
+            notify(device, bluetoothFormat.encodeToByteArray(bluetoothFormat.serializer(), notification))
+
+        /**
+         * Notifies all [ConnectedDevice] currently subscribed that that the data changed to [value]
+         * @param value the new data
+         * @return `true` if the notification was successfully sent to all [ConnectedDevice], `false` otherwise
+         */
         suspend fun notifyAll(value: ByteArray): Boolean {
             var result = true
             for (device in subscribedDevices.value) {
@@ -242,6 +523,39 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
             }
             return result
         }
+
+        /**
+         * Notifies all [ConnectedDevice] currently subscribed that that the data changed to [notification]
+         * @param Notification the type of the data to notify
+         * @param notification the new data
+         * @param toByteArray method to convert the [Notification] to a [ByteArray]
+         * @return `true` if the notification was successfully sent to all [ConnectedDevice], `false` otherwise
+         */
+        suspend fun <Notification> notifyAll(notification: Notification, toByteArray: Notification.() -> ByteArray): Boolean = notifyAll(notification.toByteArray())
+
+        /**
+         * Notifies all [ConnectedDevice] currently subscribed that that the data changed to [notification]
+         * @param Notification the type of the data to notify
+         * @param notification the new data
+         * @param serializationStrategy the [SerializationStrategy] to use to encode the [Notification] to a [ByteArray]
+         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Notification] to a [ByteArray]
+         * @return `true` if the notification was successfully sent to all [ConnectedDevice], `false` otherwise
+         */
+        suspend fun <Notification> notifyAll(
+            notification: Notification,
+            serializationStrategy: SerializationStrategy<Notification>,
+            bluetoothFormat: BluetoothFormat = BluetoothFormat,
+        ): Boolean = notifyAll(bluetoothFormat.encodeToByteArray(serializationStrategy, notification))
+
+        /**
+         * Notifies all [ConnectedDevice] currently subscribed that that the data changed to [notification]
+         * @param Notification the type of the data to notify
+         * @param notification the new data
+         * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Notification] to a [ByteArray]
+         * @return `true` if the notification was successfully sent to all [ConnectedDevice], `false` otherwise
+         */
+        suspend inline fun <reified Notification> notifyAll(notification: Notification, bluetoothFormat: BluetoothFormat = BluetoothFormat): Boolean =
+            notifyAll(bluetoothFormat.encodeToByteArray(bluetoothFormat.serializer(), notification))
 
         override suspend fun emit(value: ByteArray) {
             notifyAll(value)
@@ -264,7 +578,14 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
     override val uuid: UUID = wrapper.uuid
     override val properties: Set<CharacteristicProperty> = wrapper.properties
 
+    /**
+     * The list of [LocalDescriptor] available for this characteristic
+     */
     abstract override val descriptors: List<LocalDescriptor>
+
+    /**
+     * The set of [Permission] of this characteristic.
+     */
     val permissions: Set<Permission> = wrapper.permissions
 }
 
@@ -358,17 +679,108 @@ internal class LocalCharacteristicDSL(
     }
 }
 
+/**
+ * Accessor to the platform level Local Bluetooth characteristic
+ * @param uuid the [UUID] of the characteristic
+ * @param properties the [CharacteristicProperty] of the characteristic
+ * @param permissions the [Permission] of the characteristic
+ */
 expect class LocalCharacteristicWrapper {
     val uuid: UUID
     val properties: Set<CharacteristicProperty>
     val permissions: Set<LocalCharacteristic.Permission>
 
-    constructor(
+    internal constructor(
         uuid: UUID,
         properties: Set<CharacteristicProperty>,
         encryptedNotification: Boolean,
         permissions: Set<LocalCharacteristic.Permission>,
     )
 
+    /**
+     * Adds a [LocalDescriptorWrapper] to the characteristic
+     */
     fun addDescriptor(descriptor: LocalDescriptorWrapper)
 }
+
+/**
+ * Makes this [LocalCharacteristic] readable by a [ConnectedDevice] to always return [GattResponse.ReadSuccess]
+ * Cannot be called if [LocalCharacteristic.DSL.readable], or [LocalCharacteristic.DSL.readableAlwaysSuccess] has been called before
+ * @param T the type of the data being read
+ * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.READ_ENCRYPTION_REQUIRED].
+ * Otherwise will add [Permission.READABLE]
+ * @param bluetoothFormat the [BluetoothFormat] to use to encode the [T] to a [ByteArray]
+ * @param onRead the function to call when reading from the characteristic.
+ * This contains the [ConnectedDevice] and the offset of the data to read and should return the [T] being read.
+ */
+inline fun <reified T : Any> LocalCharacteristic.DSL.readableAlwaysSuccess(
+    encrypted: Boolean = false,
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    noinline onRead: suspend LocalCharacteristic.(ConnectedDevice) -> T,
+) = readableAlwaysSuccess(encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onRead)
+
+/**
+ * Makes this [LocalCharacteristic] writable by a [ConnectedDevice]
+ * Cannot be called if [writable] has been called before
+ * @param T the type of the data being written
+ * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
+ * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
+ * Otherwise will add [Permission.WRITABLE]
+ * @param onFailedToWrite the function to call when writing to the characteristic fails.
+ * This contains the [ConnectedDevice] and the exception that caused deserialization to fail and should return a [GattResponse.WriteResponse]
+ * @param onWrite the function to call when reading from the characteristic.
+ * This contains the [ConnectedDevice], and the [T] to write and should return a [GattResponse.WriteResponse].
+ * If the data being written is split over multiple offsets, this will only be called when the data can be fully deserialized
+ */
+inline fun <reified T : Any> LocalCharacteristic.DSL.writable(
+    properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
+    encrypted: Boolean = false,
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    noinline onFailedToWrite: suspend LocalCharacteristic.(ConnectedDevice, Exception) -> GattResponse.WriteResponse = { _, _ -> GattResponse.ApplicationError(0x80) },
+    noinline onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> GattResponse.WriteResponse,
+) = writable(properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onFailedToWrite, onWrite)
+
+/**
+ * Makes this [LocalCharacteristic] writable by a [ConnectedDevice] and always responds with [GattResponse.WriteSuccess]
+ * Cannot be called if [writable] has been called before
+ * @param T the type of the data being written
+ * @param properties the [CharacteristicProperty.Writable] of the characteristic. Must not be empty
+ * @param encrypted `true` if reading from the characteristic should be encrypted. This will result in [Permission.WRITE_ENCRYPTION_REQUIRED].
+ * Otherwise will add [Permission.WRITABLE]
+ * @param onWrite the function to call when reading from the characteristic.
+ * This contains the [ConnectedDevice], and the [T] to write.
+ * If the data being written is split over multiple offsets, this will only be called when the data can be fully deserialized
+ */
+inline fun <reified T : Any> LocalCharacteristic.DSL.writableAlwaysSuccess(
+    properties: Set<CharacteristicProperty.Writable> = setOf(CharacteristicProperty.Write),
+    encrypted: Boolean = false,
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+    noinline onWrite: suspend LocalCharacteristic.(ConnectedDevice, T) -> Unit,
+) = writableAlwaysSuccess(properties, encrypted, bluetoothFormat.serializer<T>(), bluetoothFormat, onWrite)
+
+/**
+ * Makes this [LocalCharacteristic] a [LocalCharacteristic.Notifiable]
+ * and automatically sends the [ByteArray] as a notification
+ * This method can only be called once.
+ * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
+ * @param encrypted `true` if subscribing to the characteristic should be encrypted.
+ */
+fun LocalCharacteristic.DSL.NotificationDSL<ByteArray>.triggerNotification(
+    properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+    encrypted: Boolean = false,
+) = triggerNotification(properties, encrypted) { this }
+
+/**
+ * Makes this [LocalCharacteristic] a [LocalCharacteristic.Notifiable]
+ * and automatically sends a [ByteArray] notification upon [Trigger]
+ * This method can only be called once.
+ * @param Trigger the type of the data being collected
+ * @param properties the [CharacteristicProperty.Notifiable] of the characteristic. Must not be empty
+ * @param encrypted `true` if subscribing to the characteristic should be encrypted.
+ * @param bluetoothFormat the [BluetoothFormat] to use to encode the [Trigger] to a [ByteArray]
+ */
+inline fun <reified Trigger> LocalCharacteristic.DSL.NotificationDSL<Trigger>.triggerNotification(
+    properties: Set<CharacteristicProperty.Notifiable> = setOf(CharacteristicProperty.Notify),
+    encrypted: Boolean = false,
+    bluetoothFormat: BluetoothFormat = BluetoothFormat,
+) = triggerNotification(properties, encrypted, bluetoothFormat.serializer<Trigger>(), bluetoothFormat)

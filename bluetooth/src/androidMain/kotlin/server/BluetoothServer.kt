@@ -266,6 +266,7 @@ internal sealed class AndroidServerState {
             callback::registerReadAction,
             callback::registerWriteAction,
             { encrypted ->
+                // Android Characteristics Notifications require the CCCD being set, so we do that here to enable subscribing to the characteristic.
                 LocalDescriptorDSL(
                     Descriptor.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR,
                     callback::registerReadAction,
@@ -284,6 +285,7 @@ internal sealed class AndroidServerState {
 
                             (value.contentEquals(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE) && properties.contains(CharacteristicProperty.Indicate)) ||
                                 (value.contentEquals(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE) && properties.contains(CharacteristicProperty.Notify)) -> {
+                                // Update the status. Both notifications and indications can be set at the same time so make sure any previously set values remain intact
                                 deviceStatus.synchronized {
                                     val current = getOrDefault(device, BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE)
                                     val lsb = current[0] or value[0]

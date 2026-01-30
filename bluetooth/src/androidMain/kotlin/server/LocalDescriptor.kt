@@ -14,6 +14,7 @@
     limitations under the License.
 
  */
+@file:JvmName("AndroidLocalDescriptor")
 
 package com.splendo.kaluga.bluetooth.server
 

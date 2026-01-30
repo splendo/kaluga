@@ -27,12 +27,14 @@ import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
-import com.splendo.kaluga.base.utils.buildByteArray
 import com.splendo.kaluga.base.utils.getCompletedOrNull
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.server.ServerSettings
 import com.splendo.kaluga.bluetooth.server.ServerStatus
+import com.splendo.kaluga.bluetooth.server.triggerNotification
+import com.splendo.kaluga.bluetooth.server.writable
+import com.splendo.kaluga.bluetooth.server.readableAlwaysSuccess
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.example.shared.stylable.TextStyles
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothSpec
@@ -64,24 +66,6 @@ class BluetoothServerViewModel(private val alertPresenter: BaseAlertPresenter.Bu
     KoinComponent {
 
     companion object {
-        fun generateHeartRateMeasurement(heartRate: Int, energyExpended: Int, sensorContactDetected: Boolean): ByteArray = buildByteArray {
-            require(heartRate in 0..65535) { "Heart rate must be 0..65535" }
-
-            add(heartRate > UByte.MAX_VALUE.toInt())
-            add(sensorContactDetected)
-            add(true)
-            add(true) // Energy Expended
-            add(false) // RR Intervals
-
-            if (heartRate <= UByte.MAX_VALUE.toInt()) {
-                add(heartRate.toUByte())
-            } else {
-                add(heartRate.toUShort())
-            }
-
-            add(energyExpended.toUShort())
-        }
-
         val formatter = CommonScientificValueFormatter.with(builder = {
             defaultValueFormatter = NumberFormatter(style = NumberFormatStyle.Integer(minDigits = 1U)).apply {
                 notANumberSymbol = "--"
@@ -108,23 +92,26 @@ class BluetoothServerViewModel(private val alertPresenter: BaseAlertPresenter.Bu
                         energyExpended,
                         position,
                     ) { heartRate, energyExpended, position ->
-                        generateHeartRateMeasurement(heartRate.value.toInt(), energyExpended.value.toInt(), position != null)
-                    }.sample(1.seconds).collectAsNotification(coroutineScope, SharingStarted.Lazily, 1)
+                        BluetoothSpec.HeartRate(
+                            heartRate.value.toInt(),
+                            true,
+                            position != null,
+                            energyExpended.value.toInt(),
+                            listOf(BluetoothSpec.RRInterval(1.seconds)),
+                        )
+                    }.sample(1.seconds).collectTo(coroutineScope, SharingStarted.Lazily, 1) {
+                        triggerNotification()
+                    }
                 }
                 characteristic(BluetoothSpec.HeartRateService.SENSOR_LOCATION_CHARACTERISTIC) {
-                    readableAlwaysSuccess { _, _ ->
-                        val position = position.value ?: BluetoothSpec.SensorLocation.OTHER
-                        byteArrayOf(position.value)
+                    readableAlwaysSuccess { _ ->
+                        position.value ?: BluetoothSpec.SensorLocation.OTHER
                     }
                 }
                 characteristic(BluetoothSpec.HeartRateService.HEART_RATE_CONTROL_POINT_CHARACTERISTIC) {
-                    writable { _, value, _ ->
-                        if (value.contentEquals(byteArrayOf(0x01))) {
-                            energyExpended.update { 0(Kilojoule) }
-                            GattResponse.WriteSuccess
-                        } else {
-                            GattResponse.ApplicationError(0x80)
-                        }
+                    writable<BluetoothSpec.ResetEnergyCommand> { _, _ ->
+                        energyExpended.update { 0(Kilojoule) }
+                        GattResponse.WriteSuccess
                     }
                 }
             }

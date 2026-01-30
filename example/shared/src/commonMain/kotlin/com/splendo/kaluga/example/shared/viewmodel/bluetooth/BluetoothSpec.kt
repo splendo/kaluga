@@ -17,7 +17,21 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
+import com.splendo.kaluga.bluetooth.serialization.FlagIndex
+import com.splendo.kaluga.bluetooth.serialization.Length
+import com.splendo.kaluga.bluetooth.serialization.NullIfEmpty
+import com.splendo.kaluga.bluetooth.serialization.Prefix
+import com.splendo.kaluga.bluetooth.serialization.Scalar
+import com.splendo.kaluga.bluetooth.serialization.SerializedByteValue
+import com.splendo.kaluga.bluetooth.serialization.Size
+import com.splendo.kaluga.bluetooth.serialization.Unsigned
+import com.splendo.kaluga.bluetooth.serialization.Unsized
 import com.splendo.kaluga.bluetooth.uuidFrom
+import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmInline
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 object BluetoothSpec {
 
@@ -40,18 +54,62 @@ object BluetoothSpec {
         val INFO_CHARACTERISTIC = uuidFrom("e85a71f7-3d54-4a43-ba9b-89ff9e3428e0")
     }
 
-    enum class SensorLocation(val value: Byte) {
-        OTHER(0),
-        CHEST(1),
-        WRIST(2),
-        FINGER(3),
-        HAND(4),
-        EAR_LOBE(5),
-        FOOT(6),
-        ;
+    @Serializable
+    @JvmInline
+    value class RRInterval private constructor(
+        @Size(Length.`16_BIT`)
+        @Scalar(binaryExponent = 10)
+        val seconds: Double,
+    ) {
+        constructor(duration: Duration) : this(duration.toDouble(DurationUnit.SECONDS))
 
-        companion object {
-            fun from(byte: Byte) = entries.find { it.value == byte }
-        }
+        val duration: Duration get() = seconds.seconds
     }
+
+    @Serializable
+    data class HeartRate(
+        @Size(Length.`8_BIT`)
+        @Size(Length.`16_BIT`)
+        @Unsigned
+        val heartRate: Int,
+        @FlagIndex(1)
+        val contactSupported: Boolean,
+        @FlagIndex(2)
+        val contactDetected: Boolean = !contactSupported,
+        @Unsigned
+        @Size(Length.`16_BIT`)
+        val energyExpended: Int? = null,
+        @NullIfEmpty
+        @Unsized
+        val rrIntervals: List<RRInterval> = emptyList(),
+    )
+
+    @Serializable
+    enum class SensorLocation {
+
+        @SerializedByteValue(0x00)
+        OTHER,
+
+        @SerializedByteValue(0x01)
+        CHEST,
+
+        @SerializedByteValue(0x02)
+        WRIST,
+
+        @SerializedByteValue(0x03)
+        FINGER,
+
+        @SerializedByteValue(0x04)
+        HAND,
+
+        @SerializedByteValue(0x05)
+        EAR_LOBE,
+
+        @SerializedByteValue(0x06)
+        FOOT,
+    }
+
+    @Serializable
+    @Prefix([0x01])
+    data object ResetEnergyCommand
 }

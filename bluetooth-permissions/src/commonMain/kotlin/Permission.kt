@@ -26,15 +26,27 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
 /**
- * [Permission] to access the Bluetooth scanner
+ * [Permission] to access the Bluetooth sensor
+ * @property type the [Type] of the permission
  */
 data class BluetoothPermission(val type: Type) : Permission() {
 
+    /**
+     * The type of a [BluetoothPermission]
+     */
     sealed class Type {
 
+        /**
+         * A [BluetoothPermission] that allows client side communication with the Bluetooth sensor, such as scanning, reading, writing etc.
+         * @property useForLocation if `true` Bluetooth will scan for location.
+         */
         data class Client(val useForLocation: Boolean = false) : Type() {
             override val name: String = "BluetoothClient" + if (useForLocation) "ForLocation" else ""
         }
+
+        /**
+         * A [BluetoothPermission] that allows the server side communication with the Bluetooth sensor.
+         */
 
         data object Server : Type() {
             override val name: String = "BluetoothServer"

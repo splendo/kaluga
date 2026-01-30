@@ -28,6 +28,7 @@ import com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager.Acti
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -46,9 +47,9 @@ class BluetoothCharacteristicNotificationTest :
     fun testEnableNotification() = testWithFlowAndTestContext(Configuration.DeviceWithCharacteristic()) {
         connect()
         discover()
-        val subscription = CompletableDeferred<RemoteCharacteristic.Subscription>()
+        val subscription = CompletableDeferred<RemoteCharacteristic.SubscriptionResult>()
         enableNotifications(subscription)
-        subscription.await().hasSubscribedSuccessfully.await()
+        subscription.await()
     }
 
     @Test
@@ -56,11 +57,11 @@ class BluetoothCharacteristicNotificationTest :
         connect()
         discover()
 
-        val subscription = CompletableDeferred<RemoteCharacteristic.Subscription>()
+        val subscription = CompletableDeferred<RemoteCharacteristic.SubscriptionResult>()
         enableNotifications(subscription)
-        subscription.await().hasSubscribedSuccessfully.await()
+        subscription.await()
         mainAction {
-            assertIs<GattResponse.WriteSuccess>(characteristic.subscribe {}.hasSubscribedSuccessfully.getCompleted())
+            assertIs<RemoteCharacteristic.SubscriptionResult.DidSubscribe>(characteristic.subscribe {})
             assertTrue(characteristic.isNotifying)
         }
     }
@@ -69,11 +70,13 @@ class BluetoothCharacteristicNotificationTest :
     fun testDisableNotification() = testWithFlowAndTestContext(Configuration.DeviceWithCharacteristic()) {
         connect()
         discover()
-        val subscription = CompletableDeferred<RemoteCharacteristic.Subscription>()
+        val subscription = CompletableDeferred<RemoteCharacteristic.SubscriptionResult>()
         enableNotifications(subscription)
 
         mainAction {
-            subscription.await().unsubscribe()
+            val subscriptionResult = subscription.await()
+            assertIs<RemoteCharacteristic.SubscriptionResult.DidSubscribe>(subscriptionResult)
+            launch { subscriptionResult.subscription.unsubscribe() }
         }
 
         test {
@@ -107,12 +110,11 @@ class BluetoothCharacteristicNotificationTest :
 
         mainAction {
             assertFalse(characteristic.isNotifying)
-            characteristic.subscribe {}
-            yieldMultiple(2)
+            launch { characteristic.subscribe {} }
         }
         test {
             val captor = AnyOrNullCaptor<DeviceAction<*>>()
-            connectionManager.performActionMock.verify(captor)
+            connectionManager.performActionMock.verifyWithin(value = captor)
             assertIs<DeviceAction.Notification.Enable>(captor.lastCaptured)
             assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Notification.Enable>(it.action)
@@ -158,15 +160,14 @@ class BluetoothCharacteristicNotificationTest :
         }
     }
 
-    private suspend fun enableNotifications(subscription: CompletableDeferred<RemoteCharacteristic.Subscription>) {
+    private suspend fun enableNotifications(subscription: CompletableDeferred<RemoteCharacteristic.SubscriptionResult>) {
         mainAction {
             assertFalse(characteristic.isNotifying, "Notifications already enabled!")
-            subscription.complete(characteristic.subscribe { })
-            yieldMultiple(2)
+            launch { subscription.complete(characteristic.subscribe { }) }
         }
         test {
             val captor = AnyOrNullCaptor<DeviceAction<*>>()
-            connectionManager.performActionMock.verify(captor)
+            connectionManager.performActionMock.verifyWithin(value = captor)
             assertIs<DeviceAction.Notification.Enable>(captor.lastCaptured)
             assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Notification.Enable>(it.action)

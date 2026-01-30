@@ -19,27 +19,41 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.logging.ContextualLogger
+import com.splendo.kaluga.logging.Logger
 
+/**
+ * [Characteristic] descriptors are used to contain related information about the Characteristic Value.
+ * The GATT profile defines a standard set of characteristic descriptors that can be used by higher layer profiles.
+ * Higher layer profiles may define additional characteristic descriptors that are profile specific.
+ */
 interface Descriptor : Attribute {
 
     companion object {
+
+        /**
+         * The [UUID] used by the Client Characteristic Configuration Descriptor, which is required for enabling notifications.
+         */
         val CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR: UUID = uuidFrom("2902")
     }
+
+    /**
+     * The [Characteristic] this descriptor belongs to
+     */
     val characteristic: Characteristic
 }
 
 /**
- * An [Attribute] of a Bluetooth Descriptor
+ * A [Descriptor] [RemoteAttribute] that is accessed remotely by a bluetooth client using [Bluetooth]
  * @property wrapper the [RemoteDescriptorWrapper] to access the platform descriptor
+ * @property characteristic the [RemoteCharacteristic] this descriptor belongs to
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
- * @param logger the [ContextualLogger] to use for logging.
+ * @param logger the [Logger] to use for logging.
  */
 open class RemoteDescriptor(
     val wrapper: RemoteDescriptorWrapper,
     override val characteristic: RemoteCharacteristic,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
-    logger: ContextualLogger,
+    logger: Logger,
 ) : RemoteAttribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(
     emitNewAction,
     logger,

@@ -44,6 +44,1145 @@ public final class com/splendo/kaluga/base/SingleThreadDispatcherKt {
 	public static final fun threadPoolDispatcher-qim9Vi0 (ILjava/lang/String;)Lkotlinx/coroutines/ExecutorCoroutineDispatcher;
 }
 
+public abstract interface class com/splendo/kaluga/base/bytes/ByteArrayBuilder {
+	public abstract fun add (B)V
+	public abstract fun add (CLcom/splendo/kaluga/base/bytes/Encoding;Lcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public abstract fun add (DLcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public abstract fun add (FLcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public abstract fun add (ILcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public abstract fun add (JLcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public abstract fun add (Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/StringEncodingSettings;Lcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public abstract fun add (SLcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public abstract fun add (Z)V
+	public abstract fun add ([B)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;CLcom/splendo/kaluga/base/bytes/Encoding;Lcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;DLcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;FLcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/StringEncodingSettings;Lcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;SLcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public abstract fun add-4PLdz1A (JLcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public static synthetic fun add-4PLdz1A$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public abstract fun add-593hS54 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public static synthetic fun add-593hS54$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public abstract fun add-7apg3OU (B)V
+	public abstract fun add-8th3mqE (D)V
+	public abstract fun add-F5bENeA (D)V
+	public abstract fun add-QCWLtZ4 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public static synthetic fun add-QCWLtZ4$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public abstract fun add-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public static synthetic fun add-qim9Vi0$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public abstract fun add-vckuEUM (SLcom/splendo/kaluga/base/bytes/ByteOrder;)V
+	public static synthetic fun add-vckuEUM$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;SLcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public abstract fun getByteOrder ()Lcom/splendo/kaluga/base/bytes/ByteOrder;
+}
+
+public final class com/splendo/kaluga/base/bytes/ByteArrayBuilderKt {
+	public static final fun buildByteArray (Lcom/splendo/kaluga/base/bytes/ByteOrder;Lkotlin/jvm/functions/Function1;)[B
+	public static synthetic fun buildByteArray$default (Lcom/splendo/kaluga/base/bytes/ByteOrder;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/ByteExtensionsKt {
+	public static final fun isBitSet (BLjava/lang/Number;)Z
+	public static final fun isBitSet ([BLjava/lang/Number;)Z
+	public static final fun setBit (BLjava/lang/Number;)B
+	public static final fun setBit ([BLjava/lang/Number;)[B
+	public static final fun shl (BI)B
+	public static final fun shr (BI)B
+}
+
+public final class com/splendo/kaluga/base/bytes/ByteOrder : java/lang/Enum {
+	public static final field LEAST_SIGNIFICANT_FIRST Lcom/splendo/kaluga/base/bytes/ByteOrder;
+	public static final field MOST_SIGNIFICANT_FIRST Lcom/splendo/kaluga/base/bytes/ByteOrder;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/bytes/ByteOrder;
+	public static fun values ()[Lcom/splendo/kaluga/base/bytes/ByteOrder;
+}
+
+public final class com/splendo/kaluga/base/bytes/CKSUM : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CKSUM;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public abstract interface class com/splendo/kaluga/base/bytes/CRC {
+	public static final field Companion Lcom/splendo/kaluga/base/bytes/CRC$Companion;
+	public abstract fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public abstract fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC$Companion {
+	public final fun invoke-1WdNxsU (IJJJZZ)Lcom/splendo/kaluga/base/bytes/CRC;
+	public static synthetic fun invoke-1WdNxsU$default (Lcom/splendo/kaluga/base/bytes/CRC$Companion;IJJJZZILjava/lang/Object;)Lcom/splendo/kaluga/base/bytes/CRC;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC10 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC10;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC10$CDMA2000 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC10$CDMA2000;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC10$GSM : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC10$GSM;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC11 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC11;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC11$UMTS : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC11$UMTS;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC12 {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC12;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC12$CDMA2000 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC12$CDMA2000;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC12$DECT : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC12$DECT;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC12$GSM : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC12$GSM;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC12$UMTS : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC12$UMTS;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC13 {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC13;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC13$BBC : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC13$BBC;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC14 {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC14;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC14$DARC : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC14$DARC;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC14$GSM : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC14$GSM;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC15 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC15;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC15$MPT1327 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC15$MPT1327;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$Autosar : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$Autosar;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$CDMA2000 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$CDMA2000;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$CMS : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$CMS;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$DARC : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$DARC;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$DDS110 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$DDS110;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$DECT {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$DECT;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$DECT$R : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$DECT$R;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$DECT$X : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$DECT$X;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$DNP : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$DNP;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$EN13757 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$EN13757;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$GSM : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$GSM;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$Kermit : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$Kermit;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$LJ1200 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$LJ1200;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$M17 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$M17;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$MCRF4XX : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$MCRF4XX;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$Maxim : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$Maxim;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$Modbus : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$Modbus;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$NRSC5 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$NRSC5;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$OpenSafety {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$OpenSafety;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$OpenSafety$A : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$OpenSafety$A;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$OpenSafety$B : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$OpenSafety$B;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$PROFIBUS : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$PROFIBUS;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$Riello : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$Riello;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$SPIFujitsu : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$SPIFujitsu;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$T10DIF : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$T10DIF;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$TMS37157 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$TMS37157;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$TeleDisk : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$TeleDisk;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$UMTS : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$UMTS;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$USB : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$USB;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC16$XModem : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC16$XModem;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC17 {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC17;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC17$CANFD : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC17$CANFD;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC21 {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC21;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC21$CANFD : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC21$CANFD;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC24 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC24;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC24$BLE : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC24$BLE;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC24$Flexray {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC24$Flexray;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC24$Flexray$A : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC24$Flexray$A;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC24$Flexray$B : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC24$Flexray$B;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC24$Interlaken : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC24$Interlaken;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC24$LTE {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC24$LTE;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC24$LTE$A : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC24$LTE$A;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC24$LTE$B : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC24$LTE$B;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC24$OS9 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC24$OS9;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC3 {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC3;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC3$GSM : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC3$GSM;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC3$ROHC : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC3$ROHC;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC30 {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC30;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC30$CDMA : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC30$CDMA;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC31 {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC31;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC31$Philips : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC31$Philips;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC32 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC32;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC32$AIXM : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC32$AIXM;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC32$Autosar : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC32$Autosar;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC32$BZip2 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC32$BZip2;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC32$Base91D : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC32$Base91D;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC32$CDROMEDC : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC32$CDROMEDC;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC32$ISCSI : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC32$ISCSI;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC32$MEF : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC32$MEF;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC32$MPEG2 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC32$MPEG2;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC32$XFER : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC32$XFER;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC4 {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC4;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC4$ITU : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC4$ITU;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC4$Interlaken : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC4$Interlaken;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC40 {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC40;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC40$GSM : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC40$GSM;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC5 {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC5;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC5$EPC : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC5$EPC;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC5$ITU : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC5$ITU;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC5$USB : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC5$USB;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC6 {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC6;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC6$CDMA2000 {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC6$CDMA2000;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC6$CDMA2000$A : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC6$CDMA2000$A;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC6$CDMA2000$B : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC6$CDMA2000$B;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC6$DARC : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC6$DARC;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC6$GSM : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC6$GSM;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC6$ITU : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC6$ITU;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC64 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC64;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC64$GOISO : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC64$GOISO;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC64$MS : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC64$MS;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC64$NVME : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC64$NVME;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC64$REDIS : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC64$REDIS;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC64$WE : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC64$WE;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC64$XZ : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC64$XZ;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC7 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC7;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC7$ROHC : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC7$ROHC;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC7$UMTS : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC7$UMTS;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$AES : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$AES;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$Autosar : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$Autosar;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$Bluetooth : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$Bluetooth;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$CDMA2000 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$CDMA2000;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$DARC : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$DARC;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$DVBS2 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$DVBS2;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$GSM {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$GSM;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$GSM$A : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$GSM$A;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$GSM$B : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$GSM$B;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$HITAG : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$HITAG;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$ICODE : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$ICODE;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$ITU : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$ITU;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$LTE : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$LTE;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$Maxim : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$Maxim;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$Mifare {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$Mifare;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$Mifare$MAD : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$Mifare$MAD;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$NRSC5 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$NRSC5;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$OpenSafety : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$OpenSafety;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$ROHC : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$ROHC;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$SAE {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$SAE;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$SAE$J1850 : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$SAE$J1850;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC8$WCDMA : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRC8$WCDMA;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRCA : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRCA;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CRCB : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/CRCB;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/CharExtensionsKt {
+	public static final fun decodeAsciiChar (B)C
+	public static final fun decodeAsciiChar ([BI)C
+	public static final fun decodeUTF16Char ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)C
+	public static final fun decodeUTF8Char (B)C
+	public static final fun decodeUTF8Char ([BI)C
+	public static final fun encodeChar (Lcom/splendo/kaluga/base/bytes/Encoding;CLcom/splendo/kaluga/base/bytes/ByteOrder;)Ljava/io/Serializable;
+	public static final fun toAscii (C)B
+	public static final fun toAsciiOrNull (C)Ljava/lang/Byte;
+	public static final fun toUTF16 (CLcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/DoubleExtensionsKt {
+	public static final fun decodeDouble ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)D
+	public static final fun toByteArray (DLcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/Encoding : java/lang/Enum {
+	public static final field ASCII Lcom/splendo/kaluga/base/bytes/Encoding;
+	public static final field UTF_16 Lcom/splendo/kaluga/base/bytes/Encoding;
+	public static final field UTF_8 Lcom/splendo/kaluga/base/bytes/Encoding;
+	public final fun getByteSize ()I
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/bytes/Encoding;
+	public static fun values ()[Lcom/splendo/kaluga/base/bytes/Encoding;
+}
+
+public final class com/splendo/kaluga/base/bytes/FloatExtensionsKt {
+	public static final fun decodeFloat ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)F
+	public static final fun toByteArray (FLcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/Int24ExtensionsKt {
+	public static final fun and-npgKo-Y (II)I
+	public static final fun decodeInt24 ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)I
+	public static final fun isBitSet-QCWLtZ4 (ILjava/lang/Number;)Z
+	public static final fun or-npgKo-Y (II)I
+	public static final fun setBit-QCWLtZ4 (ILjava/lang/Number;)I
+	public static final fun shl-QCWLtZ4 (II)I
+	public static final fun shr-QCWLtZ4 (II)I
+	public static final fun toByteArray-QCWLtZ4 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/IntExtensionsKt {
+	public static final fun decodeInt ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)I
+	public static final fun isBitSet (ILjava/lang/Number;)Z
+	public static final fun length (I)I
+	public static final fun setBit (ILjava/lang/Number;)I
+	public static final fun toByteArray (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/JAMCRC : com/splendo/kaluga/base/bytes/CRC {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/JAMCRC;
+	public fun compute-I7RO_PI ([B)J
+	public fun getByteWidth ()I
+	public fun getWidth ()I
+}
+
+public final class com/splendo/kaluga/base/bytes/LongExtensionsKt {
+	public static final fun decodeLong ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)J
+	public static final fun isBitSet (JLjava/lang/Number;)Z
+	public static final fun setBit (JLjava/lang/Number;)J
+	public static final fun toByteArray (JLcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/MedFloat16ExtensionsKt {
+	public static final fun decodeMedFloat16 ([BI)D
+	public static final fun toByteArray-8th3mqE (D)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/MedFloat32ExtensionsKt {
+	public static final fun decodeMedFloat32 ([BI)D
+	public static final fun toByteArray-F5bENeA (D)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/ShortExtensionsKt {
+	public static final fun decodeShort ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)S
+	public static final fun isBitSet (SLjava/lang/Number;)Z
+	public static final fun setBit (SLjava/lang/Number;)S
+	public static final fun shl (SI)S
+	public static final fun shr (SI)S
+	public static final fun toByteArray (SLcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/StringEncodingSettings {
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking;Lcom/splendo/kaluga/base/bytes/Encoding;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking;Lcom/splendo/kaluga/base/bytes/Encoding;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking;
+	public final fun component2 ()Lcom/splendo/kaluga/base/bytes/Encoding;
+	public final fun copy (Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking;Lcom/splendo/kaluga/base/bytes/Encoding;)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/bytes/StringEncodingSettings;Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking;Lcom/splendo/kaluga/base/bytes/Encoding;ILjava/lang/Object;)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEncoding ()Lcom/splendo/kaluga/base/bytes/Encoding;
+	public final fun getEndMarking ()Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking {
+}
+
+public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$FixedLength : com/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking {
+	public fun <init> (I)V
+	public final fun component1 ()I
+	public final fun copy (I)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$FixedLength;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$FixedLength;IILjava/lang/Object;)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$FixedLength;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLength ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix : com/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking {
+	public abstract fun encodeSize-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$ByteLength : com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$ByteLength;
+	public fun encodeSize-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$ShortLength : com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$ShortLength;
+	public fun encodeSize-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$WithOverflow : com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix {
+	public fun <init> ()V
+	public fun <init> (B)V
+	public synthetic fun <init> (BILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()B
+	public final fun copy (B)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$WithOverflow;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$WithOverflow;BILjava/lang/Object;)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$WithOverflow;
+	public fun encodeSize-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSentinel ()B
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$NoMarking : com/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$NoMarking;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$NullTerminated : com/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking {
+	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$NullTerminated;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/base/bytes/StringExtensionsKt {
+	public static final fun decodeString (Lkotlin/sequences/Sequence;Lcom/splendo/kaluga/base/bytes/StringEncodingSettings;)Ljava/lang/String;
+	public static final fun decodeString ([BLcom/splendo/kaluga/base/bytes/StringEncodingSettings;Lcom/splendo/kaluga/base/bytes/ByteOrder;)Ljava/lang/String;
+	public static final fun encodeString (Lcom/splendo/kaluga/base/bytes/Encoding;Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static final fun toAscii (Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static final fun toAsciiOrNull (Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static final fun toByteArray (Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/StringEncodingSettings;Lcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static final fun toUTF16 (Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/UByteExtensionsKt {
+	public static final fun decodeUByte ([BI)B
+	public static final fun isBitSet-0ky7B_Q (BLjava/lang/Number;)Z
+	public static final fun setBit-0ky7B_Q (BLjava/lang/Number;)B
+	public static final fun shl-0ky7B_Q (BI)B
+	public static final fun shr-0ky7B_Q (BI)B
+	public static final fun toByteArray-7apg3OU (B)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/UInt24ExtensionsKt {
+	public static final fun and-5oVDibg (II)I
+	public static final fun decodeUInt24 ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)I
+	public static final fun isBitSet-593hS54 (ILjava/lang/Number;)Z
+	public static final fun or-5oVDibg (II)I
+	public static final fun setBit-593hS54 (ILjava/lang/Number;)I
+	public static final fun shl-593hS54 (II)I
+	public static final fun shr-593hS54 (II)I
+	public static final fun toByteArray-593hS54 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/UIntExtensionsKt {
+	public static final fun decodeUInt ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)I
+	public static final fun isBitSet-qim9Vi0 (ILjava/lang/Number;)Z
+	public static final fun setBit-qim9Vi0 (ILjava/lang/Number;)I
+	public static final fun toByteArray-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/ULongExtensionsKt {
+	public static final fun decodeULong ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)J
+	public static final fun isBitSet-4PLdz1A (JLjava/lang/Number;)Z
+	public static final fun setBit-4PLdz1A (JLjava/lang/Number;)J
+	public static final fun toByteArray-4PLdz1A (JLcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
+public final class com/splendo/kaluga/base/bytes/UShortExtensionsKt {
+	public static final fun decodeUShort ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)S
+	public static final fun isBitSet-vckuEUM (SLjava/lang/Number;)Z
+	public static final fun setBit-vckuEUM (SLjava/lang/Number;)S
+	public static final fun shl-vckuEUM (SI)S
+	public static final fun shr-vckuEUM (SI)S
+	public static final fun toByteArray-vckuEUM (SLcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+}
+
 public final class com/splendo/kaluga/base/collections/ConcurrentMutableIterator : java/util/Iterator, kotlin/jvm/internal/markers/KMutableIterator {
 	public fun hasNext ()Z
 	public fun next ()Ljava/lang/Object;
@@ -896,55 +2035,6 @@ public final class com/splendo/kaluga/base/utils/BufferedAsListChannelKt {
 	public static final fun BufferedAsListChannel (Lkotlin/coroutines/CoroutineContext;Lkotlinx/coroutines/ExecutorCoroutineDispatcher;Z)Lcom/splendo/kaluga/base/utils/BufferedAsListChannel;
 }
 
-public abstract interface class com/splendo/kaluga/base/utils/ByteArrayBuilder {
-	public abstract fun add (B)V
-	public abstract fun add (C)V
-	public abstract fun add (DLcom/splendo/kaluga/base/utils/ByteOrder;)V
-	public abstract fun add (FLcom/splendo/kaluga/base/utils/ByteOrder;)V
-	public abstract fun add (ILcom/splendo/kaluga/base/utils/ByteOrder;)V
-	public abstract fun add (JLcom/splendo/kaluga/base/utils/ByteOrder;)V
-	public abstract fun add (Ljava/lang/String;)V
-	public abstract fun add (SLcom/splendo/kaluga/base/utils/ByteOrder;)V
-	public abstract fun add (Z)V
-	public abstract fun add ([B)V
-	public static synthetic fun add$default (Lcom/splendo/kaluga/base/utils/ByteArrayBuilder;DLcom/splendo/kaluga/base/utils/ByteOrder;ILjava/lang/Object;)V
-	public static synthetic fun add$default (Lcom/splendo/kaluga/base/utils/ByteArrayBuilder;FLcom/splendo/kaluga/base/utils/ByteOrder;ILjava/lang/Object;)V
-	public static synthetic fun add$default (Lcom/splendo/kaluga/base/utils/ByteArrayBuilder;ILcom/splendo/kaluga/base/utils/ByteOrder;ILjava/lang/Object;)V
-	public static synthetic fun add$default (Lcom/splendo/kaluga/base/utils/ByteArrayBuilder;JLcom/splendo/kaluga/base/utils/ByteOrder;ILjava/lang/Object;)V
-	public static synthetic fun add$default (Lcom/splendo/kaluga/base/utils/ByteArrayBuilder;SLcom/splendo/kaluga/base/utils/ByteOrder;ILjava/lang/Object;)V
-	public abstract fun add-4PLdz1A (JLcom/splendo/kaluga/base/utils/ByteOrder;)V
-	public static synthetic fun add-4PLdz1A$default (Lcom/splendo/kaluga/base/utils/ByteArrayBuilder;JLcom/splendo/kaluga/base/utils/ByteOrder;ILjava/lang/Object;)V
-	public abstract fun add-7apg3OU (B)V
-	public abstract fun add-QCWLtZ4 (ILcom/splendo/kaluga/base/utils/ByteOrder;)V
-	public static synthetic fun add-QCWLtZ4$default (Lcom/splendo/kaluga/base/utils/ByteArrayBuilder;ILcom/splendo/kaluga/base/utils/ByteOrder;ILjava/lang/Object;)V
-	public abstract fun add-qim9Vi0 (ILcom/splendo/kaluga/base/utils/ByteOrder;)V
-	public static synthetic fun add-qim9Vi0$default (Lcom/splendo/kaluga/base/utils/ByteArrayBuilder;ILcom/splendo/kaluga/base/utils/ByteOrder;ILjava/lang/Object;)V
-	public abstract fun add-vckuEUM (SLcom/splendo/kaluga/base/utils/ByteOrder;)V
-	public static synthetic fun add-vckuEUM$default (Lcom/splendo/kaluga/base/utils/ByteArrayBuilder;SLcom/splendo/kaluga/base/utils/ByteOrder;ILjava/lang/Object;)V
-}
-
-public final class com/splendo/kaluga/base/utils/ByteArrayBuilderKt {
-	public static final fun buildByteArray (Lcom/splendo/kaluga/base/utils/ByteOrder;Lkotlin/jvm/functions/Function1;)[B
-	public static synthetic fun buildByteArray$default (Lcom/splendo/kaluga/base/utils/ByteOrder;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)[B
-}
-
-public final class com/splendo/kaluga/base/utils/ByteExtensionsKt {
-	public static final fun isBitSet (BLjava/lang/Number;)Z
-	public static final fun isBitSet ([BLjava/lang/Number;)Z
-	public static final fun setBit (BLjava/lang/Number;)B
-	public static final fun setBit ([BLjava/lang/Number;)[B
-	public static final fun shl (BI)B
-	public static final fun shr (BI)B
-}
-
-public final class com/splendo/kaluga/base/utils/ByteOrder : java/lang/Enum {
-	public static final field LEAST_SIGNIFICANT_FIRST Lcom/splendo/kaluga/base/utils/ByteOrder;
-	public static final field MOST_SIGNIFICANT_FIRST Lcom/splendo/kaluga/base/utils/ByteOrder;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lcom/splendo/kaluga/base/utils/ByteOrder;
-	public static fun values ()[Lcom/splendo/kaluga/base/utils/ByteOrder;
-}
-
 public final class com/splendo/kaluga/base/utils/ByteUtils {
 	public static final field BYTE_STRING_LENGTH I
 	public static final field HEX_RADIX I
@@ -1132,54 +2222,44 @@ public final class com/splendo/kaluga/base/utils/Deferred_getCompletedOrNullKt {
 	public static final fun getCompletedOrNull (Lkotlinx/coroutines/Deferred;)Ljava/lang/Object;
 }
 
-public final class com/splendo/kaluga/base/utils/DoubleExtensionsKt {
-	public static final fun decodeDouble ([BILcom/splendo/kaluga/base/utils/ByteOrder;)D
-	public static final fun toByteArray (DLcom/splendo/kaluga/base/utils/ByteOrder;)[B
-}
-
 public final class com/splendo/kaluga/base/utils/EmptyCompletableDeferredKt {
 	public static final fun EmptyCompletableDeferred (Lkotlinx/coroutines/Job;)Lkotlinx/coroutines/CompletableDeferred;
 	public static synthetic fun EmptyCompletableDeferred$default (Lkotlinx/coroutines/Job;ILjava/lang/Object;)Lkotlinx/coroutines/CompletableDeferred;
 	public static final fun complete (Lkotlinx/coroutines/CompletableDeferred;)V
 }
 
-public final class com/splendo/kaluga/base/utils/FloatExtensionsKt {
-	public static final fun decodeFloat ([BILcom/splendo/kaluga/base/utils/ByteOrder;)F
-	public static final fun toByteArray (FLcom/splendo/kaluga/base/utils/ByteOrder;)[B
-}
-
-public final class com/splendo/kaluga/base/utils/Int24 {
+public final class com/splendo/kaluga/base/utils/Int24 : java/lang/Comparable {
+	public static final field Companion Lcom/splendo/kaluga/base/utils/Int24$Companion;
+	public static final field SIZE_BITS I
+	public static final field SIZE_BYTES I
 	public static final synthetic fun box-impl (I)Lcom/splendo/kaluga/base/utils/Int24;
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo-utNcqao (I)I
+	public static fun compareTo-utNcqao (II)I
 	public static fun constructor-impl (I)I
+	public static final fun div-LcdnZjw (II)I
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (ILjava/lang/Object;)Z
 	public static final fun equals-impl0 (II)Z
-	public final fun getValue-pVg5ArA ()I
+	public final fun getValue ()I
 	public fun hashCode ()I
 	public static fun hashCode-impl (I)I
+	public static final fun minus-LcdnZjw (II)I
+	public static final fun plus-LcdnZjw (II)I
+	public static final fun times-LcdnZjw (II)I
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (I)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()I
 }
 
-public final class com/splendo/kaluga/base/utils/Int24Kt {
-	public static final fun and-npgKo-Y (II)I
-	public static final fun decodeInt24 ([BILcom/splendo/kaluga/base/utils/ByteOrder;)I
-	public static final fun isBitSet-QCWLtZ4 (ILjava/lang/Number;)Z
-	public static final fun or-npgKo-Y (II)I
-	public static final fun setBit-QCWLtZ4 (ILjava/lang/Number;)I
-	public static final fun shl-QCWLtZ4 (II)I
-	public static final fun shr-QCWLtZ4 (II)I
-	public static final fun toByteArray-QCWLtZ4 (ILcom/splendo/kaluga/base/utils/ByteOrder;)[B
-	public static final fun toInt24-WZ4Q5Ns (I)I
+public final class com/splendo/kaluga/base/utils/Int24$Companion {
+	public final fun getMAX_VALUE-HZKBeUQ ()I
+	public final fun getMIN_VALUE-HZKBeUQ ()I
 }
 
-public final class com/splendo/kaluga/base/utils/IntExtensionsKt {
-	public static final fun decodeInt ([BILcom/splendo/kaluga/base/utils/ByteOrder;)I
-	public static final fun isBitSet (ILjava/lang/Number;)Z
-	public static final fun length (I)I
-	public static final fun setBit (ILjava/lang/Number;)I
-	public static final fun toByteArray (ILcom/splendo/kaluga/base/utils/ByteOrder;)[B
+public final class com/splendo/kaluga/base/utils/Int24Kt {
+	public static final fun toInt24 (Ljava/lang/Number;)I
+	public static final fun toUInt24-utNcqao (I)I
 }
 
 public abstract class com/splendo/kaluga/base/utils/KalugaDate : java/lang/Comparable {
@@ -1314,11 +2394,67 @@ public final class com/splendo/kaluga/base/utils/KalugaTimeZoneKt {
 	public static final fun getUtc (Lcom/splendo/kaluga/base/utils/KalugaTimeZone$Companion;)Lcom/splendo/kaluga/base/utils/KalugaTimeZone;
 }
 
-public final class com/splendo/kaluga/base/utils/LongExtensionsKt {
-	public static final fun decodeLong ([BILcom/splendo/kaluga/base/utils/ByteOrder;)J
-	public static final fun isBitSet (JLjava/lang/Number;)Z
-	public static final fun setBit (JLjava/lang/Number;)J
-	public static final fun toByteArray (JLcom/splendo/kaluga/base/utils/ByteOrder;)[B
+public final class com/splendo/kaluga/base/utils/MedFloat16 : java/lang/Comparable {
+	public static final field Companion Lcom/splendo/kaluga/base/utils/MedFloat16$Companion;
+	public static final field MAX_EXPONENT I
+	public static final field MAX_MANTISSA I
+	public static final field MIN_EXPONENT I
+	public static final field MIN_MANTISSA I
+	public static final synthetic fun box-impl (D)Lcom/splendo/kaluga/base/utils/MedFloat16;
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo-8th3mqE (D)I
+	public static fun compareTo-8th3mqE (DD)I
+	public static fun constructor-impl (D)D
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (DLjava/lang/Object;)Z
+	public static final fun equals-impl0 (DD)Z
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public static fun hashCode-impl (D)I
+	public static final fun isFinite-impl (D)Z
+	public static final fun isInfinite-impl (D)Z
+	public static final fun isNaN-impl (D)Z
+	public static final fun isNegativeInfinity-impl (D)Z
+	public static final fun isNotAvailableAtThisResolution-impl (D)Z
+	public static final fun isPositiveInfinity-impl (D)Z
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (D)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()D
+}
+
+public final class com/splendo/kaluga/base/utils/MedFloat16$Companion {
+	public final fun canRepresent (D)Z
+	public final fun getNAN-ZdtFW6w ()D
+	public final fun getNEGATIVE_INFINITY-ZdtFW6w ()D
+	public final fun getPOSITIVE_INFINITY-ZdtFW6w ()D
+}
+
+public final class com/splendo/kaluga/base/utils/MedFloat32 : java/lang/Comparable {
+	public static final field Companion Lcom/splendo/kaluga/base/utils/MedFloat32$Companion;
+	public static final synthetic fun box-impl (D)Lcom/splendo/kaluga/base/utils/MedFloat32;
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo-F5bENeA (D)I
+	public static fun compareTo-F5bENeA (DD)I
+	public static fun constructor-impl (D)D
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (DLjava/lang/Object;)Z
+	public static final fun equals-impl0 (DD)Z
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public static fun hashCode-impl (D)I
+	public static final fun isFinite-impl (D)Z
+	public static final fun isInfinite-impl (D)Z
+	public static final fun isNaN-impl (D)Z
+	public static final fun isNegativeInfinity-impl (D)Z
+	public static final fun isNotAvailableAtThisResolution-impl (D)Z
+	public static final fun isPositiveInfinity-impl (D)Z
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (D)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()D
+}
+
+public final class com/splendo/kaluga/base/utils/MedFloat32$Companion {
+	public final fun canRepresent (D)Z
 }
 
 public abstract class com/splendo/kaluga/base/utils/RoundingMode {
@@ -1345,15 +2481,6 @@ public final class com/splendo/kaluga/base/utils/RoundingMode$RoundUp : com/sple
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/splendo/kaluga/base/utils/ShortExtensionsKt {
-	public static final fun decodeShort ([BILcom/splendo/kaluga/base/utils/ByteOrder;)S
-	public static final fun isBitSet (SLjava/lang/Number;)Z
-	public static final fun setBit (SLjava/lang/Number;)S
-	public static final fun shl (SI)S
-	public static final fun shr (SI)S
-	public static final fun toByteArray (SLcom/splendo/kaluga/base/utils/ByteOrder;)[B
-}
-
 public final class com/splendo/kaluga/base/utils/TimeZoneNameStyle : java/lang/Enum {
 	public static final field Long Lcom/splendo/kaluga/base/utils/TimeZoneNameStyle;
 	public static final field Short Lcom/splendo/kaluga/base/utils/TimeZoneNameStyle;
@@ -1362,36 +2489,38 @@ public final class com/splendo/kaluga/base/utils/TimeZoneNameStyle : java/lang/E
 	public static fun values ()[Lcom/splendo/kaluga/base/utils/TimeZoneNameStyle;
 }
 
-public final class com/splendo/kaluga/base/utils/UByteExtensionsKt {
-	public static final fun decodeUByte ([BI)B
-	public static final fun isBitSet-0ky7B_Q (BLjava/lang/Number;)Z
-	public static final fun setBit-0ky7B_Q (BLjava/lang/Number;)B
-	public static final fun shl-0ky7B_Q (BI)B
-	public static final fun shr-0ky7B_Q (BI)B
-	public static final fun toByteArray-7apg3OU (B)[B
+public final class com/splendo/kaluga/base/utils/UInt24 : java/lang/Comparable {
+	public static final field Companion Lcom/splendo/kaluga/base/utils/UInt24$Companion;
+	public static final field SIZE_BITS I
+	public static final field SIZE_BYTES I
+	public static final synthetic fun box-impl (I)Lcom/splendo/kaluga/base/utils/UInt24;
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo-AwlQDGc (I)I
+	public static fun compareTo-AwlQDGc (II)I
+	public static fun constructor-impl (I)I
+	public static final fun div-ygyKLtY (II)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public final fun getValue-pVg5ArA ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public static final fun minus-ygyKLtY (II)I
+	public static final fun plus-ygyKLtY (II)I
+	public static final fun times-ygyKLtY (II)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
 }
 
-public final class com/splendo/kaluga/base/utils/UIntExtensionsKt {
-	public static final fun decodeUInt ([BILcom/splendo/kaluga/base/utils/ByteOrder;)I
-	public static final fun isBitSet-qim9Vi0 (ILjava/lang/Number;)Z
-	public static final fun setBit-qim9Vi0 (ILjava/lang/Number;)I
-	public static final fun toByteArray-qim9Vi0 (ILcom/splendo/kaluga/base/utils/ByteOrder;)[B
+public final class com/splendo/kaluga/base/utils/UInt24$Companion {
+	public final fun getMAX_VALUE-CkuCWNI ()I
+	public final fun getMIN_VALUE-CkuCWNI ()I
 }
 
-public final class com/splendo/kaluga/base/utils/ULongExtensionsKt {
-	public static final fun decodeULong ([BILcom/splendo/kaluga/base/utils/ByteOrder;)J
-	public static final fun isBitSet-4PLdz1A (JLjava/lang/Number;)Z
-	public static final fun setBit-4PLdz1A (JLjava/lang/Number;)J
-	public static final fun toByteArray-4PLdz1A (JLcom/splendo/kaluga/base/utils/ByteOrder;)[B
-}
-
-public final class com/splendo/kaluga/base/utils/UShortExtensionsKt {
-	public static final fun decodeUShort ([BILcom/splendo/kaluga/base/utils/ByteOrder;)S
-	public static final fun isBitSet-vckuEUM (SLjava/lang/Number;)Z
-	public static final fun setBit-vckuEUM (SLjava/lang/Number;)S
-	public static final fun shl-vckuEUM (SI)S
-	public static final fun shr-vckuEUM (SI)S
-	public static final fun toByteArray-vckuEUM (SLcom/splendo/kaluga/base/utils/ByteOrder;)[B
+public final class com/splendo/kaluga/base/utils/UInt24Kt {
+	public static final fun toInt24-AwlQDGc (I)I
+	public static final fun toUInt24-WZ4Q5Ns (I)I
 }
 
 public final class com/splendo/kaluga/base/utils/UnitSystem : java/lang/Enum {
