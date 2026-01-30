@@ -73,23 +73,25 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
             }
             actions.forEach { apply(it) }
         }
-        // Calculate checksum if necessary
-        val checksum = binaryDescriptor.structureSettings.checksumAlgorithm?.let { crc ->
-            crc.compute(body).toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST).take(crc.byteWidth).let {
-                when (binaryDescriptor.byteOrder) {
-                    ByteOrder.MOST_SIGNIFICANT_FIRST -> it.reversed()
-                    ByteOrder.LEAST_SIGNIFICANT_FIRST -> it
-                }.toByteArray()
-            }
-        } ?: byteArrayOf()
+        val crc = binaryDescriptor.structureSettings.checksumAlgorithm
+        val additionalBytes = listOfNotNull(binaryDescriptor.structureSettings.prefix, binaryDescriptor.structureSettings.postfix).sumOf { it.array.size }
 
         // Full data consists of prefix + body + checksum + postfix
-        return buildByteArray(binaryDescriptor.byteOrder, binaryDescriptor.expectedSize) {
+        return buildByteArray(binaryDescriptor.byteOrder, binaryDescriptor.expectedSize + (crc?.byteWidth ?: 0) + additionalBytes) {
             binaryDescriptor.structureSettings.prefix?.let {
                 add(it.array)
             }
             add(body)
-            add(checksum)
+            crc?.let {
+                // Calculate checksum if necessary
+                val crcBytes = crc.compute(body).toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+                for (i in 0..<crc.byteWidth) {
+                    when (binaryDescriptor.byteOrder) {
+                        ByteOrder.MOST_SIGNIFICANT_FIRST -> add(crcBytes[crc.byteWidth - i - 1])
+                        ByteOrder.LEAST_SIGNIFICANT_FIRST -> add(crcBytes[i])
+                    }
+                }
+            }
             binaryDescriptor.structureSettings.postfix?.let {
                 add(it.array)
             }
@@ -133,8 +135,12 @@ class UnexpectedNullTermination(override val message: String) : SerializationExc
 /**
  * A [BinaryBuilder] to build data for a collection (List/Map) structure
  */
-internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder, private val classBuilders: List<ItemBinaryBuilder>, private val isNullTerminated: Boolean) :
-    BinaryBuilder {
+internal abstract class CollectionBinaryBuilder(
+    private val byteOrder: ByteOrder,
+    private val classBuilders: List<ItemBinaryBuilder>,
+    private val expectedSize: Int,
+    private val isNullTerminated: Boolean,
+) : BinaryBuilder {
     private var currentIndex = 0
     val currentClassBuilder: ItemBinaryBuilder get() = classBuilders[currentIndex]
 
@@ -155,15 +161,19 @@ internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder
         currentClassBuilder.makeUnconstrained()
     }
 
-    override fun build(): ByteArray = buildByteArray(byteOrder) {
-        classBuilders.forEachIndexed { index, classBuilder ->
-            val value = classBuilder.build()
+    override fun build(): ByteArray = if (classBuilders.isEmpty()) {
+        byteArrayOf()
+    } else {
+        buildByteArray(byteOrder, expectedSize) {
+            classBuilders.forEachIndexed { index, classBuilder ->
+                val value = classBuilder.build()
 
-            // Ensure no unexpected null termination occurs
-            if (isNullTerminated && classBuilder.binaryDescriptor.fieldIndex == 0 && classBuilder.checkIfStartsWithNull(value, byteOrder)) {
-                throw UnexpectedNullTermination("The element at $index starts with Null Byte in a Null Terminated List")
+                // Ensure no unexpected null termination occurs
+                if (isNullTerminated && classBuilder.binaryDescriptor.fieldIndex == 0 && classBuilder.checkIfStartsWithNull(value, byteOrder)) {
+                    throw UnexpectedNullTermination("The element at $index starts with Null Byte in a Null Terminated List")
+                }
+                add(value)
             }
-            add(value)
         }
     }
 }
@@ -177,6 +187,7 @@ internal class ListBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, si
         MutableList(size) {
             ItemBinaryBuilder(binaryDescriptor.children.first(), onUnconstrained)
         },
+        binaryDescriptor.children.first().expectedSize * size,
         isNullTerminated,
     )
 
@@ -190,5 +201,6 @@ internal class MapBinaryBuilder(binaryDescriptor: BluetoothBinaryDescriptor, siz
             val index = it % 2
             ItemBinaryBuilder(binaryDescriptor.children[index], onUnconstrained)
         },
+        (binaryDescriptor.children[0].expectedSize + binaryDescriptor.children[1].expectedSize) * size,
         isNullTerminated,
     )

@@ -244,7 +244,15 @@ annotation class Checksum(val width: Int, val polynomial: ULong, val init: ULong
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
 annotation class SerializedByteValue(val value: Byte)
 
+/**
+ * Annotation added for serializing using [BluetoothFormat]
+ *
+ * Can be added to elements to indicate the expected byte size required to store the value.
+ * The closer this is to the serialized size, the less copies are required during serialization.
+ *
+ * @property size the expected byte size. Must be larger than 0
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
-@Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS)
+@Target(AnnotationTarget.CLASS)
 annotation class ExpectedSize(val size: Int)
