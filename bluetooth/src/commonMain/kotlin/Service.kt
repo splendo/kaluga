@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.logging.ContextualLogger
 
@@ -58,17 +59,32 @@ interface Service : Attribute {
 
 /**
  * A [Service] that is accessed remotely by a bluetooth client using [Bluetooth]
- * @param service the [RemoteServiceWrapper] to access the platform service.
- * @param includedServices the list of [com.splendo.kaluga.bluetooth.RemoteService] this service includes.
- * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
- * @param logger the [ContextualLogger] to use for logging.
  */
-class RemoteService(
+class RemoteService internal constructor(
     service: RemoteServiceWrapper,
     override val includedServices: List<RemoteService>,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
-    logger: ContextualLogger,
+    logger: ConnectionSettings.ConnectionLogger.ServiceLogger,
 ) : Service {
+
+    /**
+     * Constructor
+     * @param service the [RemoteServiceWrapper] to access the platform service.
+     * @param includedServices the list of [com.splendo.kaluga.bluetooth.RemoteService] this service includes.
+     * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
+     * @param logger the [ContextualLogger] to use for logging.
+     */
+    constructor(
+        service: RemoteServiceWrapper,
+        includedServices: List<RemoteService>,
+        emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
+        logger: ContextualLogger,
+    ) : this(
+        service,
+        includedServices,
+        emitNewAction,
+        ConnectionSettings.ConnectionLogger.ServiceLogger(logger),
+    )
 
     override val uuid = service.uuid
     override val type = service.type
@@ -81,7 +97,7 @@ class RemoteService(
             it,
             service = this,
             emitNewAction = emitNewAction,
-            logger = logger.withAppendedContext("Service" to uuid.uuidString, "Characteristic" to it.uuid.uuidString),
+            logger = logger[it.uuid],
         )
     }
 }

@@ -19,10 +19,11 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.collections.concurrentMutableListOf
 import com.splendo.kaluga.base.utils.containsAny
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.serialization.BluetoothFormat
-import com.splendo.kaluga.logging.ContextualLogger
+import com.splendo.kaluga.logging.Logger
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import kotlinx.atomicfu.updateAndGet
@@ -53,21 +54,36 @@ interface Characteristic : Attribute {
 
 /**
  * A [Characteristic] [RemoteAttribute] that is accessed remotely by a bluetooth client using [Bluetooth]
- * @property wrapper the [RemoteCharacteristicWrapper] to access the platform characteristic
- * @property service the [RemoteService] this characteristic belongs to
- * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
- * @param logger the [ContextualLogger] to use for logging.
  */
-open class RemoteCharacteristic(
+open class RemoteCharacteristic internal constructor(
     val wrapper: RemoteCharacteristicWrapper,
     override val service: RemoteService,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
-    logger: ContextualLogger,
+    logger: ConnectionSettings.ConnectionLogger.CharacteristicLogger,
 ) : RemoteAttribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(
     emitNewAction,
     logger,
 ),
     Characteristic {
+
+    /**
+     * Constructor
+     * @property wrapper the [RemoteCharacteristicWrapper] to access the platform characteristic
+     * @property service the [RemoteService] this characteristic belongs to
+     * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
+     * @param logger the [Logger] to use for logging.
+     */
+    constructor(
+        wrapper: RemoteCharacteristicWrapper,
+        service: RemoteService,
+        emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
+        logger: Logger,
+    ) : this(
+        wrapper,
+        service,
+        emitNewAction,
+        ConnectionSettings.ConnectionLogger.CharacteristicLogger(logger),
+    )
 
     /**
      * Result from calling [RemoteCharacteristic.subscribe]
@@ -254,11 +270,13 @@ open class RemoteCharacteristic(
         subscriptions.forEach { it.onUpdate(value) }
     }
 
-    private fun unsubscribe(subscription: Subscription): DeviceAction.Notification? = if (subscriptions.remove(subscription) && subscriptions.isEmpty()) {
-        lastKnownValue = null
-        startDisableNotification()
-    } else {
-        null
+    private fun unsubscribe(subscription: Subscription): DeviceAction.Notification? = subscriptions.synchronized {
+        if (remove(subscription) && isEmpty()) {
+            lastKnownValue = null
+            startDisableNotification()
+        } else {
+            null
+        }
     }
 
     /**
@@ -362,7 +380,7 @@ open class RemoteCharacteristic(
             wrapper = it,
             characteristic = this,
             emitNewAction = emitNewAction,
-            logger = logger.withAppendedContext("Descriptor" to it.uuid.uuidString),
+            logger = logger[it.uuid],
         )
     }
 
@@ -424,10 +442,7 @@ sealed class CharacteristicProperty(val rawValue: Int, val encryptedValue: Int) 
 
     companion object {
 
-        /**
-         * Gets a [Set] of [CharacteristicProperty] from an [Int]
-         */
-        fun fromInt(properties: Int): Set<CharacteristicProperty> = setOf(
+        private val allProperties = setOf(
             Broadcast,
             Read,
             Write,
@@ -436,7 +451,12 @@ sealed class CharacteristicProperty(val rawValue: Int, val encryptedValue: Int) 
             Notify,
             Indicate,
             ExtendedProperties,
-        ).filter {
+        )
+
+        /**
+         * Gets a [Set] of [CharacteristicProperty] from an [Int]
+         */
+        fun fromInt(properties: Int): Set<CharacteristicProperty> = allProperties.filter {
             (properties and it.rawValue) != 0 || (properties and it.encryptedValue) != 0
         }.toSet()
     }

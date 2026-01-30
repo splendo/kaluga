@@ -72,8 +72,22 @@ fun ByteArray.decodeInt24(octetIndex: Int, byteOrder: ByteOrder): Int24 {
  * @param byteOrder the [ByteOrder] in which the [Int24] is encoded
  * @return the encoded [ByteArray].
  */
-fun Int24.toByteArray(byteOrder: ByteOrder) = ByteArray(Int24.SIZE_BYTES) {
-    (value shr byteOrder.shift(it, Int24.SIZE_BITS)).toByte()
+fun Int24.toByteArray(byteOrder: ByteOrder) = copyIntoByteArray(ByteArray(Int24.SIZE_BYTES), byteOrder = byteOrder)
+
+/**
+ * Encodes this [Int24] and copies it into a [ByteArray] at a given offset.
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @param byteOrder the [ByteOrder] in which the [Int24] is encoded
+ * @throws IllegalArgumentException if [array] is not  is not large enough to hold 3 bytes at the [offset].
+ * @return the encoded [ByteArray].
+ */
+fun Int24.copyIntoByteArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray {
+    require(array.size >= offset + Int24.SIZE_BYTES) { "Cannot copy into ByteArray. Must be at least ${offset + Int24.SIZE_BYTES} long" }
+    for (index in 0..<Int24.SIZE_BYTES) {
+        array[offset + index] = (value shr byteOrder.shift(index, Int24.SIZE_BITS)).toByte()
+    }
+    return array
 }
 
 /**

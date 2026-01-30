@@ -556,7 +556,7 @@ public final class com/splendo/kaluga/bluetooth/PairingUtilsKt {
 }
 
 public abstract class com/splendo/kaluga/bluetooth/RemoteAttribute : com/splendo/kaluga/bluetooth/Attribute {
-	public fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/ContextualLogger;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/Logger;)V
 	protected final fun addAction (Lcom/splendo/kaluga/bluetooth/device/DeviceAction;)V
 	public final fun read (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun read (Lkotlinx/serialization/DeserializationStrategy;Lcom/splendo/kaluga/bluetooth/serialization/BluetoothFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -573,7 +573,7 @@ public abstract class com/splendo/kaluga/bluetooth/RemoteAttribute : com/splendo
 }
 
 public class com/splendo/kaluga/bluetooth/RemoteCharacteristic : com/splendo/kaluga/bluetooth/RemoteAttribute, com/splendo/kaluga/bluetooth/Characteristic {
-	public fun <init> (Lcom/splendo/kaluga/bluetooth/RemoteCharacteristicWrapper;Lcom/splendo/kaluga/bluetooth/RemoteService;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/ContextualLogger;)V
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/RemoteCharacteristicWrapper;Lcom/splendo/kaluga/bluetooth/RemoteService;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/Logger;)V
 	public synthetic fun createReadAction$bluetooth_release ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Read;
 	public synthetic fun createWriteAction$bluetooth_release ([B)Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Write;
 	public final fun disableNotification (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -650,7 +650,7 @@ public final class com/splendo/kaluga/bluetooth/RemoteCharacteristicWrapper$Writ
 }
 
 public class com/splendo/kaluga/bluetooth/RemoteDescriptor : com/splendo/kaluga/bluetooth/RemoteAttribute, com/splendo/kaluga/bluetooth/Descriptor {
-	public fun <init> (Lcom/splendo/kaluga/bluetooth/RemoteDescriptorWrapper;Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/ContextualLogger;)V
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/RemoteDescriptorWrapper;Lcom/splendo/kaluga/bluetooth/RemoteCharacteristic;Lkotlin/jvm/functions/Function1;Lcom/splendo/kaluga/logging/Logger;)V
 	public synthetic fun createReadAction$bluetooth_release ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Read;
 	public synthetic fun createWriteAction$bluetooth_release ([B)Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Write;
 	public synthetic fun getCharacteristic ()Lcom/splendo/kaluga/bluetooth/Characteristic;
@@ -751,10 +751,8 @@ public abstract class com/splendo/kaluga/bluetooth/device/BaseDeviceConnectionMa
 	protected abstract fun didStartPerformingAction (Lcom/splendo/kaluga/bluetooth/device/DeviceAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	protected final fun getCurrentAction ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction;
-	protected final fun getDataLogger ()Lcom/splendo/kaluga/logging/ContextualLogger;
 	protected final fun getDeviceWrapper ()Lcom/splendo/kaluga/bluetooth/device/DeviceWrapper;
 	public fun getEvents ()Lkotlinx/coroutines/flow/Flow;
-	protected final fun getLogger ()Lcom/splendo/kaluga/logging/ContextualLogger;
 	protected final fun getNotifyingCharacteristics ()Lcom/splendo/kaluga/base/collections/ConcurrentMutableMap;
 	public synthetic fun getRssi ()Lkotlinx/coroutines/flow/Flow;
 	public fun getRssi ()Lkotlinx/coroutines/flow/SharedFlow;
@@ -929,20 +927,53 @@ public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectedDev
 }
 
 public final class com/splendo/kaluga/bluetooth/device/ConnectionSettings {
-	public fun <init> ()V
 	public fun <init> (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lcom/splendo/kaluga/logging/Logger;Lcom/splendo/kaluga/logging/Logger;)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lcom/splendo/kaluga/logging/Logger;Lcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;
-	public final fun component2 ()Lcom/splendo/kaluga/logging/Logger;
-	public final fun component3 ()Lcom/splendo/kaluga/logging/Logger;
-	public final fun copy (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lcom/splendo/kaluga/logging/Logger;Lcom/splendo/kaluga/logging/Logger;)Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;
-	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lcom/splendo/kaluga/logging/Logger;Lcom/splendo/kaluga/logging/Logger;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getDataLogger ()Lcom/splendo/kaluga/logging/Logger;
-	public final fun getLogger ()Lcom/splendo/kaluga/logging/Logger;
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lcom/splendo/kaluga/logging/Logger;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getReconnectionSettings ()Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectionSettings$CommonLoggerDSL {
+	public abstract fun getContextualLogger ()Lcom/splendo/kaluga/logging/ContextualLogger;
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL : com/splendo/kaluga/bluetooth/device/ConnectionSettings$CommonLoggerDSL {
+	public abstract fun logData (Lcom/splendo/kaluga/logging/ContextualLogger;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun logData$default (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL;Lcom/splendo/kaluga/logging/ContextualLogger;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun logState (Lcom/splendo/kaluga/logging/ContextualLogger;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun logState$default (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL;Lcom/splendo/kaluga/logging/ContextualLogger;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL$CharacteristicLoggerDSL : com/splendo/kaluga/bluetooth/device/ConnectionSettings$CommonLoggerDSL {
+	public fun defaultLoggerForDescriptor (Ljava/util/UUID;)Lcom/splendo/kaluga/logging/ContextualLogger;
+	public abstract fun logAnyDescriptor (Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun logAnyDescriptor$default (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL$CharacteristicLoggerDSL;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun logDescriptor (Ljava/util/UUID;Lcom/splendo/kaluga/logging/ContextualLogger;)V
+	public static synthetic fun logDescriptor$default (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL$CharacteristicLoggerDSL;Ljava/util/UUID;Lcom/splendo/kaluga/logging/ContextualLogger;ILjava/lang/Object;)V
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL$DataLoggerDSL : com/splendo/kaluga/bluetooth/device/ConnectionSettings$CommonLoggerDSL {
+	public fun defaultLoggerForService (Ljava/util/UUID;)Lcom/splendo/kaluga/logging/ContextualLogger;
+	public abstract fun logAnyService (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun logAnyService$default (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL$DataLoggerDSL;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun logService (Ljava/util/UUID;Lcom/splendo/kaluga/logging/ContextualLogger;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun logService$default (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL$DataLoggerDSL;Ljava/util/UUID;Lcom/splendo/kaluga/logging/ContextualLogger;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL$ServiceLoggerDSL : com/splendo/kaluga/bluetooth/device/ConnectionSettings$CommonLoggerDSL {
+	public fun defaultLoggerForCharacteristic (Ljava/util/UUID;)Lcom/splendo/kaluga/logging/ContextualLogger;
+	public abstract fun logAnyCharacteristic (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun logAnyCharacteristic$default (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL$ServiceLoggerDSL;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun logCharacteristic (Ljava/util/UUID;Lcom/splendo/kaluga/logging/ContextualLogger;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun logCharacteristic$default (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL$ServiceLoggerDSL;Ljava/util/UUID;Lcom/splendo/kaluga/logging/ContextualLogger;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL$StateLoggerDSL : com/splendo/kaluga/bluetooth/device/ConnectionSettings$CommonLoggerDSL {
+	public abstract fun logAction (Lcom/splendo/kaluga/logging/ContextualLogger;)V
+	public static synthetic fun logAction$default (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL$StateLoggerDSL;Lcom/splendo/kaluga/logging/ContextualLogger;ILjava/lang/Object;)V
+	public abstract fun logStateChangesBy (Lcom/splendo/kaluga/logging/ContextualLogger;)V
+	public static synthetic fun logStateChangesBy$default (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$LoggerDSL$StateLoggerDSL;Lcom/splendo/kaluga/logging/ContextualLogger;ILjava/lang/Object;)V
 }
 
 public abstract class com/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings {

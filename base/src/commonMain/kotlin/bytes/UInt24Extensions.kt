@@ -46,12 +46,26 @@ fun ByteArray.decodeUInt24(octetIndex: Int, byteOrder: ByteOrder): UInt24 {
 }
 
 /**
- * Encodes this [Int24] into a [ByteArray].
- * @param byteOrder the [ByteOrder] in which the [Int24] is encoded
+ * Encodes this [UInt24] into a [ByteArray].
+ * @param byteOrder the [ByteOrder] in which the [UInt24] is encoded
  * @return the encoded [ByteArray].
  */
-fun UInt24.toByteArray(byteOrder: ByteOrder) = ByteArray(UInt24.SIZE_BYTES) {
-    (value shr byteOrder.shift(it, UInt24.SIZE_BITS)).toByte()
+fun UInt24.toByteArray(byteOrder: ByteOrder) = copyIntoByteArray(ByteArray(UInt24.SIZE_BYTES), byteOrder = byteOrder)
+
+/**
+ * Encodes this [UInt24] and copies it into a [ByteArray] at a given offset.
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @param byteOrder the [ByteOrder] in which the [UInt24] is encoded
+ * @throws IllegalArgumentException if [array] is not  is not large enough to hold 3 bytes at the [offset].
+ * @return the encoded [ByteArray].
+ */
+fun UInt24.copyIntoByteArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray {
+    require(array.size >= offset + UInt24.SIZE_BYTES) { "Cannot copy into ByteArray. Must be at least ${offset + UInt24.SIZE_BYTES} long" }
+    for (index in 0..<UInt24.SIZE_BYTES) {
+        array[offset + index] = (value shr byteOrder.shift(index, UInt24.SIZE_BITS)).toByte()
+    }
+    return array
 }
 
 /**

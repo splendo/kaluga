@@ -57,12 +57,22 @@ fun ByteArray.decodeMedFloat32(octetIndex: Int): MedFloat32 {
  * Encodes this [MedFloat32] into a [ByteArray].
  * @return the encoded [ByteArray].
  */
-fun MedFloat32.toByteArray(): ByteArray {
-    if (value.isNaN()) return MedFloat32.NAN_BYTE_VALUE
+fun MedFloat32.toByteArray() = copyIntoByteArray(ByteArray(4))
 
-    if (value == Double.POSITIVE_INFINITY) return MedFloat32.POSITIVE_INFINITY_BYTE_VALUE
+/**
+ * Encodes this [MedFloat32] and copies it into a [ByteArray] at a given offset.
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @throws IllegalArgumentException if [array] is not  is not large enough to hold 4 bytes at the [offset].
+ * @return the encoded [ByteArray].
+ */
+fun MedFloat32.copyIntoByteArray(array: ByteArray, offset: Int = 0): ByteArray {
+    require(array.size >= offset + 4) { "Cannot copy into ByteArray. Must be at least ${offset + 4} long" }
+    if (value.isNaN()) return MedFloat32.NAN_BYTE_VALUE.copyInto(array, offset)
 
-    if (value == Double.NEGATIVE_INFINITY) return MedFloat32.NEGATIVE_INFINITY_BYTE_VALUE
+    if (value == Double.POSITIVE_INFINITY) return MedFloat32.POSITIVE_INFINITY_BYTE_VALUE.copyInto(array, offset)
+
+    if (value == Double.NEGATIVE_INFINITY) return MedFloat32.NEGATIVE_INFINITY_BYTE_VALUE.copyInto(array, offset)
     var mantissa = value
     var exponent = 0
 
@@ -87,15 +97,14 @@ fun MedFloat32.toByteArray(): ByteArray {
     }
 
     if (mantissa.toInt() !in Int24.MIN_VALUE.value..Int24.MAX_VALUE.value) {
-        return MedFloat32.NOT_AT_THIS_RESOLUTION_BYTE_VALUE
+        return MedFloat32.NOT_AT_THIS_RESOLUTION_BYTE_VALUE.copyInto(array, offset)
     }
 
     val mant = mantissa.toInt()
 
-    return byteArrayOf(
-        (mant and 0xFF).toByte(),
-        ((mant shr 8) and 0xFF).toByte(),
-        ((mant shr 16) and 0xFF).toByte(),
-        exponent.toByte(),
-    )
+    array[offset] = (mant and 0xFF).toByte()
+    array[offset + 1] = ((mant shr 8) and 0xFF).toByte()
+    array[offset + 2] = ((mant shr 16) and 0xFF).toByte()
+    array[offset + 3] = exponent.toByte()
+    return array
 }
