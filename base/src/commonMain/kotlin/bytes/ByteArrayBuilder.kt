@@ -334,7 +334,7 @@ private class ByteArrayBuilderImpl(expectedSize: Int, override val byteOrder: By
 
         val remaining = currentChunk.size - currentByteOffset
         when {
-            expectedSize in 1..remaining -> {
+            expectedSize in 1..<remaining -> {
                 generateIntoMethod(
                     when (byteOrder) {
                         ByteOrder.MOST_SIGNIFICANT_FIRST -> remaining - expectedSize
