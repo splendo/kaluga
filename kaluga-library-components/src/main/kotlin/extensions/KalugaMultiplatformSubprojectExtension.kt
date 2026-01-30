@@ -414,7 +414,6 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                         optIn("kotlinx.serialization.ExperimentalSerializationApi")
                     }
                     enableLanguageFeature("InlineClasses")
-                    enableLanguageFeature("ExplicitBackingFields")
                 }
             }
             project.setupPublishingAfterEvaluation()

@@ -353,7 +353,7 @@ private class ByteArrayBuilderImpl(expectedSize: Int, override val byteOrder: By
                         currentByteOffset += splitIndex
                         if (splitIndex < fullSegment.size) {
                             completedChunks.add(currentChunk)
-                            completedChunks.add(fullSegment.copyInto(ByteArray(fullSegment.size - splitIndex), 0, splitIndex))
+                            completedChunks.add(fullSegment.sliceArray(splitIndex..<fullSegment.size))
                             currentChunk = ByteArray(currentChunk.size * 2)
                             currentByteOffset = 0
                         }
@@ -364,7 +364,7 @@ private class ByteArrayBuilderImpl(expectedSize: Int, override val byteOrder: By
                         currentByteOffset += splitIndex
                         if (splitIndex < fullSegment.size) {
                             completedChunks.add(currentChunk)
-                            completedChunks.add(fullSegment.copyInto(ByteArray(fullSegment.size - splitIndex), endIndex = fullSegment.size - splitIndex))
+                            completedChunks.add(fullSegment.sliceArray(0..<fullSegment.size - splitIndex))
                             currentChunk = ByteArray(currentChunk.size * 2)
                             currentByteOffset = 0
                         }
