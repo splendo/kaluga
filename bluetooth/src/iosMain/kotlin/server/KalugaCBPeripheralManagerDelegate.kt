@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.server
 
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
@@ -25,6 +26,8 @@ import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.logging.warn
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.atomicfu.locks.withLock
 import kotlinx.cinterop.ObjCSignatureOverride
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineName
@@ -64,13 +67,15 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
         return didStartAdvertising
     }
 
-    private var available = CompletableDeferred<Unit>()
+    private var available = EmptyCompletableDeferred()
     fun resetAvailable(): Deferred<Unit> {
         if (!available.isCompleted) {
             available = CompletableDeferred()
         }
         return available
     }
+
+    private val lock = reentrantLock()
 
     private val readActions = mutableMapOf<CBCharacteristic, suspend (ConnectedDevice, Int) -> GattResponse.ReadResponse>()
     private val writeActions = mutableMapOf<CBCharacteristic, suspend (ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse>()
@@ -79,7 +84,7 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
 
     private val handlingScope = CoroutineScope(handlingContext + CoroutineName("CBPeripheralManagerDelegate"))
 
-    fun registerReadAction(characteristic: LocalCharacteristic, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse) {
+    fun registerReadAction(characteristic: LocalCharacteristic, onRead: suspend LocalCharacteristic.(ConnectedDevice, Int) -> GattResponse.ReadResponse) = lock.withLock {
         val identifier = characteristic.wrapper.characteristic
         if (readActions.contains(identifier)) {
             logger.warn(TAG) { "Read action for $identifier was already set. Ignoring" }
@@ -88,16 +93,17 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
         }
     }
 
-    fun registerWriteAction(characteristic: LocalCharacteristic, onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse) {
-        val identifier = characteristic.wrapper.characteristic
-        if (writeActions.contains(identifier)) {
-            logger.warn(TAG) { "Write action for $identifier was already set. Ignoring" }
-        } else {
-            writeActions[identifier] = { device, offset, value -> characteristic.onWrite(device, offset, value) }
+    fun registerWriteAction(characteristic: LocalCharacteristic, onWrite: suspend LocalCharacteristic.(ConnectedDevice, ByteArray, Int) -> GattResponse.WriteResponse) =
+        lock.withLock {
+            val identifier = characteristic.wrapper.characteristic
+            if (writeActions.contains(identifier)) {
+                logger.warn(TAG) { "Write action for $identifier was already set. Ignoring" }
+            } else {
+                writeActions[identifier] = { device, offset, value -> characteristic.onWrite(device, offset, value) }
+            }
         }
-    }
 
-    fun registerSubscriptionActions(characteristic: LocalCharacteristic.Notifiable) {
+    fun registerSubscriptionActions(characteristic: LocalCharacteristic.Notifiable) = lock.withLock {
         val identifier = characteristic.wrapper.characteristic
         when {
             subscribeActions.contains(identifier) -> logger.warn(TAG) { "Subscribe action for $identifier was already set. Ignoring" }
@@ -113,12 +119,14 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
 
     fun removeService(service: CBService) {
         service.includedServices.orEmpty().typedList<CBService>().forEach(::removeService)
-        readActions -= readActions.keys.filter { it.service == service.UUID }.toSet()
-        writeActions -= writeActions.keys.filter { it.service == service.UUID }.toSet()
-        subscribeActions -= subscribeActions.keys.filter { it.service == service.UUID }.toSet()
+        lock.withLock {
+            readActions -= readActions.keys.filter { it.service == service.UUID }.toSet()
+            writeActions -= writeActions.keys.filter { it.service == service.UUID }.toSet()
+            subscribeActions -= subscribeActions.keys.filter { it.service == service.UUID }.toSet()
+        }
     }
 
-    fun removeAllServices() {
+    fun removeAllServices() = lock.withLock {
         readActions.clear()
         writeActions.clear()
         subscribeActions.clear()

@@ -34,3 +34,13 @@ fun ByteArray.decodeFloat(octetIndex: Int, byteOrder: ByteOrder): Float = Float.
  * @return [ByteArray] representing the [Float]
  */
 fun Float.toByteArray(byteOrder: ByteOrder) = toRawBits().toByteArray(byteOrder)
+
+/**
+ * Encodes this [Float] and copies it into a [ByteArray] at a given offset.
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @param byteOrder the [ByteOrder] in which the [Float] is encoded
+ * @throws IllegalArgumentException if [array] is not  is not large enough to hold 4 bytes at the [offset].
+ * @return the encoded [ByteArray].
+ */
+fun Float.copyIntoByteArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray = toRawBits().copyIntoByteArray(array, offset, byteOrder)

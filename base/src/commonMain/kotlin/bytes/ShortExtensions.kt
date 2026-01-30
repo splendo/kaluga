@@ -40,8 +40,22 @@ fun ByteArray.decodeShort(octetIndex: Int, byteOrder: ByteOrder): Short {
  * @param byteOrder the [ByteOrder] in which the [Short] is encoded
  * @return the encoded [ByteArray].
  */
-fun Short.toByteArray(byteOrder: ByteOrder) = ByteArray(Short.SIZE_BYTES) {
-    (this shr byteOrder.shift(it, Short.SIZE_BITS)).toByte()
+fun Short.toByteArray(byteOrder: ByteOrder) = copyIntoByteArray(ByteArray(Short.SIZE_BYTES), byteOrder = byteOrder)
+
+/**
+ * Encodes this [Short] and copies it into a [ByteArray] at a given offset.
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @param byteOrder the [ByteOrder] in which the [Short] is encoded
+ * @throws IllegalArgumentException if [array] is not  is not large enough to hold 2 bytes at the [offset].
+ * @return the encoded [ByteArray].
+ */
+fun Short.copyIntoByteArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray {
+    require(array.size >= offset + Short.SIZE_BYTES) { "Cannot copy into ByteArray. Must be at least ${offset + Short.SIZE_BYTES} long" }
+    for (index in 0..<Short.SIZE_BYTES) {
+        array[offset + index] = (this shr byteOrder.shift(index, Short.SIZE_BITS)).toByte()
+    }
+    return array
 }
 
 /**

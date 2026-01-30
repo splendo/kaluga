@@ -76,10 +76,20 @@ fun ByteArray.decodeMedFloat16(octetIndex: Int): MedFloat16 {
  * Encodes this [MedFloat16] into a [ByteArray].
  * @return the encoded [ByteArray].
  */
-fun MedFloat16.toByteArray(): ByteArray {
-    if (value.isNaN()) return MedFloat16.NAN_BYTE_VALUE
-    if (value == Double.POSITIVE_INFINITY) return MedFloat16.POSITIVE_INFINITY_BYTE_VALUE
-    if (value == Double.NEGATIVE_INFINITY) return MedFloat16.NEGATIVE_INFINITY_BYTE_VALUE
+fun MedFloat16.toByteArray(): ByteArray = copyIntoByteArray(ByteArray(2))
+
+/**
+ * Encodes this [MedFloat16] and copies it into a [ByteArray] at a given offset.
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @throws IllegalArgumentException if [array] is not  is not large enough to hold 2 bytes at the [offset].
+ * @return the encoded [ByteArray].
+ */
+fun MedFloat16.copyIntoByteArray(array: ByteArray, offset: Int = 0): ByteArray {
+    require(array.size >= offset + 2) { "Cannot copy into ByteArray. Must be at least ${offset + 2} long" }
+    if (value.isNaN()) return MedFloat16.NAN_BYTE_VALUE.copyInto(array, offset)
+    if (value == Double.POSITIVE_INFINITY) return MedFloat16.POSITIVE_INFINITY_BYTE_VALUE.copyInto(array, offset)
+    if (value == Double.NEGATIVE_INFINITY) return MedFloat16.NEGATIVE_INFINITY_BYTE_VALUE.copyInto(array, offset)
     var mantissa = value
     var exponent = 0
 
@@ -103,7 +113,7 @@ fun MedFloat16.toByteArray(): ByteArray {
     }
 
     if (mantissa.toInt() !in MedFloat16.MIN_MANTISSA..MedFloat16.MAX_MANTISSA) {
-        return MedFloat16.NOT_AT_THIS_RESOLUTION_BYTE_VALUE
+        return MedFloat16.NOT_AT_THIS_RESOLUTION_BYTE_VALUE.copyInto(array, offset)
     }
 
     val mant = mantissa.toInt()
@@ -111,8 +121,7 @@ fun MedFloat16.toByteArray(): ByteArray {
 
     val raw = (exp shl 12) or (mant and 0x0FFF)
 
-    return byteArrayOf(
-        (raw and 0xFF).toByte(),
-        ((raw shr 8) and 0xFF).toByte(),
-    )
+    array[offset] = (raw and 0xFF).toByte()
+    array[offset + 1] = ((raw shr 8) and 0xFF).toByte()
+    return array
 }
