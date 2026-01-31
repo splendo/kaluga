@@ -101,6 +101,14 @@ sealed class BluetoothFormat(private val validateChecksum: Boolean, override val
         val flag = BluetoothBinaryDescriptorRegistry.bluetoothBinaryDescriptor(serializer.descriptor, serializersModule)
         val builder = object : BinaryBuilder {
             val flags = MutableList(maxOf(flag.bitIndex + flag.bitWidth, 0)) { false }
+
+            override val expectedSize: Int
+                get() = totalBodySize
+            private var currentBits: Int = flags.size % Byte.SIZE_BITS
+            private var expectedBodySize: Int = flags.size / Byte.SIZE_BITS
+
+            private val totalBodySize: Int get() = expectedBodySize +
+                if (currentBits > 0) 1 else 0
             private val actions = mutableListOf<ByteArrayBuilder.() -> Unit>()
             private var isOfUnconstrainedSize: Boolean = false
 
@@ -108,8 +116,29 @@ sealed class BluetoothFormat(private val validateChecksum: Boolean, override val
                 flags[index] = value
             }
 
-            override fun addAction(action: ByteArrayBuilder.() -> Unit) {
-                require(!isOfUnconstrainedSize) { "This object has data of an unconstrained size." }
+            override fun addBit(value: Boolean) {
+                if (isOfUnconstrainedSize) {
+                    throw DataAfterUnconstrainedData("Attempted to add data after data of an unconstrained size")
+                }
+                currentBits++
+                if (currentBits == Byte.SIZE_BITS) {
+                    expectedBodySize++
+                    currentBits = 0
+                }
+                actions += {
+                    add(value)
+                }
+            }
+
+            override fun addAction(expectedSize: Int, action: ByteArrayBuilder.() -> Unit) {
+                if (isOfUnconstrainedSize) {
+                    throw DataAfterUnconstrainedData("Attempted to add data after data of an unconstrained size")
+                }
+                if (currentBits > 0) {
+                    expectedBodySize++
+                    currentBits = 0
+                }
+                expectedBodySize += expectedSize
                 actions += action
             }
 
@@ -117,15 +146,27 @@ sealed class BluetoothFormat(private val validateChecksum: Boolean, override val
                 isOfUnconstrainedSize = true
             }
 
-            override fun build(): ByteArray = buildByteArray(flag.byteOrder, flag.expectedSize) {
-                flags.forEach { add(it) }
-                actions.forEach { apply(it) }
+            override fun ByteArrayBuilder.build() {
+                if (flag.byteOrder == byteOrder) {
+                    flags.forEach { add(it) }
+                    actions.forEach { apply(it) }
+                } else {
+                    add(
+                        buildByteArray(flag.byteOrder, expectedSize) {
+                            build()
+                        },
+                    )
+                }
             }
         }
         val encoder = BluetoothBinaryEncoder(flag, builder, serializersModule)
         serializer.serialize(encoder, value)
 
-        return builder.build()
+        return buildByteArray(flag.byteOrder, builder.expectedSize) {
+            with(builder) {
+                build()
+            }
+        }
     }
 
     override fun <T> decodeFromByteArray(deserializer: DeserializationStrategy<T>, bytes: ByteArray): T {
