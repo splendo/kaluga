@@ -33,6 +33,8 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.SERVICE
 import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
+import com.splendo.kaluga.bluetooth.ksp.helpers.nullIfPropertyIsNull
+import com.splendo.kaluga.bluetooth.ksp.helpers.orNullIfNullable
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -132,12 +134,14 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
                     .returns(className.copy(nullable = true))
                     .addCode(
                         CodeBlock.builder()
-                            .beginControlFlow("$RETURN $DISCOVERED_SERVICES.%M(%T.$UUID)?.let",
+                            .beginControlFlow(
+                                "$RETURN $DISCOVERED_SERVICES.%M(%T.$UUID)?.let",
                                 References.Bluetooth.getOrNull,
-                                interfaceName)
+                                interfaceName,
+                            )
                             .addStatement("%T(it${needsFormatter.functionArgument})", className)
                             .endControlFlow()
-                            .build()
+                            .build(),
                     )
                     .build(),
             )
@@ -158,6 +162,28 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
                     )
                     .build(),
             )
+            .addFunction(
+                FunSpec.builder("$FROM_SERVICE$OR_NULL")
+                    .addParameters(
+                        listOfNotNull(
+                            ParameterSpec(SERVICE, References.Bluetooth.remoteService),
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
+                        ),
+                    )
+                    .returns(className.copy(nullable = true))
+                    .addCode(
+                        CodeBlock.builder()
+                            .beginControlFlow(
+                                "$RETURN $SERVICE.includedServices.%M(%T.$UUID)?.let",
+                                References.Bluetooth.getOrNull,
+                                interfaceName,
+                            )
+                            .addStatement("%T(it${needsFormatter.functionArgument})", className)
+                            .endControlFlow()
+                            .build(),
+                    )
+                    .build(),
+            )
             .build()
 
     override fun generateSimulated(nested: List<TypeSpec>): TypeSpec {
@@ -173,7 +199,7 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
                             if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class)) {
                                 ParameterSpec(
                                     propertyDeclaration.simpleName.asString(),
-                                    NameHelper.nameFor(typeDeclaration, GenerationType.CLIENT_SIMULATOR),
+                                    NameHelper.nameFor(typeDeclaration, GenerationType.CLIENT_SIMULATOR).nullIfPropertyIsNull(propertyDeclaration),
                                 )
                             } else {
                                 null
@@ -184,7 +210,7 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
                                 if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothCharacteristic::class)) {
                                     ParameterSpec(
                                         propertyDeclaration.simpleName.asString(),
-                                        NameHelper.nameFor(typeDeclaration, GenerationType.CLIENT_SIMULATOR),
+                                        NameHelper.nameFor(typeDeclaration, GenerationType.CLIENT_SIMULATOR).nullIfPropertyIsNull(propertyDeclaration),
                                     )
                                 } else {
                                     null
@@ -230,7 +256,7 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
     private fun generateServiceOrCharacteristicProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec =
         PropertySpec.builder(
             propertyDeclaration.simpleName.asString(),
-            NameHelper.clientName(typeDeclaration, type),
+            NameHelper.clientName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration),
         )
             .addModifiers(
                 *type.additionalModifiers.toTypedArray(),
@@ -241,7 +267,7 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
 
                     GenerationType.Type.BLUETOOTH -> {
                         initializer(
-                            "%T.$FROM_SERVICE($SERVICE${NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration).functionArgument})",
+                            "%T.$FROM_SERVICE${propertyDeclaration.orNullIfNullable}($SERVICE${NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration).functionArgument})",
                             NameHelper.clientName(typeDeclaration, type),
                         )
                     }

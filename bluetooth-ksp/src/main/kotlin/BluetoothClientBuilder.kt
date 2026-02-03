@@ -31,6 +31,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
 import com.splendo.kaluga.bluetooth.ksp.helpers.SIMULATED
+import com.splendo.kaluga.bluetooth.ksp.helpers.nullIfPropertyIsNull
 import com.splendo.kaluga.bluetooth.ksp.helpers.orNullIfNullable
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -138,7 +139,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
                             if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class)) {
                                 ParameterSpec(
                                     propertyDeclaration.simpleName.asString(),
-                                    NameHelper.nameFor(typeDeclaration, GenerationType.CLIENT_SIMULATOR),
+                                    NameHelper.nameFor(typeDeclaration, GenerationType.CLIENT_SIMULATOR).nullIfPropertyIsNull(propertyDeclaration),
                                 )
                             } else {
                                 null
@@ -170,7 +171,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
     private fun generateServiceProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec =
         PropertySpec.builder(
             propertyDeclaration.simpleName.asString(),
-            NameHelper.clientName(typeDeclaration, type).copy(nullable = propertyDeclaration.type.resolve().isMarkedNullable),
+            NameHelper.clientName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration),
         )
             .addModifiers(*type.additionalModifiers.toTypedArray())
             .apply {
@@ -179,9 +180,9 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
 
                     GenerationType.Type.BLUETOOTH -> {
                         initializer(
-                            "%T.${BluetoothRemoteServiceBuilder.FROM_DISCOVERED_SERVICES}${propertyDeclaration.orNullIfNullable}(${DISCOVERED_SERVICES}${NeedsFormatterHelper.needsBluetoothFormatter(
-                                typeDeclaration,
-                            ).functionArgument})",
+                            "%T.${BluetoothRemoteServiceBuilder.FROM_DISCOVERED_SERVICES}${propertyDeclaration.orNullIfNullable}(" +
+                                "${DISCOVERED_SERVICES}${NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration).functionArgument}" +
+                                ")",
                             NameHelper.clientName(typeDeclaration, type),
                         )
                     }

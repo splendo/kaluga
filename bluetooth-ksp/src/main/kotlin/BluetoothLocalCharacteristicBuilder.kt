@@ -61,11 +61,14 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
 import com.splendo.kaluga.bluetooth.ksp.helpers.isNotifiable
 import com.splendo.kaluga.bluetooth.ksp.helpers.isReadable
 import com.splendo.kaluga.bluetooth.ksp.helpers.isWritable
+import com.splendo.kaluga.bluetooth.ksp.helpers.nullIfPropertyIsNull
 import com.splendo.kaluga.bluetooth.ksp.helpers.onReadMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.onWriteMethodName
+import com.splendo.kaluga.bluetooth.ksp.helpers.optionalChainIfNullable
 import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.splendo.kaluga.bluetooth.ksp.helpers.subscribeMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.unsubscribeMethodName
+import com.splendo.kaluga.bluetooth.ksp.helpers.withLetIfNull
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -155,7 +158,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                 } else if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class)) {
                     addProperty(
                         propertyDeclaration.delegateParameterName,
-                        NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_API).nestedClass(DELEGATE),
+                        NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_API).nestedClass(DELEGATE).nullIfPropertyIsNull(propertyDeclaration),
                     )
                 } else {
                     logger.error(
@@ -336,10 +339,15 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                             typeDeclaration,
                                             NeedsFormatterHelper.Target.SERVER_DSL,
                                         )
-                                        addStatement(
-                                            "%T.$CONFIGURE($THIS, $delegateParameterName.${propertyDeclaration.delegateParameterName}${descriptorNeedsFormatter.functionArgument})",
-                                            NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_BLUETOOTH),
-                                        )
+                                        withLetIfNull(
+                                            "$delegateParameterName.${propertyDeclaration.delegateParameterName}",
+                                            property = propertyDeclaration,
+                                        ) { property ->
+                                            addStatement(
+                                                "%T.$CONFIGURE($THIS, $property${descriptorNeedsFormatter.functionArgument})",
+                                                NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_BLUETOOTH),
+                                            )
+                                        }
                                     } else {
                                         logger.error(
                                             "Only @${Readable::class.simpleName}, @${Writable::class.simpleName}, @${WritableWithoutResponse::class.simpleName}, @${WritableSigned::class.simpleName}, @${Notifiable::class.simpleName}, @${Indicatable::class.simpleName} and @${BluetoothDescriptor::class.simpleName} properties can be declared",
@@ -561,10 +569,11 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
 
                         val descriptorCode =
                             properties.mapNotNull { propertyDeclaration ->
-                                val typeDeclaration = propertyDeclaration.type.resolve().declaration
+                                val type = propertyDeclaration.type.resolve()
+                                val typeDeclaration = type.declaration
                                 if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class)) {
                                     CodeBlock.of(
-                                        "${propertyDeclaration.simpleName.asString()} = ${propertyDeclaration.simpleName.asString()}.$GENERATE_REMOTE($IDENTIFIER)",
+                                        "${propertyDeclaration.simpleName.asString()} = ${propertyDeclaration.simpleName.asString()}${propertyDeclaration.optionalChainIfNullable}.$GENERATE_REMOTE($IDENTIFIER)",
                                     )
                                 } else {
                                     null
@@ -835,7 +844,10 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
     }
 
     private fun generateDescriptorProperty(propertyDeclaration: KSPropertyDeclaration, typeDeclaration: KSClassDeclaration, type: GenerationType.Type): PropertySpec =
-        PropertySpec.builder(propertyDeclaration.simpleName.asString(), NameHelper.serverName(typeDeclaration, type))
+        PropertySpec.builder(
+            propertyDeclaration.simpleName.asString(),
+            NameHelper.serverName(typeDeclaration, type).nullIfPropertyIsNull(propertyDeclaration),
+        )
             .addModifiers(*type.additionalModifiers.toTypedArray())
             .apply {
                 when (type) {
@@ -855,10 +867,14 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
 
                     GenerationType.Type.SIMULATOR -> {
                         initializer(
-                            CodeBlock.of(
-                                "%T(${declaration.delegateParameterName}.${propertyDeclaration.delegateParameterName}, $IS_CLOSED)",
-                                NameHelper.serverName(typeDeclaration, type),
-                            ),
+                            CodeBlock.builder()
+                                .withLetIfNull("${declaration.delegateParameterName}.${propertyDeclaration.delegateParameterName}", propertyDeclaration) { property ->
+                                    addStatement(
+                                        "%T($property, $IS_CLOSED)",
+                                        NameHelper.serverName(typeDeclaration, type),
+                                    )
+                                }
+                                .build(),
                         )
                     }
                 }

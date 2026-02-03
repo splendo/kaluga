@@ -67,8 +67,7 @@ const val IS_CLOSED = "isClosed"
 
 val KSDeclaration.delegateParameterName: String get() = "${simpleName.asString().replaceFirstChar { it.lowercase() }}$DELEGATE"
 
-val KSPropertyDeclaration.orNullIfNullable: String get() = if (type.resolve().isMarkedNullable) OR_NULL else ""
-
+val KSPropertyDeclaration.orNullIfNullable: String get() = if (isNullable) OR_NULL else ""
 
 val KSPropertyDeclaration.onReadMethodName: String get() = "$ON_READ${simpleName.asString().replaceFirstChar { it.uppercase() }}"
 val KSPropertyDeclaration.onWriteMethodName: String get() = "$ON_WRITE${simpleName.asString().replaceFirstChar { it.uppercase() }}"

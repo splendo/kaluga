@@ -31,6 +31,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.DESCRIPTOR
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
+import com.splendo.kaluga.bluetooth.ksp.helpers.OR_NULL
 import com.splendo.kaluga.bluetooth.ksp.helpers.READ
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
@@ -42,6 +43,7 @@ import com.splendo.kaluga.bluetooth.ksp.helpers.onReadMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.onWriteMethodName
 import com.splendo.kaluga.bluetooth.ksp.helpers.serializer
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
@@ -87,7 +89,7 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                             ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
                         ),
 
-                        )
+                    )
                     .build(),
             )
             .addSuperinterface(interfaceName)
@@ -127,8 +129,29 @@ internal class BluetoothRemoteDescriptorBuilder(declaration: KSClassDeclaration,
                     )
                     .build(),
             )
+            .addFunction(
+                FunSpec.builder("$FROM_CHARACTERISTIC$OR_NULL")
+                    .addParameters(
+                        listOfNotNull(
+                            ParameterSpec(CHARACTERISTIC, References.Bluetooth.remoteCharacteristic),
+                            ParameterSpec(FORMAT, References.Bluetooth.Serialization.bluetoothFormat).takeIf { needsFormatter.needsFormatter },
+                        ),
+                    )
+                    .returns(className.copy(nullable = true))
+                    .addCode(
+                        CodeBlock.builder()
+                            .beginControlFlow(
+                                "$RETURN $CHARACTERISTIC.descriptors.%M(%T.$UUID)?.let",
+                                References.Bluetooth.getOrNull,
+                                interfaceName,
+                            )
+                            .addStatement("%T(it${needsFormatter.functionArgument})", className)
+                            .endControlFlow()
+                            .build(),
+                    )
+                    .build(),
+            )
             .build()
-
 
     override fun generateSimulated(nested: List<TypeSpec>): TypeSpec {
         val className = NameHelper.nameFor(declaration, GenerationType.CLIENT_SIMULATOR)
