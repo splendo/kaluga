@@ -11,6 +11,7 @@ public final class com/splendo/kaluga/test/bluetooth/AndroidMockCharacteristicWr
 	public fun getWriteType ()Lcom/splendo/kaluga/bluetooth/RemoteCharacteristicWrapper$WriteType;
 	public fun setValue ([B)V
 	public fun setWriteType (Lcom/splendo/kaluga/bluetooth/RemoteCharacteristicWrapper$WriteType;)V
+	public fun updateValue ([B)V
 }
 
 public final class com/splendo/kaluga/test/bluetooth/AndroidMockDescriptorWrapper : com/splendo/kaluga/test/bluetooth/MockDescriptorWrapper {
@@ -21,6 +22,7 @@ public final class com/splendo/kaluga/test/bluetooth/AndroidMockDescriptorWrappe
 	public fun getUuid ()Ljava/util/UUID;
 	public fun getValue ()[B
 	public fun setValue ([B)V
+	public fun updateValue ([B)V
 }
 
 public final class com/splendo/kaluga/test/bluetooth/Android_mocksKt {
@@ -34,6 +36,10 @@ public abstract interface class com/splendo/kaluga/test/bluetooth/ContainsMockVa
 	public abstract fun getValue ()[B
 	public abstract fun setValue ([B)V
 	public fun updateValue ([B)V
+}
+
+public final class com/splendo/kaluga/test/bluetooth/ContainsMockValue$DefaultImpls {
+	public static fun updateValue (Lcom/splendo/kaluga/test/bluetooth/ContainsMockValue;[B)V
 }
 
 public final class com/splendo/kaluga/test/bluetooth/MockBluetoothGattWrapper : com/splendo/kaluga/bluetooth/device/BluetoothGattWrapper {
@@ -107,11 +113,19 @@ public final class com/splendo/kaluga/test/bluetooth/MockCharacteristic : com/sp
 public abstract interface class com/splendo/kaluga/test/bluetooth/MockCharacteristicWrapper : com/splendo/kaluga/bluetooth/RemoteCharacteristicWrapper, com/splendo/kaluga/test/bluetooth/ContainsMockValue {
 }
 
+public final class com/splendo/kaluga/test/bluetooth/MockCharacteristicWrapper$DefaultImpls {
+	public static fun updateValue (Lcom/splendo/kaluga/test/bluetooth/MockCharacteristicWrapper;[B)V
+}
+
 public final class com/splendo/kaluga/test/bluetooth/MockDescriptor : com/splendo/kaluga/bluetooth/RemoteDescriptor {
 	public fun <init> (Lcom/splendo/kaluga/bluetooth/RemoteDescriptorWrapper;Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface class com/splendo/kaluga/test/bluetooth/MockDescriptorWrapper : com/splendo/kaluga/bluetooth/RemoteDescriptorWrapper, com/splendo/kaluga/test/bluetooth/ContainsMockValue {
+}
+
+public final class com/splendo/kaluga/test/bluetooth/MockDescriptorWrapper$DefaultImpls {
+	public static fun updateValue (Lcom/splendo/kaluga/test/bluetooth/MockDescriptorWrapper;[B)V
 }
 
 public final class com/splendo/kaluga/test/bluetooth/MockDeviceBuilder {
@@ -320,6 +334,8 @@ public final class com/splendo/kaluga/test/bluetooth/device/MockDevice : com/spl
 	public final fun addAction (Lcom/splendo/kaluga/bluetooth/device/DeviceAction;)V
 	public fun advertisementDataDidUpdate (Lcom/splendo/kaluga/bluetooth/device/BaseAdvertisementData;)V
 	public final fun completeAction (Lcom/splendo/kaluga/bluetooth/GattResponse;)V
+	public fun connect (Lcom/splendo/kaluga/bluetooth/device/ConnectionSettings$ReconnectionSettings;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun disconnect (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getIdentifier ()Ljava/lang/String;
 	public fun getInfo ()Lkotlinx/coroutines/flow/MutableStateFlow;
 	public synthetic fun getInfo ()Lkotlinx/coroutines/flow/StateFlow;

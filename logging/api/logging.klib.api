@@ -28,6 +28,8 @@ final class com.splendo.kaluga.logging/ContextualLogger : com.splendo.kaluga.log
 
     final fun log(com.splendo.kaluga.logging/LogLevel, kotlin/String?, kotlin/Throwable?, kotlin/Function0<kotlin/String>?) // com.splendo.kaluga.logging/ContextualLogger.log|log(com.splendo.kaluga.logging.LogLevel;kotlin.String?;kotlin.Throwable?;kotlin.Function0<kotlin.String>?){}[0]
     final fun withAppendedContext(kotlin/Pair<kotlin/String, kotlin/Any?>, kotlin/Array<out kotlin/Pair<kotlin/String, kotlin/Any?>>...): com.splendo.kaluga.logging/ContextualLogger // com.splendo.kaluga.logging/ContextualLogger.withAppendedContext|withAppendedContext(kotlin.Pair<kotlin.String,kotlin.Any?>;kotlin.Array<out|kotlin.Pair<kotlin.String,kotlin.Any?>>...){}[0]
+    final fun withAppendedTag(kotlin/String): com.splendo.kaluga.logging/ContextualLogger // com.splendo.kaluga.logging/ContextualLogger.withAppendedTag|withAppendedTag(kotlin.String){}[0]
+    final fun withLogger(com.splendo.kaluga.logging/Logger): com.splendo.kaluga.logging/ContextualLogger // com.splendo.kaluga.logging/ContextualLogger.withLogger|withLogger(com.splendo.kaluga.logging.Logger){}[0]
 }
 
 final class com.splendo.kaluga.logging/NapierLogger : com.splendo.kaluga.logging/Logger { // com.splendo.kaluga.logging/NapierLogger|null[0]
