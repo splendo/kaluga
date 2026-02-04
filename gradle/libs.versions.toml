@@ -10,7 +10,7 @@ kotlin = "2.3.0"
 kotlinter = "5.3.0"
 kotlinx-kover = "0.9.4"
 dokka = "2.1.0"
-vanniktechMavenPublish = "0.35.0"
+vanniktechMavenPublish = "0.36.0"
 palantir-git-version = "4.2.0"
 
 # higher versions of dependencycheck despite being a minor update break the API
