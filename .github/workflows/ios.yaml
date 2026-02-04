@@ -7,7 +7,7 @@ jobs:
     with:
       gradleTask: compileKotlinIosSimulatorArm64
 
-  lint:
+  validation:
     needs: build
     runs-on: macos-26
     steps:
@@ -31,6 +31,8 @@ jobs:
         name: ktLint report
         path: build/reports/ktlint
       if: ${{ failure() }}
+    - name: run checkLegacyAbi
+      run: ./gradlew checkLegacyAbi
 
   test:
     needs: build
