@@ -284,27 +284,14 @@ val String.utf8Size: Int get() = utf8Size(false)
  */
 fun String.utf8Size(throwOnMalformed: Boolean): Int {
     var size = 0
-    var charIndex = 0
-    while (charIndex < length) {
-        val code = this[charIndex++].code
-        when {
-            code < 0x80 -> size += 1
-
-            code < 0x800 -> size += 2
-
-            code in 0xD800..<0xE000 -> { // Surrogate char value
-                val codePoint = codePointFromSurrogate(this, code, charIndex, length, throwOnMalformed)
-                if (codePoint <= 0) {
-                    size += 3
-                } else {
-                    size += 4
-                    charIndex++
-                }
-            }
-
-            else -> size += 3
-        }
-    }
+    utf8Encoding(
+        throwOnMalformed = throwOnMalformed,
+        onSingleByte = { size++ },
+        onDoubleByte = { size += 2 },
+        onTripleByte = { size += 3 },
+        onSurrogate = { size += 4 },
+        onMalformedSurrogate = { size += 3 },
+    )
     return size
 }
 
@@ -348,42 +335,32 @@ fun String.copyUTF8IntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteO
             }
         }
     }
-    var charIndex = 0
-
-    while (charIndex < length) {
-        val code = this[charIndex++].code
-        when {
-            code < 0x80 -> {
-                writeByte(code.toByte())
-            }
-
-            code < 0x800 -> {
-                writeByte(((code shr 6) or 0xC0).toByte())
-                writeByte(((code and 0x3F) or 0x80).toByte())
-            }
-
-            code in 0xD800..0xDBFF -> { // high surrogate
-                val codePoint = codePointFromSurrogate(this, code, charIndex, length, throwOnMalformed)
-                if (codePoint <= 0) {
-                    writeByte(REPLACEMENT_BYTE_SEQUENCE[0])
-                    writeByte(REPLACEMENT_BYTE_SEQUENCE[1])
-                    writeByte(REPLACEMENT_BYTE_SEQUENCE[2])
-                } else {
-                    writeByte(((codePoint shr 18) or 0xF0).toByte())
-                    writeByte((((codePoint shr 12) and 0x3F) or 0x80).toByte())
-                    writeByte((((codePoint shr 6) and 0x3F) or 0x80).toByte())
-                    writeByte(((codePoint and 0x3F) or 0x80).toByte())
-                    charIndex++
-                }
-            }
-
-            else -> {
-                writeByte((0xE0 or (code shr 12)).toByte())
-                writeByte((0x80 or ((code shr 6) and 0x3F)).toByte())
-                writeByte((0x80 or (code and 0x3F)).toByte())
-            }
-        }
-    }
+    utf8Encoding(
+        throwOnMalformed,
+        onSingleByte = { code ->
+            writeByte(code.toByte())
+        },
+        onDoubleByte = { code ->
+            writeByte(((code shr 6) or 0xC0).toByte())
+            writeByte(((code and 0x3F) or 0x80).toByte())
+        },
+        onTripleByte = { code ->
+            writeByte((0xE0 or (code shr 12)).toByte())
+            writeByte((0x80 or ((code shr 6) and 0x3F)).toByte())
+            writeByte((0x80 or (code and 0x3F)).toByte())
+        },
+        onSurrogate = { codePoint ->
+            writeByte(((codePoint shr 18) or 0xF0).toByte())
+            writeByte((((codePoint shr 12) and 0x3F) or 0x80).toByte())
+            writeByte((((codePoint shr 6) and 0x3F) or 0x80).toByte())
+            writeByte(((codePoint and 0x3F) or 0x80).toByte())
+        },
+        onMalformedSurrogate = {
+            writeByte(REPLACEMENT_BYTE_SEQUENCE[0])
+            writeByte(REPLACEMENT_BYTE_SEQUENCE[1])
+            writeByte(REPLACEMENT_BYTE_SEQUENCE[2])
+        },
+    )
     return array
 }
 
@@ -564,19 +541,37 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
  */
 class KalugaCharacterCodingException(override val message: String?) : Exception()
 
-/** Returns the negative [size] if [throwOnMalformed] is false, throws [CharacterCodingException] otherwise. */
-private fun malformed(size: Int, index: Int, throwOnMalformed: Boolean): Int {
-    if (throwOnMalformed) throw KalugaCharacterCodingException("Malformed sequence starting at ${index - 1}")
-    return -size
+private inline fun String.utf8Encoding(
+    throwOnMalformed: Boolean,
+    onSingleByte: (Int) -> Unit,
+    onDoubleByte: (Int) -> Unit,
+    onTripleByte: (Int) -> Unit,
+    onSurrogate: (Int) -> Unit,
+    onMalformedSurrogate: () -> Unit,
+) {
+    var charIndex = 0
+    while (charIndex < length) {
+        val code = this[charIndex++].code
+        when {
+            code < 0x80 -> onSingleByte(code)
+
+            code < 0x800 -> onDoubleByte(code)
+
+            code in 0xD800..<0xE000 -> { // Surrogate char value
+                val codePoint = codePointFromSurrogate(this, code, charIndex, length, throwOnMalformed)
+                if (codePoint <= 0) {
+                    onMalformedSurrogate()
+                } else {
+                    onSurrogate(codePoint)
+                    charIndex++
+                }
+            }
+
+            else -> onTripleByte(code)
+        }
+    }
 }
 
-/**
- * Returns code point corresponding to UTF-16 surrogate pair,
- * where the first of the pair is the [high] and the second is in the [string] at the [index].
- * Returns zero if the pair is malformed and [throwOnMalformed] is false.
- *
- * @throws CharacterCodingException if the pair is malformed and [throwOnMalformed] is true.
- */
 private fun codePointFromSurrogate(string: String, high: Int, index: Int, endIndex: Int, throwOnMalformed: Boolean): Int {
     if (high !in 0xD800..0xDBFF || index >= endIndex) {
         return malformed(0, index, throwOnMalformed)
@@ -586,4 +581,9 @@ private fun codePointFromSurrogate(string: String, high: Int, index: Int, endInd
         return malformed(0, index, throwOnMalformed)
     }
     return 0x10000 + ((high and 0x3FF) shl 10) or (low and 0x3FF)
+}
+
+private fun malformed(size: Int, index: Int, throwOnMalformed: Boolean): Int {
+    if (throwOnMalformed) throw KalugaCharacterCodingException("Malformed sequence starting at ${index - 1}")
+    return -size
 }
