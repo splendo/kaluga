@@ -20,11 +20,10 @@ package com.splendo.kaluga.base.bytes
 import com.splendo.kaluga.base.bytes.Encoding.ASCII
 import com.splendo.kaluga.base.bytes.Encoding.UTF_16
 import com.splendo.kaluga.base.bytes.Encoding.UTF_8
-import kotlin.coroutines.coroutineContext
 
 /**
  * Character encoding
- * @property byteSize the number of [Byte] required to encode with this encoding
+ * @property byteSize the number of [Byte] required to encode a [Char] with this encoding
  */
 enum class Encoding(val byteSize: Int) {
 
@@ -50,7 +49,7 @@ enum class Encoding(val byteSize: Int) {
  * @param byteOrder the [ByteOrder] to use. For [Encoding] where [Encoding.byteSize] is 1, this can be ignored.
  */
 fun Encoding.encodeChar(char: Char, byteOrder: ByteOrder): ByteArray = when (this) {
-    UTF_8 -> char.toString().encodeToByteArray()
+    UTF_8 -> char.toString().toUTF8(byteOrder)
     UTF_16 -> char.toUTF16(byteOrder)
     ASCII -> byteArrayOf(char.toAscii())
 }
@@ -67,7 +66,7 @@ fun Encoding.encodeChar(char: Char, byteOrder: ByteOrder): ByteArray = when (thi
 fun Encoding.copyCharIntoByteArray(char: Char, array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray {
     require(array.size > byteSize + offset) { "Cannot copy into ByteArray. Must be at least ${offset + byteSize} long" }
     return when (this) {
-        UTF_8 -> char.toString().encodeToByteArray().copyInto(array, offset)
+        UTF_8 -> char.toString().copyUTF8IntoArray(array, offset, byteOrder)
 
         UTF_16 -> char.copyUTF16IntoByteArray(array, offset, byteOrder)
 

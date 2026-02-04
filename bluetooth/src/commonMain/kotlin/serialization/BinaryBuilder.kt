@@ -22,16 +22,21 @@ import com.splendo.kaluga.base.bytes.ByteOrder
 import com.splendo.kaluga.base.bytes.buildByteArray
 import com.splendo.kaluga.base.bytes.toByteArray
 import kotlinx.serialization.SerializationException
+import kotlin.math.ceil
 
 /**
  * Builder for creating a [ByteArray] from a [BluetoothBinaryDescriptor]
  */
 internal interface BinaryBuilder {
+
+    val expectedSize: Int
+
     fun addFlag(index: Int, value: Boolean)
-    fun addAction(action: ByteArrayBuilder.() -> Unit)
+    fun addBit(value: Boolean)
+    fun addAction(expectedSize: Int, action: ByteArrayBuilder.() -> Unit)
     fun makeUnconstrained()
 
-    fun build(): ByteArray
+    fun ByteArrayBuilder.build()
 }
 
 /**
@@ -46,6 +51,17 @@ class DataAfterUnconstrainedData(override val message: String?) : SerializationE
 internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBinaryDescriptor, flagBitsSize: Int, private val onUnconstrained: () -> Unit) : BinaryBuilder {
 
     val flagBits: MutableList<Boolean> = MutableList(flagBitsSize.coerceAtLeast(0)) { false }
+
+    override val expectedSize: Int
+        get() = totalBodySize +
+            (binaryDescriptor.structureSettings.checksumAlgorithm?.byteWidth ?: 0) +
+            (binaryDescriptor.structureSettings.prefix?.array?.size ?: 0) +
+            (binaryDescriptor.structureSettings.postfix?.array?.size ?: 0)
+    private var currentBits: Int = flagBitsSize % Byte.SIZE_BITS
+    private var expectedBodySize: Int = flagBitsSize / Byte.SIZE_BITS
+
+    private val totalBodySize: Int get() = expectedBodySize +
+        if (currentBits > 0) 1 else 0
     private val actions = mutableListOf<ByteArrayBuilder.() -> Unit>()
     private var isOfUnconstrainedSize: Boolean = false
 
@@ -53,10 +69,26 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
         flagBits[index] = value
     }
 
-    override fun addAction(action: ByteArrayBuilder.() -> Unit) {
+    override fun addBit(value: Boolean) {
+        currentBits++
+        if (currentBits == Byte.SIZE_BITS) {
+            expectedBodySize++
+            currentBits = 0
+        }
+        actions += {
+            add(value)
+        }
+    }
+
+    override fun addAction(expectedSize: Int, action: ByteArrayBuilder.() -> Unit) {
         if (isOfUnconstrainedSize) {
             throw DataAfterUnconstrainedData("Attempted to add data after data of an unconstrained size")
         }
+        if (currentBits > 0) {
+            expectedBodySize++
+            currentBits = 0
+        }
+        expectedBodySize += expectedSize
         actions += action
     }
 
@@ -65,33 +97,50 @@ internal abstract class StructureBinaryBuilder(val binaryDescriptor: BluetoothBi
         isOfUnconstrainedSize = true
     }
 
-    override fun build(): ByteArray {
-        // The body is the flag bits + remaining body. This is also the part used for checksum verification
-        val body = buildByteArray(binaryDescriptor.byteOrder) {
-            flagBits.forEach {
-                add(it)
-            }
-            actions.forEach { apply(it) }
-        }
-        // Calculate checksum if necessary
-        val checksum = binaryDescriptor.structureSettings.checksumAlgorithm?.let { crc ->
-            crc.compute(body).toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST).take(crc.byteWidth).let {
-                when (binaryDescriptor.byteOrder) {
-                    ByteOrder.MOST_SIGNIFICANT_FIRST -> it.reversed()
-                    ByteOrder.LEAST_SIGNIFICANT_FIRST -> it
-                }.toByteArray()
-            }
-        } ?: byteArrayOf()
-
-        // Full data consists of prefix + body + checksum + postfix
-        return buildByteArray(binaryDescriptor.byteOrder) {
+    override fun ByteArrayBuilder.build() {
+        if (byteOrder == binaryDescriptor.byteOrder) {
             binaryDescriptor.structureSettings.prefix?.let {
                 add(it.array)
             }
-            add(body)
-            add(checksum)
+            val crc = binaryDescriptor.structureSettings.checksumAlgorithm
+            if (crc != null) {
+                // The body is the flag bits + remaining body. This is also the part used for checksum verification
+                val body = buildByteArray(binaryDescriptor.byteOrder, totalBodySize) {
+                    buildBody()
+                }
+                add(body)
+                // Calculate checksum if necessary
+                val crcBytes = crc.compute(body).toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST)
+                for (i in 0..<crc.byteWidth) {
+                    when (binaryDescriptor.byteOrder) {
+                        ByteOrder.MOST_SIGNIFICANT_FIRST -> add(crcBytes[crc.byteWidth - i - 1])
+                        ByteOrder.LEAST_SIGNIFICANT_FIRST -> add(crcBytes[i])
+                    }
+                }
+            } else {
+                buildBody()
+            }
+
             binaryDescriptor.structureSettings.postfix?.let {
                 add(it.array)
+            }
+        } else {
+            add(
+                buildByteArray(binaryDescriptor.byteOrder, expectedSize) {
+                    build()
+                },
+            )
+        }
+    }
+
+    private fun ByteArrayBuilder.buildBody() {
+        flagBits.forEach {
+            add(it)
+        }
+        actions.forEach { apply(it) }
+        if (currentBits > 0) {
+            repeat(Byte.SIZE_BITS - currentBits) {
+                add(false)
             }
         }
     }
@@ -138,13 +187,19 @@ internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder
     private var currentIndex = 0
     val currentClassBuilder: ItemBinaryBuilder get() = classBuilders[currentIndex]
 
+    override val expectedSize: Int get() = classBuilders.sumOf { it.expectedSize }
+
     fun setIndex(index: Int): BluetoothBinaryDescriptor {
         currentIndex = index
         return currentClassBuilder.binaryDescriptor
     }
 
-    override fun addAction(action: ByteArrayBuilder.() -> Unit) {
-        currentClassBuilder.addAction(action)
+    override fun addBit(value: Boolean) {
+        currentClassBuilder.addBit(value)
+    }
+
+    override fun addAction(expectedSize: Int, action: ByteArrayBuilder.() -> Unit) {
+        currentClassBuilder.addAction(expectedSize, action)
     }
 
     override fun addFlag(index: Int, value: Boolean) {
@@ -155,15 +210,33 @@ internal abstract class CollectionBinaryBuilder(private val byteOrder: ByteOrder
         currentClassBuilder.makeUnconstrained()
     }
 
-    override fun build(): ByteArray = buildByteArray(byteOrder) {
-        classBuilders.forEachIndexed { index, classBuilder ->
-            val value = classBuilder.build()
-
-            // Ensure no unexpected null termination occurs
-            if (isNullTerminated && classBuilder.binaryDescriptor.fieldIndex == 0 && classBuilder.checkIfStartsWithNull(value, byteOrder)) {
-                throw UnexpectedNullTermination("The element at $index starts with Null Byte in a Null Terminated List")
+    override fun ByteArrayBuilder.build() {
+        if (byteOrder == this@CollectionBinaryBuilder.byteOrder) {
+            classBuilders.forEachIndexed { index, classBuilder ->
+                if (isNullTerminated && classBuilder.binaryDescriptor.fieldIndex == 0) {
+                    val value = buildByteArray(expectedSize = classBuilder.expectedSize) {
+                        with(classBuilder) {
+                            build()
+                        }
+                    }
+                    if (classBuilder.checkIfStartsWithNull(value, byteOrder)) {
+                        throw UnexpectedNullTermination("The element at $index starts with Null Byte in a Null Terminated List")
+                    }
+                    add(value)
+                } else {
+                    with(classBuilder) {
+                        build()
+                    }
+                }
             }
-            add(value)
+        } else {
+            add(
+                with(this@CollectionBinaryBuilder) {
+                    buildByteArray(byteOrder, expectedSize) {
+                        build()
+                    }
+                },
+            )
         }
     }
 }

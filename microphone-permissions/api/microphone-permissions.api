@@ -3,6 +3,10 @@ public abstract interface class com/splendo/kaluga/permissions/microphone/BaseMi
 	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/microphone/BaseMicrophonePermissionManagerBuilder;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
 }
 
+public final class com/splendo/kaluga/permissions/microphone/BaseMicrophonePermissionManagerBuilder$DefaultImpls {
+	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/microphone/BaseMicrophonePermissionManagerBuilder;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
+}
+
 public final class com/splendo/kaluga/permissions/microphone/DefaultMicrophonePermissionManager : com/splendo/kaluga/permissions/base/BasePermissionManager {
 	public fun <init> (Landroid/content/Context;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;)V
 }

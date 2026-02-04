@@ -308,7 +308,11 @@ private class ByteArrayBuilderImpl(expectedSize: Int, override val byteOrder: By
     }
 
     override fun add(string: String, settings: StringEncodingSettings, order: ByteOrder) {
-        add(string.toByteArray(settings, order))
+        add(
+            string.byteArraySize(settings),
+            generateIntoMethod = { string.copyIntoArray(currentChunk, settings, it, order) },
+            generateMethod = { string.toByteArray(settings, order) },
+        )
     }
 
     override fun add(char: Char, encoding: Encoding, order: ByteOrder) {
