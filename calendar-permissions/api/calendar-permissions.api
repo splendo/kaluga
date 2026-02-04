@@ -3,6 +3,10 @@ public abstract interface class com/splendo/kaluga/permissions/calendar/BaseCale
 	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/calendar/BaseCalendarPermissionManagerBuilder;Lcom/splendo/kaluga/permissions/calendar/CalendarPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
 }
 
+public final class com/splendo/kaluga/permissions/calendar/BaseCalendarPermissionManagerBuilder$DefaultImpls {
+	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/calendar/BaseCalendarPermissionManagerBuilder;Lcom/splendo/kaluga/permissions/calendar/CalendarPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
+}
+
 public final class com/splendo/kaluga/permissions/calendar/CalendarPermission : com/splendo/kaluga/permissions/base/Permission {
 	public fun <init> ()V
 	public fun <init> (Z)V

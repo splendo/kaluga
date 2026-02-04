@@ -1,0 +1,23 @@
+// Klib ABI Dump
+// Targets: [iosSimulatorArm64, js]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:test-utils-service>
+abstract class com.splendo.kaluga.test.service/MockServiceMonitor : com.splendo.kaluga.service/ServiceMonitor { // com.splendo.kaluga.test.service/MockServiceMonitor|null[0]
+    constructor <init>() // com.splendo.kaluga.test.service/MockServiceMonitor.<init>|<init>(){}[0]
+
+    abstract val isEnabled // com.splendo.kaluga.test.service/MockServiceMonitor.isEnabled|{}isEnabled[0]
+        abstract fun <get-isEnabled>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.splendo.kaluga.test.service/MockServiceMonitor.isEnabled.<get-isEnabled>|<get-isEnabled>(){}[0]
+    final val startMonitoringMock // com.splendo.kaluga.test.service/MockServiceMonitor.startMonitoringMock|{}startMonitoringMock[0]
+        final fun <get-startMonitoringMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.service/MockServiceMonitor.startMonitoringMock.<get-startMonitoringMock>|<get-startMonitoringMock>(){}[0]
+    final val stopMonitoringMock // com.splendo.kaluga.test.service/MockServiceMonitor.stopMonitoringMock|{}stopMonitoringMock[0]
+        final fun <get-stopMonitoringMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.service/MockServiceMonitor.stopMonitoringMock.<get-stopMonitoringMock>|<get-stopMonitoringMock>(){}[0]
+    open val isServiceEnabled // com.splendo.kaluga.test.service/MockServiceMonitor.isServiceEnabled|{}isServiceEnabled[0]
+        open fun <get-isServiceEnabled>(): kotlin/Boolean // com.splendo.kaluga.test.service/MockServiceMonitor.isServiceEnabled.<get-isServiceEnabled>|<get-isServiceEnabled>(){}[0]
+
+    open fun startMonitoring() // com.splendo.kaluga.test.service/MockServiceMonitor.startMonitoring|startMonitoring(){}[0]
+    open fun stopMonitoring() // com.splendo.kaluga.test.service/MockServiceMonitor.stopMonitoring|stopMonitoring(){}[0]
+}

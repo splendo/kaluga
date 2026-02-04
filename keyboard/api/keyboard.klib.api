@@ -1,0 +1,65 @@
+// Klib ABI Dump
+// Targets: [iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:keyboard>
+abstract interface <#A: com.splendo.kaluga.keyboard/FocusHandler> com.splendo.kaluga.keyboard/BaseKeyboardManager { // com.splendo.kaluga.keyboard/BaseKeyboardManager|null[0]
+    abstract fun hide() // com.splendo.kaluga.keyboard/BaseKeyboardManager.hide|hide(){}[0]
+    abstract fun show(#A) // com.splendo.kaluga.keyboard/BaseKeyboardManager.show|show(1:0){}[0]
+
+    abstract interface <#A1: com.splendo.kaluga.keyboard/FocusHandler> Builder : com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.keyboard/BaseKeyboardManager.Builder|null[0]
+        abstract fun create(kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.keyboard/BaseKeyboardManager<#A1> // com.splendo.kaluga.keyboard/BaseKeyboardManager.Builder.create|create(kotlinx.coroutines.CoroutineScope){}[0]
+    }
+}
+
+abstract interface com.splendo.kaluga.keyboard/FocusHandler // com.splendo.kaluga.keyboard/FocusHandler|null[0]
+
+final class <#A: kotlin/Any?> com.splendo.kaluga.keyboard/ValueFocusHandler : com.splendo.kaluga.keyboard/FocusHandler { // com.splendo.kaluga.keyboard/ValueFocusHandler|null[0]
+    constructor <init>(#A) // com.splendo.kaluga.keyboard/ValueFocusHandler.<init>|<init>(1:0){}[0]
+
+    final val value // com.splendo.kaluga.keyboard/ValueFocusHandler.value|{}value[0]
+        final fun <get-value>(): #A // com.splendo.kaluga.keyboard/ValueFocusHandler.value.<get-value>|<get-value>(){}[0]
+
+    final fun component1(): #A // com.splendo.kaluga.keyboard/ValueFocusHandler.component1|component1(){}[0]
+    final fun copy(#A = ...): com.splendo.kaluga.keyboard/ValueFocusHandler<#A> // com.splendo.kaluga.keyboard/ValueFocusHandler.copy|copy(1:0){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.keyboard/ValueFocusHandler.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.keyboard/ValueFocusHandler.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.keyboard/ValueFocusHandler.toString|toString(){}[0]
+}
+
+final class com.splendo.kaluga.keyboard/UIKitFocusHandler : com.splendo.kaluga.keyboard/FocusHandler { // com.splendo.kaluga.keyboard/UIKitFocusHandler|null[0]
+    constructor <init>(platform.UIKit/UIView) // com.splendo.kaluga.keyboard/UIKitFocusHandler.<init>|<init>(platform.UIKit.UIView){}[0]
+
+    final val view // com.splendo.kaluga.keyboard/UIKitFocusHandler.view|{}view[0]
+        final fun <get-view>(): platform.UIKit/UIView // com.splendo.kaluga.keyboard/UIKitFocusHandler.view.<get-view>|<get-view>(){}[0]
+
+    final fun component1(): platform.UIKit/UIView // com.splendo.kaluga.keyboard/UIKitFocusHandler.component1|component1(){}[0]
+    final fun copy(platform.UIKit/UIView = ...): com.splendo.kaluga.keyboard/UIKitFocusHandler // com.splendo.kaluga.keyboard/UIKitFocusHandler.copy|copy(platform.UIKit.UIView){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.keyboard/UIKitFocusHandler.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.keyboard/UIKitFocusHandler.hashCode|hashCode(){}[0]
+    final fun requestFocus() // com.splendo.kaluga.keyboard/UIKitFocusHandler.requestFocus|requestFocus(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.keyboard/UIKitFocusHandler.toString|toString(){}[0]
+}
+
+final class com.splendo.kaluga.keyboard/UIKitKeyboardManager : com.splendo.kaluga.keyboard/BaseKeyboardManager<com.splendo.kaluga.keyboard/UIKitFocusHandler> { // com.splendo.kaluga.keyboard/UIKitKeyboardManager|null[0]
+    constructor <init>(platform.UIKit/UIApplication) // com.splendo.kaluga.keyboard/UIKitKeyboardManager.<init>|<init>(platform.UIKit.UIApplication){}[0]
+
+    final fun hide() // com.splendo.kaluga.keyboard/UIKitKeyboardManager.hide|hide(){}[0]
+    final fun show(com.splendo.kaluga.keyboard/UIKitFocusHandler) // com.splendo.kaluga.keyboard/UIKitKeyboardManager.show|show(com.splendo.kaluga.keyboard.UIKitFocusHandler){}[0]
+
+    final class Builder : com.splendo.kaluga.keyboard/BaseKeyboardManager.Builder<com.splendo.kaluga.keyboard/UIKitFocusHandler> { // com.splendo.kaluga.keyboard/UIKitKeyboardManager.Builder|null[0]
+        constructor <init>(platform.UIKit/UIApplication = ...) // com.splendo.kaluga.keyboard/UIKitKeyboardManager.Builder.<init>|<init>(platform.UIKit.UIApplication){}[0]
+
+        final fun create(kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.keyboard/UIKitKeyboardManager // com.splendo.kaluga.keyboard/UIKitKeyboardManager.Builder.create|create(kotlinx.coroutines.CoroutineScope){}[0]
+    }
+}
+
+open class <#A: kotlin/Any?> com.splendo.kaluga.keyboard/ValueKeyboardManager : com.splendo.kaluga.keyboard/BaseKeyboardManager<com.splendo.kaluga.keyboard/ValueFocusHandler<#A>> { // com.splendo.kaluga.keyboard/ValueKeyboardManager|null[0]
+    constructor <init>(kotlin/Function1<#A?, kotlin/Unit>) // com.splendo.kaluga.keyboard/ValueKeyboardManager.<init>|<init>(kotlin.Function1<1:0?,kotlin.Unit>){}[0]
+
+    open fun hide() // com.splendo.kaluga.keyboard/ValueKeyboardManager.hide|hide(){}[0]
+    open fun show(com.splendo.kaluga.keyboard/ValueFocusHandler<#A>) // com.splendo.kaluga.keyboard/ValueKeyboardManager.show|show(com.splendo.kaluga.keyboard.ValueFocusHandler<1:0>){}[0]
+}

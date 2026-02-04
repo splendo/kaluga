@@ -60,5 +60,5 @@ jobs:
         with:
           name: "Coverage Report HTML"
           path: "**/build/reports/kover/html"
-      - name: run apiCheck
-        run: ./gradlew apiCheck
+      - name: run checkLegacyAbi
+        run: ./gradlew checkLegacyAbi

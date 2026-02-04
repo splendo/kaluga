@@ -99,6 +99,12 @@ public abstract interface class com/splendo/kaluga/alerts/AlertActions {
 	public static synthetic fun showAsync$default (Lcom/splendo/kaluga/alerts/AlertActions;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
 }
 
+public final class com/splendo/kaluga/alerts/AlertActions$DefaultImpls {
+	public static synthetic fun dismiss$default (Lcom/splendo/kaluga/alerts/AlertActions;ZILjava/lang/Object;)V
+	public static synthetic fun show$default (Lcom/splendo/kaluga/alerts/AlertActions;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun showAsync$default (Lcom/splendo/kaluga/alerts/AlertActions;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+}
+
 public final class com/splendo/kaluga/alerts/AlertPresenter : com/splendo/kaluga/alerts/BaseAlertPresenter, kotlinx/coroutines/CoroutineScope {
 	public fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;)V
 	public synthetic fun <init> (Lcom/splendo/kaluga/alerts/Alert;Lcom/splendo/kaluga/architecture/lifecycle/LifecycleManagerObserver;Lkotlinx/coroutines/CoroutineScope;Lcom/splendo/kaluga/logging/Logger;ILkotlin/jvm/internal/DefaultConstructorMarker;)V

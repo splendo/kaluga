@@ -1,0 +1,45 @@
+// Klib ABI Dump
+// Targets: [iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:links>
+abstract interface com.splendo.kaluga.links.handler/LinksHandler { // com.splendo.kaluga.links.handler/LinksHandler|null[0]
+    abstract fun extractQueryAsMap(kotlin/String): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>> // com.splendo.kaluga.links.handler/LinksHandler.extractQueryAsMap|extractQueryAsMap(kotlin.String){}[0]
+    abstract fun isValid(kotlin/String): kotlin/Boolean // com.splendo.kaluga.links.handler/LinksHandler.isValid|isValid(kotlin.String){}[0]
+}
+
+abstract interface com.splendo.kaluga.links/LinksManager { // com.splendo.kaluga.links/LinksManager|null[0]
+    abstract fun <#A1: kotlin/Any?> handleIncomingLink(kotlin/String, kotlinx.serialization/KSerializer<#A1>): #A1? // com.splendo.kaluga.links/LinksManager.handleIncomingLink|handleIncomingLink(kotlin.String;kotlinx.serialization.KSerializer<0:0>){0§<kotlin.Any?>}[0]
+    abstract fun validateLink(kotlin/String): kotlin/String? // com.splendo.kaluga.links/LinksManager.validateLink|validateLink(kotlin.String){}[0]
+
+    abstract interface Builder { // com.splendo.kaluga.links/LinksManager.Builder|null[0]
+        abstract fun create(): com.splendo.kaluga.links/LinksManager // com.splendo.kaluga.links/LinksManager.Builder.create|create(){}[0]
+    }
+}
+
+final class com.splendo.kaluga.links.handler/PlatformLinksHandler : com.splendo.kaluga.links.handler/LinksHandler { // com.splendo.kaluga.links.handler/PlatformLinksHandler|null[0]
+    constructor <init>() // com.splendo.kaluga.links.handler/PlatformLinksHandler.<init>|<init>(){}[0]
+
+    final fun extractQueryAsMap(kotlin/String): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>> // com.splendo.kaluga.links.handler/PlatformLinksHandler.extractQueryAsMap|extractQueryAsMap(kotlin.String){}[0]
+    final fun isValid(kotlin/String): kotlin/Boolean // com.splendo.kaluga.links.handler/PlatformLinksHandler.isValid|isValid(kotlin.String){}[0]
+}
+
+final class com.splendo.kaluga.links/DefaultLinksManager : com.splendo.kaluga.links/LinksManager { // com.splendo.kaluga.links/DefaultLinksManager|null[0]
+    constructor <init>(com.splendo.kaluga.links.handler/LinksHandler) // com.splendo.kaluga.links/DefaultLinksManager.<init>|<init>(com.splendo.kaluga.links.handler.LinksHandler){}[0]
+
+    final fun <#A1: kotlin/Any?> handleIncomingLink(kotlin/String, kotlinx.serialization/KSerializer<#A1>): #A1? // com.splendo.kaluga.links/DefaultLinksManager.handleIncomingLink|handleIncomingLink(kotlin.String;kotlinx.serialization.KSerializer<0:0>){0§<kotlin.Any?>}[0]
+    final fun validateLink(kotlin/String): kotlin/String? // com.splendo.kaluga.links/DefaultLinksManager.validateLink|validateLink(kotlin.String){}[0]
+
+    final class Builder : com.splendo.kaluga.links/LinksManager.Builder { // com.splendo.kaluga.links/DefaultLinksManager.Builder|null[0]
+        constructor <init>() // com.splendo.kaluga.links/DefaultLinksManager.Builder.<init>|<init>(){}[0]
+        constructor <init>(com.splendo.kaluga.links.handler/LinksHandler) // com.splendo.kaluga.links/DefaultLinksManager.Builder.<init>|<init>(com.splendo.kaluga.links.handler.LinksHandler){}[0]
+
+        final fun create(): com.splendo.kaluga.links/LinksManager // com.splendo.kaluga.links/DefaultLinksManager.Builder.create|create(){}[0]
+    }
+}
+
+final fun (com.splendo.kaluga.links/LinksManager).com.splendo.kaluga.links/validateLink(platform.Foundation/NSURL): platform.Foundation/NSURL? // com.splendo.kaluga.links/validateLink|validateLink@com.splendo.kaluga.links.LinksManager(platform.Foundation.NSURL){}[0]
+final fun <#A: kotlin/Any?> (com.splendo.kaluga.links/LinksManager).com.splendo.kaluga.links/handleIncomingLink(platform.Foundation/NSURL, kotlinx.serialization/KSerializer<#A>): #A? // com.splendo.kaluga.links/handleIncomingLink|handleIncomingLink@com.splendo.kaluga.links.LinksManager(platform.Foundation.NSURL;kotlinx.serialization.KSerializer<0:0>){0§<kotlin.Any?>}[0]

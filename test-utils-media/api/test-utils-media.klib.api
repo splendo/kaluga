@@ -1,0 +1,405 @@
+// Klib ABI Dump
+// Targets: [iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:test-utils-media>
+final class com.splendo.kaluga.test.media/MockBaseMediaManager : com.splendo.kaluga.media/BaseMediaManager, com.splendo.kaluga.media/MediaSurfaceController, com.splendo.kaluga.media/VolumeController { // com.splendo.kaluga.test.media/MockBaseMediaManager|null[0]
+    constructor <init>(com.splendo.kaluga.media/MediaSurfaceProvider?, com.splendo.kaluga.test.media/MockVolumeController = ..., com.splendo.kaluga.test.media/MockMediaSurfaceController = ..., kotlin.coroutines/CoroutineContext, kotlin/Boolean = ...) // com.splendo.kaluga.test.media/MockBaseMediaManager.<init>|<init>(com.splendo.kaluga.media.MediaSurfaceProvider?;com.splendo.kaluga.test.media.MockVolumeController;com.splendo.kaluga.test.media.MockMediaSurfaceController;kotlin.coroutines.CoroutineContext;kotlin.Boolean){}[0]
+
+    final val cleanUpMock // com.splendo.kaluga.test.media/MockBaseMediaManager.cleanUpMock|{}cleanUpMock[0]
+        final fun <get-cleanUpMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.media/MockBaseMediaManager.cleanUpMock.<get-cleanUpMock>|<get-cleanUpMock>(){}[0]
+    final val currentVolume // com.splendo.kaluga.test.media/MockBaseMediaManager.currentVolume|{}currentVolume[0]
+        final fun <get-currentVolume>(): kotlinx.coroutines.flow/Flow<kotlin/Float> // com.splendo.kaluga.test.media/MockBaseMediaManager.currentVolume.<get-currentVolume>|<get-currentVolume>(){}[0]
+    final val handleCreatePlayableMediaMock // com.splendo.kaluga.test.media/MockBaseMediaManager.handleCreatePlayableMediaMock|{}handleCreatePlayableMediaMock[0]
+        final fun <get-handleCreatePlayableMediaMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<com.splendo.kaluga.media/MediaSource>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<com.splendo.kaluga.media/MediaSource>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<com.splendo.kaluga.media/MediaSource>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<com.splendo.kaluga.media/MediaSource>, com.splendo.kaluga.media/PlayableMedia?> // com.splendo.kaluga.test.media/MockBaseMediaManager.handleCreatePlayableMediaMock.<get-handleCreatePlayableMediaMock>|<get-handleCreatePlayableMediaMock>(){}[0]
+    final val handleResetMock // com.splendo.kaluga.test.media/MockBaseMediaManager.handleResetMock|{}handleResetMock[0]
+        final fun <get-handleResetMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.media/MockBaseMediaManager.handleResetMock.<get-handleResetMock>|<get-handleResetMock>(){}[0]
+    final val initializeMock // com.splendo.kaluga.test.media/MockBaseMediaManager.initializeMock|{}initializeMock[0]
+        final fun <get-initializeMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<com.splendo.kaluga.media/PlayableMedia>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<com.splendo.kaluga.media/PlayableMedia>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<com.splendo.kaluga.media/PlayableMedia>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<com.splendo.kaluga.media/PlayableMedia>, kotlin/Unit> // com.splendo.kaluga.test.media/MockBaseMediaManager.initializeMock.<get-initializeMock>|<get-initializeMock>(){}[0]
+    final val mediaSurfaceController // com.splendo.kaluga.test.media/MockBaseMediaManager.mediaSurfaceController|{}mediaSurfaceController[0]
+        final fun <get-mediaSurfaceController>(): com.splendo.kaluga.test.media/MockMediaSurfaceController // com.splendo.kaluga.test.media/MockBaseMediaManager.mediaSurfaceController.<get-mediaSurfaceController>|<get-mediaSurfaceController>(){}[0]
+    final val pauseMock // com.splendo.kaluga.test.media/MockBaseMediaManager.pauseMock|{}pauseMock[0]
+        final fun <get-pauseMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.media/MockBaseMediaManager.pauseMock.<get-pauseMock>|<get-pauseMock>(){}[0]
+    final val playMock // com.splendo.kaluga.test.media/MockBaseMediaManager.playMock|{}playMock[0]
+        final fun <get-playMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlin/Float>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin/Float>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlin/Float>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlin/Float>, kotlin/Unit> // com.splendo.kaluga.test.media/MockBaseMediaManager.playMock.<get-playMock>|<get-playMock>(){}[0]
+    final val startSeekMock // com.splendo.kaluga.test.media/MockBaseMediaManager.startSeekMock|{}startSeekMock[0]
+        final fun <get-startSeekMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlin.time/Duration>, kotlin/Unit> // com.splendo.kaluga.test.media/MockBaseMediaManager.startSeekMock.<get-startSeekMock>|<get-startSeekMock>(){}[0]
+    final val stopMock // com.splendo.kaluga.test.media/MockBaseMediaManager.stopMock|{}stopMock[0]
+        final fun <get-stopMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.media/MockBaseMediaManager.stopMock.<get-stopMock>|<get-stopMock>(){}[0]
+    final val volumeController // com.splendo.kaluga.test.media/MockBaseMediaManager.volumeController|{}volumeController[0]
+        final fun <get-volumeController>(): com.splendo.kaluga.test.media/MockVolumeController // com.splendo.kaluga.test.media/MockBaseMediaManager.volumeController.<get-volumeController>|<get-volumeController>(){}[0]
+
+    final fun handleCompleted() // com.splendo.kaluga.test.media/MockBaseMediaManager.handleCompleted|handleCompleted(){}[0]
+    final fun handleError(com.splendo.kaluga.media/PlaybackError) // com.splendo.kaluga.test.media/MockBaseMediaManager.handleError|handleError(com.splendo.kaluga.media.PlaybackError){}[0]
+    final fun handlePrepared(com.splendo.kaluga.media/PlayableMedia) // com.splendo.kaluga.test.media/MockBaseMediaManager.handlePrepared|handlePrepared(com.splendo.kaluga.media.PlayableMedia){}[0]
+    final fun handleSeekCompleted(kotlin/Boolean) // com.splendo.kaluga.test.media/MockBaseMediaManager.handleSeekCompleted|handleSeekCompleted(kotlin.Boolean){}[0]
+    final fun initialize(com.splendo.kaluga.media/PlayableMedia) // com.splendo.kaluga.test.media/MockBaseMediaManager.initialize|initialize(com.splendo.kaluga.media.PlayableMedia){}[0]
+    final fun pause() // com.splendo.kaluga.test.media/MockBaseMediaManager.pause|pause(){}[0]
+    final fun play(kotlin/Float) // com.splendo.kaluga.test.media/MockBaseMediaManager.play|play(kotlin.Float){}[0]
+    final fun stop() // com.splendo.kaluga.test.media/MockBaseMediaManager.stop|stop(){}[0]
+    final suspend fun renderVideoOnSurface(com.splendo.kaluga.media/MediaSurface?) // com.splendo.kaluga.test.media/MockBaseMediaManager.renderVideoOnSurface|renderVideoOnSurface(com.splendo.kaluga.media.MediaSurface?){}[0]
+    final suspend fun updateVolume(kotlin/Float) // com.splendo.kaluga.test.media/MockBaseMediaManager.updateVolume|updateVolume(kotlin.Float){}[0]
+
+    final class Builder : com.splendo.kaluga.media/BaseMediaManager.Builder { // com.splendo.kaluga.test.media/MockBaseMediaManager.Builder|null[0]
+        constructor <init>(com.splendo.kaluga.test.media/MockVolumeController = ..., com.splendo.kaluga.test.media/MockMediaSurfaceController = ..., kotlin/Boolean = ...) // com.splendo.kaluga.test.media/MockBaseMediaManager.Builder.<init>|<init>(com.splendo.kaluga.test.media.MockVolumeController;com.splendo.kaluga.test.media.MockMediaSurfaceController;kotlin.Boolean){}[0]
+
+        final val builtMediaManagers // com.splendo.kaluga.test.media/MockBaseMediaManager.Builder.builtMediaManagers|{}builtMediaManagers[0]
+            final fun <get-builtMediaManagers>(): com.splendo.kaluga.base.collections/ConcurrentMutableList<com.splendo.kaluga.test.media/MockBaseMediaManager> // com.splendo.kaluga.test.media/MockBaseMediaManager.Builder.builtMediaManagers.<get-builtMediaManagers>|<get-builtMediaManagers>(){}[0]
+        final val createMock // com.splendo.kaluga.test.media/MockBaseMediaManager.Builder.createMock|{}createMock[0]
+            final fun <get-createMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/PairParameters.Matchers<com.splendo.kaluga.media/MediaSurfaceProvider?, kotlin.coroutines/CoroutineContext>, com.splendo.kaluga.test.base.mock.parameters/PairParameters.MatchersOrCaptor<com.splendo.kaluga.media/MediaSurfaceProvider?, kotlin.coroutines/CoroutineContext>, com.splendo.kaluga.test.base.mock.parameters/PairParameters.Values<com.splendo.kaluga.media/MediaSurfaceProvider?, kotlin.coroutines/CoroutineContext>, com.splendo.kaluga.test.base.mock.parameters/PairParameters<com.splendo.kaluga.media/MediaSurfaceProvider?, kotlin.coroutines/CoroutineContext>, com.splendo.kaluga.media/BaseMediaManager> // com.splendo.kaluga.test.media/MockBaseMediaManager.Builder.createMock.<get-createMock>|<get-createMock>(){}[0]
+        final val mediaSurfaceController // com.splendo.kaluga.test.media/MockBaseMediaManager.Builder.mediaSurfaceController|{}mediaSurfaceController[0]
+            final fun <get-mediaSurfaceController>(): com.splendo.kaluga.test.media/MockMediaSurfaceController // com.splendo.kaluga.test.media/MockBaseMediaManager.Builder.mediaSurfaceController.<get-mediaSurfaceController>|<get-mediaSurfaceController>(){}[0]
+        final val volumeController // com.splendo.kaluga.test.media/MockBaseMediaManager.Builder.volumeController|{}volumeController[0]
+            final fun <get-volumeController>(): com.splendo.kaluga.test.media/MockVolumeController // com.splendo.kaluga.test.media/MockBaseMediaManager.Builder.volumeController.<get-volumeController>|<get-volumeController>(){}[0]
+
+        final fun create(com.splendo.kaluga.media/MediaSurfaceProvider?, kotlin.coroutines/CoroutineContext): com.splendo.kaluga.media/BaseMediaManager // com.splendo.kaluga.test.media/MockBaseMediaManager.Builder.create|create(com.splendo.kaluga.media.MediaSurfaceProvider?;kotlin.coroutines.CoroutineContext){}[0]
+    }
+}
+
+final class com.splendo.kaluga.test.media/MockMediaManager : com.splendo.kaluga.media/MediaManager, com.splendo.kaluga.media/MediaSurfaceController, com.splendo.kaluga.media/VolumeController { // com.splendo.kaluga.test.media/MockMediaManager|null[0]
+    constructor <init>(kotlinx.coroutines.flow/MutableSharedFlow<com.splendo.kaluga.media/MediaManager.Event>, com.splendo.kaluga.test.media/MockVolumeController, com.splendo.kaluga.test.media/MockMediaSurfaceController, kotlin/Boolean = ...) // com.splendo.kaluga.test.media/MockMediaManager.<init>|<init>(kotlinx.coroutines.flow.MutableSharedFlow<com.splendo.kaluga.media.MediaManager.Event>;com.splendo.kaluga.test.media.MockVolumeController;com.splendo.kaluga.test.media.MockMediaSurfaceController;kotlin.Boolean){}[0]
+
+    final val createPlayableMediaMock // com.splendo.kaluga.test.media/MockMediaManager.createPlayableMediaMock|{}createPlayableMediaMock[0]
+        final fun <get-createPlayableMediaMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<com.splendo.kaluga.media/MediaSource>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<com.splendo.kaluga.media/MediaSource>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<com.splendo.kaluga.media/MediaSource>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<com.splendo.kaluga.media/MediaSource>, com.splendo.kaluga.media/PlayableMedia?> // com.splendo.kaluga.test.media/MockMediaManager.createPlayableMediaMock.<get-createPlayableMediaMock>|<get-createPlayableMediaMock>(){}[0]
+    final val currentVolume // com.splendo.kaluga.test.media/MockMediaManager.currentVolume|{}currentVolume[0]
+        final fun <get-currentVolume>(): kotlinx.coroutines.flow/Flow<kotlin/Float> // com.splendo.kaluga.test.media/MockMediaManager.currentVolume.<get-currentVolume>|<get-currentVolume>(){}[0]
+    final val endMock // com.splendo.kaluga.test.media/MockMediaManager.endMock|{}endMock[0]
+        final fun <get-endMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.media/MockMediaManager.endMock.<get-endMock>|<get-endMock>(){}[0]
+    final val events // com.splendo.kaluga.test.media/MockMediaManager.events|{}events[0]
+        final fun <get-events>(): kotlinx.coroutines.flow/MutableSharedFlow<com.splendo.kaluga.media/MediaManager.Event> // com.splendo.kaluga.test.media/MockMediaManager.events.<get-events>|<get-events>(){}[0]
+    final val initializeMock // com.splendo.kaluga.test.media/MockMediaManager.initializeMock|{}initializeMock[0]
+        final fun <get-initializeMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<com.splendo.kaluga.media/PlayableMedia>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<com.splendo.kaluga.media/PlayableMedia>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<com.splendo.kaluga.media/PlayableMedia>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<com.splendo.kaluga.media/PlayableMedia>, kotlin/Unit> // com.splendo.kaluga.test.media/MockMediaManager.initializeMock.<get-initializeMock>|<get-initializeMock>(){}[0]
+    final val mediaSurfaceController // com.splendo.kaluga.test.media/MockMediaManager.mediaSurfaceController|{}mediaSurfaceController[0]
+        final fun <get-mediaSurfaceController>(): com.splendo.kaluga.test.media/MockMediaSurfaceController // com.splendo.kaluga.test.media/MockMediaManager.mediaSurfaceController.<get-mediaSurfaceController>|<get-mediaSurfaceController>(){}[0]
+    final val pauseMock // com.splendo.kaluga.test.media/MockMediaManager.pauseMock|{}pauseMock[0]
+        final fun <get-pauseMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.media/MockMediaManager.pauseMock.<get-pauseMock>|<get-pauseMock>(){}[0]
+    final val playMock // com.splendo.kaluga.test.media/MockMediaManager.playMock|{}playMock[0]
+        final fun <get-playMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlin/Float>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin/Float>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlin/Float>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlin/Float>, kotlin/Unit> // com.splendo.kaluga.test.media/MockMediaManager.playMock.<get-playMock>|<get-playMock>(){}[0]
+    final val resetMock // com.splendo.kaluga.test.media/MockMediaManager.resetMock|{}resetMock[0]
+        final fun <get-resetMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.media/MockMediaManager.resetMock.<get-resetMock>|<get-resetMock>(){}[0]
+    final val seekToMock // com.splendo.kaluga.test.media/MockMediaManager.seekToMock|{}seekToMock[0]
+        final fun <get-seekToMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlin.time/Duration>, kotlin/Boolean> // com.splendo.kaluga.test.media/MockMediaManager.seekToMock.<get-seekToMock>|<get-seekToMock>(){}[0]
+    final val stopMock // com.splendo.kaluga.test.media/MockMediaManager.stopMock|{}stopMock[0]
+        final fun <get-stopMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.media/MockMediaManager.stopMock.<get-stopMock>|<get-stopMock>(){}[0]
+    final val volumeController // com.splendo.kaluga.test.media/MockMediaManager.volumeController|{}volumeController[0]
+        final fun <get-volumeController>(): com.splendo.kaluga.test.media/MockVolumeController // com.splendo.kaluga.test.media/MockMediaManager.volumeController.<get-volumeController>|<get-volumeController>(){}[0]
+
+    final fun close() // com.splendo.kaluga.test.media/MockMediaManager.close|close(){}[0]
+    final fun initialize(com.splendo.kaluga.media/PlayableMedia) // com.splendo.kaluga.test.media/MockMediaManager.initialize|initialize(com.splendo.kaluga.media.PlayableMedia){}[0]
+    final fun pause() // com.splendo.kaluga.test.media/MockMediaManager.pause|pause(){}[0]
+    final fun play(kotlin/Float) // com.splendo.kaluga.test.media/MockMediaManager.play|play(kotlin.Float){}[0]
+    final fun reset() // com.splendo.kaluga.test.media/MockMediaManager.reset|reset(){}[0]
+    final fun stop() // com.splendo.kaluga.test.media/MockMediaManager.stop|stop(){}[0]
+    final suspend fun createPlayableMedia(com.splendo.kaluga.media/MediaSource): com.splendo.kaluga.media/PlayableMedia? // com.splendo.kaluga.test.media/MockMediaManager.createPlayableMedia|createPlayableMedia(com.splendo.kaluga.media.MediaSource){}[0]
+    final suspend fun renderVideoOnSurface(com.splendo.kaluga.media/MediaSurface?) // com.splendo.kaluga.test.media/MockMediaManager.renderVideoOnSurface|renderVideoOnSurface(com.splendo.kaluga.media.MediaSurface?){}[0]
+    final suspend fun seekTo(kotlin.time/Duration): kotlin/Boolean // com.splendo.kaluga.test.media/MockMediaManager.seekTo|seekTo(kotlin.time.Duration){}[0]
+    final suspend fun updateVolume(kotlin/Float) // com.splendo.kaluga.test.media/MockMediaManager.updateVolume|updateVolume(kotlin.Float){}[0]
+}
+
+final class com.splendo.kaluga.test.media/MockMediaPlayer : com.splendo.kaluga.media/MediaPlayer, com.splendo.kaluga.media/MediaSurfaceController, com.splendo.kaluga.media/VolumeController { // com.splendo.kaluga.test.media/MockMediaPlayer|null[0]
+    constructor <init>(kotlinx.coroutines.flow/MutableStateFlow<com.splendo.kaluga.media/PlayableMedia?>, kotlinx.coroutines.flow/MutableStateFlow<com.splendo.kaluga.media/MediaPlayer.Controls>, com.splendo.kaluga.test.media/MockVolumeController, com.splendo.kaluga.test.media/MockMediaSurfaceController) // com.splendo.kaluga.test.media/MockMediaPlayer.<init>|<init>(kotlinx.coroutines.flow.MutableStateFlow<com.splendo.kaluga.media.PlayableMedia?>;kotlinx.coroutines.flow.MutableStateFlow<com.splendo.kaluga.media.MediaPlayer.Controls>;com.splendo.kaluga.test.media.MockVolumeController;com.splendo.kaluga.test.media.MockMediaSurfaceController){}[0]
+
+    final val awaitCompletionMock // com.splendo.kaluga.test.media/MockMediaPlayer.awaitCompletionMock|{}awaitCompletionMock[0]
+        final fun <get-awaitCompletionMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.media/MockMediaPlayer.awaitCompletionMock.<get-awaitCompletionMock>|<get-awaitCompletionMock>(){}[0]
+    final val controls // com.splendo.kaluga.test.media/MockMediaPlayer.controls|{}controls[0]
+        final fun <get-controls>(): kotlinx.coroutines.flow/MutableStateFlow<com.splendo.kaluga.media/MediaPlayer.Controls> // com.splendo.kaluga.test.media/MockMediaPlayer.controls.<get-controls>|<get-controls>(){}[0]
+    final val currentVolume // com.splendo.kaluga.test.media/MockMediaPlayer.currentVolume|{}currentVolume[0]
+        final fun <get-currentVolume>(): kotlinx.coroutines.flow/Flow<kotlin/Float> // com.splendo.kaluga.test.media/MockMediaPlayer.currentVolume.<get-currentVolume>|<get-currentVolume>(){}[0]
+    final val endMock // com.splendo.kaluga.test.media/MockMediaPlayer.endMock|{}endMock[0]
+        final fun <get-endMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.media/MockMediaPlayer.endMock.<get-endMock>|<get-endMock>(){}[0]
+    final val forceStartMock // com.splendo.kaluga.test.media/MockMediaPlayer.forceStartMock|{}forceStartMock[0]
+        final fun <get-forceStartMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/PairParameters.Matchers<com.splendo.kaluga.media/PlaybackState.PlaybackParameters, kotlin/Boolean>, com.splendo.kaluga.test.base.mock.parameters/PairParameters.MatchersOrCaptor<com.splendo.kaluga.media/PlaybackState.PlaybackParameters, kotlin/Boolean>, com.splendo.kaluga.test.base.mock.parameters/PairParameters.Values<com.splendo.kaluga.media/PlaybackState.PlaybackParameters, kotlin/Boolean>, com.splendo.kaluga.test.base.mock.parameters/PairParameters<com.splendo.kaluga.media/PlaybackState.PlaybackParameters, kotlin/Boolean>, kotlin/Unit> // com.splendo.kaluga.test.media/MockMediaPlayer.forceStartMock.<get-forceStartMock>|<get-forceStartMock>(){}[0]
+    final val initializeForMock // com.splendo.kaluga.test.media/MockMediaPlayer.initializeForMock|{}initializeForMock[0]
+        final fun <get-initializeForMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<com.splendo.kaluga.media/MediaSource>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<com.splendo.kaluga.media/MediaSource>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<com.splendo.kaluga.media/MediaSource>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<com.splendo.kaluga.media/MediaSource>, kotlin/Unit> // com.splendo.kaluga.test.media/MockMediaPlayer.initializeForMock.<get-initializeForMock>|<get-initializeForMock>(){}[0]
+    final val mediaSurfaceController // com.splendo.kaluga.test.media/MockMediaPlayer.mediaSurfaceController|{}mediaSurfaceController[0]
+        final fun <get-mediaSurfaceController>(): com.splendo.kaluga.test.media/MockMediaSurfaceController // com.splendo.kaluga.test.media/MockMediaPlayer.mediaSurfaceController.<get-mediaSurfaceController>|<get-mediaSurfaceController>(){}[0]
+    final val playableMedia // com.splendo.kaluga.test.media/MockMediaPlayer.playableMedia|{}playableMedia[0]
+        final fun <get-playableMedia>(): kotlinx.coroutines.flow/MutableStateFlow<com.splendo.kaluga.media/PlayableMedia?> // com.splendo.kaluga.test.media/MockMediaPlayer.playableMedia.<get-playableMedia>|<get-playableMedia>(){}[0]
+    final val resetMock // com.splendo.kaluga.test.media/MockMediaPlayer.resetMock|{}resetMock[0]
+        final fun <get-resetMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.media/MockMediaPlayer.resetMock.<get-resetMock>|<get-resetMock>(){}[0]
+    final val volumeController // com.splendo.kaluga.test.media/MockMediaPlayer.volumeController|{}volumeController[0]
+        final fun <get-volumeController>(): com.splendo.kaluga.test.media/MockVolumeController // com.splendo.kaluga.test.media/MockMediaPlayer.volumeController.<get-volumeController>|<get-volumeController>(){}[0]
+
+    final fun close() // com.splendo.kaluga.test.media/MockMediaPlayer.close|close(){}[0]
+    final suspend fun awaitCompletion() // com.splendo.kaluga.test.media/MockMediaPlayer.awaitCompletion|awaitCompletion(){}[0]
+    final suspend fun forceStart(com.splendo.kaluga.media/PlaybackState.PlaybackParameters, kotlin/Boolean) // com.splendo.kaluga.test.media/MockMediaPlayer.forceStart|forceStart(com.splendo.kaluga.media.PlaybackState.PlaybackParameters;kotlin.Boolean){}[0]
+    final suspend fun initializeFor(com.splendo.kaluga.media/MediaSource) // com.splendo.kaluga.test.media/MockMediaPlayer.initializeFor|initializeFor(com.splendo.kaluga.media.MediaSource){}[0]
+    final suspend fun renderVideoOnSurface(com.splendo.kaluga.media/MediaSurface?) // com.splendo.kaluga.test.media/MockMediaPlayer.renderVideoOnSurface|renderVideoOnSurface(com.splendo.kaluga.media.MediaSurface?){}[0]
+    final suspend fun reset() // com.splendo.kaluga.test.media/MockMediaPlayer.reset|reset(){}[0]
+    final suspend fun updateVolume(kotlin/Float) // com.splendo.kaluga.test.media/MockMediaPlayer.updateVolume|updateVolume(kotlin.Float){}[0]
+}
+
+final class com.splendo.kaluga.test.media/MockMediaSurfaceController : com.splendo.kaluga.media/MediaSurfaceController { // com.splendo.kaluga.test.media/MockMediaSurfaceController|null[0]
+    constructor <init>() // com.splendo.kaluga.test.media/MockMediaSurfaceController.<init>|<init>(){}[0]
+
+    final val renderVideoOnSurfaceMock // com.splendo.kaluga.test.media/MockMediaSurfaceController.renderVideoOnSurfaceMock|{}renderVideoOnSurfaceMock[0]
+        final fun <get-renderVideoOnSurfaceMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<com.splendo.kaluga.media/MediaSurface?>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<com.splendo.kaluga.media/MediaSurface?>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<com.splendo.kaluga.media/MediaSurface?>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<com.splendo.kaluga.media/MediaSurface?>, kotlin/Unit> // com.splendo.kaluga.test.media/MockMediaSurfaceController.renderVideoOnSurfaceMock.<get-renderVideoOnSurfaceMock>|<get-renderVideoOnSurfaceMock>(){}[0]
+
+    final suspend fun renderVideoOnSurface(com.splendo.kaluga.media/MediaSurface?) // com.splendo.kaluga.test.media/MockMediaSurfaceController.renderVideoOnSurface|renderVideoOnSurface(com.splendo.kaluga.media.MediaSurface?){}[0]
+}
+
+final class com.splendo.kaluga.test.media/MockMediaSurfaceProvider : com.splendo.kaluga.media/MediaSurfaceProvider { // com.splendo.kaluga.test.media/MockMediaSurfaceProvider|null[0]
+    constructor <init>(kotlinx.coroutines.flow/MutableSharedFlow<com.splendo.kaluga.media/MediaSurface?>) // com.splendo.kaluga.test.media/MockMediaSurfaceProvider.<init>|<init>(kotlinx.coroutines.flow.MutableSharedFlow<com.splendo.kaluga.media.MediaSurface?>){}[0]
+
+    final val surface // com.splendo.kaluga.test.media/MockMediaSurfaceProvider.surface|{}surface[0]
+        final fun <get-surface>(): kotlinx.coroutines.flow/MutableSharedFlow<com.splendo.kaluga.media/MediaSurface?> // com.splendo.kaluga.test.media/MockMediaSurfaceProvider.surface.<get-surface>|<get-surface>(){}[0]
+}
+
+final class com.splendo.kaluga.test.media/MockPlayableMedia : com.splendo.kaluga.media/PlayableMedia { // com.splendo.kaluga.test.media/MockPlayableMedia|null[0]
+    constructor <init>(com.splendo.kaluga.media/MediaSource, kotlin.time/Duration = ..., kotlin.time/Duration = ..., kotlinx.coroutines.flow/MutableStateFlow<com.splendo.kaluga.media/Resolution> = ..., kotlin.collections/List<com.splendo.kaluga.media/TrackInfo> = ...) // com.splendo.kaluga.test.media/MockPlayableMedia.<init>|<init>(com.splendo.kaluga.media.MediaSource;kotlin.time.Duration;kotlin.time.Duration;kotlinx.coroutines.flow.MutableStateFlow<com.splendo.kaluga.media.Resolution>;kotlin.collections.List<com.splendo.kaluga.media.TrackInfo>){}[0]
+
+    final val duration // com.splendo.kaluga.test.media/MockPlayableMedia.duration|{}duration[0]
+        final fun <get-duration>(): kotlin.time/Duration // com.splendo.kaluga.test.media/MockPlayableMedia.duration.<get-duration>|<get-duration>(){}[0]
+    final val resolution // com.splendo.kaluga.test.media/MockPlayableMedia.resolution|{}resolution[0]
+        final fun <get-resolution>(): kotlinx.coroutines.flow/MutableStateFlow<com.splendo.kaluga.media/Resolution> // com.splendo.kaluga.test.media/MockPlayableMedia.resolution.<get-resolution>|<get-resolution>(){}[0]
+    final val source // com.splendo.kaluga.test.media/MockPlayableMedia.source|{}source[0]
+        final fun <get-source>(): com.splendo.kaluga.media/MediaSource // com.splendo.kaluga.test.media/MockPlayableMedia.source.<get-source>|<get-source>(){}[0]
+    final val tracks // com.splendo.kaluga.test.media/MockPlayableMedia.tracks|{}tracks[0]
+        final fun <get-tracks>(): kotlin.collections/List<com.splendo.kaluga.media/TrackInfo> // com.splendo.kaluga.test.media/MockPlayableMedia.tracks.<get-tracks>|<get-tracks>(){}[0]
+
+    final var currentPlayTime // com.splendo.kaluga.test.media/MockPlayableMedia.currentPlayTime|{}currentPlayTime[0]
+        final fun <get-currentPlayTime>(): kotlin.time/Duration // com.splendo.kaluga.test.media/MockPlayableMedia.currentPlayTime.<get-currentPlayTime>|<get-currentPlayTime>(){}[0]
+        final fun <set-currentPlayTime>(kotlin.time/Duration) // com.splendo.kaluga.test.media/MockPlayableMedia.currentPlayTime.<set-currentPlayTime>|<set-currentPlayTime>(kotlin.time.Duration){}[0]
+}
+
+final class com.splendo.kaluga.test.media/MockPlaybackStateRepo : com.splendo.kaluga.media/BasePlaybackStateRepo { // com.splendo.kaluga.test.media/MockPlaybackStateRepo|null[0]
+    constructor <init>(com.splendo.kaluga.test.media/MockPlaybackState.Configuration, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.test.media/MockPlaybackStateRepo.<init>|<init>(com.splendo.kaluga.test.media.MockPlaybackState.Configuration;kotlin.coroutines.CoroutineContext){}[0]
+    constructor <init>(kotlin/Function0<com.splendo.kaluga.test.media/MockPlaybackState>, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.test.media/MockPlaybackStateRepo.<init>|<init>(kotlin.Function0<com.splendo.kaluga.test.media.MockPlaybackState>;kotlin.coroutines.CoroutineContext){}[0]
+}
+
+final class com.splendo.kaluga.test.media/MockVolumeController : com.splendo.kaluga.media/VolumeController { // com.splendo.kaluga.test.media/MockVolumeController|null[0]
+    constructor <init>(kotlin/Boolean = ...) // com.splendo.kaluga.test.media/MockVolumeController.<init>|<init>(kotlin.Boolean){}[0]
+
+    final val currentVolume // com.splendo.kaluga.test.media/MockVolumeController.currentVolume|{}currentVolume[0]
+        final fun <get-currentVolume>(): kotlinx.coroutines.flow/MutableStateFlow<kotlin/Float> // com.splendo.kaluga.test.media/MockVolumeController.currentVolume.<get-currentVolume>|<get-currentVolume>(){}[0]
+    final val updateVolumeMock // com.splendo.kaluga.test.media/MockVolumeController.updateVolumeMock|{}updateVolumeMock[0]
+        final fun <get-updateVolumeMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlin/Float>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin/Float>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlin/Float>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlin/Float>, kotlin/Unit> // com.splendo.kaluga.test.media/MockVolumeController.updateVolumeMock.<get-updateVolumeMock>|<get-updateVolumeMock>(){}[0]
+
+    final suspend fun updateVolume(kotlin/Float) // com.splendo.kaluga.test.media/MockVolumeController.updateVolume|updateVolume(kotlin.Float){}[0]
+}
+
+sealed class com.splendo.kaluga.test.media/MockPlaybackState { // com.splendo.kaluga.test.media/MockPlaybackState|null[0]
+    abstract val playbackState // com.splendo.kaluga.test.media/MockPlaybackState.playbackState|{}playbackState[0]
+        abstract fun <get-playbackState>(): com.splendo.kaluga.media/PlaybackState // com.splendo.kaluga.test.media/MockPlaybackState.playbackState.<get-playbackState>|<get-playbackState>(){}[0]
+
+    final class Completed : com.splendo.kaluga.media/PlaybackState.Completed, com.splendo.kaluga.test.media/MockPlaybackState.Prepared { // com.splendo.kaluga.test.media/MockPlaybackState.Completed|null[0]
+        constructor <init>(com.splendo.kaluga.media/PlayableMedia, com.splendo.kaluga.test.media/MockPlaybackState.Configuration) // com.splendo.kaluga.test.media/MockPlaybackState.Completed.<init>|<init>(com.splendo.kaluga.media.PlayableMedia;com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+
+        final val configuration // com.splendo.kaluga.test.media/MockPlaybackState.Completed.configuration|{}configuration[0]
+            final fun <get-configuration>(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Completed.configuration.<get-configuration>|<get-configuration>(){}[0]
+        final val playableMedia // com.splendo.kaluga.test.media/MockPlaybackState.Completed.playableMedia|{}playableMedia[0]
+            final fun <get-playableMedia>(): com.splendo.kaluga.media/PlayableMedia // com.splendo.kaluga.test.media/MockPlaybackState.Completed.playableMedia.<get-playableMedia>|<get-playableMedia>(){}[0]
+        final val playbackState // com.splendo.kaluga.test.media/MockPlaybackState.Completed.playbackState|{}playbackState[0]
+            final fun <get-playbackState>(): com.splendo.kaluga.media/PlaybackState // com.splendo.kaluga.test.media/MockPlaybackState.Completed.playbackState.<get-playbackState>|<get-playbackState>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.media/PlayableMedia // com.splendo.kaluga.test.media/MockPlaybackState.Completed.component1|component1(){}[0]
+        final fun component2(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Completed.component2|component2(){}[0]
+        final fun copy(com.splendo.kaluga.media/PlayableMedia = ..., com.splendo.kaluga.test.media/MockPlaybackState.Configuration = ...): com.splendo.kaluga.test.media/MockPlaybackState.Completed // com.splendo.kaluga.test.media/MockPlaybackState.Completed.copy|copy(com.splendo.kaluga.media.PlayableMedia;com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.media/MockPlaybackState.Completed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.media/MockPlaybackState.Completed.hashCode|hashCode(){}[0]
+        final fun start(com.splendo.kaluga.media/PlaybackState.PlaybackParameters): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Playing> // com.splendo.kaluga.test.media/MockPlaybackState.Completed.start|start(com.splendo.kaluga.media.PlaybackState.PlaybackParameters){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.media/MockPlaybackState.Completed.toString|toString(){}[0]
+    }
+
+    final class Configuration { // com.splendo.kaluga.test.media/MockPlaybackState.Configuration|null[0]
+        constructor <init>(kotlin/Function1<com.splendo.kaluga.media/MediaSource, com.splendo.kaluga.media/PlayableMedia?> = ..., com.splendo.kaluga.media/VolumeController = ..., com.splendo.kaluga.media/MediaSurfaceController = ..., com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlin.time/Duration>, kotlin/Boolean> = ...) // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.<init>|<init>(kotlin.Function1<com.splendo.kaluga.media.MediaSource,com.splendo.kaluga.media.PlayableMedia?>;com.splendo.kaluga.media.VolumeController;com.splendo.kaluga.media.MediaSurfaceController;com.splendo.kaluga.test.base.mock.SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters.SingleParameters.Matchers<kotlin.time.Duration>,com.splendo.kaluga.test.base.mock.parameters.SingleParameters.MatchersOrCaptor<kotlin.time.Duration>,com.splendo.kaluga.test.base.mock.parameters.SingleParameters.Values<kotlin.time.Duration>,com.splendo.kaluga.test.base.mock.parameters.SingleParameters<kotlin.time.Duration>,kotlin.Boolean>){}[0]
+
+        final val mediaProvider // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.mediaProvider|{}mediaProvider[0]
+            final fun <get-mediaProvider>(): kotlin/Function1<com.splendo.kaluga.media/MediaSource, com.splendo.kaluga.media/PlayableMedia?> // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.mediaProvider.<get-mediaProvider>|<get-mediaProvider>(){}[0]
+        final val mediaSurfaceController // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.mediaSurfaceController|{}mediaSurfaceController[0]
+            final fun <get-mediaSurfaceController>(): com.splendo.kaluga.media/MediaSurfaceController // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.mediaSurfaceController.<get-mediaSurfaceController>|<get-mediaSurfaceController>(){}[0]
+        final val seekToMock // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.seekToMock|{}seekToMock[0]
+            final fun <get-seekToMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlin.time/Duration>, kotlin/Boolean> // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.seekToMock.<get-seekToMock>|<get-seekToMock>(){}[0]
+        final val volumeController // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.volumeController|{}volumeController[0]
+            final fun <get-volumeController>(): com.splendo.kaluga.media/VolumeController // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.volumeController.<get-volumeController>|<get-volumeController>(){}[0]
+
+        final fun component1(): kotlin/Function1<com.splendo.kaluga.media/MediaSource, com.splendo.kaluga.media/PlayableMedia?> // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.component1|component1(){}[0]
+        final fun component2(): com.splendo.kaluga.media/VolumeController // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.component2|component2(){}[0]
+        final fun component3(): com.splendo.kaluga.media/MediaSurfaceController // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.component3|component3(){}[0]
+        final fun component4(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlin.time/Duration>, kotlin/Boolean> // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.component4|component4(){}[0]
+        final fun copy(kotlin/Function1<com.splendo.kaluga.media/MediaSource, com.splendo.kaluga.media/PlayableMedia?> = ..., com.splendo.kaluga.media/VolumeController = ..., com.splendo.kaluga.media/MediaSurfaceController = ..., com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlin.time/Duration>, kotlin/Boolean> = ...): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.copy|copy(kotlin.Function1<com.splendo.kaluga.media.MediaSource,com.splendo.kaluga.media.PlayableMedia?>;com.splendo.kaluga.media.VolumeController;com.splendo.kaluga.media.MediaSurfaceController;com.splendo.kaluga.test.base.mock.SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters.SingleParameters.Matchers<kotlin.time.Duration>,com.splendo.kaluga.test.base.mock.parameters.SingleParameters.MatchersOrCaptor<kotlin.time.Duration>,com.splendo.kaluga.test.base.mock.parameters.SingleParameters.Values<kotlin.time.Duration>,com.splendo.kaluga.test.base.mock.parameters.SingleParameters<kotlin.time.Duration>,kotlin.Boolean>){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.media/MockPlaybackState.Configuration.toString|toString(){}[0]
+    }
+
+    final class Error : com.splendo.kaluga.media/PlaybackState.Error, com.splendo.kaluga.test.media/MockPlaybackState.Active { // com.splendo.kaluga.test.media/MockPlaybackState.Error|null[0]
+        constructor <init>(com.splendo.kaluga.media/PlaybackError, com.splendo.kaluga.test.media/MockPlaybackState.Configuration) // com.splendo.kaluga.test.media/MockPlaybackState.Error.<init>|<init>(com.splendo.kaluga.media.PlaybackError;com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+
+        final val configuration // com.splendo.kaluga.test.media/MockPlaybackState.Error.configuration|{}configuration[0]
+            final fun <get-configuration>(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Error.configuration.<get-configuration>|<get-configuration>(){}[0]
+        final val error // com.splendo.kaluga.test.media/MockPlaybackState.Error.error|{}error[0]
+            final fun <get-error>(): com.splendo.kaluga.media/PlaybackError // com.splendo.kaluga.test.media/MockPlaybackState.Error.error.<get-error>|<get-error>(){}[0]
+        final val playbackState // com.splendo.kaluga.test.media/MockPlaybackState.Error.playbackState|{}playbackState[0]
+            final fun <get-playbackState>(): com.splendo.kaluga.media/PlaybackState // com.splendo.kaluga.test.media/MockPlaybackState.Error.playbackState.<get-playbackState>|<get-playbackState>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.media/PlaybackError // com.splendo.kaluga.test.media/MockPlaybackState.Error.component1|component1(){}[0]
+        final fun component2(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Error.component2|component2(){}[0]
+        final fun copy(com.splendo.kaluga.media/PlaybackError = ..., com.splendo.kaluga.test.media/MockPlaybackState.Configuration = ...): com.splendo.kaluga.test.media/MockPlaybackState.Error // com.splendo.kaluga.test.media/MockPlaybackState.Error.copy|copy(com.splendo.kaluga.media.PlaybackError;com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.media/MockPlaybackState.Error.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.media/MockPlaybackState.Error.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.media/MockPlaybackState.Error.toString|toString(){}[0]
+    }
+
+    final class Idle : com.splendo.kaluga.media/PlaybackState.Idle, com.splendo.kaluga.test.media/MockPlaybackState.Prepared { // com.splendo.kaluga.test.media/MockPlaybackState.Idle|null[0]
+        constructor <init>(com.splendo.kaluga.media/PlayableMedia, com.splendo.kaluga.test.media/MockPlaybackState.Configuration) // com.splendo.kaluga.test.media/MockPlaybackState.Idle.<init>|<init>(com.splendo.kaluga.media.PlayableMedia;com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+
+        final val configuration // com.splendo.kaluga.test.media/MockPlaybackState.Idle.configuration|{}configuration[0]
+            final fun <get-configuration>(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Idle.configuration.<get-configuration>|<get-configuration>(){}[0]
+        final val playableMedia // com.splendo.kaluga.test.media/MockPlaybackState.Idle.playableMedia|{}playableMedia[0]
+            final fun <get-playableMedia>(): com.splendo.kaluga.media/PlayableMedia // com.splendo.kaluga.test.media/MockPlaybackState.Idle.playableMedia.<get-playableMedia>|<get-playableMedia>(){}[0]
+        final val playbackState // com.splendo.kaluga.test.media/MockPlaybackState.Idle.playbackState|{}playbackState[0]
+            final fun <get-playbackState>(): com.splendo.kaluga.media/PlaybackState // com.splendo.kaluga.test.media/MockPlaybackState.Idle.playbackState.<get-playbackState>|<get-playbackState>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.media/PlayableMedia // com.splendo.kaluga.test.media/MockPlaybackState.Idle.component1|component1(){}[0]
+        final fun component2(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Idle.component2|component2(){}[0]
+        final fun copy(com.splendo.kaluga.media/PlayableMedia = ..., com.splendo.kaluga.test.media/MockPlaybackState.Configuration = ...): com.splendo.kaluga.test.media/MockPlaybackState.Idle // com.splendo.kaluga.test.media/MockPlaybackState.Idle.copy|copy(com.splendo.kaluga.media.PlayableMedia;com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.media/MockPlaybackState.Idle.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.media/MockPlaybackState.Idle.hashCode|hashCode(){}[0]
+        final fun play(com.splendo.kaluga.media/PlaybackState.PlaybackParameters): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Playing> // com.splendo.kaluga.test.media/MockPlaybackState.Idle.play|play(com.splendo.kaluga.media.PlaybackState.PlaybackParameters){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.media/MockPlaybackState.Idle.toString|toString(){}[0]
+    }
+
+    final class Initialized : com.splendo.kaluga.media/PlaybackState.Initialized, com.splendo.kaluga.test.media/MockPlaybackState.Active { // com.splendo.kaluga.test.media/MockPlaybackState.Initialized|null[0]
+        constructor <init>(com.splendo.kaluga.media/PlayableMedia, com.splendo.kaluga.test.media/MockPlaybackState.Configuration) // com.splendo.kaluga.test.media/MockPlaybackState.Initialized.<init>|<init>(com.splendo.kaluga.media.PlayableMedia;com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+
+        final val configuration // com.splendo.kaluga.test.media/MockPlaybackState.Initialized.configuration|{}configuration[0]
+            final fun <get-configuration>(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Initialized.configuration.<get-configuration>|<get-configuration>(){}[0]
+        final val playbackState // com.splendo.kaluga.test.media/MockPlaybackState.Initialized.playbackState|{}playbackState[0]
+            final fun <get-playbackState>(): com.splendo.kaluga.media/PlaybackState // com.splendo.kaluga.test.media/MockPlaybackState.Initialized.playbackState.<get-playbackState>|<get-playbackState>(){}[0]
+        final val source // com.splendo.kaluga.test.media/MockPlaybackState.Initialized.source|{}source[0]
+            final fun <get-source>(): com.splendo.kaluga.media/MediaSource // com.splendo.kaluga.test.media/MockPlaybackState.Initialized.source.<get-source>|<get-source>(){}[0]
+
+        final fun component2(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Initialized.component2|component2(){}[0]
+        final fun copy(com.splendo.kaluga.media/PlayableMedia = ..., com.splendo.kaluga.test.media/MockPlaybackState.Configuration = ...): com.splendo.kaluga.test.media/MockPlaybackState.Initialized // com.splendo.kaluga.test.media/MockPlaybackState.Initialized.copy|copy(com.splendo.kaluga.media.PlayableMedia;com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.media/MockPlaybackState.Initialized.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.media/MockPlaybackState.Initialized.hashCode|hashCode(){}[0]
+        final fun prepared(com.splendo.kaluga.media/PlayableMedia): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Idle> // com.splendo.kaluga.test.media/MockPlaybackState.Initialized.prepared|prepared(com.splendo.kaluga.media.PlayableMedia){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.media/MockPlaybackState.Initialized.toString|toString(){}[0]
+    }
+
+    final class Paused : com.splendo.kaluga.media/PlaybackState.Paused, com.splendo.kaluga.test.media/MockPlaybackState.Prepared { // com.splendo.kaluga.test.media/MockPlaybackState.Paused|null[0]
+        constructor <init>(com.splendo.kaluga.media/PlaybackState.PlaybackParameters, com.splendo.kaluga.media/PlayableMedia, com.splendo.kaluga.test.media/MockPlaybackState.Configuration) // com.splendo.kaluga.test.media/MockPlaybackState.Paused.<init>|<init>(com.splendo.kaluga.media.PlaybackState.PlaybackParameters;com.splendo.kaluga.media.PlayableMedia;com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+
+        final val configuration // com.splendo.kaluga.test.media/MockPlaybackState.Paused.configuration|{}configuration[0]
+            final fun <get-configuration>(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Paused.configuration.<get-configuration>|<get-configuration>(){}[0]
+        final val play // com.splendo.kaluga.test.media/MockPlaybackState.Paused.play|{}play[0]
+            final fun <get-play>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Playing> // com.splendo.kaluga.test.media/MockPlaybackState.Paused.play.<get-play>|<get-play>(){}[0]
+        final val playableMedia // com.splendo.kaluga.test.media/MockPlaybackState.Paused.playableMedia|{}playableMedia[0]
+            final fun <get-playableMedia>(): com.splendo.kaluga.media/PlayableMedia // com.splendo.kaluga.test.media/MockPlaybackState.Paused.playableMedia.<get-playableMedia>|<get-playableMedia>(){}[0]
+        final val playbackParameters // com.splendo.kaluga.test.media/MockPlaybackState.Paused.playbackParameters|{}playbackParameters[0]
+            final fun <get-playbackParameters>(): com.splendo.kaluga.media/PlaybackState.PlaybackParameters // com.splendo.kaluga.test.media/MockPlaybackState.Paused.playbackParameters.<get-playbackParameters>|<get-playbackParameters>(){}[0]
+        final val playbackState // com.splendo.kaluga.test.media/MockPlaybackState.Paused.playbackState|{}playbackState[0]
+            final fun <get-playbackState>(): com.splendo.kaluga.media/PlaybackState // com.splendo.kaluga.test.media/MockPlaybackState.Paused.playbackState.<get-playbackState>|<get-playbackState>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.media/PlaybackState.PlaybackParameters // com.splendo.kaluga.test.media/MockPlaybackState.Paused.component1|component1(){}[0]
+        final fun component2(): com.splendo.kaluga.media/PlayableMedia // com.splendo.kaluga.test.media/MockPlaybackState.Paused.component2|component2(){}[0]
+        final fun component3(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Paused.component3|component3(){}[0]
+        final fun copy(com.splendo.kaluga.media/PlaybackState.PlaybackParameters = ..., com.splendo.kaluga.media/PlayableMedia = ..., com.splendo.kaluga.test.media/MockPlaybackState.Configuration = ...): com.splendo.kaluga.test.media/MockPlaybackState.Paused // com.splendo.kaluga.test.media/MockPlaybackState.Paused.copy|copy(com.splendo.kaluga.media.PlaybackState.PlaybackParameters;com.splendo.kaluga.media.PlayableMedia;com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.media/MockPlaybackState.Paused.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.media/MockPlaybackState.Paused.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.media/MockPlaybackState.Paused.toString|toString(){}[0]
+        final fun updatePlaybackParameters(com.splendo.kaluga.media/PlaybackState.PlaybackParameters): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Paused> // com.splendo.kaluga.test.media/MockPlaybackState.Paused.updatePlaybackParameters|updatePlaybackParameters(com.splendo.kaluga.media.PlaybackState.PlaybackParameters){}[0]
+    }
+
+    final class Playing : com.splendo.kaluga.media/PlaybackState.Playing, com.splendo.kaluga.test.media/MockPlaybackState.Prepared { // com.splendo.kaluga.test.media/MockPlaybackState.Playing|null[0]
+        constructor <init>(com.splendo.kaluga.media/PlaybackState.PlaybackParameters, com.splendo.kaluga.media/PlayableMedia, com.splendo.kaluga.test.media/MockPlaybackState.Configuration) // com.splendo.kaluga.test.media/MockPlaybackState.Playing.<init>|<init>(com.splendo.kaluga.media.PlaybackState.PlaybackParameters;com.splendo.kaluga.media.PlayableMedia;com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+
+        final val completedLoop // com.splendo.kaluga.test.media/MockPlaybackState.Playing.completedLoop|{}completedLoop[0]
+            final fun <get-completedLoop>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.PlayingOrCompleted> // com.splendo.kaluga.test.media/MockPlaybackState.Playing.completedLoop.<get-completedLoop>|<get-completedLoop>(){}[0]
+        final val configuration // com.splendo.kaluga.test.media/MockPlaybackState.Playing.configuration|{}configuration[0]
+            final fun <get-configuration>(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Playing.configuration.<get-configuration>|<get-configuration>(){}[0]
+        final val pause // com.splendo.kaluga.test.media/MockPlaybackState.Playing.pause|{}pause[0]
+            final fun <get-pause>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Paused> // com.splendo.kaluga.test.media/MockPlaybackState.Playing.pause.<get-pause>|<get-pause>(){}[0]
+        final val playableMedia // com.splendo.kaluga.test.media/MockPlaybackState.Playing.playableMedia|{}playableMedia[0]
+            final fun <get-playableMedia>(): com.splendo.kaluga.media/PlayableMedia // com.splendo.kaluga.test.media/MockPlaybackState.Playing.playableMedia.<get-playableMedia>|<get-playableMedia>(){}[0]
+        final val playbackParameters // com.splendo.kaluga.test.media/MockPlaybackState.Playing.playbackParameters|{}playbackParameters[0]
+            final fun <get-playbackParameters>(): com.splendo.kaluga.media/PlaybackState.PlaybackParameters // com.splendo.kaluga.test.media/MockPlaybackState.Playing.playbackParameters.<get-playbackParameters>|<get-playbackParameters>(){}[0]
+        final val playbackState // com.splendo.kaluga.test.media/MockPlaybackState.Playing.playbackState|{}playbackState[0]
+            final fun <get-playbackState>(): com.splendo.kaluga.media/PlaybackState // com.splendo.kaluga.test.media/MockPlaybackState.Playing.playbackState.<get-playbackState>|<get-playbackState>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.media/PlaybackState.PlaybackParameters // com.splendo.kaluga.test.media/MockPlaybackState.Playing.component1|component1(){}[0]
+        final fun component2(): com.splendo.kaluga.media/PlayableMedia // com.splendo.kaluga.test.media/MockPlaybackState.Playing.component2|component2(){}[0]
+        final fun component3(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Playing.component3|component3(){}[0]
+        final fun copy(com.splendo.kaluga.media/PlaybackState.PlaybackParameters = ..., com.splendo.kaluga.media/PlayableMedia = ..., com.splendo.kaluga.test.media/MockPlaybackState.Configuration = ...): com.splendo.kaluga.test.media/MockPlaybackState.Playing // com.splendo.kaluga.test.media/MockPlaybackState.Playing.copy|copy(com.splendo.kaluga.media.PlaybackState.PlaybackParameters;com.splendo.kaluga.media.PlayableMedia;com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.media/MockPlaybackState.Playing.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.media/MockPlaybackState.Playing.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.media/MockPlaybackState.Playing.toString|toString(){}[0]
+        final fun updatePlaybackParameters(com.splendo.kaluga.media/PlaybackState.PlaybackParameters): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Playing> // com.splendo.kaluga.test.media/MockPlaybackState.Playing.updatePlaybackParameters|updatePlaybackParameters(com.splendo.kaluga.media.PlaybackState.PlaybackParameters){}[0]
+    }
+
+    final class Stopped : com.splendo.kaluga.media/PlaybackState.Stopped, com.splendo.kaluga.test.media/MockPlaybackState.Active { // com.splendo.kaluga.test.media/MockPlaybackState.Stopped|null[0]
+        constructor <init>(com.splendo.kaluga.media/PlayableMedia, com.splendo.kaluga.test.media/MockPlaybackState.Configuration) // com.splendo.kaluga.test.media/MockPlaybackState.Stopped.<init>|<init>(com.splendo.kaluga.media.PlayableMedia;com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+
+        final val configuration // com.splendo.kaluga.test.media/MockPlaybackState.Stopped.configuration|{}configuration[0]
+            final fun <get-configuration>(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Stopped.configuration.<get-configuration>|<get-configuration>(){}[0]
+        final val playbackState // com.splendo.kaluga.test.media/MockPlaybackState.Stopped.playbackState|{}playbackState[0]
+            final fun <get-playbackState>(): com.splendo.kaluga.media/PlaybackState // com.splendo.kaluga.test.media/MockPlaybackState.Stopped.playbackState.<get-playbackState>|<get-playbackState>(){}[0]
+        final val reinitialize // com.splendo.kaluga.test.media/MockPlaybackState.Stopped.reinitialize|{}reinitialize[0]
+            final fun <get-reinitialize>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Initialized> // com.splendo.kaluga.test.media/MockPlaybackState.Stopped.reinitialize.<get-reinitialize>|<get-reinitialize>(){}[0]
+
+        final fun component2(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Stopped.component2|component2(){}[0]
+        final fun copy(com.splendo.kaluga.media/PlayableMedia = ..., com.splendo.kaluga.test.media/MockPlaybackState.Configuration = ...): com.splendo.kaluga.test.media/MockPlaybackState.Stopped // com.splendo.kaluga.test.media/MockPlaybackState.Stopped.copy|copy(com.splendo.kaluga.media.PlayableMedia;com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.media/MockPlaybackState.Stopped.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.media/MockPlaybackState.Stopped.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.media/MockPlaybackState.Stopped.toString|toString(){}[0]
+    }
+
+    final class Uninitialized : com.splendo.kaluga.media/PlaybackState.Uninitialized, com.splendo.kaluga.test.media/MockPlaybackState.Active { // com.splendo.kaluga.test.media/MockPlaybackState.Uninitialized|null[0]
+        constructor <init>(com.splendo.kaluga.test.media/MockPlaybackState.Configuration) // com.splendo.kaluga.test.media/MockPlaybackState.Uninitialized.<init>|<init>(com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+
+        final val configuration // com.splendo.kaluga.test.media/MockPlaybackState.Uninitialized.configuration|{}configuration[0]
+            final fun <get-configuration>(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Uninitialized.configuration.<get-configuration>|<get-configuration>(){}[0]
+        final val playbackState // com.splendo.kaluga.test.media/MockPlaybackState.Uninitialized.playbackState|{}playbackState[0]
+            final fun <get-playbackState>(): com.splendo.kaluga.media/PlaybackState // com.splendo.kaluga.test.media/MockPlaybackState.Uninitialized.playbackState.<get-playbackState>|<get-playbackState>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Uninitialized.component1|component1(){}[0]
+        final fun copy(com.splendo.kaluga.test.media/MockPlaybackState.Configuration = ...): com.splendo.kaluga.test.media/MockPlaybackState.Uninitialized // com.splendo.kaluga.test.media/MockPlaybackState.Uninitialized.copy|copy(com.splendo.kaluga.test.media.MockPlaybackState.Configuration){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.media/MockPlaybackState.Uninitialized.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.media/MockPlaybackState.Uninitialized.hashCode|hashCode(){}[0]
+        final fun initialize(com.splendo.kaluga.media/MediaSource): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.InitializedOrError> // com.splendo.kaluga.test.media/MockPlaybackState.Uninitialized.initialize|initialize(com.splendo.kaluga.media.MediaSource){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.media/MockPlaybackState.Uninitialized.toString|toString(){}[0]
+    }
+
+    sealed class Active : com.splendo.kaluga.test.media/MockPlaybackState { // com.splendo.kaluga.test.media/MockPlaybackState.Active|null[0]
+        abstract val configuration // com.splendo.kaluga.test.media/MockPlaybackState.Active.configuration|{}configuration[0]
+            abstract fun <get-configuration>(): com.splendo.kaluga.test.media/MockPlaybackState.Configuration // com.splendo.kaluga.test.media/MockPlaybackState.Active.configuration.<get-configuration>|<get-configuration>(){}[0]
+        final val end // com.splendo.kaluga.test.media/MockPlaybackState.Active.end|{}end[0]
+            final fun <get-end>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Closed> // com.splendo.kaluga.test.media/MockPlaybackState.Active.end.<get-end>|<get-end>(){}[0]
+        final val mediaSurfaceController // com.splendo.kaluga.test.media/MockPlaybackState.Active.mediaSurfaceController|{}mediaSurfaceController[0]
+            final fun <get-mediaSurfaceController>(): com.splendo.kaluga.media/MediaSurfaceController // com.splendo.kaluga.test.media/MockPlaybackState.Active.mediaSurfaceController.<get-mediaSurfaceController>|<get-mediaSurfaceController>(){}[0]
+        final val reset // com.splendo.kaluga.test.media/MockPlaybackState.Active.reset|{}reset[0]
+            final fun <get-reset>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Uninitialized> // com.splendo.kaluga.test.media/MockPlaybackState.Active.reset.<get-reset>|<get-reset>(){}[0]
+        final val volumeController // com.splendo.kaluga.test.media/MockPlaybackState.Active.volumeController|{}volumeController[0]
+            final fun <get-volumeController>(): com.splendo.kaluga.media/VolumeController // com.splendo.kaluga.test.media/MockPlaybackState.Active.volumeController.<get-volumeController>|<get-volumeController>(){}[0]
+
+        final fun failWithError(com.splendo.kaluga.media/PlaybackError): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.media/MockPlaybackState.Error> // com.splendo.kaluga.test.media/MockPlaybackState.Active.failWithError|failWithError(com.splendo.kaluga.media.PlaybackError){}[0]
+    }
+
+    sealed class Prepared : com.splendo.kaluga.test.media/MockPlaybackState.Active { // com.splendo.kaluga.test.media/MockPlaybackState.Prepared|null[0]
+        abstract val playableMedia // com.splendo.kaluga.test.media/MockPlaybackState.Prepared.playableMedia|{}playableMedia[0]
+            abstract fun <get-playableMedia>(): com.splendo.kaluga.media/PlayableMedia // com.splendo.kaluga.test.media/MockPlaybackState.Prepared.playableMedia.<get-playableMedia>|<get-playableMedia>(){}[0]
+        final val stop // com.splendo.kaluga.test.media/MockPlaybackState.Prepared.stop|{}stop[0]
+            final fun <get-stop>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Stopped> // com.splendo.kaluga.test.media/MockPlaybackState.Prepared.stop.<get-stop>|<get-stop>(){}[0]
+
+        final suspend fun seekTo(kotlin.time/Duration): kotlin/Boolean // com.splendo.kaluga.test.media/MockPlaybackState.Prepared.seekTo|seekTo(kotlin.time.Duration){}[0]
+    }
+
+    final object Closed : com.splendo.kaluga.media/PlaybackState.Closed, com.splendo.kaluga.test.media/MockPlaybackState { // com.splendo.kaluga.test.media/MockPlaybackState.Closed|null[0]
+        final val playbackState // com.splendo.kaluga.test.media/MockPlaybackState.Closed.playbackState|{}playbackState[0]
+            final fun <get-playbackState>(): com.splendo.kaluga.media/PlaybackState // com.splendo.kaluga.test.media/MockPlaybackState.Closed.playbackState.<get-playbackState>|<get-playbackState>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.media/MockPlaybackState.Closed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.media/MockPlaybackState.Closed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.media/MockPlaybackState.Closed.toString|toString(){}[0]
+    }
+
+    final object Companion { // com.splendo.kaluga.test.media/MockPlaybackState.Companion|null[0]
+        final fun createSeekToMock(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlin.time/Duration>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlin.time/Duration>, kotlin/Boolean> // com.splendo.kaluga.test.media/MockPlaybackState.Companion.createSeekToMock|createSeekToMock(){}[0]
+    }
+}
+
+final fun com.splendo.kaluga.test.media/createMockMediaSurface(): com.splendo.kaluga.media/MediaSurface // com.splendo.kaluga.test.media/createMockMediaSurface|createMockMediaSurface(){}[0]

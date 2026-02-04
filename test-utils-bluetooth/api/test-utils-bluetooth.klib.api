@@ -1,0 +1,898 @@
+// Klib ABI Dump
+// Targets: [iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:test-utils-bluetooth>
+open annotation class com.splendo.kaluga.test.bluetooth/MockBuilderDsl : kotlin/Annotation { // com.splendo.kaluga.test.bluetooth/MockBuilderDsl|null[0]
+    constructor <init>() // com.splendo.kaluga.test.bluetooth/MockBuilderDsl.<init>|<init>(){}[0]
+}
+
+abstract interface com.splendo.kaluga.test.bluetooth/CanUpdateMockValue { // com.splendo.kaluga.test.bluetooth/CanUpdateMockValue|null[0]
+    abstract fun updateMockValue(kotlin/ByteArray?) // com.splendo.kaluga.test.bluetooth/CanUpdateMockValue.updateMockValue|updateMockValue(kotlin.ByteArray?){}[0]
+}
+
+abstract interface com.splendo.kaluga.test.bluetooth/MockCharacteristicWrapper : com.splendo.kaluga.bluetooth/CharacteristicWrapper, com.splendo.kaluga.test.bluetooth/CanUpdateMockValue // com.splendo.kaluga.test.bluetooth/MockCharacteristicWrapper|null[0]
+
+abstract interface com.splendo.kaluga.test.bluetooth/MockDescriptorWrapper : com.splendo.kaluga.bluetooth/DescriptorWrapper, com.splendo.kaluga.test.bluetooth/CanUpdateMockValue // com.splendo.kaluga.test.bluetooth/MockDescriptorWrapper|null[0]
+
+final class com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData : com.splendo.kaluga.bluetooth.device/BaseAdvertisementData { // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData|null[0]
+    constructor <init>(kotlin/String? = ..., kotlin/Int? = ..., kotlin/ByteArray? = ..., kotlin.collections/List<platform.CoreBluetooth/CBUUID> = ..., kotlin.collections/Map<platform.CoreBluetooth/CBUUID, kotlin/ByteArray?> = ..., kotlin/Int = ..., kotlin/Boolean = ...) // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.<init>|<init>(kotlin.String?;kotlin.Int?;kotlin.ByteArray?;kotlin.collections.List<platform.CoreBluetooth.CBUUID>;kotlin.collections.Map<platform.CoreBluetooth.CBUUID,kotlin.ByteArray?>;kotlin.Int;kotlin.Boolean){}[0]
+
+    final val isConnectable // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.isConnectable|{}isConnectable[0]
+        final fun <get-isConnectable>(): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.isConnectable.<get-isConnectable>|<get-isConnectable>(){}[0]
+    final val manufacturerData // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.manufacturerData|{}manufacturerData[0]
+        final fun <get-manufacturerData>(): kotlin/ByteArray? // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.manufacturerData.<get-manufacturerData>|<get-manufacturerData>(){}[0]
+    final val manufacturerId // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.manufacturerId|{}manufacturerId[0]
+        final fun <get-manufacturerId>(): kotlin/Int? // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.manufacturerId.<get-manufacturerId>|<get-manufacturerId>(){}[0]
+    final val name // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.name|{}name[0]
+        final fun <get-name>(): kotlin/String? // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.name.<get-name>|<get-name>(){}[0]
+    final val serviceData // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.serviceData|{}serviceData[0]
+        final fun <get-serviceData>(): kotlin.collections/Map<platform.CoreBluetooth/CBUUID, kotlin/ByteArray?> // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.serviceData.<get-serviceData>|<get-serviceData>(){}[0]
+    final val serviceUUIDs // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.serviceUUIDs|{}serviceUUIDs[0]
+        final fun <get-serviceUUIDs>(): kotlin.collections/List<platform.CoreBluetooth/CBUUID> // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.serviceUUIDs.<get-serviceUUIDs>|<get-serviceUUIDs>(){}[0]
+    final val txPowerLevel // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.txPowerLevel|{}txPowerLevel[0]
+        final fun <get-txPowerLevel>(): kotlin/Int // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.txPowerLevel.<get-txPowerLevel>|<get-txPowerLevel>(){}[0]
+
+    final fun component1(): kotlin/String? // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.component1|component1(){}[0]
+    final fun component2(): kotlin/Int? // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.component2|component2(){}[0]
+    final fun component3(): kotlin/ByteArray? // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.component3|component3(){}[0]
+    final fun component4(): kotlin.collections/List<platform.CoreBluetooth/CBUUID> // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.component4|component4(){}[0]
+    final fun component5(): kotlin.collections/Map<platform.CoreBluetooth/CBUUID, kotlin/ByteArray?> // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.component5|component5(){}[0]
+    final fun component6(): kotlin/Int // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.component6|component6(){}[0]
+    final fun component7(): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.component7|component7(){}[0]
+    final fun copy(kotlin/String? = ..., kotlin/Int? = ..., kotlin/ByteArray? = ..., kotlin.collections/List<platform.CoreBluetooth/CBUUID> = ..., kotlin.collections/Map<platform.CoreBluetooth/CBUUID, kotlin/ByteArray?> = ..., kotlin/Int = ..., kotlin/Boolean = ...): com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.copy|copy(kotlin.String?;kotlin.Int?;kotlin.ByteArray?;kotlin.collections.List<platform.CoreBluetooth.CBUUID>;kotlin.collections.Map<platform.CoreBluetooth.CBUUID,kotlin.ByteArray?>;kotlin.Int;kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.device/MockAdvertisementData.toString|toString(){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager { // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager|null[0]
+    constructor <init>() // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.<init>|<init>(){}[0]
+
+    final val mockConnect // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockConnect|{}mockConnect[0]
+        final fun <get-mockConnect>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockConnect.<get-mockConnect>|<get-mockConnect>(){}[0]
+    final val mockDisconnect // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockDisconnect|{}mockDisconnect[0]
+        final fun <get-mockDisconnect>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockDisconnect.<get-mockDisconnect>|<get-mockDisconnect>(){}[0]
+    final val mockDiscoverServices // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockDiscoverServices|{}mockDiscoverServices[0]
+        final fun <get-mockDiscoverServices>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockDiscoverServices.<get-mockDiscoverServices>|<get-mockDiscoverServices>(){}[0]
+    final val mockHandleCancelConnecting // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockHandleCancelConnecting|{}mockHandleCancelConnecting[0]
+        final fun <get-mockHandleCancelConnecting>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockHandleCancelConnecting.<get-mockHandleCancelConnecting>|<get-mockHandleCancelConnecting>(){}[0]
+    final val mockHandleCancelReconnecting // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockHandleCancelReconnecting|{}mockHandleCancelReconnecting[0]
+        final fun <get-mockHandleCancelReconnecting>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockHandleCancelReconnecting.<get-mockHandleCancelReconnecting>|<get-mockHandleCancelReconnecting>(){}[0]
+    final val mockPair // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockPair|{}mockPair[0]
+        final fun <get-mockPair>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockPair.<get-mockPair>|<get-mockPair>(){}[0]
+    final val mockReadRssi // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockReadRssi|{}mockReadRssi[0]
+        final fun <get-mockReadRssi>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockReadRssi.<get-mockReadRssi>|<get-mockReadRssi>(){}[0]
+    final val mockRequestMtu // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockRequestMtu|{}mockRequestMtu[0]
+        final fun <get-mockRequestMtu>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlin/Int>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin/Int>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlin/Int>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlin/Int>, com.splendo.kaluga.bluetooth.device/DeviceAction.RequestMtu> // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockRequestMtu.<get-mockRequestMtu>|<get-mockRequestMtu>(){}[0]
+    final val mockStartConnecting // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockStartConnecting|{}mockStartConnecting[0]
+        final fun <get-mockStartConnecting>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings?>, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockStartConnecting.<get-mockStartConnecting>|<get-mockStartConnecting>(){}[0]
+    final val mockStartDisconnected // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockStartDisconnected|{}mockStartDisconnected[0]
+        final fun <get-mockStartDisconnected>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockStartDisconnected.<get-mockStartDisconnected>|<get-mockStartDisconnected>(){}[0]
+    final val mockStartDiscovering // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockStartDiscovering|{}mockStartDiscovering[0]
+        final fun <get-mockStartDiscovering>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockStartDiscovering.<get-mockStartDiscovering>|<get-mockStartDiscovering>(){}[0]
+    final val mockUnpair // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockUnpair|{}mockUnpair[0]
+        final fun <get-mockUnpair>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.mockUnpair.<get-mockUnpair>|<get-mockUnpair>(){}[0]
+
+    final fun handleCancelConnecting() // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.handleCancelConnecting|handleCancelConnecting(){}[0]
+    final fun handleCancelReconnecting() // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.handleCancelReconnecting|handleCancelReconnecting(){}[0]
+    final fun startConnecting(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings?) // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.startConnecting|startConnecting(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings?){}[0]
+    final fun startDisconnected() // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.startDisconnected|startDisconnected(){}[0]
+    final fun startDiscovering() // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.startDiscovering|startDiscovering(){}[0]
+    final suspend fun connect() // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.connect|connect(){}[0]
+    final suspend fun disconnect() // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.disconnect|disconnect(){}[0]
+    final suspend fun discoverServices() // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.discoverServices|discoverServices(){}[0]
+    final suspend fun pair() // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.pair|pair(){}[0]
+    final suspend fun readRssi() // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.readRssi|readRssi(){}[0]
+    final suspend fun requestMtu(kotlin/Int): com.splendo.kaluga.bluetooth.device/DeviceAction.RequestMtu // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.requestMtu|requestMtu(kotlin.Int){}[0]
+    final suspend fun unpair() // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager.unpair|unpair(){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceStateRepo : com.splendo.kaluga.bluetooth.device/BaseConnectableDeviceStateRepo { // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceStateRepo|null[0]
+    constructor <init>(com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceStateRepo.<init>|<init>(com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager;kotlin.coroutines.CoroutineContext){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth.device/MockDevice : com.splendo.kaluga.bluetooth.device/Device { // com.splendo.kaluga.test.bluetooth.device/MockDevice|null[0]
+    constructor <init>(platform.Foundation/NSUUID = ..., kotlinx.coroutines.flow/MutableStateFlow<com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo> = ..., com.splendo.kaluga.bluetooth.device/ConnectionSettings = ..., kotlin.coroutines/CoroutineContext, kotlin/Boolean = ..., kotlin.time/Duration = ..., com.splendo.kaluga.logging/Logger = ...) // com.splendo.kaluga.test.bluetooth.device/MockDevice.<init>|<init>(platform.Foundation.NSUUID;kotlinx.coroutines.flow.MutableStateFlow<com.splendo.kaluga.test.bluetooth.device.MockDeviceInfo>;com.splendo.kaluga.bluetooth.device.ConnectionSettings;kotlin.coroutines.CoroutineContext;kotlin.Boolean;kotlin.time.Duration;com.splendo.kaluga.logging.Logger){}[0]
+
+    final val identifier // com.splendo.kaluga.test.bluetooth.device/MockDevice.identifier|{}identifier[0]
+        final fun <get-identifier>(): platform.Foundation/NSUUID // com.splendo.kaluga.test.bluetooth.device/MockDevice.identifier.<get-identifier>|<get-identifier>(){}[0]
+    final val info // com.splendo.kaluga.test.bluetooth.device/MockDevice.info|{}info[0]
+        final fun <get-info>(): kotlinx.coroutines.flow/MutableStateFlow<com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo> // com.splendo.kaluga.test.bluetooth.device/MockDevice.info.<get-info>|<get-info>(){}[0]
+    final val mockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDevice.mockConnectableDeviceManager|{}mockConnectableDeviceManager[0]
+        final fun <get-mockConnectableDeviceManager>(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDevice.mockConnectableDeviceManager.<get-mockConnectableDeviceManager>|<get-mockConnectableDeviceManager>(){}[0]
+    final val state // com.splendo.kaluga.test.bluetooth.device/MockDevice.state|{}state[0]
+        final fun <get-state>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth.device/DeviceState> // com.splendo.kaluga.test.bluetooth.device/MockDevice.state.<get-state>|<get-state>(){}[0]
+
+    final fun addAction(com.splendo.kaluga.bluetooth.device/DeviceAction) // com.splendo.kaluga.test.bluetooth.device/MockDevice.addAction|addAction(com.splendo.kaluga.bluetooth.device.DeviceAction){}[0]
+    final fun advertisementDataDidUpdate(com.splendo.kaluga.bluetooth.device/BaseAdvertisementData) // com.splendo.kaluga.test.bluetooth.device/MockDevice.advertisementDataDidUpdate|advertisementDataDidUpdate(com.splendo.kaluga.bluetooth.device.BaseAdvertisementData){}[0]
+    final fun completeAction() // com.splendo.kaluga.test.bluetooth.device/MockDevice.completeAction|completeAction(){}[0]
+    final fun handleCancelConnecting() // com.splendo.kaluga.test.bluetooth.device/MockDevice.handleCancelConnecting|handleCancelConnecting(){}[0]
+    final fun handleConnected() // com.splendo.kaluga.test.bluetooth.device/MockDevice.handleConnected|handleConnected(){}[0]
+    final fun handleConnecting() // com.splendo.kaluga.test.bluetooth.device/MockDevice.handleConnecting|handleConnecting(){}[0]
+    final fun handleDisconnected() // com.splendo.kaluga.test.bluetooth.device/MockDevice.handleDisconnected|handleDisconnected(){}[0]
+    final fun handleDisconnecting() // com.splendo.kaluga.test.bluetooth.device/MockDevice.handleDisconnecting|handleDisconnecting(){}[0]
+    final fun handleDiscoverServices(kotlin.collections/List<com.splendo.kaluga.bluetooth/Service>) // com.splendo.kaluga.test.bluetooth.device/MockDevice.handleDiscoverServices|handleDiscoverServices(kotlin.collections.List<com.splendo.kaluga.bluetooth.Service>){}[0]
+    final fun handleStartDiscoveringServices() // com.splendo.kaluga.test.bluetooth.device/MockDevice.handleStartDiscoveringServices|handleStartDiscoveringServices(){}[0]
+    final fun rssiDidUpdate(kotlin/Int) // com.splendo.kaluga.test.bluetooth.device/MockDevice.rssiDidUpdate|rssiDidUpdate(kotlin.Int){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager : com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager { // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager|null[0]
+    constructor <init>(kotlin/Boolean = ..., com.splendo.kaluga.bluetooth.device/DeviceWrapper, com.splendo.kaluga.bluetooth.device/ConnectionSettings, kotlinx.coroutines/CoroutineScope, kotlin/Boolean = ...) // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.<init>|<init>(kotlin.Boolean;com.splendo.kaluga.bluetooth.device.DeviceWrapper;com.splendo.kaluga.bluetooth.device.ConnectionSettings;kotlinx.coroutines.CoroutineScope;kotlin.Boolean){}[0]
+
+    final val connectMock // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.connectMock|{}connectMock[0]
+        final fun <get-connectMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.connectMock.<get-connectMock>|<get-connectMock>(){}[0]
+    final val disconnectMock // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.disconnectMock|{}disconnectMock[0]
+        final fun <get-disconnectMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.disconnectMock.<get-disconnectMock>|<get-disconnectMock>(){}[0]
+    final val discoverServicesMock // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.discoverServicesMock|{}discoverServicesMock[0]
+        final fun <get-discoverServicesMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.discoverServicesMock.<get-discoverServicesMock>|<get-discoverServicesMock>(){}[0]
+    final val getCurrentStateMock // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.getCurrentStateMock|{}getCurrentStateMock[0]
+        final fun <get-getCurrentStateMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.State> // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.getCurrentStateMock.<get-getCurrentStateMock>|<get-getCurrentStateMock>(){}[0]
+    final val handleCurrentActionCompletedMock // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.handleCurrentActionCompletedMock|{}handleCurrentActionCompletedMock[0]
+        final fun <get-handleCurrentActionCompletedMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/PairParameters.Matchers<kotlin/Boolean, com.splendo.kaluga.bluetooth.device/DeviceAction?>, com.splendo.kaluga.test.base.mock.parameters/PairParameters.MatchersOrCaptor<kotlin/Boolean, com.splendo.kaluga.bluetooth.device/DeviceAction?>, com.splendo.kaluga.test.base.mock.parameters/PairParameters.Values<kotlin/Boolean, com.splendo.kaluga.bluetooth.device/DeviceAction?>, com.splendo.kaluga.test.base.mock.parameters/PairParameters<kotlin/Boolean, com.splendo.kaluga.bluetooth.device/DeviceAction?>, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.handleCurrentActionCompletedMock.<get-handleCurrentActionCompletedMock>|<get-handleCurrentActionCompletedMock>(){}[0]
+    final val pairMock // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.pairMock|{}pairMock[0]
+        final fun <get-pairMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.pairMock.<get-pairMock>|<get-pairMock>(){}[0]
+    final val performActionMock // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.performActionMock|{}performActionMock[0]
+        final fun <get-performActionMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<com.splendo.kaluga.bluetooth.device/DeviceAction>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<com.splendo.kaluga.bluetooth.device/DeviceAction>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<com.splendo.kaluga.bluetooth.device/DeviceAction>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<com.splendo.kaluga.bluetooth.device/DeviceAction>, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.performActionMock.<get-performActionMock>|<get-performActionMock>(){}[0]
+    final val readRssiMock // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.readRssiMock|{}readRssiMock[0]
+        final fun <get-readRssiMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.readRssiMock.<get-readRssiMock>|<get-readRssiMock>(){}[0]
+    final val unpairMock // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.unpairMock|{}unpairMock[0]
+        final fun <get-unpairMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.unpairMock.<get-unpairMock>|<get-unpairMock>(){}[0]
+
+    final var willActionSucceed // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.willActionSucceed|{}willActionSucceed[0]
+        final fun <get-willActionSucceed>(): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.willActionSucceed.<get-willActionSucceed>|<get-willActionSucceed>(){}[0]
+        final fun <set-willActionSucceed>(kotlin/Boolean) // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.willActionSucceed.<set-willActionSucceed>|<set-willActionSucceed>(kotlin.Boolean){}[0]
+
+    final fun connect() // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.connect|connect(){}[0]
+    final fun createService(com.splendo.kaluga.bluetooth/ServiceWrapper): com.splendo.kaluga.bluetooth/Service // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.createService|createService(com.splendo.kaluga.bluetooth.ServiceWrapper){}[0]
+    final fun disconnect() // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.disconnect|disconnect(){}[0]
+    final fun getCurrentState(): com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.State // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.getCurrentState|getCurrentState(){}[0]
+    final fun handleDiscoverCompleted(kotlin.collections/List<com.splendo.kaluga.bluetooth/Service>) // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.handleDiscoverCompleted|handleDiscoverCompleted(kotlin.collections.List<com.splendo.kaluga.bluetooth.Service>){}[0]
+    final fun handleNewRssi(kotlin/Int) // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.handleNewRssi|handleNewRssi(kotlin.Int){}[0]
+    final fun handleUpdatedCharacteristic(platform.CoreBluetooth/CBUUID, kotlin/Boolean, kotlin/Function1<com.splendo.kaluga.bluetooth/Characteristic, kotlin/Unit>?) // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.handleUpdatedCharacteristic|handleUpdatedCharacteristic(platform.CoreBluetooth.CBUUID;kotlin.Boolean;kotlin.Function1<com.splendo.kaluga.bluetooth.Characteristic,kotlin.Unit>?){}[0]
+    final fun handleUpdatedDescriptor(platform.CoreBluetooth/CBUUID, kotlin/Boolean, kotlin/Function1<com.splendo.kaluga.bluetooth/Descriptor, kotlin/Unit>?) // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.handleUpdatedDescriptor|handleUpdatedDescriptor(platform.CoreBluetooth.CBUUID;kotlin.Boolean;kotlin.Function1<com.splendo.kaluga.bluetooth.Descriptor,kotlin.Unit>?){}[0]
+    final suspend fun discoverServices() // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.discoverServices|discoverServices(){}[0]
+    final suspend fun handleCurrentAction() // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.handleCurrentAction|handleCurrentAction(){}[0]
+    final suspend fun readRssi() // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.readRssi|readRssi(){}[0]
+
+    final class Builder : com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.Builder { // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.Builder|null[0]
+        constructor <init>(kotlin/Boolean = ..., kotlin/Boolean = ...) // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.Builder.<init>|<init>(kotlin.Boolean;kotlin.Boolean){}[0]
+
+        final val createMock // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.Builder.createMock|{}createMock[0]
+            final fun <get-createMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/TripleParameters.Matchers<com.splendo.kaluga.bluetooth.device/DeviceWrapper, com.splendo.kaluga.bluetooth.device/ConnectionSettings, kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters.MatchersOrCaptor<com.splendo.kaluga.bluetooth.device/DeviceWrapper, com.splendo.kaluga.bluetooth.device/ConnectionSettings, kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters.Values<com.splendo.kaluga.bluetooth.device/DeviceWrapper, com.splendo.kaluga.bluetooth.device/ConnectionSettings, kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters<com.splendo.kaluga.bluetooth.device/DeviceWrapper, com.splendo.kaluga.bluetooth.device/ConnectionSettings, kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager> // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.Builder.createMock.<get-createMock>|<get-createMock>(){}[0]
+        final val createdDeviceConnectionManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.Builder.createdDeviceConnectionManager|{}createdDeviceConnectionManager[0]
+            final fun <get-createdDeviceConnectionManager>(): com.splendo.kaluga.base.collections/ConcurrentMutableList<com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager> // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.Builder.createdDeviceConnectionManager.<get-createdDeviceConnectionManager>|<get-createdDeviceConnectionManager>(){}[0]
+
+        final fun create(com.splendo.kaluga.bluetooth.device/DeviceWrapper, com.splendo.kaluga.bluetooth.device/ConnectionSettings, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.bluetooth.device/BaseDeviceConnectionManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.Builder.create|create(com.splendo.kaluga.bluetooth.device.DeviceWrapper;com.splendo.kaluga.bluetooth.device.ConnectionSettings;kotlinx.coroutines.CoroutineScope){}[0]
+    }
+}
+
+final class com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo : com.splendo.kaluga.bluetooth.device/DeviceInfo { // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo|null[0]
+    constructor <init>(platform.Foundation/NSUUID = ..., com.splendo.kaluga.bluetooth.device/BaseAdvertisementData = ..., kotlin/String? = ..., kotlin/Int = ..., com.splendo.kaluga.base.utils/KalugaDate = ...) // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.<init>|<init>(platform.Foundation.NSUUID;com.splendo.kaluga.bluetooth.device.BaseAdvertisementData;kotlin.String?;kotlin.Int;com.splendo.kaluga.base.utils.KalugaDate){}[0]
+
+    final val advertisementData // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.advertisementData|{}advertisementData[0]
+        final fun <get-advertisementData>(): com.splendo.kaluga.bluetooth.device/BaseAdvertisementData // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.advertisementData.<get-advertisementData>|<get-advertisementData>(){}[0]
+    final val identifier // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.identifier|{}identifier[0]
+        final fun <get-identifier>(): platform.Foundation/NSUUID // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.identifier.<get-identifier>|<get-identifier>(){}[0]
+    final val name // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.name|{}name[0]
+        final fun <get-name>(): kotlin/String? // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.name.<get-name>|<get-name>(){}[0]
+    final val rssi // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.rssi|{}rssi[0]
+        final fun <get-rssi>(): kotlin/Int // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.rssi.<get-rssi>|<get-rssi>(){}[0]
+    final val updatedAt // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.updatedAt|{}updatedAt[0]
+        final fun <get-updatedAt>(): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.updatedAt.<get-updatedAt>|<get-updatedAt>(){}[0]
+
+    final fun component1(): platform.Foundation/NSUUID // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.component1|component1(){}[0]
+    final fun component2(): com.splendo.kaluga.bluetooth.device/BaseAdvertisementData // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.component3|component3(){}[0]
+    final fun component4(): kotlin/Int // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.component4|component4(){}[0]
+    final fun component5(): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.component5|component5(){}[0]
+    final fun copy(platform.Foundation/NSUUID = ..., com.splendo.kaluga.bluetooth.device/BaseAdvertisementData = ..., kotlin/String? = ..., kotlin/Int = ..., com.splendo.kaluga.base.utils/KalugaDate = ...): com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.copy|copy(platform.Foundation.NSUUID;com.splendo.kaluga.bluetooth.device.BaseAdvertisementData;kotlin.String?;kotlin.Int;com.splendo.kaluga.base.utils.KalugaDate){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.device/MockDeviceInfo.toString|toString(){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner : com.splendo.kaluga.bluetooth.scanner/BaseScanner { // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner|null[0]
+    constructor <init>(kotlin/Boolean, com.splendo.kaluga.bluetooth.scanner/BaseScanner.Settings, kotlinx.coroutines/CoroutineScope, kotlinx.coroutines/CoroutineDispatcher, kotlin/Boolean = ...) // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.<init>|<init>(kotlin.Boolean;com.splendo.kaluga.bluetooth.scanner.BaseScanner.Settings;kotlinx.coroutines.CoroutineScope;kotlinx.coroutines.CoroutineDispatcher;kotlin.Boolean){}[0]
+
+    final val bluetoothEnabledMonitor // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.bluetoothEnabledMonitor|{}bluetoothEnabledMonitor[0]
+        final fun <get-bluetoothEnabledMonitor>(): com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.bluetoothEnabledMonitor.<get-bluetoothEnabledMonitor>|<get-bluetoothEnabledMonitor>(){}[0]
+    final val didStartScanningMock // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.didStartScanningMock|{}didStartScanningMock[0]
+        final fun <get-didStartScanningMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>>, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.didStartScanningMock.<get-didStartScanningMock>|<get-didStartScanningMock>(){}[0]
+    final val didStopScanningMock // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.didStopScanningMock|{}didStopScanningMock[0]
+        final fun <get-didStopScanningMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.didStopScanningMock.<get-didStopScanningMock>|<get-didStopScanningMock>(){}[0]
+    final val generateEnableSensorsActionsMock // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.generateEnableSensorsActionsMock|{}generateEnableSensorsActionsMock[0]
+        final fun <get-generateEnableSensorsActionsMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin.collections/List<kotlin.coroutines/SuspendFunction0<kotlin/Boolean>>> // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.generateEnableSensorsActionsMock.<get-generateEnableSensorsActionsMock>|<get-generateEnableSensorsActionsMock>(){}[0]
+    final val isEnabled // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.isEnabled|{}isEnabled[0]
+        final fun <get-isEnabled>(): kotlinx.coroutines.flow/MutableStateFlow<kotlin/Boolean> // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.isEnabled.<get-isEnabled>|<get-isEnabled>(){}[0]
+    final val isSupported // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.isSupported|{}isSupported[0]
+        final fun <get-isSupported>(): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.isSupported.<get-isSupported>|<get-isSupported>(){}[0]
+    final val retrievePairedDeviceDiscoveredEventsMock // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.retrievePairedDeviceDiscoveredEventsMock|{}retrievePairedDeviceDiscoveredEventsMock[0]
+        final fun <get-retrievePairedDeviceDiscoveredEventsMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/PairParameters.Matchers<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/PairParameters.MatchersOrCaptor<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/PairParameters.Values<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/PairParameters<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, kotlin.collections/List<com.splendo.kaluga.bluetooth.scanner/Scanner.DeviceDiscovered>> // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.retrievePairedDeviceDiscoveredEventsMock.<get-retrievePairedDeviceDiscoveredEventsMock>|<get-retrievePairedDeviceDiscoveredEventsMock>(){}[0]
+    final val startMonitoringHardwareEnabledMock // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.startMonitoringHardwareEnabledMock|{}startMonitoringHardwareEnabledMock[0]
+        final fun <get-startMonitoringHardwareEnabledMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.startMonitoringHardwareEnabledMock.<get-startMonitoringHardwareEnabledMock>|<get-startMonitoringHardwareEnabledMock>(){}[0]
+    final val startMonitoringPermissionsMock // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.startMonitoringPermissionsMock|{}startMonitoringPermissionsMock[0]
+        final fun <get-startMonitoringPermissionsMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.startMonitoringPermissionsMock.<get-startMonitoringPermissionsMock>|<get-startMonitoringPermissionsMock>(){}[0]
+    final val stopMonitoringHardwareEnabledMock // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.stopMonitoringHardwareEnabledMock|{}stopMonitoringHardwareEnabledMock[0]
+        final fun <get-stopMonitoringHardwareEnabledMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.stopMonitoringHardwareEnabledMock.<get-stopMonitoringHardwareEnabledMock>|<get-stopMonitoringHardwareEnabledMock>(){}[0]
+    final val stopMonitoringPermissionsMock // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.stopMonitoringPermissionsMock|{}stopMonitoringPermissionsMock[0]
+        final fun <get-stopMonitoringPermissionsMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.stopMonitoringPermissionsMock.<get-stopMonitoringPermissionsMock>|<get-stopMonitoringPermissionsMock>(){}[0]
+
+    final fun handleDeviceDiscovered(com.splendo.kaluga.bluetooth.device/DeviceWrapper, kotlin/Int, com.splendo.kaluga.bluetooth.device/BaseAdvertisementData, kotlin/Function1<kotlin.coroutines/CoroutineContext, com.splendo.kaluga.bluetooth.device/Device>) // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.handleDeviceDiscovered|handleDeviceDiscovered(com.splendo.kaluga.bluetooth.device.DeviceWrapper;kotlin.Int;com.splendo.kaluga.bluetooth.device.BaseAdvertisementData;kotlin.Function1<kotlin.coroutines.CoroutineContext,com.splendo.kaluga.bluetooth.device.Device>){}[0]
+    final suspend fun startMonitoringHardwareEnabled() // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.startMonitoringHardwareEnabled|startMonitoringHardwareEnabled(){}[0]
+    final suspend fun startMonitoringPermissions() // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.startMonitoringPermissions|startMonitoringPermissions(){}[0]
+    final suspend fun stopMonitoringHardwareEnabled() // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.stopMonitoringHardwareEnabled|stopMonitoringHardwareEnabled(){}[0]
+    final suspend fun stopMonitoringPermissions() // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.stopMonitoringPermissions|stopMonitoringPermissions(){}[0]
+
+    final class Builder : com.splendo.kaluga.bluetooth.scanner/BaseScanner.Builder { // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.Builder|null[0]
+        constructor <init>(kotlin/Boolean, kotlin/Boolean = ...) // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.Builder.<init>|<init>(kotlin.Boolean;kotlin.Boolean){}[0]
+
+        final val createMock // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.Builder.createMock|{}createMock[0]
+            final fun <get-createMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/TripleParameters.Matchers<com.splendo.kaluga.bluetooth.scanner/BaseScanner.Settings, kotlinx.coroutines/CoroutineScope, kotlinx.coroutines/CoroutineDispatcher>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters.MatchersOrCaptor<com.splendo.kaluga.bluetooth.scanner/BaseScanner.Settings, kotlinx.coroutines/CoroutineScope, kotlinx.coroutines/CoroutineDispatcher>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters.Values<com.splendo.kaluga.bluetooth.scanner/BaseScanner.Settings, kotlinx.coroutines/CoroutineScope, kotlinx.coroutines/CoroutineDispatcher>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters<com.splendo.kaluga.bluetooth.scanner/BaseScanner.Settings, kotlinx.coroutines/CoroutineScope, kotlinx.coroutines/CoroutineDispatcher>, com.splendo.kaluga.bluetooth.scanner/BaseScanner> // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.Builder.createMock.<get-createMock>|<get-createMock>(){}[0]
+        final val createdScanners // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.Builder.createdScanners|{}createdScanners[0]
+            final fun <get-createdScanners>(): com.splendo.kaluga.base.collections/ConcurrentMutableList<com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner> // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.Builder.createdScanners.<get-createdScanners>|<get-createdScanners>(){}[0]
+
+        final fun create(com.splendo.kaluga.bluetooth.scanner/BaseScanner.Settings, kotlinx.coroutines/CoroutineScope, kotlinx.coroutines/CoroutineDispatcher): com.splendo.kaluga.bluetooth.scanner/BaseScanner // com.splendo.kaluga.test.bluetooth.scanner/MockBaseScanner.Builder.create|create(com.splendo.kaluga.bluetooth.scanner.BaseScanner.Settings;kotlinx.coroutines.CoroutineScope;kotlinx.coroutines.CoroutineDispatcher){}[0]
+    }
+}
+
+final class com.splendo.kaluga.test.bluetooth.scanner/MockScanner : com.splendo.kaluga.bluetooth.scanner/Scanner { // com.splendo.kaluga.test.bluetooth.scanner/MockScanner|null[0]
+    constructor <init>(kotlin/Boolean, kotlinx.coroutines.flow/MutableSharedFlow<com.splendo.kaluga.bluetooth.scanner/Scanner.Event>, kotlinx.coroutines.flow/MutableSharedFlow<com.splendo.kaluga.bluetooth.scanner/Scanner.ConnectionEvent>, kotlinx.coroutines.flow/MutableSharedFlow<kotlin.collections/List<com.splendo.kaluga.bluetooth.scanner/Scanner.DeviceDiscovered>>) // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.<init>|<init>(kotlin.Boolean;kotlinx.coroutines.flow.MutableSharedFlow<com.splendo.kaluga.bluetooth.scanner.Scanner.Event>;kotlinx.coroutines.flow.MutableSharedFlow<com.splendo.kaluga.bluetooth.scanner.Scanner.ConnectionEvent>;kotlinx.coroutines.flow.MutableSharedFlow<kotlin.collections.List<com.splendo.kaluga.bluetooth.scanner.Scanner.DeviceDiscovered>>){}[0]
+
+    final val cancelRetrievingPairedDevicesMock // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.cancelRetrievingPairedDevicesMock|{}cancelRetrievingPairedDevicesMock[0]
+        final fun <get-cancelRetrievingPairedDevicesMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.cancelRetrievingPairedDevicesMock.<get-cancelRetrievingPairedDevicesMock>|<get-cancelRetrievingPairedDevicesMock>(){}[0]
+    final val connectionEvents // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.connectionEvents|{}connectionEvents[0]
+        final fun <get-connectionEvents>(): kotlinx.coroutines.flow/MutableSharedFlow<com.splendo.kaluga.bluetooth.scanner/Scanner.ConnectionEvent> // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.connectionEvents.<get-connectionEvents>|<get-connectionEvents>(){}[0]
+    final val discoveryEvents // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.discoveryEvents|{}discoveryEvents[0]
+        final fun <get-discoveryEvents>(): kotlinx.coroutines.flow/MutableSharedFlow<kotlin.collections/List<com.splendo.kaluga.bluetooth.scanner/Scanner.DeviceDiscovered>> // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.discoveryEvents.<get-discoveryEvents>|<get-discoveryEvents>(){}[0]
+    final val events // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.events|{}events[0]
+        final fun <get-events>(): kotlinx.coroutines.flow/MutableSharedFlow<com.splendo.kaluga.bluetooth.scanner/Scanner.Event> // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.events.<get-events>|<get-events>(){}[0]
+    final val isHardwareEnabledMock // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.isHardwareEnabledMock|{}isHardwareEnabledMock[0]
+        final fun <get-isHardwareEnabledMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Boolean> // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.isHardwareEnabledMock.<get-isHardwareEnabledMock>|<get-isHardwareEnabledMock>(){}[0]
+    final val isSupported // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.isSupported|{}isSupported[0]
+        final fun <get-isSupported>(): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.isSupported.<get-isSupported>|<get-isSupported>(){}[0]
+    final val requestEnableHardwareMock // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.requestEnableHardwareMock|{}requestEnableHardwareMock[0]
+        final fun <get-requestEnableHardwareMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.requestEnableHardwareMock.<get-requestEnableHardwareMock>|<get-requestEnableHardwareMock>(){}[0]
+    final val retrievePairedDevicesMock // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.retrievePairedDevicesMock|{}retrievePairedDevicesMock[0]
+        final fun <get-retrievePairedDevicesMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/TripleParameters.Matchers<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters.MatchersOrCaptor<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters.Values<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.retrievePairedDevicesMock.<get-retrievePairedDevicesMock>|<get-retrievePairedDevicesMock>(){}[0]
+    final val scanForDevicesMock // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.scanForDevicesMock|{}scanForDevicesMock[0]
+        final fun <get-scanForDevicesMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/PairParameters.Matchers<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/PairParameters.MatchersOrCaptor<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/PairParameters.Values<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/PairParameters<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.scanForDevicesMock.<get-scanForDevicesMock>|<get-scanForDevicesMock>(){}[0]
+    final val startMonitoringHardwareEnabledMock // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.startMonitoringHardwareEnabledMock|{}startMonitoringHardwareEnabledMock[0]
+        final fun <get-startMonitoringHardwareEnabledMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.startMonitoringHardwareEnabledMock.<get-startMonitoringHardwareEnabledMock>|<get-startMonitoringHardwareEnabledMock>(){}[0]
+    final val startMonitoringPermissionsMock // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.startMonitoringPermissionsMock|{}startMonitoringPermissionsMock[0]
+        final fun <get-startMonitoringPermissionsMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.startMonitoringPermissionsMock.<get-startMonitoringPermissionsMock>|<get-startMonitoringPermissionsMock>(){}[0]
+    final val stopMonitoringHardwareEnabledMock // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.stopMonitoringHardwareEnabledMock|{}stopMonitoringHardwareEnabledMock[0]
+        final fun <get-stopMonitoringHardwareEnabledMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.stopMonitoringHardwareEnabledMock.<get-stopMonitoringHardwareEnabledMock>|<get-stopMonitoringHardwareEnabledMock>(){}[0]
+    final val stopMonitoringPermissionsMock // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.stopMonitoringPermissionsMock|{}stopMonitoringPermissionsMock[0]
+        final fun <get-stopMonitoringPermissionsMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.stopMonitoringPermissionsMock.<get-stopMonitoringPermissionsMock>|<get-stopMonitoringPermissionsMock>(){}[0]
+    final val stopScanningMock // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.stopScanningMock|{}stopScanningMock[0]
+        final fun <get-stopScanningMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.stopScanningMock.<get-stopScanningMock>|<get-stopScanningMock>(){}[0]
+
+    final fun cancelRetrievingPairedDevices() // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.cancelRetrievingPairedDevices|cancelRetrievingPairedDevices(){}[0]
+    final suspend fun isHardwareEnabled(): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.isHardwareEnabled|isHardwareEnabled(){}[0]
+    final suspend fun requestEnableHardware() // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.requestEnableHardware|requestEnableHardware(){}[0]
+    final suspend fun retrievePairedDevices(kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?) // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.retrievePairedDevices|retrievePairedDevices(kotlin.collections.Set<platform.CoreBluetooth.CBUUID>;kotlin.Boolean;com.splendo.kaluga.bluetooth.device.ConnectionSettings?){}[0]
+    final suspend fun scanForDevices(kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth.device/ConnectionSettings?) // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.scanForDevices|scanForDevices(kotlin.collections.Set<platform.CoreBluetooth.CBUUID>;com.splendo.kaluga.bluetooth.device.ConnectionSettings?){}[0]
+    final suspend fun startMonitoringHardwareEnabled() // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.startMonitoringHardwareEnabled|startMonitoringHardwareEnabled(){}[0]
+    final suspend fun startMonitoringPermissions() // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.startMonitoringPermissions|startMonitoringPermissions(){}[0]
+    final suspend fun stopMonitoringHardwareEnabled() // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.stopMonitoringHardwareEnabled|stopMonitoringHardwareEnabled(){}[0]
+    final suspend fun stopMonitoringPermissions() // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.stopMonitoringPermissions|stopMonitoringPermissions(){}[0]
+    final suspend fun stopScanning() // com.splendo.kaluga.test.bluetooth.scanner/MockScanner.stopScanning|stopScanning(){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper : com.splendo.kaluga.test.bluetooth/MockCharacteristicWrapper { // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper|null[0]
+    constructor <init>(platform.CoreBluetooth/CBUUID = ..., kotlin/Int = ..., kotlin.collections/List<platform.CoreBluetooth/CBUUID> = ...) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.<init>|<init>(platform.CoreBluetooth.CBUUID;kotlin.Int;kotlin.collections.List<platform.CoreBluetooth.CBUUID>){}[0]
+
+    final val descriptors // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.descriptors|{}descriptors[0]
+        final fun <get-descriptors>(): kotlin.collections/List<com.splendo.kaluga.bluetooth/DescriptorWrapper> // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.descriptors.<get-descriptors>|<get-descriptors>(){}[0]
+    final val isNotificationCompleted // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isNotificationCompleted|{}isNotificationCompleted[0]
+        final fun <get-isNotificationCompleted>(): kotlinx.coroutines/CompletableDeferred<kotlin/Boolean> // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isNotificationCompleted.<get-isNotificationCompleted>|<get-isNotificationCompleted>(){}[0]
+    final val isReadCompleted // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isReadCompleted|{}isReadCompleted[0]
+        final fun <get-isReadCompleted>(): kotlinx.coroutines/CompletableDeferred<kotlin/Unit> // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isReadCompleted.<get-isReadCompleted>|<get-isReadCompleted>(){}[0]
+    final val isWriteCompleted // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isWriteCompleted|{}isWriteCompleted[0]
+        final fun <get-isWriteCompleted>(): kotlinx.coroutines/CompletableDeferred<platform.Foundation/NSData> // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.isWriteCompleted.<get-isWriteCompleted>|<get-isWriteCompleted>(){}[0]
+    final val properties // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.properties|{}properties[0]
+        final fun <get-properties>(): kotlin/Int // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.properties.<get-properties>|<get-properties>(){}[0]
+    final val uuid // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.uuid|{}uuid[0]
+        final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.uuid.<get-uuid>|<get-uuid>(){}[0]
+
+    final var value // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.value|{}value[0]
+        final fun <get-value>(): platform.Foundation/NSData? // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.value.<get-value>|<get-value>(){}[0]
+        final fun <set-value>(platform.Foundation/NSData?) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.value.<set-value>|<set-value>(platform.Foundation.NSData?){}[0]
+
+    final fun readValue(platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.readValue|readValue(platform.CoreBluetooth.CBPeripheral){}[0]
+    final fun setNotificationValue(kotlin/Boolean, platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.setNotificationValue|setNotificationValue(kotlin.Boolean;platform.CoreBluetooth.CBPeripheral){}[0]
+    final fun updateMockValue(kotlin/ByteArray?) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.updateMockValue|updateMockValue(kotlin.ByteArray?){}[0]
+    final fun writeValue(platform.Foundation/NSData, platform.CoreBluetooth/CBPeripheral, kotlin/Boolean) // com.splendo.kaluga.test.bluetooth/IOSMockCharacteristicWrapper.writeValue|writeValue(platform.Foundation.NSData;platform.CoreBluetooth.CBPeripheral;kotlin.Boolean){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper : com.splendo.kaluga.test.bluetooth/MockDescriptorWrapper { // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper|null[0]
+    constructor <init>(platform.CoreBluetooth/CBUUID = ...) // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.<init>|<init>(platform.CoreBluetooth.CBUUID){}[0]
+
+    final val isReadCompleted // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.isReadCompleted|{}isReadCompleted[0]
+        final fun <get-isReadCompleted>(): kotlinx.coroutines/CompletableDeferred<kotlin/Unit> // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.isReadCompleted.<get-isReadCompleted>|<get-isReadCompleted>(){}[0]
+    final val isWriteCompleted // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.isWriteCompleted|{}isWriteCompleted[0]
+        final fun <get-isWriteCompleted>(): kotlinx.coroutines/CompletableDeferred<platform.Foundation/NSData> // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.isWriteCompleted.<get-isWriteCompleted>|<get-isWriteCompleted>(){}[0]
+    final val uuid // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.uuid|{}uuid[0]
+        final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.uuid.<get-uuid>|<get-uuid>(){}[0]
+
+    final var value // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.value|{}value[0]
+        final fun <get-value>(): platform.Foundation/NSData? // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.value.<get-value>|<get-value>(){}[0]
+        final fun <set-value>(platform.Foundation/NSData?) // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.value.<set-value>|<set-value>(platform.Foundation.NSData?){}[0]
+
+    final fun readValue(platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.readValue|readValue(platform.CoreBluetooth.CBPeripheral){}[0]
+    final fun updateMockValue(kotlin/ByteArray?) // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.updateMockValue|updateMockValue(kotlin.ByteArray?){}[0]
+    final fun writeValue(platform.Foundation/NSData, platform.CoreBluetooth/CBPeripheral) // com.splendo.kaluga.test.bluetooth/IOSMockDescriptorWrapper.writeValue|writeValue(platform.Foundation.NSData;platform.CoreBluetooth.CBPeripheral){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor : com.splendo.kaluga.bluetooth/BluetoothMonitor, com.splendo.kaluga.test.service/MockServiceMonitor { // com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor|null[0]
+    constructor <init>(kotlinx.coroutines.flow/StateFlow<kotlin/Boolean>) // com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor.<init>|<init>(kotlinx.coroutines.flow.StateFlow<kotlin.Boolean>){}[0]
+
+    final val isEnabled // com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor.isEnabled|{}isEnabled[0]
+        final fun <get-isEnabled>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.splendo.kaluga.test.bluetooth/MockBluetoothMonitor.isEnabled.<get-isEnabled>|<get-isEnabled>(){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth/MockBluetoothService : com.splendo.kaluga.bluetooth/BluetoothService { // com.splendo.kaluga.test.bluetooth/MockBluetoothService|null[0]
+    constructor <init>(kotlinx.coroutines.flow/MutableStateFlow<kotlin.collections/List<com.splendo.kaluga.bluetooth.device/Device>> = ..., kotlinx.coroutines.flow/MutableStateFlow<kotlin.collections/Map<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin.collections/List<com.splendo.kaluga.bluetooth.device/Device>>> = ..., kotlinx.coroutines.flow/MutableStateFlow<kotlin.collections/Map<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin.collections/List<com.splendo.kaluga.bluetooth.device/Device>>> = ..., kotlinx.coroutines.flow/MutableStateFlow<kotlin/Boolean> = ..., kotlin/Boolean = ...) // com.splendo.kaluga.test.bluetooth/MockBluetoothService.<init>|<init>(kotlinx.coroutines.flow.MutableStateFlow<kotlin.collections.List<com.splendo.kaluga.bluetooth.device.Device>>;kotlinx.coroutines.flow.MutableStateFlow<kotlin.collections.Map<kotlin.collections.Set<platform.CoreBluetooth.CBUUID>,kotlin.collections.List<com.splendo.kaluga.bluetooth.device.Device>>>;kotlinx.coroutines.flow.MutableStateFlow<kotlin.collections.Map<kotlin.collections.Set<platform.CoreBluetooth.CBUUID>,kotlin.collections.List<com.splendo.kaluga.bluetooth.device.Device>>>;kotlinx.coroutines.flow.MutableStateFlow<kotlin.Boolean>;kotlin.Boolean){}[0]
+
+    final val allDevicesMock // com.splendo.kaluga.test.bluetooth/MockBluetoothService.allDevicesMock|{}allDevicesMock[0]
+        final fun <get-allDevicesMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlinx.coroutines.flow/Flow<kotlin.collections/List<com.splendo.kaluga.bluetooth.device/Device>>> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.allDevicesMock.<get-allDevicesMock>|<get-allDevicesMock>(){}[0]
+    final val devicesMock // com.splendo.kaluga.test.bluetooth/MockBluetoothService.devicesMock|{}devicesMock[0]
+        final fun <get-devicesMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlinx.coroutines.flow/Flow<kotlin.collections/List<com.splendo.kaluga.bluetooth.device/Device>>> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.devicesMock.<get-devicesMock>|<get-devicesMock>(){}[0]
+    final val discoveredDevicesFlow // com.splendo.kaluga.test.bluetooth/MockBluetoothService.discoveredDevicesFlow|{}discoveredDevicesFlow[0]
+        final fun <get-discoveredDevicesFlow>(): kotlinx.coroutines.flow/MutableStateFlow<kotlin.collections/List<com.splendo.kaluga.bluetooth.device/Device>> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.discoveredDevicesFlow.<get-discoveredDevicesFlow>|<get-discoveredDevicesFlow>(){}[0]
+    final val filteredDevicesFlow // com.splendo.kaluga.test.bluetooth/MockBluetoothService.filteredDevicesFlow|{}filteredDevicesFlow[0]
+        final fun <get-filteredDevicesFlow>(): kotlinx.coroutines.flow/MutableStateFlow<kotlin.collections/Map<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin.collections/List<com.splendo.kaluga.bluetooth.device/Device>>> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.filteredDevicesFlow.<get-filteredDevicesFlow>|<get-filteredDevicesFlow>(){}[0]
+    final val isEnabled // com.splendo.kaluga.test.bluetooth/MockBluetoothService.isEnabled|{}isEnabled[0]
+        final fun <get-isEnabled>(): kotlinx.coroutines.flow/MutableStateFlow<kotlin/Boolean> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.isEnabled.<get-isEnabled>|<get-isEnabled>(){}[0]
+    final val isScanningMock // com.splendo.kaluga.test.bluetooth/MockBluetoothService.isScanningMock|{}isScanningMock[0]
+        final fun <get-isScanningMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlinx.coroutines.flow/Flow<kotlin/Boolean>> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.isScanningMock.<get-isScanningMock>|<get-isScanningMock>(){}[0]
+    final val pairedDevicesFlow // com.splendo.kaluga.test.bluetooth/MockBluetoothService.pairedDevicesFlow|{}pairedDevicesFlow[0]
+        final fun <get-pairedDevicesFlow>(): kotlinx.coroutines.flow/MutableStateFlow<kotlin.collections/Map<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin.collections/List<com.splendo.kaluga.bluetooth.device/Device>>> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.pairedDevicesFlow.<get-pairedDevicesFlow>|<get-pairedDevicesFlow>(){}[0]
+    final val pairedDevicesMock // com.splendo.kaluga.test.bluetooth/MockBluetoothService.pairedDevicesMock|{}pairedDevicesMock[0]
+        final fun <get-pairedDevicesMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/TripleParameters.Matchers<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters.MatchersOrCaptor<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters.Values<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, kotlinx.coroutines.flow/Flow<kotlin.collections/List<com.splendo.kaluga.bluetooth.device/Device>>> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.pairedDevicesMock.<get-pairedDevicesMock>|<get-pairedDevicesMock>(){}[0]
+    final val scannedDevicesMock // com.splendo.kaluga.test.bluetooth/MockBluetoothService.scannedDevicesMock|{}scannedDevicesMock[0]
+        final fun <get-scannedDevicesMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>>, kotlinx.coroutines.flow/Flow<kotlin.collections/List<com.splendo.kaluga.bluetooth.device/Device>>> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.scannedDevicesMock.<get-scannedDevicesMock>|<get-scannedDevicesMock>(){}[0]
+    final val startScanningMock // com.splendo.kaluga.test.bluetooth/MockBluetoothService.startScanningMock|{}startScanningMock[0]
+        final fun <get-startScanningMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/TripleParameters.Matchers<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth/BluetoothService.CleanMode, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters.MatchersOrCaptor<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth/BluetoothService.CleanMode, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters.Values<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth/BluetoothService.CleanMode, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth/BluetoothService.CleanMode, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, kotlin/Unit> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.startScanningMock.<get-startScanningMock>|<get-startScanningMock>(){}[0]
+    final val stopScanningMock // com.splendo.kaluga.test.bluetooth/MockBluetoothService.stopScanningMock|{}stopScanningMock[0]
+        final fun <get-stopScanningMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<com.splendo.kaluga.bluetooth/BluetoothService.CleanMode>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<com.splendo.kaluga.bluetooth/BluetoothService.CleanMode>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<com.splendo.kaluga.bluetooth/BluetoothService.CleanMode>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<com.splendo.kaluga.bluetooth/BluetoothService.CleanMode>, kotlin/Unit> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.stopScanningMock.<get-stopScanningMock>|<get-stopScanningMock>(){}[0]
+
+    final var currentFilter // com.splendo.kaluga.test.bluetooth/MockBluetoothService.currentFilter|{}currentFilter[0]
+        final fun <get-currentFilter>(): kotlinx.coroutines.flow/MutableStateFlow<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.currentFilter.<get-currentFilter>|<get-currentFilter>(){}[0]
+        final fun <set-currentFilter>(kotlinx.coroutines.flow/MutableStateFlow<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>>) // com.splendo.kaluga.test.bluetooth/MockBluetoothService.currentFilter.<set-currentFilter>|<set-currentFilter>(kotlinx.coroutines.flow.MutableStateFlow<kotlin.collections.Set<platform.CoreBluetooth.CBUUID>>){}[0]
+
+    final fun allDevices(): kotlinx.coroutines.flow/Flow<kotlin.collections/List<com.splendo.kaluga.bluetooth.device/Device>> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.allDevices|allDevices(){}[0]
+    final fun devices(): kotlinx.coroutines.flow/Flow<kotlin.collections/List<com.splendo.kaluga.bluetooth.device/Device>> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.devices|devices(){}[0]
+    final fun pairedDevices(kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?): kotlinx.coroutines.flow/Flow<kotlin.collections/List<com.splendo.kaluga.bluetooth.device/Device>> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.pairedDevices|pairedDevices(kotlin.collections.Set<platform.CoreBluetooth.CBUUID>;kotlin.Boolean;com.splendo.kaluga.bluetooth.device.ConnectionSettings?){}[0]
+    final fun scannedDevices(kotlin.collections/Set<platform.CoreBluetooth/CBUUID>): kotlinx.coroutines.flow/Flow<kotlin.collections/List<com.splendo.kaluga.bluetooth.device/Device>> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.scannedDevices|scannedDevices(kotlin.collections.Set<platform.CoreBluetooth.CBUUID>){}[0]
+    final fun startScanning(kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth/BluetoothService.CleanMode, com.splendo.kaluga.bluetooth.device/ConnectionSettings?) // com.splendo.kaluga.test.bluetooth/MockBluetoothService.startScanning|startScanning(kotlin.collections.Set<platform.CoreBluetooth.CBUUID>;com.splendo.kaluga.bluetooth.BluetoothService.CleanMode;com.splendo.kaluga.bluetooth.device.ConnectionSettings?){}[0]
+    final fun stopScanning(com.splendo.kaluga.bluetooth/BluetoothService.CleanMode) // com.splendo.kaluga.test.bluetooth/MockBluetoothService.stopScanning|stopScanning(com.splendo.kaluga.bluetooth.BluetoothService.CleanMode){}[0]
+    final suspend fun isScanning(): kotlinx.coroutines.flow/Flow<kotlin/Boolean> // com.splendo.kaluga.test.bluetooth/MockBluetoothService.isScanning|isScanning(){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth/MockCBPeripheralWrapper : com.splendo.kaluga.bluetooth.device/DeviceWrapper { // com.splendo.kaluga.test.bluetooth/MockCBPeripheralWrapper|null[0]
+    constructor <init>(kotlin/String? = ..., platform.Foundation/NSUUID = ...) // com.splendo.kaluga.test.bluetooth/MockCBPeripheralWrapper.<init>|<init>(kotlin.String?;platform.Foundation.NSUUID){}[0]
+
+    final val identifier // com.splendo.kaluga.test.bluetooth/MockCBPeripheralWrapper.identifier|{}identifier[0]
+        final fun <get-identifier>(): platform.Foundation/NSUUID // com.splendo.kaluga.test.bluetooth/MockCBPeripheralWrapper.identifier.<get-identifier>|<get-identifier>(){}[0]
+    final val name // com.splendo.kaluga.test.bluetooth/MockCBPeripheralWrapper.name|{}name[0]
+        final fun <get-name>(): kotlin/String? // com.splendo.kaluga.test.bluetooth/MockCBPeripheralWrapper.name.<get-name>|<get-name>(){}[0]
+
+    final fun component1(): kotlin/String? // com.splendo.kaluga.test.bluetooth/MockCBPeripheralWrapper.component1|component1(){}[0]
+    final fun component2(): platform.Foundation/NSUUID // com.splendo.kaluga.test.bluetooth/MockCBPeripheralWrapper.component2|component2(){}[0]
+    final fun copy(kotlin/String? = ..., platform.Foundation/NSUUID = ...): com.splendo.kaluga.test.bluetooth/MockCBPeripheralWrapper // com.splendo.kaluga.test.bluetooth/MockCBPeripheralWrapper.copy|copy(kotlin.String?;platform.Foundation.NSUUID){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth/MockCBPeripheralWrapper.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth/MockCBPeripheralWrapper.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth/MockCBPeripheralWrapper.toString|toString(){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth/MockCharacteristic : com.splendo.kaluga.bluetooth/Characteristic { // com.splendo.kaluga.test.bluetooth/MockCharacteristic|null[0]
+    constructor <init>(com.splendo.kaluga.bluetooth/CharacteristicWrapper, kotlin/Function1<com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.Event.AddAction, kotlin/Unit>) // com.splendo.kaluga.test.bluetooth/MockCharacteristic.<init>|<init>(com.splendo.kaluga.bluetooth.CharacteristicWrapper;kotlin.Function1<com.splendo.kaluga.bluetooth.device.DeviceConnectionManager.Event.AddAction,kotlin.Unit>){}[0]
+
+    final val updateMock // com.splendo.kaluga.test.bluetooth/MockCharacteristic.updateMock|{}updateMock[0]
+        final fun <get-updateMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth/MockCharacteristic.updateMock.<get-updateMock>|<get-updateMock>(){}[0]
+
+    final fun updateValue() // com.splendo.kaluga.test.bluetooth/MockCharacteristic.updateValue|updateValue(){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth/MockDescriptor : com.splendo.kaluga.bluetooth/Descriptor { // com.splendo.kaluga.test.bluetooth/MockDescriptor|null[0]
+    constructor <init>(com.splendo.kaluga.bluetooth/DescriptorWrapper, kotlin/Function1<com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.Event.AddAction, kotlin/Unit>) // com.splendo.kaluga.test.bluetooth/MockDescriptor.<init>|<init>(com.splendo.kaluga.bluetooth.DescriptorWrapper;kotlin.Function1<com.splendo.kaluga.bluetooth.device.DeviceConnectionManager.Event.AddAction,kotlin.Unit>){}[0]
+
+    final val updateMock // com.splendo.kaluga.test.bluetooth/MockDescriptor.updateMock|{}updateMock[0]
+        final fun <get-updateMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.bluetooth/MockDescriptor.updateMock.<get-updateMock>|<get-updateMock>(){}[0]
+
+    final fun updateValue() // com.splendo.kaluga.test.bluetooth/MockDescriptor.updateValue|updateValue(){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth/MockDeviceBuilder { // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder|null[0]
+    constructor <init>(kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.<init>|<init>(kotlin.coroutines.CoroutineContext){}[0]
+
+    final var connectionDelay // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.connectionDelay|{}connectionDelay[0]
+        final fun <get-connectionDelay>(): kotlin.time/Duration // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.connectionDelay.<get-connectionDelay>|<get-connectionDelay>(){}[0]
+        final fun <set-connectionDelay>(kotlin.time/Duration) // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.connectionDelay.<set-connectionDelay>|<set-connectionDelay>(kotlin.time.Duration){}[0]
+    final var identifier // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.identifier|{}identifier[0]
+        final fun <get-identifier>(): platform.Foundation/NSUUID // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.identifier.<get-identifier>|<get-identifier>(){}[0]
+        final fun <set-identifier>(platform.Foundation/NSUUID) // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.identifier.<set-identifier>|<set-identifier>(platform.Foundation.NSUUID){}[0]
+    final var isConnectable // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.isConnectable|{}isConnectable[0]
+        final fun <get-isConnectable>(): kotlin/Boolean // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.isConnectable.<get-isConnectable>|<get-isConnectable>(){}[0]
+        final fun <set-isConnectable>(kotlin/Boolean) // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.isConnectable.<set-isConnectable>|<set-isConnectable>(kotlin.Boolean){}[0]
+    final var manufacturerData // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.manufacturerData|{}manufacturerData[0]
+        final fun <get-manufacturerData>(): kotlin/ByteArray? // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.manufacturerData.<get-manufacturerData>|<get-manufacturerData>(){}[0]
+        final fun <set-manufacturerData>(kotlin/ByteArray?) // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.manufacturerData.<set-manufacturerData>|<set-manufacturerData>(kotlin.ByteArray?){}[0]
+    final var manufacturerId // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.manufacturerId|{}manufacturerId[0]
+        final fun <get-manufacturerId>(): kotlin/Int? // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.manufacturerId.<get-manufacturerId>|<get-manufacturerId>(){}[0]
+        final fun <set-manufacturerId>(kotlin/Int?) // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.manufacturerId.<set-manufacturerId>|<set-manufacturerId>(kotlin.Int?){}[0]
+    final var name // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.name|{}name[0]
+        final fun <get-name>(): kotlin/String? // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.name.<get-name>|<get-name>(){}[0]
+        final fun <set-name>(kotlin/String?) // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.name.<set-name>|<set-name>(kotlin.String?){}[0]
+    final var rssi // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.rssi|{}rssi[0]
+        final fun <get-rssi>(): kotlin/Int // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.rssi.<get-rssi>|<get-rssi>(){}[0]
+        final fun <set-rssi>(kotlin/Int) // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.rssi.<set-rssi>|<set-rssi>(kotlin.Int){}[0]
+    final var setupMocks // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.setupMocks|{}setupMocks[0]
+        final fun <get-setupMocks>(): kotlin/Boolean // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.setupMocks.<get-setupMocks>|<get-setupMocks>(){}[0]
+        final fun <set-setupMocks>(kotlin/Boolean) // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.setupMocks.<set-setupMocks>|<set-setupMocks>(kotlin.Boolean){}[0]
+    final var txPower // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.txPower|{}txPower[0]
+        final fun <get-txPower>(): kotlin/Int // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.txPower.<get-txPower>|<get-txPower>(){}[0]
+        final fun <set-txPower>(kotlin/Int) // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.txPower.<set-txPower>|<set-txPower>(kotlin.Int){}[0]
+
+    final fun build(): com.splendo.kaluga.test.bluetooth.device/MockDevice // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.build|build(){}[0]
+    final fun services(kotlin/Function1<kotlin.collections/ArrayList<platform.CoreBluetooth/CBUUID>, kotlin/Unit>) // com.splendo.kaluga.test.bluetooth/MockDeviceBuilder.services|services(kotlin.Function1<kotlin.collections.ArrayList<platform.CoreBluetooth.CBUUID>,kotlin.Unit>){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder { // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder|null[0]
+    constructor <init>() // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.<init>|<init>(){}[0]
+
+    final var deviceName // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.deviceName|{}deviceName[0]
+        final fun <get-deviceName>(): kotlin/String? // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.deviceName.<get-deviceName>|<get-deviceName>(){}[0]
+        final fun <set-deviceName>(kotlin/String?) // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.deviceName.<set-deviceName>|<set-deviceName>(kotlin.String?){}[0]
+    final var identifier // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.identifier|{}identifier[0]
+        final fun <get-identifier>(): platform.Foundation/NSUUID // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.identifier.<get-identifier>|<get-identifier>(){}[0]
+        final fun <set-identifier>(platform.Foundation/NSUUID) // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.identifier.<set-identifier>|<set-identifier>(platform.Foundation.NSUUID){}[0]
+    final var manufacturerData // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.manufacturerData|{}manufacturerData[0]
+        final fun <get-manufacturerData>(): kotlin/ByteArray? // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.manufacturerData.<get-manufacturerData>|<get-manufacturerData>(){}[0]
+        final fun <set-manufacturerData>(kotlin/ByteArray?) // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.manufacturerData.<set-manufacturerData>|<set-manufacturerData>(kotlin.ByteArray?){}[0]
+    final var manufacturerId // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.manufacturerId|{}manufacturerId[0]
+        final fun <get-manufacturerId>(): kotlin/Int? // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.manufacturerId.<get-manufacturerId>|<get-manufacturerId>(){}[0]
+        final fun <set-manufacturerId>(kotlin/Int?) // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.manufacturerId.<set-manufacturerId>|<set-manufacturerId>(kotlin.Int?){}[0]
+    final var rssi // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.rssi|{}rssi[0]
+        final fun <get-rssi>(): kotlin/Int // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.rssi.<get-rssi>|<get-rssi>(){}[0]
+        final fun <set-rssi>(kotlin/Int) // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.rssi.<set-rssi>|<set-rssi>(kotlin.Int){}[0]
+    final var serviceData // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.serviceData|{}serviceData[0]
+        final fun <get-serviceData>(): kotlin.collections/Map<platform.CoreBluetooth/CBUUID, kotlin/ByteArray?> // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.serviceData.<get-serviceData>|<get-serviceData>(){}[0]
+        final fun <set-serviceData>(kotlin.collections/Map<platform.CoreBluetooth/CBUUID, kotlin/ByteArray?>) // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.serviceData.<set-serviceData>|<set-serviceData>(kotlin.collections.Map<platform.CoreBluetooth.CBUUID,kotlin.ByteArray?>){}[0]
+    final var txPowerLevel // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.txPowerLevel|{}txPowerLevel[0]
+        final fun <get-txPowerLevel>(): kotlin/Int // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.txPowerLevel.<get-txPowerLevel>|<get-txPowerLevel>(){}[0]
+        final fun <set-txPowerLevel>(kotlin/Int) // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.txPowerLevel.<set-txPowerLevel>|<set-txPowerLevel>(kotlin.Int){}[0]
+
+    final fun build(): com.splendo.kaluga.bluetooth.device/DeviceInfoImpl // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.build|build(){}[0]
+    final fun services(kotlin/Function1<kotlin.collections/ArrayList<platform.CoreBluetooth/CBUUID>, kotlin/Unit>) // com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder.services|services(kotlin.Function1<kotlin.collections.ArrayList<platform.CoreBluetooth.CBUUID>,kotlin.Unit>){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth/MockServiceWrapper : com.splendo.kaluga.bluetooth/ServiceWrapper { // com.splendo.kaluga.test.bluetooth/MockServiceWrapper|null[0]
+    constructor <init>(com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder) // com.splendo.kaluga.test.bluetooth/MockServiceWrapper.<init>|<init>(com.splendo.kaluga.test.bluetooth.ServiceWrapperBuilder){}[0]
+    constructor <init>(platform.CoreBluetooth/CBUUID = ..., kotlin.collections/List<com.splendo.kaluga.bluetooth/CharacteristicWrapper> = ...) // com.splendo.kaluga.test.bluetooth/MockServiceWrapper.<init>|<init>(platform.CoreBluetooth.CBUUID;kotlin.collections.List<com.splendo.kaluga.bluetooth.CharacteristicWrapper>){}[0]
+
+    final val characteristics // com.splendo.kaluga.test.bluetooth/MockServiceWrapper.characteristics|{}characteristics[0]
+        final fun <get-characteristics>(): kotlin.collections/List<com.splendo.kaluga.bluetooth/CharacteristicWrapper> // com.splendo.kaluga.test.bluetooth/MockServiceWrapper.characteristics.<get-characteristics>|<get-characteristics>(){}[0]
+    final val uuid // com.splendo.kaluga.test.bluetooth/MockServiceWrapper.uuid|{}uuid[0]
+        final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/MockServiceWrapper.uuid.<get-uuid>|<get-uuid>(){}[0]
+}
+
+final class com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder { // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder|null[0]
+    constructor <init>() // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.<init>|<init>(){}[0]
+
+    final val characteristics // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.characteristics|{}characteristics[0]
+        final fun <get-characteristics>(): kotlin.collections/List<com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic> // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.characteristics.<get-characteristics>|<get-characteristics>(){}[0]
+
+    final var uuid // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.uuid|{}uuid[0]
+        final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.uuid.<get-uuid>|<get-uuid>(){}[0]
+        final fun <set-uuid>(platform.CoreBluetooth/CBUUID) // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.uuid.<set-uuid>|<set-uuid>(platform.CoreBluetooth.CBUUID){}[0]
+
+    final fun characteristics(kotlin/Function1<kotlin.collections/ArrayList<com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic>, kotlin/Unit>) // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.characteristics|characteristics(kotlin.Function1<kotlin.collections.ArrayList<com.splendo.kaluga.test.bluetooth.ServiceWrapperBuilder.Characteristic>,kotlin.Unit>){}[0]
+
+    final class Characteristic { // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic|null[0]
+        constructor <init>(platform.CoreBluetooth/CBUUID = ..., kotlin.collections/List<com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor> = ..., kotlin/Int = ...) // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.<init>|<init>(platform.CoreBluetooth.CBUUID;kotlin.collections.List<com.splendo.kaluga.test.bluetooth.ServiceWrapperBuilder.Descriptor>;kotlin.Int){}[0]
+
+        final val descriptorUUIDs // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.descriptorUUIDs|{}descriptorUUIDs[0]
+            final fun <get-descriptorUUIDs>(): kotlin.collections/List<platform.CoreBluetooth/CBUUID> // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.descriptorUUIDs.<get-descriptorUUIDs>|<get-descriptorUUIDs>(){}[0]
+        final val descriptors // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.descriptors|{}descriptors[0]
+            final fun <get-descriptors>(): kotlin.collections/List<com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor> // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.descriptors.<get-descriptors>|<get-descriptors>(){}[0]
+        final val properties // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.properties|{}properties[0]
+            final fun <get-properties>(): kotlin/Int // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.properties.<get-properties>|<get-properties>(){}[0]
+        final val uuid // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.uuid|{}uuid[0]
+            final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.uuid.<get-uuid>|<get-uuid>(){}[0]
+
+        final fun component1(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.component1|component1(){}[0]
+        final fun component2(): kotlin.collections/List<com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor> // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.component2|component2(){}[0]
+        final fun component3(): kotlin/Int // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.component3|component3(){}[0]
+        final fun copy(platform.CoreBluetooth/CBUUID = ..., kotlin.collections/List<com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor> = ..., kotlin/Int = ...): com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.copy|copy(platform.CoreBluetooth.CBUUID;kotlin.collections.List<com.splendo.kaluga.test.bluetooth.ServiceWrapperBuilder.Descriptor>;kotlin.Int){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.toString|toString(){}[0]
+
+        final class Builder { // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.Builder|null[0]
+            constructor <init>() // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.Builder.<init>|<init>(){}[0]
+
+            final val descriptors // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.Builder.descriptors|{}descriptors[0]
+                final fun <get-descriptors>(): kotlin.collections/List<com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor> // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.Builder.descriptors.<get-descriptors>|<get-descriptors>(){}[0]
+
+            final var properties // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.Builder.properties|{}properties[0]
+                final fun <get-properties>(): kotlin/Int // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.Builder.properties.<get-properties>|<get-properties>(){}[0]
+                final fun <set-properties>(kotlin/Int) // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.Builder.properties.<set-properties>|<set-properties>(kotlin.Int){}[0]
+            final var uuid // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.Builder.uuid|{}uuid[0]
+                final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.Builder.uuid.<get-uuid>|<get-uuid>(){}[0]
+                final fun <set-uuid>(platform.CoreBluetooth/CBUUID) // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.Builder.uuid.<set-uuid>|<set-uuid>(platform.CoreBluetooth.CBUUID){}[0]
+
+            final fun build(): com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.Builder.build|build(){}[0]
+            final fun descriptors(kotlin/Function1<kotlin.collections/ArrayList<com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor>, kotlin/Unit>) // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.Builder.descriptors|descriptors(kotlin.Function1<kotlin.collections.ArrayList<com.splendo.kaluga.test.bluetooth.ServiceWrapperBuilder.Descriptor>,kotlin.Unit>){}[0]
+        }
+    }
+
+    final class Descriptor { // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor|null[0]
+        constructor <init>(platform.CoreBluetooth/CBUUID = ...) // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor.<init>|<init>(platform.CoreBluetooth.CBUUID){}[0]
+
+        final val uuid // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor.uuid|{}uuid[0]
+            final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor.uuid.<get-uuid>|<get-uuid>(){}[0]
+
+        final fun component1(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor.component1|component1(){}[0]
+        final fun copy(platform.CoreBluetooth/CBUUID = ...): com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor.copy|copy(platform.CoreBluetooth.CBUUID){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor.toString|toString(){}[0]
+    }
+}
+
+sealed class com.splendo.kaluga.test.bluetooth.device/MockDeviceState : com.splendo.kaluga.base.state/KalugaState { // com.splendo.kaluga.test.bluetooth.device/MockDeviceState|null[0]
+    final class Connecting : com.splendo.kaluga.base.state/HandleAfterOldStateIsRemoved<com.splendo.kaluga.test.bluetooth.device/MockDeviceState>, com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connecting, com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connectable { // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting|null[0]
+        constructor <init>(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings, com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager) // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.<init>|<init>(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings;com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager){}[0]
+
+        final val asDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.asDeviceState|{}asDeviceState[0]
+            final fun <get-asDeviceState>(): com.splendo.kaluga.bluetooth.device/ConnectableDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.asDeviceState.<get-asDeviceState>|<get-asDeviceState>(){}[0]
+        final val cancelConnection // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.cancelConnection|{}cancelConnection[0]
+            final fun <get-cancelConnection>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.cancelConnection.<get-cancelConnection>|<get-cancelConnection>(){}[0]
+        final val didConnect // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.didConnect|{}didConnect[0]
+            final fun <get-didConnect>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.NoServices> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.didConnect.<get-didConnect>|<get-didConnect>(){}[0]
+        final val mockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.mockConnectableDeviceManager|{}mockConnectableDeviceManager[0]
+            final fun <get-mockConnectableDeviceManager>(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.mockConnectableDeviceManager.<get-mockConnectableDeviceManager>|<get-mockConnectableDeviceManager>(){}[0]
+
+        final fun component2(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.component2|component2(){}[0]
+        final fun copy(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings = ..., com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager = ...): com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.copy|copy(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings;com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.equals|equals(kotlin.Any?){}[0]
+        final fun handleCancel() // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.handleCancel|handleCancel(){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.toString|toString(){}[0]
+        final suspend fun afterOldStateIsRemoved(com.splendo.kaluga.test.bluetooth.device/MockDeviceState) // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connecting.afterOldStateIsRemoved|afterOldStateIsRemoved(com.splendo.kaluga.test.bluetooth.device.MockDeviceState){}[0]
+    }
+
+    final class Disconnected : com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Disconnected, com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connectable { // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected|null[0]
+        constructor <init>(com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager) // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected.<init>|<init>(com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager){}[0]
+
+        final val asDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected.asDeviceState|{}asDeviceState[0]
+            final fun <get-asDeviceState>(): com.splendo.kaluga.bluetooth.device/ConnectableDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected.asDeviceState.<get-asDeviceState>|<get-asDeviceState>(){}[0]
+        final val mockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected.mockConnectableDeviceManager|{}mockConnectableDeviceManager[0]
+            final fun <get-mockConnectableDeviceManager>(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected.mockConnectableDeviceManager.<get-mockConnectableDeviceManager>|<get-mockConnectableDeviceManager>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected.component1|component1(){}[0]
+        final fun connect(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connecting> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected.connect|connect(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings){}[0]
+        final fun copy(com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager = ...): com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected.copy|copy(com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected.hashCode|hashCode(){}[0]
+        final fun startConnecting(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings?) // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected.startConnecting|startConnecting(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings?){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected.toString|toString(){}[0]
+    }
+
+    final class Disconnecting : com.splendo.kaluga.base.state/HandleAfterOldStateIsRemoved<com.splendo.kaluga.test.bluetooth.device/MockDeviceState>, com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Disconnecting, com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connectable { // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting|null[0]
+        constructor <init>(com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager) // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting.<init>|<init>(com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager){}[0]
+
+        final val asDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting.asDeviceState|{}asDeviceState[0]
+            final fun <get-asDeviceState>(): com.splendo.kaluga.bluetooth.device/ConnectableDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting.asDeviceState.<get-asDeviceState>|<get-asDeviceState>(){}[0]
+        final val mockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting.mockConnectableDeviceManager|{}mockConnectableDeviceManager[0]
+            final fun <get-mockConnectableDeviceManager>(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting.mockConnectableDeviceManager.<get-mockConnectableDeviceManager>|<get-mockConnectableDeviceManager>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting.component1|component1(){}[0]
+        final fun copy(com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager = ...): com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting.copy|copy(com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting.toString|toString(){}[0]
+        final suspend fun afterOldStateIsRemoved(com.splendo.kaluga.test.bluetooth.device/MockDeviceState) // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting.afterOldStateIsRemoved|afterOldStateIsRemoved(com.splendo.kaluga.test.bluetooth.device.MockDeviceState){}[0]
+    }
+
+    sealed class Connectable : com.splendo.kaluga.test.bluetooth.device/MockDeviceState { // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connectable|null[0]
+        abstract val asDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connectable.asDeviceState|{}asDeviceState[0]
+            abstract fun <get-asDeviceState>(): com.splendo.kaluga.bluetooth.device/ConnectableDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connectable.asDeviceState.<get-asDeviceState>|<get-asDeviceState>(){}[0]
+        abstract val mockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connectable.mockConnectableDeviceManager|{}mockConnectableDeviceManager[0]
+            abstract fun <get-mockConnectableDeviceManager>(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connectable.mockConnectableDeviceManager.<get-mockConnectableDeviceManager>|<get-mockConnectableDeviceManager>(){}[0]
+        final val didDisconnect // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connectable.didDisconnect|{}didDisconnect[0]
+            final fun <get-didDisconnect>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnected> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connectable.didDisconnect.<get-didDisconnect>|<get-didDisconnect>(){}[0]
+        final val disconnecting // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connectable.disconnecting|{}disconnecting[0]
+            final fun <get-disconnecting>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Disconnecting> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connectable.disconnecting.<get-disconnecting>|<get-disconnecting>(){}[0]
+
+        final suspend fun unpair() // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connectable.unpair|unpair(){}[0]
+    }
+
+    sealed class Connected : com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connectable { // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected|null[0]
+        final fun startDisconnected() // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.startDisconnected|startDisconnected(){}[0]
+        final suspend fun pair() // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.pair|pair(){}[0]
+        final suspend fun readRssi() // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.readRssi|readRssi(){}[0]
+
+        final class Discovering : com.splendo.kaluga.base.state/HandleAfterOldStateIsRemoved<com.splendo.kaluga.test.bluetooth.device/MockDeviceState>, com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.Discovering, com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected { // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering|null[0]
+            constructor <init>(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings, com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager) // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.<init>|<init>(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings;com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager){}[0]
+
+            final val asDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.asDeviceState|{}asDeviceState[0]
+                final fun <get-asDeviceState>(): com.splendo.kaluga.bluetooth.device/ConnectableDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.asDeviceState.<get-asDeviceState>|<get-asDeviceState>(){}[0]
+            final val mockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.mockConnectableDeviceManager|{}mockConnectableDeviceManager[0]
+                final fun <get-mockConnectableDeviceManager>(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.mockConnectableDeviceManager.<get-mockConnectableDeviceManager>|<get-mockConnectableDeviceManager>(){}[0]
+            final val reconnect // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.reconnect|{}reconnect[0]
+                final fun <get-reconnect>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connecting> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.reconnect.<get-reconnect>|<get-reconnect>(){}[0]
+            final val reconnectionSettings // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.reconnectionSettings|{}reconnectionSettings[0]
+                final fun <get-reconnectionSettings>(): com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.reconnectionSettings.<get-reconnectionSettings>|<get-reconnectionSettings>(){}[0]
+
+            final fun component1(): com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.component1|component1(){}[0]
+            final fun component2(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.component2|component2(){}[0]
+            final fun copy(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings = ..., com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager = ...): com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.copy|copy(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings;com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager){}[0]
+            final fun didDiscoverServices(kotlin.collections/List<com.splendo.kaluga.bluetooth/Service>): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.Idle> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.didDiscoverServices|didDiscoverServices(kotlin.collections.List<com.splendo.kaluga.bluetooth.Service>){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.toString|toString(){}[0]
+            final fun updateReconnectionSettings(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.updateReconnectionSettings|updateReconnectionSettings(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings){}[0]
+            final suspend fun afterOldStateIsRemoved(com.splendo.kaluga.test.bluetooth.device/MockDeviceState) // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Discovering.afterOldStateIsRemoved|afterOldStateIsRemoved(com.splendo.kaluga.test.bluetooth.device.MockDeviceState){}[0]
+        }
+
+        final class HandlingAction : com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.HandlingAction, com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.DiscoveredServices { // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction|null[0]
+            constructor <init>(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings, kotlin/Int?, kotlin.collections/List<com.splendo.kaluga.bluetooth/Service>, com.splendo.kaluga.bluetooth.device/DeviceAction, kotlin.collections/List<com.splendo.kaluga.bluetooth.device/DeviceAction>, com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager) // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.<init>|<init>(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings;kotlin.Int?;kotlin.collections.List<com.splendo.kaluga.bluetooth.Service>;com.splendo.kaluga.bluetooth.device.DeviceAction;kotlin.collections.List<com.splendo.kaluga.bluetooth.device.DeviceAction>;com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager){}[0]
+
+            final val action // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.action|{}action[0]
+                final fun <get-action>(): com.splendo.kaluga.bluetooth.device/DeviceAction // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.action.<get-action>|<get-action>(){}[0]
+            final val actionCompleted // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.actionCompleted|{}actionCompleted[0]
+                final fun <get-actionCompleted>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.DiscoveredServices> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.actionCompleted.<get-actionCompleted>|<get-actionCompleted>(){}[0]
+            final val asDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.asDeviceState|{}asDeviceState[0]
+                final fun <get-asDeviceState>(): com.splendo.kaluga.bluetooth.device/ConnectableDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.asDeviceState.<get-asDeviceState>|<get-asDeviceState>(){}[0]
+            final val mockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.mockConnectableDeviceManager|{}mockConnectableDeviceManager[0]
+                final fun <get-mockConnectableDeviceManager>(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.mockConnectableDeviceManager.<get-mockConnectableDeviceManager>|<get-mockConnectableDeviceManager>(){}[0]
+            final val mtu // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.mtu|{}mtu[0]
+                final fun <get-mtu>(): kotlin/Int? // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.mtu.<get-mtu>|<get-mtu>(){}[0]
+            final val nextActions // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.nextActions|{}nextActions[0]
+                final fun <get-nextActions>(): kotlin.collections/List<com.splendo.kaluga.bluetooth.device/DeviceAction> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.nextActions.<get-nextActions>|<get-nextActions>(){}[0]
+            final val reconnect // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.reconnect|{}reconnect[0]
+                final fun <get-reconnect>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connecting> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.reconnect.<get-reconnect>|<get-reconnect>(){}[0]
+            final val reconnectionSettings // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.reconnectionSettings|{}reconnectionSettings[0]
+                final fun <get-reconnectionSettings>(): com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.reconnectionSettings.<get-reconnectionSettings>|<get-reconnectionSettings>(){}[0]
+            final val services // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.services|{}services[0]
+                final fun <get-services>(): kotlin.collections/List<com.splendo.kaluga.bluetooth/Service> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.services.<get-services>|<get-services>(){}[0]
+
+            final fun addAction(com.splendo.kaluga.bluetooth.device/DeviceAction): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.HandlingAction> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.addAction|addAction(com.splendo.kaluga.bluetooth.device.DeviceAction){}[0]
+            final fun component1(): com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.component1|component1(){}[0]
+            final fun component2(): kotlin/Int? // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.component2|component2(){}[0]
+            final fun component3(): kotlin.collections/List<com.splendo.kaluga.bluetooth/Service> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.component3|component3(){}[0]
+            final fun component4(): com.splendo.kaluga.bluetooth.device/DeviceAction // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.component4|component4(){}[0]
+            final fun component5(): kotlin.collections/List<com.splendo.kaluga.bluetooth.device/DeviceAction> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.component5|component5(){}[0]
+            final fun component6(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.component6|component6(){}[0]
+            final fun copy(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings = ..., kotlin/Int? = ..., kotlin.collections/List<com.splendo.kaluga.bluetooth/Service> = ..., com.splendo.kaluga.bluetooth.device/DeviceAction = ..., kotlin.collections/List<com.splendo.kaluga.bluetooth.device/DeviceAction> = ..., com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager = ...): com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.copy|copy(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings;kotlin.Int?;kotlin.collections.List<com.splendo.kaluga.bluetooth.Service>;com.splendo.kaluga.bluetooth.device.DeviceAction;kotlin.collections.List<com.splendo.kaluga.bluetooth.device.DeviceAction>;com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.toString|toString(){}[0]
+            final fun updateReconnectionSettings(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.updateReconnectionSettings|updateReconnectionSettings(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings){}[0]
+            final suspend fun requestMtu(kotlin/Int): com.splendo.kaluga.bluetooth.device/DeviceAction.RequestMtu // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.HandlingAction.requestMtu|requestMtu(kotlin.Int){}[0]
+        }
+
+        final class Idle : com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.Idle, com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.DiscoveredServices { // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle|null[0]
+            constructor <init>(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings, kotlin/Int?, kotlin.collections/List<com.splendo.kaluga.bluetooth/Service>, com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager) // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.<init>|<init>(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings;kotlin.Int?;kotlin.collections.List<com.splendo.kaluga.bluetooth.Service>;com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager){}[0]
+
+            final val asDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.asDeviceState|{}asDeviceState[0]
+                final fun <get-asDeviceState>(): com.splendo.kaluga.bluetooth.device/ConnectableDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.asDeviceState.<get-asDeviceState>|<get-asDeviceState>(){}[0]
+            final val mockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.mockConnectableDeviceManager|{}mockConnectableDeviceManager[0]
+                final fun <get-mockConnectableDeviceManager>(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.mockConnectableDeviceManager.<get-mockConnectableDeviceManager>|<get-mockConnectableDeviceManager>(){}[0]
+            final val mtu // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.mtu|{}mtu[0]
+                final fun <get-mtu>(): kotlin/Int? // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.mtu.<get-mtu>|<get-mtu>(){}[0]
+            final val reconnect // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.reconnect|{}reconnect[0]
+                final fun <get-reconnect>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connecting> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.reconnect.<get-reconnect>|<get-reconnect>(){}[0]
+            final val reconnectionSettings // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.reconnectionSettings|{}reconnectionSettings[0]
+                final fun <get-reconnectionSettings>(): com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.reconnectionSettings.<get-reconnectionSettings>|<get-reconnectionSettings>(){}[0]
+            final val services // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.services|{}services[0]
+                final fun <get-services>(): kotlin.collections/List<com.splendo.kaluga.bluetooth/Service> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.services.<get-services>|<get-services>(){}[0]
+
+            final fun component1(): com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.component1|component1(){}[0]
+            final fun component2(): kotlin/Int? // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.component2|component2(){}[0]
+            final fun component3(): kotlin.collections/List<com.splendo.kaluga.bluetooth/Service> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.component3|component3(){}[0]
+            final fun component4(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.component4|component4(){}[0]
+            final fun copy(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings = ..., kotlin/Int? = ..., kotlin.collections/List<com.splendo.kaluga.bluetooth/Service> = ..., com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager = ...): com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.copy|copy(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings;kotlin.Int?;kotlin.collections.List<com.splendo.kaluga.bluetooth.Service>;com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.equals|equals(kotlin.Any?){}[0]
+            final fun handleAction(com.splendo.kaluga.bluetooth.device/DeviceAction): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.HandlingAction> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.handleAction|handleAction(com.splendo.kaluga.bluetooth.device.DeviceAction){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.toString|toString(){}[0]
+            final fun updateReconnectionSettings(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.updateReconnectionSettings|updateReconnectionSettings(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings){}[0]
+            final suspend fun requestMtu(kotlin/Int): com.splendo.kaluga.bluetooth.device/DeviceAction.RequestMtu // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.Idle.requestMtu|requestMtu(kotlin.Int){}[0]
+        }
+
+        final class NoServices : com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.NoServices, com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected { // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices|null[0]
+            constructor <init>(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings, com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager) // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.<init>|<init>(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings;com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager){}[0]
+
+            final val asDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.asDeviceState|{}asDeviceState[0]
+                final fun <get-asDeviceState>(): com.splendo.kaluga.bluetooth.device/ConnectableDeviceState // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.asDeviceState.<get-asDeviceState>|<get-asDeviceState>(){}[0]
+            final val discoverServices // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.discoverServices|{}discoverServices[0]
+                final fun <get-discoverServices>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connected.Discovering> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.discoverServices.<get-discoverServices>|<get-discoverServices>(){}[0]
+            final val mockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.mockConnectableDeviceManager|{}mockConnectableDeviceManager[0]
+                final fun <get-mockConnectableDeviceManager>(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.mockConnectableDeviceManager.<get-mockConnectableDeviceManager>|<get-mockConnectableDeviceManager>(){}[0]
+            final val reconnect // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.reconnect|{}reconnect[0]
+                final fun <get-reconnect>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState.Connecting> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.reconnect.<get-reconnect>|<get-reconnect>(){}[0]
+            final val reconnectionSettings // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.reconnectionSettings|{}reconnectionSettings[0]
+                final fun <get-reconnectionSettings>(): com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.reconnectionSettings.<get-reconnectionSettings>|<get-reconnectionSettings>(){}[0]
+
+            final fun component1(): com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.component1|component1(){}[0]
+            final fun component2(): com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.component2|component2(){}[0]
+            final fun copy(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings = ..., com.splendo.kaluga.test.bluetooth.device/MockConnectableDeviceManager = ...): com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.copy|copy(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings;com.splendo.kaluga.test.bluetooth.device.MockConnectableDeviceManager){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.hashCode|hashCode(){}[0]
+            final fun startDiscovering() // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.startDiscovering|startDiscovering(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.toString|toString(){}[0]
+            final fun updateReconnectionSettings(com.splendo.kaluga.bluetooth.device/ConnectionSettings.ReconnectionSettings): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices> // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.NoServices.updateReconnectionSettings|updateReconnectionSettings(com.splendo.kaluga.bluetooth.device.ConnectionSettings.ReconnectionSettings){}[0]
+        }
+
+        sealed class DiscoveredServices : com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.Connected.DiscoveredServices|null[0]
+    }
+
+    final object NotConnectable : com.splendo.kaluga.bluetooth.device/NotConnectableDeviceState, com.splendo.kaluga.test.bluetooth.device/MockDeviceState { // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.NotConnectable|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.NotConnectable.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.NotConnectable.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.device/MockDeviceState.NotConnectable.toString|toString(){}[0]
+    }
+}
+
+sealed class com.splendo.kaluga.test.bluetooth.scanner/MockScanningState { // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState|null[0]
+    final val nothingFound // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.nothingFound|{}nothingFound[0]
+        final fun <get-nothingFound>(): com.splendo.kaluga.bluetooth.scanner/DefaultDevices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.nothingFound.<get-nothingFound>|<get-nothingFound>(){}[0]
+
+    final class Deinitialized : com.splendo.kaluga.bluetooth.scanner/ScanningState.Deinitialized, com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Inactive { // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Deinitialized|null[0]
+        constructor <init>(com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices) // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Deinitialized.<init>|<init>(com.splendo.kaluga.bluetooth.scanner.ScanningState.Devices){}[0]
+
+        final val previousDevices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Deinitialized.previousDevices|{}previousDevices[0]
+            final fun <get-previousDevices>(): com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Deinitialized.previousDevices.<get-previousDevices>|<get-previousDevices>(){}[0]
+        final val reinitialize // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Deinitialized.reinitialize|{}reinitialize[0]
+            final fun <get-reinitialize>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Initializing> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Deinitialized.reinitialize.<get-reinitialize>|<get-reinitialize>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Deinitialized.component1|component1(){}[0]
+        final fun copy(com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices = ...): com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Deinitialized // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Deinitialized.copy|copy(com.splendo.kaluga.bluetooth.scanner.ScanningState.Devices){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Deinitialized.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Deinitialized.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Deinitialized.toString|toString(){}[0]
+    }
+
+    final class Initializing : com.splendo.kaluga.bluetooth.scanner/ScanningState.Initializing, com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Active { // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Initializing|null[0]
+        constructor <init>(com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices) // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Initializing.<init>|<init>(com.splendo.kaluga.bluetooth.scanner.ScanningState.Devices){}[0]
+
+        final val devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Initializing.devices|{}devices[0]
+            final fun <get-devices>(): com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Initializing.devices.<get-devices>|<get-devices>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Initializing.component1|component1(){}[0]
+        final fun copy(com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices = ...): com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Initializing // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Initializing.copy|copy(com.splendo.kaluga.bluetooth.scanner.ScanningState.Devices){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Initializing.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Initializing.hashCode|hashCode(){}[0]
+        final fun initialized(kotlin/Boolean, kotlin/Boolean): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.scanner/ScanningState.Initialized> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Initializing.initialized|initialized(kotlin.Boolean;kotlin.Boolean){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Initializing.toString|toString(){}[0]
+    }
+
+    final class NotInitialized : com.splendo.kaluga.bluetooth.scanner/ScanningState.NotInitialized, com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Inactive { // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NotInitialized|null[0]
+        constructor <init>(kotlin/Boolean) // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NotInitialized.<init>|<init>(kotlin.Boolean){}[0]
+
+        final val isHardwareSupported // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NotInitialized.isHardwareSupported|{}isHardwareSupported[0]
+            final fun <get-isHardwareSupported>(): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NotInitialized.isHardwareSupported.<get-isHardwareSupported>|<get-isHardwareSupported>(){}[0]
+
+        final fun component1(): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NotInitialized.component1|component1(){}[0]
+        final fun copy(kotlin/Boolean = ...): com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NotInitialized // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NotInitialized.copy|copy(kotlin.Boolean){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NotInitialized.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NotInitialized.hashCode|hashCode(){}[0]
+        final fun startInitializing(): kotlin/Function0<kotlin/Any> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NotInitialized.startInitializing|startInitializing(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NotInitialized.toString|toString(){}[0]
+    }
+
+    final class PermittedHandler { // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.PermittedHandler|null[0]
+        constructor <init>(com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices) // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.PermittedHandler.<init>|<init>(com.splendo.kaluga.bluetooth.scanner.ScanningState.Devices){}[0]
+
+        final val revokePermission // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.PermittedHandler.revokePermission|{}revokePermission[0]
+            final fun <get-revokePermission>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.MissingPermissions> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.PermittedHandler.revokePermission.<get-revokePermission>|<get-revokePermission>(){}[0]
+    }
+
+    sealed class Active : com.splendo.kaluga.test.bluetooth.scanner/MockScanningState { // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Active|null[0]
+        abstract val devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Active.devices|{}devices[0]
+            abstract fun <get-devices>(): com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Active.devices.<get-devices>|<get-devices>(){}[0]
+        open val deinitialize // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Active.deinitialize|{}deinitialize[0]
+            open fun <get-deinitialize>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Deinitialized> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Active.deinitialize.<get-deinitialize>|<get-deinitialize>(){}[0]
+    }
+
+    sealed class Enabled : com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Active { // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled|null[0]
+        abstract val permittedHandler // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.permittedHandler|{}permittedHandler[0]
+            abstract fun <get-permittedHandler>(): com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.PermittedHandler // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.permittedHandler.<get-permittedHandler>|<get-permittedHandler>(){}[0]
+        final val disable // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.disable|{}disable[0]
+            final fun <get-disable>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.Disabled> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.disable.<get-disable>|<get-disable>(){}[0]
+        final val revokePermission // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.revokePermission|{}revokePermission[0]
+            final fun <get-revokePermission>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.MissingPermissions> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.revokePermission.<get-revokePermission>|<get-revokePermission>(){}[0]
+
+        final fun devicesForPairedDevices(kotlin.collections/Map<platform.Foundation/NSUUID, kotlin/Function0<com.splendo.kaluga.bluetooth.device/Device>>, kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean): com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.devicesForPairedDevices|devicesForPairedDevices(kotlin.collections.Map<platform.Foundation.NSUUID,kotlin.Function0<com.splendo.kaluga.bluetooth.device.Device>>;kotlin.collections.Set<platform.CoreBluetooth.CBUUID>;kotlin.Boolean){}[0]
+
+        final class Idle : com.splendo.kaluga.bluetooth.scanner/ScanningState.Enabled.Idle, com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled { // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Idle|null[0]
+            constructor <init>(com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices) // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Idle.<init>|<init>(com.splendo.kaluga.bluetooth.scanner.ScanningState.Devices){}[0]
+
+            final val devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Idle.devices|{}devices[0]
+                final fun <get-devices>(): com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Idle.devices.<get-devices>|<get-devices>(){}[0]
+            final val retrievePairedDevicesMock // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Idle.retrievePairedDevicesMock|{}retrievePairedDevicesMock[0]
+                final fun <get-retrievePairedDevicesMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/TripleParameters.Matchers<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters.MatchersOrCaptor<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters.Values<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Idle.retrievePairedDevicesMock.<get-retrievePairedDevicesMock>|<get-retrievePairedDevicesMock>(){}[0]
+
+            final fun pairedDevices(kotlin.collections/Map<platform.Foundation/NSUUID, kotlin/Function0<com.splendo.kaluga.bluetooth.device/Device>>, kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.scanner/ScanningState.Enabled> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Idle.pairedDevices|pairedDevices(kotlin.collections.Map<platform.Foundation.NSUUID,kotlin.Function0<com.splendo.kaluga.bluetooth.device.Device>>;kotlin.collections.Set<platform.CoreBluetooth.CBUUID>;kotlin.Boolean){}[0]
+            final fun refresh(kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth/BluetoothService.CleanMode): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.scanner/ScanningState.Enabled.Idle> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Idle.refresh|refresh(kotlin.collections.Set<platform.CoreBluetooth.CBUUID>;com.splendo.kaluga.bluetooth.BluetoothService.CleanMode){}[0]
+            final fun startScanning(kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, com.splendo.kaluga.bluetooth/BluetoothService.CleanMode, com.splendo.kaluga.bluetooth.device/ConnectionSettings?): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.scanner/ScanningState.Enabled.Scanning> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Idle.startScanning|startScanning(kotlin.collections.Set<platform.CoreBluetooth.CBUUID>;com.splendo.kaluga.bluetooth.BluetoothService.CleanMode;com.splendo.kaluga.bluetooth.device.ConnectionSettings?){}[0]
+            final suspend fun retrievePairedDevices(kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?) // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Idle.retrievePairedDevices|retrievePairedDevices(kotlin.collections.Set<platform.CoreBluetooth.CBUUID>;kotlin.Boolean;com.splendo.kaluga.bluetooth.device.ConnectionSettings?){}[0]
+        }
+
+        final class Scanning : com.splendo.kaluga.bluetooth.scanner/ScanningState.Enabled.Scanning, com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled { // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Scanning|null[0]
+            constructor <init>(com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices) // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Scanning.<init>|<init>(com.splendo.kaluga.bluetooth.scanner.ScanningState.Devices){}[0]
+
+            final val devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Scanning.devices|{}devices[0]
+                final fun <get-devices>(): com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Scanning.devices.<get-devices>|<get-devices>(){}[0]
+            final val retrievePairedDevicesMock // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Scanning.retrievePairedDevicesMock|{}retrievePairedDevicesMock[0]
+                final fun <get-retrievePairedDevicesMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/TripleParameters.Matchers<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters.MatchersOrCaptor<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters.Values<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, com.splendo.kaluga.test.base.mock.parameters/TripleParameters<kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?>, kotlin/Unit> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Scanning.retrievePairedDevicesMock.<get-retrievePairedDevicesMock>|<get-retrievePairedDevicesMock>(){}[0]
+
+            final fun pairedDevices(kotlin.collections/Map<platform.Foundation/NSUUID, kotlin/Function0<com.splendo.kaluga.bluetooth.device/Device>>, kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.scanner/ScanningState.Enabled> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Scanning.pairedDevices|pairedDevices(kotlin.collections.Map<platform.Foundation.NSUUID,kotlin.Function0<com.splendo.kaluga.bluetooth.device.Device>>;kotlin.collections.Set<platform.CoreBluetooth.CBUUID>;kotlin.Boolean){}[0]
+            final fun stopScanning(com.splendo.kaluga.bluetooth/BluetoothService.CleanMode): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.scanner/ScanningState.Enabled.Idle> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Scanning.stopScanning|stopScanning(com.splendo.kaluga.bluetooth.BluetoothService.CleanMode){}[0]
+            final suspend fun discoverDevices(kotlin.collections/List<com.splendo.kaluga.bluetooth.scanner/ScanningState.Enabled.Scanning.DiscoveredDevice>): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.scanner/ScanningState.Enabled.Scanning> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Scanning.discoverDevices|discoverDevices(kotlin.collections.List<com.splendo.kaluga.bluetooth.scanner.ScanningState.Enabled.Scanning.DiscoveredDevice>){}[0]
+            final suspend fun retrievePairedDevices(kotlin.collections/Set<platform.CoreBluetooth/CBUUID>, kotlin/Boolean, com.splendo.kaluga.bluetooth.device/ConnectionSettings?) // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Enabled.Scanning.retrievePairedDevices|retrievePairedDevices(kotlin.collections.Set<platform.CoreBluetooth.CBUUID>;kotlin.Boolean;com.splendo.kaluga.bluetooth.device.ConnectionSettings?){}[0]
+        }
+    }
+
+    sealed class Inactive : com.splendo.kaluga.test.bluetooth.scanner/MockScanningState // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Inactive|null[0]
+
+    sealed class Initialized : com.splendo.kaluga.test.bluetooth.scanner/MockScanningState // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Initialized|null[0]
+
+    sealed class NoBluetooth : com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Active { // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth|null[0]
+        abstract val previousDevices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.previousDevices|{}previousDevices[0]
+            abstract fun <get-previousDevices>(): com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.previousDevices.<get-previousDevices>|<get-previousDevices>(){}[0]
+        open val deinitialize // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.deinitialize|{}deinitialize[0]
+            open fun <get-deinitialize>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.Deinitialized> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.deinitialize.<get-deinitialize>|<get-deinitialize>(){}[0]
+        open val devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.devices|{}devices[0]
+            open fun <get-devices>(): com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.devices.<get-devices>|<get-devices>(){}[0]
+
+        final class Disabled : com.splendo.kaluga.bluetooth.scanner/ScanningState.NoBluetooth.Disabled, com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth { // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.Disabled|null[0]
+            constructor <init>(com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices) // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.Disabled.<init>|<init>(com.splendo.kaluga.bluetooth.scanner.ScanningState.Devices){}[0]
+
+            final val enable // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.Disabled.enable|{}enable[0]
+                final fun <get-enable>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.scanner/ScanningState.Enabled> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.Disabled.enable.<get-enable>|<get-enable>(){}[0]
+            final val revokePermission // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.Disabled.revokePermission|{}revokePermission[0]
+                final fun <get-revokePermission>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.MissingPermissions> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.Disabled.revokePermission.<get-revokePermission>|<get-revokePermission>(){}[0]
+
+            final fun copy(com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices = ...): com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.Disabled // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.Disabled.copy|copy(com.splendo.kaluga.bluetooth.scanner.ScanningState.Devices){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.Disabled.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.Disabled.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.Disabled.toString|toString(){}[0]
+        }
+
+        final class MissingPermissions : com.splendo.kaluga.bluetooth.scanner/ScanningState.NoBluetooth.MissingPermissions, com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth { // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.MissingPermissions|null[0]
+            constructor <init>(com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices) // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.MissingPermissions.<init>|<init>(com.splendo.kaluga.bluetooth.scanner.ScanningState.Devices){}[0]
+
+            final fun copy(com.splendo.kaluga.bluetooth.scanner/ScanningState.Devices = ...): com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.MissingPermissions // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.MissingPermissions.copy|copy(com.splendo.kaluga.bluetooth.scanner.ScanningState.Devices){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.MissingPermissions.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.MissingPermissions.hashCode|hashCode(){}[0]
+            final fun permit(kotlin/Boolean): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.bluetooth.scanner/ScanningState> // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.MissingPermissions.permit|permit(kotlin.Boolean){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoBluetooth.MissingPermissions.toString|toString(){}[0]
+        }
+    }
+
+    final object NoHardware : com.splendo.kaluga.bluetooth.scanner/ScanningState.NoHardware, com.splendo.kaluga.test.bluetooth.scanner/MockScanningState { // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoHardware|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoHardware.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoHardware.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.bluetooth.scanner/MockScanningState.NoHardware.toString|toString(){}[0]
+    }
+}
+
+final fun (com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder).com.splendo.kaluga.test.bluetooth/build(): com.splendo.kaluga.bluetooth/ServiceWrapper // com.splendo.kaluga.test.bluetooth/build|build@com.splendo.kaluga.test.bluetooth.ServiceWrapperBuilder(){}[0]
+final fun (kotlin.collections/ArrayList<com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic>).com.splendo.kaluga.test.bluetooth/characteristic(kotlin/Function1<com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Characteristic.Builder, kotlin/Unit>): kotlin/Boolean // com.splendo.kaluga.test.bluetooth/characteristic|characteristic@kotlin.collections.ArrayList<com.splendo.kaluga.test.bluetooth.ServiceWrapperBuilder.Characteristic>(kotlin.Function1<com.splendo.kaluga.test.bluetooth.ServiceWrapperBuilder.Characteristic.Builder,kotlin.Unit>){}[0]
+final fun (kotlin.collections/ArrayList<com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder.Descriptor>).com.splendo.kaluga.test.bluetooth/descriptor(platform.CoreBluetooth/CBUUID): kotlin/Boolean // com.splendo.kaluga.test.bluetooth/descriptor|descriptor@kotlin.collections.ArrayList<com.splendo.kaluga.test.bluetooth.ServiceWrapperBuilder.Descriptor>(platform.CoreBluetooth.CBUUID){}[0]
+final fun (kotlin.collections/ArrayList<platform.CoreBluetooth/CBUUID>).com.splendo.kaluga.test.bluetooth/uuid(kotlin/String): kotlin/Boolean // com.splendo.kaluga.test.bluetooth/uuid|uuid@kotlin.collections.ArrayList<platform.CoreBluetooth.CBUUID>(kotlin.String){}[0]
+final fun com.splendo.kaluga.test.bluetooth/buildMockDevice(kotlin.coroutines/CoroutineContext, kotlin/Function1<com.splendo.kaluga.test.bluetooth/MockDeviceBuilder, kotlin/Unit>): com.splendo.kaluga.test.bluetooth.device/MockDevice // com.splendo.kaluga.test.bluetooth/buildMockDevice|buildMockDevice(kotlin.coroutines.CoroutineContext;kotlin.Function1<com.splendo.kaluga.test.bluetooth.MockDeviceBuilder,kotlin.Unit>){}[0]
+final fun com.splendo.kaluga.test.bluetooth/createDeviceWrapper(kotlin/String? = ..., platform.Foundation/NSUUID = ...): com.splendo.kaluga.bluetooth.device/DeviceWrapper // com.splendo.kaluga.test.bluetooth/createDeviceWrapper|createDeviceWrapper(kotlin.String?;platform.Foundation.NSUUID){}[0]
+final fun com.splendo.kaluga.test.bluetooth/createMockDevice(com.splendo.kaluga.bluetooth.device/DeviceWrapper, kotlinx.coroutines/CoroutineScope, com.splendo.kaluga.bluetooth.device/ConnectionSettings = ..., com.splendo.kaluga.test.bluetooth.device/MockDeviceConnectionManager.Builder = ..., kotlin/Function2<com.splendo.kaluga.bluetooth.device/DeviceConnectionManager, kotlin.coroutines/CoroutineContext, com.splendo.kaluga.base.state/StateRepo<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState, kotlinx.coroutines.flow/MutableStateFlow<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState>>> = ..., kotlin/Function1<com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder, kotlin/Unit>): com.splendo.kaluga.bluetooth.device/DeviceImpl // com.splendo.kaluga.test.bluetooth/createMockDevice|createMockDevice(com.splendo.kaluga.bluetooth.device.DeviceWrapper;kotlinx.coroutines.CoroutineScope;com.splendo.kaluga.bluetooth.device.ConnectionSettings;com.splendo.kaluga.test.bluetooth.device.MockDeviceConnectionManager.Builder;kotlin.Function2<com.splendo.kaluga.bluetooth.device.DeviceConnectionManager,kotlin.coroutines.CoroutineContext,com.splendo.kaluga.base.state.StateRepo<com.splendo.kaluga.bluetooth.device.ConnectableDeviceState,kotlinx.coroutines.flow.MutableStateFlow<com.splendo.kaluga.bluetooth.device.ConnectableDeviceState>>>;kotlin.Function1<com.splendo.kaluga.test.bluetooth.MockDeviceInfoBuilder,kotlin.Unit>){}[0]
+final fun com.splendo.kaluga.test.bluetooth/createMockDevice(platform.Foundation/NSUUID, com.splendo.kaluga.bluetooth.device/ConnectionSettings = ..., kotlin/Function1<com.splendo.kaluga.bluetooth.device/ConnectionSettings, com.splendo.kaluga.bluetooth.device/DeviceConnectionManager>, kotlin/Function1<com.splendo.kaluga.test.bluetooth/MockDeviceInfoBuilder, kotlin/Unit>, kotlin/Function2<com.splendo.kaluga.bluetooth.device/DeviceConnectionManager, kotlin.coroutines/CoroutineContext, com.splendo.kaluga.base.state/StateRepo<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState, kotlinx.coroutines.flow/MutableStateFlow<com.splendo.kaluga.bluetooth.device/ConnectableDeviceState>>> = ..., kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.bluetooth.device/DeviceImpl // com.splendo.kaluga.test.bluetooth/createMockDevice|createMockDevice(platform.Foundation.NSUUID;com.splendo.kaluga.bluetooth.device.ConnectionSettings;kotlin.Function1<com.splendo.kaluga.bluetooth.device.ConnectionSettings,com.splendo.kaluga.bluetooth.device.DeviceConnectionManager>;kotlin.Function1<com.splendo.kaluga.test.bluetooth.MockDeviceInfoBuilder,kotlin.Unit>;kotlin.Function2<com.splendo.kaluga.bluetooth.device.DeviceConnectionManager,kotlin.coroutines.CoroutineContext,com.splendo.kaluga.base.state.StateRepo<com.splendo.kaluga.bluetooth.device.ConnectableDeviceState,kotlinx.coroutines.flow.MutableStateFlow<com.splendo.kaluga.bluetooth.device.ConnectableDeviceState>>>;kotlinx.coroutines.CoroutineScope){}[0]
+final fun com.splendo.kaluga.test.bluetooth/createServiceWrapper(kotlin/Function1<com.splendo.kaluga.test.bluetooth/ServiceWrapperBuilder, kotlin/Unit>): com.splendo.kaluga.bluetooth/ServiceWrapper // com.splendo.kaluga.test.bluetooth/createServiceWrapper|createServiceWrapper(kotlin.Function1<com.splendo.kaluga.test.bluetooth.ServiceWrapperBuilder,kotlin.Unit>){}[0]
+final fun com.splendo.kaluga.test.bluetooth/randomIdentifier(): platform.Foundation/NSUUID // com.splendo.kaluga.test.bluetooth/randomIdentifier|randomIdentifier(){}[0]

@@ -1,0 +1,77 @@
+// Klib ABI Dump
+// Targets: [iosSimulatorArm64, js]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:test-utils-architecture>
+abstract class <#A: com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel> com.splendo.kaluga.test.architecture/SimpleUIThreadViewModelTest : com.splendo.kaluga.test.architecture/UIThreadViewModelTest<com.splendo.kaluga.test.architecture/UIThreadViewModelTest.ViewModelTestContext<#A>, #A> { // com.splendo.kaluga.test.architecture/SimpleUIThreadViewModelTest|null[0]
+    constructor <init>() // com.splendo.kaluga.test.architecture/SimpleUIThreadViewModelTest.<init>|<init>(){}[0]
+
+    open val createTestContext // com.splendo.kaluga.test.architecture/SimpleUIThreadViewModelTest.createTestContext|{}createTestContext[0]
+        open fun <get-createTestContext>(): kotlin.coroutines/SuspendFunction1<kotlinx.coroutines/CoroutineScope, com.splendo.kaluga.test.architecture/UIThreadViewModelTest.ViewModelTestContext<#A>> // com.splendo.kaluga.test.architecture/SimpleUIThreadViewModelTest.createTestContext.<get-createTestContext>|<get-createTestContext>(){}[0]
+
+    abstract fun createViewModel(): #A // com.splendo.kaluga.test.architecture/SimpleUIThreadViewModelTest.createViewModel|createViewModel(){}[0]
+}
+
+abstract class <#A: com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel> com.splendo.kaluga.test.architecture/ViewModelTest : com.splendo.kaluga.test.base/BaseTest { // com.splendo.kaluga.test.architecture/ViewModelTest|null[0]
+    constructor <init>() // com.splendo.kaluga.test.architecture/ViewModelTest.<init>|<init>(){}[0]
+
+    final var viewModel // com.splendo.kaluga.test.architecture/ViewModelTest.viewModel|{}viewModel[0]
+        final fun <get-viewModel>(): #A // com.splendo.kaluga.test.architecture/ViewModelTest.viewModel.<get-viewModel>|<get-viewModel>(){}[0]
+        final fun <set-viewModel>(#A) // com.splendo.kaluga.test.architecture/ViewModelTest.viewModel.<set-viewModel>|<set-viewModel>(1:0){}[0]
+
+    abstract fun createViewModel(): #A // com.splendo.kaluga.test.architecture/ViewModelTest.createViewModel|createViewModel(){}[0]
+    open fun afterTest() // com.splendo.kaluga.test.architecture/ViewModelTest.afterTest|afterTest(){}[0]
+    open fun beforeTest() // com.splendo.kaluga.test.architecture/ViewModelTest.beforeTest|beforeTest(){}[0]
+}
+
+abstract class <#A: com.splendo.kaluga.test.architecture/UIThreadViewModelTest.ViewModelTestContext<#B>, #B: com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel> com.splendo.kaluga.test.architecture/UIThreadViewModelTest : com.splendo.kaluga.test.base/UIThreadTest<#A> { // com.splendo.kaluga.test.architecture/UIThreadViewModelTest|null[0]
+    constructor <init>() // com.splendo.kaluga.test.architecture/UIThreadViewModelTest.<init>|<init>(){}[0]
+
+    abstract interface <#A1: com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel> ViewModelTestContext : com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.ViewModelTestContext<#A1>, com.splendo.kaluga.test.base/UIThreadTest.TestContext // com.splendo.kaluga.test.architecture/UIThreadViewModelTest.ViewModelTestContext|null[0]
+
+    open class <#A1: com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel> LazyViewModelTestContext : com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.LazyViewModelTestContext<#A1>, com.splendo.kaluga.test.architecture/UIThreadViewModelTest.ViewModelTestContext<#A1> { // com.splendo.kaluga.test.architecture/UIThreadViewModelTest.LazyViewModelTestContext|null[0]
+        constructor <init>(kotlinx.coroutines/CoroutineScope, kotlin/Function0<#A1>) // com.splendo.kaluga.test.architecture/UIThreadViewModelTest.LazyViewModelTestContext.<init>|<init>(kotlinx.coroutines.CoroutineScope;kotlin.Function0<1:0>){}[0]
+    }
+}
+
+abstract class <#A: kotlin/Any?, #B: com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.ViewModelTestContext<#C>, #C: com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel> com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest : com.splendo.kaluga.test.base/BaseUIThreadTest<#A, #B> { // com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest|null[0]
+    constructor <init>() // com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.<init>|<init>(){}[0]
+
+    abstract interface <#A1: com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel> ViewModelTestContext : com.splendo.kaluga.test.base/BaseUIThreadTest.TestContext { // com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.ViewModelTestContext|null[0]
+        abstract val viewModel // com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.ViewModelTestContext.viewModel|{}viewModel[0]
+            abstract fun <get-viewModel>(): #A1 // com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.ViewModelTestContext.viewModel.<get-viewModel>|<get-viewModel>(){}[0]
+
+        open fun dispose() // com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.ViewModelTestContext.dispose|dispose(){}[0]
+    }
+
+    open class <#A1: com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel> LazyViewModelTestContext : com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.ViewModelTestContext<#A1>, kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.LazyViewModelTestContext|null[0]
+        constructor <init>(kotlinx.coroutines/CoroutineScope, kotlin/Function0<#A1>) // com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.LazyViewModelTestContext.<init>|<init>(kotlinx.coroutines.CoroutineScope;kotlin.Function0<1:0>){}[0]
+
+        open val coroutineContext // com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.LazyViewModelTestContext.coroutineContext|{}coroutineContext[0]
+            open fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.LazyViewModelTestContext.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+        open val viewModel // com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.LazyViewModelTestContext.viewModel|{}viewModel[0]
+            open fun <get-viewModel>(): #A1 // com.splendo.kaluga.test.architecture/BaseUIThreadViewModelTest.LazyViewModelTestContext.viewModel.<get-viewModel>|<get-viewModel>(){}[0]
+    }
+}
+
+final class com.splendo.kaluga.test.architecture/MockNavigationException : com.splendo.kaluga.architecture.navigation/NavigationException { // com.splendo.kaluga.test.architecture/MockNavigationException|null[0]
+    constructor <init>(com.splendo.kaluga.architecture.navigation/NavigationAction<*>) // com.splendo.kaluga.test.architecture/MockNavigationException.<init>|<init>(com.splendo.kaluga.architecture.navigation.NavigationAction<*>){}[0]
+}
+
+open class <#A: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> com.splendo.kaluga.test.architecture/MockNavigator : com.splendo.kaluga.architecture.navigation/Navigator<#A> { // com.splendo.kaluga.test.architecture/MockNavigator|null[0]
+    constructor <init>(kotlin/Function1<#A, kotlin/Unit> = ...) // com.splendo.kaluga.test.architecture/MockNavigator.<init>|<init>(kotlin.Function1<1:0,kotlin.Unit>){}[0]
+
+    final val navigateMock // com.splendo.kaluga.test.architecture/MockNavigator.navigateMock|{}navigateMock[0]
+        final fun <get-navigateMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<#A>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<#A>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<#A>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<#A>, kotlin/Unit> // com.splendo.kaluga.test.architecture/MockNavigator.navigateMock.<get-navigateMock>|<get-navigateMock>(){}[0]
+
+    open fun navigate(#A) // com.splendo.kaluga.test.architecture/MockNavigator.navigate|navigate(1:0){}[0]
+
+    final object Companion { // com.splendo.kaluga.test.architecture/MockNavigator.Companion|null[0]
+        final fun <#A2: com.splendo.kaluga.architecture.navigation/NavigationAction<*>> navigatorThatThrows(): com.splendo.kaluga.test.architecture/MockNavigator<#A2> // com.splendo.kaluga.test.architecture/MockNavigator.Companion.navigatorThatThrows|navigatorThatThrows(){0§<com.splendo.kaluga.architecture.navigation.NavigationAction<*>>}[0]
+    }
+}
+
+final fun (com.splendo.kaluga.architecture.viewmodel/LifecycleViewModel).com.splendo.kaluga.test.architecture.viewmodel/cleanUp() // com.splendo.kaluga.test.architecture.viewmodel/cleanUp|cleanUp@com.splendo.kaluga.architecture.viewmodel.LifecycleViewModel(){}[0]

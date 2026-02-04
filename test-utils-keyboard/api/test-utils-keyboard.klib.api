@@ -1,0 +1,44 @@
+// Klib ABI Dump
+// Targets: [iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:test-utils-keyboard>
+final class <#A: com.splendo.kaluga.keyboard/FocusHandler> com.splendo.kaluga.test.keyboard/MockKeyboardManager : com.splendo.kaluga.keyboard/BaseKeyboardManager<#A> { // com.splendo.kaluga.test.keyboard/MockKeyboardManager|null[0]
+    constructor <init>(kotlin/Boolean = ...) // com.splendo.kaluga.test.keyboard/MockKeyboardManager.<init>|<init>(kotlin.Boolean){}[0]
+
+    final val hideMock // com.splendo.kaluga.test.keyboard/MockKeyboardManager.hideMock|{}hideMock[0]
+        final fun <get-hideMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.keyboard/MockKeyboardManager.hideMock.<get-hideMock>|<get-hideMock>(){}[0]
+    final val showMock // com.splendo.kaluga.test.keyboard/MockKeyboardManager.showMock|{}showMock[0]
+        final fun <get-showMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<#A>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<#A>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<#A>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<#A>, kotlin/Unit> // com.splendo.kaluga.test.keyboard/MockKeyboardManager.showMock.<get-showMock>|<get-showMock>(){}[0]
+
+    final var focusHandler // com.splendo.kaluga.test.keyboard/MockKeyboardManager.focusHandler|{}focusHandler[0]
+        final fun <get-focusHandler>(): #A? // com.splendo.kaluga.test.keyboard/MockKeyboardManager.focusHandler.<get-focusHandler>|<get-focusHandler>(){}[0]
+        final fun <set-focusHandler>(#A?) // com.splendo.kaluga.test.keyboard/MockKeyboardManager.focusHandler.<set-focusHandler>|<set-focusHandler>(1:0?){}[0]
+
+    final fun hide() // com.splendo.kaluga.test.keyboard/MockKeyboardManager.hide|hide(){}[0]
+    final fun show(#A) // com.splendo.kaluga.test.keyboard/MockKeyboardManager.show|show(1:0){}[0]
+
+    final class <#A1: com.splendo.kaluga.keyboard/FocusHandler> Builder : com.splendo.kaluga.keyboard/BaseKeyboardManager.Builder<#A1> { // com.splendo.kaluga.test.keyboard/MockKeyboardManager.Builder|null[0]
+        constructor <init>(kotlin/Boolean = ...) // com.splendo.kaluga.test.keyboard/MockKeyboardManager.Builder.<init>|<init>(kotlin.Boolean){}[0]
+
+        final val builtKeyboardManagers // com.splendo.kaluga.test.keyboard/MockKeyboardManager.Builder.builtKeyboardManagers|{}builtKeyboardManagers[0]
+            final fun <get-builtKeyboardManagers>(): com.splendo.kaluga.base.collections/ConcurrentMutableList<com.splendo.kaluga.test.keyboard/MockKeyboardManager<#A1>> // com.splendo.kaluga.test.keyboard/MockKeyboardManager.Builder.builtKeyboardManagers.<get-builtKeyboardManagers>|<get-builtKeyboardManagers>(){}[0]
+        final val createMock // com.splendo.kaluga.test.keyboard/MockKeyboardManager.Builder.createMock|{}createMock[0]
+            final fun <get-createMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlinx.coroutines/CoroutineScope>, com.splendo.kaluga.test.keyboard/MockKeyboardManager<#A1>> // com.splendo.kaluga.test.keyboard/MockKeyboardManager.Builder.createMock.<get-createMock>|<get-createMock>(){}[0]
+
+        final fun create(kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.test.keyboard/MockKeyboardManager<#A1> // com.splendo.kaluga.test.keyboard/MockKeyboardManager.Builder.create|create(kotlinx.coroutines.CoroutineScope){}[0]
+    }
+}
+
+final class com.splendo.kaluga.test.keyboard/MockFocusHandler : com.splendo.kaluga.keyboard/FocusHandler { // com.splendo.kaluga.test.keyboard/MockFocusHandler|null[0]
+    constructor <init>() // com.splendo.kaluga.test.keyboard/MockFocusHandler.<init>|<init>(){}[0]
+
+    final var isFocused // com.splendo.kaluga.test.keyboard/MockFocusHandler.isFocused|{}isFocused[0]
+        final fun <get-isFocused>(): kotlin/Boolean // com.splendo.kaluga.test.keyboard/MockFocusHandler.isFocused.<get-isFocused>|<get-isFocused>(){}[0]
+
+    final fun giveFocus() // com.splendo.kaluga.test.keyboard/MockFocusHandler.giveFocus|giveFocus(){}[0]
+    final fun removeFocus() // com.splendo.kaluga.test.keyboard/MockFocusHandler.removeFocus|removeFocus(){}[0]
+}

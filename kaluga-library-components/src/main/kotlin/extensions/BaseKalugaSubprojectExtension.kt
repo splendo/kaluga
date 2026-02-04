@@ -20,6 +20,11 @@ package com.splendo.kaluga.plugin.extensions
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
+import org.gradle.kotlin.dsl.configure
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, protected val namespacePostfix: String?, objects: ObjectFactory) :
     BaseKalugaExtension(versionCatalog, objects) {
@@ -65,10 +70,29 @@ sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, prote
 
     protected abstract fun Project.setupSubproject()
 
+    @OptIn(ExperimentalAbiValidation::class)
     override fun Project.afterProjectEvaluated() {
         if (moduleName.isEmpty()) {
             throw RuntimeException("moduleName must be configured")
         }
+
+        extensions.configure(KotlinProjectExtension::class) {
+            extensions.configure(AbiValidationMultiplatformExtension::class) {
+                enabled.set(true)
+
+                filters.excluded {
+                    byNames.set(
+                        setOf(
+                            "com.splendo.kaluga.$moduleName.BuildConfig",
+                            "com.splendo.kaluga.${moduleName.replace("-", ".")}.BuildConfig",
+                            "com.splendo.kaluga.${moduleName.replace("-", "")}.BuildConfig",
+                        )
+                    )
+                }
+            }
+        }
+
+
     }
 
     protected abstract fun Project.configureSubproject()

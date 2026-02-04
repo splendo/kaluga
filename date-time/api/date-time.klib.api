@@ -1,0 +1,53 @@
+// Klib ABI Dump
+// Targets: [iosSimulatorArm64, js]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:date-time>
+abstract interface com.splendo.kaluga.datetime.timer/ControllableTimer : com.splendo.kaluga.datetime.timer/Timer { // com.splendo.kaluga.datetime.timer/ControllableTimer|null[0]
+    abstract suspend fun pause(): kotlin/Boolean // com.splendo.kaluga.datetime.timer/ControllableTimer.pause|pause(){}[0]
+    abstract suspend fun start(): kotlin/Boolean // com.splendo.kaluga.datetime.timer/ControllableTimer.start|start(){}[0]
+    abstract suspend fun stop() // com.splendo.kaluga.datetime.timer/ControllableTimer.stop|stop(){}[0]
+}
+
+abstract interface com.splendo.kaluga.datetime.timer/Timer { // com.splendo.kaluga.datetime.timer/Timer|null[0]
+    abstract val currentState // com.splendo.kaluga.datetime.timer/Timer.currentState|{}currentState[0]
+        abstract fun <get-currentState>(): com.splendo.kaluga.datetime.timer/Timer.State // com.splendo.kaluga.datetime.timer/Timer.currentState.<get-currentState>|<get-currentState>(){}[0]
+    abstract val duration // com.splendo.kaluga.datetime.timer/Timer.duration|{}duration[0]
+        abstract fun <get-duration>(): kotlin.time/Duration // com.splendo.kaluga.datetime.timer/Timer.duration.<get-duration>|<get-duration>(){}[0]
+    abstract val state // com.splendo.kaluga.datetime.timer/Timer.state|{}state[0]
+        abstract fun <get-state>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.datetime.timer/Timer.State> // com.splendo.kaluga.datetime.timer/Timer.state.<get-state>|<get-state>(){}[0]
+
+    sealed interface State { // com.splendo.kaluga.datetime.timer/Timer.State|null[0]
+        abstract val elapsed // com.splendo.kaluga.datetime.timer/Timer.State.elapsed|{}elapsed[0]
+            abstract fun <get-elapsed>(): kotlinx.coroutines.flow/Flow<kotlin.time/Duration> // com.splendo.kaluga.datetime.timer/Timer.State.elapsed.<get-elapsed>|<get-elapsed>(){}[0]
+
+        abstract interface Running : com.splendo.kaluga.datetime.timer/Timer.State // com.splendo.kaluga.datetime.timer/Timer.State.Running|null[0]
+
+        sealed interface NotRunning : com.splendo.kaluga.datetime.timer/Timer.State { // com.splendo.kaluga.datetime.timer/Timer.State.NotRunning|null[0]
+            abstract interface Finished : com.splendo.kaluga.datetime.timer/Timer.State.NotRunning // com.splendo.kaluga.datetime.timer/Timer.State.NotRunning.Finished|null[0]
+
+            abstract interface Paused : com.splendo.kaluga.datetime.timer/Timer.State.NotRunning // com.splendo.kaluga.datetime.timer/Timer.State.NotRunning.Paused|null[0]
+        }
+    }
+}
+
+final class com.splendo.kaluga.datetime.timer/RecurringTimer : com.splendo.kaluga.datetime.timer/ControllableTimer { // com.splendo.kaluga.datetime.timer/RecurringTimer|null[0]
+    constructor <init>(kotlin.time/Duration, kotlin.time/Duration = ..., kotlin.time/TimeSource = ..., kotlin.coroutines/SuspendFunction1<kotlin.time/Duration, kotlin/Unit> = ..., kotlinx.coroutines/CoroutineScope = ...) // com.splendo.kaluga.datetime.timer/RecurringTimer.<init>|<init>(kotlin.time.Duration;kotlin.time.Duration;kotlin.time.TimeSource;kotlin.coroutines.SuspendFunction1<kotlin.time.Duration,kotlin.Unit>;kotlinx.coroutines.CoroutineScope){}[0]
+
+    final val currentState // com.splendo.kaluga.datetime.timer/RecurringTimer.currentState|{}currentState[0]
+        final fun <get-currentState>(): com.splendo.kaluga.datetime.timer/Timer.State // com.splendo.kaluga.datetime.timer/RecurringTimer.currentState.<get-currentState>|<get-currentState>(){}[0]
+    final val duration // com.splendo.kaluga.datetime.timer/RecurringTimer.duration|{}duration[0]
+        final fun <get-duration>(): kotlin.time/Duration // com.splendo.kaluga.datetime.timer/RecurringTimer.duration.<get-duration>|<get-duration>(){}[0]
+    final val state // com.splendo.kaluga.datetime.timer/RecurringTimer.state|{}state[0]
+        final fun <get-state>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.datetime.timer/Timer.State> // com.splendo.kaluga.datetime.timer/RecurringTimer.state.<get-state>|<get-state>(){}[0]
+
+    final suspend fun pause(): kotlin/Boolean // com.splendo.kaluga.datetime.timer/RecurringTimer.pause|pause(){}[0]
+    final suspend fun start(): kotlin/Boolean // com.splendo.kaluga.datetime.timer/RecurringTimer.start|start(){}[0]
+    final suspend fun stop() // com.splendo.kaluga.datetime.timer/RecurringTimer.stop|stop(){}[0]
+}
+
+final fun (com.splendo.kaluga.datetime.timer/Timer).com.splendo.kaluga.datetime.timer/elapsed(): kotlinx.coroutines.flow/Flow<kotlin.time/Duration> // com.splendo.kaluga.datetime.timer/elapsed|elapsed@com.splendo.kaluga.datetime.timer.Timer(){}[0]
+final suspend fun (com.splendo.kaluga.datetime.timer/Timer).com.splendo.kaluga.datetime.timer/awaitFinish() // com.splendo.kaluga.datetime.timer/awaitFinish|awaitFinish@com.splendo.kaluga.datetime.timer.Timer(){}[0]
