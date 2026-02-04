@@ -595,6 +595,13 @@ final class <#A: kotlin/Any?> com.splendo.kaluga.base.collections/ConcurrentMuta
     final fun toString(): kotlin/String // com.splendo.kaluga.base.collections/ConcurrentMutableSet.toString|toString(){}[0]
 }
 
+final class com.splendo.kaluga.base.bytes/KalugaCharacterCodingException : kotlin/Exception { // com.splendo.kaluga.base.bytes/KalugaCharacterCodingException|null[0]
+    constructor <init>(kotlin/String?) // com.splendo.kaluga.base.bytes/KalugaCharacterCodingException.<init>|<init>(kotlin.String?){}[0]
+
+    final val message // com.splendo.kaluga.base.bytes/KalugaCharacterCodingException.message|{}message[0]
+        final fun <get-message>(): kotlin/String? // com.splendo.kaluga.base.bytes/KalugaCharacterCodingException.message.<get-message>|<get-message>(){}[0]
+}
+
 final class com.splendo.kaluga.base.bytes/StringEncodingSettings { // com.splendo.kaluga.base.bytes/StringEncodingSettings|null[0]
     constructor <init>(com.splendo.kaluga.base.bytes/StringEncodingSettings.EndMarking = ..., com.splendo.kaluga.base.bytes/Encoding = ...) // com.splendo.kaluga.base.bytes/StringEncodingSettings.<init>|<init>(com.splendo.kaluga.base.bytes.StringEncodingSettings.EndMarking;com.splendo.kaluga.base.bytes.Encoding){}[0]
 
@@ -2829,12 +2836,13 @@ final fun (kotlin/String).com.splendo.kaluga.base.bytes/byteArraySize(com.splend
 final fun (kotlin/String).com.splendo.kaluga.base.bytes/copyAsciiIntoArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/copyAsciiIntoArray|copyAsciiIntoArray@kotlin.String(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/String).com.splendo.kaluga.base.bytes/copyIntoArray(kotlin/ByteArray, com.splendo.kaluga.base.bytes/StringEncodingSettings, kotlin/Int = ..., com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/copyIntoArray|copyIntoArray@kotlin.String(kotlin.ByteArray;com.splendo.kaluga.base.bytes.StringEncodingSettings;kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/String).com.splendo.kaluga.base.bytes/copyUTF16IntoArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/copyUTF16IntoArray|copyUTF16IntoArray@kotlin.String(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
-final fun (kotlin/String).com.splendo.kaluga.base.bytes/copyUTF8IntoArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/copyUTF8IntoArray|copyUTF8IntoArray@kotlin.String(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (kotlin/String).com.splendo.kaluga.base.bytes/copyUTF8IntoArray(kotlin/ByteArray, kotlin/Int = ..., com.splendo.kaluga.base.bytes/ByteOrder, kotlin/Boolean = ...): kotlin/ByteArray // com.splendo.kaluga.base.bytes/copyUTF8IntoArray|copyUTF8IntoArray@kotlin.String(kotlin.ByteArray;kotlin.Int;com.splendo.kaluga.base.bytes.ByteOrder;kotlin.Boolean){}[0]
 final fun (kotlin/String).com.splendo.kaluga.base.bytes/toAscii(com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/toAscii|toAscii@kotlin.String(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/String).com.splendo.kaluga.base.bytes/toAsciiOrNull(com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray? // com.splendo.kaluga.base.bytes/toAsciiOrNull|toAsciiOrNull@kotlin.String(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/String).com.splendo.kaluga.base.bytes/toByteArray(com.splendo.kaluga.base.bytes/StringEncodingSettings, com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/toByteArray|toByteArray@kotlin.String(com.splendo.kaluga.base.bytes.StringEncodingSettings;com.splendo.kaluga.base.bytes.ByteOrder){}[0]
 final fun (kotlin/String).com.splendo.kaluga.base.bytes/toUTF16(com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/toUTF16|toUTF16@kotlin.String(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
-final fun (kotlin/String).com.splendo.kaluga.base.bytes/toUTF8(com.splendo.kaluga.base.bytes/ByteOrder): kotlin/ByteArray // com.splendo.kaluga.base.bytes/toUTF8|toUTF8@kotlin.String(com.splendo.kaluga.base.bytes.ByteOrder){}[0]
+final fun (kotlin/String).com.splendo.kaluga.base.bytes/toUTF8(com.splendo.kaluga.base.bytes/ByteOrder, kotlin/Boolean = ...): kotlin/ByteArray // com.splendo.kaluga.base.bytes/toUTF8|toUTF8@kotlin.String(com.splendo.kaluga.base.bytes.ByteOrder;kotlin.Boolean){}[0]
+final fun (kotlin/String).com.splendo.kaluga.base.bytes/utf8Size(kotlin/Boolean): kotlin/Int // com.splendo.kaluga.base.bytes/utf8Size|utf8Size@kotlin.String(kotlin.Boolean){}[0]
 final fun (kotlin/String).com.splendo.kaluga.base.text/format(kotlin/Array<out kotlin/Any?>..., com.splendo.kaluga.base.utils/KalugaLocale = ...): kotlin/String // com.splendo.kaluga.base.text/format|format@kotlin.String(kotlin.Array<out|kotlin.Any?>...;com.splendo.kaluga.base.utils.KalugaLocale){}[0]
 final fun (kotlin/String).com.splendo.kaluga.base.text/lowerCased(com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.text/lowerCased|lowerCased@kotlin.String(com.splendo.kaluga.base.utils.KalugaLocale){}[0]
 final fun (kotlin/String).com.splendo.kaluga.base.text/upperCased(com.splendo.kaluga.base.utils/KalugaLocale): kotlin/String // com.splendo.kaluga.base.text/upperCased|upperCased@kotlin.String(com.splendo.kaluga.base.utils.KalugaLocale){}[0]

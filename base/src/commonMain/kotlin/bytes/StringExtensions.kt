@@ -221,79 +221,98 @@ fun String.copyIntoArray(array: ByteArray, settings: StringEncodingSettings, off
     }
 }
 
-val String.utf8Size: Int get() {
+val String.utf8Size: Int get() = utf8Size(false)
+
+fun String.utf8Size(throwOnMalformed: Boolean): Int {
     var size = 0
-    var i = 0
-    while (i < length) {
-        val c = this[i]
+    var charIndex = 0
+    while (charIndex < length) {
+        val code = this[charIndex++].code
         when {
-            c.code < 0x80 -> size += 1
+            code < 0x80 -> size += 1
 
-            c.code < 0x800 -> size += 2
+            code < 0x800 -> size += 2
 
-            c.isHighSurrogate() -> {
-                size += 4
-                i++ // skip low surrogate
+            code in 0xD800..<0xE000 -> { // Surrogate char value
+                val codePoint = codePointFromSurrogate(this, code, charIndex, length, throwOnMalformed)
+                if (codePoint <= 0) {
+                    size += 3
+                } else {
+                    size += 4
+                    charIndex++
+                }
             }
 
             else -> size += 3
         }
-        i++
     }
     return size
 }
 
-fun String.toUTF8(byteOrder: ByteOrder): ByteArray = copyUTF8IntoArray(ByteArray(utf8Size), byteOrder = byteOrder)
+fun String.toUTF8(byteOrder: ByteOrder, throwOnMalformed: Boolean = false): ByteArray =
+    copyUTF8IntoArray(ByteArray(utf8Size), byteOrder = byteOrder, throwOnMalformed = throwOnMalformed)
 
-fun String.copyUTF8IntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray {
-    val size = utf8Size
-    require(array.size >= offset + size) { "Cannot copy into ByteArray. Must be at least ${offset + size} long" }
+fun String.copyUTF8IntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder, throwOnMalformed: Boolean = false): ByteArray {
     var pos = 0
-    val writeByte = when (byteOrder) {
+    val writeByte: (Byte) -> Unit = when (byteOrder) {
         ByteOrder.MOST_SIGNIFICANT_FIRST -> {
-            { byte: Byte ->
-                array[offset + size - pos++ - 1] = byte
+            val size = utf8Size(throwOnMalformed)
+            require(array.size >= size) { "Cannot copy into ByteArray. Must be at least ${offset + size} long" }
+            val function = { byte: Byte ->
+                val index = offset + size - pos++ - 1
+                array[index] = byte
             }
+            function
         }
 
         ByteOrder.LEAST_SIGNIFICANT_FIRST -> {
-            { byte: Byte -> array[offset + pos++] = byte }
+            { byte: Byte ->
+                val index = offset + pos++
+                require(array.size > index) { "Cannot copy into ByteArray. Must be at least ${ offset + utf8Size(throwOnMalformed) } long" }
+                array[index] = byte
+            }
         }
     }
-    var i = 0
+    var charIndex = 0
 
-    while (i < length) {
-        val c = this[i].code
+    while (charIndex < length) {
+        val code = this[charIndex++].code
         when {
-            c < 0x80 -> {
-                writeByte(c.toByte())
+            code < 0x80 -> {
+                writeByte(code.toByte())
             }
 
-            c < 0x800 -> {
-                writeByte((0xC0 or (c shr 6)).toByte())
-                writeByte((0x80 or (c and 0x3F)).toByte())
+            code < 0x800 -> {
+                writeByte(((code shr 6) or 0xC0).toByte())
+                writeByte(((code and 0x3F) or 0x80).toByte())
             }
 
-            c in 0xD800..0xDBFF -> { // high surrogate
-                val low = this[++i].code
-                val codePoint =
-                    ((c - 0xD800) shl 10) + (low - 0xDC00) + 0x10000
-                writeByte((0xF0 or (codePoint shr 18)).toByte())
-                writeByte((0x80 or ((codePoint shr 12) and 0x3F)).toByte())
-                writeByte((0x80 or ((codePoint shr 6) and 0x3F)).toByte())
-                writeByte((0x80 or (codePoint and 0x3F)).toByte())
+            code in 0xD800..0xDBFF -> { // high surrogate
+                val codePoint = codePointFromSurrogate(this, code, charIndex, length, throwOnMalformed)
+                if (codePoint <= 0) {
+                    writeByte(REPLACEMENT_BYTE_SEQUENCE[0])
+                    writeByte(REPLACEMENT_BYTE_SEQUENCE[1])
+                    writeByte(REPLACEMENT_BYTE_SEQUENCE[2])
+                } else {
+                    writeByte(((codePoint shr 18) or 0xF0).toByte())
+                    writeByte((((codePoint shr 12) and 0x3F) or 0x80).toByte())
+                    writeByte((((codePoint shr 6) and 0x3F) or 0x80).toByte())
+                    writeByte(((codePoint and 0x3F) or 0x80).toByte())
+                    charIndex++
+                }
             }
 
             else -> {
-                writeByte((0xE0 or (c shr 12)).toByte())
-                writeByte((0x80 or ((c shr 6) and 0x3F)).toByte())
-                writeByte((0x80 or (c and 0x3F)).toByte())
+                writeByte((0xE0 or (code shr 12)).toByte())
+                writeByte((0x80 or ((code shr 6) and 0x3F)).toByte())
+                writeByte((0x80 or (code and 0x3F)).toByte())
             }
         }
-        i++
     }
     return array
 }
+
+private val REPLACEMENT_BYTE_SEQUENCE: ByteArray = byteArrayOf(0xEF.toByte(), 0xBF.toByte(), 0xBD.toByte())
 
 val String.utf16Size: Int get() = length * 2
 fun String.toUTF16(byteOrder: ByteOrder): ByteArray = copyUTF16IntoArray(ByteArray(utf16Size), byteOrder = byteOrder)
@@ -422,4 +441,30 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
     } else {
         result
     }
+}
+
+class KalugaCharacterCodingException(override val message: String?) : Exception()
+
+/** Returns the negative [size] if [throwOnMalformed] is false, throws [CharacterCodingException] otherwise. */
+private fun malformed(size: Int, index: Int, throwOnMalformed: Boolean): Int {
+    if (throwOnMalformed) throw KalugaCharacterCodingException("Malformed sequence starting at ${index - 1}")
+    return -size
+}
+
+/**
+ * Returns code point corresponding to UTF-16 surrogate pair,
+ * where the first of the pair is the [high] and the second is in the [string] at the [index].
+ * Returns zero if the pair is malformed and [throwOnMalformed] is false.
+ *
+ * @throws CharacterCodingException if the pair is malformed and [throwOnMalformed] is true.
+ */
+private fun codePointFromSurrogate(string: String, high: Int, index: Int, endIndex: Int, throwOnMalformed: Boolean): Int {
+    if (high !in 0xD800..0xDBFF || index >= endIndex) {
+        return malformed(0, index, throwOnMalformed)
+    }
+    val low = string[index].code
+    if (low !in 0xDC00..0xDFFF) {
+        return malformed(0, index, throwOnMalformed)
+    }
+    return 0x10000 + ((high and 0x3FF) shl 10) or (low and 0x3FF)
 }
