@@ -27,6 +27,8 @@ import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 
 abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatalog, val libraryExtension: LibraryExtension, namespacePostfix: String, objects: ObjectFactory) :
@@ -76,6 +78,7 @@ abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatal
 
     protected abstract fun LibraryExtension.configure()
 
+    @OptIn(ExperimentalAbiValidation::class)
     override fun Project.beforeEvaluated() {
         setupSubproject()
         libraryExtension.apply {
@@ -113,6 +116,12 @@ abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatal
             }
 
             configure()
+        }
+        extensions.configure(KotlinAndroidProjectExtension::class) {
+            extensions.configure(AbiValidationExtension::class) {
+                enabled.set(true)
+                abiExtension()
+            }
         }
         configureSubproject()
     }

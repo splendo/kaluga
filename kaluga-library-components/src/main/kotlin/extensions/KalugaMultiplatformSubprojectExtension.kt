@@ -39,6 +39,8 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JsModuleKind
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jmailen.gradle.kotlinter.tasks.LintTask
@@ -150,7 +152,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         }
     }
 
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    @OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalAbiValidation::class)
     private fun KotlinMultiplatformExtension.configureMultiplatform(project: Project) {
         compilerOptions {
             freeCompilerArgs.addAll("-Xexpect-actual-classes", "-Xconsistent-data-class-copy-visibility")
@@ -174,6 +176,11 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 IOSTarget.X64 -> iosX64()
                 IOSTarget.SimulatorArm64 -> iosSimulatorArm64()
             }
+        }
+
+        extensions.configure(AbiValidationMultiplatformExtension::class) {
+            enabled.set(true)
+            abiExtension()
         }
 
         project.afterEvaluate {
