@@ -23,10 +23,8 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.splendo.kaluga.bluetooth.annotations.Bluetooth
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
-import com.splendo.kaluga.bluetooth.annotations.BluetoothClient
 import com.splendo.kaluga.bluetooth.annotations.BluetoothClientName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
-import com.splendo.kaluga.bluetooth.annotations.BluetoothServer
 import com.splendo.kaluga.bluetooth.annotations.BluetoothServerName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.splendo.kaluga.bluetooth.ksp.GenerationType
@@ -65,7 +63,6 @@ internal object NameHelper {
         GenerationType.Side.CLIENT ->
             getAnnotationsByType(BluetoothClientName::class).firstOrNull()?.name ?: when {
                 isAnnotationPresent(Bluetooth::class) -> "${simpleName.asString()}Client"
-                isAnnotationPresent(BluetoothClient::class) -> "${simpleName.asString()}Client"
                 isAnnotationPresent(BluetoothService::class) -> "Remote${simpleName.asString()}"
                 isAnnotationPresent(BluetoothCharacteristic::class) -> "Remote${simpleName.asString()}"
                 isAnnotationPresent(BluetoothDescriptor::class) -> "Remote${simpleName.asString()}"
@@ -74,7 +71,6 @@ internal object NameHelper {
 
         GenerationType.Side.SERVER -> getAnnotationsByType(BluetoothServerName::class).firstOrNull()?.name ?: when {
             isAnnotationPresent(Bluetooth::class) -> "${simpleName.asString()}Server"
-            isAnnotationPresent(BluetoothServer::class) -> "${simpleName.asString()}Server"
             isAnnotationPresent(BluetoothService::class) -> "Local${simpleName.asString()}"
             isAnnotationPresent(BluetoothCharacteristic::class) -> "Local${simpleName.asString()}"
             isAnnotationPresent(BluetoothDescriptor::class) -> "Local${simpleName.asString()}"

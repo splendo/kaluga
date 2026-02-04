@@ -23,14 +23,6 @@ annotation class Bluetooth
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class BluetoothClient
-
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.SOURCE)
-annotation class BluetoothServer
-
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.SOURCE)
 annotation class BluetoothClientName(val name: String)
 
 @Target(AnnotationTarget.CLASS)

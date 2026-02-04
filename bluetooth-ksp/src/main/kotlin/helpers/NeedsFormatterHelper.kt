@@ -22,9 +22,7 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.Bluetooth
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
-import com.splendo.kaluga.bluetooth.annotations.BluetoothClient
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
-import com.splendo.kaluga.bluetooth.annotations.BluetoothServer
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.splendo.kaluga.bluetooth.annotations.Writable
 import com.squareup.kotlinpoet.BYTE_ARRAY
@@ -46,8 +44,6 @@ internal object NeedsFormatterHelper {
 
     fun needsBluetoothFormatter(declaration: KSClassDeclaration, target: Target = Target.CLIENT): NeedsFormatter = when {
         declaration.isAnnotationPresent(Bluetooth::class) ||
-            declaration.isAnnotationPresent(BluetoothClient::class) ||
-            declaration.isAnnotationPresent(BluetoothServer::class) ||
             declaration.isAnnotationPresent(BluetoothService::class) -> {
             declaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { property ->
                 (property.type.resolve().declaration as? KSClassDeclaration)?.let {

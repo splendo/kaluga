@@ -59,6 +59,11 @@ class BluetoothPlugin : Plugin<Project> {
                     dependsOn("kspCommonMainKotlinMetadata")
                 }
             }
+            afterEvaluate {
+                this@run.extensions.configure<KspExtension> {
+                    arg("isSingleTarget", "${targets.size == 1}")
+                }
+            }
         }
     }
 }

@@ -18,7 +18,6 @@
 package com.splendo.kaluga.bluetooth.ksp
 
 import com.google.devtools.ksp.getAnnotationsByType
-import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
@@ -28,45 +27,27 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.splendo.kaluga.bluetooth.annotations.Bluetooth
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
-import com.splendo.kaluga.bluetooth.annotations.BluetoothClient
 import com.splendo.kaluga.bluetooth.annotations.BluetoothClientName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
-import com.splendo.kaluga.bluetooth.annotations.BluetoothServer
 import com.splendo.kaluga.bluetooth.annotations.BluetoothServerName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.ksp.writeTo
 
-class BluetoothSymbolProcessor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
+class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironment) : SymbolProcessor {
 
     private val codeGenerator = environment.codeGenerator
     private val logger = environment.logger
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         logger.warn("------ PROCESSING ----")
+        logger.warn(environment.options.entries.joinToString { (key, value) -> "$key: $value" })
+        logger.warn(environment.platforms.joinToString { it.platformName })
         val bluetoothDeclarations = resolver.getSymbolsWithAnnotation(Bluetooth::class.java.name).filterIsInstance<KSClassDeclaration>().filter { it.parentDeclaration == null }
         bluetoothDeclarations.forEach { bluetoothDeclaration ->
             bluetoothDeclaration.generateBluetoothClientFile()
             bluetoothDeclaration.generateBluetoothServerFile()
-        }
-        val clientDeclarations = resolver.getSymbolsWithAnnotation(BluetoothClient::class.java.name).filter {
-            !it.isAnnotationPresent(Bluetooth::class)
-        }.filterIsInstance<KSClassDeclaration>().filter {
-            it.parentDeclaration ==
-                null
-        }
-        clientDeclarations.forEach { clientDeclaration ->
-            clientDeclaration.generateBluetoothClientFile()
-        }
-        val serverDeclarations = resolver.getSymbolsWithAnnotation(BluetoothServer::class.java.name).filter {
-            !it.isAnnotationPresent(Bluetooth::class)
-        }.filterIsInstance<KSClassDeclaration>().filter {
-            it.parentDeclaration ==
-                null
-        }
-        serverDeclarations.forEach { serverDeclaration ->
-            serverDeclaration.generateBluetoothServerFile()
         }
         val serviceDeclarations = resolver.getSymbolsWithAnnotation(BluetoothService::class.java.name).filterIsInstance<KSClassDeclaration>().filter {
             it.parentDeclaration == null
