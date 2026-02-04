@@ -32,12 +32,26 @@ fun Encoding.encodeString(string: String, byteOrder: ByteOrder) = when (this) {
     ASCII -> string.toAscii(byteOrder)
 }
 
+/**
+ * Encodes a [String] using the given [Encoding] and [ByteOrder] and copies it into a [ByteArray] at a given offset.
+ * @param string the [String] to encode.
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @param byteOrder the [ByteOrder]
+ * @throws IllegalArgumentException if [array] is not  is not large enough to hold [Encoding.byteSize] bytes at the [offset].
+ * @return the encoded [ByteArray].
+ */
 fun Encoding.copyEncodedStringIntoArray(string: String, array: ByteArray, offset: Int = 0, byteOrder: ByteOrder) = when (this) {
     UTF_8 -> string.copyUTF8IntoArray(array, offset, byteOrder)
     UTF_16 -> string.copyUTF16IntoArray(array, offset, byteOrder)
     ASCII -> string.copyAsciiIntoArray(array, offset, byteOrder)
 }
 
+/**
+ * Returns the number of [Byte]s required to encode a [String] using the given [Encoding].
+ * @param string the [String] to encode.
+ * @return the number of [Byte]s required to encode the [String] using the given [Encoding].
+ */
 fun Encoding.byteSizeOf(string: String): Int = when (this) {
     UTF_8 -> string.utf8Size
     UTF_16 -> string.utf16Size
@@ -61,8 +75,29 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
      */
     sealed class LengthPrefix : EndMarking() {
 
+        /**
+         * The expected number of [Byte]s required to encode the length of the String.
+         * @param size the size of the String
+         * @return the number of [Byte]s required to encode the length of the String
+         */
         abstract fun expectedByteSize(size: UInt): Int
+
+        /**
+         * Encodes the length of the String as a prefix.
+         * @param size the size of the String
+         * @param order the [ByteOrder] to use.
+         * @return the [ByteArray] containing the encoded length
+         */
         fun encodeSize(size: UInt, order: ByteOrder): ByteArray = copyEncodedSizeInto(ByteArray(expectedByteSize(size)), size, order, 0)
+
+        /**
+         * Encodes the length of the String as a prefix and copies it into a [ByteArray] at a given offset.
+         * @param array the [ByteArray] to copy the encoded length into.
+         * @param size the size of the String
+         * @param order the [ByteOrder] to use.
+         * @param offset the offset at which to copy the encoded length.
+         * @return the [ByteArray] containing the encoded length
+         */
         abstract fun copyEncodedSizeInto(array: ByteArray, size: UInt, order: ByteOrder, offset: Int): ByteArray
 
         /**
@@ -144,6 +179,11 @@ data class StringEncodingSettings(val endMarking: EndMarking = LengthPrefix.Byte
     data class FixedLength(val length: Int) : EndMarking()
 }
 
+/**
+ * Returns the number of [Byte]s required to encode a [String] using the given [StringEncodingSettings].
+ * @param settings the [StringEncodingSettings] to apply to the encoding.
+ * @return the number of [Byte]s required to encode the [String] using the given [StringEncodingSettings].
+ */
 fun String.byteArraySize(settings: StringEncodingSettings): Int {
     val stringSize = settings.encoding.byteSizeOf(this)
     return when (val endMarking = settings.endMarking) {
@@ -169,6 +209,16 @@ fun String.byteArraySize(settings: StringEncodingSettings): Int {
  * @return The encoded [ByteArray]
  */
 fun String.toByteArray(settings: StringEncodingSettings, order: ByteOrder): ByteArray = copyIntoArray(ByteArray(byteArraySize(settings)), settings, order = order)
+
+/**
+ * Encodes a [String] using the given [StringEncodingSettings] and [ByteOrder] and copies it into a [ByteArray]
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @param order the [ByteOrder] to use. When passing [ByteOrder.MOST_SIGNIFICANT_FIRST] the first character will be at the end of the array.
+ * @throws IllegalArgumentException if the string contains a null character and [StringEncodingSettings.NullTerminated] is used,
+ * or if the length of the string cannot be encoded by [StringEncodingSettings.LengthPrefix]
+ * @return The encoded [ByteArray]
+ */
 fun String.copyIntoArray(array: ByteArray, settings: StringEncodingSettings, offset: Int = 0, order: ByteOrder): ByteArray {
     val totalSize = byteArraySize(settings)
     val stringSize = settings.encoding.byteSizeOf(this)
@@ -221,8 +271,17 @@ fun String.copyIntoArray(array: ByteArray, settings: StringEncodingSettings, off
     }
 }
 
+/**
+ * Returns the number of [Byte]s required to encode a [String] using UTF-8.
+ */
 val String.utf8Size: Int get() = utf8Size(false)
 
+/**
+ * Returns the number of [Byte]s required to encode a [String] using UTF-8.
+ * @param throwOnMalformed if true, throws a [KalugaCharacterCodingException] if the string contains malformed UTF-8.
+ * @throws [KalugaCharacterCodingException] if the string contains malformed UTF-8
+ * @return the number of [Byte]s required to encode the [String] using UTF-8.
+ */
 fun String.utf8Size(throwOnMalformed: Boolean): Int {
     var size = 0
     var charIndex = 0
@@ -249,9 +308,25 @@ fun String.utf8Size(throwOnMalformed: Boolean): Int {
     return size
 }
 
+/**
+ * Encodes a [String] to a [ByteArray] using UTF-8.
+ * @param byteOrder the [ByteOrder] to use.
+ * @param throwOnMalformed if true, throws a [KalugaCharacterCodingException] if the string contains malformed UTF-8.
+ * @throws [KalugaCharacterCodingException] if the string contains malformed UTF-8
+ * @return The encoded [ByteArray]
+ */
 fun String.toUTF8(byteOrder: ByteOrder, throwOnMalformed: Boolean = false): ByteArray =
     copyUTF8IntoArray(ByteArray(utf8Size), byteOrder = byteOrder, throwOnMalformed = throwOnMalformed)
 
+/**
+ * Encodes a [String] using UTF-8 and copies it into a [ByteArray] at a given offset.
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @param byteOrder the [ByteOrder] to use.
+ * @param throwOnMalformed if true, throws a [KalugaCharacterCodingException] if the string contains malformed UTF-8.
+ * @throws [KalugaCharacterCodingException] if the string contains malformed UTF-8
+ * @return The encoded [ByteArray]
+ */
 fun String.copyUTF8IntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder, throwOnMalformed: Boolean = false): ByteArray {
     var pos = 0
     val writeByte: (Byte) -> Unit = when (byteOrder) {
@@ -314,9 +389,25 @@ fun String.copyUTF8IntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteO
 
 private val REPLACEMENT_BYTE_SEQUENCE: ByteArray = byteArrayOf(0xEF.toByte(), 0xBF.toByte(), 0xBD.toByte())
 
+/**
+ * Returns the number of [Byte]s required to encode a [String] using UTF-16.
+ */
 val String.utf16Size: Int get() = length * 2
+
+/**
+ * Encodes a [String] to a [ByteArray] using UTF-16.
+ * @param byteOrder the [ByteOrder] to use.
+ * @return The encoded [ByteArray]
+ */
 fun String.toUTF16(byteOrder: ByteOrder): ByteArray = copyUTF16IntoArray(ByteArray(utf16Size), byteOrder = byteOrder)
 
+/**
+ * Encodes a [String] using UTF-16 and copies it into a [ByteArray] at a given offset.
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @param byteOrder the [ByteOrder] to use.
+ * @return The encoded [ByteArray]
+ */
 fun String.copyUTF16IntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray {
     val byteLength = utf16Size
     require(array.size >= offset + byteLength) { "Cannot copy into ByteArray. Must be at least ${offset + byteLength} long" }
@@ -338,7 +429,17 @@ fun String.copyUTF16IntoArray(array: ByteArray, offset: Int = 0, byteOrder: Byte
     return array
 }
 
+/**
+ * Returns the number of [Byte]s required to encode a [String] using ASCII.
+ */
 val String.asciiSize: Int get() = length
+
+/**
+ * Encodes a [String] to a [ByteArray] using ASCII.
+ * @param byteOrder the [ByteOrder] to use.
+ * @throws [IllegalArgumentException] if the string contains a non-ASCII character. Use [String.toAsciiOrNull] to get a non-throwing variant
+ * @return The encoded [ByteArray]
+ */
 fun String.toAscii(byteOrder: ByteOrder): ByteArray = copyAsciiIntoArray(ByteArray(asciiSize), byteOrder = byteOrder)
 
 fun String.copyAsciiIntoArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray {
@@ -355,19 +456,34 @@ fun String.copyAsciiIntoArray(array: ByteArray, offset: Int = 0, byteOrder: Byte
     return array
 }
 
+/**
+ * Encodes a [String] to a [ByteArray] using ASCII or `null` if the string contains a non-ASCII character.
+ * @param byteOrder the [ByteOrder] to use.
+ * @return the [ByteArray] representing the [String] in ASCII if it can be represented in ASCII, `null` otherwise.
+ */
 fun String.toAsciiOrNull(byteOrder: ByteOrder): ByteArray? = try {
     toAscii(byteOrder)
 } catch (_: IllegalArgumentException) {
     null
 }
 
+/**
+ * Decodes a [ByteArray] ordered Least Significant first into a String using [StringEncodingSettings]
+ * @param settings the [StringEncodingSettings] to be used for decoding the String
+ * @param order the [ByteOrder] the string was encoded in.
+ * @return the decoded String
+ */
 fun ByteArray.decodeString(settings: StringEncodingSettings, order: ByteOrder): String {
-    val array = when (order) {
-        ByteOrder.MOST_SIGNIFICANT_FIRST -> reversedArray()
-        ByteOrder.LEAST_SIGNIFICANT_FIRST -> this
+    val (startingIndex, change) = when (order) {
+        ByteOrder.MOST_SIGNIFICANT_FIRST -> size - 1 to -1
+        ByteOrder.LEAST_SIGNIFICANT_FIRST -> 0 to 1
     }
-    var index = 0
-    val next = { array.getOrNull(index++) }
+    var index = startingIndex
+    val next = {
+        getOrNull(index).also {
+            index += change
+        }
+    }
     return generateSequence(next, { next() }).decodeString(settings)
 }
 
@@ -443,6 +559,9 @@ fun Sequence<Byte>.decodeString(settings: StringEncodingSettings): String {
     }
 }
 
+/**
+ * Exception thrown when a character cannot be encoded into UTF-8
+ */
 class KalugaCharacterCodingException(override val message: String?) : Exception()
 
 /** Returns the negative [size] if [throwOnMalformed] is false, throws [CharacterCodingException] otherwise. */
