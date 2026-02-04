@@ -3,6 +3,10 @@ public abstract interface class com/splendo/kaluga/permissions/location/BaseLoca
 	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/location/BaseLocationPermissionManagerBuilder;Lcom/splendo/kaluga/permissions/location/LocationPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
 }
 
+public final class com/splendo/kaluga/permissions/location/BaseLocationPermissionManagerBuilder$DefaultImpls {
+	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/location/BaseLocationPermissionManagerBuilder;Lcom/splendo/kaluga/permissions/location/LocationPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
+}
+
 public final class com/splendo/kaluga/permissions/location/DefaultLocationPermissionManager : com/splendo/kaluga/permissions/base/BasePermissionManager {
 	public fun <init> (Landroid/content/Context;Lcom/splendo/kaluga/permissions/location/LocationPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;)V
 }

@@ -1,0 +1,138 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:test-utils-system>
+final class <#A: com.splendo.kaluga.system.network/NetworkManager.Builder> com.splendo.kaluga.test.system.network/MockNetworkStateRepoBuilder : com.splendo.kaluga.system.network.state/BaseNetworkStateRepoBuilder { // com.splendo.kaluga.test.system.network/MockNetworkStateRepoBuilder|null[0]
+    constructor <init>(#A, kotlin/Boolean = ...) // com.splendo.kaluga.test.system.network/MockNetworkStateRepoBuilder.<init>|<init>(1:0;kotlin.Boolean){}[0]
+
+    final val builtNetworkStateRepo // com.splendo.kaluga.test.system.network/MockNetworkStateRepoBuilder.builtNetworkStateRepo|{}builtNetworkStateRepo[0]
+        final fun <get-builtNetworkStateRepo>(): com.splendo.kaluga.base.collections/ConcurrentMutableList<com.splendo.kaluga.system.network.state/NetworkStateRepo> // com.splendo.kaluga.test.system.network/MockNetworkStateRepoBuilder.builtNetworkStateRepo.<get-builtNetworkStateRepo>|<get-builtNetworkStateRepo>(){}[0]
+    final val createMock // com.splendo.kaluga.test.system.network/MockNetworkStateRepoBuilder.createMock|{}createMock[0]
+        final fun <get-createMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Matchers<kotlin.coroutines/CoroutineContext>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.MatchersOrCaptor<kotlin.coroutines/CoroutineContext>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters.Values<kotlin.coroutines/CoroutineContext>, com.splendo.kaluga.test.base.mock.parameters/SingleParameters<kotlin.coroutines/CoroutineContext>, com.splendo.kaluga.system.network.state/NetworkStateRepo> // com.splendo.kaluga.test.system.network/MockNetworkStateRepoBuilder.createMock.<get-createMock>|<get-createMock>(){}[0]
+    final val networkManagerBuilder // com.splendo.kaluga.test.system.network/MockNetworkStateRepoBuilder.networkManagerBuilder|{}networkManagerBuilder[0]
+        final fun <get-networkManagerBuilder>(): #A // com.splendo.kaluga.test.system.network/MockNetworkStateRepoBuilder.networkManagerBuilder.<get-networkManagerBuilder>|<get-networkManagerBuilder>(){}[0]
+
+    final fun create(kotlin.coroutines/CoroutineContext): com.splendo.kaluga.system.network.state/NetworkStateRepo // com.splendo.kaluga.test.system.network/MockNetworkStateRepoBuilder.create|create(kotlin.coroutines.CoroutineContext){}[0]
+}
+
+final class com.splendo.kaluga.test.system.network/MockNetworkManager : com.splendo.kaluga.system.network/NetworkManager { // com.splendo.kaluga.test.system.network/MockNetworkManager|null[0]
+    constructor <init>(com.splendo.kaluga.system.network/NetworkConnectionType) // com.splendo.kaluga.test.system.network/MockNetworkManager.<init>|<init>(com.splendo.kaluga.system.network.NetworkConnectionType){}[0]
+
+    final val network // com.splendo.kaluga.test.system.network/MockNetworkManager.network|{}network[0]
+        final fun <get-network>(): kotlinx.coroutines.flow/MutableStateFlow<com.splendo.kaluga.system.network/NetworkConnectionType> // com.splendo.kaluga.test.system.network/MockNetworkManager.network.<get-network>|<get-network>(){}[0]
+    final val startMonitoringMock // com.splendo.kaluga.test.system.network/MockNetworkManager.startMonitoringMock|{}startMonitoringMock[0]
+        final fun <get-startMonitoringMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.system.network/MockNetworkManager.startMonitoringMock.<get-startMonitoringMock>|<get-startMonitoringMock>(){}[0]
+    final val stopMonitoringMock // com.splendo.kaluga.test.system.network/MockNetworkManager.stopMonitoringMock|{}stopMonitoringMock[0]
+        final fun <get-stopMonitoringMock>(): com.splendo.kaluga.test.base.mock/SuspendMethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, kotlin/Unit> // com.splendo.kaluga.test.system.network/MockNetworkManager.stopMonitoringMock.<get-stopMonitoringMock>|<get-stopMonitoringMock>(){}[0]
+
+    final suspend fun startMonitoring() // com.splendo.kaluga.test.system.network/MockNetworkManager.startMonitoring|startMonitoring(){}[0]
+    final suspend fun stopMonitoring() // com.splendo.kaluga.test.system.network/MockNetworkManager.stopMonitoring|stopMonitoring(){}[0]
+
+    final class Builder : com.splendo.kaluga.system.network/NetworkManager.Builder { // com.splendo.kaluga.test.system.network/MockNetworkManager.Builder|null[0]
+        constructor <init>(com.splendo.kaluga.system.network/NetworkConnectionType, kotlin/Boolean = ...) // com.splendo.kaluga.test.system.network/MockNetworkManager.Builder.<init>|<init>(com.splendo.kaluga.system.network.NetworkConnectionType;kotlin.Boolean){}[0]
+
+        final val builtNetworkManagers // com.splendo.kaluga.test.system.network/MockNetworkManager.Builder.builtNetworkManagers|{}builtNetworkManagers[0]
+            final fun <get-builtNetworkManagers>(): com.splendo.kaluga.base.collections/ConcurrentMutableList<com.splendo.kaluga.test.system.network/MockNetworkManager> // com.splendo.kaluga.test.system.network/MockNetworkManager.Builder.builtNetworkManagers.<get-builtNetworkManagers>|<get-builtNetworkManagers>(){}[0]
+        final val createMock // com.splendo.kaluga.test.system.network/MockNetworkManager.Builder.createMock|{}createMock[0]
+            final fun <get-createMock>(): com.splendo.kaluga.test.base.mock/MethodMock<com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Matchers, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.MatchersOrCaptor, com.splendo.kaluga.test.base.mock.parameters/VoidParameters.Values, com.splendo.kaluga.test.base.mock.parameters/VoidParameters, com.splendo.kaluga.system.network/NetworkManager> // com.splendo.kaluga.test.system.network/MockNetworkManager.Builder.createMock.<get-createMock>|<get-createMock>(){}[0]
+
+        final fun create(): com.splendo.kaluga.system.network/NetworkManager // com.splendo.kaluga.test.system.network/MockNetworkManager.Builder.create|create(){}[0]
+    }
+}
+
+sealed class com.splendo.kaluga.test.system.network/MockNetworkState { // com.splendo.kaluga.test.system.network/MockNetworkState|null[0]
+    abstract val networkConnectionType // com.splendo.kaluga.test.system.network/MockNetworkState.networkConnectionType|{}networkConnectionType[0]
+        abstract fun <get-networkConnectionType>(): com.splendo.kaluga.system.network/NetworkConnectionType // com.splendo.kaluga.test.system.network/MockNetworkState.networkConnectionType.<get-networkConnectionType>|<get-networkConnectionType>(){}[0]
+
+    final class Available : com.splendo.kaluga.system.network.state/NetworkState.Available, com.splendo.kaluga.test.system.network/MockNetworkState.Initialized { // com.splendo.kaluga.test.system.network/MockNetworkState.Available|null[0]
+        constructor <init>(com.splendo.kaluga.system.network/NetworkConnectionType.Known.Available) // com.splendo.kaluga.test.system.network/MockNetworkState.Available.<init>|<init>(com.splendo.kaluga.system.network.NetworkConnectionType.Known.Available){}[0]
+
+        final val networkConnectionType // com.splendo.kaluga.test.system.network/MockNetworkState.Available.networkConnectionType|{}networkConnectionType[0]
+            final fun <get-networkConnectionType>(): com.splendo.kaluga.system.network/NetworkConnectionType.Known.Available // com.splendo.kaluga.test.system.network/MockNetworkState.Available.networkConnectionType.<get-networkConnectionType>|<get-networkConnectionType>(){}[0]
+        final val unavailable // com.splendo.kaluga.test.system.network/MockNetworkState.Available.unavailable|{}unavailable[0]
+            final fun <get-unavailable>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.system.network.state/NetworkState.Unavailable> // com.splendo.kaluga.test.system.network/MockNetworkState.Available.unavailable.<get-unavailable>|<get-unavailable>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.system.network/NetworkConnectionType.Known.Available // com.splendo.kaluga.test.system.network/MockNetworkState.Available.component1|component1(){}[0]
+        final fun copy(com.splendo.kaluga.system.network/NetworkConnectionType.Known.Available = ...): com.splendo.kaluga.test.system.network/MockNetworkState.Available // com.splendo.kaluga.test.system.network/MockNetworkState.Available.copy|copy(com.splendo.kaluga.system.network.NetworkConnectionType.Known.Available){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.system.network/MockNetworkState.Available.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.system.network/MockNetworkState.Available.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.system.network/MockNetworkState.Available.toString|toString(){}[0]
+    }
+
+    final class Deinitialized : com.splendo.kaluga.system.network.state/NetworkState.Deinitialized, com.splendo.kaluga.test.system.network/MockNetworkState { // com.splendo.kaluga.test.system.network/MockNetworkState.Deinitialized|null[0]
+        constructor <init>(com.splendo.kaluga.system.network/NetworkConnectionType) // com.splendo.kaluga.test.system.network/MockNetworkState.Deinitialized.<init>|<init>(com.splendo.kaluga.system.network.NetworkConnectionType){}[0]
+
+        final val networkConnectionType // com.splendo.kaluga.test.system.network/MockNetworkState.Deinitialized.networkConnectionType|{}networkConnectionType[0]
+            final fun <get-networkConnectionType>(): com.splendo.kaluga.system.network/NetworkConnectionType // com.splendo.kaluga.test.system.network/MockNetworkState.Deinitialized.networkConnectionType.<get-networkConnectionType>|<get-networkConnectionType>(){}[0]
+        final val reinitialize // com.splendo.kaluga.test.system.network/MockNetworkState.Deinitialized.reinitialize|{}reinitialize[0]
+            final fun <get-reinitialize>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.system.network.state/NetworkState.Initializing> // com.splendo.kaluga.test.system.network/MockNetworkState.Deinitialized.reinitialize.<get-reinitialize>|<get-reinitialize>(){}[0]
+
+        final fun copy(com.splendo.kaluga.system.network/NetworkConnectionType = ...): com.splendo.kaluga.test.system.network/MockNetworkState.Deinitialized // com.splendo.kaluga.test.system.network/MockNetworkState.Deinitialized.copy|copy(com.splendo.kaluga.system.network.NetworkConnectionType){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.system.network/MockNetworkState.Deinitialized.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.system.network/MockNetworkState.Deinitialized.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.system.network/MockNetworkState.Deinitialized.toString|toString(){}[0]
+    }
+
+    final class Initializing : com.splendo.kaluga.system.network.state/NetworkState.Initializing, com.splendo.kaluga.test.system.network/MockNetworkState.Active { // com.splendo.kaluga.test.system.network/MockNetworkState.Initializing|null[0]
+        constructor <init>(com.splendo.kaluga.system.network/NetworkConnectionType) // com.splendo.kaluga.test.system.network/MockNetworkState.Initializing.<init>|<init>(com.splendo.kaluga.system.network.NetworkConnectionType){}[0]
+
+        final val networkConnectionType // com.splendo.kaluga.test.system.network/MockNetworkState.Initializing.networkConnectionType|{}networkConnectionType[0]
+            final fun <get-networkConnectionType>(): com.splendo.kaluga.system.network/NetworkConnectionType // com.splendo.kaluga.test.system.network/MockNetworkState.Initializing.networkConnectionType.<get-networkConnectionType>|<get-networkConnectionType>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.system.network/NetworkConnectionType // com.splendo.kaluga.test.system.network/MockNetworkState.Initializing.component1|component1(){}[0]
+        final fun copy(com.splendo.kaluga.system.network/NetworkConnectionType = ...): com.splendo.kaluga.test.system.network/MockNetworkState.Initializing // com.splendo.kaluga.test.system.network/MockNetworkState.Initializing.copy|copy(com.splendo.kaluga.system.network.NetworkConnectionType){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.system.network/MockNetworkState.Initializing.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.system.network/MockNetworkState.Initializing.hashCode|hashCode(){}[0]
+        final fun initialized(com.splendo.kaluga.system.network/NetworkConnectionType): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.system.network.state/NetworkState.Initialized> // com.splendo.kaluga.test.system.network/MockNetworkState.Initializing.initialized|initialized(com.splendo.kaluga.system.network.NetworkConnectionType){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.system.network/MockNetworkState.Initializing.toString|toString(){}[0]
+    }
+
+    final class Unknown : com.splendo.kaluga.system.network.state/NetworkState.Unknown, com.splendo.kaluga.test.system.network/MockNetworkState.Initialized { // com.splendo.kaluga.test.system.network/MockNetworkState.Unknown|null[0]
+        constructor <init>(com.splendo.kaluga.system.network/NetworkConnectionType.Unknown) // com.splendo.kaluga.test.system.network/MockNetworkState.Unknown.<init>|<init>(com.splendo.kaluga.system.network.NetworkConnectionType.Unknown){}[0]
+
+        final val networkConnectionType // com.splendo.kaluga.test.system.network/MockNetworkState.Unknown.networkConnectionType|{}networkConnectionType[0]
+            final fun <get-networkConnectionType>(): com.splendo.kaluga.system.network/NetworkConnectionType.Unknown // com.splendo.kaluga.test.system.network/MockNetworkState.Unknown.networkConnectionType.<get-networkConnectionType>|<get-networkConnectionType>(){}[0]
+        final val unavailable // com.splendo.kaluga.test.system.network/MockNetworkState.Unknown.unavailable|{}unavailable[0]
+            final fun <get-unavailable>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.system.network.state/NetworkState.Unavailable> // com.splendo.kaluga.test.system.network/MockNetworkState.Unknown.unavailable.<get-unavailable>|<get-unavailable>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.system.network/NetworkConnectionType.Unknown // com.splendo.kaluga.test.system.network/MockNetworkState.Unknown.component1|component1(){}[0]
+        final fun copy(com.splendo.kaluga.system.network/NetworkConnectionType.Unknown = ...): com.splendo.kaluga.test.system.network/MockNetworkState.Unknown // com.splendo.kaluga.test.system.network/MockNetworkState.Unknown.copy|copy(com.splendo.kaluga.system.network.NetworkConnectionType.Unknown){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.system.network/MockNetworkState.Unknown.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.system.network/MockNetworkState.Unknown.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.system.network/MockNetworkState.Unknown.toString|toString(){}[0]
+    }
+
+    sealed class Active : com.splendo.kaluga.test.system.network/MockNetworkState { // com.splendo.kaluga.test.system.network/MockNetworkState.Active|null[0]
+        final val deinitialize // com.splendo.kaluga.test.system.network/MockNetworkState.Active.deinitialize|{}deinitialize[0]
+            final fun <get-deinitialize>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.system.network/MockNetworkState.Deinitialized> // com.splendo.kaluga.test.system.network/MockNetworkState.Active.deinitialize.<get-deinitialize>|<get-deinitialize>(){}[0]
+    }
+
+    sealed class Inactive : com.splendo.kaluga.test.system.network/MockNetworkState // com.splendo.kaluga.test.system.network/MockNetworkState.Inactive|null[0]
+
+    sealed class Initialized : com.splendo.kaluga.test.system.network/MockNetworkState.Active { // com.splendo.kaluga.test.system.network/MockNetworkState.Initialized|null[0]
+        final fun available(com.splendo.kaluga.system.network/NetworkConnectionType.Known.Available): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.test.system.network/MockNetworkState.Available> // com.splendo.kaluga.test.system.network/MockNetworkState.Initialized.available|available(com.splendo.kaluga.system.network.NetworkConnectionType.Known.Available){}[0]
+        final fun unknown(com.splendo.kaluga.system.network/NetworkConnectionType.Unknown.Reason): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.system.network.state/NetworkState.Unknown> // com.splendo.kaluga.test.system.network/MockNetworkState.Initialized.unknown|unknown(com.splendo.kaluga.system.network.NetworkConnectionType.Unknown.Reason){}[0]
+    }
+
+    final object NotInitialized : com.splendo.kaluga.system.network.state/NetworkState.NotInitialized, com.splendo.kaluga.test.system.network/MockNetworkState.Inactive { // com.splendo.kaluga.test.system.network/MockNetworkState.NotInitialized|null[0]
+        final val networkConnectionType // com.splendo.kaluga.test.system.network/MockNetworkState.NotInitialized.networkConnectionType|{}networkConnectionType[0]
+            final fun <get-networkConnectionType>(): com.splendo.kaluga.system.network/NetworkConnectionType // com.splendo.kaluga.test.system.network/MockNetworkState.NotInitialized.networkConnectionType.<get-networkConnectionType>|<get-networkConnectionType>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.system.network/MockNetworkState.NotInitialized.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.system.network/MockNetworkState.NotInitialized.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.system.network/MockNetworkState.NotInitialized.toString|toString(){}[0]
+    }
+
+    final object Unavailable : com.splendo.kaluga.system.network.state/NetworkState.Unavailable, com.splendo.kaluga.test.system.network/MockNetworkState.Initialized { // com.splendo.kaluga.test.system.network/MockNetworkState.Unavailable|null[0]
+        final val networkConnectionType // com.splendo.kaluga.test.system.network/MockNetworkState.Unavailable.networkConnectionType|{}networkConnectionType[0]
+            final fun <get-networkConnectionType>(): com.splendo.kaluga.system.network/NetworkConnectionType.Known.Absent // com.splendo.kaluga.test.system.network/MockNetworkState.Unavailable.networkConnectionType.<get-networkConnectionType>|<get-networkConnectionType>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.test.system.network/MockNetworkState.Unavailable.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.test.system.network/MockNetworkState.Unavailable.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.test.system.network/MockNetworkState.Unavailable.toString|toString(){}[0]
+    }
+}

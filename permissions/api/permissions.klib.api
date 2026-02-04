@@ -1,0 +1,10 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:permissions>
+final fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions/registerAllPermissions(kotlin.time/Duration = ..., com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ...) // com.splendo.kaluga.permissions/registerAllPermissions|registerAllPermissions@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.time.Duration;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings){}[0]
+final suspend fun (com.splendo.kaluga.permissions.base/PermissionsBuilder).com.splendo.kaluga.permissions/registerAllPermissionsNotRegistered(kotlin.time/Duration = ..., com.splendo.kaluga.permissions.base/BasePermissionManager.Settings = ...) // com.splendo.kaluga.permissions/registerAllPermissionsNotRegistered|registerAllPermissionsNotRegistered@com.splendo.kaluga.permissions.base.PermissionsBuilder(kotlin.time.Duration;com.splendo.kaluga.permissions.base.BasePermissionManager.Settings){}[0]
