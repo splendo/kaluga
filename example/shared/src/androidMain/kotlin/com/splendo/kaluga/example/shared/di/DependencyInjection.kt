@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -52,7 +52,10 @@ import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
 import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
+import com.splendo.kaluga.example.shared.viewmodel.media.MediaListNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.media.MediaListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.media.MediaNavigationAction
+import com.splendo.kaluga.example.shared.viewmodel.media.MediaSoundViewModel
 import com.splendo.kaluga.example.shared.viewmodel.media.MediaViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.NotificationPermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
@@ -169,6 +172,14 @@ internal val androidModule = module {
         MediaViewModel(mediaSurfaceProvider, DefaultMediaManager.Builder(), AlertPresenter.Builder(), navigator)
     }
 
+    viewModel { (navigator: Navigator<MediaListNavigationAction>) ->
+        MediaListViewModel(navigator)
+    }
+
+    viewModel {
+        MediaSoundViewModel()
+    }
+
     viewModel { (navigator: Navigator<SystemNavigationActions>) ->
         SystemViewModel(
             navigator,
@@ -234,7 +245,7 @@ fun initKoin(customModules: List<Module> = emptyList()) = initKoin(
             permissionsBuilder = it,
         )
     },
-    { BluetoothBuilder(permissionsBuilder = it) },
+    { BluetoothBuilder(useLocationPermission = USE_BLUETOOTH_FOR_LOCATION, permissionsBuilder = it) },
     customModules,
 )
 

@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricAndUKImperialThermalResistance]
@@ -58,11 +61,11 @@ val ThermalResistanceUnits: Set<ThermalResistance> get() = MetricAndUKImperialTh
     USCustomaryThermalResistanceUnits
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.ThermalResistance]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.ThermalResistance]
  * SI unit is `Kelvin per Watt`
  */
 @Serializable
-sealed class ThermalResistance : AbstractScientificUnit<PhysicalQuantity.ThermalResistance>() {
+sealed class ThermalResistance : DefinedScientificUnit<PhysicalQuantity.ThermalResistance>() {
 
     /**
      * The [Temperature] component
@@ -171,3 +174,16 @@ infix fun USCustomaryTemperature.per(power: MetricAndImperialPower) = USCustomar
  * @return the [USCustomaryThermalResistance] represented by the units
  */
 infix fun USCustomaryTemperature.per(power: ImperialPower) = USCustomaryThermalResistance(this, power)
+
+internal fun SerializersModuleBuilder.setupForThermalResistance() {
+    polymorphic(ThermalResistance::class) {
+        registerThermalResistanceClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<ThermalResistance>.registerThermalResistanceClasses() {
+    subclass(MetricAndUKImperialThermalResistance::class, MetricAndUKImperialThermalResistance.serializer())
+    subclass(MetricThermalResistance::class, MetricThermalResistance.serializer())
+    subclass(UKImperialThermalResistance::class, UKImperialThermalResistance.serializer())
+    subclass(USCustomaryThermalResistance::class, USCustomaryThermalResistance.serializer())
+}

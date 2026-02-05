@@ -36,6 +36,13 @@ class ColorViewController: UIViewController {
     @IBOutlet var blendedLightenedColorsCollectionView: UICollectionView!
     @IBOutlet var blendedDarkenedColorsCollectionView: UICollectionView!
     
+    @IBOutlet var currentModeLabel: UILabel!
+    @IBOutlet var currentModeColorsCollectionView: UICollectionView!
+    @IBOutlet var lightModeLabel: UILabel!
+    @IBOutlet var lightModeColorsCollectionView: UICollectionView!
+    @IBOutlet var darkModeLabel: UILabel!
+    @IBOutlet var darkModeColorsCollectionView: UICollectionView!
+    
     private var backdropLightenedColors: [KalugaBackgroundStyle] = []
     private var backdropDarkenedColors: [KalugaBackgroundStyle] = []
     private var sourceLightenedColors: [KalugaBackgroundStyle] = []
@@ -54,6 +61,9 @@ class ColorViewController: UIViewController {
         super.viewDidLoad()
 
         title = "feature_resources_color".localized()
+        currentModeLabel.text = "resources_color_current_mode".localized()
+        lightModeLabel.text = "resources_color_light_mode".localized()
+        darkModeLabel.text = "resources_color_dark_mode".localized()
 
         backdropLightenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
         backdropDarkenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
@@ -61,6 +71,11 @@ class ColorViewController: UIViewController {
         sourceDarkenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
         blendedLightenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
         blendedDarkenedColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
+        
+        currentModeColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
+        lightModeColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
+        darkModeColorsCollectionView.register(ColorCollectionCellView.self, forCellWithReuseIdentifier: ColorCollectionCellView.Const.identifier)
+        
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
             
@@ -158,6 +173,15 @@ extension ColorViewController: UICollectionViewDataSource, UICollectionViewDeleg
         if collectionView == blendedDarkenedColorsCollectionView {
             return blendedDarkenedColors.count
         }
+        if collectionView == currentModeColorsCollectionView {
+            return viewModel.currentModeColors.count
+        }
+        if collectionView == lightModeColorsCollectionView {
+            return viewModel.lightModeColors.count
+        }
+        if collectionView == darkModeColorsCollectionView {
+            return viewModel.darkModeColors.count
+        }
         return 0
     }
     
@@ -188,7 +212,24 @@ extension ColorViewController: UICollectionViewDataSource, UICollectionViewDeleg
             if collectionView == blendedDarkenedColorsCollectionView {
                 BackgroundStyleKt.applyBackgroundStyle(cell, style: blendedDarkenedColors[indexPath.row])
             }
+            if collectionView == currentModeColorsCollectionView {
+                BackgroundStyleKt.applyBackgroundStyle(cell, style: viewModel.currentModeColors[indexPath.row])
+            }
+            if collectionView == lightModeColorsCollectionView {
+                BackgroundStyleKt.applyBackgroundStyle(cell, style: viewModel.lightModeColors[indexPath.row])
+            }
+            if collectionView == darkModeColorsCollectionView {
+                BackgroundStyleKt.applyBackgroundStyle(cell, style: viewModel.darkModeColors[indexPath.row])
+            }
         }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        currentModeColorsCollectionView.reloadData()
+        lightModeColorsCollectionView.reloadData()
+        darkModeColorsCollectionView.reloadData()
     }
 }
 

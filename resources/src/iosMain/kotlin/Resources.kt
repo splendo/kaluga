@@ -50,7 +50,7 @@ actual class DefaultColorLoader(private val bundle: NSBundle, private val traitC
     actual constructor() : this(NSBundle.mainBundle, null)
     actual override fun loadColor(identifier: String, defaultValue: KalugaColor?): KalugaColor? = UIColor
         .colorNamed(identifier, bundle, traitCollection)
-        ?.let { KalugaColor(it) } ?: defaultValue
+        ?.let { KalugaColor.DarkLightColor(it) } ?: defaultValue
 }
 
 /**
@@ -69,5 +69,5 @@ actual class DefaultImageLoader(private val bundle: NSBundle, private val traitC
  * Default implementation of a [FontLoader].
  */
 actual class DefaultFontLoader actual constructor() : FontLoader {
-    actual override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? = UIFont.fontWithName(identifier, UIFont.labelFontSize) ?: defaultValue
+    actual override fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? = UIFont.fontWithName(identifier, UIFont.labelFontSize) ?: defaultValue
 }

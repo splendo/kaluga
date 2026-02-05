@@ -32,7 +32,7 @@ interface LinksHandler {
     /**
      * Processes the query parameters of a url string into a list
      * @param url the url string to extract the query parameters from
-     * @return a list containing the values of all query parameters of the [url]
+     * @return a map containing the all query parameters of the [url]
      */
-    fun extractQueryAsList(url: String): List<Any>
+    fun extractQueryAsMap(url: String): Map<String, List<String>>
 }

@@ -1,0 +1,80 @@
+name: 'Setup linux workspace reusable workflow'
+
+on:
+  workflow_call:
+    inputs:
+      gradleTask:
+        required: false
+        type: string
+      project:
+        required: false
+        type: string
+      projectBlacklist:
+        required: false
+        type: string
+
+    outputs:
+      projects:
+        description: "Gradle projects that do not dependent on another project or have other projects dependent on them"
+        value: ${{ jobs.setup.outputs.projects }}
+jobs:
+  setup:
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      projects: ${{ steps.envFile.outputs.projects }}
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: setup tools and enable Gradle cache writing
+        uses: ./.github/workflows/setup_tools_linux/
+        with:
+          gradle-cache-read-only: 'false'
+          restore-workspace-cache: 'false'
+          project: ${{ inputs.project }}
+
+      - name: generate file with projects for build matrix
+        if: inputs.project == ''
+        run: ./gradlew generateNonDependentProjectsFile -PgenerateNonDependentProjectsFile.blacklist=${{ inputs.projectBlacklist }}
+
+      - name: generate file with single requested project for build matrix
+        if: inputs.project != ''
+        run: echo "projects=['${{ inputs.project }}']" > non_dependent_projects.properties
+
+      - name: show projects for Matrix
+        run: cat non_dependent_projects.properties
+
+      - name: load projects for build matrix
+        uses: cardinalby/export-env-action@v2
+        id: envFile
+        with:
+          envFile: 'non_dependent_projects.properties'
+          export: 'false'
+
+      - name: run custom Gradle task for all projects
+        if: inputs.project == ''
+        run: ./gradlew ${{ inputs.gradleTask }}
+
+      - name: run custom Gradle task for single project
+        if: inputs.project != ''
+        run: ./gradlew :${{ inputs.project }}:${{ inputs.gradleTask }}
+
+      - name: Make cache of workspace
+        uses: actions/cache/save@v5
+        id: store-build
+        with:
+          path: |
+            ./*
+            !/.gradle
+          key: build-linux-${{ github.sha }}-${{ inputs.project }}

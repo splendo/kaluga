@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [LuminousFlux]
@@ -39,12 +42,12 @@ val LuminousFluxUnits: Set<LuminousFlux> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.LuminousFlux]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.LuminousFlux]
  * SI unit is [Lumen]
  */
 @Serializable
 sealed class LuminousFlux :
-    AbstractScientificUnit<PhysicalQuantity.LuminousFlux>(),
+    DefinedScientificUnit<PhysicalQuantity.LuminousFlux>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.LuminousFlux>
 
 @Serializable
@@ -90,3 +93,23 @@ data object Megalumen : LumenMultiple(), MetricMultipleUnit<MeasurementSystem.Me
 
 @Serializable
 data object Gigalumen : LumenMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousFlux, Lumen> by Giga(Lumen)
+
+internal fun SerializersModuleBuilder.setupForLuminousFlux() {
+    polymorphic(LuminousFlux::class) {
+        registerLuminousFluxClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<LuminousFlux>.registerLuminousFluxClasses() {
+    subclass(Lumen::class, Lumen.serializer())
+    subclass(Centilumen::class, Centilumen.serializer())
+    subclass(Decalumen::class, Decalumen.serializer())
+    subclass(Decilumen::class, Decilumen.serializer())
+    subclass(Gigalumen::class, Gigalumen.serializer())
+    subclass(Hectolumen::class, Hectolumen.serializer())
+    subclass(Kilolumen::class, Kilolumen.serializer())
+    subclass(Megalumen::class, Megalumen.serializer())
+    subclass(Microlumen::class, Microlumen.serializer())
+    subclass(Millilumen::class, Millilumen.serializer())
+    subclass(Nanolumen::class, Nanolumen.serializer())
+}

@@ -18,6 +18,7 @@ package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.scientificSerializationModule
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
@@ -25,6 +26,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
 class ScientificUnitTest {
+
+    companion object {
+        val json = Json {
+            serializersModule = scientificSerializationModule
+        }
+    }
 
     @Serializable
     data class UnitContainer(val unit: AbstractScientificUnit<*>)
@@ -48,6 +55,10 @@ class ScientificUnitTest {
             val jsonString = Json.encodeToString(UnitContainer.serializer(), container)
             val decoded = Json.decodeFromString(UnitContainer.serializer(), jsonString)
             assertEquals(container, decoded)
+            val moduleJsonString = json.encodeToString(UnitContainer.serializer(), container)
+            val moduleDecoded = json.decodeFromString(UnitContainer.serializer(), moduleJsonString)
+            assertEquals(container, moduleDecoded)
+            assertEquals(jsonString, moduleJsonString)
         }
     }
 }

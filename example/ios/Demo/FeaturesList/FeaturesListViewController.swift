@@ -124,7 +124,7 @@ private extension FeatureListNavigationAction {
             )
         }
         case is FeatureListNavigationAction.Location: return NavigationSpec.Segue(identifier: "showLocation")
-        case is FeatureListNavigationAction.Media: return NavigationSpec.Segue(identifier: "showMedia")
+        case is FeatureListNavigationAction.Media: return NavigationSpec.Segue(identifier: "showMediaList")
         case is FeatureListNavigationAction.Permissions: return NavigationSpec.Segue(identifier: "showPermissions")
         case is FeatureListNavigationAction.PlatformSpecific: return NavigationSpec.Segue(identifier: "showPlatformSpecific")
         case is FeatureListNavigationAction.Resources: return NavigationSpec.Push(animated: true) {

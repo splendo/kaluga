@@ -23,6 +23,9 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [IonizingRadiationEquivalentDose]
@@ -53,12 +56,12 @@ val IonizingRadiationEquivalentDoseUnits: Set<IonizingRadiationEquivalentDose> g
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.IonizingRadiationEquivalentDose]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.IonizingRadiationEquivalentDose]
  * SI unit is [Sievert]
  */
 @Serializable
 sealed class IonizingRadiationEquivalentDose :
-    AbstractScientificUnit<PhysicalQuantity.IonizingRadiationEquivalentDose>(),
+    DefinedScientificUnit<PhysicalQuantity.IonizingRadiationEquivalentDose>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.IonizingRadiationEquivalentDose>
 
 @Serializable
@@ -107,12 +110,12 @@ data object Gigasievert : SievertMultiple(), MetricMultipleUnit<MeasurementSyste
 
 @Serializable
 data object RoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose> {
-    const val SIEVERT_IN_REM = 0.01
+    private val SIEVERT_IN_REM = "0.01".toDecimal()
     override val symbol = "rem"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.IonizingRadiationEquivalentDose
-    override fun fromSIUnit(value: Decimal): Decimal = value / SIEVERT_IN_REM.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value * SIEVERT_IN_REM.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value / SIEVERT_IN_REM
+    override fun toSIUnit(value: Decimal): Decimal = value * SIEVERT_IN_REM
 }
 
 @Serializable
@@ -169,3 +172,34 @@ data object MegaroentgenEquivalentMan :
 data object GigaroentgenEquivalentMan :
     RoentgenEquivalentManMultiple(),
     MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Giga(RoentgenEquivalentMan)
+
+internal fun SerializersModuleBuilder.setupForIonizingRadiationEquivalentDose() {
+    polymorphic(IonizingRadiationEquivalentDose::class) {
+        registerIonizingRadiationEquivalentDoseClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<IonizingRadiationEquivalentDose>.registerIonizingRadiationEquivalentDoseClasses() {
+    subclass(RoentgenEquivalentMan::class, RoentgenEquivalentMan.serializer())
+    subclass(CentiroentgenEquivalentMan::class, CentiroentgenEquivalentMan.serializer())
+    subclass(DecaroentgenEquivalentMan::class, DecaroentgenEquivalentMan.serializer())
+    subclass(DeciroentgenEquivalentMan::class, DeciroentgenEquivalentMan.serializer())
+    subclass(GigaroentgenEquivalentMan::class, GigaroentgenEquivalentMan.serializer())
+    subclass(HectoroentgenEquivalentMan::class, HectoroentgenEquivalentMan.serializer())
+    subclass(KiloroentgenEquivalentMan::class, KiloroentgenEquivalentMan.serializer())
+    subclass(MegaroentgenEquivalentMan::class, MegaroentgenEquivalentMan.serializer())
+    subclass(MicroroentgenEquivalentMan::class, MicroroentgenEquivalentMan.serializer())
+    subclass(MilliroentgenEquivalentMan::class, MilliroentgenEquivalentMan.serializer())
+    subclass(NanoroentgenEquivalentMan::class, NanoroentgenEquivalentMan.serializer())
+    subclass(Sievert::class, Sievert.serializer())
+    subclass(Centisievert::class, Centisievert.serializer())
+    subclass(Decasievert::class, Decasievert.serializer())
+    subclass(Decisievert::class, Decisievert.serializer())
+    subclass(Gigasievert::class, Gigasievert.serializer())
+    subclass(Hectosievert::class, Hectosievert.serializer())
+    subclass(Kilosievert::class, Kilosievert.serializer())
+    subclass(Megasievert::class, Megasievert.serializer())
+    subclass(Microsievert::class, Microsievert.serializer())
+    subclass(Millisievert::class, Millisievert.serializer())
+    subclass(Nanosievert::class, Nanosievert.serializer())
+}

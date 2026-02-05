@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.ContextualLogger
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -29,19 +29,16 @@ import kotlinx.coroutines.flow.first
  * @property wrapper the [CharacteristicWrapper] to access the platform characteristic
  * @param initialValue the initial [ByteArray] value of the characteristic
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
- * @param parentLogTag the log tag used to modify the log tag of this characteristic
- * @param logger the [Logger] to use for logging.
+ * @param logger the [ContextualLogger] to use for logging.
  */
 open class Characteristic(
     val wrapper: CharacteristicWrapper,
     initialValue: ByteArray? = null,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
-    parentLogTag: String,
-    logger: Logger,
+    logger: ContextualLogger,
 ) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(
     initialValue,
     emitNewAction,
-    "$parentLogTag Characteristic",
     logger,
 ) {
 
@@ -118,7 +115,13 @@ open class Characteristic(
     /**
      * The list of [Descriptor] associated with the characteristic
      */
-    val descriptors: List<Descriptor> = wrapper.descriptors.map { Descriptor(it, emitNewAction = emitNewAction, parentLogTag = logTag, logger = logger) }
+    val descriptors: List<Descriptor> = wrapper.descriptors.map {
+        Descriptor(
+            wrapper = it,
+            emitNewAction = emitNewAction,
+            logger = logger.withAppendedContext("Descriptor" to it.uuid.uuidString),
+        )
+    }
 
     override fun createReadAction(): DeviceAction.Read.Characteristic = DeviceAction.Read.Characteristic(this)
 
@@ -166,7 +169,7 @@ expect interface CharacteristicWrapper {
 /**
  * Checks whether [CharacteristicWrapper.properties] contains any properties in [property]
  * @param property the list of properties to check
- * @return `tre` if [CharacteristicWrapper.properties] contains at least one of [property]
+ * @return `true` if [CharacteristicWrapper.properties] contains at least one of [property]
  */
 fun CharacteristicWrapper.containsAnyOf(vararg property: Int) = if (property.isNotEmpty()) {
     properties and property.reduce { acc, i -> acc.or(i) } != 0

@@ -31,6 +31,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.DialogFragment
 import com.splendo.kaluga.architecture.compose.activity
+import com.splendo.kaluga.architecture.compose.appCompatActivity
 import com.splendo.kaluga.architecture.navigation.IntentFlag
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.NavigationBundle
@@ -255,6 +256,7 @@ sealed class ComposableNavSpec {
                         data = Uri.parse(url.toURI().toString())
                     }
                 }
+
                 is NavigationSpec.Browser.Type.Normal -> {
                     val uri = Uri.parse(url.toURI().toString())
                     Intent(Intent.ACTION_VIEW, uri)
@@ -358,7 +360,7 @@ sealed class ComposableNavSpec {
 
         @Composable
         override fun createLauncher(viewModel: BaseLifecycleViewModel, onDispose: () -> Unit): () -> Unit {
-            val fragmentManager = LocalContext.current.activity?.supportFragmentManager
+            val fragmentManager = LocalContext.current.appCompatActivity?.supportFragmentManager
             return {
                 fragmentManager?.let {
                     createDialog().show(it, tag)

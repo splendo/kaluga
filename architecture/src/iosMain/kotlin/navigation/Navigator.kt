@@ -319,6 +319,7 @@ class ViewControllerNavigator<Action : NavigationAction<*>>(parentVC: UIViewCont
             NavigationSpec.Browser.Type.Normal -> {
                 UIApplication.sharedApplication.openURL(browserSpec.url)
             }
+
             is NavigationSpec.Browser.Type.SafariView -> {
                 val safariVc = SFSafariViewController(browserSpec.url)
                 assertParent().presentViewController(safariVc, spec.animated) {

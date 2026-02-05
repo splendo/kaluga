@@ -20,13 +20,15 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
-import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Dimensionless]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Dimensionless]
  *
  * Dimensionless Quantity
  * is a quantity to which no physical dimension is assigned, also known as a bare, pure, or scalar quantity
@@ -72,8 +74,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 sealed class Dimensionless :
-    AbstractScientificUnit<PhysicalQuantity.Dimensionless>(),
-    MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Dimensionless>
+    DefinedScientificUnit<PhysicalQuantity.Dimensionless>(),
+    MetricAndImperialScientificUnit<PhysicalQuantity.Dimensionless>
 
 /**
  * Set of all [Dimensionless]
@@ -98,20 +100,30 @@ val One.constant get() = UNIT_VALUE.invoke(One)
 
 @Serializable
 data object Percent : Dimensionless() {
-    const val PARTS_PER_HUNDRED = 100.0
     override val symbol: String = "%"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Dimensionless
-    override fun fromSIUnit(value: Decimal): Decimal = value * PARTS_PER_HUNDRED.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / PARTS_PER_HUNDRED.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * Decimal.HUNDRED
+    override fun toSIUnit(value: Decimal): Decimal = value / Decimal.HUNDRED
 }
 
 @Serializable
 data object Permill : Dimensionless() {
-    const val PARTS_PER_THOUSAND = 1000.0
     override val symbol: String = "‰"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Dimensionless
-    override fun fromSIUnit(value: Decimal): Decimal = value * PARTS_PER_THOUSAND.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / PARTS_PER_THOUSAND.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * Decimal.THOUSAND
+    override fun toSIUnit(value: Decimal): Decimal = value / Decimal.THOUSAND
+}
+
+internal fun SerializersModuleBuilder.setupForDimensionlessUnit() {
+    polymorphic(Dimensionless::class) {
+        registerDimensionlessClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Dimensionless>.registerDimensionlessClasses() {
+    subclass(One::class, One.serializer())
+    subclass(Percent::class, Percent.serializer())
+    subclass(Permill::class, Permill.serializer())
 }

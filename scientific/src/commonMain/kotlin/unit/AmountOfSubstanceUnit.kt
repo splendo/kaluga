@@ -21,6 +21,9 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [AmountOfSubstance]
@@ -40,12 +43,12 @@ val AmountOfSubstanceUnits: Set<AmountOfSubstance> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.AmountOfSubstance]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.AmountOfSubstance]
  * SI unit is [Mole]
  */
 @Serializable
 sealed class AmountOfSubstance :
-    AbstractScientificUnit<PhysicalQuantity.AmountOfSubstance>(),
+    DefinedScientificUnit<PhysicalQuantity.AmountOfSubstance>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.AmountOfSubstance>
 
 @Serializable
@@ -95,4 +98,24 @@ data object Gigamole : MoleMultiple(), MetricMultipleUnit<MeasurementSystem.Metr
 /**
  * The proportionality factor that relates the number of constituent particles (usually molecules, atoms or ions) in a sample with the amount of substance in that sample
  */
-val AvogadroConstant = 6.02214076e23.toDecimal()
+val AvogadroConstant = "6.02214076e23".toDecimal()
+
+internal fun SerializersModuleBuilder.setupForAmountOfSubstance() {
+    polymorphic(AmountOfSubstance::class) {
+        registerAmountOfSubstanceClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<AmountOfSubstance>.registerAmountOfSubstanceClasses() {
+    subclass(Mole::class, Mole.serializer())
+    subclass(Centimole::class, Centimole.serializer())
+    subclass(Decamole::class, Decamole.serializer())
+    subclass(Decimole::class, Decimole.serializer())
+    subclass(Gigamole::class, Gigamole.serializer())
+    subclass(Hectomole::class, Hectomole.serializer())
+    subclass(Kilomole::class, Kilomole.serializer())
+    subclass(Megamole::class, Megamole.serializer())
+    subclass(Micromole::class, Micromole.serializer())
+    subclass(Millimole::class, Millimole.serializer())
+    subclass(Nanomole::class, Nanomole.serializer())
+}

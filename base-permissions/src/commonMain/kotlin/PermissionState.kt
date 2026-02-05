@@ -24,7 +24,6 @@ import com.splendo.kaluga.base.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.base.state.KalugaState
 import com.splendo.kaluga.permissions.base.PermissionState.Active
 import com.splendo.kaluga.permissions.base.PermissionState.Allowed
-import com.splendo.kaluga.permissions.base.PermissionState.Deinitialized
 import com.splendo.kaluga.permissions.base.PermissionState.Denied
 import com.splendo.kaluga.permissions.base.PermissionState.Inactive
 import com.splendo.kaluga.permissions.base.PermissionState.Initialized

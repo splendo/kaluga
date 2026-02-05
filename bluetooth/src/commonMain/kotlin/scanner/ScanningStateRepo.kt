@@ -16,14 +16,14 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.state.ColdStateFlowRepo
 import com.splendo.kaluga.base.state.StateRepo
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.device.Identifier
-import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
@@ -55,6 +55,7 @@ abstract class BaseScanningStateRepo(
             is ScanningState.Inactive -> {
                 repo.createInitializingState(state)
             }
+
             is ScanningState.Active, is ScanningState.NoHardware -> state.remain()
         }
     },
@@ -83,43 +84,43 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
                     (this as ScanningStateImplRepo).startMonitoringScanner(scanner)
                     state.startInitializing(scanner)
                 }
+
                 is ScanningStateImpl.Deinitialized -> {
                     (this as ScanningStateImplRepo).startMonitoringScanner(state.scanner)
                     state.reinitialize
                 }
+
                 else -> state.remain()
             }
         },
         createDeinitializingState = { state ->
             val repo = this as ScanningStateImplRepo
             repo.supervisorJob.cancelChildren()
-            repo.dispatcher?.close()
-            repo.dispatcher = null
             state.deinitialize
         },
         coroutineContext = coroutineContext,
     ) {
 
     private val supervisorJob = SupervisorJob(coroutineContext[Job])
-    private var dispatcher: CloseableCoroutineDispatcher? = null
     private fun startMonitoringScanner(scanner: Scanner) {
-        val dispatcher = singleThreadDispatcher("ScanningStateRepo").also {
-            this.dispatcher = it
-        }
-        CoroutineScope(coroutineContext + supervisorJob + dispatcher).launch {
+        CoroutineScope(coroutineContext + supervisorJob + Dispatchers.IO.limitedParallelism(1)).launch {
             scanner.events.collect { event ->
                 when (event) {
                     is Scanner.Event.PermissionChanged -> handlePermissionChangedEvent(event, scanner)
+
                     is Scanner.Event.BluetoothDisabled -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled::class) { it.disable }
+
                     is Scanner.Event.BluetoothEnabled -> takeAndChangeState(remainIfStateNot = ScanningState.NoBluetooth.Disabled::class) { it.enable }
+
                     is Scanner.Event.FailedScanning -> takeAndChangeState(remainIfStateNot = ScanningState.Enabled.Scanning::class) {
                         it.stopScanning(BluetoothService.CleanMode.REMOVE_ALL)
                     }
+
                     is Scanner.Event.PairedDevicesRetrieved -> handlePairedDevice(event)
                 }
             }
         }
-        CoroutineScope(coroutineContext + supervisorJob + dispatcher).launch {
+        CoroutineScope(coroutineContext + supervisorJob + Dispatchers.IO.limitedParallelism(1)).launch {
             scanner.connectionEvents.collect { connectionEvent ->
                 when (connectionEvent) {
                     is Scanner.ConnectionEvent.DeviceConnected -> handleDeviceConnectionChanged(connectionEvent.identifier, true)
@@ -127,7 +128,7 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
                 }
             }
         }
-        CoroutineScope(coroutineContext + supervisorJob + dispatcher).launch {
+        CoroutineScope(coroutineContext + supervisorJob + Dispatchers.IO.limitedParallelism(1)).launch {
             scanner.discoveryEvents.collect { discoveredDevices ->
                 handleDeviceDiscovered(discoveredDevices)
             }
@@ -139,6 +140,7 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
             is ScanningState.Initializing -> {
                 state.initialized(event.hasPermission, scanner.isHardwareEnabled())
             }
+
             is ScanningState.Permitted -> {
                 if (event.hasPermission) {
                     state.remain()
@@ -146,7 +148,9 @@ open class ScanningStateImplRepo(createScanner: suspend () -> Scanner, private v
                     state.revokePermission
                 }
             }
+
             is ScanningState.NoBluetooth.MissingPermissions -> if (event.hasPermission) state.permit(scanner.isHardwareEnabled()) else state.remain()
+
             else -> {
                 state.remain()
             }

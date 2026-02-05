@@ -1,0 +1,214 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:alerts>
+abstract interface com.splendo.kaluga.alerts/AlertActions { // com.splendo.kaluga.alerts/AlertActions|null[0]
+    abstract fun dismiss(kotlin/Boolean = ...) // com.splendo.kaluga.alerts/AlertActions.dismiss|dismiss(kotlin.Boolean){}[0]
+    abstract fun showAsync(kotlin/Boolean = ..., kotlin/Function0<kotlin/Unit> = ...) // com.splendo.kaluga.alerts/AlertActions.showAsync|showAsync(kotlin.Boolean;kotlin.Function0<kotlin.Unit>){}[0]
+    abstract suspend fun show(kotlin/Boolean = ...): com.splendo.kaluga.alerts/Alert.Action? // com.splendo.kaluga.alerts/AlertActions.show|show(kotlin.Boolean){}[0]
+}
+
+abstract class com.splendo.kaluga.alerts/BaseAlertPresenter : com.splendo.kaluga.alerts/AlertActions { // com.splendo.kaluga.alerts/BaseAlertPresenter|null[0]
+    constructor <init>(com.splendo.kaluga.alerts/Alert, com.splendo.kaluga.logging/Logger) // com.splendo.kaluga.alerts/BaseAlertPresenter.<init>|<init>(com.splendo.kaluga.alerts.Alert;com.splendo.kaluga.logging.Logger){}[0]
+
+    final val alert // com.splendo.kaluga.alerts/BaseAlertPresenter.alert|{}alert[0]
+        final fun <get-alert>(): com.splendo.kaluga.alerts/Alert // com.splendo.kaluga.alerts/BaseAlertPresenter.alert.<get-alert>|<get-alert>(){}[0]
+
+    abstract fun dismissAlert(kotlin/Boolean = ...) // com.splendo.kaluga.alerts/BaseAlertPresenter.dismissAlert|dismissAlert(kotlin.Boolean){}[0]
+    abstract fun showAlert(kotlin/Boolean = ..., kotlin/Function1<com.splendo.kaluga.alerts/Alert.Action?, kotlin/Unit> = ..., kotlin/Function0<kotlin/Unit> = ...) // com.splendo.kaluga.alerts/BaseAlertPresenter.showAlert|showAlert(kotlin.Boolean;kotlin.Function1<com.splendo.kaluga.alerts.Alert.Action?,kotlin.Unit>;kotlin.Function0<kotlin.Unit>){}[0]
+    final fun dismissAlertWithLog(kotlin/Boolean = ...) // com.splendo.kaluga.alerts/BaseAlertPresenter.dismissAlertWithLog|dismissAlertWithLog(kotlin.Boolean){}[0]
+    open fun dismiss(kotlin/Boolean) // com.splendo.kaluga.alerts/BaseAlertPresenter.dismiss|dismiss(kotlin.Boolean){}[0]
+    open fun showAsync(kotlin/Boolean, kotlin/Function0<kotlin/Unit>) // com.splendo.kaluga.alerts/BaseAlertPresenter.showAsync|showAsync(kotlin.Boolean;kotlin.Function0<kotlin.Unit>){}[0]
+    open suspend fun show(kotlin/Boolean): com.splendo.kaluga.alerts/Alert.Action? // com.splendo.kaluga.alerts/BaseAlertPresenter.show|show(kotlin.Boolean){}[0]
+
+    abstract class Builder : com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.alerts/BaseAlertPresenter.Builder|null[0]
+        constructor <init>() // com.splendo.kaluga.alerts/BaseAlertPresenter.Builder.<init>|<init>(){}[0]
+
+        abstract fun create(com.splendo.kaluga.alerts/Alert, com.splendo.kaluga.logging/Logger = ..., kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.alerts/BaseAlertPresenter // com.splendo.kaluga.alerts/BaseAlertPresenter.Builder.create|create(com.splendo.kaluga.alerts.Alert;com.splendo.kaluga.logging.Logger;kotlinx.coroutines.CoroutineScope){}[0]
+    }
+
+    final object Companion { // com.splendo.kaluga.alerts/BaseAlertPresenter.Companion|null[0]
+        final const val TAG // com.splendo.kaluga.alerts/BaseAlertPresenter.Companion.TAG|{}TAG[0]
+            final fun <get-TAG>(): kotlin/String // com.splendo.kaluga.alerts/BaseAlertPresenter.Companion.TAG.<get-TAG>|<get-TAG>(){}[0]
+    }
+}
+
+final class com.splendo.kaluga.alerts/Alert { // com.splendo.kaluga.alerts/Alert|null[0]
+    constructor <init>(kotlin/String?, kotlin/String?, kotlin.collections/List<com.splendo.kaluga.alerts/Alert.Action>, com.splendo.kaluga.alerts/Alert.TextInputAction? = ..., com.splendo.kaluga.alerts/Alert.Style = ...) // com.splendo.kaluga.alerts/Alert.<init>|<init>(kotlin.String?;kotlin.String?;kotlin.collections.List<com.splendo.kaluga.alerts.Alert.Action>;com.splendo.kaluga.alerts.Alert.TextInputAction?;com.splendo.kaluga.alerts.Alert.Style){}[0]
+
+    final val actions // com.splendo.kaluga.alerts/Alert.actions|{}actions[0]
+        final fun <get-actions>(): kotlin.collections/List<com.splendo.kaluga.alerts/Alert.Action> // com.splendo.kaluga.alerts/Alert.actions.<get-actions>|<get-actions>(){}[0]
+    final val message // com.splendo.kaluga.alerts/Alert.message|{}message[0]
+        final fun <get-message>(): kotlin/String? // com.splendo.kaluga.alerts/Alert.message.<get-message>|<get-message>(){}[0]
+    final val style // com.splendo.kaluga.alerts/Alert.style|{}style[0]
+        final fun <get-style>(): com.splendo.kaluga.alerts/Alert.Style // com.splendo.kaluga.alerts/Alert.style.<get-style>|<get-style>(){}[0]
+    final val textInputAction // com.splendo.kaluga.alerts/Alert.textInputAction|{}textInputAction[0]
+        final fun <get-textInputAction>(): com.splendo.kaluga.alerts/Alert.TextInputAction? // com.splendo.kaluga.alerts/Alert.textInputAction.<get-textInputAction>|<get-textInputAction>(){}[0]
+    final val title // com.splendo.kaluga.alerts/Alert.title|{}title[0]
+        final fun <get-title>(): kotlin/String? // com.splendo.kaluga.alerts/Alert.title.<get-title>|<get-title>(){}[0]
+
+    final fun component1(): kotlin/String? // com.splendo.kaluga.alerts/Alert.component1|component1(){}[0]
+    final fun component2(): kotlin/String? // com.splendo.kaluga.alerts/Alert.component2|component2(){}[0]
+    final fun component3(): kotlin.collections/List<com.splendo.kaluga.alerts/Alert.Action> // com.splendo.kaluga.alerts/Alert.component3|component3(){}[0]
+    final fun component4(): com.splendo.kaluga.alerts/Alert.TextInputAction? // com.splendo.kaluga.alerts/Alert.component4|component4(){}[0]
+    final fun component5(): com.splendo.kaluga.alerts/Alert.Style // com.splendo.kaluga.alerts/Alert.component5|component5(){}[0]
+    final fun copy(kotlin/String? = ..., kotlin/String? = ..., kotlin.collections/List<com.splendo.kaluga.alerts/Alert.Action> = ..., com.splendo.kaluga.alerts/Alert.TextInputAction? = ..., com.splendo.kaluga.alerts/Alert.Style = ...): com.splendo.kaluga.alerts/Alert // com.splendo.kaluga.alerts/Alert.copy|copy(kotlin.String?;kotlin.String?;kotlin.collections.List<com.splendo.kaluga.alerts.Alert.Action>;com.splendo.kaluga.alerts.Alert.TextInputAction?;com.splendo.kaluga.alerts.Alert.Style){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.alerts/Alert.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.alerts/Alert.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.alerts/Alert.toString|toString(){}[0]
+
+    final enum class Style : kotlin/Enum<com.splendo.kaluga.alerts/Alert.Style> { // com.splendo.kaluga.alerts/Alert.Style|null[0]
+        enum entry ACTION_LIST // com.splendo.kaluga.alerts/Alert.Style.ACTION_LIST|null[0]
+        enum entry ALERT // com.splendo.kaluga.alerts/Alert.Style.ALERT|null[0]
+        enum entry TEXT_INPUT // com.splendo.kaluga.alerts/Alert.Style.TEXT_INPUT|null[0]
+
+        final val entries // com.splendo.kaluga.alerts/Alert.Style.entries|#static{}entries[0]
+            final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.alerts/Alert.Style> // com.splendo.kaluga.alerts/Alert.Style.entries.<get-entries>|<get-entries>#static(){}[0]
+
+        final fun valueOf(kotlin/String): com.splendo.kaluga.alerts/Alert.Style // com.splendo.kaluga.alerts/Alert.Style.valueOf|valueOf#static(kotlin.String){}[0]
+        final fun values(): kotlin/Array<com.splendo.kaluga.alerts/Alert.Style> // com.splendo.kaluga.alerts/Alert.Style.values|values#static(){}[0]
+    }
+
+    final class Action { // com.splendo.kaluga.alerts/Alert.Action|null[0]
+        constructor <init>(kotlin/String, com.splendo.kaluga.alerts/Alert.Action.Style = ..., kotlin/Function0<kotlin/Unit> = ...) // com.splendo.kaluga.alerts/Alert.Action.<init>|<init>(kotlin.String;com.splendo.kaluga.alerts.Alert.Action.Style;kotlin.Function0<kotlin.Unit>){}[0]
+
+        final val handler // com.splendo.kaluga.alerts/Alert.Action.handler|{}handler[0]
+            final fun <get-handler>(): kotlin/Function0<kotlin/Unit> // com.splendo.kaluga.alerts/Alert.Action.handler.<get-handler>|<get-handler>(){}[0]
+        final val style // com.splendo.kaluga.alerts/Alert.Action.style|{}style[0]
+            final fun <get-style>(): com.splendo.kaluga.alerts/Alert.Action.Style // com.splendo.kaluga.alerts/Alert.Action.style.<get-style>|<get-style>(){}[0]
+        final val title // com.splendo.kaluga.alerts/Alert.Action.title|{}title[0]
+            final fun <get-title>(): kotlin/String // com.splendo.kaluga.alerts/Alert.Action.title.<get-title>|<get-title>(){}[0]
+
+        final fun component1(): kotlin/String // com.splendo.kaluga.alerts/Alert.Action.component1|component1(){}[0]
+        final fun component2(): com.splendo.kaluga.alerts/Alert.Action.Style // com.splendo.kaluga.alerts/Alert.Action.component2|component2(){}[0]
+        final fun component3(): kotlin/Function0<kotlin/Unit> // com.splendo.kaluga.alerts/Alert.Action.component3|component3(){}[0]
+        final fun copy(kotlin/String = ..., com.splendo.kaluga.alerts/Alert.Action.Style = ..., kotlin/Function0<kotlin/Unit> = ...): com.splendo.kaluga.alerts/Alert.Action // com.splendo.kaluga.alerts/Alert.Action.copy|copy(kotlin.String;com.splendo.kaluga.alerts.Alert.Action.Style;kotlin.Function0<kotlin.Unit>){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.alerts/Alert.Action.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.alerts/Alert.Action.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.alerts/Alert.Action.toString|toString(){}[0]
+
+        final enum class Style : kotlin/Enum<com.splendo.kaluga.alerts/Alert.Action.Style> { // com.splendo.kaluga.alerts/Alert.Action.Style|null[0]
+            enum entry CANCEL // com.splendo.kaluga.alerts/Alert.Action.Style.CANCEL|null[0]
+            enum entry DEFAULT // com.splendo.kaluga.alerts/Alert.Action.Style.DEFAULT|null[0]
+            enum entry DESTRUCTIVE // com.splendo.kaluga.alerts/Alert.Action.Style.DESTRUCTIVE|null[0]
+            enum entry NEGATIVE // com.splendo.kaluga.alerts/Alert.Action.Style.NEGATIVE|null[0]
+            enum entry NEUTRAL // com.splendo.kaluga.alerts/Alert.Action.Style.NEUTRAL|null[0]
+            enum entry POSITIVE // com.splendo.kaluga.alerts/Alert.Action.Style.POSITIVE|null[0]
+
+            final val entries // com.splendo.kaluga.alerts/Alert.Action.Style.entries|#static{}entries[0]
+                final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.alerts/Alert.Action.Style> // com.splendo.kaluga.alerts/Alert.Action.Style.entries.<get-entries>|<get-entries>#static(){}[0]
+            final val value // com.splendo.kaluga.alerts/Alert.Action.Style.value|{}value[0]
+                final fun <get-value>(): kotlin/Int // com.splendo.kaluga.alerts/Alert.Action.Style.value.<get-value>|<get-value>(){}[0]
+
+            final fun valueOf(kotlin/String): com.splendo.kaluga.alerts/Alert.Action.Style // com.splendo.kaluga.alerts/Alert.Action.Style.valueOf|valueOf#static(kotlin.String){}[0]
+            final fun values(): kotlin/Array<com.splendo.kaluga.alerts/Alert.Action.Style> // com.splendo.kaluga.alerts/Alert.Action.Style.values|values#static(){}[0]
+        }
+    }
+
+    final class Builder { // com.splendo.kaluga.alerts/Alert.Builder|null[0]
+        constructor <init>(com.splendo.kaluga.alerts/Alert.Style = ...) // com.splendo.kaluga.alerts/Alert.Builder.<init>|<init>(com.splendo.kaluga.alerts.Alert.Style){}[0]
+
+        final fun addActions(kotlin.collections/List<com.splendo.kaluga.alerts/Alert.Action>): com.splendo.kaluga.alerts/Alert.Builder // com.splendo.kaluga.alerts/Alert.Builder.addActions|addActions(kotlin.collections.List<com.splendo.kaluga.alerts.Alert.Action>){}[0]
+        final fun addActions(kotlin/Array<out com.splendo.kaluga.alerts/Alert.Action>...): com.splendo.kaluga.alerts/Alert.Builder // com.splendo.kaluga.alerts/Alert.Builder.addActions|addActions(kotlin.Array<out|com.splendo.kaluga.alerts.Alert.Action>...){}[0]
+        final fun build(): com.splendo.kaluga.alerts/Alert // com.splendo.kaluga.alerts/Alert.Builder.build|build(){}[0]
+        final fun setMessage(kotlin/String?): com.splendo.kaluga.alerts/Alert.Builder // com.splendo.kaluga.alerts/Alert.Builder.setMessage|setMessage(kotlin.String?){}[0]
+        final fun setNegativeButton(kotlin/String, kotlin/Function0<kotlin/Unit> = ...): com.splendo.kaluga.alerts/Alert.Builder // com.splendo.kaluga.alerts/Alert.Builder.setNegativeButton|setNegativeButton(kotlin.String;kotlin.Function0<kotlin.Unit>){}[0]
+        final fun setNeutralButton(kotlin/String, kotlin/Function0<kotlin/Unit> = ...): com.splendo.kaluga.alerts/Alert.Builder // com.splendo.kaluga.alerts/Alert.Builder.setNeutralButton|setNeutralButton(kotlin.String;kotlin.Function0<kotlin.Unit>){}[0]
+        final fun setPositiveButton(kotlin/String, kotlin/Function0<kotlin/Unit> = ...): com.splendo.kaluga.alerts/Alert.Builder // com.splendo.kaluga.alerts/Alert.Builder.setPositiveButton|setPositiveButton(kotlin.String;kotlin.Function0<kotlin.Unit>){}[0]
+        final fun setTextInput(kotlin/String? = ..., kotlin/String?, kotlin/Function1<kotlin/String, kotlin/Unit>): com.splendo.kaluga.alerts/Alert.Builder // com.splendo.kaluga.alerts/Alert.Builder.setTextInput|setTextInput(kotlin.String?;kotlin.String?;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
+        final fun setTitle(kotlin/String?): com.splendo.kaluga.alerts/Alert.Builder // com.splendo.kaluga.alerts/Alert.Builder.setTitle|setTitle(kotlin.String?){}[0]
+    }
+
+    final class TextInputAction { // com.splendo.kaluga.alerts/Alert.TextInputAction|null[0]
+        constructor <init>(kotlin/String?, kotlin/String?, kotlin/Function1<kotlin/String, kotlin/Unit>) // com.splendo.kaluga.alerts/Alert.TextInputAction.<init>|<init>(kotlin.String?;kotlin.String?;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
+
+        final val placeholder // com.splendo.kaluga.alerts/Alert.TextInputAction.placeholder|{}placeholder[0]
+            final fun <get-placeholder>(): kotlin/String? // com.splendo.kaluga.alerts/Alert.TextInputAction.placeholder.<get-placeholder>|<get-placeholder>(){}[0]
+        final val text // com.splendo.kaluga.alerts/Alert.TextInputAction.text|{}text[0]
+            final fun <get-text>(): kotlin/String? // com.splendo.kaluga.alerts/Alert.TextInputAction.text.<get-text>|<get-text>(){}[0]
+        final val textObserver // com.splendo.kaluga.alerts/Alert.TextInputAction.textObserver|{}textObserver[0]
+            final fun <get-textObserver>(): kotlin/Function1<kotlin/String, kotlin/Unit> // com.splendo.kaluga.alerts/Alert.TextInputAction.textObserver.<get-textObserver>|<get-textObserver>(){}[0]
+
+        final fun component1(): kotlin/String? // com.splendo.kaluga.alerts/Alert.TextInputAction.component1|component1(){}[0]
+        final fun component2(): kotlin/String? // com.splendo.kaluga.alerts/Alert.TextInputAction.component2|component2(){}[0]
+        final fun component3(): kotlin/Function1<kotlin/String, kotlin/Unit> // com.splendo.kaluga.alerts/Alert.TextInputAction.component3|component3(){}[0]
+        final fun copy(kotlin/String? = ..., kotlin/String? = ..., kotlin/Function1<kotlin/String, kotlin/Unit> = ...): com.splendo.kaluga.alerts/Alert.TextInputAction // com.splendo.kaluga.alerts/Alert.TextInputAction.copy|copy(kotlin.String?;kotlin.String?;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.alerts/Alert.TextInputAction.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.alerts/Alert.TextInputAction.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.alerts/Alert.TextInputAction.toString|toString(){}[0]
+    }
+}
+
+final class com.splendo.kaluga.alerts/AlertPresenter : com.splendo.kaluga.alerts/BaseAlertPresenter { // com.splendo.kaluga.alerts/AlertPresenter|null[0]
+    constructor <init>(com.splendo.kaluga.alerts/Alert, platform.UIKit/UIViewController, com.splendo.kaluga.logging/Logger, kotlin/Function1<com.splendo.kaluga.alerts/Alert, platform.UIKit/UIPopoverPresentationControllerDelegateProtocol>) // com.splendo.kaluga.alerts/AlertPresenter.<init>|<init>(com.splendo.kaluga.alerts.Alert;platform.UIKit.UIViewController;com.splendo.kaluga.logging.Logger;kotlin.Function1<com.splendo.kaluga.alerts.Alert,platform.UIKit.UIPopoverPresentationControllerDelegateProtocol>){}[0]
+
+    final fun textDidChange() // com.splendo.kaluga.alerts/AlertPresenter.textDidChange|textDidChange(){}[0]
+
+    final class Builder : com.splendo.kaluga.alerts/BaseAlertPresenter.Builder { // com.splendo.kaluga.alerts/AlertPresenter.Builder|null[0]
+        constructor <init>(platform.UIKit/UIViewController) // com.splendo.kaluga.alerts/AlertPresenter.Builder.<init>|<init>(platform.UIKit.UIViewController){}[0]
+        constructor <init>(platform.UIKit/UIViewController, kotlin/Function1<com.splendo.kaluga.alerts/Alert, platform.UIKit/UIPopoverPresentationControllerDelegateProtocol>) // com.splendo.kaluga.alerts/AlertPresenter.Builder.<init>|<init>(platform.UIKit.UIViewController;kotlin.Function1<com.splendo.kaluga.alerts.Alert,platform.UIKit.UIPopoverPresentationControllerDelegateProtocol>){}[0]
+
+        final fun create(com.splendo.kaluga.alerts/Alert, com.splendo.kaluga.logging/Logger, kotlinx.coroutines/CoroutineScope): com.splendo.kaluga.alerts/AlertPresenter // com.splendo.kaluga.alerts/AlertPresenter.Builder.create|create(com.splendo.kaluga.alerts.Alert;com.splendo.kaluga.logging.Logger;kotlinx.coroutines.CoroutineScope){}[0]
+    }
+
+    final class DefaultUIPopoverPresentationControllerDelegateProtocol : platform.UIKit/UIPopoverPresentationControllerDelegateProtocol, platform.darwin/NSObject { // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol|null[0]
+        constructor <init>(platform.UIKit/UIView) // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.<init>|<init>(sourceView:platform.UIKit.UIView){}[0]
+
+        final val debugDescription // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.debugDescription|{}debugDescription[0]
+            final fun <get-debugDescription>(): kotlin/String? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.debugDescription.<get-debugDescription>|objc:debugDescription#Accessor[0]
+        final val description // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.description|{}description[0]
+            final fun <get-description>(): kotlin/String? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.description.<get-description>|objc:description#Accessor[0]
+        final val hash // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.hash|{}hash[0]
+            final fun <get-hash>(): kotlin/ULong // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.hash.<get-hash>|objc:hash#Accessor[0]
+        final val superclass // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.superclass|{}superclass[0]
+            final fun <get-superclass>(): kotlinx.cinterop/ObjCClass? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.superclass.<get-superclass>|objc:superclass#Accessor[0]
+
+        final fun adaptivePresentationStyleForPresentationController(platform.UIKit/UIPresentationController): kotlin/Long // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.adaptivePresentationStyleForPresentationController|objc:adaptivePresentationStyleForPresentationController:[0]
+        final fun adaptivePresentationStyleForPresentationController(platform.UIKit/UIPresentationController, platform.UIKit/UITraitCollection): kotlin/Long // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.adaptivePresentationStyleForPresentationController|objc:adaptivePresentationStyleForPresentationController:traitCollection:[0]
+        final fun class(): kotlinx.cinterop/ObjCClass? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.class|objc:class[0]
+        final fun conformsToProtocol(objcnames.classes/Protocol?): kotlin/Boolean // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.conformsToProtocol|objc:conformsToProtocol:[0]
+        final fun copy(): kotlin/Any? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.copy|objc:copy[0]
+        final fun debugDescription(): kotlin/String? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.debugDescription|objc:debugDescription[0]
+        final fun description(): kotlin/String? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.description|objc:description[0]
+        final fun doesNotRecognizeSelector(kotlinx.cinterop/CPointer<out kotlinx.cinterop/CPointed>?) // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.doesNotRecognizeSelector|objc:doesNotRecognizeSelector:[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.equals|equals(other:kotlin.Any?){}[0]
+        final fun finalize() // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.finalize|objc:finalize[0]
+        final fun forwardInvocation(objcnames.classes/NSInvocation?) // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.forwardInvocation|objc:forwardInvocation:[0]
+        final fun forwardingTargetForSelector(kotlinx.cinterop/CPointer<out kotlinx.cinterop/CPointed>?): kotlin/Any? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.forwardingTargetForSelector|objc:forwardingTargetForSelector:[0]
+        final fun hash(): kotlin/ULong // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.hash|objc:hash[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.hashCode|hashCode(){}[0]
+        final fun init(): platform.darwin/NSObject? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.init|objc:init[0]
+        final fun isEqual(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.isEqual|objc:isEqual:[0]
+        final fun isKindOfClass(kotlinx.cinterop/ObjCClass?): kotlin/Boolean // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.isKindOfClass|objc:isKindOfClass:[0]
+        final fun isMemberOfClass(kotlinx.cinterop/ObjCClass?): kotlin/Boolean // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.isMemberOfClass|objc:isMemberOfClass:[0]
+        final fun isProxy(): kotlin/Boolean // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.isProxy|objc:isProxy[0]
+        final fun methodForSelector(kotlinx.cinterop/CPointer<out kotlinx.cinterop/CPointed>?): kotlinx.cinterop/CPointer<kotlinx.cinterop/CFunction<kotlin/Function0<kotlin/Unit>>>? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.methodForSelector|objc:methodForSelector:[0]
+        final fun methodSignatureForSelector(kotlinx.cinterop/CPointer<out kotlinx.cinterop/CPointed>?): objcnames.classes/NSMethodSignature? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.methodSignatureForSelector|objc:methodSignatureForSelector:[0]
+        final fun mutableCopy(): kotlin/Any? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.mutableCopy|objc:mutableCopy[0]
+        final fun performSelector(kotlinx.cinterop/CPointer<out kotlinx.cinterop/CPointed>?): kotlin/Any? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.performSelector|objc:performSelector:[0]
+        final fun performSelector(kotlinx.cinterop/CPointer<out kotlinx.cinterop/CPointed>?, kotlin/Any?): kotlin/Any? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.performSelector|objc:performSelector:withObject:[0]
+        final fun performSelector(kotlinx.cinterop/CPointer<out kotlinx.cinterop/CPointed>?, kotlin/Any?, kotlin/Any?): kotlin/Any? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.performSelector|objc:performSelector:withObject:withObject:[0]
+        final fun popoverPresentationController(platform.UIKit/UIPopoverPresentationController, kotlinx.cinterop/CPointer<platform.CoreGraphics/CGRect>?, kotlinx.cinterop/CPointer<kotlinx.cinterop/ObjCObjectVar<platform.UIKit/UIView?>>?) // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.popoverPresentationController|objc:popoverPresentationController:willRepositionPopoverToRect:inView:[0]
+        final fun popoverPresentationControllerDidDismissPopover(platform.UIKit/UIPopoverPresentationController) // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.popoverPresentationControllerDidDismissPopover|objc:popoverPresentationControllerDidDismissPopover:[0]
+        final fun popoverPresentationControllerShouldDismissPopover(platform.UIKit/UIPopoverPresentationController): kotlin/Boolean // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.popoverPresentationControllerShouldDismissPopover|objc:popoverPresentationControllerShouldDismissPopover:[0]
+        final fun prepareForPopoverPresentation(platform.UIKit/UIPopoverPresentationController) // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.prepareForPopoverPresentation|objc:prepareForPopoverPresentation:[0]
+        final fun presentationController(platform.UIKit/UIPresentationController, kotlin/Long): platform.UIKit/UIViewController? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.presentationController|objc:presentationController:viewControllerForAdaptivePresentationStyle:[0]
+        final fun presentationController(platform.UIKit/UIPresentationController, kotlin/Long, platform.UIKit/UIViewControllerTransitionCoordinatorProtocol?) // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.presentationController|objc:presentationController:willPresentWithAdaptiveStyle:transitionCoordinator:[0]
+        final fun presentationController(platform.UIKit/UIPresentationController, platform.UIKit/UIPresentationController) // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.presentationController|objc:presentationController:prepareAdaptivePresentationController:[0]
+        final fun presentationControllerDidAttemptToDismiss(platform.UIKit/UIPresentationController) // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.presentationControllerDidAttemptToDismiss|objc:presentationControllerDidAttemptToDismiss:[0]
+        final fun presentationControllerDidDismiss(platform.UIKit/UIPresentationController) // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.presentationControllerDidDismiss|objc:presentationControllerDidDismiss:[0]
+        final fun presentationControllerShouldDismiss(platform.UIKit/UIPresentationController): kotlin/Boolean // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.presentationControllerShouldDismiss|objc:presentationControllerShouldDismiss:[0]
+        final fun presentationControllerWillDismiss(platform.UIKit/UIPresentationController) // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.presentationControllerWillDismiss|objc:presentationControllerWillDismiss:[0]
+        final fun respondsToSelector(kotlinx.cinterop/CPointer<out kotlinx.cinterop/CPointed>?): kotlin/Boolean // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.respondsToSelector|objc:respondsToSelector:[0]
+        final fun superclass(): kotlinx.cinterop/ObjCClass? // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.superclass|objc:superclass[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.alerts/AlertPresenter.DefaultUIPopoverPresentationControllerDelegateProtocol.toString|toString(){}[0]
+    }
+}
+
+final fun (com.splendo.kaluga.alerts/BaseAlertPresenter.Builder).com.splendo.kaluga.alerts/buildActionSheet(kotlinx.coroutines/CoroutineScope, com.splendo.kaluga.logging/Logger = ..., kotlin/Function1<com.splendo.kaluga.alerts/Alert.Builder, kotlin/Unit>): com.splendo.kaluga.alerts/BaseAlertPresenter // com.splendo.kaluga.alerts/buildActionSheet|buildActionSheet@com.splendo.kaluga.alerts.BaseAlertPresenter.Builder(kotlinx.coroutines.CoroutineScope;com.splendo.kaluga.logging.Logger;kotlin.Function1<com.splendo.kaluga.alerts.Alert.Builder,kotlin.Unit>){}[0]
+final fun (com.splendo.kaluga.alerts/BaseAlertPresenter.Builder).com.splendo.kaluga.alerts/buildAlert(kotlinx.coroutines/CoroutineScope, com.splendo.kaluga.logging/Logger = ..., kotlin/Function1<com.splendo.kaluga.alerts/Alert.Builder, kotlin/Unit>): com.splendo.kaluga.alerts/BaseAlertPresenter // com.splendo.kaluga.alerts/buildAlert|buildAlert@com.splendo.kaluga.alerts.BaseAlertPresenter.Builder(kotlinx.coroutines.CoroutineScope;com.splendo.kaluga.logging.Logger;kotlin.Function1<com.splendo.kaluga.alerts.Alert.Builder,kotlin.Unit>){}[0]
+final fun (com.splendo.kaluga.alerts/BaseAlertPresenter.Builder).com.splendo.kaluga.alerts/buildAlertWithInput(kotlinx.coroutines/CoroutineScope, com.splendo.kaluga.logging/Logger = ..., kotlin/Function1<com.splendo.kaluga.alerts/Alert.Builder, kotlin/Unit>): com.splendo.kaluga.alerts/BaseAlertPresenter // com.splendo.kaluga.alerts/buildAlertWithInput|buildAlertWithInput@com.splendo.kaluga.alerts.BaseAlertPresenter.Builder(kotlinx.coroutines.CoroutineScope;com.splendo.kaluga.logging.Logger;kotlin.Function1<com.splendo.kaluga.alerts.Alert.Builder,kotlin.Unit>){}[0]

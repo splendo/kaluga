@@ -17,93 +17,21 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.assertEqualScientificValue
-import com.splendo.kaluga.scientific.convert
-import com.splendo.kaluga.scientific.converter.acceleration.div
-import com.splendo.kaluga.scientific.converter.yank.div
-import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class JoltUnitTest {
 
     @Test
     fun joltTest() {
         assertScientificConversion(
-            1,
+            Decimal.ONE,
             (Meter per Second per Second per Second),
-            11.8110236,
+            Meter.convert(Decimal.ONE, Foot) * "3.6".toDecimal(),
             Foot per Minute per Millisecond per Minute,
-            7,
-        )
-    }
-
-    @Test
-    fun joltFromAccelerationDivTimeTest() {
-        assertEquals(
-            1.0(Meter per Second per Second per Second),
-            (2(Meter per Second per Second) / 2(Second)),
-        )
-        assertEquals(
-            1.0(Foot per Second per Second per Second),
-            (2(Foot per Second per Second) / 2(Second)),
-        )
-        assertEquals(
-            1.0(GUnit per Second),
-            (2(GUnit) / 2(Second)),
-        )
-        assertEquals(
-            1.0(GUnit.metric per Second),
-            (2(GUnit.metric) / 2(Second)),
-        )
-        assertEquals(
-            1.0(GUnit.imperial per Second),
-            (2(GUnit.imperial) / 2(Second)),
-        )
-        assertEquals(
-            1.0(Meter per Second per Second per Second),
-            (2((Meter per Second per Second) as Acceleration) / 2(Second)),
-        )
-    }
-
-    @Test
-    fun joltFromYankAndMassTest() {
-        assertEquals(
-            1.0(Meter per Second per Second per Second),
-            2(Newton per Second) / 2(Kilogram),
-        )
-        assertEquals(
-            ImperialStandardGravityAcceleration / 1(Second),
-            2(PoundForce per Second) / 2(Pound),
-        )
-        assertEquals(
-            ImperialStandardGravityAcceleration / 1(Second),
-            2(PoundForce per Second) / 2(Pound.ukImperial),
-        )
-        assertEquals(
-            ImperialStandardGravityAcceleration / 1(Second),
-            2(PoundForce per Second) / 2(Pound.usCustomary),
-        )
-        assertEquals(
-            ImperialStandardGravityAcceleration / 1(Second),
-            2(PoundForce.ukImperial per Second) / 2(Pound),
-        )
-        assertEquals(
-            ImperialStandardGravityAcceleration / 1(Second),
-            2(PoundForce.ukImperial per Second) / 2(Pound.ukImperial),
-        )
-        assertEquals(
-            ImperialStandardGravityAcceleration / 1(Second),
-            2(PoundForce.usCustomary per Second) / 2(Pound),
-        )
-        assertEquals(
-            ImperialStandardGravityAcceleration / 1(Second),
-            2(PoundForce.usCustomary per Second) / 2(Pound.usCustomary),
-        )
-        assertEqualScientificValue(
-            1.0(Meter per Second per Second per Second),
-            2(Newton per Second) / 2(Kilogram).convert(Pound),
-            9,
+            round = 32,
         )
     }
 }

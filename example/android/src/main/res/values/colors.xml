@@ -27,4 +27,7 @@
     <color name="text_disabled">@color/black_38</color>
     <color name="background_card">@color/white_38</color>
 
+    <color name="named_color">#FF0000</color>
+    <color name="named_color_with_dark_mode">#00FF00</color>
+
 </resources>

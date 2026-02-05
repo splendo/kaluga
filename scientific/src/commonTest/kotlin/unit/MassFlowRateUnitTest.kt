@@ -17,26 +17,15 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.assertEqualScientificValue
-import com.splendo.kaluga.scientific.convert
-import com.splendo.kaluga.scientific.converter.weight.div
-import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class MassFlowRateUnitTest {
 
     @Test
     fun massFlowRateConversionTest() {
-        assertScientificConversion(1.0, (Kilogram per Second), 132.28, Pound per Minute, 2)
-    }
-
-    @Test
-    fun massFlowRateFromWeightAndAreaTest() {
-        assertEquals(1(Kilogram per Second), 2(Kilogram) / 2(Second))
-        assertEquals(1(Pound per Second), 2(Pound) / 2(Second))
-        assertEquals(1(Pound.ukImperial per Second), 2(Pound.ukImperial) / 2(Second))
-        assertEquals(1(Pound.usCustomary per Second), 2(Pound.usCustomary) / 2(Second))
-        assertEqualScientificValue(1(Kilogram per Second), 2(Kilogram).convert(Pound as Weight) / 2(Second), 8)
+        assertScientificConversion(Decimal.ONE, (Kilogram per Second), Kilogram.convert(Decimal.ONE, Pound) * 60.toDecimal(), Pound per Minute, round = 30)
     }
 }

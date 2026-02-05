@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricVolumetricFlux]
@@ -58,11 +61,11 @@ val VolumetricFluxUnits: Set<VolumetricFlux> get() = MetricVolumetricFluxUnits +
     USCustomaryVolumetricFluxUnits.filter { it.volumetricFlow.volume !is USCustomaryImperialVolumeWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.VolumetricFlux]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.VolumetricFlux]
  * SI unit is `CubicMeter per Second per SquareMeter`
  */
 @Serializable
-sealed class VolumetricFlux : AbstractScientificUnit<PhysicalQuantity.VolumetricFlux>() {
+sealed class VolumetricFlux : DefinedScientificUnit<PhysicalQuantity.VolumetricFlux>() {
 
     /**
      * The [VolumetricFlow] component
@@ -164,3 +167,16 @@ infix fun UKImperialVolumetricFlow.per(area: ImperialArea) = UKImperialVolumetri
  * @return the [USCustomaryVolumetricFlux] represented by the units
  */
 infix fun USCustomaryVolumetricFlow.per(area: ImperialArea) = USCustomaryVolumetricFlux(this, area)
+
+internal fun SerializersModuleBuilder.setupForVolumetricFlux() {
+    polymorphic(VolumetricFlux::class) {
+        registerVolumetricFluxClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<VolumetricFlux>.registerVolumetricFluxClasses() {
+    subclass(ImperialVolumetricFlux::class, ImperialVolumetricFlux.serializer())
+    subclass(MetricVolumetricFlux::class, MetricVolumetricFlux.serializer())
+    subclass(UKImperialVolumetricFlux::class, UKImperialVolumetricFlux.serializer())
+    subclass(USCustomaryVolumetricFlux::class, USCustomaryVolumetricFlux.serializer())
+}

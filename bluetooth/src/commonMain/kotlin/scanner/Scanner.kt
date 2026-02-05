@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.scanner
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.utils.BufferedAsListChannel
+import com.splendo.kaluga.base.utils.applyIf
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.RSSI
 import com.splendo.kaluga.bluetooth.Service
@@ -35,7 +36,6 @@ import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.description
 import com.splendo.kaluga.bluetooth.device.stringValue
-import com.splendo.kaluga.bluetooth.scanner.BaseScanner.Settings
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
@@ -254,6 +254,7 @@ abstract class BaseScanner constructor(
         val permissions: Permissions,
         val autoRequestPermission: Boolean = true,
         val autoEnableSensors: Boolean = true,
+        val useLocation: Boolean = false,
         val discoverBondedDevices: Boolean = true,
         val defaultConnectionSettings: ConnectionSettings = ConnectionSettings(),
         val logger: Logger = RestrictedLogger(RestrictedLogLevel.None),
@@ -283,6 +284,9 @@ abstract class BaseScanner constructor(
     internal val permissions: Permissions = settings.permissions
     private val autoRequestPermission: Boolean = settings.autoRequestPermission
     private val autoEnableSensors: Boolean = settings.autoEnableSensors
+    internal val useLocation: Boolean = settings.useLocation
+
+    internal val bluetoothPermission = BluetoothPermission(useForLocation = settings.useLocation)
     private val defaultConnectionSettings = settings.defaultConnectionSettings
 
     protected val eventChannel = Channel<Scanner.Event>(UNLIMITED)
@@ -292,7 +296,7 @@ abstract class BaseScanner constructor(
     private val isScanningDevicesDiscovered = MutableStateFlow<BufferedAsListChannel<Scanner.DeviceDiscovered>?>(null)
     override val discoveryEvents: Flow<List<Scanner.DeviceDiscovered>> = isScanningDevicesDiscovered.flatMapLatest { it?.receiveAsFlow() ?: emptyFlow() }
 
-    protected val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
+    protected val bluetoothPermissionRepo get() = permissions[bluetoothPermission]
     protected abstract val bluetoothEnabledMonitor: BluetoothMonitor?
 
     protected open val permissionsFlow: Flow<List<PermissionState<*>>> get() = bluetoothPermissionRepo.filterOnlyImportant().map { listOf(it) }
@@ -330,6 +334,7 @@ abstract class BaseScanner constructor(
                         logger.info(LOG_TAG) { "Request permission" }
                         state.request()
                     }
+
                     else -> {}
                 }
             }
@@ -431,7 +436,9 @@ abstract class BaseScanner constructor(
 
     private fun checkIfNewPairingDiscoveryShouldBeStarted(withServices: Filter): Boolean = when (isRetrievingPairedDevicesFilter) {
         withServices -> false
+
         null -> true
+
         else -> {
             retrievingPairedDevicesJob?.cancel()
             retrievingPairedDevicesJob = null
@@ -454,7 +461,7 @@ abstract class BaseScanner constructor(
             rssi,
             advertisementData,
             connectionManagerBuilder,
-            defaultConnectionSettings,
+            currentConnectionSettings,
         )(coroutineContext)
     }
 
@@ -515,8 +522,8 @@ abstract class BaseScanner constructor(
         connectionEventChannel.trySend(Scanner.ConnectionEvent.DeviceConnected(identifier))
     }
 
-    internal fun handleDeviceDisconnected(identifier: Identifier) {
-        logger.debug(LOG_TAG) { "Device ${identifier.stringValue} disconnected" }
+    internal fun handleDeviceDisconnected(identifier: Identifier, message: String?) {
+        logger.debug(LOG_TAG) { "Device ${identifier.stringValue} disconnected".applyIf(!message.isNullOrEmpty()) { "$this due to $message" } }
         connectionEventChannel.trySend(Scanner.ConnectionEvent.DeviceDisconnected(identifier))
     }
 

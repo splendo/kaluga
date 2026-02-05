@@ -17,39 +17,45 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.test.base.mock.matcher.ParameterMatcher.Companion.eq
-import com.splendo.kaluga.test.base.mock.verify
+import com.splendo.kaluga.bluetooth.device.ConnectableDeviceState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-class BluetoothRequestMtuTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithoutService, BluetoothFlowTest.DeviceContext, Int?>() {
+class BluetoothRequestMtuTest : BluetoothFlowTest<BluetoothFlowTest.Configuration.DeviceWithService, BluetoothFlowTest.ServiceContext, Int?>() {
 
-    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithoutService, scope: CoroutineScope) -> DeviceContext = { configuration, scope ->
-        DeviceContext(configuration, scope)
+    override val createTestContextWithConfiguration: suspend (configuration: Configuration.DeviceWithService, scope: CoroutineScope) -> ServiceContext =
+        { configuration, scope -> ServiceContext(configuration, scope) }
+    override val flowFromTestContext: suspend ServiceContext.() -> Flow<Int?> = {
+        flowOf(device).mtu()
     }
-
-    override val flowFromTestContext: suspend DeviceContext.() -> Flow<Int?> = { bluetooth.scannedDevices()[device.identifier].mtu() }
 
     @Test
     fun testRequestMtu() = testWithFlowAndTestContext(
-        Configuration.DeviceWithoutService(),
+        Configuration.DeviceWithService(),
     ) {
         val newMtu = 512
 
         mainAction {
             bluetooth.startScanning()
             scanDevice()
+            connectDevice()
+            device.state.filterIsInstance<ConnectableDeviceState.Connected.NoServices>().first().startDiscovering()
+            discoverService()
+            device.state.filterIsInstance<ConnectableDeviceState.Connected.Idle>().first()
         }
         test {
             assertNull(it)
         }
         mainAction {
-            connectDevice()
-            bluetooth.scannedDevices()[device.identifier].requestMtu(newMtu)
-            connectionManager.requestMtuMock.verify(eq(newMtu))
+            flowOf(device).requestMtu(newMtu)
+            device.state.filterIsInstance<ConnectableDeviceState.Connected.HandlingAction>().first()
+            connectionManager.handleCurrentAction()
         }
 
         test {

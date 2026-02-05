@@ -26,6 +26,7 @@ import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.logging.ContextualLogger
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.logging.info
@@ -139,12 +140,6 @@ interface DeviceConnectionManager {
          * @property succeeded if `true`, [action] completed successfully
          */
         data class CompletedAction(val action: DeviceAction?, val succeeded: Boolean) : Event()
-
-        /**
-         * [Event] indicating the device has updated its [MTU] size
-         * @property newMtu the new [MTU] size
-         */
-        data class MtuUpdated(val newMtu: MTU) : Event()
     }
 
     /**
@@ -181,13 +176,6 @@ interface DeviceConnectionManager {
      * Starts reading the latest RSSI value of the device
      */
     suspend fun readRssi()
-
-    /**
-     * Requests an update to the [MTU] size of the device
-     * @param mtu the size of the [MTU] to request
-     * @return `true` if the request was successful
-     */
-    suspend fun requestMtu(mtu: MTU): Boolean
 
     /**
      * Starts performing a [DeviceAction]
@@ -227,6 +215,11 @@ interface DeviceConnectionManager {
     fun handleDisconnect(onDisconnect: (suspend () -> Unit)? = null)
 
     /**
+     * Fires an [Event.AddAction] with [DeviceAction.RequestMtu]
+     */
+    fun requestMtu(mtu: MTU): DeviceAction.RequestMtu
+
+    /**
      * Resets all actions and disconnects the device
      */
     suspend fun reset()
@@ -252,8 +245,9 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     DeviceConnectionManager,
     CoroutineScope by coroutineScope {
 
-    private val logTag = "Bluetooth Device ${deviceWrapper.identifier.stringValue}"
-    private val logger = settings.logger
+    private val tag = "Bluetooth ${deviceWrapper.identifier.stringValue}"
+    protected val logger = ContextualLogger(settings.logger, tag)
+    protected val dataLogger = ContextualLogger(settings.dataLogger, tag)
 
     private val defaultReconnectionSettings = settings.reconnectionSettings
 
@@ -267,62 +261,66 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     override val rssi = sharedRssi.asSharedFlow()
 
     override suspend fun readRssi() {
-        logger.debug(logTag) { "Request Read RSSI" }
+        logger.debug { "Request Read RSSI" }
         // TODO call into abstract function?
     }
 
     protected open fun handleNewRssi(rssi: RSSI) {
-        logger.debug(logTag) { "Updated Rssi $rssi" }
+        logger.debug { "Updated Rssi $rssi" }
         sharedRssi.tryEmit(rssi)
     }
 
-    protected fun handleNewMtu(mtu: MTU) {
-        logger.debug(logTag) { "Updated Mtu $mtu" }
-        emitEvent(DeviceConnectionManager.Event.MtuUpdated(mtu))
+    protected fun handleNewMtu(mtu: MTU, succeeded: Boolean) {
+        logger.debug { "Updated Mtu $mtu" }
+        val action = currentAction
+        if (action is DeviceAction.RequestMtu) {
+            action.mtuResponse = mtu
+            handleCurrentActionCompleted(succeeded)
+        }
     }
 
     final override fun startConnecting(reconnectionSettings: ConnectionSettings.ReconnectionSettings?) {
-        logger.info(logTag) { "Start Connecting" }
+        logger.info { "Start Connecting" }
         emitEvent(DeviceConnectionManager.Event.Connecting(reconnectionSettings ?: defaultReconnectionSettings))
     }
 
     final override fun cancelConnecting() {
-        logger.info(logTag) { "Cancel Connecting" }
+        logger.info { "Cancel Connecting" }
         emitEvent(DeviceConnectionManager.Event.CancelledConnecting)
     }
 
     final override fun handleConnect() {
-        logger.info(logTag) { "Did Connect" }
+        logger.info { "Did Connect" }
         emitEvent(DeviceConnectionManager.Event.Connected)
     }
 
     final override fun startDisconnecting() {
-        logger.info(logTag) { "Start Disconnecting" }
+        logger.info { "Start Disconnecting" }
         emitEvent(DeviceConnectionManager.Event.Disconnecting)
     }
 
     final override suspend fun performAction(action: DeviceAction) {
-        logger.info(logTag) { "Perform action $action" }
+        logger.info { "Perform action $action" }
         didStartPerformingAction(action)
     }
 
     protected abstract suspend fun didStartPerformingAction(action: DeviceAction)
 
     final override suspend fun pair() {
-        logger.info(logTag) { "Pair" }
+        logger.info { "Pair" }
         requestStartPairing()
     }
 
     protected abstract suspend fun requestStartPairing()
 
     final override suspend fun unpair() {
-        logger.info(logTag) { "Unpair" }
+        logger.info { "Unpair" }
         requestStartUnpairing()
     }
 
     protected abstract suspend fun requestStartUnpairing()
 
-    protected open fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitEvent, logTag, logger)
+    protected open fun createService(wrapper: ServiceWrapper): Service = Service(wrapper, ::emitEvent, dataLogger)
 
     final override fun handleDisconnect(onDisconnect: (suspend () -> Unit)?) {
         val currentAction = this.currentAction
@@ -334,12 +332,18 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
             onDisconnect?.invoke()
             Unit
         }
-        logger.info(logTag) { "Did Disconnect" }
+        logger.info { "Did Disconnect" }
         emitEvent(DeviceConnectionManager.Event.Disconnected(clean))
     }
 
+    override fun requestMtu(mtu: MTU): DeviceAction.RequestMtu {
+        val action = DeviceAction.RequestMtu(mtu)
+        emitEvent(DeviceConnectionManager.Event.AddAction(action))
+        return action
+    }
+
     final override fun startDiscovering() {
-        logger.info(logTag) { "Start Discovering Services" }
+        logger.info { "Start Discovering Services" }
         emitEvent(DeviceConnectionManager.Event.Discovering)
     }
 
@@ -347,7 +351,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
     internal fun handleDiscoverCompleted(serviceWrappers: List<ServiceWrapper>) = handleDiscoverCompleted(serviceWrappers.map { createService(it) })
 
     protected open fun handleDiscoverCompleted(services: List<Service>) {
-        logger.info(logTag) { "Discovered services: ${services.map { it.uuid.uuidString }}" }
+        logger.info { "Discovered services: ${services.map { it.uuid.uuidString }}" }
         emitEvent(DeviceConnectionManager.Event.DiscoveredServices(services))
     }
 
@@ -356,9 +360,9 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
         this.currentAction = null
         if (currentAction != null) {
             if (succeeded) {
-                logger.info(logTag) { "Completed $currentAction successfully" }
+                logger.info { "Completed $currentAction successfully" }
             } else {
-                logger.error(logTag) { "Failed to complete $currentAction" }
+                logger.error { "Failed to complete $currentAction" }
             }
         }
         emitEvent(DeviceConnectionManager.Event.CompletedAction(currentAction, succeeded))
@@ -377,6 +381,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
                     null
                 }
             }
+
             is DeviceAction.Write.Characteristic -> {
                 if (action.characteristic.uuid.uuidString == uuid.uuidString) {
                     action.characteristic
@@ -384,6 +389,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
                     null
                 }
             }
+
             else -> null
         }
 
@@ -403,6 +409,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
                     null
                 }
             }
+
             is DeviceAction.Write.Descriptor -> {
                 if (action.descriptor.uuid.uuidString == uuid.uuidString) {
                     action.descriptor
@@ -410,6 +417,7 @@ abstract class BaseDeviceConnectionManager(protected val deviceWrapper: DeviceWr
                     null
                 }
             }
+
             else -> {
                 null
             }
@@ -441,6 +449,5 @@ internal expect class DefaultDeviceConnectionManager : BaseDeviceConnectionManag
     override suspend fun discoverServices()
     override suspend fun didStartPerformingAction(action: DeviceAction)
     override suspend fun requestStartPairing()
-    override suspend fun requestMtu(mtu: MTU): Boolean
     override suspend fun requestStartUnpairing()
 }

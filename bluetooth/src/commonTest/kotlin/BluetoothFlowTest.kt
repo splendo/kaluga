@@ -166,7 +166,7 @@ abstract class BluetoothFlowTest<C : BluetoothFlowTest.Configuration, TC : Bluet
                         coroutineContext = scannerContext,
                     ).apply {
                         // Make sure permissionState has been created as it may break the tests otherwise
-                        get(BluetoothPermission)
+                        get(BluetoothPermission())
                     },
                     configuration.autoRequestPermission,
                     configuration.autoEnableBluetooth,

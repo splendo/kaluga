@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricMassFlowRate]
@@ -58,11 +61,11 @@ val MassFlowRateUnits: Set<MassFlowRate> get() = MetricMassFlowRateUnits +
     USCustomaryMassFlowRateUnits.filter { it.weight !is USCustomaryImperialWeightWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.MassFlowRate]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.MassFlowRate]
  * SI unit is `Kilogram per Second`
  */
 @Serializable
-sealed class MassFlowRate : AbstractScientificUnit<PhysicalQuantity.MassFlowRate>() {
+sealed class MassFlowRate : DefinedScientificUnit<PhysicalQuantity.MassFlowRate>() {
 
     /**
      * The [Weight] component
@@ -164,3 +167,16 @@ infix fun USCustomaryWeight.per(time: Time) = USCustomaryMassFlowRate(this, time
  * @return the [UKImperialMassFlowRate] represented by the units
  */
 infix fun UKImperialWeight.per(time: Time) = UKImperialMassFlowRate(this, time)
+
+internal fun SerializersModuleBuilder.setupForMassFlowRate() {
+    polymorphic(MassFlowRate::class) {
+        registerMassFlowRateClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<MassFlowRate>.registerMassFlowRateClasses() {
+    subclass(ImperialMassFlowRate::class, ImperialMassFlowRate.serializer())
+    subclass(MetricMassFlowRate::class, MetricMassFlowRate.serializer())
+    subclass(UKImperialMassFlowRate::class, UKImperialMassFlowRate.serializer())
+    subclass(USCustomaryMassFlowRate::class, USCustomaryMassFlowRate.serializer())
+}

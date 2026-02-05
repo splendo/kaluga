@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricSpecificVolume]
@@ -58,11 +61,11 @@ val SpecificVolumeUnits: Set<SpecificVolume> get() = MetricSpecificVolumeUnits +
     USCustomarySpecificVolumeUnits.filter { it.volume !is USCustomaryImperialVolumeWrapper || it.per !is USCustomaryImperialWeightWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.SpecificVolume]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.SpecificVolume]
  * SI unit is `CubicMeter per Kilogram`
  */
 @Serializable
-sealed class SpecificVolume : AbstractScientificUnit<PhysicalQuantity.SpecificVolume>() {
+sealed class SpecificVolume : DefinedScientificUnit<PhysicalQuantity.SpecificVolume>() {
 
     /**
      * The [Volume] component
@@ -192,3 +195,16 @@ infix fun UKImperialVolume.per(weight: ImperialWeight) = UKImperialSpecificVolum
  * @return the [UKImperialSpecificVolume] represented by the units
  */
 infix fun UKImperialVolume.per(weight: UKImperialWeight) = UKImperialSpecificVolume(this, weight)
+
+internal fun SerializersModuleBuilder.setupForSpecificVolume() {
+    polymorphic(SpecificVolume::class) {
+        registerSpecificVolumeClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<SpecificVolume>.registerSpecificVolumeClasses() {
+    subclass(ImperialSpecificVolume::class, ImperialSpecificVolume.serializer())
+    subclass(MetricSpecificVolume::class, MetricSpecificVolume.serializer())
+    subclass(UKImperialSpecificVolume::class, UKImperialSpecificVolume.serializer())
+    subclass(USCustomarySpecificVolume::class, USCustomarySpecificVolume.serializer())
+}

@@ -17,74 +17,16 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.convert
-import com.splendo.kaluga.scientific.converter.area.times
-import com.splendo.kaluga.scientific.converter.volume.div
-import com.splendo.kaluga.scientific.converter.volumetricFlux.times
-import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.pow
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class VolumetricFlowUnitTest {
 
     @Test
     fun volumetricFlowConversionTest() {
-        assertScientificConversion(1.0, CubicMeter per Second, 2118.88, CubicFoot per Minute, 2)
-    }
-
-    @Test
-    fun volumetricFlowFromVolumeAndTimeTest() {
-        assertEquals(1(CubicMeter per Second), 2(CubicMeter) / 2(Second))
-        assertEquals(1(CubicFoot per Second), 2(CubicFoot) / 2(Second))
-        assertEquals(1(ImperialGallon per Second), 2(ImperialGallon) / 2(Second))
-        assertEquals(1(UsLiquidGallon per Second), 2(UsLiquidGallon) / 2(Second))
-        assertEquals(
-            1(CubicMeter per Second),
-            2(CubicMeter).convert(CubicFoot as Volume) / 2(Second),
-        )
-    }
-
-    @Test
-    fun volumetricFlowFromVolumetricFluxAndAreaTest() {
-        assertEquals(
-            4(CubicMeter per Second),
-            2((CubicMeter per Second) per SquareMeter) * 2(SquareMeter),
-        )
-        assertEquals(
-            4(CubicMeter per Second),
-            2(SquareMeter) * 2((CubicMeter per Second) per SquareMeter),
-        )
-        assertEquals(
-            4(CubicFoot per Second),
-            2((CubicFoot per Second) per SquareFoot) * 2(SquareFoot),
-        )
-        assertEquals(
-            4(CubicFoot per Second),
-            2(SquareFoot) * 2((CubicFoot per Second) per SquareFoot),
-        )
-        assertEquals(
-            4(ImperialGallon per Second),
-            2((ImperialGallon per Second) per SquareFoot) * 2(SquareFoot),
-        )
-        assertEquals(
-            4(ImperialGallon per Second),
-            2(SquareFoot) * 2((ImperialGallon per Second) per SquareFoot),
-        )
-        assertEquals(
-            4(UsLiquidGallon per Second),
-            2((UsLiquidGallon per Second) per SquareFoot) * 2(SquareFoot),
-        )
-        assertEquals(
-            4(UsLiquidGallon per Second),
-            2(SquareFoot) * 2((UsLiquidGallon per Second) per SquareFoot),
-        )
-        assertEquals(
-            4(CubicMeter per Second),
-            2((CubicMeter per Second) per SquareMeter) * 2(SquareMeter).convert(SquareFoot),
-        )
-        assertEquals(
-            4(CubicMeter per Second),
-            2(SquareMeter).convert(SquareFoot) * 2((CubicMeter per Second) per SquareMeter),
-        )
+        assertScientificConversion(Decimal.ONE, CubicMeter per Second, Meter.convert(Decimal.ONE, Foot).pow(3) * 60.toDecimal(), CubicFoot per Minute, round = 31)
     }
 }

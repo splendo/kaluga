@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricKinematicViscosity]
@@ -42,11 +45,11 @@ val KinematicViscosityUnits: Set<KinematicViscosity> get() = MetricKinematicVisc
     ImperialKinematicViscosityUnits
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.KinematicViscosity]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.KinematicViscosity]
  * SI unit is `SquareMeter per Second`
  */
 @Serializable
-sealed class KinematicViscosity : AbstractScientificUnit<PhysicalQuantity.KinematicViscosity>() {
+sealed class KinematicViscosity : DefinedScientificUnit<PhysicalQuantity.KinematicViscosity>() {
 
     /**
      * The [Area] component
@@ -100,3 +103,14 @@ infix fun MetricArea.per(time: Time) = MetricKinematicViscosity(this, time)
  * @return the [ImperialKinematicViscosity] represented by the units
  */
 infix fun ImperialArea.per(time: Time) = ImperialKinematicViscosity(this, time)
+
+internal fun SerializersModuleBuilder.setupForKinematicViscosity() {
+    polymorphic(KinematicViscosity::class) {
+        registerKinematicViscosityClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<KinematicViscosity>.registerKinematicViscosityClasses() {
+    subclass(ImperialKinematicViscosity::class, ImperialKinematicViscosity.serializer())
+    subclass(MetricKinematicViscosity::class, MetricKinematicViscosity.serializer())
+}

@@ -19,7 +19,8 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.bluetooth.extensions.printableString
+import com.splendo.kaluga.logging.ContextualLogger
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.channels.BufferOverflow
@@ -33,17 +34,13 @@ import kotlinx.coroutines.flow.MutableSharedFlow
  * @param WriteAction the [DeviceAction.Write] associated with the attribute
  * @param initialValue the initial [ByteArray] value of the attribute
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
- * @param parentLogTag the log tag used to modify the log tag of this attribute
- * @param logger the [Logger] to use for logging.
+ * @param logger the [ContextualLogger] to use for logging.
  */
 abstract class Attribute<ReadAction : DeviceAction.Read, WriteAction : DeviceAction.Write>(
     initialValue: ByteArray? = null,
     private val emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
-    private val parentLogTag: String,
-    private val logger: Logger,
+    private val logger: ContextualLogger,
 ) : Flow<ByteArray?> {
-
-    protected val logTag: String get() = "$parentLogTag-${uuid.uuidString}"
 
     /**
      * The [UUID] of the attribute
@@ -85,14 +82,14 @@ abstract class Attribute<ReadAction : DeviceAction.Read, WriteAction : DeviceAct
      */
     open fun updateValue() {
         val nextValue = getUpdatedValue()
-        logger.debug(logTag) { "Updated value to $nextValue" }
+        logger.debug { "Updated value to ${nextValue?.printableString}" }
         sharedFlow.tryEmit(nextValue)
     }
 
     internal abstract fun getUpdatedValue(): ByteArray?
 
     protected fun addAction(action: DeviceAction) {
-        logger.info(logTag) { "Add action $action" }
+        logger.info { "Add action $action" }
         emitNewAction(DeviceConnectionManager.Event.AddAction(action))
     }
 }

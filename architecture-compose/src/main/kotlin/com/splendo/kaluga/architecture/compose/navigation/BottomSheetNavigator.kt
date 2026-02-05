@@ -70,6 +70,7 @@ sealed class BottomSheetNavigator<Action : NavigationAction<*>>(private val navi
                         onDispose()
                     }
                 }
+
                 is BottomSheetLaunchedNavigation -> {
                     spec.launchedNavigation.Launch(this, onDispose)
                 }

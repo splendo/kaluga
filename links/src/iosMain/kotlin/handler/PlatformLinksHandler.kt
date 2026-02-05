@@ -32,8 +32,10 @@ actual class PlatformLinksHandler : LinksHandler {
         return NSURLConnection.canHandleRequest(NSURLRequest.requestWithURL(nsUrl))
     }
 
-    actual override fun extractQueryAsList(url: String): List<Any> {
+    actual override fun extractQueryAsMap(url: String): Map<String, List<String>> {
         val components = NSURLComponents(url)
-        return components.queryItems.orEmpty().mapNotNull { (it as? NSURLQueryItem)?.value }
+        return components.queryItems.orEmpty()
+            .filterIsInstance<NSURLQueryItem>()
+            .groupBy(keySelector = { it.name }, valueTransform = { it.value ?: "" })
     }
 }

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.resources.compose
 
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,9 +25,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.TintedImage
+import com.splendo.kaluga.resources.tinted
 
 @Composable
 fun KalugaImage.Composable(
@@ -59,5 +64,15 @@ fun TintedImage.Composable(
     alignment = alignment,
     contentScale = contentScale,
     alpha = alpha,
-    colorFilter = ColorFilter.tint(tint.composable),
+    colorFilter = ColorFilter.tint(tint.composable()),
 )
+
+@Preview
+@Composable
+private fun TintedImagePreview() {
+    val image = KalugaImage(AppCompatResources.getDrawable(LocalContext.current, android.R.drawable.ic_media_play)!!).tinted(
+        DefaultColors.blue,
+    )
+
+    image.Composable(contentDescription = "Play")
+}

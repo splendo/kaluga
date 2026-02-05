@@ -67,6 +67,9 @@ class ColorActivity : KalugaViewModelActivity<ColorViewModel>() {
         binding.blendedDarken.adapter = BackgroundAdapter()
         binding.sourceLighten.adapter = BackgroundAdapter()
         binding.sourceDarken.adapter = BackgroundAdapter()
+        binding.colorsCurrentMode.adapter = BackgroundAdapter()
+        binding.colorsLightMode.adapter = BackgroundAdapter()
+        binding.colorsDarkMode.adapter = BackgroundAdapter()
     }
 }
 
@@ -102,7 +105,7 @@ class BackgroundAdapter : RecyclerView.Adapter<BackgroundAdapter.BackgroundViewH
         backgrounds.getOrNull(position)?.let { background ->
             holder.view.applyBackgroundStyle(background)
         } ?: run {
-            holder.view.setBackgroundColor(DefaultColors.clear)
+            holder.view.setBackgroundColor(DefaultColors.clear.color)
         }
     }
 }

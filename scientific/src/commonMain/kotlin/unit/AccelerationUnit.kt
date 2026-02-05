@@ -25,6 +25,9 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 val MetricAndImperialAccelerationUnits: Set<MetricAndImperialAcceleration> get() =
     setOf(GUnit, Nanog, Microg, Millig, Centig, Decig, Decag, Hectog, Kilog, Megag, Gigag)
@@ -54,11 +57,11 @@ val AccelerationUnits: Set<Acceleration> get() = MetricAndImperialAccelerationUn
     ImperialAccelerationUnits.filter { it !is ImperialMetricAndImperialAccelerationWrapper }
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Acceleration]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Acceleration]
  * SI unit is `Meter per Second per Second`
  */
 @Serializable
-sealed class Acceleration : AbstractScientificUnit<PhysicalQuantity.Acceleration>() {
+sealed class Acceleration : DefinedScientificUnit<PhysicalQuantity.Acceleration>() {
 
     /**
      * The [Speed] component
@@ -243,7 +246,7 @@ infix fun ImperialSpeed.per(time: Time): ImperialAcceleration = CombinedImperial
 @Serializable
 data object GUnit : MetricAndImperialAcceleration(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Acceleration> {
 
-    private val standardGravity = 9.80665.toDecimal()
+    private val standardGravity = "9.80665".toDecimal()
 
     override val symbol: String = "g-unit"
     override val speed = Meter per Second
@@ -331,3 +334,56 @@ val MetricStandardGravityAcceleration = 1(GUnit).convert(Meter per Second per Se
  * The standard [Acceleration] due to gravity in `Foot per Second per Second`
  */
 val ImperialStandardGravityAcceleration = 1(GUnit).convert(Foot per Second per Second)
+
+internal fun SerializersModuleBuilder.setupForAccelerationUnit() {
+    polymorphic(Acceleration::class) {
+        registerAccelerationClasses()
+    }
+    polymorphic(MetricAcceleration::class) {
+        registerMetricAccelerationClasses()
+    }
+    polymorphic(ImperialAcceleration::class) {
+        registerImperialAccelerationClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Acceleration>.registerAccelerationClasses() {
+    registerMetricAndImperialAccelerationClasses()
+    registerMetricAccelerationClasses()
+    registerImperialAccelerationClasses()
+}
+
+internal fun PolymorphicModuleBuilder<MetricAndImperialAcceleration>.registerMetricAndImperialAccelerationClasses() {
+    subclass(GUnit::class, GUnit.serializer())
+    subclass(Centig::class, Centig.serializer())
+    subclass(Decag::class, Decag.serializer())
+    subclass(Decig::class, Decig.serializer())
+    subclass(Gigag::class, Gigag.serializer())
+    subclass(Hectog::class, Hectog.serializer())
+    subclass(Kilog::class, Kilog.serializer())
+    subclass(Megag::class, Megag.serializer())
+    subclass(Microg::class, Microg.serializer())
+    subclass(Millig::class, Millig.serializer())
+    subclass(Nanog::class, Nanog.serializer())
+}
+
+internal fun PolymorphicModuleBuilder<MetricAcceleration>.registerMetricAccelerationClasses() {
+    subclass(CombinedMetricAcceleration::class, CombinedMetricAcceleration.serializer())
+    subclass(MetricMetricAndImperialAccelerationWrapper::class, MetricMetricAndImperialAccelerationWrapper.serializer())
+    subclass(Gal::class, Gal.serializer())
+    subclass(NanoGal::class, NanoGal.serializer())
+    subclass(MicroGal::class, MicroGal.serializer())
+    subclass(MilliGal::class, MilliGal.serializer())
+    subclass(CentiGal::class, CentiGal.serializer())
+    subclass(DeciGal::class, DeciGal.serializer())
+    subclass(DecaGal::class, DecaGal.serializer())
+    subclass(HectoGal::class, HectoGal.serializer())
+    subclass(KiloGal::class, KiloGal.serializer())
+    subclass(MegaGal::class, MegaGal.serializer())
+    subclass(GigaGal::class, GigaGal.serializer())
+}
+
+internal fun PolymorphicModuleBuilder<ImperialAcceleration>.registerImperialAccelerationClasses() {
+    subclass(CombinedImperialAcceleration::class, CombinedImperialAcceleration.serializer())
+    subclass(ImperialMetricAndImperialAccelerationWrapper::class, ImperialMetricAndImperialAccelerationWrapper.serializer())
+}

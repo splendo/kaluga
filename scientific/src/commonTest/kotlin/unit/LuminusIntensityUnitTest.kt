@@ -17,40 +17,21 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.converter.area.times
-import com.splendo.kaluga.scientific.converter.luminance.times
-import com.splendo.kaluga.scientific.converter.luminousFlux.div
-import com.splendo.kaluga.scientific.invoke
-import kotlin.math.PI
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class LuminusIntensityUnitTest {
 
     @Test
     fun luminusIntensityConversionTest() {
-        assertScientificConversion(1, Candela, 1e+9, Nanocandela)
-        assertScientificConversion(1, Candela, 1e+6, Microcandela)
-        assertScientificConversion(1, Candela, 1000.0, Millicandela)
-        assertScientificConversion(1, Candela, 100.0, Centicandela)
-        assertScientificConversion(1, Candela, 10.0, Decicandela)
-        assertScientificConversion(1, Candela, 0.1, Decacandela)
-        assertScientificConversion(1, Candela, 0.01, Hectocandela)
-        assertScientificConversion(1, Candela, 0.001, Kilocandela)
-        assertScientificConversion(1, Candela, 1e-6, Megacandela)
-        assertScientificConversion(1, Candela, 1e-9, Gigacandela)
-    }
-
-    @Test
-    fun luminousIntensityFromLuminanceAndArea() {
-        assertEquals(4(Candela), 2(Nit) * 2(SquareMeter))
-        assertEquals(4(Candela), 2(SquareMeter) * 2(Nit))
-        assertEquals((4 / PI)(Candela), 2(FootLambert) * 2(SquareFoot))
-        assertEquals((4 / PI)(Candela), 2(SquareFoot) * 2(FootLambert))
-    }
-
-    @Test
-    fun luminousIntensityFromLuminousFluxAndSolidAngleTest() {
-        assertEquals(1(Candela), 2(Lumen) / 2(Steradian))
+        assertScientificConversion("1", Candela, "1e+9", Nanocandela)
+        assertScientificConversion("1", Candela, "1e+6", Microcandela)
+        assertScientificConversion("1", Candela, "1000.0", Millicandela)
+        assertScientificConversion("1", Candela, "100.0", Centicandela)
+        assertScientificConversion("1", Candela, "10.0", Decicandela)
+        assertScientificConversion("1", Candela, "0.1", Decacandela)
+        assertScientificConversion("1", Candela, "0.01", Hectocandela)
+        assertScientificConversion("1", Candela, "0.001", Kilocandela)
+        assertScientificConversion("1", Candela, "1e-6", Megacandela)
+        assertScientificConversion("1", Candela, "1e-9", Gigacandela)
     }
 }

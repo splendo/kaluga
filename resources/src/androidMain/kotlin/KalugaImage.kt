@@ -32,6 +32,6 @@ actual data class KalugaImage(val drawable: Drawable)
  */
 val TintedImage.drawable: Drawable? get() = image.drawable.constantState?.newDrawable()?.mutate()?.let {
     DrawableCompat.wrap(it).apply {
-        DrawableCompat.setTint(this, tint)
+        DrawableCompat.setTint(this, tint.currentColor)
     }
 }

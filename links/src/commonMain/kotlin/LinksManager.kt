@@ -19,7 +19,7 @@ package com.splendo.kaluga.links
 
 import com.splendo.kaluga.links.handler.LinksHandler
 import com.splendo.kaluga.links.handler.PlatformLinksHandler
-import com.splendo.kaluga.links.utils.decodeFromList
+import com.splendo.kaluga.links.utils.decodeFromMap
 import kotlinx.serialization.KSerializer
 
 /**
@@ -74,14 +74,9 @@ class DefaultLinksManager(private val linksHandler: LinksHandler) : LinksManager
         override fun create(): LinksManager = DefaultLinksManager(handler)
     }
 
-    override fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>): T? {
-        val list = linksHandler.extractQueryAsList(url)
-        if (list.isEmpty()) {
-            return null
-        }
-
-        return decodeFromList(list, serializer)
-    }
+    override fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>): T? = runCatching {
+        decodeFromMap(linksHandler.extractQueryAsMap(url), serializer)
+    }.getOrNull()
 
     override fun validateLink(url: String): String? = if (linksHandler.isValid(url)) {
         url

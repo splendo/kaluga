@@ -27,6 +27,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.randomIdentifier
+import com.splendo.kaluga.logging.ContextualLogger
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
@@ -43,7 +44,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class MockDevice(
     override val identifier: Identifier = randomIdentifier(),
-    override val info: MutableStateFlow<MockDeviceInfo> = MutableStateFlow(MockDeviceInfo()),
+    override val info: MutableStateFlow<MockDeviceInfo> = MutableStateFlow(MockDeviceInfo(identifier)),
     private val connectionSettings: ConnectionSettings = ConnectionSettings(),
     private val coroutineContext: CoroutineContext,
     setupMocks: Boolean = true,
@@ -58,8 +59,12 @@ class MockDevice(
     init {
         if (setupMocks) {
             mockConnectableDeviceManager.mockRequestMtu.on().doExecuteSuspended { (mtu) ->
-                connectableDeviceStateRepo.takeAndChangeState(ConnectableDeviceState.Connected::class) { it.didUpdateMtu(mtu) }
-                true
+                connectableDeviceStateRepo.takeAndChangeState(MockDeviceState.Connected.Idle::class) { state ->
+                    suspend {
+                        MockDeviceState.Connected.Idle(state.reconnectionSettings, mtu, state.services, state.mockConnectableDeviceManager)
+                    }
+                }
+                DeviceAction.RequestMtu(mtu)
             }
             mockConnectableDeviceManager.mockStartDisconnected.on().doExecute {
                 handleDisconnecting()
@@ -101,8 +106,7 @@ class MockDevice(
         Service(
             service = createServiceWrapper { uuid = it },
             emitNewAction = {},
-            parentLogTag = "MockDeviceService",
-            logger = logger,
+            logger = ContextualLogger(logger, "MockDeviceService"),
         )
     }
 
@@ -142,7 +146,9 @@ class MockDevice(
                     is ConnectionSettings.ReconnectionSettings.Always -> state.reconnect
                     is ConnectionSettings.ReconnectionSettings.Never -> state.didDisconnect
                 }
+
                 is ConnectableDeviceState.Disconnected -> state.remain()
+
                 is ConnectableDeviceState.Connecting,
                 is ConnectableDeviceState.Disconnecting,
                 -> state.didDisconnect

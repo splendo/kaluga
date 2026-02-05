@@ -32,6 +32,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,6 +51,7 @@ import com.splendo.kaluga.resources.compose.Composable
 import com.splendo.kaluga.resources.compose.backgroundStyle
 import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import org.koin.androidx.compose.koinViewModel
+import com.splendo.kaluga.example.R
 
 @Composable
 fun ColorsLayout() {
@@ -136,6 +138,13 @@ fun ColorsLayout() {
             ListOfColors(darkenSource)
             ListOfColors(lightenBlended)
             ListOfColors(darkenBlended)
+
+            Text(text = androidx.compose.ui.res.stringResource(R.string.resources_color_current_mode))
+            ListOfColors(currentModeColors)
+            Text(text = androidx.compose.ui.res.stringResource(R.string.resources_color_light_mode))
+            ListOfColors(lightModeColors)
+            Text(text = androidx.compose.ui.res.stringResource(R.string.resources_color_dark_mode))
+            ListOfColors(darkModeColors)
         }
     }
 }

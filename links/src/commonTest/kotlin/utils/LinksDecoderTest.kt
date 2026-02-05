@@ -17,11 +17,12 @@
 
 package com.splendo.kaluga.links.utils
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
 
 @Serializable
 enum class MyEnum {
@@ -31,118 +32,81 @@ enum class MyEnum {
 }
 
 @Serializable
-data class DataTypesValues(
-    val stringValue: String,
-    val charValue: Char,
-    val intValue: Int,
-    val longValue: Long,
-    val floatValue: Float,
-    val doubleValue: Double,
-    val booleanValue: Boolean,
-    val byteValue: Byte,
-    val enumValue: MyEnum,
-    val listValue: List<String>,
-    val nullableValue: String?,
-)
+data class DataContainer<T>(val value: T)
 
 class LinksDecoderTest {
 
-    companion object {
-        private const val BYTE_VALUE: Byte = 1
-        private val queryValues = listOf<Any>(
-            // stringValue
-            "Test",
-            // charValue
-            'A',
-            // intValue
-            0,
-            // longValue
-            3L,
-            // floatValue
-            3.14f,
-            // doubleValue
-            3.14,
-            // booleanValue
-            true,
-            // byteValue
-            "1",
-            // enumValue
-            "A",
-            // listValue size
-            3,
-            // listValue[0]
-            "zero",
-            // listValue[1]
-            "one",
-            // listValue[2]
-            "two",
-            // nullableValue
-            "NULL",
+    private fun <T> checkDecodeDataContainer(valueSerializer: KSerializer<T>, queryValue: String, expected: T) {
+        val container = decodeFromMap(
+            mapOf(DataContainer<*>::value.name to listOf(queryValue)),
+            DataContainer.serializer(valueSerializer),
         )
-        private val expextedValue = DataTypesValues(
-            "Test",
-            'A',
-            0,
-            3L,
-            3.14f,
-            3.14,
-            true,
-            BYTE_VALUE,
-            MyEnum.A,
-            listOf("zero", "one", "two"),
-            null,
+        assertEquals(expected, container.value)
+    }
+
+    @Test
+    fun testStringValue() = checkDecodeDataContainer(String.serializer(), "a string", "a string")
+
+    @Test
+    fun testCharValue() = checkDecodeDataContainer(Char.serializer(), "a", 'a')
+
+    @Test
+    fun testIntValue() = checkDecodeDataContainer(Int.serializer(), "10", 10)
+
+    @Test
+    fun testLongValue() = checkDecodeDataContainer(Long.serializer(), "100", 100L)
+
+    @Test
+    fun testFloatValue() = checkDecodeDataContainer(Float.serializer(), "3.14", 3.14f)
+
+    @Test
+    fun testDoubleValue() = checkDecodeDataContainer(Double.serializer(), "3.14", 3.14)
+
+    @Test
+    fun testBooleanValue() = checkDecodeDataContainer(Boolean.serializer(), "true", true)
+
+    @Test
+    fun testByteValue() = checkDecodeDataContainer(Byte.serializer(), "123", 123.toByte())
+
+    @Test
+    fun testEnumValue() = checkDecodeDataContainer(MyEnum.serializer(), "A", MyEnum.A)
+
+    @Test
+    fun testListValue() {
+        val container = decodeFromMap(
+            mapOf(DataContainer<*>::value.name to listOf("A", "B", "C")),
+            DataContainer.serializer(ListSerializer(MyEnum.serializer())),
         )
+        assertEquals(listOf(MyEnum.A, MyEnum.B, MyEnum.C), container.value)
     }
 
     @Test
-    fun testDecodeList() {
-        val decodedObject = decodeFromList(queryValues, DataTypesValues.serializer())
+    fun testOrderOfElementsDoesNotMatterListValue() {
+        @Serializable
+        data class Data(val name: String, val count: Int)
 
-        assertEquals(expextedValue, decodedObject)
+        @Serializable
+        data class DataWithInvertedOrder(val count: Int, val name: String)
+
+        val map = mapOf(
+            "name" to listOf("kaluga"),
+            "count" to listOf("123"),
+        )
+
+        assertEquals(Data("kaluga", 123), decodeFromMap(map, Data.serializer()))
+        assertEquals(DataWithInvertedOrder(123, "kaluga"), decodeFromMap(map, DataWithInvertedOrder.serializer()))
     }
 
     @Test
-    fun testDecodeListFailOnWrongOrder() { // it fails because the first parameter or DataTypesValues is a String.
-        val list = mutableListOf<Any>(300).plus(queryValues)
+    fun testDefaultValue() {
+        @Serializable
+        data class Data(val value: String = "123")
 
-        assertFailsWith<ClassCastException> {
-            decodeFromList(list, DataTypesValues.serializer())
-        }
-    }
+        val data = decodeFromMap(
+            mapOf("someOtherField" to listOf("someOtherValue")),
+            Data.serializer(),
+        )
 
-    @Test
-    fun testDecoder() {
-        val linksDecoder = LinksDecoder(ArrayDeque(queryValues))
-
-        linksDecoder.run {
-            testDataType<String>(decodeValue())
-            testDataType<Char>(decodeValue())
-            testDataType<Int>(decodeValue())
-            testDataType<Long>(decodeValue())
-            testDataType<Float>(decodeValue())
-            testDataType<Double>(decodeValue())
-            testDataType<Boolean>(decodeValue())
-            testDataType<Byte>(decodeValue().toString().toByte())
-            testDataType<MyEnum>(decodeValue())
-            testDataType<Int>(decodeValue()) // decode listValue.size
-            testDataType<String>(decodeValue()) // decode listValue[0]
-            testDataType<String>(decodeValue()) // decode listValue[1]
-            testDataType<String>(decodeValue()) // decode listValue[2]
-            testDataType<String>(decodeValue())
-        }
-
-        // It fails because all the fields have been decoded.
-        assertFailsWith<NoSuchElementException> {
-            testDataType<String>(linksDecoder.decodeValue())
-        }
-    }
-
-    private inline fun <reified T> testDataType(value: Any) {
-        if (enumValues<MyEnum>().any { it.name == value }) {
-            assertTrue { enumValues<MyEnum>().any { it.name == value } }
-            return
-        }
-
-        assertTrue { value is T }
+        assertEquals("123", data.value)
     }
 }

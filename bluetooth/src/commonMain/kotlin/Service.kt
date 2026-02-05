@@ -18,16 +18,15 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.ContextualLogger
 
 /**
  * A Bluetooth Service
  * @param service the [ServiceWrapper] to access the platform service
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
- * @param parentLogTag the log tag used to modify the log tag of this service
- * @param logger the [Logger] to use for logging.
+ * @param logger the [ContextualLogger] to use for logging.
  */
-class Service(service: ServiceWrapper, emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit, parentLogTag: String, logger: Logger) {
+class Service(service: ServiceWrapper, emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit, logger: ContextualLogger) {
 
     /**
      * The [UUID] of the service
@@ -41,8 +40,7 @@ class Service(service: ServiceWrapper, emitNewAction: (DeviceConnectionManager.E
         Characteristic(
             it,
             emitNewAction = emitNewAction,
-            parentLogTag = "$parentLogTag Service ${uuid.uuidString}",
-            logger = logger,
+            logger = logger.withAppendedContext("Service" to uuid.uuidString, "Characteristic" to it.uuid.uuidString),
         )
     }
 }

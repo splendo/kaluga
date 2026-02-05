@@ -1,5 +1,5 @@
 /*
- Copyright 2022 Splendo Consulting B.V. The Netherlands
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -40,6 +40,11 @@ import kotlin.time.Duration.Companion.minutes
 typealias LocationStateRepoBuilderBuilder = (suspend (CoroutineContext) -> Permissions) -> LocationStateRepoBuilder
 typealias BluetoothBuilderBuilder = (suspend (CoroutineContext) -> Permissions) -> BluetoothBuilder
 
+/*
+    Switch this value to use the location permission on Android when using bluetooth.
+ */
+const val USE_BLUETOOTH_FOR_LOCATION = false
+
 private fun sharedModule(locationStateRepoBuilderBuilder: LocationStateRepoBuilderBuilder, bluetoothBuilderBuilder: BluetoothBuilderBuilder) = module {
     single<Logger> { RestrictedLogger(RestrictedLogLevel.None) }
     single { PermissionsBuilder() }
@@ -60,7 +65,7 @@ private fun sharedModule(locationStateRepoBuilderBuilder: LocationStateRepoBuild
             builder.registerLocationPermissionIfNotRegistered(settings = settings)
             Permissions(builder, it)
         }.create(
-            scannerSettingsBuilder = { BaseScanner.Settings(it, logger = get()) },
+            scannerSettingsBuilder = { BaseScanner.Settings(permissions = it, useLocation = USE_BLUETOOTH_FOR_LOCATION, logger = get()) },
         )
     }
     single { DefaultBeacons(get<Bluetooth>(), beaconLifetime = 1.minutes, logger = get()) }

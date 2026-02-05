@@ -18,9 +18,13 @@
 package com.splendo.kaluga.scientific.unit
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [ElectricCharge]
@@ -41,12 +45,12 @@ val ElectricChargeUnits: Set<ElectricCharge> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.ElectricCharge]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.ElectricCharge]
  * SI unit is [Coulomb]
  */
 @Serializable
 sealed class ElectricCharge :
-    AbstractScientificUnit<PhysicalQuantity.ElectricCharge>(),
+    DefinedScientificUnit<PhysicalQuantity.ElectricCharge>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.ElectricCharge>
 
 @Serializable
@@ -101,4 +105,25 @@ data object Gigacoulomb : CoulombMultiple(), MetricMultipleUnit<MeasurementSyste
 /**
  * The [ElectricCharge] carried by a single proton
  */
-val elementaryCharge = 1.602176634e-19(Coulomb)
+val elementaryCharge = "1.602176634e-19".toDecimal()(Coulomb)
+
+internal fun SerializersModuleBuilder.setupForElectricCharge() {
+    polymorphic(ElectricCharge::class) {
+        registerElectricChargeClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<ElectricCharge>.registerElectricChargeClasses() {
+    subclass(Coulomb::class, Coulomb.serializer())
+    subclass(Abcoulomb::class, Abcoulomb.serializer())
+    subclass(Centicoulomb::class, Centicoulomb.serializer())
+    subclass(Decacoulomb::class, Decacoulomb.serializer())
+    subclass(Decicoulomb::class, Decicoulomb.serializer())
+    subclass(Gigacoulomb::class, Gigacoulomb.serializer())
+    subclass(Hectocoulomb::class, Hectocoulomb.serializer())
+    subclass(Kilocoulomb::class, Kilocoulomb.serializer())
+    subclass(Megacoulomb::class, Megacoulomb.serializer())
+    subclass(Microcoulomb::class, Microcoulomb.serializer())
+    subclass(Millicoulomb::class, Millicoulomb.serializer())
+    subclass(Nanocoulomb::class, Nanocoulomb.serializer())
+}

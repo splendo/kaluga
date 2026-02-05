@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricLuminousExposure]
@@ -41,11 +44,11 @@ val ImperialLuminousExposureUnits: Set<ImperialLuminousExposure> get() = Imperia
 val LuminousExposureUnits: Set<LuminousExposure> get() = MetricLuminousExposureUnits + ImperialLuminousExposureUnits
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.LuminousExposure]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.LuminousExposure]
  * SI unit is `Lux x Second`
  */
 @Serializable
-sealed class LuminousExposure : AbstractScientificUnit<PhysicalQuantity.LuminousExposure>() {
+sealed class LuminousExposure : DefinedScientificUnit<PhysicalQuantity.LuminousExposure>() {
     /**
      * The [Illuminance] component
      */
@@ -98,3 +101,14 @@ infix fun MetricIlluminance.x(time: Time) = MetricLuminousExposure(this, time)
  * @return the [ImperialLuminousExposure] represented by the units
  */
 infix fun ImperialIlluminance.x(time: Time) = ImperialLuminousExposure(this, time)
+
+internal fun SerializersModuleBuilder.setupForLuminousExposure() {
+    polymorphic(LuminousExposure::class) {
+        registerLuminousExposureClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<LuminousExposure>.registerLuminousExposureClasses() {
+    subclass(ImperialLuminousExposure::class, ImperialLuminousExposure.serializer())
+    subclass(MetricLuminousExposure::class, MetricLuminousExposure.serializer())
+}

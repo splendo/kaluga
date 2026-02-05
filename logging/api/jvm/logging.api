@@ -1,3 +1,10 @@
+public final class com/splendo/kaluga/logging/ContextualLogger : com/splendo/kaluga/logging/Logger {
+	public fun <init> (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/util/Map;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun log (Lcom/splendo/kaluga/logging/LogLevel;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public final fun withAppendedContext (Lkotlin/Pair;[Lkotlin/Pair;)Lcom/splendo/kaluga/logging/ContextualLogger;
+}
+
 public final class com/splendo/kaluga/logging/JvmLogKt {
 	public static final fun getDefaultLogger ()Lcom/splendo/kaluga/logging/Logger;
 	public static final fun getLogger ()Lcom/splendo/kaluga/logging/Logger;
@@ -95,6 +102,10 @@ public final class com/splendo/kaluga/logging/LogLevel : java/lang/Enum {
 
 public abstract interface class com/splendo/kaluga/logging/Logger {
 	public abstract fun log (Lcom/splendo/kaluga/logging/LogLevel;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public static synthetic fun log$default (Lcom/splendo/kaluga/logging/Logger;Lcom/splendo/kaluga/logging/LogLevel;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+}
+
+public final class com/splendo/kaluga/logging/Logger$DefaultImpls {
 	public static synthetic fun log$default (Lcom/splendo/kaluga/logging/Logger;Lcom/splendo/kaluga/logging/LogLevel;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
 }
 

@@ -20,42 +20,38 @@ package com.splendo.kaluga.base
 
 import android.app.Application
 import android.content.Context
-import com.splendo.kaluga.base.ApplicationHolder.Companion.application
+import com.splendo.kaluga.base.ApplicationHolder.applicationContext
 
 /**
- * Class holding reference to the [Application] running Kaluga
- * set [application] to your Application so default constructors work with the proper [Context]
+ * Class holding reference to the [Application] [Context] running Kaluga
+ * set [applicationContext] to your Application so default constructors work with the proper [Context]
  */
-class ApplicationHolder {
-    companion object {
+object ApplicationHolder {
 
-        /**
-         * The [Application] running Kaluga
-         */
-        var application: Application? = null
-            set(application) {
-                check(field == null) { "Application object can only be set once." }
-                field = application
+    private var _applicationContext: Context? = null
+        set(value) {
+            check(field == null) { "Application object can only be set once." }
+            field = value
+        }
+
+    /**
+     * Indicates whether [Application] [Context] was set
+     */
+    val isInitialized: Boolean get() = _applicationContext != null
+
+    /**
+     * The [Context] of the [Application] running Kaluga
+     */
+    var applicationContext: Context
+        get() {
+            val context = _applicationContext
+            checkNotNull(context) {
+                "You've used ApplicationHolder.applicationContext without setting it on this holder " +
+                    "(you should do this from Application.onCreate() or in your test)"
             }
-
-        /**
-         * The [Context] of the [application]
-         */
-        val applicationContext: Context
-            get() {
-                val application = this.application
-                checkNotNull(application) {
-                    "You've used ApplicationHolder.applicationContext without setting the Application on this holder " +
-                        "(you should do this from Application.onCreate() or in your test)"
-                }
-
-                val context = application.applicationContext
-                checkNotNull(context) {
-                    "ApplicationContext is null, this should not happen during runtime if you set a real Application instance on this holder." +
-                        "For testing make sure you set an Application with a real or mock ApplicationContext available."
-                }
-
-                return context
-            }
-    }
+            return context
+        }
+        set(value) {
+            _applicationContext = value.applicationContext
+        }
 }

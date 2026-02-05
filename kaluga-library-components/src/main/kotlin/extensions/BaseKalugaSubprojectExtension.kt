@@ -1,5 +1,5 @@
 /*
- Copyright 2024 Splendo Consulting B.V. The Netherlands
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,32 +17,22 @@
 
 package com.splendo.kaluga.plugin.extensions
 
-import com.android.build.gradle.LibraryExtension
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.publish.PublicationContainer
-import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
-import org.gradle.kotlin.dsl.configure
-import org.gradle.plugins.signing.Sign
+import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationVariantSpec
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
-sealed class BaseKalugaSubprojectExtension(
-    versionCatalog: VersionCatalog,
-    private val libraryExtension: LibraryExtension,
-    private val namespacePostfix: String?,
-    objects: ObjectFactory,
-) : BaseKalugaExtension(versionCatalog, objects) {
+sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, protected val namespacePostfix: String?, objects: ObjectFactory) :
+    BaseKalugaExtension(versionCatalog, objects) {
 
-    var isPublished: Boolean = true
-
+    abstract var namespace: String?
     var moduleName: String
-        get() = libraryExtension.namespace.orEmpty()
+        get() = namespace.orEmpty()
             .removePrefix("$BASE_GROUP.")
             .removeSuffix(namespacePostfix?.let { ".$it" } ?: "")
         set(value) {
-            libraryExtension.namespace = listOfNotNull(BASE_GROUP, value, namespacePostfix).joinToString(".")
+            namespace = listOfNotNull(BASE_GROUP, value, namespacePostfix).joinToString(".")
         }
 
     protected val androidMainDependencies = listOf(
@@ -59,7 +49,7 @@ sealed class BaseKalugaSubprojectExtension(
         "mockito-core",
     ).map { it.asDependency() }
 
-    protected val androidInstrumentedTestDependencies = listOf(
+    protected val androidDeviceTestDependencies = listOf(
         "androidx-test-core",
         "androidx-test-core-ktx",
         "androidx-test-espresso",
@@ -75,75 +65,27 @@ sealed class BaseKalugaSubprojectExtension(
         "mockito-android",
     ).map { it.asDependency() }
 
-    override fun Project.beforeEvaluated() {
-        setupSubproject()
-        libraryExtension.apply {
-            compileSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
-            buildToolsVersion = versionCatalog.findVersion("androidBuildTools").get().displayName
-
-            defaultConfig {
-                minSdk = versionCatalog.findVersion("androidMinSdk").get().displayName.toInt()
-
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-            }
-
-            signingConfigs {
-                create("stableDebug") {
-                    storeFile = project.rootProject.file("keystore/stableDebug.keystore")
-                    storePassword = "stableDebug"
-                    keyAlias = "stableDebug"
-                    keyPassword = "stableDebug"
-                }
-            }
-
-            buildTypes {
-                release {
-                    isMinifyEnabled = false
-                }
-                debug {
-                    signingConfig = signingConfigs.getByName("stableDebug")
-                }
-            }
-
-            compileOptions {
-                val javaVersion = JavaVersion.toVersion(versionCatalog.findVersion("java").get().displayName)
-                sourceCompatibility = javaVersion
-                targetCompatibility = javaVersion
-            }
-
-            configure()
-        }
-    }
-
     protected abstract fun Project.setupSubproject()
 
+    @OptIn(ExperimentalAbiValidation::class)
     override fun Project.afterProjectEvaluated() {
         if (moduleName.isEmpty()) {
             throw RuntimeException("moduleName must be configured")
-        }
-
-        configureSubproject()
-        if (isPublished) {
-            setupPublishing()
         }
     }
 
     protected abstract fun Project.configureSubproject()
 
-    protected abstract fun LibraryExtension.configure()
-    private fun Project.setupPublishing() {
-        extensions.configure(PublishingExtension::class) {
-            publications {
-                configure(project)
-            }
-        }
+    protected fun String.asDependency() = versionCatalog.findLibrary(this).get()
 
-        tasks.withType(AbstractPublishToMaven::class.java).configureEach {
-            dependsOn(tasks.withType(Sign::class.java))
+    @OptIn(ExperimentalAbiValidation::class)
+    protected fun AbiValidationVariantSpec.abiExtension() {
+        filters.excluded {
+            byNames.set(
+                setOf(
+                    "com.splendo.kaluga.$moduleName.BuildConfig",
+                )
+            )
         }
     }
-
-    protected abstract fun PublicationContainer.configure(project: Project)
-
-    protected fun String.asDependency() = versionCatalog.findLibrary(this).get()
 }

@@ -17,31 +17,22 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.converter.magneticFlux.div
-import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class MagneticInductionUnitTest {
 
     @Test
     fun magneticInductionConversionTest() {
-        assertScientificConversion(1, Tesla, 1e+9, Nanotesla)
-        assertScientificConversion(1, Tesla, 1e+6, Microtesla)
-        assertScientificConversion(1, Tesla, 1000.0, Millitesla)
-        assertScientificConversion(1, Tesla, 100.0, Centitesla)
-        assertScientificConversion(1, Tesla, 10.0, Decitesla)
-        assertScientificConversion(1, Tesla, 0.1, Decatesla)
-        assertScientificConversion(1, Tesla, 0.01, Hectotesla)
-        assertScientificConversion(1, Tesla, 0.001, Kilotesla)
-        assertScientificConversion(1, Tesla, 1e-6, Megatesla)
-        assertScientificConversion(1, Tesla, 1e-9, Gigatesla)
-        assertScientificConversion(1, Tesla, 10000.0, Gauss)
-    }
-
-    @Test
-    fun inductionFromFluxAndAreaTest() {
-        assertEquals(1(Gauss), 2(Maxwell) / 2(SquareCentimeter))
-        assertEquals(1(Tesla), 2(Weber) / 2(SquareMeter))
+        assertScientificConversion("1", Tesla, "1e+9", Nanotesla)
+        assertScientificConversion("1", Tesla, "1e+6", Microtesla)
+        assertScientificConversion("1", Tesla, "1000.0", Millitesla)
+        assertScientificConversion("1", Tesla, "100.0", Centitesla)
+        assertScientificConversion("1", Tesla, "10.0", Decitesla)
+        assertScientificConversion("1", Tesla, "0.1", Decatesla)
+        assertScientificConversion("1", Tesla, "0.01", Hectotesla)
+        assertScientificConversion("1", Tesla, "0.001", Kilotesla)
+        assertScientificConversion("1", Tesla, "1e-6", Megatesla)
+        assertScientificConversion("1", Tesla, "1e-9", Gigatesla)
+        assertScientificConversion("1", Tesla, "10000.0", Gauss)
     }
 }

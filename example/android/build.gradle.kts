@@ -1,5 +1,3 @@
-import com.splendo.kaluga.plugin.helpers.gitBranch
-
 plugins {
     id("com.android.application")
     id(libs.plugins.kotlin.android.get().pluginId)
@@ -9,8 +7,7 @@ plugins {
 }
 
 group = "com.splendo.kaluga"
-val kalugaVersion = libs.versions.kaluga.get()
-version = gitBranch.toVersion(kalugaVersion)
+version = libs.versions.kaluga.get()
 
 android {
     namespace = "com.splendo.kaluga.example"
@@ -37,10 +34,6 @@ android {
             storeFile = file("../keystore/debug.keystore")
             storePassword = "nckI1UYofHIMkOnXpmZJVA"
         }
-    }
-
-    kotlinOptions {
-        jvmTarget = libs.versions.java.get()
     }
 
     buildTypes {
@@ -81,10 +74,10 @@ kotlin {
 }
 
 dependencies {
-    implementation("com.splendo.kaluga:architecture-compose:$version")
-    implementation("com.splendo.kaluga:keyboard-compose:$version")
-    implementation("com.splendo.kaluga:resources-compose:$version")
-    implementation("com.splendo.kaluga:resources-databinding:$version")
+    implementation("com.splendo.kaluga:architecture-compose:${project.rootProject.version}")
+    implementation("com.splendo.kaluga:keyboard-compose:${project.rootProject.version}")
+    implementation("com.splendo.kaluga:resources-compose:${project.rootProject.version}")
+    implementation("com.splendo.kaluga:resources-databinding:${project.rootProject.version}")
     implementation(project(":shared"))
 
     implementation(libs.androidx.compose.ui)
@@ -108,4 +101,3 @@ dependencies {
 
     implementation(libs.koin.compose)
 }
-

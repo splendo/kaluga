@@ -71,6 +71,7 @@ actual class DefaultLocationPermissionManager(private val bundle: NSBundle, loca
 
     private val permissionHandler = DefaultAuthorizationStatusHandler(eventChannel, logTag, logger)
     private val locationManager = MainCLLocationManagerAccessor {
+        allowsBackgroundLocationUpdates = permission.background
         desiredAccuracy = if (permission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
     }
 
@@ -129,8 +130,11 @@ actual class LocationPermissionManagerBuilder actual constructor(private val con
 
 private fun Pair<CLAuthorizationStatus, Boolean>.toAuthorizationStatus(permission: LocationPermission): IOSPermissionsHelper.AuthorizationStatus = when (first) {
     kCLAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+
     kCLAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+
     kCLAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+
     kCLAuthorizationStatusAuthorizedAlways -> {
         if (permission.precise && !second) {
             IOSPermissionsHelper.AuthorizationStatus.Denied
@@ -138,6 +142,7 @@ private fun Pair<CLAuthorizationStatus, Boolean>.toAuthorizationStatus(permissio
             IOSPermissionsHelper.AuthorizationStatus.Authorized
         }
     }
+
     kCLAuthorizationStatusAuthorizedWhenInUse -> {
         if (permission.background || (permission.precise && !second)) {
             IOSPermissionsHelper.AuthorizationStatus.Denied
@@ -145,6 +150,7 @@ private fun Pair<CLAuthorizationStatus, Boolean>.toAuthorizationStatus(permissio
             IOSPermissionsHelper.AuthorizationStatus.Authorized
         }
     }
+
     else -> {
         com.splendo.kaluga.logging.error("Unknown CLAuthorizationStatus $first")
         IOSPermissionsHelper.AuthorizationStatus.Denied

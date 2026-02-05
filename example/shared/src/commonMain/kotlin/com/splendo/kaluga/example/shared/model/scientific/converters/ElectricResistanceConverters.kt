@@ -51,9 +51,11 @@ val PhysicalQuantity.ElectricResistance.converters get() = listOf<QuantityConver
             leftUnit is Abohm && rightUnit is Frequency -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ElectricResistance && rightUnit is Frequency -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -66,9 +68,11 @@ val PhysicalQuantity.ElectricResistance.converters get() = listOf<QuantityConver
             leftUnit is Abohm && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ElectricResistance && rightUnit is Time -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -81,6 +85,7 @@ val PhysicalQuantity.ElectricResistance.converters get() = listOf<QuantityConver
             leftUnit is ElectricResistance && rightUnit is ElectricInductance -> {
                 DefaultScientificValue(leftValue, leftUnit) / DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -93,9 +98,11 @@ val PhysicalQuantity.ElectricResistance.converters get() = listOf<QuantityConver
             leftUnit is Abohm && rightUnit is Abcoulomb -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ElectricResistance && rightUnit is ElectricCharge -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -108,6 +115,7 @@ val PhysicalQuantity.ElectricResistance.converters get() = listOf<QuantityConver
             leftUnit is ElectricResistance && rightUnit is ElectricCapacitance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -120,12 +128,15 @@ val PhysicalQuantity.ElectricResistance.converters get() = listOf<QuantityConver
             leftUnit is Abohm && rightUnit is Abampere -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is Abohm && rightUnit is Biot -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is ElectricResistance && rightUnit is ElectricCurrent -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

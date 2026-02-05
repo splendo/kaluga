@@ -21,6 +21,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -39,17 +40,19 @@ import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
  * @param backgroundStyle the [KalugaBackgroundStyle] to modify with
  * @return a [Modifier] that adds a background according to the [KalugaBackgroundStyle]
  */
+@Composable
 fun Modifier.backgroundStyle(backgroundStyle: KalugaBackgroundStyle) = background(
-    backgroundStyle.fillStyle.brush,
+    backgroundStyle.fillStyle.brush(),
     backgroundStyle.shape.shape,
-).border(backgroundStyle.strokeStyle.borderStroke, backgroundStyle.shape.shape)
+).border(backgroundStyle.strokeStyle.borderStroke(), backgroundStyle.shape.shape)
 
 /**
  * Gets the [Brush] of a [KalugaBackgroundStyle.FillStyle]
  */
-val KalugaBackgroundStyle.FillStyle.brush: Brush get() = when (this) {
-    is KalugaBackgroundStyle.FillStyle.Solid -> SolidColor(color.composable)
-    is KalugaBackgroundStyle.FillStyle.Gradient -> gradientStyle.brush
+@Composable
+fun KalugaBackgroundStyle.FillStyle.brush(): Brush = when (this) {
+    is KalugaBackgroundStyle.FillStyle.Solid -> SolidColor(color.composable())
+    is KalugaBackgroundStyle.FillStyle.Gradient -> gradientStyle.brush()
 }
 
 /**
@@ -86,42 +89,45 @@ val KalugaBackgroundStyle.Shape.shape: Shape get() = when (this) {
             },
         )
     }
+
     is KalugaBackgroundStyle.Shape.Oval -> androidx.compose.foundation.shape.CircleShape
 }
 
-val KalugaBackgroundStyle.StrokeStyle.borderStroke: BorderStroke get() = when (this) {
+@Composable
+fun KalugaBackgroundStyle.StrokeStyle.borderStroke(): BorderStroke = when (this) {
     is KalugaBackgroundStyle.StrokeStyle.None -> BorderStroke(0.0f.dp, Color.Transparent)
-    is KalugaBackgroundStyle.StrokeStyle.Stroke -> BorderStroke(width.dp, color.composable)
+    is KalugaBackgroundStyle.StrokeStyle.Stroke -> BorderStroke(width.dp, color.composable())
 }
 
 @Preview
 @Composable
-fun PreviewBackgroundStyle() {
+private fun PreviewBackgroundStyle() {
     Box(
-        modifier = Modifier.backgroundStyle(
-            KalugaBackgroundStyle(
-                KalugaBackgroundStyle.FillStyle.Gradient(
-                    GradientStyle.Radial(
-                        listOf(
-                            GradientStyle.ColorPoint(DefaultColors.darkBlue, 0.2f),
-                            GradientStyle.ColorPoint(DefaultColors.blue, 0.4f),
-                            GradientStyle.ColorPoint(DefaultColors.aliceBlue, 0.6f),
+        modifier = Modifier
+            .backgroundStyle(
+                KalugaBackgroundStyle(
+                    KalugaBackgroundStyle.FillStyle.Gradient(
+                        GradientStyle.Radial(
+                            listOf(
+                                GradientStyle.ColorPoint(DefaultColors.darkBlue, 0.2f),
+                                GradientStyle.ColorPoint(DefaultColors.blue, 0.4f),
+                                GradientStyle.ColorPoint(DefaultColors.aliceBlue, 0.6f),
+                            ),
+                            50.0f,
+                            GradientStyle.CenterPoint(0.2f, 0.3f),
                         ),
-                        50.0f,
-                        GradientStyle.CenterPoint(0.2f, 0.3f),
+                    ),
+                    KalugaBackgroundStyle.StrokeStyle.Stroke(1.0f, DefaultColors.black),
+                    KalugaBackgroundStyle.Shape.Rectangle(
+                        8.0f,
+                        4.0f,
+                        setOf(
+                            KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT,
+                            KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT,
+                        ),
                     ),
                 ),
-                KalugaBackgroundStyle.StrokeStyle.Stroke(1.0f, DefaultColors.black),
-                KalugaBackgroundStyle.Shape.Rectangle(
-                    4.0f,
-                    2.0f,
-                    setOf(
-                        KalugaBackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT,
-                        KalugaBackgroundStyle.Shape.Rectangle.Corner.TOP_RIGHT,
-                    ),
-                ),
-            ),
-        ),
+            ).padding(8.dp),
     ) {
         Text("Test")
     }

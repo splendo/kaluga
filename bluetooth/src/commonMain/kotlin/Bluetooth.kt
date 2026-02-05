@@ -47,6 +47,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -227,6 +228,7 @@ class Bluetooth constructor(coroutineContext: CoroutineContext, scanningStateRep
                     shouldStartRetrievingPairing = true
                     emit(emptyList())
                 }
+
                 else -> {
                     shouldStartRetrievingPairing = true
                 }
@@ -243,8 +245,10 @@ class Bluetooth constructor(coroutineContext: CoroutineContext, scanningStateRep
                     ) { it.startScanning(scanMode.filter, scanMode.cleanMode, scanMode.connectionSettings) }
                     scanState.devices
                 }
+
                 is ScanMode.Stopped -> scanState.devices
             }
+
             is ScanningState.Enabled.Scanning -> when (scanMode) {
                 is ScanMode.Scan -> {
                     if (scanState.devices.currentScanFilter.filter == scanMode.filter) {
@@ -259,6 +263,7 @@ class Bluetooth constructor(coroutineContext: CoroutineContext, scanningStateRep
                         scanState.devices
                     }
                 }
+
                 is ScanMode.Stopped -> {
                     scanningStateRepo.takeAndChangeState(
                         remainIfStateNot = ScanningState.Enabled.Scanning::class,
@@ -266,7 +271,9 @@ class Bluetooth constructor(coroutineContext: CoroutineContext, scanningStateRep
                     scanState.devices
                 }
             }
+
             is ScanningState.Deinitialized -> scanState.previousDevices
+
             is ScanningState.NoBluetooth, is ScanningState.NoHardware, is ScanningState.Inactive, is ScanningState.Initializing -> scanState.nothingFound
         }
     }.distinctUntilChanged()
@@ -354,11 +361,15 @@ fun Flow<Device?>.services(): Flow<List<Service>> = state().transformLatest { de
                         deviceState.startDiscovering()
                         emptyList()
                     }
+
                     is ConnectableDeviceState.Connected.Idle -> deviceState.services
+
                     is ConnectableDeviceState.Connected.HandlingAction -> deviceState.services
+
                     else -> emptyList()
                 }
             }
+
             else -> emptyList()
         },
     )
@@ -370,20 +381,18 @@ fun Flow<Device?>.services(): Flow<List<Service>> = state().transformLatest { de
  * @param reconnectionSettings the [ConnectionSettings.ReconnectionSettings] to use if the [Device] disconnects after connecting. If `null` the default will be used.
  * @return `true` if connection was successful
  */
-suspend fun Flow<Device?>.connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null) {
-    transformLatest { device ->
-        device?.let {
-            try {
-                emit(it.connect(reconnectionSettings))
-            } catch (e: CancellationException) {
-                withContext(NonCancellable) {
-                    it.disconnect()
-                }
-                throw e
+suspend fun Flow<Device?>.connect(reconnectionSettings: ConnectionSettings.ReconnectionSettings? = null): Boolean = transformLatest { device ->
+    device?.let {
+        try {
+            emit(it.connect(reconnectionSettings))
+        } catch (e: CancellationException) {
+            withContext(NonCancellable) {
+                it.disconnect()
             }
+            throw e
         }
-    }.first()
-}
+    }
+}.first()
 
 /**
  * Attempts to disconnect to the [Device] from a [Flow] of [Device]
@@ -423,7 +432,7 @@ fun Flow<Device?>.rssi(): Flow<RSSI> = info().map { it.rssi }.distinctUntilChang
  * @return the [Flow] of [MTU] associated with the [Device] in the given [Flow]
  */
 fun Flow<Device?>.mtu() = state().map { state ->
-    if (state is ConnectableDeviceState.Connected) {
+    if (state is ConnectableDeviceState.Connected.MtuHolder) {
         state.mtu
     } else {
         null
@@ -463,6 +472,7 @@ suspend fun Flow<Device?>.updateRssi() {
                 deviceState.readRssi()
                 emit(Unit)
             }
+
             else -> {}
         }
     }.first()
@@ -470,18 +480,11 @@ suspend fun Flow<Device?>.updateRssi() {
 
 /**
  * Attempts to request a [MTU] size for the [Device] from a [Flow] of [Device]
- * When this method completes, the devices should have had [ConnectableDeviceState.Connected.requestMtu] called
  * @param mtu the [MTU] size to request
- * @return if `true` the new MTU value has been requested successfully
  */
-suspend fun Flow<Device?>.requestMtu(mtu: MTU): Boolean = state().transformLatest { deviceState ->
-    when (deviceState) {
-        is ConnectableDeviceState.Connected -> {
-            emit(deviceState.requestMtu(mtu))
-        }
-        else -> {}
-    }
-}.first()
+suspend fun Flow<Device?>.requestMtu(mtu: MTU) = state()
+    .filterIsInstance<ConnectableDeviceState.Connected.MtuHolder>()
+    .first().requestMtu(mtu)
 
 /**
  * Gets a ([Flow] of) [Service] of a given [UUID] from a [Flow] of a list of [Service]

@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricIlluminance]
@@ -62,11 +65,11 @@ val ImperialIlluminanceUnits: Set<ImperialIlluminance> get() = setOf(
 val IlluminanceUnits: Set<Illuminance> get() = MetricIlluminanceUnits + ImperialIlluminanceUnits
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Illuminance]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Illuminance]
  * SI unit is [Lux]
  */
 @Serializable
-sealed class Illuminance : AbstractScientificUnit<PhysicalQuantity.Illuminance>()
+sealed class Illuminance : DefinedScientificUnit<PhysicalQuantity.Illuminance>()
 
 /**
  * An [Illuminance] for [MeasurementSystem.Metric]
@@ -179,4 +182,36 @@ data object FootCandle : ImperialIlluminance() {
     override val quantity = PhysicalQuantity.Illuminance
     override fun fromSIUnit(value: Decimal): Decimal = SquareFoot.toSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = SquareFoot.fromSIUnit(value)
+}
+
+internal fun SerializersModuleBuilder.setupForIlluminance() {
+    polymorphic(Illuminance::class) {
+        registerIlluminanceClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Illuminance>.registerIlluminanceClasses() {
+    subclass(FootCandle::class, FootCandle.serializer())
+    subclass(Lux::class, Lux.serializer())
+    subclass(Centilux::class, Centilux.serializer())
+    subclass(Decalux::class, Decalux.serializer())
+    subclass(Decilux::class, Decilux.serializer())
+    subclass(Gigalux::class, Gigalux.serializer())
+    subclass(Hectolux::class, Hectolux.serializer())
+    subclass(Kilolux::class, Kilolux.serializer())
+    subclass(Megalux::class, Megalux.serializer())
+    subclass(Microlux::class, Microlux.serializer())
+    subclass(Millilux::class, Millilux.serializer())
+    subclass(Nanolux::class, Nanolux.serializer())
+    subclass(Phot::class, Phot.serializer())
+    subclass(Centiphot::class, Centiphot.serializer())
+    subclass(Decaphot::class, Decaphot.serializer())
+    subclass(Deciphot::class, Deciphot.serializer())
+    subclass(Gigaphot::class, Gigaphot.serializer())
+    subclass(Hectophot::class, Hectophot.serializer())
+    subclass(Kilophot::class, Kilophot.serializer())
+    subclass(Megaphot::class, Megaphot.serializer())
+    subclass(Microphot::class, Microphot.serializer())
+    subclass(Milliphot::class, Milliphot.serializer())
+    subclass(Nanophot::class, Nanophot.serializer())
 }

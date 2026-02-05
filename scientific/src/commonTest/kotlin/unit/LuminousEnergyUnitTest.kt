@@ -17,35 +17,15 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.convert
-import com.splendo.kaluga.scientific.converter.area.times
-import com.splendo.kaluga.scientific.converter.luminousExposure.times
-import com.splendo.kaluga.scientific.converter.luminousFlux.times
-import com.splendo.kaluga.scientific.converter.time.times
-import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class LuminousEnergyUnitTest {
 
     @Test
     fun luminousEnergyConversionTest() {
-        assertScientificConversion(1.0, Lumen x Second, 0.027778, Centilumen x Hour, 6)
-    }
-
-    @Test
-    fun luminousEnergyFromLuminousExposureAndAreaTest() {
-        assertEquals(4(Lumen x Second), 2(Lux x Second) * 2(SquareMeter))
-        assertEquals(4(Lumen x Second), 2(SquareMeter) * 2(Lux x Second))
-        assertEquals(4(Lumen x Second), 2(FootCandle x Second) * 2(SquareFoot))
-        assertEquals(4(Lumen x Second), 2(SquareFoot) * 2(FootCandle x Second))
-        assertEquals(4(Lumen x Second), 2(Lux x Second) * 2(SquareMeter).convert(SquareFoot))
-        assertEquals(4(Lumen x Second), 2(SquareMeter).convert(SquareFoot) * 2(Lux x Second))
-    }
-
-    @Test
-    fun luminousEnergyFromLuminousFluxAndTimeTest() {
-        assertEquals(4(Lumen x Second), 2(Lumen) * 2(Second))
-        assertEquals(4(Lumen x Second), 2(Second) * 2(Lumen))
+        assertScientificConversion(Decimal.ONE, Lumen x Second, Decimal.ONE / 36.toDecimal(), Centilumen x Hour, round = 32)
     }
 }

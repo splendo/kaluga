@@ -9,6 +9,7 @@
 "feature_keyboard" = "Keyboard";
 "feature_location" = "Location";
 "feature_media" = "Media";
+"feature_media_sound" = "Sound";
 "feature_permissions" = "Permissions";
 "feature_links" = "Links";
 "feature_beacons" = "Beacons";
@@ -126,6 +127,10 @@ That query will be deserialized into a object and shown in an alert.";
 "media_playback_update_volume" = "Update Volume";
 "media_playback_rate" = "Set playback rate";
 "media_error_title" = "An error occurred playing this media";
+
+"resources_color_current_mode" = "Color in current mode";
+"resources_color_dark_mode" = "Color in dark mode";
+"resources_color_light_mode" = "Color in light mode";
 
 "ios_ui_type_selector" = "Select UI Type";
 "ios_swift_ui" = "SwiftUI";

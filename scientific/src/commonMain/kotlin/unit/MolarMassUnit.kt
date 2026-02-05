@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricMolarMass]
@@ -58,11 +61,11 @@ val MolarMassUnits: Set<MolarMass> get() = MetricMolarMassUnits +
     USCustomaryMolarMassUnits.filter { it.weight !is USCustomaryImperialWeightWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.MolarMass]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.MolarMass]
  * SI unit is `Kilogram per Mole`
  */
 @Serializable
-sealed class MolarMass : AbstractScientificUnit<PhysicalQuantity.MolarMass>() {
+sealed class MolarMass : DefinedScientificUnit<PhysicalQuantity.MolarMass>() {
 
     /**
      * The [Weight] component
@@ -164,3 +167,16 @@ infix fun USCustomaryWeight.per(amountOfSubstance: AmountOfSubstance) = USCustom
  * @return the [UKImperialMolarMass] represented by the units
  */
 infix fun UKImperialWeight.per(amountOfSubstance: AmountOfSubstance) = UKImperialMolarMass(this, amountOfSubstance)
+
+internal fun SerializersModuleBuilder.setupForMolarMass() {
+    polymorphic(MolarMass::class) {
+        registerMolarMassClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<MolarMass>.registerMolarMassClasses() {
+    subclass(ImperialMolarMass::class, ImperialMolarMass.serializer())
+    subclass(MetricMolarMass::class, MetricMolarMass.serializer())
+    subclass(UKImperialMolarMass::class, UKImperialMolarMass.serializer())
+    subclass(USCustomaryMolarMass::class, USCustomaryMolarMass.serializer())
+}

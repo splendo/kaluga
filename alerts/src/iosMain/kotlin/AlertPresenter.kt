@@ -80,6 +80,7 @@ actual class AlertPresenter(
             -> UIAlertActionStyleDefault
 
             Alert.Action.Style.DESTRUCTIVE -> UIAlertActionStyleDestructive
+
             Alert.Action.Style.CANCEL,
             Alert.Action.Style.NEGATIVE,
             -> UIAlertActionStyleCancel
@@ -102,7 +103,7 @@ actual class AlertPresenter(
         BaseAlertPresenter.Builder() {
 
         /**
-         * Constructor that returns a [DefaultUIPopoverPresentationControllerDelegateProtocol] when a presented [AlertPresenter] requires a [UIPopoverPresentationControllerDelegateProtocol].
+         * Constructor that returns a [DefaultUIPopoverPresentationControllerDelegateProtocol] when a presented [AlertPresenter] requires a [KalugaUIPopoverPresentationControllerDelegate].
          * @param viewController The [UIViewController] to present any [AlertPresenter] built using this builder.
          */
         constructor(

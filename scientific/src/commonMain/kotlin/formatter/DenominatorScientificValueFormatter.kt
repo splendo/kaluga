@@ -78,7 +78,9 @@ class DenominatorScientificValueFormatter private constructor(
             includeZeroValues: IncludeZeroValues,
         ) = when (denominators.size) {
             0 -> lastDenominatorFormatter.format(FormatterScientificValue(value, unit))
+
             1 -> lastDenominatorFormatter.format(FormatterScientificValue(value, unit).convert(denominators.first(), ::FormatterScientificValue))
+
             else -> {
                 // Convert the initial value to the first denominator value
                 val initialValue = FormatterScientificValue(value, unit).convert(denominators.first(), ::FormatterScientificValue)
@@ -98,7 +100,7 @@ class DenominatorScientificValueFormatter private constructor(
 
         private fun ScientificValue<Quantity, *>.equalsToZeroForFormat(formatter: ScientificValueFormatter): Boolean {
             // Format 0.0
-            val zeroFormatted = formatter.format(FormatterScientificValue(0.0.toDecimal(), unit))
+            val zeroFormatted = formatter.format(FormatterScientificValue(Decimal.ZERO, unit))
             // Format the value in the given unit
             val formatted = formatter.format(this)
             // If they are the same, the value is 0
@@ -112,8 +114,11 @@ class DenominatorScientificValueFormatter private constructor(
         ): List<String> {
             val valuesToFormat = when (includeZeroValues) {
                 IncludeZeroValues.ALL -> this
+
                 IncludeZeroValues.NONE -> removeZeroElements(formatter, lastFormatter)
+
                 IncludeZeroValues.ONLY_NON_ENDING -> removeEndingZeroes(lastFormatter)
+
                 IncludeZeroValues.ONLY_FIRST_ENDING -> {
                     // Remove ending zeroes and for remaining values remove zeroes
                     when (val indexOfFirstEnding = removeEndingZeroes(lastFormatter).size) {
@@ -122,6 +127,7 @@ class DenominatorScientificValueFormatter private constructor(
                         else -> subList(0, indexOfFirstEnding).removeZeroElements(formatter) + get(indexOfFirstEnding)
                     }
                 }
+
                 IncludeZeroValues.ONLY_NON_ENDING_AND_FIRST_ENDING -> {
                     // Get sublist up to and including first ending element
                     when (val indexOfFirstEnding = removeEndingZeroes(lastFormatter).size) {
@@ -323,6 +329,7 @@ class DenominatorScientificValueFormatter private constructor(
         val denominators = denominators[valueToFormat.unit]
         return when {
             denominators == null || denominators.denominators.isEmpty() -> defaultFormatter.format(valueToFormat)
+
             else -> denominators.formatValue(
                 valueToFormat.decimalValue,
                 separator,

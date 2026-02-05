@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [LuminousIntensity]
@@ -39,12 +42,12 @@ val LuminousIntensityUnits: Set<LuminousIntensity> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.LuminousIntensity]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.LuminousIntensity]
  * SI unit is [Candela]
  */
 @Serializable
 sealed class LuminousIntensity :
-    AbstractScientificUnit<PhysicalQuantity.LuminousIntensity>(),
+    DefinedScientificUnit<PhysicalQuantity.LuminousIntensity>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.LuminousIntensity>
 
 @Serializable
@@ -90,3 +93,23 @@ data object Megacandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSyste
 
 @Serializable
 data object Gigacandela : CandelaMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.LuminousIntensity, Candela> by Giga(Candela)
+
+internal fun SerializersModuleBuilder.setupForLuminousIntensity() {
+    polymorphic(LuminousIntensity::class) {
+        registerLuminousIntensityClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<LuminousIntensity>.registerLuminousIntensityClasses() {
+    subclass(Candela::class, Candela.serializer())
+    subclass(Centicandela::class, Centicandela.serializer())
+    subclass(Decacandela::class, Decacandela.serializer())
+    subclass(Decicandela::class, Decicandela.serializer())
+    subclass(Gigacandela::class, Gigacandela.serializer())
+    subclass(Hectocandela::class, Hectocandela.serializer())
+    subclass(Kilocandela::class, Kilocandela.serializer())
+    subclass(Megacandela::class, Megacandela.serializer())
+    subclass(Microcandela::class, Microcandela.serializer())
+    subclass(Millicandela::class, Millicandela.serializer())
+    subclass(Nanocandela::class, Nanocandela.serializer())
+}

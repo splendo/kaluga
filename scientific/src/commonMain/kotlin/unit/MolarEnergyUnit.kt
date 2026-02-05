@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricAndImperialMolarEnergy]
@@ -50,11 +53,11 @@ val MolarEnergyUnits: Set<MolarEnergy> get() = MetricAndImperialMolarEnergyUnits
     ImperialMolarEnergyUnits.filter { it.energy !is ImperialMetricAndImperialEnergyWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.MolarEnergy]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.MolarEnergy]
  * SI unit is `Joule per Mole`
  */
 @Serializable
-sealed class MolarEnergy : AbstractScientificUnit<PhysicalQuantity.MolarEnergy>() {
+sealed class MolarEnergy : DefinedScientificUnit<PhysicalQuantity.MolarEnergy>() {
 
     /**
      * The [Energy] component
@@ -137,3 +140,15 @@ infix fun MetricEnergy.per(amountOfSubstance: AmountOfSubstance) = MetricMolarEn
  * @return the [ImperialMolarEnergy] represented by the units
  */
 infix fun ImperialEnergy.per(amountOfSubstance: AmountOfSubstance) = ImperialMolarEnergy(this, amountOfSubstance)
+
+internal fun SerializersModuleBuilder.setupForMolarEnergy() {
+    polymorphic(MolarEnergy::class) {
+        registerMolarEnergyClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<MolarEnergy>.registerMolarEnergyClasses() {
+    subclass(ImperialMolarEnergy::class, ImperialMolarEnergy.serializer())
+    subclass(MetricAndImperialMolarEnergy::class, MetricAndImperialMolarEnergy.serializer())
+    subclass(MetricMolarEnergy::class, MetricMolarEnergy.serializer())
+}

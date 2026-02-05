@@ -51,9 +51,10 @@ include(":resources-compose")
 include(":resources-databinding")
 include(":review")
 include(":scientific")
+include(":scientific-converters")
 include(":service")
 include(":system")
-// // Test Utils
+// Test Utils
 include(":test-utils")
 include(":test-utils-base")
 include(":test-utils-alerts")

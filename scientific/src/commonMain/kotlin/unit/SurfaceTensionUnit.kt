@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricSurfaceTension]
@@ -58,11 +61,11 @@ val SurfaceTensionUnits: Set<SurfaceTension> get() = MetricSurfaceTensionUnits +
     USCustomarySurfaceTensionUnits.filter { it.force !is USCustomaryImperialForceWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.SurfaceTension]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.SurfaceTension]
  * SI unit is `Newton per Meter`
  */
 @Serializable
-sealed class SurfaceTension : AbstractScientificUnit<PhysicalQuantity.SurfaceTension>() {
+sealed class SurfaceTension : DefinedScientificUnit<PhysicalQuantity.SurfaceTension>() {
 
     /**
      * The [Force] component
@@ -164,3 +167,16 @@ infix fun USCustomaryForce.per(length: ImperialLength) = USCustomarySurfaceTensi
  * @return the [UKImperialSurfaceTension] represented by the units
  */
 infix fun UKImperialForce.per(length: ImperialLength) = UKImperialSurfaceTension(this, length)
+
+internal fun SerializersModuleBuilder.setupForSurfaceTension() {
+    polymorphic(SurfaceTension::class) {
+        registerSurfaceTensionClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<SurfaceTension>.registerSurfaceTensionClasses() {
+    subclass(ImperialSurfaceTension::class, ImperialSurfaceTension.serializer())
+    subclass(MetricSurfaceTension::class, MetricSurfaceTension.serializer())
+    subclass(UKImperialSurfaceTension::class, UKImperialSurfaceTension.serializer())
+    subclass(USCustomarySurfaceTension::class, USCustomarySurfaceTension.serializer())
+}

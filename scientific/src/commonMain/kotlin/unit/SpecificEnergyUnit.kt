@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricSpecificEnergy]
@@ -58,11 +61,11 @@ val SpecificEnergyUnits: Set<SpecificEnergy> get() = MetricSpecificEnergyUnits +
     USCustomarySpecificEnergyUnits.filter { it.per !is USCustomaryImperialWeightWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.SpecificEnergy]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.SpecificEnergy]
  * SI unit is `Joule per Kilogram`
  */
 @Serializable
-sealed class SpecificEnergy : AbstractScientificUnit<PhysicalQuantity.SpecificEnergy>() {
+sealed class SpecificEnergy : DefinedScientificUnit<PhysicalQuantity.SpecificEnergy>() {
 
     /**
      * The [Energy] component
@@ -192,3 +195,16 @@ infix fun ImperialEnergy.per(weight: UKImperialWeight) = UKImperialSpecificEnerg
  * @return the [USCustomarySpecificEnergy] represented by the units
  */
 infix fun ImperialEnergy.per(weight: USCustomaryWeight) = USCustomarySpecificEnergy(this, weight)
+
+internal fun SerializersModuleBuilder.setupForSpecificEnergy() {
+    polymorphic(SpecificEnergy::class) {
+        registerSpecificEnergyClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<SpecificEnergy>.registerSpecificEnergyClasses() {
+    subclass(ImperialSpecificEnergy::class, ImperialSpecificEnergy.serializer())
+    subclass(MetricSpecificEnergy::class, MetricSpecificEnergy.serializer())
+    subclass(UKImperialSpecificEnergy::class, UKImperialSpecificEnergy.serializer())
+    subclass(USCustomarySpecificEnergy::class, USCustomarySpecificEnergy.serializer())
+}

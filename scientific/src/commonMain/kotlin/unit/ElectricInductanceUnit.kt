@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [ElectricInductance]
@@ -40,12 +43,12 @@ val ElectricInductanceUnits: Set<ElectricInductance> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.ElectricInductance]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.ElectricInductance]
  * SI unit is [Henry]
  */
 @Serializable
 sealed class ElectricInductance :
-    AbstractScientificUnit<PhysicalQuantity.ElectricInductance>(),
+    DefinedScientificUnit<PhysicalQuantity.ElectricInductance>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.ElectricInductance>
 
 @Serializable
@@ -96,3 +99,24 @@ data object Megahenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.Me
 
 @Serializable
 data object Gigahenry : HenryMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricInductance, Henry> by Giga(Henry)
+
+internal fun SerializersModuleBuilder.setupForElectricInductance() {
+    polymorphic(ElectricInductance::class) {
+        registerElectricInductanceClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<ElectricInductance>.registerElectricInductanceClasses() {
+    subclass(Henry::class, Henry.serializer())
+    subclass(Abhenry::class, Abhenry.serializer())
+    subclass(Centihenry::class, Centihenry.serializer())
+    subclass(Decahenry::class, Decahenry.serializer())
+    subclass(Decihenry::class, Decihenry.serializer())
+    subclass(Gigahenry::class, Gigahenry.serializer())
+    subclass(Hectohenry::class, Hectohenry.serializer())
+    subclass(Kilohenry::class, Kilohenry.serializer())
+    subclass(Megahenry::class, Megahenry.serializer())
+    subclass(Microhenry::class, Microhenry.serializer())
+    subclass(Millihenry::class, Millihenry.serializer())
+    subclass(Nanohenry::class, Nanohenry.serializer())
+}

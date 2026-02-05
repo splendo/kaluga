@@ -68,8 +68,7 @@ actual class DefaultLocationManager(settings: Settings, coroutineScope: Coroutin
             handleLocationChanged(listOf(didUpdateToLocation.knownLocation))
         }
 
-        override fun locationManager(manager: CLLocationManager, didFinishDeferredUpdatesWithError: NSError?) {
-        }
+        override fun locationManager(manager: CLLocationManager, didFinishDeferredUpdatesWithError: NSError?) {}
 
         private fun handleLocationChanged(locations: List<Location.KnownLocation>) = locations.forEach {
             onLocationsChanged.tryEmit(it) // should always works as the buffer is DROP_OLDEST
@@ -78,11 +77,13 @@ actual class DefaultLocationManager(settings: Settings, coroutineScope: Coroutin
 
     actual override val locationMonitor: LocationMonitor = LocationMonitor.Builder(CLLocationManager()).create()
     private val locationManager = MainCLLocationManagerAccessor {
+        allowsBackgroundLocationUpdates = locationPermission.background
         desiredAccuracy = if (locationPermission.precise) kCLLocationAccuracyBest else kCLLocationAccuracyReduced
         distanceFilter = settings.minUpdateDistanceMeters.toDouble()
     }
 
     private val locationUpdateDelegate: Delegate
+
     init {
         val sharedLocations = sharedLocations
         locationUpdateDelegate = Delegate(sharedLocations)

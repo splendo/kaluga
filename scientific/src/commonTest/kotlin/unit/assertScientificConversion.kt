@@ -17,35 +17,37 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.round
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlin.test.assertEquals
 
 fun <Quantity : PhysicalQuantity> assertScientificConversion(
-    left: Number,
+    left: String,
     leftUnit: ScientificUnit<Quantity>,
-    expectedRight: Number,
+    expectedRight: String,
     rightUnit: ScientificUnit<Quantity>,
+    round: Int? = null,
     bidirectional: Boolean = true,
-) {
-    assertEquals(expectedRight.toDouble(), leftUnit.convert(left, rightUnit))
-    if (bidirectional) {
-        assertEquals(left.toDouble(), rightUnit.convert(expectedRight, leftUnit))
-    }
-}
+) = assertScientificConversion(left.toDecimal(), leftUnit, expectedRight.toDecimal(), rightUnit, round, bidirectional)
 
 fun <Quantity : PhysicalQuantity> assertScientificConversion(
-    left: Number,
+    left: Decimal,
     leftUnit: ScientificUnit<Quantity>,
-    expectedRight: Number,
+    expectedRight: Decimal,
     rightUnit: ScientificUnit<Quantity>,
-    round: Int,
+    round: Int? = null,
     bidirectional: Boolean = true,
 ) {
-    assertEquals(expectedRight.toDouble(), leftUnit.convert(left, rightUnit, round))
+    val roundedExpectedRight = round?.let { expectedRight.round(it) } ?: expectedRight
+    val actualRight = leftUnit.convert(left, rightUnit)
+    val roundedActualRight = round?.let { actualRight.round(it) } ?: actualRight
+    assertEquals(roundedExpectedRight, roundedActualRight)
     if (bidirectional) {
-        assertEquals(
-            left.toDouble(),
-            rightUnit.convert(leftUnit.convert(left, rightUnit), leftUnit, round),
-        )
+        val roundedLeft = round?.let { left.round(it) } ?: left
+        val actualLeftReverse = rightUnit.convert(actualRight, leftUnit)
+        val roundedActualLeftReverse = round?.let { actualLeftReverse.round(it) } ?: actualLeftReverse
+        assertEquals(roundedLeft, roundedActualLeftReverse)
     }
 }

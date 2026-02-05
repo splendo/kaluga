@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricDensity]
@@ -58,11 +61,11 @@ val DensityUnits: Set<Density> get() = MetricDensityUnits +
     USCustomaryDensityUnits.filter { it.weight !is USCustomaryImperialWeightWrapper || it.per !is USCustomaryImperialVolumeWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Density]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Density]
  * SI unit is `Kilogram per CubicMeter`
  */
 @Serializable
-sealed class Density : AbstractScientificUnit<PhysicalQuantity.Density>() {
+sealed class Density : DefinedScientificUnit<PhysicalQuantity.Density>() {
 
     /**
      * The [Weight] component
@@ -184,3 +187,16 @@ infix fun UKImperialWeight.per(volume: ImperialVolume) = UKImperialDensity(this,
  * @return the [UKImperialDensity] represented by the units
  */
 infix fun UKImperialWeight.per(volume: UKImperialVolume) = UKImperialDensity(this, volume)
+
+internal fun SerializersModuleBuilder.setupForDensity() {
+    polymorphic(Density::class) {
+        registerDensityClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Density>.registerDensityClasses() {
+    subclass(ImperialDensity::class, ImperialDensity.serializer())
+    subclass(MetricDensity::class, MetricDensity.serializer())
+    subclass(UKImperialDensity::class, UKImperialDensity.serializer())
+    subclass(USCustomaryDensity::class, USCustomaryDensity.serializer())
+}

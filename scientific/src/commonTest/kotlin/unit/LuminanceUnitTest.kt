@@ -17,51 +17,32 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.assertEqualScientificValue
-import com.splendo.kaluga.scientific.convert
-import com.splendo.kaluga.scientific.converter.illuminance.div
-import com.splendo.kaluga.scientific.converter.luminousIntensity.div
-import com.splendo.kaluga.scientific.invoke
-import kotlin.math.PI
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.pow
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class LuminanceUnitTest {
 
     @Test
     fun luminanceConversionTest() {
-        assertScientificConversion(1, Nit, 1e+9, Nanonit)
-        assertScientificConversion(1, Nit, 1e+6, Micronit)
-        assertScientificConversion(1, Nit, 1000.0, Millinit)
-        assertScientificConversion(1, Nit, 100.0, Centinit)
-        assertScientificConversion(1, Nit, 10.0, Decinit)
-        assertScientificConversion(1, Nit, 0.1, Decanit)
-        assertScientificConversion(1, Nit, 0.01, Hectonit)
-        assertScientificConversion(1, Nit, 0.001, Kilonit)
-        assertScientificConversion(1, Nit, 1e-6, Meganit)
-        assertScientificConversion(1, Nit, 1e-9, Giganit)
+        assertScientificConversion("1", Nit, "1e+9", Nanonit)
+        assertScientificConversion("1", Nit, "1e+6", Micronit)
+        assertScientificConversion("1", Nit, "1000.0", Millinit)
+        assertScientificConversion("1", Nit, "100.0", Centinit)
+        assertScientificConversion("1", Nit, "10.0", Decinit)
+        assertScientificConversion("1", Nit, "0.1", Decanit)
+        assertScientificConversion("1", Nit, "0.01", Hectonit)
+        assertScientificConversion("1", Nit, "0.001", Kilonit)
+        assertScientificConversion("1", Nit, "1e-6", Meganit)
+        assertScientificConversion("1", Nit, "1e-9", Giganit)
 
-        assertScientificConversion(1, Nit, 3.14159265359, Apostilb, 11)
-        assertScientificConversion(1, Nit, 0.0003141593, Lambert, 10)
-        assertScientificConversion(1, Nit, 3141.5927, Skot, 4)
-        assertScientificConversion(1, Nit, 31415926.536, Bril, 3)
-        assertScientificConversion(1, Nit, 0.2918635, FootLambert, 7)
-    }
-
-    @Test
-    fun luminanceFromIlluminanceAndSolidAngleTest() {
-        assertEquals(1(Stilb), 2(Phot) / 2(Steradian))
-        assertEquals(1(Stilb), 20(Deciphot) / 2(Steradian))
-        assertEquals(1(Nit), 2(Lux) / 2(Steradian))
-        assertEqualScientificValue(PI(FootLambert), 2(FootCandle) / 2(Steradian), 8)
-        assertEquals(1(Nit), 2(Lux).convert(FootCandle as Illuminance) / 2(Steradian))
-    }
-
-    @Test
-    fun luminanceFromLuminousIntensityAndAreaTest() {
-        assertEquals(1(Stilb), 2(Candela) / 2(SquareCentimeter))
-        assertEquals(1(Nit), 2(Candela) / 2(SquareMeter))
-        assertEqualScientificValue(PI(FootLambert), (2(Candela) / 2(SquareFoot)), 8)
-        assertEquals(1(Nit), 2(Candela) / 2(SquareMeter).convert(SquareFoot as Area))
+        assertScientificConversion(Decimal.ONE, Nit, Decimal.PI, Apostilb, round = 32)
+        assertScientificConversion(Decimal.ONE, Nit, Decimal.PI / 10000.toDecimal(), Lambert, round = 32)
+        assertScientificConversion(Decimal.ONE, Nit, Decimal.THOUSAND * Decimal.PI, Skot, round = 29)
+        assertScientificConversion(Decimal.ONE, Nit, 10000000.toDecimal() * Decimal.PI, Bril, round = 32)
+        assertScientificConversion(Decimal.ONE, Nit, Decimal.PI / Meter.convert(Decimal.ONE, Foot).pow(2), FootLambert, round = 32)
     }
 }

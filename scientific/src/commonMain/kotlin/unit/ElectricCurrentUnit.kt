@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [ElectricCurrent]
@@ -41,12 +44,12 @@ val ElectricCurrentUnits: Set<ElectricCurrent> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.ElectricCurrent]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.ElectricCurrent]
  * SI unit is [Ampere]
  */
 @Serializable
 sealed class ElectricCurrent :
-    AbstractScientificUnit<PhysicalQuantity.ElectricCurrent>(),
+    DefinedScientificUnit<PhysicalQuantity.ElectricCurrent>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.ElectricCurrent>
 
 @Serializable
@@ -102,3 +105,25 @@ data object Megaampere : AmpereMultiple(), MetricMultipleUnit<MeasurementSystem.
 
 @Serializable
 data object Gigaampere : AmpereMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCurrent, Ampere> by Giga(Ampere)
+
+internal fun SerializersModuleBuilder.setupForElectricCurrent() {
+    polymorphic(ElectricCurrent::class) {
+        registerElectricCurrentClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<ElectricCurrent>.registerElectricCurrentClasses() {
+    subclass(Ampere::class, Ampere.serializer())
+    subclass(Abampere::class, Abampere.serializer())
+    subclass(Biot::class, Biot.serializer())
+    subclass(Centiampere::class, Centiampere.serializer())
+    subclass(Decaampere::class, Decaampere.serializer())
+    subclass(Deciampere::class, Deciampere.serializer())
+    subclass(Gigaampere::class, Gigaampere.serializer())
+    subclass(Hectoampere::class, Hectoampere.serializer())
+    subclass(Kiloampere::class, Kiloampere.serializer())
+    subclass(Megaampere::class, Megaampere.serializer())
+    subclass(Microampere::class, Microampere.serializer())
+    subclass(Milliampere::class, Milliampere.serializer())
+    subclass(Nanoampere::class, Nanoampere.serializer())
+}

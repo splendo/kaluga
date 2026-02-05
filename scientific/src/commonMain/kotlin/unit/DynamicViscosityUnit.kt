@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricDynamicViscosity]
@@ -58,11 +61,11 @@ val DynamicViscosityUnits: Set<DynamicViscosity> get() = MetricDynamicViscosityU
     USCustomaryDynamicViscosityUnits.filter { it.pressure !is USCustomaryImperialPressureWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.DynamicViscosity]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.DynamicViscosity]
  * SI unit is `Pascal per Second`
  */
 @Serializable
-sealed class DynamicViscosity : AbstractScientificUnit<PhysicalQuantity.DynamicViscosity>() {
+sealed class DynamicViscosity : DefinedScientificUnit<PhysicalQuantity.DynamicViscosity>() {
 
     /**
      * The [Pressure] component
@@ -164,3 +167,16 @@ infix fun UKImperialPressure.x(time: Time) = UKImperialDynamicViscosity(this, ti
  * @return the [USCustomaryDynamicViscosity] represented by the units
  */
 infix fun USCustomaryPressure.x(time: Time) = USCustomaryDynamicViscosity(this, time)
+
+internal fun SerializersModuleBuilder.setupForDynamicViscosity() {
+    polymorphic(DynamicViscosity::class) {
+        registerDynamicViscosityClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<DynamicViscosity>.registerDynamicViscosityClasses() {
+    subclass(ImperialDynamicViscosity::class, ImperialDynamicViscosity.serializer())
+    subclass(MetricDynamicViscosity::class, MetricDynamicViscosity.serializer())
+    subclass(UKImperialDynamicViscosity::class, UKImperialDynamicViscosity.serializer())
+    subclass(USCustomaryDynamicViscosity::class, USCustomaryDynamicViscosity.serializer())
+}

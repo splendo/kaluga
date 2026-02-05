@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricYank]
@@ -58,11 +61,11 @@ val YankUnits: Set<Yank> get() = MetricYankUnits +
     USCustomaryYankUnits.filter { it.force !is USCustomaryImperialForceWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Yank]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Yank]
  * SI unit is `Newton per Second`
  */
 @Serializable
-sealed class Yank : AbstractScientificUnit<PhysicalQuantity.Yank>() {
+sealed class Yank : DefinedScientificUnit<PhysicalQuantity.Yank>() {
 
     /**
      * The [Force] component
@@ -164,3 +167,16 @@ infix fun UKImperialForce.per(time: Time) = UKImperialYank(this, time)
  * @return the [USCustomaryYank] represented by the units
  */
 infix fun USCustomaryForce.per(time: Time) = USCustomaryYank(this, time)
+
+internal fun SerializersModuleBuilder.setupForYank() {
+    polymorphic(Yank::class) {
+        registerYankClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Yank>.registerYankClasses() {
+    subclass(ImperialYank::class, ImperialYank.serializer())
+    subclass(MetricYank::class, MetricYank.serializer())
+    subclass(UKImperialYank::class, UKImperialYank.serializer())
+    subclass(USCustomaryYank::class, USCustomaryYank.serializer())
+}

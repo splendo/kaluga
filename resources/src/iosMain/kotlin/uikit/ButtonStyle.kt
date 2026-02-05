@@ -48,10 +48,7 @@ import platform.UIKit.UIControlStateDisabled
 import platform.UIKit.UIControlStateHighlighted
 import platform.UIKit.UIControlStateNormal
 import platform.UIKit.UIEdgeInsetsMake
-import platform.UIKit.UIGraphicsBeginImageContext
-import platform.UIKit.UIGraphicsEndImageContext
-import platform.UIKit.UIGraphicsGetCurrentContext
-import platform.UIKit.UIGraphicsGetImageFromCurrentImageContext
+import platform.UIKit.UIGraphicsImageRenderer
 import platform.UIKit.UIImage
 import platform.UIKit.UIUserInterfaceLayoutDirection
 import platform.UIKit.setContentEdgeInsets
@@ -181,18 +178,16 @@ private fun UIButtonConfiguration.applyButtonBackgroundStateStyle(style: KalugaB
     background.image = button.backgroundImage(stateStyle)
 }
 
-private fun UIButton.backgroundImage(style: ButtonStateStyle): UIImage = try {
+private fun UIButton.backgroundImage(style: ButtonStateStyle): UIImage {
     val bounds = bounds
-    UIGraphicsBeginImageContext(CGSizeMake(bounds.useContents { size.width }, bounds.useContents { size.height }))
-    CALayer().apply {
-        frame = bounds
-        applyBackgroundStyle(style.backgroundStyle, bounds)
-        renderInContext(UIGraphicsGetCurrentContext())
+    val renderer = UIGraphicsImageRenderer(CGSizeMake(bounds.useContents { size.width }, bounds.useContents { size.height }))
+    return renderer.imageWithActions { context ->
+        CALayer().apply {
+            frame = bounds
+            applyBackgroundStyle(style.backgroundStyle, bounds)
+            renderInContext(context?.CGContext)
+        }
     }
-
-    UIGraphicsGetImageFromCurrentImageContext()!!
-} finally {
-    UIGraphicsEndImageContext()
 }
 
 private fun UIButtonConfiguration.applyImageStyle(buttonStyle: KalugaButtonStyle.WithImage<*>, state: UIControlState) {
@@ -213,18 +208,23 @@ private fun UIButtonConfiguration.applyImageGravity(gravity: ImageGravity, spaci
     imagePadding = spacing.toDouble()
     imagePlacement = when (gravity) {
         ImageGravity.START -> NSDirectionalRectEdgeLeading
+
         ImageGravity.LEFT -> if (UIApplication.sharedApplication.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionLeftToRight) {
             NSDirectionalRectEdgeLeading
         } else {
             NSDirectionalRectEdgeTrailing
         }
+
         ImageGravity.END -> NSDirectionalRectEdgeTrailing
+
         ImageGravity.RIGHT -> if (UIApplication.sharedApplication.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionLeftToRight) {
             NSDirectionalRectEdgeTrailing
         } else {
             NSDirectionalRectEdgeLeading
         }
+
         ImageGravity.TOP -> NSDirectionalRectEdgeTop
+
         ImageGravity.BOTTOM -> NSDirectionalRectEdgeBottom
     }
 }
@@ -237,13 +237,11 @@ private fun ButtonImage.image(size: ImageSize): UIImage {
     }
     return when (size) {
         is ImageSize.Intrinsic -> rawImage
+
         is ImageSize.Sized -> {
-            try {
-                UIGraphicsBeginImageContext(CGSizeMake(size.width.toDouble(), size.height.toDouble()))
+            val renderer = UIGraphicsImageRenderer(CGSizeMake(size.width.toDouble(), size.height.toDouble()))
+            renderer.imageWithActions { _ ->
                 rawImage.drawInRect(CGRectMake(0.0, 0.0, size.width.toDouble(), size.height.toDouble()))
-                UIGraphicsGetImageFromCurrentImageContext() ?: UIImage()
-            } finally {
-                UIGraphicsEndImageContext()
             }
         }
     }

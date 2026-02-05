@@ -23,7 +23,9 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
-import kotlin.math.PI
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [SolidAngle]
@@ -40,12 +42,12 @@ val SolidAngleUnits: Set<SolidAngle> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.SolidAngle]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.SolidAngle]
  * SI unit is [Steradian]
  */
 @Serializable
 sealed class SolidAngle :
-    AbstractScientificUnit<PhysicalQuantity.SolidAngle>(),
+    DefinedScientificUnit<PhysicalQuantity.SolidAngle>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.SolidAngle>
 
 @Serializable
@@ -79,12 +81,12 @@ data object Decisteradian : SteradianMultiple(), MetricMultipleUnit<MeasurementS
 
 @Serializable
 data object Spat : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.SolidAngle> {
-    private const val STERADIAN_IN_SPAT = 4.0 * PI
+    private val STERADIAN_IN_SPAT = Decimal.PI * 4.toDecimal()
     override val symbol = "sp"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.SolidAngle
-    override fun fromSIUnit(value: Decimal): Decimal = value / STERADIAN_IN_SPAT.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value * STERADIAN_IN_SPAT.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value / STERADIAN_IN_SPAT
+    override fun toSIUnit(value: Decimal): Decimal = value * STERADIAN_IN_SPAT
 }
 
 @Serializable
@@ -94,4 +96,21 @@ data object SquareDegree : SolidAngle() {
     override val quantity = PhysicalQuantity.SolidAngle
     override fun fromSIUnit(value: Decimal): Decimal = Degree.fromSIUnit(Degree.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = Degree.toSIUnit(Degree.toSIUnit(value))
+}
+
+internal fun SerializersModuleBuilder.setupForSolidAngle() {
+    polymorphic(SolidAngle::class) {
+        registerSolidAngleClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<SolidAngle>.registerSolidAngleClasses() {
+    subclass(Spat::class, Spat.serializer())
+    subclass(SquareDegree::class, SquareDegree.serializer())
+    subclass(Steradian::class, Steradian.serializer())
+    subclass(Centisteradian::class, Centisteradian.serializer())
+    subclass(Decisteradian::class, Decisteradian.serializer())
+    subclass(Microsteradian::class, Microsteradian.serializer())
+    subclass(Millisteradian::class, Millisteradian.serializer())
+    subclass(Nanosteradian::class, Nanosteradian.serializer())
 }

@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricMomentum]
@@ -66,11 +69,11 @@ val MomentumUnits: Set<Momentum> get() = MetricMomentumUnits +
     USCustomaryMomentumUnits.filter { it.mass !is USCustomaryImperialWeightWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Momentum]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Momentum]
  * SI unit is `Kilogram x Meter per Second`
  */
 @Serializable
-sealed class Momentum : AbstractScientificUnit<PhysicalQuantity.Momentum>() {
+sealed class Momentum : DefinedScientificUnit<PhysicalQuantity.Momentum>() {
 
     /**
      * The [Weight] component
@@ -172,3 +175,16 @@ infix fun UKImperialWeight.x(speed: ImperialSpeed) = UKImperialMomentum(this, sp
  * @return the [USCustomaryMomentum] represented by the units
  */
 infix fun USCustomaryWeight.x(speed: ImperialSpeed) = USCustomaryMomentum(this, speed)
+
+internal fun SerializersModuleBuilder.setupForMomentum() {
+    polymorphic(Momentum::class) {
+        registerMomentumClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Momentum>.registerMomentumClasses() {
+    subclass(ImperialMomentum::class, ImperialMomentum.serializer())
+    subclass(MetricMomentum::class, MetricMomentum.serializer())
+    subclass(UKImperialMomentum::class, UKImperialMomentum.serializer())
+    subclass(USCustomaryMomentum::class, USCustomaryMomentum.serializer())
+}

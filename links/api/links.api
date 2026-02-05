@@ -27,13 +27,13 @@ public final class com/splendo/kaluga/links/LinksManagerKt {
 }
 
 public abstract interface class com/splendo/kaluga/links/handler/LinksHandler {
-	public abstract fun extractQueryAsList (Ljava/lang/String;)Ljava/util/List;
+	public abstract fun extractQueryAsMap (Ljava/lang/String;)Ljava/util/Map;
 	public abstract fun isValid (Ljava/lang/String;)Z
 }
 
 public final class com/splendo/kaluga/links/handler/PlatformLinksHandler : com/splendo/kaluga/links/handler/LinksHandler {
 	public fun <init> ()V
-	public fun extractQueryAsList (Ljava/lang/String;)Ljava/util/List;
+	public fun extractQueryAsMap (Ljava/lang/String;)Ljava/util/Map;
 	public fun isValid (Ljava/lang/String;)Z
 }
 

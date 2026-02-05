@@ -142,8 +142,14 @@
         <activity android:name=".beacons.BeaconsActivity"
             android:label="@string/feature_beacons"
             android:screenOrientation="fullSensor"/>
+        <activity android:name=".media.MediaListActivity"
+            android:label="@string/feature_media"
+            android:screenOrientation="fullSensor"/>
         <activity android:name=".media.MediaActivity"
             android:label="@string/feature_media"
+            android:screenOrientation="fullSensor"/>
+        <activity android:name=".media.MediaSoundActivity"
+            android:label="@string/feature_media_sound"
             android:screenOrientation="fullSensor"/>
         <activity android:name=".resources.ResourcesActivity"
             android:label="@string/feature_resources"

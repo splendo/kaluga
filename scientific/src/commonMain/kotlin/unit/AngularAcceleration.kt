@@ -29,14 +29,14 @@ val AngularAccelerationUnits: Set<AngularAcceleration> get() = AngularVelocityUn
 }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.AngularAcceleration]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.AngularAcceleration]
  * SI unit is `Radian per Second per Second`
  * @property angularVelocity the [AngularVelocity] component
  * @property per the [Time] component
  */
 @Serializable
 data class AngularAcceleration(val angularVelocity: AngularVelocity, val per: Time) :
-    AbstractScientificUnit<PhysicalQuantity.AngularAcceleration>(),
+    DefinedScientificUnit<PhysicalQuantity.AngularAcceleration>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.AngularAcceleration> {
     override val quantity = PhysicalQuantity.AngularAcceleration
     override val system = MeasurementSystem.MetricAndImperial

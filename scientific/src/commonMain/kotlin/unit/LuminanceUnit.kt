@@ -23,7 +23,9 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
-import kotlin.math.PI
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricLuminance]
@@ -60,11 +62,11 @@ val ImperialLuminanceUnits: Set<ImperialLuminance> get() = setOf(
 val LuminanceUnits: Set<Luminance> get() = MetricLuminanceUnits + ImperialLuminanceUnits
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Luminance]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Luminance]
  * SI unit is [Nit]
  */
 @Serializable
-sealed class Luminance : AbstractScientificUnit<PhysicalQuantity.Luminance>()
+sealed class Luminance : DefinedScientificUnit<PhysicalQuantity.Luminance>()
 
 /**
  * A [Luminance] for [MeasurementSystem.Metric]
@@ -137,12 +139,12 @@ data object Stilb : MetricLuminance() {
 
 @Serializable
 data object Apostilb : MetricLuminance() {
-    private const val APOSTILB_IN_NIT = PI
+    private val APOSTILB_IN_NIT = Decimal.PI
     override val symbol: String = "asb"
     override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
-    override fun fromSIUnit(value: Decimal): Decimal = value * APOSTILB_IN_NIT.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / APOSTILB_IN_NIT.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * APOSTILB_IN_NIT
+    override fun toSIUnit(value: Decimal): Decimal = value / APOSTILB_IN_NIT
 }
 
 @Serializable
@@ -156,22 +158,22 @@ data object Lambert : MetricLuminance() {
 
 @Serializable
 data object Skot : MetricLuminance() {
-    private const val SKOT_IN_APOSTILB = 1000.0
+    private val SKOT_IN_APOSTILB = Decimal.THOUSAND
     override val symbol: String = "sk"
     override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
-    override fun fromSIUnit(value: Decimal): Decimal = Apostilb.fromSIUnit(value) * SKOT_IN_APOSTILB.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = Apostilb.toSIUnit(value / SKOT_IN_APOSTILB.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = Apostilb.fromSIUnit(value) * SKOT_IN_APOSTILB
+    override fun toSIUnit(value: Decimal): Decimal = Apostilb.toSIUnit(value / SKOT_IN_APOSTILB)
 }
 
 @Serializable
 data object Bril : MetricLuminance() {
-    private const val BRIL_IN_APOSTILB = 10000000.0
+    private val BRIL_IN_APOSTILB = 10000000.toDecimal()
     override val symbol: String = "Bril"
     override val quantity = PhysicalQuantity.Luminance
     override val system = MeasurementSystem.Metric
-    override fun fromSIUnit(value: Decimal): Decimal = Apostilb.fromSIUnit(value) * BRIL_IN_APOSTILB.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = Apostilb.toSIUnit(value / BRIL_IN_APOSTILB.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = Apostilb.fromSIUnit(value) * BRIL_IN_APOSTILB
+    override fun toSIUnit(value: Decimal): Decimal = Apostilb.toSIUnit(value / BRIL_IN_APOSTILB)
 }
 
 @Serializable
@@ -181,4 +183,30 @@ data object FootLambert : ImperialLuminance() {
     override val system = MeasurementSystem.Imperial
     override fun fromSIUnit(value: Decimal): Decimal = Apostilb.fromSIUnit(SquareFoot.toSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = SquareFoot.fromSIUnit(Apostilb.toSIUnit(value))
+}
+
+internal fun SerializersModuleBuilder.setupForLuminance() {
+    polymorphic(Luminance::class) {
+        registerLuminanceClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Luminance>.registerLuminanceClasses() {
+    subclass(FootLambert::class, FootLambert.serializer())
+    subclass(Apostilb::class, Apostilb.serializer())
+    subclass(Bril::class, Bril.serializer())
+    subclass(Lambert::class, Lambert.serializer())
+    subclass(Nit::class, Nit.serializer())
+    subclass(Centinit::class, Centinit.serializer())
+    subclass(Decanit::class, Decanit.serializer())
+    subclass(Decinit::class, Decinit.serializer())
+    subclass(Giganit::class, Giganit.serializer())
+    subclass(Hectonit::class, Hectonit.serializer())
+    subclass(Kilonit::class, Kilonit.serializer())
+    subclass(Meganit::class, Meganit.serializer())
+    subclass(Micronit::class, Micronit.serializer())
+    subclass(Millinit::class, Millinit.serializer())
+    subclass(Nanonit::class, Nanonit.serializer())
+    subclass(Skot::class, Skot.serializer())
+    subclass(Stilb::class, Stilb.serializer())
 }

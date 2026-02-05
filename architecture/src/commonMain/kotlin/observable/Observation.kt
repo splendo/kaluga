@@ -93,12 +93,12 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(override val initia
         }
     }
 
-    @Suppress("UNCHECKED_CAST") // should always downcast as R extends T
     /**
      * Used internally to set the [observedValue]. Make sure you are in [Dispatchers.Main] or the main thread
      *
      * @param value the new value that will be observed
      */
+    @Suppress("UNCHECKED_CAST") // should always downcast as R extends T
     private fun setValueUnconfined(value: ObservableOptional<T>): ObservableOptional<T> {
         val v = value.asResult(defaultValue)
         val before = backingInternalValue
@@ -109,7 +109,8 @@ open class Observation<R : T, T, OO : ObservableOptional<R>>(override val initia
             val result = (v as? ObservableOptional.Value<*>)?.value as R
 
             this@Observation.observers.synchronized {
-                forEach {
+                // iterate on a copy to prevent concurrent modification
+                toTypedArray().forEach {
                     it(result)
                 }
             }

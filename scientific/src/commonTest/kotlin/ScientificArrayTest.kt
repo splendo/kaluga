@@ -21,7 +21,6 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDouble
 import com.splendo.kaluga.base.utils.toInt
 import com.splendo.kaluga.base.utils.toIntArray
-import com.splendo.kaluga.scientific.converter.length.times
 import com.splendo.kaluga.scientific.unit.Decimeter
 import com.splendo.kaluga.scientific.unit.Kilometer
 import com.splendo.kaluga.scientific.unit.Meter
@@ -82,7 +81,7 @@ class ScientificArrayTest {
     @Test
     fun testMapScientificArray() {
         val listOfLength = listOf(1, 2, 3, 4, 5)(Meter)
-        val listOfArea = listOfLength.map { times(2(Meter)) }
+        val listOfArea = listOfLength.map { (value * 2)(SquareMeter) }
         assertEquals(SquareMeter, listOfArea.unit)
         assertEquals(listOf(2.0, 4.0, 6.0, 8.0, 10.0), listOfArea.values.asList())
     }
@@ -91,7 +90,7 @@ class ScientificArrayTest {
     fun testCombineScientificArray() {
         val listOfLength = listOf(1, 2, 3, 4, 5)(Meter)
         val listOfWidth = listOf(2, 4, 6, 8, 10)(Meter)
-        val listOfArea = listOfLength.combine(listOfWidth) { times(it) }
+        val listOfArea = listOfLength.combine(listOfWidth) { (value * it.value)(SquareMeter) }
         assertEquals(SquareMeter, listOfArea.unit)
         assertEquals(listOf(2.0, 8.0, 18.0, 32.0, 50.0), listOfArea.values.asList())
 

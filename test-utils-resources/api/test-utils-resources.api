@@ -3,15 +3,15 @@ public final class com/splendo/kaluga/test/resources/MockColorLoader : com/splen
 	public fun <init> (Z)V
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getLoadColorMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
-	public fun loadColor (Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/Integer;
+	public fun loadColor (Ljava/lang/String;Lcom/splendo/kaluga/resources/KalugaColor;)Lcom/splendo/kaluga/resources/KalugaColor;
 }
 
 public final class com/splendo/kaluga/test/resources/MockFontLoader : com/splendo/kaluga/resources/FontLoader {
 	public fun <init> ()V
 	public fun <init> (Z)V
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getLoadFontMock ()Lcom/splendo/kaluga/test/base/mock/SuspendMethodMock;
-	public fun loadFont (Ljava/lang/String;Landroid/graphics/Typeface;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getLoadFontMock ()Lcom/splendo/kaluga/test/base/mock/MethodMock;
+	public fun loadFont (Ljava/lang/String;Landroid/graphics/Typeface;)Landroid/graphics/Typeface;
 }
 
 public final class com/splendo/kaluga/test/resources/MockImageLoader : com/splendo/kaluga/resources/ImageLoader {
@@ -23,7 +23,7 @@ public final class com/splendo/kaluga/test/resources/MockImageLoader : com/splen
 }
 
 public final class com/splendo/kaluga/test/resources/MockResourcesKt {
-	public static final fun mockColor ()I
+	public static final fun mockColor ()Lcom/splendo/kaluga/resources/KalugaColor;
 	public static final fun mockFont ()Landroid/graphics/Typeface;
 	public static final fun mockImage ()Lcom/splendo/kaluga/resources/KalugaImage;
 }

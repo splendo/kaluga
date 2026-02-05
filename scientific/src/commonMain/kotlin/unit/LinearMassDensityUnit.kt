@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricLinearMassDensity]
@@ -58,11 +61,11 @@ val LinearMassDensityUnits: Set<LinearMassDensity> get() = MetricLinearMassDensi
     USCustomaryLinearMassDensityUnits.filter { it.weight !is USCustomaryImperialWeightWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.LinearMassDensity]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.LinearMassDensity]
  * SI unit is `Kilogram per Meter`
  */
 @Serializable
-sealed class LinearMassDensity : AbstractScientificUnit<PhysicalQuantity.LinearMassDensity>() {
+sealed class LinearMassDensity : DefinedScientificUnit<PhysicalQuantity.LinearMassDensity>() {
 
     /**
      * The [Weight] component
@@ -164,3 +167,16 @@ infix fun USCustomaryWeight.per(length: ImperialLength) = USCustomaryLinearMassD
  * @return the [UKImperialLinearMassDensity] represented by the units
  */
 infix fun UKImperialWeight.per(length: ImperialLength) = UKImperialLinearMassDensity(this, length)
+
+internal fun SerializersModuleBuilder.setupForLinearMassDensity() {
+    polymorphic(LinearMassDensity::class) {
+        registerLinearMassDensityClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<LinearMassDensity>.registerLinearMassDensityClasses() {
+    subclass(ImperialLinearMassDensity::class, ImperialLinearMassDensity.serializer())
+    subclass(MetricLinearMassDensity::class, MetricLinearMassDensity.serializer())
+    subclass(UKImperialLinearMassDensity::class, UKImperialLinearMassDensity.serializer())
+    subclass(USCustomaryLinearMassDensity::class, USCustomaryLinearMassDensity.serializer())
+}

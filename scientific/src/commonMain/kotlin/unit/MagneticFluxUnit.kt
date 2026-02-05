@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MagneticFlux]
@@ -40,12 +43,12 @@ val MagneticFluxUnits: Set<MagneticFlux> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.MagneticFlux]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.MagneticFlux]
  * SI unit is [Weber]
  */
 @Serializable
 sealed class MagneticFlux :
-    AbstractScientificUnit<PhysicalQuantity.MagneticFlux>(),
+    DefinedScientificUnit<PhysicalQuantity.MagneticFlux>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.MagneticFlux>
 
 @Serializable
@@ -99,4 +102,25 @@ data object Maxwell : MagneticFlux() {
     override val quantity = PhysicalQuantity.MagneticFlux
     override fun fromSIUnit(value: Decimal): Decimal = Abvolt.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = Abvolt.toSIUnit(value)
+}
+
+internal fun SerializersModuleBuilder.setupForMagneticFlux() {
+    polymorphic(MagneticFlux::class) {
+        registerMagneticFluxClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<MagneticFlux>.registerMagneticFluxClasses() {
+    subclass(Maxwell::class, Maxwell.serializer())
+    subclass(Weber::class, Weber.serializer())
+    subclass(Centiweber::class, Centiweber.serializer())
+    subclass(Decaweber::class, Decaweber.serializer())
+    subclass(Deciweber::class, Deciweber.serializer())
+    subclass(Gigaweber::class, Gigaweber.serializer())
+    subclass(Hectoweber::class, Hectoweber.serializer())
+    subclass(Kiloweber::class, Kiloweber.serializer())
+    subclass(Megaweber::class, Megaweber.serializer())
+    subclass(Microweber::class, Microweber.serializer())
+    subclass(Milliweber::class, Milliweber.serializer())
+    subclass(Nanoweber::class, Nanoweber.serializer())
 }

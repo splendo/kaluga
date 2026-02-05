@@ -17,25 +17,21 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.convert
-import com.splendo.kaluga.scientific.converter.volumetricFlow.div
-import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class VolumetricFluxUnitTest {
 
     @Test
     fun volumetricFluxConversionTest() {
-        assertScientificConversion(1.0, (CubicMeter per Second per SquareMeter), 196.85, CubicFoot per Minute per SquareFoot, 2)
-    }
-
-    @Test
-    fun volumetricFluxFromVolumetricFlowAndAreaTest() {
-        assertEquals(1(CubicMeter per Second per SquareMeter), 2(CubicMeter per Second) / 2(SquareMeter))
-        assertEquals(1(CubicFoot per Second per SquareFoot), 2(CubicFoot per Second) / 2(SquareFoot))
-        assertEquals(1(ImperialGallon per Second per SquareFoot), 2(ImperialGallon per Second) / 2(SquareFoot))
-        assertEquals(1(UsLiquidGallon per Second per SquareFoot), 2(UsLiquidGallon per Second) / 2(SquareFoot))
-        assertEquals(1(CubicMeter per Second per SquareMeter), 2(CubicMeter per Second) / 2(SquareMeter).convert(SquareFoot))
+        assertScientificConversion(
+            Decimal.ONE,
+            (CubicMeter per Second per SquareMeter),
+            Meter.convert(Decimal.ONE, Foot) * 60.toDecimal(),
+            CubicFoot per Minute per SquareFoot,
+            round = 32,
+        )
     }
 }

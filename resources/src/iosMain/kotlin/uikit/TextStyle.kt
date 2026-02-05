@@ -40,6 +40,7 @@ fun UILabel.bindLabel(label: KalugaLabel) {
     applyTextStyle(label.style)
     when (label) {
         is KalugaLabel.Plain -> text = label.text
+
         is KalugaLabel.Styled -> {
             val urlRanges = label.text.attributeString.urlRanges
             attributedText = if (urlRanges.isNotEmpty()) {
@@ -79,6 +80,7 @@ fun UILabel.bindLabel(label: KalugaLabel) {
 fun UITextView.bindLabel(label: KalugaLabel) {
     when (label) {
         is KalugaLabel.Plain -> text = label.text
+
         is KalugaLabel.Styled -> {
             attributedText = label.text.attributeString
             if (label.text.attributeString.urlRanges.isNotEmpty()) {

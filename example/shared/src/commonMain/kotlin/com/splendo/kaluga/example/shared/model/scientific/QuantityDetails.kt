@@ -166,6 +166,7 @@ internal val PhysicalQuantity.quantityDetails: QuantityDetails<*>? get() = when 
     is PhysicalQuantity.VolumetricFlux -> QuantityDetails(this, VolumetricFluxUnits, converters)
     is PhysicalQuantity.Weight -> QuantityDetails(this, WeightUnits, converters)
     is PhysicalQuantity.Yank -> QuantityDetails(this, YankUnits, converters)
+    is PhysicalQuantity.Undefined<*> -> error("Undefined Quantities not supported")
 }
 
 val PhysicalQuantity.name: String get() = this::class.simpleName.orEmpty().split("(?=\\p{Upper})".toRegex()).joinToString(" ")

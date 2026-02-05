@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -36,18 +37,23 @@ kotlin {
 
 dependencies {
     implementation(libs.android.gradle)
+    implementation(libs.android.multiplatform.gradle)
+    implementation(libs.vanniktech.maven.publish)
     implementation(libs.compose.gradle)
     implementation(libs.dependencycheck.gradle)
     implementation(libs.dokka.gradle)
     implementation(libs.kotlin.gradle)
     implementation(libs.kotlinter.gradle)
     implementation(libs.kotlinx.atomicfu.gradle)
-    implementation(libs.kotlinx.binarycompatibilityvalidator.gradle)
     implementation(libs.kotlinx.kover.gradle)
+    implementation(libs.palantir.git.version)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
 }
 
-val compileKotlin: KotlinCompile by tasks
-
-compileKotlin.kotlinOptions {
-    languageVersion = "2.0"
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        languageVersion.set(KotlinVersion.KOTLIN_2_2)
+    }
 }

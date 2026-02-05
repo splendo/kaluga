@@ -3,6 +3,10 @@ public abstract interface class com/splendo/kaluga/permissions/camera/BaseCamera
 	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/camera/BaseCameraPermissionManagerBuilder;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
 }
 
+public final class com/splendo/kaluga/permissions/camera/BaseCameraPermissionManagerBuilder$DefaultImpls {
+	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/camera/BaseCameraPermissionManagerBuilder;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
+}
+
 public final class com/splendo/kaluga/permissions/camera/CameraPermission : com/splendo/kaluga/permissions/base/Permission {
 	public static final field INSTANCE Lcom/splendo/kaluga/permissions/camera/CameraPermission;
 	public fun equals (Ljava/lang/Object;)Z

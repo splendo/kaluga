@@ -34,7 +34,7 @@ class ExampleApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        ApplicationHolder.application = this
+        ApplicationHolder.applicationContext = this
 
         initKoin(
             listOf(

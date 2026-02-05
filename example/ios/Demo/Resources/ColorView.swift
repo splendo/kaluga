@@ -89,12 +89,21 @@ struct ColorView: View, Equatable {
                 }
                 blendModeButton.value.toButton()
                 viewModel.flipButton.toButton()
-                lightenedBackdrops.asHorizontalScrollView()
-                darkenedBackdrops.asHorizontalScrollView()
-                lightenedBlended.asHorizontalScrollView()
-                darkenedBlended.asHorizontalScrollView()
-                lightenedSource.asHorizontalScrollView()
-                darkenedSource.asHorizontalScrollView()
+                lightenedBackdrops.value.asHorizontalScrollView()
+                darkenedBackdrops.value.asHorizontalScrollView()
+                lightenedBlended.value.asHorizontalScrollView()
+                darkenedBlended.value.asHorizontalScrollView()
+                lightenedSource.value.asHorizontalScrollView()
+                darkenedSource.value.asHorizontalScrollView()
+                
+                Text("resources_color_current_mode".localized())
+                viewModel.currentModeColors.asHorizontalScrollView()
+                
+                Text("resources_color_light_mode".localized())
+                viewModel.lightModeColors.asHorizontalScrollView()
+                
+                Text("resources_color_dark_mode".localized())
+                viewModel.darkModeColors.asHorizontalScrollView()
             }
             .navigationTitle("feature_resources_color".localized())
             .onAppear {
@@ -120,11 +129,11 @@ struct ColorView: View, Equatable {
     }
 }
 
-extension ListObservable<KalugaBackgroundStyle> {
+extension Array<KalugaBackgroundStyle> {
     func asHorizontalScrollView() -> some View {
         ScrollView(.horizontal) {
             HStack(spacing: 2.0) {
-                ForEach(value, id: \.self) { backgroundStyle in
+                ForEach(self, id: \.self) { backgroundStyle in
                     Spacer()
                         .frame(width: 50.0, height: 50.0)
                         .background(backgroundStyle)

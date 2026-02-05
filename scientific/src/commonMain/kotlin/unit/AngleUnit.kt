@@ -23,7 +23,9 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
-import kotlin.math.PI
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [Angle]
@@ -48,12 +50,12 @@ val AngleUnits: Set<Angle> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Angle]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Angle]
  * SI unit is [Radian]
  */
 @Serializable
 sealed class Angle :
-    AbstractScientificUnit<PhysicalQuantity.Angle>(),
+    DefinedScientificUnit<PhysicalQuantity.Angle>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.Angle>
 
 @Serializable
@@ -87,12 +89,12 @@ data object Deciradian : RadianMultiple(), MetricMultipleUnit<MeasurementSystem.
 
 @Serializable
 data object Turn : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Angle> {
-    private const val RADIAN_IN_TURN = 2.0 * PI
+    private val RADIAN_IN_TURN = Decimal.PI * 2.toDecimal()
     override val symbol = "tr"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Angle
-    override fun fromSIUnit(value: Decimal): Decimal = value / RADIAN_IN_TURN.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value * RADIAN_IN_TURN.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value / RADIAN_IN_TURN
+    override fun toSIUnit(value: Decimal): Decimal = value * RADIAN_IN_TURN
 }
 
 @Serializable
@@ -117,40 +119,65 @@ data object Deciturn : TurnMultiple(), MetricMultipleUnit<MeasurementSystem.Metr
 
 @Serializable
 data object Degree : Angle() {
-    private const val DEGREE_IN_TURN = 360.0
+    private val DEGREE_IN_TURN = 360.toDecimal()
     override val symbol = "°"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Angle
-    override fun fromSIUnit(value: Decimal): Decimal = Turn.fromSIUnit(value) * DEGREE_IN_TURN.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = Turn.toSIUnit(value / DEGREE_IN_TURN.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = Turn.fromSIUnit(value) * DEGREE_IN_TURN
+    override fun toSIUnit(value: Decimal): Decimal = Turn.toSIUnit(value / DEGREE_IN_TURN)
 }
 
 @Serializable
 data object Gradian : Angle() {
-    private const val GRADIAN_IN_TURN = 400.0
+    private val GRADIAN_IN_TURN = 400.toDecimal()
     override val symbol = "gon"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Angle
-    override fun fromSIUnit(value: Decimal): Decimal = Turn.fromSIUnit(value) * GRADIAN_IN_TURN.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = Turn.toSIUnit(value / GRADIAN_IN_TURN.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = Turn.fromSIUnit(value) * GRADIAN_IN_TURN
+    override fun toSIUnit(value: Decimal): Decimal = Turn.toSIUnit(value / GRADIAN_IN_TURN)
 }
 
 @Serializable
 data object ArcMinute : Angle() {
-    private const val ARCMINUTE_IN_TURN = 21600.0
+    private val ARCMINUTE_IN_TURN = 21600.toDecimal()
     override val symbol = "′"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Angle
-    override fun fromSIUnit(value: Decimal): Decimal = Turn.fromSIUnit(value) * ARCMINUTE_IN_TURN.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = Turn.toSIUnit(value / ARCMINUTE_IN_TURN.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = Turn.fromSIUnit(value) * ARCMINUTE_IN_TURN
+    override fun toSIUnit(value: Decimal): Decimal = Turn.toSIUnit(value / ARCMINUTE_IN_TURN)
 }
 
 @Serializable
 data object ArcSecond : Angle() {
-    private const val ARCSECOND_IN_TURN = 1296000.0
+    private val ARCSECOND_IN_TURN = 1296000.toDecimal()
     override val symbol = "″"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Angle
-    override fun fromSIUnit(value: Decimal): Decimal = Turn.fromSIUnit(value) * ARCSECOND_IN_TURN.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = Turn.toSIUnit(value / ARCSECOND_IN_TURN.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = Turn.fromSIUnit(value) * ARCSECOND_IN_TURN
+    override fun toSIUnit(value: Decimal): Decimal = Turn.toSIUnit(value / ARCSECOND_IN_TURN)
+}
+
+internal fun SerializersModuleBuilder.setupForAngle() {
+    polymorphic(Angle::class) {
+        registerAngleClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Angle>.registerAngleClasses() {
+    subclass(ArcMinute::class, ArcMinute.serializer())
+    subclass(ArcSecond::class, ArcSecond.serializer())
+    subclass(Degree::class, Degree.serializer())
+    subclass(Gradian::class, Gradian.serializer())
+    subclass(Radian::class, Radian.serializer())
+    subclass(Centiradian::class, Centiradian.serializer())
+    subclass(Deciradian::class, Deciradian.serializer())
+    subclass(Microradian::class, Microradian.serializer())
+    subclass(Milliradian::class, Milliradian.serializer())
+    subclass(Nanoradian::class, Nanoradian.serializer())
+    subclass(Turn::class, Turn.serializer())
+    subclass(Centiturn::class, Centiturn.serializer())
+    subclass(Deciturn::class, Deciturn.serializer())
+    subclass(Microturn::class, Microturn.serializer())
+    subclass(Milliturn::class, Milliturn.serializer())
+    subclass(Nanoturn::class, Nanoturn.serializer())
 }

@@ -30,18 +30,22 @@ import java.net.URL
  * The source at which [PlayableMedia] can be found
  */
 actual sealed class MediaSource {
+    /**
+     * A [MediaSource] that is located on the device
+     */
+    actual sealed class Local : MediaSource()
 
     /**
      * A [MediaSource] that has an associated [AssetFileDescriptor]
      * @property descriptor the [AssetFileDescriptor] associated with the media source
      */
-    data class Asset(val descriptor: AssetFileDescriptor) : MediaSource()
+    data class Asset(val descriptor: AssetFileDescriptor) : Local()
 
     /**
      * A [MediaSource] that has an associated [FileDescriptor]
      * @property descriptor the [FileDescriptor] associated with the media source
      */
-    data class File(val descriptor: FileDescriptor) : MediaSource()
+    data class File(val descriptor: FileDescriptor, val offset: Long, val length: Long) : Local()
 
     /**
      * A [MediaSource] that is located at a [URL]
@@ -64,6 +68,13 @@ actual sealed class MediaSource {
         val headers: Map<String, String>? = null,
         val cookies: List<HttpCookie>? = null,
     ) : MediaSource()
+
+    /**
+     * A [MediaSource] that has is located in an application bundle
+     * @property fileName the name of the media source file
+     * @property defType the type of resource
+     */
+    data class Bundle(val fileName: String, val defType: String = "raw") : Local()
 }
 
 /**
@@ -76,3 +87,11 @@ actual fun mediaSourceFromUrl(url: String): MediaSource? = try {
 } catch (e: MalformedURLException) {
     null
 }
+
+/**
+ * Attempts to create a [MediaSource] from a file name
+ * @param fileName the name of the media source file
+ * @param fileType the type of the media source file
+ * @return the [MediaSource.Local] associated with the file or `null` if none could be created
+ */
+actual fun mediaSourceFromLocalFile(fileName: String, fileType: String): MediaSource.Local = MediaSource.Bundle(fileName)

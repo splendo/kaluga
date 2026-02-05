@@ -22,6 +22,7 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
+import com.splendo.kaluga.example.shared.di.USE_BLUETOOTH_FOR_LOCATION
 import com.splendo.kaluga.logging.RestrictedLogLevel
 import com.splendo.kaluga.logging.RestrictedLogger
 import com.splendo.kaluga.permissions.base.BasePermissionManager
@@ -56,7 +57,7 @@ enum class PermissionView(val title: String) {
     ;
 
     val permission: Permission get() = when (this) {
-        Bluetooth -> BluetoothPermission
+        Bluetooth -> BluetoothPermission(useForLocation = USE_BLUETOOTH_FOR_LOCATION)
         Calendar -> CalendarPermission(allowWrite = true)
         Camera -> CameraPermission
         Contacts -> ContactsPermission(allowWrite = true)

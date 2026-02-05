@@ -23,6 +23,9 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * A unit of measurement for a [PhysicalQuantity]
@@ -60,6 +63,9 @@ sealed interface ScientificUnit<Quantity : PhysicalQuantity> :
      * @return the [Decimal] value in this unit
      */
     fun fromSIUnit(value: Decimal): Decimal
+
+    fun deltaToSIUnitDelta(delta: Decimal): Decimal = toSIUnit(delta)
+    fun deltaFromSIUnitDelta(delta: Decimal): Decimal = fromSIUnit(delta)
 }
 
 /**
@@ -107,18 +113,30 @@ interface MetricAndUKImperialScientificUnit<Quantity : PhysicalQuantity> :
     MeasurementUsage.UsedInMetricAndUKImperial
 
 /**
+ * A [SystemScientificUnit] for [MeasurementSystem.MetricAndUSCustomary]
+ */
+interface MetricAndUSCustomaryScientificUnit<Quantity : PhysicalQuantity> :
+    SystemScientificUnit<MeasurementSystem.MetricAndUSCustomary, Quantity>,
+    MeasurementUsage.UsedInMetricAndUSCustomary
+
+/**
  * A [SystemScientificUnit] for [MeasurementSystem.MetricAndImperial]
  */
 interface MetricAndImperialScientificUnit<Quantity : PhysicalQuantity> :
     SystemScientificUnit<MeasurementSystem.MetricAndImperial, Quantity>,
     MeasurementUsage.UsedInMetricAndImperial
 
+@Serializable
+sealed class AbstractScientificUnit<Quantity : PhysicalQuantity> : ScientificUnit<Quantity>
+
 /**
  * A class implementation of [ScientificUnit]
  * @param Quantity the type of [PhysicalQuantity] to measure
  */
 @Serializable
-sealed class AbstractScientificUnit<Quantity : PhysicalQuantity> : ScientificUnit<Quantity>
+sealed class DefinedScientificUnit<Quantity> : AbstractScientificUnit<Quantity>() where
+          Quantity : PhysicalQuantity,
+          Quantity : PhysicalQuantity.Defined
 
 /**
  * Converts a value in a [ScientificUnit] to the value of another unit with the same [PhysicalQuantity]
@@ -171,9 +189,9 @@ fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(
 fun <Quantity : PhysicalQuantity> ScientificUnit<Quantity>.convert(value: Decimal, to: ScientificUnit<Quantity>) = if (this == to) value else to.fromSIUnit(toSIUnit(value))
 
 /**
- * The set of all [AbstractScientificUnit] supported by this library
+ * The set of all [DefinedScientificUnit] supported by this library
  */
-val Units: Set<AbstractScientificUnit<*>> get() = AccelerationUnits +
+val Units: Set<DefinedScientificUnit<*>> get() = AccelerationUnits +
     ActionUnits +
     AmountOfSubstanceUnits +
     AngleUnits +
@@ -234,3 +252,141 @@ val Units: Set<AbstractScientificUnit<*>> get() = AccelerationUnits +
     WeightUnits +
     YankUnits +
     DimensionlessUnits
+
+internal fun SerializersModuleBuilder.setupForScientificUnit() {
+    polymorphic(AbstractScientificUnit::class) {
+        registerUnitClasses()
+    }
+    setupForDefinedScientificUnit()
+    setupForUndefinedScientificUnit()
+}
+
+internal fun SerializersModuleBuilder.setupForDefinedScientificUnit() {
+    polymorphic(DefinedScientificUnit::class) {
+        registerDefinedUnitClasses()
+    }
+    setupForActionUnit()
+    setupForAmountOfSubstance()
+    setupForAngle()
+    setupForAreaDensity()
+    setupForArea()
+    setupForCatalysticActivity()
+    setupForDensity()
+    setupForDynamicViscosity()
+    setupForElectricCapacitance()
+    setupForElectricCharge()
+    setupForElectricConductance()
+    setupForElectricCurrent()
+    setupForElectricInductance()
+    setupForElectricResistance()
+    setupForEnergy()
+    setupForForce()
+    setupForFrequency()
+    setupForHeatCapacity()
+    setupForIlluminance()
+    setupForIonizingRadiationAbsorbedDose()
+    setupForIonizingRadiationEquivalentDose()
+    setupForJolt()
+    setupForKinematicViscosity()
+    setupForLength()
+    setupForLinearMassDensity()
+    setupForLuminance()
+    setupForLuminousExposure()
+    setupForLuminousFlux()
+    setupForLuminousIntensity()
+    setupForMagneticFlux()
+    setupForMagneticInduction()
+    setupForMassFlowRate()
+    setupForMolality()
+    setupForMolarity()
+    setupForMolarEnergy()
+    setupForMolarMass()
+    setupForMolarVolume()
+    setupForMomentum()
+    setupForPower()
+    setupForPressure()
+    setupForRadioactivity()
+    setupForSolidAngle()
+    setupForSpecificEnergy()
+    setupForSpecificHeatCapacity()
+    setupForSpecificVolume()
+    setupForSpeed()
+    setupForSurfaceTension()
+    setupForTemperature()
+    setupForThermalResistance()
+    setupForTime()
+    setupForVoltage()
+    setupForVolume()
+    setupForVolumetricFlow()
+    setupForVolumetricFlux()
+    setupForWeight()
+    setupForYank()
+}
+
+internal fun PolymorphicModuleBuilder<AbstractScientificUnit<*>>.registerUnitClasses() {
+    registerDefinedUnitClasses()
+    registerUndefinedScientificUnitClasses()
+}
+
+internal fun PolymorphicModuleBuilder<DefinedScientificUnit<*>>.registerDefinedUnitClasses() {
+    registerActionClasses()
+    registerAmountOfSubstanceClasses()
+    registerAngleClasses()
+    subclass(AngularVelocity::class, AngularVelocity.serializer())
+    subclass(AngularAcceleration::class, AngularAcceleration.serializer())
+    registerAreaDensityClasses()
+    registerAreaClasses()
+    registerCatalysticActivityClasses()
+    registerDensityClasses()
+    registerDynamicViscosityClasses()
+    registerElectricCapacitanceClasses()
+    registerElectricChargeClasses()
+    registerElectricConductanceClasses()
+    registerElectricCurrentClasses()
+    registerElectricInductanceClasses()
+    registerElectricResistanceClasses()
+    registerEnergyClasses()
+    registerForceClasses()
+    registerFrequencyClasses()
+    registerHeatCapacityClasses()
+    registerIlluminanceClasses()
+    registerIonizingRadiationAbsorbedDoseClasses()
+    registerIonizingRadiationEquivalentDoseClasses()
+    registerJoltClasses()
+    registerKinematicViscosityClasses()
+    registerLengthClasses()
+    registerLinearMassDensityClasses()
+    registerLuminanceClasses()
+    subclass(LuminousEnergy::class, LuminousEnergy.serializer())
+    registerLuminousExposureClasses()
+    registerLuminousFluxClasses()
+    registerLuminousIntensityClasses()
+    registerMagneticFluxClasses()
+    registerMagneticInductionClasses()
+    registerMassFlowRateClasses()
+    registerMolalityClasses()
+    registerMolarityClasses()
+    registerMolarEnergyClasses()
+    registerMolarMassClasses()
+    registerMolarVolumeClasses()
+    registerMomentumClasses()
+    registerPowerClasses()
+    registerPressureClasses()
+    registerRadioactivityClasses()
+    registerSolidAngleClasses()
+    registerSpecificEnergyClasses()
+    registerSpecificHeatCapacityClasses()
+    registerSpecificVolumeClasses()
+    registerSpeedClasses()
+    registerSurfaceTensionClasses()
+    registerTemperatureClasses()
+    registerThermalResistanceClasses()
+    registerTimeClasses()
+    registerVoltageClasses()
+    registerVolumetricFlowClasses()
+    registerVolumetricFluxClasses()
+    registerVolumeClasses()
+    registerWeightClasses()
+    registerYankClasses()
+    registerDimensionlessClasses()
+}

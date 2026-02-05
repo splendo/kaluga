@@ -1,5 +1,5 @@
 /*
- Copyright 2024 Splendo Consulting B.V. The Netherlands
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,40 +17,48 @@
 
 package com.splendo.kaluga.plugin.extensions
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import com.splendo.kaluga.plugin.container.AppleInteropContainer
+import com.splendo.kaluga.plugin.container.BuildSwiftLibTask
 import com.splendo.kaluga.plugin.container.MultiplatformDependencyContainer
+import com.splendo.kaluga.plugin.container.sdkName
 import com.splendo.kaluga.plugin.helpers.jvmTarget
+import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.publish.PublicationContainer
-import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.newInstance
+import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JsModuleKind
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jmailen.gradle.kotlinter.tasks.LintTask
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.util.Locale.getDefault
 import javax.inject.Inject
 
 open class KalugaMultiplatformSubprojectExtension @Inject constructor(
+    val multiplatformExtension: KotlinMultiplatformExtension,
     versionCatalog: VersionCatalog,
-    libraryExtension: LibraryExtension,
     objects: ObjectFactory,
-) : BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, null, objects) {
+) : BaseKalugaSubprojectExtension(versionCatalog, null, objects) {
 
     companion object {
-        private val testDependentProjectsEnvName = "TEST_DEPENDENT_PROJECTS"
-        private val onCiEnvName = "CI"
+        private const val TEST_DEPENDENT_PROJECTS_ENV_NAME = "TEST_DEPENDENT_PROJECTS"
+        private const val ON_CI_ENV_NAME = "CI"
     }
     private enum class IOSTarget(val sourceSetName: String) {
         X64("iosX64"),
@@ -59,7 +67,31 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     }
 
     var supportJVM: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                multiplatformExtension.jvm()
+            }
+        }
     var supportJS: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                multiplatformExtension.js(KotlinJsCompilerType.IR) {
+                    nodejs()
+                    browser()
+                    compilations.configureEach {
+                        compileTaskProvider.configure {
+                            compilerOptions {
+                                sourceMap.set(true)
+                                moduleKind.set(JsModuleKind.MODULE_UMD)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    var iosDeploymentTarget: String = "15.0"
 
     private val multiplatformDependencies = objects.newInstance(MultiplatformDependencyContainer::class)
     private val appleInterop = objects.newInstance(AppleInteropContainer::class)
@@ -77,23 +109,22 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         frameworkConfig = action
     }
 
+    private val androidLibraryExtension = multiplatformExtension.extensions.findByType(KotlinMultiplatformAndroidLibraryExtension::class.java)!!
+    override var namespace: String?
+        get() = androidLibraryExtension.namespace
+        set(value) {
+            androidLibraryExtension.namespace = value
+        }
+
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     override fun Project.setupSubproject() {
-        // Android Target must be setup before project is evaluated as publishing will break otherwise
-        extensions.configure(KotlinMultiplatformExtension::class) {
-            androidTarget() {
-                instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-                unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-                publishAllLibraryVariants()
-            }
-        }
     }
 
     override fun Project.configureSubproject() {
         extensions.configure(KotlinMultiplatformExtension::class) {
             configureMultiplatform(this@configureSubproject)
         }
-        task("printConfigurations") {
+        tasks.register("printConfigurations") {
             doLast {
                 configurations.all { println(this) }
             }
@@ -104,38 +135,24 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             reports.set(mapOf("plain" to rootProject.layout.buildDirectory.get().asFile.resolve("reports/ktlint/${project.path}-${this.name}.txt")))
         }
 
-        afterEvaluate {
-            iosTargets.forEach { target ->
-                val targetName = target.sourceSetName
-                if (tasks.names.contains("linkDebugTest${targetName.replaceFirstChar { it.titlecase() } }")) {
-                    // creating copy task for the target
-                    val copyTask = tasks.create("copy${targetName.replaceFirstChar { it.titlecase() } }TestResources", Copy::class) {
-                        from("src/iosTest/resources/.")
-                        into("${layout.buildDirectory.get().asFile}/bin/$targetName/debugTest")
-                    }
-
-                    // apply copy task to the target
-                    tasks.named("linkDebugTest${targetName.replaceFirstChar { it.titlecase() }}") {
-                        dependsOn(copyTask)
-                    }
+        iosTargets.forEach { target ->
+            val targetName = target.sourceSetName
+            if (tasks.names.contains("linkDebugTest${targetName.replaceFirstChar { it.titlecase() }}")) {
+                // creating copy task for the target
+                val copyTask = tasks.register("copy${targetName.replaceFirstChar { it.titlecase() }}TestResources", Copy::class) {
+                    from("src/iosTest/resources/.")
+                    into("${layout.buildDirectory.get().asFile}/bin/$targetName/debugTest")
                 }
-            }
-        }
 
-        if (listOf(testDependentProjectsEnvName, onCiEnvName).any { System.getenv().containsKey(it) }) {
-            parent?.subprojects?.filter {
-                it.name.startsWith("${project.name}-") || it.name.endsWith("-${project.name}")
-            }?.forEach { module ->
-                afterEvaluate {
-                    logger.info("[connect_check_expansion] :${project.name}:connectedDebugAndroidTest dependsOn:${module.name}:connectedDebugAndroidTest")
-                    tasks.getByPath("connectedDebugAndroidTest")
-                        .dependsOn(":${module.name}:connectedDebugAndroidTest")
+                // apply copy task to the target
+                tasks.named("linkDebugTest${targetName.replaceFirstChar { it.titlecase() }}") {
+                    dependsOn(copyTask)
                 }
             }
         }
     }
 
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    @OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalAbiValidation::class)
     private fun KotlinMultiplatformExtension.configureMultiplatform(project: Project) {
         compilerOptions {
             freeCompilerArgs.addAll("-Xexpect-actual-classes", "-Xconsistent-data-class-copy-visibility")
@@ -161,69 +178,76 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             }
         }
 
-        if (supportJVM) {
-            jvm()
+        extensions.configure(AbiValidationMultiplatformExtension::class) {
+            enabled.set(true)
+            abiExtension()
         }
-        if (supportJS) {
-            js(KotlinJsCompilerType.IR) {
-                nodejs()
-                browser()
-                compilations.configureEach {
-                    compileTaskProvider.configure {
-                        compilerOptions {
-                            sourceMap.set(true)
-                            moduleKind.set(JsModuleKind.MODULE_UMD)
-                        }
-                    }
-                }
-            }
-        }
-
-        applyDefaultHierarchyTemplate()
 
         project.afterEvaluate {
+            applyDefaultHierarchyTemplate()
+            dependencies {
+                implementation("kotlinx-coroutines-core".asDependency())
+
+                testImplementation(kotlin("test"))
+                testImplementation(kotlin("test-common"))
+                testImplementation(kotlin("test-annotations-common"))
+            }
+
             with(sourceSets) {
                 commonMain.configure {
                     dependencies {
-                        implementation("kotlinx-coroutines-core".asDependency())
-                        multiplatformDependencies.common.mainDependencies.forEach { it.execute(this) }
+                        multiplatformDependencies.common.mainDependencies.forEach {
+                            it.execute(this)
+                        }
                     }
                 }
 
                 commonTest.configure {
                     dependencies {
-                        implementation(kotlin("test"))
-                        implementation(kotlin("test-common"))
-                        implementation(kotlin("test-annotations-common"))
-                        multiplatformDependencies.common.testDependencies.forEach { it.execute(this) }
+                        multiplatformDependencies.common.testDependencies.forEach {
+                            it.execute(this)
+                        }
                     }
                 }
 
                 androidMain.configure {
                     dependencies {
-                        androidMainDependencies.forEach { implementation(it) }
-                        multiplatformDependencies.android.mainDependencies.forEach { it.execute(this) }
+                        androidMainDependencies.forEach {
+                            implementation(it)
+                        }
+
+                        multiplatformDependencies.android.mainDependencies.forEach {
+                            it.execute(this)
+                        }
                     }
                 }
 
-                androidUnitTest.configure {
+                getByName("androidHostTest") {
                     dependencies {
-                        androidTestDependencies.forEach { implementation(it) }
+                        androidTestDependencies.forEach {
+                            implementation(it)
+                        }
                         multiplatformDependencies.android.testDependencies.forEach { it.execute(this) }
                     }
                 }
 
-                androidInstrumentedTest.configure {
+                getByName("androidDeviceTest") {
+                    // No longer allowed so leads to warning. Seems to work for now but probably fragile
+                    dependsOn(getByName("commonTest"))
                     dependencies {
-                        androidInstrumentedTestDependencies.forEach { implementation(it) }
-                        multiplatformDependencies.android.instrumentedTestDependencies.forEach { it.execute(this) }
+                        androidDeviceTestDependencies.forEach {
+                            implementation(it)
+                        }
+                        multiplatformDependencies.android.deviceTestDependencies.forEach { it.execute(this) }
                     }
                 }
 
                 if (multiplatformDependencies.apple.mainDependencies.isNotEmpty()) {
                     appleMain.configure {
                         dependencies {
-                            multiplatformDependencies.apple.mainDependencies.forEach { it.execute(this) }
+                            multiplatformDependencies.apple.mainDependencies.forEach {
+                                it.execute(this)
+                            }
                         }
                     }
                 }
@@ -231,20 +255,27 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 if (multiplatformDependencies.apple.testDependencies.isNotEmpty()) {
                     appleTest.configure {
                         dependencies {
-                            multiplatformDependencies.apple.testDependencies.forEach { it.execute(this) }
+                            multiplatformDependencies.apple.testDependencies.forEach {
+                                it.execute(this)
+                            }
                         }
                     }
                 }
 
                 iosMain.configure {
+                    iosDeploymentTarget = "15.0"
                     dependencies {
-                        multiplatformDependencies.ios.mainDependencies.forEach { it.execute(this) }
+                        multiplatformDependencies.ios.mainDependencies.forEach {
+                            it.execute(this)
+                        }
                     }
                 }
 
                 iosTest.configure {
                     dependencies {
-                        multiplatformDependencies.ios.testDependencies.forEach { it.execute(this) }
+                        multiplatformDependencies.ios.testDependencies.forEach {
+                            it.execute(this)
+                        }
                     }
                 }
 
@@ -284,12 +315,81 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
             }
 
-            project.configure(iosTargets) {
-                compilations.getByName("main").cinterops.let { mainInterops ->
-                    appleInterop.main.forEach { it.execute(mainInterops) }
+            val developerDirProvider = providers.exec {
+                if (iosTargets.isNotEmpty()) {
+                    commandLine("xcode-select", "-p")
                 }
-                compilations.getByName("test").cinterops.let { mainInterops ->
-                    appleInterop.test.forEach { it.execute(mainInterops) }
+            }.standardOutput.asText.map { it.trim() }
+
+            project.configure(iosTargets) {
+                val swiftSourceDir = project.file("src/iosMain/swift")
+                val cinteropSwiftInteropTaskName = "cinteropSwiftInterop${name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }}"
+                logger.info("cinteropSwiftInteropTask: ${project.name}:$cinteropSwiftInteropTaskName with target: $name ($konanTarget)")
+                val buildSwiftLibTask = if (swiftSourceDir.exists() && swiftSourceDir.listFiles().isNotEmpty()) {
+                    tasks.register<BuildSwiftLibTask>("buildSwiftLib_$name") {
+                        logger.info("buildSwiftLib_$name registered for $konanTarget with deployment $iosDeploymentTarget")
+                        srcDir.set(swiftSourceDir)
+                        libraryOutputDir.set(layout.buildDirectory.dir("swift/$name"))
+                        headerOutputDir.set(layout.buildDirectory.dir("objc/$name"))
+                        target.set(konanTarget)
+                        deploymentTarget.set(iosDeploymentTarget)
+                    }
+                } else {
+                    null
+                }
+                compilations.getByName("main").let { main ->
+                    main.cinterops.let { mainInterops ->
+                        buildSwiftLibTask?.let { buildSwiftLibTask ->
+                            mainInterops.create("swiftInterop") {
+                                val defFile = File(layout.buildDirectory.asFile.get(), "cinterop/$name/$targetName/swiftinterop.def")
+
+                                if (defFile.exists()) {
+                                    defFile.delete()
+                                }
+                                defFile.parentFile.mkdirs()
+                                defFile.createNewFile()
+                                val writer = BufferedWriter(FileWriter(defFile))
+                                val staticLibPath = buildSwiftLibTask.get().libraryOutputDir.get().asFile.absolutePath
+                                val devDir = project.providers.environmentVariable("DEVELOPER_DIR").getOrElse(developerDirProvider.get())
+                                val swiftLibPath = "$devDir/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/${buildSwiftLibTask.get().target.get().sdkName}"
+                                val linkerOpts = "-L$swiftLibPath -rpath /usr/lib/swift"
+                                val headerSourceDir = buildSwiftLibTask.get().headerOutputDir.get().asFile
+
+                                logger.info("Creating .def file: $defFile with libraryPaths: $staticLibPath linkerOpts: $linkerOpts, compiling with headers from $headerSourceDir")
+
+                                try {
+                                    writer.write(
+                                        """
+                                            |language = Objective-C
+                                            |headers = SwiftInterop.h
+                                            |package = com.splendo.kaluga.$moduleName
+                                            |headerFilter = SwiftInterop.h
+                                            |staticLibraries = libswiftinterop.a
+                                            |libraryPaths = $staticLibPath/
+                                            |linkerOpts = $linkerOpts
+                                        """.trimMargin(),
+                                    )
+                                } finally {
+                                    writer.close()
+                                }
+                                definitionFile.set(defFile)
+                                compilerOpts("-I/${headerSourceDir.absolutePath}")
+                                includeDirs.allHeaders(headerSourceDir)
+                                tasks.named(cinteropSwiftInteropTaskName).configure {
+                                    dependsOn(buildSwiftLibTask)
+                                }
+                            }
+                        }
+
+                        appleInterop.main.forEach { settings ->
+                            settings.execute(mainInterops)
+                        }
+                    }
+                }
+                compilations.getByName("test").let { test ->
+                    test.cinterops.let { mainInterops ->
+                        appleInterop.test.forEach { it.execute(mainInterops) }
+                    }
                 }
                 binaries {
                     frameworkConfig?.let { iosExport ->
@@ -323,14 +423,29 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     enableLanguageFeature("InlineClasses")
                 }
             }
+            project.setupPublishingAfterEvaluation()
         }
     }
 
-    override fun LibraryExtension.configure() {
-        @Suppress("UnstableApiUsage")
-        testOptions {
-            unitTests.isReturnDefaultValues = true
-            targetSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
+    fun KotlinMultiplatformAndroidLibraryExtension.configure() {
+        compileSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
+        buildToolsVersion = versionCatalog.findVersion("androidBuildTools").get().displayName
+        minSdk = versionCatalog.findVersion("androidMinSdk").get().displayName.toInt()
+
+        withHostTest {
+            isReturnDefaultValues = true
+            targetSdk {
+                release(versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt())
+            }
+        }
+        withDeviceTest {
+            animationsDisabled = true
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
+
+        // TODO: base on a flag in kaluga configuration
+        androidResources {
+            enable = true
         }
 
         packaging {
@@ -349,17 +464,9 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             )
         }
     }
-    override fun PublicationContainer.configure(project: Project) {
-        getByName("kotlinMultiplatform") {
-            (this as MavenPublication).let {
-                artifactId = project.name
-                groupId = BASE_GROUP
-                version = project.kalugaVersion
-            }
-        }
-    }
 
     private val Project.iosTargets: Set<IOSTarget> get() {
+        if (!Os.isFamily(Os.FAMILY_MAC)) return emptySet()
         val sdkName = System.getenv("SDK_NAME") ?: "unknown"
         val isRealIOSDevice = sdkName.startsWith("iphoneos").also {
             logger.info("Run on real ios device: $it from sdk: $sdkName")
@@ -381,5 +488,15 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             isAppleSilicon -> setOf(IOSTarget.SimulatorArm64)
             else -> setOf(IOSTarget.X64)
         }
+    }
+
+    override fun Project.beforeEvaluated() {
+        setupSubproject()
+
+        multiplatformExtension.extensions.getByType(KotlinMultiplatformAndroidLibraryTarget::class.java).apply {
+            configure()
+        }
+
+        configureSubproject()
     }
 }

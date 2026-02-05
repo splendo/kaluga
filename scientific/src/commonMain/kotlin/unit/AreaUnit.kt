@@ -23,6 +23,9 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricArea]
@@ -57,11 +60,11 @@ val ImperialAreaUnits: Set<ImperialArea> get() = setOf(
 val AreaUnits: Set<Area> get() = MetricAreaUnits + ImperialAreaUnits
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Area]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Area]
  * SI unit is `SquareMeter`
  */
 @Serializable
-sealed class Area : AbstractScientificUnit<PhysicalQuantity.Area>()
+sealed class Area : DefinedScientificUnit<PhysicalQuantity.Area>()
 
 /**
  * An [Area] for [MeasurementSystem.Metric]
@@ -149,9 +152,49 @@ data object SquareInch : ImperialArea(), SystemScientificUnit<MeasurementSystem.
 @Serializable
 data object Acre : ImperialArea() {
     override val symbol: String = "acre"
-    val ACRES_IN_SQUARE_MILE = 640.0
+    private val ACRES_IN_SQUARE_MILE = 640.toDecimal()
     override val quantity = PhysicalQuantity.Area
     override val system = MeasurementSystem.Imperial
-    override fun toSIUnit(value: Decimal): Decimal = SquareMile.toSIUnit(value / ACRES_IN_SQUARE_MILE.toDecimal())
-    override fun fromSIUnit(value: Decimal): Decimal = SquareMile.fromSIUnit(value) * ACRES_IN_SQUARE_MILE.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = SquareMile.toSIUnit(value / ACRES_IN_SQUARE_MILE)
+    override fun fromSIUnit(value: Decimal): Decimal = SquareMile.fromSIUnit(value) * ACRES_IN_SQUARE_MILE
+}
+
+internal fun SerializersModuleBuilder.setupForArea() {
+    polymorphic(Area::class) {
+        registerAreaClasses()
+    }
+    polymorphic(MetricArea::class) {
+        registerMetricAreaClasses()
+    }
+    polymorphic(ImperialArea::class) {
+        registerImperialAreaClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Area>.registerAreaClasses() {
+    registerMetricAreaClasses()
+    registerImperialAreaClasses()
+}
+
+internal fun PolymorphicModuleBuilder<MetricArea>.registerMetricAreaClasses() {
+    subclass(Hectare::class, Hectare.serializer())
+    subclass(SquareCentimeter::class, SquareCentimeter.serializer())
+    subclass(SquareDecameter::class, SquareDecameter.serializer())
+    subclass(SquareDecimeter::class, SquareDecimeter.serializer())
+    subclass(SquareGigameter::class, SquareGigameter.serializer())
+    subclass(SquareHectometer::class, SquareHectometer.serializer())
+    subclass(SquareKilometer::class, SquareKilometer.serializer())
+    subclass(SquareMegameter::class, SquareMegameter.serializer())
+    subclass(SquareMeter::class, SquareMeter.serializer())
+    subclass(SquareMicrometer::class, SquareMicrometer.serializer())
+    subclass(SquareMillimeter::class, SquareMillimeter.serializer())
+    subclass(SquareNanometer::class, SquareNanometer.serializer())
+}
+
+internal fun PolymorphicModuleBuilder<ImperialArea>.registerImperialAreaClasses() {
+    subclass(Acre::class, Acre.serializer())
+    subclass(SquareFoot::class, SquareFoot.serializer())
+    subclass(SquareInch::class, SquareInch.serializer())
+    subclass(SquareMile::class, SquareMile.serializer())
+    subclass(SquareYard::class, SquareYard.serializer())
 }

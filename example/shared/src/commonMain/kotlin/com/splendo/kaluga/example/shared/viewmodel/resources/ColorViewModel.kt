@@ -27,6 +27,7 @@ import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.KalugaColor
+import com.splendo.kaluga.resources.asColor
 import com.splendo.kaluga.resources.burn
 import com.splendo.kaluga.resources.colorBlend
 import com.splendo.kaluga.resources.colorFrom
@@ -49,6 +50,7 @@ import com.splendo.kaluga.resources.screen
 import com.splendo.kaluga.resources.softLight
 import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
 import com.splendo.kaluga.resources.view.KalugaButton
+import com.splendo.kaluga.resources.withDarkMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -116,6 +118,40 @@ class ColorViewModel(private val alertPresenterBuilder: BaseAlertPresenter.Build
     val lightenBlended = blendedColor.lightenList()
     val darkenBlended = blendedColor.darkenList()
 
+    private val colorsWithDarkMode = listOf(
+        "named_color".asColor()!!,
+        "named_color_with_dark_mode".asColor()!!,
+        DefaultColors.azure withDarkMode DefaultColors.crimson,
+    )
+
+    val currentModeColors = colorsWithDarkMode.map {
+        KalugaBackgroundStyle(KalugaBackgroundStyle.FillStyle.Solid(it))
+    }
+
+    val lightModeColors = colorsWithDarkMode.map { color ->
+        KalugaBackgroundStyle(
+            KalugaBackgroundStyle.FillStyle.Solid(
+                when (color) {
+                    is KalugaColor.RGBColor -> color
+                    is KalugaColor.DarkLightColor -> color.defaultColor
+                    else -> throw IllegalArgumentException("Invalid Color $color")
+                },
+            ),
+        )
+    }
+
+    val darkModeColors = colorsWithDarkMode.map { color ->
+        KalugaBackgroundStyle(
+            KalugaBackgroundStyle.FillStyle.Solid(
+                when (color) {
+                    is KalugaColor.RGBColor -> color
+                    is KalugaColor.DarkLightColor -> color.darkColor
+                    else -> throw IllegalArgumentException("Invalid Color $color")
+                },
+            ),
+        )
+    }
+
     private val steps = (1..10).map { it.toDouble() / 10.0 }
     private fun Flow<KalugaColor>.lightenList() = map { color ->
         steps.map {
@@ -151,7 +187,7 @@ class ColorViewModel(private val alertPresenterBuilder: BaseAlertPresenter.Build
         ) {
             alertPresenterBuilder.buildActionSheet(coroutineScope) {
                 addActions(
-                    SelectableBlendMode.values().map { selectableBlendMode ->
+                    SelectableBlendMode.entries.map { selectableBlendMode ->
                         Alert.Action(selectableBlendMode.name) {
                             blendMode.value = selectableBlendMode
                         }
@@ -170,7 +206,7 @@ class ColorViewModel(private val alertPresenterBuilder: BaseAlertPresenter.Build
         backdropColor.value = sourceColor
     }
 
-    private fun submitColorText(colorText: String, onColorParsed: (KalugaColor) -> Unit) {
+    private fun submitColorText(colorText: String, onColorParsed: (KalugaColor.RGBColor) -> Unit) {
         colorFrom(colorText)?.let { onColorParsed(it) } ?: run {
             coroutineScope.launch {
                 alertPresenterBuilder.buildAlert(coroutineScope) {

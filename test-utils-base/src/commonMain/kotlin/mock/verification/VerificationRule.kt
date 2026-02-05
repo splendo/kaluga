@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.test.base.mock.verification
 
+import com.splendo.kaluga.test.base.mock.verification.VerificationRule.Companion.times
+
 /**
  * Rule for checking how often a [com.splendo.kaluga.test.base.mock.BaseMethodMock] can be called
  */

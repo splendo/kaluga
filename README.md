@@ -1,5 +1,4 @@
-[![Maven Central](https://img.shields.io/maven-central/v/com.splendo.kaluga/base)](https://central.sonatype.com/search?q=g:com.splendo.kaluga) [![Build Status](https://app.bitrise.io/app/14b7d4be75507f70/status.svg?token=KawVB7619B-KRBdIADdplg&branch=master)](https://app.bitrise.io/app/14b7d4be75507f70)<sup>🤖</sup> [![Build Status](https://app.bitrise.io/app/67ee1b576288ad31/status.svg?token=hUq90QsaCPe2nyWxyX1KGg&branch=master)](https://app.bitrise.io/app/67ee1b576288ad31)<sup>🍏</sup>
-
+[![Maven Central](https://img.shields.io/maven-central/v/com.splendo.kaluga/base)](https://central.sonatype.com/search?q=g:com.splendo.kaluga)
 ![kaluga logo](https://raw.githubusercontent.com/splendo/kaluga/b1198b0427046f7aa3de5f74fd2fcebd461eb6c1/logo/Logo.svg)
 
 This project is named after the Kaluga, the world's biggest freshwater fish, which is found in the icy Amur river.
@@ -66,6 +65,8 @@ class HudViewModel(private val hudBuilder: HUD.Builder): BaseLifecycleViewModel(
 Kaluga contains [an example project](example/) that is used to test the developed modules.
 
 ## Using Kaluga
+
+> **_NOTE:_** Older versions of Kotlin may cause a Thread Deadlock when running some modules on iOS. For this reason, it is recommended to target Kotlin `2.2.21` or higher
 
 For starting a new project based on Kaluga see the [kaluga-starter repo](https://github.com/splendo/kaluga-starter), which shows how to do this step by step.
 

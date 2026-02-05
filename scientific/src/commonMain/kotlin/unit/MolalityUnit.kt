@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricMolality]
@@ -58,11 +61,11 @@ val MolalityUnits: Set<Molality> get() = MetricMolalityUnits +
     USCustomaryMolalityUnits.filter { it.per !is USCustomaryImperialWeightWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Molality]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Molality]
  * SI unit is `Mole per Kilogram`
  */
 @Serializable
-sealed class Molality : AbstractScientificUnit<PhysicalQuantity.Molality>() {
+sealed class Molality : DefinedScientificUnit<PhysicalQuantity.Molality>() {
 
     /**
      * The [AmountOfSubstance] component
@@ -164,3 +167,16 @@ infix fun AmountOfSubstance.per(weight: UKImperialWeight) = UKImperialMolality(t
  * @return the [USCustomaryMolality] represented by the units
  */
 infix fun AmountOfSubstance.per(weight: USCustomaryWeight) = USCustomaryMolality(this, weight)
+
+internal fun SerializersModuleBuilder.setupForMolality() {
+    polymorphic(Molality::class) {
+        registerMolalityClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Molality>.registerMolalityClasses() {
+    subclass(ImperialMolality::class, ImperialMolality.serializer())
+    subclass(MetricMolality::class, MetricMolality.serializer())
+    subclass(UKImperialMolality::class, UKImperialMolality.serializer())
+    subclass(USCustomaryMolality::class, USCustomaryMolality.serializer())
+}

@@ -20,6 +20,7 @@ package com.splendo.kaluga.test.bluetooth
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.logging.ContextualLogger
 import com.splendo.kaluga.logging.defaultLogger
 import com.splendo.kaluga.test.base.mock.call
 import com.splendo.kaluga.test.base.mock.parameters.mock
@@ -31,8 +32,7 @@ class MockCharacteristic(characteristic: CharacteristicWrapper, emitNewAction: (
     Characteristic(
         wrapper = characteristic,
         emitNewAction = emitNewAction,
-        parentLogTag = "",
-        logger = defaultLogger,
+        logger = ContextualLogger(defaultLogger, "MockCharacteristic"),
     ) {
 
     /**

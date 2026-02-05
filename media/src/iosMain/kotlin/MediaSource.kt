@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.media
 
-import com.splendo.kaluga.media.MediaSource.URL.Option
 import platform.AVFoundation.AVAsset
 import platform.AVFoundation.AVAssetReferenceRestrictions
 import platform.AVFoundation.AVURLAssetAllowsCellularAccessKey
@@ -39,6 +38,10 @@ import platform.Foundation.NSUUID
  * The source at which [PlayableMedia] can be found
  */
 actual sealed class MediaSource {
+    /**
+     * A [MediaSource] that is located on the device
+     */
+    actual sealed class Local : MediaSource()
 
     /**
      * A [MediaSource] that has an associated [AVAsset]
@@ -134,6 +137,13 @@ actual sealed class MediaSource {
             }
         }
     }
+
+    /**
+     * A [MediaSource] that has is located in an application bundle
+     * @property fileName the name of the media source file
+     * @property fileType the type of the media source file
+     */
+    data class Bundle(val fileName: String, val fileType: String) : Local()
 }
 
 /**
@@ -143,3 +153,11 @@ actual sealed class MediaSource {
  */
 actual fun mediaSourceFromUrl(url: String): MediaSource? =
     NSURL.URLWithString(url)?.let { MediaSource.URL(it, options = listOf(MediaSource.URL.Option.PreferPreciseDurationAndTiming(true))) }
+
+/**
+ * Attempts to create a [MediaSource] from a file name
+ * @param fileName the name of the media source file
+ * @param fileType the type of the media source file
+ * @return the [MediaSource.Local] associated with the file or `null` if none could be created
+ */
+actual fun mediaSourceFromLocalFile(fileName: String, fileType: String): MediaSource.Local = MediaSource.Bundle(fileName, fileType)

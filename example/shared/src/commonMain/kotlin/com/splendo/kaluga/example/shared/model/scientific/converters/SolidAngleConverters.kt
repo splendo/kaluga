@@ -32,18 +32,23 @@ val PhysicalQuantity.SolidAngle.converters get() = listOf<QuantityConverter<Phys
             leftUnit is SolidAngle && rightUnit is Luminance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is SolidAngle && rightUnit is Lambert -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is SolidAngle && rightUnit is MetricLuminance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is SolidAngle && rightUnit is ImperialLuminance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             leftUnit is SolidAngle && rightUnit is Luminance -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },
@@ -56,6 +61,7 @@ val PhysicalQuantity.SolidAngle.converters get() = listOf<QuantityConverter<Phys
             leftUnit is SolidAngle && rightUnit is LuminousIntensity -> {
                 DefaultScientificValue(leftValue, leftUnit) * DefaultScientificValue(rightValue, rightUnit)
             }
+
             else -> throw RuntimeException("Unexpected units: $leftUnit, $rightUnit")
         }
     },

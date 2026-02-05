@@ -19,24 +19,26 @@ package com.splendo.kaluga.plugin.extensions
 
 import com.android.build.gradle.LibraryExtension
 import com.splendo.kaluga.plugin.helpers.jvmTarget
+import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.publish.PublicationContainer
-import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 
-abstract class BaseKalugaAndroidSubprojectExtension(
-    versionCatalog: VersionCatalog,
-    libraryExtension: LibraryExtension,
-    namespacePostfix: String,
-    objects: ObjectFactory,
-) : BaseKalugaSubprojectExtension(versionCatalog, libraryExtension, namespacePostfix, objects) {
+abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatalog, val libraryExtension: LibraryExtension, namespacePostfix: String, objects: ObjectFactory) :
+    BaseKalugaSubprojectExtension(versionCatalog, namespacePostfix, objects) {
+
+    override var namespace: String?
+        get() = libraryExtension.namespace
+        set(value) {
+            libraryExtension.namespace = value
+        }
 
     override fun Project.setupSubproject() {}
 
@@ -61,7 +63,7 @@ abstract class BaseKalugaAndroidSubprojectExtension(
             androidTestDependencies.forEach {
                 add("testImplementation", it)
             }
-            androidInstrumentedTestDependencies.forEach {
+            androidDeviceTestDependencies.forEach {
                 add("androidTestImplementation", it)
             }
         }
@@ -70,20 +72,57 @@ abstract class BaseKalugaAndroidSubprojectExtension(
     protected abstract fun LanguageSettingsBuilder.languageSettings()
     protected abstract fun DependencyHandlerScope.commonDependencies()
 
-    override fun PublicationContainer.configure(project: Project) {
-        create("release", MavenPublication::class) {
-            from(project.components.getByName("release"))
+    override fun Project.afterProjectEvaluated() {
+        setupPublishingAfterEvaluation()
+    }
 
-            artifactId = project.name
-            groupId = BASE_GROUP
-            version = project.kalugaVersion
-        }
-        create("debug", MavenPublication::class) {
-            from(project.components.getByName("debug"))
+    protected abstract fun LibraryExtension.configure()
 
-            artifactId = project.name
-            groupId = BASE_GROUP
-            version = project.kalugaVersion
+    @OptIn(ExperimentalAbiValidation::class)
+    override fun Project.beforeEvaluated() {
+        setupSubproject()
+        libraryExtension.apply {
+            compileSdk = versionCatalog.findVersion("androidCompileSdk").get().displayName.toInt()
+            buildToolsVersion = versionCatalog.findVersion("androidBuildTools").get().displayName
+
+            defaultConfig {
+                minSdk = versionCatalog.findVersion("androidMinSdk").get().displayName.toInt()
+
+                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+            }
+
+            signingConfigs {
+                create("stableDebug") {
+                    storeFile = project.rootProject.file("keystore/stableDebug.keystore")
+                    storePassword = "stableDebug"
+                    keyAlias = "stableDebug"
+                    keyPassword = "stableDebug"
+                }
+            }
+
+            buildTypes {
+                release {
+                    isMinifyEnabled = false
+                }
+                debug {
+                    signingConfig = signingConfigs.getByName("stableDebug")
+                }
+            }
+
+            compileOptions {
+                val javaVersion = JavaVersion.toVersion(versionCatalog.findVersion("java").get().displayName)
+                sourceCompatibility = javaVersion
+                targetCompatibility = javaVersion
+            }
+
+            configure()
         }
+        extensions.configure(KotlinAndroidProjectExtension::class) {
+            extensions.configure(AbiValidationExtension::class) {
+                enabled.set(true)
+                abiExtension()
+            }
+        }
+        configureSubproject()
     }
 }

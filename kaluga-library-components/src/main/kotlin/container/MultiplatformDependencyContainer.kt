@@ -22,9 +22,7 @@ import org.gradle.api.model.ObjectFactory
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import javax.inject.Inject
 
-open class MultiplatformDependencyContainer @Inject constructor(
-    objects: ObjectFactory,
-) {
+open class MultiplatformDependencyContainer @Inject constructor(objects: ObjectFactory) {
 
     sealed class TargetDependencyContainer {
         internal val mainDependencies = mutableListOf<Action<KotlinDependencyHandler>>()
@@ -42,10 +40,12 @@ open class MultiplatformDependencyContainer @Inject constructor(
     open class Common : TargetDependencyContainer()
     open class Android : TargetDependencyContainer() {
 
-        internal val instrumentedTestDependencies = mutableListOf<Action<KotlinDependencyHandler>>()
+        internal val deviceTestDependencies = mutableListOf<Action<KotlinDependencyHandler>>()
 
-        fun instrumented(action: Action<KotlinDependencyHandler>) {
-            instrumentedTestDependencies.add(action)
+        @Deprecated("use device instead", ReplaceWith("device(action)"))
+        fun instrumented(action: Action<KotlinDependencyHandler>) = device(action)
+        fun device(action: Action<KotlinDependencyHandler>) {
+            deviceTestDependencies.add(action)
         }
     }
 

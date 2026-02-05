@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.base.utils.typedList
 import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
+import platform.CoreBluetooth.CBCharacteristicWriteWithoutResponse
 import platform.CoreBluetooth.CBDescriptor
 import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBUUID
@@ -60,8 +61,9 @@ actual interface CharacteristicWrapper {
      * Request a [CBPeripheral] to write [value] to the characteristic
      * @param value the [NSData] to write to the characteristic
      * @param peripheral the [CBPeripheral] to perform the write operation
+     * @param withResponse whether the write response is expected
      */
-    fun writeValue(value: NSData, peripheral: CBPeripheral)
+    fun writeValue(value: NSData, peripheral: CBPeripheral, withResponse: Boolean)
 
     /**
      * Request a [CBPeripheral] to update the notifying status of the characteristic
@@ -90,8 +92,13 @@ class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic)
         peripheral.readValueForCharacteristic(characteristic)
     }
 
-    override fun writeValue(value: NSData, peripheral: CBPeripheral) {
-        peripheral.writeValue(value, characteristic, CBCharacteristicWriteWithResponse)
+    override fun writeValue(value: NSData, peripheral: CBPeripheral, withResponse: Boolean) {
+        val type = if (withResponse) {
+            CBCharacteristicWriteWithResponse
+        } else {
+            CBCharacteristicWriteWithoutResponse
+        }
+        peripheral.writeValue(value, characteristic, type)
     }
 
     override fun setNotificationValue(enabled: Boolean, peripheral: CBPeripheral) {

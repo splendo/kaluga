@@ -23,6 +23,9 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [Voltage]
@@ -43,12 +46,12 @@ val VoltageUnits: Set<Voltage> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Voltage]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Voltage]
  * SI unit is [Volt]
  */
 @Serializable
 sealed class Voltage :
-    AbstractScientificUnit<PhysicalQuantity.Voltage>(),
+    DefinedScientificUnit<PhysicalQuantity.Voltage>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.Voltage>
 
 @Serializable
@@ -65,12 +68,12 @@ data object Nanovolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAnd
 
 @Serializable
 data object Abvolt : Voltage() {
-    private const val ABVOLT_IN_VOLT = 100000000.0
+    private val ABVOLT_IN_VOLT = 100000000.toDecimal()
     override val symbol = "abV"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Voltage
-    override fun fromSIUnit(value: Decimal): Decimal = value * ABVOLT_IN_VOLT.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / ABVOLT_IN_VOLT.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * ABVOLT_IN_VOLT
+    override fun toSIUnit(value: Decimal): Decimal = value / ABVOLT_IN_VOLT
 }
 
 @Serializable
@@ -104,3 +107,24 @@ data object Megavolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.Metr
 
 @Serializable
 data object Gigavolt : VoltMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.Voltage, Volt> by Giga(Volt)
+
+internal fun SerializersModuleBuilder.setupForVoltage() {
+    polymorphic(Voltage::class) {
+        registerVoltageClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Voltage>.registerVoltageClasses() {
+    subclass(Abvolt::class, Abvolt.serializer())
+    subclass(Nanovolt::class, Nanovolt.serializer())
+    subclass(Volt::class, Volt.serializer())
+    subclass(Centivolt::class, Centivolt.serializer())
+    subclass(Decavolt::class, Decavolt.serializer())
+    subclass(Decivolt::class, Decivolt.serializer())
+    subclass(Gigavolt::class, Gigavolt.serializer())
+    subclass(Hectovolt::class, Hectovolt.serializer())
+    subclass(Kilovolt::class, Kilovolt.serializer())
+    subclass(Megavolt::class, Megavolt.serializer())
+    subclass(Microvolt::class, Microvolt.serializer())
+    subclass(Millivolt::class, Millivolt.serializer())
+}

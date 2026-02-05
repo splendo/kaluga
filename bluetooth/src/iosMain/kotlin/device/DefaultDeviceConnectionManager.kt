@@ -19,8 +19,8 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
+import com.splendo.kaluga.bluetooth.CharacteristicProperties
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
-import com.splendo.kaluga.bluetooth.MTU
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
 import kotlinx.cinterop.ObjCSignatureOverride
@@ -91,6 +91,7 @@ internal actual class DefaultDeviceConnectionManager(
         @ObjCSignatureOverride
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic: CBCharacteristic, error: NSError?) {
             updateCharacteristic(didUpdateValueForCharacteristic, error)
+            updateCharacteristic(didUpdateValueForCharacteristic, error)
         }
 
         @ObjCSignatureOverride
@@ -123,10 +124,6 @@ internal actual class DefaultDeviceConnectionManager(
         }
     }
 
-    init {
-        peripheral.delegate = peripheralDelegate
-    }
-
     actual override fun getCurrentState(): DeviceConnectionManager.State = when (peripheral.state) {
         CBPeripheralStateConnected -> DeviceConnectionManager.State.CONNECTED
         CBPeripheralStateConnecting -> DeviceConnectionManager.State.CONNECTING
@@ -136,6 +133,7 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     actual override fun connect() {
+        peripheral.delegate = peripheralDelegate
         cbCentralManager.connectPeripheral(peripheral, null)
     }
 
@@ -150,6 +148,7 @@ internal actual class DefaultDeviceConnectionManager(
     actual override fun disconnect() {
         val state = getCurrentState()
         cbCentralManager.cancelPeripheralConnection(peripheral)
+        peripheral.delegate = null
         if (state != DeviceConnectionManager.State.CONNECTED) {
             handleDisconnect()
         }
@@ -159,37 +158,43 @@ internal actual class DefaultDeviceConnectionManager(
         peripheral.readRSSI()
     }
 
-    actual override suspend fun requestMtu(mtu: MTU): Boolean {
-        val max = peripheral.maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse)
-        debug(TAG) {
-            "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $max"
-        }
-        // Update MTU to current known value
-        handleNewMtu(max.toInt())
-        // Return false, because we can't request MTU change from iOS
-        return false
-    }
-
     actual override suspend fun didStartPerformingAction(action: DeviceAction) {
         currentAction = action
         when (action) {
             is DeviceAction.Read.Characteristic -> action.characteristic.wrapper.readValue(peripheral)
+
             is DeviceAction.Read.Descriptor -> action.descriptor.wrapper.readValue(peripheral)
+
             is DeviceAction.Write.Characteristic -> {
-                action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral)
+                val withResponse = action.characteristic.hasProperty(CharacteristicProperties.Write) ||
+                    !action.characteristic.hasProperty(CharacteristicProperties.WriteWithoutResponse)
+                action.characteristic.wrapper.writeValue(action.newValue.toNSData(), peripheral, withResponse)
+                if (!withResponse) {
+                    handleCurrentActionCompleted(succeeded = true)
+                }
             }
+
             is DeviceAction.Write.Descriptor -> {
                 action.descriptor.wrapper.writeValue(action.newValue.toNSData(), peripheral)
             }
+
             is DeviceAction.Notification.Enable -> {
                 val uuid = action.characteristic.uuid.uuidString
                 notifyingCharacteristics[uuid] = action.characteristic
                 action.characteristic.wrapper.setNotificationValue(true, peripheral)
             }
+
             is DeviceAction.Notification.Disable -> {
                 val uuid = action.characteristic.uuid.uuidString
                 notifyingCharacteristics.remove(uuid)
                 action.characteristic.wrapper.setNotificationValue(false, peripheral)
+            }
+
+            is DeviceAction.RequestMtu -> {
+                val max = peripheral.maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse)
+                debug(TAG) { "maximumWriteValueLengthForType(CBCharacteristicWriteWithResponse) = $max" }
+                // Update MTU to current known value, set succeeded to false, because we can't request MTU change from iOS
+                handleNewMtu(max.toInt(), false)
             }
         }
     }

@@ -30,10 +30,11 @@ import com.splendo.kaluga.resources.stylable.KalugaTextStyle
 fun TextView.bindLabel(label: KalugaLabel) {
     text = when (label) {
         is KalugaLabel.Plain -> label.text
+
         is KalugaLabel.Styled -> {
             if (label.text.spannable.getSpans(0, label.text.spannable.length, URLSpan::class.java).isNotEmpty()) {
                 label.text.linkStyle?.let {
-                    setLinkTextColor(it.color)
+                    setLinkTextColor(it.color.currentColor)
                 }
                 movementMethod = LinkMovementMethod.getInstance()
             }
@@ -50,7 +51,7 @@ fun TextView.bindLabel(label: KalugaLabel) {
 fun TextView.applyTextStyle(textStyle: KalugaTextStyle) {
     typeface = textStyle.font
     textSize = textStyle.size
-    setTextColor(ColorStateList(arrayOf(intArrayOf()), intArrayOf(textStyle.color)))
+    setTextColor(ColorStateList(arrayOf(intArrayOf()), intArrayOf(textStyle.color.currentColor)))
     isAllCaps = false
     gravity = textStyle.alignment.alignment(context).gravity
 }

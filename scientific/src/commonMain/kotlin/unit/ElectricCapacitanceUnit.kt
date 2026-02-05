@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [ElectricCapacitance]
@@ -39,12 +42,12 @@ val ElectricCapacitanceUnits: Set<ElectricCapacitance> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.ElectricCapacitance]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.ElectricCapacitance]
  * SI unit is [Farad]
  */
 @Serializable
 sealed class ElectricCapacitance :
-    AbstractScientificUnit<PhysicalQuantity.ElectricCapacitance>(),
+    DefinedScientificUnit<PhysicalQuantity.ElectricCapacitance>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.ElectricCapacitance>
 
 @Serializable
@@ -94,4 +97,25 @@ data object Gigafarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.Me
 @Serializable
 data object Abfarad : FaradMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricCapacitance, Farad> by Giga(Farad) {
     override val symbol: String = "abF"
+}
+
+internal fun SerializersModuleBuilder.setupForElectricCapacitance() {
+    polymorphic(ElectricCapacitance::class) {
+        registerElectricCapacitanceClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<ElectricCapacitance>.registerElectricCapacitanceClasses() {
+    subclass(Farad::class, Farad.serializer())
+    subclass(Abfarad::class, Abfarad.serializer())
+    subclass(Centifarad::class, Centifarad.serializer())
+    subclass(Decafarad::class, Decafarad.serializer())
+    subclass(Decifarad::class, Decifarad.serializer())
+    subclass(Gigafarad::class, Gigafarad.serializer())
+    subclass(Hectofarad::class, Hectofarad.serializer())
+    subclass(Kilofarad::class, Kilofarad.serializer())
+    subclass(Megafarad::class, Megafarad.serializer())
+    subclass(Microfarad::class, Microfarad.serializer())
+    subclass(Millifarad::class, Millifarad.serializer())
+    subclass(Nanofarad::class, Nanofarad.serializer())
 }

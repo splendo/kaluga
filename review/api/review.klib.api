@@ -1,0 +1,19 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:review>
+final class com.splendo.kaluga.review/ReviewManager { // com.splendo.kaluga.review/ReviewManager|null[0]
+    constructor <init>() // com.splendo.kaluga.review/ReviewManager.<init>|<init>(){}[0]
+
+    final suspend fun attemptToRequestReview() // com.splendo.kaluga.review/ReviewManager.attemptToRequestReview|attemptToRequestReview(){}[0]
+
+    final class Builder : com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.review/ReviewManager.Builder|null[0]
+        constructor <init>() // com.splendo.kaluga.review/ReviewManager.Builder.<init>|<init>(){}[0]
+
+        final fun create(): com.splendo.kaluga.review/ReviewManager // com.splendo.kaluga.review/ReviewManager.Builder.create|create(){}[0]
+    }
+}

@@ -17,10 +17,25 @@
 
 package com.splendo.kaluga.resources.compose
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.splendo.kaluga.resources.KalugaColor
 
 /**
  * Gets a [Color] from a [KalugaColor]
  */
-val KalugaColor.composable get() = Color(this)
+@Composable
+fun KalugaColor.composable(): Color = Color(
+    when (this) {
+        is KalugaColor.RGBColor -> color
+
+        is KalugaColor.DarkLightColor -> {
+            if (isSystemInDarkTheme()) {
+                darkColor.color
+            } else {
+                defaultColor.color
+            }
+        }
+    },
+)

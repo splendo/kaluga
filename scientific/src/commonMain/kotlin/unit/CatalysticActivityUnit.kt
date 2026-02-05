@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [CatalysticActivity]
@@ -39,12 +42,12 @@ val CatalysticActivityUnits: Set<CatalysticActivity> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.CatalysticActivity]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.CatalysticActivity]
  * SI unit is [Katal]
  */
 @Serializable
 sealed class CatalysticActivity :
-    AbstractScientificUnit<PhysicalQuantity.CatalysticActivity>(),
+    DefinedScientificUnit<PhysicalQuantity.CatalysticActivity>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.CatalysticActivity>
 
 @Serializable
@@ -90,3 +93,23 @@ data object Megakatal : KatalMultiple(), MetricMultipleUnit<MeasurementSystem.Me
 
 @Serializable
 data object Gigakatal : KatalMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.CatalysticActivity, Katal> by Giga(Katal)
+
+internal fun SerializersModuleBuilder.setupForCatalysticActivity() {
+    polymorphic(CatalysticActivity::class) {
+        registerCatalysticActivityClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<CatalysticActivity>.registerCatalysticActivityClasses() {
+    subclass(Katal::class, Katal.serializer())
+    subclass(Centikatal::class, Centikatal.serializer())
+    subclass(Decakatal::class, Decakatal.serializer())
+    subclass(Decikatal::class, Decikatal.serializer())
+    subclass(Gigakatal::class, Gigakatal.serializer())
+    subclass(Hectokatal::class, Hectokatal.serializer())
+    subclass(Kilokatal::class, Kilokatal.serializer())
+    subclass(Megakatal::class, Megakatal.serializer())
+    subclass(Microkatal::class, Microkatal.serializer())
+    subclass(Millikatal::class, Millikatal.serializer())
+    subclass(Nanokatal::class, Nanokatal.serializer())
+}

@@ -4,4 +4,5 @@
     <color name="text_secondary">@color/white_54</color>
     <color name="text_disabled">@color/white_38</color>
     <color name="background_card">@color/black_38</color>
+    <color name="named_color_with_dark_mode">#0000FF</color>
 </resources>

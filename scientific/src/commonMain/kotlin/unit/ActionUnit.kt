@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricAndImperialAction]
@@ -50,11 +53,11 @@ val ActionUnits: Set<Action> get() = MetricAndImperialActionUnits +
     ImperialActionUnits.filter { it.energy !is ImperialMetricAndImperialEnergyWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Acceleration]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Acceleration]
  * SI unit is `Joule x Second`
  */
 @Serializable
-sealed class Action : AbstractScientificUnit<PhysicalQuantity.Action>() {
+sealed class Action : DefinedScientificUnit<PhysicalQuantity.Action>() {
 
     /**
      * The [Energy] component
@@ -129,3 +132,15 @@ infix fun MetricEnergy.x(time: Time) = MetricAction(this, time)
  * @return the [ImperialAction] represented by the units
  */
 infix fun ImperialEnergy.x(time: Time) = ImperialAction(this, time)
+
+internal fun SerializersModuleBuilder.setupForActionUnit() {
+    polymorphic(Action::class) {
+        registerActionClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Action>.registerActionClasses() {
+    subclass(ImperialAction::class, ImperialAction.serializer())
+    subclass(MetricAction::class, MetricAction.serializer())
+    subclass(MetricAndImperialAction::class, MetricAndImperialAction.serializer())
+}

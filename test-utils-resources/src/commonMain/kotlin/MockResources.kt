@@ -115,7 +115,7 @@ class MockFontLoader(private val returnMock: Boolean = false) : FontLoader {
         }
     }
 
-    override suspend fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? = loadFontMock.call(identifier, defaultValue)
+    override fun loadFont(identifier: String, defaultValue: KalugaFont?): KalugaFont? = loadFontMock.call(identifier, defaultValue)
 }
 
 /**

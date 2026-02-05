@@ -23,6 +23,9 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [IonizingRadiationAbsorbedDose]
@@ -53,12 +56,12 @@ val IonizingRadiationAbsorbedDoseUnits: Set<IonizingRadiationAbsorbedDose> get()
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.IonizingRadiationAbsorbedDose]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.IonizingRadiationAbsorbedDose]
  * SI unit is [Gray]
  */
 @Serializable
 sealed class IonizingRadiationAbsorbedDose :
-    AbstractScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>(),
+    DefinedScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.IonizingRadiationAbsorbedDose>
 
 @Serializable
@@ -107,12 +110,12 @@ data object Gigagray : GrayMultiple(), MetricMultipleUnit<MeasurementSystem.Metr
 
 @Serializable
 data object Rad : IonizingRadiationAbsorbedDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose> {
-    const val GRAY_IN_RAD = 0.01
+    private val GRAY_IN_RAD = "0.01".toDecimal()
     override val symbol = "rad"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.IonizingRadiationAbsorbedDose
-    override fun fromSIUnit(value: Decimal): Decimal = value / GRAY_IN_RAD.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value * GRAY_IN_RAD.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value / GRAY_IN_RAD
+    override fun toSIUnit(value: Decimal): Decimal = value * GRAY_IN_RAD
 }
 
 @Serializable
@@ -149,3 +152,34 @@ data object Megarad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.Metric
 
 @Serializable
 data object Gigarad : RadMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.IonizingRadiationAbsorbedDose, Rad> by Giga(Rad)
+
+internal fun SerializersModuleBuilder.setupForIonizingRadiationAbsorbedDose() {
+    polymorphic(IonizingRadiationAbsorbedDose::class) {
+        registerIonizingRadiationAbsorbedDoseClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<IonizingRadiationAbsorbedDose>.registerIonizingRadiationAbsorbedDoseClasses() {
+    subclass(Gray::class, Gray.serializer())
+    subclass(Centigray::class, Centigray.serializer())
+    subclass(Decagray::class, Decagray.serializer())
+    subclass(Decigray::class, Decigray.serializer())
+    subclass(Gigagray::class, Gigagray.serializer())
+    subclass(Hectogray::class, Hectogray.serializer())
+    subclass(Kilogray::class, Kilogray.serializer())
+    subclass(Megagray::class, Megagray.serializer())
+    subclass(Microgray::class, Microgray.serializer())
+    subclass(Milligray::class, Milligray.serializer())
+    subclass(Nanogray::class, Nanogray.serializer())
+    subclass(Rad::class, Rad.serializer())
+    subclass(Centirad::class, Centirad.serializer())
+    subclass(Decarad::class, Decarad.serializer())
+    subclass(Decirad::class, Decirad.serializer())
+    subclass(Gigarad::class, Gigarad.serializer())
+    subclass(Hectorad::class, Hectorad.serializer())
+    subclass(Kilorad::class, Kilorad.serializer())
+    subclass(Megarad::class, Megarad.serializer())
+    subclass(Microrad::class, Microrad.serializer())
+    subclass(Millirad::class, Millirad.serializer())
+    subclass(Nanorad::class, Nanorad.serializer())
+}

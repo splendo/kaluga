@@ -16,6 +16,8 @@ dependencies {
 }
 ```
 
+Add [`scientific-converters` module](../scientific-converters) to support converting between units.
+
 ## Usage
 
 ### Scientific Unit
@@ -36,6 +38,12 @@ Not all units are named. Some can be derived from using other units using either
 val speed = Meter per Second
 val momentum = Kilogram x speed
 ```
+
+If a unit is not related to a Defined `PhysicalQuantity` it will become a Custom Scientific Unit.
+
+### Serialization
+
+If a Unit has a `PhysicalQuantity.Defined` it will be automatically serializable. However, when Custom Scientific units are to be serialized, the `scientificSerializationModule` should be added to your Serialization modules.
 
 ### Scientific Value
 
@@ -64,16 +72,6 @@ Convert a ScientificValue to another value of the same `PhysicalQuantity` using 
 #### Calculations
 
 `ScientificValue` objects can be modified with numbers or other `ScientificValue` objects. All values have a `plus`, `minus`, `times`, and `div` function. By default this results in a new `DefaultScientificUnit` but this behaviour can be overloaded using custom parameters.
-
-In addition, some units may be multiplied or divided by other units depending on how they are defined. For instance, you can create a Force value by multiplying a `Weight` and `Acceleration` unit. The unit of the returned ScientificValue will be determined based on the input. Calculating with values in the Imperial system generally returns an imperial unit, while using CGS-units will usually return a CGS unit. Alternatively the unit can be explicitly defined by using the creation method (usually named after the `PhysicalQuantity`).
-
-```kotlin
-val weight = 10(Kilogram)
-val acceleration = 3(Meter per Second per Second)
-val force = weight * acceleration // Returns in Newton
-val dyneForce = weight.convert(Gram) * acceleration.convert(Centimeter per Second per Second) // Returns in Dyne
-val poundForce = PoundForce.force(weight, acceleration) // Returns in PoundForce even though constructing units are in metric
-```
 
 ### Scientific Array
 

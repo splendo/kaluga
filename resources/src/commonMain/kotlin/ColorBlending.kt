@@ -28,18 +28,41 @@ import kotlin.math.sqrt
 sealed class BlendMode {
 
     /**
+     * Blends two [KalugaColor.RGBColor] into a new [KalugaColor.RGBColor] using this [BlendMode]
+     * @param backdrop the [KalugaColor.RGBColor] at the base layer
+     * @param source the [KalugaColor.RGBColor] at the top layer
+     * @return a [KalugaColor.RGBColor] that is the result of [backdrop] and [source] being blended using this Blend mode
+     */
+    abstract fun blendColor(backdrop: KalugaColor.RGBColor, source: KalugaColor.RGBColor): KalugaColor.RGBColor
+
+    /**
      * Blends two [KalugaColor] into a new [KalugaColor] using this [BlendMode]
      * @param backdrop the [KalugaColor] at the base layer
      * @param source the [KalugaColor] at the top layer
      * @return a [KalugaColor] that is the result of [backdrop] and [source] being blended using this Blend mode
+     * If either [backdrop] or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
      */
-    abstract fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor
+    fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = when (backdrop) {
+        is KalugaColor.RGBColor -> when (source) {
+            is KalugaColor.RGBColor -> blendColor(backdrop, source)
+            is KalugaColor.DarkLightColor -> blendColor(backdrop, source.defaultColor) withDarkMode blendColor(backdrop, source.darkColor)
+            else -> throw IllegalArgumentException("Unknown KalugaColor $source")
+        }
+
+        is KalugaColor.DarkLightColor -> when (source) {
+            is KalugaColor.RGBColor -> blendColor(backdrop.defaultColor, source) withDarkMode blendColor(backdrop.darkColor, source)
+            is KalugaColor.DarkLightColor -> blendColor(backdrop.defaultColor, source.defaultColor) withDarkMode blendColor(backdrop.darkColor, source.darkColor)
+            else -> throw IllegalArgumentException("Unknown KalugaColor $source")
+        }
+
+        else -> throw IllegalArgumentException("Unknown KalugaColor $backdrop")
+    }
 
     /**
      * A [BlendMode] where each color channel can be blended independently
      */
     sealed class SeparableBlendMode : BlendMode() {
-        override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = colorFrom(
+        override fun blendColor(backdrop: KalugaColor.RGBColor, source: KalugaColor.RGBColor): KalugaColor.RGBColor = colorFrom(
             blendColorChannel(backdrop.red, source.red),
             blendColorChannel(backdrop.green, source.green),
             blendColorChannel(backdrop.blue, source.blue),
@@ -65,7 +88,7 @@ sealed class BlendMode {
                 return UnboundColor(red + delta, green + delta, blue + delta)
             }
 
-            val clip: KalugaColor
+            val clip: KalugaColor.RGBColor
                 get() {
                     val lumination = this.lumination
                     val min = minOf(red, green, blue)
@@ -76,28 +99,30 @@ sealed class BlendMode {
                             lumination + (((green - lumination) * lumination) / (lumination - min)),
                             lumination + (((blue - lumination) * lumination) / (lumination - min)),
                         )
+
                         max > 1.0 -> colorFrom(
                             lumination + (((red - lumination) * (1.0 - lumination)) / (max - lumination)),
                             lumination + (((green - lumination) * (1.0 - lumination)) / (max - lumination)),
                             lumination + (((blue - lumination) * (1.0 - lumination)) / (max - lumination)),
                         )
+
                         else -> colorFrom(red, green, blue)
                     }
                 }
         }
 
-        private val KalugaColor.unbounded get() = UnboundColor(red, green, blue)
-        protected val KalugaColor.lumination get() = unbounded.lumination
-        protected val KalugaColor.saturation: Double
+        private val KalugaColor.RGBColor.unbounded get() = UnboundColor(red, green, blue)
+        protected val KalugaColor.RGBColor.lumination get() = unbounded.lumination
+        protected val KalugaColor.RGBColor.saturation: Double
             get() = maxOf(red, green, blue) - minOf(
                 red,
                 green,
                 blue,
             )
 
-        protected fun KalugaColor.setLumination(lumination: Double): KalugaColor = unbounded.setLumination(lumination).clip
+        protected fun KalugaColor.RGBColor.setLumination(lumination: Double): KalugaColor.RGBColor = unbounded.setLumination(lumination).clip
 
-        protected fun KalugaColor.setSaturation(saturation: Double): KalugaColor {
+        protected fun KalugaColor.RGBColor.setSaturation(saturation: Double): KalugaColor.RGBColor {
             val keyRed = "red"
             val keyGreen = "green"
             val keyBlue = "blue"
@@ -226,7 +251,7 @@ sealed class BlendMode {
      * A [NonSeparableBlendMode] that creates a result color with the luminance and saturation of the base color and the hue of the source color
      */
     data object Hue : NonSeparableBlendMode() {
-        override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = source
+        override fun blendColor(backdrop: KalugaColor.RGBColor, source: KalugaColor.RGBColor): KalugaColor.RGBColor = source
             .setSaturation(backdrop.saturation)
             .setLumination(backdrop.lumination)
     }
@@ -235,7 +260,7 @@ sealed class BlendMode {
      * A [NonSeparableBlendMode] that creates a result color with the luminance and hue of the base color and the saturation of the source color
      */
     data object Saturation : NonSeparableBlendMode() {
-        override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = backdrop
+        override fun blendColor(backdrop: KalugaColor.RGBColor, source: KalugaColor.RGBColor): KalugaColor.RGBColor = backdrop
             .setSaturation(source.saturation)
             .setLumination(backdrop.lumination)
     }
@@ -244,22 +269,38 @@ sealed class BlendMode {
      * A [NonSeparableBlendMode] that creates a result color with the luminance of the base color and the hue and saturation of the source color
      */
     data object ColorBlend : NonSeparableBlendMode() {
-        override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = source.setLumination(backdrop.lumination)
+        override fun blendColor(backdrop: KalugaColor.RGBColor, source: KalugaColor.RGBColor): KalugaColor.RGBColor = source.setLumination(backdrop.lumination)
     }
 
     /**
      * A [NonSeparableBlendMode] that creates a result color with the hue and saturation of the base color and the luminance of the source color
      */
     data object Luminosity : NonSeparableBlendMode() {
-        override fun blendColor(backdrop: KalugaColor, source: KalugaColor): KalugaColor = backdrop.setLumination(source.lumination)
+        override fun blendColor(backdrop: KalugaColor.RGBColor, source: KalugaColor.RGBColor): KalugaColor.RGBColor = backdrop.setLumination(source.lumination)
     }
+}
+
+private fun KalugaColor.blend(source: KalugaColor, mode: BlendMode): KalugaColor = when (this) {
+    is KalugaColor.RGBColor -> when (source) {
+        is KalugaColor.RGBColor -> blend(source, mode)
+        is KalugaColor.DarkLightColor -> blend(source.defaultColor, mode) withDarkMode blend(source.darkColor, mode)
+        else -> throw IllegalArgumentException("Unknown KalugaColor $source")
+    }
+
+    is KalugaColor.DarkLightColor -> when (source) {
+        is KalugaColor.RGBColor -> defaultColor.blend(source, mode) withDarkMode darkColor.blend(source, mode)
+        is KalugaColor.DarkLightColor -> defaultColor.blend(source.defaultColor, mode) withDarkMode darkColor.blend(source.darkColor, mode)
+        else -> throw IllegalArgumentException("Unknown KalugaColor $source")
+    }
+
+    else -> throw IllegalArgumentException("Unknown KalugaColor $this")
 }
 
 /**
  * Blends two colors according to their [BlendMode]
  * For Alpha Blending the W3 standard is applied: https://www.w3.org/TR/compositing-1/#blending
  */
-private fun KalugaColor.blend(source: KalugaColor, mode: BlendMode): KalugaColor {
+private fun KalugaColor.RGBColor.blend(source: KalugaColor.RGBColor, mode: BlendMode): KalugaColor.RGBColor {
     val alphaCompose = {
             backdropAlpha: Double,
             sourceAlpha: Double,
@@ -286,6 +327,7 @@ private fun KalugaColor.blend(source: KalugaColor, mode: BlendMode): KalugaColor
  * Blends a [KalugaColor] with another color using [BlendMode.Normal]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.Normal] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.normal(source: KalugaColor) = blend(source, BlendMode.Normal)
 
@@ -293,6 +335,7 @@ infix fun KalugaColor.normal(source: KalugaColor) = blend(source, BlendMode.Norm
  * Blends a [KalugaColor] with another color using [BlendMode.Multiply]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.Multiply] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.multiply(source: KalugaColor) = blend(source, BlendMode.Multiply)
 
@@ -300,6 +343,7 @@ infix fun KalugaColor.multiply(source: KalugaColor) = blend(source, BlendMode.Mu
  * Blends a [KalugaColor] with another color using [BlendMode.Screen]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.Screen] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.screen(source: KalugaColor) = blend(source, BlendMode.Screen)
 
@@ -307,6 +351,7 @@ infix fun KalugaColor.screen(source: KalugaColor) = blend(source, BlendMode.Scre
  * Blends a [KalugaColor] with another color using [BlendMode.Overlay]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.Overlay] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.overlay(source: KalugaColor) = blend(source, BlendMode.Overlay)
 
@@ -314,6 +359,7 @@ infix fun KalugaColor.overlay(source: KalugaColor) = blend(source, BlendMode.Ove
  * Blends a [KalugaColor] with another color using [BlendMode.Darken]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.Darken] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.darken(source: KalugaColor) = blend(source, BlendMode.Darken)
 
@@ -321,6 +367,7 @@ infix fun KalugaColor.darken(source: KalugaColor) = blend(source, BlendMode.Dark
  * Blends a [KalugaColor] with another color using [BlendMode.Lighten]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.Lighten] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.lighten(source: KalugaColor) = blend(source, BlendMode.Lighten)
 
@@ -328,6 +375,7 @@ infix fun KalugaColor.lighten(source: KalugaColor) = blend(source, BlendMode.Lig
  * Blends a [KalugaColor] with another color using [BlendMode.HardLight]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.HardLight] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.hardLight(source: KalugaColor) = blend(source, BlendMode.HardLight)
 
@@ -335,6 +383,7 @@ infix fun KalugaColor.hardLight(source: KalugaColor) = blend(source, BlendMode.H
  * Blends a [KalugaColor] with another color using [BlendMode.SoftLight]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.SoftLight] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.softLight(source: KalugaColor) = blend(source, BlendMode.SoftLight)
 
@@ -342,6 +391,7 @@ infix fun KalugaColor.softLight(source: KalugaColor) = blend(source, BlendMode.S
  * Blends a [KalugaColor] with another color using [BlendMode.ColorDodge]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.ColorDodge] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.dodge(source: KalugaColor) = blend(source, BlendMode.ColorDodge)
 
@@ -349,6 +399,7 @@ infix fun KalugaColor.dodge(source: KalugaColor) = blend(source, BlendMode.Color
  * Blends a [KalugaColor] with another color using [BlendMode.ColorBurn]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.ColorBurn] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.burn(source: KalugaColor) = blend(source, BlendMode.ColorBurn)
 
@@ -356,6 +407,7 @@ infix fun KalugaColor.burn(source: KalugaColor) = blend(source, BlendMode.ColorB
  * Blends a [KalugaColor] with another color using [BlendMode.Difference]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.Difference] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.difference(source: KalugaColor) = blend(source, BlendMode.Difference)
 
@@ -363,6 +415,7 @@ infix fun KalugaColor.difference(source: KalugaColor) = blend(source, BlendMode.
  * Blends a [KalugaColor] with another color using [BlendMode.Exclusion]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.Exclusion] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.exclude(source: KalugaColor) = blend(source, BlendMode.Exclusion)
 
@@ -370,6 +423,7 @@ infix fun KalugaColor.exclude(source: KalugaColor) = blend(source, BlendMode.Exc
  * Blends a [KalugaColor] with another color using [BlendMode.Hue]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.Hue] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.hue(source: KalugaColor) = blend(source, BlendMode.Hue)
 
@@ -377,6 +431,7 @@ infix fun KalugaColor.hue(source: KalugaColor) = blend(source, BlendMode.Hue)
  * Blends a [KalugaColor] with another color using [BlendMode.Saturation]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.Saturation] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.saturate(source: KalugaColor) = blend(source, BlendMode.Saturation)
 
@@ -384,6 +439,7 @@ infix fun KalugaColor.saturate(source: KalugaColor) = blend(source, BlendMode.Sa
  * Blends a [KalugaColor] with another color using [BlendMode.Luminosity]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.Luminosity] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.luminate(source: KalugaColor) = blend(source, BlendMode.Luminosity)
 
@@ -391,5 +447,6 @@ infix fun KalugaColor.luminate(source: KalugaColor) = blend(source, BlendMode.Lu
  * Blends a [KalugaColor] with another color using [BlendMode.ColorBlend]
  * @param source the [KalugaColor] that serves as the source color
  * @return a [KalugaColor] that is the result of [BlendMode.ColorBlend] being applied with this [KalugaColor] as the base color and [source] as the source color
+ * If either this or [source] is a [KalugaColor.DarkLightColor] the result will be a [KalugaColor.DarkLightColor] as well.
  */
 infix fun KalugaColor.colorBlend(source: KalugaColor) = blend(source, BlendMode.ColorBlend)

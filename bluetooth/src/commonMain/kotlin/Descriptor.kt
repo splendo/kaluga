@@ -19,26 +19,23 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.ContextualLogger
 
 /**
  * An [Attribute] of a Bluetooth Descriptor
  * @property wrapper the [DescriptorWrapper] to access the platform descriptor
  * @param initialValue the initial [ByteArray] value of the descriptor
  * @param emitNewAction method to call when a new [DeviceConnectionManager.Event.AddAction] event should take place
- * @param parentLogTag the log tag used to modify the log tag of this descriptor
- * @param logger the [Logger] to use for logging.
+ * @param logger the [ContextualLogger] to use for logging.
  */
 open class Descriptor(
     val wrapper: DescriptorWrapper,
     initialValue: ByteArray? = null,
     emitNewAction: (DeviceConnectionManager.Event.AddAction) -> Unit,
-    parentLogTag: String,
-    logger: Logger,
+    logger: ContextualLogger,
 ) : Attribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(
     initialValue,
     emitNewAction,
-    "$parentLogTag Descriptor",
     logger,
 ) {
 

@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricSpecificHeatCapacity]
@@ -50,11 +53,11 @@ val SpecificHeatCapacityUnits: Set<SpecificHeatCapacity> get() = MetricSpecificH
     USCustomarySpecificHeatCapacityUnits
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.SpecificHeatCapacity]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.SpecificHeatCapacity]
  * SI unit is `Joule per Kelvin per Kilogram`
  */
 @Serializable
-sealed class SpecificHeatCapacity : AbstractScientificUnit<PhysicalQuantity.SpecificHeatCapacity>() {
+sealed class SpecificHeatCapacity : DefinedScientificUnit<PhysicalQuantity.SpecificHeatCapacity>() {
 
     /**
      * The [HeatCapacity] component
@@ -197,3 +200,15 @@ infix fun UKImperialSpecificEnergy.per(temperature: MetricAndUKImperialTemperatu
  * @return the [USCustomarySpecificHeatCapacity] represented by the units
  */
 infix fun USCustomarySpecificEnergy.per(temperature: USCustomaryTemperature) = USCustomarySpecificHeatCapacity(energy per temperature, per)
+
+internal fun SerializersModuleBuilder.setupForSpecificHeatCapacity() {
+    polymorphic(SpecificHeatCapacity::class) {
+        registerSpecificHeatCapacityClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<SpecificHeatCapacity>.registerSpecificHeatCapacityClasses() {
+    subclass(MetricSpecificHeatCapacity::class, MetricSpecificHeatCapacity.serializer())
+    subclass(UKImperialSpecificHeatCapacity::class, UKImperialSpecificHeatCapacity.serializer())
+    subclass(USCustomarySpecificHeatCapacity::class, USCustomarySpecificHeatCapacity.serializer())
+}

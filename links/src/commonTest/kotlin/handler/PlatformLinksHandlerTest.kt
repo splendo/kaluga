@@ -56,15 +56,23 @@ abstract class PlatformLinksHandlerTest(private val linksValidator: PlatformLink
 
     @Test
     fun testQueryExtractorSucceed() {
-        val url = "https://test.io?list_1=first&list_2=second&list_3=third"
+        val url = "https://test.io?list=first&list=second&list=third"
 
-        assertEquals(listOf("first", "second", "third"), linksValidator.extractQueryAsList(url))
+        val map = linksValidator.extractQueryAsMap(url)
+
+        assertEquals(mapOf("list" to listOf("first", "second", "third")), map)
     }
 
     @Test
     fun testQueryExtractorEmptyQuery() {
         val url = "https://test.io"
 
-        assertEquals(emptyList(), linksValidator.extractQueryAsList(url))
+        assertEquals(emptyMap(), linksValidator.extractQueryAsMap(url))
+    }
+
+    @Test
+    fun testNestedLinksUndamaged() {
+        val url = "https://redirect.com?link=https%3A%2F%2Fexample.com%3Fparam%3Dvalue"
+        assertEquals(mapOf("link" to listOf("https://example.com?param=value")), linksValidator.extractQueryAsMap(url))
     }
 }

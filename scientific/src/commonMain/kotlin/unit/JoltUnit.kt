@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricJolt]
@@ -42,11 +45,11 @@ val JoltUnits: Set<Jolt> get() = MetricJoltUnits +
     ImperialJoltUnits
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Jolt]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Jolt]
  * SI unit is `Meter per Second per Second per Second`
  */
 @Serializable
-sealed class Jolt : AbstractScientificUnit<PhysicalQuantity.Jolt>() {
+sealed class Jolt : DefinedScientificUnit<PhysicalQuantity.Jolt>() {
     abstract val acceleration: Acceleration
     abstract val per: Time
     override val quantity = PhysicalQuantity.Jolt
@@ -127,3 +130,15 @@ infix fun MetricAcceleration.per(time: Time) = MetricJolt(this, time)
  * @return the [ImperialJolt] represented by the units
  */
 infix fun ImperialAcceleration.per(time: Time) = ImperialJolt(this, time)
+
+internal fun SerializersModuleBuilder.setupForJolt() {
+    polymorphic(Jolt::class) {
+        registerJoltClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Jolt>.registerJoltClasses() {
+    subclass(ImperialJolt::class, ImperialJolt.serializer())
+    subclass(MetricAndImperialJolt::class, MetricAndImperialJolt.serializer())
+    subclass(MetricJolt::class, MetricJolt.serializer())
+}

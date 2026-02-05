@@ -24,6 +24,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlin.jvm.JvmName
@@ -31,7 +33,31 @@ import kotlin.jvm.JvmName
 /**
  * Class describing a color
  */
-expect class KalugaColor
+expect sealed class KalugaColor {
+
+    /**
+     * A [KalugaColor] that is represented by a single rgb-value
+     */
+    class RGBColor : KalugaColor
+
+    /**
+     * A [KalugaColor] that has a different [RGBColor] for [isInDarkMode] being `true` or `false`.
+     * @property defaultColor the [RGBColor] to use when [isInDarkMode] is `false`.
+     * @property darkColor the [RGBColor] to use when [isInDarkMode] is `true`.
+     */
+    class DarkLightColor : KalugaColor {
+        val defaultColor: RGBColor
+        val darkColor: RGBColor
+    }
+}
+
+/**
+ * Gets the [KalugaColor.RGBColor] [forDarkMode]
+ * @param forDarkMode if `true` will return the [KalugaColor.RGBColor] to use when [isInDarkMode] is true,
+ * otherwise returns the default color.
+ * @return the [KalugaColor.RGBColor] associated with [forDarkMode]
+ */
+fun KalugaColor.DarkLightColor.rgbColor(forDarkMode: Boolean) = if (forDarkMode) darkColor else defaultColor
 
 /**
  * A wrapper for [KalugaColor] that allows it to be serialized
@@ -41,77 +67,137 @@ expect class KalugaColor
 data class SerializableColor(val color: KalugaColor)
 
 /**
+ * A wrapper for [KalugaColor.RGBColor] that allows it to be serialized
+ * @property color the [KalugaColor.RGBColor] to wrap
+ */
+@Serializable(with = RGBColorSerializer::class)
+data class SerializableRGBColor(val color: KalugaColor.RGBColor)
+
+/**
  * Gets a [SerializableColor] instance of this color
  */
 val KalugaColor.serializable get() = SerializableColor(this)
 
 /**
+ * Gets a [SerializableRGBColor] instance of this color
+ */
+val KalugaColor.RGBColor.serializable get() = SerializableRGBColor(this)
+
+/**
  * Gets the red value of the color in a range between `0.0` and `1.0`
  */
-expect val KalugaColor.red: Double
+expect val KalugaColor.RGBColor.red: Double
+
+/**
+ * Gets the red value of the color [forDarkMode] in a range between `0.0` and `1.0`
+ * @param forDarkMode if `true` will return the red value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
+ */
+fun KalugaColor.DarkLightColor.red(forDarkMode: Boolean) = rgbColor(forDarkMode).red
 
 /**
  * Gets the red value of the color in a range between `0` and `255`
  */
-expect val KalugaColor.redInt: Int
+expect val KalugaColor.RGBColor.redInt: Int
+
+/**
+ * Gets the red value of the color [forDarkMode] in a range between `0` and `255`
+ * @param forDarkMode if `true` will return the red value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
+ */
+fun KalugaColor.DarkLightColor.redInt(forDarkMode: Boolean) = rgbColor(forDarkMode).redInt
 
 /**
  * Gets the green value of the color in a range between `0.0` and `1.0`
  */
-expect val KalugaColor.green: Double
+expect val KalugaColor.RGBColor.green: Double
+
+/**
+ * Gets the green value of the color [forDarkMode] in a range between `0.0` and `1.0`
+ * @param forDarkMode if `true` will return the green value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
+ */
+fun KalugaColor.DarkLightColor.green(forDarkMode: Boolean) = rgbColor(forDarkMode).green
 
 /**
  * Gets the green value of the color in a range between `0` and `255`
  */
-expect val KalugaColor.greenInt: Int
+expect val KalugaColor.RGBColor.greenInt: Int
+
+/**
+ * Gets the green value of the color [forDarkMode] in a range between `0` and `255`
+ * @param forDarkMode if `true` will return the green value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
+ */
+fun KalugaColor.DarkLightColor.greenInt(forDarkMode: Boolean) = rgbColor(forDarkMode).greenInt
 
 /**
  * Gets the blue value of the color in a range between `0.0` and `1.0`
  */
-expect val KalugaColor.blue: Double
+expect val KalugaColor.RGBColor.blue: Double
+
+/**
+ * Gets the blue value of the color [forDarkMode] in a range between `0.0` and `1.0`
+ * @param forDarkMode if `true` will return the blue value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
+ */
+fun KalugaColor.DarkLightColor.blue(forDarkMode: Boolean) = rgbColor(forDarkMode).blue
 
 /**
  * Gets the blue value of the color in a range between `0` and `255`
  */
-expect val KalugaColor.blueInt: Int
+expect val KalugaColor.RGBColor.blueInt: Int
+
+/**
+ * Gets the blue value of the color [forDarkMode] in a range between `0` and `255`
+ * @param forDarkMode if `true` will return the blue value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
+ */
+fun KalugaColor.DarkLightColor.blueInt(forDarkMode: Boolean) = rgbColor(forDarkMode).blueInt
 
 /**
  * Gets the alpha value of the color in a range between `0.0` and `1.0`
  */
-expect val KalugaColor.alpha: Double
+expect val KalugaColor.RGBColor.alpha: Double
+
+/**
+ * Gets the alpha value of the color [forDarkMode] in a range between `0.0` and `1.0`
+ * @param forDarkMode if `true` will return the alpha value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
+ */
+fun KalugaColor.DarkLightColor.alpha(forDarkMode: Boolean) = rgbColor(forDarkMode).alpha
 
 /**
  * Gets the alpha value of the color in a range between `0` and `255`
  */
-expect val KalugaColor.alphaInt: Int
+expect val KalugaColor.RGBColor.alphaInt: Int
 
 /**
- * Creates a [KalugaColor] using red, green, blue, and (optional) alpha, all ranging between `0.0` and `1.0`.
+ * Gets the alpha value of the color [forDarkMode] in a range between `0` and `255`
+ * @param forDarkMode if `true` will return the alpha value of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
+ */
+fun KalugaColor.DarkLightColor.alphaInt(forDarkMode: Boolean) = rgbColor(forDarkMode).alphaInt
+
+/**
+ * Creates a [KalugaColor.RGBColor] using red, green, blue, and (optional) alpha, all ranging between `0.0` and `1.0`.
  * @param red The red color value ranging between `0.0` and `1.0`.
  * @param green The green color value ranging between `0.0` and `1.0`.
  * @param blue The blue color value ranging between `0.0` and `1.0`.
  * @param alpha The alpha color value ranging between `0.0` and `1.0`. Defaults to `1.0`
- * @return The [KalugaColor] with the corresponding red, green, blue, and alpha values
+ * @return The [KalugaColor.RGBColor] with the corresponding red, green, blue, and alpha values
  */
-expect fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double = 1.0): KalugaColor
+expect fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double = 1.0): KalugaColor.RGBColor
 
 /**
- * Creates a [KalugaColor] using red, green, blue, and (optional) alpha, all ranging between `0` and `255`.
+ * Creates a [KalugaColor.RGBColor] using red, green, blue, and (optional) alpha, all ranging between `0` and `255`.
  * @param redInt The red color value ranging between `0` and `255`.
  * @param greenInt The green color value ranging between `0` and `255`.
  * @param blueInt The blue color value ranging between `0` and `255`.
  * @param alphaInt The alpha color value ranging between `0` and `255`. Defaults to `255`
- * @return The [KalugaColor] with the corresponding red, green, blue, and alpha values
+ * @return The [KalugaColor.RGBColor] with the corresponding red, green, blue, and alpha values
  */
-expect fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int = 255): KalugaColor
+expect fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int = 255): KalugaColor.RGBColor
 
 /**
- * Attempts to parse a given [String] into a [Color].
+ * Attempts to parse a given [String] into a [KalugaColor.RGBColor].
  * The string should be formatted as either `#AARRGGBB` or `#RRGGBB` for the parsing to succeed.
- * @param hexString The [String] to parse as a [Color]
- * @return The [Color] associated with [hexString] or `null` if improperly formatted.
+ * @param hexString The [String] to parse as a [KalugaColor.RGBColor]
+ * @return The [KalugaColor.RGBColor] associated with [hexString] or `null` if improperly formatted.
  */
-fun colorFrom(hexString: String): KalugaColor? = if (hexString.startsWith('#')) {
+fun colorFrom(hexString: String): KalugaColor.RGBColor? = if (hexString.startsWith('#')) {
     val hexColor = hexString.substring(1).toLong(16)
     when (hexString.length) {
         9 -> {
@@ -121,12 +207,14 @@ fun colorFrom(hexString: String): KalugaColor? = if (hexString.startsWith('#')) 
             val blue = hexColor and 0xFF
             colorFrom(red.toInt(), green.toInt(), blue.toInt(), alpha.toInt())
         }
+
         7 -> {
             val red = hexColor ushr 16
             val green = (hexColor shr 8) and 0xFF
             val blue = hexColor and 0xFF
             colorFrom(red.toInt(), green.toInt(), blue.toInt())
         }
+
         else -> null
     }
 } else {
@@ -134,17 +222,42 @@ fun colorFrom(hexString: String): KalugaColor? = if (hexString.startsWith('#')) 
 }
 
 /**
- * The inverted [KalugaColor]
+ * Creates a [KalugaColor.DarkLightColor] that uses [darkModeColor] when [isInDarkMode] and this color otherwise.
+ * If this color has a dark mode already it will be overwritten.
+ * If [darkModeColor] has a dark mode, it will be used.
+ * @param darkModeColor the [KalugaColor.RGBColor] to use when [isInDarkMode]
+ * @return a [KalugaColor.DarkLightColor] that supports a custom color in dark mode.
  */
-val KalugaColor.inverted: KalugaColor get() = colorFrom(1.0 - red, 1.0 - green, 1.0 - blue, alpha)
+expect infix fun KalugaColor.RGBColor.withDarkMode(darkModeColor: KalugaColor.RGBColor): KalugaColor.DarkLightColor
 
 /**
- * The hex string representing this color
+ * The inverted [KalugaColor.RGBColor].
  */
-val KalugaColor.hexString: String
+val KalugaColor.RGBColor.inverted: KalugaColor.RGBColor get() = colorFrom(1.0 - red, 1.0 - green, 1.0 - blue, alpha)
+
+/**
+ * The inverted [KalugaColor.DarkLightColor]. Each value will be inverted individually.
+ */
+val KalugaColor.DarkLightColor.inverted get() = defaultColor.inverted withDarkMode darkColor.inverted
+
+/**
+ * Creates a [KalugaColor.DarkLightColor] from another by using the [KalugaColor.DarkLightColor.darkColor] as the default color and vice versa.
+ */
+val KalugaColor.DarkLightColor.flipped get() = darkColor withDarkMode defaultColor
+
+/**
+ * The hex string representing this color.
+ */
+val KalugaColor.RGBColor.hexString: String
     get() {
         return "#${alphaInt.toHex(2)}${redInt.toHex(2)}${greenInt.toHex(2)}${blueInt.toHex(2)}"
     }
+
+/**
+ * Gets the hex string representing the color [forDarkMode]
+ * @param forDarkMode if `true` will return the hex string representation of [KalugaColor.DarkLightColor.darkColor], otherwise the value of [KalugaColor.DarkLightColor.defaultColor].
+ */
+fun KalugaColor.DarkLightColor.hexString(forDarkMode: Boolean) = rgbColor(forDarkMode).hexString
 
 private fun Int.toHex(minSize: Int): String {
     val hexValue = this.toString(16)
@@ -156,15 +269,52 @@ private fun Int.toHex(minSize: Int): String {
  * A [KSerializer] for [SerializableColor]
  */
 open class ColorSerializer : KSerializer<SerializableColor> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ColorString", PrimitiveKind.STRING)
+    override val descriptor = buildClassSerialDescriptor("ColorString") {
+        element<Boolean>("isDarkLight")
+        element<String>("default")
+        element<String>("darkMode", isOptional = true)
+    }
 
     override fun serialize(encoder: Encoder, value: SerializableColor) {
+        when (val color = value.color) {
+            is KalugaColor.RGBColor -> {
+                encoder.encodeBoolean(false)
+                encoder.encodeString(color.hexString)
+                encoder.encodeNull()
+            }
+
+            is KalugaColor.DarkLightColor -> {
+                encoder.encodeBoolean(true)
+                encoder.encodeString(color.defaultColor.hexString)
+                encoder.encodeString(color.darkColor.hexString)
+            }
+
+            else -> throw IllegalArgumentException("Unknown KalugaColor $color")
+        }
+    }
+
+    override fun deserialize(decoder: Decoder): SerializableColor = SerializableColor(
+        if (decoder.decodeBoolean()) {
+            colorFrom(decoder.decodeString())!! withDarkMode colorFrom(decoder.decodeString())!!
+        } else {
+            colorFrom(decoder.decodeString())!!
+        },
+    )
+}
+
+/**
+ * A [KSerializer] for [SerializableRGBColor]
+ */
+open class RGBColorSerializer : KSerializer<SerializableRGBColor> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ColorString", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: SerializableRGBColor) {
         val string = value.color.hexString
         encoder.encodeString(string)
     }
 
-    override fun deserialize(decoder: Decoder): SerializableColor {
+    override fun deserialize(decoder: Decoder): SerializableRGBColor {
         val string = decoder.decodeString()
-        return SerializableColor(colorFrom(string)!!)
+        return SerializableRGBColor(colorFrom(string)!!)
     }
 }

@@ -23,6 +23,9 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MagneticInduction]
@@ -43,12 +46,12 @@ val MagneticInductionUnits: Set<MagneticInduction> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.MagneticInduction]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.MagneticInduction]
  * SI unit is [Tesla]
  */
 @Serializable
 sealed class MagneticInduction :
-    AbstractScientificUnit<PhysicalQuantity.MagneticInduction>(),
+    DefinedScientificUnit<PhysicalQuantity.MagneticInduction>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.MagneticInduction>
 
 @Serializable
@@ -97,10 +100,31 @@ data object Gigatesla : TeslaMultiple(), MetricMultipleUnit<MeasurementSystem.Me
 
 @Serializable
 data object Gauss : MagneticInduction() {
-    private const val GAUSS_IN_TESLA = 10000.0
+    private val GAUSS_IN_TESLA = 10000.toDecimal()
     override val symbol = "G"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.MagneticInduction
-    override fun fromSIUnit(value: Decimal): Decimal = value * GAUSS_IN_TESLA.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / GAUSS_IN_TESLA.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * GAUSS_IN_TESLA
+    override fun toSIUnit(value: Decimal): Decimal = value / GAUSS_IN_TESLA
+}
+
+internal fun SerializersModuleBuilder.setupForMagneticInduction() {
+    polymorphic(MagneticInduction::class) {
+        registerMagneticInductionClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<MagneticInduction>.registerMagneticInductionClasses() {
+    subclass(Gauss::class, Gauss.serializer())
+    subclass(Tesla::class, Tesla.serializer())
+    subclass(Centitesla::class, Centitesla.serializer())
+    subclass(Decatesla::class, Decatesla.serializer())
+    subclass(Decitesla::class, Decitesla.serializer())
+    subclass(Gigatesla::class, Gigatesla.serializer())
+    subclass(Hectotesla::class, Hectotesla.serializer())
+    subclass(Kilotesla::class, Kilotesla.serializer())
+    subclass(Megatesla::class, Megatesla.serializer())
+    subclass(Microtesla::class, Microtesla.serializer())
+    subclass(Millitesla::class, Millitesla.serializer())
+    subclass(Nanotesla::class, Nanotesla.serializer())
 }

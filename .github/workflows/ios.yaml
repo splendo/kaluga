@@ -1,8 +1,5 @@
 name: iOS tests
 on: pull_request
-env:
-  GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false -Dkotlin.daemon.jvm.options=-Xmx8G,-XX:MaxMetaspaceSize=512m,-Dorg.gradle.daemon=false,-Dkotlin.incremental=false"
-  JAVA_OPTS: "-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
 
 jobs:
   build:
@@ -10,12 +7,12 @@ jobs:
     with:
       gradleTask: compileKotlinIosSimulatorArm64
 
-  lint:
+  validation:
     needs: build
-    runs-on: macos-14
+    runs-on: macos-26
     steps:
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         submodules: recursive
 
@@ -29,22 +26,24 @@ jobs:
       run: ./gradlew lintKotlin
 
     - name: ktLint report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: ktLint report
         path: build/reports/ktlint
       if: ${{ failure() }}
+    - name: run checkLegacyAbi
+      run: ./gradlew checkLegacyAbi
 
   test:
     needs: build
-    runs-on: macos-14
+    runs-on: macos-26
     strategy:
       fail-fast: false
       matrix:
         module: ${{ fromJSON(needs.build.outputs.projects) }}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup tools and cache for workspace
         uses: ./.github/workflows/setup_tools_macos/
@@ -52,12 +51,40 @@ jobs:
           kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
           arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
 
-
       - name: run iOS tests
         run: ./gradlew :${{ matrix.module }}:ios${{ runner.arch == 'X86' && 'X86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'SimulatorArm32' || 'SimulatorArm64' }}Test
       - name: Upload iOS test artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: ${{ matrix.module}} iOS Test Report HTML
           path: ${{ format('**{0}/build/reports/tests/ios{1}Test', matrix.module, runner.arch == 'X86' && 'X86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'SimulatorArm32' || 'SimulatorArm64') }}
+
+  example:
+    needs: build
+    runs-on: macos-26
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+
+      - name: Setup tools and cache for workspace
+        uses: ./.github/workflows/setup_tools_macos/
+        with:
+          kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
+          arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
+      - name: run install
+        working-directory: example/ios
+        run: | 
+          brew install sourcery
+          ./install.sh
+
+      - name: build example
+        working-directory: example/ios
+        run: set -o pipefail && xcodebuild -project Demo.xcodeproj -sdk iphonesimulator -scheme Demo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1'
+        shell: bash
+
+      - name: 'upload xcodebuild.log'
+        uses: actions/upload-artifact@v6
+        with:
+          name: "xcodebuild.log"
+          path: "example/ios/xcodebuild.log"

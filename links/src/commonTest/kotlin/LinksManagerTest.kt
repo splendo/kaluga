@@ -30,18 +30,18 @@ import kotlin.test.assertEquals
 class LinksManagerTest {
 
     @Serializable
-    data class Person(val name: String, val surname: String, val spokenLanguages: List<Languages> = emptyList()) {
+    data class Person(val name: String, val surname: String, val spokenLanguages: List<Language> = emptyList()) {
         companion object {
-            val dummyUrl = "http://url.com?name=Corrado&surname=Quattrocchi&spokenLanguageSize=3&spokenLanguages=ITALIAN&spokenLanguages=ENGLISH&spokenLanguages=DUTCH"
+            val dummyUrl = "http://url.com?name=Corrado&surname=Quattrocchi&spokenLanguages=ITALIAN&spokenLanguages=ENGLISH&spokenLanguages=DUTCH"
             val dummyPerson = Person(
                 "Corrado",
                 "Quattrocchi",
-                listOf(Languages.ITALIAN, Languages.ENGLISH, Languages.DUTCH),
+                listOf(Language.ITALIAN, Language.ENGLISH, Language.DUTCH),
             )
         }
     }
 
-    enum class Languages {
+    enum class Language {
         ITALIAN,
         ENGLISH,
         DUTCH,
@@ -52,14 +52,14 @@ class LinksManagerTest {
 
     @Test
     fun testHandleIncomingLinkSucceed() {
-        handler.extractQueryAsListMock
+        handler.extractQueryAsMapMock
             .on(eq(Person.dummyUrl))
             .doReturn(
-                listOf(
-                    Person.dummyPerson.name,
-                    Person.dummyPerson.surname,
-                    Person.dummyPerson.spokenLanguages.size,
-                ) + Person.dummyPerson.spokenLanguages.map { it.name },
+                mapOf(
+                    Person::name.name to listOf(Person.dummyPerson.name),
+                    Person::surname.name to listOf(Person.dummyPerson.surname),
+                    Person::spokenLanguages.name to Person.dummyPerson.spokenLanguages.map { it.name },
+                ),
             )
         val result = linksManager.handleIncomingLink(Person.dummyUrl, Person.serializer())
 
@@ -68,7 +68,7 @@ class LinksManagerTest {
 
     @Test
     fun testHandleIncomingLinkFailed() {
-        handler.extractQueryAsListMock.on(any()).doReturn(emptyList())
+        handler.extractQueryAsMapMock.on(any()).doReturn(emptyMap())
         val query = ""
 
         val result = linksManager.handleIncomingLink(query, Person.serializer())
@@ -94,9 +94,9 @@ class LinksManagerTest {
 
 private class MockLinksHandler : LinksHandler {
 
-    val extractQueryAsListMock = this::extractQueryAsList.mock()
+    val extractQueryAsMapMock = this::extractQueryAsMap.mock()
     val isValidMock = this::isValid.mock()
 
-    override fun extractQueryAsList(url: String): List<Any> = extractQueryAsListMock.call(url)
+    override fun extractQueryAsMap(url: String): Map<String, List<String>> = extractQueryAsMapMock.call(url)
     override fun isValid(url: String): Boolean = isValidMock.call(url)
 }

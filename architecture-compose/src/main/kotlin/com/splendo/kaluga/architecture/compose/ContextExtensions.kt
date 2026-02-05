@@ -19,14 +19,24 @@ package com.splendo.kaluga.architecture.compose
 
 import android.content.Context
 import android.content.ContextWrapper
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
+
+/**
+ * Gets the [ComponentActivity] of a [Context] if it exists.
+ * This does a recursive lookup if [Context] is a [ContextWrapper]
+ */
+val Context.activity: ComponentActivity? get() = when (this) {
+    is ComponentActivity -> this
+
+    is ContextWrapper -> baseContext.activity
+
+    // recursive lookup
+    else -> null
+}
 
 /**
  * Gets the [AppCompatActivity] of a [Context] if it exists.
  * This does a recursive lookup if [Context] is a [ContextWrapper]
  */
-val Context.activity: AppCompatActivity? get() = when (this) {
-    is AppCompatActivity -> this
-    is ContextWrapper -> baseContext.activity // recursive lookup
-    else -> null
-}
+val Context.appCompatActivity: AppCompatActivity? get() = activity as? AppCompatActivity

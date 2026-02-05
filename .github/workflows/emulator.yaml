@@ -17,13 +17,11 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false\" -Dorg.gradle.daemon=false -Dkotlin.incremental=false -Dkotlin.daemon.jvm.options=-Xmx8G,-XX:MaxMetaspaceSize=512m,-Dorg.gradle.daemon=false,-Dkotlin.incremental=false"
-  JAVA_OPTS: "-Xmx8G -XX:MaxMetaspaceSize=512m -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
   ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 120
 
 jobs:
   build:
-    uses: ./.github/workflows/setup_macos.yaml
+    uses: ./.github/workflows/setup_linux.yaml
     with:
       gradleTask: bundleLibRuntimeToJarDebug
       project: ${{ inputs.project }}
@@ -31,32 +29,35 @@ jobs:
 
   test:
     needs: build
-    runs-on: macos-13
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        api-level: [24, 34]
+        api-level: [24, 36]
         project: ${{ fromJSON(needs.build.outputs.projects) }}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
 
       - name: Setup tools and cache for workspace
-        uses: ./.github/workflows/setup_tools_macos/
-        with:
-          kotlinVersion: ${{ needs.build.outputs.kotlinVersion }}
-          arch: ${{ runner.arch == 'X86' && 'x86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'arm32' || 'arm64' }}
+        uses: ./.github/workflows/setup_tools_linux/
+
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
 
       - name: AVD cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: avd-cache
         with:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd.v11-${{ matrix.api-level }}
+          key: avd.v12-${{ matrix.api-level }}
 
       - name: create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
@@ -101,7 +102,14 @@ jobs:
           cores: 6
           script: |
             ./script/check_emulator.sh
-            ./gradlew ${{ inputs.video && 'recordAndroid' }} :${{ matrix.project }}:connectedDebugAndroidTest
+            ./gradlew ${{ inputs.video && 'recordAndroid' }} :${{ matrix.project }}:connectedAndroidTest
+
+      - name: Upload test reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: "Android UI tests for ${{ matrix.project }}"
+          path: "${{ matrix.project }}/build/reports/androidTests/connected/debug/**"
 
       - name: rename video
         if: always() && inputs.video    

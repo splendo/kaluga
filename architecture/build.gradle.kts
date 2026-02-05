@@ -9,7 +9,6 @@ kaluga {
 
     supportJVM = true
     supportJS = true
-
     dependencies {
         android {
             main {
@@ -28,7 +27,7 @@ kaluga {
                 api(libs.kotlinx.serialization.json)
             }
             test {
-                api(project(":test-utils-architecture", ""))
+                implementation(project(":test-utils-architecture", ""))
             }
         }
         js {

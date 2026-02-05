@@ -23,6 +23,9 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [Frequency]
@@ -43,12 +46,12 @@ val FrequencyUnits: Set<Frequency> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Frequency]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Frequency]
  * SI unit is [Hertz]
  */
 @Serializable
 sealed class Frequency :
-    AbstractScientificUnit<PhysicalQuantity.Frequency>(),
+    DefinedScientificUnit<PhysicalQuantity.Frequency>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.Frequency>
 
 @Serializable
@@ -97,9 +100,31 @@ data object Gigahertz : HertzMultiple(), MetricMultipleUnit<MeasurementSystem.Me
 
 @Serializable
 data object BeatsPerMinute : Frequency() {
+    private val SECONDS_PER_MINUTE = 60.toDecimal()
     override val symbol: String = "bpm"
     override val system = MeasurementSystem.MetricAndImperial
     override val quantity = PhysicalQuantity.Frequency
-    override fun fromSIUnit(value: Decimal): Decimal = value * 60.0.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / 60.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * SECONDS_PER_MINUTE
+    override fun toSIUnit(value: Decimal): Decimal = value / SECONDS_PER_MINUTE
+}
+
+internal fun SerializersModuleBuilder.setupForFrequency() {
+    polymorphic(Frequency::class) {
+        registerFrequencyClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Frequency>.registerFrequencyClasses() {
+    subclass(BeatsPerMinute::class, BeatsPerMinute.serializer())
+    subclass(Hertz::class, Hertz.serializer())
+    subclass(Centihertz::class, Centihertz.serializer())
+    subclass(Decahertz::class, Decahertz.serializer())
+    subclass(Decihertz::class, Decihertz.serializer())
+    subclass(Gigahertz::class, Gigahertz.serializer())
+    subclass(Hectohertz::class, Hectohertz.serializer())
+    subclass(Kilohertz::class, Kilohertz.serializer())
+    subclass(Megahertz::class, Megahertz.serializer())
+    subclass(Microhertz::class, Microhertz.serializer())
+    subclass(Millihertz::class, Millihertz.serializer())
+    subclass(Nanohertz::class, Nanohertz.serializer())
 }

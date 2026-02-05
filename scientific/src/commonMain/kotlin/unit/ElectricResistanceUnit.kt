@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [ElectricResistance]
@@ -40,12 +43,12 @@ val ElectricResistanceUnits: Set<ElectricResistance> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.ElectricResistance]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.ElectricResistance]
  * SI unit is [Ohm]
  */
 @Serializable
 sealed class ElectricResistance :
-    AbstractScientificUnit<PhysicalQuantity.ElectricResistance>(),
+    DefinedScientificUnit<PhysicalQuantity.ElectricResistance>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.ElectricResistance>
 
 @Serializable
@@ -96,3 +99,24 @@ data object Megaohm : OhmMultiple(), MetricMultipleUnit<MeasurementSystem.Metric
 
 @Serializable
 data object Gigaohm : OhmMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricResistance, Ohm> by Giga(Ohm)
+
+internal fun SerializersModuleBuilder.setupForElectricResistance() {
+    polymorphic(ElectricResistance::class) {
+        registerElectricResistanceClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<ElectricResistance>.registerElectricResistanceClasses() {
+    subclass(Ohm::class, Ohm.serializer())
+    subclass(Abohm::class, Abohm.serializer())
+    subclass(Centiohm::class, Centiohm.serializer())
+    subclass(Decaohm::class, Decaohm.serializer())
+    subclass(Deciohm::class, Deciohm.serializer())
+    subclass(Gigaohm::class, Gigaohm.serializer())
+    subclass(HectoOhm::class, HectoOhm.serializer())
+    subclass(Kiloohm::class, Kiloohm.serializer())
+    subclass(Megaohm::class, Megaohm.serializer())
+    subclass(Microohm::class, Microohm.serializer())
+    subclass(Milliohm::class, Milliohm.serializer())
+    subclass(Nanoohm::class, Nanoohm.serializer())
+}

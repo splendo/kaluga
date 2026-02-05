@@ -48,8 +48,11 @@ class PermissionViewModel(private val permission: Permission) :
         .map { permissionState ->
             when (permissionState) {
                 is PermissionState.Allowed -> "permission_allowed".localized()
+
                 is PermissionState.Denied.Requestable -> "permission_requestable".localized()
+
                 is PermissionState.Denied.Locked -> "permission_denied".localized()
+
                 is PermissionState.Initializing,
                 is PermissionState.Deinitialized,
                 is PermissionState.Uninitialized,

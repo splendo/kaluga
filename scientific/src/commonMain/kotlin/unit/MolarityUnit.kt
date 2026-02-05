@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricMolarity]
@@ -58,11 +61,11 @@ val MolarityUnits: Set<Molarity> get() = MetricMolarityUnits +
     USCustomaryMolarityUnits.filter { it.per !is USCustomaryImperialVolumeWrapper }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Molarity]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Molarity]
  * SI unit is `Mole per CubicMeter`
  */
 @Serializable
-sealed class Molarity : AbstractScientificUnit<PhysicalQuantity.Molarity>() {
+sealed class Molarity : DefinedScientificUnit<PhysicalQuantity.Molarity>() {
 
     /**
      * The [AmountOfSubstance] component
@@ -164,3 +167,16 @@ infix fun AmountOfSubstance.per(volume: USCustomaryVolume) = USCustomaryMolarity
  * @return the [UKImperialMolarity] represented by the units
  */
 infix fun AmountOfSubstance.per(volume: UKImperialVolume) = UKImperialMolarity(this, volume)
+
+internal fun SerializersModuleBuilder.setupForMolarity() {
+    polymorphic(Molarity::class) {
+        registerMolarityClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Molarity>.registerMolarityClasses() {
+    subclass(ImperialMolarity::class, ImperialMolarity.serializer())
+    subclass(MetricMolarity::class, MetricMolarity.serializer())
+    subclass(UKImperialMolarity::class, UKImperialMolarity.serializer())
+    subclass(USCustomaryMolarity::class, USCustomaryMolarity.serializer())
+}

@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.singleThreadDispatcher
 import kotlin.coroutines.CoroutineContext
 
 private val defaultNetworkDispatcher by lazy {
-    singleThreadDispatcher("Location")
+    singleThreadDispatcher("NetworkState")
 }
 
 /**

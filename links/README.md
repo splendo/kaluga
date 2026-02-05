@@ -27,20 +27,19 @@ val someClassOrNull = linksManager.validateLink(url)?.let {
 }
 ```
 
-The library parses the query parameters of a URL into a list of objects and decodes them into an object using a serializer.
-This means query parameters should be in the order at which the Serializer specifies them.
-When the object contains nested properties, they should be preceded by a numeric indicator of the amount of elements to expect:
+The library parses the query parameters of a URL into a map and decodes it into an object using a serializer.
+This means query parameters should correspond to the serialized field names specified by the Serializer.
 
 ```kotlin
 @Serializable 
-data class Aliment(val name: String)
+data class Ingredient(val name: String)
 
 @Serializable 
-data class Recipe(val name: String, val ingredients: List<Aliment>)
+data class Recipe(val name: String, val ingredients: List<Ingredient>)
 
 // Somewhere in the code
-val url = "https://kaluga.splendo.com/?name=Carbonara&size=3&ingredients=Spaghetti&ingredients=Bacon&ingredients=Egg"
+val url = "https://kaluga.splendo.com/?name=Carbonara&ingredients=Spaghetti&ingredients=Bacon&ingredients=Egg"
+val linksManager = DefaultLinksManager.Builder().create()
+val recipe = linksManager.handleIncomingLink(url, Recipe.serializer())
 
 ```
-
-The names of the parameters are ignored when decoding.

@@ -22,6 +22,9 @@ import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [MetricSpeed]
@@ -43,11 +46,11 @@ val ImperialSpeedUnits: Set<ImperialSpeed> get() = ImperialLengthUnits.flatMap {
 val SpeedUnits: Set<Speed> get() = MetricSpeedUnits + ImperialSpeedUnits
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.Speed]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.Speed]
  * SI unit is `Meter per Second`
  */
 @Serializable
-sealed class Speed : AbstractScientificUnit<PhysicalQuantity.Speed>() {
+sealed class Speed : DefinedScientificUnit<PhysicalQuantity.Speed>() {
 
     /**
      * The [Length] component
@@ -111,3 +114,14 @@ val MetricSpeedOfLight = 299792458(Meter per Second)
  * The [Speed] of light in `Foot per Second`
  */
 val ImperialSpeedOfLight = MetricSpeedOfLight.convert(Foot per Second)
+
+internal fun SerializersModuleBuilder.setupForSpeed() {
+    polymorphic(Speed::class) {
+        registerSpeedClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<Speed>.registerSpeedClasses() {
+    subclass(ImperialSpeed::class, ImperialSpeed.serializer())
+    subclass(MetricSpeed::class, MetricSpeed.serializer())
+}

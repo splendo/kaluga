@@ -62,6 +62,7 @@ sealed class ComposableNavigator<Action : NavigationAction<*>>(private val navig
                         onDispose()
                     }
                 }
+
                 is ComposableNavSpec.LaunchedNavigation -> spec.Launch(this, onDispose)
             }
         }

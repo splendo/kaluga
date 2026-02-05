@@ -17,49 +17,36 @@
 
 package com.splendo.kaluga.scientific.unit
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.assertEqualScientificValue
-import com.splendo.kaluga.scientific.converter.decimal.decaysPer
-import com.splendo.kaluga.scientific.converter.radioactivity.radioactivity
-import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
 
 class RadioActivityUnitTest {
 
     @Test
     fun radioActivityConversionTest() {
-        assertScientificConversion(1, Becquerel, 1e+9, Nanobecquerel)
-        assertScientificConversion(1, Becquerel, 1e+6, Microbecquerel)
-        assertScientificConversion(1, Becquerel, 1000.0, Millibecquerel)
-        assertScientificConversion(1, Becquerel, 100.0, Centibecquerel)
-        assertScientificConversion(1, Becquerel, 10.0, Decibecquerel)
-        assertScientificConversion(1, Becquerel, 0.1, Decabecquerel)
-        assertScientificConversion(1, Becquerel, 0.01, Hectobecquerel)
-        assertScientificConversion(1, Becquerel, 0.001, Kilobecquerel)
-        assertScientificConversion(1, Becquerel, 1e-6, Megabecquerel)
-        assertScientificConversion(1, Becquerel, 1e-9, Gigabecquerel)
-        assertScientificConversion(1, Becquerel, 2.7027027027027E-11, Curie, 24)
+        assertScientificConversion("1", Becquerel, "1e+9", Nanobecquerel)
+        assertScientificConversion("1", Becquerel, "1e+6", Microbecquerel)
+        assertScientificConversion("1", Becquerel, "1000.0", Millibecquerel)
+        assertScientificConversion("1", Becquerel, "100.0", Centibecquerel)
+        assertScientificConversion("1", Becquerel, "10.0", Decibecquerel)
+        assertScientificConversion("1", Becquerel, "0.1", Decabecquerel)
+        assertScientificConversion("1", Becquerel, "0.01", Hectobecquerel)
+        assertScientificConversion("1", Becquerel, "0.001", Kilobecquerel)
+        assertScientificConversion("1", Becquerel, "1e-6", Megabecquerel)
+        assertScientificConversion("1", Becquerel, "1e-9", Gigabecquerel)
+        assertScientificConversion(Decimal.ONE, Becquerel, Decimal.ONE / 3.7e10.toDecimal(), Curie, round = 32)
 
-        assertScientificConversion(1, Curie, 1e+9, Nanocurie)
-        assertScientificConversion(1, Curie, 1e+6, Microcurie)
-        assertScientificConversion(1, Curie, 1000.0, Millicurie)
-        assertScientificConversion(1, Curie, 100.0, Centicurie)
-        assertScientificConversion(1, Curie, 10.0, Decicurie)
-        assertScientificConversion(1, Curie, 0.1, Decacurie)
-        assertScientificConversion(1, Curie, 0.01, Hectocurie)
-        assertScientificConversion(1, Curie, 0.001, Kilocurie)
-        assertScientificConversion(1, Curie, 1e-6, Megacurie)
-        assertScientificConversion(1, Curie, 1e-9, Gigacurie)
-    }
-
-    @Test
-    fun radioActivityFromAmountOfSubstanceDivTimeTest() {
-        assertEqualScientificValue(2087.1149(Becquerel), Becquerel.radioactivity(2e-10(Mole), 4e10(Second)), 4)
-    }
-
-    @Test
-    fun radioActivityFromTimeTest() {
-        assertEqualScientificValue(1(Becquerel), 2 decaysPer 2(Second))
-        assertEqualScientificValue(1(Becquerel), 2.toDecimal() decaysPer 2(Second))
+        assertScientificConversion("1", Curie, "1e+9", Nanocurie)
+        assertScientificConversion("1", Curie, "1e+6", Microcurie)
+        assertScientificConversion("1", Curie, "1000.0", Millicurie)
+        assertScientificConversion("1", Curie, "100.0", Centicurie)
+        assertScientificConversion("1", Curie, "10.0", Decicurie)
+        assertScientificConversion("1", Curie, "0.1", Decacurie)
+        assertScientificConversion("1", Curie, "0.01", Hectocurie)
+        assertScientificConversion("1", Curie, "0.001", Kilocurie)
+        assertScientificConversion("1", Curie, "1e-6", Megacurie)
+        assertScientificConversion("1", Curie, "1e-9", Gigacurie)
     }
 }

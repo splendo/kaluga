@@ -11,6 +11,7 @@
     <string name="feature_links">Links</string>
     <string name="feature_location">Location</string>
     <string name="feature_media">Media</string>
+    <string name="feature_media_sound">Sound</string>
     <string name="feature_permissions">Permissions</string>
     <string name="feature_system">System</string>
     <string name="feature_beacons">Beacons</string>
@@ -130,4 +131,8 @@
 
     <string name="android_ui_compose">Compose Implementation</string>
     <string name="android_ui_xml">XML Implementation</string>
+
+    <string name="resources_color_current_mode">Color in current mode</string>
+    <string name="resources_color_dark_mode">Color in dark mode</string>
+    <string name="resources_color_light_mode">Color in light mode</string>
 </resources>

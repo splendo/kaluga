@@ -20,6 +20,7 @@ val modules = listOf(
     "resources" to true,
     "review" to true,
     "scientific" to false,
+    "scientific-converters" to false,
     "system" to true,
     "permissions" to true
 )
@@ -32,7 +33,7 @@ kaluga {
         transitiveExport = true
         modules.forEach { (module, isExportable) ->
             if (isExportable) {
-                export("com.splendo.kaluga:$module:$version")
+                export("com.splendo.kaluga:$module:${project.rootProject.version}")
             }
         }
     }
@@ -45,7 +46,7 @@ kaluga {
         common {
             main {
                 modules.forEach { (module, _) ->
-                    api("com.splendo.kaluga:$module:$version")
+                    api("com.splendo.kaluga:$module:${project.rootProject.version}")
                 }
                 api(libs.koin.core)
             }

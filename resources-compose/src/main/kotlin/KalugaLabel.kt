@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
@@ -42,18 +43,19 @@ import com.splendo.kaluga.resources.view.bindLabel
  * @param modifier the [Modifier] to be applied to this layout node
  */
 @Composable
-fun KalugaLabel.Composable(modifier: Modifier) {
+fun KalugaLabel.Composable(modifier: Modifier = Modifier) {
     when (this) {
         is KalugaLabel.Plain -> {
             Text(
                 modifier = modifier,
                 text = text,
-                color = style.color.composable,
+                color = style.color.composable(),
                 fontFamily = FontFamily(style.font),
                 fontSize = style.size.sp,
                 textAlign = style.alignment.composable,
             )
         }
+
         is KalugaLabel.Styled -> {
             // Compose does not support SpannedString and AttributedString lacks features so use legacy view
             AndroidView(
@@ -70,7 +72,7 @@ fun KalugaLabel.Composable(modifier: Modifier) {
 
 @Preview
 @Composable
-fun PreviewKalugaLabel() {
+private fun PreviewKalugaLabel() {
     val textStyle = com.splendo.kaluga.resources.stylable.KalugaTextStyle(
         defaultBoldFont,
         DefaultColors.darkRed,
@@ -79,6 +81,10 @@ fun PreviewKalugaLabel() {
     Column(modifier = Modifier.size(100.dp)) {
         KalugaLabel.Plain("Plain Text", textStyle).Composable(
             modifier = Modifier.fillMaxWidth(),
+        )
+
+        KalugaLabel.Plain("Plain Text", textStyle).Composable(
+            modifier = Modifier.align(Alignment.End),
         )
         KalugaLabel.Styled(
             "Styled Text".styled(

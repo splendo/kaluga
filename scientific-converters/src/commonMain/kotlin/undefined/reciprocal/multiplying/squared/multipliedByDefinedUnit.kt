@@ -1,0 +1,97 @@
+@file:Suppress("ktlint:standard:wrapping")
+/*
+ Copyright 2025 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.scientific.converter.undefined.reciprocal.multiplying.squared
+
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.PhysicalQuantity
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.UndefinedQuantityType
+import com.splendo.kaluga.scientific.UndefinedScientificValue
+import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.unit.AbstractUndefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.DefinedScientificUnit
+import com.splendo.kaluga.scientific.unit.UndefinedDividedUnit
+import com.splendo.kaluga.scientific.unit.UndefinedMultipliedUnit
+import com.splendo.kaluga.scientific.unit.UndefinedReciprocalUnit
+import com.splendo.kaluga.scientific.unit.WrappedUndefinedExtendedUnit
+
+// Inv<Mul<A, A>> * B! -> Div<Wr<B>, Mul<A, A>>
+
+fun <
+    LeftReciprocalLeftAndRightQuantity : UndefinedQuantityType,
+    LeftReciprocalLeftUnit : AbstractUndefinedScientificUnit<LeftReciprocalLeftAndRightQuantity>,
+    LeftReciprocalRightUnit : AbstractUndefinedScientificUnit<LeftReciprocalLeftAndRightQuantity>,
+    LeftReciprocalUnit : UndefinedMultipliedUnit<
+        LeftReciprocalLeftAndRightQuantity,
+        LeftReciprocalLeftUnit,
+        LeftReciprocalLeftAndRightQuantity,
+        LeftReciprocalRightUnit,
+        >,
+    LeftUnit : UndefinedReciprocalUnit<
+        UndefinedQuantityType.Multiplying<
+            LeftReciprocalLeftAndRightQuantity,
+            LeftReciprocalLeftAndRightQuantity,
+            >,
+        LeftReciprocalUnit,
+        >,
+    RightQuantity : PhysicalQuantity.DefinedPhysicalQuantityWithDimension,
+    RightUnit : DefinedScientificUnit<RightQuantity>,
+    WrappedRightUnit : WrappedUndefinedExtendedUnit<
+        RightQuantity,
+        RightUnit,
+        >,
+    TargetUnit : UndefinedDividedUnit<
+        UndefinedQuantityType.Extended<
+            RightQuantity,
+            >,
+        WrappedRightUnit,
+        UndefinedQuantityType.Multiplying<
+            LeftReciprocalLeftAndRightQuantity,
+            LeftReciprocalLeftAndRightQuantity,
+            >,
+        LeftReciprocalUnit,
+        >,
+    TargetValue : UndefinedScientificValue<
+        UndefinedQuantityType.Dividing<
+            UndefinedQuantityType.Extended<
+                RightQuantity,
+                >,
+            UndefinedQuantityType.Multiplying<
+                LeftReciprocalLeftAndRightQuantity,
+                LeftReciprocalLeftAndRightQuantity,
+                >,
+            >,
+        TargetUnit,
+        >,
+    > UndefinedScientificValue<
+    UndefinedQuantityType.Reciprocal<
+        UndefinedQuantityType.Multiplying<
+            LeftReciprocalLeftAndRightQuantity,
+            LeftReciprocalLeftAndRightQuantity,
+            >,
+        >,
+    LeftUnit,
+    >.multipliedByDefinedUnit(
+    right: ScientificValue<RightQuantity, RightUnit>,
+    rightAsUndefined: RightUnit.() -> WrappedRightUnit,
+    wrappedRightUnitPerLeftReciprocalUnit: WrappedRightUnit.(LeftReciprocalUnit) -> TargetUnit,
+    factory: (Decimal, TargetUnit) -> TargetValue,
+) = right.unit.rightAsUndefined().wrappedRightUnitPerLeftReciprocalUnit(
+    unit.inverse,
+).byMultiplying(this, right, factory)

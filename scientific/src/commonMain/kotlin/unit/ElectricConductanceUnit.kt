@@ -20,6 +20,9 @@ package com.splendo.kaluga.scientific.unit
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 /**
  * Set of all [ElectricConductance]
@@ -40,12 +43,12 @@ val ElectricConductanceUnits: Set<ElectricConductance> get() = setOf(
 )
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.ElectricConductance]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.ElectricConductance]
  * SI unit is [Siemens]
  */
 @Serializable
 sealed class ElectricConductance :
-    AbstractScientificUnit<PhysicalQuantity.ElectricConductance>(),
+    DefinedScientificUnit<PhysicalQuantity.ElectricConductance>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.ElectricConductance>
 
 @Serializable
@@ -95,4 +98,25 @@ data object Gigasiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSyste
 @Serializable
 data object Absiemens : SiemensMultiple(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, PhysicalQuantity.ElectricConductance, Siemens> by Giga(Siemens) {
     override val symbol: String = "abS"
+}
+
+internal fun SerializersModuleBuilder.setupForElectricConductance() {
+    polymorphic(ElectricConductance::class) {
+        registerElectricConductanceClasses()
+    }
+}
+
+internal fun PolymorphicModuleBuilder<ElectricConductance>.registerElectricConductanceClasses() {
+    subclass(Siemens::class, Siemens.serializer())
+    subclass(Absiemens::class, Absiemens.serializer())
+    subclass(Centisiemens::class, Centisiemens.serializer())
+    subclass(Decasiemens::class, Decasiemens.serializer())
+    subclass(Decisiemens::class, Decisiemens.serializer())
+    subclass(Gigasiemens::class, Gigasiemens.serializer())
+    subclass(Hectosiemens::class, Hectosiemens.serializer())
+    subclass(Kilosiemens::class, Kilosiemens.serializer())
+    subclass(Megasiemens::class, Megasiemens.serializer())
+    subclass(Microsiemens::class, Microsiemens.serializer())
+    subclass(Millisiemens::class, Millisiemens.serializer())
+    subclass(Nanosiemens::class, Nanosiemens.serializer())
 }

@@ -29,14 +29,14 @@ val LuminousEnergyUnits: Set<LuminousEnergy> get() = LuminousFluxUnits.flatMap {
 }.toSet()
 
 /**
- * An [AbstractScientificUnit] for [PhysicalQuantity.LuminousEnergy]
+ * An [DefinedScientificUnit] for [PhysicalQuantity.LuminousEnergy]
  * SI unit is `Lumen x Second`
  * @property luminousFlux the [LuminousFlux] component
  * @property time the [Time] component
  */
 @Serializable
 data class LuminousEnergy(val luminousFlux: LuminousFlux, val time: Time) :
-    AbstractScientificUnit<PhysicalQuantity.LuminousEnergy>(),
+    DefinedScientificUnit<PhysicalQuantity.LuminousEnergy>(),
     MetricAndImperialScientificUnit<PhysicalQuantity.LuminousEnergy> {
     override val symbol: String = "${luminousFlux.symbol}⋅${time.symbol}"
     override val system = MeasurementSystem.MetricAndImperial

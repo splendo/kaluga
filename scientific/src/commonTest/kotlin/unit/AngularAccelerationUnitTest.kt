@@ -17,28 +17,17 @@
 
 package com.splendo.kaluga.scientific.unit
 
-import com.splendo.kaluga.scientific.converter.angularVelocity.div
-import com.splendo.kaluga.scientific.invoke
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class AngularAccelerationUnitTest {
 
     @Test
     fun angularAccelerationConvertionTest() {
         assertScientificConversion(
-            1,
+            "1",
             (Radian per Second per Second),
-            0.0001,
+            "0.0001",
             Centiradian per Millisecond per Millisecond,
-        )
-    }
-
-    @Test
-    fun angularAccelerationFromAngularVelocityAndTime() {
-        assertEquals(
-            1((Centiradian per Millisecond per Millisecond)),
-            2(Centiradian per Millisecond) / 2(Millisecond),
         )
     }
 }
