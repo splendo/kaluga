@@ -27,6 +27,10 @@ import com.splendo.kaluga.logging.Logger
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import kotlinx.atomicfu.updateAndGet
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.serialization.DeserializationStrategy
 
 /**
@@ -133,18 +137,14 @@ open class RemoteCharacteristic internal constructor(
         internal fun startUnsubscribe() = onUnsubscribe()
     }
 
-    private val _isNotifying = atomic(false)
+    private val _isNotifying = MutableStateFlow(false)
     private val subscriptions = concurrentMutableListOf<Subscription>()
     private var lastKnownValue: ByteArray? = null
 
     /**
      * If `true` this characteristic has been set to automatically provide updates to its value
      */
-    var isNotifying: Boolean
-        get() = _isNotifying.value
-        set(value) {
-            _isNotifying.value = value
-        }
+    val isNotifying: StateFlow<Boolean> = _isNotifying.asStateFlow()
 
     /**
      * Attempts to subscribe to the characteristic.
@@ -222,7 +222,7 @@ open class RemoteCharacteristic internal constructor(
             when {
                 currentNotificationAction == null -> {
                     actionToFail = null
-                    if (!isNotifying) {
+                    if (!_isNotifying.value) {
                         val action = DeviceAction.Notification.Enable(this)
                         enableAction = action
                         shouldHandleAction = true
@@ -306,7 +306,7 @@ open class RemoteCharacteristic internal constructor(
             when {
                 currentNotificationAction == null -> {
                     actionToFail = null
-                    if (isNotifying) {
+                    if (_isNotifying.value) {
                         val action = DeviceAction.Notification.Disable(this)
                         disableAction = action
                         shouldHandleAction = true
@@ -358,7 +358,7 @@ open class RemoteCharacteristic internal constructor(
         if (hasAnyProperty(setOf(CharacteristicProperty.Notify, CharacteristicProperty.Indicate))) {
             response.invokeOnCompletion { completedResponse ->
                 if (completedResponse == null && response.getCompleted() is GattResponse.WriteSuccess) {
-                    isNotifying = this is DeviceAction.Notification.Enable
+                    _isNotifying.update { this is DeviceAction.Notification.Enable }
                 }
                 currentNotificationAction.updateAndGet { it?.next() }?.current?.handle()
             }
