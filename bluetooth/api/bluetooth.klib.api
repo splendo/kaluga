@@ -2223,6 +2223,8 @@ open class com.splendo.kaluga.bluetooth.scanner/ScanningStateImplRepo : com.sple
 open class com.splendo.kaluga.bluetooth/RemoteCharacteristic : com.splendo.kaluga.bluetooth/Characteristic, com.splendo.kaluga.bluetooth/RemoteAttribute<com.splendo.kaluga.bluetooth.device/DeviceAction.Read.Characteristic, com.splendo.kaluga.bluetooth.device/DeviceAction.Write.Characteristic> { // com.splendo.kaluga.bluetooth/RemoteCharacteristic|null[0]
     constructor <init>(com.splendo.kaluga.bluetooth/RemoteCharacteristicWrapper, com.splendo.kaluga.bluetooth/RemoteService, kotlin/Function1<com.splendo.kaluga.bluetooth.device/DeviceConnectionManager.Event.AddAction, kotlin/Unit>, com.splendo.kaluga.logging/Logger) // com.splendo.kaluga.bluetooth/RemoteCharacteristic.<init>|<init>(com.splendo.kaluga.bluetooth.RemoteCharacteristicWrapper;com.splendo.kaluga.bluetooth.RemoteService;kotlin.Function1<com.splendo.kaluga.bluetooth.device.DeviceConnectionManager.Event.AddAction,kotlin.Unit>;com.splendo.kaluga.logging.Logger){}[0]
 
+    final val isNotifying // com.splendo.kaluga.bluetooth/RemoteCharacteristic.isNotifying|{}isNotifying[0]
+        final fun <get-isNotifying>(): kotlinx.coroutines.flow/StateFlow<kotlin/Boolean> // com.splendo.kaluga.bluetooth/RemoteCharacteristic.isNotifying.<get-isNotifying>|<get-isNotifying>(){}[0]
     final val wrapper // com.splendo.kaluga.bluetooth/RemoteCharacteristic.wrapper|{}wrapper[0]
         final fun <get-wrapper>(): com.splendo.kaluga.bluetooth/RemoteCharacteristicWrapper // com.splendo.kaluga.bluetooth/RemoteCharacteristic.wrapper.<get-wrapper>|<get-wrapper>(){}[0]
     open val descriptors // com.splendo.kaluga.bluetooth/RemoteCharacteristic.descriptors|{}descriptors[0]
@@ -2233,10 +2235,6 @@ open class com.splendo.kaluga.bluetooth/RemoteCharacteristic : com.splendo.kalug
         open fun <get-service>(): com.splendo.kaluga.bluetooth/RemoteService // com.splendo.kaluga.bluetooth/RemoteCharacteristic.service.<get-service>|<get-service>(){}[0]
     open val uuid // com.splendo.kaluga.bluetooth/RemoteCharacteristic.uuid|{}uuid[0]
         open fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.bluetooth/RemoteCharacteristic.uuid.<get-uuid>|<get-uuid>(){}[0]
-
-    final var isNotifying // com.splendo.kaluga.bluetooth/RemoteCharacteristic.isNotifying|{}isNotifying[0]
-        final fun <get-isNotifying>(): kotlin/Boolean // com.splendo.kaluga.bluetooth/RemoteCharacteristic.isNotifying.<get-isNotifying>|<get-isNotifying>(){}[0]
-        final fun <set-isNotifying>(kotlin/Boolean) // com.splendo.kaluga.bluetooth/RemoteCharacteristic.isNotifying.<set-isNotifying>|<set-isNotifying>(kotlin.Boolean){}[0]
 
     final fun hasProperty(com.splendo.kaluga.bluetooth/CharacteristicProperty): kotlin/Boolean // com.splendo.kaluga.bluetooth/RemoteCharacteristic.hasProperty|hasProperty(com.splendo.kaluga.bluetooth.CharacteristicProperty){}[0]
     final fun startDisableNotification(): com.splendo.kaluga.bluetooth.device/DeviceAction.Notification.Disable? // com.splendo.kaluga.bluetooth/RemoteCharacteristic.startDisableNotification|startDisableNotification(){}[0]

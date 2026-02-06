@@ -62,7 +62,7 @@ class BluetoothCharacteristicNotificationTest :
         subscription.await()
         mainAction {
             assertIs<RemoteCharacteristic.SubscriptionResult.DidSubscribe>(characteristic.subscribe {})
-            assertTrue(characteristic.isNotifying)
+            assertTrue(characteristic.isNotifying.value)
         }
     }
 
@@ -95,7 +95,7 @@ class BluetoothCharacteristicNotificationTest :
         }
         test {
             assertIs<ConnectableDeviceState.Connected.Idle>(it)
-            assertFalse(characteristic.isNotifying)
+            assertFalse(characteristic.isNotifying.value)
         }
     }
 
@@ -109,7 +109,7 @@ class BluetoothCharacteristicNotificationTest :
         discover()
 
         mainAction {
-            assertFalse(characteristic.isNotifying)
+            assertFalse(characteristic.isNotifying.value)
             launch { characteristic.subscribe {} }
         }
         test {
@@ -118,7 +118,7 @@ class BluetoothCharacteristicNotificationTest :
             assertIs<DeviceAction.Notification.Enable>(captor.lastCaptured)
             assertIs<ConnectableDeviceState.Connected.HandlingAction>(it)
             assertIs<DeviceAction.Notification.Enable>(it.action)
-            assertFalse(characteristic.isNotifying)
+            assertFalse(characteristic.isNotifying.value)
         }
     }
 
@@ -162,7 +162,7 @@ class BluetoothCharacteristicNotificationTest :
 
     private suspend fun enableNotifications(subscription: CompletableDeferred<RemoteCharacteristic.SubscriptionResult>) {
         mainAction {
-            assertFalse(characteristic.isNotifying, "Notifications already enabled!")
+            assertFalse(characteristic.isNotifying.value, "Notifications already enabled!")
             launch { subscription.complete(characteristic.subscribe { }) }
         }
         test {
@@ -176,7 +176,7 @@ class BluetoothCharacteristicNotificationTest :
             connectionManager.handleCurrentAction()
         }
         test {
-            assertTrue(characteristic.isNotifying)
+            assertTrue(characteristic.isNotifying.value)
             assertIs<ConnectableDeviceState.Connected.Idle>(it)
         }
     }

@@ -610,8 +610,7 @@ public class com/splendo/kaluga/bluetooth/RemoteCharacteristic : com/splendo/kal
 	public fun getUuid ()Ljava/util/UUID;
 	public final fun getWrapper ()Lcom/splendo/kaluga/bluetooth/RemoteCharacteristicWrapper;
 	public final fun hasProperty (Lcom/splendo/kaluga/bluetooth/CharacteristicProperty;)Z
-	public final fun isNotifying ()Z
-	public final fun setNotifying (Z)V
+	public final fun isNotifying ()Lkotlinx/coroutines/flow/StateFlow;
 	public final fun startDisableNotification ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Notification$Disable;
 	public final fun startEnableNotification ()Lcom/splendo/kaluga/bluetooth/device/DeviceAction$Notification$Enable;
 	public final fun subscribe (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
