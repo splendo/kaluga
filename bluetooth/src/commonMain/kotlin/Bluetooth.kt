@@ -636,6 +636,15 @@ fun Flow<RemoteCharacteristic?>.value(): Flow<ByteArray> = distinctUntilChanged(
 }
 
 /**
+ * Gets a ([Flow] of) the [ByteArray] value from a [Flow] of an [RemoteCharacteristic] or an empty [ByteArray] if data is unavailable
+ * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
+ * @return the [Flow] of the [ByteArray] value of the [RemoteCharacteristic] in the given [Flow], or an empty [ByteArray] if data is unavailable
+ */
+fun Flow<RemoteCharacteristic?>.valueOrEmpty(): Flow<ByteArray> = distinctUntilChanged().flatMapLatest { characteristic ->
+    characteristic?.value() ?: flowOf(byteArrayOf())
+}
+
+/**
  * Gets a ([Flow] of) [T] value from a [Flow] of an [RemoteCharacteristic]
  * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
  * @param T the type of the data to receive
@@ -649,6 +658,19 @@ fun <T> Flow<RemoteCharacteristic?>.value(deserializationStrategy: Deserializati
     }
 
 /**
+ * Gets a ([Flow] of) [T] value from a [Flow] of an [RemoteCharacteristic] or `null` if data is unavailable
+ * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
+ * @param T the type of the data to receive
+ * @param deserializationStrategy the [DeserializationStrategy] to use to deserialize the [ByteArray] to [T]
+ * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @return the [Flow] of the [T] value of the [RemoteCharacteristic] in the given [Flow] or `null` if data is unavailable
+ */
+fun <T> Flow<RemoteCharacteristic?>.valueOrNull(deserializationStrategy: DeserializationStrategy<T>, bluetoothFormat: BluetoothFormat = BluetoothFormat): Flow<T?> =
+    distinctUntilChanged().flatMapLatest { characteristic ->
+        characteristic?.value(deserializationStrategy, bluetoothFormat) ?: flowOf(null)
+    }
+
+/**
  * Gets a ([Flow] of) [T] value from a [Flow] of an [RemoteCharacteristic]
  * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
  * @param T the type of the data to receive
@@ -657,6 +679,16 @@ fun <T> Flow<RemoteCharacteristic?>.value(deserializationStrategy: Deserializati
  */
 inline fun <reified T> Flow<RemoteCharacteristic?>.value(bluetoothFormat: BluetoothFormat = BluetoothFormat): Flow<T> =
     value(bluetoothFormat.serializersModule.serializer(), bluetoothFormat)
+
+/**
+ * Gets a ([Flow] of) [T] value from a [Flow] of an [RemoteCharacteristic]
+ * This method will automatically subscribe/unsubscribe to the [RemoteCharacteristic] when the [Flow] is collected
+ * @param T the type of the data to receive
+ * @param bluetoothFormat the [BluetoothFormat] to use to deserialize the [ByteArray] to [T]
+ * @return the [Flow] of the [T] value of the [RemoteCharacteristic] in the given [Flow]
+ */
+inline fun <reified T> Flow<RemoteCharacteristic?>.valueOrNull(bluetoothFormat: BluetoothFormat = BluetoothFormat): Flow<T?> =
+    valueOrNull(bluetoothFormat.serializersModule.serializer(), bluetoothFormat)
 
 /**
  * Gets a ([Flow] of) the [ByteArray] value from a [RemoteCharacteristic]

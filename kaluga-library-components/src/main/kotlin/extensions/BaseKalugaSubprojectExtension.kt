@@ -20,6 +20,8 @@ package com.splendo.kaluga.plugin.extensions
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
+import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationVariantSpec
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, protected val namespacePostfix: String?, objects: ObjectFactory) :
     BaseKalugaExtension(versionCatalog, objects) {
@@ -65,6 +67,7 @@ sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, prote
 
     protected abstract fun Project.setupSubproject()
 
+    @OptIn(ExperimentalAbiValidation::class)
     override fun Project.afterProjectEvaluated() {
         if (moduleName.isEmpty()) {
             throw RuntimeException("moduleName must be configured")
@@ -74,4 +77,15 @@ sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, prote
     protected abstract fun Project.configureSubproject()
 
     protected fun String.asDependency() = versionCatalog.findLibrary(this).get()
+
+    @OptIn(ExperimentalAbiValidation::class)
+    protected fun AbiValidationVariantSpec.abiExtension() {
+        filters.excluded {
+            byNames.set(
+                setOf(
+                    "com.splendo.kaluga.$moduleName.BuildConfig",
+                )
+            )
+        }
+    }
 }

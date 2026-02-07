@@ -69,9 +69,24 @@ public abstract interface class com/splendo/kaluga/base/bytes/ByteArrayBuilder {
 	public abstract fun getByteOrder ()Lcom/splendo/kaluga/base/bytes/ByteOrder;
 }
 
+public final class com/splendo/kaluga/base/bytes/ByteArrayBuilder$DefaultImpls {
+	public static synthetic fun add$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;CLcom/splendo/kaluga/base/bytes/Encoding;Lcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;DLcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;FLcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/StringEncodingSettings;Lcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;SLcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add-4PLdz1A$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;JLcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add-593hS54$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add-QCWLtZ4$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add-qim9Vi0$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;ILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+	public static synthetic fun add-vckuEUM$default (Lcom/splendo/kaluga/base/bytes/ByteArrayBuilder;SLcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)V
+}
+
 public final class com/splendo/kaluga/base/bytes/ByteArrayBuilderKt {
-	public static final fun buildByteArray (Lcom/splendo/kaluga/base/bytes/ByteOrder;Lkotlin/jvm/functions/Function1;)[B
-	public static synthetic fun buildByteArray$default (Lcom/splendo/kaluga/base/bytes/ByteOrder;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)[B
+	public static final fun buildByteArray (Lcom/splendo/kaluga/base/bytes/ByteOrder;ILkotlin/jvm/functions/Function1;)[B
+	public static synthetic fun buildByteArray$default (Lcom/splendo/kaluga/base/bytes/ByteOrder;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)[B
 }
 
 public final class com/splendo/kaluga/base/bytes/ByteExtensionsKt {
@@ -108,6 +123,10 @@ public abstract interface class com/splendo/kaluga/base/bytes/CRC {
 public final class com/splendo/kaluga/base/bytes/CRC$Companion {
 	public final fun invoke-1WdNxsU (IJJJZZ)Lcom/splendo/kaluga/base/bytes/CRC;
 	public static synthetic fun invoke-1WdNxsU$default (Lcom/splendo/kaluga/base/bytes/CRC$Companion;IJJJZZILjava/lang/Object;)Lcom/splendo/kaluga/base/bytes/CRC;
+}
+
+public final class com/splendo/kaluga/base/bytes/CRC$DefaultImpls {
+	public static fun getByteWidth (Lcom/splendo/kaluga/base/bytes/CRC;)I
 }
 
 public final class com/splendo/kaluga/base/bytes/CRC10 : com/splendo/kaluga/base/bytes/CRC {
@@ -961,18 +980,24 @@ public final class com/splendo/kaluga/base/bytes/CRCB : com/splendo/kaluga/base/
 }
 
 public final class com/splendo/kaluga/base/bytes/CharExtensionsKt {
+	public static final fun copyCharIntoByteArray (Lcom/splendo/kaluga/base/bytes/Encoding;C[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyCharIntoByteArray$default (Lcom/splendo/kaluga/base/bytes/Encoding;C[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
+	public static final fun copyUTF16IntoByteArray (C[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyUTF16IntoByteArray$default (C[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
 	public static final fun decodeAsciiChar (B)C
 	public static final fun decodeAsciiChar ([BI)C
 	public static final fun decodeUTF16Char ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)C
 	public static final fun decodeUTF8Char (B)C
 	public static final fun decodeUTF8Char ([BI)C
-	public static final fun encodeChar (Lcom/splendo/kaluga/base/bytes/Encoding;CLcom/splendo/kaluga/base/bytes/ByteOrder;)Ljava/io/Serializable;
+	public static final fun encodeChar (Lcom/splendo/kaluga/base/bytes/Encoding;CLcom/splendo/kaluga/base/bytes/ByteOrder;)[B
 	public static final fun toAscii (C)B
 	public static final fun toAsciiOrNull (C)Ljava/lang/Byte;
 	public static final fun toUTF16 (CLcom/splendo/kaluga/base/bytes/ByteOrder;)[B
 }
 
 public final class com/splendo/kaluga/base/bytes/DoubleExtensionsKt {
+	public static final fun copyIntoByteArray (D[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray$default (D[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
 	public static final fun decodeDouble ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)D
 	public static final fun toByteArray (DLcom/splendo/kaluga/base/bytes/ByteOrder;)[B
 }
@@ -988,12 +1013,16 @@ public final class com/splendo/kaluga/base/bytes/Encoding : java/lang/Enum {
 }
 
 public final class com/splendo/kaluga/base/bytes/FloatExtensionsKt {
+	public static final fun copyIntoByteArray (F[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray$default (F[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
 	public static final fun decodeFloat ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)F
 	public static final fun toByteArray (FLcom/splendo/kaluga/base/bytes/ByteOrder;)[B
 }
 
 public final class com/splendo/kaluga/base/bytes/Int24ExtensionsKt {
 	public static final fun and-npgKo-Y (II)I
+	public static final fun copyIntoByteArray-w7mN1NY (I[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray-w7mN1NY$default (I[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
 	public static final fun decodeInt24 ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)I
 	public static final fun isBitSet-QCWLtZ4 (ILjava/lang/Number;)Z
 	public static final fun or-npgKo-Y (II)I
@@ -1004,6 +1033,8 @@ public final class com/splendo/kaluga/base/bytes/Int24ExtensionsKt {
 }
 
 public final class com/splendo/kaluga/base/bytes/IntExtensionsKt {
+	public static final fun copyIntoByteArray (I[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray$default (I[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
 	public static final fun decodeInt ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)I
 	public static final fun isBitSet (ILjava/lang/Number;)Z
 	public static final fun length (I)I
@@ -1018,7 +1049,14 @@ public final class com/splendo/kaluga/base/bytes/JAMCRC : com/splendo/kaluga/bas
 	public fun getWidth ()I
 }
 
+public final class com/splendo/kaluga/base/bytes/KalugaCharacterCodingException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
 public final class com/splendo/kaluga/base/bytes/LongExtensionsKt {
+	public static final fun copyIntoByteArray (J[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray$default (J[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
 	public static final fun decodeLong ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)J
 	public static final fun isBitSet (JLjava/lang/Number;)Z
 	public static final fun setBit (JLjava/lang/Number;)J
@@ -1026,16 +1064,22 @@ public final class com/splendo/kaluga/base/bytes/LongExtensionsKt {
 }
 
 public final class com/splendo/kaluga/base/bytes/MedFloat16ExtensionsKt {
+	public static final fun copyIntoByteArray-Hl2vuUw (D[BI)[B
+	public static synthetic fun copyIntoByteArray-Hl2vuUw$default (D[BIILjava/lang/Object;)[B
 	public static final fun decodeMedFloat16 ([BI)D
 	public static final fun toByteArray-8th3mqE (D)[B
 }
 
 public final class com/splendo/kaluga/base/bytes/MedFloat32ExtensionsKt {
+	public static final fun copyIntoByteArray-DCrUOrk (D[BI)[B
+	public static synthetic fun copyIntoByteArray-DCrUOrk$default (D[BIILjava/lang/Object;)[B
 	public static final fun decodeMedFloat32 ([BI)D
 	public static final fun toByteArray-F5bENeA (D)[B
 }
 
 public final class com/splendo/kaluga/base/bytes/ShortExtensionsKt {
+	public static final fun copyIntoByteArray (S[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray$default (S[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
 	public static final fun decodeShort ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)S
 	public static final fun isBitSet (SLjava/lang/Number;)Z
 	public static final fun setBit (SLjava/lang/Number;)S
@@ -1074,21 +1118,25 @@ public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$FixedLen
 }
 
 public abstract class com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix : com/splendo/kaluga/base/bytes/StringEncodingSettings$EndMarking {
-	public abstract fun encodeSize-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public abstract fun copyEncodedSizeInto-Yuhug_o ([BILcom/splendo/kaluga/base/bytes/ByteOrder;I)[B
+	public final fun encodeSize-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public abstract fun expectedByteSize-WZ4Q5Ns (I)I
 }
 
 public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$ByteLength : com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$ByteLength;
-	public fun encodeSize-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public fun copyEncodedSizeInto-Yuhug_o ([BILcom/splendo/kaluga/base/bytes/ByteOrder;I)[B
 	public fun equals (Ljava/lang/Object;)Z
+	public fun expectedByteSize-WZ4Q5Ns (I)I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$ShortLength : com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix {
 	public static final field INSTANCE Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$ShortLength;
-	public fun encodeSize-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public fun copyEncodedSizeInto-Yuhug_o ([BILcom/splendo/kaluga/base/bytes/ByteOrder;I)[B
 	public fun equals (Ljava/lang/Object;)Z
+	public fun expectedByteSize-WZ4Q5Ns (I)I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -1100,8 +1148,9 @@ public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPr
 	public final fun component1 ()B
 	public final fun copy (B)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$WithOverflow;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$WithOverflow;BILjava/lang/Object;)Lcom/splendo/kaluga/base/bytes/StringEncodingSettings$LengthPrefix$WithOverflow;
-	public fun encodeSize-qim9Vi0 (ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public fun copyEncodedSizeInto-Yuhug_o ([BILcom/splendo/kaluga/base/bytes/ByteOrder;I)[B
 	public fun equals (Ljava/lang/Object;)Z
+	public fun expectedByteSize-WZ4Q5Ns (I)I
 	public final fun getSentinel ()B
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -1122,13 +1171,31 @@ public final class com/splendo/kaluga/base/bytes/StringEncodingSettings$NullTerm
 }
 
 public final class com/splendo/kaluga/base/bytes/StringExtensionsKt {
+	public static final fun byteArraySize (Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/StringEncodingSettings;)I
+	public static final fun byteSizeOf (Lcom/splendo/kaluga/base/bytes/Encoding;Ljava/lang/String;)I
+	public static final fun copyAsciiIntoArray (Ljava/lang/String;[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyAsciiIntoArray$default (Ljava/lang/String;[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
+	public static final fun copyEncodedStringIntoArray (Lcom/splendo/kaluga/base/bytes/Encoding;Ljava/lang/String;[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyEncodedStringIntoArray$default (Lcom/splendo/kaluga/base/bytes/Encoding;Ljava/lang/String;[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
+	public static final fun copyIntoArray (Ljava/lang/String;[BLcom/splendo/kaluga/base/bytes/StringEncodingSettings;ILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoArray$default (Ljava/lang/String;[BLcom/splendo/kaluga/base/bytes/StringEncodingSettings;ILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
+	public static final fun copyUTF16IntoArray (Ljava/lang/String;[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyUTF16IntoArray$default (Ljava/lang/String;[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
+	public static final fun copyUTF8IntoArray (Ljava/lang/String;[BILcom/splendo/kaluga/base/bytes/ByteOrder;Z)[B
+	public static synthetic fun copyUTF8IntoArray$default (Ljava/lang/String;[BILcom/splendo/kaluga/base/bytes/ByteOrder;ZILjava/lang/Object;)[B
 	public static final fun decodeString (Lkotlin/sequences/Sequence;Lcom/splendo/kaluga/base/bytes/StringEncodingSettings;)Ljava/lang/String;
 	public static final fun decodeString ([BLcom/splendo/kaluga/base/bytes/StringEncodingSettings;Lcom/splendo/kaluga/base/bytes/ByteOrder;)Ljava/lang/String;
 	public static final fun encodeString (Lcom/splendo/kaluga/base/bytes/Encoding;Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static final fun getAsciiSize (Ljava/lang/String;)I
+	public static final fun getUtf16Size (Ljava/lang/String;)I
+	public static final fun getUtf8Size (Ljava/lang/String;)I
 	public static final fun toAscii (Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/ByteOrder;)[B
 	public static final fun toAsciiOrNull (Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/ByteOrder;)[B
 	public static final fun toByteArray (Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/StringEncodingSettings;Lcom/splendo/kaluga/base/bytes/ByteOrder;)[B
 	public static final fun toUTF16 (Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static final fun toUTF8 (Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/ByteOrder;Z)[B
+	public static synthetic fun toUTF8$default (Ljava/lang/String;Lcom/splendo/kaluga/base/bytes/ByteOrder;ZILjava/lang/Object;)[B
+	public static final fun utf8Size (Ljava/lang/String;Z)I
 }
 
 public final class com/splendo/kaluga/base/bytes/UByteExtensionsKt {
@@ -1142,6 +1209,8 @@ public final class com/splendo/kaluga/base/bytes/UByteExtensionsKt {
 
 public final class com/splendo/kaluga/base/bytes/UInt24ExtensionsKt {
 	public static final fun and-5oVDibg (II)I
+	public static final fun copyIntoByteArray-6sPYMpY (I[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray-6sPYMpY$default (I[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
 	public static final fun decodeUInt24 ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)I
 	public static final fun isBitSet-593hS54 (ILjava/lang/Number;)Z
 	public static final fun or-5oVDibg (II)I
@@ -1152,6 +1221,8 @@ public final class com/splendo/kaluga/base/bytes/UInt24ExtensionsKt {
 }
 
 public final class com/splendo/kaluga/base/bytes/UIntExtensionsKt {
+	public static final fun copyIntoByteArray-SGjrQA4 (I[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray-SGjrQA4$default (I[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
 	public static final fun decodeUInt ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)I
 	public static final fun isBitSet-qim9Vi0 (ILjava/lang/Number;)Z
 	public static final fun setBit-qim9Vi0 (ILjava/lang/Number;)I
@@ -1159,6 +1230,8 @@ public final class com/splendo/kaluga/base/bytes/UIntExtensionsKt {
 }
 
 public final class com/splendo/kaluga/base/bytes/ULongExtensionsKt {
+	public static final fun copyIntoByteArray-v3sQxsQ (J[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray-v3sQxsQ$default (J[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
 	public static final fun decodeULong ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)J
 	public static final fun isBitSet-4PLdz1A (JLjava/lang/Number;)Z
 	public static final fun setBit-4PLdz1A (JLjava/lang/Number;)J
@@ -1166,6 +1239,8 @@ public final class com/splendo/kaluga/base/bytes/ULongExtensionsKt {
 }
 
 public final class com/splendo/kaluga/base/bytes/UShortExtensionsKt {
+	public static final fun copyIntoByteArray-k_pLkZQ (S[BILcom/splendo/kaluga/base/bytes/ByteOrder;)[B
+	public static synthetic fun copyIntoByteArray-k_pLkZQ$default (S[BILcom/splendo/kaluga/base/bytes/ByteOrder;ILjava/lang/Object;)[B
 	public static final fun decodeUShort ([BILcom/splendo/kaluga/base/bytes/ByteOrder;)S
 	public static final fun isBitSet-vckuEUM (SLjava/lang/Number;)Z
 	public static final fun setBit-vckuEUM (SLjava/lang/Number;)S

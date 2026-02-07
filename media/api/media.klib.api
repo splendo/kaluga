@@ -1,0 +1,885 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.splendo.kaluga:media>
+abstract interface com.splendo.kaluga.media/MediaManager : com.splendo.kaluga.media/MediaSurfaceController, com.splendo.kaluga.media/VolumeController { // com.splendo.kaluga.media/MediaManager|null[0]
+    abstract val events // com.splendo.kaluga.media/MediaManager.events|{}events[0]
+        abstract fun <get-events>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/MediaManager.Event> // com.splendo.kaluga.media/MediaManager.events.<get-events>|<get-events>(){}[0]
+
+    abstract fun close() // com.splendo.kaluga.media/MediaManager.close|close(){}[0]
+    abstract fun initialize(com.splendo.kaluga.media/PlayableMedia) // com.splendo.kaluga.media/MediaManager.initialize|initialize(com.splendo.kaluga.media.PlayableMedia){}[0]
+    abstract fun pause() // com.splendo.kaluga.media/MediaManager.pause|pause(){}[0]
+    abstract fun play(kotlin/Float) // com.splendo.kaluga.media/MediaManager.play|play(kotlin.Float){}[0]
+    abstract fun reset() // com.splendo.kaluga.media/MediaManager.reset|reset(){}[0]
+    abstract fun stop() // com.splendo.kaluga.media/MediaManager.stop|stop(){}[0]
+    abstract suspend fun createPlayableMedia(com.splendo.kaluga.media/MediaSource): com.splendo.kaluga.media/PlayableMedia? // com.splendo.kaluga.media/MediaManager.createPlayableMedia|createPlayableMedia(com.splendo.kaluga.media.MediaSource){}[0]
+    abstract suspend fun seekTo(kotlin.time/Duration): kotlin/Boolean // com.splendo.kaluga.media/MediaManager.seekTo|seekTo(kotlin.time.Duration){}[0]
+
+    sealed class Event { // com.splendo.kaluga.media/MediaManager.Event|null[0]
+        final class DidFailWithError : com.splendo.kaluga.media/MediaManager.Event { // com.splendo.kaluga.media/MediaManager.Event.DidFailWithError|null[0]
+            constructor <init>(com.splendo.kaluga.media/PlaybackError) // com.splendo.kaluga.media/MediaManager.Event.DidFailWithError.<init>|<init>(com.splendo.kaluga.media.PlaybackError){}[0]
+
+            final val error // com.splendo.kaluga.media/MediaManager.Event.DidFailWithError.error|{}error[0]
+                final fun <get-error>(): com.splendo.kaluga.media/PlaybackError // com.splendo.kaluga.media/MediaManager.Event.DidFailWithError.error.<get-error>|<get-error>(){}[0]
+
+            final fun component1(): com.splendo.kaluga.media/PlaybackError // com.splendo.kaluga.media/MediaManager.Event.DidFailWithError.component1|component1(){}[0]
+            final fun copy(com.splendo.kaluga.media/PlaybackError = ...): com.splendo.kaluga.media/MediaManager.Event.DidFailWithError // com.splendo.kaluga.media/MediaManager.Event.DidFailWithError.copy|copy(com.splendo.kaluga.media.PlaybackError){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaManager.Event.DidFailWithError.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaManager.Event.DidFailWithError.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaManager.Event.DidFailWithError.toString|toString(){}[0]
+        }
+
+        final class DidPrepare : com.splendo.kaluga.media/MediaManager.Event { // com.splendo.kaluga.media/MediaManager.Event.DidPrepare|null[0]
+            constructor <init>(com.splendo.kaluga.media/PlayableMedia) // com.splendo.kaluga.media/MediaManager.Event.DidPrepare.<init>|<init>(com.splendo.kaluga.media.PlayableMedia){}[0]
+
+            final val playableMedia // com.splendo.kaluga.media/MediaManager.Event.DidPrepare.playableMedia|{}playableMedia[0]
+                final fun <get-playableMedia>(): com.splendo.kaluga.media/PlayableMedia // com.splendo.kaluga.media/MediaManager.Event.DidPrepare.playableMedia.<get-playableMedia>|<get-playableMedia>(){}[0]
+
+            final fun component1(): com.splendo.kaluga.media/PlayableMedia // com.splendo.kaluga.media/MediaManager.Event.DidPrepare.component1|component1(){}[0]
+            final fun copy(com.splendo.kaluga.media/PlayableMedia = ...): com.splendo.kaluga.media/MediaManager.Event.DidPrepare // com.splendo.kaluga.media/MediaManager.Event.DidPrepare.copy|copy(com.splendo.kaluga.media.PlayableMedia){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaManager.Event.DidPrepare.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaManager.Event.DidPrepare.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaManager.Event.DidPrepare.toString|toString(){}[0]
+        }
+
+        final class RateDidChange : com.splendo.kaluga.media/MediaManager.Event { // com.splendo.kaluga.media/MediaManager.Event.RateDidChange|null[0]
+            constructor <init>(kotlin/Float) // com.splendo.kaluga.media/MediaManager.Event.RateDidChange.<init>|<init>(kotlin.Float){}[0]
+
+            final val newRate // com.splendo.kaluga.media/MediaManager.Event.RateDidChange.newRate|{}newRate[0]
+                final fun <get-newRate>(): kotlin/Float // com.splendo.kaluga.media/MediaManager.Event.RateDidChange.newRate.<get-newRate>|<get-newRate>(){}[0]
+
+            final fun component1(): kotlin/Float // com.splendo.kaluga.media/MediaManager.Event.RateDidChange.component1|component1(){}[0]
+            final fun copy(kotlin/Float = ...): com.splendo.kaluga.media/MediaManager.Event.RateDidChange // com.splendo.kaluga.media/MediaManager.Event.RateDidChange.copy|copy(kotlin.Float){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaManager.Event.RateDidChange.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaManager.Event.RateDidChange.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaManager.Event.RateDidChange.toString|toString(){}[0]
+        }
+
+        final object DidComplete : com.splendo.kaluga.media/MediaManager.Event { // com.splendo.kaluga.media/MediaManager.Event.DidComplete|null[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaManager.Event.DidComplete.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaManager.Event.DidComplete.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaManager.Event.DidComplete.toString|toString(){}[0]
+        }
+
+        final object DidEnd : com.splendo.kaluga.media/MediaManager.Event { // com.splendo.kaluga.media/MediaManager.Event.DidEnd|null[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaManager.Event.DidEnd.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaManager.Event.DidEnd.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaManager.Event.DidEnd.toString|toString(){}[0]
+        }
+    }
+}
+
+abstract interface com.splendo.kaluga.media/MediaPlayer : com.splendo.kaluga.media/MediaSurfaceController, com.splendo.kaluga.media/VolumeController { // com.splendo.kaluga.media/MediaPlayer|null[0]
+    abstract val controls // com.splendo.kaluga.media/MediaPlayer.controls|{}controls[0]
+        abstract fun <get-controls>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/MediaPlayer.Controls> // com.splendo.kaluga.media/MediaPlayer.controls.<get-controls>|<get-controls>(){}[0]
+    abstract val playableMedia // com.splendo.kaluga.media/MediaPlayer.playableMedia|{}playableMedia[0]
+        abstract fun <get-playableMedia>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/PlayableMedia?> // com.splendo.kaluga.media/MediaPlayer.playableMedia.<get-playableMedia>|<get-playableMedia>(){}[0]
+
+    abstract fun close() // com.splendo.kaluga.media/MediaPlayer.close|close(){}[0]
+    abstract suspend fun awaitCompletion() // com.splendo.kaluga.media/MediaPlayer.awaitCompletion|awaitCompletion(){}[0]
+    abstract suspend fun forceStart(com.splendo.kaluga.media/PlaybackState.PlaybackParameters, kotlin/Boolean = ...) // com.splendo.kaluga.media/MediaPlayer.forceStart|forceStart(com.splendo.kaluga.media.PlaybackState.PlaybackParameters;kotlin.Boolean){}[0]
+    abstract suspend fun initializeFor(com.splendo.kaluga.media/MediaSource) // com.splendo.kaluga.media/MediaPlayer.initializeFor|initializeFor(com.splendo.kaluga.media.MediaSource){}[0]
+    abstract suspend fun reset() // com.splendo.kaluga.media/MediaPlayer.reset|reset(){}[0]
+
+    final class Controls { // com.splendo.kaluga.media/MediaPlayer.Controls|null[0]
+        constructor <init>(com.splendo.kaluga.media/MediaPlayer.Controls.Play? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.Pause? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.Unpause? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.Stop? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.Seek? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.SetRate? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.SetLoopMode? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.AwaitPreparation? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.DisplayError? = ...) // com.splendo.kaluga.media/MediaPlayer.Controls.<init>|<init>(com.splendo.kaluga.media.MediaPlayer.Controls.Play?;com.splendo.kaluga.media.MediaPlayer.Controls.Pause?;com.splendo.kaluga.media.MediaPlayer.Controls.Unpause?;com.splendo.kaluga.media.MediaPlayer.Controls.Stop?;com.splendo.kaluga.media.MediaPlayer.Controls.Seek?;com.splendo.kaluga.media.MediaPlayer.Controls.SetRate?;com.splendo.kaluga.media.MediaPlayer.Controls.SetLoopMode?;com.splendo.kaluga.media.MediaPlayer.Controls.AwaitPreparation?;com.splendo.kaluga.media.MediaPlayer.Controls.DisplayError?){}[0]
+
+        final val awaitPreparation // com.splendo.kaluga.media/MediaPlayer.Controls.awaitPreparation|{}awaitPreparation[0]
+            final fun <get-awaitPreparation>(): com.splendo.kaluga.media/MediaPlayer.Controls.AwaitPreparation? // com.splendo.kaluga.media/MediaPlayer.Controls.awaitPreparation.<get-awaitPreparation>|<get-awaitPreparation>(){}[0]
+        final val controlTypes // com.splendo.kaluga.media/MediaPlayer.Controls.controlTypes|{}controlTypes[0]
+            final fun <get-controlTypes>(): kotlin.collections/Set<com.splendo.kaluga.media/MediaPlayer.Controls.ControlType> // com.splendo.kaluga.media/MediaPlayer.Controls.controlTypes.<get-controlTypes>|<get-controlTypes>(){}[0]
+        final val displayError // com.splendo.kaluga.media/MediaPlayer.Controls.displayError|{}displayError[0]
+            final fun <get-displayError>(): com.splendo.kaluga.media/MediaPlayer.Controls.DisplayError? // com.splendo.kaluga.media/MediaPlayer.Controls.displayError.<get-displayError>|<get-displayError>(){}[0]
+        final val pause // com.splendo.kaluga.media/MediaPlayer.Controls.pause|{}pause[0]
+            final fun <get-pause>(): com.splendo.kaluga.media/MediaPlayer.Controls.Pause? // com.splendo.kaluga.media/MediaPlayer.Controls.pause.<get-pause>|<get-pause>(){}[0]
+        final val play // com.splendo.kaluga.media/MediaPlayer.Controls.play|{}play[0]
+            final fun <get-play>(): com.splendo.kaluga.media/MediaPlayer.Controls.Play? // com.splendo.kaluga.media/MediaPlayer.Controls.play.<get-play>|<get-play>(){}[0]
+        final val seek // com.splendo.kaluga.media/MediaPlayer.Controls.seek|{}seek[0]
+            final fun <get-seek>(): com.splendo.kaluga.media/MediaPlayer.Controls.Seek? // com.splendo.kaluga.media/MediaPlayer.Controls.seek.<get-seek>|<get-seek>(){}[0]
+        final val setLoopMode // com.splendo.kaluga.media/MediaPlayer.Controls.setLoopMode|{}setLoopMode[0]
+            final fun <get-setLoopMode>(): com.splendo.kaluga.media/MediaPlayer.Controls.SetLoopMode? // com.splendo.kaluga.media/MediaPlayer.Controls.setLoopMode.<get-setLoopMode>|<get-setLoopMode>(){}[0]
+        final val setRate // com.splendo.kaluga.media/MediaPlayer.Controls.setRate|{}setRate[0]
+            final fun <get-setRate>(): com.splendo.kaluga.media/MediaPlayer.Controls.SetRate? // com.splendo.kaluga.media/MediaPlayer.Controls.setRate.<get-setRate>|<get-setRate>(){}[0]
+        final val stop // com.splendo.kaluga.media/MediaPlayer.Controls.stop|{}stop[0]
+            final fun <get-stop>(): com.splendo.kaluga.media/MediaPlayer.Controls.Stop? // com.splendo.kaluga.media/MediaPlayer.Controls.stop.<get-stop>|<get-stop>(){}[0]
+        final val unpause // com.splendo.kaluga.media/MediaPlayer.Controls.unpause|{}unpause[0]
+            final fun <get-unpause>(): com.splendo.kaluga.media/MediaPlayer.Controls.Unpause? // com.splendo.kaluga.media/MediaPlayer.Controls.unpause.<get-unpause>|<get-unpause>(){}[0]
+
+        final fun component1(): com.splendo.kaluga.media/MediaPlayer.Controls.Play? // com.splendo.kaluga.media/MediaPlayer.Controls.component1|component1(){}[0]
+        final fun component2(): com.splendo.kaluga.media/MediaPlayer.Controls.Pause? // com.splendo.kaluga.media/MediaPlayer.Controls.component2|component2(){}[0]
+        final fun component3(): com.splendo.kaluga.media/MediaPlayer.Controls.Unpause? // com.splendo.kaluga.media/MediaPlayer.Controls.component3|component3(){}[0]
+        final fun component4(): com.splendo.kaluga.media/MediaPlayer.Controls.Stop? // com.splendo.kaluga.media/MediaPlayer.Controls.component4|component4(){}[0]
+        final fun component5(): com.splendo.kaluga.media/MediaPlayer.Controls.Seek? // com.splendo.kaluga.media/MediaPlayer.Controls.component5|component5(){}[0]
+        final fun component6(): com.splendo.kaluga.media/MediaPlayer.Controls.SetRate? // com.splendo.kaluga.media/MediaPlayer.Controls.component6|component6(){}[0]
+        final fun component7(): com.splendo.kaluga.media/MediaPlayer.Controls.SetLoopMode? // com.splendo.kaluga.media/MediaPlayer.Controls.component7|component7(){}[0]
+        final fun component8(): com.splendo.kaluga.media/MediaPlayer.Controls.AwaitPreparation? // com.splendo.kaluga.media/MediaPlayer.Controls.component8|component8(){}[0]
+        final fun component9(): com.splendo.kaluga.media/MediaPlayer.Controls.DisplayError? // com.splendo.kaluga.media/MediaPlayer.Controls.component9|component9(){}[0]
+        final fun copy(com.splendo.kaluga.media/MediaPlayer.Controls.Play? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.Pause? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.Unpause? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.Stop? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.Seek? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.SetRate? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.SetLoopMode? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.AwaitPreparation? = ..., com.splendo.kaluga.media/MediaPlayer.Controls.DisplayError? = ...): com.splendo.kaluga.media/MediaPlayer.Controls // com.splendo.kaluga.media/MediaPlayer.Controls.copy|copy(com.splendo.kaluga.media.MediaPlayer.Controls.Play?;com.splendo.kaluga.media.MediaPlayer.Controls.Pause?;com.splendo.kaluga.media.MediaPlayer.Controls.Unpause?;com.splendo.kaluga.media.MediaPlayer.Controls.Stop?;com.splendo.kaluga.media.MediaPlayer.Controls.Seek?;com.splendo.kaluga.media.MediaPlayer.Controls.SetRate?;com.splendo.kaluga.media.MediaPlayer.Controls.SetLoopMode?;com.splendo.kaluga.media.MediaPlayer.Controls.AwaitPreparation?;com.splendo.kaluga.media.MediaPlayer.Controls.DisplayError?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaPlayer.Controls.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaPlayer.Controls.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaPlayer.Controls.toString|toString(){}[0]
+        final inline fun <#A2: reified com.splendo.kaluga.media/MediaPlayer.Controls.ControlType> getControlType(): #A2? // com.splendo.kaluga.media/MediaPlayer.Controls.getControlType|getControlType(){0§<com.splendo.kaluga.media.MediaPlayer.Controls.ControlType>}[0]
+        final suspend fun tryPause(): kotlin/Boolean // com.splendo.kaluga.media/MediaPlayer.Controls.tryPause|tryPause(){}[0]
+        final suspend fun tryPlay(com.splendo.kaluga.media/PlaybackState.PlaybackParameters = ...): kotlin/Boolean // com.splendo.kaluga.media/MediaPlayer.Controls.tryPlay|tryPlay(com.splendo.kaluga.media.PlaybackState.PlaybackParameters){}[0]
+        final suspend fun trySeek(kotlin.time/Duration): kotlin/Boolean // com.splendo.kaluga.media/MediaPlayer.Controls.trySeek|trySeek(kotlin.time.Duration){}[0]
+        final suspend fun trySetLoopMode(com.splendo.kaluga.media/PlaybackState.LoopMode): kotlin/Boolean // com.splendo.kaluga.media/MediaPlayer.Controls.trySetLoopMode|trySetLoopMode(com.splendo.kaluga.media.PlaybackState.LoopMode){}[0]
+        final suspend fun trySetRate(kotlin/Float): kotlin/Boolean // com.splendo.kaluga.media/MediaPlayer.Controls.trySetRate|trySetRate(kotlin.Float){}[0]
+        final suspend fun tryStop(): kotlin/Boolean // com.splendo.kaluga.media/MediaPlayer.Controls.tryStop|tryStop(){}[0]
+        final suspend fun tryUnpause(): kotlin/Boolean // com.splendo.kaluga.media/MediaPlayer.Controls.tryUnpause|tryUnpause(){}[0]
+
+        final class DisplayError : com.splendo.kaluga.media/MediaPlayer.Controls.ControlType { // com.splendo.kaluga.media/MediaPlayer.Controls.DisplayError|null[0]
+            constructor <init>(com.splendo.kaluga.media/PlaybackError) // com.splendo.kaluga.media/MediaPlayer.Controls.DisplayError.<init>|<init>(com.splendo.kaluga.media.PlaybackError){}[0]
+
+            final val error // com.splendo.kaluga.media/MediaPlayer.Controls.DisplayError.error|{}error[0]
+                final fun <get-error>(): com.splendo.kaluga.media/PlaybackError // com.splendo.kaluga.media/MediaPlayer.Controls.DisplayError.error.<get-error>|<get-error>(){}[0]
+        }
+
+        final class Pause : com.splendo.kaluga.media/MediaPlayer.Controls.ControlType { // com.splendo.kaluga.media/MediaPlayer.Controls.Pause|null[0]
+            constructor <init>(kotlin.coroutines/SuspendFunction0<kotlin/Unit>) // com.splendo.kaluga.media/MediaPlayer.Controls.Pause.<init>|<init>(kotlin.coroutines.SuspendFunction0<kotlin.Unit>){}[0]
+
+            final val perform // com.splendo.kaluga.media/MediaPlayer.Controls.Pause.perform|{}perform[0]
+                final fun <get-perform>(): kotlin.coroutines/SuspendFunction0<kotlin/Unit> // com.splendo.kaluga.media/MediaPlayer.Controls.Pause.perform.<get-perform>|<get-perform>(){}[0]
+        }
+
+        final class Play : com.splendo.kaluga.media/MediaPlayer.Controls.ControlType { // com.splendo.kaluga.media/MediaPlayer.Controls.Play|null[0]
+            constructor <init>(kotlin.coroutines/SuspendFunction1<com.splendo.kaluga.media/PlaybackState.PlaybackParameters, kotlin/Unit>) // com.splendo.kaluga.media/MediaPlayer.Controls.Play.<init>|<init>(kotlin.coroutines.SuspendFunction1<com.splendo.kaluga.media.PlaybackState.PlaybackParameters,kotlin.Unit>){}[0]
+
+            final val perform // com.splendo.kaluga.media/MediaPlayer.Controls.Play.perform|{}perform[0]
+                final fun <get-perform>(): kotlin.coroutines/SuspendFunction1<com.splendo.kaluga.media/PlaybackState.PlaybackParameters, kotlin/Unit> // com.splendo.kaluga.media/MediaPlayer.Controls.Play.perform.<get-perform>|<get-perform>(){}[0]
+
+            final suspend fun perform() // com.splendo.kaluga.media/MediaPlayer.Controls.Play.perform|perform(){}[0]
+        }
+
+        final class Seek : com.splendo.kaluga.media/MediaPlayer.Controls.ControlType { // com.splendo.kaluga.media/MediaPlayer.Controls.Seek|null[0]
+            constructor <init>(kotlin.coroutines/SuspendFunction1<kotlin.time/Duration, kotlin/Boolean>) // com.splendo.kaluga.media/MediaPlayer.Controls.Seek.<init>|<init>(kotlin.coroutines.SuspendFunction1<kotlin.time.Duration,kotlin.Boolean>){}[0]
+
+            final val perform // com.splendo.kaluga.media/MediaPlayer.Controls.Seek.perform|{}perform[0]
+                final fun <get-perform>(): kotlin.coroutines/SuspendFunction1<kotlin.time/Duration, kotlin/Boolean> // com.splendo.kaluga.media/MediaPlayer.Controls.Seek.perform.<get-perform>|<get-perform>(){}[0]
+        }
+
+        final class SetLoopMode : com.splendo.kaluga.media/MediaPlayer.Controls.ControlType { // com.splendo.kaluga.media/MediaPlayer.Controls.SetLoopMode|null[0]
+            constructor <init>(com.splendo.kaluga.media/PlaybackState.LoopMode, kotlin.coroutines/SuspendFunction1<com.splendo.kaluga.media/PlaybackState.LoopMode, kotlin/Unit>) // com.splendo.kaluga.media/MediaPlayer.Controls.SetLoopMode.<init>|<init>(com.splendo.kaluga.media.PlaybackState.LoopMode;kotlin.coroutines.SuspendFunction1<com.splendo.kaluga.media.PlaybackState.LoopMode,kotlin.Unit>){}[0]
+
+            final val currentLoopMode // com.splendo.kaluga.media/MediaPlayer.Controls.SetLoopMode.currentLoopMode|{}currentLoopMode[0]
+                final fun <get-currentLoopMode>(): com.splendo.kaluga.media/PlaybackState.LoopMode // com.splendo.kaluga.media/MediaPlayer.Controls.SetLoopMode.currentLoopMode.<get-currentLoopMode>|<get-currentLoopMode>(){}[0]
+            final val perform // com.splendo.kaluga.media/MediaPlayer.Controls.SetLoopMode.perform|{}perform[0]
+                final fun <get-perform>(): kotlin.coroutines/SuspendFunction1<com.splendo.kaluga.media/PlaybackState.LoopMode, kotlin/Unit> // com.splendo.kaluga.media/MediaPlayer.Controls.SetLoopMode.perform.<get-perform>|<get-perform>(){}[0]
+        }
+
+        final class SetRate : com.splendo.kaluga.media/MediaPlayer.Controls.ControlType { // com.splendo.kaluga.media/MediaPlayer.Controls.SetRate|null[0]
+            constructor <init>(kotlin/Float, kotlin.coroutines/SuspendFunction1<kotlin/Float, kotlin/Unit>) // com.splendo.kaluga.media/MediaPlayer.Controls.SetRate.<init>|<init>(kotlin.Float;kotlin.coroutines.SuspendFunction1<kotlin.Float,kotlin.Unit>){}[0]
+
+            final val currentRate // com.splendo.kaluga.media/MediaPlayer.Controls.SetRate.currentRate|{}currentRate[0]
+                final fun <get-currentRate>(): kotlin/Float // com.splendo.kaluga.media/MediaPlayer.Controls.SetRate.currentRate.<get-currentRate>|<get-currentRate>(){}[0]
+            final val perform // com.splendo.kaluga.media/MediaPlayer.Controls.SetRate.perform|{}perform[0]
+                final fun <get-perform>(): kotlin.coroutines/SuspendFunction1<kotlin/Float, kotlin/Unit> // com.splendo.kaluga.media/MediaPlayer.Controls.SetRate.perform.<get-perform>|<get-perform>(){}[0]
+        }
+
+        final class Stop : com.splendo.kaluga.media/MediaPlayer.Controls.ControlType { // com.splendo.kaluga.media/MediaPlayer.Controls.Stop|null[0]
+            constructor <init>(kotlin.coroutines/SuspendFunction0<kotlin/Unit>) // com.splendo.kaluga.media/MediaPlayer.Controls.Stop.<init>|<init>(kotlin.coroutines.SuspendFunction0<kotlin.Unit>){}[0]
+
+            final val perform // com.splendo.kaluga.media/MediaPlayer.Controls.Stop.perform|{}perform[0]
+                final fun <get-perform>(): kotlin.coroutines/SuspendFunction0<kotlin/Unit> // com.splendo.kaluga.media/MediaPlayer.Controls.Stop.perform.<get-perform>|<get-perform>(){}[0]
+        }
+
+        final class Unpause : com.splendo.kaluga.media/MediaPlayer.Controls.ControlType { // com.splendo.kaluga.media/MediaPlayer.Controls.Unpause|null[0]
+            constructor <init>(kotlin.coroutines/SuspendFunction0<kotlin/Unit>) // com.splendo.kaluga.media/MediaPlayer.Controls.Unpause.<init>|<init>(kotlin.coroutines.SuspendFunction0<kotlin.Unit>){}[0]
+
+            final val perform // com.splendo.kaluga.media/MediaPlayer.Controls.Unpause.perform|{}perform[0]
+                final fun <get-perform>(): kotlin.coroutines/SuspendFunction0<kotlin/Unit> // com.splendo.kaluga.media/MediaPlayer.Controls.Unpause.perform.<get-perform>|<get-perform>(){}[0]
+        }
+
+        sealed class ControlType // com.splendo.kaluga.media/MediaPlayer.Controls.ControlType|null[0]
+
+        final object AwaitPreparation : com.splendo.kaluga.media/MediaPlayer.Controls.ControlType { // com.splendo.kaluga.media/MediaPlayer.Controls.AwaitPreparation|null[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaPlayer.Controls.AwaitPreparation.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaPlayer.Controls.AwaitPreparation.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaPlayer.Controls.AwaitPreparation.toString|toString(){}[0]
+        }
+    }
+}
+
+abstract interface com.splendo.kaluga.media/MediaSurfaceController { // com.splendo.kaluga.media/MediaSurfaceController|null[0]
+    abstract suspend fun renderVideoOnSurface(com.splendo.kaluga.media/MediaSurface?) // com.splendo.kaluga.media/MediaSurfaceController.renderVideoOnSurface|renderVideoOnSurface(com.splendo.kaluga.media.MediaSurface?){}[0]
+}
+
+abstract interface com.splendo.kaluga.media/MediaSurfaceProvider : com.splendo.kaluga.architecture.lifecycle/LifecycleSubscribable { // com.splendo.kaluga.media/MediaSurfaceProvider|null[0]
+    abstract val surface // com.splendo.kaluga.media/MediaSurfaceProvider.surface|{}surface[0]
+        abstract fun <get-surface>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/MediaSurface?> // com.splendo.kaluga.media/MediaSurfaceProvider.surface.<get-surface>|<get-surface>(){}[0]
+}
+
+abstract interface com.splendo.kaluga.media/PlayableMedia { // com.splendo.kaluga.media/PlayableMedia|null[0]
+    abstract val currentPlayTime // com.splendo.kaluga.media/PlayableMedia.currentPlayTime|{}currentPlayTime[0]
+        abstract fun <get-currentPlayTime>(): kotlin.time/Duration // com.splendo.kaluga.media/PlayableMedia.currentPlayTime.<get-currentPlayTime>|<get-currentPlayTime>(){}[0]
+    abstract val duration // com.splendo.kaluga.media/PlayableMedia.duration|{}duration[0]
+        abstract fun <get-duration>(): kotlin.time/Duration // com.splendo.kaluga.media/PlayableMedia.duration.<get-duration>|<get-duration>(){}[0]
+    abstract val resolution // com.splendo.kaluga.media/PlayableMedia.resolution|{}resolution[0]
+        abstract fun <get-resolution>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/Resolution> // com.splendo.kaluga.media/PlayableMedia.resolution.<get-resolution>|<get-resolution>(){}[0]
+    abstract val source // com.splendo.kaluga.media/PlayableMedia.source|{}source[0]
+        abstract fun <get-source>(): com.splendo.kaluga.media/MediaSource // com.splendo.kaluga.media/PlayableMedia.source.<get-source>|<get-source>(){}[0]
+    abstract val tracks // com.splendo.kaluga.media/PlayableMedia.tracks|{}tracks[0]
+        abstract fun <get-tracks>(): kotlin.collections/List<com.splendo.kaluga.media/TrackInfo> // com.splendo.kaluga.media/PlayableMedia.tracks.<get-tracks>|<get-tracks>(){}[0]
+}
+
+abstract interface com.splendo.kaluga.media/SoundPlayer : kotlin/AutoCloseable { // com.splendo.kaluga.media/SoundPlayer|null[0]
+    abstract fun play() // com.splendo.kaluga.media/SoundPlayer.play|play(){}[0]
+}
+
+abstract interface com.splendo.kaluga.media/VolumeController { // com.splendo.kaluga.media/VolumeController|null[0]
+    abstract val currentVolume // com.splendo.kaluga.media/VolumeController.currentVolume|{}currentVolume[0]
+        abstract fun <get-currentVolume>(): kotlinx.coroutines.flow/Flow<kotlin/Float> // com.splendo.kaluga.media/VolumeController.currentVolume.<get-currentVolume>|<get-currentVolume>(){}[0]
+
+    abstract suspend fun updateVolume(kotlin/Float) // com.splendo.kaluga.media/VolumeController.updateVolume|updateVolume(kotlin.Float){}[0]
+}
+
+sealed interface com.splendo.kaluga.media/PlaybackState : com.splendo.kaluga.base.state/KalugaState { // com.splendo.kaluga.media/PlaybackState|null[0]
+    abstract interface Closed : com.splendo.kaluga.base.flow/SpecialFlowValue.Last, com.splendo.kaluga.media/PlaybackState // com.splendo.kaluga.media/PlaybackState.Closed|null[0]
+
+    abstract interface Completed : com.splendo.kaluga.media/PlaybackState.PlayingOrCompleted { // com.splendo.kaluga.media/PlaybackState.Completed|null[0]
+        abstract fun start(com.splendo.kaluga.media/PlaybackState.PlaybackParameters = ...): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Playing> // com.splendo.kaluga.media/PlaybackState.Completed.start|start(com.splendo.kaluga.media.PlaybackState.PlaybackParameters){}[0]
+    }
+
+    abstract interface Error : com.splendo.kaluga.media/PlaybackState.InitializedOrError { // com.splendo.kaluga.media/PlaybackState.Error|null[0]
+        abstract val error // com.splendo.kaluga.media/PlaybackState.Error.error|{}error[0]
+            abstract fun <get-error>(): com.splendo.kaluga.media/PlaybackError // com.splendo.kaluga.media/PlaybackState.Error.error.<get-error>|<get-error>(){}[0]
+    }
+
+    abstract interface Idle : com.splendo.kaluga.media/PlaybackState.Prepared { // com.splendo.kaluga.media/PlaybackState.Idle|null[0]
+        abstract fun play(com.splendo.kaluga.media/PlaybackState.PlaybackParameters = ...): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Playing> // com.splendo.kaluga.media/PlaybackState.Idle.play|play(com.splendo.kaluga.media.PlaybackState.PlaybackParameters){}[0]
+    }
+
+    abstract interface Initialized : com.splendo.kaluga.media/PlaybackState.InitializedOrError { // com.splendo.kaluga.media/PlaybackState.Initialized|null[0]
+        abstract val source // com.splendo.kaluga.media/PlaybackState.Initialized.source|{}source[0]
+            abstract fun <get-source>(): com.splendo.kaluga.media/MediaSource // com.splendo.kaluga.media/PlaybackState.Initialized.source.<get-source>|<get-source>(){}[0]
+
+        abstract fun prepared(com.splendo.kaluga.media/PlayableMedia): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Idle> // com.splendo.kaluga.media/PlaybackState.Initialized.prepared|prepared(com.splendo.kaluga.media.PlayableMedia){}[0]
+    }
+
+    abstract interface Paused : com.splendo.kaluga.media/PlaybackState.Started { // com.splendo.kaluga.media/PlaybackState.Paused|null[0]
+        abstract val play // com.splendo.kaluga.media/PlaybackState.Paused.play|{}play[0]
+            abstract fun <get-play>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Playing> // com.splendo.kaluga.media/PlaybackState.Paused.play.<get-play>|<get-play>(){}[0]
+
+        abstract fun updatePlaybackParameters(com.splendo.kaluga.media/PlaybackState.PlaybackParameters): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Paused> // com.splendo.kaluga.media/PlaybackState.Paused.updatePlaybackParameters|updatePlaybackParameters(com.splendo.kaluga.media.PlaybackState.PlaybackParameters){}[0]
+        open fun playWithUpdatedPlaybackParameters(com.splendo.kaluga.media/PlaybackState.PlaybackParameters): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Playing> // com.splendo.kaluga.media/PlaybackState.Paused.playWithUpdatedPlaybackParameters|playWithUpdatedPlaybackParameters(com.splendo.kaluga.media.PlaybackState.PlaybackParameters){}[0]
+    }
+
+    abstract interface Playing : com.splendo.kaluga.media/PlaybackState.PlayingOrCompleted, com.splendo.kaluga.media/PlaybackState.Started { // com.splendo.kaluga.media/PlaybackState.Playing|null[0]
+        abstract val completedLoop // com.splendo.kaluga.media/PlaybackState.Playing.completedLoop|{}completedLoop[0]
+            abstract fun <get-completedLoop>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.PlayingOrCompleted> // com.splendo.kaluga.media/PlaybackState.Playing.completedLoop.<get-completedLoop>|<get-completedLoop>(){}[0]
+        abstract val pause // com.splendo.kaluga.media/PlaybackState.Playing.pause|{}pause[0]
+            abstract fun <get-pause>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Paused> // com.splendo.kaluga.media/PlaybackState.Playing.pause.<get-pause>|<get-pause>(){}[0]
+
+        abstract fun updatePlaybackParameters(com.splendo.kaluga.media/PlaybackState.PlaybackParameters): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Playing> // com.splendo.kaluga.media/PlaybackState.Playing.updatePlaybackParameters|updatePlaybackParameters(com.splendo.kaluga.media.PlaybackState.PlaybackParameters){}[0]
+    }
+
+    abstract interface Stopped : com.splendo.kaluga.media/PlaybackState.Active { // com.splendo.kaluga.media/PlaybackState.Stopped|null[0]
+        abstract val reinitialize // com.splendo.kaluga.media/PlaybackState.Stopped.reinitialize|{}reinitialize[0]
+            abstract fun <get-reinitialize>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Initialized> // com.splendo.kaluga.media/PlaybackState.Stopped.reinitialize.<get-reinitialize>|<get-reinitialize>(){}[0]
+    }
+
+    abstract interface Uninitialized : com.splendo.kaluga.media/PlaybackState.Active { // com.splendo.kaluga.media/PlaybackState.Uninitialized|null[0]
+        abstract fun initialize(com.splendo.kaluga.media/MediaSource): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.InitializedOrError> // com.splendo.kaluga.media/PlaybackState.Uninitialized.initialize|initialize(com.splendo.kaluga.media.MediaSource){}[0]
+    }
+
+    sealed interface Active : com.splendo.kaluga.media/PlaybackState { // com.splendo.kaluga.media/PlaybackState.Active|null[0]
+        abstract val end // com.splendo.kaluga.media/PlaybackState.Active.end|{}end[0]
+            abstract fun <get-end>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Closed> // com.splendo.kaluga.media/PlaybackState.Active.end.<get-end>|<get-end>(){}[0]
+        abstract val mediaSurfaceController // com.splendo.kaluga.media/PlaybackState.Active.mediaSurfaceController|{}mediaSurfaceController[0]
+            abstract fun <get-mediaSurfaceController>(): com.splendo.kaluga.media/MediaSurfaceController // com.splendo.kaluga.media/PlaybackState.Active.mediaSurfaceController.<get-mediaSurfaceController>|<get-mediaSurfaceController>(){}[0]
+        abstract val reset // com.splendo.kaluga.media/PlaybackState.Active.reset|{}reset[0]
+            abstract fun <get-reset>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Uninitialized> // com.splendo.kaluga.media/PlaybackState.Active.reset.<get-reset>|<get-reset>(){}[0]
+        abstract val volumeController // com.splendo.kaluga.media/PlaybackState.Active.volumeController|{}volumeController[0]
+            abstract fun <get-volumeController>(): com.splendo.kaluga.media/VolumeController // com.splendo.kaluga.media/PlaybackState.Active.volumeController.<get-volumeController>|<get-volumeController>(){}[0]
+
+        abstract fun failWithError(com.splendo.kaluga.media/PlaybackError): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Error> // com.splendo.kaluga.media/PlaybackState.Active.failWithError|failWithError(com.splendo.kaluga.media.PlaybackError){}[0]
+    }
+
+    sealed interface InitializedOrError : com.splendo.kaluga.media/PlaybackState.Active // com.splendo.kaluga.media/PlaybackState.InitializedOrError|null[0]
+
+    sealed interface PlayingOrCompleted : com.splendo.kaluga.media/PlaybackState.Prepared // com.splendo.kaluga.media/PlaybackState.PlayingOrCompleted|null[0]
+
+    sealed interface Prepared : com.splendo.kaluga.media/PlaybackState.Active { // com.splendo.kaluga.media/PlaybackState.Prepared|null[0]
+        abstract val playableMedia // com.splendo.kaluga.media/PlaybackState.Prepared.playableMedia|{}playableMedia[0]
+            abstract fun <get-playableMedia>(): com.splendo.kaluga.media/PlayableMedia // com.splendo.kaluga.media/PlaybackState.Prepared.playableMedia.<get-playableMedia>|<get-playableMedia>(){}[0]
+        abstract val stop // com.splendo.kaluga.media/PlaybackState.Prepared.stop|{}stop[0]
+            abstract fun <get-stop>(): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Stopped> // com.splendo.kaluga.media/PlaybackState.Prepared.stop.<get-stop>|<get-stop>(){}[0]
+
+        abstract suspend fun seekTo(kotlin.time/Duration): kotlin/Boolean // com.splendo.kaluga.media/PlaybackState.Prepared.seekTo|seekTo(kotlin.time.Duration){}[0]
+    }
+
+    sealed interface Started : com.splendo.kaluga.media/PlaybackState.Prepared { // com.splendo.kaluga.media/PlaybackState.Started|null[0]
+        abstract val playbackParameters // com.splendo.kaluga.media/PlaybackState.Started.playbackParameters|{}playbackParameters[0]
+            abstract fun <get-playbackParameters>(): com.splendo.kaluga.media/PlaybackState.PlaybackParameters // com.splendo.kaluga.media/PlaybackState.Started.playbackParameters.<get-playbackParameters>|<get-playbackParameters>(){}[0]
+
+        abstract fun updatePlaybackParameters(com.splendo.kaluga.media/PlaybackState.PlaybackParameters): kotlin.coroutines/SuspendFunction0<com.splendo.kaluga.media/PlaybackState.Started> // com.splendo.kaluga.media/PlaybackState.Started.updatePlaybackParameters|updatePlaybackParameters(com.splendo.kaluga.media.PlaybackState.PlaybackParameters){}[0]
+    }
+
+    final class PlaybackParameters { // com.splendo.kaluga.media/PlaybackState.PlaybackParameters|null[0]
+        constructor <init>(kotlin/Float = ..., com.splendo.kaluga.media/PlaybackState.LoopMode = ...) // com.splendo.kaluga.media/PlaybackState.PlaybackParameters.<init>|<init>(kotlin.Float;com.splendo.kaluga.media.PlaybackState.LoopMode){}[0]
+
+        final val loopMode // com.splendo.kaluga.media/PlaybackState.PlaybackParameters.loopMode|{}loopMode[0]
+            final fun <get-loopMode>(): com.splendo.kaluga.media/PlaybackState.LoopMode // com.splendo.kaluga.media/PlaybackState.PlaybackParameters.loopMode.<get-loopMode>|<get-loopMode>(){}[0]
+        final val rate // com.splendo.kaluga.media/PlaybackState.PlaybackParameters.rate|{}rate[0]
+            final fun <get-rate>(): kotlin/Float // com.splendo.kaluga.media/PlaybackState.PlaybackParameters.rate.<get-rate>|<get-rate>(){}[0]
+
+        final fun component1(): kotlin/Float // com.splendo.kaluga.media/PlaybackState.PlaybackParameters.component1|component1(){}[0]
+        final fun component2(): com.splendo.kaluga.media/PlaybackState.LoopMode // com.splendo.kaluga.media/PlaybackState.PlaybackParameters.component2|component2(){}[0]
+        final fun copy(kotlin/Float = ..., com.splendo.kaluga.media/PlaybackState.LoopMode = ...): com.splendo.kaluga.media/PlaybackState.PlaybackParameters // com.splendo.kaluga.media/PlaybackState.PlaybackParameters.copy|copy(kotlin.Float;com.splendo.kaluga.media.PlaybackState.LoopMode){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/PlaybackState.PlaybackParameters.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/PlaybackState.PlaybackParameters.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/PlaybackState.PlaybackParameters.toString|toString(){}[0]
+    }
+
+    sealed class LoopMode { // com.splendo.kaluga.media/PlaybackState.LoopMode|null[0]
+        final class LoopingForFixedNumber : com.splendo.kaluga.media/PlaybackState.LoopMode { // com.splendo.kaluga.media/PlaybackState.LoopMode.LoopingForFixedNumber|null[0]
+            constructor <init>(kotlin/UInt) // com.splendo.kaluga.media/PlaybackState.LoopMode.LoopingForFixedNumber.<init>|<init>(kotlin.UInt){}[0]
+
+            final val loops // com.splendo.kaluga.media/PlaybackState.LoopMode.LoopingForFixedNumber.loops|{}loops[0]
+                final fun <get-loops>(): kotlin/UInt // com.splendo.kaluga.media/PlaybackState.LoopMode.LoopingForFixedNumber.loops.<get-loops>|<get-loops>(){}[0]
+
+            final fun component1(): kotlin/UInt // com.splendo.kaluga.media/PlaybackState.LoopMode.LoopingForFixedNumber.component1|component1(){}[0]
+            final fun copy(kotlin/UInt = ...): com.splendo.kaluga.media/PlaybackState.LoopMode.LoopingForFixedNumber // com.splendo.kaluga.media/PlaybackState.LoopMode.LoopingForFixedNumber.copy|copy(kotlin.UInt){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/PlaybackState.LoopMode.LoopingForFixedNumber.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/PlaybackState.LoopMode.LoopingForFixedNumber.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.media/PlaybackState.LoopMode.LoopingForFixedNumber.toString|toString(){}[0]
+        }
+
+        final object LoopingForever : com.splendo.kaluga.media/PlaybackState.LoopMode { // com.splendo.kaluga.media/PlaybackState.LoopMode.LoopingForever|null[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/PlaybackState.LoopMode.LoopingForever.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/PlaybackState.LoopMode.LoopingForever.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.media/PlaybackState.LoopMode.LoopingForever.toString|toString(){}[0]
+        }
+
+        final object NotLooping : com.splendo.kaluga.media/PlaybackState.LoopMode { // com.splendo.kaluga.media/PlaybackState.LoopMode.NotLooping|null[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/PlaybackState.LoopMode.NotLooping.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/PlaybackState.LoopMode.NotLooping.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.media/PlaybackState.LoopMode.NotLooping.toString|toString(){}[0]
+        }
+    }
+}
+
+abstract class <#A: kotlin/Any?> com.splendo.kaluga.media/BaseMediaSurfaceProvider : com.splendo.kaluga.media/MediaSurfaceProvider { // com.splendo.kaluga.media/BaseMediaSurfaceProvider|null[0]
+    constructor <init>(#A?) // com.splendo.kaluga.media/BaseMediaSurfaceProvider.<init>|<init>(1:0?){}[0]
+
+    open val surface // com.splendo.kaluga.media/BaseMediaSurfaceProvider.surface|{}surface[0]
+        open fun <get-surface>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/MediaSurface?> // com.splendo.kaluga.media/BaseMediaSurfaceProvider.surface.<get-surface>|<get-surface>(){}[0]
+
+    abstract fun (#A).asMediaSurface(): com.splendo.kaluga.media/MediaSurface? // com.splendo.kaluga.media/BaseMediaSurfaceProvider.asMediaSurface|asMediaSurface@1:0(){}[0]
+    final fun update(#A?) // com.splendo.kaluga.media/BaseMediaSurfaceProvider.update|update(1:0?){}[0]
+}
+
+abstract class com.splendo.kaluga.media/BaseMediaManager : com.splendo.kaluga.media/MediaManager, kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.media/BaseMediaManager|null[0]
+    constructor <init>(com.splendo.kaluga.media/MediaSurfaceProvider?, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/BaseMediaManager.<init>|<init>(com.splendo.kaluga.media.MediaSurfaceProvider?;kotlin.coroutines.CoroutineContext){}[0]
+
+    open val coroutineContext // com.splendo.kaluga.media/BaseMediaManager.coroutineContext|{}coroutineContext[0]
+        open fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // com.splendo.kaluga.media/BaseMediaManager.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+    open val events // com.splendo.kaluga.media/BaseMediaManager.events|{}events[0]
+        open fun <get-events>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/MediaManager.Event> // com.splendo.kaluga.media/BaseMediaManager.events.<get-events>|<get-events>(){}[0]
+
+    abstract fun cleanUp() // com.splendo.kaluga.media/BaseMediaManager.cleanUp|cleanUp(){}[0]
+    abstract fun handleCreatePlayableMedia(com.splendo.kaluga.media/MediaSource): com.splendo.kaluga.media/PlayableMedia? // com.splendo.kaluga.media/BaseMediaManager.handleCreatePlayableMedia|handleCreatePlayableMedia(com.splendo.kaluga.media.MediaSource){}[0]
+    abstract fun handleReset() // com.splendo.kaluga.media/BaseMediaManager.handleReset|handleReset(){}[0]
+    abstract fun startSeek(kotlin.time/Duration) // com.splendo.kaluga.media/BaseMediaManager.startSeek|startSeek(kotlin.time.Duration){}[0]
+    final fun reset() // com.splendo.kaluga.media/BaseMediaManager.reset|reset(){}[0]
+    final suspend fun createPlayableMedia(com.splendo.kaluga.media/MediaSource): com.splendo.kaluga.media/PlayableMedia? // com.splendo.kaluga.media/BaseMediaManager.createPlayableMedia|createPlayableMedia(com.splendo.kaluga.media.MediaSource){}[0]
+    final suspend fun seekTo(kotlin.time/Duration): kotlin/Boolean // com.splendo.kaluga.media/BaseMediaManager.seekTo|seekTo(kotlin.time.Duration){}[0]
+    open fun close() // com.splendo.kaluga.media/BaseMediaManager.close|close(){}[0]
+    open fun handleCompleted() // com.splendo.kaluga.media/BaseMediaManager.handleCompleted|handleCompleted(){}[0]
+    open fun handleError(com.splendo.kaluga.media/PlaybackError) // com.splendo.kaluga.media/BaseMediaManager.handleError|handleError(com.splendo.kaluga.media.PlaybackError){}[0]
+    open fun handlePrepared(com.splendo.kaluga.media/PlayableMedia) // com.splendo.kaluga.media/BaseMediaManager.handlePrepared|handlePrepared(com.splendo.kaluga.media.PlayableMedia){}[0]
+    open fun handleRateChanged(kotlin/Float) // com.splendo.kaluga.media/BaseMediaManager.handleRateChanged|handleRateChanged(kotlin.Float){}[0]
+    open fun handleSeekCompleted(kotlin/Boolean) // com.splendo.kaluga.media/BaseMediaManager.handleSeekCompleted|handleSeekCompleted(kotlin.Boolean){}[0]
+
+    abstract interface Builder { // com.splendo.kaluga.media/BaseMediaManager.Builder|null[0]
+        abstract fun create(com.splendo.kaluga.media/MediaSurfaceProvider?, kotlin.coroutines/CoroutineContext): com.splendo.kaluga.media/BaseMediaManager // com.splendo.kaluga.media/BaseMediaManager.Builder.create|create(com.splendo.kaluga.media.MediaSurfaceProvider?;kotlin.coroutines.CoroutineContext){}[0]
+    }
+}
+
+abstract class com.splendo.kaluga.media/BasePlaybackStateRepo : com.splendo.kaluga.base.state/HotStateFlowRepo<com.splendo.kaluga.media/PlaybackState> { // com.splendo.kaluga.media/BasePlaybackStateRepo|null[0]
+    constructor <init>(kotlin/Function1<com.splendo.kaluga.base.state/HotStateFlowRepo<com.splendo.kaluga.media/PlaybackState>, com.splendo.kaluga.media/PlaybackState>, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/BasePlaybackStateRepo.<init>|<init>(kotlin.Function1<com.splendo.kaluga.base.state.HotStateFlowRepo<com.splendo.kaluga.media.PlaybackState>,com.splendo.kaluga.media.PlaybackState>;kotlin.coroutines.CoroutineContext){}[0]
+}
+
+final class com.splendo.kaluga.media/AVPlayerLayerMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.AVFoundation/AVPlayerLayer> { // com.splendo.kaluga.media/AVPlayerLayerMediaSurfaceProvider|null[0]
+    constructor <init>(platform.AVFoundation/AVPlayerLayer?) // com.splendo.kaluga.media/AVPlayerLayerMediaSurfaceProvider.<init>|<init>(platform.AVFoundation.AVPlayerLayer?){}[0]
+}
+
+final class com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.AVKit/AVPlayerViewController> { // com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider|null[0]
+    constructor <init>(platform.AVKit/AVPlayerViewController?) // com.splendo.kaluga.media/AVPlayerViewControllerMediaSurfaceProvider.<init>|<init>(platform.AVKit.AVPlayerViewController?){}[0]
+}
+
+final class com.splendo.kaluga.media/BindingMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<kotlin/Function1<platform.AVFoundation/AVPlayer?, kotlin/Unit>> { // com.splendo.kaluga.media/BindingMediaSurfaceProvider|null[0]
+    constructor <init>(kotlin/Function1<platform.AVFoundation/AVPlayer?, kotlin/Unit>?) // com.splendo.kaluga.media/BindingMediaSurfaceProvider.<init>|<init>(kotlin.Function1<platform.AVFoundation.AVPlayer?,kotlin.Unit>?){}[0]
+}
+
+final class com.splendo.kaluga.media/DefaultMediaManager : com.splendo.kaluga.media/BaseMediaManager { // com.splendo.kaluga.media/DefaultMediaManager|null[0]
+    constructor <init>(com.splendo.kaluga.media/MediaSurfaceProvider?, com.splendo.kaluga.media/DefaultMediaManager.Settings, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/DefaultMediaManager.<init>|<init>(com.splendo.kaluga.media.MediaSurfaceProvider?;com.splendo.kaluga.media.DefaultMediaManager.Settings;kotlin.coroutines.CoroutineContext){}[0]
+
+    final val currentVolume // com.splendo.kaluga.media/DefaultMediaManager.currentVolume|{}currentVolume[0]
+        final fun <get-currentVolume>(): kotlinx.coroutines.flow/Flow<kotlin/Float> // com.splendo.kaluga.media/DefaultMediaManager.currentVolume.<get-currentVolume>|<get-currentVolume>(){}[0]
+
+    final fun initialize(com.splendo.kaluga.media/PlayableMedia) // com.splendo.kaluga.media/DefaultMediaManager.initialize|initialize(com.splendo.kaluga.media.PlayableMedia){}[0]
+    final fun pause() // com.splendo.kaluga.media/DefaultMediaManager.pause|pause(){}[0]
+    final fun play(kotlin/Float) // com.splendo.kaluga.media/DefaultMediaManager.play|play(kotlin.Float){}[0]
+    final fun stop() // com.splendo.kaluga.media/DefaultMediaManager.stop|stop(){}[0]
+    final suspend fun renderVideoOnSurface(com.splendo.kaluga.media/MediaSurface?) // com.splendo.kaluga.media/DefaultMediaManager.renderVideoOnSurface|renderVideoOnSurface(com.splendo.kaluga.media.MediaSurface?){}[0]
+    final suspend fun updateVolume(kotlin/Float) // com.splendo.kaluga.media/DefaultMediaManager.updateVolume|updateVolume(kotlin.Float){}[0]
+
+    final class Builder : com.splendo.kaluga.media/BaseMediaManager.Builder { // com.splendo.kaluga.media/DefaultMediaManager.Builder|null[0]
+        constructor <init>() // com.splendo.kaluga.media/DefaultMediaManager.Builder.<init>|<init>(){}[0]
+        constructor <init>(com.splendo.kaluga.media/DefaultMediaManager.Settings) // com.splendo.kaluga.media/DefaultMediaManager.Builder.<init>|<init>(com.splendo.kaluga.media.DefaultMediaManager.Settings){}[0]
+
+        final fun create(com.splendo.kaluga.media/MediaSurfaceProvider?, kotlin.coroutines/CoroutineContext): com.splendo.kaluga.media/DefaultMediaManager // com.splendo.kaluga.media/DefaultMediaManager.Builder.create|create(com.splendo.kaluga.media.MediaSurfaceProvider?;kotlin.coroutines.CoroutineContext){}[0]
+    }
+
+    final class Settings { // com.splendo.kaluga.media/DefaultMediaManager.Settings|null[0]
+        constructor <init>(kotlin/Boolean = ..., kotlin/Boolean = ...) // com.splendo.kaluga.media/DefaultMediaManager.Settings.<init>|<init>(kotlin.Boolean;kotlin.Boolean){}[0]
+
+        final val playAfterDeviceUnavailable // com.splendo.kaluga.media/DefaultMediaManager.Settings.playAfterDeviceUnavailable|{}playAfterDeviceUnavailable[0]
+            final fun <get-playAfterDeviceUnavailable>(): kotlin/Boolean // com.splendo.kaluga.media/DefaultMediaManager.Settings.playAfterDeviceUnavailable.<get-playAfterDeviceUnavailable>|<get-playAfterDeviceUnavailable>(){}[0]
+        final val playInBackground // com.splendo.kaluga.media/DefaultMediaManager.Settings.playInBackground|{}playInBackground[0]
+            final fun <get-playInBackground>(): kotlin/Boolean // com.splendo.kaluga.media/DefaultMediaManager.Settings.playInBackground.<get-playInBackground>|<get-playInBackground>(){}[0]
+
+        final fun component1(): kotlin/Boolean // com.splendo.kaluga.media/DefaultMediaManager.Settings.component1|component1(){}[0]
+        final fun component2(): kotlin/Boolean // com.splendo.kaluga.media/DefaultMediaManager.Settings.component2|component2(){}[0]
+        final fun copy(kotlin/Boolean = ..., kotlin/Boolean = ...): com.splendo.kaluga.media/DefaultMediaManager.Settings // com.splendo.kaluga.media/DefaultMediaManager.Settings.copy|copy(kotlin.Boolean;kotlin.Boolean){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/DefaultMediaManager.Settings.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/DefaultMediaManager.Settings.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/DefaultMediaManager.Settings.toString|toString(){}[0]
+    }
+}
+
+final class com.splendo.kaluga.media/DefaultMediaPlayer : com.splendo.kaluga.media/MediaPlayer, kotlinx.coroutines/CoroutineScope { // com.splendo.kaluga.media/DefaultMediaPlayer|null[0]
+    constructor <init>(com.splendo.kaluga.media/MediaSurfaceProvider?, com.splendo.kaluga.media/BaseMediaManager.Builder, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/DefaultMediaPlayer.<init>|<init>(com.splendo.kaluga.media.MediaSurfaceProvider?;com.splendo.kaluga.media.BaseMediaManager.Builder;kotlin.coroutines.CoroutineContext){}[0]
+    constructor <init>(kotlin/Function1<kotlin.coroutines/CoroutineContext, com.splendo.kaluga.media/BasePlaybackStateRepo>, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/DefaultMediaPlayer.<init>|<init>(kotlin.Function1<kotlin.coroutines.CoroutineContext,com.splendo.kaluga.media.BasePlaybackStateRepo>;kotlin.coroutines.CoroutineContext){}[0]
+
+    final val controls // com.splendo.kaluga.media/DefaultMediaPlayer.controls|{}controls[0]
+        final fun <get-controls>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/MediaPlayer.Controls> // com.splendo.kaluga.media/DefaultMediaPlayer.controls.<get-controls>|<get-controls>(){}[0]
+    final val coroutineContext // com.splendo.kaluga.media/DefaultMediaPlayer.coroutineContext|{}coroutineContext[0]
+        final fun <get-coroutineContext>(): kotlin.coroutines/CoroutineContext // com.splendo.kaluga.media/DefaultMediaPlayer.coroutineContext.<get-coroutineContext>|<get-coroutineContext>(){}[0]
+    final val currentVolume // com.splendo.kaluga.media/DefaultMediaPlayer.currentVolume|{}currentVolume[0]
+        final fun <get-currentVolume>(): kotlinx.coroutines.flow/Flow<kotlin/Float> // com.splendo.kaluga.media/DefaultMediaPlayer.currentVolume.<get-currentVolume>|<get-currentVolume>(){}[0]
+    final val playableMedia // com.splendo.kaluga.media/DefaultMediaPlayer.playableMedia|{}playableMedia[0]
+        final fun <get-playableMedia>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/PlayableMedia?> // com.splendo.kaluga.media/DefaultMediaPlayer.playableMedia.<get-playableMedia>|<get-playableMedia>(){}[0]
+
+    final fun close() // com.splendo.kaluga.media/DefaultMediaPlayer.close|close(){}[0]
+    final suspend fun awaitCompletion() // com.splendo.kaluga.media/DefaultMediaPlayer.awaitCompletion|awaitCompletion(){}[0]
+    final suspend fun forceStart(com.splendo.kaluga.media/PlaybackState.PlaybackParameters, kotlin/Boolean) // com.splendo.kaluga.media/DefaultMediaPlayer.forceStart|forceStart(com.splendo.kaluga.media.PlaybackState.PlaybackParameters;kotlin.Boolean){}[0]
+    final suspend fun initializeFor(com.splendo.kaluga.media/MediaSource) // com.splendo.kaluga.media/DefaultMediaPlayer.initializeFor|initializeFor(com.splendo.kaluga.media.MediaSource){}[0]
+    final suspend fun renderVideoOnSurface(com.splendo.kaluga.media/MediaSurface?) // com.splendo.kaluga.media/DefaultMediaPlayer.renderVideoOnSurface|renderVideoOnSurface(com.splendo.kaluga.media.MediaSurface?){}[0]
+    final suspend fun reset() // com.splendo.kaluga.media/DefaultMediaPlayer.reset|reset(){}[0]
+    final suspend fun updateVolume(kotlin/Float) // com.splendo.kaluga.media/DefaultMediaPlayer.updateVolume|updateVolume(kotlin.Float){}[0]
+}
+
+final class com.splendo.kaluga.media/DefaultPlayableMedia : com.splendo.kaluga.media/PlayableMedia { // com.splendo.kaluga.media/DefaultPlayableMedia|null[0]
+    constructor <init>(com.splendo.kaluga.media/MediaSource, platform.AVFoundation/AVPlayerItem) // com.splendo.kaluga.media/DefaultPlayableMedia.<init>|<init>(com.splendo.kaluga.media.MediaSource;platform.AVFoundation.AVPlayerItem){}[0]
+
+    final val currentPlayTime // com.splendo.kaluga.media/DefaultPlayableMedia.currentPlayTime|{}currentPlayTime[0]
+        final fun <get-currentPlayTime>(): kotlin.time/Duration // com.splendo.kaluga.media/DefaultPlayableMedia.currentPlayTime.<get-currentPlayTime>|<get-currentPlayTime>(){}[0]
+    final val duration // com.splendo.kaluga.media/DefaultPlayableMedia.duration|{}duration[0]
+        final fun <get-duration>(): kotlin.time/Duration // com.splendo.kaluga.media/DefaultPlayableMedia.duration.<get-duration>|<get-duration>(){}[0]
+    final val resolution // com.splendo.kaluga.media/DefaultPlayableMedia.resolution|{}resolution[0]
+        final fun <get-resolution>(): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.media/Resolution> // com.splendo.kaluga.media/DefaultPlayableMedia.resolution.<get-resolution>|<get-resolution>(){}[0]
+    final val source // com.splendo.kaluga.media/DefaultPlayableMedia.source|{}source[0]
+        final fun <get-source>(): com.splendo.kaluga.media/MediaSource // com.splendo.kaluga.media/DefaultPlayableMedia.source.<get-source>|<get-source>(){}[0]
+    final val tracks // com.splendo.kaluga.media/DefaultPlayableMedia.tracks|{}tracks[0]
+        final fun <get-tracks>(): kotlin.collections/List<com.splendo.kaluga.media/TrackInfo> // com.splendo.kaluga.media/DefaultPlayableMedia.tracks.<get-tracks>|<get-tracks>(){}[0]
+}
+
+final class com.splendo.kaluga.media/DefaultSoundPlayer : com.splendo.kaluga.media/SoundPlayer { // com.splendo.kaluga.media/DefaultSoundPlayer|null[0]
+    constructor <init>(com.splendo.kaluga.media/MediaSource.Local) // com.splendo.kaluga.media/DefaultSoundPlayer.<init>|<init>(com.splendo.kaluga.media.MediaSource.Local){}[0]
+    constructor <init>(com.splendo.kaluga.media/MediaSource.Local, com.splendo.kaluga.media/DefaultSoundPlayer.Configuration) // com.splendo.kaluga.media/DefaultSoundPlayer.<init>|<init>(com.splendo.kaluga.media.MediaSource.Local;com.splendo.kaluga.media.DefaultSoundPlayer.Configuration){}[0]
+
+    final fun close() // com.splendo.kaluga.media/DefaultSoundPlayer.close|close(){}[0]
+    final fun play() // com.splendo.kaluga.media/DefaultSoundPlayer.play|play(){}[0]
+
+    sealed interface State { // com.splendo.kaluga.media/DefaultSoundPlayer.State|null[0]
+        abstract fun changeRoute(kotlin/Function0<com.splendo.kaluga.media/SoundPlayer>): com.splendo.kaluga.media/DefaultSoundPlayer.State // com.splendo.kaluga.media/DefaultSoundPlayer.State.changeRoute|changeRoute(kotlin.Function0<com.splendo.kaluga.media.SoundPlayer>){}[0]
+        abstract fun enterBackground(): com.splendo.kaluga.media/DefaultSoundPlayer.State // com.splendo.kaluga.media/DefaultSoundPlayer.State.enterBackground|enterBackground(){}[0]
+        abstract fun enterForeground(kotlin/Function0<com.splendo.kaluga.media/SoundPlayer>): com.splendo.kaluga.media/DefaultSoundPlayer.State // com.splendo.kaluga.media/DefaultSoundPlayer.State.enterForeground|enterForeground(kotlin.Function0<com.splendo.kaluga.media.SoundPlayer>){}[0]
+        abstract fun finish(): com.splendo.kaluga.media/DefaultSoundPlayer.State // com.splendo.kaluga.media/DefaultSoundPlayer.State.finish|finish(){}[0]
+
+        final class Foreground : com.splendo.kaluga.media/DefaultSoundPlayer.State { // com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground|null[0]
+            constructor <init>(com.splendo.kaluga.media/SoundPlayer) // com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground.<init>|<init>(com.splendo.kaluga.media.SoundPlayer){}[0]
+
+            final val mediaPlayer // com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground.mediaPlayer|{}mediaPlayer[0]
+                final fun <get-mediaPlayer>(): com.splendo.kaluga.media/SoundPlayer // com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground.mediaPlayer.<get-mediaPlayer>|<get-mediaPlayer>(){}[0]
+
+            final fun changeRoute(kotlin/Function0<com.splendo.kaluga.media/SoundPlayer>): com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground // com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground.changeRoute|changeRoute(kotlin.Function0<com.splendo.kaluga.media.SoundPlayer>){}[0]
+            final fun component1(): com.splendo.kaluga.media/SoundPlayer // com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground.component1|component1(){}[0]
+            final fun copy(com.splendo.kaluga.media/SoundPlayer = ...): com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground // com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground.copy|copy(com.splendo.kaluga.media.SoundPlayer){}[0]
+            final fun enterBackground(): com.splendo.kaluga.media/DefaultSoundPlayer.State.Background // com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground.enterBackground|enterBackground(){}[0]
+            final fun enterForeground(kotlin/Function0<com.splendo.kaluga.media/SoundPlayer>): com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground // com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground.enterForeground|enterForeground(kotlin.Function0<com.splendo.kaluga.media.SoundPlayer>){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground.equals|equals(kotlin.Any?){}[0]
+            final fun finish(): com.splendo.kaluga.media/DefaultSoundPlayer.State.Finished // com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground.finish|finish(){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground.toString|toString(){}[0]
+        }
+
+        final object Background : com.splendo.kaluga.media/DefaultSoundPlayer.State { // com.splendo.kaluga.media/DefaultSoundPlayer.State.Background|null[0]
+            final fun changeRoute(kotlin/Function0<com.splendo.kaluga.media/SoundPlayer>): com.splendo.kaluga.media/DefaultSoundPlayer.State.Background // com.splendo.kaluga.media/DefaultSoundPlayer.State.Background.changeRoute|changeRoute(kotlin.Function0<com.splendo.kaluga.media.SoundPlayer>){}[0]
+            final fun enterBackground(): com.splendo.kaluga.media/DefaultSoundPlayer.State.Background // com.splendo.kaluga.media/DefaultSoundPlayer.State.Background.enterBackground|enterBackground(){}[0]
+            final fun enterForeground(kotlin/Function0<com.splendo.kaluga.media/SoundPlayer>): com.splendo.kaluga.media/DefaultSoundPlayer.State.Foreground // com.splendo.kaluga.media/DefaultSoundPlayer.State.Background.enterForeground|enterForeground(kotlin.Function0<com.splendo.kaluga.media.SoundPlayer>){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/DefaultSoundPlayer.State.Background.equals|equals(kotlin.Any?){}[0]
+            final fun finish(): com.splendo.kaluga.media/DefaultSoundPlayer.State.Finished // com.splendo.kaluga.media/DefaultSoundPlayer.State.Background.finish|finish(){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/DefaultSoundPlayer.State.Background.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.media/DefaultSoundPlayer.State.Background.toString|toString(){}[0]
+        }
+
+        final object Finished : com.splendo.kaluga.media/DefaultSoundPlayer.State { // com.splendo.kaluga.media/DefaultSoundPlayer.State.Finished|null[0]
+            final fun changeRoute(kotlin/Function0<com.splendo.kaluga.media/SoundPlayer>): com.splendo.kaluga.media/DefaultSoundPlayer.State.Finished // com.splendo.kaluga.media/DefaultSoundPlayer.State.Finished.changeRoute|changeRoute(kotlin.Function0<com.splendo.kaluga.media.SoundPlayer>){}[0]
+            final fun enterBackground(): com.splendo.kaluga.media/DefaultSoundPlayer.State.Finished // com.splendo.kaluga.media/DefaultSoundPlayer.State.Finished.enterBackground|enterBackground(){}[0]
+            final fun enterForeground(kotlin/Function0<com.splendo.kaluga.media/SoundPlayer>): com.splendo.kaluga.media/DefaultSoundPlayer.State.Finished // com.splendo.kaluga.media/DefaultSoundPlayer.State.Finished.enterForeground|enterForeground(kotlin.Function0<com.splendo.kaluga.media.SoundPlayer>){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/DefaultSoundPlayer.State.Finished.equals|equals(kotlin.Any?){}[0]
+            final fun finish(): com.splendo.kaluga.media/DefaultSoundPlayer.State.Finished // com.splendo.kaluga.media/DefaultSoundPlayer.State.Finished.finish|finish(){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/DefaultSoundPlayer.State.Finished.hashCode|hashCode(){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.media/DefaultSoundPlayer.State.Finished.toString|toString(){}[0]
+        }
+    }
+
+    final class Configuration { // com.splendo.kaluga.media/DefaultSoundPlayer.Configuration|null[0]
+        constructor <init>(kotlin/Boolean = ...) // com.splendo.kaluga.media/DefaultSoundPlayer.Configuration.<init>|<init>(kotlin.Boolean){}[0]
+
+        final val restartIfRouteChanged // com.splendo.kaluga.media/DefaultSoundPlayer.Configuration.restartIfRouteChanged|{}restartIfRouteChanged[0]
+            final fun <get-restartIfRouteChanged>(): kotlin/Boolean // com.splendo.kaluga.media/DefaultSoundPlayer.Configuration.restartIfRouteChanged.<get-restartIfRouteChanged>|<get-restartIfRouteChanged>(){}[0]
+
+        final fun component1(): kotlin/Boolean // com.splendo.kaluga.media/DefaultSoundPlayer.Configuration.component1|component1(){}[0]
+        final fun copy(kotlin/Boolean = ...): com.splendo.kaluga.media/DefaultSoundPlayer.Configuration // com.splendo.kaluga.media/DefaultSoundPlayer.Configuration.copy|copy(kotlin.Boolean){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/DefaultSoundPlayer.Configuration.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/DefaultSoundPlayer.Configuration.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/DefaultSoundPlayer.Configuration.toString|toString(){}[0]
+    }
+
+    final inner class ForegroundSoundPlayer : com.splendo.kaluga.media/SoundPlayer { // com.splendo.kaluga.media/DefaultSoundPlayer.ForegroundSoundPlayer|null[0]
+        constructor <init>(kotlin/Boolean = ...) // com.splendo.kaluga.media/DefaultSoundPlayer.ForegroundSoundPlayer.<init>|<init>(kotlin.Boolean){}[0]
+
+        final fun close() // com.splendo.kaluga.media/DefaultSoundPlayer.ForegroundSoundPlayer.close|close(){}[0]
+        final fun play() // com.splendo.kaluga.media/DefaultSoundPlayer.ForegroundSoundPlayer.play|play(){}[0]
+        final fun start() // com.splendo.kaluga.media/DefaultSoundPlayer.ForegroundSoundPlayer.start|start(){}[0]
+    }
+}
+
+final class com.splendo.kaluga.media/MediaSurface { // com.splendo.kaluga.media/MediaSurface|null[0]
+    constructor <init>(kotlin/Function1<platform.AVFoundation/AVPlayer?, kotlin/Unit>) // com.splendo.kaluga.media/MediaSurface.<init>|<init>(kotlin.Function1<platform.AVFoundation.AVPlayer?,kotlin.Unit>){}[0]
+    constructor <init>(platform.AVFoundation/AVPlayerLayer) // com.splendo.kaluga.media/MediaSurface.<init>|<init>(platform.AVFoundation.AVPlayerLayer){}[0]
+    constructor <init>(platform.AVKit/AVPlayerViewController) // com.splendo.kaluga.media/MediaSurface.<init>|<init>(platform.AVKit.AVPlayerViewController){}[0]
+
+    final val bind // com.splendo.kaluga.media/MediaSurface.bind|{}bind[0]
+        final fun <get-bind>(): kotlin/Function1<platform.AVFoundation/AVPlayer?, kotlin/Unit> // com.splendo.kaluga.media/MediaSurface.bind.<get-bind>|<get-bind>(){}[0]
+
+    final fun component1(): kotlin/Function1<platform.AVFoundation/AVPlayer?, kotlin/Unit> // com.splendo.kaluga.media/MediaSurface.component1|component1(){}[0]
+    final fun copy(kotlin/Function1<platform.AVFoundation/AVPlayer?, kotlin/Unit> = ...): com.splendo.kaluga.media/MediaSurface // com.splendo.kaluga.media/MediaSurface.copy|copy(kotlin.Function1<platform.AVFoundation.AVPlayer?,kotlin.Unit>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaSurface.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaSurface.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaSurface.toString|toString(){}[0]
+}
+
+final class com.splendo.kaluga.media/Resolution { // com.splendo.kaluga.media/Resolution|null[0]
+    constructor <init>(kotlin/Int, kotlin/Int) // com.splendo.kaluga.media/Resolution.<init>|<init>(kotlin.Int;kotlin.Int){}[0]
+
+    final val aspectRatio // com.splendo.kaluga.media/Resolution.aspectRatio|{}aspectRatio[0]
+        final fun <get-aspectRatio>(): kotlin/String // com.splendo.kaluga.media/Resolution.aspectRatio.<get-aspectRatio>|<get-aspectRatio>(){}[0]
+    final val height // com.splendo.kaluga.media/Resolution.height|{}height[0]
+        final fun <get-height>(): kotlin/Int // com.splendo.kaluga.media/Resolution.height.<get-height>|<get-height>(){}[0]
+    final val width // com.splendo.kaluga.media/Resolution.width|{}width[0]
+        final fun <get-width>(): kotlin/Int // com.splendo.kaluga.media/Resolution.width.<get-width>|<get-width>(){}[0]
+
+    final fun component1(): kotlin/Int // com.splendo.kaluga.media/Resolution.component1|component1(){}[0]
+    final fun component2(): kotlin/Int // com.splendo.kaluga.media/Resolution.component2|component2(){}[0]
+    final fun copy(kotlin/Int = ..., kotlin/Int = ...): com.splendo.kaluga.media/Resolution // com.splendo.kaluga.media/Resolution.copy|copy(kotlin.Int;kotlin.Int){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/Resolution.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/Resolution.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.media/Resolution.toString|toString(){}[0]
+
+    final object Companion { // com.splendo.kaluga.media/Resolution.Companion|null[0]
+        final val ZERO // com.splendo.kaluga.media/Resolution.Companion.ZERO|{}ZERO[0]
+            final fun <get-ZERO>(): com.splendo.kaluga.media/Resolution // com.splendo.kaluga.media/Resolution.Companion.ZERO.<get-ZERO>|<get-ZERO>(){}[0]
+    }
+}
+
+final class com.splendo.kaluga.media/TrackInfo { // com.splendo.kaluga.media/TrackInfo|null[0]
+    constructor <init>(kotlin/Int, com.splendo.kaluga.media/TrackInfo.Type, kotlin/String) // com.splendo.kaluga.media/TrackInfo.<init>|<init>(kotlin.Int;com.splendo.kaluga.media.TrackInfo.Type;kotlin.String){}[0]
+
+    final val id // com.splendo.kaluga.media/TrackInfo.id|{}id[0]
+        final fun <get-id>(): kotlin/Int // com.splendo.kaluga.media/TrackInfo.id.<get-id>|<get-id>(){}[0]
+    final val language // com.splendo.kaluga.media/TrackInfo.language|{}language[0]
+        final fun <get-language>(): kotlin/String // com.splendo.kaluga.media/TrackInfo.language.<get-language>|<get-language>(){}[0]
+    final val type // com.splendo.kaluga.media/TrackInfo.type|{}type[0]
+        final fun <get-type>(): com.splendo.kaluga.media/TrackInfo.Type // com.splendo.kaluga.media/TrackInfo.type.<get-type>|<get-type>(){}[0]
+
+    final fun component1(): kotlin/Int // com.splendo.kaluga.media/TrackInfo.component1|component1(){}[0]
+    final fun component2(): com.splendo.kaluga.media/TrackInfo.Type // com.splendo.kaluga.media/TrackInfo.component2|component2(){}[0]
+    final fun component3(): kotlin/String // com.splendo.kaluga.media/TrackInfo.component3|component3(){}[0]
+    final fun copy(kotlin/Int = ..., com.splendo.kaluga.media/TrackInfo.Type = ..., kotlin/String = ...): com.splendo.kaluga.media/TrackInfo // com.splendo.kaluga.media/TrackInfo.copy|copy(kotlin.Int;com.splendo.kaluga.media.TrackInfo.Type;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/TrackInfo.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/TrackInfo.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.media/TrackInfo.toString|toString(){}[0]
+
+    final enum class Type : kotlin/Enum<com.splendo.kaluga.media/TrackInfo.Type> { // com.splendo.kaluga.media/TrackInfo.Type|null[0]
+        enum entry AUDIO // com.splendo.kaluga.media/TrackInfo.Type.AUDIO|null[0]
+        enum entry METADATA // com.splendo.kaluga.media/TrackInfo.Type.METADATA|null[0]
+        enum entry SUBTITLE // com.splendo.kaluga.media/TrackInfo.Type.SUBTITLE|null[0]
+        enum entry TIMED_TEXT // com.splendo.kaluga.media/TrackInfo.Type.TIMED_TEXT|null[0]
+        enum entry UNKNOWN // com.splendo.kaluga.media/TrackInfo.Type.UNKNOWN|null[0]
+        enum entry VIDEO // com.splendo.kaluga.media/TrackInfo.Type.VIDEO|null[0]
+
+        final val entries // com.splendo.kaluga.media/TrackInfo.Type.entries|#static{}entries[0]
+            final fun <get-entries>(): kotlin.enums/EnumEntries<com.splendo.kaluga.media/TrackInfo.Type> // com.splendo.kaluga.media/TrackInfo.Type.entries.<get-entries>|<get-entries>#static(){}[0]
+
+        final fun valueOf(kotlin/String): com.splendo.kaluga.media/TrackInfo.Type // com.splendo.kaluga.media/TrackInfo.Type.valueOf|valueOf#static(kotlin.String){}[0]
+        final fun values(): kotlin/Array<com.splendo.kaluga.media/TrackInfo.Type> // com.splendo.kaluga.media/TrackInfo.Type.values|values#static(){}[0]
+    }
+}
+
+final class com.splendo.kaluga.media/UIViewMediaSurfaceProvider : com.splendo.kaluga.media/BaseMediaSurfaceProvider<platform.UIKit/UIView> { // com.splendo.kaluga.media/UIViewMediaSurfaceProvider|null[0]
+    constructor <init>(platform.UIKit/UIView?) // com.splendo.kaluga.media/UIViewMediaSurfaceProvider.<init>|<init>(platform.UIKit.UIView?){}[0]
+}
+
+open class com.splendo.kaluga.media/PlaybackStateRepo : com.splendo.kaluga.media/BasePlaybackStateRepo { // com.splendo.kaluga.media/PlaybackStateRepo|null[0]
+    constructor <init>(com.splendo.kaluga.media/MediaManager, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.media/PlaybackStateRepo.<init>|<init>(com.splendo.kaluga.media.MediaManager;kotlin.coroutines.CoroutineContext){}[0]
+}
+
+sealed class com.splendo.kaluga.media/MediaSoundError : kotlin/Error { // com.splendo.kaluga.media/MediaSoundError|null[0]
+    final class CannotAccessMediaFile : com.splendo.kaluga.media/MediaSoundError { // com.splendo.kaluga.media/MediaSoundError.CannotAccessMediaFile|null[0]
+        constructor <init>(kotlin/String? = ...) // com.splendo.kaluga.media/MediaSoundError.CannotAccessMediaFile.<init>|<init>(kotlin.String?){}[0]
+    }
+
+    final class CannotSetAudioSessionConfiguration : com.splendo.kaluga.media/MediaSoundError { // com.splendo.kaluga.media/MediaSoundError.CannotSetAudioSessionConfiguration|null[0]
+        constructor <init>(kotlin/String? = ...) // com.splendo.kaluga.media/MediaSoundError.CannotSetAudioSessionConfiguration.<init>|<init>(kotlin.String?){}[0]
+    }
+
+    final class CannotStartAudioEngine : com.splendo.kaluga.media/MediaSoundError { // com.splendo.kaluga.media/MediaSoundError.CannotStartAudioEngine|null[0]
+        constructor <init>(kotlin/String? = ...) // com.splendo.kaluga.media/MediaSoundError.CannotStartAudioEngine.<init>|<init>(kotlin.String?){}[0]
+    }
+
+    final object UnexpectedMediaSourceShouldBeLocal : com.splendo.kaluga.media/MediaSoundError { // com.splendo.kaluga.media/MediaSoundError.UnexpectedMediaSourceShouldBeLocal|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaSoundError.UnexpectedMediaSourceShouldBeLocal.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaSoundError.UnexpectedMediaSourceShouldBeLocal.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaSoundError.UnexpectedMediaSourceShouldBeLocal.toString|toString(){}[0]
+    }
+}
+
+sealed class com.splendo.kaluga.media/MediaSource { // com.splendo.kaluga.media/MediaSource|null[0]
+    final class Asset : com.splendo.kaluga.media/MediaSource { // com.splendo.kaluga.media/MediaSource.Asset|null[0]
+        constructor <init>(platform.AVFoundation/AVAsset) // com.splendo.kaluga.media/MediaSource.Asset.<init>|<init>(platform.AVFoundation.AVAsset){}[0]
+
+        final val asset // com.splendo.kaluga.media/MediaSource.Asset.asset|{}asset[0]
+            final fun <get-asset>(): platform.AVFoundation/AVAsset // com.splendo.kaluga.media/MediaSource.Asset.asset.<get-asset>|<get-asset>(){}[0]
+
+        final fun component1(): platform.AVFoundation/AVAsset // com.splendo.kaluga.media/MediaSource.Asset.component1|component1(){}[0]
+        final fun copy(platform.AVFoundation/AVAsset = ...): com.splendo.kaluga.media/MediaSource.Asset // com.splendo.kaluga.media/MediaSource.Asset.copy|copy(platform.AVFoundation.AVAsset){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.Asset.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaSource.Asset.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaSource.Asset.toString|toString(){}[0]
+    }
+
+    final class Bundle : com.splendo.kaluga.media/MediaSource.Local { // com.splendo.kaluga.media/MediaSource.Bundle|null[0]
+        constructor <init>(kotlin/String, kotlin/String) // com.splendo.kaluga.media/MediaSource.Bundle.<init>|<init>(kotlin.String;kotlin.String){}[0]
+
+        final val fileName // com.splendo.kaluga.media/MediaSource.Bundle.fileName|{}fileName[0]
+            final fun <get-fileName>(): kotlin/String // com.splendo.kaluga.media/MediaSource.Bundle.fileName.<get-fileName>|<get-fileName>(){}[0]
+        final val fileType // com.splendo.kaluga.media/MediaSource.Bundle.fileType|{}fileType[0]
+            final fun <get-fileType>(): kotlin/String // com.splendo.kaluga.media/MediaSource.Bundle.fileType.<get-fileType>|<get-fileType>(){}[0]
+
+        final fun component1(): kotlin/String // com.splendo.kaluga.media/MediaSource.Bundle.component1|component1(){}[0]
+        final fun component2(): kotlin/String // com.splendo.kaluga.media/MediaSource.Bundle.component2|component2(){}[0]
+        final fun copy(kotlin/String = ..., kotlin/String = ...): com.splendo.kaluga.media/MediaSource.Bundle // com.splendo.kaluga.media/MediaSource.Bundle.copy|copy(kotlin.String;kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.Bundle.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaSource.Bundle.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaSource.Bundle.toString|toString(){}[0]
+    }
+
+    final class URL : com.splendo.kaluga.media/MediaSource { // com.splendo.kaluga.media/MediaSource.URL|null[0]
+        constructor <init>(platform.Foundation/NSURL, kotlin.collections/List<com.splendo.kaluga.media/MediaSource.URL.Option> = ...) // com.splendo.kaluga.media/MediaSource.URL.<init>|<init>(platform.Foundation.NSURL;kotlin.collections.List<com.splendo.kaluga.media.MediaSource.URL.Option>){}[0]
+
+        final val options // com.splendo.kaluga.media/MediaSource.URL.options|{}options[0]
+            final fun <get-options>(): kotlin.collections/List<com.splendo.kaluga.media/MediaSource.URL.Option> // com.splendo.kaluga.media/MediaSource.URL.options.<get-options>|<get-options>(){}[0]
+        final val url // com.splendo.kaluga.media/MediaSource.URL.url|{}url[0]
+            final fun <get-url>(): platform.Foundation/NSURL // com.splendo.kaluga.media/MediaSource.URL.url.<get-url>|<get-url>(){}[0]
+
+        final fun component1(): platform.Foundation/NSURL // com.splendo.kaluga.media/MediaSource.URL.component1|component1(){}[0]
+        final fun component2(): kotlin.collections/List<com.splendo.kaluga.media/MediaSource.URL.Option> // com.splendo.kaluga.media/MediaSource.URL.component2|component2(){}[0]
+        final fun copy(platform.Foundation/NSURL = ..., kotlin.collections/List<com.splendo.kaluga.media/MediaSource.URL.Option> = ...): com.splendo.kaluga.media/MediaSource.URL // com.splendo.kaluga.media/MediaSource.URL.copy|copy(platform.Foundation.NSURL;kotlin.collections.List<com.splendo.kaluga.media.MediaSource.URL.Option>){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaSource.URL.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaSource.URL.toString|toString(){}[0]
+
+        sealed class Option { // com.splendo.kaluga.media/MediaSource.URL.Option|null[0]
+            final class AllowsCellularAccess : com.splendo.kaluga.media/MediaSource.URL.Option { // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsCellularAccess|null[0]
+                constructor <init>(kotlin/Boolean) // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsCellularAccess.<init>|<init>(kotlin.Boolean){}[0]
+
+                final val isAllowed // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsCellularAccess.isAllowed|{}isAllowed[0]
+                    final fun <get-isAllowed>(): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsCellularAccess.isAllowed.<get-isAllowed>|<get-isAllowed>(){}[0]
+
+                final fun component1(): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsCellularAccess.component1|component1(){}[0]
+                final fun copy(kotlin/Boolean = ...): com.splendo.kaluga.media/MediaSource.URL.Option.AllowsCellularAccess // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsCellularAccess.copy|copy(kotlin.Boolean){}[0]
+                final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsCellularAccess.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsCellularAccess.hashCode|hashCode(){}[0]
+                final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsCellularAccess.toString|toString(){}[0]
+            }
+
+            final class AllowsConstrainedNetworkAccess : com.splendo.kaluga.media/MediaSource.URL.Option { // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsConstrainedNetworkAccess|null[0]
+                constructor <init>(kotlin/Boolean) // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsConstrainedNetworkAccess.<init>|<init>(kotlin.Boolean){}[0]
+
+                final val isAllowed // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsConstrainedNetworkAccess.isAllowed|{}isAllowed[0]
+                    final fun <get-isAllowed>(): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsConstrainedNetworkAccess.isAllowed.<get-isAllowed>|<get-isAllowed>(){}[0]
+
+                final fun component1(): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsConstrainedNetworkAccess.component1|component1(){}[0]
+                final fun copy(kotlin/Boolean = ...): com.splendo.kaluga.media/MediaSource.URL.Option.AllowsConstrainedNetworkAccess // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsConstrainedNetworkAccess.copy|copy(kotlin.Boolean){}[0]
+                final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsConstrainedNetworkAccess.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsConstrainedNetworkAccess.hashCode|hashCode(){}[0]
+                final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsConstrainedNetworkAccess.toString|toString(){}[0]
+            }
+
+            final class AllowsExpensiveNetworkAccess : com.splendo.kaluga.media/MediaSource.URL.Option { // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsExpensiveNetworkAccess|null[0]
+                constructor <init>(kotlin/Boolean) // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsExpensiveNetworkAccess.<init>|<init>(kotlin.Boolean){}[0]
+
+                final val isAllowed // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsExpensiveNetworkAccess.isAllowed|{}isAllowed[0]
+                    final fun <get-isAllowed>(): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsExpensiveNetworkAccess.isAllowed.<get-isAllowed>|<get-isAllowed>(){}[0]
+
+                final fun component1(): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsExpensiveNetworkAccess.component1|component1(){}[0]
+                final fun copy(kotlin/Boolean = ...): com.splendo.kaluga.media/MediaSource.URL.Option.AllowsExpensiveNetworkAccess // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsExpensiveNetworkAccess.copy|copy(kotlin.Boolean){}[0]
+                final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsExpensiveNetworkAccess.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsExpensiveNetworkAccess.hashCode|hashCode(){}[0]
+                final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaSource.URL.Option.AllowsExpensiveNetworkAccess.toString|toString(){}[0]
+            }
+
+            final class HTTPCookies : com.splendo.kaluga.media/MediaSource.URL.Option { // com.splendo.kaluga.media/MediaSource.URL.Option.HTTPCookies|null[0]
+                constructor <init>(kotlin.collections/List<platform.Foundation/NSHTTPCookie>) // com.splendo.kaluga.media/MediaSource.URL.Option.HTTPCookies.<init>|<init>(kotlin.collections.List<platform.Foundation.NSHTTPCookie>){}[0]
+
+                final val cookies // com.splendo.kaluga.media/MediaSource.URL.Option.HTTPCookies.cookies|{}cookies[0]
+                    final fun <get-cookies>(): kotlin.collections/List<platform.Foundation/NSHTTPCookie> // com.splendo.kaluga.media/MediaSource.URL.Option.HTTPCookies.cookies.<get-cookies>|<get-cookies>(){}[0]
+
+                final fun component1(): kotlin.collections/List<platform.Foundation/NSHTTPCookie> // com.splendo.kaluga.media/MediaSource.URL.Option.HTTPCookies.component1|component1(){}[0]
+                final fun copy(kotlin.collections/List<platform.Foundation/NSHTTPCookie> = ...): com.splendo.kaluga.media/MediaSource.URL.Option.HTTPCookies // com.splendo.kaluga.media/MediaSource.URL.Option.HTTPCookies.copy|copy(kotlin.collections.List<platform.Foundation.NSHTTPCookie>){}[0]
+                final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.HTTPCookies.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaSource.URL.Option.HTTPCookies.hashCode|hashCode(){}[0]
+                final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaSource.URL.Option.HTTPCookies.toString|toString(){}[0]
+            }
+
+            final class PreferPreciseDurationAndTiming : com.splendo.kaluga.media/MediaSource.URL.Option { // com.splendo.kaluga.media/MediaSource.URL.Option.PreferPreciseDurationAndTiming|null[0]
+                constructor <init>(kotlin/Boolean) // com.splendo.kaluga.media/MediaSource.URL.Option.PreferPreciseDurationAndTiming.<init>|<init>(kotlin.Boolean){}[0]
+
+                final val isPreferred // com.splendo.kaluga.media/MediaSource.URL.Option.PreferPreciseDurationAndTiming.isPreferred|{}isPreferred[0]
+                    final fun <get-isPreferred>(): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.PreferPreciseDurationAndTiming.isPreferred.<get-isPreferred>|<get-isPreferred>(){}[0]
+
+                final fun component1(): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.PreferPreciseDurationAndTiming.component1|component1(){}[0]
+                final fun copy(kotlin/Boolean = ...): com.splendo.kaluga.media/MediaSource.URL.Option.PreferPreciseDurationAndTiming // com.splendo.kaluga.media/MediaSource.URL.Option.PreferPreciseDurationAndTiming.copy|copy(kotlin.Boolean){}[0]
+                final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.PreferPreciseDurationAndTiming.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaSource.URL.Option.PreferPreciseDurationAndTiming.hashCode|hashCode(){}[0]
+                final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaSource.URL.Option.PreferPreciseDurationAndTiming.toString|toString(){}[0]
+            }
+
+            final class PrimarySessionIdentifier : com.splendo.kaluga.media/MediaSource.URL.Option { // com.splendo.kaluga.media/MediaSource.URL.Option.PrimarySessionIdentifier|null[0]
+                constructor <init>(platform.Foundation/NSUUID) // com.splendo.kaluga.media/MediaSource.URL.Option.PrimarySessionIdentifier.<init>|<init>(platform.Foundation.NSUUID){}[0]
+
+                final val identifier // com.splendo.kaluga.media/MediaSource.URL.Option.PrimarySessionIdentifier.identifier|{}identifier[0]
+                    final fun <get-identifier>(): platform.Foundation/NSUUID // com.splendo.kaluga.media/MediaSource.URL.Option.PrimarySessionIdentifier.identifier.<get-identifier>|<get-identifier>(){}[0]
+
+                final fun component1(): platform.Foundation/NSUUID // com.splendo.kaluga.media/MediaSource.URL.Option.PrimarySessionIdentifier.component1|component1(){}[0]
+                final fun copy(platform.Foundation/NSUUID = ...): com.splendo.kaluga.media/MediaSource.URL.Option.PrimarySessionIdentifier // com.splendo.kaluga.media/MediaSource.URL.Option.PrimarySessionIdentifier.copy|copy(platform.Foundation.NSUUID){}[0]
+                final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.PrimarySessionIdentifier.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaSource.URL.Option.PrimarySessionIdentifier.hashCode|hashCode(){}[0]
+                final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaSource.URL.Option.PrimarySessionIdentifier.toString|toString(){}[0]
+            }
+
+            final class ReferenceRestrictions : com.splendo.kaluga.media/MediaSource.URL.Option { // com.splendo.kaluga.media/MediaSource.URL.Option.ReferenceRestrictions|null[0]
+                constructor <init>(kotlin.collections/List<kotlin/ULong>) // com.splendo.kaluga.media/MediaSource.URL.Option.ReferenceRestrictions.<init>|<init>(kotlin.collections.List<kotlin.ULong>){}[0]
+
+                final val restrictions // com.splendo.kaluga.media/MediaSource.URL.Option.ReferenceRestrictions.restrictions|{}restrictions[0]
+                    final fun <get-restrictions>(): kotlin.collections/List<kotlin/ULong> // com.splendo.kaluga.media/MediaSource.URL.Option.ReferenceRestrictions.restrictions.<get-restrictions>|<get-restrictions>(){}[0]
+
+                final fun component1(): kotlin.collections/List<kotlin/ULong> // com.splendo.kaluga.media/MediaSource.URL.Option.ReferenceRestrictions.component1|component1(){}[0]
+                final fun copy(kotlin.collections/List<kotlin/ULong> = ...): com.splendo.kaluga.media/MediaSource.URL.Option.ReferenceRestrictions // com.splendo.kaluga.media/MediaSource.URL.Option.ReferenceRestrictions.copy|copy(kotlin.collections.List<kotlin.ULong>){}[0]
+                final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.ReferenceRestrictions.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaSource.URL.Option.ReferenceRestrictions.hashCode|hashCode(){}[0]
+                final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaSource.URL.Option.ReferenceRestrictions.toString|toString(){}[0]
+            }
+
+            final class RequestAttribution : com.splendo.kaluga.media/MediaSource.URL.Option { // com.splendo.kaluga.media/MediaSource.URL.Option.RequestAttribution|null[0]
+                constructor <init>(kotlin/ULong) // com.splendo.kaluga.media/MediaSource.URL.Option.RequestAttribution.<init>|<init>(kotlin.ULong){}[0]
+
+                final val attribution // com.splendo.kaluga.media/MediaSource.URL.Option.RequestAttribution.attribution|{}attribution[0]
+                    final fun <get-attribution>(): kotlin/ULong // com.splendo.kaluga.media/MediaSource.URL.Option.RequestAttribution.attribution.<get-attribution>|<get-attribution>(){}[0]
+
+                final fun component1(): kotlin/ULong // com.splendo.kaluga.media/MediaSource.URL.Option.RequestAttribution.component1|component1(){}[0]
+                final fun copy(kotlin/ULong = ...): com.splendo.kaluga.media/MediaSource.URL.Option.RequestAttribution // com.splendo.kaluga.media/MediaSource.URL.Option.RequestAttribution.copy|copy(kotlin.ULong){}[0]
+                final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.RequestAttribution.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaSource.URL.Option.RequestAttribution.hashCode|hashCode(){}[0]
+                final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaSource.URL.Option.RequestAttribution.toString|toString(){}[0]
+            }
+
+            final class UserAgent : com.splendo.kaluga.media/MediaSource.URL.Option { // com.splendo.kaluga.media/MediaSource.URL.Option.UserAgent|null[0]
+                constructor <init>(kotlin/String) // com.splendo.kaluga.media/MediaSource.URL.Option.UserAgent.<init>|<init>(kotlin.String){}[0]
+
+                final val userAgent // com.splendo.kaluga.media/MediaSource.URL.Option.UserAgent.userAgent|{}userAgent[0]
+                    final fun <get-userAgent>(): kotlin/String // com.splendo.kaluga.media/MediaSource.URL.Option.UserAgent.userAgent.<get-userAgent>|<get-userAgent>(){}[0]
+
+                final fun component1(): kotlin/String // com.splendo.kaluga.media/MediaSource.URL.Option.UserAgent.component1|component1(){}[0]
+                final fun copy(kotlin/String = ...): com.splendo.kaluga.media/MediaSource.URL.Option.UserAgent // com.splendo.kaluga.media/MediaSource.URL.Option.UserAgent.copy|copy(kotlin.String){}[0]
+                final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/MediaSource.URL.Option.UserAgent.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/MediaSource.URL.Option.UserAgent.hashCode|hashCode(){}[0]
+                final fun toString(): kotlin/String // com.splendo.kaluga.media/MediaSource.URL.Option.UserAgent.toString|toString(){}[0]
+            }
+        }
+    }
+
+    sealed class Local : com.splendo.kaluga.media/MediaSource // com.splendo.kaluga.media/MediaSource.Local|null[0]
+}
+
+sealed class com.splendo.kaluga.media/PlaybackError : kotlin/Exception { // com.splendo.kaluga.media/PlaybackError|null[0]
+    final object IO : com.splendo.kaluga.media/PlaybackError { // com.splendo.kaluga.media/PlaybackError.IO|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/PlaybackError.IO.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/PlaybackError.IO.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/PlaybackError.IO.toString|toString(){}[0]
+    }
+
+    final object MalformedMediaSource : com.splendo.kaluga.media/PlaybackError { // com.splendo.kaluga.media/PlaybackError.MalformedMediaSource|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/PlaybackError.MalformedMediaSource.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/PlaybackError.MalformedMediaSource.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/PlaybackError.MalformedMediaSource.toString|toString(){}[0]
+    }
+
+    final object PlaybackHasEnded : com.splendo.kaluga.media/PlaybackError { // com.splendo.kaluga.media/PlaybackError.PlaybackHasEnded|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/PlaybackError.PlaybackHasEnded.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/PlaybackError.PlaybackHasEnded.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/PlaybackError.PlaybackHasEnded.toString|toString(){}[0]
+    }
+
+    final object TimedOut : com.splendo.kaluga.media/PlaybackError { // com.splendo.kaluga.media/PlaybackError.TimedOut|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/PlaybackError.TimedOut.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/PlaybackError.TimedOut.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/PlaybackError.TimedOut.toString|toString(){}[0]
+    }
+
+    final object Uninitalized : com.splendo.kaluga.media/PlaybackError { // com.splendo.kaluga.media/PlaybackError.Uninitalized|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/PlaybackError.Uninitalized.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/PlaybackError.Uninitalized.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/PlaybackError.Uninitalized.toString|toString(){}[0]
+    }
+
+    final object Unknown : com.splendo.kaluga.media/PlaybackError { // com.splendo.kaluga.media/PlaybackError.Unknown|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/PlaybackError.Unknown.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/PlaybackError.Unknown.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/PlaybackError.Unknown.toString|toString(){}[0]
+    }
+
+    final object Unsupported : com.splendo.kaluga.media/PlaybackError { // com.splendo.kaluga.media/PlaybackError.Unsupported|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.media/PlaybackError.Unsupported.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.media/PlaybackError.Unsupported.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.media/PlaybackError.Unsupported.toString|toString(){}[0]
+    }
+}
+
+final val com.splendo.kaluga.media/duration // com.splendo.kaluga.media/duration|@com.splendo.kaluga.media.MediaPlayer{}duration[0]
+    final fun (com.splendo.kaluga.media/MediaPlayer).<get-duration>(): kotlinx.coroutines.flow/Flow<kotlin.time/Duration> // com.splendo.kaluga.media/duration.<get-duration>|<get-duration>@com.splendo.kaluga.media.MediaPlayer(){}[0]
+final val com.splendo.kaluga.media/isVideo // com.splendo.kaluga.media/isVideo|@com.splendo.kaluga.media.PlayableMedia{}isVideo[0]
+    final fun (com.splendo.kaluga.media/PlayableMedia).<get-isVideo>(): kotlin/Boolean // com.splendo.kaluga.media/isVideo.<get-isVideo>|<get-isVideo>@com.splendo.kaluga.media.PlayableMedia(){}[0]
+
+final fun (com.splendo.kaluga.media/MediaPlayer).com.splendo.kaluga.media/playTime(kotlin.time/Duration): kotlinx.coroutines.flow/Flow<kotlin.time/Duration> // com.splendo.kaluga.media/playTime|playTime@com.splendo.kaluga.media.MediaPlayer(kotlin.time.Duration){}[0]
+final fun com.splendo.kaluga.media/mediaSourceFromLocalFile(kotlin/String, kotlin/String): com.splendo.kaluga.media/MediaSource.Local // com.splendo.kaluga.media/mediaSourceFromLocalFile|mediaSourceFromLocalFile(kotlin.String;kotlin.String){}[0]
+final fun com.splendo.kaluga.media/mediaSourceFromUrl(kotlin/String): com.splendo.kaluga.media/MediaSource? // com.splendo.kaluga.media/mediaSourceFromUrl|mediaSourceFromUrl(kotlin.String){}[0]
+final suspend fun (com.splendo.kaluga.media/MediaPlayer).com.splendo.kaluga.media/play(com.splendo.kaluga.media/PlaybackState.PlaybackParameters = ..., kotlin/Boolean = ...) // com.splendo.kaluga.media/play|play@com.splendo.kaluga.media.MediaPlayer(com.splendo.kaluga.media.PlaybackState.PlaybackParameters;kotlin.Boolean){}[0]

@@ -14,6 +14,11 @@ kaluga {
                 implementation(libs.kotlinx.atomicfu)
             }
         }
+        ios {
+            main {
+                implementation(libs.kotlinx.atomicfu)
+            }
+        }
         common {
             main {
                 implementation(project(":service"))

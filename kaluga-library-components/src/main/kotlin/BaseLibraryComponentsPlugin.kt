@@ -24,7 +24,6 @@ import com.splendo.kaluga.plugin.extensions.KSPSubprojectExtension
 import com.splendo.kaluga.plugin.extensions.KalugaMultiplatformSubprojectExtension
 import com.splendo.kaluga.plugin.extensions.KalugaRootExtension
 import kotlinx.kover.gradle.plugin.KoverGradlePlugin
-import kotlinx.validation.BinaryCompatibilityValidatorPlugin
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -70,7 +69,6 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
 
         val kalugaExtension = when {
             rootProject == this -> {
-                pluginManager.apply(BinaryCompatibilityValidatorPlugin::class)
                 extensions.create<KalugaRootExtension>(EXTENSION_NAME, versionCatalog)
             }
 

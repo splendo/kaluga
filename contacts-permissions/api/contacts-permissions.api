@@ -3,6 +3,10 @@ public abstract interface class com/splendo/kaluga/permissions/contacts/BaseCont
 	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/contacts/BaseContactsPermissionManagerBuilder;Lcom/splendo/kaluga/permissions/contacts/ContactsPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
 }
 
+public final class com/splendo/kaluga/permissions/contacts/BaseContactsPermissionManagerBuilder$DefaultImpls {
+	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/contacts/BaseContactsPermissionManagerBuilder;Lcom/splendo/kaluga/permissions/contacts/ContactsPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
+}
+
 public final class com/splendo/kaluga/permissions/contacts/ContactsPermission : com/splendo/kaluga/permissions/base/Permission {
 	public fun <init> ()V
 	public fun <init> (Z)V

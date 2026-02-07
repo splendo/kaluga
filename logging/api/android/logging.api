@@ -107,6 +107,10 @@ public abstract interface class com/splendo/kaluga/logging/Logger {
 	public static synthetic fun log$default (Lcom/splendo/kaluga/logging/Logger;Lcom/splendo/kaluga/logging/LogLevel;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
 }
 
+public final class com/splendo/kaluga/logging/Logger$DefaultImpls {
+	public static synthetic fun log$default (Lcom/splendo/kaluga/logging/Logger;Lcom/splendo/kaluga/logging/LogLevel;Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+}
+
 public final class com/splendo/kaluga/logging/LoggerKt {
 	public static final fun d (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;)V
 	public static final fun d (Lcom/splendo/kaluga/logging/Logger;Ljava/lang/String;Ljava/lang/String;)V

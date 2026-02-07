@@ -3,6 +3,10 @@ public abstract interface class com/splendo/kaluga/permissions/storage/BaseStora
 	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/storage/BaseStoragePermissionManagerBuilder;Lcom/splendo/kaluga/permissions/storage/StoragePermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
 }
 
+public final class com/splendo/kaluga/permissions/storage/BaseStoragePermissionManagerBuilder$DefaultImpls {
+	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/storage/BaseStoragePermissionManagerBuilder;Lcom/splendo/kaluga/permissions/storage/StoragePermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
+}
+
 public final class com/splendo/kaluga/permissions/storage/DefaultStoragePermissionManager : com/splendo/kaluga/permissions/base/BasePermissionManager {
 	public fun <init> (Landroid/content/Context;Lcom/splendo/kaluga/permissions/storage/StoragePermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;)V
 }

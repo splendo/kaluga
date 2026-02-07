@@ -3,6 +3,10 @@ public abstract interface class com/splendo/kaluga/permissions/bluetooth/BaseBlu
 	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/bluetooth/BaseBluetoothPermissionManagerBuilder;Lcom/splendo/kaluga/permissions/bluetooth/BluetoothPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
 }
 
+public final class com/splendo/kaluga/permissions/bluetooth/BaseBluetoothPermissionManagerBuilder$DefaultImpls {
+	public static synthetic fun create$default (Lcom/splendo/kaluga/permissions/bluetooth/BaseBluetoothPermissionManagerBuilder;Lcom/splendo/kaluga/permissions/bluetooth/BluetoothPermission;Lcom/splendo/kaluga/permissions/base/BasePermissionManager$Settings;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lcom/splendo/kaluga/permissions/base/PermissionManager;
+}
+
 public final class com/splendo/kaluga/permissions/bluetooth/BluetoothPermission : com/splendo/kaluga/permissions/base/Permission {
 	public fun <init> (Lcom/splendo/kaluga/permissions/bluetooth/BluetoothPermission$Type;)V
 	public final fun component1 ()Lcom/splendo/kaluga/permissions/bluetooth/BluetoothPermission$Type;

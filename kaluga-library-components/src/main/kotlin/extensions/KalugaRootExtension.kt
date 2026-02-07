@@ -18,7 +18,6 @@
 package com.splendo.kaluga.plugin.extensions
 
 import com.splendo.kaluga.plugin.helpers.kalugaVersion
-import kotlinx.validation.ApiValidationExtension
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
@@ -27,6 +26,8 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.repositories
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.owasp.dependencycheck.gradle.extension.AnalyzerExtension
 import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 import javax.inject.Inject
@@ -59,9 +60,6 @@ open class KalugaRootExtension @Inject constructor(healthVersionCatalog: Version
         }
 
         generateNonDependentProjectsFileTask()
-        project.extensions.configure(ApiValidationExtension::class) {
-            apiExtensions(project)
-        }
 
         project.koverModules()
 
@@ -143,19 +141,6 @@ open class KalugaRootExtension @Inject constructor(healthVersionCatalog: Version
 
             file.appendText("]")
         }
-    }
-
-    private fun ApiValidationExtension.apiExtensions(project: Project) {
-        project.subprojects.forEach { subproject ->
-            val moduleName = subproject.name
-            ignoredClasses.add("com.splendo.kaluga.$moduleName.BuildConfig")
-            ignoredClasses.add("com.splendo.kaluga.${moduleName.replace("-", ".")}.BuildConfig")
-            ignoredClasses.add("com.splendo.kaluga.${moduleName.replace("-", "")}.BuildConfig")
-            ignoredClasses.add("com.splendo.kaluga.permissions.${moduleName.replace("-permissions", "")}.BuildConfig")
-        }
-        ignoredClasses.add("$BASE_GROUP.permissions.BuildConfig")
-        ignoredClasses.add("$BASE_GROUP.test.BuildConfig")
-        ignoredClasses.add("$BASE_GROUP.datetime.timer.BuildConfig")
     }
 
     private fun Project.koverModules() {

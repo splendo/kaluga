@@ -10,7 +10,6 @@ kotlin = "2.3.0"
 kotlinter = "5.3.0"
 kotlinx-kover = "0.9.4"
 dokka = "2.1.0"
-binarycompatilityvalidator = "0.18.1"
 vanniktechMavenPublish = "0.36.0"
 palantir-git-version = "4.2.0"
 
@@ -111,7 +110,6 @@ kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.
 kotlinter-gradle = { module = "org.jmailen.gradle:kotlinter-gradle", version.ref = "kotlinter" }
 dependencycheck-gradle = { module = "org.owasp:dependency-check-gradle", version.ref = "dependencycheck" }
 kotlinx-atomicfu-gradle = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "kotlinx-atomicfu" }
-kotlinx-binarycompatibilityvalidator-gradle = { module = "org.jetbrains.kotlinx.binary-compatibility-validator:org.jetbrains.kotlinx.binary-compatibility-validator.gradle.plugin", version.ref = "binarycompatilityvalidator" }
 kotlinx-kover-gradle = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kotlinx-kover" }
 dokka-gradle = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 vanniktech-maven-publish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "vanniktechMavenPublish" }
@@ -228,7 +226,6 @@ kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
 dependencycheck = { id = "org.owasp.dependencycheck", version.ref = "dependencycheck" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
-kotlinx-binarycompatibilityvalidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binarycompatilityvalidator" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlinx-atomicfu" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinx-kover"}

@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.base.collections.concurrentMutableMapOf
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.Descriptor
@@ -357,7 +358,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
          * @param notification the [NotificationDSL] to use to set up notification
          */
         fun <T> StateFlow<T>.collectTo(scope: CoroutineScope, notification: NotificationDSL<T>.() -> Unit) {
-            val hasStarted = CompletableDeferred<Unit>()
+            val hasStarted = EmptyCompletableDeferred()
             NotificationDSL(
                 this@DSL,
                 onSubscribe = { device, toByteArray ->
@@ -385,7 +386,7 @@ sealed class LocalCharacteristic(val wrapper: LocalCharacteristicWrapper, overri
          * @param notification the [NotificationDSL] to use to set up notification
          */
         fun <T> ReceiveChannel<T>.consumeTo(scope: CoroutineScope, notification: NotificationDSL<T>.() -> Unit) {
-            val hasStarted = CompletableDeferred<Unit>()
+            val hasStarted = EmptyCompletableDeferred()
             NotificationDSL(
                 this@DSL,
                 onSubscribe = { device, toByteArray ->

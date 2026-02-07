@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.bytes.Encoding.UTF_8
 
 /**
  * Character encoding
- * @property byteSize the number of [Byte] required to encode with this encoding
+ * @property byteSize the number of [Byte] required to encode a [Char] with this encoding
  */
 enum class Encoding(val byteSize: Int) {
 
@@ -48,10 +48,33 @@ enum class Encoding(val byteSize: Int) {
  * @param char the [Char] to encode.
  * @param byteOrder the [ByteOrder] to use. For [Encoding] where [Encoding.byteSize] is 1, this can be ignored.
  */
-fun Encoding.encodeChar(char: Char, byteOrder: ByteOrder) = when (this) {
-    UTF_8 -> char.toString().encodeToByteArray()
+fun Encoding.encodeChar(char: Char, byteOrder: ByteOrder): ByteArray = when (this) {
+    UTF_8 -> char.toString().toUTF8(byteOrder)
     UTF_16 -> char.toUTF16(byteOrder)
-    ASCII -> char.toAscii()
+    ASCII -> byteArrayOf(char.toAscii())
+}
+
+/**
+ * Encodes a [Char] using the given [Encoding] and [ByteOrder] and copies it into a [ByteArray] at a given offset.
+ * @param char the [Char] to encode.
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @param byteOrder the [ByteOrder] in which the [Char] is encoded. For [Encoding] where [Encoding.byteSize] is 1, this can be ignored.
+ * @throws IllegalArgumentException if [array] is not  is not large enough to hold [Encoding.byteSize] bytes at the [offset].
+ * @return the encoded [ByteArray].
+ */
+fun Encoding.copyCharIntoByteArray(char: Char, array: ByteArray, offset: Int = 0, byteOrder: ByteOrder): ByteArray {
+    require(array.size > byteSize + offset) { "Cannot copy into ByteArray. Must be at least ${offset + byteSize} long" }
+    return when (this) {
+        UTF_8 -> char.toString().copyUTF8IntoArray(array, offset, byteOrder)
+
+        UTF_16 -> char.copyUTF16IntoByteArray(array, offset, byteOrder)
+
+        ASCII -> {
+            array[offset] = char.toAscii()
+            array
+        }
+    }
 }
 
 /**
@@ -60,6 +83,16 @@ fun Encoding.encodeChar(char: Char, byteOrder: ByteOrder) = when (this) {
  * @return the [ByteArray] representing the [Char] in UTF-16.
  */
 fun Char.toUTF16(byteOrder: ByteOrder): ByteArray = code.toUShort().toByteArray(byteOrder)
+
+/**
+ * Encodes a [Char] and copies it into a [ByteArray] at a given offset in UTF-16 using the given [ByteOrder].
+ * @param array the [ByteArray] to copy the encoded data into.
+ * @param offset the offset at which to copy the encoded data.
+ * @param byteOrder the [ByteOrder] to use.
+ * @throws IllegalArgumentException if [array] is not  is not large enough to hold 2 bytes at the [offset].
+ * @return the [ByteArray] representing the [Char] in UTF-16.
+ */
+fun Char.copyUTF16IntoByteArray(array: ByteArray, offset: Int = 0, byteOrder: ByteOrder) = code.toUShort().copyIntoByteArray(array, offset, byteOrder)
 
 /**
  * Encodes a [Char] to a [Byte] in ASCII.

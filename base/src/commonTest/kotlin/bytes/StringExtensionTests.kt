@@ -38,6 +38,11 @@ class StringExtensionTests {
 
     @Test
     fun encodeShortStringWithPrefix() {
+        assertContentEquals(
+            SHORT_STRING.toUTF8(ByteOrder.MOST_SIGNIFICANT_FIRST),
+            SHORT_STRING.encodeToByteArray().reversedArray(),
+        )
+
         SHORT_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.LengthPrefix.ByteLength, Encoding.UTF_8),
             ByteOrder.LEAST_SIGNIFICANT_FIRST,
@@ -47,7 +52,7 @@ class StringExtensionTests {
         SHORT_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.LengthPrefix.ByteLength, Encoding.UTF_8),
             ByteOrder.MOST_SIGNIFICANT_FIRST,
-            SHORT_STRING.reversed().map { it.code.toByte() }.toByteArray() + SHORT_STRING.length.toByte(),
+            SHORT_STRING.encodeToByteArray().reversedArray() + SHORT_STRING.length.toByte(),
         )
 
         SHORT_STRING.encodeDecode(
@@ -77,13 +82,13 @@ class StringExtensionTests {
         SHORT_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.LengthPrefix.ShortLength, Encoding.UTF_8),
             ByteOrder.LEAST_SIGNIFICANT_FIRST,
-            SHORT_STRING.length.toUShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) + SHORT_STRING.map { it.code.toByte() }.toByteArray(),
+            SHORT_STRING.length.toUShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) + SHORT_STRING.encodeToByteArray(),
         )
 
         SHORT_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.LengthPrefix.ShortLength, Encoding.UTF_8),
             ByteOrder.MOST_SIGNIFICANT_FIRST,
-            SHORT_STRING.reversed().map { it.code.toByte() }.toByteArray() + SHORT_STRING.length.toUShort().toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST),
+            SHORT_STRING.encodeToByteArray().reversedArray() + SHORT_STRING.length.toUShort().toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST),
         )
 
         SHORT_STRING.encodeDecode(
@@ -124,13 +129,13 @@ class StringExtensionTests {
         LONG_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.LengthPrefix.ShortLength, Encoding.UTF_8),
             ByteOrder.LEAST_SIGNIFICANT_FIRST,
-            LONG_STRING.length.toUShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) + LONG_STRING.map { it.code.toByte() }.toByteArray(),
+            LONG_STRING.length.toUShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) + LONG_STRING.encodeToByteArray(),
         )
 
         LONG_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.LengthPrefix.ShortLength, Encoding.UTF_8),
             ByteOrder.MOST_SIGNIFICANT_FIRST,
-            LONG_STRING.reversed().map { it.code.toByte() }.toByteArray() + LONG_STRING.length.toUShort().toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST),
+            LONG_STRING.encodeToByteArray().reversedArray() + LONG_STRING.length.toUShort().toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST),
         )
 
         LONG_STRING.encodeDecode(
@@ -164,13 +169,13 @@ class StringExtensionTests {
         LONG_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.LengthPrefix.WithOverflow(), Encoding.UTF_8),
             ByteOrder.LEAST_SIGNIFICANT_FIRST,
-            byteArrayOf(0xFF.toByte()) + LONG_STRING.length.toUShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) + LONG_STRING.map { it.code.toByte() }.toByteArray(),
+            byteArrayOf(0xFF.toByte()) + LONG_STRING.length.toUShort().toByteArray(ByteOrder.LEAST_SIGNIFICANT_FIRST) + LONG_STRING.encodeToByteArray(),
         )
 
         LONG_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.LengthPrefix.WithOverflow(), Encoding.UTF_8),
             ByteOrder.MOST_SIGNIFICANT_FIRST,
-            LONG_STRING.reversed().map { it.code.toByte() }.toByteArray() + LONG_STRING.length.toUShort().toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST) + 0xFF.toByte(),
+            LONG_STRING.encodeToByteArray().reversedArray() + LONG_STRING.length.toUShort().toByteArray(ByteOrder.MOST_SIGNIFICANT_FIRST) + 0xFF.toByte(),
         )
 
         LONG_STRING.encodeDecode(
@@ -206,26 +211,26 @@ class StringExtensionTests {
         SHORT_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.FixedLength(100), Encoding.UTF_8),
             ByteOrder.LEAST_SIGNIFICANT_FIRST,
-            SHORT_STRING.map { it.code.toByte() }.toByteArray() + ByteArray(100 - SHORT_STRING.length),
+            SHORT_STRING.encodeToByteArray() + ByteArray(100 - SHORT_STRING.length),
         )
 
         SHORT_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.FixedLength(100), Encoding.UTF_8),
             ByteOrder.MOST_SIGNIFICANT_FIRST,
-            ByteArray(100 - SHORT_STRING.length) + SHORT_STRING.reversed().map { it.code.toByte() }.toByteArray(),
+            ByteArray(100 - SHORT_STRING.length) + SHORT_STRING.encodeToByteArray().reversedArray(),
         )
 
         SHORT_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.FixedLength(10), Encoding.UTF_8),
             ByteOrder.LEAST_SIGNIFICANT_FIRST,
-            SHORT_STRING.take(10).map { it.code.toByte() }.toByteArray(),
+            SHORT_STRING.take(10).encodeToByteArray(),
             SHORT_STRING.take(10),
         )
 
         SHORT_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.FixedLength(10), Encoding.UTF_8),
             ByteOrder.MOST_SIGNIFICANT_FIRST,
-            SHORT_STRING.take(10).reversed().map { it.code.toByte() }.toByteArray(),
+            SHORT_STRING.take(10).encodeToByteArray().reversedArray(),
             SHORT_STRING.take(10),
         )
 
@@ -287,13 +292,13 @@ class StringExtensionTests {
         SHORT_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.NullTerminated, Encoding.UTF_8),
             ByteOrder.LEAST_SIGNIFICANT_FIRST,
-            SHORT_STRING.map { it.code.toByte() }.toByteArray() + 0x00.toByte(),
+            SHORT_STRING.encodeToByteArray() + 0x00.toByte(),
         )
 
         SHORT_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.NullTerminated, Encoding.UTF_8),
             ByteOrder.MOST_SIGNIFICANT_FIRST,
-            byteArrayOf(0x00.toByte()) + SHORT_STRING.reversed().map { it.code.toByte() }.toByteArray(),
+            byteArrayOf(0x00.toByte()) + SHORT_STRING.encodeToByteArray().reversedArray(),
         )
 
         SHORT_STRING.encodeDecode(
@@ -336,13 +341,13 @@ class StringExtensionTests {
         SHORT_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8),
             ByteOrder.LEAST_SIGNIFICANT_FIRST,
-            SHORT_STRING.map { it.code.toByte() }.toByteArray(),
+            SHORT_STRING.encodeToByteArray(),
         )
 
         SHORT_STRING.encodeDecode(
             StringEncodingSettings(StringEncodingSettings.NoMarking, Encoding.UTF_8),
             ByteOrder.MOST_SIGNIFICANT_FIRST,
-            SHORT_STRING.reversed().map { it.code.toByte() }.toByteArray(),
+            SHORT_STRING.encodeToByteArray().reversedArray(),
         )
 
         SHORT_STRING.encodeDecode(
