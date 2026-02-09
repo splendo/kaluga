@@ -23,8 +23,10 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
+import com.google.devtools.ksp.processing.UnknownPlatformInfo
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.Origin
 import com.splendo.kaluga.bluetooth.annotations.Bluetooth
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
 import com.splendo.kaluga.bluetooth.annotations.BluetoothClientName
@@ -40,30 +42,33 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
     private val codeGenerator = environment.codeGenerator
     private val logger = environment.logger
 
+    private val commonSources = environment.options["commonSource"].orEmpty().split(":")
+
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        logger.warn("------ PROCESSING ----")
-        logger.warn(environment.options.entries.joinToString { (key, value) -> "$key: $value" })
-        logger.warn(environment.platforms.joinToString { it.platformName })
-        val bluetoothDeclarations = resolver.getSymbolsWithAnnotation(Bluetooth::class.java.name).filterIsInstance<KSClassDeclaration>().filter { it.parentDeclaration == null }
+        logger.warn("------ PROCESSING for ${environment.platforms.joinToString { it.platformName }} ----")
+        logger.warn("Options" + environment.options.entries.joinToString { (key, value) -> "$key: $value" })
+        val bluetoothDeclarations = resolver.getSymbolsWithAnnotation(Bluetooth::class.java.name).filterIsInstance<KSClassDeclaration>().filter {
+            it.includeInGeneration && it.parentDeclaration == null
+        }
         bluetoothDeclarations.forEach { bluetoothDeclaration ->
             bluetoothDeclaration.generateBluetoothClientFile()
             bluetoothDeclaration.generateBluetoothServerFile()
         }
         val serviceDeclarations = resolver.getSymbolsWithAnnotation(BluetoothService::class.java.name).filterIsInstance<KSClassDeclaration>().filter {
-            it.parentDeclaration == null
+            it.includeInGeneration && it.parentDeclaration == null
         }
         serviceDeclarations.forEach { serviceDeclaration ->
             serviceDeclaration.generateBluetoothServiceFile(serviceDeclaration.getAnnotationsByType(BluetoothService::class).first())
         }
         val characteristicDeclarations = resolver.getSymbolsWithAnnotation(BluetoothCharacteristic::class.java.name).filterIsInstance<KSClassDeclaration>().filter {
-            it.parentDeclaration ==
+            it.includeInGeneration && it.parentDeclaration ==
                 null
         }
         characteristicDeclarations.forEach { characteristicDeclaration ->
             characteristicDeclaration.generateBluetoothCharacteristicFile(characteristicDeclaration.getAnnotationsByType(BluetoothCharacteristic::class).first())
         }
         val descriptorDeclarations = resolver.getSymbolsWithAnnotation(BluetoothDescriptor::class.java.name).filterIsInstance<KSClassDeclaration>().filter {
-            it.parentDeclaration ==
+            it.includeInGeneration && it.parentDeclaration ==
                 null
         }
         descriptorDeclarations.forEach { descriptorDeclaration ->
@@ -169,6 +174,16 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
         getAnnotationsByType(BluetoothClientName::class).firstOrNull()?.name ?: "$prefix${simpleName.asString()}$postFix"
     private fun KSClassDeclaration.serverName(prefix: String = "", postFix: String = "Server") =
         getAnnotationsByType(BluetoothServerName::class).firstOrNull()?.name ?: "$prefix${simpleName.asString()}$postFix"
+
+    private val KSClassDeclaration.includeInGeneration: Boolean get() = when {
+        environment.options["isSingleTarget"] == "true" -> true
+        environment.platforms.size > 1 -> true
+        else -> {
+            containingFile?.filePath?.let { filePath ->
+                commonSources.none { filePath.startsWith(it) }
+            } ?: true
+        }
+    }
 }
 
 class BluetoothSymbolProcessorProvider : SymbolProcessorProvider {

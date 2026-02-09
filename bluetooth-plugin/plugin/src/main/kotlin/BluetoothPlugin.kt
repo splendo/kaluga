@@ -38,30 +38,39 @@ class BluetoothPlugin : Plugin<Project> {
 
         val kalugaVersion = BluetoothPluginVersion.kalugaVersion
 
-        extensions.configure<KotlinMultiplatformExtension> {
-            project.dependencies.add(
-                "kspCommonMainMetadata",
-                "com.splendo.kaluga:bluetooth-ksp:$kalugaVersion"
-            )
-            sourceSets.all {
-                languageSettings.optIn("com.google.devtools.ksp.KspExperimental")
-            }
-            sourceSets.commonMain {
-                kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
-                dependencies {
-                    implementation("com.splendo.kaluga:bluetooth-annotations:$kalugaVersion")
-                    implementation("com.splendo.kaluga:bluetooth:$kalugaVersion")
+        afterEvaluate {
+            extensions.configure<KotlinMultiplatformExtension> {
+                project.dependencies.add(
+                    "kspCommonMainMetadata",
+                    "com.splendo.kaluga:bluetooth-ksp:$kalugaVersion"
+                )
+                targets.configureEach {
+                    if (name !in listOf("metadata")) {
+                        project.dependencies.add(
+                            "ksp${name.uppercaseFirstChar()}",
+                            "com.splendo.kaluga:bluetooth-ksp:$kalugaVersion"
+                        )
+                    }
                 }
-            }
+                sourceSets.all {
+                    languageSettings.optIn("com.google.devtools.ksp.KspExperimental")
+                }
+                sourceSets.commonMain {
+                    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+                    dependencies {
+                        implementation("com.splendo.kaluga:bluetooth-annotations:$kalugaVersion")
+                        implementation("com.splendo.kaluga:bluetooth:$kalugaVersion")
+                    }
+                }
 
-            tasks.withType<KspAATask>().configureEach {
-                if (name != "kspCommonMainKotlinMetadata") {
-                    dependsOn("kspCommonMainKotlinMetadata")
+                tasks.withType<KspAATask>().configureEach {
+                    if (targets.size > 2 && name != "kspCommonMainKotlinMetadata") {
+                        dependsOn("kspCommonMainKotlinMetadata")
+                    }
                 }
-            }
-            afterEvaluate {
                 this@run.extensions.configure<KspExtension> {
-                    arg("isSingleTarget", "${targets.size == 1}")
+                    arg("commonSource", sourceSets.commonMain.get().kotlin.sourceDirectories.asPath)
+                    arg("isSingleTarget", "${targets.size == 2}")
                 }
             }
         }
