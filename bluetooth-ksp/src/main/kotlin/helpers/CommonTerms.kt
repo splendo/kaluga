@@ -21,17 +21,17 @@ import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 
 // Kotlin keywords
-const val VAL = "val"
+const val AS = "as"
+const val FALSE = "false"
+const val IS = "is"
+const val IT = "it"
+const val NULL = "null"
 const val RETURN = "return"
 const val THIS = "this"
-const val FALSE = "false"
-const val TRUE = "true"
-const val NULL = "null"
-const val IT = "it"
-const val VALUE = "value"
 const val TO = "to"
-const val AS = "as"
-const val IS = "is"
+const val TRUE = "true"
+const val VAL = "val"
+const val VALUE = "value"
 
 // Kotlin control flow
 const val IF = "if"
@@ -67,22 +67,22 @@ const val ACTION = "Action"
 const val BUILDER = "builder"
 const val CHANGED = "Changed"
 const val CLOSE = "close"
-const val IS_CLOSED = "isClosed"
 const val CONFIGURE = "configure"
 const val DELEGATE = "Delegate"
+const val ERROR = "error"
 const val EXCEPTION = "exception"
+const val FAILURE = "Failure"
+const val IS_CLOSED = "isClosed"
 const val OFFSET = "offset"
 const val OR_NULL = "OrNull"
-const val SUCCESS = "Success"
-const val FAILURE = "Failure"
 const val RESPONSE = "response"
-const val ERROR = "error"
+const val SUCCESS = "Success"
 
 // Encoding
 const val BLUETOOTH_FORMAT = "bluetoothFormat"
-const val FORMAT = "format"
-const val ENCODE_TO_BYTE_ARRAY = "encodeToByteArray"
 const val DECODE_FROM_BYTE_ARRAY = "decodeFromByteArray"
+const val ENCODE_TO_BYTE_ARRAY = "encodeToByteArray"
+const val FORMAT = "format"
 const val DESERIALIZATION_STRATEGY = "deserializationStrategy"
 
 // Bluetooth
@@ -107,17 +107,17 @@ const val SUBSCRIBED_DEVICES = "subscribedDevices"
 
 // Service
 const val SERVICE = "service"
-const val INCLUDED_SERVICE = "includedService"
 const val SERVICES = "services"
 const val FROM_SERVICE = "fromService"
-const val FROM_DISCOVERED_SERVICES = "fromDiscoveredServices"
-const val DISCOVERED_SERVICES = "discoveredServices"
+const val INCLUDED_SERVICE = "includedService"
 const val INCLUDED_SERVICES = "includedServices"
-const val FROM_CHARACTERISTIC = "fromCharacteristic"
+const val DISCOVERED_SERVICES = "discoveredServices"
+const val FROM_DISCOVERED_SERVICES = "fromDiscoveredServices"
 
 // Characteristic
 const val CHARACTERISTIC = "characteristic"
 const val CHARACTERISTICS = "characteristics"
+const val FROM_CHARACTERISTIC = "fromCharacteristic"
 
 // Descriptor
 const val DESCRIPTOR = "descriptor"
@@ -125,10 +125,10 @@ const val DESCRIPTORS = "descriptors"
 
 // Reading
 const val ENCRYPTED = "encrypted"
-const val PROPERTIES = "properties"
 const val READ = "read"
 const val READABLE = "readable"
 const val ON_READ = "onRead"
+const val PROPERTIES = "properties"
 
 // Writing
 const val WRITE = "write"
