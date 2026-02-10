@@ -32,6 +32,12 @@ object References {
         override val packageName: String = "com.splendo.kaluga.base"
 
         val singleThreadDispatcher = memberName("singleThreadDispatcher")
+
+        object Utils : ClassNameProvider {
+            override val packageName: String = "${Base.packageName}.utils"
+
+            val complete = memberName("complete")
+        }
     }
     object Bluetooth : ClassNameProvider {
         object Device : ClassNameProvider {

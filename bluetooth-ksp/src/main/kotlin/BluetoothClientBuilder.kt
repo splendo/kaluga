@@ -23,13 +23,18 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
-import com.splendo.kaluga.bluetooth.ksp.BluetoothServerBuilder.Companion.GENERATE_CLIENT
+import com.splendo.kaluga.bluetooth.ksp.helpers.ALL_DEVICES
 import com.splendo.kaluga.bluetooth.ksp.helpers.BLUETOOTH
+import com.splendo.kaluga.bluetooth.ksp.helpers.DISCOVERED_SERVICES
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
+import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_DISCOVERED_SERVICES
+import com.splendo.kaluga.bluetooth.ksp.helpers.GENERATE_CLIENT
+import com.splendo.kaluga.bluetooth.ksp.helpers.IDENTIFIER
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
+import com.splendo.kaluga.bluetooth.ksp.helpers.SERVER
 import com.splendo.kaluga.bluetooth.ksp.helpers.SIMULATED
 import com.splendo.kaluga.bluetooth.ksp.helpers.nullIfPropertyIsNull
 import com.splendo.kaluga.bluetooth.ksp.helpers.orNullIfNullable
@@ -41,12 +46,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
-internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: KSPLogger) : AbstractBluetoothClassBuilder(declaration, logger) {
-
-    companion object {
-        const val IDENTIFIER = "identifier"
-        const val DISCOVERED_SERVICES = "discoveredServices"
-    }
+internal class BluetoothClientBuilder(declaration: KSClassDeclaration, options: Options, logger: KSPLogger) : AbstractBluetoothClassBuilder(declaration, options, logger) {
 
     override fun generateAPI(nested: List<TypeSpec>): TypeSpec {
         val needsFormatter = NeedsFormatterHelper.needsBluetoothFormatter(declaration)
@@ -58,8 +58,14 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
     }
 
     private fun generateAPICompanionObject(needsFormatter: NeedsFormatterHelper.NeedsFormatter): TypeSpec = TypeSpec.companionObjectBuilder()
-        .addFunction(generateAPIBluetoothMethod(needsFormatter))
-        .addFunction(generateAPISimulatorMethod())
+        .apply {
+            if (options.generateBluetoothImplementation) {
+                addFunction(generateAPIBluetoothMethod(needsFormatter))
+            }
+            if (options.generateSimulatorImplementation) {
+                addFunction(generateAPISimulatorMethod())
+            }
+        }
         .build()
 
     private fun generateAPIBluetoothMethod(needsFormatter: NeedsFormatterHelper.NeedsFormatter): FunSpec = FunSpec.builder(
@@ -78,7 +84,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
                 ),
             )
             .addStatement(
-                "$RETURN %T($BLUETOOTH.allDevices().%M($IDENTIFIER).%M().%M()${needsFormatter.functionArgument})",
+                "$RETURN %T($BLUETOOTH.$ALL_DEVICES().%M($IDENTIFIER).%M().%M()${needsFormatter.functionArgument})",
                 returnType,
                 References.Bluetooth.get,
                 References.Bluetooth.discoveredServices,
@@ -93,10 +99,10 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
             .addParameters(
                 listOf(
                     ParameterSpec(IDENTIFIER, References.Bluetooth.Device.identifier),
-                    ParameterSpec("server", serverType),
+                    ParameterSpec(SERVER, serverType),
                 ),
             )
-            .addStatement("$RETURN server.$GENERATE_CLIENT($IDENTIFIER)")
+            .addStatement("$RETURN $SERVER.$GENERATE_CLIENT($IDENTIFIER)")
     }.build()
 
     override fun generateBluetooth(nested: List<TypeSpec>): TypeSpec {
@@ -161,7 +167,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
                 if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothService::class)) {
                     generateServiceProperty(propertyDeclaration, typeDeclaration, type)
                 } else {
-                    logger.error("A BluetoothClient should only have @${BluetoothService::class.simpleName} properties $typeDeclaration ${typeDeclaration.annotations}")
+                    invalidProperty(propertyDeclaration, BluetoothService::class)
                     null
                 }
             }.toList(),
@@ -180,7 +186,7 @@ internal class BluetoothClientBuilder(declaration: KSClassDeclaration, logger: K
 
                     GenerationType.Type.BLUETOOTH -> {
                         initializer(
-                            "%T.${BluetoothRemoteServiceBuilder.FROM_DISCOVERED_SERVICES}${propertyDeclaration.orNullIfNullable}(" +
+                            "%T.$FROM_DISCOVERED_SERVICES${propertyDeclaration.orNullIfNullable}(" +
                                 "${DISCOVERED_SERVICES}${NeedsFormatterHelper.needsBluetoothFormatter(typeDeclaration).functionArgument}" +
                                 ")",
                             NameHelper.clientName(typeDeclaration, type),

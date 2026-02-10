@@ -25,6 +25,7 @@ import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -37,6 +38,8 @@ class BluetoothPlugin : Plugin<Project> {
         plugins.apply(KspGradleSubplugin::class)
 
         val kalugaVersion = BluetoothPluginVersion.kalugaVersion
+
+        val bluetoothExtension = extensions.create("bluetooth", BluetoothExtension::class.java, extensions.getByType<KspExtension>())
 
         afterEvaluate {
             extensions.configure<KotlinMultiplatformExtension> {
@@ -52,6 +55,8 @@ class BluetoothPlugin : Plugin<Project> {
                         )
                     }
                 }
+                println(targets.joinToString { it.name })
+                val isSinglePlatform = targets.count { it.name != "metadata" } == 1
                 sourceSets.all {
                     languageSettings.optIn("com.google.devtools.ksp.KspExperimental")
                 }
@@ -64,15 +69,16 @@ class BluetoothPlugin : Plugin<Project> {
                 }
 
                 tasks.withType<KspAATask>().configureEach {
-                    if (targets.size > 2 && name != "kspCommonMainKotlinMetadata") {
+                    if (!isSinglePlatform && name != "kspCommonMainKotlinMetadata") {
                         dependsOn("kspCommonMainKotlinMetadata")
                     }
                 }
                 this@run.extensions.configure<KspExtension> {
-                    arg("commonSource", sourceSets.commonMain.get().kotlin.sourceDirectories.asPath)
-                    arg("isSingleTarget", "${targets.size == 2}")
+                    arg("commonSource", sourceSets.commonMain.get().kotlin.sourceDirectories.files.joinToString(separator = ":") { it.absolutePath })
+                    arg("isSingleTarget", "$isSinglePlatform")
                 }
             }
+            bluetoothExtension.afterEvaluate()
         }
     }
 }

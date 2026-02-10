@@ -28,22 +28,32 @@ import com.splendo.kaluga.bluetooth.annotations.AdvertisingName
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.splendo.kaluga.bluetooth.ksp.helpers.BLUETOOTH
 import com.splendo.kaluga.bluetooth.ksp.helpers.BUILDER
+import com.splendo.kaluga.bluetooth.ksp.helpers.CLOSE
 import com.splendo.kaluga.bluetooth.ksp.helpers.CONFIGURE
 import com.splendo.kaluga.bluetooth.ksp.helpers.COROUTINE_CONTEXT
 import com.splendo.kaluga.bluetooth.ksp.helpers.COROUTINE_SCOPE
 import com.splendo.kaluga.bluetooth.ksp.helpers.DELEGATE
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
+import com.splendo.kaluga.bluetooth.ksp.helpers.GENERATE_CLIENT
 import com.splendo.kaluga.bluetooth.ksp.helpers.GENERATE_REMOTE
+import com.splendo.kaluga.bluetooth.ksp.helpers.GET_OR_PUT
 import com.splendo.kaluga.bluetooth.ksp.helpers.IDENTIFIER
 import com.splendo.kaluga.bluetooth.ksp.helpers.IS_CLOSED
+import com.splendo.kaluga.bluetooth.ksp.helpers.IT
+import com.splendo.kaluga.bluetooth.ksp.helpers.LAZY
+import com.splendo.kaluga.bluetooth.ksp.helpers.MUTABLE_MAP_OF
+import com.splendo.kaluga.bluetooth.ksp.helpers.NULL
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.REMOTES
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
+import com.splendo.kaluga.bluetooth.ksp.helpers.SERVER
+import com.splendo.kaluga.bluetooth.ksp.helpers.SERVICES
 import com.splendo.kaluga.bluetooth.ksp.helpers.SIMULATED
 import com.splendo.kaluga.bluetooth.ksp.helpers.THIS
 import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
+import com.splendo.kaluga.bluetooth.ksp.helpers.VALUE
 import com.splendo.kaluga.bluetooth.ksp.helpers.WITH
 import com.splendo.kaluga.bluetooth.ksp.helpers.delegateParameterName
 import com.splendo.kaluga.bluetooth.ksp.helpers.nullIfPropertyIsNull
@@ -63,13 +73,16 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.joinToCode
 
-internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: KSPLogger) : AbstractBluetoothClassBuilder(declaration, logger) {
+internal class BluetoothServerBuilder(declaration: KSClassDeclaration, options: Options, logger: KSPLogger) : AbstractBluetoothClassBuilder(declaration, options, logger) {
 
-    companion object {
-        const val SERVER = "server"
+    private companion object {
+        const val CREATE_SERVER = "createServer"
+        const val SERVER_NAME = "serverName"
+        const val LOCAL_NAME = "localName"
+        const val ADVERTISE = "advertise"
         const val SETTINGS_BUILDER = "settingsBuilder"
         const val PERMISSIONS = "permissions"
-        const val GENERATE_CLIENT = "generateClient"
+        const val SERVICE_UUIDS = "serviceUUIDs"
     }
 
     override fun generateAPI(nested: List<TypeSpec>): TypeSpec {
@@ -94,12 +107,14 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
     }
 
     private fun generateAPICompanionObject(delegateParameter: ParameterSpec, interfaceName: ClassName): TypeSpec = TypeSpec.companionObjectBuilder()
-        .addFunction(
-            generateAPICreateBluetoothMethod(delegateParameter, interfaceName),
-        )
-        .addFunction(
-            generateAPICreateSimulatorMethod(delegateParameter, interfaceName),
-        )
+        .apply {
+            if (options.generateBluetoothImplementation) {
+                addFunction(generateAPICreateBluetoothMethod(delegateParameter, interfaceName))
+            }
+            if (options.generateSimulatorImplementation) {
+                addFunction(generateAPICreateSimulatorMethod(delegateParameter, interfaceName))
+            }
+        }
         .build()
 
     private fun generateAPICreateBluetoothMethod(delegateParameter: ParameterSpec, interfaceName: ClassName): FunSpec = FunSpec.builder(
@@ -123,15 +138,15 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                             parameters = listOf(ParameterSpec(PERMISSIONS, References.Permissions.permissions)),
                             returnType = References.Bluetooth.Server.serverSettings,
                         ),
-                    ).defaultValue("{ %T(permissions = it) }", References.Bluetooth.Server.serverSettings)
+                    ).defaultValue("{ %T($PERMISSIONS = $IT) }", References.Bluetooth.Server.serverSettings)
                         .build(),
                     ParameterSpec.builder(
-                        "serverName",
+                        SERVER_NAME,
                         STRING.copy(nullable = true),
                     ).defaultValue(
                         declaration.getAnnotationsByType(AdvertisingName::class).firstOrNull()?.let {
                             CodeBlock.of("%S", it.name)
-                        } ?: CodeBlock.of("null"),
+                        } ?: CodeBlock.of(NULL),
                     )
                         .build(),
                     ParameterSpec.builder(COROUTINE_CONTEXT, References.Kotlin.Coroutines.coroutineContext)
@@ -143,16 +158,16 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                 CodeBlock.builder()
                     .add("$RETURN %T(\n", returnType)
                     .indent()
-                    .add("$BUILDER.createServer(")
+                    .add("$BUILDER.$CREATE_SERVER(")
                     .indent()
-                    .addStatement("settingsBuilder = $SETTINGS_BUILDER,")
-                    .addStatement("coroutineContext = $COROUTINE_CONTEXT,")
+                    .addStatement("$SETTINGS_BUILDER = $SETTINGS_BUILDER,")
+                    .addStatement("$COROUTINE_CONTEXT = $COROUTINE_CONTEXT,")
                     .unindent()
                     .addStatement(") {")
                     .indent()
-                    .beginControlFlow("advertise")
+                    .beginControlFlow(ADVERTISE)
                     .apply {
-                        addStatement("localName = serverName")
+                        addStatement("$LOCAL_NAME = $SERVER_NAME")
                         val advertisingUUIDs = declarations.filterIsInstance<KSPropertyDeclaration>().mapNotNull {
                             val resolvedDeclaration = it.type.resolve().declaration
                             if (resolvedDeclaration is KSClassDeclaration &&
@@ -165,7 +180,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                             }
                         }.toList()
                         if (advertisingUUIDs.isNotEmpty()) {
-                            addStatement("serviceUUIDs(%L)", advertisingUUIDs.joinToCode(separator = ", "))
+                            addStatement("$SERVICE_UUIDS(%L)", advertisingUUIDs.joinToCode(separator = ", "))
                         }
                     }
                     .endControlFlow()
@@ -211,7 +226,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                         NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_API).nestedClass(DELEGATE).nullIfPropertyIsNull(propertyDeclaration),
                     ).build()
                 } else {
-                    logger.error("A BluetoothServer should only have @${BluetoothService::class.simpleName} properties $typeDeclaration ${typeDeclaration.annotations}")
+                    invalidProperty(propertyDeclaration, BluetoothService::class)
                     null
                 }
             }.toList(),
@@ -252,9 +267,9 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
             .addTypes(nested)
             .generateBody(declarations, GenerationType.Type.BLUETOOTH)
             .addFunction(
-                FunSpec.builder("close")
+                FunSpec.builder(CLOSE)
                     .addModifiers(KModifier.OVERRIDE)
-                    .addCode(CodeBlock.of("$SERVER.close()"))
+                    .addCode(CodeBlock.of("$SERVER.$CLOSE()"))
                     .build(),
             )
             .build()
@@ -295,7 +310,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                                         }
 
                                         else -> {
-                                            logger.error("Only @${BluetoothService::class.simpleName} properties can be declared")
+                                            invalidProperty(propertyDeclaration, BluetoothService::class)
                                         }
                                     }
                                 }
@@ -337,28 +352,36 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                     .initializer(COROUTINE_SCOPE)
                     .build(),
             )
-            .addProperty(
-                PropertySpec.builder(REMOTES, MUTABLE_MAP.parameterizedBy(References.Bluetooth.Device.identifier, remote))
-                    .addModifiers(KModifier.PRIVATE)
-                    .initializer("mutableMapOf()")
-                    .build(),
-            )
+            .apply {
+                if (options.generateClient) {
+                    addProperty(
+                        PropertySpec.builder(REMOTES, MUTABLE_MAP.parameterizedBy(References.Bluetooth.Device.identifier, remote))
+                            .addModifiers(KModifier.PRIVATE)
+                            .initializer("$MUTABLE_MAP_OF()")
+                            .build(),
+                    )
+                }
+            }
             .addProperty(
                 PropertySpec.builder(IS_CLOSED, References.KotlinX.Coroutines.completableDeferred.parameterizedBy(UNIT))
                     .addModifiers(KModifier.PRIVATE)
                     .initializer("%T()", References.KotlinX.Coroutines.completableDeferred)
                     .build(),
             )
-            .addFunction(
-                generateSimulatorGenerateRemoteMethod(remote, properties),
-            )
+            .apply {
+                if (options.generateClient) {
+                    addFunction(
+                        generateSimulatorGenerateRemoteMethod(remote, properties),
+                    )
+                }
+            }
             .addTypes(nested)
             .addFunction(
-                FunSpec.builder("close")
+                FunSpec.builder(CLOSE)
                     .addModifiers(KModifier.OVERRIDE)
                     .addCode(
                         CodeBlock.builder()
-                            .addStatement("$IS_CLOSED.complete(Unit)")
+                            .addStatement("$IS_CLOSED.%M()", References.Base.Utils.complete)
                             .addStatement("$COROUTINE_SCOPE.%M()", References.KotlinX.Coroutines.cancel)
                             .build(),
                     )
@@ -373,7 +396,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
         .returns(remote)
         .addCode(
             CodeBlock.builder()
-                .add("$RETURN $REMOTES.getOrPut($IDENTIFIER) {\n")
+                .add("$RETURN $REMOTES.$GET_OR_PUT($IDENTIFIER) {\n")
                 .indent()
                 .beginControlFlow("$WITH (${declaration.delegateParameterName})")
                 .apply {
@@ -414,7 +437,7 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
                     }
 
                     else -> {
-                        logger.error("A BluetoothServer should only have @${BluetoothService::class.simpleName} properties $typeDeclaration ${typeDeclaration.annotations}")
+                        invalidProperty(propertyDeclaration, BluetoothService::class)
                         null
                     }
                 }
@@ -434,9 +457,9 @@ internal class BluetoothServerBuilder(declaration: KSClassDeclaration, logger: K
 
                     GenerationType.Type.BLUETOOTH -> {
                         delegate(
-                            "lazy { %L }",
+                            "$LAZY { %L }",
                             CodeBlock.of(
-                                "%T($SERVER.services.value.%M(%T.$UUID)${serviceNeedsFormat.functionArgument})",
+                                "%T($SERVER.$SERVICES.$VALUE.%M(%T.$UUID)${serviceNeedsFormat.functionArgument})",
                                 NameHelper.serverName(typeDeclaration, type),
                                 References.Bluetooth.get,
                                 NameHelper.serverName(typeDeclaration, GenerationType.Type.API),

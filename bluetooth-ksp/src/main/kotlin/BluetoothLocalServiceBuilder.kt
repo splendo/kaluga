@@ -25,14 +25,21 @@ import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.splendo.kaluga.bluetooth.annotations.Notifiable
+import com.splendo.kaluga.bluetooth.ksp.helpers.AS
 import com.splendo.kaluga.bluetooth.ksp.helpers.BUILDER
+import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTICS
 import com.splendo.kaluga.bluetooth.ksp.helpers.CONFIGURE
 import com.splendo.kaluga.bluetooth.ksp.helpers.COROUTINE_SCOPE
 import com.splendo.kaluga.bluetooth.ksp.helpers.DELEGATE
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.GENERATE_REMOTE
+import com.splendo.kaluga.bluetooth.ksp.helpers.GET_OR_PUT
 import com.splendo.kaluga.bluetooth.ksp.helpers.IDENTIFIER
+import com.splendo.kaluga.bluetooth.ksp.helpers.INCLUDED_SERVICE
+import com.splendo.kaluga.bluetooth.ksp.helpers.INCLUDED_SERVICES
 import com.splendo.kaluga.bluetooth.ksp.helpers.IS_CLOSED
+import com.splendo.kaluga.bluetooth.ksp.helpers.LAZY
+import com.splendo.kaluga.bluetooth.ksp.helpers.MUTABLE_MAP_OF
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.REMOTES
@@ -58,8 +65,8 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.joinToCode
 
-internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, private val service: BluetoothService, logger: KSPLogger) :
-    AbstractBluetoothClassBuilder(declaration, logger) {
+internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, private val service: BluetoothService, options: Options, logger: KSPLogger) :
+    AbstractBluetoothClassBuilder(declaration, options, logger) {
     override fun generateAPI(nested: List<TypeSpec>): TypeSpec {
         val interfaceName = NameHelper.nameFor(declaration, GenerationType.SERVER_API)
         return TypeSpec.interfaceBuilder(interfaceName)
@@ -98,9 +105,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                                     NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_API).nestedClass(DELEGATE).nullIfPropertyIsNull(propertyDeclaration),
                                 ).build()
                             } else {
-                                logger.error(
-                                    "A BluetoothService should only have @${BluetoothService::class.simpleName} and @${BluetoothCharacteristic::class.simpleName} properties $typeDeclaration ${typeDeclaration.annotations}",
-                                )
+                                invalidProperty(propertyDeclaration, BluetoothService::class, BluetoothCharacteristic::class)
                                 null
                             }
                         }.toList(),
@@ -171,7 +176,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
             addCode(
                 CodeBlock.builder()
                     .beginControlFlow(
-                        "$RETURN $BUILDER.service(%T.$UUID) {",
+                        "$RETURN $BUILDER.$SERVICE(%T.$UUID) {",
                         interfaceName,
                     )
                     .apply {
@@ -197,9 +202,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                                 }
 
                                 else -> {
-                                    logger.error(
-                                        "Only @${BluetoothService::class.simpleName} and @${BluetoothCharacteristic::class.simpleName} properties can be declared",
-                                    )
+                                    invalidProperty(propertyDeclaration, BluetoothService::class, BluetoothCharacteristic::class)
                                 }
                             }
                         }
@@ -225,7 +228,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
             addCode(
                 CodeBlock.builder()
                     .beginControlFlow(
-                        "$RETURN $BUILDER.includedService(%T.$UUID) {",
+                        "$RETURN $BUILDER.$INCLUDED_SERVICE(%T.$UUID) {",
                         interfaceName,
                     )
                     .apply {
@@ -247,7 +250,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                                 }
 
                                 else -> {
-                                    logger.error("Only @${BluetoothCharacteristic::class.simpleName} properties can be declared in a nested BluetoothService")
+                                    invalidProperty(propertyDeclaration, BluetoothCharacteristic::class)
                                 }
                             }
                         }
@@ -283,21 +286,29 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                     .initializer(declaration.delegateParameterName)
                     .build(),
             )
-            .addProperty(
-                PropertySpec.builder(REMOTES, MUTABLE_MAP.parameterizedBy(References.Bluetooth.Device.identifier, remote))
-                    .addModifiers(KModifier.PRIVATE)
-                    .initializer("mutableMapOf()")
-                    .build(),
-            )
+            .apply {
+                if (options.generateClient) {
+                    addProperty(
+                        PropertySpec.builder(REMOTES, MUTABLE_MAP.parameterizedBy(References.Bluetooth.Device.identifier, remote))
+                            .addModifiers(KModifier.PRIVATE)
+                            .initializer("$MUTABLE_MAP_OF()")
+                            .build(),
+                    )
+                }
+            }
             .addProperty(
                 PropertySpec.builder(IS_CLOSED, References.KotlinX.Coroutines.deferred.parameterizedBy(UNIT))
                     .addModifiers(KModifier.PRIVATE)
                     .initializer(IS_CLOSED)
                     .build(),
             )
-            .addFunction(
-                generateSimulatorGenerateRemoteMethod(remote, properties),
-            )
+            .apply {
+                if (options.generateClient) {
+                    addFunction(
+                        generateSimulatorGenerateRemoteMethod(remote, properties),
+                    )
+                }
+            }
             .addTypes(nested)
             .generateBody(declarations, GenerationType.Type.SIMULATOR)
             .build()
@@ -308,7 +319,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
         .returns(remote)
         .addCode(
             CodeBlock.builder()
-                .add("$RETURN $REMOTES.getOrPut($IDENTIFIER) {\n")
+                .add("$RETURN $REMOTES.$GET_OR_PUT($IDENTIFIER) {\n")
                 .indent()
                 .beginControlFlow("$WITH (${declaration.delegateParameterName})")
                 .apply {
@@ -370,9 +381,7 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
                     }
 
                     else -> {
-                        logger.error(
-                            "A BluetoothService should only have @${BluetoothService::class.simpleName} and @${BluetoothCharacteristic::class.simpleName} properties $typeDeclaration ${typeDeclaration.annotations}",
-                        )
+                        invalidProperty(propertyDeclaration, BluetoothService::class, BluetoothCharacteristic::class)
                         null
                     }
                 }
@@ -392,9 +401,9 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
 
                     GenerationType.Type.BLUETOOTH -> {
                         delegate(
-                            "lazy { %L }",
+                            "$LAZY { %L }",
                             CodeBlock.of(
-                                "%T($SERVICE.includedServices.%M(%T.$UUID)${serviceNeedsFormat.functionArgument})",
+                                "%T($SERVICE.$INCLUDED_SERVICES.%M(%T.$UUID)${serviceNeedsFormat.functionArgument})",
                                 NameHelper.serverName(typeDeclaration, type),
                                 References.Bluetooth.get,
                                 NameHelper.serverName(typeDeclaration, GenerationType.Type.API),
@@ -430,11 +439,11 @@ internal class BluetoothLocalServiceBuilder(declaration: KSClassDeclaration, pri
 
                     GenerationType.Type.BLUETOOTH -> {
                         val isNotifiable = typeDeclaration.declarations.filterIsInstance<KSPropertyDeclaration>().any { it.isAnnotationPresent(Notifiable::class) }
-                        val cast = if (isNotifiable) CodeBlock.of(" as %T", References.Bluetooth.Server.localCharacteristicNotifiable) else CodeBlock.of("")
+                        val cast = if (isNotifiable) CodeBlock.of(" $AS %T", References.Bluetooth.Server.localCharacteristicNotifiable) else CodeBlock.of("")
                         delegate(
-                            "lazy { %L }",
+                            "$LAZY { %L }",
                             CodeBlock.of(
-                                "%T($SERVICE.characteristics.%M(%T.$UUID)%L${characteristicNeedsFormat.functionArgument})",
+                                "%T($SERVICE.$CHARACTERISTICS.%M(%T.$UUID)%L${characteristicNeedsFormat.functionArgument})",
                                 NameHelper.serverName(typeDeclaration, type),
                                 References.Bluetooth.get,
                                 NameHelper.serverName(typeDeclaration, GenerationType.Type.API),

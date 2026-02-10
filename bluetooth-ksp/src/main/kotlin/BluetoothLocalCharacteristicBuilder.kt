@@ -32,30 +32,71 @@ import com.splendo.kaluga.bluetooth.annotations.Writable
 import com.splendo.kaluga.bluetooth.annotations.WritableSigned
 import com.splendo.kaluga.bluetooth.annotations.WritableWithoutResponse
 import com.splendo.kaluga.bluetooth.ksp.helpers.ACTION
+import com.splendo.kaluga.bluetooth.ksp.helpers.ALL
+import com.splendo.kaluga.bluetooth.ksp.helpers.ALSO
+import com.splendo.kaluga.bluetooth.ksp.helpers.AS
+import com.splendo.kaluga.bluetooth.ksp.helpers.BLUETOOTH_FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.BUILDER
 import com.splendo.kaluga.bluetooth.ksp.helpers.CHANGED
 import com.splendo.kaluga.bluetooth.ksp.helpers.CHARACTERISTIC
 import com.splendo.kaluga.bluetooth.ksp.helpers.CONFIGURE
+import com.splendo.kaluga.bluetooth.ksp.helpers.CONTAINS
+import com.splendo.kaluga.bluetooth.ksp.helpers.COROUTINE_CONTEXT
 import com.splendo.kaluga.bluetooth.ksp.helpers.COROUTINE_SCOPE
 import com.splendo.kaluga.bluetooth.ksp.helpers.DELEGATE
+import com.splendo.kaluga.bluetooth.ksp.helpers.DESCRIPTORS
+import com.splendo.kaluga.bluetooth.ksp.helpers.DESERIALIZATION_STRATEGY
+import com.splendo.kaluga.bluetooth.ksp.helpers.DEVICE
+import com.splendo.kaluga.bluetooth.ksp.helpers.DEVICES
+import com.splendo.kaluga.bluetooth.ksp.helpers.ELSE
+import com.splendo.kaluga.bluetooth.ksp.helpers.EMIT
+import com.splendo.kaluga.bluetooth.ksp.helpers.EMPTY_LIST
+import com.splendo.kaluga.bluetooth.ksp.helpers.ENCRYPTED
 import com.splendo.kaluga.bluetooth.ksp.helpers.EXCEPTION
+import com.splendo.kaluga.bluetooth.ksp.helpers.FAILURE
+import com.splendo.kaluga.bluetooth.ksp.helpers.FALSE
+import com.splendo.kaluga.bluetooth.ksp.helpers.FIND
+import com.splendo.kaluga.bluetooth.ksp.helpers.FIRST
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
 import com.splendo.kaluga.bluetooth.ksp.helpers.GENERATE_REMOTE
+import com.splendo.kaluga.bluetooth.ksp.helpers.GET_OR_PUT
 import com.splendo.kaluga.bluetooth.ksp.helpers.IDENTIFIER
+import com.splendo.kaluga.bluetooth.ksp.helpers.IF
 import com.splendo.kaluga.bluetooth.ksp.helpers.IS_CLOSED
+import com.splendo.kaluga.bluetooth.ksp.helpers.IT
+import com.splendo.kaluga.bluetooth.ksp.helpers.LAZY
+import com.splendo.kaluga.bluetooth.ksp.helpers.LET
+import com.splendo.kaluga.bluetooth.ksp.helpers.MAP
+import com.splendo.kaluga.bluetooth.ksp.helpers.MUTABLE_FLOW
+import com.splendo.kaluga.bluetooth.ksp.helpers.MUTABLE_MAP_OF
+import com.splendo.kaluga.bluetooth.ksp.helpers.NOTIFIABLE
 import com.splendo.kaluga.bluetooth.ksp.helpers.NOTIFY
 import com.splendo.kaluga.bluetooth.ksp.helpers.NOTIFY_ALL
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.OFFSET
+import com.splendo.kaluga.bluetooth.ksp.helpers.ON_AWAIT
 import com.splendo.kaluga.bluetooth.ksp.helpers.ON_FAILED_TO_WRITE
+import com.splendo.kaluga.bluetooth.ksp.helpers.ON_SUBSCRIBE
+import com.splendo.kaluga.bluetooth.ksp.helpers.ON_UNSUBSCRIBE
+import com.splendo.kaluga.bluetooth.ksp.helpers.ON_WRITE
+import com.splendo.kaluga.bluetooth.ksp.helpers.PROPERTIES
+import com.splendo.kaluga.bluetooth.ksp.helpers.READABLE
 import com.splendo.kaluga.bluetooth.ksp.helpers.REMOTES
 import com.splendo.kaluga.bluetooth.ksp.helpers.RETURN
 import com.splendo.kaluga.bluetooth.ksp.helpers.References
+import com.splendo.kaluga.bluetooth.ksp.helpers.SET_OF
+import com.splendo.kaluga.bluetooth.ksp.helpers.SUBSCRIBED_DEVICES
 import com.splendo.kaluga.bluetooth.ksp.helpers.SUBSCRIBERS
+import com.splendo.kaluga.bluetooth.ksp.helpers.SUBSCRIPTION_COUNT
 import com.splendo.kaluga.bluetooth.ksp.helpers.THIS
+import com.splendo.kaluga.bluetooth.ksp.helpers.TO
+import com.splendo.kaluga.bluetooth.ksp.helpers.TRUE
 import com.splendo.kaluga.bluetooth.ksp.helpers.UUID
+import com.splendo.kaluga.bluetooth.ksp.helpers.VAL
+import com.splendo.kaluga.bluetooth.ksp.helpers.VALUE
 import com.splendo.kaluga.bluetooth.ksp.helpers.WITH
+import com.splendo.kaluga.bluetooth.ksp.helpers.WRITABLE
 import com.splendo.kaluga.bluetooth.ksp.helpers.delegateParameterName
 import com.splendo.kaluga.bluetooth.ksp.helpers.isByteArray
 import com.splendo.kaluga.bluetooth.ksp.helpers.isNotifiable
@@ -85,11 +126,11 @@ import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.joinToCode
 import com.squareup.kotlinpoet.ksp.toTypeName
 
-internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclaration, private val characteristic: BluetoothCharacteristic, logger: KSPLogger) :
-    AbstractBluetoothClassBuilder(declaration, logger) {
+internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclaration, private val characteristic: BluetoothCharacteristic, options: Options, logger: KSPLogger) :
+    AbstractBluetoothClassBuilder(declaration, options, logger) {
 
-    companion object {
-        private const val MUTABLE_FLOW = "mutableFlow"
+    private companion object {
+        const val HAS_SUBSCRIBED = "hasSubscribed"
     }
 
     override fun generateAPI(nested: List<TypeSpec>): TypeSpec {
@@ -129,7 +170,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
 
                             addFunction(generateDelegateReadMethods(interfaceName, propertyDeclaration))
                         } else {
-                            logger.error("Only one @${Readable::class.simpleName} property can be declared")
+                            logOnlyOneProperty(Readable::class)
                         }
                     }
                     if (propertyDeclaration.isAnnotationPresent(Writable::class) || propertyDeclaration.isAnnotationPresent(WritableWithoutResponse::class) ||
@@ -140,9 +181,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
 
                             addFunctions(generateDelegateWriteMethods(interfaceName, propertyDeclaration))
                         } else {
-                            logger.error(
-                                "Only one @${Writable::class.simpleName} / @${WritableWithoutResponse::class.simpleName} / @${WritableSigned::class.simpleName} property can be declared",
-                            )
+                            logOnlyOneProperty(Writable::class, WritableWithoutResponse::class, WritableSigned::class)
                         }
                     }
 
@@ -152,7 +191,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
 
                             addFunctions(generateDelegateSubscriptionMethods(propertyDeclaration, interfaceName))
                         } else {
-                            logger.error("Only one @${Notifiable::class.simpleName} / @${Indicatable::class.simpleName} property can be declared")
+                            logOnlyOneProperty(Notifiable::class, Indicatable::class)
                         }
                     }
                 } else if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class)) {
@@ -161,8 +200,15 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                         NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_API).nestedClass(DELEGATE).nullIfPropertyIsNull(propertyDeclaration),
                     )
                 } else {
-                    logger.error(
-                        "Only @${Readable::class.simpleName}, @${Writable::class.simpleName}, @${WritableWithoutResponse::class.simpleName}, @${WritableSigned::class.simpleName}, @${Notifiable::class.simpleName}, @${Indicatable::class.simpleName} and @${BluetoothDescriptor::class.simpleName} properties can be declared",
+                    invalidProperty(
+                        propertyDeclaration,
+                        Readable::class,
+                        Writable::class,
+                        WritableWithoutResponse::class,
+                        WritableSigned::class,
+                        Notifiable::class,
+                        Indicatable::class,
+                        BluetoothDescriptor::class,
                     )
                 }
             }
@@ -171,7 +217,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
 
     private fun generateDelegateReadMethods(interfaceName: ClassName, propertyDeclaration: KSPropertyDeclaration): FunSpec {
         val readMethod = propertyDeclaration.onReadMethodName
-        val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, logger)
+        val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, options, logger)
         return FunSpec.builder(readMethod).addModifiers(KModifier.ABSTRACT, KModifier.SUSPEND)
             .receiver(interfaceName)
             .addParameters(
@@ -279,7 +325,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                     addCode(
                         CodeBlock.builder()
                             .beginControlFlow(
-                                "$RETURN $BUILDER.characteristic(%T.$UUID) {",
+                                "$RETURN $BUILDER.$CHARACTERISTIC(%T.$UUID) {",
                                 NameHelper.nameFor(declaration, GenerationType.SERVER_API),
                             )
                             .apply {
@@ -291,7 +337,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                     val scopeMethod = if (scope.isNotEmpty()) "$THIS@$scope" else THIS
                                     return if (isNotifiable()) {
                                         CodeBlock.of(
-                                            "%T($scopeMethod as %T$constructorFormat)",
+                                            "%T($scopeMethod $AS %T$constructorFormat)",
                                             className,
                                             References.Bluetooth.Server.localCharacteristicNotifiable,
                                         )
@@ -311,7 +357,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
 
                                                 add(generateSetupReadMethods(propertyDeclaration, delegateParameterName, ::castingMethod))
                                             } else {
-                                                logger.error("Only one @${Readable::class.simpleName} property can be declared")
+                                                logOnlyOneProperty(Readable::class)
                                             }
                                         }
                                         if (propertyDeclaration.isWritable) {
@@ -320,9 +366,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
 
                                                 add(generateSetupWriteMethods(propertyDeclaration, delegateParameterName, ::castingMethod))
                                             } else {
-                                                logger.error(
-                                                    "Only one @${Writable::class.simpleName} / @${WritableWithoutResponse::class.simpleName} / @${WritableSigned::class.simpleName} property can be declared",
-                                                )
+                                                logOnlyOneProperty(Writable::class, WritableWithoutResponse::class, WritableSigned::class)
                                             }
                                         }
 
@@ -331,7 +375,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                                 hasNotifyMethods = true
                                                 add(generateSetupNotificationMethods(propertyDeclaration, delegateParameterName, constructorFormat, className))
                                             } else {
-                                                logger.error("Only one @${Notifiable::class.simpleName} / @${Indicatable::class.simpleName} property can be declared")
+                                                logOnlyOneProperty(Notifiable::class, Indicatable::class)
                                             }
                                         }
                                     } else if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class)) {
@@ -349,8 +393,15 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                                             )
                                         }
                                     } else {
-                                        logger.error(
-                                            "Only @${Readable::class.simpleName}, @${Writable::class.simpleName}, @${WritableWithoutResponse::class.simpleName}, @${WritableSigned::class.simpleName}, @${Notifiable::class.simpleName}, @${Indicatable::class.simpleName} and @${BluetoothDescriptor::class.simpleName} properties can be declared",
+                                        invalidProperty(
+                                            propertyDeclaration,
+                                            Readable::class,
+                                            Writable::class,
+                                            WritableWithoutResponse::class,
+                                            WritableSigned::class,
+                                            Notifiable::class,
+                                            Indicatable::class,
+                                            BluetoothDescriptor::class,
                                         )
                                     }
                                 }
@@ -365,11 +416,11 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
 
     private fun generateSetupReadMethods(propertyDeclaration: KSPropertyDeclaration, delegateParameterName: String, castingMethod: (String) -> CodeBlock): CodeBlock {
         val readMethod = propertyDeclaration.onReadMethodName
-        val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, logger)
+        val resultType = BluetoothResultTypeBuilder(declaration, propertyDeclaration, options, logger)
         return CodeBlock.builder()
-            .beginControlFlow("readable(${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { device, $OFFSET ->")
+            .beginControlFlow("$READABLE(${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { $DEVICE, $OFFSET ->")
             .beginControlFlow("$WITH($delegateParameterName)")
-            .add(resultType.parseBluetoothResult(CodeBlock.of("%L.$readMethod(device.identifier", castingMethod("readable"))))
+            .add(resultType.parseBluetoothResult(CodeBlock.of("%L.$readMethod($DEVICE.$IDENTIFIER", castingMethod(READABLE))))
             .endControlFlow()
             .endControlFlow()
             .build()
@@ -383,16 +434,16 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
             },
             References.Bluetooth.signedWriteProperty.takeIf { propertyDeclaration.isAnnotationPresent(WritableSigned::class) },
         )
-        val propertiesCode = properties.joinToCode(prefix = "setOf(", suffix = ")") { CodeBlock.of("%T", it) }
+        val propertiesCode = properties.joinToCode(prefix = "$SET_OF(", suffix = ")") { CodeBlock.of("%T", it) }
 
         return if (propertyDeclaration.isByteArray) {
             CodeBlock.builder()
                 .beginControlFlow(
-                    "writable(%L, ${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { device, value, $OFFSET ->",
+                    "$WRITABLE(%L, ${propertyDeclaration.isAnnotationPresent(Encrypted::class)}) { $DEVICE, $VALUE, $OFFSET ->",
                     propertiesCode,
                 )
                 .beginControlFlow("$WITH($delegateParameterName)")
-                .addStatement("%L.$writeMethod(value, $OFFSET, device.identifier)", castingMethod("writable"))
+                .addStatement("%L.$writeMethod($VALUE, $OFFSET, $DEVICE.$IDENTIFIER)", castingMethod(WRITABLE))
                 .endControlFlow()
                 .endControlFlow()
         } else {
@@ -402,26 +453,26 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                 }
             }"
             CodeBlock.builder()
-                .addStatement("writable(")
+                .addStatement("$WRITABLE(")
                 .indent()
-                .addStatement("properties = %L,", propertiesCode)
-                .addStatement("encrypted = ${propertyDeclaration.isAnnotationPresent(Encrypted::class)},")
+                .addStatement("$PROPERTIES = %L,", propertiesCode)
+                .addStatement("$ENCRYPTED = ${propertyDeclaration.isAnnotationPresent(Encrypted::class)},")
                 .addStatement(
-                    "deserializationStrategy = %L,",
+                    "$DESERIALIZATION_STRATEGY = %L,",
                     propertyDeclaration.type.resolve().toTypeName().serializer(logger),
                 )
-                .addStatement("bluetoothFormat = $FORMAT,")
-                .addStatement("onFailedToWrite = { device, exception ->")
+                .addStatement("$BLUETOOTH_FORMAT = $FORMAT,")
+                .addStatement("$ON_FAILED_TO_WRITE = { $DEVICE, $EXCEPTION ->")
                 .indent()
-                .beginControlFlow("with($delegateParameterName)")
-                .addStatement("%L.$failedToWriteMethod(exception, device.identifier)", castingMethod("writable"))
+                .beginControlFlow("$WITH($delegateParameterName)")
+                .addStatement("%L.$failedToWriteMethod($EXCEPTION, $DEVICE.$IDENTIFIER)", castingMethod(WRITABLE))
                 .endControlFlow()
                 .unindent()
                 .addStatement("},")
-                .addStatement("onWrite = { device, value ->")
+                .addStatement("$ON_WRITE = { $DEVICE, $VALUE ->")
                 .indent()
                 .beginControlFlow("$WITH($delegateParameterName)")
-                .addStatement("%L.$writeMethod(value, device.identifier)", castingMethod("writable"))
+                .addStatement("%L.$writeMethod($VALUE, $DEVICE.$IDENTIFIER)", castingMethod(WRITABLE))
                 .endControlFlow()
                 .unindent()
                 .addStatement("}")
@@ -440,30 +491,30 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
             References.Bluetooth.notifyProperty.takeIf { propertyDeclaration.isAnnotationPresent(Notifiable::class) },
             References.Bluetooth.indicatableProperty.takeIf { propertyDeclaration.isAnnotationPresent(Indicatable::class) },
         )
-        val propertiesCode = properties.joinToCode(prefix = "setOf(", suffix = ")") { CodeBlock.of("%T", it) }
+        val propertiesCode = properties.joinToCode(prefix = "$SET_OF(", suffix = ")") { CodeBlock.of("%T", it) }
 
         val subscribeMethod = propertyDeclaration.subscribeMethodName
         val unsubscribeMethod = propertyDeclaration.unsubscribeMethodName
         return CodeBlock.builder()
-            .addStatement("notifiable(")
+            .addStatement("$NOTIFIABLE(")
             .indent()
-            .addStatement("properties = %L,", propertiesCode)
-            .addStatement("encrypted = ${propertyDeclaration.isAnnotationPresent(Encrypted::class)},")
-            .addStatement("onSubscribe = { device ->")
+            .addStatement("$PROPERTIES = %L,", propertiesCode)
+            .addStatement("$ENCRYPTED = ${propertyDeclaration.isAnnotationPresent(Encrypted::class)},")
+            .addStatement("$ON_SUBSCRIBE = { $DEVICE ->")
             .indent()
             .beginControlFlow("$WITH($delegateParameterName)")
             .addStatement(
-                "%T($THIS@notifiable$constructorFormat).$subscribeMethod(device.identifier)",
+                "%T($THIS@$NOTIFIABLE$constructorFormat).$subscribeMethod($DEVICE.$IDENTIFIER)",
                 className,
             )
             .endControlFlow()
             .unindent()
             .addStatement("},")
-            .addStatement("onUnsubscribe = { device ->")
+            .addStatement("$ON_UNSUBSCRIBE = { $DEVICE ->")
             .indent()
             .beginControlFlow("$WITH($delegateParameterName)")
             .addStatement(
-                "%T($THIS@notifiable$constructorFormat).$unsubscribeMethod(device.identifier)",
+                "%T($THIS@$NOTIFIABLE$constructorFormat).$unsubscribeMethod($DEVICE.$IDENTIFIER)",
                 className,
             )
             .endControlFlow()
@@ -496,13 +547,17 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
             )
             .addSuperinterface(apiName)
             .addProperties(generateSimulatorProperties(notifiable, delegate, remote))
-            .addFunction(generateSimulatorGenerateRemoteMethod(remote, notifiable, properties))
+            .apply {
+                if (options.generateClient) {
+                    addFunction(generateSimulatorGenerateRemoteMethod(remote, notifiable, properties))
+                }
+            }
             .addTypes(nested)
             .generateBody(declarations, GenerationType.Type.SIMULATOR)
             .build()
     }
 
-    private fun generateSimulatorProperties(notifiable: KSPropertyDeclaration?, delegate: ClassName, remote: ClassName): List<PropertySpec> = listOf(
+    private fun generateSimulatorProperties(notifiable: KSPropertyDeclaration?, delegate: ClassName, remote: ClassName): List<PropertySpec> = listOfNotNull(
         PropertySpec.builder(declaration.delegateParameterName, delegate)
             .initializer(declaration.delegateParameterName)
             .build(),
@@ -521,8 +576,8 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
             ),
         )
             .addModifiers(KModifier.PRIVATE)
-            .initializer("mutableMapOf()")
-            .build(),
+            .initializer("${MUTABLE_MAP_OF}()")
+            .build().takeIf { options.generateClient },
         PropertySpec.builder(IS_CLOSED, References.KotlinX.Coroutines.deferred.parameterizedBy(UNIT))
             .addModifiers(KModifier.PRIVATE)
             .initializer(IS_CLOSED)
@@ -536,7 +591,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
             PropertySpec.builder(
                 "_${notifiable.simpleName.asString()}$SUBSCRIBERS",
                 References.KotlinX.Coroutines.Flow.mutableStateFlow.parameterizedBy(LIST.parameterizedBy(References.Bluetooth.Device.identifier)),
-            ).initializer("%T(emptyList())", References.KotlinX.Coroutines.Flow.mutableStateFlow)
+            ).initializer("%T($EMPTY_LIST)", References.KotlinX.Coroutines.Flow.mutableStateFlow)
                 .addModifiers(KModifier.PRIVATE)
                 .build(),
         )
@@ -548,7 +603,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
             .returns(remote)
             .addCode(
                 CodeBlock.builder()
-                    .add("$RETURN $REMOTES.getOrPut($IDENTIFIER) {\n")
+                    .add("$RETURN $REMOTES.$GET_OR_PUT($IDENTIFIER) {\n")
                     .indent()
                     .beginControlFlow("$WITH (${declaration.delegateParameterName})")
                     .apply {
@@ -585,13 +640,13 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                             )
                         }
                         unindent()
-                        addStatement(")${if (notifiable != null) " to $MUTABLE_FLOW" else ""}")
+                        addStatement(")${if (notifiable != null) " $TO $MUTABLE_FLOW" else ""}")
                     }
                     .endControlFlow()
                     .unindent()
                     .apply {
                         if (notifiable != null) {
-                            add("}.first\n")
+                            add("}.$FIRST\n")
                         } else {
                             add("}\n")
                         }
@@ -601,25 +656,25 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
             .build()
 
     private fun generateGenerateRemoteMutableFlow(notifiable: KSPropertyDeclaration): CodeBlock = CodeBlock.builder()
-        .addStatement("val $MUTABLE_FLOW = %T<%T>()", References.KotlinX.Coroutines.Flow.mutableSharedFlow, notifiable.type.resolve().toTypeName())
+        .addStatement("$VAL $MUTABLE_FLOW = %T<%T>()", References.KotlinX.Coroutines.Flow.mutableSharedFlow, notifiable.type.resolve().toTypeName())
         .beginControlFlow("$COROUTINE_SCOPE.%M", References.KotlinX.Coroutines.launch)
         .addStatement(
-            "$MUTABLE_FLOW.subscriptionCount.%M { it >= 1 }.%M()",
+            "$MUTABLE_FLOW.$SUBSCRIPTION_COUNT.%M { $IT >= 1 }.%M()",
             References.KotlinX.Coroutines.Flow.map,
             References.KotlinX.Coroutines.Flow.distinctUntilChanged,
         )
         .indent()
         .addStatement(
-            ".%M { _${notifiable.simpleName.asString()}$SUBSCRIBERS.%M { emptyList() } }",
+            ".%M { _${notifiable.simpleName.asString()}$SUBSCRIBERS.%M { $EMPTY_LIST } }",
             References.KotlinX.Coroutines.Flow.onCompletion,
             References.KotlinX.Coroutines.Flow.update,
         )
-        .beginControlFlow(".%M { hasSubscribed ->", References.KotlinX.Coroutines.Flow.collect)
-        .beginControlFlow("if (hasSubscribed)")
-        .addStatement("_${notifiable.simpleName.asString()}$SUBSCRIBERS.%M { it + $IDENTIFIER }", References.KotlinX.Coroutines.Flow.update)
+        .beginControlFlow(".%M { $HAS_SUBSCRIBED ->", References.KotlinX.Coroutines.Flow.collect)
+        .beginControlFlow("$IF ($HAS_SUBSCRIBED)")
+        .addStatement("_${notifiable.simpleName.asString()}$SUBSCRIBERS.%M { $IT + $IDENTIFIER }", References.KotlinX.Coroutines.Flow.update)
         .addStatement("${notifiable.subscribeMethodName}($IDENTIFIER)")
-        .nextControlFlow("else")
-        .addStatement("_${notifiable.simpleName.asString()}$SUBSCRIBERS.%M { it - $IDENTIFIER }", References.KotlinX.Coroutines.Flow.update)
+        .nextControlFlow(ELSE)
+        .addStatement("_${notifiable.simpleName.asString()}$SUBSCRIBERS.%M { $IT - $IDENTIFIER }", References.KotlinX.Coroutines.Flow.update)
         .addStatement("${notifiable.unsubscribeMethodName}($IDENTIFIER)")
         .endControlFlow()
         .endControlFlow()
@@ -638,18 +693,18 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
         .addStatement("${readProperty.onReadMethodName}($IDENTIFIER${if (readProperty.isByteArray) ", 0" else ""})")
         .endControlFlow()
         .unindent()
-        .addStatement("}.onAwait { it }")
+        .addStatement("}.$ON_AWAIT { $IT }")
         .apply {
-            val resultType = BluetoothResultTypeBuilder(declaration, readProperty, logger)
+            val resultType = BluetoothResultTypeBuilder(declaration, readProperty, options, logger)
             val result = if (resultType.hasCustomResult) {
-                CodeBlock.of("%T.Failure(%T)", resultType.responseClassName, References.Bluetooth.deviceUnavailable)
+                CodeBlock.of("%T.$FAILURE(%T)", resultType.responseClassName, References.Bluetooth.deviceUnavailable)
             } else {
                 CodeBlock.of("%T", References.Bluetooth.deviceUnavailable)
             }
-            addStatement("$IS_CLOSED.onAwait { %L }", result)
+            addStatement("$IS_CLOSED.$ON_AWAIT { %L }", result)
         }
         .endControlFlow()
-        .addStatement(".also { coroutineContext.%M() }", References.KotlinX.Coroutines.cancelChildren)
+        .addStatement(".$ALSO { $COROUTINE_CONTEXT.%M() }", References.KotlinX.Coroutines.cancelChildren)
         .endControlFlow()
         .unindent()
         .addStatement("},")
@@ -668,10 +723,10 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
         )
         .endControlFlow()
         .unindent()
-        .addStatement("}.onAwait { it }")
-        .addStatement("$IS_CLOSED.onAwait { %T }", References.Bluetooth.deviceUnavailable)
+        .addStatement("}.$ON_AWAIT { $IT }")
+        .addStatement("$IS_CLOSED.$ON_AWAIT { %T }", References.Bluetooth.deviceUnavailable)
         .endControlFlow()
-        .addStatement(".also { coroutineContext.%M() }", References.KotlinX.Coroutines.cancelChildren)
+        .addStatement(".$ALSO { $COROUTINE_CONTEXT.%M() }", References.KotlinX.Coroutines.cancelChildren)
         .endControlFlow()
         .unindent()
         .addStatement("},")
@@ -691,16 +746,14 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                     if (!hasReadMethod) {
                         hasReadMethod = true
                     } else {
-                        logger.error("Only one @${Readable::class.simpleName} property can be declared")
+                        logOnlyOneProperty(Readable::class)
                     }
                 }
                 if (propertyDeclaration.isWritable) {
                     if (!hasWriteMethod) {
                         hasWriteMethod = true
                     } else {
-                        logger.error(
-                            "Only one @${Writable::class.simpleName} / @${WritableWithoutResponse::class.simpleName} / @${WritableSigned::class.simpleName} property can be declared",
-                        )
+                        logOnlyOneProperty(Writable::class, WritableWithoutResponse::class, WritableSigned::class)
                     }
                 }
 
@@ -711,7 +764,7 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                         addProperty(generateSubscribersProperty(propertyDeclaration, type))
                         addFunctions(generateNotifyMethods(propertyDeclaration, type))
                     } else {
-                        logger.error("Only one @${Notifiable::class.simpleName} / @${Indicatable::class.simpleName} property can be declared")
+                        logOnlyOneProperty(Notifiable::class, Indicatable::class)
                     }
                 }
             } else if (typeDeclaration is KSClassDeclaration && typeDeclaration.isAnnotationPresent(BluetoothDescriptor::class)) {
@@ -719,8 +772,15 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                     generateDescriptorProperty(propertyDeclaration, typeDeclaration, type),
                 )
             } else {
-                logger.error(
-                    "Only @${Readable::class.simpleName}, @${Writable::class.simpleName}, @${WritableWithoutResponse::class.simpleName}, @${WritableSigned::class.simpleName}, @${Notifiable::class.simpleName}, @${Indicatable::class.simpleName} and @${BluetoothDescriptor::class.simpleName} properties can be declared",
+                invalidProperty(
+                    propertyDeclaration,
+                    Readable::class,
+                    Writable::class,
+                    WritableWithoutResponse::class,
+                    WritableSigned::class,
+                    Notifiable::class,
+                    Indicatable::class,
+                    BluetoothDescriptor::class,
                 )
             }
         }
@@ -738,8 +798,8 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                 GenerationType.Type.BLUETOOTH -> {
                     initializer(
                         CodeBlock.builder()
-                            .beginControlFlow("$CHARACTERISTIC.subscribedDevices.%M { devices ->", References.KotlinX.Coroutines.Flow.map)
-                            .addStatement("devices.map(%T::identifier)", References.Bluetooth.Server.connectedDevice)
+                            .beginControlFlow("$CHARACTERISTIC.$SUBSCRIBED_DEVICES.%M { $DEVICES ->", References.KotlinX.Coroutines.Flow.map)
+                            .addStatement("$DEVICES.$MAP(%T::$IDENTIFIER)", References.Bluetooth.Server.connectedDevice)
                             .endControlFlow()
                             .build(),
                     )
@@ -765,10 +825,10 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
 
                         GenerationType.Type.BLUETOOTH -> {
                             if (propertyDeclaration.isByteArray) {
-                                addStatement("$RETURN $CHARACTERISTIC.notifyAll(${propertyDeclaration.simpleName.asString()})")
+                                addStatement("$RETURN $CHARACTERISTIC.$NOTIFY_ALL(${propertyDeclaration.simpleName.asString()})")
                             } else {
                                 addStatement(
-                                    "$RETURN $CHARACTERISTIC.notifyAll(${propertyDeclaration.simpleName.asString()}, %L, $FORMAT)",
+                                    "$RETURN $CHARACTERISTIC.$NOTIFY_ALL(${propertyDeclaration.simpleName.asString()}, %L, $FORMAT)",
                                     resolvedType.toTypeName().serializer(logger),
                                 )
                             }
@@ -777,13 +837,13 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
                         GenerationType.Type.SIMULATOR -> {
                             addCode(
                                 CodeBlock.builder()
-                                    .beginControlFlow("$RETURN _${propertyDeclaration.simpleName.asString()}$SUBSCRIBERS.value.all")
+                                    .beginControlFlow("$RETURN _${propertyDeclaration.simpleName.asString()}$SUBSCRIBERS.$VALUE.$ALL")
                                     .addStatement(
                                         "$NOTIFY${
                                             propertyDeclaration.simpleName.asString().replaceFirstChar {
                                                 it.uppercase()
                                             }
-                                        }$CHANGED(it, ${propertyDeclaration.simpleName.asString()})",
+                                        }$CHANGED($IT, ${propertyDeclaration.simpleName.asString()})",
                                     )
                                     .endControlFlow()
                                     .build(),
@@ -803,39 +863,43 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
 
                         GenerationType.Type.BLUETOOTH -> {
                             val notifyCode = if (propertyDeclaration.isByteArray) {
-                                CodeBlock.of("$CHARACTERISTIC.notify(it, ${propertyDeclaration.simpleName.asString()})")
+                                CodeBlock.of("$CHARACTERISTIC.$NOTIFY($IT, ${propertyDeclaration.simpleName.asString()})")
                             } else {
                                 CodeBlock.of(
-                                    "$CHARACTERISTIC.notify(it, ${propertyDeclaration.simpleName.asString()}, %L, $FORMAT)",
+                                    "$CHARACTERISTIC.$NOTIFY($IT, ${propertyDeclaration.simpleName.asString()}, %L, $FORMAT)",
                                     resolvedType.toTypeName().serializer(logger),
                                 )
                             }
                             addCode(
                                 CodeBlock.builder()
-                                    .add("$RETURN $CHARACTERISTIC.subscribedDevices.value.find { it.identifier == $IDENTIFIER }?.let {\n")
+                                    .add("$RETURN $CHARACTERISTIC.$SUBSCRIBED_DEVICES.$VALUE.$FIND { $IT.$IDENTIFIER == $IDENTIFIER }?.$LET {\n")
                                     .indent()
                                     .add(notifyCode)
                                     .unindent()
-                                    .add("} ?: false\n")
+                                    .add("} ?: $FALSE\n")
                                     .build(),
                             )
                         }
 
                         GenerationType.Type.SIMULATOR -> {
-                            addCode(
-                                CodeBlock.builder()
-                                    .add("$RETURN $REMOTES[$IDENTIFIER]?.let { (_, $MUTABLE_FLOW) ->\n")
-                                    .indent()
-                                    .beginControlFlow("if (_${propertyDeclaration.simpleName.asString()}$SUBSCRIBERS.value.contains($IDENTIFIER))")
-                                    .addStatement("$MUTABLE_FLOW.emit(${propertyDeclaration.simpleName.asString()})")
-                                    .addStatement("true")
-                                    .nextControlFlow("else")
-                                    .addStatement("false")
-                                    .endControlFlow()
-                                    .unindent()
-                                    .addStatement("} ?: false")
-                                    .build(),
-                            )
+                            if (options.generateClient) {
+                                addCode(
+                                    CodeBlock.builder()
+                                        .add("$RETURN $REMOTES[$IDENTIFIER]?.$LET { (_, $MUTABLE_FLOW) ->\n")
+                                        .indent()
+                                        .beginControlFlow("$IF (_${propertyDeclaration.simpleName.asString()}$SUBSCRIBERS.$VALUE.$CONTAINS($IDENTIFIER))")
+                                        .addStatement("$MUTABLE_FLOW.$EMIT(${propertyDeclaration.simpleName.asString()})")
+                                        .addStatement(TRUE)
+                                        .nextControlFlow(ELSE)
+                                        .addStatement(FALSE)
+                                        .endControlFlow()
+                                        .unindent()
+                                        .addStatement("} ?: $FALSE")
+                                        .build(),
+                                )
+                            } else {
+                                addStatement("$RETURN $FALSE")
+                            }
                         }
                     }
                 }
@@ -855,9 +919,9 @@ internal class BluetoothLocalCharacteristicBuilder(declaration: KSClassDeclarati
 
                     GenerationType.Type.BLUETOOTH -> {
                         delegate(
-                            "lazy { %L }",
+                            "$LAZY { %L }",
                             CodeBlock.of(
-                                "%T($CHARACTERISTIC.descriptors.%M(%T.$UUID))",
+                                "%T($CHARACTERISTIC.$DESCRIPTORS.%M(%T.$UUID))",
                                 NameHelper.serverName(typeDeclaration, type),
                                 References.Bluetooth.get,
                                 NameHelper.nameFor(typeDeclaration, GenerationType.SERVER_API),

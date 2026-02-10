@@ -44,9 +44,14 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
 
     private val commonSources = environment.options["commonSource"].orEmpty().split(":")
 
+    private val options = Options(environment)
+
     override fun process(resolver: Resolver): List<KSAnnotated> {
         logger.warn("------ PROCESSING for ${environment.platforms.joinToString { it.platformName }} ----")
-        logger.warn("Options" + environment.options.entries.joinToString { (key, value) -> "$key: $value" })
+        logger.warn("Options:")
+        for ((key, value) in environment.options.entries) {
+            logger.warn("\t$key = $value")
+        }
         val bluetoothDeclarations = resolver.getSymbolsWithAnnotation(Bluetooth::class.java.name).filterIsInstance<KSClassDeclaration>().filter {
             it.includeInGeneration && it.parentDeclaration == null
         }
@@ -82,7 +87,7 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
         val clientClass = ClassName(packageName.asString(), clientName())
         FileSpec.builder(clientClass).generate(
             GenerationType.Side.CLIENT,
-            BluetoothClientBuilder(this, logger),
+            BluetoothClientBuilder(this, options, logger),
         )
     }
 
@@ -90,7 +95,7 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
         val serverClass = ClassName(packageName.asString(), serverName())
         FileSpec.builder(serverClass).generate(
             GenerationType.Side.SERVER,
-            BluetoothServerBuilder(this, logger),
+            BluetoothServerBuilder(this, options, logger),
         )
     }
 
@@ -98,17 +103,17 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
         val remoteServiceClass = ClassName(packageName.asString(), clientName(prefix = "Remote", postFix = ""))
         FileSpec.builder(remoteServiceClass).generate(
             GenerationType.Side.CLIENT,
-            BluetoothRemoteServiceBuilder(this, service, logger),
+            BluetoothRemoteServiceBuilder(this, service, options, logger),
         )
         val localServiceClass = ClassName(packageName.asString(), serverName(prefix = "Local", postFix = ""))
         FileSpec.builder(localServiceClass).generate(
             GenerationType.Side.SERVER,
-            BluetoothLocalServiceBuilder(this, service, logger),
+            BluetoothLocalServiceBuilder(this, service, options, logger),
         )
     }
 
     private fun KSClassDeclaration.generateBluetoothCharacteristicFile(characteristic: BluetoothCharacteristic) {
-        BluetoothResultTypeBuilder.fromClassDeclaration(this, logger)?.let { resultTypeBuilder ->
+        BluetoothResultTypeBuilder.fromClassDeclaration(this, options, logger)?.let { resultTypeBuilder ->
             if (resultTypeBuilder.hasCustomResult) {
                 FileSpec.builder(resultTypeBuilder.responseClassName)
                     .apply {
@@ -122,17 +127,17 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
         val remoteCharacteristicClass = ClassName(packageName.asString(), clientName(prefix = "Remote", postFix = ""))
         FileSpec.builder(remoteCharacteristicClass).generate(
             GenerationType.Side.CLIENT,
-            BluetoothRemoteCharacteristicBuilder(this, characteristic, logger),
+            BluetoothRemoteCharacteristicBuilder(this, characteristic, options, logger),
         )
         val localCharacteristicClass = ClassName(packageName.asString(), serverName(prefix = "Local", postFix = ""))
         FileSpec.builder(localCharacteristicClass).generate(
             GenerationType.Side.SERVER,
-            BluetoothLocalCharacteristicBuilder(this, characteristic, logger),
+            BluetoothLocalCharacteristicBuilder(this, characteristic, options, logger),
         )
     }
 
     private fun KSClassDeclaration.generateBluetoothDescriptorFile(descriptor: BluetoothDescriptor) {
-        BluetoothResultTypeBuilder.fromClassDeclaration(this, logger)?.let { resultTypeBuilder ->
+        BluetoothResultTypeBuilder.fromClassDeclaration(this, options, logger)?.let { resultTypeBuilder ->
             if (resultTypeBuilder.hasCustomResult) {
                 FileSpec.builder(resultTypeBuilder.responseClassName)
                     .apply {
@@ -146,25 +151,41 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
         val remoteDescriptorClass = ClassName(packageName.asString(), clientName(prefix = "Remote", postFix = ""))
         FileSpec.builder(remoteDescriptorClass).generate(
             GenerationType.Side.CLIENT,
-            BluetoothRemoteDescriptorBuilder(this, descriptor, logger),
+            BluetoothRemoteDescriptorBuilder(this, descriptor, options, logger),
         )
         val localDescriptorClass = ClassName(packageName.asString(), serverName(prefix = "Local", postFix = ""))
         FileSpec.builder(localDescriptorClass).generate(
             GenerationType.Side.SERVER,
-            BluetoothLocalDescriptorBuilder(this, descriptor, logger),
+            BluetoothLocalDescriptorBuilder(this, descriptor, options, logger),
         )
     }
 
-    private fun FileSpec.Builder.generate(side: GenerationType.Side, builder: AbstractBluetoothClassBuilder) = apply {
-        addTypes(
-            when (side) {
-                GenerationType.Side.CLIENT -> listOf(GenerationType.CLIENT_API, GenerationType.CLIENT_BLUETOOTH, GenerationType.CLIENT_SIMULATOR)
-                GenerationType.Side.SERVER -> listOf(GenerationType.SERVER_API, GenerationType.SERVER_BLUETOOTH, GenerationType.SERVER_SIMULATOR)
-            }.map { generationType ->
-                builder.generate(generationType)
-            },
-        )
-    }.generate()
+    private fun FileSpec.Builder.generate(side: GenerationType.Side, builder: AbstractBluetoothClassBuilder) {
+        val typesToAdd = when (side) {
+            GenerationType.Side.CLIENT -> {
+                listOfNotNull(
+                    GenerationType.CLIENT_API,
+                    GenerationType.CLIENT_BLUETOOTH.takeIf { options.generateBluetoothImplementation },
+                    GenerationType.CLIENT_SIMULATOR.takeIf { options.generateSimulatorImplementation },
+                ).takeIf { options.generateClient }
+            }
+
+            GenerationType.Side.SERVER -> {
+                listOfNotNull(
+                    GenerationType.SERVER_API,
+                    GenerationType.SERVER_BLUETOOTH.takeIf { options.generateBluetoothImplementation },
+                    GenerationType.SERVER_SIMULATOR.takeIf { options.generateSimulatorImplementation },
+                ).takeIf { options.generateServer }
+            }
+        }
+        typesToAdd?.let {
+            addTypes(
+                typesToAdd.map { generationType ->
+                    builder.generate(generationType)
+                },
+            ).generate()
+        }
+    }
 
     private fun FileSpec.Builder.generate() = apply {
         indent("    ").build().writeTo(codeGenerator, Dependencies.ALL_FILES)
@@ -177,7 +198,9 @@ class BluetoothSymbolProcessor(private val environment: SymbolProcessorEnvironme
 
     private val KSClassDeclaration.includeInGeneration: Boolean get() = when {
         environment.options["isSingleTarget"] == "true" -> true
+
         environment.platforms.size > 1 -> true
+
         else -> {
             containingFile?.filePath?.let { filePath ->
                 commonSources.none { filePath.startsWith(it) }

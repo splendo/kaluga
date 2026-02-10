@@ -1,3 +1,5 @@
+import com.splendo.kaluga.bluetooth.plugin.BluetoothTarget
+import com.splendo.kaluga.bluetooth.plugin.ImplementFor
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -23,6 +25,11 @@ kotlin {
     dependencies {
         implementation(libs.kotlinx.coroutines.core)
     }
+}
+
+bluetooth {
+    target.add(BluetoothTarget.SERVER)
+    implementFor.add(ImplementFor.SIMULATOR)
 }
 
 tasks.withType<KotlinCompile>().configureEach {

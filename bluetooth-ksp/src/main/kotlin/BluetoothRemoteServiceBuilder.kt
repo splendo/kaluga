@@ -24,8 +24,13 @@ import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
+import com.splendo.kaluga.bluetooth.ksp.helpers.DISCOVERED_SERVICES
 import com.splendo.kaluga.bluetooth.ksp.helpers.FORMAT
+import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_DISCOVERED_SERVICES
 import com.splendo.kaluga.bluetooth.ksp.helpers.FROM_SERVICE
+import com.splendo.kaluga.bluetooth.ksp.helpers.INCLUDED_SERVICES
+import com.splendo.kaluga.bluetooth.ksp.helpers.IT
+import com.splendo.kaluga.bluetooth.ksp.helpers.LET
 import com.splendo.kaluga.bluetooth.ksp.helpers.NameHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.NeedsFormatterHelper
 import com.splendo.kaluga.bluetooth.ksp.helpers.OR_NULL
@@ -45,13 +50,8 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
-internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, private val service: BluetoothService, logger: KSPLogger) :
-    AbstractBluetoothClassBuilder(declaration, logger) {
-
-    companion object {
-        const val DISCOVERED_SERVICES = "discoveredServices"
-        const val FROM_DISCOVERED_SERVICES = "fromDiscoveredServices"
-    }
+internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, private val service: BluetoothService, options: Options, logger: KSPLogger) :
+    AbstractBluetoothClassBuilder(declaration, options, logger) {
 
     override fun generateAPI(nested: List<TypeSpec>): TypeSpec {
         val interfaceName = NameHelper.nameFor(declaration, GenerationType.CLIENT_API)
@@ -135,11 +135,11 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
                     .addCode(
                         CodeBlock.builder()
                             .beginControlFlow(
-                                "$RETURN $DISCOVERED_SERVICES.%M(%T.$UUID)?.let",
+                                "$RETURN $DISCOVERED_SERVICES.%M(%T.$UUID)?.$LET",
                                 References.Bluetooth.getOrNull,
                                 interfaceName,
                             )
-                            .addStatement("%T(it${needsFormatter.functionArgument})", className)
+                            .addStatement("%T($IT${needsFormatter.functionArgument})", className)
                             .endControlFlow()
                             .build(),
                     )
@@ -155,7 +155,7 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
                     )
                     .returns(className)
                     .addStatement(
-                        "$RETURN %T($SERVICE.includedServices.%M(%T.$UUID)${needsFormatter.functionArgument})",
+                        "$RETURN %T($SERVICE.$INCLUDED_SERVICES.%M(%T.$UUID)${needsFormatter.functionArgument})",
                         className,
                         References.Bluetooth.get,
                         interfaceName,
@@ -174,11 +174,11 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
                     .addCode(
                         CodeBlock.builder()
                             .beginControlFlow(
-                                "$RETURN $SERVICE.includedServices.%M(%T.$UUID)?.let",
+                                "$RETURN $SERVICE.$INCLUDED_SERVICES.%M(%T.$UUID)?.$LET",
                                 References.Bluetooth.getOrNull,
                                 interfaceName,
                             )
-                            .addStatement("%T(it${needsFormatter.functionArgument})", className)
+                            .addStatement("%T($IT${needsFormatter.functionArgument})", className)
                             .endControlFlow()
                             .build(),
                     )
@@ -246,7 +246,7 @@ internal class BluetoothRemoteServiceBuilder(declaration: KSClassDeclaration, pr
 
                     generateServiceOrCharacteristicProperty(propertyDeclaration, typeDeclaration, type)
                 } else {
-                    logger.error("A BluetoothService should only have BluetoothService and BluetoothCharacteristic properties $typeDeclaration ${typeDeclaration.annotations}")
+                    invalidProperty(propertyDeclaration, BluetoothService::class, BluetoothCharacteristic::class)
                     null
                 }
             }.toList(),

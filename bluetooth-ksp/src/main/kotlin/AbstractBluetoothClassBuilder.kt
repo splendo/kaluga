@@ -21,14 +21,16 @@ import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.splendo.kaluga.bluetooth.annotations.Bluetooth
 import com.splendo.kaluga.bluetooth.annotations.BluetoothCharacteristic
 import com.splendo.kaluga.bluetooth.annotations.BluetoothDescriptor
 import com.splendo.kaluga.bluetooth.annotations.BluetoothService
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
+import kotlin.reflect.KClass
 
-internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDeclaration, val logger: KSPLogger) {
+internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDeclaration, val options: Options, val logger: KSPLogger) {
 
     val declarations get() = declaration.declarations
     fun generate(generationType: GenerationType): TypeSpec = with(declaration) {
@@ -49,10 +51,11 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
         bluetoothDeclarations.forEach { bluetoothDeclaration ->
             when (generationType.side) {
                 GenerationType.Side.CLIENT -> {
-                    add(BluetoothClientBuilder(bluetoothDeclaration, logger).generate(generationType))
+                    add(BluetoothClientBuilder(bluetoothDeclaration, options, logger).generate(generationType))
                 }
+
                 GenerationType.Side.SERVER -> {
-                    add(BluetoothServerBuilder(bluetoothDeclaration, logger).generate(generationType))
+                    add(BluetoothServerBuilder(bluetoothDeclaration, options, logger).generate(generationType))
                 }
             }
         }
@@ -62,10 +65,11 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
             val service = serviceDeclaration.getAnnotationsByType(BluetoothService::class).first()
             when (generationType.side) {
                 GenerationType.Side.CLIENT -> {
-                    add(BluetoothRemoteServiceBuilder(serviceDeclaration, service, logger).generate(generationType))
+                    add(BluetoothRemoteServiceBuilder(serviceDeclaration, service, options, logger).generate(generationType))
                 }
+
                 GenerationType.Side.SERVER -> {
-                    add(BluetoothLocalServiceBuilder(serviceDeclaration, service, logger).generate(generationType))
+                    add(BluetoothLocalServiceBuilder(serviceDeclaration, service, options, logger).generate(generationType))
                 }
             }
         }
@@ -73,17 +77,18 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
         val characteristicDeclarations = declarations.filter { it.isAnnotationPresent(BluetoothCharacteristic::class) }.filterIsInstance<KSClassDeclaration>()
         characteristicDeclarations.forEach { characteristicDeclaration ->
             val characteristic = characteristicDeclaration.getAnnotationsByType(BluetoothCharacteristic::class).first()
+            if (generationType.type == GenerationType.Type.API && (generationType.side == GenerationType.Side.CLIENT || !options.generateClient)) {
+                BluetoothResultTypeBuilder.fromClassDeclaration(characteristicDeclaration, options, logger)?.generateType()?.let {
+                    add(it)
+                }
+            }
             when (generationType.side) {
                 GenerationType.Side.CLIENT -> {
-                    if (generationType.type == GenerationType.Type.API) {
-                        BluetoothResultTypeBuilder.fromClassDeclaration(characteristicDeclaration, logger)?.generateType()?.let {
-                            add(it)
-                        }
-                    }
-                    add(BluetoothRemoteCharacteristicBuilder(characteristicDeclaration, characteristic, logger).generate(generationType))
+                    add(BluetoothRemoteCharacteristicBuilder(characteristicDeclaration, characteristic, options, logger).generate(generationType))
                 }
+
                 GenerationType.Side.SERVER -> {
-                    add(BluetoothLocalCharacteristicBuilder(characteristicDeclaration, characteristic, logger).generate(generationType))
+                    add(BluetoothLocalCharacteristicBuilder(characteristicDeclaration, characteristic, options, logger).generate(generationType))
                 }
             }
         }
@@ -91,17 +96,18 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
         val descriptorDeclarations = declarations.filter { it.isAnnotationPresent(BluetoothDescriptor::class) }.filterIsInstance<KSClassDeclaration>()
         descriptorDeclarations.forEach { descriptorDeclaration ->
             val descriptor = descriptorDeclaration.getAnnotationsByType(BluetoothDescriptor::class).first()
+            if (generationType.type == GenerationType.Type.API && (generationType.side == GenerationType.Side.CLIENT || !options.generateClient)) {
+                BluetoothResultTypeBuilder.fromClassDeclaration(descriptorDeclaration, options, logger)?.generateType()?.let {
+                    add(it)
+                }
+            }
             when (generationType.side) {
                 GenerationType.Side.CLIENT -> {
-                    if (generationType.type == GenerationType.Type.API) {
-                        BluetoothResultTypeBuilder.fromClassDeclaration(descriptorDeclaration, logger)?.generateType()?.let {
-                            add(it)
-                        }
-                    }
-                    add(BluetoothRemoteDescriptorBuilder(descriptorDeclaration, descriptor, logger).generate(generationType))
+                    add(BluetoothRemoteDescriptorBuilder(descriptorDeclaration, descriptor, options, logger).generate(generationType))
                 }
+
                 GenerationType.Side.SERVER -> {
-                    add(BluetoothLocalDescriptorBuilder(descriptorDeclaration, descriptor, logger).generate(generationType))
+                    add(BluetoothLocalDescriptorBuilder(descriptorDeclaration, descriptor, options, logger).generate(generationType))
                 }
             }
         }
@@ -111,4 +117,22 @@ internal abstract class AbstractBluetoothClassBuilder(val declaration: KSClassDe
         KModifier.ABSTRACT.takeIf { this == GenerationType.Type.API },
         KModifier.OVERRIDE.takeIf { this != GenerationType.Type.API },
     )
+
+    protected fun logOnlyOneProperty(classOne: KClass<*>, vararg classes: KClass<*>) {
+        logger.error("Only one ${(listOf(classOne) + classes.toList()).joinToString(separator = " / ") { "@${it.simpleName}" }} property can be declared")
+    }
+
+    protected fun invalidProperty(declaration: KSPropertyDeclaration, validClassOne: KClass<*>, vararg validClasses: KClass<*>) {
+        val received = "Received ${declaration.simpleName} with annotations: ${declaration.annotations.joinToString { it.shortName.asString() }}"
+        if (validClasses.isEmpty()) {
+            logger.error("Only a @${validClassOne.simpleName} property can be declared. $received")
+        } else {
+            val last = validClasses.last()
+            logger.error(
+                "Only ${(listOf(validClassOne) + validClasses.dropLast(1)).joinToString {
+                    "@${it.simpleName}"
+                }}, and @${last.simpleName} properties can be declared. $received",
+            )
+        }
+    }
 }
