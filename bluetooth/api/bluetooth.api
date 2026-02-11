@@ -60,6 +60,7 @@ public final class com/splendo/kaluga/bluetooth/BluetoothKt {
 	public static final fun distance (Lkotlinx/coroutines/flow/Flow;DI)Lkotlinx/coroutines/flow/Flow;
 	public static synthetic fun distance$default (Lcom/splendo/kaluga/bluetooth/device/ConnectableDevice;DIILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 	public static synthetic fun distance$default (Lkotlinx/coroutines/flow/Flow;DIILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun filter (Lkotlinx/coroutines/flow/Flow;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun filterDiscovering (Lcom/splendo/kaluga/bluetooth/device/ConnectableDevice;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun get (Lkotlinx/coroutines/flow/Flow;Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun includedServices (Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
@@ -212,7 +213,9 @@ public final class com/splendo/kaluga/bluetooth/CharacteristicProperty$WriteWith
 }
 
 public final class com/splendo/kaluga/bluetooth/CommonUUID {
+	public static final fun getUuid (Ljava/util/UUID;)Lkotlin/uuid/Uuid;
 	public static final fun uuidFrom (Ljava/lang/String;)Ljava/util/UUID;
+	public static final fun uuidFrom (Lkotlin/uuid/Uuid;)Ljava/util/UUID;
 }
 
 public final class com/splendo/kaluga/bluetooth/DefaultBluetoothMonitor : com/splendo/kaluga/service/DefaultServiceMonitor, com/splendo/kaluga/bluetooth/BluetoothMonitor {
@@ -1755,6 +1758,284 @@ public final class com/splendo/kaluga/bluetooth/scanner/DefaultScanner$Builder :
 
 public final class com/splendo/kaluga/bluetooth/scanner/DefaultScanner$Companion {
 	public final fun getDefaultScanSettings ()Lno/nordicsemi/android/support/v18/scanner/ScanSettings;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter {
+	public fun <init> ()V
+	public fun <init> (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;Ljava/util/Set;Ljava/util/Set;)V
+	public synthetic fun <init> (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;Ljava/util/Set;Ljava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;
+	public final fun and (Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;
+	public final fun component1 ()Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;
+	public final fun component2 ()Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public final fun component3 ()Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+	public final fun component4 ()Ljava/util/Set;
+	public final fun component5 ()Ljava/util/Set;
+	public final fun copy (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;Ljava/util/Set;Ljava/util/Set;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;Ljava/util/Set;Ljava/util/Set;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getExclude ()Ljava/util/Set;
+	public final fun getManufacturer ()Ljava/util/Set;
+	public final fun getNameMatcher ()Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;
+	public final fun getServiceMatcher ()Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public final fun getUpdateMatcher ()Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+	public fun hashCode ()I
+	public final fun matches (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public final fun minus (Ljava/lang/String;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;
+	public final fun minus-LRDsOJo (J)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;
+	public final fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;
+	public final fun or (Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;
+	public final fun plus (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;
+	public final fun plus (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;
+	public final fun plus-LRDsOJo (J)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;
+	public final fun plus-P2G2UVI (I)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;
+	public final fun plus-mRyJPXA (Lkotlin/text/Regex;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;
+	public fun toString ()Ljava/lang/String;
+	public final fun union (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$ManufacturerIdentifier {
+	public static final synthetic fun box-impl (I)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ManufacturerIdentifier;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public final fun getManufacturerId ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher {
+	public fun matches (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public abstract fun matches (Ljava/lang/String;)Z
+	public abstract fun plus (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;
+	public abstract fun plus-mRyJPXA (Lkotlin/text/Regex;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher$All : com/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher {
+	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher$All;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun matches (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public fun matches (Ljava/lang/String;)Z
+	public fun plus (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;
+	public fun plus-mRyJPXA (Lkotlin/text/Regex;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher$DefaultImpls {
+	public static fun matches (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher$Some : com/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher {
+	public fun <init> (Ljava/util/Set;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/Set;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher$Some;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher$Some;Ljava/util/Set;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher$Some;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getNamePatterns ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun matches (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public fun matches (Ljava/lang/String;)Z
+	public fun plus (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;
+	public fun plus-mRyJPXA (Lkotlin/text/Regex;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$NameMatcher;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher {
+	public abstract fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public fun and (Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun matches (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public abstract fun matches (Ljava/util/List;)Z
+	public abstract fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public fun or (Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$All : com/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained {
+	public fun <init> (Ljava/util/Set;)V
+	public fun <init> ([Ljava/util/UUID;)V
+	public fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public fun and (Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public final fun component1 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/Set;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$All;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$All;Ljava/util/Set;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$All;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConstraints ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun matches (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public fun matches (Ljava/util/List;)Z
+	public fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public fun or (Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Any : com/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher {
+	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Any;
+	public fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public fun and (Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun matches (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public fun matches (Ljava/util/List;)Z
+	public fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public fun or (Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained : com/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher {
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained$DefaultImpls {
+	public static fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public static fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public static fun matches (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public static fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public static fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$DefaultImpls {
+	public static fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public static fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public static fun matches (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public static fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public static fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Exactly : com/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained {
+	public fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public fun and (Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public static fun and-impl (Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public static fun and-impl (Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public static fun and-impl (Ljava/util/UUID;Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public static final synthetic fun box-impl (Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Exactly;
+	public static fun constructor-impl (Ljava/util/UUID;)Ljava/util/UUID;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/util/UUID;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/util/UUID;Ljava/util/UUID;)Z
+	public final fun getUuid ()Ljava/util/UUID;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/util/UUID;)I
+	public fun matches (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public fun matches (Ljava/util/List;)Z
+	public static fun matches-impl (Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public static fun matches-impl (Ljava/util/UUID;Ljava/util/List;)Z
+	public fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public fun or (Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public static fun or-impl (Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public static fun or-impl (Ljava/util/UUID;Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public static fun or-impl (Ljava/util/UUID;Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/util/UUID;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/util/UUID;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Some : com/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained {
+	public fun <init> (Ljava/util/Set;)V
+	public fun <init> ([Ljava/util/UUID;)V
+	public fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun and (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public fun and (Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public final fun component1 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/Set;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Some;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Some;Ljava/util/Set;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Some;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConstraints ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun matches (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public fun matches (Ljava/util/List;)Z
+	public fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun or (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher;
+	public fun or (Ljava/util/UUID;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$ServiceMatcher$Constrained;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher {
+	public abstract fun matches (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
+	public fun matches (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public fun minus-LRDsOJo (J)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+	public abstract fun plus (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+	public abstract fun plus-LRDsOJo (J)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher$Age : com/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher {
+	public synthetic fun <init> (JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-UwyO8pc ()J
+	public final fun copy-LRDsOJo (J)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher$Age;
+	public static synthetic fun copy-LRDsOJo$default (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher$Age;JILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher$Age;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAge-UwyO8pc ()J
+	public fun hashCode ()I
+	public fun matches (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
+	public fun matches (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public fun minus-LRDsOJo (J)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+	public fun plus (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+	public fun plus-LRDsOJo (J)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher$All : com/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher {
+	public static final field INSTANCE Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher$All;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun matches (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
+	public fun matches (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public fun minus-LRDsOJo (J)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+	public fun plus (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+	public fun plus-LRDsOJo (J)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher$Age;
+	public synthetic fun plus-LRDsOJo (J)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher$DefaultImpls {
+	public static fun matches (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public static fun minus-LRDsOJo (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;J)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher$UpdatedAfter : com/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher {
+	public fun <init> (Lcom/splendo/kaluga/base/utils/KalugaDate;)V
+	public final fun component1 ()Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public final fun copy (Lcom/splendo/kaluga/base/utils/KalugaDate;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher$UpdatedAfter;
+	public static synthetic fun copy$default (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher$UpdatedAfter;Lcom/splendo/kaluga/base/utils/KalugaDate;ILjava/lang/Object;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher$UpdatedAfter;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDate ()Lcom/splendo/kaluga/base/utils/KalugaDate;
+	public fun hashCode ()I
+	public fun matches (Lcom/splendo/kaluga/base/utils/KalugaDate;)Z
+	public fun matches (Lcom/splendo/kaluga/bluetooth/device/DeviceInfo;)Z
+	public fun minus-LRDsOJo (J)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+	public fun plus (Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+	public fun plus-LRDsOJo (J)Lcom/splendo/kaluga/bluetooth/scanner/DeviceFilter$UpdateMatcher;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/DeviceFilterKt {
+	public static final fun NamePostfix (Ljava/lang/String;)Lkotlin/text/Regex;
+	public static final fun NamePrefix (Ljava/lang/String;)Lkotlin/text/Regex;
+}
+
+public final class com/splendo/kaluga/bluetooth/scanner/NamePattern {
+	public static final synthetic fun box-impl (Lkotlin/text/Regex;)Lcom/splendo/kaluga/bluetooth/scanner/NamePattern;
+	public static fun constructor-impl (Ljava/lang/String;)Lkotlin/text/Regex;
+	public static fun constructor-impl (Lkotlin/text/Regex;)Lkotlin/text/Regex;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Lkotlin/text/Regex;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Lkotlin/text/Regex;Lkotlin/text/Regex;)Z
+	public final fun getValue ()Lkotlin/text/Regex;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Lkotlin/text/Regex;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Lkotlin/text/Regex;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Lkotlin/text/Regex;
 }
 
 public abstract interface class com/splendo/kaluga/bluetooth/scanner/Scanner {

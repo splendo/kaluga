@@ -22,6 +22,8 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.text.format
 import kotlin.jvm.JvmName
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 private object Constants {
     val formatValidationRegex = Regex(
@@ -55,6 +57,13 @@ expect class UUID
 expect val UUID.uuidString: String
 
 /**
+ * Converts a [UUID] to a [Uuid]
+ * @return the [Uuid] associated with the [UUID]
+ */
+@OptIn(ExperimentalUuidApi::class)
+val UUID.uuid: Uuid get() = Uuid.parse(uuidString)
+
+/**
  * Gets the [UUID] from a given string
  * @param uuidString the string to converter to a [UUID]
  * @return the [UUID] associated with the string
@@ -62,6 +71,13 @@ expect val UUID.uuidString: String
  */
 @Throws(UUIDException::class)
 fun uuidFrom(uuidString: String): UUID = if (uuidString.isValidUUIDString()) unsafeUUIDFrom(uuidString) else throw UUIDException.InvalidFormat(uuidString)
+
+/**
+ * Gets the [UUID] from a given [Uuid]
+ * @param uuid the [Uuid] to converter to a [UUID]
+ */
+@OptIn(ExperimentalUuidApi::class)
+fun uuidFrom(uuid: Uuid): UUID = uuidFrom(uuid.toHexDashString())
 
 /**
  * Gets a random [UUID]

@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Targets: [iosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -1795,6 +1795,206 @@ final class com.splendo.kaluga.bluetooth.scanner/DefaultScanner : com.splendo.ka
     }
 }
 
+final class com.splendo.kaluga.bluetooth.scanner/DeviceFilter { // com.splendo.kaluga.bluetooth.scanner/DeviceFilter|null[0]
+    constructor <init>(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher = ..., com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher = ..., com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher = ..., kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ManufacturerIdentifier> = ..., kotlin.collections/Set<platform.Foundation/NSUUID> = ...) // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.<init>|<init>(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.NameMatcher;com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher;com.splendo.kaluga.bluetooth.scanner.DeviceFilter.UpdateMatcher;kotlin.collections.Set<com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ManufacturerIdentifier>;kotlin.collections.Set<platform.Foundation.NSUUID>){}[0]
+
+    final val exclude // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.exclude|{}exclude[0]
+        final fun <get-exclude>(): kotlin.collections/Set<platform.Foundation/NSUUID> // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.exclude.<get-exclude>|<get-exclude>(){}[0]
+    final val manufacturer // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.manufacturer|{}manufacturer[0]
+        final fun <get-manufacturer>(): kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ManufacturerIdentifier> // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.manufacturer.<get-manufacturer>|<get-manufacturer>(){}[0]
+    final val nameMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.nameMatcher|{}nameMatcher[0]
+        final fun <get-nameMatcher>(): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.nameMatcher.<get-nameMatcher>|<get-nameMatcher>(){}[0]
+    final val serviceMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.serviceMatcher|{}serviceMatcher[0]
+        final fun <get-serviceMatcher>(): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.serviceMatcher.<get-serviceMatcher>|<get-serviceMatcher>(){}[0]
+    final val updateMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.updateMatcher|{}updateMatcher[0]
+        final fun <get-updateMatcher>(): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.updateMatcher.<get-updateMatcher>|<get-updateMatcher>(){}[0]
+
+    final fun and(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher): com.splendo.kaluga.bluetooth.scanner/DeviceFilter // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.and|and(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher){}[0]
+    final fun and(platform.CoreBluetooth/CBUUID): com.splendo.kaluga.bluetooth.scanner/DeviceFilter // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.and|and(platform.CoreBluetooth.CBUUID){}[0]
+    final fun component1(): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.component1|component1(){}[0]
+    final fun component2(): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.component2|component2(){}[0]
+    final fun component3(): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.component3|component3(){}[0]
+    final fun component4(): kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ManufacturerIdentifier> // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.component4|component4(){}[0]
+    final fun component5(): kotlin.collections/Set<platform.Foundation/NSUUID> // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.component5|component5(){}[0]
+    final fun copy(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher = ..., com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher = ..., com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher = ..., kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ManufacturerIdentifier> = ..., kotlin.collections/Set<platform.Foundation/NSUUID> = ...): com.splendo.kaluga.bluetooth.scanner/DeviceFilter // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.copy|copy(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.NameMatcher;com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher;com.splendo.kaluga.bluetooth.scanner.DeviceFilter.UpdateMatcher;kotlin.collections.Set<com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ManufacturerIdentifier>;kotlin.collections.Set<platform.Foundation.NSUUID>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.hashCode|hashCode(){}[0]
+    final fun matches(com.splendo.kaluga.bluetooth.device/DeviceInfo): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.matches|matches(com.splendo.kaluga.bluetooth.device.DeviceInfo){}[0]
+    final fun minus(kotlin.time/Duration): com.splendo.kaluga.bluetooth.scanner/DeviceFilter // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.minus|minus(kotlin.time.Duration){}[0]
+    final fun minus(platform.Foundation/NSUUID): com.splendo.kaluga.bluetooth.scanner/DeviceFilter // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.minus|minus(platform.Foundation.NSUUID){}[0]
+    final fun or(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher): com.splendo.kaluga.bluetooth.scanner/DeviceFilter // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.or|or(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher){}[0]
+    final fun or(platform.CoreBluetooth/CBUUID): com.splendo.kaluga.bluetooth.scanner/DeviceFilter // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.or|or(platform.CoreBluetooth.CBUUID){}[0]
+    final fun plus(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ManufacturerIdentifier): com.splendo.kaluga.bluetooth.scanner/DeviceFilter // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.plus|plus(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ManufacturerIdentifier){}[0]
+    final fun plus(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher): com.splendo.kaluga.bluetooth.scanner/DeviceFilter // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.plus|plus(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.NameMatcher){}[0]
+    final fun plus(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher): com.splendo.kaluga.bluetooth.scanner/DeviceFilter // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.plus|plus(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.UpdateMatcher){}[0]
+    final fun plus(com.splendo.kaluga.bluetooth.scanner/NamePattern): com.splendo.kaluga.bluetooth.scanner/DeviceFilter // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.plus|plus(com.splendo.kaluga.bluetooth.scanner.NamePattern){}[0]
+    final fun plus(kotlin.time/Duration): com.splendo.kaluga.bluetooth.scanner/DeviceFilter // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.plus|plus(kotlin.time.Duration){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.toString|toString(){}[0]
+    final fun union(com.splendo.kaluga.bluetooth.scanner/DeviceFilter): com.splendo.kaluga.bluetooth.scanner/DeviceFilter // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.union|union(com.splendo.kaluga.bluetooth.scanner.DeviceFilter){}[0]
+
+    sealed interface NameMatcher { // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher|null[0]
+        abstract fun matches(kotlin/String?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.matches|matches(kotlin.String?){}[0]
+        abstract fun plus(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.plus|plus(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.NameMatcher){}[0]
+        abstract fun plus(com.splendo.kaluga.bluetooth.scanner/NamePattern): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.plus|plus(com.splendo.kaluga.bluetooth.scanner.NamePattern){}[0]
+        open fun matches(com.splendo.kaluga.bluetooth.device/DeviceInfo): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.matches|matches(com.splendo.kaluga.bluetooth.device.DeviceInfo){}[0]
+
+        final class Some : com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher { // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.Some|null[0]
+            constructor <init>(kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/NamePattern>) // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.Some.<init>|<init>(kotlin.collections.Set<com.splendo.kaluga.bluetooth.scanner.NamePattern>){}[0]
+
+            final val namePatterns // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.Some.namePatterns|{}namePatterns[0]
+                final fun <get-namePatterns>(): kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/NamePattern> // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.Some.namePatterns.<get-namePatterns>|<get-namePatterns>(){}[0]
+
+            final fun component1(): kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/NamePattern> // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.Some.component1|component1(){}[0]
+            final fun copy(kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/NamePattern> = ...): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.Some // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.Some.copy|copy(kotlin.collections.Set<com.splendo.kaluga.bluetooth.scanner.NamePattern>){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.Some.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.Some.hashCode|hashCode(){}[0]
+            final fun matches(kotlin/String?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.Some.matches|matches(kotlin.String?){}[0]
+            final fun plus(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.Some.plus|plus(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.NameMatcher){}[0]
+            final fun plus(com.splendo.kaluga.bluetooth.scanner/NamePattern): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.Some.plus|plus(com.splendo.kaluga.bluetooth.scanner.NamePattern){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.Some.toString|toString(){}[0]
+        }
+
+        final object All : com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher { // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.All|null[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.All.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.All.hashCode|hashCode(){}[0]
+            final fun matches(kotlin/String?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.All.matches|matches(kotlin.String?){}[0]
+            final fun plus(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.All.plus|plus(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.NameMatcher){}[0]
+            final fun plus(com.splendo.kaluga.bluetooth.scanner/NamePattern): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.All.plus|plus(com.splendo.kaluga.bluetooth.scanner.NamePattern){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.NameMatcher.All.toString|toString(){}[0]
+        }
+    }
+
+    sealed interface ServiceMatcher { // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher|null[0]
+        abstract fun and(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.and|and(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher.Constrained){}[0]
+        abstract fun matches(kotlin.collections/List<platform.CoreBluetooth/CBUUID>): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.matches|matches(kotlin.collections.List<platform.CoreBluetooth.CBUUID>){}[0]
+        abstract fun or(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.or|or(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher.Constrained){}[0]
+        open fun and(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.and|and(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher){}[0]
+        open fun and(platform.CoreBluetooth/CBUUID): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.and|and(platform.CoreBluetooth.CBUUID){}[0]
+        open fun matches(com.splendo.kaluga.bluetooth.device/DeviceInfo): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.matches|matches(com.splendo.kaluga.bluetooth.device.DeviceInfo){}[0]
+        open fun or(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.or|or(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher){}[0]
+        open fun or(platform.CoreBluetooth/CBUUID): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.or|or(platform.CoreBluetooth.CBUUID){}[0]
+
+        sealed interface Constrained : com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained|null[0]
+
+        final class All : com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained { // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.All|null[0]
+            constructor <init>(kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained>) // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.All.<init>|<init>(kotlin.collections.Set<com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher.Constrained>){}[0]
+            constructor <init>(kotlin/Array<out platform.CoreBluetooth/CBUUID>...) // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.All.<init>|<init>(kotlin.Array<out|platform.CoreBluetooth.CBUUID>...){}[0]
+
+            final val constraints // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.All.constraints|{}constraints[0]
+                final fun <get-constraints>(): kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained> // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.All.constraints.<get-constraints>|<get-constraints>(){}[0]
+
+            final fun and(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.All.and|and(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher.Constrained){}[0]
+            final fun component1(): kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained> // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.All.component1|component1(){}[0]
+            final fun copy(kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained> = ...): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.All // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.All.copy|copy(kotlin.collections.Set<com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher.Constrained>){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.All.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.All.hashCode|hashCode(){}[0]
+            final fun matches(kotlin.collections/List<platform.CoreBluetooth/CBUUID>): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.All.matches|matches(kotlin.collections.List<platform.CoreBluetooth.CBUUID>){}[0]
+            final fun or(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.All.or|or(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher.Constrained){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.All.toString|toString(){}[0]
+        }
+
+        final class Some : com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained { // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Some|null[0]
+            constructor <init>(kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained>) // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Some.<init>|<init>(kotlin.collections.Set<com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher.Constrained>){}[0]
+            constructor <init>(kotlin/Array<out platform.CoreBluetooth/CBUUID>...) // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Some.<init>|<init>(kotlin.Array<out|platform.CoreBluetooth.CBUUID>...){}[0]
+
+            final val constraints // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Some.constraints|{}constraints[0]
+                final fun <get-constraints>(): kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained> // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Some.constraints.<get-constraints>|<get-constraints>(){}[0]
+
+            final fun and(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Some.and|and(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher.Constrained){}[0]
+            final fun component1(): kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained> // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Some.component1|component1(){}[0]
+            final fun copy(kotlin.collections/Set<com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained> = ...): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Some // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Some.copy|copy(kotlin.collections.Set<com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher.Constrained>){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Some.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Some.hashCode|hashCode(){}[0]
+            final fun matches(kotlin.collections/List<platform.CoreBluetooth/CBUUID>): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Some.matches|matches(kotlin.collections.List<platform.CoreBluetooth.CBUUID>){}[0]
+            final fun or(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Some.or|or(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher.Constrained){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Some.toString|toString(){}[0]
+        }
+
+        final value class Exactly : com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained { // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Exactly|null[0]
+            constructor <init>(platform.CoreBluetooth/CBUUID) // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Exactly.<init>|<init>(platform.CoreBluetooth.CBUUID){}[0]
+
+            final val uuid // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Exactly.uuid|{}uuid[0]
+                final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Exactly.uuid.<get-uuid>|<get-uuid>(){}[0]
+
+            final fun and(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Exactly.and|and(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher.Constrained){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Exactly.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Exactly.hashCode|hashCode(){}[0]
+            final fun matches(kotlin.collections/List<platform.CoreBluetooth/CBUUID>): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Exactly.matches|matches(kotlin.collections.List<platform.CoreBluetooth.CBUUID>){}[0]
+            final fun or(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Exactly.or|or(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher.Constrained){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Exactly.toString|toString(){}[0]
+        }
+
+        final object Any : com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher { // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Any|null[0]
+            final fun and(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Any.and|and(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher.Constrained){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Any.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Any.hashCode|hashCode(){}[0]
+            final fun matches(kotlin.collections/List<platform.CoreBluetooth/CBUUID>): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Any.matches|matches(kotlin.collections.List<platform.CoreBluetooth.CBUUID>){}[0]
+            final fun or(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Constrained // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Any.or|or(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.ServiceMatcher.Constrained){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ServiceMatcher.Any.toString|toString(){}[0]
+        }
+    }
+
+    sealed interface UpdateMatcher { // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher|null[0]
+        abstract fun matches(com.splendo.kaluga.base.utils/KalugaDate): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.matches|matches(com.splendo.kaluga.base.utils.KalugaDate){}[0]
+        abstract fun plus(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.plus|plus(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.UpdateMatcher){}[0]
+        abstract fun plus(kotlin.time/Duration): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.plus|plus(kotlin.time.Duration){}[0]
+        open fun matches(com.splendo.kaluga.bluetooth.device/DeviceInfo): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.matches|matches(com.splendo.kaluga.bluetooth.device.DeviceInfo){}[0]
+        open fun minus(kotlin.time/Duration): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.minus|minus(kotlin.time.Duration){}[0]
+
+        final class Age : com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher { // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.Age|null[0]
+            constructor <init>(kotlin.time/Duration) // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.Age.<init>|<init>(kotlin.time.Duration){}[0]
+
+            final val age // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.Age.age|{}age[0]
+                final fun <get-age>(): kotlin.time/Duration // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.Age.age.<get-age>|<get-age>(){}[0]
+
+            final fun component1(): kotlin.time/Duration // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.Age.component1|component1(){}[0]
+            final fun copy(kotlin.time/Duration = ...): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.Age // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.Age.copy|copy(kotlin.time.Duration){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.Age.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.Age.hashCode|hashCode(){}[0]
+            final fun matches(com.splendo.kaluga.base.utils/KalugaDate): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.Age.matches|matches(com.splendo.kaluga.base.utils.KalugaDate){}[0]
+            final fun plus(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.Age.plus|plus(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.UpdateMatcher){}[0]
+            final fun plus(kotlin.time/Duration): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.Age.plus|plus(kotlin.time.Duration){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.Age.toString|toString(){}[0]
+        }
+
+        final class UpdatedAfter : com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher { // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.UpdatedAfter|null[0]
+            constructor <init>(com.splendo.kaluga.base.utils/KalugaDate) // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.UpdatedAfter.<init>|<init>(com.splendo.kaluga.base.utils.KalugaDate){}[0]
+
+            final val date // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.UpdatedAfter.date|{}date[0]
+                final fun <get-date>(): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.UpdatedAfter.date.<get-date>|<get-date>(){}[0]
+
+            final fun component1(): com.splendo.kaluga.base.utils/KalugaDate // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.UpdatedAfter.component1|component1(){}[0]
+            final fun copy(com.splendo.kaluga.base.utils/KalugaDate = ...): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.UpdatedAfter // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.UpdatedAfter.copy|copy(com.splendo.kaluga.base.utils.KalugaDate){}[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.UpdatedAfter.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.UpdatedAfter.hashCode|hashCode(){}[0]
+            final fun matches(com.splendo.kaluga.base.utils/KalugaDate): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.UpdatedAfter.matches|matches(com.splendo.kaluga.base.utils.KalugaDate){}[0]
+            final fun plus(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.UpdatedAfter.plus|plus(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.UpdateMatcher){}[0]
+            final fun plus(kotlin.time/Duration): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.UpdatedAfter.plus|plus(kotlin.time.Duration){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.UpdatedAfter.toString|toString(){}[0]
+        }
+
+        final object All : com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher { // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.All|null[0]
+            final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.All.equals|equals(kotlin.Any?){}[0]
+            final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.All.hashCode|hashCode(){}[0]
+            final fun matches(com.splendo.kaluga.base.utils/KalugaDate): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.All.matches|matches(com.splendo.kaluga.base.utils.KalugaDate){}[0]
+            final fun plus(com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.All.plus|plus(com.splendo.kaluga.bluetooth.scanner.DeviceFilter.UpdateMatcher){}[0]
+            final fun plus(kotlin.time/Duration): com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.Age // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.All.plus|plus(kotlin.time.Duration){}[0]
+            final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.UpdateMatcher.All.toString|toString(){}[0]
+        }
+    }
+
+    final value class ManufacturerIdentifier { // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ManufacturerIdentifier|null[0]
+        constructor <init>(kotlin/Int) // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ManufacturerIdentifier.<init>|<init>(kotlin.Int){}[0]
+
+        final val manufacturerId // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ManufacturerIdentifier.manufacturerId|{}manufacturerId[0]
+            final fun <get-manufacturerId>(): kotlin/Int // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ManufacturerIdentifier.manufacturerId.<get-manufacturerId>|<get-manufacturerId>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ManufacturerIdentifier.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ManufacturerIdentifier.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.scanner/DeviceFilter.ManufacturerIdentifier.toString|toString(){}[0]
+    }
+}
+
 final class com.splendo.kaluga.bluetooth.scanner/ScanningStateRepo : com.splendo.kaluga.bluetooth.scanner/ScanningStateImplRepo { // com.splendo.kaluga.bluetooth.scanner/ScanningStateRepo|null[0]
     constructor <init>(kotlin.coroutines/SuspendFunction1<kotlin.coroutines/CoroutineContext, com.splendo.kaluga.bluetooth.scanner/BaseScanner.Settings>, com.splendo.kaluga.bluetooth.scanner/BaseScanner.Builder, kotlin/Function1<platform.Foundation/NSUUID, kotlin.coroutines/CoroutineContext>, kotlin.coroutines/CoroutineContext) // com.splendo.kaluga.bluetooth.scanner/ScanningStateRepo.<init>|<init>(kotlin.coroutines.SuspendFunction1<kotlin.coroutines.CoroutineContext,com.splendo.kaluga.bluetooth.scanner.BaseScanner.Settings>;com.splendo.kaluga.bluetooth.scanner.BaseScanner.Builder;kotlin.Function1<platform.Foundation.NSUUID,kotlin.coroutines.CoroutineContext>;kotlin.coroutines.CoroutineContext){}[0]
 }
@@ -2206,6 +2406,18 @@ final class com.splendo.kaluga.bluetooth/RemoteService : com.splendo.kaluga.blue
         final fun <get-uuid>(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.bluetooth/RemoteService.uuid.<get-uuid>|<get-uuid>(){}[0]
 }
 
+final value class com.splendo.kaluga.bluetooth.scanner/NamePattern { // com.splendo.kaluga.bluetooth.scanner/NamePattern|null[0]
+    constructor <init>(kotlin.text/Regex) // com.splendo.kaluga.bluetooth.scanner/NamePattern.<init>|<init>(kotlin.text.Regex){}[0]
+    constructor <init>(kotlin/String) // com.splendo.kaluga.bluetooth.scanner/NamePattern.<init>|<init>(kotlin.String){}[0]
+
+    final val value // com.splendo.kaluga.bluetooth.scanner/NamePattern.value|{}value[0]
+        final fun <get-value>(): kotlin.text/Regex // com.splendo.kaluga.bluetooth.scanner/NamePattern.value.<get-value>|<get-value>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.splendo.kaluga.bluetooth.scanner/NamePattern.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.splendo.kaluga.bluetooth.scanner/NamePattern.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.splendo.kaluga.bluetooth.scanner/NamePattern.toString|toString(){}[0]
+}
+
 open class com.splendo.kaluga.bluetooth.device/IdentifierSerializer : kotlinx.serialization/KSerializer<com.splendo.kaluga.bluetooth.device/SerializableIdentifier> { // com.splendo.kaluga.bluetooth.device/IdentifierSerializer|null[0]
     constructor <init>() // com.splendo.kaluga.bluetooth.device/IdentifierSerializer.<init>|<init>(){}[0]
 
@@ -2554,6 +2766,8 @@ final val com.splendo.kaluga.bluetooth.device/stringValue // com.splendo.kaluga.
     final fun (platform.Foundation/NSUUID).<get-stringValue>(): kotlin/String // com.splendo.kaluga.bluetooth.device/stringValue.<get-stringValue>|<get-stringValue>@platform.Foundation.NSUUID(){}[0]
 final val com.splendo.kaluga.bluetooth/asBytes // com.splendo.kaluga.bluetooth/asBytes|@platform.Foundation.NSData{}asBytes[0]
     final fun (platform.Foundation/NSData).<get-asBytes>(): kotlin/ByteArray // com.splendo.kaluga.bluetooth/asBytes.<get-asBytes>|<get-asBytes>@platform.Foundation.NSData(){}[0]
+final val com.splendo.kaluga.bluetooth/uuid // com.splendo.kaluga.bluetooth/uuid|@platform.CoreBluetooth.CBUUID{}uuid[0]
+    final fun (platform.CoreBluetooth/CBUUID).<get-uuid>(): kotlin.uuid/Uuid // com.splendo.kaluga.bluetooth/uuid.<get-uuid>|<get-uuid>@platform.CoreBluetooth.CBUUID(){}[0]
 final val com.splendo.kaluga.bluetooth/uuidString // com.splendo.kaluga.bluetooth/uuidString|@platform.CoreBluetooth.CBUUID{}uuidString[0]
     final fun (platform.CoreBluetooth/CBUUID).<get-uuidString>(): kotlin/String // com.splendo.kaluga.bluetooth/uuidString.<get-uuidString>|<get-uuidString>@platform.CoreBluetooth.CBUUID(){}[0]
 
@@ -2586,6 +2800,7 @@ final fun (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth/RemoteChara
 final fun (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth/RemoteCharacteristic?>).com.splendo.kaluga.bluetooth/valueOrEmpty(): kotlinx.coroutines.flow/Flow<kotlin/ByteArray> // com.splendo.kaluga.bluetooth/valueOrEmpty|valueOrEmpty@kotlinx.coroutines.flow.Flow<com.splendo.kaluga.bluetooth.RemoteCharacteristic?>(){}[0]
 final fun (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth/RemoteService?>).com.splendo.kaluga.bluetooth/characteristics(): kotlinx.coroutines.flow/Flow<kotlin.collections/List<com.splendo.kaluga.bluetooth/RemoteCharacteristic>> // com.splendo.kaluga.bluetooth/characteristics|characteristics@kotlinx.coroutines.flow.Flow<com.splendo.kaluga.bluetooth.RemoteService?>(){}[0]
 final fun (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth/RemoteService?>).com.splendo.kaluga.bluetooth/includedServices(): kotlinx.coroutines.flow/Flow<kotlin.collections/List<com.splendo.kaluga.bluetooth/RemoteService>> // com.splendo.kaluga.bluetooth/includedServices|includedServices@kotlinx.coroutines.flow.Flow<com.splendo.kaluga.bluetooth.RemoteService?>(){}[0]
+final fun (kotlinx.coroutines.flow/Flow<kotlin.collections/List<com.splendo.kaluga.bluetooth.device/ConnectableDevice>>).com.splendo.kaluga.bluetooth/filter(com.splendo.kaluga.bluetooth.scanner/DeviceFilter): kotlinx.coroutines.flow/Flow<kotlin.collections/List<com.splendo.kaluga.bluetooth.device/ConnectableDevice>> // com.splendo.kaluga.bluetooth/filter|filter@kotlinx.coroutines.flow.Flow<kotlin.collections.List<com.splendo.kaluga.bluetooth.device.ConnectableDevice>>(com.splendo.kaluga.bluetooth.scanner.DeviceFilter){}[0]
 final fun (kotlinx.coroutines.flow/Flow<kotlin.collections/List<com.splendo.kaluga.bluetooth.device/ConnectableDevice>>).com.splendo.kaluga.bluetooth/get(platform.Foundation/NSUUID): kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth.device/ConnectableDevice?> // com.splendo.kaluga.bluetooth/get|get@kotlinx.coroutines.flow.Flow<kotlin.collections.List<com.splendo.kaluga.bluetooth.device.ConnectableDevice>>(platform.Foundation.NSUUID){}[0]
 final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlin.collections/List<#A>).com.splendo.kaluga.bluetooth/get(platform.CoreBluetooth/CBUUID): #A // com.splendo.kaluga.bluetooth/get|get@kotlin.collections.List<0:0>(platform.CoreBluetooth.CBUUID){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
 final fun <#A: com.splendo.kaluga.bluetooth/Attribute> (kotlin.collections/List<#A>).com.splendo.kaluga.bluetooth/getOrNull(platform.CoreBluetooth/CBUUID): #A? // com.splendo.kaluga.bluetooth/getOrNull|getOrNull@kotlin.collections.List<0:0>(platform.CoreBluetooth.CBUUID){0§<com.splendo.kaluga.bluetooth.Attribute>}[0]
@@ -2611,7 +2826,10 @@ final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.blu
 final fun <#A: kotlin/Any?> (kotlinx.coroutines.flow/Flow<com.splendo.kaluga.bluetooth/RemoteCharacteristic?>).com.splendo.kaluga.bluetooth/valueOrNull(kotlinx.serialization/DeserializationStrategy<#A>, com.splendo.kaluga.bluetooth.serialization/BluetoothFormat = ...): kotlinx.coroutines.flow/Flow<#A?> // com.splendo.kaluga.bluetooth/valueOrNull|valueOrNull@kotlinx.coroutines.flow.Flow<com.splendo.kaluga.bluetooth.RemoteCharacteristic?>(kotlinx.serialization.DeserializationStrategy<0:0>;com.splendo.kaluga.bluetooth.serialization.BluetoothFormat){0§<kotlin.Any?>}[0]
 final fun com.splendo.kaluga.bluetooth.device/identifierFromString(kotlin/String): platform.Foundation/NSUUID? // com.splendo.kaluga.bluetooth.device/identifierFromString|identifierFromString(kotlin.String){}[0]
 final fun com.splendo.kaluga.bluetooth.device/randomIdentifier(): platform.Foundation/NSUUID // com.splendo.kaluga.bluetooth.device/randomIdentifier|randomIdentifier(){}[0]
+final fun com.splendo.kaluga.bluetooth.scanner/NamePostfix(kotlin/String): com.splendo.kaluga.bluetooth.scanner/NamePattern // com.splendo.kaluga.bluetooth.scanner/NamePostfix|NamePostfix(kotlin.String){}[0]
+final fun com.splendo.kaluga.bluetooth.scanner/NamePrefix(kotlin/String): com.splendo.kaluga.bluetooth.scanner/NamePattern // com.splendo.kaluga.bluetooth.scanner/NamePrefix|NamePrefix(kotlin.String){}[0]
 final fun com.splendo.kaluga.bluetooth/randomUUID(): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.bluetooth/randomUUID|randomUUID(){}[0]
+final fun com.splendo.kaluga.bluetooth/uuidFrom(kotlin.uuid/Uuid): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.bluetooth/uuidFrom|uuidFrom(kotlin.uuid.Uuid){}[0]
 final fun com.splendo.kaluga.bluetooth/uuidFrom(kotlin/String): platform.CoreBluetooth/CBUUID // com.splendo.kaluga.bluetooth/uuidFrom|uuidFrom(kotlin.String){}[0]
 final inline fun <#A: kotlin/Any?, #B: reified kotlin/Any?, #C: kotlin/Any?> (com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding.TriggerResponse<#A, #C>).com.splendo.kaluga.bluetooth.device/triggerWrite(com.splendo.kaluga.bluetooth.serialization/BluetoothFormat = ..., noinline kotlin/Function1<#A, #B>, noinline kotlin/Function1<com.splendo.kaluga.bluetooth.device/RemoteAttributeBinding.WriteBuilder.NonMutating<#C, #A>, kotlin/Unit>) // com.splendo.kaluga.bluetooth.device/triggerWrite|triggerWrite@com.splendo.kaluga.bluetooth.device.RemoteAttributeBinding.TriggerResponse<0:0,0:2>(com.splendo.kaluga.bluetooth.serialization.BluetoothFormat;kotlin.Function1<0:0,0:1>;kotlin.Function1<com.splendo.kaluga.bluetooth.device.RemoteAttributeBinding.WriteBuilder.NonMutating<0:2,0:0>,kotlin.Unit>){0§<kotlin.Any?>;1§<kotlin.Any?>;2§<kotlin.Any?>}[0]
 final inline fun <#A: reified kotlin/Any> (com.splendo.kaluga.bluetooth.server/LocalCharacteristic.DSL).com.splendo.kaluga.bluetooth.server/readableAlwaysSuccess(kotlin/Boolean = ..., com.splendo.kaluga.bluetooth.serialization/BluetoothFormat = ..., noinline kotlin.coroutines/SuspendFunction2<com.splendo.kaluga.bluetooth.server/LocalCharacteristic, com.splendo.kaluga.bluetooth.server/ConnectedDevice, #A>) // com.splendo.kaluga.bluetooth.server/readableAlwaysSuccess|readableAlwaysSuccess@com.splendo.kaluga.bluetooth.server.LocalCharacteristic.DSL(kotlin.Boolean;com.splendo.kaluga.bluetooth.serialization.BluetoothFormat;kotlin.coroutines.SuspendFunction2<com.splendo.kaluga.bluetooth.server.LocalCharacteristic,com.splendo.kaluga.bluetooth.server.ConnectedDevice,0:0>){0§<kotlin.Any>}[0]

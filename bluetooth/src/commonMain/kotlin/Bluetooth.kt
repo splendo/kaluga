@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.text.lowerCased
+import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
@@ -30,6 +31,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
+import com.splendo.kaluga.bluetooth.scanner.DeviceFilter
 import com.splendo.kaluga.bluetooth.scanner.Filter
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
@@ -67,6 +69,8 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.serializer
 import kotlin.coroutines.CoroutineContext
+import kotlin.jvm.JvmInline
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 private val defaultBluetoothClientDispatcher by lazy {
@@ -374,6 +378,22 @@ expect class BluetoothBuilder : BaseBluetoothBuilder {
 operator fun Flow<List<ConnectableDevice>>.get(identifier: Identifier): Flow<ConnectableDevice?> = this.map { devices ->
     devices.firstOrNull { it.identifier.stringValue.lowerCased(KalugaLocale.enUsPosix) == identifier.stringValue.lowerCased(KalugaLocale.enUsPosix) }
 }.distinctUntilChanged()
+
+fun Flow<List<ConnectableDevice>>.filter(deviceFilter: DeviceFilter) = flatMapLatest { devices ->
+    combine(
+        devices.map { device ->
+            device.info.transformLatest { info ->
+                if (deviceFilter.matches(info)) {
+                    emit(device)
+                } else {
+                    emit(null)
+                }
+            }
+        },
+    ) {
+        it.filterNotNull()
+    }
+}
 
 /**
  * Gets a ([Flow] of) [DeviceState] from a [Flow] or [ConnectableDevice]
