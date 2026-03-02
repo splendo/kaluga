@@ -17,10 +17,13 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.permissions.location.KalugaLocationPermissionDelegateProtocol
+import com.splendo.kaluga.permissions.location.KalugaLocationPermissionWrapper
 import com.splendo.kaluga.service.DefaultServiceMonitor
 import com.splendo.kaluga.service.ServiceMonitor
+import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.getAndUpdate
 import platform.CoreLocation.CLLocationManager
-import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.darwin.NSObject
 
 /**
@@ -53,8 +56,8 @@ class DefaultLocationMonitor(private val locationManager: CLLocationManager) :
 
     internal class LocationManagerDelegate(private val updateState: () -> Unit) :
         NSObject(),
-        CLLocationManagerDelegateProtocol {
-        override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
+        KalugaLocationPermissionDelegateProtocol {
+        override fun didChangeAuthorizationForLocationManager(manager: CLLocationManager) {
             updateState()
         }
     }
@@ -62,11 +65,19 @@ class DefaultLocationMonitor(private val locationManager: CLLocationManager) :
     override val isServiceEnabled: Boolean
         get() = locationManager.locationServicesEnabled()
 
+    private val locationWrapper = atomic<KalugaLocationPermissionWrapper?>(null)
+
     override fun monitoringDidStart() {
-        locationManager.delegate = LocationManagerDelegate(::updateState)
+        locationWrapper.getAndUpdate {
+            it?.unlink()
+            KalugaLocationPermissionWrapper.createByLinkingWithLocationManager(locationManager, LocationManagerDelegate(::updateState))
+        }
     }
 
     override fun monitoringDidStop() {
-        locationManager.delegate = null
+        locationWrapper.getAndUpdate {
+            it?.unlink()
+            null
+        }
     }
 }

@@ -6,13 +6,6 @@ public abstract interface class com/splendo/kaluga/scientific/ByteScientificArra
 	public fun iterator ()Ljava/util/Iterator;
 }
 
-public final class com/splendo/kaluga/scientific/ByteScientificArray$DefaultImpls {
-	public static fun get (Lcom/splendo/kaluga/scientific/ByteScientificArray;I)Ljava/lang/Byte;
-	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/ByteScientificArray;)Ljava/util/List;
-	public static fun getSize (Lcom/splendo/kaluga/scientific/ByteScientificArray;)I
-	public static fun iterator (Lcom/splendo/kaluga/scientific/ByteScientificArray;)Ljava/util/Iterator;
-}
-
 public final class com/splendo/kaluga/scientific/ConvertScientificValueKt {
 	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
 	public static final fun convert (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -129,15 +122,10 @@ public final class com/splendo/kaluga/scientific/DefaultScientificArray : com/sp
 	public final fun copy ([DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/DefaultScientificArray;[DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun get (I)Ljava/lang/Double;
-	public synthetic fun get (I)Ljava/lang/Number;
-	public fun getDecimalValues ()Ljava/util/List;
-	public fun getSize ()I
 	public fun getUnit ()Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;
 	public synthetic fun getUnit ()Lcom/splendo/kaluga/scientific/unit/ScientificUnit;
 	public fun getValues ()[D
 	public fun hashCode ()I
-	public fun iterator ()Ljava/util/Iterator;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -160,8 +148,6 @@ public final class com/splendo/kaluga/scientific/DefaultScientificValue : com/sp
 	public static final field Companion Lcom/splendo/kaluga/scientific/DefaultScientificValue$Companion;
 	public fun <init> (DLcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)V
 	public fun <init> (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)V
-	public fun compareTo (Lcom/splendo/kaluga/scientific/ScientificValue;)I
-	public synthetic fun compareTo (Ljava/lang/Object;)I
 	public final fun component1 ()Lcom/splendo/kaluga/base/utils/Decimal;
 	public final fun component2 ()Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;
 	public final fun copy (Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;)Lcom/splendo/kaluga/scientific/DefaultScientificValue;
@@ -197,26 +183,12 @@ public abstract interface class com/splendo/kaluga/scientific/DoubleScientificAr
 	public fun iterator ()Ljava/util/Iterator;
 }
 
-public final class com/splendo/kaluga/scientific/DoubleScientificArray$DefaultImpls {
-	public static fun get (Lcom/splendo/kaluga/scientific/DoubleScientificArray;I)Ljava/lang/Double;
-	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/DoubleScientificArray;)Ljava/util/List;
-	public static fun getSize (Lcom/splendo/kaluga/scientific/DoubleScientificArray;)I
-	public static fun iterator (Lcom/splendo/kaluga/scientific/DoubleScientificArray;)Ljava/util/Iterator;
-}
-
 public abstract interface class com/splendo/kaluga/scientific/FloatScientificArray : com/splendo/kaluga/scientific/ScientificArray {
 	public fun get (I)Ljava/lang/Float;
 	public synthetic fun get (I)Ljava/lang/Number;
 	public fun getSize ()I
 	public abstract fun getValues ()[F
 	public fun iterator ()Ljava/util/Iterator;
-}
-
-public final class com/splendo/kaluga/scientific/FloatScientificArray$DefaultImpls {
-	public static fun get (Lcom/splendo/kaluga/scientific/FloatScientificArray;I)Ljava/lang/Float;
-	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/FloatScientificArray;)Ljava/util/List;
-	public static fun getSize (Lcom/splendo/kaluga/scientific/FloatScientificArray;)I
-	public static fun iterator (Lcom/splendo/kaluga/scientific/FloatScientificArray;)Ljava/util/Iterator;
 }
 
 public abstract interface class com/splendo/kaluga/scientific/IntScientificArray : com/splendo/kaluga/scientific/ScientificArray {
@@ -227,26 +199,12 @@ public abstract interface class com/splendo/kaluga/scientific/IntScientificArray
 	public fun iterator ()Ljava/util/Iterator;
 }
 
-public final class com/splendo/kaluga/scientific/IntScientificArray$DefaultImpls {
-	public static fun get (Lcom/splendo/kaluga/scientific/IntScientificArray;I)Ljava/lang/Integer;
-	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/IntScientificArray;)Ljava/util/List;
-	public static fun getSize (Lcom/splendo/kaluga/scientific/IntScientificArray;)I
-	public static fun iterator (Lcom/splendo/kaluga/scientific/IntScientificArray;)Ljava/util/Iterator;
-}
-
 public abstract interface class com/splendo/kaluga/scientific/LongScientificArray : com/splendo/kaluga/scientific/ScientificArray {
 	public fun get (I)Ljava/lang/Long;
 	public synthetic fun get (I)Ljava/lang/Number;
 	public fun getSize ()I
 	public abstract fun getValues ()[J
 	public fun iterator ()Ljava/util/Iterator;
-}
-
-public final class com/splendo/kaluga/scientific/LongScientificArray$DefaultImpls {
-	public static fun get (Lcom/splendo/kaluga/scientific/LongScientificArray;I)Ljava/lang/Long;
-	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/LongScientificArray;)Ljava/util/List;
-	public static fun getSize (Lcom/splendo/kaluga/scientific/LongScientificArray;)I
-	public static fun iterator (Lcom/splendo/kaluga/scientific/LongScientificArray;)Ljava/util/Iterator;
 }
 
 public final class com/splendo/kaluga/scientific/MultiplyScientificValueKt {
@@ -818,10 +776,6 @@ public abstract interface class com/splendo/kaluga/scientific/ScientificArray : 
 	public abstract fun iterator ()Ljava/util/Iterator;
 }
 
-public final class com/splendo/kaluga/scientific/ScientificArray$DefaultImpls {
-	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/ScientificArray;)Ljava/util/List;
-}
-
 public final class com/splendo/kaluga/scientific/ScientificArrayKt {
 	public static final fun combine (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/ScientificArray;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/DefaultScientificArray;
 	public static final fun combine (Lcom/splendo/kaluga/scientific/ScientificArray;Lcom/splendo/kaluga/scientific/ScientificArray;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificArray;
@@ -864,11 +818,6 @@ public abstract interface class com/splendo/kaluga/scientific/ScientificValue : 
 	public abstract fun getValue ()Ljava/lang/Number;
 }
 
-public final class com/splendo/kaluga/scientific/ScientificValue$DefaultImpls {
-	public static fun compareTo (Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;)I
-	public static fun getDecimalValue (Lcom/splendo/kaluga/scientific/ScientificValue;)Lcom/splendo/kaluga/base/utils/Decimal;
-}
-
 public final class com/splendo/kaluga/scientific/ScientificValueKt {
 	public static final fun byDividing (Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lcom/splendo/kaluga/scientific/ScientificValue;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
 	public static final fun byInverting (Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lcom/splendo/kaluga/scientific/ScientificValue;Lkotlin/jvm/functions/Function2;)Lcom/splendo/kaluga/scientific/ScientificValue;
@@ -905,13 +854,6 @@ public abstract interface class com/splendo/kaluga/scientific/ShortScientificArr
 	public fun getSize ()I
 	public abstract fun getValues ()[S
 	public fun iterator ()Ljava/util/Iterator;
-}
-
-public final class com/splendo/kaluga/scientific/ShortScientificArray$DefaultImpls {
-	public static fun get (Lcom/splendo/kaluga/scientific/ShortScientificArray;I)Ljava/lang/Short;
-	public static fun getDecimalValues (Lcom/splendo/kaluga/scientific/ShortScientificArray;)Ljava/util/List;
-	public static fun getSize (Lcom/splendo/kaluga/scientific/ShortScientificArray;)I
-	public static fun iterator (Lcom/splendo/kaluga/scientific/ShortScientificArray;)Ljava/util/Iterator;
 }
 
 public final class com/splendo/kaluga/scientific/SplitScientificValueKt {
@@ -1258,8 +1200,6 @@ public final class com/splendo/kaluga/scientific/unit/Absiemens : com/splendo/ka
 public abstract class com/splendo/kaluga/scientific/unit/AbstractScientificUnit : com/splendo/kaluga/scientific/unit/ScientificUnit {
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit$Companion;
 	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public fun deltaToSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public static final synthetic fun write$Self (Lcom/splendo/kaluga/scientific/unit/AbstractScientificUnit;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;Lkotlinx/serialization/KSerializer;)V
 }
 
@@ -1470,7 +1410,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/AngularAccelerat
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/AngularAcceleration;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/AngularAcceleration$Companion {
@@ -1511,7 +1450,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/AngularVelocity$
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/AngularVelocity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/AngularVelocity$Companion {
@@ -1841,11 +1779,6 @@ public final class com/splendo/kaluga/scientific/unit/CalorieMultiple$IT$Compani
 public abstract interface class com/splendo/kaluga/scientific/unit/CalorieUnit : com/splendo/kaluga/scientific/unit/MetricBaseUnit {
 }
 
-public final class com/splendo/kaluga/scientific/unit/CalorieUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/CalorieUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/CalorieUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-}
-
 public final class com/splendo/kaluga/scientific/unit/Candela : com/splendo/kaluga/scientific/unit/LuminousIntensity, com/splendo/kaluga/scientific/unit/MetricBaseUnit {
 	public static final field INSTANCE Lcom/splendo/kaluga/scientific/unit/Candela;
 	public fun equals (Ljava/lang/Object;)Z
@@ -1899,8 +1832,6 @@ public final class com/splendo/kaluga/scientific/unit/Celsius : com/splendo/kalu
 
 public final class com/splendo/kaluga/scientific/unit/Centi : com/splendo/kaluga/scientific/unit/MetricMultipleUnit {
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricBaseUnit;)V
-	public fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public fun deltaToSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
@@ -2694,7 +2625,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/CombinedImperial
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/CombinedImperialAcceleration;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/CombinedImperialAcceleration$Companion {
@@ -2724,7 +2654,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/CombinedMetricAc
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/CombinedMetricAcceleration;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/CombinedMetricAcceleration$Companion {
@@ -2739,15 +2668,6 @@ public abstract interface class com/splendo/kaluga/scientific/unit/CombinedPower
 	public synthetic fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
 	public fun toSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-}
-
-public final class com/splendo/kaluga/scientific/unit/CombinedPower$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/CombinedPower;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/CombinedPower;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun fromSIUnit (Lcom/splendo/kaluga/scientific/unit/CombinedPower;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun getQuantity (Lcom/splendo/kaluga/scientific/unit/CombinedPower;)Lcom/splendo/kaluga/scientific/PhysicalQuantity$Power;
-	public static fun getSymbol (Lcom/splendo/kaluga/scientific/unit/CombinedPower;)Ljava/lang/String;
-	public static fun toSIUnit (Lcom/splendo/kaluga/scientific/unit/CombinedPower;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
 public final class com/splendo/kaluga/scientific/unit/Coulomb : com/splendo/kaluga/scientific/unit/ElectricCharge, com/splendo/kaluga/scientific/unit/MetricBaseUnit {
@@ -3059,10 +2979,6 @@ public abstract class com/splendo/kaluga/scientific/unit/CustomUndefinedExtended
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/CustomUndefinedExtendedUnit$Companion;
 	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public fun getDenominatorUnits ()Ljava/util/List;
-	public fun getNumeratorUnits ()Ljava/util/List;
-	public fun getQuantityType ()Lcom/splendo/kaluga/scientific/UndefinedQuantityType$Extended;
-	public synthetic fun getQuantityType ()Lcom/splendo/kaluga/scientific/UndefinedQuantityType;
 	public abstract fun getSiFactor ()D
 	public abstract fun getSiOffset ()D
 	public fun toSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
@@ -3369,8 +3285,6 @@ public final class com/splendo/kaluga/scientific/unit/DaltonMultiple$Companion {
 
 public final class com/splendo/kaluga/scientific/unit/Deca : com/splendo/kaluga/scientific/unit/MetricMultipleUnit {
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricBaseUnit;)V
-	public fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public fun deltaToSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
@@ -4060,8 +3974,6 @@ public final class com/splendo/kaluga/scientific/unit/Decaweber : com/splendo/ka
 
 public final class com/splendo/kaluga/scientific/unit/Deci : com/splendo/kaluga/scientific/unit/MetricMultipleUnit {
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricBaseUnit;)V
-	public fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public fun deltaToSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
@@ -5334,8 +5246,6 @@ public final class com/splendo/kaluga/scientific/unit/Gauss : com/splendo/kaluga
 
 public final class com/splendo/kaluga/scientific/unit/Giga : com/splendo/kaluga/scientific/unit/MetricMultipleUnit {
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricBaseUnit;)V
-	public fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public fun deltaToSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
@@ -6174,8 +6084,6 @@ public final class com/splendo/kaluga/scientific/unit/Hectare : com/splendo/kalu
 
 public final class com/splendo/kaluga/scientific/unit/Hecto : com/splendo/kaluga/scientific/unit/MetricMultipleUnit {
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricBaseUnit;)V
-	public fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public fun deltaToSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
@@ -7012,7 +6920,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialAction$$
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialAction;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialAction$Companion {
@@ -7057,7 +6964,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialAreaDens
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialAreaDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialAreaDensity$Companion {
@@ -7072,17 +6978,12 @@ public final class com/splendo/kaluga/scientific/unit/ImperialCombinedPower : co
 	public final fun copy (Lcom/splendo/kaluga/scientific/unit/ImperialNamedEnergyUnit;Lcom/splendo/kaluga/scientific/unit/Time;)Lcom/splendo/kaluga/scientific/unit/ImperialCombinedPower;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/ImperialCombinedPower;Lcom/splendo/kaluga/scientific/unit/ImperialNamedEnergyUnit;Lcom/splendo/kaluga/scientific/unit/Time;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/ImperialCombinedPower;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getEnergy ()Lcom/splendo/kaluga/scientific/unit/ImperialNamedEnergyUnit;
 	public synthetic fun getEnergy ()Lcom/splendo/kaluga/scientific/unit/NamedEnergyUnit;
 	public fun getPer ()Lcom/splendo/kaluga/scientific/unit/Time;
-	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$Power;
-	public synthetic fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
-	public fun getSymbol ()Ljava/lang/String;
 	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Imperial;
 	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
 	public fun hashCode ()I
-	public fun toSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -7094,7 +6995,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialCombined
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialCombinedPower;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialCombinedPower$Companion {
@@ -7129,7 +7029,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialDensity$
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialDensity$Companion {
@@ -7163,7 +7062,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialDynamicV
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialDynamicViscosity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialDynamicViscosity$Companion {
@@ -7262,7 +7160,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialJolt$$se
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialJolt;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialJolt$Companion {
@@ -7294,7 +7191,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialKinemati
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialKinematicViscosity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialKinematicViscosity$Companion {
@@ -7343,7 +7239,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialLinearMa
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialLinearMassDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialLinearMassDensity$Companion {
@@ -7385,7 +7280,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialLuminous
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialLuminousExposure;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialLuminousExposure$Companion {
@@ -7419,7 +7313,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialMassFlow
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMassFlowRate;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMassFlowRate$Companion {
@@ -7452,7 +7345,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialMetricAn
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialAccelerationWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialAccelerationWrapper$Companion {
@@ -7486,7 +7378,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialMetricAn
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialEnergyWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialEnergyWrapper$Companion {
@@ -7520,7 +7411,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialMetricAn
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMetricAndImperialPowerWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMetricAndImperialPowerWrapper$Companion {
@@ -7554,7 +7444,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialMolality
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolality;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMolality$Companion {
@@ -7586,7 +7475,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialMolarEne
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolarEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMolarEnergy$Companion {
@@ -7620,7 +7508,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialMolarMas
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolarMass;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMolarMass$Companion {
@@ -7654,7 +7541,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialMolarVol
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolarVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMolarVolume$Companion {
@@ -7688,7 +7574,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialMolarity
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMolarity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMolarity$Companion {
@@ -7723,7 +7608,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialMomentum
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialMomentum;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialMomentum$Companion {
@@ -7789,11 +7673,6 @@ public final class com/splendo/kaluga/scientific/unit/ImperialQuart : com/splend
 public abstract interface class com/splendo/kaluga/scientific/unit/ImperialScientificUnit : com/splendo/kaluga/scientific/unit/MeasurementUsage$UsedInImperial, com/splendo/kaluga/scientific/unit/SystemScientificUnit {
 }
 
-public final class com/splendo/kaluga/scientific/unit/ImperialScientificUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/ImperialScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/ImperialScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-}
-
 public final class com/splendo/kaluga/scientific/unit/ImperialSpecificEnergy : com/splendo/kaluga/scientific/unit/SpecificEnergy, com/splendo/kaluga/scientific/unit/ImperialScientificUnit {
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/ImperialSpecificEnergy$Companion;
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/ImperialEnergy;Lcom/splendo/kaluga/scientific/unit/ImperialWeight;)V
@@ -7822,7 +7701,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialSpecific
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialSpecificEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialSpecificEnergy$Companion {
@@ -7857,7 +7735,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialSpecific
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialSpecificVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialSpecificVolume$Companion {
@@ -7889,7 +7766,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialSpeed$$s
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialSpeed;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialSpeed$Companion {
@@ -7924,7 +7800,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialSurfaceT
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialSurfaceTension;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialSurfaceTension$Companion {
@@ -8012,7 +7887,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialVolumetr
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlow;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialVolumetricFlow$Companion {
@@ -8047,7 +7921,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialVolumetr
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialVolumetricFlux;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialVolumetricFlux$Companion {
@@ -8095,7 +7968,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/ImperialYank$$se
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/ImperialYank;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/ImperialYank$Companion {
@@ -8283,8 +8155,6 @@ public final class com/splendo/kaluga/scientific/unit/Kelvin : com/splendo/kalug
 
 public final class com/splendo/kaluga/scientific/unit/Kilo : com/splendo/kaluga/scientific/unit/MetricMultipleUnit {
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricBaseUnit;)V
-	public fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public fun deltaToSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
@@ -9245,7 +9115,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/LuminousEnergy$$
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/LuminousEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/LuminousEnergy$Companion {
@@ -9496,8 +9365,6 @@ public abstract interface class com/splendo/kaluga/scientific/unit/MeasurementUs
 
 public final class com/splendo/kaluga/scientific/unit/Mega : com/splendo/kaluga/scientific/unit/MetricMultipleUnit {
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricBaseUnit;)V
-	public fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public fun deltaToSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
@@ -10282,7 +10149,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricAction$$se
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAction;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricAction$Companion {
@@ -10330,7 +10196,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricAndImperia
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndImperialAction;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricAndImperialAction$Companion {
@@ -10345,17 +10210,12 @@ public final class com/splendo/kaluga/scientific/unit/MetricAndImperialCombinedP
 	public final fun copy (Lcom/splendo/kaluga/scientific/unit/MetricAndImperialNamedEnergyUnit;Lcom/splendo/kaluga/scientific/unit/Time;)Lcom/splendo/kaluga/scientific/unit/MetricAndImperialCombinedPower;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/MetricAndImperialCombinedPower;Lcom/splendo/kaluga/scientific/unit/MetricAndImperialNamedEnergyUnit;Lcom/splendo/kaluga/scientific/unit/Time;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/MetricAndImperialCombinedPower;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getEnergy ()Lcom/splendo/kaluga/scientific/unit/MetricAndImperialNamedEnergyUnit;
 	public synthetic fun getEnergy ()Lcom/splendo/kaluga/scientific/unit/NamedEnergyUnit;
 	public fun getPer ()Lcom/splendo/kaluga/scientific/unit/Time;
-	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$Power;
-	public synthetic fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
-	public fun getSymbol ()Ljava/lang/String;
 	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$MetricAndImperial;
 	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
 	public fun hashCode ()I
-	public fun toSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -10367,7 +10227,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricAndImperia
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndImperialCombinedPower;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricAndImperialCombinedPower$Companion {
@@ -10411,7 +10270,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricAndImperia
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndImperialJolt;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricAndImperialJolt$Companion {
@@ -10445,7 +10303,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricAndImperia
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndImperialMolarEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricAndImperialMolarEnergy$Companion {
@@ -10473,11 +10330,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricAndImperialPower$Com
 }
 
 public abstract interface class com/splendo/kaluga/scientific/unit/MetricAndImperialScientificUnit : com/splendo/kaluga/scientific/unit/MeasurementUsage$UsedInMetricAndImperial, com/splendo/kaluga/scientific/unit/SystemScientificUnit {
-}
-
-public final class com/splendo/kaluga/scientific/unit/MetricAndImperialScientificUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/MetricAndImperialScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/MetricAndImperialScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCapacity : com/splendo/kaluga/scientific/unit/HeatCapacity, com/splendo/kaluga/scientific/unit/MetricAndUKImperialScientificUnit {
@@ -10508,7 +10360,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricAndUKImper
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCapacity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCapacity$Companion {
@@ -10516,11 +10367,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricAndUKImperialHeatCap
 }
 
 public abstract interface class com/splendo/kaluga/scientific/unit/MetricAndUKImperialScientificUnit : com/splendo/kaluga/scientific/unit/MeasurementUsage$UsedInMetricAndUKImperial, com/splendo/kaluga/scientific/unit/SystemScientificUnit {
-}
-
-public final class com/splendo/kaluga/scientific/unit/MetricAndUKImperialScientificUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
 public abstract class com/splendo/kaluga/scientific/unit/MetricAndUKImperialTemperature : com/splendo/kaluga/scientific/unit/Temperature, com/splendo/kaluga/scientific/unit/MeasurementUsage$UsedInUKImperial, com/splendo/kaluga/scientific/unit/MetricAndUKImperialScientificUnit {
@@ -10565,7 +10411,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricAndUKImper
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAndUKImperialThermalResistance;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricAndUKImperialThermalResistance$Companion {
@@ -10573,11 +10418,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricAndUKImperialThermal
 }
 
 public abstract interface class com/splendo/kaluga/scientific/unit/MetricAndUSCustomaryScientificUnit : com/splendo/kaluga/scientific/unit/MeasurementUsage$UsedInMetricAndUSCustomary, com/splendo/kaluga/scientific/unit/SystemScientificUnit {
-}
-
-public final class com/splendo/kaluga/scientific/unit/MetricAndUSCustomaryScientificUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/MetricAndUSCustomaryScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/MetricAndUSCustomaryScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
 public abstract class com/splendo/kaluga/scientific/unit/MetricArea : com/splendo/kaluga/scientific/unit/Area, com/splendo/kaluga/scientific/unit/MetricScientificUnit {
@@ -10616,7 +10456,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricAreaDensit
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricAreaDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricAreaDensity$Companion {
@@ -10627,11 +10466,6 @@ public abstract interface class com/splendo/kaluga/scientific/unit/MetricBaseUni
 	public abstract fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricBaseUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/MetricBaseUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/MetricBaseUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-}
-
 public final class com/splendo/kaluga/scientific/unit/MetricCombinedPower : com/splendo/kaluga/scientific/unit/MetricPower, com/splendo/kaluga/scientific/unit/CombinedPower {
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/MetricCombinedPower$Companion;
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricNamedEnergyUnit;Lcom/splendo/kaluga/scientific/unit/Time;)V
@@ -10640,17 +10474,12 @@ public final class com/splendo/kaluga/scientific/unit/MetricCombinedPower : com/
 	public final fun copy (Lcom/splendo/kaluga/scientific/unit/MetricNamedEnergyUnit;Lcom/splendo/kaluga/scientific/unit/Time;)Lcom/splendo/kaluga/scientific/unit/MetricCombinedPower;
 	public static synthetic fun copy$default (Lcom/splendo/kaluga/scientific/unit/MetricCombinedPower;Lcom/splendo/kaluga/scientific/unit/MetricNamedEnergyUnit;Lcom/splendo/kaluga/scientific/unit/Time;ILjava/lang/Object;)Lcom/splendo/kaluga/scientific/unit/MetricCombinedPower;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getEnergy ()Lcom/splendo/kaluga/scientific/unit/MetricNamedEnergyUnit;
 	public synthetic fun getEnergy ()Lcom/splendo/kaluga/scientific/unit/NamedEnergyUnit;
 	public fun getPer ()Lcom/splendo/kaluga/scientific/unit/Time;
-	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$Power;
-	public synthetic fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
-	public fun getSymbol ()Ljava/lang/String;
 	public fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem$Metric;
 	public synthetic fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
 	public fun hashCode ()I
-	public fun toSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -10662,7 +10491,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricCombinedPo
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricCombinedPower;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricCombinedPower$Companion {
@@ -10706,7 +10534,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricDensity$$s
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricDensity$Companion {
@@ -10738,7 +10565,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricDynamicVis
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricDynamicViscosity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricDynamicViscosity$Companion {
@@ -10791,7 +10617,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricHeatCapaci
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricHeatCapacity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricHeatCapacity$Companion {
@@ -10848,7 +10673,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricJolt$$seri
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricJolt;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricJolt$Companion {
@@ -10880,7 +10704,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricKinematicV
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricKinematicViscosity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricKinematicViscosity$Companion {
@@ -10923,7 +10746,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricLinearMass
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricLinearMassDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricLinearMassDensity$Companion {
@@ -10965,7 +10787,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricLuminousEx
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricLuminousExposure;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricLuminousExposure$Companion {
@@ -10997,7 +10818,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricMassFlowRa
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMassFlowRate;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricMassFlowRate$Companion {
@@ -11030,7 +10850,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricMetricAndI
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialAccelerationWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialAccelerationWrapper$Companion {
@@ -11064,7 +10883,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricMetricAndI
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialEnergyWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialEnergyWrapper$Companion {
@@ -11098,7 +10916,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricMetricAndI
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMetricAndImperialPowerWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricMetricAndImperialPowerWrapper$Companion {
@@ -11130,7 +10947,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricMolality$$
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolality;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricMolality$Companion {
@@ -11162,7 +10978,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricMolarEnerg
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolarEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricMolarEnergy$Companion {
@@ -11194,7 +11009,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricMolarMass$
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolarMass;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricMolarMass$Companion {
@@ -11226,7 +11040,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricMolarVolum
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolarVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricMolarVolume$Companion {
@@ -11258,7 +11071,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricMolarity$$
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMolarity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricMolarity$Companion {
@@ -11291,7 +11103,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricMomentum$$
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricMomentum;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricMomentum$Companion {
@@ -11299,11 +11110,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricMomentum$Companion {
 }
 
 public abstract interface class com/splendo/kaluga/scientific/unit/MetricMultipleUnit : com/splendo/kaluga/scientific/unit/SystemScientificUnit {
-}
-
-public final class com/splendo/kaluga/scientific/unit/MetricMultipleUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/MetricMultipleUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/MetricMultipleUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
 public abstract class com/splendo/kaluga/scientific/unit/MetricNamedEnergyUnit : com/splendo/kaluga/scientific/unit/MetricEnergy, com/splendo/kaluga/scientific/unit/NamedEnergyUnit {
@@ -11339,11 +11145,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricPressure$Companion {
 public abstract interface class com/splendo/kaluga/scientific/unit/MetricScientificUnit : com/splendo/kaluga/scientific/unit/MeasurementUsage$UsedInMetric, com/splendo/kaluga/scientific/unit/SystemScientificUnit {
 }
 
-public final class com/splendo/kaluga/scientific/unit/MetricScientificUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/MetricScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/MetricScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-}
-
 public final class com/splendo/kaluga/scientific/unit/MetricSpecificEnergy : com/splendo/kaluga/scientific/unit/SpecificEnergy, com/splendo/kaluga/scientific/unit/MetricScientificUnit {
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/MetricSpecificEnergy$Companion;
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricEnergy;Lcom/splendo/kaluga/scientific/unit/MetricWeight;)V
@@ -11370,7 +11171,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricSpecificEn
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSpecificEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricSpecificEnergy$Companion {
@@ -11403,7 +11203,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricSpecificHe
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSpecificHeatCapacity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricSpecificHeatCapacity$Companion {
@@ -11436,7 +11235,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricSpecificVo
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSpecificVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricSpecificVolume$Companion {
@@ -11468,7 +11266,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricSpeed$$ser
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSpeed;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricSpeed$Companion {
@@ -11501,7 +11298,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricSurfaceTen
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricSurfaceTension;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricSurfaceTension$Companion {
@@ -11534,7 +11330,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricThermalRes
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricThermalResistance;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricThermalResistance$Companion {
@@ -11576,7 +11371,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricVolumetric
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlow;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricVolumetricFlow$Companion {
@@ -11609,7 +11403,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricVolumetric
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricVolumetricFlux;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricVolumetricFlux$Companion {
@@ -11651,7 +11444,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/MetricYank$$seri
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/MetricYank;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/MetricYank$Companion {
@@ -11660,8 +11452,6 @@ public final class com/splendo/kaluga/scientific/unit/MetricYank$Companion {
 
 public final class com/splendo/kaluga/scientific/unit/Micro : com/splendo/kaluga/scientific/unit/MetricMultipleUnit {
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricBaseUnit;)V
-	public fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public fun deltaToSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
@@ -12430,8 +12220,6 @@ public final class com/splendo/kaluga/scientific/unit/Mile : com/splendo/kaluga/
 
 public final class com/splendo/kaluga/scientific/unit/Milli : com/splendo/kaluga/scientific/unit/MetricMultipleUnit {
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricBaseUnit;)V
-	public fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public fun deltaToSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
@@ -13481,15 +13269,8 @@ public final class com/splendo/kaluga/scientific/unit/MomentumUnitKt {
 public abstract interface class com/splendo/kaluga/scientific/unit/NamedEnergyUnit : com/splendo/kaluga/scientific/unit/SystemScientificUnit {
 }
 
-public final class com/splendo/kaluga/scientific/unit/NamedEnergyUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/NamedEnergyUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/NamedEnergyUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-}
-
 public final class com/splendo/kaluga/scientific/unit/Nano : com/splendo/kaluga/scientific/unit/MetricMultipleUnit {
 	public fun <init> (Lcom/splendo/kaluga/scientific/unit/MetricBaseUnit;)V
-	public fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public fun deltaToSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun getQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity;
 	public fun getSymbol ()Ljava/lang/String;
@@ -14687,11 +14468,6 @@ public abstract interface class com/splendo/kaluga/scientific/unit/ScientificUni
 	public abstract fun toSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
-public final class com/splendo/kaluga/scientific/unit/ScientificUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-}
-
 public final class com/splendo/kaluga/scientific/unit/ScientificUnitKt {
 	public static final fun convert (Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public static final fun convert (Lcom/splendo/kaluga/scientific/unit/ScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;Lcom/splendo/kaluga/scientific/unit/ScientificUnit;ILcom/splendo/kaluga/base/utils/RoundingMode;)Lcom/splendo/kaluga/base/utils/Decimal;
@@ -15316,11 +15092,6 @@ public abstract interface class com/splendo/kaluga/scientific/unit/SystemScienti
 	public abstract fun getSystem ()Lcom/splendo/kaluga/scientific/unit/MeasurementSystem;
 }
 
-public final class com/splendo/kaluga/scientific/unit/SystemScientificUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/SystemScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/SystemScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-}
-
 public abstract class com/splendo/kaluga/scientific/unit/Temperature : com/splendo/kaluga/scientific/unit/DefinedScientificUnit {
 	public static final field Companion Lcom/splendo/kaluga/scientific/unit/Temperature$Companion;
 	public synthetic fun <init> (ILcom/splendo/kaluga/scientific/PhysicalQuantity$Temperature;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
@@ -15520,7 +15291,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialAreaDe
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialAreaDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialAreaDensity$Companion {
@@ -15553,7 +15323,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialDensit
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialDensity$Companion {
@@ -15585,7 +15354,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialDynami
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialDynamicViscosity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialDynamicViscosity$Companion {
@@ -15632,7 +15400,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialHeatCa
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialHeatCapacity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialHeatCapacity$Companion {
@@ -15662,7 +15429,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialImperi
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialImperialForceWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialImperialForceWrapper$Companion {
@@ -15692,7 +15458,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialImperi
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialImperialVolumeWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialImperialVolumeWrapper$Companion {
@@ -15722,7 +15487,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialImperi
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialImperialWeightWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialImperialWeightWrapper$Companion {
@@ -15755,7 +15519,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialLinear
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialLinearMassDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialLinearMassDensity$Companion {
@@ -15787,7 +15550,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialMassFl
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMassFlowRate;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialMassFlowRate$Companion {
@@ -15819,7 +15581,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialMolali
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMolality;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialMolality$Companion {
@@ -15851,7 +15612,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialMolarM
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMolarMass;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialMolarMass$Companion {
@@ -15883,7 +15643,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialMolarV
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMolarVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialMolarVolume$Companion {
@@ -15915,7 +15674,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialMolari
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMolarity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialMolarity$Companion {
@@ -15948,7 +15706,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialMoment
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialMomentum;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialMomentum$Companion {
@@ -15992,7 +15749,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialPressu
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialPressureWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialPressureWrapper$Companion {
@@ -16000,11 +15756,6 @@ public final class com/splendo/kaluga/scientific/unit/UKImperialPressureWrapper$
 }
 
 public abstract interface class com/splendo/kaluga/scientific/unit/UKImperialScientificUnit : com/splendo/kaluga/scientific/unit/MeasurementUsage$UsedInUKImperial, com/splendo/kaluga/scientific/unit/SystemScientificUnit {
-}
-
-public final class com/splendo/kaluga/scientific/unit/UKImperialScientificUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UKImperialScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UKImperialScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy : com/splendo/kaluga/scientific/unit/SpecificEnergy, com/splendo/kaluga/scientific/unit/UKImperialScientificUnit {
@@ -16033,7 +15784,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialSpecif
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificEnergy$Companion {
@@ -16066,7 +15816,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialSpecif
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificHeatCapacity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificHeatCapacity$Companion {
@@ -16099,7 +15848,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialSpecif
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialSpecificVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialSpecificVolume$Companion {
@@ -16132,7 +15880,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialSurfac
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialSurfaceTension;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialSurfaceTension$Companion {
@@ -16165,7 +15912,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialTherma
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialThermalResistance;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialThermalResistance$Companion {
@@ -16211,7 +15957,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialVolume
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlow;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialVolumetricFlow$Companion {
@@ -16244,7 +15989,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialVolume
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialVolumetricFlux;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialVolumetricFlux$Companion {
@@ -16290,7 +16034,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/UKImperialYank$$
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/UKImperialYank;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UKImperialYank$Companion {
@@ -16323,7 +16066,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryAreaD
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryAreaDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryAreaDensity$Companion {
@@ -16356,7 +16098,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryDensi
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryDensity$Companion {
@@ -16388,7 +16129,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryDynam
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryDynamicViscosity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryDynamicViscosity$Companion {
@@ -16435,7 +16175,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryHeatC
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryHeatCapacity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryHeatCapacity$Companion {
@@ -16465,7 +16204,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryImper
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialForceWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialForceWrapper$Companion {
@@ -16495,7 +16233,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryImper
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialPressureWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialPressureWrapper$Companion {
@@ -16525,7 +16262,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryImper
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialVolumeWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialVolumeWrapper$Companion {
@@ -16555,7 +16291,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryImper
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryImperialWeightWrapper;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryImperialWeightWrapper$Companion {
@@ -16588,7 +16323,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryLinea
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryLinearMassDensity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryLinearMassDensity$Companion {
@@ -16620,7 +16354,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryMassF
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMassFlowRate;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryMassFlowRate$Companion {
@@ -16652,7 +16385,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryMolal
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMolality;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryMolality$Companion {
@@ -16684,7 +16416,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryMolar
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarMass;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarMass$Companion {
@@ -16716,7 +16447,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryMolar
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarVolume$Companion {
@@ -16748,7 +16478,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryMolar
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMolarity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryMolarity$Companion {
@@ -16781,7 +16510,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryMomen
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryMomentum;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryMomentum$Companion {
@@ -16803,11 +16531,6 @@ public final class com/splendo/kaluga/scientific/unit/USCustomaryPressure$Compan
 }
 
 public abstract interface class com/splendo/kaluga/scientific/unit/USCustomaryScientificUnit : com/splendo/kaluga/scientific/unit/MeasurementUsage$UsedInUSCustomary, com/splendo/kaluga/scientific/unit/SystemScientificUnit {
-}
-
-public final class com/splendo/kaluga/scientific/unit/USCustomaryScientificUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/USCustomaryScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/USCustomaryScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy : com/splendo/kaluga/scientific/unit/SpecificEnergy, com/splendo/kaluga/scientific/unit/USCustomaryScientificUnit {
@@ -16836,7 +16559,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomarySpeci
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificEnergy$Companion {
@@ -16869,7 +16591,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomarySpeci
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificHeatCapacity;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificHeatCapacity$Companion {
@@ -16902,7 +16623,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomarySpeci
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomarySpecificVolume;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomarySpecificVolume$Companion {
@@ -16935,7 +16655,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomarySurfa
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomarySurfaceTension;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomarySurfaceTension$Companion {
@@ -16982,7 +16701,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryTherm
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryThermalResistance;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryThermalResistance$Companion {
@@ -17028,7 +16746,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryVolum
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlow;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlow$Companion {
@@ -17061,7 +16778,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryVolum
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlux;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryVolumetricFlux$Companion {
@@ -17107,7 +16823,6 @@ public final synthetic class com/splendo/kaluga/scientific/unit/USCustomaryYank$
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/splendo/kaluga/scientific/unit/USCustomaryYank;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/splendo/kaluga/scientific/unit/USCustomaryYank$Companion {
@@ -17379,89 +17094,25 @@ public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedExte
 	public synthetic fun getQuantityType ()Lcom/splendo/kaluga/scientific/UndefinedQuantityType;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun getDenominatorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit;)Ljava/util/List;
-	public static fun getNumeratorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit;)Ljava/util/List;
-	public static fun getQuantityType (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit;)Lcom/splendo/kaluga/scientific/UndefinedQuantityType$Extended;
-}
-
 public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$Imperial : com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit, com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$Imperial {
-}
-
-public final class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$Imperial$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$Imperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$Imperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun getDenominatorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$Imperial;)Ljava/util/List;
-	public static fun getNumeratorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$Imperial;)Ljava/util/List;
-	public static fun getQuantityType (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$Imperial;)Lcom/splendo/kaluga/scientific/UndefinedQuantityType$Extended;
 }
 
 public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$Metric : com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit, com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$Metric {
 }
 
-public final class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$Metric$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$Metric;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$Metric;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun getDenominatorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$Metric;)Ljava/util/List;
-	public static fun getNumeratorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$Metric;)Ljava/util/List;
-	public static fun getQuantityType (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$Metric;)Lcom/splendo/kaluga/scientific/UndefinedQuantityType$Extended;
-}
-
 public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndImperial : com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit, com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndImperial {
-}
-
-public final class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndImperial$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndImperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndImperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun getDenominatorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndImperial;)Ljava/util/List;
-	public static fun getNumeratorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndImperial;)Ljava/util/List;
-	public static fun getQuantityType (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndImperial;)Lcom/splendo/kaluga/scientific/UndefinedQuantityType$Extended;
 }
 
 public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndUKImperial : com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit, com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndUKImperial {
 }
 
-public final class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndUKImperial$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndUKImperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndUKImperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun getDenominatorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndUKImperial;)Ljava/util/List;
-	public static fun getNumeratorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndUKImperial;)Ljava/util/List;
-	public static fun getQuantityType (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndUKImperial;)Lcom/splendo/kaluga/scientific/UndefinedQuantityType$Extended;
-}
-
 public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndUSCustomary : com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit, com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndUSCustomary {
-}
-
-public final class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndUSCustomary$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndUSCustomary;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndUSCustomary;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun getDenominatorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndUSCustomary;)Ljava/util/List;
-	public static fun getNumeratorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndUSCustomary;)Ljava/util/List;
-	public static fun getQuantityType (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$MetricAndUSCustomary;)Lcom/splendo/kaluga/scientific/UndefinedQuantityType$Extended;
 }
 
 public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$UKImperial : com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit, com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$UKImperial {
 }
 
-public final class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$UKImperial$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$UKImperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$UKImperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun getDenominatorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$UKImperial;)Ljava/util/List;
-	public static fun getNumeratorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$UKImperial;)Ljava/util/List;
-	public static fun getQuantityType (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$UKImperial;)Lcom/splendo/kaluga/scientific/UndefinedQuantityType$Extended;
-}
-
 public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$USCustomary : com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit, com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$USCustomary {
-}
-
-public final class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$USCustomary$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$USCustomary;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$USCustomary;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun getDenominatorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$USCustomary;)Ljava/util/List;
-	public static fun getNumeratorUnits (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$USCustomary;)Ljava/util/List;
-	public static fun getQuantityType (Lcom/splendo/kaluga/scientific/unit/UndefinedExtendedUnit$USCustomary;)Lcom/splendo/kaluga/scientific/UndefinedQuantityType$Extended;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UndefinedExtendedUnitKt {
@@ -17941,27 +17592,12 @@ public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedScie
 	public abstract fun getQuantityType ()Lcom/splendo/kaluga/scientific/UndefinedQuantityType;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-}
-
 public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$Imperial : com/splendo/kaluga/scientific/unit/ImperialScientificUnit, com/splendo/kaluga/scientific/unit/UndefinedScientificUnit {
 	public abstract fun getUkImperial ()Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$UKImperial;
 	public abstract fun getUsCustomary ()Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$USCustomary;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$Imperial$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$Imperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$Imperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-}
-
 public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$Metric : com/splendo/kaluga/scientific/unit/MetricScientificUnit, com/splendo/kaluga/scientific/unit/UndefinedScientificUnit {
-}
-
-public final class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$Metric$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$Metric;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$Metric;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
 public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndImperial : com/splendo/kaluga/scientific/unit/MetricAndImperialScientificUnit, com/splendo/kaluga/scientific/unit/UndefinedScientificUnit {
@@ -17973,19 +17609,9 @@ public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedScie
 	public abstract fun getUsCustomary ()Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$USCustomary;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndImperial$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndImperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndImperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-}
-
 public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndUKImperial : com/splendo/kaluga/scientific/unit/MetricAndUKImperialScientificUnit, com/splendo/kaluga/scientific/unit/UndefinedScientificUnit {
 	public abstract fun getMetric ()Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$Metric;
 	public abstract fun getUkImperial ()Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$UKImperial;
-}
-
-public final class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndUKImperial$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndUKImperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndUKImperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
 public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndUSCustomary : com/splendo/kaluga/scientific/unit/MetricAndUSCustomaryScientificUnit, com/splendo/kaluga/scientific/unit/UndefinedScientificUnit {
@@ -17993,25 +17619,10 @@ public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedScie
 	public abstract fun getUsCustomary ()Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$USCustomary;
 }
 
-public final class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndUSCustomary$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndUSCustomary;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$MetricAndUSCustomary;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-}
-
 public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$UKImperial : com/splendo/kaluga/scientific/unit/UKImperialScientificUnit, com/splendo/kaluga/scientific/unit/UndefinedScientificUnit {
 }
 
-public final class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$UKImperial$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$UKImperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$UKImperial;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-}
-
 public abstract interface class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$USCustomary : com/splendo/kaluga/scientific/unit/USCustomaryScientificUnit, com/splendo/kaluga/scientific/unit/UndefinedScientificUnit {
-}
-
-public final class com/splendo/kaluga/scientific/unit/UndefinedScientificUnit$USCustomary$DefaultImpls {
-	public static fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$USCustomary;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public static fun deltaToSIUnitDelta (Lcom/splendo/kaluga/scientific/unit/UndefinedScientificUnit$USCustomary;Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 }
 
 public final class com/splendo/kaluga/scientific/unit/UndefinedUnitPerImperialKt {
@@ -18653,11 +18264,8 @@ public abstract class com/splendo/kaluga/scientific/unit/WrappedUndefinedExtende
 	public fun deltaFromSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun deltaToSIUnitDelta (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public fun fromSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
-	public fun getDenominatorUnits ()Ljava/util/List;
 	public fun getExtendedQuantity ()Lcom/splendo/kaluga/scientific/PhysicalQuantity$DefinedPhysicalQuantityWithDimension;
 	public fun getNumeratorUnits ()Ljava/util/List;
-	public fun getQuantityType ()Lcom/splendo/kaluga/scientific/UndefinedQuantityType$Extended;
-	public synthetic fun getQuantityType ()Lcom/splendo/kaluga/scientific/UndefinedQuantityType;
 	public abstract fun getWrapped ()Lcom/splendo/kaluga/scientific/unit/DefinedScientificUnit;
 	public fun toSIUnit (Lcom/splendo/kaluga/base/utils/Decimal;)Lcom/splendo/kaluga/base/utils/Decimal;
 	public static final synthetic fun write$Self (Lcom/splendo/kaluga/scientific/unit/WrappedUndefinedExtendedUnit;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
