@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.server
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.utils.toNSData
+import com.splendo.kaluga.bluetooth.KalugaBluetoothServerWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.info
@@ -73,12 +74,12 @@ internal sealed class IOSServerState {
 
         override suspend fun awaitEnabled(autoEnable: Boolean): ServerState.Available = coroutineScope {
             val isEnabled = async { delegate.isEnabled.first { it } }
-            val peripheralManager = CBPeripheralManager(delegate, serverQueue)
+            val wrapper = KalugaBluetoothServerWrapper.createByLinkingTo(delegate, serverQueue)
             try {
                 isEnabled.await()
-                Available(peripheralManager, permissionStateRepo, delegate, logger)
+                Available(wrapper, permissionStateRepo, delegate, logger)
             } catch (e: CancellationException) {
-                peripheralManager.setDelegate(null)
+                wrapper.unlink()
                 throw e
             }
         }
@@ -92,7 +93,7 @@ internal sealed class IOSServerState {
     }
 
     class Available(
-        private val peripheralManager: CBPeripheralManager,
+        private val bluetoothServerWrapper: KalugaBluetoothServerWrapper,
         private val permissionStateRepo: BluetoothPermissionStateRepo,
         private val delegate: KalugaCBPeripheralManagerDelegate,
         private val logger: Logger,
@@ -108,7 +109,7 @@ internal sealed class IOSServerState {
                         false
                     } else {
                         val response = async { delegate.serviceAdded.mapNotNull { (added, success) -> success.takeIf { added.UUID == toAdd.wrapper.service.UUID } }.first() }
-                        peripheralManager.addService(toAdd.wrapper.service)
+                        bluetoothServerWrapper.add(toAdd.wrapper.service)
                         if (response.await()) {
                             servicesAdded.add(toAdd.wrapper.service)
                             true
@@ -119,28 +120,28 @@ internal sealed class IOSServerState {
                 }
                 if (!success) {
                     // When failing to add the parent service, clean up the included services as well
-                    servicesAdded.forEach { peripheralManager.removeService(it) }
+                    servicesAdded.forEach { bluetoothServerWrapper.remove(it) }
                 }
                 success
             } catch (e: CancellationException) {
-                servicesAdded.forEach { peripheralManager.removeService(it) }
+                servicesAdded.forEach { bluetoothServerWrapper.remove(it) }
                 throw e
             }
         }
 
         override fun removeService(service: LocalService) {
             delegate.removeService(service.wrapper.service)
-            peripheralManager.removeService(service.wrapper.service)
+            bluetoothServerWrapper.remove(service.wrapper.service)
         }
 
         override fun removeAllServices() {
             delegate.removeAllServices()
-            peripheralManager.removeAllServices()
+            bluetoothServerWrapper.removeAllServices()
         }
 
         override suspend fun startAdvertising(data: AdvertiseData): Boolean = coroutineScope {
             val success = delegate.resetAdvertising()
-            peripheralManager.startAdvertising(
+            bluetoothServerWrapper.startAdvertising(
                 buildMap {
                     data.localName?.let {
                         put(CBAdvertisementDataLocalNameKey, it)
@@ -154,12 +155,12 @@ internal sealed class IOSServerState {
         }
 
         override fun stopAdvertising() {
-            peripheralManager.stopAdvertising()
+            bluetoothServerWrapper.stopAdvertising()
         }
 
         override suspend fun execute(characteristic: LocalCharacteristic.Notifiable, device: ConnectedDevice, value: ByteArray): Boolean = coroutineScope {
             val isAvailable = delegate.resetAvailable()
-            if (peripheralManager.updateValue(value.toNSData(), characteristic.wrapper.characteristic, listOf(device.cbCentral))) {
+            if (bluetoothServerWrapper.updateValue(value.toNSData(), characteristic.wrapper.characteristic, listOf(device.cbCentral))) {
                 true
             } else {
                 isAvailable.await()
@@ -174,7 +175,7 @@ internal sealed class IOSServerState {
 
         override suspend fun awaitRevoked(): ServerState.AwaitingPermissions {
             permissionStateRepo.filterOnlyImportant().first { state -> listOf(state).any { it !is PermissionState.Allowed } }
-            peripheralManager.setDelegate(null)
+            bluetoothServerWrapper.unlink()
             return AwaitingPermissions(permissionStateRepo, delegate, logger)
         }
 
@@ -191,7 +192,7 @@ internal sealed class IOSServerState {
         )
 
         override fun close(): ServerState.Closed {
-            peripheralManager.setDelegate(null)
+            bluetoothServerWrapper.unlink()
             return ServerState.Closed
         }
     }
