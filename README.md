@@ -66,8 +66,6 @@ Kaluga contains [an example project](example/) that is used to test the develope
 
 ## Using Kaluga
 
-> **_NOTE:_** Older versions of Kotlin may cause a Thread Deadlock when running some modules on iOS. For this reason, it is recommended to target Kotlin `2.2.21` or higher
-
 For starting a new project based on Kaluga see the [kaluga-starter repo](https://github.com/splendo/kaluga-starter), which shows how to do this step by step.
 
 Kaluga is available on Maven Central. For example the Kaluga Alerts can be imported like this:

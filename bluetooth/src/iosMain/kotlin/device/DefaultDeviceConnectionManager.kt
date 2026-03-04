@@ -21,11 +21,15 @@ import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.bluetooth.CharacteristicProperty
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
+import com.splendo.kaluga.bluetooth.KalugaBluetoothPeripheralDelegateProtocol
+import com.splendo.kaluga.bluetooth.KalugaBluetoothPeripheralWrapper
+import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.bluetooth.GattResponse
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.dataValue
 import com.splendo.kaluga.logging.debug
-import kotlinx.cinterop.ObjCSignatureOverride
+import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.getAndUpdate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -35,7 +39,6 @@ import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
 import platform.CoreBluetooth.CBDescriptor
 import platform.CoreBluetooth.CBPeripheral
-import platform.CoreBluetooth.CBPeripheralDelegateProtocol
 import platform.CoreBluetooth.CBPeripheralStateConnected
 import platform.CoreBluetooth.CBPeripheralStateConnecting
 import platform.CoreBluetooth.CBPeripheralStateDisconnected
@@ -73,63 +76,59 @@ internal actual class DefaultDeviceConnectionManager(
     private val discoveringServices = mutableListOf<CBUUID>()
     private val discoveringCharacteristics = mutableListOf<CBUUID>()
 
-    private val peripheralDelegate = object : NSObject(), CBPeripheralDelegateProtocol {
+    private val peripheralDelegate = object : NSObject(), KalugaBluetoothPeripheralDelegateProtocol {
 
-        @ObjCSignatureOverride
-        override fun peripheral(peripheral: CBPeripheral, didDiscoverDescriptorsForCharacteristic: CBCharacteristic, error: NSError?) {
-            didDiscoverDescriptors(didDiscoverDescriptorsForCharacteristic)
+        override fun didDiscoverDescriptorsFor(characteristic: CBCharacteristic, peripheral: CBPeripheral, error: NSError?) {
+            didDiscoverDescriptors(characteristic)
         }
 
-        @ObjCSignatureOverride
-        override fun peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic: CBCharacteristic, error: NSError?) {
+        override fun didUpdateNotificationStateFor(characteristic: CBCharacteristic, peripheral: CBPeripheral, error: NSError?) {
             val action = currentAction
-            if (action is DeviceAction.Notification && action.characteristic.wrapper.uuid == didUpdateNotificationStateForCharacteristic.UUID) {
+            if (action is DeviceAction.Notification && action.characteristic.wrapper.uuid == characteristic.UUID) {
                 launch {
                     action.handleNotificationStateChanged(if (error == null) GattResponse.WriteSuccess else GattResponse.Error.from(error.code.toInt()))
                 }
             }
         }
 
-        @ObjCSignatureOverride
-        override fun peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic: CBCharacteristic, error: NSError?) {
+        override fun didUpdateValueForCharacteristic(characteristic: CBCharacteristic, peripheral: CBPeripheral, error: NSError?) {
             handleCharacteristicReadOrNotified(
-                didUpdateValueForCharacteristic.UUID,
-                if (error == null) GattResponse.ReadSuccess(didUpdateValueForCharacteristic.value?.asBytes ?: byteArrayOf()) else GattResponse.Error.from(error.code.toInt()),
+                characteristic.UUID,
+                if (error == null) GattResponse.ReadSuccess(characteristic.value?.asBytes ?: byteArrayOf()) else GattResponse.Error.from(error.code.toInt()),
             )
         }
 
-        @ObjCSignatureOverride
-        override fun peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic: CBCharacteristic, error: NSError?) {
-            handleCharacteristicWritten(didWriteValueForCharacteristic.UUID, if (error == null) GattResponse.WriteSuccess else GattResponse.Error.from(error.code.toInt()))
+        override fun didWriteValueForCharacteristic(characteristic: CBCharacteristic, peripheral: CBPeripheral, error: NSError?) {
+            handleCharacteristicWritten(characteristic.UUID, if (error == null) GattResponse.WriteSuccess else GattResponse.Error.from(error.code.toInt()))
         }
 
-        @ObjCSignatureOverride
-        override fun peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor: CBDescriptor, error: NSError?) {
+        override fun didUpdateValueForDescriptor(descriptor: CBDescriptor, peripheral: CBPeripheral, error: NSError?) {
             handleDescriptorRead(
-                didUpdateValueForDescriptor.UUID,
-                if (error == null) GattResponse.ReadSuccess(didUpdateValueForDescriptor.dataValue?.asBytes ?: byteArrayOf()) else GattResponse.Error.from(error.code.toInt()),
+                descriptor.UUID,
+                if (error == null) GattResponse.ReadSuccess(descriptor.dataValue?.asBytes ?: byteArrayOf()) else GattResponse.Error.from(error.code.toInt()),
             )
         }
 
-        @ObjCSignatureOverride
-        override fun peripheral(peripheral: CBPeripheral, didWriteValueForDescriptor: CBDescriptor, error: NSError?) {
-            handleDescriptorWritten(didWriteValueForDescriptor.UUID, if (error == null) GattResponse.WriteSuccess else GattResponse.Error.from(error.code.toInt()))
+        override fun didWriteValueForDescriptor(descriptor: CBDescriptor, peripheral: CBPeripheral, error: NSError?) {
+            handleDescriptorWritten(descriptor.UUID, if (error == null) GattResponse.WriteSuccess else GattResponse.Error.from(error.code.toInt()))
         }
 
-        override fun peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService: CBService, error: NSError?) {
-            didDiscoverCharacteristic(didDiscoverCharacteristicsForService)
+        override fun didDiscoverCharacteristicsFor(service: CBService, peripheral: CBPeripheral, error: NSError?) {
+            didDiscoverCharacteristic(service)
         }
 
-        override fun peripheral(peripheral: CBPeripheral, didDiscoverServices: NSError?) {
+        override fun didDiscoverServicesFor(peripheral: CBPeripheral, error: NSError?) {
             didDiscoverServices()
         }
 
-        override fun peripheral(peripheral: CBPeripheral, didReadRSSI: NSNumber, error: NSError?) {
+        override fun didReadWithRssi(RSSI: NSNumber, forPeripheral: CBPeripheral, error: NSError?) {
             launch {
-                handleNewRssi(didReadRSSI.intValue)
+                handleNewRssi(RSSI.intValue)
             }
         }
     }
+
+    val wrapper = atomic<KalugaBluetoothPeripheralWrapper?>(null)
 
     actual override fun getCurrentState(): DeviceConnectionManager.State = when (peripheral.state) {
         CBPeripheralStateConnected -> DeviceConnectionManager.State.CONNECTED
@@ -140,7 +139,10 @@ internal actual class DefaultDeviceConnectionManager(
     }
 
     actual override fun connect() {
-        peripheral.delegate = peripheralDelegate
+        wrapper.getAndUpdate {
+            it?.unlink()
+            KalugaBluetoothPeripheralWrapper.createByLinkingWithPeripheral(peripheral, peripheralDelegate)
+        }
         cbCentralManager.connectPeripheral(peripheral, null)
     }
 
@@ -155,7 +157,10 @@ internal actual class DefaultDeviceConnectionManager(
     actual override fun disconnect() {
         val state = getCurrentState()
         cbCentralManager.cancelPeripheralConnection(peripheral)
-        peripheral.delegate = null
+        wrapper.getAndUpdate {
+            it?.unlink()
+            null
+        }
         if (state != DeviceConnectionManager.State.CONNECTED) {
             handleDisconnect()
         }

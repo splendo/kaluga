@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.toNSData
 import com.splendo.kaluga.base.utils.typedList
 import com.splendo.kaluga.bluetooth.GattResponse
+import com.splendo.kaluga.bluetooth.KalugaBluetoothServerDelegateProtocol
 import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.info
@@ -50,7 +51,7 @@ import kotlin.coroutines.CoroutineContext
 private const val TAG = "KalugaCBPeripheralManagerDelegate"
 class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingContext: CoroutineContext) :
     NSObject(),
-    CBPeripheralManagerDelegateProtocol {
+    KalugaBluetoothServerDelegateProtocol {
 
     data class ServiceAdded(val service: CBService, val success: Boolean)
 
@@ -132,50 +133,48 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
         subscribeActions.clear()
     }
 
-    override fun peripheralManagerDidUpdateState(peripheral: CBPeripheralManager) {
-        _isEnabled.tryEmit(peripheral.state == CBPeripheralManagerStatePoweredOn)
+    override fun didUpdateState(forPeripheralManager: CBPeripheralManager) {
+        _isEnabled.tryEmit(forPeripheralManager.state == CBPeripheralManagerStatePoweredOn)
     }
 
-    override fun peripheralManager(peripheral: CBPeripheralManager, didAddService: CBService, error: NSError?) {
-        _serviceAdded.tryEmit(ServiceAdded(didAddService, error == null))
+    override fun didAddService(service: CBService, peripheralManager: CBPeripheralManager, error: NSError?) {
+        _serviceAdded.tryEmit(ServiceAdded(service, error == null))
     }
 
-    @ObjCSignatureOverride
-    override fun peripheralManager(peripheral: CBPeripheralManager, central: CBCentral, didSubscribeToCharacteristic: CBCharacteristic) {
-        subscribeActions[didSubscribeToCharacteristic]?.let { onSubscribe ->
+    override fun didSubscribe(central: CBCentral, toCharacteristic: CBCharacteristic, peripheralManager: CBPeripheralManager) {
+        subscribeActions[toCharacteristic]?.let { onSubscribe ->
             handlingScope.launch {
                 onSubscribe(ConnectedDevice(central))
             }
         }
     }
 
-    @ObjCSignatureOverride
-    override fun peripheralManager(peripheral: CBPeripheralManager, central: CBCentral, didUnsubscribeFromCharacteristic: CBCharacteristic) {
-        unsubscribeActions[didUnsubscribeFromCharacteristic]?.let { onUnsubscribe ->
+    override fun didUnsubscribe(central: CBCentral, fromCharacteristic: CBCharacteristic, peripheralManager: CBPeripheralManager) {
+        unsubscribeActions[fromCharacteristic]?.let { onUnsubscribe ->
             handlingScope.launch {
                 onUnsubscribe(ConnectedDevice(central))
             }
         }
     }
 
-    override fun peripheralManager(peripheral: CBPeripheralManager, didReceiveReadRequest: CBATTRequest) {
+    override fun didReceiveRead(request: CBATTRequest, peripheralManager: CBPeripheralManager) {
         handlingScope.launch {
-            val identifier = didReceiveReadRequest.characteristic
-            logger.info(TAG) { "Device ${didReceiveReadRequest.central.identifier} attempting to read $identifier at ${didReceiveReadRequest.offset}" }
-            val response = readActions[identifier]?.invoke(ConnectedDevice(didReceiveReadRequest.central), didReceiveReadRequest.offset.toInt()) ?: GattResponse.InvalidHandle
+            val identifier = request.characteristic
+            logger.info(TAG) { "Device ${request.central.identifier} attempting to read $identifier at ${request.offset}" }
+            val response = readActions[identifier]?.invoke(ConnectedDevice(request.central), request.offset.toInt()) ?: GattResponse.InvalidHandle
             if (response is GattResponse.ReadSuccess) {
-                didReceiveReadRequest.setValue(response.value.toNSData())
+                request.setValue(response.value.toNSData())
             }
 
-            if (peripheral.state == CBPeripheralManagerStatePoweredOn) {
-                peripheral.respondToRequest(didReceiveReadRequest, response.statusCode.toLong())
+            if (peripheralManager.state == CBPeripheralManagerStatePoweredOn) {
+                peripheralManager.respondToRequest(request, response.statusCode.toLong())
             }
         }
     }
 
-    override fun peripheralManager(peripheral: CBPeripheralManager, didReceiveWriteRequests: List<*>) {
+    override fun didReceiveWrite(requests: List<*>, peripheralManager: CBPeripheralManager) {
         handlingScope.launch {
-            val requests = didReceiveWriteRequests.typedList<CBATTRequest>()
+            val requests = requests.typedList<CBATTRequest>()
             val responses = requests.map { writeRequest ->
                 val identifier = writeRequest.characteristic
                 val value = writeRequest.value?.asBytes ?: byteArrayOf()
@@ -183,17 +182,17 @@ class KalugaCBPeripheralManagerDelegate(private val logger: Logger, handlingCont
                 writeActions[identifier]?.invoke(ConnectedDevice(writeRequest.central), value, writeRequest.offset.toInt()) ?: GattResponse.InvalidHandle
             }
             val response = responses.firstOrNull { it is GattResponse.Error } ?: GattResponse.WriteSuccess
-            if (peripheral.state == CBPeripheralManagerStatePoweredOn) {
-                peripheral.respondToRequest(requests.first(), response.statusCode.toLong())
+            if (peripheralManager.state == CBPeripheralManagerStatePoweredOn) {
+                peripheralManager.respondToRequest(requests.first(), response.statusCode.toLong())
             }
         }
     }
 
-    override fun peripheralManagerDidStartAdvertising(peripheral: CBPeripheralManager, error: NSError?) {
+    override fun didStartAdvertising(peripheralManager: CBPeripheralManager, error: NSError?) {
         didStartAdvertising.complete(error == null)
     }
 
-    override fun peripheralManagerIsReadyToUpdateSubscribers(peripheral: CBPeripheralManager) {
+    override fun isReady(peripheralManager: CBPeripheralManager) {
         available.complete()
     }
 }
