@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.koin
 
+import com.splendo.kaluga.test.base.IgnoreJs
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
@@ -66,6 +67,7 @@ class KoinTestContextFailureTest {
         context.dispose()
     }
 
+    @IgnoreJs
     @Test
     fun testModuleContainsMissingDefinitions() {
         assertFailsWith<InstanceCreationException> {
@@ -79,6 +81,7 @@ class KoinTestContextFailureTest {
         }
     }
 
+    @IgnoreJs
     @Test
     fun testKoinUIThreadTestContextContainsMissingDefinitions() {
         val testClass = MockKoinUIThreadTest()

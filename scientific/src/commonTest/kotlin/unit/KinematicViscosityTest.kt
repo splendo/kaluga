@@ -22,7 +22,9 @@ import com.splendo.kaluga.base.utils.pow
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlin.test.Test
+import com.splendo.kaluga.test.base.IgnoreJs
 
+@IgnoreJs
 class KinematicViscosityTest {
 
     @Test

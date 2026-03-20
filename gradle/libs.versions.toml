@@ -1,8 +1,8 @@
 [versions]
 kaluga = "1.6.0"
-java = "17"
+java = "21"
 
-androidGradle = "8.13.2"
+androidGradle = "9.1.0"
 androidBuildTools = "36.1.0"
 androidCompileSdk = "36"
 androidMinSdk = "24"

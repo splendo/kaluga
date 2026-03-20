@@ -14,7 +14,6 @@ pluginManagement {
     }
 
     includeBuild("kaluga-library-components")
-    includeBuild("gradle-test-recorder/plugin-build/")
 }
 
 rootProject.name = "Kaluga"
