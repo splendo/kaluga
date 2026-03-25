@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: 21
 
       - name: build example
         run: ./gradlew --stacktrace android:assembleDebug
@@ -33,7 +33,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: 21
 
       - name: run Android unit tests
         run: ./gradlew testDebugUnitTest testAndroidHostTest koverHtmlReport koverXmlReport
@@ -49,13 +49,13 @@ jobs:
           update-comment: true
           coverage-counter-type: LINE
       - name: Upload Android test artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: "Android Test Report HTML"
           path: "**/build/reports/tests/testDebugUnitTest"
       - name: Upload Coverage report
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: ${{ always() && hashFiles(format('{0}/build/reports/kover/html/index.html', github.workspace)) != '' }}
         with:
           name: "Coverage Report HTML"

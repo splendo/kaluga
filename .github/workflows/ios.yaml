@@ -26,7 +26,7 @@ jobs:
       run: ./gradlew lintKotlin
 
     - name: ktLint report
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: ktLint report
         path: build/reports/ktlint
@@ -54,7 +54,7 @@ jobs:
       - name: run iOS tests
         run: ./gradlew :${{ matrix.module }}:ios${{ runner.arch == 'X86' && 'X86' || runner.arch == 'X64' && 'x86_64' || runner.arch == 'ARM' && 'SimulatorArm32' || 'SimulatorArm64' }}Test
       - name: Upload iOS test artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: ${{ matrix.module}} iOS Test Report HTML
@@ -80,11 +80,11 @@ jobs:
 
       - name: build example
         working-directory: example/ios
-        run: set -o pipefail && xcodebuild -project Demo.xcodeproj -sdk iphonesimulator -scheme Demo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1'
+        run: set -o pipefail && xcodebuild -project Demo.xcodeproj -sdk iphonesimulator -scheme Demo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.3'
         shell: bash
 
       - name: 'upload xcodebuild.log'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: "xcodebuild.log"
           path: "example/ios/xcodebuild.log"
