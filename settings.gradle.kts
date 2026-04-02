@@ -16,6 +16,10 @@ pluginManagement {
     includeBuild("kaluga-library-components")
 }
 
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
 rootProject.name = "Kaluga"
 
 /* REMINDER (see header), files should be kept up to date with Gradle and the [.git/workflows] */

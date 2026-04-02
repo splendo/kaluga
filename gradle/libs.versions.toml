@@ -1,6 +1,7 @@
 [versions]
 kaluga = "1.6.0"
 java = "21"
+foojay-resolver = "1.0.0"
 
 androidGradle = "9.1.0"
 androidBuildTools = "36.1.0"
@@ -222,5 +223,6 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlinx-atomicfu" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinx-kover"}
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+foojay-resolver = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "foojay-resolver" }
 
 [bundles]
