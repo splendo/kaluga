@@ -26,6 +26,8 @@ class DatabindingAndroidLibraryComponentsPlugin : BaseAndroidLibraryComponentsPl
     override val subExtensionClass: KClass<DatabindingKalugaAndroidSubprojectExtension> = DatabindingKalugaAndroidSubprojectExtension::class
 
     override fun PluginManager.addAndroidExtensionPlugins() {
-        // kapt was here previously but data binding code generation no longer requires it in AGP 9.0
+        // legacy-kapt replaces kotlin-kapt for AGP 9's built-in Kotlin.
+        // Needed for databinding to discover @BindingAdapter annotations from Kotlin code.
+        apply("com.android.legacy-kapt")
     }
 }
