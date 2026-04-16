@@ -80,7 +80,7 @@ jobs:
 
       - name: build example
         working-directory: example/ios
-        run: set -o pipefail && xcodebuild -project Demo.xcodeproj -sdk iphonesimulator -scheme Demo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.3'
+        run: set -o pipefail && xcodebuild -project Demo.xcodeproj -sdk iphonesimulator -scheme Demo -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.3.1'
         shell: bash
 
       - name: 'upload xcodebuild.log'
