@@ -80,7 +80,7 @@ sealed class BaseKalugaSubprojectExtension(versionCatalog: VersionCatalog, prote
 
     @OptIn(ExperimentalAbiValidation::class)
     protected fun AbiValidationVariantSpec.abiExtension() {
-        filters.excluded {
+        filters.exclude {
             byNames.set(
                 setOf(
                     "com.splendo.kaluga.$moduleName.BuildConfig",

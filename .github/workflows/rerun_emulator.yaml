@@ -1,6 +1,7 @@
 name: Rerun failed emulator tests
 permissions:
   contents: write
+  actions: write
   
 on:
   workflow_run:
