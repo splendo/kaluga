@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.plugin.extensions
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import com.splendo.kaluga.plugin.helpers.jvmTarget
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
@@ -26,10 +26,10 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
-import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 
 abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatalog, val libraryExtension: LibraryExtension, namespacePostfix: String, objects: ObjectFactory) :
     BaseKalugaSubprojectExtension(versionCatalog, namespacePostfix, objects) {
@@ -46,11 +46,8 @@ abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatal
         extensions.configure(KotlinAndroidProjectExtension::class) {
             compilerOptions {
                 jvmTarget.set(versionCatalog.jvmTarget)
-            }
-            sourceSets.all {
-                languageSettings {
-                    languageSettings()
-                }
+                // languageSettings() is not applied by AGP 9.0 built-in Kotlin; use compilerOptions.optIn instead
+                optIn.addAll(optInAnnotations())
             }
         }
         dependencies {
@@ -69,7 +66,7 @@ abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatal
         }
     }
 
-    protected abstract fun LanguageSettingsBuilder.languageSettings()
+    protected open fun optInAnnotations(): List<String> = emptyList()
     protected abstract fun DependencyHandlerScope.commonDependencies()
 
     override fun Project.afterProjectEvaluated() {
@@ -117,11 +114,10 @@ abstract class BaseKalugaAndroidSubprojectExtension(versionCatalog: VersionCatal
 
             configure()
         }
-        extensions.configure(KotlinAndroidProjectExtension::class) {
-            extensions.configure(AbiValidationExtension::class) {
-                enabled.set(true)
-                abiExtension()
-            }
+        // AbiValidationExtension is only available on KMP modules, not pure Android modules
+        extensions.findByType<AbiValidationExtension>()?.apply {
+            enabled.set(true)
+            abiExtension()
         }
         configureSubproject()
     }

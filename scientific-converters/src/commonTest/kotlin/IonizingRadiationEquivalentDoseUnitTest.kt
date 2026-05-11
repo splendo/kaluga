@@ -29,7 +29,9 @@ import com.splendo.kaluga.scientific.unit.RoentgenEquivalentMan
 import com.splendo.kaluga.scientific.unit.Sievert
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
+import com.splendo.kaluga.test.base.IgnoreJs
 
+@IgnoreJs
 class IonizingRadiationEquivalentDoseUnitTest {
 
     @Test

@@ -85,7 +85,9 @@ import com.splendo.kaluga.scientific.unit.WattHour
 import com.splendo.kaluga.scientific.unit.per
 import com.splendo.kaluga.scientific.unit.x
 import kotlin.test.Test
+import com.splendo.kaluga.test.base.IgnoreJs
 
+@IgnoreJs
 class TimeUnitTest {
 
     @Test

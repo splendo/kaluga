@@ -232,7 +232,8 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
 
                 getByName("androidDeviceTest") {
-                    // No longer allowed so leads to warning. Seems to work for now but probably fragile
+                    // dependsOn(commonTest) triggers a warning in AGP 9.0 ("different Source Set Trees")
+                    // but is required for androidDeviceTest to access expect/actual and commonTest utilities
                     dependsOn(getByName("commonTest"))
                     dependencies {
                         androidDeviceTestDependencies.forEach {

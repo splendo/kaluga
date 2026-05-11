@@ -2,7 +2,6 @@ import com.splendo.kaluga.plugin.helpers.kalugaVersion
 
 plugins {
     id("com.splendo.kaluga.plugin")
-    id("rs.houtbecke.gradle.recorder.plugin")
     `version-catalog`
     `maven-publish`
 }

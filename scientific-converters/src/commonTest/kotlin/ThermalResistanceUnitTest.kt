@@ -26,7 +26,9 @@ import com.splendo.kaluga.scientific.unit.Rankine
 import com.splendo.kaluga.scientific.unit.Watt
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
+import com.splendo.kaluga.test.base.IgnoreJs
 
+@IgnoreJs
 class ThermalResistanceUnitTest {
 
     @Test

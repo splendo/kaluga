@@ -17,19 +17,19 @@
 
 package com.splendo.kaluga.plugin.extensions
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.DependencyHandlerScope
-import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 import javax.inject.Inject
 
 open class ComposeKalugaAndroidSubprojectExtension @Inject constructor(versionCatalog: VersionCatalog, libraryExtension: LibraryExtension, objects: ObjectFactory) :
     BaseKalugaAndroidSubprojectExtension(versionCatalog, libraryExtension, "compose", objects) {
 
-    override fun LanguageSettingsBuilder.languageSettings() {
-        optIn("androidx.compose.material3.ExperimentalMaterial3Api")
-    }
+    override fun optInAnnotations() = listOf(
+        "androidx.compose.material3.ExperimentalMaterial3Api",
+        "androidx.compose.material.ExperimentalMaterialApi",
+    )
 
     override fun DependencyHandlerScope.commonDependencies() {
         add("implementation", "androidx-compose-foundation".asDependency())

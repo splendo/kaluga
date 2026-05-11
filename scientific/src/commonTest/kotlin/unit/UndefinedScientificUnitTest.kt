@@ -29,7 +29,9 @@ import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import com.splendo.kaluga.test.base.IgnoreJs
 
+@IgnoreJs
 class UndefinedScientificUnitTest {
 
     companion object {

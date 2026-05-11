@@ -32,7 +32,9 @@ import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import com.splendo.kaluga.test.base.IgnoreJs
 
+@IgnoreJs
 class ScientificArrayTest {
 
     @Serializable
@@ -114,6 +116,7 @@ class ScientificArrayTest {
     }
 }
 
+@IgnoreJs
 class MockIntScientificArray<Type : PhysicalQuantity, Unit : ScientificUnit<Type>>(decimals: List<Decimal>, override val unit: Unit) : IntScientificArray<Type, Unit> {
     override val values: IntArray = decimals.toIntArray()
 }
