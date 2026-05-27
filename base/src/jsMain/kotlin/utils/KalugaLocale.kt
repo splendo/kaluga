@@ -17,63 +17,130 @@
 
 package com.splendo.kaluga.base.utils
 
-// TODO Implement with proper locale solution for Java Script
+import com.splendo.kaluga.base.text.upperCased
+
 /**
- * Default implementation of [BaseLocale]
+ * Default implementation of [BaseLocale] backed by the ECMAScript
+ * [`Intl`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl) API.
+ *
+ * Uses [`Intl.Locale`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale)
+ * for parsing BCP 47 language tags and
+ * [`Intl.DisplayNames`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DisplayNames)
+ * for localized names. Modern Node.js and browsers ship with full ICU data, giving feature parity with
+ * `java.util.Locale` (Android/JVM) and `NSLocale` (iOS).
  */
-actual data class KalugaLocale internal constructor(
-    actual override val languageCode: String,
-    actual override val countryCode: String = "",
-    actual override val variantCode: String = "",
-    actual override val scriptCode: String = "",
-    actual override val unitSystem: UnitSystem = UnitSystem.METRIC,
-) : BaseLocale() {
+actual data class KalugaLocale internal constructor(internal val tag: String) : BaseLocale() {
 
-    actual companion object {
+    private val parsed: dynamic = parseIntlLocale(tag)
 
-        /**
-         * Creates a [KalugaLocale] based on a `language` ISO 639 alpha-2 or alpha-3 code
-         * @param language a `language` ISO 639 alpha-2 or alpha-3 code.
-         * @return The [KalugaLocale] for the given [language]
-         */
-        actual fun createLocale(language: String): KalugaLocale = KalugaLocale(language)
+    actual override val languageCode: String = parsed.language.unsafeCast<String?>() ?: ""
+    actual override val countryCode: String = parsed.region.unsafeCast<String?>() ?: ""
+    actual override val scriptCode: String = parsed.script.unsafeCast<String?>() ?: ""
+    actual override val variantCode: String = extractVariant(parsed, languageCode, scriptCode, countryCode)
 
-        /**
-         * Creates a [KalugaLocale] based on a ISO 639 alpha-2 or alpha-3 `language` code and ISO 3166 alpha-2 `country` code.
-         * @param language a ISO 639 alpha-2 or alpha-3 `language` code.
-         * @param country a ISO 3166 alpha-2 `country` code.
-         * @return The [KalugaLocale] for the given [language] and [country]
-         */
-        actual fun createLocale(language: String, country: String): KalugaLocale = KalugaLocale(language, country)
+    actual override val unitSystem: UnitSystem
+        get() = resolveMeasurementSystem(parsed) ?: UnitSystem.withCountryCode(countryCode.upperCased(this))
 
-        /**
-         * Creates a [KalugaLocale] based on a ISO 639 alpha-2 or alpha-3 `language` code, ISO 3166 alpha-2 `country` code, and variant code.
-         * @param language a ISO 639 alpha-2 or alpha-3 `language` code.
-         * @param country a ISO 3166 alpha-2 `country` code.
-         * @param variant Arbitrary value used to indicate a variation of a [KalugaLocale]
-         * @return The [KalugaLocale] for the given [language], [country], and [variant]
-         */
-        actual fun createLocale(language: String, country: String, variant: String): KalugaLocale = KalugaLocale(language, country, variant)
-
-        /**
-         * The default [KalugaLocale] of the user
-         */
-        actual val defaultLocale: KalugaLocale get() = KalugaLocale("en")
-
-        /**
-         * A list of [KalugaLocale] available to the user.
-         */
-        actual val availableLocales: List<KalugaLocale> = emptyList()
-    }
-
-    actual override fun name(forLocale: KalugaLocale): String = "${languageCode}_${countryCode}_$variantCode"
-    actual override fun countryName(forLocale: KalugaLocale): String = countryCode
-    actual override fun languageName(forLocale: KalugaLocale): String = languageCode
+    actual override fun name(forLocale: KalugaLocale): String =
+        intlDisplayName("language", forLocale.tag, tag, fallback = tag)
+    actual override fun countryName(forLocale: KalugaLocale): String =
+        if (countryCode.isEmpty()) "" else intlDisplayName("region", forLocale.tag, countryCode, fallback = countryCode)
+    actual override fun languageName(forLocale: KalugaLocale): String =
+        if (languageCode.isEmpty()) "" else intlDisplayName("language", forLocale.tag, languageCode, fallback = languageCode)
     actual override fun variantName(forLocale: KalugaLocale): String = variantCode
-    actual override fun scriptName(forLocale: KalugaLocale): String = scriptCode
+    actual override fun scriptName(forLocale: KalugaLocale): String =
+        if (scriptCode.isEmpty()) "" else intlDisplayName("script", forLocale.tag, scriptCode, fallback = scriptCode)
 
     actual override val quotationStart: String = "\""
     actual override val quotationEnd: String = "\""
     actual override val alternateQuotationStart: String = "\""
     actual override val alternateQuotationEnd: String = "\""
+
+    actual companion object {
+
+        actual fun createLocale(language: String): KalugaLocale = build(language, "", "")
+        actual fun createLocale(language: String, country: String): KalugaLocale = build(language, country, "")
+        actual fun createLocale(language: String, country: String, variant: String): KalugaLocale = build(language, country, variant)
+
+        private fun build(language: String, country: String, variant: String): KalugaLocale {
+            val raw = buildList {
+                if (language.isNotEmpty()) add(language)
+                if (country.isNotEmpty()) add(country)
+                if (variant.isNotEmpty()) add(variant)
+            }.joinToString("-").ifEmpty { "und" }
+            return KalugaLocale(canonicalizeTag(raw))
+        }
+
+        actual val defaultLocale: KalugaLocale
+            get() = KalugaLocale(canonicalizeTag(resolveCurrentLocaleTag()))
+
+        actual val availableLocales: List<KalugaLocale> by lazy {
+            resolveSupportedLocaleTags().map { KalugaLocale(it) }
+        }
+    }
 }
+
+private fun parseIntlLocale(tag: String): dynamic = try {
+    js("new Intl.Locale(tag)")
+} catch (e: dynamic) {
+    js("new Intl.Locale('und')")
+}
+
+private fun canonicalizeTag(tag: String): String = try {
+    js("new Intl.Locale(tag).baseName").unsafeCast<String>()
+} catch (e: dynamic) {
+    tag
+}
+
+private fun extractVariant(parsed: dynamic, language: String, script: String, region: String): String {
+    val baseName = parsed.baseName.unsafeCast<String?>() ?: return ""
+    val parts = baseName.split("-").toMutableList()
+    if (parts.isNotEmpty() && parts[0].equals(language, ignoreCase = true)) parts.removeAt(0)
+    if (script.isNotEmpty() && parts.isNotEmpty() && parts[0].equals(script, ignoreCase = true)) parts.removeAt(0)
+    if (region.isNotEmpty() && parts.isNotEmpty() && parts[0].equals(region, ignoreCase = true)) parts.removeAt(0)
+    return parts.joinToString("_")
+}
+
+private fun intlDisplayName(type: String, displayLocale: String, code: String, fallback: String): String = try {
+    val resolved = js("new Intl.DisplayNames([displayLocale], { type: type }).of(code)")
+    if (resolved == null) fallback else resolved.unsafeCast<String>()
+} catch (e: dynamic) {
+    fallback
+}
+
+/**
+ * Reads the measurement system exposed by `Intl.Locale.prototype.getMeasurementInfo()` /
+ * `Intl.Locale.prototype.measurementSystem`, when present (recent ICU). Returns `null` when the
+ * runtime doesn't expose it, so the caller can fall back to a country-code mapping.
+ */
+private fun resolveMeasurementSystem(parsed: dynamic): UnitSystem? = try {
+    val raw = js(
+        "(typeof parsed.getMeasurementInfo === 'function' ? parsed.getMeasurementInfo().measurementSystem : parsed.measurementSystem) || null",
+    )
+    when (raw) {
+        "ussystem", "us" -> UnitSystem.IMPERIAL
+        "uksystem", "uk" -> UnitSystem.MIXED
+        "metric" -> UnitSystem.METRIC
+        else -> null
+    }
+} catch (e: dynamic) {
+    null
+}
+
+private fun resolveCurrentLocaleTag(): String = js(
+    "(typeof navigator !== 'undefined' && navigator.language) ? navigator.language : " +
+        "(typeof Intl !== 'undefined' && Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().locale : 'en-US')",
+).unsafeCast<String>()
+
+private fun resolveSupportedLocaleTags(): List<String> = try {
+    val arr = js("(typeof Intl !== 'undefined' && typeof Intl.supportedValuesOf === 'function') ? Intl.supportedValuesOf('language') : null")
+    if (arr == null) fallbackLocaleTags else arr.unsafeCast<Array<String>>().toList()
+} catch (e: dynamic) {
+    fallbackLocaleTags
+}
+
+private val fallbackLocaleTags = listOf(
+    "ar", "bg", "ca", "cs", "da", "de", "el", "en", "es", "et", "fa", "fi", "fr",
+    "he", "hi", "hr", "hu", "id", "it", "ja", "ko", "lt", "lv", "nb", "nl", "pl",
+    "pt", "ro", "ru", "sk", "sl", "sv", "th", "tr", "uk", "vi", "zh",
+)
