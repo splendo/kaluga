@@ -25,13 +25,26 @@ import com.splendo.kaluga.base.utils.KalugaLocale
 actual val lineSeparator = "\n"
 
 /**
- * Converts a String to its lower cased variant based on a given [KalugaLocale]
- * @param locale The [KalugaLocale] to use for transforming to lower case.
+ * Converts a String to its lower cased variant based on a given [KalugaLocale].
+ *
+ * Backed by JavaScript's
+ * [`String.prototype.toLocaleLowerCase`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLocaleLowerCase)
+ * which applies locale-specific casing rules (e.g. Turkish dotted/dotless "I").
  */
-actual fun String.lowerCased(locale: KalugaLocale): String = this.lowercase()
+actual fun String.lowerCased(locale: KalugaLocale): String {
+    val source = this
+    val tag = locale.tag
+    return js("source.toLocaleLowerCase(tag)").unsafeCast<String>()
+}
 
 /**
- * Converts a String to its upper cased variant based on a given [KalugaLocale]
- * @param locale The [KalugaLocale] to use for transforming to upper case.
+ * Converts a String to its upper cased variant based on a given [KalugaLocale].
+ *
+ * Backed by JavaScript's
+ * [`String.prototype.toLocaleUpperCase`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLocaleUpperCase).
  */
-actual fun String.upperCased(locale: KalugaLocale): String = this.uppercase()
+actual fun String.upperCased(locale: KalugaLocale): String {
+    val source = this
+    val tag = locale.tag
+    return js("source.toLocaleUpperCase(tag)").unsafeCast<String>()
+}
