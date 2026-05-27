@@ -37,7 +37,6 @@ kaluga {
         }
         js {
             main {
-                implementation(npm("@splendo/bigdecimal", "1.0.26"))
                 api(libs.kotlinx.atomicfu)
             }
         }
