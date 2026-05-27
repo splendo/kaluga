@@ -38,6 +38,7 @@ kaluga {
         js {
             main {
                 api(libs.kotlinx.atomicfu)
+                implementation(npm("luxon", "3.5.0"))
             }
         }
     }

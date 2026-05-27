@@ -17,43 +17,124 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.utils.KalugaTimeZone.Companion.availableIdentifiers
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 
-// TODO Implement with proper timezone solution for Java Script
 /**
- * A default implementation of [BaseTimeZone].
+ * A default implementation of [BaseTimeZone] backed by the
+ * [`luxon`](https://moment.github.io/luxon/) JS library, which computes timezone arithmetic via
+ * the runtime's built-in `Intl.DateTimeFormat` — the same IANA tz data that ships with Node.js
+ * and modern browsers.
+ *
+ * @property identifier the IANA timezone identifier (e.g. `"Europe/Amsterdam"`, `"UTC"`).
  */
-actual class KalugaTimeZone internal constructor() : BaseTimeZone() {
+actual class KalugaTimeZone internal constructor(actual override val identifier: String) : BaseTimeZone() {
+
+    actual override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: KalugaLocale): String =
+        resolveTimeZoneName(identifier, style, withDaylightSavings, locale.tag)
+
+    actual override val offsetFromGMT: Duration get() = computeOffsets(identifier).standard
+    actual override val daylightSavingsOffset: Duration get() = computeOffsets(identifier).daylight
+
+    actual override fun offsetFromGMTAtDate(date: KalugaDate): Duration {
+        val ms = date.durationSinceEpoch.inWholeMilliseconds.toDouble()
+        val zone = identifier
+        val dt = DateTime.fromMillis(ms, js("({zone: zone})"))
+        return (dt.offset.unsafeCast<Int>()).minutes
+    }
+
+    actual override fun usesDaylightSavingsTime(date: KalugaDate): Boolean {
+        val ms = date.durationSinceEpoch.inWholeMilliseconds.toDouble()
+        val zone = identifier
+        val dt = DateTime.fromMillis(ms, js("({zone: zone})"))
+        return dt.isInDST.unsafeCast<Boolean>()
+    }
+
+    actual override fun copy(): KalugaTimeZone = KalugaTimeZone(identifier)
+
+    override fun equals(other: Any?): Boolean = (other as? KalugaTimeZone)?.let { identifier == it.identifier } ?: false
+    override fun hashCode(): Int = identifier.hashCode()
 
     actual companion object {
 
-        /**
-         * Gets a [KalugaTimeZone] based on a given Identifier
-         * @param identifier The identifier to create a [KalugaTimeZone] for
-         * @return The [KalugaTimeZone] corresponding to the identifier, if it exists. Check [availableIdentifiers] for supported identifiers
-         */
-        actual fun get(identifier: String): KalugaTimeZone? = KalugaTimeZone()
+        actual fun get(identifier: String): KalugaTimeZone? = if (isValidTimeZone(identifier)) {
+            KalugaTimeZone(canonicalizeTimeZone(identifier))
+        } else {
+            null
+        }
 
-        /**
-         * Gets the current [KalugaTimeZone] configured by the user
-         * @return The current [KalugaTimeZone] of the user
-         */
-        actual fun current(): KalugaTimeZone = KalugaTimeZone()
+        actual fun current(): KalugaTimeZone = KalugaTimeZone(systemTimeZone())
 
-        /**
-         * List of available identifiers associated with [KalugaTimeZone]s. All elements in this list can be used for creating a [KalugaTimeZone] using [KalugaTimeZone.get]
-         */
-        actual val availableIdentifiers: List<String> = emptyList()
+        actual val availableIdentifiers: List<String> by lazy { listSupportedTimeZones() }
     }
+}
 
-    actual override val identifier: String = ""
-    actual override fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: KalugaLocale): String = ""
-    actual override val offsetFromGMT = 0.milliseconds
-    actual override val daylightSavingsOffset = 0.milliseconds
-    actual override fun offsetFromGMTAtDate(date: KalugaDate): Duration = 0.milliseconds
-    actual override fun usesDaylightSavingsTime(date: KalugaDate): Boolean = false
-    actual override fun copy(): KalugaTimeZone = KalugaTimeZone()
-    override fun equals(other: Any?): Boolean = other is KalugaTimeZone && identifier == other.identifier
+private data class TimeZoneOffsets(val standard: Duration, val daylight: Duration)
+
+private fun computeOffsets(zone: String): TimeZoneOffsets {
+    val january = DateTime.fromObject(js("({year: 2024, month: 1, day: 15})"), js("({zone: zone})"))
+    val july = DateTime.fromObject(js("({year: 2024, month: 7, day: 15})"), js("({zone: zone})"))
+    val janOffset = january.offset.unsafeCast<Int>()
+    val julOffset = july.offset.unsafeCast<Int>()
+    val standard = minOf(janOffset, julOffset)
+    val daylight = maxOf(janOffset, julOffset) - standard
+    return TimeZoneOffsets(standard.minutes, daylight.minutes)
+}
+
+private fun isValidTimeZone(identifier: String): Boolean = try {
+    Info.isValidIANAZone(identifier).unsafeCast<Boolean>() ||
+        identifier.equals("UTC", ignoreCase = true) ||
+        identifier.equals("GMT", ignoreCase = true)
+} catch (e: dynamic) {
+    false
+}
+
+private fun canonicalizeTimeZone(identifier: String): String = try {
+    val dt = DateTime.now().setZone(identifier)
+    if (dt.isValid.unsafeCast<Boolean>()) dt.zoneName.unsafeCast<String>() else identifier
+} catch (e: dynamic) {
+    identifier
+}
+
+private fun systemTimeZone(): String = try {
+    val resolved = js("(typeof Intl !== 'undefined' && Intl.DateTimeFormat) ? Intl.DateTimeFormat().resolvedOptions().timeZone : null")
+    resolved?.unsafeCast<String>() ?: "UTC"
+} catch (e: dynamic) {
+    "UTC"
+}
+
+private fun listSupportedTimeZones(): List<String> = try {
+    val arr = js("(typeof Intl !== 'undefined' && typeof Intl.supportedValuesOf === 'function') ? Intl.supportedValuesOf('timeZone') : null")
+    if (arr == null) fallbackTimeZones else arr.unsafeCast<Array<String>>().toList()
+} catch (e: dynamic) {
+    fallbackTimeZones
+}
+
+private val fallbackTimeZones = listOf("UTC", "GMT")
+
+private fun resolveTimeZoneName(zone: String, style: TimeZoneNameStyle, withDaylightSavings: Boolean, localeTag: String): String = try {
+    val styleString = if (style == TimeZoneNameStyle.Short) "short" else "long"
+    // Use a January date for standard time, a July date for daylight savings (matches northern-hemisphere observance).
+    val referenceMillis = if (withDaylightSavings) DST_REFERENCE_MILLIS else STANDARD_REFERENCE_MILLIS
+    val parts = js(
+        "new Intl.DateTimeFormat(localeTag, {timeZone: zone, timeZoneName: styleString}).formatToParts(new Date(referenceMillis))",
+    )
+    extractTimeZoneNamePart(parts) ?: zone
+} catch (e: dynamic) {
+    zone
+}
+
+// Jan 15, 2024 12:00 UTC and Jul 15, 2024 12:00 UTC — chosen to disambiguate STD vs DST naming.
+private const val STANDARD_REFERENCE_MILLIS: Double = 1705320000000.0
+private const val DST_REFERENCE_MILLIS: Double = 1721044800000.0
+
+private fun extractTimeZoneNamePart(parts: dynamic): String? {
+    val length = parts.length.unsafeCast<Int>()
+    for (i in 0 until length) {
+        val part = parts[i]
+        if (part.type.unsafeCast<String>() == "timeZoneName") {
+            return part.value.unsafeCast<String>()
+        }
+    }
+    return null
 }

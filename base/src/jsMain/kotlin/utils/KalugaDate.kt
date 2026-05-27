@@ -22,92 +22,246 @@ import kotlin.time.Duration.Companion.milliseconds
 
 actual typealias KalugaDateHolder = kotlin.js.Date
 
-// TODO Implement with proper date solution for Java Script
-
 /**
- * Default implementation of [KalugaDate]
+ * Default implementation of [KalugaDate] backed by the
+ * [`luxon`](https://moment.github.io/luxon/) JS library. Mirrors `java.util.Calendar` semantics:
+ *
+ * - Setters are lenient: in-range values map to luxon's `set` (preserves the rest of the date,
+ *   correct around DST gaps where luxon normalises forward). Out-of-range values fall back to
+ *   `plus`, so e.g. `month += 22` rolls the year over.
+ * - Calendar arithmetic is timezone-aware: `day += 1` uses `plus({days: 1})` which preserves the
+ *   local time-of-day across DST transitions.
  */
-actual class DefaultKalugaDate internal constructor(actual override val date: KalugaDateHolder) : KalugaDate() {
+actual class DefaultKalugaDate internal constructor(private var dt: dynamic) : KalugaDate() {
 
     actual companion object {
 
-        /**
-         * Creates a [KalugaDate] relative to the current time
-         * @param offset The [Duration] from the current time. Defaults to 0 milliseconds
-         * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
-         * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
-         * @return A [KalugaDate] relative to the current time
-         */
-        actual fun now(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate = DefaultKalugaDate(
-            kotlin.js.Date(kotlin.js.Date.now() + offset.inWholeMilliseconds),
-        )
+        actual fun now(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate {
+            val ms = (kotlin.js.Date.now() + offset.inWholeMilliseconds.toDouble())
+            return DefaultKalugaDate(DateTime.fromMillis(ms, buildOpts(timeZone, locale)))
+        }
 
-        /**
-         * Creates a [KalugaDate] relative to January 1st 1970 00:00:00 GMT
-         * @param offset The [Duration] from the epoch time. Defaults to 0 milliseconds
-         * @param timeZone The [KalugaTimeZone] in which the Date is set. Defaults to [KalugaTimeZone.current]
-         * @param locale The [KalugaLocale] for which the Date is configured. Defaults to [KalugaLocale.defaultLocale]
-         * @return A [KalugaDate] relative to the current time
-         */
-        actual fun epoch(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate = DefaultKalugaDate(kotlin.js.Date(offset.inWholeMilliseconds))
+        actual fun epoch(offset: Duration, timeZone: KalugaTimeZone, locale: KalugaLocale): KalugaDate =
+            DefaultKalugaDate(DateTime.fromMillis(offset.inWholeMilliseconds.toDouble(), buildOpts(timeZone, locale)))
     }
 
     actual override var timeZone: KalugaTimeZone
-        get() = KalugaTimeZone()
-        set(_) { }
+        get() = KalugaTimeZone(dt.zoneName.unsafeCast<String>())
+        set(value) {
+            val zoneName = value.identifier
+            dt = dt.setZone(zoneName)
+        }
 
     actual override var era: Int
-        get() = 0
-        set(_) { }
+        get() = if (dt.year.unsafeCast<Int>() >= 1) 1 else 0
+        set(_) {
+            // luxon doesn't expose a settable era; treat as no-op for non-historical use.
+        }
+
     actual override var year: Int
-        get() = date.getFullYear()
-        set(_) { }
+        get() = dt.year.unsafeCast<Int>()
+        set(value) {
+            // year has effectively unlimited range — always use `set` to preserve other fields.
+            setField("year", value)
+        }
+
     actual override var month: Int
-        get() = date.getMonth()
-        set(_) { }
-    actual override val daysInMonth: Int = 0
+        get() = dt.month.unsafeCast<Int>()
+        set(value) {
+            setOrShift("month", "months", value, dt.month.unsafeCast<Int>(), 1, 12)
+        }
+
+    actual override val daysInMonth: Int
+        get() = dt.daysInMonth.unsafeCast<Int>()
+
     actual override var weekOfYear: Int
-        get() = 0
-        set(_) { }
+        get() = computeWeekOfYear(dt)
+        set(value) {
+            shift("weeks", value - computeWeekOfYear(dt))
+        }
+
     actual override var weekOfMonth: Int
-        get() = 0
-        set(_) { }
+        get() = computeWeekOfMonth(dt)
+        set(value) {
+            shift("weeks", value - computeWeekOfMonth(dt))
+        }
+
     actual override var day: Int
-        get() = 0
-        set(_) { }
+        get() = dt.day.unsafeCast<Int>()
+        set(value) {
+            setOrShift("day", "days", value, dt.day.unsafeCast<Int>(), 1, dt.daysInMonth.unsafeCast<Int>())
+        }
+
     actual override var dayOfYear: Int
-        get() = date.getDay()
-        set(_) { }
+        get() = dt.ordinal.unsafeCast<Int>()
+        set(value) {
+            val max = if (dt.isInLeapYear.unsafeCast<Boolean>()) 366 else 365
+            setOrShift("ordinal", "days", value, dt.ordinal.unsafeCast<Int>(), 1, max)
+        }
+
     actual override var weekDay: Int
-        get() = date.getDate() + 1
-        set(_) { }
+        get() = isoToCalendarWeekday(dt.weekday.unsafeCast<Int>())
+        set(value) {
+            val currentCalendar = isoToCalendarWeekday(dt.weekday.unsafeCast<Int>())
+            if (value in 1..7) {
+                val isoValue = calendarToIsoWeekday(value)
+                setField("weekday", isoValue)
+            } else {
+                shift("days", value - currentCalendar)
+            }
+        }
+
     actual override var firstWeekDay: Int
-        get() = 1
-        set(_) { }
+        get() = firstWeekDayForLocale(dt.locale.unsafeCast<String>())
+        set(_) {
+            // Derived from locale; not directly settable per-date with luxon.
+        }
 
     actual override var hour: Int
-        get() = date.getHours()
-        set(_) { }
-    actual override var minute: Int
-        get() = date.getMinutes()
-        set(_) { }
-    actual override var second: Int
-        get() = date.getSeconds()
-        set(_) { }
-    actual override var millisecond: Int
-        get() = date.getMilliseconds()
-        set(_) { }
-    actual override var durationSinceEpoch: Duration
-        get() = date.getTime().milliseconds
-        set(_) { }
+        get() = dt.hour.unsafeCast<Int>()
+        set(value) {
+            setOrShift("hour", "hours", value, dt.hour.unsafeCast<Int>(), 0, 23)
+        }
 
-    actual override fun copy(): KalugaDate = DefaultKalugaDate(kotlin.js.Date(date.getTime().toLong()))
+    actual override var minute: Int
+        get() = dt.minute.unsafeCast<Int>()
+        set(value) {
+            setOrShift("minute", "minutes", value, dt.minute.unsafeCast<Int>(), 0, 59)
+        }
+
+    actual override var second: Int
+        get() = dt.second.unsafeCast<Int>()
+        set(value) {
+            setOrShift("second", "seconds", value, dt.second.unsafeCast<Int>(), 0, 59)
+        }
+
+    actual override var millisecond: Int
+        get() = dt.millisecond.unsafeCast<Int>()
+        set(value) {
+            setOrShift("millisecond", "milliseconds", value, dt.millisecond.unsafeCast<Int>(), 0, 999)
+        }
+
+    actual override var durationSinceEpoch: Duration
+        get() = dt.toMillis().unsafeCast<Double>().toLong().milliseconds
+        set(value) {
+            val zone = dt.zoneName.unsafeCast<String>()
+            val locale = dt.locale.unsafeCast<String?>() ?: "en-US"
+            dt = DateTime.fromMillis(value.inWholeMilliseconds.toDouble(), js("({zone: zone, locale: locale})"))
+        }
+
+    actual override val date: KalugaDateHolder
+        get() = dt.toJSDate().unsafeCast<KalugaDateHolder>()
+
+    actual override fun copy(): KalugaDate = DefaultKalugaDate(dt)
 
     actual override fun equals(other: Any?): Boolean = (other as? KalugaDate)?.let {
-        timeZone == other.timeZone && durationSinceEpoch == other.durationSinceEpoch
+        timeZone == it.timeZone && durationSinceEpoch == it.durationSinceEpoch
     } ?: false
 
-    actual override fun compareTo(other: KalugaDate): Int = date.getTime().compareTo(other.date.getTime())
+    actual override fun hashCode(): Int = dt.toMillis().unsafeCast<Double>().hashCode()
 
-    actual override fun hashCode(): Int = date.hashCode()
+    actual override fun compareTo(other: KalugaDate): Int =
+        durationSinceEpoch.compareTo(other.durationSinceEpoch)
+
+    private fun setOrShift(field: String, plural: String, value: Int, current: Int, min: Int, max: Int) {
+        if (value in min..max) {
+            setField(field, value)
+        } else {
+            shift(plural, value - current)
+        }
+    }
+
+    private fun setField(field: String, value: Int) {
+        val opts: dynamic = js("({})")
+        opts[field] = value
+        dt = dt.set(opts)
+    }
+
+    private fun shift(unit: String, delta: Int) {
+        if (delta == 0) return
+        val duration: dynamic = js("({})")
+        duration[unit] = delta
+        dt = dt.plus(duration)
+    }
+}
+
+private fun buildOpts(timeZone: KalugaTimeZone, locale: KalugaLocale): dynamic {
+    val zone = timeZone.identifier
+    val tag = locale.tag
+    return js("({zone: zone, locale: tag})")
+}
+
+// luxon: 1=Monday … 7=Sunday (ISO). Java Calendar: 1=Sunday … 7=Saturday.
+private fun isoToCalendarWeekday(isoWeekday: Int): Int = (isoWeekday % 7) + 1
+
+private fun calendarToIsoWeekday(calendarWeekday: Int): Int = if (calendarWeekday == 1) 7 else calendarWeekday - 1
+
+private fun firstWeekDayForLocale(localeTag: String): Int = try {
+    val tag = localeTag
+    val intlLocale = js("new Intl.Locale(tag)")
+    val weekInfo = js("(typeof intlLocale.getWeekInfo === 'function' ? intlLocale.getWeekInfo() : intlLocale.weekInfo)")
+    val firstDay = weekInfo?.firstDay?.unsafeCast<Int?>() ?: 1
+    isoToCalendarWeekday(firstDay)
+} catch (e: dynamic) {
+    1 // Sunday — matches `java.util.Calendar`'s default for unknown locales.
+}
+
+private fun minimalDaysForLocale(localeTag: String): Int = try {
+    val tag = localeTag
+    val intlLocale = js("new Intl.Locale(tag)")
+    val weekInfo = js("(typeof intlLocale.getWeekInfo === 'function' ? intlLocale.getWeekInfo() : intlLocale.weekInfo)")
+    weekInfo?.minimalDays?.unsafeCast<Int?>() ?: 1
+} catch (e: dynamic) {
+    1
+}
+
+private fun computeWeekOfYear(dt: dynamic): Int {
+    val localeTag = dt.locale.unsafeCast<String?>() ?: "en-US"
+    val firstDayCalendar = firstWeekDayForLocale(localeTag)
+    val firstDayIso = calendarToIsoWeekday(firstDayCalendar)
+    val minimalDays = minimalDaysForLocale(localeTag)
+    val zone = dt.zoneName.unsafeCast<String>()
+    val year = dt.year.unsafeCast<Int>()
+    val firstWeekStart = computeFirstWeekStart(year, firstDayIso, minimalDays, zone)
+    val dayStart = dt.startOf("day").toMillis().unsafeCast<Double>()
+    val weekStartMs = firstWeekStart.toMillis().unsafeCast<Double>()
+    if (dayStart < weekStartMs) {
+        // Date is in the last week of the previous year.
+        val prevFirst = computeFirstWeekStart(year - 1, firstDayIso, minimalDays, zone)
+        val daysSince = ((dayStart - prevFirst.toMillis().unsafeCast<Double>()) / 86_400_000.0).toInt()
+        return (daysSince / 7) + 1
+    }
+    val daysSince = ((dayStart - weekStartMs) / 86_400_000.0).toInt()
+    return (daysSince / 7) + 1
+}
+
+private fun computeFirstWeekStart(year: Int, firstDayIso: Int, minimalDays: Int, zone: String): dynamic {
+    val y = year
+    val z = zone
+    val jan1 = DateTime.fromObject(js("({year: y, month: 1, day: 1})"), js("({zone: z})"))
+    val jan1Weekday = jan1.weekday.unsafeCast<Int>()
+    val daysBack = (jan1Weekday - firstDayIso + 7) % 7
+    val daysBackInt = daysBack
+    val weekStart = jan1.minus(js("({days: daysBackInt})"))
+    val daysInJan1Week = 7 - daysBack
+    return if (daysInJan1Week >= minimalDays) {
+        weekStart
+    } else {
+        weekStart.plus(js("({weeks: 1})"))
+    }
+}
+
+private fun computeWeekOfMonth(dt: dynamic): Int {
+    val localeTag = dt.locale.unsafeCast<String?>() ?: "en-US"
+    val firstDayCalendar = firstWeekDayForLocale(localeTag)
+    val firstDayIso = calendarToIsoWeekday(firstDayCalendar)
+    val firstOfMonth = dt.startOf("month")
+    val firstOfMonthWeekday = firstOfMonth.weekday.unsafeCast<Int>()
+    val daysBack = (firstOfMonthWeekday - firstDayIso + 7) % 7
+    val daysBackInt = daysBack
+    val firstWeekStart = firstOfMonth.minus(js("({days: daysBackInt})"))
+    val dayStart = dt.startOf("day").toMillis().unsafeCast<Double>()
+    val weekStartMs = firstWeekStart.toMillis().unsafeCast<Double>()
+    val daysSince = ((dayStart - weekStartMs) / 86_400_000.0).toInt()
+    return (daysSince / 7) + 1
 }
