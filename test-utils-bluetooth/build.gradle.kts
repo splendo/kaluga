@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "test.bluetooth"
+    supportMacOS = true
     dependencies {
         common {
             main {

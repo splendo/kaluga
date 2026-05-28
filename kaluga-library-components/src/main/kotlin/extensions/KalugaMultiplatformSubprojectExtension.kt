@@ -108,6 +108,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             }
         }
     var iosDeploymentTarget: String = "15.0"
+    var macosDeploymentTarget: String = "11.0"
 
     /**
      * When `true`, this module is also compiled for `macosX64` and `macosArm64`.
@@ -376,21 +377,29 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
             }.standardOutput.asText.map { it.trim() }
 
-            project.configure(iosTargets) {
-                val swiftSourceDir = project.file("src/iosMain/swift")
+            // Swift source-set resolution: `src/iosMain/swift` is iOS-only (current convention);
+            // `src/appleMain/swift` is shared across iOS + macOS. Modules that want their Swift
+            // wrappers to cover macOS too should put them under `appleMain/swift`.
+            val iosSwiftDir = project.file("src/iosMain/swift")
+            val appleSwiftDir = project.file("src/appleMain/swift")
+            fun swiftSourceDirFor(forIos: Boolean): File? = when {
+                forIos && iosSwiftDir.exists() && iosSwiftDir.listFiles().isNotEmpty() -> iosSwiftDir
+                appleSwiftDir.exists() && appleSwiftDir.listFiles().isNotEmpty() -> appleSwiftDir
+                else -> null
+            }
+
+            fun KotlinNativeTarget.configureSwiftAndInterop(swiftSourceDir: File?, deploymentTargetValue: String) {
                 val cinteropSwiftInteropTaskName = "cinteropSwiftInterop${name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }}"
                 logger.info("cinteropSwiftInteropTask: ${project.name}:$cinteropSwiftInteropTaskName with target: $name ($konanTarget)")
-                val buildSwiftLibTask = if (swiftSourceDir.exists() && swiftSourceDir.listFiles().isNotEmpty()) {
+                val buildSwiftLibTask = swiftSourceDir?.let { srcDir ->
                     tasks.register<BuildSwiftLibTask>("buildSwiftLib_$name") {
-                        logger.info("buildSwiftLib_$name registered for $konanTarget with deployment $iosDeploymentTarget")
-                        srcDir.set(swiftSourceDir)
+                        logger.info("buildSwiftLib_$name registered for $konanTarget with deployment $deploymentTargetValue")
+                        this.srcDir.set(srcDir)
                         libraryOutputDir.set(layout.buildDirectory.dir("swift/$name"))
                         headerOutputDir.set(layout.buildDirectory.dir("objc/$name"))
                         target.set(konanTarget)
-                        deploymentTarget.set(iosDeploymentTarget)
+                        deploymentTarget.set(deploymentTargetValue)
                     }
-                } else {
-                    null
                 }
                 compilations.getByName("main").let { main ->
                     main.cinterops.let { mainInterops ->
@@ -447,31 +456,26 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     }
                 }
                 binaries {
-                    frameworkConfig?.let { iosExport ->
-                        framework { iosExport() }
-                    }
                     getTest("DEBUG").apply {
                         freeCompilerArgs = freeCompilerArgs + listOf("-e", "com.splendo.kaluga.test.base.mainBackground")
                     }
                 }
             }
 
-            // macOS targets: no Swift interop (iOS-only for now) but they still need the
-            // module-level `appleInterop` cinterop bindings (e.g. `objectObserver.def`).
-            // Resolved here (inside afterEvaluate) because targets are registered by the
-            // `supportMacOS` setter, which fires *after* `configureMultiplatform()`.
-            project.configure(registeredMacosTargets) {
-                compilations.getByName("main").cinterops.let { mainInterops ->
-                    appleInterop.main.forEach { it.execute(mainInterops) }
-                }
-                compilations.getByName("test").cinterops.let { testInterops ->
-                    appleInterop.test.forEach { it.execute(testInterops) }
-                }
+            project.configure(iosTargets) {
+                configureSwiftAndInterop(swiftSourceDirFor(forIos = true), iosDeploymentTarget)
                 binaries {
-                    getTest("DEBUG").apply {
-                        freeCompilerArgs = freeCompilerArgs + listOf("-e", "com.splendo.kaluga.test.base.mainBackground")
+                    frameworkConfig?.let { iosExport ->
+                        framework { iosExport() }
                     }
                 }
+            }
+
+            // `registeredMacosTargets` is populated by the `supportMacOS` setter, which runs
+            // after `configureMultiplatform()` — so this list is only meaningful inside
+            // `afterEvaluate { }`. macOS only consumes Swift sources under `appleMain/swift`.
+            project.configure(registeredMacosTargets) {
+                configureSwiftAndInterop(swiftSourceDirFor(forIos = false), macosDeploymentTarget)
             }
 
             sourceSets.all {

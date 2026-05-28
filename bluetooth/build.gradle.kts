@@ -6,6 +6,7 @@ plugins {
 
 kaluga {
     moduleName = "bluetooth"
+    supportMacOS = true
     dependencies {
         android {
             main {

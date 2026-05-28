@@ -84,6 +84,8 @@ abstract class BuildSwiftLibTask @Inject constructor(private val execOps: ExecOp
             KonanTarget.IOS_ARM64 -> "arm64-apple-ios${deploymentTarget.get()}"
             KonanTarget.IOS_X64 -> "x86_64-apple-ios${deploymentTarget.get()}-simulator"
             KonanTarget.IOS_SIMULATOR_ARM64 -> "arm64-apple-ios${deploymentTarget.get()}-simulator"
+            KonanTarget.MACOS_X64 -> "x86_64-apple-macos${deploymentTarget.get()}"
+            KonanTarget.MACOS_ARM64 -> "arm64-apple-macos${deploymentTarget.get()}"
             else -> error("Unsupported target ${target.get()}")
         }
         logger.info("Building Swift library $libFile with headers $headerFile and target triple: $targetTriple and sdk: $sdk")
@@ -148,5 +150,7 @@ val KonanTarget.sdkName: String get() = when (this) {
     KonanTarget.IOS_ARM64 -> "iphoneos"
     KonanTarget.IOS_X64 -> "iphonesimulator"
     KonanTarget.IOS_SIMULATOR_ARM64 -> "iphonesimulator"
+    KonanTarget.MACOS_X64 -> "macosx"
+    KonanTarget.MACOS_ARM64 -> "macosx"
     else -> error("Unsupported target $this")
 }

@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "beacons"
+    supportMacOS = true
     dependencies {
         common {
             main {
