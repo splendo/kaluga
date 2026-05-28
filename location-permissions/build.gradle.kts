@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "permissions.location"
+    supportMacOS = true
     dependencies {
         android {
             main {

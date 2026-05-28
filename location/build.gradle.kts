@@ -5,6 +5,7 @@ plugins {
 
 kaluga {
     moduleName = "location"
+    supportMacOS = true
     dependencies {
         android {
             main {

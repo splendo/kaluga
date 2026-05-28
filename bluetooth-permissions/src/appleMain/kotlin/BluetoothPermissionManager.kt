@@ -18,7 +18,6 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions.bluetooth
 
-import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.BasePermissionManager.Settings
@@ -36,12 +35,6 @@ import platform.CoreBluetooth.CBManagerAuthorizationAllowedAlways
 import platform.CoreBluetooth.CBManagerAuthorizationDenied
 import platform.CoreBluetooth.CBManagerAuthorizationNotDetermined
 import platform.CoreBluetooth.CBManagerAuthorizationRestricted
-import platform.CoreBluetooth.CBPeripheralManager
-import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatus
-import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusAuthorized
-import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusDenied
-import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusNotDetermined
-import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusRestricted
 import platform.Foundation.NSBundle
 import platform.darwin.dispatch_queue_create
 import kotlin.time.Duration
@@ -59,13 +52,12 @@ actual class DefaultBluetoothPermissionManager(bluetoothPermission: BluetoothPer
     BasePermissionManager<BluetoothPermission>(bluetoothPermission, settings, coroutineScope) {
 
     companion object {
-        private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus {
-            val version = IOSVersion.systemVersion
-            return when {
-                version >= IOSVersion(13) -> CBManager.authorization.toAuthorizationStatus()
-                else -> CBPeripheralManager.authorizationStatus().toPeripheralAuthorizationStatus()
-            }
-        }
+        // `CBManager.authorization` is the modern API, available on iOS 13+ / macOS 10.15+.
+        // Kaluga's deployment targets are both above that, so the legacy
+        // `CBPeripheralManager.authorizationStatus()` fallback is no longer needed (and
+        // `CBPeripheralManager.authorizationStatus()` itself doesn't exist on macOS).
+        private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus =
+            CBManager.authorization.toAuthorizationStatus()
     }
 
     private class Provider : CurrentAuthorizationStatusProvider {
@@ -121,24 +113,6 @@ actual class BluetoothPermissionManagerBuilder actual constructor(private val co
 
     actual override fun create(bluetoothPermission: BluetoothPermission, settings: Settings, coroutineScope: CoroutineScope): BluetoothPermissionManager =
         DefaultBluetoothPermissionManager(bluetoothPermission, context, settings, coroutineScope)
-}
-
-private fun CBPeripheralManagerAuthorizationStatus.toPeripheralAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {
-    CBPeripheralManagerAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
-
-    CBPeripheralManagerAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
-
-    CBPeripheralManagerAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
-
-    CBPeripheralManagerAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-
-    else -> {
-        error(
-            "BluetoothPermissionManager",
-            "Unknown CBPeripheralManagerAuthorizationStatus status={$this}",
-        )
-        IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-    }
 }
 
 private fun CBManagerAuthorization.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus = when (this) {

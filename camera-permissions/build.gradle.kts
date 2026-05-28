@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "permissions.camera"
+    supportMacOS = true
     dependencies {
         common {
             main {

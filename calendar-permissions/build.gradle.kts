@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "permissions.calendar"
+    supportMacOS = true
     dependencies {
         common {
             main {

@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "permissions.notifications"
+    supportMacOS = true
     dependencies {
         common {
             main {

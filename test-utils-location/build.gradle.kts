@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "test.location"
+    supportMacOS = true
     dependencies {
         common {
             main {

@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "permissions.storage"
+    supportMacOS = true
     dependencies {
         common {
             main {

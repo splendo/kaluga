@@ -5,6 +5,7 @@ plugins {
 
 kaluga {
     moduleName = "scientific.converter"
+    supportMacOS = true
 
     supportJVM = true
     supportJS = true

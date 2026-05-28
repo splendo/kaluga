@@ -22,6 +22,7 @@ plugins {
 
 kaluga {
     moduleName = "links"
+    supportMacOS = true
     dependencies {
         common {
             main {

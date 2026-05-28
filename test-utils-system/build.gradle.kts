@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "test.system"
+    supportMacOS = true
     dependencies {
         common {
             main {

@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "service"
+    supportMacOS = true
 
     supportJVM = true
     supportJS = true

@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "datetime.timer"
+    supportMacOS = true
 
     supportJVM = true
     supportJS = true

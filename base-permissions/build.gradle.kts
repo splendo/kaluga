@@ -5,6 +5,7 @@ plugins {
 
 kaluga {
     moduleName = "permissions.base"
+    supportMacOS = true
     dependencies {
         android {
             main {

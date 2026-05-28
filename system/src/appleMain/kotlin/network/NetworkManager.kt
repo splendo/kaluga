@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.system.network
 
-import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.logging.debug
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
@@ -71,14 +70,10 @@ actual class DefaultNetworkManager internal constructor(private val appleNetwork
      * Builder for creating a [DefaultNetworkManager]
      */
     class Builder : NetworkManager.Builder {
-        override fun create(): NetworkManager {
-            val appleNetworkManager = if (IOSVersion.systemVersion >= IOSVersion(12)) {
-                NWPathNetworkManager()
-            } else {
-                SCNetworkManager()
-            }
-            return DefaultNetworkManager(appleNetworkManager)
-        }
+        // The Network framework (`nw_path_monitor`) is available on iOS 12+ / macOS 10.14+ —
+        // both well below the Kaluga deployment targets — so the SystemConfiguration fallback is
+        // no longer needed (and bypassing the IOSVersion check lets this compile for macOS).
+        override fun create(): NetworkManager = DefaultNetworkManager(NWPathNetworkManager())
     }
 
     actual override val network: Flow<NetworkConnectionType> get() = appleNetworkManager.network

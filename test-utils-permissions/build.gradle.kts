@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "test.permissions"
+    supportMacOS = true
     dependencies {
         common {
             main {
