@@ -152,7 +152,10 @@ actual class KalugaDateFormatter private constructor(
         if (dateStyle != null) opts.dateStyle = dateStyle.intlValue
         if (timeStyle != null) opts.timeStyle = timeStyle.intlValue
         val date = js("new Date(ms)")
-        return js("new Intl.DateTimeFormat(tag, opts).format(date)").unsafeCast<String>()
+        // Construct + call in two steps: Kotlin/JS mangles `new X(args).method(args)` inside a
+        // single `js(...)` into `new (X(args).method)(args)` (i.e. applies `new` to the method).
+        val formatter: dynamic = js("new Intl.DateTimeFormat(tag, opts)")
+        return formatter.format(date).unsafeCast<String>()
     }
 
     private fun formatByPattern(ms: Double, javaPattern: String): String {
@@ -179,12 +182,15 @@ private fun derivePatternFromStyle(dateStyle: DateFormatStyle?, timeStyle: DateF
     if (timeStyle != null) opts.timeStyle = timeStyle.intlValue
     val sample = js("new Date(Date.UTC(2024, 0, 8, 13, 37, 42, 750))")
     val tag = localeTag
-    val parts = js("new Intl.DateTimeFormat(tag, opts).formatToParts(sample)")
+    val styleFormatter: dynamic = js("new Intl.DateTimeFormat(tag, opts)")
+    val parts = styleFormatter.formatToParts(sample)
 
     // Probe the same sample with explicit month/weekday lengths so we can disambiguate non-digit
     // forms (e.g. French January as `janv.` vs `janvier`) — length alone is unreliable.
-    val monthShort = js("new Intl.DateTimeFormat(tag, {month: 'short', timeZone: 'UTC'}).formatToParts(sample)")
-    val weekdayShort = js("new Intl.DateTimeFormat(tag, {weekday: 'short', timeZone: 'UTC'}).formatToParts(sample)")
+    val monthShortFormatter: dynamic = js("new Intl.DateTimeFormat(tag, {month: 'short', timeZone: 'UTC'})")
+    val weekdayShortFormatter: dynamic = js("new Intl.DateTimeFormat(tag, {weekday: 'short', timeZone: 'UTC'})")
+    val monthShort = monthShortFormatter.formatToParts(sample)
+    val weekdayShort = weekdayShortFormatter.formatToParts(sample)
     val shortMonthForm = extractFirstPart(monthShort, "month")
     val shortWeekdayForm = extractFirstPart(weekdayShort, "weekday")
 
@@ -286,8 +292,9 @@ private fun translateToken(c: Char, count: Int): String = when (c) {
 
 private fun defaultEras(localeTag: String): List<String> = try {
     val tag = localeTag
-    val ad = js("new Intl.DateTimeFormat(tag, { era: 'short', year: 'numeric' }).formatToParts(new Date(0))")
-    val bc = js("new Intl.DateTimeFormat(tag, { era: 'short', year: 'numeric' }).formatToParts(new Date(-100000000000000))")
+    val eraFormatter: dynamic = js("new Intl.DateTimeFormat(tag, { era: 'short', year: 'numeric' })")
+    val ad = eraFormatter.formatToParts(js("new Date(0)"))
+    val bc = eraFormatter.formatToParts(js("new Date(-100000000000000)"))
     listOf(extractFirstPart(bc, "era") ?: "BC", extractFirstPart(ad, "era") ?: "AD")
 } catch (e: dynamic) {
     listOf("BC", "AD")
@@ -296,9 +303,10 @@ private fun defaultEras(localeTag: String): List<String> = try {
 private fun defaultMonths(localeTag: String, narrow: Boolean): List<String> {
     val tag = localeTag
     val style = if (narrow) "short" else "long"
+    val formatter: dynamic = js("new Intl.DateTimeFormat(tag, { month: style, timeZone: 'UTC' })")
     return (1..12).map { month ->
         val sample = js("new Date(Date.UTC(2024, month - 1, 15))")
-        val parts = js("new Intl.DateTimeFormat(tag, { month: style, timeZone: 'UTC' }).formatToParts(sample)")
+        val parts = formatter.formatToParts(sample)
         extractFirstPart(parts, "month") ?: month.toString()
     }
 }
@@ -306,10 +314,11 @@ private fun defaultMonths(localeTag: String, narrow: Boolean): List<String> {
 private fun defaultWeekdays(localeTag: String, narrow: Boolean): List<String> {
     val tag = localeTag
     val style = if (narrow) "short" else "long"
+    val formatter: dynamic = js("new Intl.DateTimeFormat(tag, { weekday: style, timeZone: 'UTC' })")
     // Reference week containing 2024-01-07 (Sunday) through 2024-01-13 (Saturday).
     return (0..6).map { offset ->
         val sample = js("new Date(Date.UTC(2024, 0, 7 + offset))")
-        val parts = js("new Intl.DateTimeFormat(tag, { weekday: style, timeZone: 'UTC' }).formatToParts(sample)")
+        val parts = formatter.formatToParts(sample)
         extractFirstPart(parts, "weekday") ?: offset.toString()
     }
 }
@@ -319,7 +328,8 @@ private fun defaultDayPeriod(localeTag: String, am: Boolean): String {
     val hour = if (am) 6 else 18
     val sample = js("new Date(Date.UTC(2024, 0, 15, hour, 0, 0))")
     val parts = try {
-        js("new Intl.DateTimeFormat(tag, { hour: 'numeric', hour12: true, timeZone: 'UTC' }).formatToParts(sample)")
+        val formatter: dynamic = js("new Intl.DateTimeFormat(tag, { hour: 'numeric', hour12: true, timeZone: 'UTC' })")
+        formatter.formatToParts(sample)
     } catch (e: dynamic) {
         return if (am) "AM" else "PM"
     }

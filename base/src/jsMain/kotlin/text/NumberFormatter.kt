@@ -72,6 +72,12 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             val styleCurrency = (style as NumberFormatStyle.Currency).currencyCode
             intlOpts.currency = styleCurrency ?: defaultCurrencyForLocale(locale)
         }
+        // The POSIX variant disables grouping in CLDR — `java.text.DecimalFormat` honours this for
+        // `en_US_POSIX` etc., but `Intl.NumberFormat` ignores the variant subtag and applies the
+        // parent locale's grouping. Match the JVM-observable behaviour explicitly.
+        if (locale.variantCode.equals("POSIX", ignoreCase = true)) {
+            intlOpts.useGrouping = false
+        }
     }
 
     private fun makeFormatter(): dynamic {
@@ -510,9 +516,14 @@ private data class LocaleSeparators(
 
 private fun resolveLocaleSeparators(localeTag: String): LocaleSeparators {
     val tag = localeTag
-    val probe = js("new Intl.NumberFormat(tag, {useGrouping: true, minimumFractionDigits: 1}).formatToParts(-12345.678)")
-    val percentProbe = js("new Intl.NumberFormat(tag, {style: 'percent'}).formatToParts(0.5)")
-    val zeroProbe = js("new Intl.NumberFormat(tag).formatToParts(0)")
+    // Build the Intl formatters in separate `js(...)` strings — see KalugaDateFormatter for the
+    // reason `new X(args).method(args)` can't appear in a single `js(...)` call.
+    val numericFormatter: dynamic = js("new Intl.NumberFormat(tag, {useGrouping: true, minimumFractionDigits: 1})")
+    val percentFormatter: dynamic = js("new Intl.NumberFormat(tag, {style: 'percent'})")
+    val zeroFormatter: dynamic = js("new Intl.NumberFormat(tag)")
+    val probe = numericFormatter.formatToParts(-12345.678)
+    val percentProbe = percentFormatter.formatToParts(0.5)
+    val zeroProbe = zeroFormatter.formatToParts(0)
     return LocaleSeparators(
         decimal = extractPart(probe, "decimal")?.firstOrNull() ?: '.',
         grouping = extractPart(probe, "group")?.firstOrNull() ?: ',',

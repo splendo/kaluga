@@ -33,9 +33,7 @@ import com.splendo.kaluga.scientific.unit.SquareMeter
 import com.splendo.kaluga.scientific.unit.Steradian
 import com.splendo.kaluga.scientific.unit.x
 import kotlin.test.Test
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class LuminusFluxUnitTest {
 
     @Test

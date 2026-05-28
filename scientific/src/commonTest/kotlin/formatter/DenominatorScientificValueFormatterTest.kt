@@ -33,9 +33,7 @@ import com.splendo.kaluga.scientific.unit.Millimeter
 import com.splendo.kaluga.scientific.unit.Yard
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class DenominatorScientificValueFormatterTest {
 
     @Test

@@ -32,9 +32,7 @@ import com.splendo.kaluga.scientific.unit.SquareFoot
 import com.splendo.kaluga.scientific.unit.SquareMeter
 import com.splendo.kaluga.scientific.unit.Steradian
 import kotlin.test.Test
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class LuminusIntensityUnitTest {
 
     @Test

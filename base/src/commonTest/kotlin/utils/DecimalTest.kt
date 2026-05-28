@@ -21,9 +21,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class DecimalTest {
 
     @Test

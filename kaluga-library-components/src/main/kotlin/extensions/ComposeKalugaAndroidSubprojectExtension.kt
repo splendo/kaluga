@@ -28,14 +28,13 @@ open class ComposeKalugaAndroidSubprojectExtension @Inject constructor(versionCa
 
     override fun optInAnnotations() = listOf(
         "androidx.compose.material3.ExperimentalMaterial3Api",
-        "androidx.compose.material.ExperimentalMaterialApi",
     )
 
     override fun DependencyHandlerScope.commonDependencies() {
-        add("implementation", "androidx-compose-foundation".asDependency())
-        add("implementation", "androidx-compose-ui".asDependency())
+        add("implementation", "compose-foundation".asDependency())
+        add("implementation", "compose-ui".asDependency())
         add("implementation", "androidx-compose-ui-tooling".asDependency())
-        add("implementation", "androidx-lifecycle-viewmodel-compose".asDependency())
+        add("implementation", "compose-lifecycle-viewmodel".asDependency())
         add("implementation", "androidx-activity-compose".asDependency())
     }
     override fun LibraryExtension.configure() {

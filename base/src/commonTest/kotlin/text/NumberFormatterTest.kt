@@ -19,13 +19,11 @@ package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.KalugaLocale.Companion.createLocale
 import com.splendo.kaluga.test.base.BaseTest
-import com.splendo.kaluga.test.base.IgnoreJs
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-@IgnoreJs
 class NumberFormatterTest : BaseTest() {
 
     companion object {

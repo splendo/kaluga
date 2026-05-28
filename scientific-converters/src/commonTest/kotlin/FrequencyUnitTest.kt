@@ -32,9 +32,7 @@ import com.splendo.kaluga.scientific.unit.Ohm
 import com.splendo.kaluga.scientific.unit.Second
 import com.splendo.kaluga.scientific.unit.Siemens
 import kotlin.test.Test
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class FrequencyUnitTest {
 
     @Test

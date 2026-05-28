@@ -37,9 +37,7 @@ import com.splendo.kaluga.scientific.unit.SquareMeter
 import com.splendo.kaluga.scientific.unit.Steradian
 import com.splendo.kaluga.scientific.unit.Stilb
 import kotlin.test.Test
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class LuminanceUnitTest {
 
     @Test

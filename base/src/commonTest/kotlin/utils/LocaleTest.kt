@@ -19,9 +19,7 @@ package com.splendo.kaluga.base.utils
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class LocaleTest {
 
     @Test

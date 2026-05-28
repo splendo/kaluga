@@ -50,9 +50,7 @@ import com.splendo.kaluga.scientific.unit.Volt
 import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class MagneticFluxUnitTest {
 
     @Test

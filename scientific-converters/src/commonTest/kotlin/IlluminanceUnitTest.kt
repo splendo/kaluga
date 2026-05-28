@@ -44,9 +44,7 @@ import com.splendo.kaluga.scientific.unit.Steradian
 import com.splendo.kaluga.scientific.unit.Stilb
 import com.splendo.kaluga.scientific.unit.x
 import kotlin.test.Test
-import com.splendo.kaluga.test.base.IgnoreJs
 
-@IgnoreJs
 class IlluminanceUnitTest {
 
     @Test

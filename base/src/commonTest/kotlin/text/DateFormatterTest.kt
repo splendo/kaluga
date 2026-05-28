@@ -24,7 +24,6 @@ import com.splendo.kaluga.base.utils.KalugaTimeZone
 import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.base.utils.nowUtc
 import com.splendo.kaluga.base.utils.utc
-import com.splendo.kaluga.test.base.IgnoreJs
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -32,7 +31,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.time.Duration.Companion.milliseconds
 
-@IgnoreJs
 class DateFormatterTest {
 
     companion object {
