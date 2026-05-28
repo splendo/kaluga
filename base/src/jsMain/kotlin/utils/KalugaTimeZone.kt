@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.base.utils
 
+import com.splendo.kaluga.base.externals.DateTime
+import com.splendo.kaluga.base.externals.Info
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
@@ -83,30 +85,29 @@ private fun computeOffsets(zone: String): TimeZoneOffsets {
 
 private fun isValidTimeZone(identifier: String): Boolean = try {
     Info.isValidIANAZone(identifier).unsafeCast<Boolean>() ||
-        identifier.equals("UTC", ignoreCase = true) ||
-        identifier.equals("GMT", ignoreCase = true)
-} catch (e: dynamic) {
+        fallbackTimeZones.any { identifier.equals(it, ignoreCase = true) }
+} catch (_: dynamic) {
     false
 }
 
 private fun canonicalizeTimeZone(identifier: String): String = try {
     val dt = DateTime.now().setZone(identifier)
     if (dt.isValid.unsafeCast<Boolean>()) dt.zoneName.unsafeCast<String>() else identifier
-} catch (e: dynamic) {
+} catch (_: dynamic) {
     identifier
 }
 
 private fun systemTimeZone(): String = try {
     val resolved = js("(typeof Intl !== 'undefined' && Intl.DateTimeFormat) ? Intl.DateTimeFormat().resolvedOptions().timeZone : null")
     resolved?.unsafeCast<String>() ?: "UTC"
-} catch (e: dynamic) {
+} catch (_: dynamic) {
     "UTC"
 }
 
 private fun listSupportedTimeZones(): List<String> = try {
     val arr = js("(typeof Intl !== 'undefined' && typeof Intl.supportedValuesOf === 'function') ? Intl.supportedValuesOf('timeZone') : null")
     if (arr == null) fallbackTimeZones else arr.unsafeCast<Array<String>>().toList()
-} catch (e: dynamic) {
+} catch (_: dynamic) {
     fallbackTimeZones
 }
 
@@ -121,7 +122,7 @@ private fun resolveTimeZoneName(zone: String, style: TimeZoneNameStyle, withDayl
     val formatter: dynamic = js("new Intl.DateTimeFormat(localeTag, {timeZone: zone, timeZoneName: styleString})")
     val parts = formatter.formatToParts(js("new Date(referenceMillis)"))
     extractTimeZoneNamePart(parts) ?: zone
-} catch (e: dynamic) {
+} catch (_: dynamic) {
     zone
 }
 

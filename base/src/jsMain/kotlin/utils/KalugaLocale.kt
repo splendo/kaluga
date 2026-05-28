@@ -82,13 +82,13 @@ actual data class KalugaLocale internal constructor(internal val tag: String) : 
 
 private fun parseIntlLocale(tag: String): dynamic = try {
     js("new Intl.Locale(tag)")
-} catch (e: dynamic) {
+} catch (_: dynamic) {
     js("new Intl.Locale('und')")
 }
 
 private fun canonicalizeTag(tag: String): String = try {
     js("new Intl.Locale(tag).baseName").unsafeCast<String>()
-} catch (e: dynamic) {
+} catch (_: dynamic) {
     tag
 }
 
@@ -124,7 +124,7 @@ private fun intlDisplayName(type: String, displayLocale: String, code: String, f
     val displayNames: dynamic = js("new Intl.DisplayNames([displayLocale], { type: type })")
     val resolved = displayNames.of(code)
     if (resolved == null) fallback else resolved.unsafeCast<String>()
-} catch (e: dynamic) {
+} catch (_: dynamic) {
     fallback
 }
 
@@ -143,7 +143,7 @@ private fun resolveMeasurementSystem(parsed: dynamic): UnitSystem? = try {
         "metric" -> UnitSystem.METRIC
         else -> null
     }
-} catch (e: dynamic) {
+} catch (_: dynamic) {
     null
 }
 
@@ -155,7 +155,7 @@ private fun resolveCurrentLocaleTag(): String = js(
 private fun resolveSupportedLocaleTags(): List<String> = try {
     val arr = js("(typeof Intl !== 'undefined' && typeof Intl.supportedValuesOf === 'function') ? Intl.supportedValuesOf('language') : null")
     if (arr == null) fallbackLocaleTags else arr.unsafeCast<Array<String>>().toList()
-} catch (e: dynamic) {
+} catch (_: dynamic) {
     fallbackLocaleTags
 }
 

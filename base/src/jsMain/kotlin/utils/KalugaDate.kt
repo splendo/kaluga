@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
+import com.splendo.kaluga.base.externals.DateTime
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -202,7 +203,7 @@ private fun firstWeekDayForLocale(localeTag: String): Int = try {
     val weekInfo = js("(typeof intlLocale.getWeekInfo === 'function' ? intlLocale.getWeekInfo() : intlLocale.weekInfo)")
     val firstDay = weekInfo?.firstDay?.unsafeCast<Int?>() ?: 1
     isoToCalendarWeekday(firstDay)
-} catch (e: dynamic) {
+} catch (_: dynamic) {
     1 // Sunday — matches `java.util.Calendar`'s default for unknown locales.
 }
 
@@ -211,7 +212,7 @@ private fun minimalDaysForLocale(localeTag: String): Int = try {
     val intlLocale = js("new Intl.Locale(tag)")
     val weekInfo = js("(typeof intlLocale.getWeekInfo === 'function' ? intlLocale.getWeekInfo() : intlLocale.weekInfo)")
     weekInfo?.minimalDays?.unsafeCast<Int?>() ?: 1
-} catch (e: dynamic) {
+} catch (_: dynamic) {
     1
 }
 

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.utils.DateTime
+import com.splendo.kaluga.base.externals.DateTime
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.KalugaLocale
@@ -132,7 +132,7 @@ actual class KalugaDateFormatter private constructor(
         val lp = luxonPattern
         val parsed = try {
             DateTime.fromFormat(s, lp, js("({zone: zone, locale: tag})"))
-        } catch (e: dynamic) {
+        } catch (_: dynamic) {
             return null
         }
         val isValid = parsed.isValid.unsafeCast<Boolean>()
@@ -296,7 +296,7 @@ private fun defaultEras(localeTag: String): List<String> = try {
     val ad = eraFormatter.formatToParts(js("new Date(0)"))
     val bc = eraFormatter.formatToParts(js("new Date(-100000000000000)"))
     listOf(extractFirstPart(bc, "era") ?: "BC", extractFirstPart(ad, "era") ?: "AD")
-} catch (e: dynamic) {
+} catch (_: dynamic) {
     listOf("BC", "AD")
 }
 
@@ -330,7 +330,7 @@ private fun defaultDayPeriod(localeTag: String, am: Boolean): String {
     val parts = try {
         val formatter: dynamic = js("new Intl.DateTimeFormat(tag, { hour: 'numeric', hour12: true, timeZone: 'UTC' })")
         formatter.formatToParts(sample)
-    } catch (e: dynamic) {
+    } catch (_: dynamic) {
         return if (am) "AM" else "PM"
     }
     return extractFirstPart(parts, "dayPeriod") ?: if (am) "AM" else "PM"
