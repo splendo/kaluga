@@ -11,6 +11,7 @@ kaluga {
 
     supportJVM = true
     supportJS = true
+    supportMacOS = true
 
     appleInterop {
         main {

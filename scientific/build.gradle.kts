@@ -8,6 +8,7 @@ kaluga {
 
     supportJVM = true
     supportJS = true
+    supportMacOS = true
 
     dependencies {
         common {

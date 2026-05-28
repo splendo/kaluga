@@ -44,6 +44,7 @@ import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jmailen.gradle.kotlinter.tasks.LintTask
 import java.io.BufferedWriter
 import java.io.File
@@ -65,6 +66,11 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         X64("iosX64"),
         Arm64("iosArm64"),
         SimulatorArm64("iosSimulatorArm64"),
+    }
+
+    private enum class MacOSTarget(val sourceSetName: String) {
+        X64("macosX64"),
+        Arm64("macosArm64"),
     }
 
     var supportJVM: Boolean = false
@@ -102,6 +108,44 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             }
         }
     var iosDeploymentTarget: String = "15.0"
+
+    /**
+     * When `true`, this module is also compiled for `macosX64` and `macosArm64`.
+     *
+     * iOS-only code stays in `iosMain`; code that works on every Apple target via Foundation /
+     * CoreBluetooth / CoreLocation / AVFoundation should live in `appleMain` so it is shared with
+     * the macOS targets.
+     *
+     * Targets are registered eagerly in the setter (like [supportJVM] / [supportJS]) because the
+     * consumer's `kaluga { }` block runs after `configureMultiplatform()` has already inspected
+     * the registered target list.
+     */
+    var supportMacOS: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                macosTargetsToRegister().forEach { macosTarget ->
+                    val target = when (macosTarget) {
+                        MacOSTarget.X64 -> multiplatformExtension.macosX64()
+                        MacOSTarget.Arm64 -> multiplatformExtension.macosArm64()
+                    }
+                    registeredMacosTargets += target
+                }
+            }
+        }
+
+    private val registeredMacosTargets = mutableListOf<KotlinNativeTarget>()
+
+    private fun macosTargetsToRegister(): Set<MacOSTarget> {
+        if (!Os.isFamily(Os.FAMILY_MAC)) return emptySet()
+        val ideaActive = System.getProperty("idea.active") == "true"
+        val isAppleSilicon = System.getProperty("os.arch") == "aarch64"
+        return when {
+            !ideaActive -> MacOSTarget.values().toSet()
+            isAppleSilicon -> setOf(MacOSTarget.Arm64)
+            else -> setOf(MacOSTarget.X64)
+        }
+    }
 
     private val multiplatformDependencies = objects.newInstance(MultiplatformDependencyContainer::class)
     private val appleInterop = objects.newInstance(AppleInteropContainer::class)
@@ -412,6 +456,24 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                 }
             }
 
+            // macOS targets: no Swift interop (iOS-only for now) but they still need the
+            // module-level `appleInterop` cinterop bindings (e.g. `objectObserver.def`).
+            // Resolved here (inside afterEvaluate) because targets are registered by the
+            // `supportMacOS` setter, which fires *after* `configureMultiplatform()`.
+            project.configure(registeredMacosTargets) {
+                compilations.getByName("main").cinterops.let { mainInterops ->
+                    appleInterop.main.forEach { it.execute(mainInterops) }
+                }
+                compilations.getByName("test").cinterops.let { testInterops ->
+                    appleInterop.test.forEach { it.execute(testInterops) }
+                }
+                binaries {
+                    getTest("DEBUG").apply {
+                        freeCompilerArgs = freeCompilerArgs + listOf("-e", "com.splendo.kaluga.test.base.mainBackground")
+                    }
+                }
+            }
+
             sourceSets.all {
                 languageSettings {
                     optIn("kotlinx.coroutines.DelicateCoroutinesApi")
@@ -423,7 +485,8 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
                     optIn("kotlin.ExperimentalStdlibApi")
                     optIn("kotlin.time.ExperimentalTime")
                     optIn("kotlin.ExperimentalStdlibApi")
-                    if (this@all.name.lowercase().contains("ios")) {
+                    val sourceSetName = this@all.name.lowercase()
+                    if (sourceSetName.contains("ios") || sourceSetName.contains("macos") || sourceSetName.contains("apple") || sourceSetName.contains("native")) {
                         optIn("kotlinx.cinterop.ExperimentalForeignApi")
                         optIn("kotlinx.cinterop.BetaInteropApi")
                         optIn("kotlin.experimental.ExperimentalNativeApi")
