@@ -73,13 +73,13 @@ abstract class BaseLibraryComponentsPlugin<SubExtension : BaseKalugaSubprojectEx
 
             subExtensionClass == ComposeKalugaAndroidSubprojectExtension::class -> {
                 pluginManager.addSubprojectExtensionPlugins(extensions)
-                val libraryExtension = extensions.findByType(com.android.build.gradle.LibraryExtension::class)!!
+                val libraryExtension = extensions.findByType(com.android.build.api.dsl.LibraryExtension::class)!!
                 extensions.create<ComposeKalugaAndroidSubprojectExtension>(EXTENSION_NAME, versionCatalog, libraryExtension, project.objects)
             }
 
             subExtensionClass == DatabindingKalugaAndroidSubprojectExtension::class -> {
                 pluginManager.addSubprojectExtensionPlugins(extensions)
-                val libraryExtension = extensions.findByType(com.android.build.gradle.LibraryExtension::class)!!
+                val libraryExtension = extensions.findByType(com.android.build.api.dsl.LibraryExtension::class)!!
                 extensions.create<DatabindingKalugaAndroidSubprojectExtension>(EXTENSION_NAME, versionCatalog, libraryExtension, project.objects)
             }
 

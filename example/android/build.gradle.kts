@@ -1,9 +1,8 @@
 plugins {
     id("com.android.application")
-    id(libs.plugins.kotlin.android.get().pluginId)
     id(libs.plugins.compose.get().pluginId)
     alias(libs.plugins.kotlin.serialization)
-    kotlin("kapt")
+    id("com.android.legacy-kapt")
 }
 
 group = "com.splendo.kaluga"
@@ -12,7 +11,6 @@ version = libs.versions.kaluga.get()
 android {
     namespace = "com.splendo.kaluga.example"
     compileSdk = libs.versions.androidCompileSdk.get().toInt()
-    buildToolsVersion = libs.versions.androidBuildTools.get()
     defaultConfig {
         applicationId = "com.splendo.kaluga.example"
         minSdk = libs.versions.androidMinSdk.get().toInt()
@@ -51,8 +49,8 @@ android {
             listOf(
                 "META-INF/kotlinx-coroutines-core.kotlin_module",
                 "META-INF/shared_debug.kotlin_module",
-                "META-INF/kotlinx-serialization-runtime.kotlin_module"
-            )
+                "META-INF/kotlinx-serialization-runtime.kotlin_module",
+            ),
         )
     }
 
@@ -64,12 +62,13 @@ android {
 }
 
 kotlin {
-    sourceSets.all {
-        languageSettings {
-            optIn("kotlin.ExperimentalStdlibApi")
-            optIn("androidx.compose.material3.ExperimentalMaterial3Api")
-            optIn("androidx.compose.ui.ExperimentalComposeUiApi")
-        }
+    jvmToolchain(libs.versions.java.get().toInt())
+    compilerOptions {
+        optIn.addAll(
+            "kotlin.ExperimentalStdlibApi",
+            "androidx.compose.material3.ExperimentalMaterial3Api",
+            "androidx.compose.ui.ExperimentalComposeUiApi",
+        )
     }
 }
 

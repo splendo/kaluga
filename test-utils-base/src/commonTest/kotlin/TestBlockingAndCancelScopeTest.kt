@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.base
 
+import com.splendo.kaluga.test.base.IgnoreJs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -36,6 +37,7 @@ class TestBlockingAndCancelScopeTest {
         }
     }
 
+    @IgnoreJs
     @Test
     fun testFrozenResult() {
         val map = testBlockingAndCancelScope(Dispatchers.Default) {

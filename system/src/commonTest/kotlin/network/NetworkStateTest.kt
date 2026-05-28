@@ -184,6 +184,15 @@ class NetworkStateTest : BaseNetworkStateTest<NetworkState, NetworkStateRepo>() 
             resetFlow()
         }
 
+        // After resetFlow, the new collector subscribes to NetworkStateRepo's
+        // cached state (Cellular) before the change below has a chance to
+        // propagate. Consume that replay explicitly to avoid a race where the
+        // next `test` block sometimes saw Cellular instead of Wifi.
+        test {
+            assertIs<NetworkState.Available>(it)
+            assertEquals(NetworkConnectionType.Known.Cellular, it.networkConnectionType)
+        }
+
         mainAction {
             networkManager.network.value = NetworkConnectionType.Known.Wifi()
         }

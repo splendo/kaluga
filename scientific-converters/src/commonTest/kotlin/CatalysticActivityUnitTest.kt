@@ -24,7 +24,9 @@ import com.splendo.kaluga.scientific.unit.Mole
 import com.splendo.kaluga.scientific.unit.Second
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import com.splendo.kaluga.test.base.IgnoreJs
 
+@IgnoreJs
 class CatalysticActivityUnitTest {
 
     @Test

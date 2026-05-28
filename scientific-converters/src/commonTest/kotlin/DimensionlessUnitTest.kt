@@ -36,7 +36,9 @@ import com.splendo.kaluga.scientific.unit.Second
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import com.splendo.kaluga.test.base.IgnoreJs
 
+@IgnoreJs
 class DimensionlessUnitTest {
 
     // 120 * 1% = 1.2

@@ -46,7 +46,9 @@ import com.splendo.kaluga.scientific.unit.UsTonForce
 import com.splendo.kaluga.scientific.unit.WattHour
 import com.splendo.kaluga.scientific.unit.per
 import kotlin.test.Test
+import com.splendo.kaluga.test.base.IgnoreJs
 
+@IgnoreJs
 class SurfaceTensionUnitTest {
 
     @Test

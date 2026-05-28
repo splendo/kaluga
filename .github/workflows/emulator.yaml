@@ -106,7 +106,7 @@ jobs:
 
       - name: Upload test reports on failure
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: "Android UI tests for ${{ matrix.project }}"
           path: "${{ matrix.project }}/build/reports/androidTests/connected/debug/**"
@@ -118,7 +118,7 @@ jobs:
       - name: upload video
         if: always() && inputs.video
         continue-on-error: true
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v7
         with:
           name: recording-${{ matrix.project }}-${{ matrix.api-level }}
           path: recording-${{ matrix.project }}-${{ matrix.api-level }}.mp4
