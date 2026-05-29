@@ -117,9 +117,7 @@ private fun resolveTimeZoneName(zone: String, style: TimeZoneNameStyle, withDayl
     val styleString = if (style == TimeZoneNameStyle.Short) "short" else "long"
     // Use a January date for standard time, a July date for daylight savings (matches northern-hemisphere observance).
     val referenceMillis = if (withDaylightSavings) DST_REFERENCE_MILLIS else STANDARD_REFERENCE_MILLIS
-    // Split construction and method call: Kotlin/JS's `js(...)` mangles `new X(args).method(args)`
-    // into `new (X(args).method)(args)` when both appear in the same string.
-    val formatter: dynamic = js("new Intl.DateTimeFormat(localeTag, {timeZone: zone, timeZoneName: styleString})")
+    val formatter = newDateTimeFormat(localeTag, js("({timeZone: zone, timeZoneName: styleString})"))
     val parts = formatter.formatToParts(js("new Date(referenceMillis)"))
     extractTimeZoneNamePart(parts) ?: zone
 } catch (_: dynamic) {

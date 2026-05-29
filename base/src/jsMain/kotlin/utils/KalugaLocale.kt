@@ -81,13 +81,13 @@ actual data class KalugaLocale internal constructor(internal val tag: String) : 
 }
 
 private fun parseIntlLocale(tag: String): dynamic = try {
-    js("new Intl.Locale(tag)")
+    newIntlLocale(tag)
 } catch (_: dynamic) {
-    js("new Intl.Locale('und')")
+    newIntlLocale("und")
 }
 
 private fun canonicalizeTag(tag: String): String = try {
-    js("new Intl.Locale(tag).baseName").unsafeCast<String>()
+    newIntlLocale(tag).baseName.unsafeCast<String>()
 } catch (_: dynamic) {
     tag
 }

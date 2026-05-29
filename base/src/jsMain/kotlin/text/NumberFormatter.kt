@@ -18,6 +18,7 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.KalugaLocale
+import com.splendo.kaluga.base.utils.newNumberFormat
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.log10
@@ -80,11 +81,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         }
     }
 
-    private fun makeFormatter(): dynamic {
-        val tag = localeTag
-        val opts = intlOpts
-        return js("new Intl.NumberFormat(tag, opts)")
-    }
+    private fun makeFormatter(): dynamic = newNumberFormat(localeTag, intlOpts)
 
     private fun partsFor(value: Double): dynamic = makeFormatter().formatToParts(value)
 
@@ -215,13 +212,12 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
     }
 
     private fun numericFormatterFor(minIntDigits: Int, minFrac: Int, maxFrac: Int, grouping: Boolean): (Double) -> String {
-        val tag = localeTag
         val opts = js("({})")
         opts.minimumIntegerDigits = if (minIntDigits > 0) minIntDigits else 1
         opts.minimumFractionDigits = minFrac
         opts.maximumFractionDigits = maxFrac
         opts.useGrouping = grouping
-        val formatter = js("new Intl.NumberFormat(tag, opts)")
+        val formatter = newNumberFormat(localeTag, opts)
         return { v -> formatter.format(v).unsafeCast<String>() }
     }
 
@@ -325,13 +321,12 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
     }
 
     private fun rawFormatWithDigits(value: Double, minInt: Int, minFrac: Int, maxFrac: Int, grouping: Boolean = false): String {
-        val tag = localeTag
         val opts = js("({})")
         opts.minimumIntegerDigits = if (minInt > 0) minInt else 1
         opts.minimumFractionDigits = minFrac
         opts.maximumFractionDigits = maxFrac
         opts.useGrouping = grouping
-        val formatter = js("new Intl.NumberFormat(tag, opts)")
+        val formatter = newNumberFormat(localeTag, opts)
         return formatter.format(value).unsafeCast<String>()
     }
 
@@ -522,12 +517,9 @@ private data class LocaleSeparators(
 )
 
 private fun resolveLocaleSeparators(localeTag: String): LocaleSeparators {
-    val tag = localeTag
-    // Build the Intl formatters in separate `js(...)` strings — see KalugaDateFormatter for the
-    // reason `new X(args).method(args)` can't appear in a single `js(...)` call.
-    val numericFormatter: dynamic = js("new Intl.NumberFormat(tag, {useGrouping: true, minimumFractionDigits: 1})")
-    val percentFormatter: dynamic = js("new Intl.NumberFormat(tag, {style: 'percent'})")
-    val zeroFormatter: dynamic = js("new Intl.NumberFormat(tag)")
+    val numericFormatter = newNumberFormat(localeTag, js("({useGrouping: true, minimumFractionDigits: 1})"))
+    val percentFormatter = newNumberFormat(localeTag, js("({style: 'percent'})"))
+    val zeroFormatter = newNumberFormat(localeTag, js("({})"))
     val probe = numericFormatter.formatToParts(-12345.678)
     val percentProbe = percentFormatter.formatToParts(0.5)
     val zeroProbe = zeroFormatter.formatToParts(0)
@@ -567,29 +559,11 @@ private fun extractPart(parts: dynamic, type: String): String? {
     return null
 }
 
+// `defaultCurrencyForCountry` lives in DefaultCurrencyForCountry.kt — generated from CLDR
+// supplemental/currencyData.json by `./gradlew :base:generateDefaultCurrencyMap`. JS's Intl has
+// no region → currency API (TC39 Locale Info v2's `getCurrencies()` is still Stage 1), so we
+// bake the CLDR map.
 private fun defaultCurrencyForLocale(locale: KalugaLocale): String {
     val country = locale.countryCode.ifEmpty { return "USD" }
     return defaultCurrencyForCountry[country.uppercase()] ?: "USD"
 }
-
-private val defaultCurrencyForCountry: Map<String, String> = mapOf(
-    "US" to "USD", "CA" to "CAD", "MX" to "MXN", "GB" to "GBP", "IE" to "EUR",
-    "NL" to "EUR", "BE" to "EUR", "FR" to "EUR", "DE" to "EUR", "AT" to "EUR",
-    "ES" to "EUR", "PT" to "EUR", "IT" to "EUR", "GR" to "EUR", "FI" to "EUR",
-    "LU" to "EUR", "CY" to "EUR", "MT" to "EUR", "SK" to "EUR", "SI" to "EUR",
-    "EE" to "EUR", "LV" to "EUR", "LT" to "EUR", "HR" to "EUR",
-    "CH" to "CHF", "SE" to "SEK", "NO" to "NOK", "DK" to "DKK", "IS" to "ISK",
-    "PL" to "PLN", "CZ" to "CZK", "HU" to "HUF", "RO" to "RON", "BG" to "BGN",
-    "RU" to "RUB", "UA" to "UAH", "BY" to "BYN", "TR" to "TRY",
-    "JP" to "JPY", "CN" to "CNY", "KR" to "KRW", "TW" to "TWD", "HK" to "HKD",
-    "SG" to "SGD", "MY" to "MYR", "TH" to "THB", "VN" to "VND", "PH" to "PHP",
-    "ID" to "IDR", "IN" to "INR", "PK" to "PKR", "BD" to "BDT", "LK" to "LKR",
-    "AU" to "AUD", "NZ" to "NZD",
-    "BR" to "BRL", "AR" to "ARS", "CL" to "CLP", "CO" to "COP", "PE" to "PEN",
-    "VE" to "VES", "UY" to "UYU", "PY" to "PYG", "BO" to "BOB", "EC" to "USD",
-    "ZA" to "ZAR", "NG" to "NGN", "EG" to "EGP", "MA" to "MAD", "DZ" to "DZD",
-    "TN" to "TND", "KE" to "KES", "GH" to "GHS", "ET" to "ETB", "TZ" to "TZS",
-    "AE" to "AED", "SA" to "SAR", "IL" to "ILS", "QA" to "QAR", "KW" to "KWD",
-    "OM" to "OMR", "BH" to "BHD", "JO" to "JOD", "LB" to "LBP", "IR" to "IRR",
-    "IQ" to "IQD", "SY" to "SYP", "YE" to "YER",
-)

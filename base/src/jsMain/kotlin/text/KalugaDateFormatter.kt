@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaDate
 import com.splendo.kaluga.base.utils.KalugaLocale
 import com.splendo.kaluga.base.utils.KalugaTimeZone
+import com.splendo.kaluga.base.utils.newDateTimeFormat
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -35,7 +36,7 @@ import kotlin.time.Duration.Companion.milliseconds
  */
 actual class KalugaDateFormatter private constructor(
     private var mode: FormatterMode,
-    private var _timeZone: KalugaTimeZone,
+    actual override var timeZone: KalugaTimeZone,
     private val locale: KalugaLocale,
 ) : BaseDateFormatter {
 
@@ -66,12 +67,6 @@ actual class KalugaDateFormatter private constructor(
         }
         set(value) {
             mode = FormatterMode.Pattern(value)
-        }
-
-    actual override var timeZone: KalugaTimeZone
-        get() = _timeZone
-        set(value) {
-            _timeZone = value
         }
 
     // Symbol getters/setters — back the value with Intl-derived defaults; setters store overrides.
@@ -128,7 +123,7 @@ actual class KalugaDateFormatter private constructor(
         // Use the parse-mode translation so the `z` (zone) token maps to luxon's lenient IANA-zone
         // matcher rather than `ZZZZ`, which can't read "UTC"/"PST"/etc back from formatted output.
         val luxonPattern = javaPatternToLuxon(pattern, forParsing = true)
-        val zone = _timeZone.identifier
+        val zone = timeZone.identifier
         val tag = locale.tag
         val s = string
         val lp = luxonPattern
@@ -142,31 +137,28 @@ actual class KalugaDateFormatter private constructor(
         val parsedMs = parsed.toMillis().unsafeCast<Double>().toLong()
         return DefaultKalugaDate.epoch(
             offset = parsedMs.milliseconds,
-            timeZone = _timeZone,
+            timeZone = timeZone,
             locale = locale,
         )
     }
 
     private fun formatByStyle(ms: Double, dateStyle: DateFormatStyle?, timeStyle: DateFormatStyle?): String {
         val tag = locale.tag
-        val zone = _timeZone.identifier
+        val zone = timeZone.identifier
         val opts = js("({timeZone: zone})")
         if (dateStyle != null) opts.dateStyle = dateStyle.intlValue
         if (timeStyle != null) opts.timeStyle = timeStyle.intlValue
         val date = js("new Date(ms)")
-        // Construct + call in two steps: Kotlin/JS mangles `new X(args).method(args)` inside a
-        // single `js(...)` into `new (X(args).method)(args)` (i.e. applies `new` to the method).
-        val formatter: dynamic = js("new Intl.DateTimeFormat(tag, opts)")
+        val formatter = newDateTimeFormat(tag, opts)
         return formatter.format(date).unsafeCast<String>()
     }
 
     private fun formatByPattern(ms: Double, javaPattern: String): String {
         val luxonPattern = javaPatternToLuxon(javaPattern)
-        val zone = _timeZone.identifier
+        val zone = timeZone.identifier
         val tag = locale.tag
-        val lp = luxonPattern
         val dt = DateTime.fromMillis(ms, js("({zone: zone, locale: tag})"))
-        return dt.toFormat(lp).unsafeCast<String>()
+        return dt.toFormat(luxonPattern).unsafeCast<String>()
     }
 }
 
@@ -184,13 +176,13 @@ private fun derivePatternFromStyle(dateStyle: DateFormatStyle?, timeStyle: DateF
     if (timeStyle != null) opts.timeStyle = timeStyle.intlValue
     val sample = js("new Date(Date.UTC(2024, 0, 8, 13, 37, 42, 750))")
     val tag = localeTag
-    val styleFormatter: dynamic = js("new Intl.DateTimeFormat(tag, opts)")
+    val styleFormatter = newDateTimeFormat(tag, opts)
     val parts = styleFormatter.formatToParts(sample)
 
     // Probe the same sample with explicit month/weekday lengths so we can disambiguate non-digit
     // forms (e.g. French January as `janv.` vs `janvier`) — length alone is unreliable.
-    val monthShortFormatter: dynamic = js("new Intl.DateTimeFormat(tag, {month: 'short', timeZone: 'UTC'})")
-    val weekdayShortFormatter: dynamic = js("new Intl.DateTimeFormat(tag, {weekday: 'short', timeZone: 'UTC'})")
+    val monthShortFormatter = newDateTimeFormat(tag, js("({month: 'short', timeZone: 'UTC'})"))
+    val weekdayShortFormatter = newDateTimeFormat(tag, js("({weekday: 'short', timeZone: 'UTC'})"))
     val monthShort = monthShortFormatter.formatToParts(sample)
     val weekdayShort = weekdayShortFormatter.formatToParts(sample)
     val shortMonthForm = extractFirstPart(monthShort, "month")
@@ -297,7 +289,7 @@ private fun translateToken(c: Char, count: Int, forParsing: Boolean): String = w
 
 private fun defaultEras(localeTag: String): List<String> = try {
     val tag = localeTag
-    val eraFormatter: dynamic = js("new Intl.DateTimeFormat(tag, { era: 'short', year: 'numeric' })")
+    val eraFormatter = newDateTimeFormat(tag, js("({ era: 'short', year: 'numeric' })"))
     val ad = eraFormatter.formatToParts(js("new Date(0)"))
     val bc = eraFormatter.formatToParts(js("new Date(-100000000000000)"))
     listOf(extractFirstPart(bc, "era") ?: "BC", extractFirstPart(ad, "era") ?: "AD")
@@ -308,7 +300,7 @@ private fun defaultEras(localeTag: String): List<String> = try {
 private fun defaultMonths(localeTag: String, narrow: Boolean): List<String> {
     val tag = localeTag
     val style = if (narrow) "short" else "long"
-    val formatter: dynamic = js("new Intl.DateTimeFormat(tag, { month: style, timeZone: 'UTC' })")
+    val formatter = newDateTimeFormat(tag, js("({ month: style, timeZone: 'UTC' })"))
     return (1..12).map { month ->
         val sample = js("new Date(Date.UTC(2024, month - 1, 15))")
         val parts = formatter.formatToParts(sample)
@@ -319,7 +311,7 @@ private fun defaultMonths(localeTag: String, narrow: Boolean): List<String> {
 private fun defaultWeekdays(localeTag: String, narrow: Boolean): List<String> {
     val tag = localeTag
     val style = if (narrow) "short" else "long"
-    val formatter: dynamic = js("new Intl.DateTimeFormat(tag, { weekday: style, timeZone: 'UTC' })")
+    val formatter = newDateTimeFormat(tag, js("({ weekday: style, timeZone: 'UTC' })"))
     // Reference week containing 2024-01-07 (Sunday) through 2024-01-13 (Saturday).
     return (0..6).map { offset ->
         val sample = js("new Date(Date.UTC(2024, 0, 7 + offset))")
@@ -333,7 +325,7 @@ private fun defaultDayPeriod(localeTag: String, am: Boolean): String {
     val hour = if (am) 6 else 18
     val sample = js("new Date(Date.UTC(2024, 0, 15, hour, 0, 0))")
     val parts = try {
-        val formatter: dynamic = js("new Intl.DateTimeFormat(tag, { hour: 'numeric', hour12: true, timeZone: 'UTC' })")
+        val formatter = newDateTimeFormat(tag, js("({ hour: 'numeric', hour12: true, timeZone: 'UTC' })"))
         formatter.formatToParts(sample)
     } catch (_: dynamic) {
         return if (am) "AM" else "PM"

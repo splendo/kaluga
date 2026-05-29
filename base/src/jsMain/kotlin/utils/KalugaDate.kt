@@ -198,8 +198,7 @@ private fun isoToCalendarWeekday(isoWeekday: Int): Int = (isoWeekday % 7) + 1
 private fun calendarToIsoWeekday(calendarWeekday: Int): Int = if (calendarWeekday == 1) 7 else calendarWeekday - 1
 
 private fun firstWeekDayForLocale(localeTag: String): Int = try {
-    val tag = localeTag
-    val intlLocale = js("new Intl.Locale(tag)")
+    val intlLocale = newIntlLocale(localeTag)
     val weekInfo = js("(typeof intlLocale.getWeekInfo === 'function' ? intlLocale.getWeekInfo() : intlLocale.weekInfo)")
     val firstDay = weekInfo?.firstDay?.unsafeCast<Int?>() ?: 1
     isoToCalendarWeekday(firstDay)
@@ -208,8 +207,7 @@ private fun firstWeekDayForLocale(localeTag: String): Int = try {
 }
 
 private fun minimalDaysForLocale(localeTag: String): Int = try {
-    val tag = localeTag
-    val intlLocale = js("new Intl.Locale(tag)")
+    val intlLocale = newIntlLocale(localeTag)
     val weekInfo = js("(typeof intlLocale.getWeekInfo === 'function' ? intlLocale.getWeekInfo() : intlLocale.weekInfo)")
     weekInfo?.minimalDays?.unsafeCast<Int?>() ?: 1
 } catch (_: dynamic) {
