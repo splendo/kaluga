@@ -28,9 +28,9 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityComposeOrAndroidUiBinding
 import com.splendo.kaluga.example.databinding.ViewListButtonBinding
-import com.splendo.kaluga.example.shared.viewmodel.compose.ComposeOrXMLNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.compose.ComposeOrXMLSelectionViewModel
-import com.splendo.kaluga.example.shared.viewmodel.compose.UIType
+import com.splendo.kaluga.example.mobileshared.viewmodel.compose.ComposeOrXMLNavigationAction
+import com.splendo.kaluga.example.mobileshared.viewmodel.compose.ComposeOrXMLSelectionViewModel
+import com.splendo.kaluga.example.mobileshared.viewmodel.compose.UIType
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 

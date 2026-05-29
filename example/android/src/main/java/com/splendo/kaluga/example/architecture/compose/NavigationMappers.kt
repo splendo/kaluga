@@ -23,10 +23,10 @@ import com.splendo.kaluga.architecture.compose.navigation.back
 import com.splendo.kaluga.architecture.compose.navigation.bottomSheetContent
 import com.splendo.kaluga.architecture.compose.navigation.bottomSheetSheetContent
 import com.splendo.kaluga.architecture.compose.navigation.next
-import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetNavigation
-import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageNavigation
+import com.splendo.kaluga.example.mobileshared.viewmodel.architecture.ArchitectureDetailsNavigationAction
+import com.splendo.kaluga.example.mobileshared.viewmodel.architecture.ArchitectureNavigationAction
+import com.splendo.kaluga.example.mobileshared.viewmodel.architecture.BottomSheetNavigation
+import com.splendo.kaluga.example.mobileshared.viewmodel.architecture.BottomSheetSubPageNavigation
 
 /** Maps a navigation action to a route string. */
 internal fun architectureNavigationRouteMapper(action: ArchitectureNavigationAction<*>): BottomSheetRoute {

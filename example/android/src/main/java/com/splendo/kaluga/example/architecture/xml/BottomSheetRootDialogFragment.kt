@@ -33,9 +33,9 @@ import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelBottomSheetDialo
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.FragmentBottomSheetBinding
 import com.splendo.kaluga.example.databinding.FragmentBottomSheetRootBinding
-import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetNavigation
-import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageNavigation
-import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetViewModel
+import com.splendo.kaluga.example.mobileshared.viewmodel.architecture.BottomSheetNavigation
+import com.splendo.kaluga.example.mobileshared.viewmodel.architecture.BottomSheetSubPageNavigation
+import com.splendo.kaluga.example.mobileshared.viewmodel.architecture.BottomSheetViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 

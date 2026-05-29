@@ -25,9 +25,9 @@ import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.parseTypeOfOrNull
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityArchitectureDetailsBinding
-import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
+import com.splendo.kaluga.example.mobileshared.viewmodel.architecture.ArchitectureDetailsNavigationAction
+import com.splendo.kaluga.example.mobileshared.viewmodel.architecture.ArchitectureDetailsViewModel
+import com.splendo.kaluga.example.mobileshared.viewmodel.architecture.InputDetails
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 

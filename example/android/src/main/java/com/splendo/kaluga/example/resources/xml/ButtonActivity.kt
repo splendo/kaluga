@@ -20,7 +20,7 @@ package com.splendo.kaluga.example.resources.xml
 import android.os.Bundle
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityButtonBinding
-import com.splendo.kaluga.example.shared.viewmodel.resources.ButtonViewModel
+import com.splendo.kaluga.example.mobileshared.viewmodel.resources.ButtonViewModel
 import com.splendo.kaluga.example.view.ButtonAdapter
 import com.splendo.kaluga.example.view.VerticalSpaceItemDecoration
 import com.splendo.kaluga.resources.dpToPixel

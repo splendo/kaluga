@@ -24,53 +24,25 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
-import com.splendo.kaluga.example.shared.viewmodel.alert.AlertViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetNavigation
-import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageNavigation
-import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
-import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.client.BluetoothDeviceListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.client.BluetoothDeviceViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.client.DeviceDetails
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.server.BluetoothServerViewModel
-import com.splendo.kaluga.example.shared.viewmodel.compose.ComposeOrXMLNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.compose.ComposeOrXMLSelectionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.datetime.TimerViewModel
-import com.splendo.kaluga.example.shared.viewmodel.datetimepicker.DateTimePickerViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
-import com.splendo.kaluga.example.shared.viewmodel.hud.HudViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.InfoNavigation
 import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
 import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
-import com.splendo.kaluga.example.shared.viewmodel.media.MediaListNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.media.MediaListViewModel
-import com.splendo.kaluga.example.shared.viewmodel.media.MediaNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.media.MediaSoundViewModel
-import com.splendo.kaluga.example.shared.viewmodel.media.MediaViewModel
-import com.splendo.kaluga.example.shared.viewmodel.permissions.NotificationPermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
-import com.splendo.kaluga.example.shared.viewmodel.resources.ButtonViewModel
-import com.splendo.kaluga.example.shared.viewmodel.resources.ColorViewModel
-import com.splendo.kaluga.example.shared.viewmodel.resources.ImagesViewModel
-import com.splendo.kaluga.example.shared.viewmodel.resources.LabelViewModel
-import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificConverterNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificConverterViewModel
 import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificNavigationAction
@@ -80,16 +52,12 @@ import com.splendo.kaluga.example.shared.viewmodel.scientific.ScientificViewMode
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewModel
-import com.splendo.kaluga.hud.HUD
 import com.splendo.kaluga.links.DefaultLinksManager
 import com.splendo.kaluga.location.DefaultLocationManager
 import com.splendo.kaluga.location.GoogleLocationProvider
 import com.splendo.kaluga.location.LocationStateRepoBuilder
-import com.splendo.kaluga.media.DefaultMediaManager
-import com.splendo.kaluga.media.MediaSurfaceProvider
 import com.splendo.kaluga.permissions.base.Permission
 import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.review.ReviewManager
 import com.splendo.kaluga.scientific.PhysicalQuantity
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
@@ -115,10 +83,6 @@ internal val androidModule = module {
         )
     }
 
-    viewModel { (navigator: Navigator<ComposeOrXMLNavigationAction>) ->
-        ComposeOrXMLSelectionViewModel(navigator)
-    }
-
     viewModel { (navigator: Navigator<PermissionsListNavigationAction>) ->
         PermissionsListViewModel(navigator)
     }
@@ -127,41 +91,8 @@ internal val androidModule = module {
 
     viewModel { (permission: LocationPermission) -> LocationViewModel(permission) }
 
-    viewModel { NotificationPermissionViewModel() }
-
-    viewModel { (navigator: Navigator<ArchitectureNavigationAction<*>>) ->
-        ArchitectureViewModel(navigator)
-    }
-
-    viewModel { (initialDetail: InputDetails, navigator: Navigator<ArchitectureDetailsNavigationAction<*>>) ->
-        ArchitectureDetailsViewModel(
-            initialDetail,
-            navigator,
-        )
-    }
-
-    viewModel { (navigator: Navigator<BottomSheetNavigation>) ->
-        BottomSheetViewModel(navigator)
-    }
-
-    viewModel { (navigator: Navigator<BottomSheetSubPageNavigation>) ->
-        BottomSheetSubPageViewModel(navigator)
-    }
-
-    viewModel {
-        AlertViewModel(AlertPresenter.Builder())
-    }
-
     viewModel {
         TimerViewModel(AlertPresenter.Builder())
-    }
-
-    viewModel {
-        DateTimePickerViewModel(DateTimePickerPresenter.Builder())
-    }
-
-    viewModel {
-        HudViewModel(HUD.Builder())
     }
 
     viewModel { (navigator: Navigator<BrowserNavigationActions<*>>) ->
@@ -170,18 +101,6 @@ internal val androidModule = module {
             AlertPresenter.Builder(),
             navigator,
         )
-    }
-
-    viewModel { (mediaSurfaceProvider: MediaSurfaceProvider, navigator: Navigator<MediaNavigationAction>) ->
-        MediaViewModel(mediaSurfaceProvider, DefaultMediaManager.Builder(), AlertPresenter.Builder(), navigator)
-    }
-
-    viewModel { (navigator: Navigator<MediaListNavigationAction>) ->
-        MediaListViewModel(navigator)
-    }
-
-    viewModel {
-        MediaSoundViewModel()
     }
 
     viewModel { (navigator: Navigator<SystemNavigationActions>) ->
@@ -207,30 +126,6 @@ internal val androidModule = module {
 
     viewModel { (identifier: Identifier, navigator: Navigator<BluetoothDeviceViewModel.CloseNavigationAction>) ->
         BluetoothDeviceViewModel(identifier, navigator)
-    }
-
-    viewModel {
-        BeaconsListViewModel()
-    }
-
-    viewModel { (navigator: Navigator<ResourcesListNavigationAction>) ->
-        ResourcesListViewModel(navigator)
-    }
-
-    viewModel {
-        ColorViewModel(AlertPresenter.Builder())
-    }
-
-    viewModel {
-        ImagesViewModel()
-    }
-
-    viewModel {
-        LabelViewModel(StyledStringBuilder.Provider())
-    }
-
-    viewModel {
-        ButtonViewModel(StyledStringBuilder.Provider(), AlertPresenter.Builder())
     }
 
     viewModel { (navigator: Navigator<ScientificNavigationAction<*>>) ->

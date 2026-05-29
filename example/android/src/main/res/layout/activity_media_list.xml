@@ -19,7 +19,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.splendo.kaluga.example.shared.viewmodel.media.MediaListViewModel" />
+            type="com.splendo.kaluga.example.mobileshared.viewmodel.media.MediaListViewModel" />
     </data>
     <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"

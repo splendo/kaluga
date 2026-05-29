@@ -26,7 +26,7 @@ import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityResourcesImagesBinding
 import com.splendo.kaluga.example.databinding.ViewResourceListImageBinding
 import com.splendo.kaluga.example.databinding.ViewResourceListTintedImageBinding
-import com.splendo.kaluga.example.shared.viewmodel.resources.ImagesViewModel
+import com.splendo.kaluga.example.mobileshared.viewmodel.resources.ImagesViewModel
 import com.splendo.kaluga.resources.KalugaImage
 import com.splendo.kaluga.resources.TintedImage
 import org.koin.androidx.viewmodel.ext.android.viewModel

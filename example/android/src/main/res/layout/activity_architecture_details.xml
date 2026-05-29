@@ -4,7 +4,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel" />
+            type="com.splendo.kaluga.example.mobileshared.viewmodel.architecture.ArchitectureDetailsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

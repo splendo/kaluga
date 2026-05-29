@@ -25,8 +25,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.example.databinding.FragmentBottomSheetSubPageBinding
-import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageNavigation
-import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageViewModel
+import com.splendo.kaluga.example.mobileshared.viewmodel.architecture.BottomSheetSubPageNavigation
+import com.splendo.kaluga.example.mobileshared.viewmodel.architecture.BottomSheetSubPageViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 

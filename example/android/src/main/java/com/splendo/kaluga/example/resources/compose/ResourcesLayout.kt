@@ -45,8 +45,8 @@ import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
-import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesListViewModel
+import com.splendo.kaluga.example.mobileshared.viewmodel.resources.ResourcesListNavigationAction
+import com.splendo.kaluga.example.mobileshared.viewmodel.resources.ResourcesListViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 

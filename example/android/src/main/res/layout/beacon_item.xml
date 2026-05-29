@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListBeaconViewModel" />
+            type="com.splendo.kaluga.example.mobileshared.viewmodel.beacons.BeaconsListBeaconViewModel" />
 
         <import type="android.view.View"/>
         <import type="com.splendo.kaluga.architecture.observable.ObservableKt" />

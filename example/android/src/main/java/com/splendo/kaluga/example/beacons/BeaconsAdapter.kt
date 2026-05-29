@@ -23,7 +23,7 @@ import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.example.databinding.BeaconItemBinding
-import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListBeaconViewModel
+import com.splendo.kaluga.example.mobileshared.viewmodel.beacons.BeaconsListBeaconViewModel
 
 object BeaconsBinding {
     @BindingAdapter("beacons")

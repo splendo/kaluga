@@ -78,6 +78,7 @@ dependencies {
     implementation("com.splendo.kaluga:resources-compose:${project.rootProject.version}")
     implementation("com.splendo.kaluga:resources-databinding:${project.rootProject.version}")
     implementation(project(":shared"))
+    implementation(project(":mobileshared"))
 
     implementation(libs.compose.ui)
     implementation(libs.androidx.compose.ui.tooling)

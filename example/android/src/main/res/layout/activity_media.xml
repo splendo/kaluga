@@ -20,7 +20,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.splendo.kaluga.example.shared.viewmodel.media.MediaViewModel" />
+            type="com.splendo.kaluga.example.mobileshared.viewmodel.media.MediaViewModel" />
 
         <import type="android.view.View" />
     </data>

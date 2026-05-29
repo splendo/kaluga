@@ -27,6 +27,7 @@ dependencyResolutionManagement {
 rootProject.name = "Kaluga Example"
 include(":android")
 include(":shared")
+include(":mobileshared")
 
 if (embedding.embeddingMode is EmbeddingMode.Composite) {
     includeBuild("../")

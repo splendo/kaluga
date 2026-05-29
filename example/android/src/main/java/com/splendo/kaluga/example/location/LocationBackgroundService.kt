@@ -33,7 +33,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
-import com.splendo.kaluga.example.shared.viewmodel.permissions.NotificationPermissionViewModel
+import com.splendo.kaluga.example.mobileshared.viewmodel.permissions.NotificationPermissionViewModel
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNot

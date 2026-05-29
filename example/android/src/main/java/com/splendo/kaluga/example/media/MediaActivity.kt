@@ -29,8 +29,8 @@ import com.splendo.kaluga.architecture.observable.observeOnLifecycle
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.ActivityMediaBinding
-import com.splendo.kaluga.example.shared.viewmodel.media.MediaNavigationAction
-import com.splendo.kaluga.example.shared.viewmodel.media.MediaViewModel
+import com.splendo.kaluga.example.mobileshared.viewmodel.media.MediaNavigationAction
+import com.splendo.kaluga.example.mobileshared.viewmodel.media.MediaViewModel
 import com.splendo.kaluga.media.ActivityMediaSurfaceProvider
 import com.splendo.kaluga.media.MediaSource
 import org.koin.androidx.viewmodel.ext.android.viewModel
