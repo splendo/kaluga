@@ -1,6 +1,7 @@
 plugins {
     id("com.splendo.kaluga.plugin")
     alias(libs.plugins.kotlin.serialization)
+    id(libs.plugins.compose.get().pluginId)
 }
 
 val modules = listOf(
@@ -49,6 +50,13 @@ kaluga {
                     api("com.splendo.kaluga:$module:${project.rootProject.version}")
                 }
                 api(libs.koin.core)
+                api(libs.compose.foundation)
+                api(libs.compose.material3)
+                api(libs.compose.ui)
+                api(libs.compose.navigation)
+                api(libs.compose.lifecycle.viewmodel)
+                api(libs.koin.compose)
+                api(libs.koin.compose.viewmodel)
             }
         }
     }

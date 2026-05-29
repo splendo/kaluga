@@ -18,61 +18,61 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.example
 
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
-import com.splendo.kaluga.architecture.navigation.ActivityNavigator
-import com.splendo.kaluga.architecture.navigation.NavigationSpec
-import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
-import com.splendo.kaluga.example.featurelist.FeaturesListFragment
-import com.splendo.kaluga.example.info.InfoFragment
-import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
-import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.material3.MaterialTheme
+import com.splendo.kaluga.example.alerts.AlertsActivity
+import com.splendo.kaluga.example.architecture.ArchitectureActivity
+import com.splendo.kaluga.example.beacons.BeaconsActivity
+import com.splendo.kaluga.example.bluetooth.BluetoothActivity
+import com.splendo.kaluga.example.datetime.TimerActivity
+import com.splendo.kaluga.example.datetimepicker.DateTimePickerActivity
+import com.splendo.kaluga.example.keyboard.KeyboardActivity
+import com.splendo.kaluga.example.link.LinksActivity
+import com.splendo.kaluga.example.loading.LoadingActivity
+import com.splendo.kaluga.example.location.LocationActivity
+import com.splendo.kaluga.example.media.MediaListActivity
+import com.splendo.kaluga.example.permissions.PermissionsListActivity
+import com.splendo.kaluga.example.resources.ResourcesActivity
+import com.splendo.kaluga.example.scientific.ScientificActivity
+import com.splendo.kaluga.example.shared.ui.AppRootScreen
+import com.splendo.kaluga.example.shared.ui.Feature
+import com.splendo.kaluga.example.system.SystemActivity
 
-class ExampleActivity : KalugaViewModelActivity<ExampleViewModel>(R.layout.activity_example) {
-
-    override val viewModel: ExampleViewModel by viewModel {
-        parametersOf(
-            ActivityNavigator<ExampleTabNavigation> { action ->
-                when (action) {
-                    ExampleTabNavigation.FeatureList -> NavigationSpec.Fragment(
-                        R.id.example_fragment,
-                        createFragment = { FeaturesListFragment() },
-                    )
-                    ExampleTabNavigation.Info -> NavigationSpec.Fragment(
-                        R.id.example_fragment,
-                        createFragment = { InfoFragment() },
-                    )
-                }
-            },
-        )
-    }
+class ExampleActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val tabs: TabLayout = findViewById(R.id.tabs)
-
-        viewModel.tabs.observeInitialized { exampleTabs ->
-            tabs.removeAllTabs()
-            exampleTabs.forEach { tab ->
-                tabs.addTab(tabs.newTab().setText(tab.title).setTag(tab))
+        setContent {
+            MaterialTheme {
+                AppRootScreen(
+                    features = Feature.entries,
+                    onFeatureSelected = ::launchFeature,
+                )
             }
         }
+    }
 
-        tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-                val exampleTab = tab?.tag as? ExampleViewModel.Tab ?: return
-                viewModel.tab.post(exampleTab)
-            }
-
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                val exampleTab = tab?.tag as? ExampleViewModel.Tab ?: return
-                viewModel.tab.post(exampleTab)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) { }
-        })
+    private fun launchFeature(feature: Feature) {
+        val cls = when (feature) {
+            Feature.Alerts -> AlertsActivity::class.java
+            Feature.Architecture -> ArchitectureActivity::class.java
+            Feature.Beacons -> BeaconsActivity::class.java
+            Feature.Bluetooth -> BluetoothActivity::class.java
+            Feature.DateTime -> TimerActivity::class.java
+            Feature.DateTimePicker -> DateTimePickerActivity::class.java
+            Feature.Keyboard -> KeyboardActivity::class.java
+            Feature.Links -> LinksActivity::class.java
+            Feature.LoadingIndicator -> LoadingActivity::class.java
+            Feature.Location -> LocationActivity::class.java
+            Feature.Media -> MediaListActivity::class.java
+            Feature.Permissions -> PermissionsListActivity::class.java
+            Feature.Resources -> ResourcesActivity::class.java
+            Feature.Scientific -> ScientificActivity::class.java
+            Feature.System -> SystemActivity::class.java
+        }
+        startActivity(Intent(this, cls))
     }
 }

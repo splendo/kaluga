@@ -560,12 +560,17 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             logger.info("Run on apple silicon: $it")
         }
 
-        return when {
+        val all = when {
             !ideaActive -> IOSTarget.values().toSet()
             isRealIOSDevice -> setOf(IOSTarget.Arm64)
             isAppleSilicon -> setOf(IOSTarget.SimulatorArm64)
             else -> setOf(IOSTarget.X64)
         }
+        // Compose Multiplatform libraries only publish for `iosArm64` and `iosSimulatorArm64`;
+        // modules that need CMP in commonMain opt out of `iosX64` with `kaluga.omitIosX64=true`
+        // in their `gradle.properties` so the property is honoured during eager target registration.
+        val omitX64 = findProperty("kaluga.omitIosX64")?.toString().equals("true", ignoreCase = true)
+        return if (omitX64) all - IOSTarget.X64 else all
     }
 
     override fun Project.beforeEvaluated() {
