@@ -161,8 +161,7 @@ actual class DefaultKalugaDate internal constructor(private var dt: dynamic) : K
 
     actual override fun hashCode(): Int = dt.toMillis().unsafeCast<Double>().hashCode()
 
-    actual override fun compareTo(other: KalugaDate): Int =
-        durationSinceEpoch.compareTo(other.durationSinceEpoch)
+    actual override fun compareTo(other: KalugaDate): Int = durationSinceEpoch.compareTo(other.durationSinceEpoch)
 
     private fun setOrShift(field: String, plural: String, value: Int, current: Int, min: Int, max: Int) {
         if (value in min..max) {

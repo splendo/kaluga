@@ -34,11 +34,8 @@ import kotlin.time.Duration.Companion.milliseconds
  * Java-style pattern tokens (`yyyy`, `MM`, `dd`, `HH`, `'literal'`, `Z`, …) are translated to
  * luxon's tokens so consumers can keep using the same patterns they use on Android/JVM.
  */
-actual class KalugaDateFormatter private constructor(
-    private var mode: FormatterMode,
-    actual override var timeZone: KalugaTimeZone,
-    private val locale: KalugaLocale,
-) : BaseDateFormatter {
+actual class KalugaDateFormatter private constructor(private var mode: FormatterMode, actual override var timeZone: KalugaTimeZone, private val locale: KalugaLocale) :
+    BaseDateFormatter {
 
     internal sealed class FormatterMode {
         data class Style(val dateStyle: DateFormatStyle?, val timeStyle: DateFormatStyle?) : FormatterMode()
@@ -197,25 +194,37 @@ private fun derivePatternFromStyle(dateStyle: DateFormatStyle?, timeStyle: DateF
         sb.append(
             when (type) {
                 "year" -> if (value.length == 2) "yy" else "yyyy"
+
                 "month" -> when {
                     value.all { it.isDigit() } && value.length == 1 -> "M"
                     value.all { it.isDigit() } -> "MM"
                     shortMonthForm != null && value == shortMonthForm -> "MMM"
                     else -> "MMMM"
                 }
+
                 "day" -> if (value.length == 1) "d" else "dd"
+
                 "hour" -> if (value.length == 1) "H" else "HH"
+
                 "minute" -> if (value.length == 1) "m" else "mm"
+
                 "second" -> if (value.length == 1) "s" else "ss"
+
                 "dayPeriod" -> "a"
+
                 "weekday" -> when {
                     shortWeekdayForm != null && value == shortWeekdayForm -> "EEE"
                     else -> "EEEE"
                 }
+
                 "era" -> "G"
+
                 "timeZoneName" -> "z"
+
                 "fractionalSecond" -> "SSS"
+
                 "literal" -> if (value.isEmpty()) "" else "'${value.replace("'", "''")}'"
+
                 else -> ""
             },
         )
@@ -264,26 +273,44 @@ private val javaTokenChars = setOf('y', 'Y', 'M', 'd', 'H', 'h', 'k', 'K', 'm', 
 
 private fun translateToken(c: Char, count: Int, forParsing: Boolean): String = when (c) {
     'y', 'Y' -> "y".repeat(count.coerceAtMost(4).coerceAtLeast(1))
+
     'M' -> "M".repeat(count.coerceAtMost(4).coerceAtLeast(1))
+
     'd' -> "d".repeat(count.coerceAtMost(2).coerceAtLeast(1))
+
     'H' -> "H".repeat(count.coerceAtMost(2).coerceAtLeast(1))
+
     'h' -> "h".repeat(count.coerceAtMost(2).coerceAtLeast(1))
+
     'k' -> "H".repeat(count.coerceAtMost(2).coerceAtLeast(1))
+
     'K' -> "h".repeat(count.coerceAtMost(2).coerceAtLeast(1))
+
     'm' -> "m".repeat(count.coerceAtMost(2).coerceAtLeast(1))
+
     's' -> "s".repeat(count.coerceAtMost(2).coerceAtLeast(1))
+
     'S' -> "S".repeat(count.coerceAtMost(3).coerceAtLeast(1))
+
     'a' -> "a"
+
     'Z' -> "ZZZ"
+
     // Java `z` formats as a zone abbreviation ("UTC"/"PST"). Luxon's `ZZZZ` produces that on format
     // but rejects those tokens on parse; luxon's `z` (IANA) accepts both IANA names and common
     // abbreviations, so we switch tokens depending on direction.
     'z' -> if (forParsing) "z" else "ZZZZ"
+
     'X' -> "ZZ"
+
     'G' -> "G"
+
     'E' -> if (count >= 4) "EEEE" else "EEE"
+
     'D' -> "o"
+
     'w', 'W' -> "WW"
+
     else -> c.toString().repeat(count)
 }
 

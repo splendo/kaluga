@@ -137,7 +137,9 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
             val cmp = bigIntCompareTo(twoRemainder, divisor)
             val roundUp = when (rounding) {
                 RoundDown -> false
+
                 RoundUp -> true
+
                 RoundHalfEven -> when {
                     cmp > 0 -> true
                     cmp < 0 -> false
@@ -175,7 +177,9 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
             val cmp = bigIntCompareTo(twoRemainder, divisor)
             val roundUp = when (rounding) {
                 RoundDown -> false
+
                 RoundUp -> true
+
                 RoundHalfEven -> when {
                     cmp > 0 -> true
                     cmp < 0 -> false

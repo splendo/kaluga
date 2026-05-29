@@ -452,6 +452,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
                 opts.useGrouping = false
                 opts.roundingMode = intlRoundingMode(style.roundingMode)
             }
+
             is NumberFormatStyle.Decimal -> {
                 opts.style = "decimal"
                 opts.minimumIntegerDigits = clampMinIntegerDigits(style.minIntegerDigits.toInt())
@@ -460,6 +461,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
                 opts.useGrouping = true
                 opts.roundingMode = intlRoundingMode(style.roundingMode)
             }
+
             is NumberFormatStyle.Percentage -> {
                 opts.style = "percent"
                 opts.minimumIntegerDigits = clampMinIntegerDigits(style.minIntegerDigits.toInt())
@@ -468,6 +470,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
                 opts.useGrouping = true
                 opts.roundingMode = intlRoundingMode(style.roundingMode)
             }
+
             is NumberFormatStyle.Permillage -> {
                 opts.style = "decimal"
                 opts.minimumIntegerDigits = clampMinIntegerDigits(style.minIntegerDigits.toInt())
@@ -476,11 +479,13 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
                 opts.useGrouping = true
                 opts.roundingMode = intlRoundingMode(style.roundingMode)
             }
+
             is NumberFormatStyle.Scientific -> {
                 opts.style = "decimal"
                 opts.useGrouping = false
                 opts.roundingMode = intlRoundingMode(style.roundingMode)
             }
+
             is NumberFormatStyle.Currency -> {
                 opts.style = "currency"
                 opts.minimumIntegerDigits = clampMinIntegerDigits(style.minIntegerDigits.toInt())
@@ -493,6 +498,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
                 opts.currencyDisplay = "symbol"
                 opts.roundingMode = intlRoundingMode(style.roundingMode)
             }
+
             is NumberFormatStyle.Pattern -> {
                 opts.style = "decimal"
                 opts.useGrouping = false
@@ -508,13 +514,7 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
  * guarantees the grouping separator part is present even for styles (Integer, Scientific) where
  * the active formatter has grouping disabled.
  */
-private data class LocaleSeparators(
-    val decimal: Char,
-    val grouping: Char,
-    val minusSign: Char,
-    val zero: Char,
-    val percentSign: Char,
-)
+private data class LocaleSeparators(val decimal: Char, val grouping: Char, val minusSign: Char, val zero: Char, val percentSign: Char)
 
 private fun resolveLocaleSeparators(localeTag: String): LocaleSeparators {
     val numericFormatter = newNumberFormat(localeTag, js("({useGrouping: true, minimumFractionDigits: 1})"))

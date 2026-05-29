@@ -41,15 +41,13 @@ actual data class KalugaLocale internal constructor(internal val tag: String) : 
     actual override val unitSystem: UnitSystem
         get() = resolveMeasurementSystem(parsed) ?: UnitSystem.withCountryCode(countryCode.upperCased(this))
 
-    actual override fun name(forLocale: KalugaLocale): String =
-        intlDisplayName("language", forLocale.tag, tag, fallback = tag)
+    actual override fun name(forLocale: KalugaLocale): String = intlDisplayName("language", forLocale.tag, tag, fallback = tag)
     actual override fun countryName(forLocale: KalugaLocale): String =
         if (countryCode.isEmpty()) "" else intlDisplayName("region", forLocale.tag, countryCode, fallback = countryCode)
     actual override fun languageName(forLocale: KalugaLocale): String =
         if (languageCode.isEmpty()) "" else intlDisplayName("language", forLocale.tag, languageCode, fallback = languageCode)
     actual override fun variantName(forLocale: KalugaLocale): String = variantCode
-    actual override fun scriptName(forLocale: KalugaLocale): String =
-        if (scriptCode.isEmpty()) "" else intlDisplayName("script", forLocale.tag, scriptCode, fallback = scriptCode)
+    actual override fun scriptName(forLocale: KalugaLocale): String = if (scriptCode.isEmpty()) "" else intlDisplayName("script", forLocale.tag, scriptCode, fallback = scriptCode)
 
     actual override val quotationStart: String = "\""
     actual override val quotationEnd: String = "\""
