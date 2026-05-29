@@ -35,6 +35,7 @@ private external fun jsBigInt(value: Int): dynamic
 private val BI_ZERO: dynamic = jsBigInt(0)
 private val BI_ONE: dynamic = jsBigInt(1)
 private val BI_TWO: dynamic = jsBigInt(2)
+private val BI_FIVE: dynamic = jsBigInt(5)
 private val BI_TEN: dynamic = jsBigInt(10)
 
 private fun bigIntLessThan(a: dynamic, b: dynamic): Boolean = (a < b).unsafeCast<Boolean>()
@@ -57,6 +58,19 @@ private fun pow10(n: Int): dynamic {
     val s = "1" + "0".repeat(n)
     val result = jsBigInt(s)
     if (n <= 128) powerCache[n] = result
+    return result
+}
+
+private fun bigIntPow(base: dynamic, n: Int): dynamic {
+    if (n <= 0) return BI_ONE
+    var result: dynamic = BI_ONE
+    var b: dynamic = base
+    var e = n
+    while (e > 0) {
+        if (e and 1 == 1) result = result * b
+        e = e shr 1
+        if (e > 0) b = b * b
+    }
     return result
 }
 
@@ -193,6 +207,12 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
         val s2 = bigIntCompareTo(other.significand, BI_ZERO)
         if (s1 != s2) return s1.compareTo(s2)
         if (s1 == 0) return 0
+        // Each non-zero value satisfies 10^(M-1) <= |v| < 10^M where M = digits - scale.
+        // Different M ⇒ strict inequality without aligning scales — guards against
+        // pathological cases like comparing 1e-1_000_000 against 1.
+        val ma = digitsOf(significand) - scale
+        val mb = digitsOf(other.significand) - other.scale
+        if (ma != mb) return if (s1 > 0) ma.compareTo(mb) else mb.compareTo(ma)
         val maxScale = max(scale, other.scale)
         val a = if (scale < maxScale) significand * pow10(maxScale - scale) else significand
         val b = if (other.scale < maxScale) other.significand * pow10(maxScale - other.scale) else other.significand
@@ -210,27 +230,34 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
         if (isZero) return BigDecimal(BI_ZERO, 0)
         var sig: dynamic = significand
         var s = scale
-        while (s > 0 && bigIntEquals(sig % BI_TEN, BI_ZERO)) {
-            sig /= BI_TEN
+        while (bigIntEquals(sig % BI_TEN, BI_ZERO)) {
+            sig = sig / BI_TEN
             s -= 1
         }
         return BigDecimal(sig, s)
     }
 
     override fun toString(): String {
-        if (isZero) {
-            return if (scale > 0) "0." + "0".repeat(scale) else "0"
-        }
-        val neg = isNegative
-        val absStr = bigIntToString(if (neg) (-significand).unsafeCast<dynamic>() else significand)
-        val sign = if (neg) "-" else ""
-        if (scale <= 0) {
-            return sign + absStr + "0".repeat(-scale)
-        }
-        return if (absStr.length > scale) {
-            sign + absStr.substring(0, absStr.length - scale) + "." + absStr.substring(absStr.length - scale)
+        val sign = if (isNegative) "-" else ""
+        val absStr = if (isZero) {
+            "0"
         } else {
-            sign + "0." + "0".repeat(scale - absStr.length) + absStr
+            bigIntToString((if (isNegative) -significand else significand).unsafeCast<dynamic>())
+        }
+        val precision = absStr.length
+        // JVM BigDecimal.toString: use plain notation iff scale >= 0 && adjustedExp >= -6,
+        // otherwise scientific with the decimal point after the first significant digit.
+        val adjustedExp = (precision - 1) - scale
+        return if (scale >= 0 && adjustedExp >= -6) {
+            when {
+                scale == 0 -> sign + absStr
+                absStr.length > scale -> sign + absStr.substring(0, absStr.length - scale) + "." + absStr.substring(absStr.length - scale)
+                else -> sign + "0." + "0".repeat(scale - absStr.length) + absStr
+            }
+        } else {
+            val mantissa = if (precision == 1) absStr else absStr.substring(0, 1) + "." + absStr.substring(1)
+            val expStr = if (adjustedExp >= 0) "E+$adjustedExp" else "E$adjustedExp"
+            sign + mantissa + expStr
         }
     }
 
@@ -283,9 +310,36 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
 
         fun fromLong(n: Long): BigDecimal = BigDecimal(jsBigInt(n.toString()), 0)
 
+        /**
+         * Decodes [d] as the exact rational it represents in IEEE 754 (mirroring the
+         * `java.math.BigDecimal(double)` constructor), not its shorter decimal display.
+         * E.g. `fromDouble(0.1)` yields `0.1000000000000000055511151231257827021181583404541015625`.
+         */
         fun fromDouble(d: Double): BigDecimal {
             if (d.isNaN() || d.isInfinite()) throw NumberFormatException("Not a valid decimal: $d")
-            return fromString(d.toString())
+            if (d == 0.0) return ZERO
+
+            val bits = d.toRawBits()
+            val signBit = (bits ushr 63).toInt()
+            val rawExp = ((bits ushr 52) and 0x7FFL).toInt()
+            val rawFrac = bits and ((1L shl 52) - 1L)
+            var mantissa = if (rawExp == 0) rawFrac shl 1 else rawFrac or (1L shl 52)
+            var exponent = rawExp - 1075
+            // Normalize away trailing zero bits — this keeps the resulting decimal scale minimal.
+            while ((mantissa and 1L) == 0L) {
+                mantissa = mantissa shr 1
+                exponent++
+            }
+            val absSig: dynamic = jsBigInt(mantissa.toString())
+            return if (exponent >= 0) {
+                val product: dynamic = absSig * bigIntPow(BI_TWO, exponent)
+                val signed: dynamic = if (signBit != 0) -product else product
+                BigDecimal(signed, 0)
+            } else {
+                val product: dynamic = absSig * bigIntPow(BI_FIVE, -exponent)
+                val signed: dynamic = if (signBit != 0) -product else product
+                BigDecimal(signed, -exponent)
+            }
         }
     }
 }

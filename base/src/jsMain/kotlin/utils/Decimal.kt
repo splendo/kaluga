@@ -74,7 +74,14 @@ actual fun FiniteDecimal.pow(n: Int, scale: Int, roundingMode: RoundingMode): Fi
 actual fun FiniteDecimal.round(scale: Int, roundingMode: RoundingMode): FiniteDecimal =
     FiniteDecimal(bd.setScale(scale, roundingMode))
 
-actual fun Number.toFiniteDecimal(): FiniteDecimal? = this.toString().toFiniteDecimal()
+actual fun Number.toFiniteDecimal(): FiniteDecimal? {
+    if (this is Long) return FiniteDecimal(BigDecimal.fromLong(this))
+    val d = this.toDouble()
+    return when {
+        d.isNaN() || d.isInfinite() -> null
+        else -> FiniteDecimal(BigDecimal.fromDouble(d))
+    }
+}
 
 actual fun String.toFiniteDecimal(): FiniteDecimal? = try {
     FiniteDecimal(BigDecimal.fromString(this))
