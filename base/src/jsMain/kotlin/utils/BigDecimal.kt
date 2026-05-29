@@ -37,14 +37,14 @@ private val BI_ONE: dynamic = jsBigInt(1)
 private val BI_TWO: dynamic = jsBigInt(2)
 private val BI_TEN: dynamic = jsBigInt(10)
 
-private fun biLt(a: dynamic, b: dynamic): Boolean = (a < b).unsafeCast<Boolean>()
-private fun biGt(a: dynamic, b: dynamic): Boolean = (a > b).unsafeCast<Boolean>()
-private fun biEq(a: dynamic, b: dynamic): Boolean = js("a === b").unsafeCast<Boolean>()
-private fun biToString(a: dynamic): String = js("a.toString()").unsafeCast<String>()
+private fun bigIntLessThan(a: dynamic, b: dynamic): Boolean = (a < b).unsafeCast<Boolean>()
+private fun bigInGreaterThan(a: dynamic, b: dynamic): Boolean = (a > b).unsafeCast<Boolean>()
+private fun bigIntEquals(a: dynamic, b: dynamic): Boolean = js("a === b").unsafeCast<Boolean>()
+private fun bigIntToString(a: dynamic): String = js("a.toString()").unsafeCast<String>()
 
-private fun biCompare(a: dynamic, b: dynamic): Int = when {
-    biLt(a, b) -> -1
-    biGt(a, b) -> 1
+private fun bigIntCompareTo(a: dynamic, b: dynamic): Int = when {
+    bigIntLessThan(a, b) -> -1
+    bigInGreaterThan(a, b) -> 1
     else -> 0
 }
 
@@ -61,8 +61,8 @@ private fun pow10(n: Int): dynamic {
 }
 
 private fun digitsOf(value: dynamic): Int {
-    if (biEq(value, BI_ZERO)) return 1
-    val s = biToString(value)
+    if (bigIntEquals(value, BI_ZERO)) return 1
+    val s = bigIntToString(value)
     return if (s.startsWith("-")) s.length - 1 else s.length
 }
 
@@ -73,8 +73,8 @@ private fun digitsOf(value: dynamic): Int {
  */
 class BigDecimal(val significand: dynamic, val scale: Int) {
 
-    val isZero: Boolean get() = biEq(significand, BI_ZERO)
-    val isNegative: Boolean get() = biLt(significand, BI_ZERO)
+    val isZero: Boolean get() = bigIntEquals(significand, BI_ZERO)
+    val isNegative: Boolean get() = bigIntLessThan(significand, BI_ZERO)
 
     fun unaryMinus(): BigDecimal = BigDecimal((-significand).unsafeCast<dynamic>(), scale)
 
@@ -109,28 +109,28 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
         var dividend: dynamic = if (extraDigits > 0) significand * pow10(extraDigits) else significand
         var divisor: dynamic = other.significand
 
-        if (biLt(divisor, BI_ZERO)) {
+        if (bigIntLessThan(divisor, BI_ZERO)) {
             dividend = -dividend
             divisor = -divisor
         }
-        val negDividend = biLt(dividend, BI_ZERO)
+        val negDividend = bigIntLessThan(dividend, BI_ZERO)
         val absDividend: dynamic = if (negDividend) -dividend else dividend
 
         var quotient: dynamic = absDividend / divisor
         val remainder: dynamic = absDividend - quotient * divisor
-        if (!biEq(remainder, BI_ZERO)) {
+        if (!bigIntEquals(remainder, BI_ZERO)) {
             val twoRemainder = remainder * BI_TWO
-            val cmp = biCompare(twoRemainder, divisor)
+            val cmp = bigIntCompareTo(twoRemainder, divisor)
             val roundUp = when (rounding) {
                 RoundDown -> false
                 RoundUp -> true
                 RoundHalfEven -> when {
                     cmp > 0 -> true
                     cmp < 0 -> false
-                    else -> !biEq(quotient % BI_TWO, BI_ZERO)
+                    else -> !bigIntEquals(quotient % BI_TWO, BI_ZERO)
                 }
             }
-            if (roundUp) quotient = quotient + BI_ONE
+            if (roundUp) quotient += BI_ONE
         }
         if (negDividend) quotient = -quotient
 
@@ -156,19 +156,19 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
         val abs: dynamic = if (neg) -significand else significand
         var quotient: dynamic = abs / divisor
         val remainder: dynamic = abs - quotient * divisor
-        if (!biEq(remainder, BI_ZERO)) {
+        if (!bigIntEquals(remainder, BI_ZERO)) {
             val twoRemainder = remainder * BI_TWO
-            val cmp = biCompare(twoRemainder, divisor)
+            val cmp = bigIntCompareTo(twoRemainder, divisor)
             val roundUp = when (rounding) {
                 RoundDown -> false
                 RoundUp -> true
                 RoundHalfEven -> when {
                     cmp > 0 -> true
                     cmp < 0 -> false
-                    else -> !biEq(quotient % BI_TWO, BI_ZERO)
+                    else -> !bigIntEquals(quotient % BI_TWO, BI_ZERO)
                 }
             }
-            if (roundUp) quotient = quotient + BI_ONE
+            if (roundUp) quotient += BI_ONE
         }
         if (neg) quotient = -quotient
         return BigDecimal(quotient, newScale)
@@ -189,29 +189,29 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
     }
 
     fun compareTo(other: BigDecimal): Int {
-        val s1 = biCompare(significand, BI_ZERO)
-        val s2 = biCompare(other.significand, BI_ZERO)
+        val s1 = bigIntCompareTo(significand, BI_ZERO)
+        val s2 = bigIntCompareTo(other.significand, BI_ZERO)
         if (s1 != s2) return s1.compareTo(s2)
         if (s1 == 0) return 0
         val maxScale = max(scale, other.scale)
         val a = if (scale < maxScale) significand * pow10(maxScale - scale) else significand
         val b = if (other.scale < maxScale) other.significand * pow10(maxScale - other.scale) else other.significand
-        return biCompare(a, b)
+        return bigIntCompareTo(a, b)
     }
 
     override fun equals(other: Any?): Boolean = (other as? BigDecimal)?.let { compareTo(it) == 0 } ?: false
 
     override fun hashCode(): Int {
         val s = stripTrailingZeros()
-        return biToString(s.significand).hashCode() * 31 + s.scale
+        return bigIntToString(s.significand).hashCode() * 31 + s.scale
     }
 
     fun stripTrailingZeros(): BigDecimal {
         if (isZero) return BigDecimal(BI_ZERO, 0)
         var sig: dynamic = significand
         var s = scale
-        while (s > 0 && biEq(sig % BI_TEN, BI_ZERO)) {
-            sig = sig / BI_TEN
+        while (s > 0 && bigIntEquals(sig % BI_TEN, BI_ZERO)) {
+            sig /= BI_TEN
             s -= 1
         }
         return BigDecimal(sig, s)
@@ -222,7 +222,7 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
             return if (scale > 0) "0." + "0".repeat(scale) else "0"
         }
         val neg = isNegative
-        val absStr = biToString(if (neg) (-significand).unsafeCast<dynamic>() else significand)
+        val absStr = bigIntToString(if (neg) (-significand).unsafeCast<dynamic>() else significand)
         val sign = if (neg) "-" else ""
         if (scale <= 0) {
             return sign + absStr + "0".repeat(-scale)
@@ -240,10 +240,10 @@ class BigDecimal(val significand: dynamic, val scale: Int) {
 
     fun toLong(): Long {
         val rounded = setScale(0, RoundDown)
-        val s = biToString(rounded.significand)
+        val s = bigIntToString(rounded.significand)
         return try {
             s.toLong()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             if (rounded.isNegative) Long.MIN_VALUE else Long.MAX_VALUE
         }
     }

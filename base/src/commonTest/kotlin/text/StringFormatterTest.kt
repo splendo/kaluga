@@ -20,7 +20,6 @@ package com.splendo.kaluga.base.text
 import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.base.utils.KalugaLocale.Companion.createLocale
 import com.splendo.kaluga.base.utils.KalugaTimeZone
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -527,7 +526,6 @@ class StringFormatterTest {
     }
 
     @Test
-    @Ignore // PDT sometimes turns into GMT-7
     fun testFormatDate() {
         val date = DefaultKalugaDate.now(timeZone = KalugaTimeZone.get("America/Los_Angeles")!!, locale = locale).apply {
             year = 2020

@@ -125,7 +125,9 @@ actual class KalugaDateFormatter private constructor(
     }
 
     actual override fun parse(string: String): KalugaDate? {
-        val luxonPattern = javaPatternToLuxon(pattern)
+        // Use the parse-mode translation so the `z` (zone) token maps to luxon's lenient IANA-zone
+        // matcher rather than `ZZZZ`, which can't read "UTC"/"PST"/etc back from formatted output.
+        val luxonPattern = javaPatternToLuxon(pattern, forParsing = true)
         val zone = _timeZone.identifier
         val tag = locale.tag
         val s = string
@@ -239,7 +241,7 @@ private fun derivePatternFromStyle(dateStyle: DateFormatStyle?, timeStyle: DateF
  * - Java `X` (ISO 8601 offset) maps to luxon `ZZ`.
  * - Java `E`/`EE`/`EEE` collapse to luxon `EEE` (short); `EEEE` maps to `EEEE` (long).
  */
-internal fun javaPatternToLuxon(pattern: String): String {
+internal fun javaPatternToLuxon(pattern: String, forParsing: Boolean = false): String {
     val sb = StringBuilder()
     var i = 0
     while (i < pattern.length) {
@@ -256,7 +258,7 @@ internal fun javaPatternToLuxon(pattern: String): String {
             var end = i
             while (end < pattern.length && pattern[end] == c) end++
             val count = end - i
-            sb.append(translateToken(c, count))
+            sb.append(translateToken(c, count, forParsing))
             i = end
         } else {
             sb.append(c)
@@ -268,7 +270,7 @@ internal fun javaPatternToLuxon(pattern: String): String {
 
 private val javaTokenChars = setOf('y', 'Y', 'M', 'd', 'H', 'h', 'k', 'K', 'm', 's', 'S', 'a', 'z', 'Z', 'X', 'G', 'E', 'D', 'w', 'W')
 
-private fun translateToken(c: Char, count: Int): String = when (c) {
+private fun translateToken(c: Char, count: Int, forParsing: Boolean): String = when (c) {
     'y', 'Y' -> "y".repeat(count.coerceAtMost(4).coerceAtLeast(1))
     'M' -> "M".repeat(count.coerceAtMost(4).coerceAtLeast(1))
     'd' -> "d".repeat(count.coerceAtMost(2).coerceAtLeast(1))
@@ -281,7 +283,10 @@ private fun translateToken(c: Char, count: Int): String = when (c) {
     'S' -> "S".repeat(count.coerceAtMost(3).coerceAtLeast(1))
     'a' -> "a"
     'Z' -> "ZZZ"
-    'z' -> "ZZZZ"
+    // Java `z` formats as a zone abbreviation ("UTC"/"PST"). Luxon's `ZZZZ` produces that on format
+    // but rejects those tokens on parse; luxon's `z` (IANA) accepts both IANA names and common
+    // abbreviations, so we switch tokens depending on direction.
+    'z' -> if (forParsing) "z" else "ZZZZ"
     'X' -> "ZZ"
     'G' -> "G"
     'E' -> if (count >= 4) "EEEE" else "EEE"

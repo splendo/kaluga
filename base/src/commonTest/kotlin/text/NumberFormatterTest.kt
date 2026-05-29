@@ -19,7 +19,6 @@ package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.KalugaLocale.Companion.createLocale
 import com.splendo.kaluga.test.base.BaseTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -97,7 +96,6 @@ class NumberFormatterTest : BaseTest() {
     }
 
     @Test
-    @Ignore // on Android 30 this becomes 200.0%" https://github.com/splendo/kaluga/issues/230
     fun testFormatPercentage() {
         val formatters = createFormatters(NumberFormatStyle.Percentage(minFractionDigits = 0U, maxFractionDigits = 2U))
 
@@ -112,7 +110,6 @@ class NumberFormatterTest : BaseTest() {
     }
 
     @Test
-    @Ignore // on Android 30 this becomes 2000.0%" https://github.com/splendo/kaluga/issues/230
     fun testFormatPermillage() {
         val formatters = createFormatters(NumberFormatStyle.Permillage(minFractionDigits = 0U, maxFractionDigits = 2U)) { it.usesGroupingSeparator = false }
 
@@ -158,14 +155,11 @@ class NumberFormatterTest : BaseTest() {
     }
 
     @Test
-    @Ignore // https://github.com/splendo/kaluga/issues/230
     fun testFormatForeignCurrency() {
         val usdFormatters = createFormatters(NumberFormatStyle.Currency(currencyCode = "USD")) { it.usesGroupingSeparator = true }
         assertEquals("$12,345.68", usdFormatters.usFormatter.format(12345.6789).replace("\u00A0", " "))
-        // TODO: on Java 11 this becomes US$ instead of USD https://github.com/splendo/kaluga/issues/230
         assertEquals("$USDForNL 12.345,68", usdFormatters.nlFormatter.format(12345.6789).replace("\u00A0", " "))
 
-        // TODO on Java 11 this becomes ¥ instead of JPY https://github.com/splendo/kaluga/issues/230
         val yenFormatters = createFormatters(NumberFormatStyle.Currency(currencyCode = "JPY")) { it.usesGroupingSeparator = true }
         assertEquals("${JPYForUS}12,346", yenFormatters.usFormatter.format(12345.6789).replace("\u00A0", " "))
         assertEquals("$JPYForNL 12.346", yenFormatters.nlFormatter.format(12345.6789).replace("\u00A0", " "))

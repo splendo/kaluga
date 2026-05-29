@@ -89,12 +89,14 @@ class DateFormatterTest {
     }
 
     @Test
-    @Ignore // android emulator 23 does not correctly format the french locale
     fun testTimeFormat() {
         val usFormatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, KalugaTimeZone.utc, UnitedStatesLocale)
         val frFormatter = KalugaDateFormatter.timeFormat(DateFormatStyle.Medium, KalugaTimeZone.utc, FranceLocale)
 
-        assertEquals("1:37:42 PM", usFormatter.format(March181988))
+        // CLDR ≥ 42 separates the time and the day-period (AM/PM) with U+202F NARROW NO-BREAK SPACE
+        // (and historically U+00A0 NO-BREAK SPACE on some platforms) instead of a regular space.
+        // Normalise so the assertion isn't whitespace-sensitive.
+        assertEquals("1:37:42 PM", usFormatter.format(March181988).replace(" ", " ").replace(" ", " "))
         assertEquals("13:37:42", frFormatter.format(March181988))
     }
 
@@ -111,7 +113,6 @@ class DateFormatterTest {
     }
 
     @Test
-    @Ignore // fails on emulator 24
     fun testParseDateWithDifferentTimezone() {
         val utcFormatter = KalugaDateFormatter.patternFormat("yyyy.MM.dd G 'at' HH:mm:ss z", KalugaTimeZone.utc, KalugaLocale.enUsPosix)
         val pstFormatter = KalugaDateFormatter.patternFormat("yyyy.MM.dd G 'at' HH:mm:ss z", PSTTimeZone, KalugaLocale.enUsPosix)

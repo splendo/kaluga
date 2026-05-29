@@ -324,13 +324,13 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
         return "$sign$mantissaStr$exponentSymbol$expSign$expDigits"
     }
 
-    private fun rawFormatWithDigits(value: Double, minInt: Int, minFrac: Int, maxFrac: Int): String {
+    private fun rawFormatWithDigits(value: Double, minInt: Int, minFrac: Int, maxFrac: Int, grouping: Boolean = false): String {
         val tag = localeTag
         val opts = js("({})")
         opts.minimumIntegerDigits = if (minInt > 0) minInt else 1
         opts.minimumFractionDigits = minFrac
         opts.maximumFractionDigits = maxFrac
-        opts.useGrouping = false
+        opts.useGrouping = grouping
         val formatter = js("new Intl.NumberFormat(tag, opts)")
         return formatter.format(value).unsafeCast<String>()
     }
@@ -341,11 +341,15 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
 
     private fun formatPermillage(value: Double): String {
         val ps = style as NumberFormatStyle.Permillage
+        // `value` has already been normalized by `format()` to [raw * _multiplier / defaultMultiplier];
+        // re-apply defaultMultiplier (1000) so the rendered mantissa is raw * _multiplier.
+        val scaled = value * defaultMultiplier
         val mantissaStr = rawFormatWithDigits(
-            value,
+            scaled,
             minInt = ps.minIntegerDigits.toInt().coerceAtLeast(1),
             minFrac = ps.minFractionDigits.toInt(),
             maxFrac = ps.maxFractionDigits.toInt(),
+            grouping = usesGroupingSeparator,
         )
         return mantissaStr + perMillSymbol
     }
@@ -485,8 +489,11 @@ actual class NumberFormatter actual constructor(actual override val locale: Kalu
             is NumberFormatStyle.Currency -> {
                 opts.style = "currency"
                 opts.minimumIntegerDigits = clampMinIntegerDigits(style.minIntegerDigits.toInt())
-                opts.minimumFractionDigits = style.minFractionDigits?.toInt() ?: 2
-                opts.maximumFractionDigits = style.maxFractionDigits?.toInt() ?: 2
+                // When fraction-digit bounds are unset, leave them off so Intl picks the
+                // currency's natural digits (2 for USD, 0 for JPY, ...) — matching JVM's
+                // fallback to `Currency.defaultFractionDigits`.
+                style.minFractionDigits?.toInt()?.let { opts.minimumFractionDigits = it }
+                style.maxFractionDigits?.toInt()?.let { opts.maximumFractionDigits = it }
                 opts.useGrouping = true
                 opts.currencyDisplay = "symbol"
                 opts.roundingMode = intlRoundingMode(style.roundingMode)
