@@ -56,6 +56,7 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
     val multiplatformExtension: KotlinMultiplatformExtension,
     versionCatalog: VersionCatalog,
     objects: ObjectFactory,
+    private val project: Project,
 ) : BaseKalugaSubprojectExtension(versionCatalog, null, objects) {
 
     companion object {
@@ -141,11 +142,17 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
         if (!Os.isFamily(Os.FAMILY_MAC)) return emptySet()
         val ideaActive = System.getProperty("idea.active") == "true"
         val isAppleSilicon = System.getProperty("os.arch") == "aarch64"
-        return when {
+        val all = when {
             !ideaActive -> MacOSTarget.values().toSet()
             isAppleSilicon -> setOf(MacOSTarget.Arm64)
             else -> setOf(MacOSTarget.X64)
         }
+        // Compose Multiplatform doesn't publish for `macosX64`, mirroring its iOS story. Modules
+        // depending on CMP set `kaluga.omitMacosX64=true` in their `gradle.properties` so the
+        // legacy Intel target isn't registered and Gradle's variant resolution stays clean.
+        val omitMacosX64 = project.findProperty("kaluga.omitMacosX64")?.toString()
+            .equals("true", ignoreCase = true)
+        return if (omitMacosX64) all - MacOSTarget.X64 else all
     }
 
     private val multiplatformDependencies = objects.newInstance(MultiplatformDependencyContainer::class)

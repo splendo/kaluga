@@ -28,6 +28,7 @@ import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermissionIfNotRegistered
 import com.splendo.kaluga.permissions.location.registerLocationPermissionIfNotRegistered
+import com.splendo.kaluga.permissions.registerAllPermissions
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
@@ -44,7 +45,15 @@ const val USE_LOCATION_FOR_BLUETOOTH = false
 
 private fun sharedModule(locationStateRepoBuilderBuilder: LocationStateRepoBuilderBuilder, bluetoothBuilderBuilder: BluetoothBuilderBuilder) = module {
     single<Logger> { RestrictedLogger(RestrictedLogLevel.None) }
-    single { PermissionsBuilder() }
+    // `registerAllPermissions` is non-suspend and idempotent enough that re-running for already
+    // registered permissions is a no-op. Doing it here means every consumer of `PermissionsBuilder`
+    // — including the CMP `PermissionScreen` that pulls the builder via `koinInject` — sees the
+    // factories ready without having to register them inside its own coroutine first.
+    single {
+        PermissionsBuilder().apply {
+            registerAllPermissions(settings = BasePermissionManager.Settings(logger = get()))
+        }
+    }
     single {
         locationStateRepoBuilderBuilder {
             val builder = get<PermissionsBuilder>()

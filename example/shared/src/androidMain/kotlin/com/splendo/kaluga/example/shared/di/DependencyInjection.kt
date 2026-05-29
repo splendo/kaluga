@@ -24,12 +24,15 @@ import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.location.DefaultLocationManager
 import com.splendo.kaluga.location.GoogleLocationProvider
 import com.splendo.kaluga.location.LocationStateRepoBuilder
+import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
-internal val androidModule = module {}
+internal val androidModule = module {
+    single { NetworkStateRepoBuilder() }
+}
 
 fun initKoin(customModules: List<Module> = emptyList()) = initKoin(
     androidModule,

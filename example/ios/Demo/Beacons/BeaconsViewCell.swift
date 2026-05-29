@@ -15,18 +15,41 @@
 //
 
 import UIKit
-import KalugaExampleShared
+import KalugaMobileShared
 
 class BeaconsViewCell: UICollectionViewCell {
 
     static var identifier: String { String(describing: Self.self) }
 
-    @IBOutlet private var namespaceLabel: UILabel!
-    @IBOutlet private var instanceLabel: UILabel!
-    @IBOutlet private var txPowerLabel: UILabel!
+    private let namespaceLabel = UILabel()
+    private let instanceLabel = UILabel()
+    private let txPowerLabel = UILabel()
 
     private let disposeBag = DisposeBag()
     private var viewModel: BeaconsListBeaconViewModel?
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        let stack = UIStackView(arrangedSubviews: [namespaceLabel, instanceLabel, txPowerLabel])
+        stack.axis = .vertical
+        stack.spacing = 4
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(stack)
+        NSLayoutConstraint.activate([
+            stack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            stack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
+            stack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
+        ])
+        namespaceLabel.font = .preferredFont(forTextStyle: .headline)
+        instanceLabel.font = .preferredFont(forTextStyle: .body)
+        txPowerLabel.font = .preferredFont(forTextStyle: .caption1)
+        txPowerLabel.textColor = .secondaryLabel
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) is unavailable")
+    }
 
     func configure(with viewModel: BeaconsListBeaconViewModel) {
         self.viewModel = viewModel

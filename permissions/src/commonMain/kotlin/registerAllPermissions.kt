@@ -48,7 +48,6 @@ fun PermissionsBuilder.registerAllPermissions(
     registerLocationPermission(monitoringInterval = monitoringInterval, settings = settings)
     registerMicrophonePermission(monitoringInterval = monitoringInterval, settings = settings)
     registerNotificationsPermission(monitoringInterval = monitoringInterval, settings = settings)
-    registerMicrophonePermission(monitoringInterval = monitoringInterval, settings = settings)
     registerStoragePermission(monitoringInterval = monitoringInterval, settings = settings)
 }
 
@@ -63,6 +62,5 @@ suspend fun PermissionsBuilder.registerAllPermissionsNotRegistered(
     registerLocationPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
     registerMicrophonePermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
     registerNotificationsPermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
-    registerMicrophonePermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
     registerStoragePermissionIfNotRegistered(monitoringInterval = monitoringInterval, settings = settings)
 }

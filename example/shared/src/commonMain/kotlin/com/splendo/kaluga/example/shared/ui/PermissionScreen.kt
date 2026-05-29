@@ -26,7 +26,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,11 +35,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
-import com.splendo.kaluga.permissions.base.BasePermissionManager
 import com.splendo.kaluga.permissions.base.PermissionState
 import com.splendo.kaluga.permissions.base.Permissions
 import com.splendo.kaluga.permissions.base.PermissionsBuilder
-import com.splendo.kaluga.permissions.registerAllPermissionsNotRegistered
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -58,11 +55,6 @@ fun PermissionScreen(permissionView: PermissionView, modifier: Modifier = Modifi
     val permission = remember(permissionView) { permissionView.permission }
     val permissions = remember(permissionView) {
         Permissions(builder, permissionScope.coroutineContext)
-    }
-    LaunchedEffect(permissionView) {
-        builder.registerAllPermissionsNotRegistered(
-            settings = BasePermissionManager.Settings(),
-        )
     }
     val state by remember(permissionView) { permissions[permission] }
         .collectAsState(initial = null)

@@ -15,7 +15,7 @@
 //
 
 import SwiftUI
-import KalugaExampleShared
+import KalugaMobileShared
 
 struct ResourcesListView: View {
 

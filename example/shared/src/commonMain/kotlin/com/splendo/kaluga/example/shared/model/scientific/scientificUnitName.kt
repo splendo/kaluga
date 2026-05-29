@@ -18,6 +18,10 @@
 package com.splendo.kaluga.example.shared.model.scientific
 
 import com.splendo.kaluga.scientific.unit.Acceleration
+import com.splendo.kaluga.scientific.unit.CombinedImperialAcceleration
+import com.splendo.kaluga.scientific.unit.CombinedMetricAcceleration
+import com.splendo.kaluga.scientific.unit.ImperialMetricAndImperialAccelerationWrapper
+import com.splendo.kaluga.scientific.unit.MetricMetricAndImperialAccelerationWrapper
 import com.splendo.kaluga.scientific.unit.Action
 import com.splendo.kaluga.scientific.unit.AngularAcceleration
 import com.splendo.kaluga.scientific.unit.AngularVelocity
@@ -61,7 +65,14 @@ import com.splendo.kaluga.scientific.unit.VolumetricFlux
 import com.splendo.kaluga.scientific.unit.Yank
 
 val ScientificUnit<*>.name: String get() = when (this) {
-    is Acceleration -> "${speed.name} per ${per.name}"
+    // Acceleration has *both* combined units (a speed/time pair like `Kilometer per Hour per
+    // Second`) and named units (`GUnit`, `Gal` and all their SI-prefixed multiples) that share
+    // the same `speed = Meter per Second` / `per = Second` overrides. Only the combined variants
+    // can be rendered via the compound formula; the named ones fall through to their class name.
+    is CombinedMetricAcceleration -> "${speed.name} per ${per.name}"
+    is CombinedImperialAcceleration -> "${speed.name} per ${per.name}"
+    is MetricMetricAndImperialAccelerationWrapper -> "${metricAndImperial.name} (Metric)"
+    is ImperialMetricAndImperialAccelerationWrapper -> "${metricAndImperial.name} (Imperial)"
     is Action -> "${energy.name}-${time.name}"
     is AngularAcceleration -> "${angularVelocity.name} per ${per.name}"
     is AngularVelocity -> "${angle.name} per ${per.name}"

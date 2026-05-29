@@ -164,7 +164,7 @@ val allPhysicalQuantities: Set<PhysicalQuantity> = setOf(
     PhysicalQuantity.Yank,
 )
 
-internal val PhysicalQuantity.quantityDetails: QuantityDetails<*>? get() = when (this) {
+val PhysicalQuantity.quantityDetails: QuantityDetails<*>? get() = when (this) {
     is PhysicalQuantity.Dimensionless -> null
     is PhysicalQuantity.Acceleration -> QuantityDetails(this, AccelerationUnits, converters)
     is PhysicalQuantity.Action -> QuantityDetails(this, ActionUnits, converters)

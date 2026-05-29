@@ -19,11 +19,14 @@ package com.splendo.kaluga.example.shared.di
 
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
+import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
-internal val macosModule = module { }
+internal val macosModule = module {
+    single { NetworkStateRepoBuilder() }
+}
 
 fun initKoin(customModules: List<Module> = emptyList()) = initKoin(
     macosModule,

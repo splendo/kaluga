@@ -15,7 +15,7 @@
 //
 
 import SwiftUI
-import KalugaExampleShared
+import KalugaMobileShared
 import PartialSheet
 
 struct ArchitectureView: View {

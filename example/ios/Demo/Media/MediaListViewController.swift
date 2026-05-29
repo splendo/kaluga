@@ -1,12 +1,12 @@
 //
 //  Copyright 2025 Splendo Consulting B.V. The Netherlands
-// 
+//
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
 //    You may obtain a copy of the License at
-// 
+//
 //      http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 //    Unless required by applicable law or agreed to in writing, software
 //    distributed under the License is distributed on an "AS IS" BASIS,
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,28 +15,38 @@
 //
 
 import UIKit
-import KalugaExampleShared
+import KalugaMobileShared
 
 class MediaListViewController: UITableViewController {
 
+    private static let cellIdentifier = "MediaListCell"
+
     private lazy var navigator: ViewControllerNavigator<MediaListNavigationAction> = ViewControllerNavigator(parentVC: self) { action in
-        NavigationSpec.Segue(identifier: action.segueKey)
+        switch action {
+        case is MediaListNavigationAction.Media: return NavigationSpec.Push(animated: true) { MediaViewController() }
+        case is MediaListNavigationAction.Sound: return NavigationSpec.Push(animated: true) { MediaSoundViewController() }
+        default: fatalError("Unknown navigation action \(action)")
+        }
     }
-    
+
     private lazy var viewModel = MediaListViewModel(navigator: navigator)
     private var lifecycleManager: LifecycleManager!
 
     private var media = [String]()
     private var onSelected: ((Int) -> Void)?
 
-    deinit {
-        lifecycleManager.unbind()
+    init() { super.init(style: .plain) }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) is unavailable")
     }
+
+    deinit { lifecycleManager.unbind() }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         title = "feature_media".localized()
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Self.cellIdentifier)
 
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
@@ -50,46 +60,23 @@ class MediaListViewController: UITableViewController {
                         }
                     }
                     self?.tableView.reloadData()
-                }
+                },
             ]
         }
     }
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
+    override func numberOfSections(in tableView: UITableView) -> Int { 1 }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return media.count
-    }
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { media.count }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return tableView.dequeueTypedReusableCell(withIdentifier: MediaListCell.Const.identifier, for: indexPath) { (cell: MediaListCell) in
-            cell.label.text = media[indexPath.row]
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: Self.cellIdentifier, for: indexPath)
+        cell.textLabel?.text = media[indexPath.row]
+        return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        _ = onSelected?(indexPath.row)
+        onSelected?(indexPath.row)
         tableView.deselectRow(at: indexPath, animated: true)
-    }
-}
-
-class MediaListCell: UITableViewCell {
-    
-    enum Const {
-        static let identifier = "MediaListCell"
-    }
-    
-    @IBOutlet weak var label: UILabel!
-}
-
-private extension MediaListNavigationAction {
-    var segueKey: String {
-        switch self {
-        case is MediaListNavigationAction.Media: return "showMedia"
-        case is MediaListNavigationAction.Sound: return "showSound"
-        default: return ""
-        }
     }
 }

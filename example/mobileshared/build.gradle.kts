@@ -21,12 +21,16 @@ kaluga {
         baseName = "KalugaMobileShared"
         isStatic = false
         transitiveExport = true
+        // Deliberately NOT exporting `:shared` here: doing so dragged
+        // `kaluga.scientific.unit.Pascal` into mobileshared's Objective-C header, and
+        // `+ (instancetype)pascal` collides with clang's reserved `pascal` calling-convention
+        // keyword. iOS Swift code links KalugaExampleShared.framework separately for the
+        // macOS-capable types, so re-exporting them from mobileshared would be redundant anyway.
         modules.forEach { (module, isExportable) ->
             if (isExportable) {
                 export("com.splendo.kaluga:$module:${project.rootProject.version}")
             }
         }
-        export(project(":shared"))
     }
     dependencies {
         android {

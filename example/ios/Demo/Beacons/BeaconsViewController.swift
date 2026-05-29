@@ -15,85 +15,72 @@
 //
 
 import UIKit
-import KalugaExampleShared
+import KalugaMobileShared
 
 class BeaconsViewController: UICollectionViewController {
 
     private var beacons = [BeaconsListBeaconViewModel]() {
-        didSet {
-            collectionView.reloadData()
-        }
+        didSet { collectionView.reloadData() }
     }
 
     private var lifecycleManager: LifecycleManager!
 
-    private lazy var flowLayout: UICollectionViewFlowLayout = {
+    private lazy var viewModel = BeaconsListViewModel()
+
+    init() {
         let flowLayout = FittingWidthAutomaticHeightCollectionViewFlowLayout()
         flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         flowLayout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
         flowLayout.minimumLineSpacing = 4
-        return flowLayout
-    }()
+        super.init(collectionViewLayout: flowLayout)
+    }
 
-    private lazy var viewModel = BeaconsListViewModel()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) is unavailable")
+    }
 
     deinit {
         lifecycleManager.unbind()
-    }
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-
-        collectionView.collectionViewLayout = flowLayout
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         title = "feature_beacons".localized()
+        collectionView.backgroundColor = .systemBackground
+        collectionView.register(BeaconsViewCell.self, forCellWithReuseIdentifier: BeaconsViewCell.identifier)
 
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
-
             return [
                 viewModel.isScanning.observe { isScanning in
                     self?.updateNavigationItem(isScanning: isScanning as? Bool ?? false)
                 },
                 viewModel.beacons.observe { devices in
                     self?.beacons = devices as? [BeaconsListBeaconViewModel] ?? []
-                }
+                },
             ]
         }
     }
 
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
+    override func numberOfSections(in collectionView: UICollectionView) -> Int { 1 }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         beacons.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return collectionView.dequeueTypedReusableCell(withReuseIdentifier: BeaconsViewCell.identifier, for: indexPath) { (beaconCell: BeaconsViewCell) in
-            beaconCell.configure(with: beacons[indexPath.row])
-        }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BeaconsViewCell.identifier, for: indexPath) as! BeaconsViewCell
+        cell.configure(with: beacons[indexPath.row])
+        return cell
     }
 
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = cell as? BeaconsViewCell else {
-            return
-        }
-
-        cell.startMonitoring()
+        (cell as? BeaconsViewCell)?.startMonitoring()
     }
 
     override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = cell as? BeaconsViewCell else {
-            return
-        }
-
-        cell.stopMonitoring()
+        (cell as? BeaconsViewCell)?.stopMonitoring()
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

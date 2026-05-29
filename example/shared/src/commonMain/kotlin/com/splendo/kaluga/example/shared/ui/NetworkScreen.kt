@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.system.network.NetworkConnectionType
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import com.splendo.kaluga.system.network.state.network
+import org.koin.compose.koinInject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -54,8 +55,9 @@ private fun describe(type: NetworkConnectionType): String = when (type) {
 
 @Composable
 fun NetworkScreen(modifier: Modifier = Modifier) {
+    val builder: NetworkStateRepoBuilder = koinInject()
     val stateFlow = remember {
-        NetworkStateRepoBuilder().create().network()
+        builder.create().network()
             .map(::describe)
             .stateIn(networkScope, SharingStarted.Eagerly, "Resolving network state…")
     }

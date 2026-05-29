@@ -1,12 +1,12 @@
 //
 //  Copyright 2023 Splendo Consulting B.V. The Netherlands
-// 
+//
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
 //    You may obtain a copy of the License at
-// 
+//
 //      http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 //    Unless required by applicable law or agreed to in writing, software
 //    distributed under the License is distributed on an "AS IS" BASIS,
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,7 @@
 
 import UIKit
 import AVKit
-import KalugaExampleShared
+import KalugaMobileShared
 import MediaPlayer
 
 /// A view that displays the visual contents of a player object.
@@ -25,7 +25,7 @@ class PlayerView: UIView {
 }
 
 class MediaViewController: UIViewController {
-    
+
     private let mediaSurfaceProvider = UIViewMediaSurfaceProvider(initialView: nil)
     private lazy var navigator: ViewControllerNavigator<MediaNavigationAction> = ViewControllerNavigator(parentVC: self) { action in
         switch action {
@@ -43,7 +43,7 @@ class MediaViewController: UIViewController {
         default: fatalError("Unknown action")
         }
     }
-    
+
     private lazy var viewModel = MediaViewModel(
         mediaSurfaceProvider: mediaSurfaceProvider,
         builder: DefaultMediaManager.Builder(settings: DefaultMediaManager.Settings(playInBackground: true, playAfterDeviceUnavailable: true)),
@@ -51,59 +51,100 @@ class MediaViewController: UIViewController {
         navigator: navigator
     )
     private var lifecycleManager: LifecycleManager!
-    
-    @IBOutlet var selectMediaButton: UIButton!
-    @IBOutlet var volumeButton: UIButton!
-    @IBOutlet var loadingIndicator: UIActivityIndicatorView!
-    @IBOutlet var playerView: PlayerView!
-    @IBOutlet var playerAspectRatio: NSLayoutConstraint!
-    @IBOutlet var containerView: UIView!
-    @IBOutlet var currentPlayTimeLabel: UILabel!
-    @IBOutlet var playtimeProgress: UISlider!
-    @IBOutlet var totalDurationLabel: UILabel!
-    @IBOutlet var playButton: UIButton!
-    @IBOutlet var pauseButton: UIButton!
-    @IBOutlet var stopButton: UIButton!
-    @IBOutlet var loopButton: UIButton!
-    @IBOutlet var rateButton: UIButton!
 
-    deinit {
-        lifecycleManager.unbind()
+    private let selectMediaButton = UIButton(type: .system)
+    private let volumeButton = UIButton(type: .system)
+    private let loadingIndicator = UIActivityIndicatorView(style: .medium)
+    private let playerView = PlayerView()
+    private var playerAspectRatio: NSLayoutConstraint!
+    private let containerView = UIView()
+    private let currentPlayTimeLabel = UILabel()
+    private let playtimeProgress = UISlider()
+    private let totalDurationLabel = UILabel()
+    private let playButton = UIButton(type: .system)
+    private let pauseButton = UIButton(type: .system)
+    private let stopButton = UIButton(type: .system)
+    private let loopButton = UIButton(type: .system)
+    private let rateButton = UIButton(type: .system)
+
+    deinit { lifecycleManager.unbind() }
+
+    override func loadView() {
+        let root = UIView()
+        root.backgroundColor = .systemBackground
+
+        currentPlayTimeLabel.font = .preferredFont(forTextStyle: .caption1)
+        totalDurationLabel.font = .preferredFont(forTextStyle: .caption1)
+        totalDurationLabel.textAlignment = .right
+
+        playerView.translatesAutoresizingMaskIntoConstraints = false
+        playerAspectRatio = playerView.widthAnchor.constraint(equalTo: playerView.heightAnchor, multiplier: 1.0)
+        playerAspectRatio.isActive = true
+
+        let timeRow = UIStackView(arrangedSubviews: [currentPlayTimeLabel, totalDurationLabel])
+        timeRow.axis = .horizontal
+        timeRow.distribution = .fillEqually
+
+        let transportRow = UIStackView(arrangedSubviews: [playButton, pauseButton, stopButton])
+        transportRow.axis = .horizontal
+        transportRow.distribution = .fillEqually
+        transportRow.spacing = 8
+
+        let modifierRow = UIStackView(arrangedSubviews: [loopButton, rateButton, volumeButton])
+        modifierRow.axis = .horizontal
+        modifierRow.distribution = .fillEqually
+        modifierRow.spacing = 8
+
+        let containerStack = UIStackView(arrangedSubviews: [timeRow, playtimeProgress, transportRow, modifierRow])
+        containerStack.axis = .vertical
+        containerStack.spacing = 12
+        containerStack.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(containerStack)
+        NSLayoutConstraint.activate([
+            containerStack.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            containerStack.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            containerStack.topAnchor.constraint(equalTo: containerView.topAnchor),
+            containerStack.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+        ])
+
+        let rootStack = UIStackView(arrangedSubviews: [selectMediaButton, playerView, loadingIndicator, containerView])
+        rootStack.axis = .vertical
+        rootStack.spacing = 16
+        rootStack.translatesAutoresizingMaskIntoConstraints = false
+        root.addSubview(rootStack)
+        NSLayoutConstraint.activate([
+            rootStack.leadingAnchor.constraint(equalTo: root.layoutMarginsGuide.leadingAnchor),
+            rootStack.trailingAnchor.constraint(equalTo: root.layoutMarginsGuide.trailingAnchor),
+            rootStack.topAnchor.constraint(equalTo: root.layoutMarginsGuide.topAnchor),
+            rootStack.bottomAnchor.constraint(lessThanOrEqualTo: root.layoutMarginsGuide.bottomAnchor),
+        ])
+        view = root
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-
         title = "feature_media".localized()
-        
+
         playtimeProgress.minimumValue = 0.0
         playtimeProgress.maximumValue = 1.0
-        
+        playtimeProgress.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
+
         ButtonStyleKt.bindButton(selectMediaButton, button: viewModel.selectMediaButton)
-        
+
         lifecycleManager = viewModel.addLifecycleManager(parent: self) { [unowned self] in
             [
                 self.viewModel.hasControls.observe { hasControls in
-                    let hasControls = hasControls?.boolValue ?? false
-                    self.containerView.isHidden = !hasControls
+                    self.containerView.isHidden = !(hasControls?.boolValue ?? false)
                 },
                 self.viewModel.isPreparing.observe { isPreparing in
                     let isPreparing = isPreparing?.boolValue ?? false
                     self.loadingIndicator.isHidden = !isPreparing
-                    if isPreparing {
-                        self.loadingIndicator.startAnimating()
-                    } else {
-                        self.loadingIndicator.stopAnimating()
-                    }
+                    if isPreparing { self.loadingIndicator.startAnimating() } else { self.loadingIndicator.stopAnimating() }
                 },
                 self.viewModel.isShowingVideo.observe { isShowingVideo in
                     let isShowingVideo = isShowingVideo?.boolValue ?? false
                     self.playerView.isHidden = !isShowingVideo
-                    if isShowingVideo {
-                        self.mediaSurfaceProvider.update(value: self.playerView)
-                    } else {
-                        self.mediaSurfaceProvider.update(value: nil)
-                    }
+                    self.mediaSurfaceProvider.update(value: isShowingVideo ? self.playerView : nil)
                 },
                 self.viewModel.resolution.observe { resolution in
                     let resolution = resolution ?? Resolution.companion.ZERO
@@ -112,15 +153,7 @@ class MediaViewController: UIViewController {
                     if resolution.height != 0 {
                         ratio = CGFloat(Float(resolution.width) / Float(resolution.height))
                     }
-                    self.playerAspectRatio = NSLayoutConstraint(
-                        item: self.playerView as Any,
-                        attribute: .width,
-                        relatedBy: .equal,
-                        toItem: self.playerView,
-                        attribute: .height,
-                        multiplier: ratio,
-                        constant: 0
-                    )
+                    self.playerAspectRatio = self.playerView.widthAnchor.constraint(equalTo: self.playerView.heightAnchor, multiplier: ratio)
                     self.playerAspectRatio.isActive = true
                 },
                 self.viewModel.currentPlaytime.observe { currentPlayTime in
@@ -130,50 +163,37 @@ class MediaViewController: UIViewController {
                     self.totalDurationLabel.text = totalDuration as? String
                 },
                 self.viewModel.progress.observe { progress in
-                    let progress = progress?.floatValue ?? 0.0
-                    self.playtimeProgress.value = progress
+                    self.playtimeProgress.value = progress?.floatValue ?? 0.0
                 },
-                self.viewModel.playButton.observe { playButton in
-                    if let playButton = playButton {
-                        ButtonStyleKt.bindButton(self.playButton, button: playButton)
-                    }
+                self.viewModel.playButton.observe { button in
+                    if let button { ButtonStyleKt.bindButton(self.playButton, button: button) }
                 },
-                self.viewModel.pauseButton.observe { pauseButton in
-                    if let pauseButton = pauseButton {
-                        ButtonStyleKt.bindButton(self.pauseButton, button: pauseButton)
-                    }
+                self.viewModel.pauseButton.observe { button in
+                    if let button { ButtonStyleKt.bindButton(self.pauseButton, button: button) }
                 },
-                self.viewModel.stopButton.observe { stopButton in
-                    if let stopButton = stopButton {
-                        ButtonStyleKt.bindButton(self.stopButton, button: stopButton)
-                    }
+                self.viewModel.stopButton.observe { button in
+                    if let button { ButtonStyleKt.bindButton(self.stopButton, button: button) }
                 },
-                self.viewModel.loopButton.observe { loopButton in
-                    if let loopButton = loopButton {
-                        ButtonStyleKt.bindButton(self.loopButton, button: loopButton)
-                    }
+                self.viewModel.loopButton.observe { button in
+                    if let button { ButtonStyleKt.bindButton(self.loopButton, button: button) }
                 },
-                self.viewModel.rateButton.observe { rateButton in
-                    if let rateButton = rateButton {
-                        ButtonStyleKt.bindButton(self.rateButton, button: rateButton)
-                    }
+                self.viewModel.rateButton.observe { button in
+                    if let button { ButtonStyleKt.bindButton(self.rateButton, button: button) }
                 },
-                self.viewModel.volumeButton.observe { volumeButton in
-                    if let volumeButton = volumeButton {
-                        ButtonStyleKt.bindButton(self.volumeButton, button: volumeButton)
-                    }
-                }
+                self.viewModel.volumeButton.observe { button in
+                    if let button { ButtonStyleKt.bindButton(self.volumeButton, button: button) }
+                },
             ]
         }
     }
-    
-    @IBAction func sliderValueChanged(_ sender: Any) {
+
+    @objc private func sliderValueChanged() {
         viewModel.seekTo(progress: Double(playtimeProgress.value))
     }
 }
 
 extension MediaViewController: MPMediaPickerControllerDelegate {
- 
+
     func mediaPicker(_ mediaPicker: MPMediaPickerController, didPickMediaItems mediaItemCollection: MPMediaItemCollection) {
         if !mediaItemCollection.items.isEmpty {
             let item = mediaItemCollection.items[0]
