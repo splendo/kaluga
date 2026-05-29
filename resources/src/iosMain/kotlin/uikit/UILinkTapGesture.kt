@@ -86,7 +86,7 @@ internal class UILinkTapGesture(private val label: UILabel, private val urlRange
     fun tapLabel(gesture: UITapGestureRecognizer) {
         urlRanges.forEach { (range, url) ->
             if (didTapAttributedTextInLabel(gesture, range)) {
-                UIApplication.sharedApplication.openURL(url)
+                UIApplication.sharedApplication.openURL(url, emptyMap<Any?, Any>(), null)
             }
         }
     }

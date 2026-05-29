@@ -25,7 +25,11 @@ import platform.UIKit.UIApplication
 actual object PlatformActions {
     actual fun openUrl(url: String) {
         NSURL.URLWithString(url)?.let { nsUrl ->
-            UIApplication.sharedApplication.openURL(nsUrl)
+            UIApplication.sharedApplication.openURL(
+                url = nsUrl,
+                options = emptyMap<Any?, Any>(),
+                completionHandler = null,
+            )
         }
     }
 
@@ -34,6 +38,12 @@ actual object PlatformActions {
         components.scheme = "mailto"
         components.path = recipients.joinToString(",")
         components.queryItems = listOf(NSURLQueryItem.queryItemWithName("subject", subject))
-        components.URL?.let { UIApplication.sharedApplication.openURL(it) }
+        components.URL?.let { nsUrl ->
+            UIApplication.sharedApplication.openURL(
+                url = nsUrl,
+                options = emptyMap<Any?, Any>(),
+                completionHandler = null,
+            )
+        }
     }
 }

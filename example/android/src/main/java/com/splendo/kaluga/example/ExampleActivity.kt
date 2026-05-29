@@ -32,12 +32,14 @@ import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.media.MediaListActivity
 import com.splendo.kaluga.example.resources.ResourcesActivity
 import com.splendo.kaluga.example.shared.ui.AppRootScreen
+import com.splendo.kaluga.example.shared.ui.DeepLinkBus
 import com.splendo.kaluga.example.shared.ui.Feature
 
 class ExampleActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        intent.postDeepLink()
         setContent {
             MaterialTheme {
                 AppRootScreen(
@@ -46,6 +48,15 @@ class ExampleActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        // singleTask launch mode: an inbound universal link reuses the running instance. The CMP
+        // root observes the bus, so just push the URL and it'll route there itself — no need to
+        // recreate the Activity, which means the existing nav back-stack stays intact.
+        setIntent(intent)
+        intent.postDeepLink()
     }
 
     private fun launchFeature(feature: Feature) {
@@ -68,4 +79,10 @@ class ExampleActivity : ComponentActivity() {
         }
         startActivity(Intent(this, cls))
     }
+}
+
+private fun Intent.postDeepLink() {
+    if (action != Intent.ACTION_VIEW) return
+    val url = data?.toString() ?: return
+    DeepLinkBus.postUrl(url)
 }

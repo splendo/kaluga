@@ -50,11 +50,25 @@
         <activity android:name="com.splendo.kaluga.example.ExampleActivity"
             android:label="Features list"
             android:exported="true"
+            android:launchMode="singleTask"
             android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <!-- Inherited from the old LinksActivity. The browser must have a target to hand the
+                 universal link to; ExampleActivity owns the CMP nav graph and routes the URL into
+                 LinksScreen via the `deepLinkUrl` extra. `autoVerify` keeps Android App Links
+                 working when the well-known assetlinks.json is hosted at the matching domain. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="https"
+                    android:host="kaluga-links.web.app"
+                    android:pathPrefix="/kalugaexample"/>
             </intent-filter>
         </activity>
         <activity android:name=".alerts.AlertsActivity"

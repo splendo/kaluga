@@ -28,6 +28,8 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -78,10 +80,46 @@ internal object Routes {
     const val SCIENTIFIC = "scientific"
 }
 
+/**
+ * Surface for inbound deep links. The host (Android activity, iOS deep-link handler, future macOS
+ * URL events) hands the parsed payload to [AppRootScreen]; the nav graph routes to the right
+ * screen and the destination screen consumes the payload exactly once.
+ */
+sealed class DeepLink {
+    data class Links(val url: String) : DeepLink()
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppRootScreen(features: List<Feature>, onUnmigratedFeatureSelected: (Feature) -> Unit, modifier: Modifier = Modifier) {
+fun AppRootScreen(
+    features: List<Feature>,
+    onUnmigratedFeatureSelected: (Feature) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val navController = rememberNavController()
+    val deepLink by DeepLinkBus.state.collectAsState()
+    LaunchedEffect(deepLink) {
+        when (val current = deepLink) {
+            is DeepLink.Links -> {
+                navController.navigate(Routes.LINKS) {
+                    // Without these flags, an inbound universal link while LinksScreen is already
+                    // on top would push a *second* LinksScreen onto the back stack — bottom-back
+                    // would then land you on the first one. `launchSingleTop` collapses a re-entry
+                    // into the existing instance, and `popUpTo(ROOT)` rewinds anything pushed on
+                    // top of root.
+                    launchSingleTop = true
+                    popUpTo(Routes.ROOT)
+                }
+                // Hand the URL to the Links destination via the back-stack entry's saved state.
+                // `LinksScreen` reads & clears it on first composition, so the dialog only shows
+                // once per inbound link.
+                navController.getBackStackEntry(Routes.LINKS)
+                    .savedStateHandle["incomingUrl"] = current.url
+                DeepLinkBus.consume()
+            }
+            null -> Unit
+        }
+    }
     NavHost(
         navController = navController,
         startDestination = Routes.ROOT,
@@ -97,9 +135,13 @@ fun AppRootScreen(features: List<Feature>, onUnmigratedFeatureSelected: (Feature
                 },
             )
         }
-        composable(Routes.LINKS) {
+        composable(Routes.LINKS) { entry ->
+            val incomingUrl = entry.savedStateHandle.get<String>("incomingUrl")
+            // Clear immediately so re-entering the screen via back navigation doesn't replay the
+            // dialog.
+            entry.savedStateHandle["incomingUrl"] = null
             DetailScaffold(title = Feature.Links.title, onBack = { navController.popBackStack() }) {
-                LinksScreen()
+                LinksScreen(incomingUrl = incomingUrl)
             }
         }
         composable(Routes.SYSTEM) {

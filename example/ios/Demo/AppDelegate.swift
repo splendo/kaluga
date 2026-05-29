@@ -33,28 +33,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.makeKeyAndVisible()
         self.window = window
 
+        // Cold-launch from a universal link: UIKit hands the URL via launchOptions before the
+        // Compose tree is up. Posting to the bus is safe — `AppRootScreen` reads the latest value
+        // when it composes, so the link is delivered to LinksScreen on first nav.
+        if let activity = launchOptions?[.userActivityDictionary] as? [AnyHashable: Any],
+           let userActivity = activity.values.compactMap({ $0 as? NSUserActivity }).first,
+           let url = userActivity.webpageURL?.absoluteString {
+            DeepLinkBus.shared.postUrl(url: url)
+        }
+        if let url = launchOptions?[.url] as? URL {
+            DeepLinkBus.shared.postUrl(url: url.absoluteString)
+        }
+
         return true
     }
 
     func application(_ application: UIApplication,
                      continue userActivity: NSUserActivity,
                      restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        // LinksViewController is gone — Links is now a CMP screen inside `MainViewController`'s
-        // nav graph, and the CMP `LinksScreen` doesn't yet accept an incoming URL. We still
-        // validate the universal link via kaluga.links so the deep-link path is exercised, and we
-        // log the parsed payload. Routing the user to the Links screen on cold-launch can be
-        // wired up by adding a `startRoute` parameter to the `MainViewController` factory.
+        // Foreground/background universal-link arrival. CMP's `AppRootScreen` observes the bus and
+        // navigates to LinksScreen automatically; LinksScreen runs the same
+        // `LinksManager.handleIncomingLink(...)` validation the old `LinksViewModel` did.
         guard let stringUrl = userActivity.webpageURL?.absoluteString else {
             NSLog("Universal link arrived without a webpageURL")
             return false
         }
-        let manager = DefaultLinksManager.Builder().create()
-        if let validated = manager.validateLink(url: stringUrl) {
-            NSLog("Kaluga deep link accepted: \(validated)")
-            return true
-        }
-        NSLog("Kaluga deep link rejected: \(stringUrl)")
-        return false
+        DeepLinkBus.shared.postUrl(url: stringUrl)
+        return true
+    }
+
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+        // Same path for custom-scheme `kalugaexample://` links (registered in Info.plist).
+        DeepLinkBus.shared.postUrl(url: url.absoluteString)
+        return true
     }
 
     func applicationWillResignActive(_ application: UIApplication) {}

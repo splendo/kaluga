@@ -22,10 +22,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.links.DefaultLinksManager
@@ -33,15 +39,31 @@ import com.splendo.kaluga.links.LinksManager
 
 private const val DEMO_URL = "https://kaluga-links.web.app"
 
+private data class IncomingAlert(val title: String, val message: String)
+
 /**
- * Validates the demo URL through [LinksManager] (proving the macOS-capable kaluga.links module is
- * wired through CMP) and hands the resulting URL to [PlatformActions.openUrl]. Skips the deep-link
- * intake demo from the Kaluga-MVVM version — that one is intrinsically platform-routing and stays
- * with the host activity.
+ * Validates the demo URL through [LinksManager] and hands it to [PlatformActions.openUrl].
+ *
+ * When the host activity (Android `ExampleActivity`, future iOS/macOS handlers) hands an inbound
+ * universal link through as [incomingUrl], the screen replays what the old `LinksViewModel.
+ * handleIncomingLink` did: feed it to `LinksManager.handleIncomingLink(url, Repository.serializer())`
+ * and show an alert with the parsed payload, or an error alert when the URL doesn't decode.
  */
 @Composable
-fun LinksScreen(modifier: Modifier = Modifier) {
+fun LinksScreen(incomingUrl: String? = null, modifier: Modifier = Modifier) {
     val linksManager: LinksManager = remember { DefaultLinksManager.Builder().create() }
+    var alert by remember { mutableStateOf<IncomingAlert?>(null) }
+
+    LaunchedEffect(incomingUrl) {
+        val url = incomingUrl ?: return@LaunchedEffect
+        val repository = linksManager.handleIncomingLink(url, Repository.serializer())
+        alert = if (repository != null) {
+            IncomingAlert(title = "Alert", message = repository.toString())
+        } else {
+            IncomingAlert(title = "Error Alert", message = "Query is invalid or empty.")
+        }
+    }
+
     Column(
         modifier = modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -58,5 +80,16 @@ fun LinksScreen(modifier: Modifier = Modifier) {
         ) {
             Text("Open Browser")
         }
+    }
+
+    alert?.let { current ->
+        AlertDialog(
+            onDismissRequest = { alert = null },
+            title = { Text(current.title) },
+            text = { Text(current.message) },
+            confirmButton = {
+                TextButton(onClick = { alert = null }) { Text("OK") }
+            },
+        )
     }
 }

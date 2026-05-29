@@ -48,10 +48,10 @@ ios/Demo/Bluetooth/Server/BluetoothServerView.swift
 If any of those folders end up empty after the deletions, you can remove the group from the project
 navigator too.
 
-If `UITypeSelection/SwiftUIOrUIKitSelectionViewController.swift` is still referenced from any
-remaining screen (it picked between SwiftUI and UIKit demos), audit those callers — that
-`SwiftUIOrUIKitSelectionViewModel` now lives under `mobileshared.viewmodel.ui.*`, so the file likely
-still works after an `import` swap (see step 4) and you can keep it.
+The old `SwiftUIOrUIKitSelectionViewController` and its Kotlin `SwiftUIOrUIKitSelectionViewModel`
+have been removed entirely — every feature that used to offer a UIKit/SwiftUI chooser now goes
+straight to its SwiftUI variant. Drop `ios/Demo/UITypeSelection/` if it's still in the project
+navigator.
 
 ## 3. Replace `ExampleViewController.swift` with a CMP host
 
@@ -129,7 +129,6 @@ ios/Demo/KeyboardManager/*.swift
 ios/Demo/LoadingIndicator/*.swift
 ios/Demo/Media/*.swift
 ios/Demo/Resources/*.swift
-ios/Demo/UITypeSelection/*.swift
 ```
 
 Swap can be done with a single project-wide find-and-replace once both frameworks are linked.

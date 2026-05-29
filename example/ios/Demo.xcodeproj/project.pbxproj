@@ -10,7 +10,6 @@
 		008D2380957750839A7B501C /* Navigation.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1AD210B87A46DBD057A7D28 /* Navigation.generated.swift */; };
 		1529FF0B35BD7AB3B6E838A9 /* UninitializedSubject.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8165D122BD8D8848D7242385 /* UninitializedSubject.generated.swift */; };
 		1E3CD7CB5C78456A64FD6847 /* LifecycleViewModel.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8678F48E60D40E6AB06177C /* LifecycleViewModel.generated.swift */; };
-		201EA2192937C32000C562EC /* SwiftUIOrUIKitSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA2182937C32000C562EC /* SwiftUIOrUIKitSelectionViewController.swift */; };
 		201EA21B2938E23600C562EC /* AlertsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA21A2938E23600C562EC /* AlertsView.swift */; };
 		201EA21D2938E89300C562EC /* DateTimePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA21C2938E89300C562EC /* DateTimePickerView.swift */; };
 		201EA21F2938EB5200C562EC /* String+Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA21E2938EB5200C562EC /* String+Localized.swift */; };
@@ -22,25 +21,11 @@
 		2025CA2B29C9FC480037DF68 /* MediaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2025CA2A29C9FC480037DF68 /* MediaViewController.swift */; };
 		203006D62FC9E4C200B3A34B /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203006D52FC9E4B900B3A34B /* ExampleViewController.swift */; };
 		2034C13A2937B494003A6D19 /* PartialSheet in Frameworks */ = {isa = PBXBuildFile; productRef = 2034C1392937B494003A6D19 /* PartialSheet */; };
-		20524A24257BEA1E0054B57E /* DateTimePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */; };
-		205747572397C9C400CDE25E /* KeyboardManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */; };
 		205AF6562488F017001BD99E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 205AF6542488F017001BD99E /* Localizable.strings */; };
-		2073D0F0270303B3002CB856 /* ButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2073D0EF270303B3002CB856 /* ButtonViewController.swift */; };
-		2073D0F227032B5B002CB856 /* ColorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2073D0F127032B5B002CB856 /* ColorViewController.swift */; };
 		207537A929A64CEC00D273F2 /* ImagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207537A829A64CEC00D273F2 /* ImagesView.swift */; };
-		207537AB29A64D3000D273F2 /* ImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207537AA29A64D3000D273F2 /* ImagesViewController.swift */; };
 		209471E124C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209471E024C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */; };
 		20BB9E652962ECA70096E836 /* KeyboardManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB9E642962ECA70096E836 /* KeyboardManagerView.swift */; };
-		20BB9E722963281D0096E836 /* MainStoryboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB9E712963281D0096E836 /* MainStoryboard.swift */; };
-		20BB9E74296331290096E836 /* UICollectionView+Typed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB9E73296331290096E836 /* UICollectionView+Typed.swift */; };
-		20BB9E76296333BE0096E836 /* UITableView+Typed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB9E75296333BE0096E836 /* UITableView+Typed.swift */; };
 		20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */; };
-		20C7D1D8246A93A600C9A63F /* ArchitectureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D7246A93A600C9A63F /* ArchitectureViewController.swift */; };
-		20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */; };
-		20CA2905293796C5007E4079 /* BottomSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CA2904293796C5007E4079 /* BottomSheetViewController.swift */; };
-		20CA2907293796D7007E4079 /* BottomSheetSubPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CA2906293796D7007E4079 /* BottomSheetSubPageViewController.swift */; };
-		20D8CD3726FE8FE200D14AC9 /* ResourcesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D8CD3626FE8FE200D14AC9 /* ResourcesListViewController.swift */; };
-		20D8CD3926FF550100D14AC9 /* LabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D8CD3826FF550100D14AC9 /* LabelViewController.swift */; };
 		20FFB48A293EB4F0005CF1C8 /* ArchitectureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FFB489293EB4F0005CF1C8 /* ArchitectureView.swift */; };
 		20FFB48C293EC3CB005CF1C8 /* ArchitectureDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FFB48B293EC3CB005CF1C8 /* ArchitectureDetailsView.swift */; };
 		20FFB48E293F818B005CF1C8 /* BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FFB48D293F818B005CF1C8 /* BottomSheetView.swift */; };
@@ -52,8 +37,6 @@
 		37B9F4481D30F2FC895AB554 /* PlatformValueMapper.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA3213EF5694917A0138255 /* PlatformValueMapper.generated.swift */; };
 		3E0F5DDF709B60978E495E1E /* KalugaBackgroundStyleShape+SwiftUI.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DDAE2784FBCEE56F96980D /* KalugaBackgroundStyleShape+SwiftUI.generated.swift */; };
 		42B12B5CFE87189A5F539B92 /* HasDefaultValue.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D181CE83615D345BB56946 /* HasDefaultValue.generated.swift */; };
-		4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B02E503236B221B003F0B36 /* LoadingViewController.swift */; };
-		4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B54CB202369DA6600B69B2D /* AlertsViewController.swift */; };
 		4BC0CBDF269F1D25000512A9 /* BeaconsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC0CBDD269F1D25000512A9 /* BeaconsViewController.swift */; };
 		4BC0CBE0269F1D25000512A9 /* BeaconsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC0CBDE269F1D25000512A9 /* BeaconsViewCell.swift */; };
 		62D65713EC7DD3C712D864BB /* ListSubject.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC460D671184DBFD03C42FB /* ListSubject.generated.swift */; };
@@ -118,7 +101,6 @@
 		167E723C40578BBD9EAA6559 /* ContainerView.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = ContainerView.generated.swift; sourceTree = "<group>"; };
 		18DDAE2784FBCEE56F96980D /* KalugaBackgroundStyleShape+SwiftUI.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "KalugaBackgroundStyleShape+SwiftUI.generated.swift"; sourceTree = "<group>"; };
 		1DA3213EF5694917A0138255 /* PlatformValueMapper.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = PlatformValueMapper.generated.swift; sourceTree = "<group>"; };
-		201EA2182937C32000C562EC /* SwiftUIOrUIKitSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIOrUIKitSelectionViewController.swift; sourceTree = "<group>"; };
 		201EA21A2938E23600C562EC /* AlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsView.swift; sourceTree = "<group>"; };
 		201EA21C2938E89300C562EC /* DateTimePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimePickerView.swift; sourceTree = "<group>"; };
 		201EA21E2938EB5200C562EC /* String+Localized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Localized.swift"; sourceTree = "<group>"; };
@@ -129,25 +111,11 @@
 		201EA228293B8C6600C562EC /* ColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorView.swift; sourceTree = "<group>"; };
 		2025CA2A29C9FC480037DF68 /* MediaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaViewController.swift; sourceTree = "<group>"; };
 		203006D52FC9E4B900B3A34B /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
-		20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimePickerViewController.swift; sourceTree = "<group>"; };
-		205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManagerViewController.swift; sourceTree = "<group>"; };
 		205AF6552488F017001BD99E /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Demo/Base.lproj/Localizable.strings; sourceTree = "<group>"; };
-		2073D0EF270303B3002CB856 /* ButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonViewController.swift; sourceTree = "<group>"; };
-		2073D0F127032B5B002CB856 /* ColorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorViewController.swift; sourceTree = "<group>"; };
 		207537A829A64CEC00D273F2 /* ImagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesView.swift; sourceTree = "<group>"; };
-		207537AA29A64D3000D273F2 /* ImagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesViewController.swift; sourceTree = "<group>"; };
 		209471E024C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FittingWidthAutomaticHeightCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		20BB9E642962ECA70096E836 /* KeyboardManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManagerView.swift; sourceTree = "<group>"; };
-		20BB9E712963281D0096E836 /* MainStoryboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainStoryboard.swift; sourceTree = "<group>"; };
-		20BB9E73296331290096E836 /* UICollectionView+Typed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Typed.swift"; sourceTree = "<group>"; };
-		20BB9E75296333BE0096E836 /* UITableView+Typed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Typed.swift"; sourceTree = "<group>"; };
 		20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+Closure.swift"; sourceTree = "<group>"; };
-		20C7D1D7246A93A600C9A63F /* ArchitectureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureViewController.swift; sourceTree = "<group>"; };
-		20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureDetailsViewController.swift; sourceTree = "<group>"; };
-		20CA2904293796C5007E4079 /* BottomSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetViewController.swift; sourceTree = "<group>"; };
-		20CA2906293796D7007E4079 /* BottomSheetSubPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetSubPageViewController.swift; sourceTree = "<group>"; };
-		20D8CD3626FE8FE200D14AC9 /* ResourcesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcesListViewController.swift; sourceTree = "<group>"; };
-		20D8CD3826FF550100D14AC9 /* LabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelViewController.swift; sourceTree = "<group>"; };
 		20FFB489293EB4F0005CF1C8 /* ArchitectureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureView.swift; sourceTree = "<group>"; };
 		20FFB48B293EC3CB005CF1C8 /* ArchitectureDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureDetailsView.swift; sourceTree = "<group>"; };
 		20FFB48D293F818B005CF1C8 /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
@@ -158,8 +126,6 @@
 		382B35FA85A28992FE37B803 /* KalugaStyledString+SwiftUI.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "KalugaStyledString+SwiftUI.generated.swift"; sourceTree = "<group>"; };
 		3EC460D671184DBFD03C42FB /* ListSubject.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = ListSubject.generated.swift; sourceTree = "<group>"; };
 		4A2BAEDD60E67CE8F9277AC6 /* Shape+Helpers.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "Shape+Helpers.generated.swift"; sourceTree = "<group>"; };
-		4B02E503236B221B003F0B36 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
-		4B54CB202369DA6600B69B2D /* AlertsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsViewController.swift; sourceTree = "<group>"; };
 		4BC0CBDD269F1D25000512A9 /* BeaconsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconsViewController.swift; sourceTree = "<group>"; };
 		4BC0CBDE269F1D25000512A9 /* BeaconsViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconsViewCell.swift; sourceTree = "<group>"; };
 		5304E64813F87A2C71BD40C2 /* KalugaButton+SwiftUI.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "KalugaButton+SwiftUI.generated.swift"; sourceTree = "<group>"; };
@@ -222,14 +188,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		201EA2172937C2CC00C562EC /* UITypeSelection */ = {
-			isa = PBXGroup;
-			children = (
-				201EA2182937C32000C562EC /* SwiftUIOrUIKitSelectionViewController.swift */,
-			);
-			path = UITypeSelection;
-			sourceTree = "<group>";
-		};
 		2025CA2929C9FC310037DF68 /* Media */ = {
 			isa = PBXGroup;
 			children = (
@@ -244,7 +202,6 @@
 		20524A22257BEA020054B57E /* DateTimePicker */ = {
 			isa = PBXGroup;
 			children = (
-				20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */,
 				201EA21C2938E89300C562EC /* DateTimePickerView.swift */,
 			);
 			path = DateTimePicker;
@@ -253,7 +210,6 @@
 		205747552397C99100CDE25E /* KeyboardManager */ = {
 			isa = PBXGroup;
 			children = (
-				205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */,
 				20BB9E642962ECA70096E836 /* KeyboardManagerView.swift */,
 			);
 			path = KeyboardManager;
@@ -272,9 +228,6 @@
 			children = (
 				20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */,
 				201EA21E2938EB5200C562EC /* String+Localized.swift */,
-				20BB9E712963281D0096E836 /* MainStoryboard.swift */,
-				20BB9E73296331290096E836 /* UICollectionView+Typed.swift */,
-				20BB9E75296333BE0096E836 /* UITableView+Typed.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -282,10 +235,6 @@
 		20C7D1D6246A938A00C9A63F /* Architecture */ = {
 			isa = PBXGroup;
 			children = (
-				20C7D1D7246A93A600C9A63F /* ArchitectureViewController.swift */,
-				20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */,
-				20CA2904293796C5007E4079 /* BottomSheetViewController.swift */,
-				20CA2906293796D7007E4079 /* BottomSheetSubPageViewController.swift */,
 				20FFB489293EB4F0005CF1C8 /* ArchitectureView.swift */,
 				20FFB48B293EC3CB005CF1C8 /* ArchitectureDetailsView.swift */,
 				20FFB48D293F818B005CF1C8 /* BottomSheetView.swift */,
@@ -297,16 +246,11 @@
 		20D8CD3526FE8FBA00D14AC9 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				20D8CD3626FE8FE200D14AC9 /* ResourcesListViewController.swift */,
-				20D8CD3826FF550100D14AC9 /* LabelViewController.swift */,
-				2073D0EF270303B3002CB856 /* ButtonViewController.swift */,
-				2073D0F127032B5B002CB856 /* ColorViewController.swift */,
 				201EA2222938F11700C562EC /* ResourcesListView.swift */,
 				201EA22429390A7F00C562EC /* ButtonView.swift */,
 				201EA22629390CFE00C562EC /* LabelView.swift */,
 				201EA228293B8C6600C562EC /* ColorView.swift */,
 				207537A829A64CEC00D273F2 /* ImagesView.swift */,
-				207537AA29A64D3000D273F2 /* ImagesViewController.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -314,7 +258,6 @@
 		4B02E502236B2206003F0B36 /* LoadingIndicator */ = {
 			isa = PBXGroup;
 			children = (
-				4B02E503236B221B003F0B36 /* LoadingViewController.swift */,
 				201EA2202938ECE700C562EC /* LoadingView.swift */,
 			);
 			path = LoadingIndicator;
@@ -323,7 +266,6 @@
 		4B54CB1F2369DA4E00B69B2D /* Alerts */ = {
 			isa = PBXGroup;
 			children = (
-				4B54CB202369DA6600B69B2D /* AlertsViewController.swift */,
 				201EA21A2938E23600C562EC /* AlertsView.swift */,
 			);
 			path = Alerts;
@@ -355,7 +297,6 @@
 			children = (
 				203006D52FC9E4B900B3A34B /* ExampleViewController.swift */,
 				2025CA2929C9FC310037DF68 /* Media */,
-				201EA2172937C2CC00C562EC /* UITypeSelection */,
 				20D8CD3526FE8FBA00D14AC9 /* Resources */,
 				648214DD263095A900CDAE05 /* Demo.entitlements */,
 				20524A22257BEA020054B57E /* DateTimePicker */,
@@ -601,39 +542,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC5100D92D2EB42700095938 /* MediaListViewController.swift in Sources */,
-				205747572397C9C400CDE25E /* KeyboardManagerViewController.swift in Sources */,
 				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
-				20D8CD3726FE8FE200D14AC9 /* ResourcesListViewController.swift in Sources */,
 				209471E124C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift in Sources */,
-				2073D0F227032B5B002CB856 /* ColorViewController.swift in Sources */,
 				201EA2232938F11700C562EC /* ResourcesListView.swift in Sources */,
 				BC5100DB2D2ECC7600095938 /* MediaSoundViewController.swift in Sources */,
-				20524A24257BEA1E0054B57E /* DateTimePickerViewController.swift in Sources */,
 				20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */,
 				4BC0CBDF269F1D25000512A9 /* BeaconsViewController.swift in Sources */,
-				20D8CD3926FF550100D14AC9 /* LabelViewController.swift in Sources */,
 				4BC0CBE0269F1D25000512A9 /* BeaconsViewCell.swift in Sources */,
-				20C7D1D8246A93A600C9A63F /* ArchitectureViewController.swift in Sources */,
-				20CA2905293796C5007E4079 /* BottomSheetViewController.swift in Sources */,
-				20BB9E76296333BE0096E836 /* UITableView+Typed.swift in Sources */,
 				20BB9E652962ECA70096E836 /* KeyboardManagerView.swift in Sources */,
 				207537A929A64CEC00D273F2 /* ImagesView.swift in Sources */,
 				201EA2212938ECE700C562EC /* LoadingView.swift in Sources */,
-				20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */,
 				201EA21F2938EB5200C562EC /* String+Localized.swift in Sources */,
-				4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */,
 				201EA22529390A7F00C562EC /* ButtonView.swift in Sources */,
 				201EA21B2938E23600C562EC /* AlertsView.swift in Sources */,
 				201EA22729390CFE00C562EC /* LabelView.swift in Sources */,
 				201EA229293B8C6600C562EC /* ColorView.swift in Sources */,
-				20CA2907293796D7007E4079 /* BottomSheetSubPageViewController.swift in Sources */,
-				4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */,
-				2073D0F0270303B3002CB856 /* ButtonViewController.swift in Sources */,
 				93EC5B31E0ADDED3225B15C9 /* Color+Color.generated.swift in Sources */,
 				201EA21D2938E89300C562EC /* DateTimePickerView.swift in Sources */,
 				7ECE3B4F9AD53DA93EF73B0E /* ContainerView.generated.swift in Sources */,
 				73DBBA374F2ED176BCF8E189 /* DefaultValues.generated.swift in Sources */,
-				207537AB29A64D3000D273F2 /* ImagesViewController.swift in Sources */,
 				42B12B5CFE87189A5F539B92 /* HasDefaultValue.generated.swift in Sources */,
 				D174F54A364898AC7E0962FC /* KalugaBackgroundStyle+SwiftUI.generated.swift in Sources */,
 				2025CA2B29C9FC480037DF68 /* MediaViewController.swift in Sources */,
@@ -645,11 +572,9 @@
 				C77C23B538A4DFB02C0E0773 /* LazyView.generated.swift in Sources */,
 				1E3CD7CB5C78456A64FD6847 /* LifecycleViewModel.generated.swift in Sources */,
 				8679BDAA7F79F92DAC24AF23 /* ListObservable.generated.swift in Sources */,
-				201EA2192937C32000C562EC /* SwiftUIOrUIKitSelectionViewController.swift in Sources */,
 				62D65713EC7DD3C712D864BB /* ListSubject.generated.swift in Sources */,
 				008D2380957750839A7B501C /* Navigation.generated.swift in Sources */,
 				C9555693B015ADE12795997D /* NavigationBarColor.generated.swift in Sources */,
-				20BB9E74296331290096E836 /* UICollectionView+Typed.swift in Sources */,
 				D17DC9D74F0BD77D12813366 /* Observable.generated.swift in Sources */,
 				203006D62FC9E4C200B3A34B /* ExampleViewController.swift in Sources */,
 				6BBAC6F7C1C74608F52D7FF7 /* PlatformMappers.generated.swift in Sources */,
@@ -657,7 +582,6 @@
 				20FFB48E293F818B005CF1C8 /* BottomSheetView.swift in Sources */,
 				847C2A647F23AF46CED079CF /* RoutingState.generated.swift in Sources */,
 				300D5D65F49D6711AC8FF5DA /* Subject.generated.swift in Sources */,
-				20BB9E722963281D0096E836 /* MainStoryboard.swift in Sources */,
 				20FFB48A293EB4F0005CF1C8 /* ArchitectureView.swift in Sources */,
 				20FFB490293FA7EB005CF1C8 /* BottomSheetSubPageView.swift in Sources */,
 				2EF7D8289105AC623E600829 /* UninitializedObservable.generated.swift in Sources */,
@@ -821,7 +745,8 @@
 					"$(inherited)",
 					"-framework",
 					KalugaMobileShared,
-					"\"-framework KalugaExampleShared\"",
+					"-framework",
+					KalugaExampleShared,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -977,7 +902,8 @@
 					"$(inherited)",
 					"-framework",
 					KalugaMobileShared,
-					"\"-framework KalugaExampleShared\"",
+					"-framework",
+					KalugaExampleShared,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";

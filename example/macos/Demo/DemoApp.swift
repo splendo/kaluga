@@ -29,6 +29,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    func application(_ application: NSApplication,
+                     continue userActivity: NSUserActivity,
+                     restorationHandler: @escaping ([any NSUserActivityRestoring]) -> Void) -> Bool {
+        // Universal link arriving via the system browser / Handoff. CMP's `AppRootScreen`
+        // observes the bus and routes to LinksScreen, where the same
+        // `LinksManager.handleIncomingLink(...)` validation runs as on iOS and Android.
+        guard let url = userActivity.webpageURL?.absoluteString else { return false }
+        DeepLinkBus.shared.postUrl(url: url)
+        return true
+    }
+
+    func application(_ application: NSApplication, open urls: [URL]) {
+        // Custom-scheme links (`kalugaexample://...`) arrive here; forward each one to the bus.
+        for url in urls {
+            DeepLinkBus.shared.postUrl(url: url.absoluteString)
+        }
+    }
+
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return true
     }
