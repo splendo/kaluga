@@ -34,7 +34,7 @@ import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageNavigation
 import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetSubPageViewModel
 import kotlinx.coroutines.flow.StateFlow
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable

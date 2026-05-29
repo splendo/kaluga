@@ -54,7 +54,7 @@ import com.splendo.kaluga.example.shared.viewmodel.resources.ColorViewModel
 import com.splendo.kaluga.resources.compose.Composable
 import com.splendo.kaluga.resources.compose.backgroundStyle
 import com.splendo.kaluga.resources.stylable.KalugaBackgroundStyle
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ColorsLayout() {

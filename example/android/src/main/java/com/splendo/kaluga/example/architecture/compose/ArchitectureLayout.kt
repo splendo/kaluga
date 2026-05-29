@@ -63,7 +63,7 @@ import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureView
 import com.splendo.kaluga.example.shared.viewmodel.architecture.BottomSheetNavigation
 import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import com.splendo.kaluga.resources.compose.Composable
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 class ComposeArchitectureActivity : AppCompatActivity() {

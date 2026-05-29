@@ -40,7 +40,7 @@ kaluga {
     dependencies {
         android {
             main {
-                api(libs.koin.android)
+                api(libs.koin.compose.viewmodel)
             }
         }
         common {

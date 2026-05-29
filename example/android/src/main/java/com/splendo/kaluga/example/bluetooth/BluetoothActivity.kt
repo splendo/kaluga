@@ -53,7 +53,7 @@ import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.client.DeviceDetails
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 class BluetoothActivity : AppCompatActivity() {

@@ -38,7 +38,7 @@ import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.example.compose.Constants
 import com.splendo.kaluga.example.shared.viewmodel.alert.AlertViewModel
 import com.splendo.kaluga.resources.compose.Composable
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 class ComposeAlertsActivity : AppCompatActivity() {
     @SuppressLint("MissingSuperCall") // Lint bug

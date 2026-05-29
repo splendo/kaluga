@@ -37,7 +37,7 @@ import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDeta
 import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import com.splendo.kaluga.resources.compose.Composable
 import kotlinx.coroutines.flow.StateFlow
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
