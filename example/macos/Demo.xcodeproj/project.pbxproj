@@ -7,30 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		88A73B41EC5B5871BE7776A3 /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403665714F0F82EC4EB9AC11 /* DemoApp.swift */; };
+		79E538BE535BEECCF74F6A96 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC30BE14C2065F9F61C4E6E /* main.swift */; };
 		9BD890B94517FA0285C0CC3F /* KalugaExampleShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFDF8536ECB2510C466FF9C4 /* KalugaExampleShared.framework */; };
-		DC8E55B917C753A113F63173 /* KalugaExampleShared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFDF8536ECB2510C466FF9C4 /* KalugaExampleShared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		45B3CDDC9ED5258ED92FB4E7 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				DC8E55B917C753A113F63173 /* KalugaExampleShared.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3A226E443F31E591F7687A46 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		403665714F0F82EC4EB9AC11 /* DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
 		58BAC8E5CE873219C0FD0BB9 /* Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Demo.entitlements; sourceTree = "<group>"; };
-		BFDF8536ECB2510C466FF9C4 /* KalugaExampleShared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = KalugaExampleShared.framework; sourceTree = "<group>"; };
+		BFDF8536ECB2510C466FF9C4 /* KalugaExampleShared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KalugaExampleShared.framework; path = "../shared/build/xcode-frameworks/Debug/macosx/KalugaExampleShared.framework"; sourceTree = "<group>"; };
+		CFC30BE14C2065F9F61C4E6E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		E158E1D8DDD5F3DC89B171A3 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -66,8 +51,8 @@
 			isa = PBXGroup;
 			children = (
 				58BAC8E5CE873219C0FD0BB9 /* Demo.entitlements */,
-				403665714F0F82EC4EB9AC11 /* DemoApp.swift */,
 				3A226E443F31E591F7687A46 /* Info.plist */,
+				CFC30BE14C2065F9F61C4E6E /* main.swift */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -88,9 +73,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 67F59FA59F734371A2570797 /* Build configuration list for PBXNativeTarget "Demo" */;
 			buildPhases = (
+				825347410B983778D33AF7A6 /* Build & embed Kotlin framework */,
 				A1DCA12CEE65932D9EECDBA4 /* Sources */,
 				F85CE95CC7B9E76D63880B75 /* Frameworks */,
-				45B3CDDC9ED5258ED92FB4E7 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -133,12 +118,34 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		825347410B983778D33AF7A6 /* Build & embed Kotlin framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Build & embed Kotlin framework";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$SRCROOT/..\"\n./gradlew :shared:embedAndSignAppleFrameworkForXcode\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A1DCA12CEE65932D9EECDBA4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				88A73B41EC5B5871BE7776A3 /* DemoApp.swift in Sources */,
+				79E538BE535BEECCF74F6A96 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,11 +160,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../shared/build/bin/macosArm64/debugFramework",
-					"$(SRCROOT)/../shared/build/bin/macosArm64/releaseFramework",
-					"$(SRCROOT)/../shared/build/bin/macosX64/debugFramework",
-					"$(SRCROOT)/../shared/build/bin/macosX64/releaseFramework",
-					"\".\"",
+					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+					"\"../shared/build/xcode-frameworks/Debug/macosx\"",
 				);
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -233,11 +237,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../shared/build/bin/macosArm64/debugFramework",
-					"$(SRCROOT)/../shared/build/bin/macosArm64/releaseFramework",
-					"$(SRCROOT)/../shared/build/bin/macosX64/debugFramework",
-					"$(SRCROOT)/../shared/build/bin/macosX64/releaseFramework",
-					"\".\"",
+					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
+					"\"../shared/build/xcode-frameworks/Debug/macosx\"",
 				);
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

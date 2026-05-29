@@ -1,10 +1,7 @@
 # XcodeGen spec for the macOS demo. Run `xcodegen generate` from this directory to (re)generate
-# `Demo.xcodeproj` against the `KalugaExampleShared.framework` produced by `:shared`. The framework
-# is linked from the Gradle build output via FRAMEWORK_SEARCH_PATHS.
-#
-# Build prerequisite:
-#   ./gradlew :shared:linkDebugFrameworkMacosArm64
-# (use `linkReleaseFrameworkMacosArm64` for release builds; switch to `MacosX64` on Intel Macs.)
+# `Demo.xcodeproj`. The actual framework binary is built and embedded by the
+# `:shared:embedAndSignAppleFrameworkForXcode` Gradle task that's wired in as a pre-build script
+# below — the same approach the iOS app already uses.
 
 name: Demo
 options:
@@ -25,23 +22,30 @@ targets:
     platform: macOS
     sources:
       - path: Demo
+    preBuildScripts:
+      - name: "Build & embed Kotlin framework"
+        # `embedAndSignAppleFrameworkForXcode` reads CONFIGURATION / SDK_NAME / ARCHS from the
+        # Xcode environment and produces the correct framework variant under
+        # `shared/build/xcode-frameworks/$CONFIGURATION/$SDK_NAME/`, then embeds & signs it into
+        # the app bundle. Mirrors the build phase in `ios/Demo.xcodeproj`.
+        script: |
+          cd "$SRCROOT/.."
+          ./gradlew :shared:embedAndSignAppleFrameworkForXcode
+        basedOnDependencyAnalysis: false
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.splendo.kaluga.example.macos
         INFOPLIST_FILE: Demo/Info.plist
         CODE_SIGN_ENTITLEMENTS: Demo/Demo.entitlements
         ENABLE_HARDENED_RUNTIME: YES
-        # Two paths are searched because the framework is emitted under either Debug or Release
-        # depending on which link* task the developer last ran.
         FRAMEWORK_SEARCH_PATHS:
-          - $(SRCROOT)/../shared/build/bin/macosArm64/debugFramework
-          - $(SRCROOT)/../shared/build/bin/macosArm64/releaseFramework
-          - $(SRCROOT)/../shared/build/bin/macosX64/debugFramework
-          - $(SRCROOT)/../shared/build/bin/macosX64/releaseFramework
+          - $(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
         LD_RUNPATH_SEARCH_PATHS:
           - $(inherited)
           - "@executable_path/../Frameworks"
     dependencies:
-      - framework: KalugaExampleShared.framework
-        embed: true
-        codeSign: true
+      # `embed: false` — the gradle task handles embed + sign itself, so we only need the link
+      # entry here. The path is a stable reference used for Xcode indexing; the actual binary
+      # comes from FRAMEWORK_SEARCH_PATHS at compile time and the script phase at build time.
+      - framework: ../shared/build/xcode-frameworks/Debug/macosx/KalugaExampleShared.framework
+        embed: false

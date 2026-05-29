@@ -5,27 +5,22 @@ only the features whose underlying Kaluga module supports macOS (`Feature.availa
 
 ## Build & run
 
-1. Build the Kotlin framework for your local arch (Compose Multiplatform only publishes for
-   `macosArm64` — Intel Macs are not supported here):
+The Xcode project runs `./gradlew :example:shared:embedAndSignAppleFrameworkForXcode` as a
+pre-build script (mirrors the iOS project). That task reads `$CONFIGURATION` / `$SDK_NAME` /
+`$ARCHS` from Xcode, links the correct `KalugaExampleShared.framework` variant under
+`shared/build/xcode-frameworks/<configuration>/<sdk>/`, and embeds + signs it into the app bundle.
+You do not need to run a separate Gradle command first.
 
-   ```sh
-   cd ..
-   ./gradlew :shared:linkDebugFrameworkMacosArm64
-   ```
+Compose Multiplatform only publishes for `macosArm64` — Intel Macs are not supported here.
 
-   The resulting `KalugaExampleShared.framework` lands in
-   `example/shared/build/bin/macosArm64/debugFramework/`. The Xcode project's
-   `FRAMEWORK_SEARCH_PATHS` look in both `debugFramework/` and `releaseFramework/` for either build
-   flavour.
-
-2. Generate the Xcode project (one-off — re-run after `project.yml` edits):
+1. Generate the Xcode project (one-off — re-run after `project.yml` edits):
 
    ```sh
    brew install xcodegen   # if missing
    xcodegen generate
    ```
 
-3. Open `Demo.xcodeproj`, pick the **Demo** scheme on a macOS run destination, and hit ⌘R.
+2. Open `Demo.xcodeproj`, pick the **Demo** scheme on a macOS run destination, and hit ⌘R.
 
 ## How the host wires Compose
 
