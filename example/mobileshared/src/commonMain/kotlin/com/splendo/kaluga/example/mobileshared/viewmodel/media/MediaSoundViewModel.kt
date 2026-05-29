@@ -19,7 +19,7 @@ package com.splendo.kaluga.example.mobileshared.viewmodel.media
 
 import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import com.splendo.kaluga.example.shared.stylable.ButtonStyles
+import com.splendo.kaluga.example.mobileshared.stylable.ButtonStyles
 import com.splendo.kaluga.media.DefaultSoundPlayer
 import com.splendo.kaluga.media.MediaSource
 import com.splendo.kaluga.resources.asImage

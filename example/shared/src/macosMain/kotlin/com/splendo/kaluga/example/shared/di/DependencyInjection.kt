@@ -15,16 +15,22 @@
 
  */
 
-package com.splendo.kaluga.example.shared.ui
+package com.splendo.kaluga.example.shared.di
 
-import androidx.compose.ui.window.ComposeUIViewController
-import platform.UIKit.UIViewController
+import com.splendo.kaluga.bluetooth.BluetoothBuilder
+import com.splendo.kaluga.location.LocationStateRepoBuilder
+import org.koin.core.module.Module
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.module
 
-/**
- * Returns a [UIViewController] containing the CMP app root. iOS hosts wrap this in their own
- * navigation chrome and provide the [onFeatureSelected] callback to launch native screens for
- * features that have not yet been migrated to CMP.
- */
-fun MainViewController(onUnmigratedFeatureSelected: (Feature) -> Unit): UIViewController = ComposeUIViewController {
-    AppRootScreen(features = Feature.entries, onUnmigratedFeatureSelected = onUnmigratedFeatureSelected)
+internal val macosModule = module { }
+
+fun initKoin(customModules: List<Module> = emptyList()) = initKoin(
+    macosModule,
+    { LocationStateRepoBuilder(permissionsBuilder = it) },
+    { BluetoothBuilder(permissionsBuilder = it) },
+    customModules,
+)
+
+internal actual val appDeclaration: KoinAppDeclaration = {
 }

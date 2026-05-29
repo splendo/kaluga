@@ -17,9 +17,7 @@
 
 package com.splendo.kaluga.example.shared.di
 
-import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
-import com.splendo.kaluga.bluetooth.beacons.DefaultBeacons
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.logging.Logger
@@ -35,7 +33,6 @@ import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.Duration.Companion.minutes
 
 typealias LocationStateRepoBuilderBuilder = (suspend (CoroutineContext) -> Permissions) -> LocationStateRepoBuilder
 typealias BluetoothBuilderBuilder = (suspend (CoroutineContext) -> Permissions) -> BluetoothBuilder
@@ -71,7 +68,6 @@ private fun sharedModule(locationStateRepoBuilderBuilder: LocationStateRepoBuild
             { BaseScanner.Settings(permissions = it, useLocation = USE_LOCATION_FOR_BLUETOOTH, logger = get()) },
         )
     }
-    single { DefaultBeacons(get<Bluetooth>(), beaconLifetime = 1.minutes, logger = get()) }
 }
 
 internal fun initKoin(

@@ -19,7 +19,7 @@ package com.splendo.kaluga.example.mobileshared.viewmodel.resources
 
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import com.splendo.kaluga.example.shared.stylable.TextStyles
+import com.splendo.kaluga.example.mobileshared.stylable.TextStyles
 import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.StringStyleAttribute
 import com.splendo.kaluga.resources.StyledStringBuilder

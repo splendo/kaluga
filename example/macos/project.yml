@@ -1,0 +1,47 @@
+# XcodeGen spec for the macOS demo. Run `xcodegen generate` from this directory to (re)generate
+# `Demo.xcodeproj` against the `KalugaExampleShared.framework` produced by `:shared`. The framework
+# is linked from the Gradle build output via FRAMEWORK_SEARCH_PATHS.
+#
+# Build prerequisite:
+#   ./gradlew :shared:linkDebugFrameworkMacosArm64
+# (use `linkReleaseFrameworkMacosArm64` for release builds; switch to `MacosX64` on Intel Macs.)
+
+name: Demo
+options:
+  bundleIdPrefix: com.splendo.kaluga
+  deploymentTarget:
+    macOS: "11.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "11.0"
+
+targets:
+  Demo:
+    type: application
+    platform: macOS
+    sources:
+      - path: Demo
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.splendo.kaluga.example.macos
+        INFOPLIST_FILE: Demo/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Demo/Demo.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+        # Two paths are searched because the framework is emitted under either Debug or Release
+        # depending on which link* task the developer last ran.
+        FRAMEWORK_SEARCH_PATHS:
+          - $(SRCROOT)/../shared/build/bin/macosArm64/debugFramework
+          - $(SRCROOT)/../shared/build/bin/macosArm64/releaseFramework
+          - $(SRCROOT)/../shared/build/bin/macosX64/debugFramework
+          - $(SRCROOT)/../shared/build/bin/macosX64/releaseFramework
+        LD_RUNPATH_SEARCH_PATHS:
+          - $(inherited)
+          - "@executable_path/../Frameworks"
+    dependencies:
+      - framework: KalugaExampleShared.framework
+        embed: true
+        codeSign: true

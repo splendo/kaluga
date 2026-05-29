@@ -24,7 +24,7 @@ import com.splendo.kaluga.architecture.observable.ObservableOptional
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedSubject
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
-import com.splendo.kaluga.example.shared.stylable.ButtonStyles
+import com.splendo.kaluga.example.mobileshared.stylable.ButtonStyles
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.flow.Flow

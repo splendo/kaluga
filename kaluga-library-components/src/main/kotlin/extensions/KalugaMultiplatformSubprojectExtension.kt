@@ -476,6 +476,11 @@ open class KalugaMultiplatformSubprojectExtension @Inject constructor(
             // `afterEvaluate { }`. macOS only consumes Swift sources under `appleMain/swift`.
             project.configure(registeredMacosTargets) {
                 configureSwiftAndInterop(swiftSourceDirFor(forIos = false), macosDeploymentTarget)
+                binaries {
+                    frameworkConfig?.let { macosExport ->
+                        framework { macosExport() }
+                    }
+                }
             }
 
             sourceSets.all {

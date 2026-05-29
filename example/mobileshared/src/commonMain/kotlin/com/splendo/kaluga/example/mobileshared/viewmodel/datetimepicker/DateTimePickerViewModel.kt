@@ -8,7 +8,7 @@ import com.splendo.kaluga.base.utils.DefaultKalugaDate
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.datetimepicker.buildDatePicker
 import com.splendo.kaluga.datetimepicker.buildTimePicker
-import com.splendo.kaluga.example.shared.stylable.ButtonStyles
+import com.splendo.kaluga.example.mobileshared.stylable.ButtonStyles
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.flow.MutableStateFlow

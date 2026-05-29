@@ -19,7 +19,7 @@ Copyright 2022 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.example.mobileshared.viewmodel.hud
 
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import com.splendo.kaluga.example.shared.stylable.ButtonStyles
+import com.splendo.kaluga.example.mobileshared.stylable.ButtonStyles
 import com.splendo.kaluga.hud.BaseHUD
 import com.splendo.kaluga.hud.HUDStyle
 import com.splendo.kaluga.hud.build

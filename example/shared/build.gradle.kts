@@ -5,29 +5,21 @@ plugins {
 }
 
 val modules = listOf(
-    "alerts" to true,
-    "architecture" to true,
     "base" to false,
     "bluetooth" to false,
-    "beacons" to false,
     "date-time" to false,
-    "date-time-picker" to true,
-    "hud" to true,
-    "keyboard" to true,
     "links" to true,
     "location" to false,
     "logging" to false,
-    "media" to true,
-    "resources" to true,
-    "review" to true,
+    "permissions" to true,
     "scientific" to false,
     "scientific-converters" to false,
     "system" to true,
-    "permissions" to true
 )
 
 kaluga {
     moduleName = "example.shared"
+    supportMacOS = true
     appleFramework {
         baseName = "KalugaExampleShared"
         isStatic = false

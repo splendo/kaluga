@@ -32,7 +32,7 @@ import com.splendo.kaluga.base.singleThreadDispatcher
 import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.text.format
-import com.splendo.kaluga.example.shared.stylable.ButtonStyles
+import com.splendo.kaluga.example.mobileshared.stylable.ButtonStyles
 import com.splendo.kaluga.media.BaseMediaManager
 import com.splendo.kaluga.media.DefaultMediaPlayer
 import com.splendo.kaluga.media.MediaPlayer

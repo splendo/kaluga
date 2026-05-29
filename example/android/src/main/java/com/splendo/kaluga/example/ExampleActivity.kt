@@ -26,20 +26,13 @@ import androidx.compose.material3.MaterialTheme
 import com.splendo.kaluga.example.alerts.AlertsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureActivity
 import com.splendo.kaluga.example.beacons.BeaconsActivity
-import com.splendo.kaluga.example.bluetooth.BluetoothActivity
-import com.splendo.kaluga.example.datetime.TimerActivity
 import com.splendo.kaluga.example.datetimepicker.DateTimePickerActivity
 import com.splendo.kaluga.example.keyboard.KeyboardActivity
-import com.splendo.kaluga.example.link.LinksActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
-import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.media.MediaListActivity
-import com.splendo.kaluga.example.permissions.PermissionsListActivity
 import com.splendo.kaluga.example.resources.ResourcesActivity
-import com.splendo.kaluga.example.scientific.ScientificActivity
 import com.splendo.kaluga.example.shared.ui.AppRootScreen
 import com.splendo.kaluga.example.shared.ui.Feature
-import com.splendo.kaluga.example.system.SystemActivity
 
 class ExampleActivity : ComponentActivity() {
 
@@ -49,7 +42,7 @@ class ExampleActivity : ComponentActivity() {
             MaterialTheme {
                 AppRootScreen(
                     features = Feature.entries,
-                    onFeatureSelected = ::launchFeature,
+                    onUnmigratedFeatureSelected = ::launchFeature,
                 )
             }
         }
@@ -60,18 +53,18 @@ class ExampleActivity : ComponentActivity() {
             Feature.Alerts -> AlertsActivity::class.java
             Feature.Architecture -> ArchitectureActivity::class.java
             Feature.Beacons -> BeaconsActivity::class.java
-            Feature.Bluetooth -> BluetoothActivity::class.java
-            Feature.DateTime -> TimerActivity::class.java
             Feature.DateTimePicker -> DateTimePickerActivity::class.java
             Feature.Keyboard -> KeyboardActivity::class.java
-            Feature.Links -> LinksActivity::class.java
             Feature.LoadingIndicator -> LoadingActivity::class.java
-            Feature.Location -> LocationActivity::class.java
             Feature.Media -> MediaListActivity::class.java
-            Feature.Permissions -> PermissionsListActivity::class.java
             Feature.Resources -> ResourcesActivity::class.java
-            Feature.Scientific -> ScientificActivity::class.java
-            Feature.System -> SystemActivity::class.java
+            Feature.Bluetooth,
+            Feature.DateTime,
+            Feature.Links,
+            Feature.Location,
+            Feature.Permissions,
+            Feature.Scientific,
+            Feature.System -> error("Feature.${feature.name} is handled inside the CMP nav graph")
         }
         startActivity(Intent(this, cls))
     }

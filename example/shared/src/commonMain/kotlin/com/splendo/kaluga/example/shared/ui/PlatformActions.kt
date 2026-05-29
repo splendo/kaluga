@@ -17,14 +17,13 @@
 
 package com.splendo.kaluga.example.shared.ui
 
-import androidx.compose.ui.window.ComposeUIViewController
-import platform.UIKit.UIViewController
-
 /**
- * Returns a [UIViewController] containing the CMP app root. iOS hosts wrap this in their own
- * navigation chrome and provide the [onFeatureSelected] callback to launch native screens for
- * features that have not yet been migrated to CMP.
+ * Platform actions invoked from CMP screens for behaviour that has no portable Compose equivalent
+ * (deep-linking to a browser or a mail client). The in-app review prompt was an iOS/Android-only
+ * concept and is intentionally not part of this expect surface — host the review button in
+ * mobileshared if you still need it.
  */
-fun MainViewController(onUnmigratedFeatureSelected: (Feature) -> Unit): UIViewController = ComposeUIViewController {
-    AppRootScreen(features = Feature.entries, onUnmigratedFeatureSelected = onUnmigratedFeatureSelected)
+expect object PlatformActions {
+    fun openUrl(url: String)
+    fun openMail(recipients: List<String>, subject: String)
 }

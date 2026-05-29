@@ -57,15 +57,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".location.LocationActivity"
-            android:label="@string/feature_location"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".permissions.PermissionsListActivity"
-            android:label="@string/permissions_list"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".permissions.PermissionActivity"
-            android:label="Permissions"
-            android:screenOrientation="fullSensor"/>
         <activity android:name=".alerts.AlertsActivity"
             android:label="@string/feature_alerts"
             android:screenOrientation="fullSensor"/>
@@ -74,9 +65,6 @@
             android:screenOrientation="fullSensor"/>
         <activity android:name=".alerts.compose.ComposeAlertsActivity"
             android:label="@string/feature_alerts"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".datetime.TimerActivity"
-            android:label="@string/feature_date_time"
             android:screenOrientation="fullSensor"/>
         <activity android:name=".datetimepicker.DateTimePickerActivity"
             android:label="@string/feature_date_time_picker"
@@ -105,21 +93,6 @@
         <activity android:name=".keyboard.compose.ComposeKeyboardActivity"
             android:label="@string/keyboard_manager"
             android:screenOrientation="fullSensor"/>
-        <activity android:name=".link.LinksActivity"
-            android:exported="true"
-            android:label="@string/feature_links"
-            android:launchMode="singleTask"
-            android:screenOrientation="fullSensor">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data
-                    android:scheme="https"
-                    android:host="kaluga-links.web.app"
-                    android:pathPrefix="/kalugaexample"/>
-            </intent-filter>
-        </activity>
         <activity android:name=".architecture.ArchitectureActivity"
             android:label="@string/feature_architecture"
             android:screenOrientation="fullSensor"/>
@@ -135,9 +108,6 @@
             android:screenOrientation="fullSensor"/>
         <activity android:name=".beacons.BeaconsActivity"
             android:label="@string/feature_beacons"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".bluetooth.BluetoothActivity"
-            android:label="@string/feature_bluetooth"
             android:screenOrientation="fullSensor"/>
         <activity android:name=".media.MediaListActivity"
             android:label="@string/feature_media"
@@ -169,20 +139,6 @@
         <activity android:name=".resources.xml.ButtonActivity"
             android:label="@string/feature_resources_button"
             android:screenOrientation="fullSensor"/>
-        <activity android:name=".scientific.ScientificActivity"
-            android:label="@string/feature_scientific"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".scientific.ScientificConverterActivity"
-            android:label="@string/feature_scientific"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".system.SystemActivity"
-            android:label="@string/feature_system"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".system.NetworkActivity"
-            android:label="@string/network_feature"
-            android:screenOrientation="fullSensor"/>
-
-
         <service android:name=".location.LocationBackgroundService"/>
 
     </application>

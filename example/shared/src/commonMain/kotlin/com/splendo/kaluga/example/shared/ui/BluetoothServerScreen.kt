@@ -17,14 +17,17 @@
 
 package com.splendo.kaluga.example.shared.ui
 
-import androidx.compose.ui.window.ComposeUIViewController
-import platform.UIKit.UIViewController
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
-/**
- * Returns a [UIViewController] containing the CMP app root. iOS hosts wrap this in their own
- * navigation chrome and provide the [onFeatureSelected] callback to launch native screens for
- * features that have not yet been migrated to CMP.
- */
-fun MainViewController(onUnmigratedFeatureSelected: (Feature) -> Unit): UIViewController = ComposeUIViewController {
-    AppRootScreen(features = Feature.entries, onUnmigratedFeatureSelected = onUnmigratedFeatureSelected)
+@Composable
+fun BluetoothServerScreen(modifier: Modifier = Modifier) {
+    Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
+        Text("Bluetooth server demo — TODO: port BluetoothServerViewModel to CMP")
+    }
 }

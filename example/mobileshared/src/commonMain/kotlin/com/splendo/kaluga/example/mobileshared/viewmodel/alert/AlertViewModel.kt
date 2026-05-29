@@ -24,7 +24,7 @@ import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.alerts.buildAlertWithInput
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import com.splendo.kaluga.example.shared.stylable.ButtonStyles
+import com.splendo.kaluga.example.mobileshared.stylable.ButtonStyles
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.resources.view.KalugaButton

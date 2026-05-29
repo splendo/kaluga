@@ -19,7 +19,7 @@ package com.splendo.kaluga.example.mobileshared.viewmodel.keyboard
 
 import com.splendo.kaluga.architecture.observable.toUninitializedSubject
 import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-import com.splendo.kaluga.example.shared.stylable.ButtonStyles
+import com.splendo.kaluga.example.mobileshared.stylable.ButtonStyles
 import com.splendo.kaluga.keyboard.BaseKeyboardManager
 import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.resources.localized
