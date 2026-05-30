@@ -17,25 +17,38 @@
 
 package com.splendo.kaluga.example.feature.beacons
 
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.beacons.Beacons
 import com.splendo.kaluga.bluetooth.beacons.DefaultBeacons
+import com.splendo.kaluga.example.arch.DetailScaffold
 import com.splendo.kaluga.example.arch.FeatureContribution
 import org.koin.core.module.Module
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-const val BEACONS_FEATURE_ID = "beacons"
-
-private class BeaconsContribution : FeatureContribution {
-    override val id = BEACONS_FEATURE_ID
+class BeaconsContribution : FeatureContribution {
+    override val id = "beacons"
     override val label = "Beacons"
-    override val isCompose = false
+    override fun register(builder: NavGraphBuilder, navController: NavController) {
+        builder.composable(id) {
+            DetailScaffold(title = label, onBack = { navController.popBackStack() }) {
+                BeaconsScreen()
+            }
+        }
+    }
 }
 
 /** Owns the [Beacons] singleton, which sits on top of the [com.splendo.kaluga.bluetooth.Bluetooth]
  *  client registered by `:feature-bluetooth` — beacons reuses the same scanner pipeline rather
  *  than spinning up a parallel one. */
 val beaconsFeatureModule: Module = module {
-    single<Beacons> { DefaultBeacons(bluetooth = get(), logger = get()) }
+    // Explicit `get<Bluetooth>()` because `:feature-bluetooth` registers the singleton under the
+    // concrete `Bluetooth` type, and `DefaultBeacons` takes the `BluetoothService` interface —
+    // Koin doesn't auto-bind a class to its parent interface, so an unqualified `get()` would
+    // try to resolve `BluetoothService` and fail at instantiation time.
+    single<Beacons> { DefaultBeacons(bluetooth = get<Bluetooth>(), logger = get()) }
     single { BeaconsContribution() } bind FeatureContribution::class
 }

@@ -37,8 +37,6 @@
 		37B9F4481D30F2FC895AB554 /* PlatformValueMapper.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA3213EF5694917A0138255 /* PlatformValueMapper.generated.swift */; };
 		3E0F5DDF709B60978E495E1E /* KalugaBackgroundStyleShape+SwiftUI.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DDAE2784FBCEE56F96980D /* KalugaBackgroundStyleShape+SwiftUI.generated.swift */; };
 		42B12B5CFE87189A5F539B92 /* HasDefaultValue.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D181CE83615D345BB56946 /* HasDefaultValue.generated.swift */; };
-		4BC0CBDF269F1D25000512A9 /* BeaconsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC0CBDD269F1D25000512A9 /* BeaconsViewController.swift */; };
-		4BC0CBE0269F1D25000512A9 /* BeaconsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC0CBDE269F1D25000512A9 /* BeaconsViewCell.swift */; };
 		62D65713EC7DD3C712D864BB /* ListSubject.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC460D671184DBFD03C42FB /* ListSubject.generated.swift */; };
 		6BBAC6F7C1C74608F52D7FF7 /* PlatformMappers.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAFF461D97215C4B63A0A1 /* PlatformMappers.generated.swift */; };
 		73DBBA374F2ED176BCF8E189 /* DefaultValues.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93070CB7E1723F904DBEDD26 /* DefaultValues.generated.swift */; };
@@ -126,8 +124,6 @@
 		382B35FA85A28992FE37B803 /* KalugaStyledString+SwiftUI.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "KalugaStyledString+SwiftUI.generated.swift"; sourceTree = "<group>"; };
 		3EC460D671184DBFD03C42FB /* ListSubject.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = ListSubject.generated.swift; sourceTree = "<group>"; };
 		4A2BAEDD60E67CE8F9277AC6 /* Shape+Helpers.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "Shape+Helpers.generated.swift"; sourceTree = "<group>"; };
-		4BC0CBDD269F1D25000512A9 /* BeaconsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconsViewController.swift; sourceTree = "<group>"; };
-		4BC0CBDE269F1D25000512A9 /* BeaconsViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconsViewCell.swift; sourceTree = "<group>"; };
 		5304E64813F87A2C71BD40C2 /* KalugaButton+SwiftUI.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "KalugaButton+SwiftUI.generated.swift"; sourceTree = "<group>"; };
 		648214DD263095A900CDAE05 /* Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Demo.entitlements; sourceTree = "<group>"; };
 		6681B8FDABE90D9625CA407A /* Observable.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Observable.generated.swift; sourceTree = "<group>"; };
@@ -271,15 +267,6 @@
 			path = Alerts;
 			sourceTree = "<group>";
 		};
-		4BC0CBDC269F1D25000512A9 /* Beacons */ = {
-			isa = PBXGroup;
-			children = (
-				4BC0CBDD269F1D25000512A9 /* BeaconsViewController.swift */,
-				4BC0CBDE269F1D25000512A9 /* BeaconsViewCell.swift */,
-			);
-			path = Beacons;
-			sourceTree = "<group>";
-		};
 		745520950D85E4696686141D = {
 			isa = PBXGroup;
 			children = (
@@ -304,7 +291,6 @@
 				74BBBF2C57521E71982179E0 /* AppDelegate.swift */,
 				20C7D1D6246A938A00C9A63F /* Architecture */,
 				74C9C443CC304CB387AB324D /* Assets.xcassets */,
-				4BC0CBDC269F1D25000512A9 /* Beacons */,
 				20C7D1CD24699A5000C9A63F /* Helpers */,
 				74BEC2BADB02749FD409313B /* Info.plist */,
 				205747552397C99100CDE25E /* KeyboardManager */,
@@ -547,8 +533,6 @@
 				201EA2232938F11700C562EC /* ResourcesListView.swift in Sources */,
 				BC5100DB2D2ECC7600095938 /* MediaSoundViewController.swift in Sources */,
 				20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */,
-				4BC0CBDF269F1D25000512A9 /* BeaconsViewController.swift in Sources */,
-				4BC0CBE0269F1D25000512A9 /* BeaconsViewCell.swift in Sources */,
 				20BB9E652962ECA70096E836 /* KeyboardManagerView.swift in Sources */,
 				207537A929A64CEC00D273F2 /* ImagesView.swift in Sources */,
 				201EA2212938ECE700C562EC /* LoadingView.swift in Sources */,

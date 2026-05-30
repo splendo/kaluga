@@ -23,8 +23,6 @@ import com.splendo.kaluga.example.feature.alerts.alertsFeatureAndroidModule
 import com.splendo.kaluga.example.feature.alerts.alertsFeatureModule
 import com.splendo.kaluga.example.feature.architecture.architectureFeatureAndroidModule
 import com.splendo.kaluga.example.feature.architecture.architectureFeatureModule
-import com.splendo.kaluga.example.feature.beacons.beaconsFeatureAndroidModule
-import com.splendo.kaluga.example.feature.beacons.beaconsFeatureModule
 import com.splendo.kaluga.example.feature.datetimepicker.datetimepickerFeatureAndroidModule
 import com.splendo.kaluga.example.feature.datetimepicker.datetimepickerFeatureModule
 import com.splendo.kaluga.example.feature.hud.hudFeatureAndroidModule
@@ -51,7 +49,6 @@ fun initKoin(customModules: List<Module> = emptyList()) = initCoreKoin(
         // Mobile-only feature contributions + common Koin singletons:
         alertsFeatureModule,
         architectureFeatureModule,
-        beaconsFeatureModule,
         datetimepickerFeatureModule,
         hudFeatureModule,
         keyboardFeatureModule,
@@ -60,7 +57,6 @@ fun initKoin(customModules: List<Module> = emptyList()) = initCoreKoin(
         // Android-only ViewModel registries:
         alertsFeatureAndroidModule,
         architectureFeatureAndroidModule,
-        beaconsFeatureAndroidModule,
         datetimepickerFeatureAndroidModule,
         hudFeatureAndroidModule,
         mediaFeatureAndroidModule,

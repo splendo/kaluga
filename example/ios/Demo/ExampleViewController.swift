@@ -55,7 +55,6 @@ class ExampleViewController: UIViewController {
             // is composed per-screen here (we host one SwiftUI view per tap), so we attach the
             // manager at each entry point that needs it.
             target = UIHostingController(rootView: ArchitectureView().attachPartialSheetToRoot())
-        case MobileFeatureIds.shared.BEACONS: target = BeaconsViewController()
         case MobileFeatureIds.shared.DATE_TIME_PICKER: target = UIHostingController(rootView: DateTimePickerView())
         case MobileFeatureIds.shared.KEYBOARD: target = UIHostingController(rootView: KeyboardManagerView())
         case MobileFeatureIds.shared.HUD: target = UIHostingController(rootView: LoadingView())

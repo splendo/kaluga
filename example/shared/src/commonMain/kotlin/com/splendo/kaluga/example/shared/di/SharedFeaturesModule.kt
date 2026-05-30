@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.example.shared.di
 
+import com.splendo.kaluga.example.feature.beacons.beaconsFeatureModule
 import com.splendo.kaluga.example.feature.bluetooth.bluetoothFeatureModule
 import com.splendo.kaluga.example.feature.datetime.datetimeFeatureModule
 import com.splendo.kaluga.example.feature.info.infoFeatureModule
@@ -43,6 +44,7 @@ val sharedFeaturesModule: Module = module {
         permissionsFeatureModule,
         locationFeatureModule,
         bluetoothFeatureModule,
+        beaconsFeatureModule,
         scientificFeatureModule,
     )
 }

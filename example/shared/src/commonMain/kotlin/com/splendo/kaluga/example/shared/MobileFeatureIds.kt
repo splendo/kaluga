@@ -28,7 +28,6 @@ package com.splendo.kaluga.example.shared
 object MobileFeatureIds {
     const val ALERTS = "alerts"
     const val ARCHITECTURE = "architecture"
-    const val BEACONS = "beacons"
     const val DATE_TIME_PICKER = "datetimepicker"
     const val HUD = "hud"
     const val KEYBOARD = "keyboard"

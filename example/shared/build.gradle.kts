@@ -13,7 +13,6 @@ plugins {
 val mobileFeatureProjects = listOf(
     ":feature-alerts",
     ":feature-architecture",
-    ":feature-beacons",
     ":feature-datetimepicker",
     ":feature-hud",
     ":feature-keyboard",
@@ -28,7 +27,6 @@ val mobileKalugaModules = listOf(
     "alerts",
     "architecture",
     "base",
-    "beacons",
     "date-time-picker",
     "hud",
     "keyboard",
@@ -76,6 +74,7 @@ kaluga {
             main {
                 api(project(":core-arch"))
                 api(project(":core-koin"))
+                api(project(":feature-beacons"))
                 api(project(":feature-bluetooth"))
                 api(project(":feature-datetime"))
                 api(project(":feature-info"))

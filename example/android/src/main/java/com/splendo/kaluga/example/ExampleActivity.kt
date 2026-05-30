@@ -27,7 +27,6 @@ import com.splendo.kaluga.example.alerts.AlertsActivity
 import com.splendo.kaluga.example.arch.AppRootScreen
 import com.splendo.kaluga.example.arch.DeepLinkBus
 import com.splendo.kaluga.example.architecture.ArchitectureActivity
-import com.splendo.kaluga.example.beacons.BeaconsActivity
 import com.splendo.kaluga.example.datetimepicker.DateTimePickerActivity
 import com.splendo.kaluga.example.keyboard.KeyboardActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
@@ -60,7 +59,6 @@ class ExampleActivity : ComponentActivity() {
         val cls = when (id) {
             MobileFeatureIds.ALERTS -> AlertsActivity::class.java
             MobileFeatureIds.ARCHITECTURE -> ArchitectureActivity::class.java
-            MobileFeatureIds.BEACONS -> BeaconsActivity::class.java
             MobileFeatureIds.DATE_TIME_PICKER -> DateTimePickerActivity::class.java
             MobileFeatureIds.KEYBOARD -> KeyboardActivity::class.java
             MobileFeatureIds.HUD -> LoadingActivity::class.java
