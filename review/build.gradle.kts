@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "review"
+    supportMacOS = true
     dependencies {
         android {
             main {
@@ -13,7 +14,10 @@ kaluga {
         }
         common {
             main {
-                implementation(project(":architecture", ""))
+                // api because `ReviewManager.Builder` extends `LifecycleSubscribable` (and on
+                // Android, `ActivityLifecycleSubscribable`) — consumers calling `.create()` on a
+                // Builder need to be able to resolve those supertypes.
+                api(project(":lifecycle", ""))
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
             }

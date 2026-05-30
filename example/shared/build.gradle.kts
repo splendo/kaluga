@@ -74,6 +74,8 @@ kaluga {
             main {
                 api(project(":core-arch"))
                 api(project(":core-koin"))
+                // For `ProvideNSWindow` at the macOS entry point + `AttachToCompose` extensions.
+                api("com.splendo.kaluga:lifecycle-compose:${project.rootProject.version}")
                 api(project(":feature-beacons"))
                 api(project(":feature-bluetooth"))
                 api(project(":feature-datetime"))
@@ -81,6 +83,7 @@ kaluga {
                 api(project(":feature-links"))
                 api(project(":feature-location"))
                 api(project(":feature-permissions"))
+                api(project(":feature-review"))
                 // `:feature-scientific` is linked-but-hidden via `implementation` so its public
                 // types (QuantityDetails, converters) — which expose `kaluga.scientific.unit.*`
                 // in their signatures — never leak into the framework header. Scientific UI is

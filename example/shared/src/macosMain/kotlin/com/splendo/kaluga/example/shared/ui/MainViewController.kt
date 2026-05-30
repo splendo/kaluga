@@ -21,15 +21,19 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import com.splendo.kaluga.example.arch.AppRootScreen
+import com.splendo.kaluga.lifecycle.compose.ProvideNSWindow
 
 /**
  * macOS framework entry point. CMP owns the NSApplication lifecycle so the Swift `@main` calls
- * this from `applicationDidFinishLaunching`. macOS has no native-launched contributions (only
- * macOS-capable feature modules are linked into the framework for the macOS target), so
- * `onNativeLaunch` defaults to a no-op.
+ * this from `applicationDidFinishLaunching`. [ProvideNSWindow] lifts the `WindowScope.window`
+ * receiver onto `LocalNSWindow` so any `WindowLifecycleSubscribable` further down the tree can
+ * auto-subscribe via `LifecycleSubscribable.AttachToCompose()` — required by media surface
+ * providers and similar window-bound services on macOS.
  */
 fun startMainWindow() {
     Window(title = "Kaluga Example", size = DpSize(800.dp, 640.dp)) {
-        AppRootScreen()
+        ProvideNSWindow {
+            AppRootScreen()
+        }
     }
 }

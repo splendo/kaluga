@@ -27,7 +27,7 @@ import androidx.annotation.IdRes
 import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import com.splendo.kaluga.architecture.lifecycle.ActivityLifecycleSubscribable
+import com.splendo.kaluga.lifecycle.ActivityLifecycleSubscribable
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.Activity.LaunchType
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.Activity.LaunchType.Companion.ActivityContract
 import com.splendo.kaluga.architecture.navigation.NavigationSpec.Companion.Activity

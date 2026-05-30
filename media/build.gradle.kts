@@ -8,7 +8,9 @@ kaluga {
         common {
             main {
                 implementation(project(":base"))
-                implementation(project(":architecture"))
+                // api because `MediaSurfaceProvider` extends `LifecycleSubscribable` — consumers
+                // need to be able to resolve that supertype.
+                api(project(":lifecycle"))
                 implementation(project(":logging"))
             }
             test {

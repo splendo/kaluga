@@ -17,10 +17,16 @@
 
 package com.splendo.kaluga.architecture.lifecycle
 
-import com.splendo.kaluga.architecture.viewmodel.BaseLifecycleViewModel
-
 /**
- * This interface can be provided to a [BaseLifecycleViewModel] to bind to platform specific lifecycle.
- * Extend this on classes that need to have some setup during lifecycle events.
+ * Moved to `:lifecycle`. Kept here as a typealias so existing callers compile during the
+ * deprecation window; new code should import [com.splendo.kaluga.lifecycle.LifecycleSubscribable]
+ * directly. `:lifecycle` has macOS support that `:architecture` cannot grow.
  */
-interface LifecycleSubscribable
+@Deprecated(
+    message = "Moved to :lifecycle. Import com.splendo.kaluga.lifecycle.LifecycleSubscribable instead.",
+    replaceWith = ReplaceWith(
+        "LifecycleSubscribable",
+        "com.splendo.kaluga.lifecycle.LifecycleSubscribable",
+    ),
+)
+typealias LifecycleSubscribable = com.splendo.kaluga.lifecycle.LifecycleSubscribable
