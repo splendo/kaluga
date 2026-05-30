@@ -17,6 +17,7 @@
 import UIKit
 import SwiftUI
 import KalugaExample
+import PartialSheet
 
 /// Hosts the Compose Multiplatform root from `:shared`. Mobile-only `FeatureContribution`s
 /// (registered in `:mobileshared`'s `mobileSharedContributionsModule` with `isCompose = false`)
@@ -46,7 +47,14 @@ class ExampleViewController: UIViewController {
         let target: UIViewController
         switch id {
         case MobileFeatureIds.shared.ALERTS: target = UIHostingController(rootView: AlertsView())
-        case MobileFeatureIds.shared.ARCHITECTURE: target = UIHostingController(rootView: ArchitectureView())
+        case MobileFeatureIds.shared.ARCHITECTURE:
+            // ArchitectureView opens its detail bottom-sheet via SwiftUI-PartialSheet's
+            // `.partialSheet(style:)` modifier, which crashes with "No ObservableObject of type
+            // PSManager found" unless a `PSManager` is in the SwiftUI environment AND the
+            // partial-sheet render layer is attached at the root. The root SwiftUI tree on iOS
+            // is composed per-screen here (we host one SwiftUI view per tap), so we attach the
+            // manager at each entry point that needs it.
+            target = UIHostingController(rootView: ArchitectureView().attachPartialSheetToRoot())
         case MobileFeatureIds.shared.BEACONS: target = BeaconsViewController()
         case MobileFeatureIds.shared.DATE_TIME_PICKER: target = UIHostingController(rootView: DateTimePickerView())
         case MobileFeatureIds.shared.KEYBOARD: target = UIHostingController(rootView: KeyboardManagerView())

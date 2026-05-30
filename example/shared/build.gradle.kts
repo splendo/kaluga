@@ -52,6 +52,11 @@ kaluga {
         // Cross-platform foundation — used by Swift on both iOS and macOS hosts.
         export(project(":core-arch"))
         export(project(":core-koin"))
+        // `CoroutineScope` and friends turn up in the generated KalugaSwiftUI bindings
+        // (KeyboardManager.create(coroutineScope:), Subject helpers, etc.) and in many Kaluga
+        // ViewModel signatures. With `transitiveExport = false` we have to export
+        // `kotlinx-coroutines-core` explicitly or Swift cannot resolve the type.
+        export(libs.kotlinx.coroutines.core)
         // macOS-capable feature modules render entirely in Compose; their classes stay linked in
         // the framework (so their Koin contributions register at startup) but are *not* exported
         // — Swift never references `BluetoothListScreen`, `LocationScreen`, `LinksScreen`, etc.
