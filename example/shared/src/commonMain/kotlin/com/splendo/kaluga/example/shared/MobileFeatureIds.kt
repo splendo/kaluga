@@ -31,6 +31,5 @@ object MobileFeatureIds {
     const val DATE_TIME_PICKER = "datetimepicker"
     const val HUD = "hud"
     const val KEYBOARD = "keyboard"
-    const val MEDIA = "media"
     const val RESOURCES = "resources"
 }

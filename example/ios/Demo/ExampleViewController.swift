@@ -58,7 +58,6 @@ class ExampleViewController: UIViewController {
         case MobileFeatureIds.shared.DATE_TIME_PICKER: target = UIHostingController(rootView: DateTimePickerView())
         case MobileFeatureIds.shared.KEYBOARD: target = UIHostingController(rootView: KeyboardManagerView())
         case MobileFeatureIds.shared.HUD: target = UIHostingController(rootView: LoadingView())
-        case MobileFeatureIds.shared.MEDIA: target = MediaListViewController()
         case MobileFeatureIds.shared.RESOURCES: target = UIHostingController(rootView: ResourcesListView())
         default:
             assertionFailure("Feature \(id) is supposed to be handled inside CMP")

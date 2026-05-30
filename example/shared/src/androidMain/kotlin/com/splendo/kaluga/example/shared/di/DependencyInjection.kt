@@ -28,8 +28,6 @@ import com.splendo.kaluga.example.feature.datetimepicker.datetimepickerFeatureMo
 import com.splendo.kaluga.example.feature.hud.hudFeatureAndroidModule
 import com.splendo.kaluga.example.feature.hud.hudFeatureModule
 import com.splendo.kaluga.example.feature.keyboard.keyboardFeatureModule
-import com.splendo.kaluga.example.feature.media.mediaFeatureAndroidModule
-import com.splendo.kaluga.example.feature.media.mediaFeatureModule
 import com.splendo.kaluga.example.feature.permissions.permissionsFeatureAndroidModule
 import com.splendo.kaluga.example.feature.resources.resourcesFeatureAndroidModule
 import com.splendo.kaluga.example.feature.resources.resourcesFeatureModule
@@ -52,14 +50,12 @@ fun initKoin(customModules: List<Module> = emptyList()) = initCoreKoin(
         datetimepickerFeatureModule,
         hudFeatureModule,
         keyboardFeatureModule,
-        mediaFeatureModule,
         resourcesFeatureModule,
         // Android-only ViewModel registries:
         alertsFeatureAndroidModule,
         architectureFeatureAndroidModule,
         datetimepickerFeatureAndroidModule,
         hudFeatureAndroidModule,
-        mediaFeatureAndroidModule,
         permissionsFeatureAndroidModule,
         resourcesFeatureAndroidModule,
     ) + customModules,

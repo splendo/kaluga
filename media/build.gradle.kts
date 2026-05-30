@@ -4,6 +4,7 @@ plugins {
 
 kaluga {
     moduleName = "media"
+    supportMacOS = true
     dependencies {
         common {
             main {

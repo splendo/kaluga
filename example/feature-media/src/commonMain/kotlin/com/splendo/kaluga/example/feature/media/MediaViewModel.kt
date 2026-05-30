@@ -1,5 +1,5 @@
 /*
- Copyright 2023 Splendo Consulting B.V. The Netherlands
+ Copyright 2026 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,42 +17,25 @@
 
 package com.splendo.kaluga.example.feature.media
 
-import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.alerts.BaseAlertPresenter
-import com.splendo.kaluga.alerts.buildActionSheet
-import com.splendo.kaluga.alerts.buildAlert
-import com.splendo.kaluga.alerts.buildAlertWithInput
-import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
-import com.splendo.kaluga.architecture.navigation.Navigator
-import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
-import com.splendo.kaluga.architecture.observable.toInitializedObservable
-import com.splendo.kaluga.architecture.observable.toUninitializedObservable
-import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
+import androidx.lifecycle.viewModelScope
 import com.splendo.kaluga.base.singleThreadDispatcher
-import com.splendo.kaluga.base.text.NumberFormatStyle
-import com.splendo.kaluga.base.text.NumberFormatter
-import com.splendo.kaluga.base.text.format
-import com.splendo.kaluga.example.stylable.ButtonStyles
+import com.splendo.kaluga.lifecycle.compose.LifecycleViewModel
 import com.splendo.kaluga.media.BaseMediaManager
 import com.splendo.kaluga.media.DefaultMediaPlayer
 import com.splendo.kaluga.media.MediaPlayer
 import com.splendo.kaluga.media.MediaSource
-import com.splendo.kaluga.media.MediaSurfaceProvider
 import com.splendo.kaluga.media.PlaybackError
 import com.splendo.kaluga.media.PlaybackState
-import com.splendo.kaluga.media.Resolution
+import com.splendo.kaluga.media.compose.ComposeMediaSurfaceProvider
 import com.splendo.kaluga.media.duration
 import com.splendo.kaluga.media.isVideo
-import com.splendo.kaluga.media.mediaSourceFromUrl
 import com.splendo.kaluga.media.playTime
-import com.splendo.kaluga.resources.asImage
-import com.splendo.kaluga.resources.localized
-import com.splendo.kaluga.resources.view.KalugaButton
-import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
@@ -61,234 +44,123 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.milliseconds
 
-sealed class MediaNavigationAction : SingleValueNavigationAction<Unit>(Unit, NavigationBundleSpecType.UnitType) {
-    data object SelectLocal : MediaNavigationAction()
-}
-
-class MediaViewModel(
-    mediaSurfaceProvider: MediaSurfaceProvider,
+/**
+ * Demoes the [LifecycleViewModel] pattern from `:lifecycle-compose` together with the
+ * [ComposeMediaSurfaceProvider] / [MediaSurfaceContainer] interop from `:media-compose`:
+ *
+ * - The view model owns a [ComposeMediaSurfaceProvider] and declares it as a
+ *   [com.splendo.kaluga.lifecycle.LifecycleSubscribable] via `super(subscribables = …)`. The
+ *   screen calls `vm.AttachToCompose()` once and any lifecycle wiring (a no-op for the
+ *   Compose-driven provider, but the same code path Activity/UIViewController/NSWindow providers
+ *   would use) is done.
+ * - [DefaultMediaPlayer] is wired with that provider, so a [MediaSurfaceContainer] composed in the
+ *   screen pushes its native surface straight into the player.
+ */
+class MediaViewModel private constructor(
+    val surfaceProvider: ComposeMediaSurfaceProvider,
     builder: BaseMediaManager.Builder,
-    private val alertPresenterBuilder: BaseAlertPresenter.Builder,
-    navigator: Navigator<MediaNavigationAction>,
-) : NavigatingViewModel<MediaNavigationAction>(navigator, mediaSurfaceProvider, alertPresenterBuilder) {
+) : LifecycleViewModel(subscribables = listOf(surfaceProvider)) {
 
-    private companion object {
-        val playbackFormatter = NumberFormatter(style = NumberFormatStyle.Decimal(minIntegerDigits = 1U)).apply { positiveSuffix = "x" }
-        val volumeFormatter = NumberFormatter(style = NumberFormatStyle.Percentage(maxFractionDigits = 0U))
-    }
+    constructor(builder: BaseMediaManager.Builder) : this(ComposeMediaSurfaceProvider(), builder)
 
-    private val mediaPlayerDispatcher = singleThreadDispatcher("MediaPlayer")
-    private val mediaPlayer = DefaultMediaPlayer(mediaSurfaceProvider, builder, coroutineScope.coroutineContext + mediaPlayerDispatcher)
+    enum class ViewState { NO_MEDIA_SELECTED, AUDIO, VIDEO }
 
-    val isPreparing = mediaPlayer.controls.map { it.getControlType<MediaPlayer.Controls.AwaitPreparation>() != null }.toInitializedObservable(false, coroutineScope)
-    val hasControls = mediaPlayer.controls.map {
-        it.controlTypes.isNotEmpty() && it.getControlType<MediaPlayer.Controls.AwaitPreparation>() == null
-    }.toInitializedObservable(false, coroutineScope)
-    private val _totalDuration = mediaPlayer.duration.stateIn(coroutineScope, SharingStarted.Eagerly, ZERO)
-    private val controls = mediaPlayer.controls.stateIn(coroutineScope, SharingStarted.Eagerly, MediaPlayer.Controls())
+    private val dispatcher = singleThreadDispatcher("MediaPlayer")
+    private val playerJob = SupervisorJob()
+    private val mediaPlayer = DefaultMediaPlayer(
+        surfaceProvider,
+        builder,
+        playerJob + dispatcher,
+    )
 
-    val totalDuration = _totalDuration.map {
-        it.format()
-    }.toInitializedObservable(ZERO.format(), coroutineScope)
-
-    val currentPlaytime = mediaPlayer.playTime(100.milliseconds).map {
-        it.format()
-    }.toInitializedObservable(ZERO.format(), coroutineScope)
-
-    val progress = combine(mediaPlayer.playTime(100.milliseconds), _totalDuration) { playTime, totalDuration ->
-        if (totalDuration > ZERO) {
-            maxOf(0.0, minOf(1.0, playTime / totalDuration))
-        } else {
-            0.0
-        }.toFloat()
-    }.toInitializedObservable(0.0f, coroutineScope)
-
-    val isSeekEnabled = controls.map { it.seek != null }.toInitializedObservable(false, coroutineScope)
-
-    val playButton = controls.map { controls ->
-        KalugaButton.WithoutText(ButtonStyles.mediaButton("play_arrow".asImage()!!), controls.play != null || controls.unpause != null) {
-            coroutineScope.launch {
-                when {
-                    controls.unpause != null -> controls.tryUnpause()
-                    controls.play != null -> controls.tryPlay()
-                    else -> {}
-                }
-            }
+    val controls: StateFlow<MediaPlayer.Controls> =
+        mediaPlayer.controls.stateIn(viewModelScope, SharingStarted.Eagerly, MediaPlayer.Controls())
+    private val totalDuration: StateFlow<Duration> =
+        mediaPlayer.duration.stateIn(viewModelScope, SharingStarted.Eagerly, ZERO)
+    val isPreparing: StateFlow<Boolean> = controls.map {
+        it.getControlType<MediaPlayer.Controls.AwaitPreparation>() != null
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    val viewState: StateFlow<ViewState> = mediaPlayer.playableMedia.map { media ->
+        when {
+            media == null -> ViewState.NO_MEDIA_SELECTED
+            media.isVideo -> ViewState.VIDEO
+            else -> ViewState.AUDIO
         }
-    }.toUninitializedObservable(coroutineScope)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, ViewState.NO_MEDIA_SELECTED)
+    val playTimeLabel: StateFlow<String> = mediaPlayer.playTime(100.milliseconds)
+        .map { it.format() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, ZERO.format())
+    val totalDurationLabel: StateFlow<String> = totalDuration
+        .map { it.format() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, ZERO.format())
+    val progress: StateFlow<Float> =
+        combine(mediaPlayer.playTime(100.milliseconds), totalDuration) { play, total ->
+            if (total > ZERO) (play / total).toFloat().coerceIn(0f, 1f) else 0f
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, 0f)
+    val volume: StateFlow<Float> = mediaPlayer.currentVolume
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 1f)
 
-    val pauseButton = controls.map {
-        KalugaButton.WithoutText(ButtonStyles.mediaButton("pause".asImage()!!), it.pause != null) {
-            coroutineScope.launch { it.tryPause() }
-        }
-    }.toUninitializedObservable(coroutineScope)
-
-    val stopButton = controls.map {
-        KalugaButton.WithoutText(ButtonStyles.mediaButton("stop".asImage()!!), it.stop != null) {
-            coroutineScope.launch { it.tryStop() }
-        }
-    }.toUninitializedObservable(coroutineScope)
-
-    val loopButton = controls.map { controls ->
-        controls.setLoopMode?.let { setLoopMode ->
-            when (val loopMode = setLoopMode.currentLoopMode) {
-                PlaybackState.LoopMode.NotLooping -> KalugaButton.WithoutText(ButtonStyles.mediaButton("repeat".asImage()!!), true) {
-                    coroutineScope.launch {
-                        setLoopMode.perform(PlaybackState.LoopMode.LoopingForever)
-                    }
-                }
-
-                is PlaybackState.LoopMode.LoopingForever -> KalugaButton.WithoutText(ButtonStyles.mediaButtonFocus("repeat_on".asImage()!!), true) {
-                    coroutineScope.launch {
-                        setLoopMode.perform(PlaybackState.LoopMode.LoopingForFixedNumber(1U))
-                    }
-                }
-
-                is PlaybackState.LoopMode.LoopingForFixedNumber -> KalugaButton.Plain(
-                    "x${loopMode.loops}",
-                    ButtonStyles.mediaButtonFocusWithImageAndText("repeat_on".asImage()!!),
-                    true,
-                ) {
-                    coroutineScope.launch {
-                        setLoopMode.perform(PlaybackState.LoopMode.NotLooping)
-                    }
-                }
-            }
-        } ?: KalugaButton.WithoutText(ButtonStyles.mediaButton("repeat".asImage()!!), false) {}
-    }.toUninitializedObservable(coroutineScope)
-
-    val rateButton = controls.map { controls ->
-        controls.setRate?.let { setRate ->
-            KalugaButton.Plain(playbackFormatter.format(setRate.currentRate), ButtonStyles.mediaButtonText, true) {
-                coroutineScope.launch {
-                    var selectedRate = setRate.currentRate
-                    alertPresenterBuilder.buildActionSheet(this) {
-                        setTitle("media_playback_rate".localized())
-                        val actions = listOf(1.0f, 0.5f, 2.0f, 4.0f).map {
-                            Alert.Action(playbackFormatter.format(it)) {
-                                selectedRate = it
-                            }
-                        }
-                        addActions(actions)
-                    }.show()
-                    setRate.perform(selectedRate)
-                }
-            }
-        } ?: KalugaButton.Plain(playbackFormatter.format(1), ButtonStyles.mediaButtonText, false) {}
-    }.toUninitializedObservable(coroutineScope)
-
-    val volumeButton = mediaPlayer.currentVolume.map {
-        KalugaButton.Plain(
-            "media_playback_volume".localized().format(volumeFormatter.format(it)),
-            ButtonStyles.default,
-        ) {
-            updateVolume()
-        }
-    }.toUninitializedObservable(coroutineScope)
-
-    fun seekTo(progress: Double) {
-        coroutineScope.launch {
-            controls.value.trySeek(_totalDuration.value * progress)
-        }
-    }
-
-    private fun updateVolume() {
-        coroutineScope.launch {
-            val selectedVolume = CompletableDeferred<Float>()
-            alertPresenterBuilder.buildActionSheet(coroutineScope) {
-                setTitle("media_playback_update_volume".localized())
-                addActions(
-                    (0..100).map {
-                        val asPercentage = it.toFloat() / 100.0f
-                        Alert.Action(volumeFormatter.format(asPercentage)) {
-                            selectedVolume.complete(asPercentage)
-                        }
-                    },
-                )
-            }.show()
-
-            mediaPlayer.updateVolume(selectedVolume.await())
-        }
-    }
-
-    val selectMediaButton = KalugaButton.Plain("media_select_media_button".localized(), ButtonStyles.default) {
-        coroutineScope.launch {
-            val defaultAudio = Alert.Action("media_select_default_audio".localized())
-            val defaultVideo = Alert.Action("media_select_default_video".localized())
-            val selectLocalFile = Alert.Action("media_select_file_on_device".localized())
-            val selectRemoteFile = Alert.Action("media_select_file_from_web".localized())
-            val confirm = Alert.Action("confirm_selection".localized(), Alert.Action.Style.POSITIVE)
-            val cancel = Alert.Action("cancel_selection".localized(), Alert.Action.Style.CANCEL)
-            val actionSelected = alertPresenterBuilder.buildActionSheet(coroutineScope) {
-                setTitle("media_select_title".localized())
-                addActions(defaultAudio, defaultVideo, selectLocalFile, selectRemoteFile, cancel)
-            }.show()
-
-            when (actionSelected) {
-                defaultAudio -> didSelectFileAt(mediaSourceFromUrl("https://cdn.freesound.org/previews/459/459992_6253486-lq.mp3"))
-
-                defaultVideo -> didSelectFileAt(
-                    mediaSourceFromUrl("https://joy1.videvo.net/videvo_files/video/free/2019-04/large_watermarked/190408_07_GulfSturgeon_03_preview.mp4"),
-                )
-
-                selectLocalFile -> navigator.navigate(MediaNavigationAction.SelectLocal)
-
-                selectRemoteFile -> {
-                    var input = ""
-                    val remoteActionSelected = alertPresenterBuilder.buildAlertWithInput(coroutineScope) {
-                        setTitle("media_select_from_web_title".localized())
-                        addActions(confirm, cancel)
-                        setTextInput(input, "media_select_from_web_hint".localized()) {
-                            input = it
-                        }
-                    }.show()
-                    when (remoteActionSelected) {
-                        confirm -> didSelectFileAt(mediaSourceFromUrl(input))
-                        else -> {}
-                    }
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    val isShowingVideo = mediaPlayer.playableMedia.map { it?.isVideo ?: false }.toInitializedObservable(false, coroutineScope)
-    val resolution = mediaPlayer.playableMedia.flatMapLatest { playableMedia ->
-        playableMedia?.resolution ?: flowOf(Resolution.ZERO)
-    }.toInitializedObservable(Resolution.ZERO, coroutineScope)
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
 
     init {
-        coroutineScope.launch {
-            controls.mapNotNull { it.displayError }.collect { error ->
-                alertPresenterBuilder.buildAlert(coroutineScope) {
-                    setTitle("media_error_title".localized())
-                    setMessage(error.error.message ?: error.error::class.simpleName.orEmpty())
-                    setNeutralButton("cancel_selection".localized())
-                }.show()
+        viewModelScope.launch {
+            controls.mapNotNull { it.displayError }.collect { display ->
+                _error.value = display.error.message ?: display.error::class.simpleName.orEmpty()
             }
         }
+    }
+
+    fun load(source: MediaSource?) = viewModelScope.launch {
+        try {
+            if (source != null) mediaPlayer.initializeFor(source) else mediaPlayer.reset()
+        } catch (_: PlaybackError) {
+            // surfaced via controls.displayError
+        }
+    }
+
+    fun playOrUnpause() = viewModelScope.launch {
+        val c = controls.value
+        when {
+            c.unpause != null -> c.tryUnpause()
+            c.play != null -> c.tryPlay()
+        }
+    }
+    fun pause() = viewModelScope.launch { controls.value.tryPause() }
+    fun stop() = viewModelScope.launch { controls.value.tryStop() }
+    fun seekTo(fraction: Double) = viewModelScope.launch {
+        controls.value.trySeek(totalDuration.value * fraction)
+    }
+    fun setRate(rate: Float) = viewModelScope.launch { controls.value.trySetRate(rate) }
+    fun setVolume(v: Float) = viewModelScope.launch { mediaPlayer.updateVolume(v) }
+    fun toggleLoopMode() = viewModelScope.launch {
+        val setLoop = controls.value.setLoopMode ?: return@launch
+        val next: PlaybackState.LoopMode = when (setLoop.currentLoopMode) {
+            PlaybackState.LoopMode.NotLooping -> PlaybackState.LoopMode.LoopingForever
+            is PlaybackState.LoopMode.LoopingForever -> PlaybackState.LoopMode.LoopingForFixedNumber(1U)
+            is PlaybackState.LoopMode.LoopingForFixedNumber -> PlaybackState.LoopMode.NotLooping
+        }
+        setLoop.perform(next)
+    }
+    fun dismissError() {
+        _error.value = null
     }
 
     override fun onCleared() {
-        super.onCleared()
+        playerJob.invokeOnCompletion { dispatcher.close() }
         mediaPlayer.close()
-        mediaPlayerDispatcher.close()
-    }
-
-    fun didSelectFileAt(source: MediaSource?) {
-        coroutineScope.launch {
-            try {
-                source?.let {
-                    mediaPlayer.initializeFor(it)
-                } ?: mediaPlayer.reset()
-            } catch (e: PlaybackError) {
-                // Will be displayed automatically
-            }
-        }
-    }
-
-    private fun Duration.format() = toComponents { hours, minutes, seconds, _ ->
-        if (hours > 0) "%02d:%02d:%02d".format(hours, minutes, seconds) else "%02d:%02d".format(minutes, seconds)
+        playerJob.cancel()
+        super.onCleared()
     }
 }
+
+private fun Duration.format() = toComponents { hours, minutes, seconds, _ ->
+    if (hours > 0) {
+        "${hours.padded()}:${minutes.padded()}:${seconds.padded()}"
+    } else {
+        "${minutes.padded()}:${seconds.padded()}"
+    }
+}
+
+private fun Int.padded() = if (this < 10) "0$this" else "$this"
+private fun Long.padded() = if (this < 10) "0$this" else "$this"

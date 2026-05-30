@@ -19,33 +19,23 @@ package com.splendo.kaluga.media
 
 import platform.AVFoundation.AVPlayer
 import platform.AVFoundation.AVPlayerLayer
-import platform.AVKit.AVPlayerViewController
 
 typealias MediaSurfaceBinding = (AVPlayer?) -> Unit
 
 /**
  * A surface on which the video component of a [PlayableMedia] can be rendered.
- * @property bind the [MediaSurfaceBinding] method to bind to an [AVPlayer]
+ * Shared across iOS + macOS — the iOS-only `AVPlayerViewController` and macOS-only
+ * `AVPlayerView` factory constructors live in `iosMain`/`macosMain` respectively, alongside
+ * the platform-specific `MediaSurfaceProvider` implementations.
+ *
+ * @property bind the [MediaSurfaceBinding] that wires the surface to an [AVPlayer].
  */
 actual data class MediaSurface(val bind: MediaSurfaceBinding) {
 
     /**
-     * Constructor to create a [MediaSurface] that binds the [AVPlayer] of a [MediaManager] to an [AVPlayerLayer]
-     * @param avPlayerLayer the [AVPlayerLayer] to bind to
+     * Convenience: bind the [AVPlayer] of a `MediaManager` to an [AVPlayerLayer].
      */
     constructor(avPlayerLayer: AVPlayerLayer) : this(
-        {
-            avPlayerLayer.player = it
-        },
-    )
-
-    /**
-     * Constructor to create a [MediaSurface] that binds the [AVPlayer] of a [MediaManager] to an [AVPlayerViewController]
-     * @param viewController the [AVPlayerViewController] to bind to
-     */
-    constructor(viewController: AVPlayerViewController) : this(
-        {
-            viewController.player = it
-        },
+        { avPlayerLayer.player = it },
     )
 }

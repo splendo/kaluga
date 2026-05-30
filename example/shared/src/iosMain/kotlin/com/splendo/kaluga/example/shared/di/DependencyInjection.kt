@@ -22,7 +22,6 @@ import com.splendo.kaluga.example.feature.architecture.architectureFeatureModule
 import com.splendo.kaluga.example.feature.datetimepicker.datetimepickerFeatureModule
 import com.splendo.kaluga.example.feature.hud.hudFeatureModule
 import com.splendo.kaluga.example.feature.keyboard.keyboardFeatureModule
-import com.splendo.kaluga.example.feature.media.mediaFeatureModule
 import com.splendo.kaluga.example.feature.resources.resourcesFeatureModule
 import com.splendo.kaluga.example.koin.initKoin as initCoreKoin
 import org.koin.core.module.Module
@@ -41,7 +40,6 @@ fun initKoin(customModules: List<Module> = emptyList()) = initCoreKoin(
         datetimepickerFeatureModule,
         hudFeatureModule,
         keyboardFeatureModule,
-        mediaFeatureModule,
         resourcesFeatureModule,
     ) + customModules,
 )

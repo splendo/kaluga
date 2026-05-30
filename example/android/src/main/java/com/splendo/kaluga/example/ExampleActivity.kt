@@ -30,7 +30,6 @@ import com.splendo.kaluga.example.architecture.ArchitectureActivity
 import com.splendo.kaluga.example.datetimepicker.DateTimePickerActivity
 import com.splendo.kaluga.example.keyboard.KeyboardActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
-import com.splendo.kaluga.example.media.MediaListActivity
 import com.splendo.kaluga.example.shared.MobileFeatureIds
 import com.splendo.kaluga.example.resources.ResourcesActivity
 
@@ -62,7 +61,6 @@ class ExampleActivity : ComponentActivity() {
             MobileFeatureIds.DATE_TIME_PICKER -> DateTimePickerActivity::class.java
             MobileFeatureIds.KEYBOARD -> KeyboardActivity::class.java
             MobileFeatureIds.HUD -> LoadingActivity::class.java
-            MobileFeatureIds.MEDIA -> MediaListActivity::class.java
             MobileFeatureIds.RESOURCES -> ResourcesActivity::class.java
             else -> error("Native launch for unknown feature id: $id")
         }

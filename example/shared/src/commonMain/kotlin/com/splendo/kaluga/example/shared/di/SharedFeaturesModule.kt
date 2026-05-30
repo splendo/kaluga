@@ -23,6 +23,7 @@ import com.splendo.kaluga.example.feature.datetime.datetimeFeatureModule
 import com.splendo.kaluga.example.feature.info.infoFeatureModule
 import com.splendo.kaluga.example.feature.links.linksFeatureModule
 import com.splendo.kaluga.example.feature.location.locationFeatureModule
+import com.splendo.kaluga.example.feature.media.mediaFeatureModule
 import com.splendo.kaluga.example.feature.permissions.permissionsFeatureModule
 import com.splendo.kaluga.example.feature.review.reviewFeatureModule
 import com.splendo.kaluga.example.feature.scientific.scientificFeatureModule
@@ -46,6 +47,7 @@ val sharedFeaturesModule: Module = module {
         locationFeatureModule,
         bluetoothFeatureModule,
         beaconsFeatureModule,
+        mediaFeatureModule,
         reviewFeatureModule,
         scientificFeatureModule,
     )

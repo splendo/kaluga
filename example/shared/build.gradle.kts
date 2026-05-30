@@ -16,7 +16,6 @@ val mobileFeatureProjects = listOf(
     ":feature-datetimepicker",
     ":feature-hud",
     ":feature-keyboard",
-    ":feature-media",
     ":feature-resources",
 )
 
@@ -30,7 +29,6 @@ val mobileKalugaModules = listOf(
     "date-time-picker",
     "hud",
     "keyboard",
-    "media",
     "resources",
 )
 
@@ -82,6 +80,7 @@ kaluga {
                 api(project(":feature-info"))
                 api(project(":feature-links"))
                 api(project(":feature-location"))
+                api(project(":feature-media"))
                 api(project(":feature-permissions"))
                 api(project(":feature-review"))
                 // `:feature-scientific` is linked-but-hidden via `implementation` so its public

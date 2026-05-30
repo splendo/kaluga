@@ -17,20 +17,7 @@
 
 package com.splendo.kaluga.example.feature.media
 
-import com.splendo.kaluga.alerts.AlertPresenter
-import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.media.BaseMediaManager
 import com.splendo.kaluga.media.DefaultMediaManager
-import com.splendo.kaluga.media.MediaSurfaceProvider
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.module.Module
-import org.koin.dsl.module
 
-val mediaFeatureAndroidModule: Module = module {
-    viewModel { (mediaSurfaceProvider: MediaSurfaceProvider, navigator: Navigator<MediaNavigationAction>) ->
-        MediaViewModel(mediaSurfaceProvider, DefaultMediaManager.Builder(), AlertPresenter.Builder(), navigator)
-    }
-    viewModel { (navigator: Navigator<MediaListNavigationAction>) ->
-        MediaListViewModel(navigator)
-    }
-    viewModel { MediaSoundViewModel() }
-}
+internal actual fun newMediaManagerBuilder(): BaseMediaManager.Builder = DefaultMediaManager.Builder()

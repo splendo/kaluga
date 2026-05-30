@@ -18,7 +18,6 @@
 		201EA22529390A7F00C562EC /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA22429390A7F00C562EC /* ButtonView.swift */; };
 		201EA22729390CFE00C562EC /* LabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA22629390CFE00C562EC /* LabelView.swift */; };
 		201EA229293B8C6600C562EC /* ColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201EA228293B8C6600C562EC /* ColorView.swift */; };
-		2025CA2B29C9FC480037DF68 /* MediaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2025CA2A29C9FC480037DF68 /* MediaViewController.swift */; };
 		203006D62FC9E4C200B3A34B /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203006D52FC9E4B900B3A34B /* ExampleViewController.swift */; };
 		2034C13A2937B494003A6D19 /* PartialSheet in Frameworks */ = {isa = PBXBuildFile; productRef = 2034C1392937B494003A6D19 /* PartialSheet */; };
 		205AF6562488F017001BD99E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 205AF6542488F017001BD99E /* Localizable.strings */; };
@@ -52,8 +51,6 @@
 		93EC5B31E0ADDED3225B15C9 /* Color+Color.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F49DA13243DC3767266475 /* Color+Color.generated.swift */; };
 		9481F22DC3CFE170CE894584 /* KeyboardManager.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F34DFA21F534655B6FD3D03 /* KeyboardManager.generated.swift */; };
 		BC5100D52D2C3B2200095938 /* sound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BC5100D42D2C3B2200095938 /* sound.mp3 */; };
-		BC5100D92D2EB42700095938 /* MediaListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5100D82D2EB42700095938 /* MediaListViewController.swift */; };
-		BC5100DB2D2ECC7600095938 /* MediaSoundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5100DA2D2ECC7600095938 /* MediaSoundViewController.swift */; };
 		C77C23B538A4DFB02C0E0773 /* LazyView.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 095989173871C8CDA70C49E1 /* LazyView.generated.swift */; };
 		C9555693B015ADE12795997D /* NavigationBarColor.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9189D92DAF37F9815ECFDC /* NavigationBarColor.generated.swift */; };
 		D0F06CF9B138426F812F3B0B /* ShapeView.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9730959B8EF5B66133F731D2 /* ShapeView.generated.swift */; };
@@ -107,7 +104,6 @@
 		201EA22429390A7F00C562EC /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
 		201EA22629390CFE00C562EC /* LabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelView.swift; sourceTree = "<group>"; };
 		201EA228293B8C6600C562EC /* ColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorView.swift; sourceTree = "<group>"; };
-		2025CA2A29C9FC480037DF68 /* MediaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaViewController.swift; sourceTree = "<group>"; };
 		203006D52FC9E4B900B3A34B /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		205AF6552488F017001BD99E /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Demo/Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		207537A829A64CEC00D273F2 /* ImagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesView.swift; sourceTree = "<group>"; };
@@ -151,8 +147,6 @@
 		A1AD210B87A46DBD057A7D28 /* Navigation.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Navigation.generated.swift; sourceTree = "<group>"; };
 		A8678F48E60D40E6AB06177C /* LifecycleViewModel.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = LifecycleViewModel.generated.swift; sourceTree = "<group>"; };
 		BC5100D42D2C3B2200095938 /* sound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = sound.mp3; sourceTree = "<group>"; };
-		BC5100D82D2EB42700095938 /* MediaListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaListViewController.swift; sourceTree = "<group>"; };
-		BC5100DA2D2ECC7600095938 /* MediaSoundViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaSoundViewController.swift; sourceTree = "<group>"; };
 		CCF6BD3638095E5452785FF3 /* KalugaLabel+SwiftUI.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "KalugaLabel+SwiftUI.generated.swift"; sourceTree = "<group>"; };
 		D7A59766D89528BA5F4327BD /* Subject.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Subject.generated.swift; sourceTree = "<group>"; };
 		EA317627E5725424F6B7569C /* KalugaDate+Extensions.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "KalugaDate+Extensions.generated.swift"; sourceTree = "<group>"; };
@@ -188,9 +182,6 @@
 			isa = PBXGroup;
 			children = (
 				BC5100D42D2C3B2200095938 /* sound.mp3 */,
-				2025CA2A29C9FC480037DF68 /* MediaViewController.swift */,
-				BC5100D82D2EB42700095938 /* MediaListViewController.swift */,
-				BC5100DA2D2ECC7600095938 /* MediaSoundViewController.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -527,11 +518,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC5100D92D2EB42700095938 /* MediaListViewController.swift in Sources */,
 				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
 				209471E124C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift in Sources */,
 				201EA2232938F11700C562EC /* ResourcesListView.swift in Sources */,
-				BC5100DB2D2ECC7600095938 /* MediaSoundViewController.swift in Sources */,
 				20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */,
 				20BB9E652962ECA70096E836 /* KeyboardManagerView.swift in Sources */,
 				207537A929A64CEC00D273F2 /* ImagesView.swift in Sources */,
@@ -547,7 +536,6 @@
 				73DBBA374F2ED176BCF8E189 /* DefaultValues.generated.swift in Sources */,
 				42B12B5CFE87189A5F539B92 /* HasDefaultValue.generated.swift in Sources */,
 				D174F54A364898AC7E0962FC /* KalugaBackgroundStyle+SwiftUI.generated.swift in Sources */,
-				2025CA2B29C9FC480037DF68 /* MediaViewController.swift in Sources */,
 				20FFB48C293EC3CB005CF1C8 /* ArchitectureDetailsView.swift in Sources */,
 				D976FB8DC34A35578A995B2E /* KalugaButton+SwiftUI.generated.swift in Sources */,
 				7C49888336FE57AAA89E7958 /* KalugaDate+Extensions.generated.swift in Sources */,

@@ -120,15 +120,6 @@
         <activity android:name=".architecture.xml.ArchitectureDetailsActivity"
             android:label="@string/feature_architecture"
             android:screenOrientation="fullSensor"/>
-        <activity android:name=".media.MediaListActivity"
-            android:label="@string/feature_media"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".media.MediaActivity"
-            android:label="@string/feature_media"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".media.MediaSoundActivity"
-            android:label="@string/feature_media_sound"
-            android:screenOrientation="fullSensor"/>
         <activity android:name=".resources.ResourcesActivity"
             android:label="@string/feature_resources"
             android:screenOrientation="fullSensor"/>

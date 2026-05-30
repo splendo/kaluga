@@ -17,19 +17,50 @@
 
 package com.splendo.kaluga.example.feature.media
 
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import com.splendo.kaluga.example.arch.DetailScaffold
 import com.splendo.kaluga.example.arch.FeatureContribution
+import com.splendo.kaluga.media.BaseMediaManager
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-const val MEDIA_FEATURE_ID = "media"
+/** [BaseMediaManager.Builder] (i.e. `DefaultMediaManager.Builder`) is defined per platform, so
+ *  the factory lives in each platform source set. */
+internal expect fun newMediaManagerBuilder(): BaseMediaManager.Builder
 
-private class MediaContribution : FeatureContribution {
+private const val MEDIA_FEATURE_ID = "media"
+
+class MediaContribution : FeatureContribution {
     override val id = MEDIA_FEATURE_ID
     override val label = "Media"
-    override val isCompose = false
+    override fun register(builder: NavGraphBuilder, navController: NavController) {
+        builder.composable(id) {
+            DetailScaffold(title = label, onBack = { navController.popBackStack() }) {
+                MediaListScreen(
+                    onMedia = { navController.navigate("$id/player") },
+                    onSound = { navController.navigate("$id/sound") },
+                )
+            }
+        }
+        builder.composable("$id/player") {
+            DetailScaffold(title = "Media Player", onBack = { navController.popBackStack() }) {
+                MediaScreen()
+            }
+        }
+        builder.composable("$id/sound") {
+            DetailScaffold(title = "Sound", onBack = { navController.popBackStack() }) {
+                MediaSoundScreen()
+            }
+        }
+    }
 }
 
 val mediaFeatureModule: Module = module {
+    single<BaseMediaManager.Builder> { newMediaManagerBuilder() }
+    viewModel { MediaViewModel(get()) }
     single { MediaContribution() } bind FeatureContribution::class
 }
